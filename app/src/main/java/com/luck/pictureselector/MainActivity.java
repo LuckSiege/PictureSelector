@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     }
 
     /**
-     * 删除图片回调
+     * 删除图片回调接口
      */
     private GridImageAdapter.onAddPicClickListener onAddPicClickListener = new GridImageAdapter.onAddPicClickListener() {
         @Override
