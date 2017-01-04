@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.luck.picture.widget.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/picture"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/image_placeholder" />
+
+    <ImageView
+        android:id="@+id/check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:padding="@dimen/margin_text"
+        android:src="@drawable/checkbox_selector" />
+
+    <RelativeLayout
+        android:id="@+id/rl_duration"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:background="@mipmap/buybuybuy"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="5dp"
+            android:text="时长："
+            android:textColor="@color/white"
+            android:textSize="11sp" />
+    </RelativeLayout>
+</com.luck.picture.widget.SquareRelativeLayout>

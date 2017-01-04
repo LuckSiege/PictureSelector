@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="btn_radius">2dp</dimen>
+    <dimen name="bar_height">48dp</dimen>
+    <dimen name="btn_height">32dp</dimen>
+    <dimen name="margin_text">8dp</dimen>
+    <dimen name="margin_layout">16dp</dimen>
+    <dimen name="status_bar_height">25dp</dimen>
+    <dimen name="big_image_size">74dp</dimen>
+    <dimen name="min_button_width">52dp</dimen>
+    <dimen name="ucrop_padding_crop_frame">16dp</dimen>
+    <dimen name="middle_text_size">17sp</dimen>
+    <dimen name="small_text_size">15sp</dimen>
+    <dimen name="mini_text_size">13sp</dimen>
+
+    <!--Crop View-->
+    <dimen name="ucrop_default_crop_grid_stoke_width">1dp</dimen>
+    <dimen name="ucrop_default_crop_frame_stoke_width">1dp</dimen>
+    <dimen name="ucrop_default_crop_rect_corner_touch_threshold">30dp</dimen>
+    <dimen name="ucrop_default_crop_rect_min_size">100dp</dimen>
+    <dimen name="ucrop_default_crop_rect_corner_touch_area_line_length">10dp</dimen>
+
+
+    <dimen name="ucrop_height_crop_aspect_ratio_text">40dp</dimen>
+    <dimen name="ucrop_size_dot_scale_text_view">8dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+</resources>

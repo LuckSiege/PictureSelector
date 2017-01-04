@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.luck.picture.widget.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/grey"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/ic_camera" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/camera"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/margin_text"
+        android:text="@string/take_picture"
+        android:textColor="@color/white" />
+</com.luck.picture.widget.SquareRelativeLayout>

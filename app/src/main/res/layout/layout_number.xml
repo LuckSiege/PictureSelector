@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/margin_text"
+    android:paddingTop="@dimen/margin_text">
+
+    <ImageButton
+        android:id="@+id/minus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_minus" />
+
+    <EditText
+        android:id="@+id/select_num"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:editable="false"
+        android:clickable="false"
+        android:focusable="false"
+        android:gravity="center"
+        android:inputType="number"
+        android:text="9" />
+
+    <ImageButton
+        android:id="@+id/plus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_plus" />
+</LinearLayout>
