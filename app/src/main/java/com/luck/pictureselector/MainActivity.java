@@ -128,8 +128,10 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
             switch (requestCode) {
                 case ImageGridActivity.REQUEST_IMAGE:
                     images = (ArrayList<String>) data.getSerializableExtra(ImageGridActivity.REQUEST_OUTPUT);
-                    adapter.setList(images);
-                    adapter.notifyDataSetChanged();
+                    if (images != null) {
+                        adapter.setList(images);
+                        adapter.notifyDataSetChanged();
+                    }
                     break;
             }
         }
