@@ -9,7 +9,8 @@
         <activity
             android:name=".ui.AlbumDirectoryActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Slider" />
         <activity
             android:name=".ui.ImageGridActivity"
             android:screenOrientation="portrait" />
