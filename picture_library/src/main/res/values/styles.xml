@@ -7,9 +7,8 @@
         <item name="colorAccent">@color/bar_grey</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowActionBar">true</item>
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/white</item>
     </style>
 
     <style name="MyToolbar" parent="android:Widget">
