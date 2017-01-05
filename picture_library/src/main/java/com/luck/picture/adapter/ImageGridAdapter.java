@@ -143,10 +143,10 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             contentHolder.contentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if ((type == LocalMediaLoader.TYPE_VIDEO && selectMode == ImageGridActivity.MODE_SINGLE || enablePreviewVideo) && imageSelectChangedListener != null) {
+                    if (type == LocalMediaLoader.TYPE_VIDEO && (selectMode == ImageGridActivity.MODE_SINGLE || enablePreviewVideo) && imageSelectChangedListener != null) {
                         int index = showCamera ? position - 1 : position;
                         imageSelectChangedListener.onPictureClick(image, index);
-                    } else if ((type == LocalMediaLoader.TYPE_IMAGE && selectMode == ImageGridActivity.MODE_SINGLE || enablePreview) && imageSelectChangedListener != null) {
+                    } else if (type == LocalMediaLoader.TYPE_IMAGE && (selectMode == ImageGridActivity.MODE_SINGLE || enablePreview) && imageSelectChangedListener != null) {
                         int index = showCamera ? position - 1 : position;
                         imageSelectChangedListener.onPictureClick(image, index);
                     } else {
