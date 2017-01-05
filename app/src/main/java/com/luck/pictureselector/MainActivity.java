@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                      * type --> 1图片 or 2视频
                      * copyMode -->裁剪比例，默认、1:1、3:4、3:2、16:9
                      * maxSelectNum --> 可选择图片的数量
-                     * mode         --> 单选 or 多选
+                     * selectMode         --> 单选 or 多选
                      * isShow       --> 是否显示拍照选项 这里自动根据type 启动拍照或录视频
                      * isPreview    --> 是否打开预览选项
                      * isCrop       --> 是否打开剪切选项
