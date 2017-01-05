@@ -91,8 +91,9 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
                         }
                     }
                 }
-                sendBroadcast(intent);
                 onSelectNumChange();
+                sendBroadcast(intent);
+
             }
         });
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -145,18 +146,20 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
         Animation animation = null;
         boolean enable = selectImages.size() != 0;
         if (enable) {
-            animation = AnimationUtils.loadAnimation(mContext, R.anim.modal_in);
             tv_ok.setEnabled(true);
+            tv_ok.setAlpha(1.0f);
+            animation = AnimationUtils.loadAnimation(mContext, R.anim.modal_in);
             tv_img_num.startAnimation(animation);
             tv_img_num.setVisibility(View.VISIBLE);
             tv_img_num.setText(selectImages.size() + "");
             tv_ok.setText("已完成");
         } else {
+            tv_ok.setEnabled(false);
+            tv_ok.setAlpha(0.5f);
             if (selectImages.size() > 0) {
                 animation = AnimationUtils.loadAnimation(mContext, R.anim.modal_out);
                 tv_img_num.startAnimation(animation);
             }
-            tv_ok.setEnabled(false);
             tv_img_num.setVisibility(View.INVISIBLE);
             tv_ok.setText("请选择");
         }
