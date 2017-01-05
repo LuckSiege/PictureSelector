@@ -15,6 +15,7 @@ import com.luck.picture.ui.AlbumDirectoryActivity;
 import com.luck.picture.ui.ImageGridActivity;
 import com.luck.picture.util.Constants;
 import com.luck.picture.util.LocalMediaLoader;
+import com.luck.picture.util.Options;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.util.FullyGridLayoutManager;
 
@@ -34,14 +35,14 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     private GridImageAdapter adapter;
     private List<String> images = new ArrayList<>();
     private RadioGroup rgbs0, rgbs1, rgbs2, rgbs3, rgbs4, rgbs5, rgbs6;
-    private int selectMode = Constants.MODE_SINGLE;
+    private int selectMode = Constants.MODE_MULTIPLE;
     private int maxSelectNum = 9;// 图片最大可选数量
     private ImageButton minus, plus;
     private EditText select_num;
     private boolean isShow = true;
     private int selectType = LocalMediaLoader.TYPE_IMAGE;
     private int copyMode = Constants.COPY_MODEL_DEFAULT;
-    private boolean enablePreview = false;
+    private boolean enablePreview = true;
     private boolean isPreviewVideo = true;
     private boolean enableCrop = true;
 
@@ -110,7 +111,16 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                      * 注意-->type为2时 设置isPreview or isCrop 无效
                      *
                      */
-                    AlbumDirectoryActivity.startPhoto(MainActivity.this, selectType, copyMode, maxSelectNum, selectMode, isShow, enablePreview, enableCrop, isPreviewVideo);
+                    Options options = new Options();
+                    options.setType(selectType);
+                    options.setCopyMode(copyMode);
+                    options.setMaxSelectNum(maxSelectNum);
+                    options.setSelectMode(selectMode);
+                    options.setShowCamera(isShow);
+                    options.setEnablePreview(enablePreview);
+                    options.setEnableCrop(enableCrop);
+                    options.setPreviewVideo(isPreviewVideo);
+                    AlbumDirectoryActivity.startPhoto(MainActivity.this, options);
                     break;
                 case 1:
                     // 删除图片
