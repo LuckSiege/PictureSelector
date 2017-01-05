@@ -13,13 +13,16 @@
             android:theme="@style/Theme.Slider" />
         <activity
             android:name=".ui.ImageGridActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Slider" />
         <activity
             android:name=".ui.PreviewActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Slider" />
         <activity
             android:name=".ui.VideoPlayActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Slider" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait" />
