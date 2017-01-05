@@ -22,6 +22,8 @@ public class Constants {
     public static final int READ_EXTERNAL_STORAGE = 0x01;
     public static final int CAMERA = 0x02;
 
+    public static final int SELECT_MAX_NUM = 9;
+
     public static final String EXTRA_POSITION = "position";
     public static final String EXTRA_PREVIEW_LIST = "previewList";
     public static final String EXTRA_PREVIEW_SELECT_LIST = "previewSelectList";
