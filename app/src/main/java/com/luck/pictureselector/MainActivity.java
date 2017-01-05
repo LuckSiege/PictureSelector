@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                      * isCrop       --> 是否打开剪切选项
                      * isPreviewVideo -->是否预览视频(播放) mode or 多选有效
                      * 注意-->type为2时 设置isPreview or isCrop 无效
-                     *
+                     * 注意：Options可以为空，默认标准模式
                      */
                     Options options = new Options();
                     options.setType(selectType);
