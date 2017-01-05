@@ -64,19 +64,20 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
     private int selectMode = Constants.MODE_MULTIPLE;
 
     public static void startPhoto(Activity activity, Options options) {
-        if (options != null) {
-            Intent intent = new Intent(activity, AlbumDirectoryActivity.class);
-            intent.putExtra(Constants.EXTRA_MAX_SELECT_NUM, options.getMaxSelectNum());
-            intent.putExtra(Constants.EXTRA_CROP_MODE, options.getCopyMode());
-            intent.putExtra(Constants.EXTRA_SELECT_MODE, options.getSelectMode());
-            intent.putExtra(Constants.EXTRA_SHOW_CAMERA, options.isShowCamera());
-            intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW, options.isEnablePreview());
-            intent.putExtra(Constants.EXTRA_ENABLE_CROP, options.isEnableCrop());
-            intent.putExtra(Constants.EXTRA_TYPE, options.getType());
-            intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, options.isPreviewVideo());
-            activity.startActivityForResult(intent, REQUEST_IMAGE);
-            activity.overridePendingTransition(R.anim.slide_bottom_in, 0);
+        if (options == null) {
+            options = new Options();
         }
+        Intent intent = new Intent(activity, AlbumDirectoryActivity.class);
+        intent.putExtra(Constants.EXTRA_MAX_SELECT_NUM, options.getMaxSelectNum());
+        intent.putExtra(Constants.EXTRA_CROP_MODE, options.getCopyMode());
+        intent.putExtra(Constants.EXTRA_SELECT_MODE, options.getSelectMode());
+        intent.putExtra(Constants.EXTRA_SHOW_CAMERA, options.isShowCamera());
+        intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW, options.isEnablePreview());
+        intent.putExtra(Constants.EXTRA_ENABLE_CROP, options.isEnableCrop());
+        intent.putExtra(Constants.EXTRA_TYPE, options.getType());
+        intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, options.isPreviewVideo());
+        activity.startActivityForResult(intent, REQUEST_IMAGE);
+        activity.overridePendingTransition(R.anim.slide_bottom_in, 0);
     }
 
     @Override
