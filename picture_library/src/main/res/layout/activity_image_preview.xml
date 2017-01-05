@@ -53,15 +53,12 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-
     <RelativeLayout
         android:id="@+id/select_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bar_height"
-        android:layout_gravity="bottom"
+        android:layout_height="46dp"
         android:background="@color/bar_grey_90"
         android:gravity="center_vertical">
-
 
         <LinearLayout
             android:id="@+id/id_ll_ok"
@@ -76,7 +73,7 @@
                 android:id="@+id/tv_img_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
+                android:layout_marginRight="5dp"
                 android:background="@drawable/message_oval"
                 android:gravity="center"
                 android:text="0"
@@ -88,6 +85,7 @@
                 android:id="@+id/tv_ok"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:alpha="0.5"
                 android:enabled="false"
                 android:gravity="center|left"
                 android:paddingRight="12dp"
