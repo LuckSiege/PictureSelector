@@ -30,6 +30,7 @@ import com.luck.picture.entity.LocalMediaFolder;
 import com.luck.picture.util.Constants;
 import com.luck.picture.util.FileUtils;
 import com.luck.picture.util.LocalMediaLoader;
+import com.luck.picture.util.Options;
 import com.luck.picture.util.Utils;
 
 import java.io.File;
@@ -62,32 +63,34 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
     private boolean enablePreviewVideo = true;
     private int selectMode = Constants.MODE_MULTIPLE;
 
-    public static void startPhoto(Activity activity, int type, int cropMode, int maxSelectNum, int mode, boolean isShow, boolean enablePreview, boolean enableCrop, boolean isPreviewVideo) {
-        Intent intent = new Intent(activity, AlbumDirectoryActivity.class);
-        intent.putExtra(Constants.EXTRA_MAX_SELECT_NUM, maxSelectNum);
-        intent.putExtra(Constants.EXTRA_CROP_MODE, cropMode);
-        intent.putExtra(Constants.EXTRA_SELECT_MODE, mode);
-        intent.putExtra(Constants.EXTRA_SHOW_CAMERA, isShow);
-        intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW, enablePreview);
-        intent.putExtra(Constants.EXTRA_ENABLE_CROP, enableCrop);
-        intent.putExtra(Constants.EXTRA_TYPE, type);
-        intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, isPreviewVideo);
-        activity.startActivityForResult(intent, REQUEST_IMAGE);
-        activity.overridePendingTransition(R.anim.slide_bottom_in, 0);
+    public static void startPhoto(Activity activity, Options options) {
+        if (options != null) {
+            Intent intent = new Intent(activity, AlbumDirectoryActivity.class);
+            intent.putExtra(Constants.EXTRA_MAX_SELECT_NUM, options.getMaxSelectNum());
+            intent.putExtra(Constants.EXTRA_CROP_MODE, options.getCopyMode());
+            intent.putExtra(Constants.EXTRA_SELECT_MODE, options.getSelectMode());
+            intent.putExtra(Constants.EXTRA_SHOW_CAMERA, options.isShowCamera());
+            intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW, options.isEnablePreview());
+            intent.putExtra(Constants.EXTRA_ENABLE_CROP, options.isEnableCrop());
+            intent.putExtra(Constants.EXTRA_TYPE, options.getType());
+            intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, options.isPreviewVideo());
+            activity.startActivityForResult(intent, REQUEST_IMAGE);
+            activity.overridePendingTransition(R.anim.slide_bottom_in, 0);
+        }
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album);
-        type = getIntent().getIntExtra(Constants.EXTRA_TYPE, 0);// 1 图片 2视频
-        showCamera = getIntent().getBooleanExtra(Constants.EXTRA_SHOW_CAMERA, false);// 是否显示拍摄
-        enablePreview = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_PREVIEW, false);// 是否显示预览
+        type = getIntent().getIntExtra(Constants.EXTRA_TYPE, 1);// 1 图片 2视频
+        showCamera = getIntent().getBooleanExtra(Constants.EXTRA_SHOW_CAMERA, true);// 是否显示拍摄
+        enablePreview = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_PREVIEW, true);// 是否显示预览
         selectMode = getIntent().getIntExtra(Constants.EXTRA_SELECT_MODE, Constants.MODE_MULTIPLE);// 选择模式,单选or多选
         enableCrop = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_CROP, false);// 是否裁剪
-        maxSelectNum = getIntent().getIntExtra(Constants.EXTRA_MAX_SELECT_NUM, 0);// 图片最大选择数量
-        copyMode = getIntent().getIntExtra(Constants.EXTRA_CROP_MODE, 0);// 裁剪模式
-        enablePreviewVideo = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, true);// 是否预览视频
+        maxSelectNum = getIntent().getIntExtra(Constants.EXTRA_MAX_SELECT_NUM, Constants.SELECT_MAX_NUM);// 图片最大选择数量
+        copyMode = getIntent().getIntExtra(Constants.EXTRA_CROP_MODE, Constants.COPY_MODEL_DEFAULT);// 裁剪模式
+        enablePreviewVideo = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, false);// 是否预览视频
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         left_back = (ImageButton) findViewById(R.id.left_back);
