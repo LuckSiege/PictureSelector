@@ -1,2 +1,1 @@
-*.java linguist-language=Scala
-*.android linguist-language=Scala
+*.c++ linguist-language=java
