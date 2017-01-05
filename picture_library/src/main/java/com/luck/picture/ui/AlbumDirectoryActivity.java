@@ -16,6 +16,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -198,6 +199,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         int id = view.getId();
         if (id == R.id.tv_right) {
             finish();
+            overridePendingTransition(0, R.anim.slide_bottom_out);
         } else if (id == R.id.tv_empty) {
             List<LocalMedia> images = new ArrayList<>();
             startImageGridActivity(tv_title.getText().toString(), images);
@@ -257,5 +259,16 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
                     break;
             }
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                finish();
+                overridePendingTransition(0, R.anim.slide_bottom_out);
+                return false;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
