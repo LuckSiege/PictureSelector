@@ -46,9 +46,6 @@ import java.util.List;
  */
 public class AlbumDirectoryActivity extends BaseActivity implements View.OnClickListener, AlbumDirectoryAdapter.OnItemClickListener {
     public final static int REQUEST_IMAGE = 88;
-    public final static int REQUEST_CAMERA = 99;
-    public final static String FOLDER_NAME = "folderName";
-    public final static String EXTRA_IMAGES = "images";
     public final static String REQUEST_OUTPUT = "outputList";
     private List<LocalMediaFolder> folders = new ArrayList<>();
     private AlbumDirectoryAdapter adapter;
@@ -76,7 +73,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         intent.putExtra(Constants.EXTRA_TYPE, type);
         intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, isPreviewVideo);
         activity.startActivityForResult(intent, REQUEST_IMAGE);
-        activity.overridePendingTransition(R.anim.slide_bottom_in, R.anim.slide_bottom_out);
+        activity.overridePendingTransition(R.anim.slide_bottom_in, 0);
     }
 
     @Override
@@ -132,7 +129,6 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
     private void notifyDataCheckedStatus(List<LocalMedia> medias) {
         try {
             // 获取选中图片
-            //medias = (List<LocalMedia>) intent.getSerializableExtra(Constants.EXTRA_PREVIEW_SELECT_LIST);
             if (medias == null) {
                 medias = new ArrayList<>();
             }
@@ -242,17 +238,17 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
                     if (type == 1) {
                         folders = (List<LocalMediaFolder>) data.getSerializableExtra(Constants.EXTRA_FOLDERS);
                         medias = (List<LocalMedia>) data.getSerializableExtra(Constants.EXTRA_PREVIEW_SELECT_LIST);
-                        if (folders != null) {
+                        if (folders != null)
                             adapter.bindFolderData(folders);
-                        }
+                        if (medias == null)
+                            medias = new ArrayList<>();
                         notifyDataCheckedStatus(medias);
                         if (tv_empty.getVisibility() == View.VISIBLE)
                             tv_empty.setVisibility(View.GONE);
                     } else {
                         ArrayList<String> images = (ArrayList<String>) data.getSerializableExtra(ImageGridActivity.REQUEST_OUTPUT);
-                        if (images == null) {
+                        if (images == null)
                             images = new ArrayList<>();
-                        }
                         setResult(RESULT_OK, new Intent().putStringArrayListExtra(REQUEST_OUTPUT, images));
                         finish();
                     }
