@@ -1,0 +1,2 @@
+*.java linguist-language=Scala
+*.android linguist-language=Scala
