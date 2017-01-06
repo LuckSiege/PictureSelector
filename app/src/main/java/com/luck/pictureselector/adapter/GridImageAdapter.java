@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.luck.pictureselector.R;
-
 import java.util.ArrayList;
 import java.util.List;
 

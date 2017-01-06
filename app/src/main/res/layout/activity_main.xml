@@ -92,7 +92,6 @@
             android:id="@+id/rb_single"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
             android:text="单选" />
 
         <RadioButton
@@ -100,6 +99,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15sp"
+            android:checked="true"
             android:text="多选" />
     </RadioGroup>
 
@@ -190,6 +190,7 @@
             android:id="@+id/rb_preview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:text="预览图片" />
 
         <RadioButton
@@ -197,7 +198,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15sp"
-            android:checked="true"
+
             android:text="禁止预览" />
 
     </RadioGroup>

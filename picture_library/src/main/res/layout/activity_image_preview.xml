@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:background="@color/transparent"
-            android:src="@mipmap/back"
+            android:src="@drawable/back"
             android:visibility="visible" />
 
         <TextView
@@ -30,7 +30,7 @@
             android:maxEms="11"
             android:singleLine="true"
             android:text="@string/app_name"
-            android:textColor="@color/white"
+            android:textColor="@color/ucrop_color_toolbar_widget"
             android:textSize="18sp" />
 
         <CheckBox
@@ -40,14 +40,14 @@
             android:layout_alignParentRight="true"
             android:button="@drawable/checkbox_checktor"
             android:gravity="center"
-            android:paddingLeft="@dimen/margin_text"
+            android:paddingLeft="@dimen/ucrop_padding_crop_frame"
             android:paddingRight="5dp"
-            android:textColor="@color/white"
+            android:textColor="@color/ucrop_color_toolbar_widget"
             android:textSize="@dimen/middle_text_size" />
     </RelativeLayout>
 
 
-    <com.luck.picture.widget.PreviewViewPager
+    <com.yalantis.ucrop.widget.PreviewViewPager
         android:id="@+id/preview_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -77,7 +77,7 @@
                 android:background="@drawable/message_oval"
                 android:gravity="center"
                 android:text="0"
-                android:textColor="@color/white"
+                android:textColor="@color/ucrop_color_toolbar_widget"
                 android:textSize="12sp"
                 android:visibility="invisible" />
 

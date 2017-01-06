@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/ucrop_color_toolbar_widget"
     android:orientation="vertical">
 
     <include
@@ -61,7 +61,7 @@
                 android:background="@drawable/message_oval"
                 android:gravity="center"
                 android:text="0"
-                android:textColor="@color/white"
+                android:textColor="@color/ucrop_color_toolbar_widget"
                 android:textSize="12sp"
                 android:visibility="invisible" />
 

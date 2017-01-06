@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.luck.picture.widget.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.yalantis.ucrop.widget.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_alignParentBottom="true"
-        android:background="@mipmap/buybuybuy"
+        android:background="@drawable/buybuybuy"
         android:visibility="gone">
 
         <TextView
@@ -34,7 +34,7 @@
             android:layout_marginBottom="4dp"
             android:layout_marginLeft="5dp"
             android:text="时长："
-            android:textColor="@color/white"
+            android:textColor="@color/ucrop_color_toolbar_widget"
             android:textSize="11sp" />
     </RelativeLayout>
-</com.luck.picture.widget.SquareRelativeLayout>
+</com.yalantis.ucrop.widget.SquareRelativeLayout>

@@ -12,7 +12,7 @@
         android:layout_height="70dp"
         android:layout_centerVertical="true"
         android:scaleType="centerCrop"
-        android:src="@mipmap/ic_placeholder" />
+        android:src="@drawable/ic_placeholder" />
 
     <TextView
         android:id="@+id/tv_folder_name"
@@ -44,7 +44,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:scaleType="centerCrop"
-        android:src="@mipmap/more_1x" />
+        android:src="@drawable/more_1x" />
 
     <TextView
         android:id="@+id/tv_img_num"
@@ -55,7 +55,7 @@
         android:background="@drawable/message_oval"
         android:gravity="center"
         android:text="0"
-        android:textColor="@color/white"
+        android:textColor="@color/ucrop_color_toolbar_widget"
         android:textSize="12sp"
         android:visibility="invisible" />
 

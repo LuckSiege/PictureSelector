@@ -7,6 +7,6 @@
         </shape>
     </item>
     <item>
-        <bitmap android:src="@mipmap/ic_placeholder" android:gravity="center" ></bitmap>
+        <bitmap android:src="@drawable/ic_placeholder" android:gravity="center" ></bitmap>
     </item>
 </layer-list>

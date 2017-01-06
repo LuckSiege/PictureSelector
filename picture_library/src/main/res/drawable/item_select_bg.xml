@@ -3,5 +3,5 @@
 
     <item android:drawable="@color/color_f2" android:state_pressed="true" />
     <item android:drawable="@color/color_f2" android:state_selected="true" />
-    <item android:drawable="@color/white" />
+    <item android:drawable="@color/ucrop_color_toolbar_widget" />
 </selector>

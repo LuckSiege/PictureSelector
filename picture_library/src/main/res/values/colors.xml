@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="white">#FFFFFF</color>
+    <!--uCrop Activity-->
+    <color name="ucrop_color_toolbar">#FF6E40</color>
+    <color name="ucrop_color_statusbar">#CC5833</color>
+    <color name="ucrop_color_toolbar_widget">#fff</color>
+    <color name="ucrop_color_widget">#000</color>
+    <color name="ucrop_color_widget_active">#FF6E40</color>
+    <color name="ucrop_color_widget_background">#fff</color>
+    <color name="ucrop_color_widget_text">#000</color>
+    <color name="ucrop_color_progress_wheel_line">#808080</color>
+    <color name="ucrop_color_crop_background">#000</color>
+    <!--Crop View-->
+    <color name="ucrop_color_default_crop_grid">#80ffffff</color>
+    <color name="ucrop_color_default_crop_frame">#ffffff</color>
+    <color name="ucrop_color_default_dimmed">#8c000000</color>
+    <color name="ucrop_color_default_logo">#4f212121</color>
+
     <color name="color_f2">#F2F2F2</color>
     <color name="color_4d">#4d4d4d</color>
     <color name="black">#000000</color>
@@ -17,22 +32,5 @@
     <color name="image_overlay2">#80000000</color>
     <color name="color_f6">#f6f6f6</color>
     <color name="bar_grey_90">#dd393a3e</color>
-
-    <!--Crop View-->
-    <color name="ucrop_color_default_crop_grid">#80ffffff</color>
-    <color name="ucrop_color_default_crop_frame">#ffffff</color>
-    <color name="ucrop_color_default_dimmed">#8c000000</color>
-    <color name="ucrop_color_default_logo">#4f212121</color>
-
-    <!--uCrop Activity-->
-    <color name="ucrop_color_toolbar">#FF6E40</color>
-    <color name="ucrop_color_statusbar">#CC5833</color>
-    <color name="ucrop_color_toolbar_widget">#fff</color>
-    <color name="ucrop_color_widget">#000</color>
-    <color name="ucrop_color_widget_active">#FF6E40</color>
-    <color name="ucrop_color_widget_background">#fff</color>
-    <color name="ucrop_color_widget_text">#000</color>
-    <color name="ucrop_color_progress_wheel_line">#808080</color>
-    <color name="ucrop_color_crop_background">#000</color>
 
 </resources>

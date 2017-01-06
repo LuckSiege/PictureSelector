@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.luck.picture">
+    package="com.yalantis.ucrop">
 
     <application
         android:allowBackup="true"
@@ -27,5 +27,4 @@
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait" />
     </application>
-
 </manifest>

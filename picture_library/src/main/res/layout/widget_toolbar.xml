@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/ucrop_color_toolbar_widget"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:background="@color/transparent"
-            android:src="@mipmap/back"
+            android:src="@drawable/back"
             android:visibility="visible" />
 
         <TextView
@@ -30,7 +30,7 @@
             android:maxEms="11"
             android:singleLine="true"
             android:text="@string/app_name"
-            android:textColor="@color/white"
+            android:textColor="@color/ucrop_color_toolbar_widget"
             android:textSize="18sp" />
 
         <TextView
@@ -42,7 +42,7 @@
             android:layout_marginRight="5dp"
             android:gravity="center"
             android:text=""
-            android:textColor="@color/white"
+            android:textColor="@color/ucrop_color_toolbar_widget"
             android:textSize="15sp" />
     </RelativeLayout>
 
