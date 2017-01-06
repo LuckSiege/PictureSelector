@@ -10,8 +10,15 @@
 8.支持视频预览
 9.支持gif图片
 10.支持一些常用场景设置：如:是否裁剪、是否预览图片、是否显示相机等
+11.新增自定义主题设置
+12.新增图片勾选样式设置
 用得着的人点个赞吧~  项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~   联系方式893855882@qq.com
 
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/E3B380A383193B1FB00E8518AA9FA930.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/ABE302D298BD56DEC871F4464E64646F.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/66C119A6BD918EAF9418324836C34BA6.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/5F1513BFD9490AF153E3E30840964FB1.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/BA7C4A038613182020DA9CE0152DA5D4.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/0F918EB15954836F59A95A3F7E0D2012.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/159BC10964D06B234A22504A545945A2.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/2AEDE4E52CC095F5896E066C59DDDF85.jpg)
