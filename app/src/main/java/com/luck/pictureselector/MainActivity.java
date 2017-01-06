@@ -1,6 +1,7 @@
 package com.luck.pictureselector;
 
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     private RecyclerView recyclerView;
     private GridImageAdapter adapter;
     private List<String> images = new ArrayList<>();
-    private RadioGroup rgbs0, rgbs1, rgbs2, rgbs3, rgbs4, rgbs5, rgbs6;
+    private RadioGroup rgbs0, rgbs1, rgbs2, rgbs3, rgbs4, rgbs5, rgbs6, rgbs7, rgbs8;
     private int selectMode = Constants.MODE_MULTIPLE;
     private int maxSelectNum = 9;// 图片最大可选数量
     private ImageButton minus, plus;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     private boolean enablePreview = true;
     private boolean isPreviewVideo = true;
     private boolean enableCrop = true;
+    private boolean theme = false;
+    private boolean selectImageType = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         rgbs4 = (RadioGroup) findViewById(R.id.rgbs4);
         rgbs5 = (RadioGroup) findViewById(R.id.rgbs5);
         rgbs6 = (RadioGroup) findViewById(R.id.rgbs6);
+        rgbs7 = (RadioGroup) findViewById(R.id.rgbs7);
+        rgbs8 = (RadioGroup) findViewById(R.id.rgbs8);
         minus = (ImageButton) findViewById(R.id.minus);
         plus = (ImageButton) findViewById(R.id.plus);
         select_num = (EditText) findViewById(R.id.select_num);
@@ -74,6 +79,8 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         rgbs4.setOnCheckedChangeListener(this);
         rgbs5.setOnCheckedChangeListener(this);
         rgbs6.setOnCheckedChangeListener(this);
+        rgbs7.setOnCheckedChangeListener(this);
+        rgbs8.setOnCheckedChangeListener(this);
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,9 +120,12 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                      * isPreview    --> 是否打开预览选项
                      * isCrop       --> 是否打开剪切选项
                      * isPreviewVideo -->是否预览视频(播放) mode or 多选有效
+                     * ThemeStyle -->主题颜色
+                     * CheckedBoxDrawable -->图片勾选样式
                      * 注意-->type为2时 设置isPreview or isCrop 无效
                      * 注意：Options可以为空，默认标准模式
                      */
+                    int selector = R.drawable.select_cb;
                     Options options = new Options();
                     options.setType(selectType);
                     options.setCopyMode(copyMode);
@@ -125,6 +135,12 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                     options.setEnablePreview(enablePreview);
                     options.setEnableCrop(enableCrop);
                     options.setPreviewVideo(isPreviewVideo);
+                    if (theme) {
+                        options.setThemeStyle(ContextCompat.getColor(MainActivity.this, R.color.blue));
+                    }
+                    if (selectImageType) {
+                        options.setCheckedBoxDrawable(selector);
+                    }
                     AlbumDirectoryActivity.startPhoto(MainActivity.this, options);
                     break;
                 case 1:
@@ -207,6 +223,18 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                 break;
             case R.id.rb_no_copy:
                 enableCrop = false;
+                break;
+            case R.id.rb_theme1:
+                theme = false;
+                break;
+            case R.id.rb_theme2:
+                theme = true;
+                break;
+            case R.id.rb_select1:
+                selectImageType = false;
+                break;
+            case R.id.rb_select2:
+                selectImageType = true;
                 break;
         }
     }
