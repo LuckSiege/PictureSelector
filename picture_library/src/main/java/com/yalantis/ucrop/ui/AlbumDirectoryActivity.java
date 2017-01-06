@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.yalantis.ucrop.R;
@@ -22,7 +21,9 @@ import com.yalantis.ucrop.entity.LocalMediaFolder;
 import com.yalantis.ucrop.util.Constants;
 import com.yalantis.ucrop.util.LocalMediaLoader;
 import com.yalantis.ucrop.util.Options;
+import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.util.Utils;
+import com.yalantis.ucrop.widget.PublicTitleBar;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -35,14 +36,14 @@ import java.util.List;
  * email：893855882@qq.com
  * data：16/12/31
  */
-public class AlbumDirectoryActivity extends BaseActivity implements View.OnClickListener, AlbumDirectoryAdapter.OnItemClickListener {
+public class AlbumDirectoryActivity extends BaseActivity implements View.OnClickListener, PublicTitleBar.OnTitleBarClick, AlbumDirectoryAdapter.OnItemClickListener {
     public final static int REQUEST_IMAGE = 88;
     public final static String REQUEST_OUTPUT = "outputList";
     private List<LocalMediaFolder> folders = new ArrayList<>();
     private AlbumDirectoryAdapter adapter;
     private RecyclerView recyclerView;
-    private ImageButton left_back;
-    private TextView tv_right, tv_title, tv_empty;
+    private PublicTitleBar titleBar;
+    private TextView tv_empty;
     private List<LocalMedia> medias = new ArrayList<>();
     private int type = 0;
     private int maxSelectNum = 0;
@@ -52,6 +53,8 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
     private boolean enableCrop = false;
     private boolean enablePreviewVideo = true;
     private int selectMode = Constants.MODE_MULTIPLE;
+    private int backgroundColor = 0;
+    private int cb_drawable = 0;
 
     public static void startPhoto(Activity activity, Options options) {
         if (options == null) {
@@ -66,6 +69,8 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         intent.putExtra(Constants.EXTRA_ENABLE_CROP, options.isEnableCrop());
         intent.putExtra(Constants.EXTRA_TYPE, options.getType());
         intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, options.isPreviewVideo());
+        intent.putExtra(Constants.BACKGROUND_COLOR, options.getThemeStyle());
+        intent.putExtra(Constants.CHECKED_DRAWABLE, options.getCheckedBoxDrawable());
         activity.startActivityForResult(intent, REQUEST_IMAGE);
         activity.overridePendingTransition(R.anim.slide_bottom_in, 0);
     }
@@ -82,24 +87,25 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         maxSelectNum = getIntent().getIntExtra(Constants.EXTRA_MAX_SELECT_NUM, Constants.SELECT_MAX_NUM);// 图片最大选择数量
         copyMode = getIntent().getIntExtra(Constants.EXTRA_CROP_MODE, Constants.COPY_MODEL_DEFAULT);// 裁剪模式
         enablePreviewVideo = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, false);// 是否预览视频
-
+        backgroundColor = getIntent().getIntExtra(Constants.BACKGROUND_COLOR, 0);
+        cb_drawable = getIntent().getIntExtra(Constants.CHECKED_DRAWABLE, 0);
+        titleBar = (PublicTitleBar) findViewById(R.id.titleBar);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        left_back = (ImageButton) findViewById(R.id.left_back);
         tv_empty = (TextView) findViewById(R.id.tv_empty);
-        tv_right = (TextView) findViewById(R.id.tv_right);
-        tv_title = (TextView) findViewById(R.id.tv_title);
-        left_back.setVisibility(View.INVISIBLE);
         tv_empty.setOnClickListener(this);
+
         switch (type) {
             case LocalMediaLoader.TYPE_IMAGE:
-                tv_title.setText(getString(R.string.all_photo));
+                titleBar.setTitleText(getString(R.string.all_photo));
                 break;
             case LocalMediaLoader.TYPE_VIDEO:
-                tv_title.setText(getString(R.string.all_video));
+                titleBar.setTitleText(getString(R.string.all_video));
                 break;
         }
-        tv_right.setText(getString(R.string.cancel));
-        tv_right.setOnClickListener(this);
+        ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
+        titleBar.setTitleBarBackgroundColor(backgroundColor);
+        titleBar.setRightText(getString(R.string.cancel));
+        titleBar.setOnTitleBarClickListener(this);
         adapter = new AlbumDirectoryAdapter(this);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -184,15 +190,24 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         });
     }
 
+
+    @Override
+    public void onLeftClick() {
+
+    }
+
+    @Override
+    public void onRightClick() {
+        finish();
+        overridePendingTransition(0, R.anim.slide_bottom_out);
+    }
+
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.tv_right) {
-            finish();
-            overridePendingTransition(0, R.anim.slide_bottom_out);
-        } else if (id == R.id.tv_empty) {
+        if (id == R.id.tv_empty) {
             List<LocalMedia> images = new ArrayList<>();
-            startImageGridActivity(tv_title.getText().toString(), images);
+            startImageGridActivity(titleBar.getTitleText(), images);
         }
     }
 
@@ -217,6 +232,8 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         intent.putExtra(Constants.EXTRA_CROP_MODE, copyMode);
         intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, enablePreviewVideo);
         intent.putExtra(Constants.EXTRA_FOLDERS, (Serializable) adapter.getFolderData());
+        intent.putExtra(Constants.BACKGROUND_COLOR, backgroundColor);
+        intent.putExtra(Constants.CHECKED_DRAWABLE, cb_drawable);
         intent.setClass(mContext, ImageGridActivity.class);
         startActivityForResult(intent, REQUEST_IMAGE);
     }
@@ -237,7 +254,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
                         if (medias == null)
                             medias = new ArrayList<>();
                         notifyDataCheckedStatus(medias);
-                        if (tv_empty.getVisibility() == View.VISIBLE)
+                        if (tv_empty.getVisibility() == View.VISIBLE && adapter.getFolderData().size() > 0)
                             tv_empty.setVisibility(View.GONE);
                     } else {
                         ArrayList<String> images = (ArrayList<String>) data.getSerializableExtra(ImageGridActivity.REQUEST_OUTPUT);
@@ -261,4 +278,5 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         }
         return super.onKeyDown(keyCode, event);
     }
+
 }

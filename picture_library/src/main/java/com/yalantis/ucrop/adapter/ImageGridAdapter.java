@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.yalantis.ucrop.R;
+import com.yalantis.ucrop.dialog.OptAnimationLoader;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.ui.ImageGridActivity;
 import com.yalantis.ucrop.util.LocalMediaLoader;
@@ -38,14 +40,16 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private boolean enablePreview;
     private int selectMode = ImageGridActivity.MODE_MULTIPLE;
     private boolean enablePreviewVideo = false;
+    private int cb_drawable;
 
-    public ImageGridAdapter(Context context, boolean showCamera, int maxSelectNum, int mode, boolean enablePreview, boolean enablePreviewVideo) {
+    public ImageGridAdapter(Context context, boolean showCamera, int maxSelectNum, int mode, boolean enablePreview, boolean enablePreviewVideo, int cb_drawable) {
         this.context = context;
         this.selectMode = mode;
         this.showCamera = showCamera;
         this.maxSelectNum = maxSelectNum;
         this.enablePreview = enablePreview;
         this.enablePreviewVideo = enablePreviewVideo;
+        this.cb_drawable = cb_drawable;
     }
 
     public void bindImagesData(List<LocalMedia> images) {
@@ -107,6 +111,7 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             final LocalMedia image = images.get(showCamera ? position - 1 : position);
             String path = image.getPath();
             final int type = image.getType();
+            contentHolder.check.setImageResource(cb_drawable);
             if (selectMode == ImageGridActivity.MODE_SINGLE) {
                 contentHolder.check.setVisibility(View.GONE);
             } else {
@@ -228,6 +233,8 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void selectImage(ViewHolder holder, boolean isChecked) {
         holder.check.setSelected(isChecked);
         if (isChecked) {
+            Animation animation = OptAnimationLoader.loadAnimation(context, R.anim.modal_in);
+            holder.check.startAnimation(animation);
             holder.picture.setColorFilter(ContextCompat.getColor(context, R.color.image_overlay2), PorterDuff.Mode.SRC_ATOP);
         } else {
             holder.picture.setColorFilter(ContextCompat.getColor(context, R.color.image_overlay), PorterDuff.Mode.SRC_ATOP);

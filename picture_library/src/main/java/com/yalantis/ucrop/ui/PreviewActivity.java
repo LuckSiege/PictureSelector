@@ -8,17 +8,22 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yalantis.ucrop.R;
+import com.yalantis.ucrop.dialog.OptAnimationLoader;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.util.Constants;
+import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.widget.PreviewViewPager;
 
 import java.io.Serializable;
@@ -38,18 +43,22 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
     private TextView tv_img_num, tv_title, tv_ok;
     private PreviewViewPager viewPager;
     private int position;
+    private RelativeLayout rl_title;
     private int maxSelectNum;
     private List<LocalMedia> images = new ArrayList<>();
     private List<LocalMedia> selectImages = new ArrayList<>();
-    private CheckBox checkboxSelect;
+    private ImageView check;
+    private int backgroundColor = 0;
+    private int cb_drawable = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_preview);
+        rl_title = (RelativeLayout) findViewById(R.id.rl_title);
         left_back = (ImageButton) findViewById(R.id.left_back);
         viewPager = (PreviewViewPager) findViewById(R.id.preview_pager);
-        checkboxSelect = (CheckBox) findViewById(R.id.checkbox_select);
+        check = (ImageView) findViewById(R.id.check);
         left_back.setOnClickListener(this);
         id_ll_ok = (LinearLayout) findViewById(R.id.id_ll_ok);
         tv_ok = (TextView) findViewById(R.id.tv_ok);
@@ -60,20 +69,34 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
         selectImages = (List<LocalMedia>) getIntent().getSerializableExtra(Constants.EXTRA_PREVIEW_SELECT_LIST);
         position = getIntent().getIntExtra(Constants.EXTRA_POSITION, 0);
         maxSelectNum = getIntent().getIntExtra(Constants.EXTRA_MAX_SELECT_NUM, 0);
+        backgroundColor = getIntent().getIntExtra(Constants.BACKGROUND_COLOR, 0);
+        cb_drawable = getIntent().getIntExtra(Constants.CHECKED_DRAWABLE, 0);
+        rl_title.setBackgroundColor(backgroundColor);
+        ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
+        check.setImageResource(cb_drawable);
         viewPager.setAdapter(new SimpleFragmentAdapter(getSupportFragmentManager()));
         viewPager.setCurrentItem(position);
         tv_title.setText(position + 1 + "/" + images.size());
         onSelectNumChange();
         onImageChecked(position);
-        checkboxSelect.setOnClickListener(new View.OnClickListener() {
+        check.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 // 刷新图片列表中图片状态
                 Intent intent = new Intent();
-                boolean isChecked = checkboxSelect.isChecked();
+                boolean isChecked;
+                if (!check.isSelected()) {
+                    isChecked = true;
+                    check.setSelected(true);
+                    Animation animation = OptAnimationLoader.loadAnimation(mContext, R.anim.modal_in);
+                    check.startAnimation(animation);
+                } else {
+                    isChecked = false;
+                    check.setSelected(false);
+                }
                 if (selectImages.size() >= maxSelectNum && isChecked) {
                     Toast.makeText(PreviewActivity.this, getString(R.string.message_max_num, maxSelectNum), Toast.LENGTH_LONG).show();
-                    checkboxSelect.setChecked(false);
+                    check.setSelected(false);
                     return;
                 }
                 LocalMedia image = images.get(viewPager.getCurrentItem());
@@ -91,9 +114,9 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
                         }
                     }
                 }
+
                 onSelectNumChange();
                 sendBroadcast(intent);
-
             }
         });
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -121,7 +144,7 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
      * @param position
      */
     public void onImageChecked(int position) {
-        checkboxSelect.setChecked(isSelected(images.get(position)));
+        check.setSelected(isSelected(images.get(position)));
     }
 
     /**
@@ -148,7 +171,7 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
         if (enable) {
             tv_ok.setEnabled(true);
             tv_ok.setAlpha(1.0f);
-            animation = AnimationUtils.loadAnimation(mContext, R.anim.modal_in);
+            animation = OptAnimationLoader.loadAnimation(mContext, R.anim.modal_in);
             tv_img_num.startAnimation(animation);
             tv_img_num.setVisibility(View.VISIBLE);
             tv_img_num.setText(selectImages.size() + "");
@@ -157,7 +180,7 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
             tv_ok.setEnabled(false);
             tv_ok.setAlpha(0.5f);
             if (selectImages.size() > 0) {
-                animation = AnimationUtils.loadAnimation(mContext, R.anim.modal_out);
+                animation = OptAnimationLoader.loadAnimation(mContext, R.anim.modal_out);
                 tv_img_num.startAnimation(animation);
             }
             tv_img_num.setVisibility(View.INVISIBLE);

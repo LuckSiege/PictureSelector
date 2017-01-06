@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.yalantis.ucrop.model.AspectRatio;
+import com.yalantis.ucrop.util.Constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,6 +68,7 @@ public class UCrop {
         mCropOptionsBundle.putParcelable(EXTRA_INPUT_URI, source);
         mCropOptionsBundle.putParcelable(EXTRA_OUTPUT_URI, destination);
     }
+
 
     /**
      * Set an aspect ratio for crop bounds.
@@ -293,6 +295,10 @@ public class UCrop {
             mOptionBundle.putString(EXTRA_COMPRESSION_FORMAT_NAME, format.name());
         }
 
+        public void background_color(int color) {
+            mOptionBundle.putInt(Constants.BACKGROUND_COLOR, color);
+        }
+
         /**
          * Set compression quality [0-100] that will be used to save resulting Bitmap.
          */
@@ -510,6 +516,8 @@ public class UCrop {
             mOptionBundle.putFloat(EXTRA_ASPECT_RATIO_X, x);
             mOptionBundle.putFloat(EXTRA_ASPECT_RATIO_Y, y);
         }
+
+
 
         /**
          * Set an aspect ratio for crop bounds that is evaluated from source image width and height.

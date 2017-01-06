@@ -1,5 +1,10 @@
 package com.yalantis.ucrop.util;
 
+import android.graphics.Color;
+
+import com.yalantis.ucrop.R;
+
+
 /**
  * author：luck
  * project：PictureSelector
@@ -17,6 +22,24 @@ public class Options {
     private boolean enablePreview = true; // 是否预览图片
     private boolean enableCrop; // 是否裁剪图片，只针对单选图片有效
     private boolean isPreviewVideo; // 是否可预览视频(播放)
+    private int themeStyle = Color.parseColor("#393a3e"); // 标题栏背景色;
+    private int checkedBoxDrawable = R.drawable.checkbox_selector;// 图片选择默认样式
+
+    public int getCheckedBoxDrawable() {
+        return checkedBoxDrawable;
+    }
+
+    public void setCheckedBoxDrawable(int checkedBoxDrawable) {
+        this.checkedBoxDrawable = checkedBoxDrawable;
+    }
+
+    public int getThemeStyle() {
+        return themeStyle;
+    }
+
+    public void setThemeStyle(int themeStyle) {
+        this.themeStyle = themeStyle;
+    }
 
     public int getType() {
         return type;

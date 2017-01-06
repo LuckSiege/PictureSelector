@@ -33,6 +33,8 @@ import com.yalantis.ucrop.util.Constants;
 import com.yalantis.ucrop.util.FileUtils;
 import com.yalantis.ucrop.util.LocalMediaLoader;
 import com.yalantis.ucrop.util.ScreenUtils;
+import com.yalantis.ucrop.util.ToolbarUtil;
+import com.yalantis.ucrop.widget.PublicTitleBar;
 
 import java.io.File;
 import java.io.Serializable;
@@ -46,7 +48,7 @@ import java.util.List;
  * email：893855882@qq.com
  * data：16/12/31
  */
-public class ImageGridActivity extends BaseActivity implements View.OnClickListener, ImageGridAdapter.OnPhotoSelectChangedListener {
+public class ImageGridActivity extends BaseActivity implements PublicTitleBar.OnTitleBarClick, View.OnClickListener, ImageGridAdapter.OnPhotoSelectChangedListener {
     public final String TAG = ImageGridActivity.class.getSimpleName();
     public final static int REQUEST_IMAGE = 88;
     public final static int REQUEST_CAMERA = 99;
@@ -58,11 +60,10 @@ public class ImageGridActivity extends BaseActivity implements View.OnClickListe
     private int spanCount = 4;
     private List<LocalMedia> images = new ArrayList<>();
     private RecyclerView recyclerView;
-    private ImageButton left_back;
     private TextView tv_img_num;
     private TextView tv_ok;
     private RelativeLayout rl_bottom;
-    private TextView tv_right, tv_title;
+    private PublicTitleBar titleBar;
     private Button id_preview;
     private ImageGridAdapter adapter;
     private String cameraPath;
@@ -78,6 +79,8 @@ public class ImageGridActivity extends BaseActivity implements View.OnClickListe
     private int selectMode = MODE_MULTIPLE;
     private List<LocalMediaFolder> folders = new ArrayList<>();
     private List<LocalMedia> selectImages = new ArrayList<LocalMedia>();// 记录选中的图片
+    private int backgroundColor = 0;
+    private int cb_drawable = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,6 +102,8 @@ public class ImageGridActivity extends BaseActivity implements View.OnClickListe
         selectMode = getIntent().getIntExtra(Constants.EXTRA_SELECT_MODE, MODE_MULTIPLE);
         enablePreviewVideo = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, true);
         maxSelectNum = getIntent().getIntExtra(Constants.EXTRA_MAX_SELECT_NUM, 0);
+        backgroundColor = getIntent().getIntExtra(Constants.BACKGROUND_COLOR, 0);
+        cb_drawable = getIntent().getIntExtra(Constants.CHECKED_DRAWABLE, 0);
         if (savedInstanceState != null) {
             cameraPath = savedInstanceState.getString(Constants.BUNDLE_CAMERA_PATH);
         }
@@ -109,17 +114,16 @@ public class ImageGridActivity extends BaseActivity implements View.OnClickListe
             selectImages = new ArrayList<>();
         }
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        left_back = (ImageButton) findViewById(R.id.left_back);
-        tv_right = (TextView) findViewById(R.id.tv_right);
-        tv_title = (TextView) findViewById(R.id.tv_title);
+        titleBar = (PublicTitleBar) findViewById(R.id.titleBar);
         rl_bottom = (RelativeLayout) findViewById(R.id.rl_bottom);
+        titleBar.setTitleBarBackgroundColor(backgroundColor);
+        ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
         tv_ok = (TextView) findViewById(R.id.tv_ok);
         id_preview = (Button) findViewById(R.id.id_preview);
         tv_img_num = (TextView) findViewById(R.id.tv_img_num);
-        left_back.setOnClickListener(this);
-        tv_right.setOnClickListener(this);
         id_preview.setOnClickListener(this);
         tv_ok.setOnClickListener(this);
+        titleBar.setOnTitleBarClickListener(this);
         if (enablePreview && selectMode == Constants.MODE_MULTIPLE) {
             if (type == LocalMediaLoader.TYPE_VIDEO) {
                 // 如果是视频不能预览
@@ -133,22 +137,22 @@ public class ImageGridActivity extends BaseActivity implements View.OnClickListe
             id_preview.setVisibility(View.GONE);
         }
         if (folderName != null && !folderName.equals("")) {
-            tv_title.setText(folderName);
+            titleBar.setTitleText(folderName);
         } else {
             switch (type) {
                 case LocalMediaLoader.TYPE_IMAGE:
-                    tv_title.setText(getString(R.string.all_image));
+                    titleBar.setTitleText(getString(R.string.all_image));
                     break;
                 case LocalMediaLoader.TYPE_VIDEO:
-                    tv_title.setText(getString(R.string.all_video));
+                    titleBar.setTitleText(getString(R.string.all_video));
                     break;
             }
         }
-        tv_right.setText(getString(R.string.cancel));
+        titleBar.setRightText(getString(R.string.cancel));
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, ScreenUtils.dip2px(this, 2), false));
         recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
-        adapter = new ImageGridAdapter(this, showCamera, maxSelectNum, selectMode, enablePreview, enablePreviewVideo);
+        adapter = new ImageGridAdapter(this, showCamera, maxSelectNum, selectMode, enablePreview, enablePreviewVideo, cb_drawable);
         recyclerView.setAdapter(adapter);
         if (selectImages.size() > 0) {
             ChangeImageNumber(selectImages);
@@ -163,14 +167,13 @@ public class ImageGridActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View view) {
         Intent intent = new Intent();
         int id = view.getId();
-        if (id == R.id.left_back || id == R.id.tv_right) {
-            setResult(RESULT_OK, new Intent().putExtra("type", 1).putExtra(Constants.EXTRA_PREVIEW_SELECT_LIST, (Serializable) adapter.getSelectedImages()).putExtra(Constants.EXTRA_FOLDERS, (Serializable) folders));
-            finish();
-        } else if (id == R.id.id_preview) {
+        if (id == R.id.id_preview) {
             intent.putExtra(Constants.EXTRA_PREVIEW_LIST, (Serializable) adapter.getSelectedImages());
             intent.putExtra(Constants.EXTRA_PREVIEW_SELECT_LIST, (Serializable) adapter.getSelectedImages());
             intent.putExtra(Constants.EXTRA_POSITION, 0);
             intent.putExtra(Constants.EXTRA_MAX_SELECT_NUM, maxSelectNum);
+            intent.putExtra(Constants.BACKGROUND_COLOR, backgroundColor);
+            intent.putExtra(Constants.CHECKED_DRAWABLE, cb_drawable);
             intent.setClass(mContext, PreviewActivity.class);
             startActivityForResult(intent, REQUEST_PREVIEW);
         } else if (id == R.id.tv_ok) {
@@ -269,6 +272,8 @@ public class ImageGridActivity extends BaseActivity implements View.OnClickListe
                     intent.putExtra(Constants.EXTRA_PREVIEW_SELECT_LIST, (Serializable) adapter.getSelectedImages());
                     intent.putExtra(Constants.EXTRA_POSITION, position);
                     intent.putExtra(Constants.EXTRA_MAX_SELECT_NUM, maxSelectNum);
+                    intent.putExtra(Constants.BACKGROUND_COLOR, backgroundColor);
+                    intent.putExtra(Constants.CHECKED_DRAWABLE, cb_drawable);
                     intent.setClass(mContext, PreviewActivity.class);
                     startActivityForResult(intent, REQUEST_PREVIEW);
                 }
@@ -309,7 +314,7 @@ public class ImageGridActivity extends BaseActivity implements View.OnClickListe
                 options.withAspectRatio(16, 9);
                 break;
         }
-        options.setStatusBarColor(ContextCompat.getColor(this, R.color.bar_grey));
+        options.background_color(backgroundColor);
         uCrop.withOptions(options);
         uCrop.start(ImageGridActivity.this);
     }
@@ -366,9 +371,7 @@ public class ImageGridActivity extends BaseActivity implements View.OnClickListe
                     } else {
                         duration = Integer.parseInt(String.valueOf(System.currentTimeMillis()).substring(0, 10));
                     }
-
                     LocalMedia media = new LocalMedia(file.getPath(), duration, duration, type);
-
                     // 根据新拍照生成的图片，插入到对应的相册当中，避免重新查询一遍数据库
                     LocalMediaFolder folder = getImageFolder(media.getPath(), folders);
                     Log.i("FolderName", folder.getName());
@@ -378,15 +381,17 @@ public class ImageGridActivity extends BaseActivity implements View.OnClickListe
                     folder.setType(type);
                     addAllFolder(media);// 所有相册或视频也插入
 
-
                     Log.i("FolderfsafsaName", folders.size() + "");
                     List<LocalMedia> images = adapter.getImages();
                     images.add(0, media);
-                    List<LocalMedia> selectedImages = adapter.getSelectedImages();
-                    selectedImages.add(media);
+                    // 没有到最大选择量 才做默认选中刚拍好的
+                    if (adapter.getSelectedImages().size() < maxSelectNum) {
+                        List<LocalMedia> selectedImages = adapter.getSelectedImages();
+                        selectedImages.add(media);
+                        adapter.bindSelectImages(selectedImages);
+                        ChangeImageNumber(adapter.getSelectedImages());
+                    }
                     adapter.bindImagesData(images);
-                    adapter.bindSelectImages(selectedImages);
-                    ChangeImageNumber(adapter.getSelectedImages());
                 }
 
             } else if (requestCode == UCrop.REQUEST_CROP) {
@@ -498,4 +503,20 @@ public class ImageGridActivity extends BaseActivity implements View.OnClickListe
             unregisterReceiver(broadcastReceiver);
         }
     }
+
+    @Override
+    public void onLeftClick() {
+        ActivityFinish();
+    }
+
+    @Override
+    public void onRightClick() {
+        ActivityFinish();
+    }
+
+    private void ActivityFinish() {
+        setResult(RESULT_OK, new Intent().putExtra("type", 1).putExtra(Constants.EXTRA_PREVIEW_SELECT_LIST, (Serializable) adapter.getSelectedImages()).putExtra(Constants.EXTRA_FOLDERS, (Serializable) folders));
+        finish();
+    }
+
 }

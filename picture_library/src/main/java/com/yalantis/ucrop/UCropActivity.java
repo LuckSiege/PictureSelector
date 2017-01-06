@@ -18,12 +18,15 @@ import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.dialog.SweetAlertDialog;
 import com.yalantis.ucrop.model.AspectRatio;
+import com.yalantis.ucrop.util.Constants;
 import com.yalantis.ucrop.util.SystemBarTintManager;
+import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
 import com.yalantis.ucrop.view.OverlayView;
@@ -63,7 +66,7 @@ public class UCropActivity extends AppCompatActivity {
     private UCropView mUCropView;
     private GestureCropImageView mGestureCropImageView;
     private OverlayView mOverlayView;
-
+    private RelativeLayout rl_title;
     private Bitmap.CompressFormat mCompressFormat = DEFAULT_COMPRESS_FORMAT;
     private int mCompressQuality = DEFAULT_COMPRESS_QUALITY;
 
@@ -171,6 +174,7 @@ public class UCropActivity extends AppCompatActivity {
 
     private void setupViews(@NonNull Intent intent) {
         tv_right = (TextView) findViewById(R.id.tv_right);
+        rl_title = (RelativeLayout) findViewById(R.id.rl_title);
         tv_right.setText("确定");
         left_back = (ImageButton) findViewById(R.id.left_back);
         left_back.setOnClickListener(new View.OnClickListener() {
@@ -192,6 +196,9 @@ public class UCropActivity extends AppCompatActivity {
             }
         });
         mLogoColor = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_LOGO_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_default_logo));
+        int backgroundColor = intent.getIntExtra(Constants.BACKGROUND_COLOR, 0);
+        rl_title.setBackgroundColor(backgroundColor);
+        ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
         initiateRootViews();
 
     }
