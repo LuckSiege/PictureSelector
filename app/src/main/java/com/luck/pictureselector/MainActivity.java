@@ -5,10 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
+
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.util.FullyGridLayoutManager;
 import com.yalantis.ucrop.ui.AlbumDirectoryActivity;
@@ -122,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                     break;
                 case 1:
                     // 删除图片
+                    Log.i("删除的下标---->", position + "");
                     images.remove(position);
                     adapter.notifyItemRemoved(position);
                     break;
