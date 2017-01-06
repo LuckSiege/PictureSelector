@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         FullyGridLayoutManager manager = new FullyGridLayoutManager(MainActivity.this, 4, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
         adapter = new GridImageAdapter(MainActivity.this, onAddPicClickListener);
+        adapter.setSelectMax(maxSelectNum);
         recyclerView.setAdapter(adapter);
         rgbs0.setOnCheckedChangeListener(this);
         rgbs1.setOnCheckedChangeListener(this);
@@ -76,8 +77,11 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                maxSelectNum--;
+                if (maxSelectNum > 1) {
+                    maxSelectNum--;
+                }
                 select_num.setText(maxSelectNum + "");
+                adapter.setSelectMax(maxSelectNum);
             }
         });
         plus.setOnClickListener(new View.OnClickListener() {
@@ -85,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
             public void onClick(View v) {
                 maxSelectNum++;
                 select_num.setText(maxSelectNum + "");
+                adapter.setSelectMax(maxSelectNum);
             }
         });
 
@@ -114,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                     Options options = new Options();
                     options.setType(selectType);
                     options.setCopyMode(copyMode);
-                    options.setMaxSelectNum(maxSelectNum);
+                    options.setMaxSelectNum(maxSelectNum - images.size());
                     options.setSelectMode(selectMode);
                     options.setShowCamera(isShow);
                     options.setEnablePreview(enablePreview);
@@ -138,8 +143,9 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case ImageGridActivity.REQUEST_IMAGE:
-                    images = (ArrayList<String>) data.getSerializableExtra(ImageGridActivity.REQUEST_OUTPUT);
-                    if (images != null) {
+                    ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(ImageGridActivity.REQUEST_OUTPUT);
+                    if (result != null) {
+                        images.addAll(result);
                         adapter.setList(images);
                         adapter.notifyDataSetChanged();
                     }
