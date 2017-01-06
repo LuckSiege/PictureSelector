@@ -10,7 +10,7 @@
 8.支持视频预览
 9.支持gif图片
 10.支持一些常用场景设置：如:是否裁剪、是否预览图片、是否显示相机等
-用得着的人点个赞吧~  项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~
+用得着的人点个赞吧~  项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~   联系方式893855882@qq.com
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/0F918EB15954836F59A95A3F7E0D2012.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/159BC10964D06B234A22504A545945A2.jpg)
