@@ -29,7 +29,6 @@
             android:ellipsize="end"
             android:maxEms="11"
             android:singleLine="true"
-            android:text="@string/app_name"
             android:textColor="@color/ucrop_color_toolbar_widget"
             android:textSize="18sp" />
 
