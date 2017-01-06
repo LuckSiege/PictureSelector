@@ -8,14 +8,15 @@ package com.yalantis.ucrop.util;
  * data：17/1/5
  */
 public class Options {
-    private int type = 1;
-    private int copyMode = Constants.COPY_MODEL_DEFAULT;
-    private int maxSelectNum = Constants.SELECT_MAX_NUM;
-    private int selectMode = Constants.MODE_MULTIPLE;
-    private boolean isShowCamera = true;
-    private boolean enablePreview = true;
-    private boolean enableCrop;
-    private boolean isPreviewVideo;
+
+    private int type = 1; // 获取相册类型; 1 图片 2 视频
+    private int copyMode = Constants.COPY_MODEL_DEFAULT; // 裁剪模式; 默认、1:1、3:4、3:2、16:9
+    private int maxSelectNum = Constants.SELECT_MAX_NUM; // 多选最大可选数量
+    private int selectMode = Constants.MODE_MULTIPLE; // 单选 or 多选
+    private boolean isShowCamera = true; // 是否显示相机
+    private boolean enablePreview = true; // 是否预览图片
+    private boolean enableCrop; // 是否裁剪图片，只针对单选图片有效
+    private boolean isPreviewVideo; // 是否可预览视频(播放)
 
     public int getType() {
         return type;
