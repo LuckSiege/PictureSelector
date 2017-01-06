@@ -114,7 +114,7 @@ public class GridImageAdapter extends
             viewHolder.mImg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnAddPicClickListener.onAddPicClick(0, position);
+                    mOnAddPicClickListener.onAddPicClick(0, viewHolder.getAdapterPosition());
                 }
             });
             viewHolder.ll_del.setVisibility(View.INVISIBLE);
@@ -123,7 +123,7 @@ public class GridImageAdapter extends
             viewHolder.ll_del.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mOnAddPicClickListener.onAddPicClick(1, position);
+                    mOnAddPicClickListener.onAddPicClick(1, viewHolder.getAdapterPosition());
                 }
             });
             String path = list.get(position);
