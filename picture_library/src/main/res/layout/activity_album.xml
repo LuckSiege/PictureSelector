@@ -1,26 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:titlebar="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/ucrop_color_toolbar_widget">
 
-    <include
-        android:id="@+id/title_bar"
-        layout="@layout/widget_toolbar"
+    <com.yalantis.ucrop.widget.PublicTitleBar
+        android:id="@+id/titleBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        titlebar:leftTextColor="@color/ucrop_color_toolbar_widget"
+        titlebar:left_display="false"
+        titlebar:rightText="取消"
+        titlebar:rightTextColor="@color/ucrop_color_toolbar_widget"
+        titlebar:right_display="true"
+        titlebar:titleBarBackground="@color/bar_grey"
+        titlebar:titleBarHeight="48dp"
+        titlebar:titleText="标题" />
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/title_bar" />
+        android:layout_below="@id/titleBar" />
 
     <TextView
         android:id="@+id/tv_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
+        android:layout_below="@id/titleBar"
         android:gravity="center"
         android:text="相册空空如也，赶紧去拍几张吧~"
         android:textColor="@color/grey"

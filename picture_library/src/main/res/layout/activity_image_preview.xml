@@ -32,17 +32,16 @@
             android:textColor="@color/ucrop_color_toolbar_widget"
             android:textSize="18sp" />
 
-        <CheckBox
-            android:id="@+id/checkbox_select"
+
+        <ImageView
+            android:id="@+id/check"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:button="@drawable/checkbox_checktor"
             android:gravity="center"
             android:paddingLeft="@dimen/ucrop_padding_crop_frame"
-            android:paddingRight="5dp"
-            android:textColor="@color/ucrop_color_toolbar_widget"
-            android:textSize="@dimen/middle_text_size" />
+            android:paddingRight="15dp"
+            android:src="@drawable/checkbox_selector" />
     </RelativeLayout>
 
 
@@ -55,7 +54,7 @@
     <RelativeLayout
         android:id="@+id/select_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="46dp"
+        android:layout_height="45dp"
         android:background="@color/bar_grey_90"
         android:gravity="center_vertical">
 
