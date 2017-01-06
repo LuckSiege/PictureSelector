@@ -9,8 +9,9 @@
 7.支持裁剪比例设置，如常用的  1:1、3：4、3:2、16:9 默认为图片大小
 8.支持视频预览
 9.支持gif图片
-10.支持一些常用场景设置：如:是否裁剪、是否预览图片、是否裁剪、是否显示相机等
-用得着的人点个赞吧~  项目会一直维护，发现问题欢迎提出~
+10.支持一些常用场景设置：如:是否裁剪、是否预览图片、是否显示相机等
+用得着的人点个赞吧~  项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~
+
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/0F918EB15954836F59A95A3F7E0D2012.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/159BC10964D06B234A22504A545945A2.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/2AEDE4E52CC095F5896E066C59DDDF85.jpg)
