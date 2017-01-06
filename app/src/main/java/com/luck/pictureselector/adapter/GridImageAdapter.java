@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.luck.pictureselector.R;
+import com.yalantis.ucrop.entity.LocalMedia;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class GridImageAdapter extends
     private LayoutInflater mInflater;
     private Context mContext;
     private List<String> list = new ArrayList<>();
+    private int selectMax = 9;
     /**
      * 点击添加图片跳转
      */
@@ -41,6 +44,10 @@ public class GridImageAdapter extends
         mInflater = LayoutInflater.from(context);
         this.mContext = context;
         this.mOnAddPicClickListener = mOnAddPicClickListener;
+    }
+
+    public void setSelectMax(int selectMax) {
+        this.selectMax = selectMax;
     }
 
     public void setList(List<String> list) {
@@ -59,10 +66,9 @@ public class GridImageAdapter extends
         }
     }
 
-
     @Override
     public int getItemCount() {
-        if (list.size() < 9) {
+        if (list.size() < selectMax) {
             return list.size() + 1;
         } else {
             return list.size();
