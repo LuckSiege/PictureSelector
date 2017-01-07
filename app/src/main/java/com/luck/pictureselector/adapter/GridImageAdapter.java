@@ -17,6 +17,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.luck.pictureselector.R;
 import com.yalantis.ucrop.entity.LocalMedia;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -140,19 +141,13 @@ public class GridImageAdapter extends
             if (path.endsWith(".mp4")) {
                 Glide.with(mContext).load(path).thumbnail(0.5f).into(viewHolder.mImg);
             } else {
+                Log.i("compress image result", new File(path).length() / 1024 + "k");
                 Glide.with(mContext)
                         .load(path)
                         .asBitmap().centerCrop()
                         .placeholder(R.color.color_f6)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                Log.i("图片宽高", resource.getWidth() + "\n" + resource.getHeight());
-                                viewHolder.mImg.setImageBitmap(resource);
-                            }
-                        });
-
+                        .into(viewHolder.mImg);
             }
         }
     }

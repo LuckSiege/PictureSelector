@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     private RecyclerView recyclerView;
     private GridImageAdapter adapter;
     private List<String> images = new ArrayList<>();
-    private RadioGroup rgbs0, rgbs1, rgbs2, rgbs3, rgbs4, rgbs5, rgbs6, rgbs7, rgbs8;
+    private RadioGroup rgbs0, rgbs1, rgbs2, rgbs3, rgbs4, rgbs5, rgbs6, rgbs7, rgbs8, rgbs9;
     private int selectMode = Constants.MODE_MULTIPLE;
     private int maxSelectNum = 9;// 图片最大可选数量
     private ImageButton minus, plus;
@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     private boolean selectImageType = false;
     private int cropW = 0;
     private int cropH = 0;
+    private boolean isCompress = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         rgbs6 = (RadioGroup) findViewById(R.id.rgbs6);
         rgbs7 = (RadioGroup) findViewById(R.id.rgbs7);
         rgbs8 = (RadioGroup) findViewById(R.id.rgbs8);
+        rgbs9 = (RadioGroup) findViewById(R.id.rgbs9);
         et_w = (EditText) findViewById(R.id.et_w);
         et_h = (EditText) findViewById(R.id.et_h);
         minus = (ImageButton) findViewById(R.id.minus);
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         rgbs6.setOnCheckedChangeListener(this);
         rgbs7.setOnCheckedChangeListener(this);
         rgbs8.setOnCheckedChangeListener(this);
+        rgbs9.setOnCheckedChangeListener(this);
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                      * CheckedBoxDrawable -->图片勾选样式
                      * cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
                      * cropH-->裁剪高度 值不能小于100
+                     * isCompress -->是否压缩图片
                      * 注意-->type为2时 设置isPreview or isCrop 无效
                      * 注意：Options可以为空，默认标准模式
                      */
@@ -142,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                     Options options = new Options();
                     options.setType(selectType);
                     options.setCopyMode(copyMode);
+                    options.setCompress(isCompress);
                     options.setMaxSelectNum(maxSelectNum - images.size());
                     options.setSelectMode(selectMode);
                     options.setShowCamera(isShow);
@@ -250,6 +255,12 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                 break;
             case R.id.rb_select2:
                 selectImageType = true;
+                break;
+            case R.id.rb_compress_false:
+                isCompress = false;
+                break;
+            case R.id.rb_compress_true:
+                isCompress = true;
                 break;
         }
     }
