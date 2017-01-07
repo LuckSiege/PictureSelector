@@ -15,7 +15,7 @@
 13.新增图片裁剪宽高设置
 用得着的人点个赞吧~  项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~   联系方式893855882@qq.com
 
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/E3B380A383193B1FB00E8518AA9FA930.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/A574F86A9A9F42A77D03B0ACC9E761C9.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/ABE302D298BD56DEC871F4464E64646F.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/66C119A6BD918EAF9418324836C34BA6.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/5F1513BFD9490AF153E3E30840964FB1.jpg)
