@@ -247,7 +247,7 @@ public class UCropActivity extends AppCompatActivity {
             public void onBitmapCropped(@NonNull Uri resultUri, int imageWidth, int imageHeight) {
                 setResultUri(resultUri, mGestureCropImageView.getTargetAspectRatio(), imageWidth, imageHeight);
                 if (dialog != null && dialog.isShowing()) {
-                    dialog.show();
+                    dialog.dismiss();
                 }
                 finish();
             }
@@ -256,7 +256,7 @@ public class UCropActivity extends AppCompatActivity {
             public void onCropFailure(@NonNull Throwable t) {
                 setResultError(t);
                 if (dialog != null && dialog.isShowing()) {
-                    dialog.show();
+                    dialog.dismiss();
                 }
                 finish();
             }
