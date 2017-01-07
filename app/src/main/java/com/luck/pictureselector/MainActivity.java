@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     private int maxSelectNum = 9;// 图片最大可选数量
     private ImageButton minus, plus;
     private EditText select_num;
+    private EditText et_w, et_h;
     private boolean isShow = true;
     private int selectType = LocalMediaLoader.TYPE_IMAGE;
     private int copyMode = Constants.COPY_MODEL_DEFAULT;
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     private boolean enableCrop = true;
     private boolean theme = false;
     private boolean selectImageType = false;
+    private int cropW = 0;
+    private int cropH = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         rgbs6 = (RadioGroup) findViewById(R.id.rgbs6);
         rgbs7 = (RadioGroup) findViewById(R.id.rgbs7);
         rgbs8 = (RadioGroup) findViewById(R.id.rgbs8);
+        et_w = (EditText) findViewById(R.id.et_w);
+        et_h = (EditText) findViewById(R.id.et_h);
         minus = (ImageButton) findViewById(R.id.minus);
         plus = (ImageButton) findViewById(R.id.plus);
         select_num = (EditText) findViewById(R.id.select_num);
@@ -122,9 +127,17 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                      * isPreviewVideo -->是否预览视频(播放) mode or 多选有效
                      * ThemeStyle -->主题颜色
                      * CheckedBoxDrawable -->图片勾选样式
+                     * cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
+                     * cropH-->裁剪高度 值不能小于100
                      * 注意-->type为2时 设置isPreview or isCrop 无效
                      * 注意：Options可以为空，默认标准模式
                      */
+                    String ws = et_w.getText().toString().trim();
+                    String hs = et_h.getText().toString().trim();
+                    if (!isNull(ws) && !isNull(hs)) {
+                        cropW = Integer.parseInt(ws);
+                        cropH = Integer.parseInt(hs);
+                    }
                     int selector = R.drawable.select_cb;
                     Options options = new Options();
                     options.setType(selectType);
@@ -135,6 +148,8 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                     options.setEnablePreview(enablePreview);
                     options.setEnableCrop(enableCrop);
                     options.setPreviewVideo(isPreviewVideo);
+                    options.setCropW(cropW);
+                    options.setCropH(cropH);
                     if (theme) {
                         options.setThemeStyle(ContextCompat.getColor(MainActivity.this, R.color.blue));
                     }
@@ -237,5 +252,21 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                 selectImageType = true;
                 break;
         }
+    }
+
+
+    /**
+     * 判断 一个字段的值否为空
+     *
+     * @param s
+     * @return
+     * @author Michael.Zhang 2013-9-7 下午4:39:00
+     */
+    public boolean isNull(String s) {
+        if (null == s || s.equals("") || s.equalsIgnoreCase("null")) {
+            return true;
+        }
+
+        return false;
     }
 }

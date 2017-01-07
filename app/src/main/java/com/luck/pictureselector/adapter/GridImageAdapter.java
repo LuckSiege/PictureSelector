@@ -1,7 +1,9 @@
 package com.luck.pictureselector.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,8 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.luck.pictureselector.R;
 import com.yalantis.ucrop.entity.LocalMedia;
 
@@ -141,10 +145,16 @@ public class GridImageAdapter extends
                         .asBitmap().centerCrop()
                         .placeholder(R.color.color_f6)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(viewHolder.mImg);
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                Log.i("图片宽高", resource.getWidth() + "\n" + resource.getHeight());
+                                viewHolder.mImg.setImageBitmap(resource);
+                            }
+                        });
+
             }
         }
-
     }
 
     protected OnItemClickListener mItemClickListener;
