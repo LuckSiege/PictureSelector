@@ -249,7 +249,7 @@ public class UCropActivity extends AppCompatActivity {
                 if (dialog != null && dialog.isShowing()) {
                     dialog.dismiss();
                 }
-                
+
                 finish();
             }
 
