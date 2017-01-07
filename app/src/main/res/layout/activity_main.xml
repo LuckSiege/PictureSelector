@@ -237,29 +237,54 @@
 
             </RadioGroup>
 
-            <RadioGroup
-                android:id="@+id/rgbs6"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <RadioButton
-                    android:id="@+id/rb_yes_copy"
+                <RadioGroup
+                    android:id="@+id/rgbs6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="允许裁剪" />
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp">
 
-                <RadioButton
-                    android:id="@+id/rb_no_copy"
+                    <RadioButton
+                        android:id="@+id/rb_yes_copy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="允许裁剪" />
+
+                    <RadioButton
+                        android:id="@+id/rb_no_copy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15sp"
+                        android:text="禁止裁剪" />
+
+                </RadioGroup>
+
+                <EditText
+                    android:id="@+id/et_w"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
-                    android:text="禁止裁剪" />
+                    android:layout_marginLeft="10dp"
+                    android:hint="裁剪宽度"
+                    android:inputType="number"
+                    android:textSize="13sp" />
 
-            </RadioGroup>
+                <EditText
+                    android:id="@+id/et_h"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:hint="裁剪高度"
+                    android:inputType="number"
+                    android:textSize="13sp" />
+            </LinearLayout>
 
             <RadioGroup
                 android:id="@+id/rgbs7"
@@ -306,6 +331,30 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15sp"
                     android:text="自定义图片选择样式" />
+
+            </RadioGroup>
+
+            <RadioGroup
+                android:id="@+id/rgbs9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp">
+
+                <RadioButton
+                    android:id="@+id/rb_compress_false"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="默认不压缩图片" />
+
+                <RadioButton
+                    android:id="@+id/rb_compress_true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15sp"
+                    android:text="压缩图片" />
 
             </RadioGroup>
         </LinearLayout>
