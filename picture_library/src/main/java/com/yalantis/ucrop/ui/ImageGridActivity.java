@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.adapter.ImageGridAdapter;
+import com.yalantis.ucrop.compress.CompressConfig;
 import com.yalantis.ucrop.compress.CompressImageOptions;
 import com.yalantis.ucrop.compress.CompressInterface;
 import com.yalantis.ucrop.decoration.GridSpacingItemDecoration;
@@ -588,10 +589,9 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
      * 处理图片压缩
      */
     private void compressImage(ArrayList<Compress> result) {
-
         showDialog();
-
-        CompressImageOptions.compress(this, result, new CompressInterface.CompressListener() {
+        CompressConfig config = CompressConfig.ofDefaultConfig();
+        CompressImageOptions.compress(this, config, result, new CompressInterface.CompressListener() {
             @Override
             public void onCompressSuccess(ArrayList<Compress> images) {
                 // 压缩成功回调
