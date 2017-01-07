@@ -24,6 +24,24 @@ public class Options {
     private boolean isPreviewVideo; // 是否可预览视频(播放)
     private int themeStyle = Color.parseColor("#393a3e"); // 标题栏背景色;
     private int checkedBoxDrawable = R.drawable.checkbox_selector;// 图片选择默认样式
+    private int cropW = Constants.COPY_WIDTH; // 裁剪宽度  如果值大于图片原始宽高 将返回原图大小
+    private int cropH = Constants.COPY_HEIGHT;// 裁剪高度  如果值大于图片原始宽高 将返回原图大小
+
+    public int getCropW() {
+        return cropW;
+    }
+
+    public void setCropW(int cropW) {
+        this.cropW = cropW;
+    }
+
+    public int getCropH() {
+        return cropH;
+    }
+
+    public void setCropH(int cropH) {
+        this.cropH = cropH;
+    }
 
     public int getCheckedBoxDrawable() {
         return checkedBoxDrawable;

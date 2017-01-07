@@ -17,7 +17,8 @@ public class Constants {
 
     public final static int MODE_MULTIPLE = 1;// 多选
     public final static int MODE_SINGLE = 2;// 单选
-
+    public static final int COPY_WIDTH = 100;
+    public static final int COPY_HEIGHT = 100;
 
     public static final int READ_EXTERNAL_STORAGE = 0x01;
     public static final int CAMERA = 0x02;
@@ -44,4 +45,7 @@ public class Constants {
     public final static String EXTRA_FOLDERS = "folders";
     public final static String BACKGROUND_COLOR = "backgroundColor";
     public final static String CHECKED_DRAWABLE = "cb_drawable";
+
+    public final static String EXTRA_CROP_W = "crop_w";
+    public final static String EXTRA_CROP_H = "crop_h";
 }
