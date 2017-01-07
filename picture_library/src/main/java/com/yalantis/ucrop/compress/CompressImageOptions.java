@@ -20,12 +20,12 @@ public class CompressImageOptions implements CompressInterface {
     private ArrayList<Compress> images;
     private CompressInterface.CompressListener listener;
 
-    public static CompressImageOptions compress(Context context, ArrayList<Compress> images, CompressInterface.CompressListener listener) {
-        return new CompressImageOptions(context, images, listener);
+    public static CompressImageOptions compress(Context context, CompressConfig config, ArrayList<Compress> images, CompressInterface.CompressListener listener) {
+        return new CompressImageOptions(context, config, images, listener);
     }
 
-    private CompressImageOptions(Context context, ArrayList<Compress> images, CompressInterface.CompressListener listener) {
-        compressImageUtil = new CompressImageUtil(context);
+    private CompressImageOptions(Context context, CompressConfig config, ArrayList<Compress> images, CompressInterface.CompressListener listener) {
+        compressImageUtil = new CompressImageUtil(context, config);
         this.images = images;
         this.listener = listener;
     }
