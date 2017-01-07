@@ -81,6 +81,8 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
     private List<LocalMedia> selectImages = new ArrayList<LocalMedia>();// 记录选中的图片
     private int backgroundColor = 0;
     private int cb_drawable = 0;
+    private int cropW = 100;
+    private int cropH = 100;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,6 +106,8 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         maxSelectNum = getIntent().getIntExtra(Constants.EXTRA_MAX_SELECT_NUM, 0);
         backgroundColor = getIntent().getIntExtra(Constants.BACKGROUND_COLOR, 0);
         cb_drawable = getIntent().getIntExtra(Constants.CHECKED_DRAWABLE, 0);
+        cropW = getIntent().getIntExtra(Constants.EXTRA_CROP_W, 0);
+        cropH = getIntent().getIntExtra(Constants.EXTRA_CROP_H, 0);
         if (savedInstanceState != null) {
             cameraPath = savedInstanceState.getString(Constants.BUNDLE_CAMERA_PATH);
         }
@@ -314,6 +318,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
                 options.withAspectRatio(16, 9);
                 break;
         }
+        options.withMaxResultSize(cropW, cropH);
         options.background_color(backgroundColor);
         uCrop.withOptions(options);
         uCrop.start(ImageGridActivity.this);

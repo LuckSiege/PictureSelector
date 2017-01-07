@@ -55,6 +55,8 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
     private int selectMode = Constants.MODE_MULTIPLE;
     private int backgroundColor = 0;
     private int cb_drawable = 0;
+    private int cropW = 0;
+    private int cropH = 0;
 
     public static void startPhoto(Activity activity, Options options) {
         if (options == null) {
@@ -71,6 +73,8 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, options.isPreviewVideo());
         intent.putExtra(Constants.BACKGROUND_COLOR, options.getThemeStyle());
         intent.putExtra(Constants.CHECKED_DRAWABLE, options.getCheckedBoxDrawable());
+        intent.putExtra(Constants.EXTRA_CROP_W, options.getCropW());
+        intent.putExtra(Constants.EXTRA_CROP_H, options.getCropH());
         activity.startActivityForResult(intent, REQUEST_IMAGE);
         activity.overridePendingTransition(R.anim.slide_bottom_in, 0);
     }
@@ -89,6 +93,8 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         enablePreviewVideo = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, false);// 是否预览视频
         backgroundColor = getIntent().getIntExtra(Constants.BACKGROUND_COLOR, 0);
         cb_drawable = getIntent().getIntExtra(Constants.CHECKED_DRAWABLE, 0);
+        cropW = getIntent().getIntExtra(Constants.EXTRA_CROP_W, 0);
+        cropH = getIntent().getIntExtra(Constants.EXTRA_CROP_H, 0);
         titleBar = (PublicTitleBar) findViewById(R.id.titleBar);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         tv_empty = (TextView) findViewById(R.id.tv_empty);
@@ -234,6 +240,8 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         intent.putExtra(Constants.EXTRA_FOLDERS, (Serializable) adapter.getFolderData());
         intent.putExtra(Constants.BACKGROUND_COLOR, backgroundColor);
         intent.putExtra(Constants.CHECKED_DRAWABLE, cb_drawable);
+        intent.putExtra(Constants.EXTRA_CROP_W, cropW);
+        intent.putExtra(Constants.EXTRA_CROP_H, cropH);
         intent.setClass(mContext, ImageGridActivity.class);
         startActivityForResult(intent, REQUEST_IMAGE);
     }
