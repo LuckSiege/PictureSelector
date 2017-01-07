@@ -381,7 +381,6 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
                     folder.setType(type);
                     addAllFolder(media);// 所有相册或视频也插入
 
-                    Log.i("FolderfsafsaName", folders.size() + "");
                     List<LocalMedia> images = adapter.getImages();
                     images.add(0, media);
                     // 没有到最大选择量 才做默认选中刚拍好的
