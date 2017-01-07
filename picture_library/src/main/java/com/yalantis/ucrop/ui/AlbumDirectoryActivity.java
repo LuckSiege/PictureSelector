@@ -269,14 +269,9 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:
-                finish();
-                overridePendingTransition(0, R.anim.slide_bottom_out);
-                return false;
-        }
-        return super.onKeyDown(keyCode, event);
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        overridePendingTransition(0, R.anim.slide_bottom_out);
     }
-
 }
