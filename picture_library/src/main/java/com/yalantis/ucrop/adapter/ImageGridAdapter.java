@@ -246,6 +246,7 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         void onChange(List<LocalMedia> selectImages);
 
+
         void onPictureClick(LocalMedia media, int position);
     }
 

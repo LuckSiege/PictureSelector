@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,14 +18,17 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.adapter.ImageGridAdapter;
+import com.yalantis.ucrop.compress.CompressImageOptions;
+import com.yalantis.ucrop.compress.CompressInterface;
 import com.yalantis.ucrop.decoration.GridSpacingItemDecoration;
+import com.yalantis.ucrop.dialog.SweetAlertDialog;
+import com.yalantis.ucrop.entity.Compress;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.entity.LocalMediaFolder;
 import com.yalantis.ucrop.util.Constants;
@@ -68,6 +70,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
     private ImageGridAdapter adapter;
     private String cameraPath;
     private int maxSelectNum = 0;
+    private SweetAlertDialog dialog;
     private boolean enableCrop = false;
     private boolean enablePreview = true;
     private boolean enablePreviewVideo = true;
@@ -83,6 +86,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
     private int cb_drawable = 0;
     private int cropW = 100;
     private int cropH = 100;
+    private boolean isCompress;// 是否压缩
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -106,6 +110,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         maxSelectNum = getIntent().getIntExtra(Constants.EXTRA_MAX_SELECT_NUM, 0);
         backgroundColor = getIntent().getIntExtra(Constants.BACKGROUND_COLOR, 0);
         cb_drawable = getIntent().getIntExtra(Constants.CHECKED_DRAWABLE, 0);
+        isCompress = getIntent().getBooleanExtra(Constants.EXTRA_COMPRESS, false);
         cropW = getIntent().getIntExtra(Constants.EXTRA_CROP_W, 0);
         cropH = getIntent().getIntExtra(Constants.EXTRA_CROP_H, 0);
         if (savedInstanceState != null) {
@@ -182,13 +187,29 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
             startActivityForResult(intent, REQUEST_PREVIEW);
         } else if (id == R.id.tv_ok) {
             List<LocalMedia> images = adapter.getSelectedImages();
-            ArrayList<String> result = new ArrayList<>();
-            for (LocalMedia media : images) {
-                result.add(media.getPath());
+            // 图片才压缩，视频不管
+            if (isCompress && type == LocalMediaLoader.TYPE_IMAGE) {
+                ArrayList<Compress> compresses = new ArrayList<>();
+                Compress compress;
+                for (LocalMedia m : images) {
+                    compress = new Compress();
+                    compress.setPath(m.getPath());
+                    compresses.add(compress);
+                }
+                compressImage(compresses);
+            } else {
+                resultBack(images);
             }
-            if (result.size() > 0) {
-                onResult(result);
-            }
+        }
+    }
+
+    private void resultBack(List<LocalMedia> images) {
+        ArrayList<String> result = new ArrayList<>();
+        for (LocalMedia media : images) {
+            result.add(media.getPath());
+        }
+        if (result.size() > 0) {
+            onResult(result);
         }
     }
 
@@ -269,7 +290,16 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
                 if (enableCrop && selectMode == Constants.MODE_SINGLE) {
                     startCopy(media.getPath());
                 } else if (!enableCrop && selectMode == Constants.MODE_SINGLE) {
-                    onSelectDone(media.getPath());
+                    if (isCompress) {
+                        // 如果压缩图片,因为单选只能选一张，所以手动设置只压缩一次就好了
+                        ArrayList<Compress> compresses = new ArrayList<>();
+                        Compress compress = new Compress();
+                        compress.setPath(media.getPath());
+                        compresses.add(compress);
+                        compressImage(compresses);
+                    } else {
+                        onSelectDone(media.getPath());
+                    }
                 } else {
                     // 图片可以预览
                     intent.putExtra(Constants.EXTRA_PREVIEW_LIST, (Serializable) previewImages);
@@ -364,7 +394,16 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
                         // 如果允许裁剪，并且是图片
                         startCopy(cameraPath);
                     } else {
-                        onSelectDone(cameraPath);
+                        if (isCompress && type == LocalMediaLoader.TYPE_IMAGE) {
+                            // 压缩图片
+                            ArrayList<Compress> compresses = new ArrayList<>();
+                            Compress compress = new Compress();
+                            compress.setPath(cameraPath);
+                            compresses.add(compress);
+                            compressImage(compresses);
+                        } else {
+                            onSelectDone(cameraPath);
+                        }
                     }
                 } else {
                     // 多选 返回列表并选中当前拍照的
@@ -404,7 +443,20 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
                 // 预览点击完成
                 if (data != null) {
                     ArrayList<String> images = (ArrayList<String>) data.getSerializableExtra(Constants.EXTRA_PREVIEW_SELECT_LIST);
-                    onResult(images);
+                    if (images == null)
+                        images = new ArrayList<>();
+                    if (isCompress && type == LocalMediaLoader.TYPE_IMAGE) {
+                        ArrayList<Compress> compresses = new ArrayList<>();
+                        for (String path : images) {
+                            // 压缩
+                            Compress compress = new Compress();
+                            compress.setPath(path);
+                            compresses.add(compress);
+                        }
+                        compressImage(compresses);
+                    } else {
+                        onResult(images);
+                    }
                 }
             }
         }
@@ -424,7 +476,16 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
     private void handleCropResult(@NonNull Intent result) {
         final Uri resultUri = UCrop.getOutput(result);
         if (resultUri != null) {
-            onSelectDone(resultUri.getPath());
+            if (isCompress && type == LocalMediaLoader.TYPE_IMAGE) {
+                // 压缩图片
+                ArrayList<Compress> compresses = new ArrayList<>();
+                Compress compress = new Compress();
+                compress.setPath(resultUri.getPath());
+                compresses.add(compress);
+                compressImage(compresses);
+            } else {
+                onSelectDone(resultUri.getPath());
+            }
         }
     }
 
@@ -523,4 +584,46 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         finish();
     }
 
+    /**
+     * 处理图片压缩
+     */
+    private void compressImage(ArrayList<Compress> result) {
+
+        showDialog();
+
+        CompressImageOptions.compress(this, result, new CompressInterface.CompressListener() {
+            @Override
+            public void onCompressSuccess(ArrayList<Compress> images) {
+                // 压缩成功回调
+                ArrayList<String> result = new ArrayList<String>();
+                for (Compress t : images) {
+                    result.add(t.getCompressPath());
+                }
+                onResult(result);
+                if (dialog != null && dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onCompressError(ArrayList<Compress> images, String msg) {
+                // 压缩失败回调 返回原图
+                ArrayList<String> result = new ArrayList<String>();
+                List<LocalMedia> selectedImages = adapter.getSelectedImages();
+                for (LocalMedia item : selectedImages) {
+                    result.add(item.getPath());
+                }
+                onResult(result);
+                if (dialog != null && dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+            }
+        }).compress();
+    }
+
+    private void showDialog() {
+        dialog = new SweetAlertDialog(ImageGridActivity.this);
+        dialog.setTitleText("处理中...");
+        dialog.show();
+    }
 }

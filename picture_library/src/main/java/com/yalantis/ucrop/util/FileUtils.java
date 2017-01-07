@@ -43,7 +43,7 @@ import java.util.Locale;
  * @version 2013-12-11
  */
 public class FileUtils {
-
+    private static String DEFAULT_CACHE_DIR = "picture_cache";
 
     public static final String POSTFIX = ".JPEG";
     public static final String POST_VIDEO = ".mp4";
@@ -161,6 +161,22 @@ public class FileUtils {
             }
         }
         return null;
+    }
+
+    public static File getPhotoCacheDir(Context context, File file) {
+        File cacheDir = context.getCacheDir();
+        if (cacheDir != null) {
+            File mCacheDir = new File(cacheDir, DEFAULT_CACHE_DIR);
+            if (!mCacheDir.mkdirs() && (!mCacheDir.exists() || !mCacheDir.isDirectory())) {
+                return file;
+            } else {
+                return new File(mCacheDir, file.getName());
+            }
+        }
+        if (Log.isLoggable(TAG, Log.ERROR)) {
+            Log.e(TAG, "default disk cache dir is null");
+        }
+        return file;
     }
 
     /**

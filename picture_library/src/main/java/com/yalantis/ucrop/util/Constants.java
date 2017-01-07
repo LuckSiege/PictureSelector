@@ -45,7 +45,7 @@ public class Constants {
     public final static String EXTRA_FOLDERS = "folders";
     public final static String BACKGROUND_COLOR = "backgroundColor";
     public final static String CHECKED_DRAWABLE = "cb_drawable";
-
+    public final static String EXTRA_COMPRESS = "isCompress";
     public final static String EXTRA_CROP_W = "crop_w";
     public final static String EXTRA_CROP_H = "crop_h";
 }

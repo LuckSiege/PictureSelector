@@ -94,14 +94,6 @@ public class LocalMediaLoader {
                                 if (TextUtils.isEmpty(path) || !new File(path).exists()) {
                                     continue;
                                 }
-//                                if (type == TYPE_VIDEO) {
-//                                    // 视频缩略图ID:MediaStore.Audio.Media._ID
-//                                    int imageId = data.getInt(data.getColumnIndexOrThrow(MediaStore.Images.Media._ID));
-//                                    Cursor thumbCursor = activity.getContentResolver().query(MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Video.Thumbnails.DATA}, MediaStore.Video.Thumbnails.VIDEO_ID + "=" + imageId, null, null);
-//                                    if (thumbCursor.moveToFirst()) {
-//                                        path = thumbCursor.getString(thumbCursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA));
-//                                    }
-//                                }
                                 long dateTime = data.getLong(data.getColumnIndexOrThrow(IMAGE_PROJECTION[2]));
                                 int duration = (type == TYPE_VIDEO ? data.getInt(data.getColumnIndexOrThrow(VIDEO_PROJECTION[4])) : 0);
                                 LocalMedia image = new LocalMedia(path, dateTime, duration, type);
