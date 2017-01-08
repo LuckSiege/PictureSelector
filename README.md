@@ -13,6 +13,7 @@
 11.新增自定义主题设置
 12.新增图片勾选样式设置
 13.新增图片裁剪宽高设置
+14.新增图片压缩处理
 用得着的人点个赞吧~  项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~   联系方式893855882@qq.com
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/A574F86A9A9F42A77D03B0ACC9E761C9.jpg)
