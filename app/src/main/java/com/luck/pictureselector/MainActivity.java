@@ -178,8 +178,8 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case ImageGridActivity.REQUEST_IMAGE:
-                    ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(ImageGridActivity.REQUEST_OUTPUT);
+                case Constants.REQUEST_IMAGE:
+                    ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(Constants.REQUEST_OUTPUT);
                     if (result != null) {
                         images.addAll(result);
                         adapter.setList(images);
