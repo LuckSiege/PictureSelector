@@ -7,16 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Author:    ZhuWenWu
- * Version    V1.0
- * Date:      2015/2/26  14:14.
- * Description:
- * Modification  History:
- * Date             Author                Version            Description
- * -----------------------------------------------------------------------------------
- * 2015/2/26        ZhuWenWu            1.0                    1.0
- * Why & What is modified:
+ * author：luck
+ * project：PictureSelector
+ * package：com.luck.picture.ui
+ * email：893855882@qq.com
+ * data：16/12/31
  */
+
 public class FullyGridLayoutManager extends GridLayoutManager {
     public FullyGridLayoutManager(Context context, int spanCount) {
         super(context, spanCount);
@@ -79,11 +76,14 @@ public class FullyGridLayoutManager extends GridLayoutManager {
         setMeasuredDimension(width, height);
     }
 
+    final RecyclerView.State mState = new RecyclerView.State();
+
     private void measureScrapChild(RecyclerView.Recycler recycler, int position, int widthSpec,
                                    int heightSpec, int[] measuredDimension) {
-        if (position < getItemCount()) {
+        int itemCount = mState.getItemCount();
+        if (position < itemCount) {
             try {
-                View view = recycler.getViewForPosition(0);//fix 动态添加时报IndexOutOfBoundsException
+                View view = recycler.getViewForPosition(0);
                 if (view != null) {
                     RecyclerView.LayoutParams p = (RecyclerView.LayoutParams) view.getLayoutParams();
                     int childWidthSpec = ViewGroup.getChildMeasureSpec(widthSpec,
