@@ -53,13 +53,6 @@ import java.util.List;
  */
 public class ImageGridActivity extends BaseActivity implements PublicTitleBar.OnTitleBarClick, View.OnClickListener, ImageGridAdapter.OnPhotoSelectChangedListener {
     public final String TAG = ImageGridActivity.class.getSimpleName();
-    public final static int REQUEST_IMAGE = 88;
-    public final static int REQUEST_CAMERA = 99;
-    public final static int REQUEST_PREVIEW = 100;
-    public final static String FOLDER_NAME = "folderName";
-    public final static String EXTRA_IMAGES = "images";
-    public final static String REQUEST_OUTPUT = "outputList";
-
     private int spanCount = 4;
     private List<LocalMedia> images = new ArrayList<>();
     private RecyclerView recyclerView;
@@ -70,43 +63,29 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
     private Button id_preview;
     private ImageGridAdapter adapter;
     private String cameraPath;
-    private int maxSelectNum = 0;
     private SweetAlertDialog dialog;
-    private boolean enableCrop = false;
-    private boolean enablePreview = true;
-    private boolean enablePreviewVideo = true;
-    private boolean showCamera = true;
-    protected int type = 0;
-    private int copyModel = 0;
-    public final static int MODE_MULTIPLE = 1;// 多选
-    public final static int MODE_SINGLE = 2;// 单选
-    private int selectMode = MODE_MULTIPLE;
     private List<LocalMediaFolder> folders = new ArrayList<>();
     private List<LocalMedia> selectImages = new ArrayList<LocalMedia>();// 记录选中的图片
-    private int backgroundColor = 0;
-    private int cb_drawable = 0;
-    private int cropW = 100;
-    private int cropH = 100;
-    private boolean isCompress;// 是否压缩
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_grid);
         registerReceiver(broadcastReceiver, Constants.ACTION_FINISH, Constants.ACTION_ADD_PHOTO, Constants.ACTION_REMOVE_PHOTO);
-        String folderName = getIntent().getStringExtra(FOLDER_NAME);
+        String folderName = getIntent().getStringExtra(Constants.FOLDER_NAME);
         folders = (List<LocalMediaFolder>) getIntent().getSerializableExtra(Constants.EXTRA_FOLDERS);
         if (folders == null) {
             folders = new ArrayList<>();
         }
         type = getIntent().getIntExtra(Constants.EXTRA_TYPE, 0);// 1图片 2视频
         selectImages = (List<LocalMedia>) getIntent().getSerializableExtra(Constants.EXTRA_PREVIEW_SELECT_LIST);
-        images = (List<LocalMedia>) getIntent().getSerializableExtra(EXTRA_IMAGES);
-        copyModel = getIntent().getIntExtra(Constants.EXTRA_CROP_MODE, 0);// 裁剪模式
+        images = (List<LocalMedia>) getIntent().getSerializableExtra(Constants.EXTRA_IMAGES);
+        copyMode = getIntent().getIntExtra(Constants.EXTRA_CROP_MODE, 0);// 裁剪模式
         enableCrop = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_CROP, false);
         enablePreview = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_PREVIEW, true);// 是否预览
         showCamera = getIntent().getBooleanExtra(Constants.EXTRA_SHOW_CAMERA, true);
-        selectMode = getIntent().getIntExtra(Constants.EXTRA_SELECT_MODE, MODE_MULTIPLE);
+        selectMode = getIntent().getIntExtra(Constants.EXTRA_SELECT_MODE, Constants.MODE_MULTIPLE);
         enablePreviewVideo = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, true);
         maxSelectNum = getIntent().getIntExtra(Constants.EXTRA_MAX_SELECT_NUM, 0);
         backgroundColor = getIntent().getIntExtra(Constants.BACKGROUND_COLOR, 0);
@@ -169,7 +148,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
             adapter.bindSelectImages(selectImages);
         }
         adapter.bindImagesData(images);
-        adapter.setOnPhotoSelectChangedListener(this);
+        adapter.setOnPhotoSelectChangedListener(ImageGridActivity.this);
     }
 
 
@@ -185,7 +164,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
             intent.putExtra(Constants.BACKGROUND_COLOR, backgroundColor);
             intent.putExtra(Constants.CHECKED_DRAWABLE, cb_drawable);
             intent.setClass(mContext, PreviewActivity.class);
-            startActivityForResult(intent, REQUEST_PREVIEW);
+            startActivityForResult(intent, Constants.REQUEST_PREVIEW);
         } else if (id == R.id.tv_ok) {
             List<LocalMedia> images = adapter.getSelectedImages();
             // 图片才压缩，视频不管
@@ -310,7 +289,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
                     intent.putExtra(Constants.BACKGROUND_COLOR, backgroundColor);
                     intent.putExtra(Constants.CHECKED_DRAWABLE, cb_drawable);
                     intent.setClass(mContext, PreviewActivity.class);
-                    startActivityForResult(intent, REQUEST_PREVIEW);
+                    startActivityForResult(intent, Constants.REQUEST_PREVIEW);
                 }
                 break;
             case LocalMediaLoader.TYPE_VIDEO:
@@ -332,7 +311,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         // 去裁剪
         UCrop uCrop = UCrop.of(Uri.parse(path), Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + ".jpg")));
         UCrop.Options options = new UCrop.Options();
-        switch (copyModel) {
+        switch (copyMode) {
             case Constants.COPY_MODEL_DEFAULT:
                 options.withAspectRatio(0, 0);
                 break;
@@ -364,7 +343,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
             File cameraFile = FileUtils.createCameraFile(this, type);
             cameraPath = cameraFile.getAbsolutePath();
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraFile));
-            startActivityForResult(cameraIntent, REQUEST_CAMERA);
+            startActivityForResult(cameraIntent, Constants.REQUEST_CAMERA);
         }
     }
 
@@ -377,7 +356,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
             File cameraFile = FileUtils.createCameraFile(this, type);
             cameraPath = cameraFile.getAbsolutePath();
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraFile));
-            startActivityForResult(cameraIntent, REQUEST_CAMERA);
+            startActivityForResult(cameraIntent, Constants.REQUEST_CAMERA);
         }
     }
 
@@ -385,7 +364,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             // on take photo success
-            if (requestCode == REQUEST_CAMERA) {
+            if (requestCode == Constants.REQUEST_CAMERA) {
                 // 拍照返回
                 File file = new File(cameraPath);
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
@@ -440,7 +419,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
 
             } else if (requestCode == UCrop.REQUEST_CROP) {
                 handleCropResult(data);
-            } else if (requestCode == REQUEST_PREVIEW) {
+            } else if (requestCode == Constants.REQUEST_PREVIEW) {
                 // 预览点击完成
                 if (data != null) {
                     ArrayList<String> images = (ArrayList<String>) data.getSerializableExtra(Constants.EXTRA_PREVIEW_SELECT_LIST);
@@ -497,7 +476,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
     }
 
     public void onResult(ArrayList<String> images) {
-        setResult(RESULT_OK, new Intent().putStringArrayListExtra(REQUEST_OUTPUT, images));
+        setResult(RESULT_OK, new Intent().putStringArrayListExtra(Constants.REQUEST_OUTPUT, images));
         finish();
     }
 

@@ -24,6 +24,20 @@ import com.yalantis.ucrop.util.Constants;
  */
 public class BaseActivity extends FragmentActivity {
     protected Context mContext;
+    protected int type = 0;
+    protected int maxSelectNum = 0;
+    protected int copyMode = 0;
+    protected boolean showCamera = false;
+    protected boolean enablePreview = false;
+    protected boolean enableCrop = false;
+    protected boolean enablePreviewVideo = true;
+    protected int selectMode = Constants.MODE_MULTIPLE;
+    protected int backgroundColor = 0;
+    protected int cb_drawable = 0;
+    protected int cropW = 100;
+    protected int cropH = 100;
+    protected boolean isCompress;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

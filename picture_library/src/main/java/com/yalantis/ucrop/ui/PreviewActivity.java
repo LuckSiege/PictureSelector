@@ -39,7 +39,6 @@ import java.util.List;
  */
 public class PreviewActivity extends BaseActivity implements View.OnClickListener {
     private ImageButton left_back;
-    private LinearLayout id_ll_ok;
     private TextView tv_img_num, tv_title, tv_ok;
     private PreviewViewPager viewPager;
     private int position;
@@ -48,8 +47,7 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
     private List<LocalMedia> images = new ArrayList<>();
     private List<LocalMedia> selectImages = new ArrayList<>();
     private ImageView check;
-    private int backgroundColor = 0;
-    private int cb_drawable = 0;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,7 +58,6 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
         viewPager = (PreviewViewPager) findViewById(R.id.preview_pager);
         check = (ImageView) findViewById(R.id.check);
         left_back.setOnClickListener(this);
-        id_ll_ok = (LinearLayout) findViewById(R.id.id_ll_ok);
         tv_ok = (TextView) findViewById(R.id.tv_ok);
         tv_img_num = (TextView) findViewById(R.id.tv_img_num);
         tv_title = (TextView) findViewById(R.id.tv_title);

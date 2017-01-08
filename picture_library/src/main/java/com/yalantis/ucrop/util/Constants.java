@@ -19,7 +19,9 @@ public class Constants {
     public final static int MODE_SINGLE = 2;// 单选
     public static final int COPY_WIDTH = 100;
     public static final int COPY_HEIGHT = 100;
-
+    public final static int REQUEST_IMAGE = 88;
+    public final static int REQUEST_CAMERA = 99;
+    public final static int REQUEST_PREVIEW = 100;
     public static final int READ_EXTERNAL_STORAGE = 0x01;
     public static final int CAMERA = 0x02;
 
@@ -32,7 +34,9 @@ public class Constants {
     public static final String ACTION_REMOVE_PHOTO = "app.action.removeImage";
     public static final String ACTION_FINISH = "app.action.finish";
 
-
+    public final static String FOLDER_NAME = "folderName";
+    public final static String REQUEST_OUTPUT = "outputList";
+    public final static String EXTRA_IMAGES = "images";
     public final static String BUNDLE_CAMERA_PATH = "CameraPath";
     public final static String EXTRA_SELECT_MODE = "SelectMode";
     public final static String EXTRA_SHOW_CAMERA = "ShowCamera";

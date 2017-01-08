@@ -9,7 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -37,27 +36,14 @@ import java.util.List;
  * data：16/12/31
  */
 public class AlbumDirectoryActivity extends BaseActivity implements View.OnClickListener, PublicTitleBar.OnTitleBarClick, AlbumDirectoryAdapter.OnItemClickListener {
-    public final static int REQUEST_IMAGE = 88;
-    public final static String REQUEST_OUTPUT = "outputList";
+
     private List<LocalMediaFolder> folders = new ArrayList<>();
     private AlbumDirectoryAdapter adapter;
     private RecyclerView recyclerView;
     private PublicTitleBar titleBar;
     private TextView tv_empty;
     private List<LocalMedia> medias = new ArrayList<>();
-    private int type = 0;
-    private int maxSelectNum = 0;
-    private int copyMode = 0;
-    private boolean showCamera = false;
-    private boolean enablePreview = false;
-    private boolean enableCrop = false;
-    private boolean enablePreviewVideo = true;
-    private int selectMode = Constants.MODE_MULTIPLE;
-    private int backgroundColor = 0;
-    private int cb_drawable = 0;
-    private int cropW = 0;
-    private int cropH = 0;
-    private boolean isCompress;
+
 
     public static void startPhoto(Activity activity, Options options) {
         if (options == null) {
@@ -77,7 +63,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         intent.putExtra(Constants.EXTRA_CROP_W, options.getCropW());
         intent.putExtra(Constants.EXTRA_CROP_H, options.getCropH());
         intent.putExtra(Constants.EXTRA_COMPRESS, options.isCompress());
-        activity.startActivityForResult(intent, REQUEST_IMAGE);
+        activity.startActivityForResult(intent, Constants.REQUEST_IMAGE);
         activity.overridePendingTransition(R.anim.slide_bottom_in, 0);
     }
 
@@ -229,7 +215,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
 
     private void startImageGridActivity(String folderName, List<LocalMedia> images) {
         Intent intent = new Intent();
-        intent.putExtra("images", (Serializable) images);
+        intent.putExtra(Constants.EXTRA_IMAGES, (Serializable) images);
         intent.putExtra(Constants.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
         intent.putExtra("folderName", folderName);
         intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW, enablePreview);
@@ -247,7 +233,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         intent.putExtra(Constants.EXTRA_CROP_W, cropW);
         intent.putExtra(Constants.EXTRA_CROP_H, cropH);
         intent.setClass(mContext, ImageGridActivity.class);
-        startActivityForResult(intent, REQUEST_IMAGE);
+        startActivityForResult(intent, Constants.REQUEST_IMAGE);
     }
 
 
@@ -255,7 +241,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case ImageGridActivity.REQUEST_IMAGE:
+                case Constants.REQUEST_IMAGE:
                     // 单选图片裁剪完调用
                     int type = data.getIntExtra("type", 0);
                     if (type == 1) {
@@ -269,10 +255,10 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
                         if (tv_empty.getVisibility() == View.VISIBLE && adapter.getFolderData().size() > 0)
                             tv_empty.setVisibility(View.GONE);
                     } else {
-                        ArrayList<String> images = (ArrayList<String>) data.getSerializableExtra(ImageGridActivity.REQUEST_OUTPUT);
+                        ArrayList<String> images = (ArrayList<String>) data.getSerializableExtra(Constants.REQUEST_OUTPUT);
                         if (images == null)
                             images = new ArrayList<>();
-                        setResult(RESULT_OK, new Intent().putStringArrayListExtra(REQUEST_OUTPUT, images));
+                        setResult(RESULT_OK, new Intent().putStringArrayListExtra(Constants.REQUEST_OUTPUT, images));
                         finish();
                     }
                     break;

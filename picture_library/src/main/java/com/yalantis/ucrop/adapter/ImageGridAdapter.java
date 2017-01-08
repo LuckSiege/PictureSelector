@@ -19,6 +19,7 @@ import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.dialog.OptAnimationLoader;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.ui.ImageGridActivity;
+import com.yalantis.ucrop.util.Constants;
 import com.yalantis.ucrop.util.LocalMediaLoader;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private List<LocalMedia> images = new ArrayList<LocalMedia>();
     private List<LocalMedia> selectImages = new ArrayList<LocalMedia>();
     private boolean enablePreview;
-    private int selectMode = ImageGridActivity.MODE_MULTIPLE;
+    private int selectMode = Constants.MODE_MULTIPLE;
     private boolean enablePreviewVideo = false;
     private int cb_drawable;
 
@@ -112,7 +113,7 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             String path = image.getPath();
             final int type = image.getType();
             contentHolder.check.setImageResource(cb_drawable);
-            if (selectMode == ImageGridActivity.MODE_SINGLE) {
+            if (selectMode == Constants.MODE_SINGLE) {
                 contentHolder.check.setVisibility(View.GONE);
             } else {
                 contentHolder.check.setVisibility(View.VISIBLE);
@@ -148,10 +149,10 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             contentHolder.contentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (type == LocalMediaLoader.TYPE_VIDEO && (selectMode == ImageGridActivity.MODE_SINGLE || enablePreviewVideo) && imageSelectChangedListener != null) {
+                    if (type == LocalMediaLoader.TYPE_VIDEO && (selectMode == Constants.MODE_SINGLE || enablePreviewVideo) && imageSelectChangedListener != null) {
                         int index = showCamera ? position - 1 : position;
                         imageSelectChangedListener.onPictureClick(image, index);
-                    } else if (type == LocalMediaLoader.TYPE_IMAGE && (selectMode == ImageGridActivity.MODE_SINGLE || enablePreview) && imageSelectChangedListener != null) {
+                    } else if (type == LocalMediaLoader.TYPE_IMAGE && (selectMode == Constants.MODE_SINGLE || enablePreview) && imageSelectChangedListener != null) {
                         int index = showCamera ? position - 1 : position;
                         imageSelectChangedListener.onPictureClick(image, index);
                     } else {
