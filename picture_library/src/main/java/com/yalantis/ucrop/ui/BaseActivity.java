@@ -15,6 +15,15 @@ import android.widget.Toast;
 
 import com.yalantis.ucrop.util.Constants;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InvalidClassException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 /**
  * author：luck
  * project：PictureSelector
@@ -149,4 +158,72 @@ public class BaseActivity extends FragmentActivity {
         Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
     }
 
+
+    /**
+     * 读取对象
+     *
+     * @param file
+     * @return
+     * @throws
+     */
+    public Serializable readObject(String file) {
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+        try {
+            fis = openFileInput(file);
+            ois = new ObjectInputStream(fis);
+            return (Serializable) ois.readObject();
+        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 反序列化失败 - 删除缓存文件
+            if (e instanceof InvalidClassException) {
+                File data = getFileStreamPath(file);
+                data.delete();
+            }
+        } finally {
+            try {
+                ois.close();
+            } catch (Exception e) {
+            }
+            try {
+                fis.close();
+            } catch (Exception e) {
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * 保存对象
+     *
+     * @param ser
+     * @param file
+     * @throws
+     */
+    public boolean saveObject(Serializable ser, String file) {
+        FileOutputStream fos = null;
+        ObjectOutputStream oos = null;
+        try {
+            fos = openFileOutput(file, MODE_PRIVATE);
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(ser);
+            oos.flush();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                oos.close();
+            } catch (Exception e) {
+            }
+            try {
+                fos.close();
+            } catch (Exception e) {
+
+            }
+        }
+    }
 }

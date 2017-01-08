@@ -80,7 +80,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         }
         type = getIntent().getIntExtra(Constants.EXTRA_TYPE, 0);// 1图片 2视频
         selectImages = (List<LocalMedia>) getIntent().getSerializableExtra(Constants.EXTRA_PREVIEW_SELECT_LIST);
-        images = (List<LocalMedia>) getIntent().getSerializableExtra(Constants.EXTRA_IMAGES);
+        images = (List<LocalMedia>) readObject(Constants.EXTRA_IMAGES);
         copyMode = getIntent().getIntExtra(Constants.EXTRA_CROP_MODE, 0);// 裁剪模式
         enableCrop = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_CROP, false);
         enablePreview = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_PREVIEW, true);// 是否预览
