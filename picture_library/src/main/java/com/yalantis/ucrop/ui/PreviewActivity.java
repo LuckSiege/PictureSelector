@@ -62,8 +62,8 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
         tv_img_num = (TextView) findViewById(R.id.tv_img_num);
         tv_title = (TextView) findViewById(R.id.tv_title);
         tv_ok.setOnClickListener(this);
-        images = (List<LocalMedia>) getIntent().getSerializableExtra(Constants.EXTRA_PREVIEW_LIST);
-        selectImages = (List<LocalMedia>) getIntent().getSerializableExtra(Constants.EXTRA_PREVIEW_SELECT_LIST);
+        images = (List<LocalMedia>) readObject(Constants.EXTRA_PREVIEW_LIST);
+        selectImages = (List<LocalMedia>) readObject(Constants.EXTRA_PREVIEW_SELECT_LIST);
         position = getIntent().getIntExtra(Constants.EXTRA_POSITION, 0);
         maxSelectNum = getIntent().getIntExtra(Constants.EXTRA_MAX_SELECT_NUM, 0);
         backgroundColor = getIntent().getIntExtra(Constants.BACKGROUND_COLOR, 0);
