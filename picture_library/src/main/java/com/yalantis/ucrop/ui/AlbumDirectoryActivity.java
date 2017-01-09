@@ -137,16 +137,19 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
                     folder.setChecked(false);
                 }
             }
-            for (LocalMediaFolder folder : folders) {
-                int num = 0;// 记录当前相册下有多少张是选中的
-                List<LocalMedia> images = folder.getImages();
-                for (LocalMedia media : images) {
-                    String path = media.getPath();
-                    for (LocalMedia m : medias) {
-                        if (path.equals(m.getPath())) {
-                            num++;
-                            folder.setChecked(true);
-                            folder.setCheckedNum(num);
+
+            if (medias.size() > 0) {
+                for (LocalMediaFolder folder : folders) {
+                    int num = 0;// 记录当前相册下有多少张是选中的
+                    List<LocalMedia> images = folder.getImages();
+                    for (LocalMedia media : images) {
+                        String path = media.getPath();
+                        for (LocalMedia m : medias) {
+                            if (path.equals(m.getPath())) {
+                                num++;
+                                folder.setChecked(true);
+                                folder.setCheckedNum(num);
+                            }
                         }
                     }
                 }
@@ -169,9 +172,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
                 if (folders.size() > 0) {
                     tv_empty.setVisibility(View.GONE);
                     adapter.bindFolderData(folders);
-                    if (medias != null && medias.size() > 0) {
-                        notifyDataCheckedStatus(medias);
-                    }
+                    notifyDataCheckedStatus(medias);
                 } else {
                     tv_empty.setVisibility(View.VISIBLE);
                     switch (type) {
