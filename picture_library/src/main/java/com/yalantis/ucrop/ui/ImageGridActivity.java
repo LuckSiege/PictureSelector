@@ -534,7 +534,8 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
-                setResult(RESULT_OK, new Intent().putExtra("type", 1).putExtra(Constants.EXTRA_PREVIEW_SELECT_LIST, (Serializable) adapter.getSelectedImages()).putExtra(Constants.EXTRA_FOLDERS, (Serializable) folders));
+                List<LocalMedia> selectedImages = adapter.getSelectedImages();
+                setResult(RESULT_OK, new Intent().putExtra("type", 1).putExtra(Constants.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectedImages).putExtra(Constants.EXTRA_FOLDERS, (Serializable) folders));
                 finish();
                 return false;
         }

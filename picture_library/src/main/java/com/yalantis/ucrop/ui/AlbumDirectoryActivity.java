@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -127,25 +128,23 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
             if (medias == null) {
                 medias = new ArrayList<>();
             }
+            // 重置一下选中状态，在重新赋值
             List<LocalMediaFolder> folders = adapter.getFolderData();
-            if (medias.size() == 0) {
-                // 没有选中，去除相册列表选中数量
-                for (LocalMediaFolder folder : folders) {
-                    folder.setCheckedNum(0);
-                    folder.setChecked(false);
-                }
-            } else {
-                for (LocalMediaFolder folder : folders) {
-                    int num = 0;// 记录当前相册下有多少张是选中的
-                    List<LocalMedia> images = folder.getImages();
-                    for (LocalMedia media : images) {
-                        String path = media.getPath();
-                        for (LocalMedia m : medias) {
-                            if (path.equals(m.getPath())) {
-                                num++;
-                                folder.setChecked(true);
-                                folder.setCheckedNum(num);
-                            }
+            for (LocalMediaFolder folder : folders) {
+                folder.setCheckedNum(0);
+                folder.setChecked(false);
+            }
+
+            for (LocalMediaFolder folder : folders) {
+                int num = 0;// 记录当前相册下有多少张是选中的
+                List<LocalMedia> images = folder.getImages();
+                for (LocalMedia media : images) {
+                    String path = media.getPath();
+                    for (LocalMedia m : medias) {
+                        if (path.equals(m.getPath())) {
+                            num++;
+                            folder.setChecked(true);
+                            folder.setCheckedNum(num);
                         }
                     }
                 }
