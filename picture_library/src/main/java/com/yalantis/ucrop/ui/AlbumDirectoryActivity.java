@@ -128,11 +128,14 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
             if (medias == null) {
                 medias = new ArrayList<>();
             }
-            // 重置一下选中状态，在重新赋值
+
             List<LocalMediaFolder> folders = adapter.getFolderData();
             for (LocalMediaFolder folder : folders) {
-                folder.setCheckedNum(0);
-                folder.setChecked(false);
+                // 只重置之前有选中过的文件夹，因为有可能也取消选中的
+                if (folder.isChecked()) {
+                    folder.setCheckedNum(0);
+                    folder.setChecked(false);
+                }
             }
             for (LocalMediaFolder folder : folders) {
                 int num = 0;// 记录当前相册下有多少张是选中的
