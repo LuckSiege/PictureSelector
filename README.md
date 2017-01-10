@@ -30,58 +30,6 @@
 
 项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~   联系方式893855882@qq.com  希望用得着的朋友点个start，你们的支持才是我继续下去的动力，在此先谢过~
 
-快速集成方式--->
-app下build
-
-引入buildcompile 'com.github.LuckSiege:PictureSelector:v1.0'
-
-项目根目录 
-allprojects {
-
-    repositories {
-    
-        maven { url 'https://jitpack.io' }
-        
-        jcenter()
-        
-    }
-}
-
-调用方法：
-基本参数设置(也可不设置，Option直接传入null，默认的是标准模式)
-
- Options options = new Options(); (util包下的)
- 
- options.setType(selectType); //1图片 or 2视频 LocalMediaLoader.TYPE_IMAGE,TYPE_VIDEO
- 
- options.setCopyMode(copyMode);//裁剪比例
-
- COPY_MODEL_DEFAULT,COPY_MODEL_1_1,COPY_MODEL_3_4,COPY_MODEL_3_2,COPY_MODEL_16_9
- 
- options.setCompress(isCompress);//是否压缩图片
- 
- options.setMaxSelectNum(maxSelectNum - images.size());// 图片最大选择数量
- 
- options.setSelectMode(selectMode);// 1 单选 or 2多选
- 
- options.setShowCamera(isShow); // 是否显示相机
- 
- options.setEnablePreview(enablePreview);// 是否预览
- 
- options.setEnableCrop(enableCrop);// 是否裁剪
- 
- options.setPreviewVideo(isPreviewVideo);//是否预览视频(播放) mode or 多选有效
- 
- options.setCropW(cropW);// 裁剪宽
- 
- options.setCropH(cropH);// 裁剪高
- 
- options.setThemeStyle(ContextCompat.getColor(MainActivity.this, R.color.blue));// 设置主题颜色
- 
- options.setCheckedBoxDrawable(selector);// 设置选择图片 勾选样式
- 
- AlbumDirectoryActivity.startPhoto(MainActivity.this, options);
-
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/A574F86A9A9F42A77D03B0ACC9E761C9.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/ABE302D298BD56DEC871F4464E64646F.jpg)
