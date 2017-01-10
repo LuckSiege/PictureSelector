@@ -52,9 +52,11 @@ allprojects {
 
  Options options = new Options(); (util包下的)
  
- options.setType(selectType); //1图片 or 2视频
+ options.setType(selectType); //1图片 or 2视频 LocalMediaLoader.TYPE_IMAGE,TYPE_VIDEO
  
- options.setCopyMode(copyMode);//裁剪比例，默认、1:1、3:4、3:2、16:9
+ options.setCopyMode(copyMode);//裁剪比例
+
+ COPY_MODEL_DEFAULT,COPY_MODEL_1_1,COPY_MODEL_3_4,COPY_MODEL_3_2,COPY_MODEL_16_9
  
  options.setCompress(isCompress);//是否压缩图片
  
