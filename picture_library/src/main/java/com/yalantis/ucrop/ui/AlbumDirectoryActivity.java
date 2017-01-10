@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.adapter.AlbumDirectoryAdapter;
 import com.yalantis.ucrop.decoration.RecycleViewDivider;
@@ -221,7 +222,9 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         Intent intent = new Intent();
         List<LocalMediaFolder> folders = adapter.getFolderData();
         String toJson = gson.toJson(images);
+        String folders_json = gson.toJson(folders);
         saveObject(toJson, Constants.EXTRA_IMAGES);
+        saveObject(folders_json, Constants.EXTRA_FOLDERS);
         intent.putExtra(Constants.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
         intent.putExtra(Constants.FOLDER_NAME, folderName);
         intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW, enablePreview);
@@ -232,7 +235,6 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         intent.putExtra(Constants.EXTRA_TYPE, type);
         intent.putExtra(Constants.EXTRA_CROP_MODE, copyMode);
         intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, enablePreviewVideo);
-        intent.putExtra(Constants.EXTRA_FOLDERS, (Serializable) folders);
         intent.putExtra(Constants.BACKGROUND_COLOR, backgroundColor);
         intent.putExtra(Constants.CHECKED_DRAWABLE, cb_drawable);
         intent.putExtra(Constants.EXTRA_COMPRESS, isCompress);
@@ -251,7 +253,9 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
                     // 单选图片裁剪完调用
                     int type = data.getIntExtra("type", 0);
                     if (type == 1) {
-                        folders = (List<LocalMediaFolder>) data.getSerializableExtra(Constants.EXTRA_FOLDERS);
+                        String folders_json = data.getStringExtra(Constants.EXTRA_FOLDERS);
+                        folders = gson.fromJson(folders_json, new TypeToken<List<LocalMediaFolder>>() {
+                        }.getType());
                         medias = (List<LocalMedia>) data.getSerializableExtra(Constants.EXTRA_PREVIEW_SELECT_LIST);
                         if (folders != null)
                             adapter.bindFolderData(folders);

@@ -75,7 +75,9 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         setContentView(R.layout.activity_image_grid);
         registerReceiver(broadcastReceiver, Constants.ACTION_FINISH, Constants.ACTION_ADD_PHOTO, Constants.ACTION_REMOVE_PHOTO);
         String folderName = getIntent().getStringExtra(Constants.FOLDER_NAME);
-        folders = (List<LocalMediaFolder>) getIntent().getSerializableExtra(Constants.EXTRA_FOLDERS);
+        String folders_json = (String) readObject(Constants.EXTRA_FOLDERS);
+        folders = gson.fromJson(folders_json, new TypeToken<List<LocalMediaFolder>>() {
+        }.getType());
         if (folders == null) {
             folders = new ArrayList<>();
         }
@@ -544,7 +546,8 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
                 List<LocalMedia> selectedImages = adapter.getSelectedImages();
-                setResult(RESULT_OK, new Intent().putExtra("type", 1).putExtra(Constants.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectedImages).putExtra(Constants.EXTRA_FOLDERS, (Serializable) folders));
+                String folders_json = gson.toJson(folders);
+                setResult(RESULT_OK, new Intent().putExtra("type", 1).putExtra(Constants.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectedImages).putExtra(Constants.EXTRA_FOLDERS, folders_json));
                 finish();
                 return false;
         }
@@ -570,7 +573,8 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
     }
 
     private void ActivityFinish() {
-        setResult(RESULT_OK, new Intent().putExtra("type", 1).putExtra(Constants.EXTRA_PREVIEW_SELECT_LIST, (Serializable) adapter.getSelectedImages()).putExtra(Constants.EXTRA_FOLDERS, (Serializable) folders));
+        String folders_json = gson.toJson(folders);
+        setResult(RESULT_OK, new Intent().putExtra("type", 1).putExtra(Constants.EXTRA_PREVIEW_SELECT_LIST, (Serializable) adapter.getSelectedImages()).putExtra(Constants.EXTRA_FOLDERS, folders_json));
         finish();
     }
 
