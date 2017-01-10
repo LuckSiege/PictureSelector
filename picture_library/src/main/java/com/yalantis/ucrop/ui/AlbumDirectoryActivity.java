@@ -219,6 +219,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
 
     private void startImageGridActivity(String folderName, List<LocalMedia> images) {
         Intent intent = new Intent();
+        List<LocalMediaFolder> folders = adapter.getFolderData();
         String toJson = gson.toJson(images);
         saveObject(toJson, Constants.EXTRA_IMAGES);
         intent.putExtra(Constants.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
@@ -231,7 +232,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         intent.putExtra(Constants.EXTRA_TYPE, type);
         intent.putExtra(Constants.EXTRA_CROP_MODE, copyMode);
         intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, enablePreviewVideo);
-        intent.putExtra(Constants.EXTRA_FOLDERS, (Serializable) adapter.getFolderData());
+        intent.putExtra(Constants.EXTRA_FOLDERS, (Serializable) folders);
         intent.putExtra(Constants.BACKGROUND_COLOR, backgroundColor);
         intent.putExtra(Constants.CHECKED_DRAWABLE, cb_drawable);
         intent.putExtra(Constants.EXTRA_COMPRESS, isCompress);
