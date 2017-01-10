@@ -166,7 +166,8 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         if (id == R.id.id_preview) {
             // 注：之前忽略了用户手机一个文件夹下可能存在几千张图片出现卡死的情况，所以将图片写入临时文件中，而不是用intent传值，intent不能传递大数据
             List<LocalMedia> selectedImages = adapter.getSelectedImages();
-            saveObject((Serializable) selectedImages, Constants.EXTRA_PREVIEW_LIST);
+            String json = gson.toJson(selectedImages);
+            saveObject(json, Constants.EXTRA_PREVIEW_LIST);
             saveObject((Serializable) selectedImages, Constants.EXTRA_PREVIEW_SELECT_LIST);
             intent.putExtra(Constants.EXTRA_POSITION, 0);
             intent.putExtra(Constants.EXTRA_MAX_SELECT_NUM, maxSelectNum);
