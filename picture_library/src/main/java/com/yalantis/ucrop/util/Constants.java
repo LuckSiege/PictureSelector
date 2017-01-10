@@ -44,6 +44,7 @@ public class Constants {
     public final static String EXTRA_ENABLE_PREVIEW_VIDEO = "EnablePreviewVideo";
     public final static String EXTRA_ENABLE_CROP = "EnableCrop";
     public final static String EXTRA_MAX_SELECT_NUM = "MaxSelectNum";
+    public final static String EXTRA_MAX_SPAN_COUNT = "spanCount";
     public final static String EXTRA_TYPE = "type";
     public final static String EXTRA_CROP_MODE = "cropMode";
     public final static String EXTRA_FOLDERS = "folders";

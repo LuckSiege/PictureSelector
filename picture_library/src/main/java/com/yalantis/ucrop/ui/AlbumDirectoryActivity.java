@@ -52,6 +52,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         }
         Intent intent = new Intent(activity, AlbumDirectoryActivity.class);
         intent.putExtra(Constants.EXTRA_MAX_SELECT_NUM, options.getMaxSelectNum());
+        intent.putExtra(Constants.EXTRA_MAX_SPAN_COUNT, options.getImageSpanCount());
         intent.putExtra(Constants.EXTRA_CROP_MODE, options.getCopyMode());
         intent.putExtra(Constants.EXTRA_SELECT_MODE, options.getSelectMode());
         intent.putExtra(Constants.EXTRA_SHOW_CAMERA, options.isShowCamera());
@@ -83,6 +84,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         backgroundColor = getIntent().getIntExtra(Constants.BACKGROUND_COLOR, 0);
         cb_drawable = getIntent().getIntExtra(Constants.CHECKED_DRAWABLE, 0);
         isCompress = getIntent().getBooleanExtra(Constants.EXTRA_COMPRESS, false);
+        spanCount = getIntent().getIntExtra(Constants.EXTRA_MAX_SPAN_COUNT, 4);
         cropW = getIntent().getIntExtra(Constants.EXTRA_CROP_W, 0);
         cropH = getIntent().getIntExtra(Constants.EXTRA_CROP_H, 0);
         titleBar = (PublicTitleBar) findViewById(R.id.titleBar);
@@ -240,6 +242,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         intent.putExtra(Constants.EXTRA_COMPRESS, isCompress);
         intent.putExtra(Constants.EXTRA_CROP_W, cropW);
         intent.putExtra(Constants.EXTRA_CROP_H, cropH);
+        intent.putExtra(Constants.EXTRA_MAX_SPAN_COUNT, spanCount);
         intent.setClass(mContext, ImageGridActivity.class);
         startActivityForResult(intent, Constants.REQUEST_IMAGE);
     }

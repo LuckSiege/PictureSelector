@@ -36,6 +36,7 @@ public class BaseActivity extends FragmentActivity {
     protected Context mContext;
     protected int type = 0;
     protected int maxSelectNum = 0;
+    protected int spanCount = 4;
     protected int copyMode = 0;
     protected boolean showCamera = false;
     protected boolean enablePreview = false;

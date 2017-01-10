@@ -55,7 +55,6 @@ import java.util.List;
  */
 public class ImageGridActivity extends BaseActivity implements PublicTitleBar.OnTitleBarClick, View.OnClickListener, ImageGridAdapter.OnPhotoSelectChangedListener {
     public final String TAG = ImageGridActivity.class.getSimpleName();
-    private int spanCount = 4;
     private List<LocalMedia> images = new ArrayList<>();
     private RecyclerView recyclerView;
     private TextView tv_img_num;
@@ -86,7 +85,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         String json = (String) readObject(Constants.EXTRA_IMAGES);
         images = gson.fromJson(json, new TypeToken<List<LocalMedia>>() {
         }.getType());
-
+        spanCount = getIntent().getIntExtra(Constants.EXTRA_MAX_SPAN_COUNT, 4);
         copyMode = getIntent().getIntExtra(Constants.EXTRA_CROP_MODE, 0);// 裁剪模式
         enableCrop = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_CROP, false);
         enablePreview = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_PREVIEW, true);// 是否预览

@@ -22,11 +22,20 @@ public class Options {
     private boolean enablePreview = true; // 是否预览图片
     private boolean enableCrop; // 是否裁剪图片，只针对单选图片有效
     private boolean isPreviewVideo; // 是否可预览视频(播放)
+    private int imageSpanCount = 4; // 列表每行显示个数
     private int themeStyle = Color.parseColor("#393a3e"); // 标题栏背景色;
     private int checkedBoxDrawable = R.drawable.checkbox_selector;// 图片选择默认样式
     private int cropW = Constants.COPY_WIDTH; // 裁剪宽度  如果值大于图片原始宽高 将返回原图大小
     private int cropH = Constants.COPY_HEIGHT;// 裁剪高度  如果值大于图片原始宽高 将返回原图大小
     private boolean isCompress = false;// 是否压缩图片，默认不压缩
+
+    public int getImageSpanCount() {
+        return imageSpanCount;
+    }
+
+    public void setImageSpanCount(int imageSpanCount) {
+        this.imageSpanCount = imageSpanCount;
+    }
 
     public boolean isCompress() {
         return isCompress;
