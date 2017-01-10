@@ -219,7 +219,6 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
 
     private void startImageGridActivity(String folderName, List<LocalMedia> images) {
         Intent intent = new Intent();
-        // 注：之前忽略了用户手机一个文件夹下可能存在几千张图片出现卡死的情况，所以将图片写入临时文件中，而不是用intent传值，intent不能传递大数据
         String toJson = gson.toJson(images);
         saveObject(toJson, Constants.EXTRA_IMAGES);
         intent.putExtra(Constants.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
