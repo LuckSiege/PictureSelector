@@ -48,26 +48,37 @@ Options options = new Options();
 
 
 options.setType(selectType); 1图片 or 2视频 LocalMediaLoader.TYPE_IMAGE,TYPE_VIDEO
+
                    
 options.setCopyMode(copyMode); 裁剪比例 默认 1:1 3:4 3:2 16:9 可参考 Constants.COPY_MODEL_1_1 
+
                     
 options.setCompress(isCompress); 是否压缩
 
+
 options.setMaxSelectNum(maxSelectNum - images.size()); 最大可选数量
+
                     
 options.setSelectMode(selectMode); 2单选 or 1多选 MODE_MULTIPLE MODE_SINGLE
+
                     
 options.setShowCamera(isShow); 是否显示相机
+
                     
 options.setEnablePreview(enablePreview); 是否预览
+
                     
 options.setEnableCrop(enableCrop); 是否裁剪
+
                    
 options.setPreviewVideo(isPreviewVideo); 是否预览视频(播放)
+
                     
 options.setCropW(cropW); 裁剪宽
+
                     
 options.setCropH(cropH); 裁剪高
+
                     
  AlbumDirectoryActivity.startPhoto(MainActivity.this, options);
 
