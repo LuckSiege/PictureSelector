@@ -35,20 +35,35 @@ allprojects {
 
 调用方法：
 基本参数设置(也可不设置，Option直接传入null，默认的是标准模式)
+
  Options options = new Options();
+ 
  options.setType(selectType); //1图片 or 2视频
+ 
  options.setCopyMode(copyMode);//裁剪比例，默认、1:1、3:4、3:2、16:9
+ 
  options.setCompress(isCompress);//是否压缩图片
+ 
  options.setMaxSelectNum(maxSelectNum - images.size());// 图片最大选择数量
+ 
  options.setSelectMode(selectMode);// 1 单选 or 2多选
+ 
  options.setShowCamera(isShow); // 是否显示相机
+ 
  options.setEnablePreview(enablePreview);// 是否预览
+ 
  options.setEnableCrop(enableCrop);// 是否裁剪
+ 
  options.setPreviewVideo(isPreviewVideo);//是否预览视频(播放) mode or 多选有效
+ 
  options.setCropW(cropW);// 裁剪宽
+ 
  options.setCropH(cropH);// 裁剪高
+ 
  options.setThemeStyle(ContextCompat.getColor(MainActivity.this, R.color.blue));// 设置主题颜色
+ 
  options.setCheckedBoxDrawable(selector);// 设置选择图片 勾选样式
+ 
  AlbumDirectoryActivity.startPhoto(MainActivity.this, options);
 
 
