@@ -81,6 +81,26 @@ options.setCropH(cropH); 裁剪高
 
                     
  AlbumDirectoryActivity.startPhoto(MainActivity.this, options);
+ 
+     @Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+     if (resultCode == RESULT_OK) {
+     
+            switch (requestCode) {
+            
+                case Constants.REQUEST_IMAGE:
+                
+                    ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(Constants.REQUEST_OUTPUT);
+                    if (result != null) {
+                        images.addAll(result);
+                        adapter.setList(images);
+                        adapter.notifyDataSetChanged();
+                    }
+                    break;
+            }
+        }
+    }
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/A574F86A9A9F42A77D03B0ACC9E761C9.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/ABE302D298BD56DEC871F4464E64646F.jpg)
