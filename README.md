@@ -30,7 +30,7 @@
 
 项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~   联系方式893855882@qq.com  希望用得着的朋友点个start，你们的支持才是我继续下去的动力，在此先谢过~
 
-app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.0.1'
+app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.0.2'
 
 项目根目录
 allprojects {
