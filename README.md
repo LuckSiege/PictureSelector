@@ -23,9 +23,13 @@ app下build
 
 项目根目录 
 allprojects {
+
     repositories {
+    
         maven { url 'https://jitpack.io' }
+        
         jcenter()
+        
     }
 }
 
