@@ -21,12 +21,14 @@ app下build
 
 引入buildcompile 'com.github.LuckSiege:PictureSelector:v1.0'
 
-项目根目录 allprojects {
+项目根目录 
+allprojects {
     repositories {
         maven { url 'https://jitpack.io' }
         jcenter()
     }
 }
+
 调用方法：
 基本参数设置(也可不设置，Option直接传入null，默认的是标准模式)
  Options options = new Options();
