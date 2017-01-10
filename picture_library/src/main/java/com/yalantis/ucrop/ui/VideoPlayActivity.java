@@ -15,6 +15,7 @@ public class VideoPlayActivity extends BaseActivity implements MediaPlayer.OnErr
     private ImageView left_back;
     private MediaController mMediaController;
     private VideoView mVideoView;
+    private ImageView iv_play;
     private int mPositionWhenPaused = -1;
 
     @Override
@@ -25,15 +26,23 @@ public class VideoPlayActivity extends BaseActivity implements MediaPlayer.OnErr
         video_path = getIntent().getStringExtra("video_path");
         left_back = (ImageView) findViewById(R.id.left_back);
         mVideoView = (VideoView) findViewById(R.id.video_view);
+        iv_play = (ImageView) findViewById(R.id.iv_play);
         //Video file
         //Create media controller，组件可以控制视频的播放，暂停，回复，seek等操作，不需要你实现
         mMediaController = new MediaController(this);
+        mVideoView.setOnCompletionListener(this);
         mVideoView.setMediaController(mMediaController);
-
         left_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+        iv_play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mVideoView.start();
+                iv_play.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -74,6 +83,6 @@ public class VideoPlayActivity extends BaseActivity implements MediaPlayer.OnErr
     }
 
     public void onCompletion(MediaPlayer mp) {
-        this.finish();
+        iv_play.setVisibility(View.VISIBLE);
     }
 }

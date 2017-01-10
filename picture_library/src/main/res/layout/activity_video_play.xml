@@ -10,11 +10,19 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
 
+    <ImageView
+        android:id="@+id/iv_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"
+        android:src="@drawable/ic_video_play" />
+
     <ImageButton
         android:id="@+id/left_back"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:background="@color/transparent"
         android:src="@drawable/back" />
 
