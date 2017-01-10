@@ -50,7 +50,7 @@ allprojects {
 调用方法：
 基本参数设置(也可不设置，Option直接传入null，默认的是标准模式)
 
- Options options = new Options();
+ Options options = new Options(); (util包下的)
  
  options.setType(selectType); //1图片 or 2视频
  
