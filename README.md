@@ -17,7 +17,10 @@
 项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~   联系方式893855882@qq.com  希望用得着的朋友点个start，你们的支持才是我继续下去的动力，在此先谢过~
 
 快速集成方式--->
-app下build引入buildcompile 'com.github.LuckSiege:PictureSelector:v1.0'
+app下build
+
+引入buildcompile 'com.github.LuckSiege:PictureSelector:v1.0'
+
 项目根目录 allprojects {
     repositories {
         maven { url 'https://jitpack.io' }
