@@ -9,7 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -221,7 +220,8 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
     private void startImageGridActivity(String folderName, List<LocalMedia> images) {
         Intent intent = new Intent();
         // 注：之前忽略了用户手机一个文件夹下可能存在几千张图片出现卡死的情况，所以将图片写入临时文件中，而不是用intent传值，intent不能传递大数据
-        saveObject((Serializable) images, Constants.EXTRA_IMAGES);
+        String toJson = gson.toJson(images);
+        saveObject(toJson, Constants.EXTRA_IMAGES);
         intent.putExtra(Constants.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
         intent.putExtra(Constants.FOLDER_NAME, folderName);
         intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW, enablePreview);
@@ -278,6 +278,5 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         finish();
         overridePendingTransition(0, R.anim.slide_bottom_out);
     }
-
 
 }

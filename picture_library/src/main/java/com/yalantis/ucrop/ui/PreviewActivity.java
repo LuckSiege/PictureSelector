@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.reflect.TypeToken;
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.dialog.OptAnimationLoader;
 import com.yalantis.ucrop.entity.LocalMedia;
@@ -62,8 +63,13 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
         tv_img_num = (TextView) findViewById(R.id.tv_img_num);
         tv_title = (TextView) findViewById(R.id.tv_title);
         tv_ok.setOnClickListener(this);
-        images = (List<LocalMedia>) readObject(Constants.EXTRA_PREVIEW_LIST);
+
+        String json = (String) readObject(Constants.EXTRA_PREVIEW_LIST);
+        images = gson.fromJson(json, new TypeToken<List<LocalMedia>>() {
+        }.getType());
+
         selectImages = (List<LocalMedia>) readObject(Constants.EXTRA_PREVIEW_SELECT_LIST);
+
         position = getIntent().getIntExtra(Constants.EXTRA_POSITION, 0);
         maxSelectNum = getIntent().getIntExtra(Constants.EXTRA_MAX_SELECT_NUM, 0);
         backgroundColor = getIntent().getIntExtra(Constants.BACKGROUND_COLOR, 0);

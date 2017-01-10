@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.yalantis.ucrop.util.Constants;
 
 import java.io.File;
@@ -46,13 +47,11 @@ public class BaseActivity extends FragmentActivity {
     protected int cropW = 100;
     protected int cropH = 100;
     protected boolean isCompress;
-
-
+    protected Gson gson = new Gson();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
-
     }
 
     /**

@@ -21,6 +21,8 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.adapter.ImageGridAdapter;
@@ -67,7 +69,6 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
     private List<LocalMediaFolder> folders = new ArrayList<>();
     private List<LocalMedia> selectImages = new ArrayList<LocalMedia>();// 记录选中的图片
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +81,10 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         }
         type = getIntent().getIntExtra(Constants.EXTRA_TYPE, 0);// 1图片 2视频
         selectImages = (List<LocalMedia>) getIntent().getSerializableExtra(Constants.EXTRA_PREVIEW_SELECT_LIST);
-        images = (List<LocalMedia>) readObject(Constants.EXTRA_IMAGES);
+        String json = (String) readObject(Constants.EXTRA_IMAGES);
+        images = gson.fromJson(json, new TypeToken<List<LocalMedia>>() {
+        }.getType());
+
         copyMode = getIntent().getIntExtra(Constants.EXTRA_CROP_MODE, 0);// 裁剪模式
         enableCrop = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_CROP, false);
         enablePreview = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_PREVIEW, true);// 是否预览
@@ -149,6 +153,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         }
         adapter.bindImagesData(images);
         adapter.setOnPhotoSelectChangedListener(ImageGridActivity.this);
+
     }
 
 
@@ -285,7 +290,8 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
                 } else {
                     // 图片可以预览
                     List<LocalMedia> selectedImages = adapter.getSelectedImages();
-                    saveObject((Serializable) previewImages, Constants.EXTRA_PREVIEW_LIST);
+                    String toJson = gson.toJson(previewImages);
+                    saveObject(toJson, Constants.EXTRA_PREVIEW_LIST);
                     saveObject((Serializable) selectedImages, Constants.EXTRA_PREVIEW_SELECT_LIST);
                     intent.putExtra(Constants.EXTRA_POSITION, position);
                     intent.putExtra(Constants.EXTRA_MAX_SELECT_NUM, maxSelectNum);
