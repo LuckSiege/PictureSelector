@@ -27,8 +27,6 @@ public class VideoPlayActivity extends BaseActivity implements MediaPlayer.OnErr
         left_back = (ImageView) findViewById(R.id.left_back);
         mVideoView = (VideoView) findViewById(R.id.video_view);
         iv_play = (ImageView) findViewById(R.id.iv_play);
-        //Video file
-        //Create media controller，组件可以控制视频的播放，暂停，回复，seek等操作，不需要你实现
         mMediaController = new MediaController(this);
         mVideoView.setOnCompletionListener(this);
         mVideoView.setMediaController(mMediaController);
