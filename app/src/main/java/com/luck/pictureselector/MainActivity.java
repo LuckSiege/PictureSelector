@@ -148,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                     options.setType(selectType);
                     options.setCopyMode(copyMode);
                     options.setCompress(isCompress);
-                    options.setImageSpanCount(4);
                     options.setMaxSelectNum(maxSelectNum - images.size());
                     options.setSelectMode(selectMode);
                     options.setShowCamera(isShow);
@@ -157,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                     options.setPreviewVideo(isPreviewVideo);
                     options.setCropW(cropW);
                     options.setCropH(cropH);
+                    options.setImageSpanCount(4);
 
                     if (theme) {
                         options.setThemeStyle(ContextCompat.getColor(MainActivity.this, R.color.blue));
