@@ -28,7 +28,17 @@ public class Options {
     private int cropW = Constants.COPY_WIDTH; // 裁剪宽度  如果值大于图片原始宽高 将返回原图大小
     private int cropH = Constants.COPY_HEIGHT;// 裁剪高度  如果值大于图片原始宽高 将返回原图大小
     private int recordVideoSecond = 0;// 录视频秒数
+    private int recordVideoDefinition = 0;// 视频清晰度
     private boolean isCompress = false;// 是否压缩图片，默认不压缩
+
+
+    public int getRecordVideoDefinition() {
+        return recordVideoDefinition;
+    }
+
+    public void setRecordVideoDefinition(int recordVideoDefinition) {
+        this.recordVideoDefinition = recordVideoDefinition;
+    }
 
     public int getRecordVideoSecond() {
         return recordVideoSecond;

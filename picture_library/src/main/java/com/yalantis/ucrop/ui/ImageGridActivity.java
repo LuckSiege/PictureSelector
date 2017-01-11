@@ -98,6 +98,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         isCompress = getIntent().getBooleanExtra(Constants.EXTRA_COMPRESS, false);
         cropW = getIntent().getIntExtra(Constants.EXTRA_CROP_W, 0);
         cropH = getIntent().getIntExtra(Constants.EXTRA_CROP_H, 0);
+        definition = getIntent().getIntExtra(Constants.EXTRA_DEFINITION, Constants.HIGH);
         recordVideoSecond = getIntent().getIntExtra(Constants.EXTRA_VIDEO_SECOND, 0);
         if (savedInstanceState != null) {
             cameraPath = savedInstanceState.getString(Constants.BUNDLE_CAMERA_PATH);
@@ -369,6 +370,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
             cameraPath = cameraFile.getAbsolutePath();
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraFile));
             cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, recordVideoSecond);
+            cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, definition);
             startActivityForResult(cameraIntent, Constants.REQUEST_CAMERA);
         }
     }

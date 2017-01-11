@@ -48,6 +48,7 @@ public class BaseActivity extends FragmentActivity {
     protected int cropW = 100;
     protected int cropH = 100;
     protected int recordVideoSecond = 0;
+    protected int definition = 3;
     protected boolean isCompress;
     protected Gson gson = new Gson();
 

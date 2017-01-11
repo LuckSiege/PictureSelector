@@ -17,6 +17,10 @@ public class Constants {
 
     public final static int MODE_MULTIPLE = 1;// 多选
     public final static int MODE_SINGLE = 2;// 单选
+
+    public static final int ORDINARY = 0;// 普通 低质量
+    public static final int HIGH = 1;// 清晰
+
     public static final int COPY_WIDTH = 100;
     public static final int COPY_HEIGHT = 100;
     public final static int REQUEST_IMAGE = 88;
@@ -54,4 +58,5 @@ public class Constants {
     public final static String EXTRA_VIDEO_SECOND = "videoSecond";
     public final static String EXTRA_CROP_W = "crop_w";
     public final static String EXTRA_CROP_H = "crop_h";
+    public final static String EXTRA_DEFINITION = "definition";
 }

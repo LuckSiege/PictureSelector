@@ -65,6 +65,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         intent.putExtra(Constants.EXTRA_CROP_W, options.getCropW());
         intent.putExtra(Constants.EXTRA_CROP_H, options.getCropH());
         intent.putExtra(Constants.EXTRA_VIDEO_SECOND, options.getRecordVideoSecond());
+        intent.putExtra(Constants.EXTRA_DEFINITION, options.getRecordVideoDefinition());
         activity.startActivityForResult(intent, Constants.REQUEST_IMAGE);
         activity.overridePendingTransition(R.anim.slide_bottom_in, 0);
     }
@@ -88,6 +89,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         cropW = getIntent().getIntExtra(Constants.EXTRA_CROP_W, 0);
         cropH = getIntent().getIntExtra(Constants.EXTRA_CROP_H, 0);
         recordVideoSecond = getIntent().getIntExtra(Constants.EXTRA_VIDEO_SECOND, 0);
+        definition = getIntent().getIntExtra(Constants.EXTRA_DEFINITION, Constants.HIGH);
         titleBar = (PublicTitleBar) findViewById(R.id.titleBar);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         tv_empty = (TextView) findViewById(R.id.tv_empty);
@@ -245,6 +247,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         intent.putExtra(Constants.EXTRA_CROP_H, cropH);
         intent.putExtra(Constants.EXTRA_MAX_SPAN_COUNT, spanCount);
         intent.putExtra(Constants.EXTRA_VIDEO_SECOND, recordVideoSecond);
+        intent.putExtra(Constants.EXTRA_DEFINITION, definition);
         intent.setClass(mContext, ImageGridActivity.class);
         startActivityForResult(intent, Constants.REQUEST_IMAGE);
     }
