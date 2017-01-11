@@ -90,6 +90,9 @@ options.setRecordVideoDefinition(Constants.HIGH);// 视频清晰度 Constants.HI
 
 options.setRecordVideoSecond(60);// 视频秒数
 
+
+options.setCheckNumMode(isCheckNumMode); 是否显示QQ选择风格(带数字效果)
+
                     
 AlbumDirectoryActivity.startPhoto(MainActivity.this, options);
  
