@@ -66,6 +66,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         intent.putExtra(Constants.EXTRA_CROP_H, options.getCropH());
         intent.putExtra(Constants.EXTRA_VIDEO_SECOND, options.getRecordVideoSecond());
         intent.putExtra(Constants.EXTRA_DEFINITION, options.getRecordVideoDefinition());
+        intent.putExtra(Constants.EXTRA_IS_CHECKED_NUM, options.isCheckNumMode());
         activity.startActivityForResult(intent, Constants.REQUEST_IMAGE);
         activity.overridePendingTransition(R.anim.slide_bottom_in, 0);
     }
@@ -90,6 +91,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         cropH = getIntent().getIntExtra(Constants.EXTRA_CROP_H, 0);
         recordVideoSecond = getIntent().getIntExtra(Constants.EXTRA_VIDEO_SECOND, 0);
         definition = getIntent().getIntExtra(Constants.EXTRA_DEFINITION, Constants.HIGH);
+        is_checked_num = getIntent().getBooleanExtra(Constants.EXTRA_IS_CHECKED_NUM, false);
         titleBar = (PublicTitleBar) findViewById(R.id.titleBar);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         tv_empty = (TextView) findViewById(R.id.tv_empty);
@@ -248,6 +250,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         intent.putExtra(Constants.EXTRA_MAX_SPAN_COUNT, spanCount);
         intent.putExtra(Constants.EXTRA_VIDEO_SECOND, recordVideoSecond);
         intent.putExtra(Constants.EXTRA_DEFINITION, definition);
+        intent.putExtra(Constants.EXTRA_IS_CHECKED_NUM, is_checked_num);
         intent.setClass(mContext, ImageGridActivity.class);
         startActivityForResult(intent, Constants.REQUEST_IMAGE);
     }

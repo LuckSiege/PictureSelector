@@ -10,13 +10,24 @@
         android:scaleType="centerCrop"
         android:src="@drawable/image_placeholder" />
 
-    <ImageView
-        android:id="@+id/check"
+    <LinearLayout
+        android:id="@+id/ll_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:padding="@dimen/margin_text"
-        android:src="@drawable/checkbox_selector" />
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_text">
+
+        <TextView
+            android:id="@+id/check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:background="@drawable/checkbox_selector"
+            android:textColor="@color/ucrop_color_toolbar_widget"
+            android:textSize="12sp" />
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/rl_duration"

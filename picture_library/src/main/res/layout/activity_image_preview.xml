@@ -32,16 +32,25 @@
             android:textColor="@color/ucrop_color_toolbar_widget"
             android:textSize="18sp" />
 
-
-        <ImageView
-            android:id="@+id/check"
+        <LinearLayout
+            android:id="@+id/ll_check"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:gravity="center"
-            android:paddingLeft="@dimen/ucrop_padding_crop_frame"
-            android:paddingRight="15dp"
-            android:src="@drawable/checkbox_selector" />
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <TextView
+                android:id="@+id/check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/checkbox_selector"
+                android:gravity="center"
+                android:textColor="@color/ucrop_color_toolbar_widget"
+                android:textSize="12sp" />
+        </LinearLayout>
     </RelativeLayout>
 
 

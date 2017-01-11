@@ -50,6 +50,7 @@ public class BaseActivity extends FragmentActivity {
     protected int recordVideoSecond = 0;
     protected int definition = 3;
     protected boolean isCompress;
+    protected boolean is_checked_num;
     protected Gson gson = new Gson();
 
     @Override

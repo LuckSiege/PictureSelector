@@ -15,13 +15,32 @@ public class LocalMedia implements Serializable {
     private long duration;
     private long lastUpdateAt;
     private boolean isChecked;
+    public int position;
+    private int num;
     private int type;
+    private boolean isAnim;
 
     public LocalMedia(String path, long lastUpdateAt, long duration, int type) {
         this.path = path;
         this.duration = duration;
         this.lastUpdateAt = lastUpdateAt;
         this.type = type;
+    }
+
+    public boolean isAnim() {
+        return isAnim;
+    }
+
+    public void setAnim(boolean anim) {
+        isAnim = anim;
+    }
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
     }
 
     public int getType() {

@@ -59,4 +59,5 @@ public class Constants {
     public final static String EXTRA_CROP_W = "crop_w";
     public final static String EXTRA_CROP_H = "crop_h";
     public final static String EXTRA_DEFINITION = "definition";
+    public final static String EXTRA_IS_CHECKED_NUM = "checkedNum";
 }

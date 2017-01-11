@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.WindowManager;
@@ -44,10 +45,11 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
     private PreviewViewPager viewPager;
     private int position;
     private RelativeLayout rl_title;
+    private LinearLayout ll_check;
     private int maxSelectNum;
     private List<LocalMedia> images = new ArrayList<>();
     private List<LocalMedia> selectImages = new ArrayList<>();
-    private ImageView check;
+    private TextView check;
 
 
     @Override
@@ -57,7 +59,8 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
         rl_title = (RelativeLayout) findViewById(R.id.rl_title);
         left_back = (ImageButton) findViewById(R.id.left_back);
         viewPager = (PreviewViewPager) findViewById(R.id.preview_pager);
-        check = (ImageView) findViewById(R.id.check);
+        ll_check = (LinearLayout) findViewById(R.id.ll_check);
+        check = (TextView) findViewById(R.id.check);
         left_back.setOnClickListener(this);
         tv_ok = (TextView) findViewById(R.id.tv_ok);
         tv_img_num = (TextView) findViewById(R.id.tv_img_num);
@@ -74,15 +77,23 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
         maxSelectNum = getIntent().getIntExtra(Constants.EXTRA_MAX_SELECT_NUM, 0);
         backgroundColor = getIntent().getIntExtra(Constants.BACKGROUND_COLOR, 0);
         cb_drawable = getIntent().getIntExtra(Constants.CHECKED_DRAWABLE, 0);
+        is_checked_num = getIntent().getBooleanExtra(Constants.EXTRA_IS_CHECKED_NUM, false);
         rl_title.setBackgroundColor(backgroundColor);
         ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
-        check.setImageResource(cb_drawable);
+
+        check.setBackgroundResource(cb_drawable);
         viewPager.setAdapter(new SimpleFragmentAdapter(getSupportFragmentManager()));
         viewPager.setCurrentItem(position);
+        LocalMedia media = images.get(position);
         tv_title.setText(position + 1 + "/" + images.size());
+        if (is_checked_num) {
+            tv_img_num.setBackgroundResource(R.drawable.message_oval_blue);
+            check.setText(media.getNum() + "");
+        }
+        notifyCheckChanged(media);
         onSelectNumChange();
         onImageChecked(position);
-        check.setOnClickListener(new View.OnClickListener() {
+        ll_check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // 刷新图片列表中图片状态
@@ -105,12 +116,18 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
                 LocalMedia image = images.get(viewPager.getCurrentItem());
                 if (isChecked) {
                     selectImages.add(image);
+                    image.setNum(selectImages.size());
+                    if (is_checked_num) {
+                        check.setText(image.getNum() + "");
+                    }
                     intent.putExtra("media", image);
                     intent.setAction(Constants.ACTION_ADD_PHOTO);
                 } else {
                     for (LocalMedia media : selectImages) {
                         if (media.getPath().equals(image.getPath())) {
                             selectImages.remove(media);
+                            subSelectPosition();
+                            notifyCheckChanged(media);
                             intent.putExtra("media", media);
                             intent.setAction(Constants.ACTION_REMOVE_PHOTO);
                             break;
@@ -131,6 +148,11 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
             @Override
             public void onPageSelected(int position) {
                 tv_title.setText(position + 1 + "/" + images.size());
+                if (is_checked_num) {
+                    LocalMedia media = images.get(position);
+                    check.setText(media.getNum() + "");
+                    notifyCheckChanged(media);
+                }
                 onImageChecked(position);
             }
 
@@ -139,6 +161,31 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
 
             }
         });
+    }
+
+    /**
+     * 选择按钮更新
+     */
+    private void notifyCheckChanged(LocalMedia imageBean) {
+        if (is_checked_num) {
+            check.setText("");
+            for (LocalMedia media : selectImages) {
+                if (media.getPath().equals(imageBean.getPath())) {
+                    imageBean.setNum(media.getNum());
+                    check.setText(String.valueOf(imageBean.getNum()));
+                }
+            }
+        }
+    }
+
+    /**
+     * 更新选择的顺序
+     */
+    private void subSelectPosition() {
+        for (int index = 0, len = selectImages.size(); index < len; index++) {
+            LocalMedia media = selectImages.get(index);
+            media.setNum(index + 1);
+        }
     }
 
     /**

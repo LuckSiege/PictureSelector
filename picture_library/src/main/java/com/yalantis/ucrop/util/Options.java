@@ -30,7 +30,15 @@ public class Options {
     private int recordVideoSecond = 0;// 录视频秒数
     private int recordVideoDefinition = 0;// 视频清晰度
     private boolean isCompress = false;// 是否压缩图片，默认不压缩
+    private boolean isCheckNumMode = false;// 是否显示QQ风格选择图片
 
+    public boolean isCheckNumMode() {
+        return isCheckNumMode;
+    }
+
+    public void setCheckNumMode(boolean checkNumMode) {
+        isCheckNumMode = checkNumMode;
+    }
 
     public int getRecordVideoDefinition() {
         return recordVideoDefinition;

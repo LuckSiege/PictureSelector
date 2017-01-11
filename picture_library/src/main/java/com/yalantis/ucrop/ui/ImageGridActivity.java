@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -100,6 +101,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         cropH = getIntent().getIntExtra(Constants.EXTRA_CROP_H, 0);
         definition = getIntent().getIntExtra(Constants.EXTRA_DEFINITION, Constants.HIGH);
         recordVideoSecond = getIntent().getIntExtra(Constants.EXTRA_VIDEO_SECOND, 0);
+        is_checked_num = getIntent().getBooleanExtra(Constants.EXTRA_IS_CHECKED_NUM, false);
         if (savedInstanceState != null) {
             cameraPath = savedInstanceState.getString(Constants.BUNDLE_CAMERA_PATH);
         }
@@ -148,7 +150,15 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, ScreenUtils.dip2px(this, 2), false));
         recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
-        adapter = new ImageGridAdapter(this, showCamera, maxSelectNum, selectMode, enablePreview, enablePreviewVideo, cb_drawable);
+        // 解决调用 notifyItemChanged 闪烁问题,取消默认动画
+        ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+
+        // 如果是显示数据风格，则默认为qq选择风格
+        if (is_checked_num) {
+            tv_img_num.setBackgroundResource(R.drawable.message_oval_blue);
+            cb_drawable = R.drawable.checkbox_num_selector;
+        }
+        adapter = new ImageGridAdapter(this, showCamera, maxSelectNum, selectMode, enablePreview, enablePreviewVideo, cb_drawable, is_checked_num);
         recyclerView.setAdapter(adapter);
         if (selectImages.size() > 0) {
             ChangeImageNumber(selectImages);
@@ -174,6 +184,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
             intent.putExtra(Constants.EXTRA_MAX_SELECT_NUM, maxSelectNum);
             intent.putExtra(Constants.BACKGROUND_COLOR, backgroundColor);
             intent.putExtra(Constants.CHECKED_DRAWABLE, cb_drawable);
+            intent.putExtra(Constants.EXTRA_IS_CHECKED_NUM, is_checked_num);
             intent.setClass(mContext, PreviewActivity.class);
             startActivityForResult(intent, Constants.REQUEST_PREVIEW);
         } else if (id == R.id.tv_ok) {
@@ -301,6 +312,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
                     intent.putExtra(Constants.EXTRA_MAX_SELECT_NUM, maxSelectNum);
                     intent.putExtra(Constants.BACKGROUND_COLOR, backgroundColor);
                     intent.putExtra(Constants.CHECKED_DRAWABLE, cb_drawable);
+                    intent.putExtra(Constants.EXTRA_IS_CHECKED_NUM, is_checked_num);
                     intent.setClass(mContext, PreviewActivity.class);
                     startActivityForResult(intent, Constants.REQUEST_PREVIEW);
                 }
@@ -508,23 +520,21 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             LocalMedia image = (LocalMedia) intent.getSerializableExtra("media");
+            List<LocalMedia> selectedImages = adapter.getSelectedImages();
             if (action.equals(Constants.ACTION_ADD_PHOTO)) {
                 // 预览时新选择了图片
-                List<LocalMedia> selectedImages = adapter.getSelectedImages();
                 selectedImages.add(image);
-                adapter.bindSelectImages(selectedImages);
             } else if (action.equals(Constants.ACTION_REMOVE_PHOTO)) {
                 // 预览时取消了之前选中的图片
-                List<LocalMedia> selectImages = adapter.getSelectedImages();
-                for (LocalMedia media : selectImages) {
+                for (LocalMedia media : selectedImages) {
                     if (media.getPath().equals(image.getPath())) {
-                        selectImages.remove(media);
-                        ChangeImageNumber(selectImages);
+                        selectedImages.remove(media);
+                        ChangeImageNumber(selectedImages);
                         break;
                     }
                 }
             }
-            adapter.notifyDataSetChanged();
+            adapter.bindSelectImages(selectedImages);
         }
     };
 
