@@ -69,9 +69,32 @@
             <include layout="@layout/layout_number" />
 
             <RadioGroup
+                android:id="@+id/rgbs01"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp">
+
+                <RadioButton
+                    android:id="@+id/rb_ordinary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="普通选择模式" />
+
+                <RadioButton
+                    android:id="@+id/rb_qq"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15sp"
+                    android:text="qq风格选择模式(带数字效果)" />
+            </RadioGroup>
+
+            <RadioGroup
                 android:id="@+id/rgbs0"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal"
                 android:paddingLeft="10dp">
 

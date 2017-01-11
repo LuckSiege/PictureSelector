@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     private RecyclerView recyclerView;
     private GridImageAdapter adapter;
     private List<String> images = new ArrayList<>();
-    private RadioGroup rgbs0, rgbs1, rgbs2, rgbs3, rgbs4, rgbs5, rgbs6, rgbs7, rgbs8, rgbs9;
+    private RadioGroup rgbs01, rgbs0, rgbs1, rgbs2, rgbs3, rgbs4, rgbs5, rgbs6, rgbs7, rgbs8, rgbs9;
     private int selectMode = Constants.MODE_MULTIPLE;
     private int maxSelectNum = 9;// 图片最大可选数量
     private ImageButton minus, plus;
@@ -52,12 +52,14 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     private int cropW = 0;
     private int cropH = 0;
     private boolean isCompress = false;
+    private boolean isCheckNumMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
+        rgbs01 = (RadioGroup) findViewById(R.id.rgbs01);
         rgbs0 = (RadioGroup) findViewById(R.id.rgbs0);
         rgbs1 = (RadioGroup) findViewById(R.id.rgbs1);
         rgbs2 = (RadioGroup) findViewById(R.id.rgbs2);
@@ -89,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         rgbs7.setOnCheckedChangeListener(this);
         rgbs8.setOnCheckedChangeListener(this);
         rgbs9.setOnCheckedChangeListener(this);
+        rgbs01.setOnCheckedChangeListener(this);
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                     options.setRecordVideoSecond(60);// 视频秒数
                     options.setCropW(cropW);
                     options.setCropH(cropH);
+                    options.setCheckNumMode(isCheckNumMode);
                     options.setImageSpanCount(4);
 
                     if (theme) {
@@ -200,6 +204,12 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
         switch (i) {
+            case R.id.rb_ordinary:
+                isCheckNumMode = false;
+                break;
+            case R.id.rb_qq:
+                isCheckNumMode = true;
+                break;
             case R.id.rb_single:
                 selectMode = Constants.MODE_SINGLE;
                 break;
