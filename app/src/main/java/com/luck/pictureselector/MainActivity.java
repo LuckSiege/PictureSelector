@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                      * cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
                      * cropH-->裁剪高度 值不能小于100
                      * isCompress -->是否压缩图片
+                     * setRecordVideoSecond 录视频的秒数，默认不限制
                      * setImageSpanCount -->每行显示个数
                      * 注意-->type为2时 设置isPreview or isCrop 无效
                      * 注意：Options可以为空，默认标准模式
@@ -154,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                     options.setEnablePreview(enablePreview);
                     options.setEnableCrop(enableCrop);
                     options.setPreviewVideo(isPreviewVideo);
+                    options.setRecordVideoSecond(60);// 视频秒数
                     options.setCropW(cropW);
                     options.setCropH(cropH);
                     options.setImageSpanCount(4);
