@@ -47,8 +47,10 @@ public class BaseActivity extends FragmentActivity {
     protected int cb_drawable = 0;
     protected int cropW = 100;
     protected int cropH = 100;
+    protected int recordVideoSecond = 0;
     protected boolean isCompress;
     protected Gson gson = new Gson();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

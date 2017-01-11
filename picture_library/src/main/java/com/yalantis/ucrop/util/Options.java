@@ -27,7 +27,16 @@ public class Options {
     private int checkedBoxDrawable = R.drawable.checkbox_selector;// 图片选择默认样式
     private int cropW = Constants.COPY_WIDTH; // 裁剪宽度  如果值大于图片原始宽高 将返回原图大小
     private int cropH = Constants.COPY_HEIGHT;// 裁剪高度  如果值大于图片原始宽高 将返回原图大小
+    private int recordVideoSecond = 0;// 录视频秒数
     private boolean isCompress = false;// 是否压缩图片，默认不压缩
+
+    public int getRecordVideoSecond() {
+        return recordVideoSecond;
+    }
+
+    public void setRecordVideoSecond(int recordVideoSecond) {
+        this.recordVideoSecond = recordVideoSecond;
+    }
 
     public int getImageSpanCount() {
         return imageSpanCount;
