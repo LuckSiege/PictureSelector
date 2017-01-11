@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                      * setRecordVideoSecond 录视频的秒数，默认不限制
                      * setRecordVideoDefinition 视频清晰度  Constants.HIGH 清晰  Constants.ORDINARY 低质量
                      * setImageSpanCount -->每行显示个数
+                     * setCheckNumMode 是否显示QQ选择风格(带数字效果)
                      * 注意-->type为2时 设置isPreview or isCrop 无效
                      * 注意：Options可以为空，默认标准模式
                      */
