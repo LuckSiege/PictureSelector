@@ -1,6 +1,4 @@
 apply plugin: 'com.android.library'
-//apply from: '../mavenpush.gradle'
-
 android {
     compileSdkVersion 23
     buildToolsVersion '23.0.3'
@@ -10,7 +8,6 @@ android {
         targetSdkVersion 23
         versionCode 22
         versionName "2.2.0-native"
-
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -19,6 +16,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
