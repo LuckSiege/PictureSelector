@@ -15,8 +15,7 @@ import android.widget.RadioGroup;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.util.FullyGridLayoutManager;
 import com.yalantis.ucrop.ui.AlbumDirectoryActivity;
-import com.yalantis.ucrop.ui.ImageGridActivity;
-import com.yalantis.ucrop.util.Constants;
+import com.yalantis.ucrop.util.PictureConfig;
 import com.yalantis.ucrop.util.LocalMediaLoader;
 import com.yalantis.ucrop.util.Options;
 
@@ -36,14 +35,14 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     private GridImageAdapter adapter;
     private List<String> images = new ArrayList<>();
     private RadioGroup rgbs01, rgbs0, rgbs1, rgbs2, rgbs3, rgbs4, rgbs5, rgbs6, rgbs7, rgbs8, rgbs9;
-    private int selectMode = Constants.MODE_MULTIPLE;
+    private int selectMode = PictureConfig.MODE_MULTIPLE;
     private int maxSelectNum = 9;// 图片最大可选数量
     private ImageButton minus, plus;
     private EditText select_num;
     private EditText et_w, et_h;
     private boolean isShow = true;
     private int selectType = LocalMediaLoader.TYPE_IMAGE;
-    private int copyMode = Constants.COPY_MODEL_DEFAULT;
+    private int copyMode = PictureConfig.COPY_MODEL_DEFAULT;
     private boolean enablePreview = true;
     private boolean isPreviewVideo = true;
     private boolean enableCrop = true;
@@ -160,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                     options.setEnablePreview(enablePreview);
                     options.setEnableCrop(enableCrop);
                     options.setPreviewVideo(isPreviewVideo);
-                    options.setRecordVideoDefinition(Constants.HIGH);// 视频清晰度
+                    options.setRecordVideoDefinition(PictureConfig.HIGH);// 视频清晰度
                     options.setRecordVideoSecond(60);// 视频秒数
                     options.setCropW(cropW);
                     options.setCropH(cropH);
@@ -190,8 +189,8 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case Constants.REQUEST_IMAGE:
-                    ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(Constants.REQUEST_OUTPUT);
+                case PictureConfig.REQUEST_IMAGE:
+                    ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(PictureConfig.REQUEST_OUTPUT);
                     if (result != null) {
                         images.addAll(result);
                         adapter.setList(images);
@@ -212,10 +211,10 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                 isCheckNumMode = true;
                 break;
             case R.id.rb_single:
-                selectMode = Constants.MODE_SINGLE;
+                selectMode = PictureConfig.MODE_SINGLE;
                 break;
             case R.id.rb_multiple:
-                selectMode = Constants.MODE_MULTIPLE;
+                selectMode = PictureConfig.MODE_MULTIPLE;
                 break;
             case R.id.rb_image:
                 selectType = LocalMediaLoader.TYPE_IMAGE;
@@ -230,19 +229,19 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                 isShow = false;
                 break;
             case R.id.rb_default:
-                copyMode = Constants.COPY_MODEL_DEFAULT;
+                copyMode = PictureConfig.COPY_MODEL_DEFAULT;
                 break;
             case R.id.rb_to1_1:
-                copyMode = Constants.COPY_MODEL_1_1;
+                copyMode = PictureConfig.COPY_MODEL_1_1;
                 break;
             case R.id.rb_to3_2:
-                copyMode = Constants.COPY_MODEL_3_2;
+                copyMode = PictureConfig.COPY_MODEL_3_2;
                 break;
             case R.id.rb_to3_4:
-                copyMode = Constants.COPY_MODEL_3_4;
+                copyMode = PictureConfig.COPY_MODEL_3_4;
                 break;
             case R.id.rb_to16_9:
-                copyMode = Constants.COPY_MODEL_16_9;
+                copyMode = PictureConfig.COPY_MODEL_16_9;
                 break;
             case R.id.rb_preview:
                 enablePreview = true;
