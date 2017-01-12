@@ -16,7 +16,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
@@ -24,9 +23,7 @@ android {
     lintOptions {
         abortOnError false
     }
-
     resourcePrefix 'ucrop_'
-
     sourceSets.main {
         jni.srcDirs = [];
     }
