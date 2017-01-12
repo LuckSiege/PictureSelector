@@ -57,4 +57,6 @@ public class ImagePreviewFragment extends Fragment {
         });
         return contentView;
     }
+
+
 }

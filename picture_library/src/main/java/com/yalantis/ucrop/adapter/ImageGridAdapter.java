@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +19,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.dialog.OptAnimationLoader;
 import com.yalantis.ucrop.entity.LocalMedia;
-import com.yalantis.ucrop.ui.ImageGridActivity;
-import com.yalantis.ucrop.util.Constants;
+import com.yalantis.ucrop.util.PictureConfig;
 import com.yalantis.ucrop.util.LocalMediaLoader;
 
 import java.util.ArrayList;
@@ -41,7 +39,7 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private List<LocalMedia> images = new ArrayList<LocalMedia>();
     private List<LocalMedia> selectImages = new ArrayList<LocalMedia>();
     private boolean enablePreview;
-    private int selectMode = Constants.MODE_MULTIPLE;
+    private int selectMode = PictureConfig.MODE_MULTIPLE;
     private boolean enablePreviewVideo = false;
     private int cb_drawable;
     private boolean is_checked_num;
@@ -119,7 +117,7 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             String path = image.getPath();
             final int type = image.getType();
             contentHolder.check.setBackgroundResource(cb_drawable);
-            if (selectMode == Constants.MODE_SINGLE) {
+            if (selectMode == PictureConfig.MODE_SINGLE) {
                 contentHolder.ll_check.setVisibility(View.GONE);
             } else {
                 contentHolder.ll_check.setVisibility(View.VISIBLE);
@@ -158,10 +156,10 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             contentHolder.contentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (type == LocalMediaLoader.TYPE_VIDEO && (selectMode == Constants.MODE_SINGLE || enablePreviewVideo) && imageSelectChangedListener != null) {
+                    if (type == LocalMediaLoader.TYPE_VIDEO && (selectMode == PictureConfig.MODE_SINGLE || enablePreviewVideo) && imageSelectChangedListener != null) {
                         int index = showCamera ? position - 1 : position;
                         imageSelectChangedListener.onPictureClick(image, index);
-                    } else if (type == LocalMediaLoader.TYPE_IMAGE && (selectMode == Constants.MODE_SINGLE || enablePreview) && imageSelectChangedListener != null) {
+                    } else if (type == LocalMediaLoader.TYPE_IMAGE && (selectMode == PictureConfig.MODE_SINGLE || enablePreview) && imageSelectChangedListener != null) {
                         int index = showCamera ? position - 1 : position;
                         imageSelectChangedListener.onPictureClick(image, index);
                     } else {
@@ -206,10 +204,8 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     public boolean isSelected(LocalMedia image) {
-        image.setAnim(false);
         for (LocalMedia media : selectImages) {
             if (media.getPath().equals(image.getPath())) {
-                image.setAnim(true);
                 return true;
             }
         }

@@ -7,7 +7,7 @@ package com.yalantis.ucrop.util;
  * email：893855882@qq.com
  * data：16/12/31
  */
-public class Constants {
+public class PictureConfig {
     // 裁剪模式
     public static final int COPY_MODEL_DEFAULT = 0;
     public static final int COPY_MODEL_1_1 = 11;
@@ -31,6 +31,7 @@ public class Constants {
 
     public static final int SELECT_MAX_NUM = 9;
 
+    public static final String EXTRA_BOTTOM_PREVIEW = "bottom_preview";
     public static final String EXTRA_POSITION = "position";
     public static final String EXTRA_PREVIEW_LIST = "previewList";
     public static final String EXTRA_PREVIEW_SELECT_LIST = "previewSelectList";

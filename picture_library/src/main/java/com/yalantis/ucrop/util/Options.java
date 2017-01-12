@@ -15,9 +15,9 @@ import com.yalantis.ucrop.R;
 public class Options {
 
     private int type = 1; // 获取相册类型; 1 图片 2 视频
-    private int copyMode = Constants.COPY_MODEL_DEFAULT; // 裁剪模式; 默认、1:1、3:4、3:2、16:9
-    private int maxSelectNum = Constants.SELECT_MAX_NUM; // 多选最大可选数量
-    private int selectMode = Constants.MODE_MULTIPLE; // 单选 or 多选
+    private int copyMode = PictureConfig.COPY_MODEL_DEFAULT; // 裁剪模式; 默认、1:1、3:4、3:2、16:9
+    private int maxSelectNum = PictureConfig.SELECT_MAX_NUM; // 多选最大可选数量
+    private int selectMode = PictureConfig.MODE_MULTIPLE; // 单选 or 多选
     private boolean isShowCamera = true; // 是否显示相机
     private boolean enablePreview = true; // 是否预览图片
     private boolean enableCrop; // 是否裁剪图片，只针对单选图片有效
@@ -25,8 +25,8 @@ public class Options {
     private int imageSpanCount = 4; // 列表每行显示个数
     private int themeStyle = Color.parseColor("#393a3e"); // 标题栏背景色;
     private int checkedBoxDrawable = R.drawable.checkbox_selector;// 图片选择默认样式
-    private int cropW = Constants.COPY_WIDTH; // 裁剪宽度  如果值大于图片原始宽高 将返回原图大小
-    private int cropH = Constants.COPY_HEIGHT;// 裁剪高度  如果值大于图片原始宽高 将返回原图大小
+    private int cropW = PictureConfig.COPY_WIDTH; // 裁剪宽度  如果值大于图片原始宽高 将返回原图大小
+    private int cropH = PictureConfig.COPY_HEIGHT;// 裁剪高度  如果值大于图片原始宽高 将返回原图大小
     private int recordVideoSecond = 0;// 录视频秒数
     private int recordVideoDefinition = 0;// 视频清晰度
     private boolean isCompress = false;// 是否压缩图片，默认不压缩

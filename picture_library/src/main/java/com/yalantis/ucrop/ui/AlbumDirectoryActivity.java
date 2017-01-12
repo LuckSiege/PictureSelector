@@ -12,13 +12,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.gson.reflect.TypeToken;
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.adapter.AlbumDirectoryAdapter;
 import com.yalantis.ucrop.decoration.RecycleViewDivider;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.entity.LocalMediaFolder;
-import com.yalantis.ucrop.util.Constants;
+import com.yalantis.ucrop.observable.ImagesObservable;
+import com.yalantis.ucrop.util.PictureConfig;
 import com.yalantis.ucrop.util.LocalMediaLoader;
 import com.yalantis.ucrop.util.Options;
 import com.yalantis.ucrop.util.ToolbarUtil;
@@ -43,31 +43,30 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
     private RecyclerView recyclerView;
     private PublicTitleBar titleBar;
     private TextView tv_empty;
-    private List<LocalMedia> medias = new ArrayList<>();
-
+    private List<LocalMedia> selectMedias = new ArrayList<>();
 
     public static void startPhoto(Activity activity, Options options) {
         if (options == null) {
             options = new Options();
         }
         Intent intent = new Intent(activity, AlbumDirectoryActivity.class);
-        intent.putExtra(Constants.EXTRA_MAX_SELECT_NUM, options.getMaxSelectNum());
-        intent.putExtra(Constants.EXTRA_MAX_SPAN_COUNT, options.getImageSpanCount());
-        intent.putExtra(Constants.EXTRA_CROP_MODE, options.getCopyMode());
-        intent.putExtra(Constants.EXTRA_SELECT_MODE, options.getSelectMode());
-        intent.putExtra(Constants.EXTRA_SHOW_CAMERA, options.isShowCamera());
-        intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW, options.isEnablePreview());
-        intent.putExtra(Constants.EXTRA_ENABLE_CROP, options.isEnableCrop());
-        intent.putExtra(Constants.EXTRA_TYPE, options.getType());
-        intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, options.isPreviewVideo());
-        intent.putExtra(Constants.BACKGROUND_COLOR, options.getThemeStyle());
-        intent.putExtra(Constants.CHECKED_DRAWABLE, options.getCheckedBoxDrawable());
-        intent.putExtra(Constants.EXTRA_CROP_W, options.getCropW());
-        intent.putExtra(Constants.EXTRA_CROP_H, options.getCropH());
-        intent.putExtra(Constants.EXTRA_VIDEO_SECOND, options.getRecordVideoSecond());
-        intent.putExtra(Constants.EXTRA_DEFINITION, options.getRecordVideoDefinition());
-        intent.putExtra(Constants.EXTRA_IS_CHECKED_NUM, options.isCheckNumMode());
-        activity.startActivityForResult(intent, Constants.REQUEST_IMAGE);
+        intent.putExtra(PictureConfig.EXTRA_MAX_SELECT_NUM, options.getMaxSelectNum());
+        intent.putExtra(PictureConfig.EXTRA_MAX_SPAN_COUNT, options.getImageSpanCount());
+        intent.putExtra(PictureConfig.EXTRA_CROP_MODE, options.getCopyMode());
+        intent.putExtra(PictureConfig.EXTRA_SELECT_MODE, options.getSelectMode());
+        intent.putExtra(PictureConfig.EXTRA_SHOW_CAMERA, options.isShowCamera());
+        intent.putExtra(PictureConfig.EXTRA_ENABLE_PREVIEW, options.isEnablePreview());
+        intent.putExtra(PictureConfig.EXTRA_ENABLE_CROP, options.isEnableCrop());
+        intent.putExtra(PictureConfig.EXTRA_TYPE, options.getType());
+        intent.putExtra(PictureConfig.EXTRA_ENABLE_PREVIEW_VIDEO, options.isPreviewVideo());
+        intent.putExtra(PictureConfig.BACKGROUND_COLOR, options.getThemeStyle());
+        intent.putExtra(PictureConfig.CHECKED_DRAWABLE, options.getCheckedBoxDrawable());
+        intent.putExtra(PictureConfig.EXTRA_CROP_W, options.getCropW());
+        intent.putExtra(PictureConfig.EXTRA_CROP_H, options.getCropH());
+        intent.putExtra(PictureConfig.EXTRA_VIDEO_SECOND, options.getRecordVideoSecond());
+        intent.putExtra(PictureConfig.EXTRA_DEFINITION, options.getRecordVideoDefinition());
+        intent.putExtra(PictureConfig.EXTRA_IS_CHECKED_NUM, options.isCheckNumMode());
+        activity.startActivityForResult(intent, PictureConfig.REQUEST_IMAGE);
         activity.overridePendingTransition(R.anim.slide_bottom_in, 0);
     }
 
@@ -75,23 +74,23 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album);
-        type = getIntent().getIntExtra(Constants.EXTRA_TYPE, 1);// 1 图片 2视频
-        showCamera = getIntent().getBooleanExtra(Constants.EXTRA_SHOW_CAMERA, true);// 是否显示拍摄
-        enablePreview = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_PREVIEW, true);// 是否显示预览
-        selectMode = getIntent().getIntExtra(Constants.EXTRA_SELECT_MODE, Constants.MODE_MULTIPLE);// 选择模式,单选or多选
-        enableCrop = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_CROP, false);// 是否裁剪
-        maxSelectNum = getIntent().getIntExtra(Constants.EXTRA_MAX_SELECT_NUM, Constants.SELECT_MAX_NUM);// 图片最大选择数量
-        copyMode = getIntent().getIntExtra(Constants.EXTRA_CROP_MODE, Constants.COPY_MODEL_DEFAULT);// 裁剪模式
-        enablePreviewVideo = getIntent().getBooleanExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, false);// 是否预览视频
-        backgroundColor = getIntent().getIntExtra(Constants.BACKGROUND_COLOR, 0);
-        cb_drawable = getIntent().getIntExtra(Constants.CHECKED_DRAWABLE, 0);
-        isCompress = getIntent().getBooleanExtra(Constants.EXTRA_COMPRESS, false);
-        spanCount = getIntent().getIntExtra(Constants.EXTRA_MAX_SPAN_COUNT, 4);
-        cropW = getIntent().getIntExtra(Constants.EXTRA_CROP_W, 0);
-        cropH = getIntent().getIntExtra(Constants.EXTRA_CROP_H, 0);
-        recordVideoSecond = getIntent().getIntExtra(Constants.EXTRA_VIDEO_SECOND, 0);
-        definition = getIntent().getIntExtra(Constants.EXTRA_DEFINITION, Constants.HIGH);
-        is_checked_num = getIntent().getBooleanExtra(Constants.EXTRA_IS_CHECKED_NUM, false);
+        type = getIntent().getIntExtra(PictureConfig.EXTRA_TYPE, 1);// 1 图片 2视频
+        showCamera = getIntent().getBooleanExtra(PictureConfig.EXTRA_SHOW_CAMERA, true);// 是否显示拍摄
+        enablePreview = getIntent().getBooleanExtra(PictureConfig.EXTRA_ENABLE_PREVIEW, true);// 是否显示预览
+        selectMode = getIntent().getIntExtra(PictureConfig.EXTRA_SELECT_MODE, PictureConfig.MODE_MULTIPLE);// 选择模式,单选or多选
+        enableCrop = getIntent().getBooleanExtra(PictureConfig.EXTRA_ENABLE_CROP, false);// 是否裁剪
+        maxSelectNum = getIntent().getIntExtra(PictureConfig.EXTRA_MAX_SELECT_NUM, PictureConfig.SELECT_MAX_NUM);// 图片最大选择数量
+        copyMode = getIntent().getIntExtra(PictureConfig.EXTRA_CROP_MODE, PictureConfig.COPY_MODEL_DEFAULT);// 裁剪模式
+        enablePreviewVideo = getIntent().getBooleanExtra(PictureConfig.EXTRA_ENABLE_PREVIEW_VIDEO, false);// 是否预览视频
+        backgroundColor = getIntent().getIntExtra(PictureConfig.BACKGROUND_COLOR, 0);
+        cb_drawable = getIntent().getIntExtra(PictureConfig.CHECKED_DRAWABLE, 0);
+        isCompress = getIntent().getBooleanExtra(PictureConfig.EXTRA_COMPRESS, false);
+        spanCount = getIntent().getIntExtra(PictureConfig.EXTRA_MAX_SPAN_COUNT, 4);
+        cropW = getIntent().getIntExtra(PictureConfig.EXTRA_CROP_W, 0);
+        cropH = getIntent().getIntExtra(PictureConfig.EXTRA_CROP_H, 0);
+        recordVideoSecond = getIntent().getIntExtra(PictureConfig.EXTRA_VIDEO_SECOND, 0);
+        definition = getIntent().getIntExtra(PictureConfig.EXTRA_DEFINITION, PictureConfig.HIGH);
+        is_checked_num = getIntent().getBooleanExtra(PictureConfig.EXTRA_IS_CHECKED_NUM, false);
         titleBar = (PublicTitleBar) findViewById(R.id.titleBar);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         tv_empty = (TextView) findViewById(R.id.tv_empty);
@@ -121,8 +120,9 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         if (hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
             readLocalMedia();
         } else {
-            requestPermission(Constants.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
+            requestPermission(PictureConfig.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
         }
+
     }
 
 
@@ -179,7 +179,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
                 if (folders.size() > 0) {
                     tv_empty.setVisibility(View.GONE);
                     adapter.bindFolderData(folders);
-                    notifyDataCheckedStatus(medias);
+                    notifyDataCheckedStatus(selectMedias);
                 } else {
                     tv_empty.setVisibility(View.VISIBLE);
                     switch (type) {
@@ -225,34 +225,32 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
     }
 
 
-    private void startImageGridActivity(String folderName, List<LocalMedia> images) {
+    private void startImageGridActivity(String folderName, final List<LocalMedia> images) {
         Intent intent = new Intent();
         List<LocalMediaFolder> folders = adapter.getFolderData();
-        String toJson = gson.toJson(images);
-        String folders_json = gson.toJson(folders);
-        saveObject(toJson, Constants.EXTRA_IMAGES);
-        saveObject(folders_json, Constants.EXTRA_FOLDERS);
-        intent.putExtra(Constants.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
-        intent.putExtra(Constants.FOLDER_NAME, folderName);
-        intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW, enablePreview);
-        intent.putExtra(Constants.EXTRA_SHOW_CAMERA, showCamera);
-        intent.putExtra(Constants.EXTRA_SELECT_MODE, selectMode);
-        intent.putExtra(Constants.EXTRA_ENABLE_CROP, enableCrop);
-        intent.putExtra(Constants.EXTRA_MAX_SELECT_NUM, maxSelectNum);
-        intent.putExtra(Constants.EXTRA_TYPE, type);
-        intent.putExtra(Constants.EXTRA_CROP_MODE, copyMode);
-        intent.putExtra(Constants.EXTRA_ENABLE_PREVIEW_VIDEO, enablePreviewVideo);
-        intent.putExtra(Constants.BACKGROUND_COLOR, backgroundColor);
-        intent.putExtra(Constants.CHECKED_DRAWABLE, cb_drawable);
-        intent.putExtra(Constants.EXTRA_COMPRESS, isCompress);
-        intent.putExtra(Constants.EXTRA_CROP_W, cropW);
-        intent.putExtra(Constants.EXTRA_CROP_H, cropH);
-        intent.putExtra(Constants.EXTRA_MAX_SPAN_COUNT, spanCount);
-        intent.putExtra(Constants.EXTRA_VIDEO_SECOND, recordVideoSecond);
-        intent.putExtra(Constants.EXTRA_DEFINITION, definition);
-        intent.putExtra(Constants.EXTRA_IS_CHECKED_NUM, is_checked_num);
+        ImagesObservable.getInstance().saveLocalMedia(images);
+        ImagesObservable.getInstance().saveLocalFolders(folders);
+        intent.putExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectMedias);
+        intent.putExtra(PictureConfig.FOLDER_NAME, folderName);
+        intent.putExtra(PictureConfig.EXTRA_ENABLE_PREVIEW, enablePreview);
+        intent.putExtra(PictureConfig.EXTRA_SHOW_CAMERA, showCamera);
+        intent.putExtra(PictureConfig.EXTRA_SELECT_MODE, selectMode);
+        intent.putExtra(PictureConfig.EXTRA_ENABLE_CROP, enableCrop);
+        intent.putExtra(PictureConfig.EXTRA_MAX_SELECT_NUM, maxSelectNum);
+        intent.putExtra(PictureConfig.EXTRA_TYPE, type);
+        intent.putExtra(PictureConfig.EXTRA_CROP_MODE, copyMode);
+        intent.putExtra(PictureConfig.EXTRA_ENABLE_PREVIEW_VIDEO, enablePreviewVideo);
+        intent.putExtra(PictureConfig.BACKGROUND_COLOR, backgroundColor);
+        intent.putExtra(PictureConfig.CHECKED_DRAWABLE, cb_drawable);
+        intent.putExtra(PictureConfig.EXTRA_COMPRESS, isCompress);
+        intent.putExtra(PictureConfig.EXTRA_CROP_W, cropW);
+        intent.putExtra(PictureConfig.EXTRA_CROP_H, cropH);
+        intent.putExtra(PictureConfig.EXTRA_MAX_SPAN_COUNT, spanCount);
+        intent.putExtra(PictureConfig.EXTRA_VIDEO_SECOND, recordVideoSecond);
+        intent.putExtra(PictureConfig.EXTRA_DEFINITION, definition);
+        intent.putExtra(PictureConfig.EXTRA_IS_CHECKED_NUM, is_checked_num);
         intent.setClass(mContext, ImageGridActivity.class);
-        startActivityForResult(intent, Constants.REQUEST_IMAGE);
+        startActivityForResult(intent, PictureConfig.REQUEST_IMAGE);
     }
 
 
@@ -260,26 +258,24 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case Constants.REQUEST_IMAGE:
+                case PictureConfig.REQUEST_IMAGE:
                     // 单选图片裁剪完调用
                     int type = data.getIntExtra("type", 0);
                     if (type == 1) {
-                        String folders_json = data.getStringExtra(Constants.EXTRA_FOLDERS);
-                        folders = gson.fromJson(folders_json, new TypeToken<List<LocalMediaFolder>>() {
-                        }.getType());
-                        medias = (List<LocalMedia>) data.getSerializableExtra(Constants.EXTRA_PREVIEW_SELECT_LIST);
-                        if (folders != null)
+                        folders = ImagesObservable.getInstance().readLocalFolders();
+                        selectMedias = (List<LocalMedia>) data.getSerializableExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
+                        if (folders != null && folders.size() > 0)
                             adapter.bindFolderData(folders);
-                        if (medias == null)
-                            medias = new ArrayList<>();
-                        notifyDataCheckedStatus(medias);
+                        if (selectMedias == null)
+                            selectMedias = new ArrayList<>();
+                        notifyDataCheckedStatus(selectMedias);
                         if (tv_empty.getVisibility() == View.VISIBLE && adapter.getFolderData().size() > 0)
                             tv_empty.setVisibility(View.GONE);
                     } else {
-                        ArrayList<String> images = (ArrayList<String>) data.getSerializableExtra(Constants.REQUEST_OUTPUT);
+                        ArrayList<String> images = (ArrayList<String>) data.getSerializableExtra(PictureConfig.REQUEST_OUTPUT);
                         if (images == null)
                             images = new ArrayList<>();
-                        setResult(RESULT_OK, new Intent().putStringArrayListExtra(Constants.REQUEST_OUTPUT, images));
+                        setResult(RESULT_OK, new Intent().putStringArrayListExtra(PictureConfig.REQUEST_OUTPUT, images));
                         finish();
                     }
                     break;
@@ -292,6 +288,15 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         super.onBackPressed();
         finish();
         overridePendingTransition(0, R.anim.slide_bottom_out);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ImagesObservable.getInstance().clearLocalFolders();
+        ImagesObservable.getInstance().clearLocalMedia();
+        ImagesObservable.getInstance().clearSelectedLocalMedia();
     }
 
 }

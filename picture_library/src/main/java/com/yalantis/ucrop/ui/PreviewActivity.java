@@ -6,25 +6,21 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.reflect.TypeToken;
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.dialog.OptAnimationLoader;
 import com.yalantis.ucrop.entity.LocalMedia;
-import com.yalantis.ucrop.util.Constants;
+import com.yalantis.ucrop.observable.ImagesObservable;
+import com.yalantis.ucrop.util.PictureConfig;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.widget.PreviewViewPager;
 
@@ -50,6 +46,7 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
     private List<LocalMedia> images = new ArrayList<>();
     private List<LocalMedia> selectImages = new ArrayList<>();
     private TextView check;
+    private SimpleFragmentAdapter adapter;
 
 
     @Override
@@ -66,33 +63,24 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
         tv_img_num = (TextView) findViewById(R.id.tv_img_num);
         tv_title = (TextView) findViewById(R.id.tv_title);
         tv_ok.setOnClickListener(this);
-
-        String json = (String) readObject(Constants.EXTRA_PREVIEW_LIST);
-        images = gson.fromJson(json, new TypeToken<List<LocalMedia>>() {
-        }.getType());
-
-        selectImages = (List<LocalMedia>) readObject(Constants.EXTRA_PREVIEW_SELECT_LIST);
-
-        position = getIntent().getIntExtra(Constants.EXTRA_POSITION, 0);
-        maxSelectNum = getIntent().getIntExtra(Constants.EXTRA_MAX_SELECT_NUM, 0);
-        backgroundColor = getIntent().getIntExtra(Constants.BACKGROUND_COLOR, 0);
-        cb_drawable = getIntent().getIntExtra(Constants.CHECKED_DRAWABLE, 0);
-        is_checked_num = getIntent().getBooleanExtra(Constants.EXTRA_IS_CHECKED_NUM, false);
+        position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
+        maxSelectNum = getIntent().getIntExtra(PictureConfig.EXTRA_MAX_SELECT_NUM, 0);
+        backgroundColor = getIntent().getIntExtra(PictureConfig.BACKGROUND_COLOR, 0);
+        cb_drawable = getIntent().getIntExtra(PictureConfig.CHECKED_DRAWABLE, 0);
+        is_checked_num = getIntent().getBooleanExtra(PictureConfig.EXTRA_IS_CHECKED_NUM, false);
         rl_title.setBackgroundColor(backgroundColor);
         ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
-
-        check.setBackgroundResource(cb_drawable);
-        viewPager.setAdapter(new SimpleFragmentAdapter(getSupportFragmentManager()));
-        viewPager.setCurrentItem(position);
-        LocalMedia media = images.get(position);
-        tv_title.setText(position + 1 + "/" + images.size());
-        if (is_checked_num) {
-            tv_img_num.setBackgroundResource(R.drawable.message_oval_blue);
-            check.setText(media.getNum() + "");
+        boolean is_bottom_preview = getIntent().getBooleanExtra(PictureConfig.EXTRA_BOTTOM_PREVIEW, false);
+        if (is_bottom_preview) {
+            // 底部预览按钮过来
+            images = (List<LocalMedia>) getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_LIST);
+        } else {
+            images = ImagesObservable.getInstance().readLocalMedias();
         }
-        notifyCheckChanged(media);
-        onSelectNumChange();
-        onImageChecked(position);
+
+        selectImages = (List<LocalMedia>) getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
+
+        initViewPageAdapterData();
         ll_check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,7 +109,8 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
                         check.setText(image.getNum() + "");
                     }
                     intent.putExtra("media", image);
-                    intent.setAction(Constants.ACTION_ADD_PHOTO);
+                    intent.setAction(PictureConfig.ACTION_ADD_PHOTO);
+                    Log.i("", images.size() + "");
                 } else {
                     for (LocalMedia media : selectImages) {
                         if (media.getPath().equals(image.getPath())) {
@@ -129,12 +118,11 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
                             subSelectPosition();
                             notifyCheckChanged(media);
                             intent.putExtra("media", media);
-                            intent.setAction(Constants.ACTION_REMOVE_PHOTO);
+                            intent.setAction(PictureConfig.ACTION_REMOVE_PHOTO);
                             break;
                         }
                     }
                 }
-
                 onSelectNumChange();
                 sendBroadcast(intent);
             }
@@ -158,9 +146,24 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
+    }
+
+    private void initViewPageAdapterData() {
+        tv_title.setText(position + 1 + "/" + images.size());
+        adapter = new SimpleFragmentAdapter(getSupportFragmentManager(), images);
+        check.setBackgroundResource(cb_drawable);
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(position);
+        onSelectNumChange();
+        onImageChecked(position);
+        if (is_checked_num) {
+            tv_img_num.setBackgroundResource(R.drawable.message_oval_blue);
+            LocalMedia media = images.get(position);
+            check.setText(media.getNum() + "");
+            notifyCheckChanged(media);
+        }
     }
 
     /**
@@ -239,18 +242,26 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
     }
 
     public class SimpleFragmentAdapter extends FragmentPagerAdapter {
-        public SimpleFragmentAdapter(FragmentManager fm) {
+        private List<LocalMedia> medias;
+
+        public SimpleFragmentAdapter(FragmentManager fm, List<LocalMedia> medias) {
             super(fm);
+            this.medias = medias;
+        }
+
+        public void setMedias(List<LocalMedia> medias) {
+            this.medias = medias;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return ImagePreviewFragment.getInstance(images.get(position).getPath());
+            ImagePreviewFragment fragment = ImagePreviewFragment.getInstance(medias.get(position).getPath());
+            return fragment;
         }
 
         @Override
         public int getCount() {
-            return images.size();
+            return medias.size();
         }
     }
 
@@ -270,7 +281,7 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
                 for (LocalMedia media : selectImages) {
                     images.add(media.getPath());
                 }
-                setResult(RESULT_OK, new Intent().putExtra(Constants.EXTRA_PREVIEW_SELECT_LIST, (Serializable) images));
+                setResult(RESULT_OK, new Intent().putExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) images));
                 finish();
             }
         }
