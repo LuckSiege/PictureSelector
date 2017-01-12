@@ -36,7 +36,7 @@
 
 项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~   联系方式893855882@qq.com  希望用得着的朋友点个start，你们的支持才是我继续下去的动力，在此先谢过~
 
-app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.0.4'  注：之前引入如有报错，请引入最新版本
+app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.0.5'  注：之前引入如有报错，请引入最新版本
 
 项目根目录
 
@@ -89,6 +89,9 @@ options.setCropH(cropH); 裁剪高
 options.setRecordVideoDefinition(Constants.HIGH);// 视频清晰度 Constants.HIGH 清晰 Constants.ORDINARY 普通 低质量
 
 options.setRecordVideoSecond(60);// 视频秒数
+
+
+options.setCheckNumMode(isCheckNumMode); 是否显示QQ选择风格(带数字效果)
 
                     
 AlbumDirectoryActivity.startPhoto(MainActivity.this, options);
