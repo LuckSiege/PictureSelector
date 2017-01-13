@@ -129,11 +129,13 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
                 case PictureConfig.REQUEST_IMAGE:
             
                     if (media.isCompressed()){
-                        // 注意：如果压缩过，在上传的时候，取 media.getCompressPath();
+                    
+                        // 注意：如果压缩过，在上传的时候，取 media.getCompressPath(); // 压缩图compressPath
                         
                     } else {
-                        // 注意：没有压缩过，在上传的时候，取 media.getPath();
-                    }
+                    
+                        // 注意：没有压缩过，在上传的时候，取 media.getPath(); // 原图path
+                    }
                     
                     List<LocalMedia> result = (List<LocalMedia>) data.getSerializableExtra(PictureConfig.REQUEST_OUTPUT);    
                   
