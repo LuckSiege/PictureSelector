@@ -91,7 +91,9 @@ options.setCropW(cropW); 裁剪宽
                     
 options.setCropH(cropH); 裁剪高
 
+
 options.setRecordVideoDefinition(Constants.HIGH);// 视频清晰度 Constants.HIGH 清晰 Constants.ORDINARY 普通 低质量
+
 
 options.setRecordVideoSecond(60);// 视频秒数
 
@@ -110,12 +112,14 @@ setPreviewBottomBgColor 预览界面底部背景色
 
 setBottomBgColor 选择图片页面底部背景色
 
+
 options.setSelectMedia() 已选图片集合
 
                     
 AlbumDirectoryActivity.startPhoto(MainActivity.this, options);
+
  
-     @Override
+@Override
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
      if (resultCode == RESULT_OK) {
@@ -125,10 +129,14 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
                 case PictureConfig.REQUEST_IMAGE:
             
                     List<LocalMedia> result = (List<LocalMedia>) data.getSerializableExtra(PictureConfig.REQUEST_OUTPUT);
-                    if (result != null) {
+                   
+                   if (result != null) {
+                    
                         adapter.setList(result);
+                        
                         adapter.notifyDataSetChanged();
                     }
+                    
                     break;
             }
         }
