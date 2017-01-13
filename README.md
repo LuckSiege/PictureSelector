@@ -34,9 +34,18 @@
 
 17.新增QQ选择风格，带数字效果
 
+setPreviewColor 预览文字颜色
+
+setCompleteColor 完成文字颜色
+
+setPreviewBottomBgColor 预览界面底部背景色
+
+setBottomBgColor 选择图片页面底部背景色
+
+
 项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~   联系方式893855882@qq.com  希望用得着的朋友点个start，你们的支持才是我继续下去的动力，在此先谢过~
 
-app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.0.7'  注：之前引入如有报错，请引入最新版本
+app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.0.8'  注：之前引入如有报错，请引入最新版本
 
 项目根目录
 
@@ -51,7 +60,7 @@ allprojects {
     }
 }
 
-Options options = new Options();
+PictureConfig options = new PictureConfig();
 
 
 options.setType(selectType); 1图片 or 2视频 LocalMediaLoader.TYPE_IMAGE,TYPE_VIDEO
@@ -103,9 +112,9 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
      
             switch (requestCode) {
             
-                case Constants.REQUEST_IMAGE:
+                case PicModeConfig.REQUEST_IMAGE:
                 
-                    ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(Constants.REQUEST_OUTPUT);
+                    ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(PicModeConfig.REQUEST_OUTPUT);
                     if (result != null) {
                         images.addAll(result);
                         adapter.setList(images);
