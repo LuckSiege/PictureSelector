@@ -60,7 +60,7 @@ allprojects {
     }
 }
 
-Options options = new Options();
+PictureConfig options = new PictureConfig();
 
 
 options.setType(selectType); 1图片 or 2视频 LocalMediaLoader.TYPE_IMAGE,TYPE_VIDEO
@@ -112,9 +112,9 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
      
             switch (requestCode) {
             
-                case Constants.REQUEST_IMAGE:
+                case PicModeConfig.REQUEST_IMAGE:
                 
-                    ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(Constants.REQUEST_OUTPUT);
+                    ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(PicModeConfig.REQUEST_OUTPUT);
                     if (result != null) {
                         images.addAll(result);
                         adapter.setList(images);
