@@ -34,14 +34,6 @@
 
 17.新增QQ选择风格，带数字效果
 
-setPreviewColor 预览文字颜色
-
-setCompleteColor 完成文字颜色
-
-setPreviewBottomBgColor 预览界面底部背景色
-
-setBottomBgColor 选择图片页面底部背景色
-
 
 项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~   联系方式893855882@qq.com  希望用得着的朋友点个start，你们的支持才是我继续下去的动力，在此先谢过~
 
@@ -102,6 +94,21 @@ options.setRecordVideoSecond(60);// 视频秒数
 
 options.setCheckNumMode(isCheckNumMode); 是否显示QQ选择风格(带数字效果)
 
+
+setPreviewColor 预览文字颜色
+
+
+setCompleteColor 完成文字颜色
+
+
+setPreviewBottomBgColor 预览界面底部背景色
+
+
+setBottomBgColor 选择图片页面底部背景色
+
+
+options.setSelectMedia() 已选图片集合
+
                     
 AlbumDirectoryActivity.startPhoto(MainActivity.this, options);
  
@@ -112,12 +119,11 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
      
             switch (requestCode) {
             
-                case PicModeConfig.REQUEST_IMAGE:
+                case PictureConfig.REQUEST_IMAGE:
                 
-                    ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(PicModeConfig.REQUEST_OUTPUT);
+                    List<LocalMedia> result = (List<LocalMedia>) data.getSerializableExtra(PictureConfig.REQUEST_OUTPUT);
                     if (result != null) {
-                        images.addAll(result);
-                        adapter.setList(images);
+                        adapter.setList(result);
                         adapter.notifyDataSetChanged();
                     }
                     break;
