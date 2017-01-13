@@ -33,7 +33,7 @@ public class LocalMediaLoader {
     // load type
     public static final int TYPE_IMAGE = 1;
     public static final int TYPE_VIDEO = 2;
-
+    public int index = 0;
     private final static String[] IMAGE_PROJECTION = {
             MediaStore.Images.Media.DATA,
             MediaStore.Images.Media.DISPLAY_NAME,
@@ -100,32 +100,39 @@ public class LocalMediaLoader {
                                 LocalMedia image = new LocalMedia(path, dateTime, duration, type);
                                 LocalMediaFolder folder = getImageFolder(path, imageFolders);
                                 folder.getImages().add(image);
-                                folder.setImageNum(folder.getImageNum() + 1);
                                 folder.setType(type);
-                                allImages.add(image);
-                                allImageFolder.setType(type);
-                                allImageFolder.setImageNum(allImageFolder.getImageNum() + 1);
+                                index++;
+                                folder.setImageNum(folder.getImageNum() + 1);
+                                // 最近相册中  只添加最新的100条
+                                if (index <= 100) {
+                                    allImages.add(image);
+                                    allImageFolder.setType(type);
+                                    allImageFolder.setImageNum(allImageFolder.getImageNum() + 1);
+                                }
+
                             } while (data.moveToNext());
+
                             if (allImages.size() > 0) {
+                                sortFolder(imageFolders);
+                                imageFolders.add(0, allImageFolder);
                                 String title = "";
                                 switch (type) {
                                     case TYPE_VIDEO:
-                                        title = activity.getString(R.string.all_video);
+                                        title = activity.getString(R.string.lately_video);
                                         break;
                                     case TYPE_IMAGE:
-                                        title = activity.getString(R.string.all_image);
+                                        title = activity.getString(R.string.lately_image);
                                         break;
                                 }
                                 allImageFolder.setFirstImagePath(allImages.get(0).getPath());
                                 allImageFolder.setName(title);
                                 allImageFolder.setType(type);
                                 allImageFolder.setImages(allImages);
-                                imageFolders.add(allImageFolder);
-                                sortFolder(imageFolders);
                             }
                             imageLoadListener.loadComplete(imageFolders);
                             data.close();
                         } else {
+                            // 如果没有相册
                             imageLoadListener.loadComplete(imageFolders);
                         }
                     }

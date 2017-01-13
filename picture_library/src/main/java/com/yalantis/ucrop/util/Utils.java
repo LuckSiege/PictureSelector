@@ -71,4 +71,19 @@ public class Utils {
         lastClickTime = time;
         return false;
     }
+
+    /**
+     * 判断 一个字段的值否为空
+     *
+     * @param s
+     * @return
+     * @author Michael.Zhang 2013-9-7 下午4:39:00
+     */
+    public static boolean isNull(String s) {
+        if (null == s || s.equals("") || s.equalsIgnoreCase("null")) {
+            return true;
+        }
+
+        return false;
+    }
 }

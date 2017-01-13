@@ -113,7 +113,14 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         tv_empty = (TextView) findViewById(R.id.tv_empty);
         tv_empty.setOnClickListener(this);
 
-        titleBar.setTitleText(getString(R.string.select_photo));
+        switch (type){
+            case LocalMediaLoader.TYPE_IMAGE:
+                titleBar.setTitleText(getString(R.string.select_photo));
+                break;
+            case LocalMediaLoader.TYPE_VIDEO:
+                titleBar.setTitleText(getString(R.string.select_video));
+                break;
+        }
 
         ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
         titleBar.setTitleBarBackgroundColor(backgroundColor);
@@ -224,7 +231,16 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         int id = view.getId();
         if (id == R.id.tv_empty) {
             List<LocalMedia> images = new ArrayList<>();
-            startImageGridActivity(titleBar.getTitleText(), images);
+            String title = "";
+            switch (type) {
+                case LocalMediaLoader.TYPE_IMAGE:
+                    title = getString(R.string.lately_image);
+                    break;
+                case LocalMediaLoader.TYPE_VIDEO:
+                    title = getString(R.string.lately_video);
+                    break;
+            }
+            startImageGridActivity(title, images);
         }
     }
 

@@ -138,9 +138,8 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         .load(path)
                         .centerCrop()
                         .thumbnail(0.5f)
-                      .placeholder(R.drawable.image_placeholder)
+                        .placeholder(R.drawable.image_placeholder)
                         .error(R.drawable.image_placeholder)
-                        .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .dontAnimate()
                         .into(contentHolder.picture);

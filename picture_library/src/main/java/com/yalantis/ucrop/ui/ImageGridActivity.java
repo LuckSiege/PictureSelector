@@ -160,6 +160,16 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
             tv_img_num.setBackgroundResource(R.drawable.message_oval_blue);
             cb_drawable = R.drawable.checkbox_num_selector;
         }
+        String titleText = titleBar.getTitleText();
+
+        if (showCamera) {
+            if (!Utils.isNull(titleText) && titleText.startsWith("最近") || titleText.startsWith("Recent")) {
+                // 只有最近相册 才显示拍摄按钮，不然相片混乱
+                showCamera = true;
+            } else {
+                showCamera = false;
+            }
+        }
         adapter = new ImageGridAdapter(this, showCamera, maxSelectNum, selectMode, enablePreview, enablePreviewVideo, cb_drawable, is_checked_num);
         recyclerView.setAdapter(adapter);
         if (selectImages.size() > 0) {
@@ -183,11 +193,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
             List<LocalMedia> selectedImages = adapter.getSelectedImages();
             List<LocalMedia> medias = new ArrayList<>();
             for (LocalMedia media : selectedImages) {
-                for (LocalMedia m : images) {
-                    if (media.getPath().equals(m.getPath())) {
-                        medias.add(m);
-                    }
-                }
+                medias.add(media);
             }
             intent.putExtra(PictureConfig.EXTRA_PREVIEW_LIST, (Serializable) medias);
             intent.putExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectedImages);
@@ -433,18 +439,29 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
                     } else {
                         duration = Integer.parseInt(String.valueOf(System.currentTimeMillis()).substring(0, 10));
                     }
+                    createNewFolder(folders);
+                    // 生成拍照图片对象
                     LocalMedia media = new LocalMedia(file.getPath(), duration, duration, type);
                     // 根据新拍照生成的图片，插入到对应的相册当中，避免重新查询一遍数据库
                     LocalMediaFolder folder = getImageFolder(media.getPath(), folders);
-                    Log.i("FolderName", folder.getName());
+                    // 更新当前图片所属文件夹
                     folder.getImages().add(0, media);// 插入到第一个位置
                     folder.setImageNum(folder.getImageNum() + 1);
                     folder.setFirstImagePath(media.getPath());
                     folder.setType(type);
 
+                    // 取出最近文件夹 插入刚拍的照片或视频，并且如果大于100张，先移除最后一条在保存，因为最近文件夹中只显示100条数据
+                    LocalMediaFolder mediaFolder = folders.get(0);
+                    mediaFolder.setFirstImagePath(media.getPath());
+                    mediaFolder.setType(type);
+                    List<LocalMedia> localMedias = mediaFolder.getImages();
+                    if (localMedias.size() >= 100) {
+                        localMedias.remove(localMedias.size() - 1);
+                    }
                     List<LocalMedia> images = adapter.getImages();
                     images.add(0, media);
-                    Log.i("", folders.size() + "");
+                    mediaFolder.setImages(images);
+                    mediaFolder.setImageNum(mediaFolder.getImages().size());
 
                     // 没有到最大选择量 才做默认选中刚拍好的
                     if (adapter.getSelectedImages().size() < maxSelectNum) {
@@ -480,6 +497,32 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * 如果没有任何相册，先创建一个最近相册出来
+     *
+     * @param folders
+     */
+    private void createNewFolder(List<LocalMediaFolder> folders) {
+        if (folders.size() == 0) {
+            // 没有相册 先创建一个最近相册出来
+            LocalMediaFolder newFolder = new LocalMediaFolder();
+            String folderName = "";
+            switch (type) {
+                case LocalMediaLoader.TYPE_IMAGE:
+                    folderName = getString(R.string.lately_image);
+                    break;
+                case LocalMediaLoader.TYPE_VIDEO:
+                    folderName = getString(R.string.lately_video);
+                    break;
+            }
+            newFolder.setName(folderName);
+            newFolder.setPath("");
+            newFolder.setFirstImagePath("");
+            newFolder.setType(type);
+            folders.add(newFolder);
         }
     }
 
