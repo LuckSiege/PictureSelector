@@ -34,7 +34,7 @@ public class GridImageAdapter extends
     public static final int TYPE_PICTURE = 2;
     private LayoutInflater mInflater;
     private Context mContext;
-    private List<String> list = new ArrayList<>();
+    private List<LocalMedia> list = new ArrayList<>();
     private int selectMax = 9;
     /**
      * 点击添加图片跳转
@@ -55,7 +55,7 @@ public class GridImageAdapter extends
         this.selectMax = selectMax;
     }
 
-    public void setList(List<String> list) {
+    public void setList(List<LocalMedia> list) {
         this.list = list;
     }
 
@@ -137,18 +137,28 @@ public class GridImageAdapter extends
                     mOnAddPicClickListener.onAddPicClick(1, viewHolder.getAdapterPosition());
                 }
             });
-            String path = list.get(position);
-            if (path.endsWith(".mp4")) {
-                Glide.with(mContext).load(path).thumbnail(0.5f).into(viewHolder.mImg);
-            } else {
-                Log.i("compress image result", new File(path).length() / 1024 + "k");
-                Glide.with(mContext)
-                        .load(path)
-                        .asBitmap().centerCrop()
-                        .placeholder(R.color.color_f6)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(viewHolder.mImg);
+            LocalMedia media = list.get(position);
+            int type = media.getType();
+            String path = media.getPath();
+            switch (type) {
+                case 1:
+                    // 图片
+                    if (media.isCompressed()) {
+                        Log.i("compress image result", new File(media.getCompressPath()).length() / 1024 + "k");
+                    }
+                    Glide.with(mContext)
+                            .load(path)
+                            .asBitmap().centerCrop()
+                            .placeholder(R.color.color_f6)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(viewHolder.mImg);
+                    break;
+                case 2:
+                    // 视频
+                    Glide.with(mContext).load(path).thumbnail(0.5f).into(viewHolder.mImg);
+                    break;
             }
+
         }
     }
 

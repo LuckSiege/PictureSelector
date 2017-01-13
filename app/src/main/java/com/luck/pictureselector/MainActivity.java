@@ -14,8 +14,8 @@ import android.widget.RadioGroup;
 
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.util.FullyGridLayoutManager;
+import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.ui.AlbumDirectoryActivity;
-import com.yalantis.ucrop.util.PicModeConfig;
 import com.yalantis.ucrop.util.LocalMediaLoader;
 import com.yalantis.ucrop.util.PictureConfig;
 
@@ -33,16 +33,15 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener {
     private RecyclerView recyclerView;
     private GridImageAdapter adapter;
-    private List<String> images = new ArrayList<>();
     private RadioGroup rgbs01, rgbs0, rgbs1, rgbs2, rgbs3, rgbs4, rgbs5, rgbs6, rgbs7, rgbs8, rgbs9;
-    private int selectMode = PicModeConfig.MODE_MULTIPLE;
+    private int selectMode = PictureConfig.MODE_MULTIPLE;
     private int maxSelectNum = 9;// 图片最大可选数量
     private ImageButton minus, plus;
     private EditText select_num;
     private EditText et_w, et_h;
     private boolean isShow = true;
     private int selectType = LocalMediaLoader.TYPE_IMAGE;
-    private int copyMode = PicModeConfig.COPY_MODEL_DEFAULT;
+    private int copyMode = PictureConfig.COPY_MODEL_DEFAULT;
     private boolean enablePreview = true;
     private boolean isPreviewVideo = true;
     private boolean enableCrop = true;
@@ -52,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     private int cropH = 0;
     private boolean isCompress = false;
     private boolean isCheckNumMode = false;
+    private List<LocalMedia> selectMedia = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +143,8 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                      * setCompleteColor 完成文字颜色
                      * setPreviewBottomBgColor 预览界面底部背景色
                      * setBottomBgColor 选择图片页面底部背景色
+                     * setCompressQuality 设置裁剪质量，默认无损裁剪
+                     * setSelectMedia 已选择的图片
                      * 注意-->type为2时 设置isPreview or isCrop 无效
                      * 注意：Options可以为空，默认标准模式
                      */
@@ -157,18 +159,21 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                     options.setType(selectType);
                     options.setCopyMode(copyMode);
                     options.setCompress(isCompress);
-                    options.setMaxSelectNum(maxSelectNum - images.size());
+                    options.setMaxSelectNum(maxSelectNum);
                     options.setSelectMode(selectMode);
                     options.setShowCamera(isShow);
                     options.setEnablePreview(enablePreview);
                     options.setEnableCrop(enableCrop);
                     options.setPreviewVideo(isPreviewVideo);
-                    options.setRecordVideoDefinition(PicModeConfig.HIGH);// 视频清晰度
+                    options.setRecordVideoDefinition(PictureConfig.HIGH);// 视频清晰度
                     options.setRecordVideoSecond(60);// 视频秒数
                     options.setCropW(cropW);
                     options.setCropH(cropH);
                     options.setCheckNumMode(isCheckNumMode);
+                    options.setCompressQuality(100);
                     options.setImageSpanCount(4);
+                    options.setSelectMedia(selectMedia);
+
                     if (theme) {
                         options.setThemeStyle(ContextCompat.getColor(MainActivity.this, R.color.blue));
                         // 可以自定义底部 预览 完成 文字的颜色和背景色
@@ -188,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                 case 1:
                     // 删除图片
                     Log.i("删除的下标---->", position + "");
-                    images.remove(position);
+                    selectMedia.remove(position);
                     adapter.notifyItemRemoved(position);
                     break;
             }
@@ -200,11 +205,10 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case PicModeConfig.REQUEST_IMAGE:
-                    ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(PicModeConfig.REQUEST_OUTPUT);
-                    if (result != null) {
-                        images.addAll(result);
-                        adapter.setList(images);
+                case PictureConfig.REQUEST_IMAGE:
+                    selectMedia = (List<LocalMedia>) data.getSerializableExtra(PictureConfig.REQUEST_OUTPUT);
+                    if (selectMedia != null) {
+                        adapter.setList(selectMedia);
                         adapter.notifyDataSetChanged();
                     }
                     break;
@@ -222,10 +226,10 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                 isCheckNumMode = true;
                 break;
             case R.id.rb_single:
-                selectMode = PicModeConfig.MODE_SINGLE;
+                selectMode = PictureConfig.MODE_SINGLE;
                 break;
             case R.id.rb_multiple:
-                selectMode = PicModeConfig.MODE_MULTIPLE;
+                selectMode = PictureConfig.MODE_MULTIPLE;
                 break;
             case R.id.rb_image:
                 selectType = LocalMediaLoader.TYPE_IMAGE;
@@ -240,19 +244,19 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                 isShow = false;
                 break;
             case R.id.rb_default:
-                copyMode = PicModeConfig.COPY_MODEL_DEFAULT;
+                copyMode = PictureConfig.COPY_MODEL_DEFAULT;
                 break;
             case R.id.rb_to1_1:
-                copyMode = PicModeConfig.COPY_MODEL_1_1;
+                copyMode = PictureConfig.COPY_MODEL_1_1;
                 break;
             case R.id.rb_to3_2:
-                copyMode = PicModeConfig.COPY_MODEL_3_2;
+                copyMode = PictureConfig.COPY_MODEL_3_2;
                 break;
             case R.id.rb_to3_4:
-                copyMode = PicModeConfig.COPY_MODEL_3_4;
+                copyMode = PictureConfig.COPY_MODEL_3_4;
                 break;
             case R.id.rb_to16_9:
-                copyMode = PicModeConfig.COPY_MODEL_16_9;
+                copyMode = PictureConfig.COPY_MODEL_16_9;
                 break;
             case R.id.rb_preview:
                 enablePreview = true;
