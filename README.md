@@ -106,7 +106,6 @@ setPreviewBottomBgColor 预览界面底部背景色
 
 setBottomBgColor 选择图片页面底部背景色
 
-
 options.setSelectMedia() 已选图片集合
 
                     
