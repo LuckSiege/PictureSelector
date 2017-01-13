@@ -123,7 +123,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
             switch (requestCode) {
             
                 case PictureConfig.REQUEST_IMAGE:
-                
+            
                     List<LocalMedia> result = (List<LocalMedia>) data.getSerializableExtra(PictureConfig.REQUEST_OUTPUT);
                     if (result != null) {
                         adapter.setList(result);
