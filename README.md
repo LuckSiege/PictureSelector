@@ -1,5 +1,8 @@
 # PictureSelector
 最近项目中用到多图选择上传的需求，随后百度了一下用了别人写的demo，发现在很多机型上各种不适，闪退等问题，严重影响使用，后面我自己写了一个，公司20几款手机全部通过，在腾讯云测中也使用了4，50款手机测试，没有发现问题，特分享出来。
+
+顺便感谢一下，大家对我的支持~
+
 功能特点： 
 
 1.适配android7.0系统
@@ -34,18 +37,11 @@
 
 17.新增QQ选择风格，带数字效果
 
-setPreviewColor 预览文字颜色
-
-setCompleteColor 完成文字颜色
-
-setPreviewBottomBgColor 预览界面底部背景色
-
-setBottomBgColor 选择图片页面底部背景色
-
+18.新增自定义 文字颜色 背景色让风格和项目更搭配
 
 项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~   联系方式893855882@qq.com  希望用得着的朋友点个start，你们的支持才是我继续下去的动力，在此先谢过~
 
-app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.0.8'  注：之前引入如有报错，请引入最新版本
+app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.0.9'  注：之前引入如有报错，请引入最新版本
 
 项目根目录
 
@@ -95,31 +91,61 @@ options.setCropW(cropW); 裁剪宽
                     
 options.setCropH(cropH); 裁剪高
 
+
 options.setRecordVideoDefinition(Constants.HIGH);// 视频清晰度 Constants.HIGH 清晰 Constants.ORDINARY 普通 低质量
+
 
 options.setRecordVideoSecond(60);// 视频秒数
 
 
 options.setCheckNumMode(isCheckNumMode); 是否显示QQ选择风格(带数字效果)
 
+
+setPreviewColor 预览文字颜色
+
+
+setCompleteColor 完成文字颜色
+
+
+setPreviewBottomBgColor 预览界面底部背景色
+
+
+setBottomBgColor 选择图片页面底部背景色
+
+
+options.setSelectMedia() 已选图片集合
+
                     
 AlbumDirectoryActivity.startPhoto(MainActivity.this, options);
+
  
-     @Override
+@Override
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
      if (resultCode == RESULT_OK) {
      
             switch (requestCode) {
             
-                case PicModeConfig.REQUEST_IMAGE:
-                
-                    ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(PicModeConfig.REQUEST_OUTPUT);
-                    if (result != null) {
-                        images.addAll(result);
-                        adapter.setList(images);
+                case PictureConfig.REQUEST_IMAGE:
+            
+                    if (media.isCompressed()){
+                    
+                        // 注意：如果压缩过，在上传的时候，取 media.getCompressPath(); // 压缩图compressPath
+                        
+                    } else {
+                    
+                        // 注意：没有压缩过，在上传的时候，取 media.getPath(); // 原图path
+                    }
+                    
+                    List<LocalMedia> result = (List<LocalMedia>) data.getSerializableExtra(PictureConfig.REQUEST_OUTPUT);    
+                  
+                   if (result != null) {
+                    
+                        adapter.setList(result);
+                        
                         adapter.notifyDataSetChanged();
                     }
+                    
                     break;
             }
         }
