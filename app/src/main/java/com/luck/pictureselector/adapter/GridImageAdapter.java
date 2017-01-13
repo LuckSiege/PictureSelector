@@ -146,6 +146,8 @@ public class GridImageAdapter extends
                     if (media.isCompressed()) {
                         Log.i("compress image result", new File(media.getCompressPath()).length() / 1024 + "k");
                     }
+
+
                     Glide.with(mContext)
                             .load(path)
                             .asBitmap().centerCrop()
