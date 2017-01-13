@@ -3,6 +3,10 @@ package com.yalantis.ucrop.util;
 import android.graphics.Color;
 
 import com.yalantis.ucrop.R;
+import com.yalantis.ucrop.entity.LocalMedia;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -13,11 +17,67 @@ import com.yalantis.ucrop.R;
  * data：17/1/5
  */
 public class PictureConfig {
+    // 裁剪模式
+    public static final int COPY_MODEL_DEFAULT = 0;
+    public static final int COPY_MODEL_1_1 = 11;
+    public static final int COPY_MODEL_3_4 = 34;
+    public static final int COPY_MODEL_3_2 = 32;
+    public static final int COPY_MODEL_16_9 = 169;
+
+    public final static int MODE_MULTIPLE = 1;// 多选
+    public final static int MODE_SINGLE = 2;// 单选
+
+    public static final int ORDINARY = 0;// 普通 低质量
+    public static final int HIGH = 1;// 清晰
+
+    public static final int COPY_WIDTH = 100;
+    public static final int COPY_HEIGHT = 100;
+    public final static int REQUEST_IMAGE = 88;
+    public final static int REQUEST_CAMERA = 99;
+    public final static int REQUEST_PREVIEW = 100;
+    public static final int READ_EXTERNAL_STORAGE = 0x01;
+    public static final int CAMERA = 0x02;
+
+    public static final int SELECT_MAX_NUM = 9;
+
+    public static final String EXTRA_BOTTOM_PREVIEW = "bottom_preview";
+    public static final String EXTRA_POSITION = "position";
+    public static final String EXTRA_PREVIEW_LIST = "previewList";
+    public static final String EXTRA_PREVIEW_SELECT_LIST = "previewSelectList";
+
+    public final static String FOLDER_NAME = "folderName";
+    public final static String REQUEST_OUTPUT = "outputList";
+    public final static String BUNDLE_CAMERA_PATH = "CameraPath";
+    public final static String EXTRA_SELECT_MODE = "SelectMode";
+    public final static String EXTRA_SHOW_CAMERA = "ShowCamera";
+    public final static String EXTRA_ENABLE_PREVIEW = "EnablePreview";
+    public final static String EXTRA_ENABLE_PREVIEW_VIDEO = "EnablePreviewVideo";
+    public final static String EXTRA_ENABLE_CROP = "EnableCrop";
+    public final static String EXTRA_MAX_SELECT_NUM = "MaxSelectNum";
+    public final static String EXTRA_MAX_SPAN_COUNT = "spanCount";
+    public final static String EXTRA_TYPE = "type";
+    public final static String EXTRA_CROP_MODE = "cropMode";
+    public final static String BACKGROUND_COLOR = "backgroundColor";
+    public final static String CHECKED_DRAWABLE = "cb_drawable";
+    public final static String EXTRA_COMPRESS = "isCompress";
+    public final static String EXTRA_VIDEO_SECOND = "videoSecond";
+
+
+    public final static String EXTRA_CROP_W = "crop_w";
+    public final static String EXTRA_CROP_H = "crop_h";
+    public final static String EXTRA_DEFINITION = "definition";
+    public final static String EXTRA_IS_CHECKED_NUM = "checkedNum";
+    public final static String EXTRA_PREVIEW_COLOR = "previewColor";
+    public final static String EXTRA_COMPLETE_COLOR = "completeColor";
+    public final static String EXTRA_BOTTOM_BG_COLOR = "bottomBgColor";
+    public final static String EXTRA_PREVIEW_BOTTOM_BG_COLOR = "previewBottomBgColor";
+    public final static String EXTRA_COMPRESS_QUALITY = "compressQuality";
+
 
     private int type = 1; // 获取相册类型; 1 图片 2 视频
-    private int copyMode = PicModeConfig.COPY_MODEL_DEFAULT; // 裁剪模式; 默认、1:1、3:4、3:2、16:9
-    private int maxSelectNum = PicModeConfig.SELECT_MAX_NUM; // 多选最大可选数量
-    private int selectMode = PicModeConfig.MODE_MULTIPLE; // 单选 or 多选
+    private int copyMode = COPY_MODEL_DEFAULT; // 裁剪模式; 默认、1:1、3:4、3:2、16:9
+    private int maxSelectNum = SELECT_MAX_NUM; // 多选最大可选数量
+    private int selectMode = MODE_MULTIPLE; // 单选 or 多选
     private boolean isShowCamera = true; // 是否显示相机
     private boolean enablePreview = true; // 是否预览图片
     private boolean enableCrop; // 是否裁剪图片，只针对单选图片有效
@@ -25,8 +85,8 @@ public class PictureConfig {
     private int imageSpanCount = 4; // 列表每行显示个数
     private int themeStyle = Color.parseColor("#393a3e"); // 标题栏背景色;
     private int checkedBoxDrawable = R.drawable.checkbox_selector;// 图片选择默认样式
-    private int cropW = PicModeConfig.COPY_WIDTH; // 裁剪宽度  如果值大于图片原始宽高 将返回原图大小
-    private int cropH = PicModeConfig.COPY_HEIGHT;// 裁剪高度  如果值大于图片原始宽高 将返回原图大小
+    private int cropW = COPY_WIDTH; // 裁剪宽度  如果值大于图片原始宽高 将返回原图大小
+    private int cropH = COPY_HEIGHT;// 裁剪高度  如果值大于图片原始宽高 将返回原图大小
     private int recordVideoSecond = 0;// 录视频秒数
     private int recordVideoDefinition = 0;// 视频清晰度
     private boolean isCompress = false;// 是否压缩图片，默认不压缩
@@ -35,6 +95,24 @@ public class PictureConfig {
     private int completeColor = Color.parseColor("#FA632D"); // 底部完成字体颜色
     private int bottomBgColor = Color.parseColor("#fafafa"); // 底部背景色
     protected int previewBottomBgColor = Color.parseColor("#dd393a3e"); // 预览底部背景色
+    protected int compressQuality = 100;// 图片裁剪质量,默认无损
+    protected List<LocalMedia> selectMedia = new ArrayList<>();// 已选择的图片
+
+    public List<LocalMedia> getSelectMedia() {
+        return selectMedia;
+    }
+
+    public void setSelectMedia(List<LocalMedia> selectMedia) {
+        this.selectMedia = selectMedia;
+    }
+
+    public int getCompressQuality() {
+        return compressQuality;
+    }
+
+    public void setCompressQuality(int compressQuality) {
+        this.compressQuality = compressQuality;
+    }
 
     public int getPreviewBottomBgColor() {
         return previewBottomBgColor;

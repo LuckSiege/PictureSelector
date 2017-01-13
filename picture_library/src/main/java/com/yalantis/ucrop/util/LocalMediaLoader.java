@@ -15,6 +15,7 @@ import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.entity.LocalMediaFolder;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -98,7 +99,6 @@ public class LocalMediaLoader {
                                 int duration = (type == TYPE_VIDEO ? data.getInt(data.getColumnIndexOrThrow(VIDEO_PROJECTION[4])) : 0);
                                 LocalMedia image = new LocalMedia(path, dateTime, duration, type);
                                 LocalMediaFolder folder = getImageFolder(path, imageFolders);
-                                Log.i("FolderName", folder.getName());
                                 folder.getImages().add(image);
                                 folder.setImageNum(folder.getImageNum() + 1);
                                 folder.setType(type);
@@ -106,7 +106,6 @@ public class LocalMediaLoader {
                                 allImageFolder.setType(type);
                                 allImageFolder.setImageNum(allImageFolder.getImageNum() + 1);
                             } while (data.moveToNext());
-
                             if (allImages.size() > 0) {
                                 String title = "";
                                 switch (type) {
@@ -140,7 +139,6 @@ public class LocalMediaLoader {
             }
         });
     }
-
 
     private void sortFolder(List<LocalMediaFolder> imageFolders) {
         // 文件夹按图片数量排序

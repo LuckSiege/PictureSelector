@@ -1,8 +1,8 @@
 package com.yalantis.ucrop.compress;
 
-import com.yalantis.ucrop.entity.Compress;
-
+import com.yalantis.ucrop.entity.LocalMedia;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 压缩照片
@@ -22,7 +22,7 @@ public interface CompressInterface {
          *
          * @param images 已经压缩图片
          */
-        void onCompressSuccess(ArrayList<Compress> images);
+        void onCompressSuccess(List<LocalMedia> images);
 
         /**
          * 压缩失败
@@ -30,6 +30,6 @@ public interface CompressInterface {
          * @param images 压缩失败的图片
          * @param msg    失败的原因
          */
-        void onCompressError(ArrayList<Compress> images, String msg);
+        void onCompressError(List<LocalMedia> images, String msg);
     }
 }

@@ -113,5 +113,6 @@ public class SweetAlertDialog extends Dialog {
     private void dismissWithAnimation(boolean fromCancel) {
         mCloseFromCancel = fromCancel;
         mDialogView.startAnimation(mModalOutAnim);
+        dismiss();
     }
 }

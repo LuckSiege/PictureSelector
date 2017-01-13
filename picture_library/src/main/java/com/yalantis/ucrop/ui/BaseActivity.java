@@ -14,7 +14,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
-import com.yalantis.ucrop.util.PicModeConfig;
+import com.yalantis.ucrop.util.PictureConfig;
 
 /**
  * author：luck
@@ -33,7 +33,7 @@ public class BaseActivity extends FragmentActivity {
     protected boolean enablePreview = false;
     protected boolean enableCrop = false;
     protected boolean enablePreviewVideo = true;
-    protected int selectMode = PicModeConfig.MODE_MULTIPLE;
+    protected int selectMode = PictureConfig.MODE_MULTIPLE;
     protected int backgroundColor = 0;
     protected int cb_drawable = 0;
     protected int cropW = 100;
@@ -46,6 +46,7 @@ public class BaseActivity extends FragmentActivity {
     protected int completeColor; // 底部完成字体颜色
     protected int bottomBgColor; // 底部背景色
     protected int previewBottomBgColor; // 预览底部背景色
+    protected int compressQuality = 0;// 压缩图片质量
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,14 +84,14 @@ public class BaseActivity extends FragmentActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case PicModeConfig.READ_EXTERNAL_STORAGE:
+            case PictureConfig.READ_EXTERNAL_STORAGE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     readLocalMedia();
                 } else {
                     showToast("读取内存卡权限已被拒绝");
                 }
                 break;
-            case PicModeConfig.CAMERA:
+            case PictureConfig.CAMERA:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startCamera();
                 } else {
@@ -151,6 +152,7 @@ public class BaseActivity extends FragmentActivity {
         }
         registerReceiver(receiver, intentFilter);
     }
+
 
     protected void showToast(String msg) {
         Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();

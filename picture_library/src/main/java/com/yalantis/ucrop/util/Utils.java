@@ -57,4 +57,18 @@ public class Utils {
         final float scale = ctx.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
+
+    /**
+     * 防止连续点击跳转两个页面
+     */
+    public static long lastClickTime;
+
+    public static boolean isFastDoubleClick() {
+        long time = System.currentTimeMillis();
+        if (time - lastClickTime < 500) {
+            return true;
+        }
+        lastClickTime = time;
+        return false;
+    }
 }

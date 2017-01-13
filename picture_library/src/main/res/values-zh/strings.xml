@@ -19,7 +19,7 @@
     <string name="num_postfix">%1$s张</string>
     <string name="message_max_num">你最多可以选择%1$s张图片</string>
     <string name="save_ing">保存图片中…</string>
-
+    <string name="select_photo">选择相册</string>
 
     <string name="no_photo">相册空空如也，赶紧去拍几张吧~</string>
     <string name="no_video">视频空空如也，赶紧去录个视频吧~</string>

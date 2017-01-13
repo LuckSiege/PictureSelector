@@ -12,6 +12,7 @@
     <string name="all_video">所有视频</string>
     <string name="photo">照片</string>
     <string name="all_photo">所有相册</string>
+    <string name="select_photo">选择相册</string>
     <string name="cancel">取消</string>
     <string name="picture">图片</string>
     <string name="take_picture">拍摄</string>

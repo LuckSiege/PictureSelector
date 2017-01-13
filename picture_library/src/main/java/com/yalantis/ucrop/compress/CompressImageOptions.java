@@ -3,10 +3,10 @@ package com.yalantis.ucrop.compress;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.yalantis.ucrop.entity.Compress;
+import com.yalantis.ucrop.entity.LocalMedia;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 压缩照片
@@ -17,14 +17,14 @@ import java.util.ArrayList;
  */
 public class CompressImageOptions implements CompressInterface {
     private CompressImageUtil compressImageUtil;
-    private ArrayList<Compress> images;
+    private List<LocalMedia> images;
     private CompressInterface.CompressListener listener;
 
-    public static CompressImageOptions compress(Context context, CompressConfig config, ArrayList<Compress> images, CompressInterface.CompressListener listener) {
+    public static CompressImageOptions compress(Context context, CompressConfig config, List<LocalMedia> images, CompressInterface.CompressListener listener) {
         return new CompressImageOptions(context, config, images, listener);
     }
 
-    private CompressImageOptions(Context context, CompressConfig config, ArrayList<Compress> images, CompressInterface.CompressListener listener) {
+    private CompressImageOptions(Context context, CompressConfig config, List<LocalMedia> images, CompressInterface.CompressListener listener) {
         compressImageUtil = new CompressImageUtil(context, config);
         this.images = images;
         this.listener = listener;
@@ -34,7 +34,7 @@ public class CompressImageOptions implements CompressInterface {
     public void compress() {
         if (images == null || images.isEmpty())
             listener.onCompressError(images, " images is null");
-        for (Compress image : images) {
+        for (LocalMedia image : images) {
             if (image == null) {
                 listener.onCompressError(images, " There are pictures of compress  is null.");
                 return;
@@ -43,7 +43,7 @@ public class CompressImageOptions implements CompressInterface {
         compress(images.get(0));
     }
 
-    private void compress(final Compress compress) {
+    private void compress(final LocalMedia compress) {
         String path = compress.getPath();
         if (TextUtils.isEmpty(path)) {
             continueCompress(compress, false);
@@ -70,7 +70,7 @@ public class CompressImageOptions implements CompressInterface {
         });
     }
 
-    private void continueCompress(Compress compress, boolean preSuccess, String... message) {
+    private void continueCompress(LocalMedia compress, boolean preSuccess, String... message) {
         compress.setCompressed(preSuccess);
         int index = images.indexOf(compress);
         boolean isLast = index == images.size() - 1;
@@ -87,7 +87,7 @@ public class CompressImageOptions implements CompressInterface {
             return;
         }
 
-        for (Compress compress : images) {
+        for (LocalMedia compress : images) {
             if (!compress.isCompressed()) {
                 listener.onCompressError(images, compress.getCompressPath() + " is compress failures");
                 return;

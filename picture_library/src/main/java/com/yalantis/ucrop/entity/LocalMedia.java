@@ -11,14 +11,15 @@ import java.io.Serializable;
  * data：16/12/31
  */
 public class LocalMedia implements Serializable {
-    private Long id;
     private String path;
+    private String compressPath;
     private long duration;
     private long lastUpdateAt;
     private boolean isChecked;
     public int position;
     private int num;
     private int type;
+    private boolean compressed;
 
     public LocalMedia(String path, long lastUpdateAt, long duration, int type) {
         this.path = path;
@@ -27,9 +28,8 @@ public class LocalMedia implements Serializable {
         this.type = type;
     }
 
-    public LocalMedia(Long id, String path, long duration, long lastUpdateAt,
-            boolean isChecked, int position, int num, int type) {
-        this.id = id;
+    public LocalMedia(String path, long duration, long lastUpdateAt,
+                      boolean isChecked, int position, int num, int type) {
         this.path = path;
         this.duration = duration;
         this.lastUpdateAt = lastUpdateAt;
@@ -42,12 +42,20 @@ public class LocalMedia implements Serializable {
     public LocalMedia() {
     }
 
-    public Long getId() {
-        return id;
+    public boolean isCompressed() {
+        return compressed;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCompressed(boolean compressed) {
+        this.compressed = compressed;
+    }
+
+    public String getCompressPath() {
+        return compressPath;
+    }
+
+    public void setCompressPath(String compressPath) {
+        this.compressPath = compressPath;
     }
 
     public int getNum() {

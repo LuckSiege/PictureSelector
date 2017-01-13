@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.dialog.SweetAlertDialog;
 import com.yalantis.ucrop.model.AspectRatio;
-import com.yalantis.ucrop.util.PicModeConfig;
+import com.yalantis.ucrop.util.PictureConfig;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
@@ -32,13 +32,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
-/**
- * Created by Oleksii Shliama (https://github.com/shliama).
- */
 
 @SuppressWarnings("ConstantConditions")
 public class UCropActivity extends AppCompatActivity {
-    public static final int DEFAULT_COMPRESS_QUALITY = 90;
+    public static final int DEFAULT_COMPRESS_QUALITY = 100;
     public static final Bitmap.CompressFormat DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG;
     private ImageButton left_back;
     private TextView tv_right;
@@ -191,7 +188,7 @@ public class UCropActivity extends AppCompatActivity {
             }
         });
         mLogoColor = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_LOGO_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_default_logo));
-        int backgroundColor = intent.getIntExtra(PicModeConfig.BACKGROUND_COLOR, 0);
+        int backgroundColor = intent.getIntExtra(PictureConfig.BACKGROUND_COLOR, 0);
         rl_title.setBackgroundColor(backgroundColor);
         ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
         initiateRootViews();

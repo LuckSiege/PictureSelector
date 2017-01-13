@@ -20,7 +20,7 @@ import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.dialog.OptAnimationLoader;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.observable.ImagesObservable;
-import com.yalantis.ucrop.util.PicModeConfig;
+import com.yalantis.ucrop.util.PictureConfig;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.widget.PreviewViewPager;
 
@@ -64,26 +64,26 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
         tv_img_num = (TextView) findViewById(R.id.tv_img_num);
         tv_title = (TextView) findViewById(R.id.tv_title);
         tv_ok.setOnClickListener(this);
-        position = getIntent().getIntExtra(PicModeConfig.EXTRA_POSITION, 0);
-        maxSelectNum = getIntent().getIntExtra(PicModeConfig.EXTRA_MAX_SELECT_NUM, 0);
-        backgroundColor = getIntent().getIntExtra(PicModeConfig.BACKGROUND_COLOR, 0);
-        cb_drawable = getIntent().getIntExtra(PicModeConfig.CHECKED_DRAWABLE, 0);
-        is_checked_num = getIntent().getBooleanExtra(PicModeConfig.EXTRA_IS_CHECKED_NUM, false);
-        completeColor = getIntent().getIntExtra(PicModeConfig.EXTRA_COMPLETE_COLOR, R.color.tab_color_true);
-        previewBottomBgColor = getIntent().getIntExtra(PicModeConfig.EXTRA_PREVIEW_BOTTOM_BG_COLOR, R.color.bar_grey_90);
+        position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
+        maxSelectNum = getIntent().getIntExtra(PictureConfig.EXTRA_MAX_SELECT_NUM, 0);
+        backgroundColor = getIntent().getIntExtra(PictureConfig.BACKGROUND_COLOR, 0);
+        cb_drawable = getIntent().getIntExtra(PictureConfig.CHECKED_DRAWABLE, 0);
+        is_checked_num = getIntent().getBooleanExtra(PictureConfig.EXTRA_IS_CHECKED_NUM, false);
+        completeColor = getIntent().getIntExtra(PictureConfig.EXTRA_COMPLETE_COLOR, R.color.tab_color_true);
+        previewBottomBgColor = getIntent().getIntExtra(PictureConfig.EXTRA_PREVIEW_BOTTOM_BG_COLOR, R.color.bar_grey_90);
         rl_title.setBackgroundColor(backgroundColor);
         ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
         tv_ok.setTextColor(completeColor);
         select_bar_layout.setBackgroundColor(previewBottomBgColor);
-        boolean is_bottom_preview = getIntent().getBooleanExtra(PicModeConfig.EXTRA_BOTTOM_PREVIEW, false);
+        boolean is_bottom_preview = getIntent().getBooleanExtra(PictureConfig.EXTRA_BOTTOM_PREVIEW, false);
         if (is_bottom_preview) {
             // 底部预览按钮过来
-            images = (List<LocalMedia>) getIntent().getSerializableExtra(PicModeConfig.EXTRA_PREVIEW_LIST);
+            images = (List<LocalMedia>) getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_LIST);
         } else {
             images = ImagesObservable.getInstance().readLocalMedias();
         }
 
-        selectImages = (List<LocalMedia>) getIntent().getSerializableExtra(PicModeConfig.EXTRA_PREVIEW_SELECT_LIST);
+        selectImages = (List<LocalMedia>) getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
 
         initViewPageAdapterData();
         ll_check.setOnClickListener(new View.OnClickListener() {
@@ -150,7 +150,7 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
 
     private void initViewPageAdapterData() {
         tv_title.setText(position + 1 + "/" + images.size());
-        adapter = new SimpleFragmentAdapter(getSupportFragmentManager(), images);
+        adapter = new SimpleFragmentAdapter(getSupportFragmentManager());
         check.setBackgroundResource(cb_drawable);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(position);
@@ -237,26 +237,20 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
 
 
     public class SimpleFragmentAdapter extends FragmentPagerAdapter {
-        private List<LocalMedia> medias;
 
-        public SimpleFragmentAdapter(FragmentManager fm, List<LocalMedia> medias) {
+        public SimpleFragmentAdapter(FragmentManager fm) {
             super(fm);
-            this.medias = medias;
-        }
-
-        public void setMedias(List<LocalMedia> medias) {
-            this.medias = medias;
         }
 
         @Override
         public Fragment getItem(int position) {
-            ImagePreviewFragment fragment = ImagePreviewFragment.getInstance(medias.get(position).getPath());
+            ImagePreviewFragment fragment = ImagePreviewFragment.getInstance(images.get(position).getPath());
             return fragment;
         }
 
         @Override
         public int getCount() {
-            return medias.size();
+            return images.size();
         }
     }
 
@@ -265,21 +259,11 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.left_back) {
-            setResult(RESULT_OK, new Intent().putExtra("type", 1).putExtra(PicModeConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectImages));
+            setResult(RESULT_OK, new Intent().putExtra("type", 1).putExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectImages));
             finish();
         } else if (id == R.id.tv_ok) {
-            ArrayList<String> result = new ArrayList<>();
-            for (LocalMedia media : selectImages) {
-                result.add(media.getPath());
-            }
-            if (result.size() > 0) {
-                ArrayList<String> images = new ArrayList<>();
-                for (LocalMedia media : selectImages) {
-                    images.add(media.getPath());
-                }
-                setResult(RESULT_OK, new Intent().putExtra(PicModeConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) images));
-                finish();
-            }
+            setResult(RESULT_OK, new Intent().putExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectImages));
+            finish();
         }
     }
 
@@ -287,7 +271,7 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
-                setResult(RESULT_OK, new Intent().putExtra("type", 1).putExtra(PicModeConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectImages));
+                setResult(RESULT_OK, new Intent().putExtra("type", 1).putExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectImages));
                 finish();
                 return false;
         }
