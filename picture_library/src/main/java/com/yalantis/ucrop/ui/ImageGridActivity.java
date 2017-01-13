@@ -1,14 +1,10 @@
 package com.yalantis.ucrop.ui;
 
 import android.Manifest;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -74,7 +70,6 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_grid);
-        registerReceiver(broadcastReceiver, PicModeConfig.ACTION_FINISH);
         String folderName = getIntent().getStringExtra(PicModeConfig.FOLDER_NAME);
         folders = ImagesObservable.getInstance().readLocalFolders();
         if (folders == null) {
@@ -527,31 +522,6 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         outState.putString(PicModeConfig.BUNDLE_CAMERA_PATH, cameraPath);
     }
 
-    /**
-     * 刷新图片选中状态
-     */
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            LocalMedia image = (LocalMedia) intent.getSerializableExtra("media");
-            List<LocalMedia> selectedImages = adapter.getSelectedImages();
-            if (action.equals(PicModeConfig.ACTION_ADD_PHOTO)) {
-                // 预览时新选择了图片
-                selectedImages.add(image);
-            } else if (action.equals(PicModeConfig.ACTION_REMOVE_PHOTO)) {
-                // 预览时取消了之前选中的图片
-                for (LocalMedia media : selectedImages) {
-                    if (media.getPath().equals(image.getPath())) {
-                        selectedImages.remove(media);
-                        ChangeImageNumber(selectedImages);
-                        break;
-                    }
-                }
-            }
-            adapter.bindSelectImages(selectedImages);
-        }
-    };
 
     private LocalMediaFolder getImageFolder(String path, List<LocalMediaFolder> imageFolders) {
         File imageFile = new File(path);
@@ -582,13 +552,6 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         return super.onKeyDown(keyCode, event);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (broadcastReceiver != null) {
-            unregisterReceiver(broadcastReceiver);
-        }
-    }
 
     @Override
     public void onLeftClick() {

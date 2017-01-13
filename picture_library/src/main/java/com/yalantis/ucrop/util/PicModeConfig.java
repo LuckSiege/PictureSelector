@@ -35,9 +35,6 @@ public class PicModeConfig {
     public static final String EXTRA_POSITION = "position";
     public static final String EXTRA_PREVIEW_LIST = "previewList";
     public static final String EXTRA_PREVIEW_SELECT_LIST = "previewSelectList";
-    public static final String ACTION_ADD_PHOTO = "app.action.addImage";
-    public static final String ACTION_REMOVE_PHOTO = "app.action.removeImage";
-    public static final String ACTION_FINISH = "app.action.finish";
 
     public final static String FOLDER_NAME = "folderName";
     public final static String REQUEST_OUTPUT = "outputList";
