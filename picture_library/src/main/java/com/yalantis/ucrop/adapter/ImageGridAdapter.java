@@ -19,7 +19,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.dialog.OptAnimationLoader;
 import com.yalantis.ucrop.entity.LocalMedia;
-import com.yalantis.ucrop.util.PictureConfig;
+import com.yalantis.ucrop.util.PicModeConfig;
 import com.yalantis.ucrop.util.LocalMediaLoader;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private List<LocalMedia> images = new ArrayList<LocalMedia>();
     private List<LocalMedia> selectImages = new ArrayList<LocalMedia>();
     private boolean enablePreview;
-    private int selectMode = PictureConfig.MODE_MULTIPLE;
+    private int selectMode = PicModeConfig.MODE_MULTIPLE;
     private boolean enablePreviewVideo = false;
     private int cb_drawable;
     private boolean is_checked_num;
@@ -117,7 +117,7 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             String path = image.getPath();
             final int type = image.getType();
             contentHolder.check.setBackgroundResource(cb_drawable);
-            if (selectMode == PictureConfig.MODE_SINGLE) {
+            if (selectMode == PicModeConfig.MODE_SINGLE) {
                 contentHolder.ll_check.setVisibility(View.GONE);
             } else {
                 contentHolder.ll_check.setVisibility(View.VISIBLE);
@@ -138,8 +138,9 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         .load(path)
                         .centerCrop()
                         .thumbnail(0.5f)
-                        .placeholder(R.drawable.image_placeholder)
+                      .placeholder(R.drawable.image_placeholder)
                         .error(R.drawable.image_placeholder)
+                        .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .dontAnimate()
                         .into(contentHolder.picture);
@@ -156,10 +157,10 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             contentHolder.contentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (type == LocalMediaLoader.TYPE_VIDEO && (selectMode == PictureConfig.MODE_SINGLE || enablePreviewVideo) && imageSelectChangedListener != null) {
+                    if (type == LocalMediaLoader.TYPE_VIDEO && (selectMode == PicModeConfig.MODE_SINGLE || enablePreviewVideo) && imageSelectChangedListener != null) {
                         int index = showCamera ? position - 1 : position;
                         imageSelectChangedListener.onPictureClick(image, index);
-                    } else if (type == LocalMediaLoader.TYPE_IMAGE && (selectMode == PictureConfig.MODE_SINGLE || enablePreview) && imageSelectChangedListener != null) {
+                    } else if (type == LocalMediaLoader.TYPE_IMAGE && (selectMode == PicModeConfig.MODE_SINGLE || enablePreview) && imageSelectChangedListener != null) {
                         int index = showCamera ? position - 1 : position;
                         imageSelectChangedListener.onPictureClick(image, index);
                     } else {

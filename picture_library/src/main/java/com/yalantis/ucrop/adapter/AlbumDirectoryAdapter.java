@@ -70,6 +70,7 @@ public class AlbumDirectoryAdapter extends RecyclerView.Adapter<AlbumDirectoryAd
                     .placeholder(R.drawable.ic_placeholder)
                     .error(R.drawable.ic_placeholder)
                     .centerCrop()
+                    .crossFade()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.first_image);
         }

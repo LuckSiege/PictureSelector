@@ -15,6 +15,7 @@ import java.util.Observable;
  * data：17/1/11
  */
 public class ImagesObservable extends Observable {
+
     private List<LocalMediaFolder> folders;
     private List<LocalMedia> medias;
     private List<LocalMedia> selectedImages;
@@ -107,4 +108,5 @@ public class ImagesObservable extends Observable {
         if (selectedImages != null)
             selectedImages.clear();
     }
+
 }

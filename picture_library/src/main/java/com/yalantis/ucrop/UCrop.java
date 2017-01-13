@@ -18,7 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.yalantis.ucrop.model.AspectRatio;
-import com.yalantis.ucrop.util.PictureConfig;
+import com.yalantis.ucrop.util.PicModeConfig;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -296,7 +296,7 @@ public class UCrop {
         }
 
         public void background_color(int color) {
-            mOptionBundle.putInt(PictureConfig.BACKGROUND_COLOR, color);
+            mOptionBundle.putInt(PicModeConfig.BACKGROUND_COLOR, color);
         }
 
         /**

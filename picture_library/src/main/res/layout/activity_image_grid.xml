@@ -35,7 +35,7 @@
         android:id="@+id/rl_bottom"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:background="#fafafa"
+        android:background="@color/color_fa"
         android:gravity="center_vertical">
 
         <Button

@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.dialog.SweetAlertDialog;
 import com.yalantis.ucrop.model.AspectRatio;
-import com.yalantis.ucrop.util.PictureConfig;
+import com.yalantis.ucrop.util.PicModeConfig;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
@@ -191,7 +191,7 @@ public class UCropActivity extends AppCompatActivity {
             }
         });
         mLogoColor = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_LOGO_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_default_logo));
-        int backgroundColor = intent.getIntExtra(PictureConfig.BACKGROUND_COLOR, 0);
+        int backgroundColor = intent.getIntExtra(PicModeConfig.BACKGROUND_COLOR, 0);
         rl_title.setBackgroundColor(backgroundColor);
         ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
         initiateRootViews();

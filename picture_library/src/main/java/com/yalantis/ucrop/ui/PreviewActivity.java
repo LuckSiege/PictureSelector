@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.ImageButton;
@@ -20,7 +20,7 @@ import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.dialog.OptAnimationLoader;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.observable.ImagesObservable;
-import com.yalantis.ucrop.util.PictureConfig;
+import com.yalantis.ucrop.util.PicModeConfig;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.widget.PreviewViewPager;
 
@@ -38,6 +38,7 @@ import java.util.List;
 public class PreviewActivity extends BaseActivity implements View.OnClickListener {
     private ImageButton left_back;
     private TextView tv_img_num, tv_title, tv_ok;
+    private RelativeLayout select_bar_layout;
     private PreviewViewPager viewPager;
     private int position;
     private RelativeLayout rl_title;
@@ -48,7 +49,6 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
     private TextView check;
     private SimpleFragmentAdapter adapter;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,35 +57,39 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
         left_back = (ImageButton) findViewById(R.id.left_back);
         viewPager = (PreviewViewPager) findViewById(R.id.preview_pager);
         ll_check = (LinearLayout) findViewById(R.id.ll_check);
+        select_bar_layout = (RelativeLayout) findViewById(R.id.select_bar_layout);
         check = (TextView) findViewById(R.id.check);
         left_back.setOnClickListener(this);
         tv_ok = (TextView) findViewById(R.id.tv_ok);
         tv_img_num = (TextView) findViewById(R.id.tv_img_num);
         tv_title = (TextView) findViewById(R.id.tv_title);
         tv_ok.setOnClickListener(this);
-        position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
-        maxSelectNum = getIntent().getIntExtra(PictureConfig.EXTRA_MAX_SELECT_NUM, 0);
-        backgroundColor = getIntent().getIntExtra(PictureConfig.BACKGROUND_COLOR, 0);
-        cb_drawable = getIntent().getIntExtra(PictureConfig.CHECKED_DRAWABLE, 0);
-        is_checked_num = getIntent().getBooleanExtra(PictureConfig.EXTRA_IS_CHECKED_NUM, false);
+        position = getIntent().getIntExtra(PicModeConfig.EXTRA_POSITION, 0);
+        maxSelectNum = getIntent().getIntExtra(PicModeConfig.EXTRA_MAX_SELECT_NUM, 0);
+        backgroundColor = getIntent().getIntExtra(PicModeConfig.BACKGROUND_COLOR, 0);
+        cb_drawable = getIntent().getIntExtra(PicModeConfig.CHECKED_DRAWABLE, 0);
+        is_checked_num = getIntent().getBooleanExtra(PicModeConfig.EXTRA_IS_CHECKED_NUM, false);
+        completeColor = getIntent().getIntExtra(PicModeConfig.EXTRA_COMPLETE_COLOR, R.color.tab_color_true);
+        previewBottomBgColor = getIntent().getIntExtra(PicModeConfig.EXTRA_PREVIEW_BOTTOM_BG_COLOR, R.color.bar_grey_90);
         rl_title.setBackgroundColor(backgroundColor);
         ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
-        boolean is_bottom_preview = getIntent().getBooleanExtra(PictureConfig.EXTRA_BOTTOM_PREVIEW, false);
+        tv_ok.setTextColor(completeColor);
+        select_bar_layout.setBackgroundColor(previewBottomBgColor);
+        boolean is_bottom_preview = getIntent().getBooleanExtra(PicModeConfig.EXTRA_BOTTOM_PREVIEW, false);
         if (is_bottom_preview) {
             // 底部预览按钮过来
-            images = (List<LocalMedia>) getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_LIST);
+            images = (List<LocalMedia>) getIntent().getSerializableExtra(PicModeConfig.EXTRA_PREVIEW_LIST);
         } else {
             images = ImagesObservable.getInstance().readLocalMedias();
         }
 
-        selectImages = (List<LocalMedia>) getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
+        selectImages = (List<LocalMedia>) getIntent().getSerializableExtra(PicModeConfig.EXTRA_PREVIEW_SELECT_LIST);
 
         initViewPageAdapterData();
         ll_check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // 刷新图片列表中图片状态
-                Intent intent = new Intent();
                 boolean isChecked;
                 if (!check.isSelected()) {
                     isChecked = true;
@@ -108,23 +112,17 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
                     if (is_checked_num) {
                         check.setText(image.getNum() + "");
                     }
-                    intent.putExtra("media", image);
-                    intent.setAction(PictureConfig.ACTION_ADD_PHOTO);
-                    Log.i("", images.size() + "");
                 } else {
                     for (LocalMedia media : selectImages) {
                         if (media.getPath().equals(image.getPath())) {
                             selectImages.remove(media);
                             subSelectPosition();
                             notifyCheckChanged(media);
-                            intent.putExtra("media", media);
-                            intent.setAction(PictureConfig.ACTION_REMOVE_PHOTO);
                             break;
                         }
                     }
                 }
                 onSelectNumChange();
-                sendBroadcast(intent);
             }
         });
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -232,14 +230,11 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
         } else {
             tv_ok.setEnabled(false);
             tv_ok.setAlpha(0.5f);
-            if (selectImages.size() > 0) {
-                animation = OptAnimationLoader.loadAnimation(mContext, R.anim.modal_out);
-                tv_img_num.startAnimation(animation);
-            }
             tv_img_num.setVisibility(View.INVISIBLE);
             tv_ok.setText("请选择");
         }
     }
+
 
     public class SimpleFragmentAdapter extends FragmentPagerAdapter {
         private List<LocalMedia> medias;
@@ -270,6 +265,7 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.left_back) {
+            setResult(RESULT_OK, new Intent().putExtra("type", 1).putExtra(PicModeConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectImages));
             finish();
         } else if (id == R.id.tv_ok) {
             ArrayList<String> result = new ArrayList<>();
@@ -281,9 +277,20 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
                 for (LocalMedia media : selectImages) {
                     images.add(media.getPath());
                 }
-                setResult(RESULT_OK, new Intent().putExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) images));
+                setResult(RESULT_OK, new Intent().putExtra(PicModeConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) images));
                 finish();
             }
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                setResult(RESULT_OK, new Intent().putExtra("type", 1).putExtra(PicModeConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectImages));
+                finish();
+                return false;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
