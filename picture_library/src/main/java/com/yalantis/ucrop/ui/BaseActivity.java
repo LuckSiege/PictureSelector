@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,7 +13,12 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
-import com.yalantis.ucrop.util.PictureConfig;
+import com.yalantis.ucrop.R;
+import com.yalantis.ucrop.entity.LocalMedia;
+import com.yalantis.ucrop.util.FunctionConfig;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * author：luck
@@ -33,7 +37,7 @@ public class BaseActivity extends FragmentActivity {
     protected boolean enablePreview = false;
     protected boolean enableCrop = false;
     protected boolean enablePreviewVideo = true;
-    protected int selectMode = PictureConfig.MODE_MULTIPLE;
+    protected int selectMode = FunctionConfig.MODE_MULTIPLE;
     protected int backgroundColor = 0;
     protected int cb_drawable = 0;
     protected int cropW = 100;
@@ -47,11 +51,41 @@ public class BaseActivity extends FragmentActivity {
     protected int bottomBgColor; // 底部背景色
     protected int previewBottomBgColor; // 预览底部背景色
     protected int compressQuality = 0;// 压缩图片质量
+    protected List<LocalMedia> selectMedias = new ArrayList<>();
+    protected FunctionConfig config = new FunctionConfig();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
+        config = (FunctionConfig) getIntent().getSerializableExtra(FunctionConfig.EXTRA_THIS_CONFIG);
+        type = config.getType();
+        showCamera = config.isShowCamera();
+        enablePreview = config.isEnablePreview();
+        selectMode = config.getSelectMode();
+        enableCrop = config.isEnableCrop();
+        maxSelectNum = config.getMaxSelectNum();
+        copyMode = config.getCopyMode();
+        enablePreviewVideo = config.isPreviewVideo();
+        backgroundColor = config.getThemeStyle();
+        cb_drawable = config.getCheckedBoxDrawable();
+        isCompress = config.isCompress();
+        spanCount = config.getImageSpanCount();
+        cropW = config.getCropW();
+        cropH = config.getCropH();
+        recordVideoSecond = config.getRecordVideoSecond();
+        definition = config.getRecordVideoDefinition();
+        is_checked_num = config.isCheckNumMode();
+        previewColor = config.getPreviewColor();
+        completeColor = config.getCompleteColor();
+        bottomBgColor = config.getBottomBgColor();
+        previewBottomBgColor = config.getPreviewBottomBgColor();
+        compressQuality = config.getCompressQuality();
+        selectMedias = config.getSelectMedia();
+        // 如果是显示数据风格，则默认为qq选择风格
+        if (is_checked_num) {
+            cb_drawable = R.drawable.checkbox_num_selector;
+        }
     }
 
     /**
@@ -84,14 +118,14 @@ public class BaseActivity extends FragmentActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case PictureConfig.READ_EXTERNAL_STORAGE:
+            case FunctionConfig.READ_EXTERNAL_STORAGE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     readLocalMedia();
                 } else {
                     showToast("读取内存卡权限已被拒绝");
                 }
                 break;
-            case PictureConfig.CAMERA:
+            case FunctionConfig.CAMERA:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startCamera();
                 } else {
@@ -156,5 +190,21 @@ public class BaseActivity extends FragmentActivity {
 
     protected void showToast(String msg) {
         Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * 判断某个activity是否存在
+     *
+     * @return
+     */
+    protected boolean isActivityExistence(String packageName, String className) {
+        Intent intent = new Intent();
+        intent.setClassName(packageName, className);
+        if (getPackageManager().resolveActivity(intent, 0) == null) {
+            // 说明系统中不存在这个activity
+            return false;
+        } else {
+            return true;
+        }
     }
 }

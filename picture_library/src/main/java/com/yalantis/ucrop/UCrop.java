@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.yalantis.ucrop.model.AspectRatio;
+import com.yalantis.ucrop.util.FunctionConfig;
 import com.yalantis.ucrop.util.PictureConfig;
 
 import java.util.ArrayList;
@@ -296,7 +297,7 @@ public class UCrop {
         }
 
         public void background_color(int color) {
-            mOptionBundle.putInt(PictureConfig.BACKGROUND_COLOR, color);
+            mOptionBundle.putInt(FunctionConfig.BACKGROUND_COLOR, color);
         }
 
         /**
@@ -518,7 +519,6 @@ public class UCrop {
         }
 
 
-
         /**
          * Set an aspect ratio for crop bounds that is evaluated from source image width and height.
          * User won't see the menu with other ratios options.
@@ -539,6 +539,9 @@ public class UCrop {
             mOptionBundle.putInt(EXTRA_MAX_SIZE_Y, height);
         }
 
+        public void putLocalMedias(FunctionConfig config) {
+            mOptionBundle.putSerializable(FunctionConfig.EXTRA_THIS_CONFIG, config);
+        }
     }
 
 }

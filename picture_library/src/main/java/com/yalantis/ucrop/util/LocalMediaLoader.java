@@ -38,7 +38,8 @@ public class LocalMediaLoader {
             MediaStore.Images.Media.DATA,
             MediaStore.Images.Media.DISPLAY_NAME,
             MediaStore.Images.Media.DATE_ADDED,
-            MediaStore.Images.Media._ID};
+            MediaStore.Images.Media._ID
+    };
 
     private final static String[] VIDEO_PROJECTION = {
             MediaStore.Video.Media.DATA,

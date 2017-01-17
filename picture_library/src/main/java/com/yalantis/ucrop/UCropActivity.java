@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -18,8 +17,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.yalantis.ucrop.callback.BitmapCropCallback;
+import com.yalantis.ucrop.compress.CompressConfig;
+import com.yalantis.ucrop.compress.CompressImageOptions;
+import com.yalantis.ucrop.compress.CompressInterface;
 import com.yalantis.ucrop.dialog.SweetAlertDialog;
+import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.model.AspectRatio;
+import com.yalantis.ucrop.ui.BaseActivity;
+import com.yalantis.ucrop.util.FunctionConfig;
+import com.yalantis.ucrop.util.LocalMediaLoader;
 import com.yalantis.ucrop.util.PictureConfig;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.view.CropImageView;
@@ -31,10 +37,11 @@ import com.yalantis.ucrop.view.UCropView;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+import java.util.List;
 
 
 @SuppressWarnings("ConstantConditions")
-public class UCropActivity extends AppCompatActivity {
+public class UCropActivity extends BaseActivity {
     public static final int DEFAULT_COMPRESS_QUALITY = 100;
     public static final Bitmap.CompressFormat DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG;
     private ImageButton left_back;
@@ -179,8 +186,7 @@ public class UCropActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    dialog = new SweetAlertDialog(UCropActivity.this);
-                    dialog.show();
+                    showDialog("处理中...");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -188,7 +194,7 @@ public class UCropActivity extends AppCompatActivity {
             }
         });
         mLogoColor = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_LOGO_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_default_logo));
-        int backgroundColor = intent.getIntExtra(PictureConfig.BACKGROUND_COLOR, 0);
+        int backgroundColor = intent.getIntExtra(FunctionConfig.BACKGROUND_COLOR, 0);
         rl_title.setBackgroundColor(backgroundColor);
         ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
         initiateRootViews();
@@ -238,35 +244,105 @@ public class UCropActivity extends AppCompatActivity {
             @Override
             public void onBitmapCropped(@NonNull Uri resultUri, int imageWidth, int imageHeight) {
                 setResultUri(resultUri, mGestureCropImageView.getTargetAspectRatio(), imageWidth, imageHeight);
-                if (dialog != null && dialog.isShowing()) {
-                    dialog.dismiss();
-                }
-
-                finish();
             }
 
             @Override
             public void onCropFailure(@NonNull Throwable t) {
                 setResultError(t);
-                if (dialog != null && dialog.isShowing()) {
-                    dialog.dismiss();
-                }
-                finish();
             }
         });
     }
 
     protected void setResultUri(Uri uri, float resultAspectRatio, int imageWidth, int imageHeight) {
-        setResult(RESULT_OK, new Intent()
-                .putExtra(UCrop.EXTRA_OUTPUT_URI, uri)
-                .putExtra(UCrop.EXTRA_OUTPUT_CROP_ASPECT_RATIO, resultAspectRatio)
-                .putExtra(UCrop.EXTRA_OUTPUT_IMAGE_WIDTH, imageWidth)
-                .putExtra(UCrop.EXTRA_OUTPUT_IMAGE_HEIGHT, imageHeight)
-        );
+//        setResult(RESULT_OK, new Intent()
+//                .putExtra(UCrop.EXTRA_OUTPUT_URI, uri)
+//                .putExtra(UCrop.EXTRA_OUTPUT_CROP_ASPECT_RATIO, resultAspectRatio)
+//                .putExtra(UCrop.EXTRA_OUTPUT_IMAGE_WIDTH, imageWidth)
+//                .putExtra(UCrop.EXTRA_OUTPUT_IMAGE_HEIGHT, imageHeight)
+//
+//        );
+        handleCropResult(uri);
     }
 
     protected void setResultError(Throwable throwable) {
         setResult(UCrop.RESULT_ERROR, new Intent().putExtra(UCrop.EXTRA_ERROR, throwable));
+        finish();
+        overridePendingTransition(0, R.anim.slide_bottom_out);
+        if (dialog != null && dialog.isShowing()) {
+            dialog.cancel();
+        }
     }
 
+
+    private void handleCropResult(@NonNull Uri resultUri) {
+        if (resultUri != null) {
+            if (isCompress && type == LocalMediaLoader.TYPE_IMAGE) {
+                // 压缩图片
+                List<LocalMedia> compresses = new ArrayList<>();
+                LocalMedia compress = new LocalMedia();
+                compress.setPath(resultUri.getPath());
+                compress.setType(type);
+                compresses.add(compress);
+                compressImage(compresses);
+            } else {
+                onSelectDone(resultUri.getPath());
+            }
+        }
+    }
+
+    /**
+     * 处理图片压缩
+     */
+    private void compressImage(List<LocalMedia> result) {
+        CompressConfig config = CompressConfig.ofDefaultConfig();
+        CompressImageOptions.compress(this, config, result, new CompressInterface.CompressListener() {
+            @Override
+            public void onCompressSuccess(List<LocalMedia> images) {
+                // 压缩成功回调
+                onResult(images);
+
+            }
+
+            @Override
+            public void onCompressError(List<LocalMedia> images, String msg) {
+                if (dialog != null && dialog.isShowing()) {
+                    dialog.cancel();
+                }
+            }
+        }).compress();
+    }
+
+    public void onSelectDone(String path) {
+        ArrayList<LocalMedia> images = new ArrayList<>();
+        LocalMedia media = new LocalMedia();
+        media.setPath(path);
+        media.setType(type);
+        images.add(media);
+        onResult(images);
+    }
+
+    public void onResult(List<LocalMedia> images) {
+        // 因为这里是单一实例的结果集，重新用变量接收一下在返回，不然会产生结果集被单一实例清空的问题
+        List<LocalMedia> result = new ArrayList<>();
+        for (LocalMedia media : images) {
+            result.add(media);
+        }
+        PictureConfig.OnSelectResultCallback resultCallback = PictureConfig.getResultCallback();
+        if (resultCallback != null) {
+            resultCallback.onSelectSuccess(result);
+        }
+
+        finish();
+        overridePendingTransition(0, R.anim.slide_bottom_out);
+        sendBroadcast("app.activity.finish");
+        if (dialog != null && dialog.isShowing()) {
+            dialog.cancel();
+        }
+    }
+
+    private void showDialog(String msg) {
+        dialog = new SweetAlertDialog(UCropActivity.this);
+        dialog.setTitleText(msg);
+        dialog.show();
+    }
 }

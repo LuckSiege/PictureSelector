@@ -14,7 +14,9 @@ import java.util.Observable;
  * email：893855882@qq.com
  * data：17/1/11
  */
-public class ImagesObservable extends Observable {
+public class ImagesObservable implements SubjectListener {
+    //观察者接口集合
+    private List<ObserverListener> observers = new ArrayList<>();
 
     private List<LocalMediaFolder> folders;
     private List<LocalMedia> medias;
@@ -49,15 +51,6 @@ public class ImagesObservable extends Observable {
         if (list != null) {
             folders = list;
         }
-    }
-
-    /**
-     * 存储选中的图片
-     *
-     * @param list
-     */
-    public void saveSelectedLocalMedia(List<LocalMedia> list) {
-        selectedImages = list;
     }
 
 
@@ -109,4 +102,39 @@ public class ImagesObservable extends Observable {
             selectedImages.clear();
     }
 
+    @Override
+    public void add(ObserverListener observerListener) {
+        observers.add(observerListener);
+    }
+
+    /**
+     * 相册所有列表文件夹
+     *
+     * @param folders
+     */
+    @Override
+    public void notifyFolderObserver(List<LocalMediaFolder> folders) {
+        for (ObserverListener observerListener : observers) {
+            observerListener.observerUpFoldersData(folders);
+        }
+    }
+
+    /**
+     * 选中图片集合观察者
+     *
+     * @param selectMedias
+     */
+    @Override
+    public void notifySelectLocalMediaObserver(List<LocalMedia> selectMedias) {
+        for (ObserverListener observerListener : observers) {
+            observerListener.observerUpSelectsData(selectMedias);
+        }
+    }
+
+    @Override
+    public void remove(ObserverListener observerListener) {
+        if (observers.contains(observerListener)) {
+            observers.remove(observerListener);
+        }
+    }
 }

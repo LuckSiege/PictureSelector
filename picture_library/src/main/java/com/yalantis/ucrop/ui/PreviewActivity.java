@@ -17,9 +17,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yalantis.ucrop.R;
+import com.yalantis.ucrop.compress.CompressConfig;
+import com.yalantis.ucrop.compress.CompressImageOptions;
+import com.yalantis.ucrop.compress.CompressInterface;
 import com.yalantis.ucrop.dialog.OptAnimationLoader;
+import com.yalantis.ucrop.dialog.SweetAlertDialog;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.observable.ImagesObservable;
+import com.yalantis.ucrop.util.FunctionConfig;
+import com.yalantis.ucrop.util.LocalMediaLoader;
 import com.yalantis.ucrop.util.PictureConfig;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.widget.PreviewViewPager;
@@ -43,11 +49,11 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
     private int position;
     private RelativeLayout rl_title;
     private LinearLayout ll_check;
-    private int maxSelectNum;
     private List<LocalMedia> images = new ArrayList<>();
     private List<LocalMedia> selectImages = new ArrayList<>();
     private TextView check;
     private SimpleFragmentAdapter adapter;
+    private SweetAlertDialog dialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,26 +70,24 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
         tv_img_num = (TextView) findViewById(R.id.tv_img_num);
         tv_title = (TextView) findViewById(R.id.tv_title);
         tv_ok.setOnClickListener(this);
-        position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
-        maxSelectNum = getIntent().getIntExtra(PictureConfig.EXTRA_MAX_SELECT_NUM, 0);
-        backgroundColor = getIntent().getIntExtra(PictureConfig.BACKGROUND_COLOR, 0);
-        cb_drawable = getIntent().getIntExtra(PictureConfig.CHECKED_DRAWABLE, 0);
-        is_checked_num = getIntent().getBooleanExtra(PictureConfig.EXTRA_IS_CHECKED_NUM, false);
-        completeColor = getIntent().getIntExtra(PictureConfig.EXTRA_COMPLETE_COLOR, R.color.tab_color_true);
-        previewBottomBgColor = getIntent().getIntExtra(PictureConfig.EXTRA_PREVIEW_BOTTOM_BG_COLOR, R.color.bar_grey_90);
+        position = getIntent().getIntExtra(FunctionConfig.EXTRA_POSITION, 0);
         rl_title.setBackgroundColor(backgroundColor);
         ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
         tv_ok.setTextColor(completeColor);
         select_bar_layout.setBackgroundColor(previewBottomBgColor);
-        boolean is_bottom_preview = getIntent().getBooleanExtra(PictureConfig.EXTRA_BOTTOM_PREVIEW, false);
+        boolean is_bottom_preview = getIntent().getBooleanExtra(FunctionConfig.EXTRA_BOTTOM_PREVIEW, false);
         if (is_bottom_preview) {
             // 底部预览按钮过来
-            images = (List<LocalMedia>) getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_LIST);
+            images = (List<LocalMedia>) getIntent().getSerializableExtra(FunctionConfig.EXTRA_PREVIEW_LIST);
         } else {
             images = ImagesObservable.getInstance().readLocalMedias();
         }
 
-        selectImages = (List<LocalMedia>) getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
+        if (is_checked_num) {
+            tv_img_num.setBackgroundResource(R.drawable.message_oval_blue);
+        }
+
+        selectImages = (List<LocalMedia>) getIntent().getSerializableExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST);
 
         initViewPageAdapterData();
         ll_check.setOnClickListener(new View.OnClickListener() {
@@ -259,22 +263,76 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.left_back) {
-            setResult(RESULT_OK, new Intent().putExtra("type", 1).putExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectImages));
-            finish();
+            activityFinish();
         } else if (id == R.id.tv_ok) {
-            setResult(RESULT_OK, new Intent().putExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectImages));
-            finish();
+            if (isCompress && type == LocalMediaLoader.TYPE_IMAGE) {
+                compressImage(selectImages);
+            } else {
+                onResult(selectImages);
+            }
         }
     }
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
-                setResult(RESULT_OK, new Intent().putExtra("type", 1).putExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectImages));
-                finish();
+                activityFinish();
                 return false;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    protected void activityFinish() {
+        setResult(RESULT_OK, new Intent().putExtra("type", 1).putExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectImages));
+        finish();
+    }
+
+    /**
+     * 处理图片压缩
+     */
+    private void compressImage(List<LocalMedia> result) {
+        showDialog("处理中...");
+        CompressConfig config = CompressConfig.ofDefaultConfig();
+        CompressImageOptions.compress(this, config, result, new CompressInterface.CompressListener() {
+            @Override
+            public void onCompressSuccess(List<LocalMedia> images) {
+                // 压缩成功回调
+                onResult(images);
+                if (dialog != null && dialog.isShowing()) {
+                    dialog.cancel();
+                }
+            }
+
+            @Override
+            public void onCompressError(List<LocalMedia> images, String msg) {
+                if (dialog != null && dialog.isShowing()) {
+                    dialog.cancel();
+                }
+            }
+        }).compress();
+    }
+
+    public void onResult(List<LocalMedia> images) {
+        // 因为这里是单一实例的结果集，重新用变量接收一下在返回，不然会产生结果集被单一实例清空的问题
+        List<LocalMedia> result = new ArrayList<>();
+        for (LocalMedia media : images) {
+            result.add(media);
+        }
+        PictureConfig.OnSelectResultCallback resultCallback = PictureConfig.getResultCallback();
+        if (resultCallback != null) {
+            resultCallback.onSelectSuccess(result);
+        }
+        finish();
+        overridePendingTransition(0, R.anim.slide_bottom_out);
+        sendBroadcast("app.activity.finish");
+    }
+
+
+    private void showDialog(String msg) {
+        dialog = new SweetAlertDialog(PreviewActivity.this);
+        dialog.setTitleText(msg);
+        dialog.show();
     }
 }

@@ -19,8 +19,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.dialog.OptAnimationLoader;
 import com.yalantis.ucrop.entity.LocalMedia;
+import com.yalantis.ucrop.util.FunctionConfig;
 import com.yalantis.ucrop.util.LocalMediaLoader;
-import com.yalantis.ucrop.util.PictureConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private List<LocalMedia> images = new ArrayList<LocalMedia>();
     private List<LocalMedia> selectImages = new ArrayList<LocalMedia>();
     private boolean enablePreview;
-    private int selectMode = PictureConfig.MODE_MULTIPLE;
+    private int selectMode = FunctionConfig.MODE_MULTIPLE;
     private boolean enablePreviewVideo = false;
     private int cb_drawable;
     private boolean is_checked_num;
@@ -117,7 +117,7 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             String path = image.getPath();
             final int type = image.getType();
             contentHolder.check.setBackgroundResource(cb_drawable);
-            if (selectMode == PictureConfig.MODE_SINGLE) {
+            if (selectMode == FunctionConfig.MODE_SINGLE) {
                 contentHolder.ll_check.setVisibility(View.GONE);
             } else {
                 contentHolder.ll_check.setVisibility(View.VISIBLE);
@@ -136,13 +136,12 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             } else {
                 Glide.with(context)
                         .load(path)
-                        .centerCrop()
-                        .thumbnail(0.5f)
                         .placeholder(R.drawable.image_placeholder)
-                        .error(R.drawable.image_placeholder)
+                        .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .dontAnimate()
+                        .centerCrop()
                         .into(contentHolder.picture);
+
                 contentHolder.rl_duration.setVisibility(View.GONE);
             }
             if (enablePreview || enablePreviewVideo) {
@@ -156,10 +155,10 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             contentHolder.contentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (type == LocalMediaLoader.TYPE_VIDEO && (selectMode == PictureConfig.MODE_SINGLE || enablePreviewVideo) && imageSelectChangedListener != null) {
+                    if (type == LocalMediaLoader.TYPE_VIDEO && (selectMode == FunctionConfig.MODE_SINGLE || enablePreviewVideo) && imageSelectChangedListener != null) {
                         int index = showCamera ? position - 1 : position;
                         imageSelectChangedListener.onPictureClick(image, index);
-                    } else if (type == LocalMediaLoader.TYPE_IMAGE && (selectMode == PictureConfig.MODE_SINGLE || enablePreview) && imageSelectChangedListener != null) {
+                    } else if (type == LocalMediaLoader.TYPE_IMAGE && (selectMode == FunctionConfig.MODE_SINGLE || enablePreview) && imageSelectChangedListener != null) {
                         int index = showCamera ? position - 1 : position;
                         imageSelectChangedListener.onPictureClick(image, index);
                     } else {
@@ -169,6 +168,7 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             });
         }
     }
+
 
     @Override
     public int getItemCount() {
@@ -252,8 +252,7 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             image.setNum(selectImages.size());
         }
         //通知点击项发生了改变
-        notifyItemChanged(contentHolder.getAdapterPosition());
-
+        notifyItemRangeChanged(contentHolder.getAdapterPosition(), images.size());
         selectImage(contentHolder, !isChecked, true);
         if (imageSelectChangedListener != null) {
             imageSelectChangedListener.onChange(selectImages);
