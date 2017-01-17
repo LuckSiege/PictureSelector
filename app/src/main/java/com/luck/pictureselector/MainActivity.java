@@ -189,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                     if (selectImageType) {
                         config.setCheckedBoxDrawable(selector);
                     }
+
                     // 先初始化参数配置，在启动相册
                     PictureConfig.init(config);
                     // 设置回调函数
