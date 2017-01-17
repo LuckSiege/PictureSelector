@@ -42,6 +42,21 @@
 
 app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.1.5'  注：之前引入如有报错，请引入最新版本、
 
+项目根目录  
+
+allprojects { 
+
+    repositories { 
+    
+        jcenter() 
+        
+        maven { url 'https://jitpack.io' } 
+        
+    }  
+    
+}  
+
+
 注：适配android7.0拍照问题，请在AndroidManifest.xml中添加标签  
 
  < provider 
@@ -62,21 +77,7 @@ app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.1.5'  注：�
                 
          </ provider> 
          
-         
-项目根目录  
 
-
-allprojects { 
-
-    repositories { 
-    
-        jcenter() 
-        
-        maven { url 'https://jitpack.io' } 
-        
-    }  
-    
-}  
 
 FunctionConfig config = new FunctionConfig();  
 config.setType(selectType); 1图片 or 2视频 LocalMediaLoader.TYPE_IMAGE,TYPE_VIDEO  
