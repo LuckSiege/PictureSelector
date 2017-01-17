@@ -76,6 +76,7 @@ allprojects {
                 android:resource="@xml/file_paths" />
                 
  </ provider> 
+ 
          
 *****相册参数构造******
 
