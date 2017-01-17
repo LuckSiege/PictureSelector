@@ -2,14 +2,18 @@ package com.yalantis.ucrop.ui;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -192,6 +196,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
 
             @Override
             public void loadComplete(List<LocalMediaFolder> folders) {
+                dismiss();
                 if (folders.size() > 0) {
                     // 取最近相册或视频数据
                     LocalMediaFolder folder = folders.get(0);
@@ -200,7 +205,6 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
                     ImageGridActivity.this.folders = folders;
                     ImagesObservable.getInstance().saveLocalFolders(folders);
                     ImagesObservable.getInstance().notifyFolderObserver(folders);
-                    dismiss();
                 }
             }
         });
@@ -401,7 +405,13 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             File cameraFile = FileUtils.createCameraFile(this, type);
             cameraPath = cameraFile.getAbsolutePath();
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraFile));
+            Uri imageUri;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                imageUri = FileProvider.getUriForFile(mContext, "com.jph.takephoto.fileprovider", cameraFile);//通过FileProvider创建一个content类型的Uri
+            } else {
+                imageUri = Uri.fromFile(cameraFile);
+            }
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             startActivityForResult(cameraIntent, FunctionConfig.REQUEST_CAMERA);
         }
     }
@@ -414,10 +424,41 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             File cameraFile = FileUtils.createCameraFile(this, type);
             cameraPath = cameraFile.getAbsolutePath();
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraFile));
+            Uri imageUri;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                imageUri = FileProvider.getUriForFile(mContext, "com.jph.takephoto.fileprovider", cameraFile);//通过FileProvider创建一个content类型的Uri
+            } else {
+                imageUri = Uri.fromFile(cameraFile);
+            }
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, recordVideoSecond);
             cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, definition);
             startActivityForResult(cameraIntent, FunctionConfig.REQUEST_CAMERA);
+        }
+    }
+
+    public static Uri getImageContentUri(Context context, File imageFile) {
+        String filePath = imageFile.getAbsolutePath();
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Images.Media._ID},
+                MediaStore.Images.Media.DATA + "=? ",
+                new String[]{filePath}, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor
+                    .getColumnIndex(MediaStore.MediaColumns._ID));
+            Uri baseUri = Uri.parse("content://media/external/images/media");
+            return Uri.withAppendedPath(baseUri, "" + id);
+        } else {
+            if (imageFile.exists()) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DATA, filePath);
+                return context.getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            } else {
+                return null;
+            }
         }
     }
 
