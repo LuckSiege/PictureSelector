@@ -147,7 +147,7 @@ private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.
             }  
         }  
   };  
-  }; 
+  
   
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/A574F86A9A9F42A77D03B0ACC9E761C9.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/ABE302D298BD56DEC871F4464E64646F.jpg)
