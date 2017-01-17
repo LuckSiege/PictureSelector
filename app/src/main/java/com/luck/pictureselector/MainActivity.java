@@ -1,6 +1,7 @@
 package com.luck.pictureselector;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,10 +16,11 @@ import android.widget.RadioGroup;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.util.FullyGridLayoutManager;
 import com.yalantis.ucrop.entity.LocalMedia;
-import com.yalantis.ucrop.ui.AlbumDirectoryActivity;
+import com.yalantis.ucrop.util.FunctionConfig;
 import com.yalantis.ucrop.util.LocalMediaLoader;
 import com.yalantis.ucrop.util.PictureConfig;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,14 +36,14 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     private RecyclerView recyclerView;
     private GridImageAdapter adapter;
     private RadioGroup rgbs01, rgbs0, rgbs1, rgbs2, rgbs3, rgbs4, rgbs5, rgbs6, rgbs7, rgbs8, rgbs9;
-    private int selectMode = PictureConfig.MODE_MULTIPLE;
+    private int selectMode = FunctionConfig.MODE_MULTIPLE;
     private int maxSelectNum = 9;// 图片最大可选数量
     private ImageButton minus, plus;
     private EditText select_num;
     private EditText et_w, et_h;
     private boolean isShow = true;
     private int selectType = LocalMediaLoader.TYPE_IMAGE;
-    private int copyMode = PictureConfig.COPY_MODEL_DEFAULT;
+    private int copyMode = FunctionConfig.COPY_MODEL_DEFAULT;
     private boolean enablePreview = true;
     private boolean isPreviewVideo = true;
     private boolean enableCrop = true;
@@ -155,44 +157,45 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                         cropH = Integer.parseInt(hs);
                     }
                     int selector = R.drawable.select_cb;
-                    PictureConfig options = new PictureConfig();
-                    options.setType(selectType);
-                    options.setCopyMode(copyMode);
-                    options.setCompress(isCompress);
-                    options.setMaxSelectNum(maxSelectNum);
-                    options.setSelectMode(selectMode);
-                    options.setShowCamera(isShow);
-                    options.setEnablePreview(enablePreview);
-                    options.setEnableCrop(enableCrop);
-                    options.setPreviewVideo(isPreviewVideo);
-                    options.setRecordVideoDefinition(PictureConfig.HIGH);// 视频清晰度
-                    options.setRecordVideoSecond(60);// 视频秒数
-                    options.setCropW(cropW);
-                    options.setCropH(cropH);
-                    options.setCheckNumMode(isCheckNumMode);
-                    options.setCompressQuality(100);
-                    options.setImageSpanCount(4);
-                    options.setSelectMedia(selectMedia);
-
+                    FunctionConfig config = new FunctionConfig();
+                    config.setType(selectType);
+                    config.setCopyMode(copyMode);
+                    config.setCompress(isCompress);
+                    config.setMaxSelectNum(maxSelectNum);
+                    config.setSelectMode(selectMode);
+                    config.setShowCamera(isShow);
+                    config.setEnablePreview(enablePreview);
+                    config.setEnableCrop(enableCrop);
+                    config.setPreviewVideo(isPreviewVideo);
+                    config.setRecordVideoDefinition(FunctionConfig.HIGH);// 视频清晰度
+                    config.setRecordVideoSecond(60);// 视频秒数
+                    config.setCropW(cropW);
+                    config.setCropH(cropH);
+                    config.setCheckNumMode(isCheckNumMode);
+                    config.setCompressQuality(100);
+                    config.setImageSpanCount(4);
+                    config.setSelectMedia(selectMedia);
                     if (theme) {
-                        options.setThemeStyle(ContextCompat.getColor(MainActivity.this, R.color.blue));
+                        config.setThemeStyle(ContextCompat.getColor(MainActivity.this, R.color.blue));
                         // 可以自定义底部 预览 完成 文字的颜色和背景色
                         if (!isCheckNumMode) {
                             // QQ 风格模式下 这里自己搭配颜色，使用蓝色可能会不好看
-                            options.setPreviewColor(ContextCompat.getColor(MainActivity.this, R.color.white));
-                            options.setCompleteColor(ContextCompat.getColor(MainActivity.this, R.color.white));
-                            options.setPreviewBottomBgColor(ContextCompat.getColor(MainActivity.this, R.color.blue));
-                            options.setBottomBgColor(ContextCompat.getColor(MainActivity.this, R.color.blue));
+                            config.setPreviewColor(ContextCompat.getColor(MainActivity.this, R.color.white));
+                            config.setCompleteColor(ContextCompat.getColor(MainActivity.this, R.color.white));
+                            config.setPreviewBottomBgColor(ContextCompat.getColor(MainActivity.this, R.color.blue));
+                            config.setBottomBgColor(ContextCompat.getColor(MainActivity.this, R.color.blue));
                         }
                     }
                     if (selectImageType) {
-                        options.setCheckedBoxDrawable(selector);
+                        config.setCheckedBoxDrawable(selector);
                     }
-                    AlbumDirectoryActivity.startPhoto(MainActivity.this, options);
+                    // 先初始化参数配置，在启动相册
+                    PictureConfig.init(config);
+                    // 设置回调函数
+                    PictureConfig.openPhoto(MainActivity.this, resultCallback);
                     break;
                 case 1:
                     // 删除图片
-                    Log.i("删除的下标---->", position + "");
                     selectMedia.remove(position);
                     adapter.notifyItemRemoved(position);
                     break;
@@ -200,21 +203,21 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
         }
     };
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case PictureConfig.REQUEST_IMAGE:
-                    selectMedia = (List<LocalMedia>) data.getSerializableExtra(PictureConfig.REQUEST_OUTPUT);
-                    if (selectMedia != null) {
-                        adapter.setList(selectMedia);
-                        adapter.notifyDataSetChanged();
-                    }
-                    break;
+    /**
+     * 图片回调方法
+     */
+    private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {
+        @Override
+        public void onSelectSuccess(List<LocalMedia> resultList) {
+            selectMedia = resultList;
+            Log.i("callBack_result", selectMedia.size() + "");
+            if (selectMedia != null) {
+                adapter.setList(selectMedia);
+                adapter.notifyDataSetChanged();
             }
         }
-    }
+    };
+
 
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -226,10 +229,10 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                 isCheckNumMode = true;
                 break;
             case R.id.rb_single:
-                selectMode = PictureConfig.MODE_SINGLE;
+                selectMode = FunctionConfig.MODE_SINGLE;
                 break;
             case R.id.rb_multiple:
-                selectMode = PictureConfig.MODE_MULTIPLE;
+                selectMode = FunctionConfig.MODE_MULTIPLE;
                 break;
             case R.id.rb_image:
                 selectType = LocalMediaLoader.TYPE_IMAGE;
@@ -244,19 +247,19 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                 isShow = false;
                 break;
             case R.id.rb_default:
-                copyMode = PictureConfig.COPY_MODEL_DEFAULT;
+                copyMode = FunctionConfig.COPY_MODEL_DEFAULT;
                 break;
             case R.id.rb_to1_1:
-                copyMode = PictureConfig.COPY_MODEL_1_1;
+                copyMode = FunctionConfig.COPY_MODEL_1_1;
                 break;
             case R.id.rb_to3_2:
-                copyMode = PictureConfig.COPY_MODEL_3_2;
+                copyMode = FunctionConfig.COPY_MODEL_3_2;
                 break;
             case R.id.rb_to3_4:
-                copyMode = PictureConfig.COPY_MODEL_3_4;
+                copyMode = FunctionConfig.COPY_MODEL_3_4;
                 break;
             case R.id.rb_to16_9:
-                copyMode = PictureConfig.COPY_MODEL_16_9;
+                copyMode = FunctionConfig.COPY_MODEL_16_9;
                 break;
             case R.id.rb_preview:
                 enablePreview = true;
@@ -305,6 +308,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
      * @return
      * @author Michael.Zhang 2013-9-7 下午4:39:00
      */
+
     public boolean isNull(String s) {
         if (null == s || s.equals("") || s.equalsIgnoreCase("null")) {
             return true;
