@@ -78,7 +78,7 @@ allprojects {
  </ provider> 
  
          
-*****相册参数构造******
+******相册参数构造******
 
 FunctionConfig config = new FunctionConfig();  
 
