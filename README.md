@@ -75,7 +75,7 @@ allprojects {
                 
                 android:resource="@xml/file_paths" />
                 
-         </ provider> 
+ </ provider> 
          
 
 
