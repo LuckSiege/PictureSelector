@@ -147,7 +147,6 @@ PictureConfig.openPhoto(MainActivity.this, resultCallback);
  */
 
 private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {
-
     @Override
     public void onSelectSuccess(List<LocalMedia> resultList) {
     
