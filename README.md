@@ -92,7 +92,7 @@ config.setCropW(cropW); 裁剪宽
 config.setCropH(cropH); 裁剪高
 
 
-config.setRecordVideoDefinition(Constants.HIGH);// 视频清晰度 Constants.HIGH 清晰 Constants.ORDINARY 普通 低质量
+config.setRecordVideoDefinition(Constants.HIGH); // 视频清晰度 Constants.HIGH 清晰 Constants.ORDINARY 普通 低质量
 
 
 config.setRecordVideoSecond(60);// 视频秒数
