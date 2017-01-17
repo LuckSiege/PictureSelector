@@ -76,10 +76,10 @@ allprojects {
                 android:resource="@xml/file_paths" />
                 
  </ provider> 
-         
+         
+*****相册参数构造******
 
-
-FunctionConfig config = new FunctionConfig();  
+FunctionConfig config = new FunctionConfig();  
 
 config.setType(selectType); 1图片 or 2视频 LocalMediaLoader.TYPE_IMAGE,TYPE_VIDEO  
 
