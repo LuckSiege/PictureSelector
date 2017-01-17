@@ -42,15 +42,15 @@ app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.1.1'  注：�
 
 注：适配android7.0拍照问题，请在AndroidManifest.xml中添加标签  
  < provider 
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.provider" 
-            android:exported="false" 
-            android:grantUriPermissions="true"> 
-            < meta-data 
-                android:name="android.support.FILE_PROVIDER_PATHS" 
-                android:resource="@xml/file_paths" /> 
-         </ provider>   
-         
+            android:name="android.support.v4.content.FileProvider"  
+            android:authorities="${applicationId}.provider"   
+            android:exported="false"   
+            android:grantUriPermissions="true">   
+            < meta-data   
+                android:name="android.support.FILE_PROVIDER_PATHS"   
+                android:resource="@xml/file_paths" />   
+         </ provider>    
+         
 项目根目录  
 
 allprojects { 
