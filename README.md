@@ -57,8 +57,10 @@ app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.1.1'  注：�
                 android:resource="@xml/file_paths" />
                 
          </ provider> 
+         
          
 项目根目录  
+
 
 allprojects { 
 
