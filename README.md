@@ -42,7 +42,7 @@ app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.1.1'  注：�
 
 注：适配android7.0拍照问题，请在AndroidManifest.xml中添加标签  
 
-    <provider 
+    <provider 
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider" 
             android:exported="false" 
@@ -51,13 +51,21 @@ app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.1.1'  注：�
                 android:name="android.support.FILE_PROVIDER_PATHS" 
                 android:resource="@xml/file_paths" /> 
          </ provider>   
+         
 项目根目录  
+
 allprojects { 
+
     repositories { 
+    
         jcenter() 
+        
         maven { url 'https://jitpack.io' } 
+        
     }  
+    
 }  
+
 FunctionConfig config = new FunctionConfig();  
 config.setType(selectType); 1图片 or 2视频 LocalMediaLoader.TYPE_IMAGE,TYPE_VIDEO  
 config.setCopyMode(copyMode); 裁剪比例 默认 1:1 3:4 3:2 16:9 可参考 Constants.COPY_MODEL_1_1  
