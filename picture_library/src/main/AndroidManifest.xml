@@ -6,7 +6,6 @@
         android:allowBackup="true"
         android:supportsRtl="true">
 
-
         <activity
             android:name=".ui.AlbumDirectoryActivity"
             android:configChanges="orientation|keyboardHidden"

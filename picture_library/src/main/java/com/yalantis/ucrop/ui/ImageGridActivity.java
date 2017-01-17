@@ -409,8 +409,9 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
             File cameraFile = FileUtils.createCameraFile(this, type);
             cameraPath = cameraFile.getAbsolutePath();
             Uri imageUri;
+            String authority = getPackageName() + ".provider";
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                imageUri = FileProvider.getUriForFile(mContext, getPackageName(), cameraFile);//通过FileProvider创建一个content类型的Uri
+                imageUri = FileProvider.getUriForFile(mContext, authority, cameraFile);//通过FileProvider创建一个content类型的Uri
             } else {
                 imageUri = Uri.fromFile(cameraFile);
             }
@@ -428,8 +429,9 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
             File cameraFile = FileUtils.createCameraFile(this, type);
             cameraPath = cameraFile.getAbsolutePath();
             Uri imageUri;
+            String authority = getPackageName() + ".provider";
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                imageUri = FileProvider.getUriForFile(mContext, getPackageName(), cameraFile);//通过FileProvider创建一个content类型的Uri
+                imageUri = FileProvider.getUriForFile(mContext, authority, cameraFile);//通过FileProvider创建一个content类型的Uri
             } else {
                 imageUri = Uri.fromFile(cameraFile);
             }
