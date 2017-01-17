@@ -133,7 +133,9 @@ PictureConfig.openPhoto(MainActivity.this, resultCallback);
  */
 
 private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {  
+
     @Override
+    
     public void onSelectSuccess(List< LocalMedia> resultList) {  
             if (media.isCompressed()){  
             // 注意：如果压缩过，在上传的时候，取 media.getCompressPath(); // 压缩图compressPath  
