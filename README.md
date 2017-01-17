@@ -56,7 +56,13 @@ allprojects {
 
     repositories {
     
-        maven { url 'https://jitpack.io' }
+        maven { 
+        
+        url 
+        
+        'https://jitpack.io' 
+        
+        }
         
         jcenter()
         
@@ -122,8 +128,10 @@ config.setBottomBgColor 选择图片页面底部背景色
 
 
 config.options.setSelectMedia() 已选图片集合
+
                     
 // 先初始化参数配置，在启动相册
+
  
 PictureConfig.init(config);
 
