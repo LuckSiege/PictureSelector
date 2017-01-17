@@ -9,22 +9,39 @@
 3.解决图片过大oom闪退问题
 
 4.动态获取系统权限，避免闪退  
+
 5.支持相片or视频的单选和多选  
-6.支持裁剪比例设置，如常用的  1:1、3：4、3:2、16:9 默认为图片大小  
+
+6.支持裁剪比例设置，如常用的  1:1、3：4、3:2、16:9 默认为图片大小
+
 7.支持视频预览  
+
 8.支持gif图片  
+
 9.支持一些常用场景设置：如:是否裁剪、是否预览图片、是否显示相机等  
+
 10.新增自定义主题设置  
+
 11.新增图片勾选样式设置  
+
 12.新增图片裁剪宽高设置  
+
 13.新增图片压缩处理  
+
 14.新增录视频最大时间设置  
+
 15.新增视频清晰度设置  
+
 16.新增QQ选择风格，带数字效果  
+
 17.新增自定义 文字颜色 背景色让风格和项目更搭配  
+
 项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~   联系方式893855882@qq.com  希望用得着的朋友点个start，你们的支持才是我继续下去的动力，在此先谢过~  
-app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.1.1'  注：之前引入如有报错，请引入最新版本、  
+
+app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.1.1'  注：之前引入如有报错，请引入最新版本、
+
 注：适配android7.0拍照问题，请在AndroidManifest.xml中添加标签  
+
     <provider 
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider" 
