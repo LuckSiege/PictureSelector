@@ -62,43 +62,64 @@ allprojects {
         
     }
 }
+
+
 FunctionConfig config = new FunctionConfig();
 
+
 config.setType(selectType); 1图片 or 2视频 LocalMediaLoader.TYPE_IMAGE,TYPE_VIDEO
+
                    
 config.setCopyMode(copyMode); 裁剪比例 默认 1:1 3:4 3:2 16:9 可参考 Constants.COPY_MODEL_1_1 
+
                     
 config.setCompress(isCompress); 是否压缩
 
+
 config.setMaxSelectNum(maxSelectNum - images.size()); 最大可选数量
+
                     
 config.setSelectMode(selectMode); 2单选 or 1多选 MODE_MULTIPLE MODE_SINGLE
+
                     
 config.setShowCamera(isShow); 是否显示相机
+
                     
 config.setEnablePreview(enablePreview); 是否预览
+
                     
 config.setEnableCrop(enableCrop); 是否裁剪
+
                    
 config.setPreviewVideo(isPreviewVideo); 是否预览视频(播放)
+
                     
 config.setCropW(cropW); 裁剪宽
+
                     
 config.setCropH(cropH); 裁剪高
 
+
 config.setRecordVideoDefinition(Constants.HIGH); // 视频清晰度 Constants.HIGH 清晰 Constants.ORDINARY 普通 低质量
+
 
 config.setRecordVideoSecond(60);// 视频秒数
 
+
 config.setCheckNumMode(isCheckNumMode); 是否显示QQ选择风格(带数字效果)
+
 
 config.setPreviewColor 预览文字颜色
 
+
 config.setCompleteColor 完成文字颜色
+
 
 config.setPreviewBottomBgColor 预览界面底部背景色
 
+
 config.setBottomBgColor 选择图片页面底部背景色
+
 
 config.options.setSelectMedia() 已选图片集合
                     
