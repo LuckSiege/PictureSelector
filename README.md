@@ -56,100 +56,103 @@ allprojects {
     }
 }
 
-PictureConfig options = new PictureConfig();
+FunctionConfig config = new FunctionConfig();
 
 
-options.setType(selectType); 1图片 or 2视频 LocalMediaLoader.TYPE_IMAGE,TYPE_VIDEO
+config.setType(selectType); 1图片 or 2视频 LocalMediaLoader.TYPE_IMAGE,TYPE_VIDEO
 
                    
-options.setCopyMode(copyMode); 裁剪比例 默认 1:1 3:4 3:2 16:9 可参考 Constants.COPY_MODEL_1_1 
+config.setCopyMode(copyMode); 裁剪比例 默认 1:1 3:4 3:2 16:9 可参考 Constants.COPY_MODEL_1_1 
 
                     
-options.setCompress(isCompress); 是否压缩
+config.setCompress(isCompress); 是否压缩
 
 
-options.setMaxSelectNum(maxSelectNum - images.size()); 最大可选数量
-
-                    
-options.setSelectMode(selectMode); 2单选 or 1多选 MODE_MULTIPLE MODE_SINGLE
+config.setMaxSelectNum(maxSelectNum - images.size()); 最大可选数量
 
                     
-options.setShowCamera(isShow); 是否显示相机
+config.setSelectMode(selectMode); 2单选 or 1多选 MODE_MULTIPLE MODE_SINGLE
 
                     
-options.setEnablePreview(enablePreview); 是否预览
+config.setShowCamera(isShow); 是否显示相机
 
                     
-options.setEnableCrop(enableCrop); 是否裁剪
+config.setEnablePreview(enablePreview); 是否预览
+
+                    
+config.setEnableCrop(enableCrop); 是否裁剪
 
                    
-options.setPreviewVideo(isPreviewVideo); 是否预览视频(播放)
+config.setPreviewVideo(isPreviewVideo); 是否预览视频(播放)
 
                     
-options.setCropW(cropW); 裁剪宽
+config.setCropW(cropW); 裁剪宽
 
                     
-options.setCropH(cropH); 裁剪高
+config.setCropH(cropH); 裁剪高
 
 
-options.setRecordVideoDefinition(Constants.HIGH);// 视频清晰度 Constants.HIGH 清晰 Constants.ORDINARY 普通 低质量
+config.setRecordVideoDefinition(Constants.HIGH);// 视频清晰度 Constants.HIGH 清晰 Constants.ORDINARY 普通 低质量
 
 
-options.setRecordVideoSecond(60);// 视频秒数
+config.setRecordVideoSecond(60);// 视频秒数
 
 
-options.setCheckNumMode(isCheckNumMode); 是否显示QQ选择风格(带数字效果)
+config.setCheckNumMode(isCheckNumMode); 是否显示QQ选择风格(带数字效果)
 
 
-setPreviewColor 预览文字颜色
+config.setPreviewColor 预览文字颜色
 
 
-setCompleteColor 完成文字颜色
+config.setCompleteColor 完成文字颜色
 
 
-setPreviewBottomBgColor 预览界面底部背景色
+config.setPreviewBottomBgColor 预览界面底部背景色
 
 
-setBottomBgColor 选择图片页面底部背景色
+config.setBottomBgColor 选择图片页面底部背景色
 
 
-options.setSelectMedia() 已选图片集合
+config.options.setSelectMedia() 已选图片集合
 
                     
-AlbumDirectoryActivity.startPhoto(MainActivity.this, options);
-
+// 先初始化参数配置，在启动相册
  
-@Override
-protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+PictureConfig.init(config);
 
-     if (resultCode == RESULT_OK) {
-     
-            switch (requestCode) {
-            
-                case PictureConfig.REQUEST_IMAGE:
-            
-                    if (media.isCompressed()){
+// 设置回调函数
+
+PictureConfig.openPhoto(MainActivity.this, resultCallback);
+
+/**
+* 图片回调方法
+*/
+private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {
+    @Override
+    public void onSelectSuccess(List<LocalMedia> resultList) {
+    
+            if (media.isCompressed()){
                     
-                        // 注意：如果压缩过，在上传的时候，取 media.getCompressPath(); // 压缩图compressPath
+            // 注意：如果压缩过，在上传的时候，取 media.getCompressPath(); // 压缩图compressPath
                         
-                    } else {
+            } else {
                     
-                        // 注意：没有压缩过，在上传的时候，取 media.getPath(); // 原图path
-                    }
-                    
-                    List<LocalMedia> result = (List<LocalMedia>) data.getSerializableExtra(PictureConfig.REQUEST_OUTPUT);    
-                  
-                   if (result != null) {
-                    
-                        adapter.setList(result);
-                        
-                        adapter.notifyDataSetChanged();
-                    }
-                    
-                    break;
+            // 注意：没有压缩过，在上传的时候，取 media.getPath(); // 原图path
+       
+            }
+    
+             selectMedia = resultList;
+             
+            if (selectMedia != null) {
+            
+                adapter.setList(selectMedia);
+                
+                adapter.notifyDataSetChanged();
+                
             }
         }
-    }
+  };
+
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/A574F86A9A9F42A77D03B0ACC9E761C9.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/ABE302D298BD56DEC871F4464E64646F.jpg)
