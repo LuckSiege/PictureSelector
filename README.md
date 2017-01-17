@@ -40,7 +40,7 @@
 
 项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~   联系方式893855882@qq.com  希望用得着的朋友点个start，你们的支持才是我继续下去的动力，在此先谢过~  
 
-app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.1.1'  注：之前引入如有报错，请引入最新版本、
+app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.1.5'  注：之前引入如有报错，请引入最新版本、
 
 注：适配android7.0拍照问题，请在AndroidManifest.xml中添加标签  
  < provider 
