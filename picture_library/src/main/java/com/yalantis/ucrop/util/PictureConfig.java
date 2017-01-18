@@ -2,10 +2,14 @@ package com.yalantis.ucrop.util;
 
 import android.app.Activity;
 import android.content.Intent;
+
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.ui.AlbumDirectoryActivity;
+import com.yalantis.ucrop.ui.ExternalPreviewActivity;
 import com.yalantis.ucrop.ui.ImageGridActivity;
+
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -53,6 +57,25 @@ public class PictureConfig {
         activity.overridePendingTransition(R.anim.slide_bottom_in, 0);
         // 绑定图片接口回调函数事件
         resultCallback = mResultCallback;
+    }
+
+
+    /**
+     * 外部图片预览
+     *
+     * @param activity
+     * @param position
+     * @param medias
+     */
+    public static void externalPicturePreview(Activity activity, int position, List<LocalMedia> medias) {
+        if (medias != null && medias.size() > 0) {
+            Intent intent = new Intent();
+            intent.putExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
+            intent.putExtra(FunctionConfig.EXTRA_POSITION, position);
+            intent.setClass(activity, ExternalPreviewActivity.class);
+            activity.startActivity(intent);
+            activity.overridePendingTransition(R.anim.toast_enter, 0);
+        }
     }
 
 

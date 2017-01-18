@@ -1,5 +1,6 @@
 package com.yalantis.ucrop.ui;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,21 +14,32 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.yalantis.ucrop.R;
+import com.yalantis.ucrop.entity.LocalMedia;
+import com.yalantis.ucrop.util.FunctionConfig;
 
 import java.io.File;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
- * Created by dee on 15/11/25.
+ * author：luck
+ * project：PictureSelector
+ * package：com.luck.picture.ui
+ * email：邮箱->893855882@qq.com
+ * data：17/01/18
  */
 public class ImagePreviewFragment extends Fragment {
     public static final String PATH = "path";
+    private List<LocalMedia> selectImages = new ArrayList<>();
 
-    public static ImagePreviewFragment getInstance(String path) {
+    public static ImagePreviewFragment getInstance(String path, List<LocalMedia> medias) {
         ImagePreviewFragment fragment = new ImagePreviewFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PATH, path);
+        bundle.putSerializable(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -38,6 +50,7 @@ public class ImagePreviewFragment extends Fragment {
         View contentView = inflater.inflate(R.layout.fragment_image_preview, container, false);
         final ImageView imageView = (ImageView) contentView.findViewById(R.id.preview_image);
         final PhotoViewAttacher mAttacher = new PhotoViewAttacher(imageView);
+        selectImages = (List<LocalMedia>) getArguments().getSerializable(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST);
         Glide.with(container.getContext())
                 .load(new File(getArguments().getString(PATH)))
                 .asBitmap()
@@ -51,12 +64,19 @@ public class ImagePreviewFragment extends Fragment {
         mAttacher.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
             @Override
             public void onViewTap(View view, float x, float y) {
-                PreviewActivity activity = (PreviewActivity) getActivity();
-                activity.finish();
+                if (getActivity() instanceof PreviewActivity) {
+                    activityFinish();
+                } else {
+                    getActivity().finish();
+                    getActivity().overridePendingTransition(0, R.anim.toast_out);
+                }
             }
         });
         return contentView;
     }
 
-
+    protected void activityFinish() {
+        getActivity().setResult(getActivity().RESULT_OK, new Intent().putExtra("type", 1).putExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectImages));
+        getActivity().finish();
+    }
 }

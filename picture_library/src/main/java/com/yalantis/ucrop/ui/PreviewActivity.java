@@ -248,7 +248,7 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
 
         @Override
         public Fragment getItem(int position) {
-            ImagePreviewFragment fragment = ImagePreviewFragment.getInstance(images.get(position).getPath());
+            ImagePreviewFragment fragment = ImagePreviewFragment.getInstance(images.get(position).getPath(),selectImages);
             return fragment;
         }
 
