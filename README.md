@@ -130,7 +130,7 @@ PictureConfig.openPhoto(MainActivity.this, resultCallback);
 
 // 外部预览图片方法 (例如选完后要预览的可调用此方法)
 
-PictureConfig.externalPicturePreview(MainActivity.this, position, selectMedia);
+PictureConfig.externalPicturePreview(this, position, selectMedia);
 
 /**
   * 图片回调方法
