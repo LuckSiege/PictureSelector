@@ -1,7 +1,5 @@
 package com.luck.pictureselector;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,7 +18,6 @@ import com.yalantis.ucrop.util.FunctionConfig;
 import com.yalantis.ucrop.util.LocalMediaLoader;
 import com.yalantis.ucrop.util.PictureConfig;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,6 +108,15 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                 adapter.setSelectMax(maxSelectNum);
             }
         });
+
+        adapter.setOnItemClickListener(new GridImageAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+                // 这里可预览图片
+                PictureConfig.externalPicturePreview(MainActivity.this, position, selectMedia);
+            }
+        });
+
 
     }
 
