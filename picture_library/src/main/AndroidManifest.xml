@@ -26,5 +26,9 @@
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.ExternalPreviewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Slider" />
     </application>
 </manifest>
