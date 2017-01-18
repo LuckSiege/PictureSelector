@@ -11,11 +11,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.util.FunctionConfig;
+import com.yalantis.ucrop.util.Utils;
 
 import java.io.File;
 import java.io.Serializable;
@@ -51,9 +53,11 @@ public class ImagePreviewFragment extends Fragment {
         final ImageView imageView = (ImageView) contentView.findViewById(R.id.preview_image);
         final PhotoViewAttacher mAttacher = new PhotoViewAttacher(imageView);
         selectImages = (List<LocalMedia>) getArguments().getSerializable(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST);
+        String path = getArguments().getString(PATH);
         Glide.with(container.getContext())
-                .load(new File(getArguments().getString(PATH)))
+                .load(path)
                 .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.ALL    )
                 .into(new SimpleTarget<Bitmap>(480, 800) {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
