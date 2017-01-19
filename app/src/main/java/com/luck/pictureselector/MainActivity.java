@@ -1,5 +1,6 @@
 package com.luck.pictureselector;
 
+import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -51,11 +52,13 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     private boolean isCompress = false;
     private boolean isCheckNumMode = false;
     private List<LocalMedia> selectMedia = new ArrayList<>();
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mContext = this;
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         rgbs01 = (RadioGroup) findViewById(R.id.rgbs01);
         rgbs0 = (RadioGroup) findViewById(R.id.rgbs0);
@@ -113,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
             @Override
             public void onItemClick(int position, View v) {
                 // 这里可预览图片
-                PictureConfig.externalPicturePreview(MainActivity.this, position, selectMedia);
+                PictureConfig.externalPicturePreview(mContext, position, selectMedia);
             }
         });
 
@@ -143,6 +146,8 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                      * cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
                      * cropH-->裁剪高度 值不能小于100
                      * isCompress -->是否压缩图片
+                     * setEnablePixelCompress 是否启用像素压缩
+                     * setEnableQualityCompress 是否启用质量压缩
                      * setRecordVideoSecond 录视频的秒数，默认不限制
                      * setRecordVideoDefinition 视频清晰度  Constants.HIGH 清晰  Constants.ORDINARY 低质量
                      * setImageSpanCount -->每行显示个数
@@ -167,6 +172,8 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
                     config.setType(selectType);
                     config.setCopyMode(copyMode);
                     config.setCompress(isCompress);
+                    config.setEnablePixelCompress(true);
+                    config.setEnableQualityCompress(true);
                     config.setMaxSelectNum(maxSelectNum);
                     config.setSelectMode(selectMode);
                     config.setShowCamera(isShow);
@@ -198,8 +205,8 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
 
                     // 先初始化参数配置，在启动相册
                     PictureConfig.init(config);
-                    // 设置回调函数
-                    PictureConfig.openPhoto(MainActivity.this, resultCallback);
+                    PictureConfig.openPhoto(mContext, resultCallback);
+
                     break;
                 case 1:
                     // 删除图片
@@ -216,7 +223,9 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
     private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {
         @Override
         public void onSelectSuccess(List<LocalMedia> resultList) {
+
             selectMedia = resultList;
+
             Log.i("callBack_result", selectMedia.size() + "");
             if (selectMedia != null) {
                 adapter.setList(selectMedia);
