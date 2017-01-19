@@ -148,8 +148,11 @@ private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.
             } else {  
             // 注意：没有压缩过，在上传的时候，取 media.getPath(); // 原图path  
             } else{
-            // 注意：如果media.getCatPath();不为空的话 就代表裁剪的图片，上传时可取，但是如果又压缩过，则取最终压缩过的compressPath
+            
+            // 注意：如果media.getCatPath();不为空的话 就代表裁剪的图片，上传时可取，但是如果又压缩过，则取最终压缩过的compressPath  
+            
             }
+            
             selectMedia = resultList;  
             selectMedia = resultList;  
             if (selectMedia != null) {  
