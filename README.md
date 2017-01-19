@@ -38,9 +38,11 @@
 
 17.新增自定义 文字颜色 背景色让风格和项目更搭配  
 
-项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~   联系方式893855882@qq.com  希望用得着的朋友点个start，你们的支持才是我继续下去的动力，在此先谢过~  
+18.新增多图裁剪功能
 
-app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.1.7'  注：之前引入如有报错，请引入最新版本、
+项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~   联系方式893855882@qq.com  希望用得着的朋友点个start，你们的支持才是我继续下去的动力，在此先谢过~  
+
+app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.1.8'  注：之前引入如有报错，请引入最新版本、
 
 项目根目录  
 
@@ -159,6 +161,7 @@ private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/ABE302D298BD56DEC871F4464E64646F.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/3483AB11C78AF4C6DCC408504768A138.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/66C119A6BD918EAF9418324836C34BA6.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/new_image.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/5F1513BFD9490AF153E3E30840964FB1.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/BA7C4A038613182020DA9CE0152DA5D4.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/0F918EB15954836F59A95A3F7E0D2012.jpg)
