@@ -154,10 +154,13 @@ private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.
             }
             
             selectMedia = resultList;  
-            selectMedia = resultList;  
+            
             if (selectMedia != null) {  
+            
                 adapter.setList(selectMedia);  
+                
                 adapter.notifyDataSetChanged();  
+                
             }  
         }  
   };  
