@@ -17,9 +17,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.util.FunctionConfig;
-import com.yalantis.ucrop.util.Utils;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +31,12 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  * email：邮箱->893855882@qq.com
  * data：17/01/18
  */
-public class ImagePreviewFragment extends Fragment {
+public class PictureImagePreviewFragment extends Fragment {
     public static final String PATH = "path";
     private List<LocalMedia> selectImages = new ArrayList<>();
 
-    public static ImagePreviewFragment getInstance(String path, List<LocalMedia> medias) {
-        ImagePreviewFragment fragment = new ImagePreviewFragment();
+    public static PictureImagePreviewFragment getInstance(String path, List<LocalMedia> medias) {
+        PictureImagePreviewFragment fragment = new PictureImagePreviewFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PATH, path);
         bundle.putSerializable(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
@@ -49,7 +47,7 @@ public class ImagePreviewFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View contentView = inflater.inflate(R.layout.fragment_image_preview, container, false);
+        View contentView = inflater.inflate(R.layout.picture_fragment_image_preview, container, false);
         final ImageView imageView = (ImageView) contentView.findViewById(R.id.preview_image);
         final PhotoViewAttacher mAttacher = new PhotoViewAttacher(imageView);
         selectImages = (List<LocalMedia>) getArguments().getSerializable(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST);
@@ -68,7 +66,7 @@ public class ImagePreviewFragment extends Fragment {
         mAttacher.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
             @Override
             public void onViewTap(View view, float x, float y) {
-                if (getActivity() instanceof PreviewActivity) {
+                if (getActivity() instanceof PicturePreviewActivity) {
                     activityFinish();
                 } else {
                     getActivity().finish();

@@ -25,11 +25,11 @@ import java.util.List;
  * email：893855882@qq.com
  * data：16/12/31
  */
-public class AlbumDirectoryAdapter extends RecyclerView.Adapter<AlbumDirectoryAdapter.ViewHolder> {
+public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAlbumDirectoryAdapter.ViewHolder> {
     private Context mContext;
     private List<LocalMediaFolder> folders = new ArrayList<>();
 
-    public AlbumDirectoryAdapter(Context mContext) {
+    public PictureAlbumDirectoryAdapter(Context mContext) {
         super();
         this.mContext = mContext;
     }
@@ -45,7 +45,7 @@ public class AlbumDirectoryAdapter extends RecyclerView.Adapter<AlbumDirectoryAd
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.album_folder_item, parent, false);
+        View itemView = LayoutInflater.from(mContext).inflate(R.layout.picture_album_folder_item, parent, false);
         return new ViewHolder(itemView);
     }
 

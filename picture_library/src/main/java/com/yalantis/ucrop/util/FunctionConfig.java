@@ -1,5 +1,6 @@
 package com.yalantis.ucrop.util;
 
+import android.content.Context;
 import android.graphics.Color;
 
 import com.yalantis.ucrop.R;
@@ -31,8 +32,8 @@ public class FunctionConfig implements Serializable {
     public static final int ORDINARY = 0;// 普通 低质量
     public static final int HIGH = 1;// 清晰
 
-    public static final int COPY_WIDTH = 100;
-    public static final int COPY_HEIGHT = 100;
+    public static final int COPY_WIDTH = 0;
+    public static final int COPY_HEIGHT = 0;
     public final static int REQUEST_IMAGE = 88;
     public final static int REQUEST_CAMERA = 99;
     public final static int REQUEST_PREVIEW = 100;
@@ -45,6 +46,7 @@ public class FunctionConfig implements Serializable {
     public static final String EXTRA_IS_TOP_ACTIVITY = "isTopActivity";
     public static final String EXTRA_BOTTOM_PREVIEW = "bottom_preview";
     public static final String EXTRA_POSITION = "position";
+    public static final String EXTRA_CUT_INDEX = "cutIndex";
     public static final String EXTRA_PREVIEW_LIST = "previewList";
     public static final String EXTRA_PREVIEW_SELECT_LIST = "previewSelectList";
 
@@ -55,6 +57,7 @@ public class FunctionConfig implements Serializable {
     public final static String EXTRA_SHOW_CAMERA = "ShowCamera";
     public final static String EXTRA_ENABLE_PREVIEW = "EnablePreview";
     public final static String EXTRA_ENABLE_PREVIEW_VIDEO = "EnablePreviewVideo";
+    public final static String EXTRA_RESULT = "select_result";
     public final static String EXTRA_ENABLE_CROP = "EnableCrop";
     public final static String EXTRA_MAX_SELECT_NUM = "MaxSelectNum";
     public final static String EXTRA_MAX_SPAN_COUNT = "spanCount";
@@ -100,6 +103,31 @@ public class FunctionConfig implements Serializable {
     protected int previewBottomBgColor = Color.parseColor("#dd393a3e"); // 预览底部背景色
     protected int compressQuality = 100;// 图片裁剪质量,默认无损
     protected List<LocalMedia> selectMedia = new ArrayList<>();// 已选择的图片
+
+    /**
+     * 是否启用像素压缩
+     */
+    protected boolean isEnablePixelCompress = true;
+    /**
+     * 是否启用质量压缩
+     */
+    protected boolean isEnableQualityCompress = true;
+
+    public boolean isEnableQualityCompress() {
+        return isEnableQualityCompress;
+    }
+
+    public void setEnableQualityCompress(boolean enableQualityCompress) {
+        isEnableQualityCompress = enableQualityCompress;
+    }
+
+    public boolean isEnablePixelCompress() {
+        return isEnablePixelCompress;
+    }
+
+    public void setEnablePixelCompress(boolean enablePixelCompress) {
+        isEnablePixelCompress = enablePixelCompress;
+    }
 
     public List<LocalMedia> getSelectMedia() {
         return selectMedia;

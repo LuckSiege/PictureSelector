@@ -71,7 +71,7 @@ public class SweetAlertDialog extends Dialog {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.alert_dialog);
+        setContentView(R.layout.picture_alert_dialog);
 
         mDialogView = getWindow().getDecorView().findViewById(android.R.id.content);
         mTitleTextView = (TextView) findViewById(R.id.title_text);

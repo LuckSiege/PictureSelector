@@ -17,18 +17,23 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.model.AspectRatio;
+import com.yalantis.ucrop.ui.PictureMultiCuttingActivity;
 import com.yalantis.ucrop.util.FunctionConfig;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 /**
  * Created by Oleksii Shliama (https://github.com/shliama).
- * <p/>
+ * <p>
  * Builder class to ease Intent setup.
  */
-public class UCrop {
+public class MultiUCrop {
 
     public static final int REQUEST_CROP = 69;
     public static final int RESULT_ERROR = 96;
@@ -57,11 +62,11 @@ public class UCrop {
      * @param source      Uri for image to crop
      * @param destination Uri for saving the cropped image
      */
-    public static UCrop of(@NonNull Uri source, @NonNull Uri destination) {
-        return new UCrop(source, destination);
+    public static MultiUCrop of(@NonNull Uri source, @NonNull Uri destination) {
+        return new MultiUCrop(source, destination);
     }
 
-    private UCrop(@NonNull Uri source, @NonNull Uri destination) {
+    private MultiUCrop(@NonNull Uri source, @NonNull Uri destination) {
         mCropIntent = new Intent();
         mCropOptionsBundle = new Bundle();
         mCropOptionsBundle.putParcelable(EXTRA_INPUT_URI, source);
@@ -76,7 +81,7 @@ public class UCrop {
      * @param x aspect ratio X
      * @param y aspect ratio Y
      */
-    public UCrop withAspectRatio(float x, float y) {
+    public MultiUCrop withAspectRatio(float x, float y) {
         mCropOptionsBundle.putFloat(EXTRA_ASPECT_RATIO_X, x);
         mCropOptionsBundle.putFloat(EXTRA_ASPECT_RATIO_Y, y);
         return this;
@@ -86,7 +91,7 @@ public class UCrop {
      * Set an aspect ratio for crop bounds that is evaluated from source image width and height.
      * User won't see the menu with other ratios options.
      */
-    public UCrop useSourceImageAspectRatio() {
+    public MultiUCrop useSourceImageAspectRatio() {
         mCropOptionsBundle.putFloat(EXTRA_ASPECT_RATIO_X, 0);
         mCropOptionsBundle.putFloat(EXTRA_ASPECT_RATIO_Y, 0);
         return this;
@@ -98,13 +103,13 @@ public class UCrop {
      * @param width  max cropped image width
      * @param height max cropped image height
      */
-    public UCrop withMaxResultSize(@IntRange(from = 100) int width, @IntRange(from = 100) int height) {
+    public MultiUCrop withMaxResultSize(@IntRange(from = 100) int width, @IntRange(from = 100) int height) {
         mCropOptionsBundle.putInt(EXTRA_MAX_SIZE_X, width);
         mCropOptionsBundle.putInt(EXTRA_MAX_SIZE_Y, height);
         return this;
     }
 
-    public UCrop withOptions(@NonNull Options options) {
+    public MultiUCrop withOptions(@NonNull Options options) {
         mCropOptionsBundle.putAll(options.getOptionBundle());
         return this;
     }
@@ -168,12 +173,12 @@ public class UCrop {
     }
 
     /**
-     * Get Intent to start {@link UCropActivity}
+     * Get Intent to start {@link PictureMultiCuttingActivity}
      *
-     * @return Intent for {@link UCropActivity}
+     * @return Intent for {@link PictureMultiCuttingActivity}
      */
     public Intent getIntent(@NonNull Context context) {
-        mCropIntent.setClass(context, UCropActivity.class);
+        mCropIntent.setClass(context, PictureMultiCuttingActivity.class);
         mCropIntent.putExtras(mCropOptionsBundle);
         return mCropIntent;
     }
@@ -288,7 +293,7 @@ public class UCrop {
         }
 
         /**
-         * Set one of {@link android.graphics.Bitmap.CompressFormat} that will be used to save resulting Bitmap.
+         * Set one of {@link Bitmap.CompressFormat} that will be used to save resulting Bitmap.
          */
         public void setCompressionFormat(@NonNull Bitmap.CompressFormat format) {
             mOptionBundle.putString(EXTRA_COMPRESSION_FORMAT_NAME, format.name());
@@ -306,11 +311,26 @@ public class UCrop {
         }
 
         /**
+         * Set images
+         */
+        public void setLocalMedia(List<LocalMedia> medias) {
+            mOptionBundle.putSerializable(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
+        }
+
+        /**
+         * Set images position
+         */
+        public void setPosition(int cutIndex) {
+            mOptionBundle.putInt(FunctionConfig.EXTRA_CUT_INDEX, cutIndex);
+        }
+
+
+        /**
          * Choose what set of gestures will be enabled on each tab - if any.
          */
-        public void setAllowedGestures(@UCropActivity.GestureTypes int tabScale,
-                                       @UCropActivity.GestureTypes int tabRotate,
-                                       @UCropActivity.GestureTypes int tabAspectRatio) {
+        public void setAllowedGestures(@PictureMultiCuttingActivity.GestureTypes int tabScale,
+                                       @PictureMultiCuttingActivity.GestureTypes int tabRotate,
+                                       @PictureMultiCuttingActivity.GestureTypes int tabAspectRatio) {
             mOptionBundle.putIntArray(EXTRA_ALLOWED_GESTURES, new int[]{tabScale, tabRotate, tabAspectRatio});
         }
 

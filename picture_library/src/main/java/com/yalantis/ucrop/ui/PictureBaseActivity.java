@@ -11,6 +11,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.yalantis.ucrop.R;
@@ -27,7 +29,7 @@ import java.util.List;
  * email：893855882@qq.com
  * data：16/12/31
  */
-public class BaseActivity extends FragmentActivity {
+public class PictureBaseActivity extends FragmentActivity {
     protected Context mContext;
     protected int type = 0;
     protected int maxSelectNum = 0;
@@ -40,8 +42,8 @@ public class BaseActivity extends FragmentActivity {
     protected int selectMode = FunctionConfig.MODE_MULTIPLE;
     protected int backgroundColor = 0;
     protected int cb_drawable = 0;
-    protected int cropW = 100;
-    protected int cropH = 100;
+    protected int cropW = 0;
+    protected int cropH = 0;
     protected int recordVideoSecond = 0;
     protected int definition = 3;
     protected boolean isCompress;
@@ -54,10 +56,15 @@ public class BaseActivity extends FragmentActivity {
     protected List<LocalMedia> selectMedias = new ArrayList<>();
     protected FunctionConfig config = new FunctionConfig();
 
+    protected int mScreenWidth = 720;
+    protected int mScreenHeight = 1280;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
+        initScreenWidth();
         config = (FunctionConfig) getIntent().getSerializableExtra(FunctionConfig.EXTRA_THIS_CONFIG);
         type = config.getType();
         showCamera = config.isShowCamera();
@@ -207,4 +214,15 @@ public class BaseActivity extends FragmentActivity {
             return true;
         }
     }
+
+    /**
+     * 初始化屏幕宽高
+     */
+    protected void initScreenWidth() {
+        DisplayMetrics dm = new DisplayMetrics();
+        dm = getResources().getDisplayMetrics();
+        mScreenHeight = dm.heightPixels;
+        mScreenWidth = dm.widthPixels;
+    }
+
 }

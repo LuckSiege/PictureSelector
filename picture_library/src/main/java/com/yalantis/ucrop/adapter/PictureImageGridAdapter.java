@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Created by dee on 15/11/19.
  */
-public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final int TYPE_CAMERA = 1;
     public static final int TYPE_PICTURE = 2;
 
@@ -44,7 +44,7 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private int cb_drawable;
     private boolean is_checked_num;
 
-    public ImageGridAdapter(Context context, boolean showCamera, int maxSelectNum, int mode, boolean enablePreview, boolean enablePreviewVideo, int cb_drawable, boolean is_checked_num) {
+    public PictureImageGridAdapter(Context context, boolean showCamera, int maxSelectNum, int mode, boolean enablePreview, boolean enablePreviewVideo, int cb_drawable, boolean is_checked_num) {
         this.context = context;
         this.selectMode = mode;
         this.showCamera = showCamera;
@@ -90,10 +90,10 @@ public class ImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_CAMERA) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_camera, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.picture_item_camera, parent, false);
             return new HeaderViewHolder(view);
         } else {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_grid_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.picture_image_grid_item, parent, false);
             return new ViewHolder(view);
         }
     }

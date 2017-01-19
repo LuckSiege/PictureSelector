@@ -2,12 +2,8 @@ package com.yalantis.ucrop.ui;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
@@ -19,7 +15,6 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -28,9 +23,10 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.yalantis.ucrop.MultiUCrop;
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.UCrop;
-import com.yalantis.ucrop.adapter.ImageGridAdapter;
+import com.yalantis.ucrop.adapter.PictureImageGridAdapter;
 import com.yalantis.ucrop.compress.CompressConfig;
 import com.yalantis.ucrop.compress.CompressImageOptions;
 import com.yalantis.ucrop.compress.CompressInterface;
@@ -60,8 +56,8 @@ import java.util.List;
  * email：893855882@qq.com
  * data：16/12/31
  */
-public class ImageGridActivity extends BaseActivity implements PublicTitleBar.OnTitleBarClick, View.OnClickListener, ImageGridAdapter.OnPhotoSelectChangedListener {
-    public final String TAG = ImageGridActivity.class.getSimpleName();
+public class PictureImageGridActivity extends PictureBaseActivity implements PublicTitleBar.OnTitleBarClick, View.OnClickListener, PictureImageGridAdapter.OnPhotoSelectChangedListener {
+    public final String TAG = PictureImageGridActivity.class.getSimpleName();
     private List<LocalMedia> images = new ArrayList<>();
     private RecyclerView recyclerView;
     private TextView tv_img_num;
@@ -69,7 +65,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
     private RelativeLayout rl_bottom;
     private PublicTitleBar titleBar;
     private Button id_preview;
-    private ImageGridAdapter adapter;
+    private PictureImageGridAdapter adapter;
     private String cameraPath;
     private SweetAlertDialog dialog;
     private List<LocalMediaFolder> folders = new ArrayList<>();
@@ -85,10 +81,11 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         }
     };
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_image_grid);
+        setContentView(R.layout.picture_activity_image_grid);
         registerReceiver(receiver, "app.activity.finish");
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         titleBar = (PublicTitleBar) findViewById(R.id.titleBar);
@@ -178,14 +175,14 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
                 showCamera = false;
             }
         }
-        adapter = new ImageGridAdapter(this, showCamera, maxSelectNum, selectMode, enablePreview, enablePreviewVideo, cb_drawable, is_checked_num);
+        adapter = new PictureImageGridAdapter(this, showCamera, maxSelectNum, selectMode, enablePreview, enablePreviewVideo, cb_drawable, is_checked_num);
         recyclerView.setAdapter(adapter);
         if (selectMedias.size() > 0) {
             ChangeImageNumber(selectMedias);
             adapter.bindSelectImages(selectMedias);
         }
         adapter.bindImagesData(images);
-        adapter.setOnPhotoSelectChangedListener(ImageGridActivity.this);
+        adapter.setOnPhotoSelectChangedListener(PictureImageGridActivity.this);
 
     }
 
@@ -205,7 +202,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
                     LocalMediaFolder folder = folders.get(0);
                     images = folder.getImages();
                     adapter.bindImagesData(images);
-                    ImageGridActivity.this.folders = folders;
+                    PictureImageGridActivity.this.folders = folders;
                     ImagesObservable.getInstance().saveLocalFolders(folders);
                     ImagesObservable.getInstance().notifyFolderObserver(folders);
                 }
@@ -233,15 +230,20 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
             intent.putExtra(FunctionConfig.EXTRA_POSITION, 0);
             intent.putExtra(FunctionConfig.EXTRA_BOTTOM_PREVIEW, true);
             intent.putExtra(FunctionConfig.EXTRA_THIS_CONFIG, config);
-            intent.setClass(mContext, PreviewActivity.class);
+            intent.setClass(mContext, PicturePreviewActivity.class);
             startActivityForResult(intent, FunctionConfig.REQUEST_PREVIEW);
         } else if (id == R.id.tv_ok) {
             List<LocalMedia> images = adapter.getSelectedImages();
-            // 图片才压缩，视频不管
-            if (isCompress && type == LocalMediaLoader.TYPE_IMAGE) {
-                compressImage(images);
+            if (enableCrop && type == LocalMediaLoader.TYPE_IMAGE && selectMode == FunctionConfig.MODE_MULTIPLE) {
+                // 是图片和选择压缩并且是多张，调用批量压缩
+                startMultiCopy(images);
             } else {
-                resultBack(images);
+                // 图片才压缩，视频不管
+                if (isCompress && type == LocalMediaLoader.TYPE_IMAGE) {
+                    compressImage(images);
+                } else {
+                    resultBack(images);
+                }
             }
         }
     }
@@ -347,7 +349,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
                     intent.putExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectedImages);
                     intent.putExtra(FunctionConfig.EXTRA_POSITION, position);
                     intent.putExtra(FunctionConfig.EXTRA_THIS_CONFIG, config);
-                    intent.setClass(mContext, PreviewActivity.class);
+                    intent.setClass(mContext, PicturePreviewActivity.class);
                     startActivityForResult(intent, FunctionConfig.REQUEST_PREVIEW);
                 }
                 break;
@@ -362,13 +364,18 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
                     }
                     bundle.putString("video_path", media.getPath());
                     bundle.putSerializable(FunctionConfig.EXTRA_THIS_CONFIG, config);
-                    startActivity(VideoPlayActivity.class, bundle);
+                    startActivity(PictureVideoPlayActivity.class, bundle);
                 }
                 break;
         }
 
     }
 
+    /**
+     * 裁剪
+     *
+     * @param path
+     */
     protected void startCopy(String path) {
         // 如果开启裁剪 并且是单选
         // 去裁剪
@@ -397,7 +404,47 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         options.background_color(backgroundColor);
         options.putLocalMedias(config);
         uCrop.withOptions(options);
-        uCrop.start(ImageGridActivity.this);
+        uCrop.start(PictureImageGridActivity.this);
+    }
+
+    /**
+     * 多图裁剪
+     *
+     * @param medias
+     */
+    protected void startMultiCopy(List<LocalMedia> medias) {
+        if (medias != null && medias.size() > 0) {
+            LocalMedia media = medias.get(0);
+            String path = media.getPath();
+            // 去裁剪
+            MultiUCrop uCrop = MultiUCrop.of(Uri.parse(path), Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + ".jpg")));
+            MultiUCrop.Options options = new MultiUCrop.Options();
+            switch (copyMode) {
+                case FunctionConfig.COPY_MODEL_DEFAULT:
+                    options.withAspectRatio(0, 0);
+                    break;
+                case FunctionConfig.COPY_MODEL_1_1:
+                    options.withAspectRatio(1, 1);
+                    break;
+                case FunctionConfig.COPY_MODEL_3_2:
+                    options.withAspectRatio(3, 2);
+                    break;
+                case FunctionConfig.COPY_MODEL_3_4:
+                    options.withAspectRatio(3, 4);
+                    break;
+                case FunctionConfig.COPY_MODEL_16_9:
+                    options.withAspectRatio(16, 9);
+                    break;
+            }
+            options.setLocalMedia(medias);
+            options.setCompressionQuality(compressQuality);
+            options.withMaxResultSize(cropW, cropH);
+            options.background_color(backgroundColor);
+            options.putLocalMedias(config);
+            uCrop.withOptions(options);
+            uCrop.start(PictureImageGridActivity.this);
+        }
+
     }
 
     /**
@@ -591,11 +638,14 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
         PictureConfig.OnSelectResultCallback resultCallback = PictureConfig.getResultCallback();
         if (resultCallback != null) {
             resultCallback.onSelectSuccess(result);
+            // 释放静态变量
+            PictureConfig.resultCallback = null;
         }
-        finish();
+
         overridePendingTransition(0, R.anim.slide_bottom_out);
         sendBroadcast("app.activity.finish");
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -665,8 +715,10 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
      */
     private void compressImage(List<LocalMedia> result) {
         showDialog("处理中...");
-        CompressConfig config = CompressConfig.ofDefaultConfig();
-        CompressImageOptions.compress(this, config, result, new CompressInterface.CompressListener() {
+        CompressConfig compress_config = CompressConfig.ofDefaultConfig();
+        compress_config.enablePixelCompress(config.isEnablePixelCompress());
+        compress_config.enableQualityCompress(config.isEnableQualityCompress());
+        CompressImageOptions.compress(this, compress_config, result, new CompressInterface.CompressListener() {
             @Override
             public void onCompressSuccess(List<LocalMedia> images) {
                 // 压缩成功回调
@@ -685,7 +737,7 @@ public class ImageGridActivity extends BaseActivity implements PublicTitleBar.On
     }
 
     private void showDialog(String msg) {
-        dialog = new SweetAlertDialog(ImageGridActivity.this);
+        dialog = new SweetAlertDialog(PictureImageGridActivity.this);
         dialog.setTitleText(msg);
         dialog.show();
     }

@@ -10,7 +10,7 @@ import android.widget.VideoView;
 
 import com.yalantis.ucrop.R;
 
-public class VideoPlayActivity extends BaseActivity implements MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
+public class PictureVideoPlayActivity extends PictureBaseActivity implements MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
     private String video_path = "";
     private ImageView left_back;
     private MediaController mMediaController;
@@ -22,7 +22,7 @@ public class VideoPlayActivity extends BaseActivity implements MediaPlayer.OnErr
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_video_play);
+        setContentView(R.layout.picture_activity_video_play);
         video_path = getIntent().getStringExtra("video_path");
         left_back = (ImageView) findViewById(R.id.left_back);
         mVideoView = (VideoView) findViewById(R.id.video_view);

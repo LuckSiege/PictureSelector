@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.yalantis.ucrop.R;
-import com.yalantis.ucrop.adapter.AlbumDirectoryAdapter;
+import com.yalantis.ucrop.adapter.PictureAlbumDirectoryAdapter;
 import com.yalantis.ucrop.decoration.RecycleViewDivider;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.entity.LocalMediaFolder;
@@ -36,10 +36,10 @@ import java.util.List;
  * email：893855882@qq.com
  * data：16/12/31
  */
-public class AlbumDirectoryActivity extends BaseActivity implements View.OnClickListener, PublicTitleBar.OnTitleBarClick, AlbumDirectoryAdapter.OnItemClickListener, ObserverListener {
+public class PictureAlbumDirectoryActivity extends PictureBaseActivity implements View.OnClickListener, PublicTitleBar.OnTitleBarClick, PictureAlbumDirectoryAdapter.OnItemClickListener, ObserverListener {
 
     private List<LocalMediaFolder> folders = new ArrayList<>();
-    private AlbumDirectoryAdapter adapter;
+    private PictureAlbumDirectoryAdapter adapter;
     private RecyclerView recyclerView;
     private PublicTitleBar titleBar;
     private TextView tv_empty;
@@ -58,7 +58,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_album);
+        setContentView(R.layout.picture_activity_album);
         registerReceiver(receiver, "app.activity.finish");
         if (selectMedias == null)
             selectMedias = new ArrayList<>();
@@ -80,7 +80,7 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         titleBar.setTitleBarBackgroundColor(backgroundColor);
         titleBar.setRightText(getString(R.string.cancel));
         titleBar.setOnTitleBarClickListener(this);
-        adapter = new AlbumDirectoryAdapter(this);
+        adapter = new PictureAlbumDirectoryAdapter(this);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new RecycleViewDivider(
@@ -210,8 +210,8 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         intent.putExtra(FunctionConfig.EXTRA_THIS_CONFIG, config);
         intent.putExtra(FunctionConfig.FOLDER_NAME, folderName);
         intent.putExtra(FunctionConfig.EXTRA_IS_TOP_ACTIVITY, true);
-        intent.setClass(mContext, ImageGridActivity.class);
-        startActivity(intent);
+        intent.setClass(mContext, PictureImageGridActivity.class);
+        startActivityForResult(intent, FunctionConfig.REQUEST_IMAGE);
     }
 
 
@@ -256,5 +256,17 @@ public class AlbumDirectoryActivity extends BaseActivity implements View.OnClick
         notifyDataCheckedStatus(selectMedias);
         if (tv_empty.getVisibility() == View.VISIBLE && adapter.getFolderData().size() > 0)
             tv_empty.setVisibility(View.GONE);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == FunctionConfig.REQUEST_IMAGE) {
+            if (resultCode == RESULT_OK) {
+                List<LocalMedia> result = (List<LocalMedia>) data.getSerializableExtra(FunctionConfig.EXTRA_RESULT);
+                setResult(RESULT_OK, new Intent().putExtra(FunctionConfig.EXTRA_RESULT, (Serializable) result));
+                finish();
+            }
+        }
     }
 }

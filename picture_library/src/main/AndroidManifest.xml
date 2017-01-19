@@ -5,30 +5,34 @@
     <application
         android:allowBackup="true"
         android:supportsRtl="true">
-
         <activity
-            android:name=".ui.AlbumDirectoryActivity"
+            android:name=".ui.PictureAlbumDirectoryActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Slider" />
         <activity
-            android:name=".ui.ImageGridActivity"
+            android:name=".ui.PictureImageGridActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Slider" />
         <activity
-            android:name=".ui.PreviewActivity"
+            android:name=".ui.PicturePreviewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Slider" />
         <activity
-            android:name=".ui.VideoPlayActivity"
+            android:name=".ui.PictureVideoPlayActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Slider" />
         <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
+            android:name=".UCropActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.ExternalPreviewActivity"
+            android:name=".ui.PictureExternalPreviewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Slider" />
+        <activity
+            android:name=".ui.PictureMultiCuttingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Slider" />
     </application>
+
 </manifest>

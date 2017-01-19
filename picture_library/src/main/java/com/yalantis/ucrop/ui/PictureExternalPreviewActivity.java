@@ -25,7 +25,7 @@ import java.util.List;
  * email：邮箱->893855882@qq.com
  * data：17/01/18
  */
-public class ExternalPreviewActivity extends FragmentActivity {
+public class PictureExternalPreviewActivity extends FragmentActivity {
     private ImageButton left_back;
     private TextView tv_title;
     private PreviewViewPager viewPager;
@@ -36,7 +36,7 @@ public class ExternalPreviewActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_external_preview);
+        setContentView(R.layout.picture_activity_external_preview);
         tv_title = (TextView) findViewById(R.id.tv_title);
         left_back = (ImageButton) findViewById(R.id.left_back);
         viewPager = (PreviewViewPager) findViewById(R.id.preview_pager);
@@ -81,7 +81,7 @@ public class ExternalPreviewActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            ImagePreviewFragment fragment = ImagePreviewFragment.getInstance(images.get(position).getPath(), images);
+            PictureImagePreviewFragment fragment = PictureImagePreviewFragment.getInstance(images.get(position).getPath(), images);
             return fragment;
         }
 

@@ -1,6 +1,9 @@
 package com.yalantis.ucrop.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yalantis.ucrop.MultiUCrop;
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.compress.CompressConfig;
 import com.yalantis.ucrop.compress.CompressImageOptions;
@@ -30,6 +34,7 @@ import com.yalantis.ucrop.util.PictureConfig;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.widget.PreviewViewPager;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +46,7 @@ import java.util.List;
  * email：893855882@qq.com
  * data：16/12/31
  */
-public class PreviewActivity extends BaseActivity implements View.OnClickListener {
+public class PicturePreviewActivity extends PictureBaseActivity implements View.OnClickListener {
     private ImageButton left_back;
     private TextView tv_img_num, tv_title, tv_ok;
     private RelativeLayout select_bar_layout;
@@ -54,11 +59,22 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
     private TextView check;
     private SimpleFragmentAdapter adapter;
     private SweetAlertDialog dialog;
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals("app.activity.finish")) {
+                finish();
+                overridePendingTransition(0, R.anim.slide_bottom_out);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_image_preview);
+        setContentView(R.layout.picture_activity_image_preview);
+        registerReceiver(receiver, "app.activity.finish");
         rl_title = (RelativeLayout) findViewById(R.id.rl_title);
         left_back = (ImageButton) findViewById(R.id.left_back);
         viewPager = (PreviewViewPager) findViewById(R.id.preview_pager);
@@ -105,7 +121,7 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
                     check.setSelected(false);
                 }
                 if (selectImages.size() >= maxSelectNum && isChecked) {
-                    Toast.makeText(PreviewActivity.this, getString(R.string.message_max_num, maxSelectNum), Toast.LENGTH_LONG).show();
+                    Toast.makeText(PicturePreviewActivity.this, getString(R.string.message_max_num, maxSelectNum), Toast.LENGTH_LONG).show();
                     check.setSelected(false);
                     return;
                 }
@@ -248,7 +264,7 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
 
         @Override
         public Fragment getItem(int position) {
-            ImagePreviewFragment fragment = ImagePreviewFragment.getInstance(images.get(position).getPath(),selectImages);
+            PictureImagePreviewFragment fragment = PictureImagePreviewFragment.getInstance(images.get(position).getPath(), selectImages);
             return fragment;
         }
 
@@ -265,14 +281,58 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
         if (id == R.id.left_back) {
             activityFinish();
         } else if (id == R.id.tv_ok) {
-            if (isCompress && type == LocalMediaLoader.TYPE_IMAGE) {
-                compressImage(selectImages);
+            if (selectMode == FunctionConfig.MODE_MULTIPLE && enableCrop && type == LocalMediaLoader.TYPE_IMAGE) {
+                // 是图片和选择压缩并且是多张，调用批量压缩
+                startMultiCopy(selectImages);
             } else {
-                onResult(selectImages);
+                if (isCompress && type == LocalMediaLoader.TYPE_IMAGE) {
+                    compressImage(selectImages);
+                } else {
+                    onResult(selectImages);
+                }
             }
         }
     }
 
+    /**
+     * 多图裁剪
+     *
+     * @param medias
+     */
+    protected void startMultiCopy(List<LocalMedia> medias) {
+        if (medias != null && medias.size() > 0) {
+            LocalMedia media = medias.get(0);
+            String path = media.getPath();
+            // 去裁剪
+            MultiUCrop uCrop = MultiUCrop.of(Uri.parse(path), Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + ".jpg")));
+            MultiUCrop.Options options = new MultiUCrop.Options();
+            switch (copyMode) {
+                case FunctionConfig.COPY_MODEL_DEFAULT:
+                    options.withAspectRatio(0, 0);
+                    break;
+                case FunctionConfig.COPY_MODEL_1_1:
+                    options.withAspectRatio(1, 1);
+                    break;
+                case FunctionConfig.COPY_MODEL_3_2:
+                    options.withAspectRatio(3, 2);
+                    break;
+                case FunctionConfig.COPY_MODEL_3_4:
+                    options.withAspectRatio(3, 4);
+                    break;
+                case FunctionConfig.COPY_MODEL_16_9:
+                    options.withAspectRatio(16, 9);
+                    break;
+            }
+            options.setLocalMedia(medias);
+            options.setCompressionQuality(compressQuality);
+            options.withMaxResultSize(cropW, cropH);
+            options.background_color(backgroundColor);
+            options.putLocalMedias(config);
+            uCrop.withOptions(options);
+            uCrop.start(PicturePreviewActivity.this);
+        }
+
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -294,8 +354,10 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
      */
     private void compressImage(List<LocalMedia> result) {
         showDialog("处理中...");
-        CompressConfig config = CompressConfig.ofDefaultConfig();
-        CompressImageOptions.compress(this, config, result, new CompressInterface.CompressListener() {
+        CompressConfig compress_config = CompressConfig.ofDefaultConfig();
+        compress_config.enablePixelCompress(config.isEnablePixelCompress());
+        compress_config.enableQualityCompress(config.isEnableQualityCompress());
+        CompressImageOptions.compress(this, compress_config, result, new CompressInterface.CompressListener() {
             @Override
             public void onCompressSuccess(List<LocalMedia> images) {
                 // 压缩成功回调
@@ -323,6 +385,8 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
         PictureConfig.OnSelectResultCallback resultCallback = PictureConfig.getResultCallback();
         if (resultCallback != null) {
             resultCallback.onSelectSuccess(result);
+            // 释放静态变量
+            PictureConfig.resultCallback = null;
         }
         finish();
         overridePendingTransition(0, R.anim.slide_bottom_out);
@@ -331,8 +395,16 @@ public class PreviewActivity extends BaseActivity implements View.OnClickListene
 
 
     private void showDialog(String msg) {
-        dialog = new SweetAlertDialog(PreviewActivity.this);
+        dialog = new SweetAlertDialog(PicturePreviewActivity.this);
         dialog.setTitleText(msg);
         dialog.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+        }
     }
 }

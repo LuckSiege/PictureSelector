@@ -15,7 +15,7 @@ import java.io.FileOutputStream;
 
 /**
  * 压缩照片
- * <p/>
+ * <p>
  * Date: 2017/01/05
  * GitHub:https://github.com/LuckSiege
  * email:893855882@qq.com
@@ -32,6 +32,7 @@ public class CompressImageUtil {
     }
 
     public void compress(String imagePath, CompressListener listener) {
+        // 启用像素压缩
         if (config.isEnablePixelCompress()) {
             try {
                 compressImageByPixel(imagePath, listener);
@@ -40,6 +41,7 @@ public class CompressImageUtil {
                 e.printStackTrace();
             }
         } else {
+            // 启用质量压缩
             compressImageByQuality(BitmapFactory.decodeFile(imagePath), imagePath, listener);
         }
     }
