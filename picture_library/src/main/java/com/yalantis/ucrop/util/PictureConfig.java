@@ -26,6 +26,7 @@ public class PictureConfig {
     public static FunctionConfig config;
     public static PictureConfig pictureConfig;
 
+
     public static PictureConfig getPictureConfig() {
         if (pictureConfig == null) {
             pictureConfig = new PictureConfig();

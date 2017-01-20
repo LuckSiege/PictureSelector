@@ -22,6 +22,7 @@ import com.yalantis.ucrop.observable.ImagesObservable;
 import com.yalantis.ucrop.observable.ObserverListener;
 import com.yalantis.ucrop.util.FunctionConfig;
 import com.yalantis.ucrop.util.LocalMediaLoader;
+import com.yalantis.ucrop.util.PictureConfig;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.util.Utils;
 import com.yalantis.ucrop.widget.PublicTitleBar;
@@ -233,6 +234,9 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
     }
 
     protected void clearData() {
+        // 释放静态变量
+        PictureConfig.getPictureConfig().resultCallback = null;
+        PictureConfig.pictureConfig = null;
         ImagesObservable.getInstance().remove(this);
         ImagesObservable.getInstance().clearLocalFolders();
         ImagesObservable.getInstance().clearLocalMedia();
@@ -270,4 +274,6 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
             }
         }
     }
+
+
 }
