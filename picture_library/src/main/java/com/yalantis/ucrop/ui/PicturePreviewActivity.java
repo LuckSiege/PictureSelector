@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -242,7 +243,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         if (enable) {
             tv_ok.setEnabled(true);
             tv_ok.setAlpha(1.0f);
-            animation = OptAnimationLoader.loadAnimation(mContext, R.anim.modal_in);
+            animation = AnimationUtils.loadAnimation(mContext, R.anim.modal_in);
             tv_img_num.startAnimation(animation);
             tv_img_num.setVisibility(View.VISIBLE);
             tv_img_num.setText(selectImages.size() + "");
@@ -382,11 +383,12 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         for (LocalMedia media : images) {
             result.add(media);
         }
-        PictureConfig.OnSelectResultCallback resultCallback = PictureConfig.getResultCallback();
+        PictureConfig.OnSelectResultCallback resultCallback = PictureConfig.getPictureConfig().getResultCallback();
         if (resultCallback != null) {
             resultCallback.onSelectSuccess(result);
             // 释放静态变量
-            PictureConfig.resultCallback = null;
+            PictureConfig.getPictureConfig().resultCallback = null;
+            PictureConfig.pictureConfig = null;
         }
         finish();
         overridePendingTransition(0, R.anim.slide_bottom_out);

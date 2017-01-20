@@ -15,13 +15,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory;
+import com.bumptech.glide.load.engine.cache.MemoryCache;
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.dialog.OptAnimationLoader;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.util.FunctionConfig;
 import com.yalantis.ucrop.util.LocalMediaLoader;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,7 +142,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                         .load(path)
                         .placeholder(R.drawable.image_placeholder)
                         .crossFade()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
                         .centerCrop()
                         .into(contentHolder.picture);
 

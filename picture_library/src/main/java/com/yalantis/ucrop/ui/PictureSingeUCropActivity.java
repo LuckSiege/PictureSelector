@@ -1,4 +1,4 @@
-package com.yalantis.ucrop;
+package com.yalantis.ucrop.ui;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.yalantis.ucrop.R;
+import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.compress.CompressConfig;
 import com.yalantis.ucrop.compress.CompressImageOptions;
@@ -23,7 +25,6 @@ import com.yalantis.ucrop.compress.CompressInterface;
 import com.yalantis.ucrop.dialog.SweetAlertDialog;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.model.AspectRatio;
-import com.yalantis.ucrop.ui.PictureBaseActivity;
 import com.yalantis.ucrop.util.FunctionConfig;
 import com.yalantis.ucrop.util.LocalMediaLoader;
 import com.yalantis.ucrop.util.PictureConfig;
@@ -41,7 +42,7 @@ import java.util.List;
 
 
 @SuppressWarnings("ConstantConditions")
-public class UCropActivity extends PictureBaseActivity {
+public class PictureSingeUCropActivity extends PictureBaseActivity {
     public static final int DEFAULT_COMPRESS_QUALITY = 100;
     public static final Bitmap.CompressFormat DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG;
     private ImageButton left_back;
@@ -89,9 +90,12 @@ public class UCropActivity extends PictureBaseActivity {
     /**
      * This method extracts all data from the incoming intent and setups views properly.
      */
+    private Uri inputUri;
+    private Uri outputUri;
+
     private void setImageData(@NonNull Intent intent) {
-        Uri inputUri = intent.getParcelableExtra(UCrop.EXTRA_INPUT_URI);
-        Uri outputUri = intent.getParcelableExtra(UCrop.EXTRA_OUTPUT_URI);
+        inputUri = intent.getParcelableExtra(UCrop.EXTRA_INPUT_URI);
+        outputUri = intent.getParcelableExtra(UCrop.EXTRA_OUTPUT_URI);
         processOptions(intent);
 
         if (inputUri != null && outputUri != null) {
@@ -121,7 +125,7 @@ public class UCropActivity extends PictureBaseActivity {
         }
         mCompressFormat = (compressFormat == null) ? DEFAULT_COMPRESS_FORMAT : compressFormat;
 
-        mCompressQuality = intent.getIntExtra(UCrop.Options.EXTRA_COMPRESSION_QUALITY, UCropActivity.DEFAULT_COMPRESS_QUALITY);
+        mCompressQuality = intent.getIntExtra(UCrop.Options.EXTRA_COMPRESSION_QUALITY, PictureSingeUCropActivity.DEFAULT_COMPRESS_QUALITY);
 
 
         // Crop image view options
@@ -280,7 +284,9 @@ public class UCropActivity extends PictureBaseActivity {
                 // 压缩图片
                 List<LocalMedia> compresses = new ArrayList<>();
                 LocalMedia compress = new LocalMedia();
-                compress.setPath(resultUri.getPath());
+                compress.setPath(inputUri.getPath());
+                compress.setCutPath(resultUri.getPath());
+                compress.setCut(true);
                 compress.setType(type);
                 compresses.add(compress);
                 compressImage(compresses);
@@ -317,7 +323,9 @@ public class UCropActivity extends PictureBaseActivity {
     public void onSelectDone(String path) {
         ArrayList<LocalMedia> images = new ArrayList<>();
         LocalMedia media = new LocalMedia();
-        media.setPath(path);
+        media.setPath(inputUri.getPath());
+        media.setCutPath(path);
+        media.setCut(true);
         media.setType(type);
         images.add(media);
         onResult(images);
@@ -330,11 +338,12 @@ public class UCropActivity extends PictureBaseActivity {
             result.add(media);
         }
 
-        PictureConfig.OnSelectResultCallback resultCallback = PictureConfig.getResultCallback();
+        PictureConfig.OnSelectResultCallback resultCallback = PictureConfig.getPictureConfig().getResultCallback();
         if (resultCallback != null) {
             resultCallback.onSelectSuccess(result);
             // 释放静态变量
-            PictureConfig.resultCallback = null;
+            PictureConfig.getPictureConfig().resultCallback = null;
+            PictureConfig.pictureConfig = null;
         }
 
         finish();
@@ -346,7 +355,7 @@ public class UCropActivity extends PictureBaseActivity {
     }
 
     private void showDialog(String msg) {
-        dialog = new SweetAlertDialog(UCropActivity.this);
+        dialog = new SweetAlertDialog(PictureSingeUCropActivity.this);
         dialog.setTitleText(msg);
         dialog.show();
     }

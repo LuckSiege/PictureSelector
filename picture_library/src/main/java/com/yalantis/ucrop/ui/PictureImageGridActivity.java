@@ -22,7 +22,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.yalantis.ucrop.MultiUCrop;
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.UCrop;
@@ -43,7 +42,6 @@ import com.yalantis.ucrop.util.ScreenUtils;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.util.Utils;
 import com.yalantis.ucrop.widget.PublicTitleBar;
-
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -110,7 +108,6 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Pub
         } else {
             selectMedias = (List<LocalMedia>) getIntent().getSerializableExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST);
         }
-
         String folderName = getIntent().getStringExtra(FunctionConfig.FOLDER_NAME);
         folders = ImagesObservable.getInstance().readLocalFolders();
         if (folders == null) {
@@ -183,7 +180,6 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Pub
         }
         adapter.bindImagesData(images);
         adapter.setOnPhotoSelectChangedListener(PictureImageGridActivity.this);
-
     }
 
     @Override
@@ -635,11 +631,12 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Pub
         for (LocalMedia media : images) {
             result.add(media);
         }
-        PictureConfig.OnSelectResultCallback resultCallback = PictureConfig.getResultCallback();
+        PictureConfig.OnSelectResultCallback resultCallback = PictureConfig.getPictureConfig().getResultCallback();
         if (resultCallback != null) {
             resultCallback.onSelectSuccess(result);
             // 释放静态变量
-            PictureConfig.resultCallback = null;
+            PictureConfig.getPictureConfig().resultCallback = null;
+            PictureConfig.pictureConfig = null;
         }
 
         overridePendingTransition(0, R.anim.slide_bottom_out);

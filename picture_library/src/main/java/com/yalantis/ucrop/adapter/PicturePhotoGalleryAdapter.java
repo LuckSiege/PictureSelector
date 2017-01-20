@@ -17,6 +17,8 @@
 package com.yalantis.ucrop.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -26,6 +28,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.entity.LocalMedia;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,32 +39,33 @@ import java.util.List;
  * data：16/12/31
  */
 
-public class PicturePhotoGalleryAdapter extends PictureViewHolderAdapter<PicturePhotoGalleryAdapter.ViewHolder, LocalMedia> {
+public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhotoGalleryAdapter.ViewHolder> {
 
     private Context context;
-    private int mRowWidth;
+    private List<LocalMedia> list = new ArrayList<>();
+    private LayoutInflater mInflater;
 
-    public PicturePhotoGalleryAdapter(Context context, List<LocalMedia> list, int screenWidth) {
-        super(context, list);
+    public PicturePhotoGalleryAdapter(Context context, List<LocalMedia> list) {
+        mInflater = LayoutInflater.from(context);
         this.context = context;
-        this.mRowWidth = screenWidth / 5;
+        this.list = list;
     }
 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
-        View view = inflate(R.layout.picture_gf_adapter_edit_list, parent);
+        View view = mInflater.inflate(R.layout.picture_gf_adapter_edit_list,
+                parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         String path = "";
-        LocalMedia photoInfo = getDatas().get(position);
+        LocalMedia photoInfo = list.get(position);
         if (photoInfo != null) {
             path = photoInfo.getPath();
         }
-
         if (photoInfo.isCut()) {
             holder.iv_dot.setVisibility(View.VISIBLE);
             holder.iv_dot.setImageResource(R.drawable.crop_oval_true);
@@ -76,19 +80,24 @@ public class PicturePhotoGalleryAdapter extends PictureViewHolderAdapter<Picture
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
                 .into(holder.mIvPhoto);
-
     }
 
-    public class ViewHolder extends PictureViewHolderAdapter.ViewHolder {
+
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView mIvPhoto;
-        ImageView mIvDelete;
         ImageView iv_dot;
 
         public ViewHolder(View view) {
             super(view);
             mIvPhoto = (ImageView) view.findViewById(R.id.iv_photo);
-            mIvDelete = (ImageView) view.findViewById(R.id.iv_delete);
             iv_dot = (ImageView) view.findViewById(R.id.iv_dot);
         }
     }
+
 }

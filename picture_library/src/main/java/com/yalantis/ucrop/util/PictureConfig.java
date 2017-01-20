@@ -24,15 +24,24 @@ import java.util.List;
 public class PictureConfig {
 
     public static FunctionConfig config;
+    public static PictureConfig pictureConfig;
+
+    public static PictureConfig getPictureConfig() {
+        if (pictureConfig == null) {
+            pictureConfig = new PictureConfig();
+        }
+
+        return pictureConfig;
+    }
 
     public PictureConfig() {
         super();
     }
 
 
-    public static OnSelectResultCallback resultCallback;
+    public OnSelectResultCallback resultCallback;
 
-    public static OnSelectResultCallback getResultCallback() {
+    public OnSelectResultCallback getResultCallback() {
         return resultCallback;
     }
 
@@ -43,7 +52,7 @@ public class PictureConfig {
     /**
      * 启动相册
      */
-    public static void openPhoto(Context mContext, OnSelectResultCallback resultCall) {
+    public void openPhoto(Context mContext, OnSelectResultCallback resultCall) {
         if (Utils.isFastDoubleClick()) {
             return;
         }
@@ -66,14 +75,13 @@ public class PictureConfig {
         resultCallback = resultCall;
     }
 
-
     /**
      * 外部图片预览
      *
      * @param position
      * @param medias
      */
-    public static void externalPicturePreview(Context mContext, int position, List<LocalMedia> medias) {
+    public void externalPicturePreview(Context mContext, int position, List<LocalMedia> medias) {
         if (medias != null && medias.size() > 0) {
             Intent intent = new Intent();
             intent.putExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);

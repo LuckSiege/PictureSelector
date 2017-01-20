@@ -83,8 +83,8 @@
             android:layout_height="1dp"
             android:background="#d2d2d7" />
 
-        <com.yalantis.ucrop.widget.HorizontalListView
-            android:id="@+id/lv_gallery"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="90dp" />
     </LinearLayout>

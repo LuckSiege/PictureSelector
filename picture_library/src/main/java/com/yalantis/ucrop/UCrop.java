@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.yalantis.ucrop.model.AspectRatio;
+import com.yalantis.ucrop.ui.PictureSingeUCropActivity;
 import com.yalantis.ucrop.util.FunctionConfig;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -168,12 +169,12 @@ public class UCrop {
     }
 
     /**
-     * Get Intent to start {@link UCropActivity}
+     * Get Intent to start {@link PictureSingeUCropActivity}
      *
-     * @return Intent for {@link UCropActivity}
+     * @return Intent for {@link PictureSingeUCropActivity}
      */
     public Intent getIntent(@NonNull Context context) {
-        mCropIntent.setClass(context, UCropActivity.class);
+        mCropIntent.setClass(context, PictureSingeUCropActivity.class);
         mCropIntent.putExtras(mCropOptionsBundle);
         return mCropIntent;
     }
@@ -308,9 +309,9 @@ public class UCrop {
         /**
          * Choose what set of gestures will be enabled on each tab - if any.
          */
-        public void setAllowedGestures(@UCropActivity.GestureTypes int tabScale,
-                                       @UCropActivity.GestureTypes int tabRotate,
-                                       @UCropActivity.GestureTypes int tabAspectRatio) {
+        public void setAllowedGestures(@PictureSingeUCropActivity.GestureTypes int tabScale,
+                                       @PictureSingeUCropActivity.GestureTypes int tabRotate,
+                                       @PictureSingeUCropActivity.GestureTypes int tabAspectRatio) {
             mOptionBundle.putIntArray(EXTRA_ALLOWED_GESTURES, new int[]{tabScale, tabRotate, tabAspectRatio});
         }
 

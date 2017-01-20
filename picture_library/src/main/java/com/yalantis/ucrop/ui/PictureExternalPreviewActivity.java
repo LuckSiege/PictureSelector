@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.util.FunctionConfig;
+import com.yalantis.ucrop.util.PictureConfig;
 import com.yalantis.ucrop.widget.PreviewViewPager;
 
 import java.util.ArrayList;
@@ -92,4 +93,10 @@ public class PictureExternalPreviewActivity extends FragmentActivity {
     }
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PictureConfig.getPictureConfig().resultCallback = null;
+        PictureConfig.pictureConfig = null;
+    }
 }

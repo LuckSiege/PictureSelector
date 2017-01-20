@@ -71,8 +71,9 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
                     .error(R.drawable.ic_placeholder)
                     .centerCrop()
                     .crossFade()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .into(holder.first_image);
+
         }
         holder.image_num.setText("(" + imageNum + ")");
         holder.tv_folder_name.setText(name);

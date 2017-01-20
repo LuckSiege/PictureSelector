@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.adapter.PictureAlbumDirectoryAdapter;
 import com.yalantis.ucrop.decoration.RecycleViewDivider;

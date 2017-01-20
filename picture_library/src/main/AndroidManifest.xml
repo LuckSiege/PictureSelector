@@ -23,7 +23,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Slider" />
         <activity
-            android:name=".UCropActivity"
+            android:name=".ui.PictureSingeUCropActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.PictureExternalPreviewActivity"

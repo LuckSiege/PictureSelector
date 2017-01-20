@@ -55,7 +55,7 @@ public class PictureImagePreviewFragment extends Fragment {
         Glide.with(container.getContext())
                 .load(path)
                 .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.ALL    )
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(new SimpleTarget<Bitmap>(480, 800) {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {

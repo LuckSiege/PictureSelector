@@ -8,11 +8,12 @@ import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -37,7 +38,6 @@ import com.yalantis.ucrop.view.GestureCropImageView;
 import com.yalantis.ucrop.view.OverlayView;
 import com.yalantis.ucrop.view.TransformImageView;
 import com.yalantis.ucrop.view.UCropView;
-import com.yalantis.ucrop.widget.HorizontalListView;
 
 import java.io.File;
 import java.lang.annotation.Retention;
@@ -46,7 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PictureMultiCuttingActivity extends PictureBaseActivity {
-    private HorizontalListView lv_gallery;
+    private RecyclerView recyclerView;
     private PicturePhotoGalleryAdapter adapter;
     private List<LocalMedia> images = new ArrayList<>();
     public static final int DEFAULT_COMPRESS_QUALITY = 100;
@@ -59,7 +59,6 @@ public class PictureMultiCuttingActivity extends PictureBaseActivity {
     public static final int ALL = 3;
     private SweetAlertDialog dialog;
     private int cutIndex = 0;
-    private List<LocalMedia> cutList = new ArrayList<>();
 
     @IntDef({NONE, SCALE, ROTATE, ALL})
     @Retention(RetentionPolicy.SOURCE)
@@ -83,12 +82,22 @@ public class PictureMultiCuttingActivity extends PictureBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_activity_multi_cutting);
         images = (List<LocalMedia>) getIntent().getSerializableExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST);
-        lv_gallery = (HorizontalListView) findViewById(R.id.lv_gallery);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         Intent intent = getIntent();
         cutIndex = intent.getIntExtra(FunctionConfig.EXTRA_CUT_INDEX, 0);
+        for (LocalMedia media : images) {
+            media.setCut(false);
+        }
         images.get(cutIndex).setCut(true);// 默认装载第一张图片
-        adapter = new PicturePhotoGalleryAdapter(mContext, images, mScreenWidth);
-        lv_gallery.setAdapter(adapter);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recyclerView.setLayoutManager(mLayoutManager);
+        adapter = new PicturePhotoGalleryAdapter(mContext, images);
+        recyclerView.setAdapter(adapter);
+        // 预览图 一页5个,裁剪到第6个的时候滚动到最新位置，不然预览图片看不到
+        if (cutIndex >= 5) {
+            recyclerView.scrollToPosition(cutIndex);
+        }
         setupViews(intent);
         setImageData(intent);
     }
@@ -316,7 +325,8 @@ public class PictureMultiCuttingActivity extends PictureBaseActivity {
             for (LocalMedia media : images) {
                 media.setCut(false);
             }
-            images.get(cutIndex).setCutPath(uri.getPath());
+
+            images.get(cutIndex).setCut(true);
             cutIndex++;
             if (cutIndex >= images.size()) {
                 // 裁剪完成，看是否压缩
@@ -330,7 +340,7 @@ public class PictureMultiCuttingActivity extends PictureBaseActivity {
                 finish();
                 startMultiCopy(images.get(cutIndex).getPath());
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         dismiss();
@@ -367,11 +377,12 @@ public class PictureMultiCuttingActivity extends PictureBaseActivity {
         for (LocalMedia media : images) {
             result.add(media);
         }
-        PictureConfig.OnSelectResultCallback resultCallback = PictureConfig.getResultCallback();
+        PictureConfig.OnSelectResultCallback resultCallback = PictureConfig.getPictureConfig().getResultCallback();
         if (resultCallback != null) {
             resultCallback.onSelectSuccess(result);
             // 释放静态变量
-            PictureConfig.resultCallback = null;
+            PictureConfig.getPictureConfig().resultCallback = null;
+            PictureConfig.pictureConfig = null;
         }
         finish();
         overridePendingTransition(0, R.anim.slide_bottom_out);
