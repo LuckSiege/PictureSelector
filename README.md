@@ -128,11 +128,11 @@ PictureConfig.init(config);
 
 // 启动相册并设置回调函数  
 
-PictureConfig.openPhoto(MainActivity.this, resultCallback); 
+PictureConfig.getPictureConfig.openPhoto(MainActivity.this, resultCallback); 
 
 // 外部预览图片方法 (例如选完后要预览的可调用此方法)
 
-PictureConfig.externalPicturePreview(this, position, selectMedia);
+PictureConfig.getPictureConfig.externalPicturePreview(this, position, selectMedia);
 
 /**
   * 图片回调方法
