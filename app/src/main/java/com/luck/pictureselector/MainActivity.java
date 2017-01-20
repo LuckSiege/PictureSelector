@@ -1,8 +1,8 @@
 package com.luck.pictureselector;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,7 +30,7 @@ import java.util.List;
  * data：16/12/31
  */
 
-public class MainActivity extends AppCompatActivity implements RadioGroup.OnCheckedChangeListener {
+public class MainActivity extends Activity implements RadioGroup.OnCheckedChangeListener {
     private RecyclerView recyclerView;
     private GridImageAdapter adapter;
     private RadioGroup rgbs01, rgbs0, rgbs1, rgbs2, rgbs3, rgbs4, rgbs5, rgbs6, rgbs7, rgbs8, rgbs9;
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
             @Override
             public void onItemClick(int position, View v) {
                 // 这里可预览图片
-                PictureConfig.externalPicturePreview(mContext, position, selectMedia);
+                PictureConfig.getPictureConfig().externalPicturePreview(mContext, position, selectMedia);
             }
         });
 
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements RadioGroup.OnChec
 
                     // 先初始化参数配置，在启动相册
                     PictureConfig.init(config);
-                    PictureConfig.openPhoto(mContext, resultCallback);
+                    PictureConfig.getPictureConfig().openPhoto(mContext, resultCallback);
 
                     break;
                 case 1:
