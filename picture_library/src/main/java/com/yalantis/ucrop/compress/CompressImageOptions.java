@@ -44,19 +44,25 @@ public class CompressImageOptions implements CompressInterface {
     }
 
     private void compress(final LocalMedia compress) {
-        String path = compress.getPath();
+        String path = "";
+        if (compress.isCut()) {
+            // 如果是裁剪过的图片，压缩裁剪图片
+            path = compress.getCutPath();
+        } else {
+            path = compress.getPath();
+        }
         if (TextUtils.isEmpty(path)) {
             continueCompress(compress, false);
             return;
         }
 
-        File file = new File(compress.getPath());
+        File file = new File(path);
         if (file == null || !file.exists() || !file.isFile()) {
             continueCompress(compress, false);
             return;
         }
 
-        compressImageUtil.compress(compress.getPath(), new CompressImageUtil.CompressListener() {
+        compressImageUtil.compress(path, new CompressImageUtil.CompressListener() {
             @Override
             public void onCompressSuccess(String imgPath) {
                 compress.setCompressPath(imgPath);

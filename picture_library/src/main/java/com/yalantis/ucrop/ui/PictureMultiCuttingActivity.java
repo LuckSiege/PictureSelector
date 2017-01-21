@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -322,14 +321,14 @@ public class PictureMultiCuttingActivity extends PictureBaseActivity {
 
     protected void setResultUri(Uri uri, float resultAspectRatio, int imageWidth, int imageHeight) {
         try {
-            for (LocalMedia media : images) {
-                media.setCut(false);
-            }
-
+            images.get(cutIndex).setCutPath(uri.getPath());
             images.get(cutIndex).setCut(true);
             cutIndex++;
             if (cutIndex >= images.size()) {
                 // 裁剪完成，看是否压缩
+                for (LocalMedia media : images) {
+                    media.setCut(true);
+                }
                 if (isCompress) {
                     dismiss();
                     compressImage(images);

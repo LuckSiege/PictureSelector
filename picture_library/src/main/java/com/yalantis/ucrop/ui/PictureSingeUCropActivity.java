@@ -227,7 +227,7 @@ public class PictureSingeUCropActivity extends PictureBaseActivity {
 
         @Override
         public void onLoadComplete() {
-            mUCropView.animate().alpha(1).setDuration(300).setInterpolator(new AccelerateInterpolator());
+            mUCropView.animate().alpha(1).setDuration(150).setInterpolator(new AccelerateInterpolator());
             supportInvalidateOptionsMenu();
         }
 
@@ -308,7 +308,6 @@ public class PictureSingeUCropActivity extends PictureBaseActivity {
             public void onCompressSuccess(List<LocalMedia> images) {
                 // 压缩成功回调
                 onResult(images);
-
             }
 
             @Override
