@@ -42,7 +42,7 @@
 
 项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~   联系方式893855882@qq.com  希望用得着的朋友点个start，你们的支持才是我继续下去的动力，在此先谢过~  
 
-app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.2.0'  注：之前引入如有报错，请引入最新版本、
+app-build 引入compile 'com.github.LuckSiege:PictureSelector:v1.2.1'  注：之前引入如有报错，请引入最新版本、
 
 项目根目录  
 
@@ -128,11 +128,11 @@ PictureConfig.init(config);
 
 // 启动相册并设置回调函数  
 
-PictureConfig.openPhoto(MainActivity.this, resultCallback); 
+PictureConfig.getPictureConfig.openPhoto(MainActivity.this, resultCallback); 
 
 // 外部预览图片方法 (例如选完后要预览的可调用此方法)
 
-PictureConfig.externalPicturePreview(this, position, selectMedia);
+PictureConfig.getPictureConfig.externalPicturePreview(this, position, selectMedia);
 
 /**
   * 图片回调方法
