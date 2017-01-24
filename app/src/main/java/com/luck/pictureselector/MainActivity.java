@@ -2,23 +2,23 @@ package com.luck.pictureselector;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
+import com.luck.picture.lib.model.FunctionConfig;
+import com.luck.picture.lib.model.LocalMediaLoader;
+import com.luck.picture.lib.model.PictureConfig;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.util.FullyGridLayoutManager;
 import com.yalantis.ucrop.entity.LocalMedia;
-import com.yalantis.ucrop.util.FunctionConfig;
-import com.yalantis.ucrop.util.LocalMediaLoader;
-import com.yalantis.ucrop.util.PictureConfig;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,14 +31,16 @@ import java.util.List;
  */
 
 public class MainActivity extends Activity implements RadioGroup.OnCheckedChangeListener {
+
     private RecyclerView recyclerView;
     private GridImageAdapter adapter;
-    private RadioGroup rgbs01, rgbs0, rgbs1, rgbs2, rgbs3, rgbs4, rgbs5, rgbs6, rgbs7, rgbs8, rgbs9;
+    private RadioGroup rgbs01, rgbs0, rgbs1, rgbs2, rgbs3, rgbs4, rgbs5, rgbs6, rgbs7, rgbs8, rgbs9, rgbs10;
     private int selectMode = FunctionConfig.MODE_MULTIPLE;
     private int maxSelectNum = 9;// 图片最大可选数量
     private ImageButton minus, plus;
     private EditText select_num;
-    private EditText et_w, et_h;
+    private EditText et_w, et_h, et_compress_width, et_compress_height;
+    private LinearLayout ll_luban_wh;
     private boolean isShow = true;
     private int selectType = LocalMediaLoader.TYPE_IMAGE;
     private int copyMode = FunctionConfig.COPY_MODEL_DEFAULT;
@@ -49,8 +51,11 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     private boolean selectImageType = false;
     private int cropW = 0;
     private int cropH = 0;
+    private int compressW = 0;
+    private int compressH = 0;
     private boolean isCompress = false;
     private boolean isCheckNumMode = false;
+    private int compressFlag = 1;// 1 系统自带压缩 2 luban压缩
     private List<LocalMedia> selectMedia = new ArrayList<>();
     private Context mContext;
 
@@ -71,6 +76,10 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         rgbs7 = (RadioGroup) findViewById(R.id.rgbs7);
         rgbs8 = (RadioGroup) findViewById(R.id.rgbs8);
         rgbs9 = (RadioGroup) findViewById(R.id.rgbs9);
+        rgbs10 = (RadioGroup) findViewById(R.id.rgbs10);
+        ll_luban_wh = (LinearLayout) findViewById(R.id.ll_luban_wh);
+        et_compress_width = (EditText) findViewById(R.id.et_compress_width);
+        et_compress_height = (EditText) findViewById(R.id.et_compress_height);
         et_w = (EditText) findViewById(R.id.et_w);
         et_h = (EditText) findViewById(R.id.et_h);
         minus = (ImageButton) findViewById(R.id.minus);
@@ -93,6 +102,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         rgbs8.setOnCheckedChangeListener(this);
         rgbs9.setOnCheckedChangeListener(this);
         rgbs01.setOnCheckedChangeListener(this);
+        rgbs10.setOnCheckedChangeListener(this);
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,15 +168,23 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                      * setBottomBgColor 选择图片页面底部背景色
                      * setCompressQuality 设置裁剪质量，默认无损裁剪
                      * setSelectMedia 已选择的图片
+                     * setCompressFlag 1为系统自带压缩  2为第三方luban压缩
                      * 注意-->type为2时 设置isPreview or isCrop 无效
                      * 注意：Options可以为空，默认标准模式
                      */
                     String ws = et_w.getText().toString().trim();
                     String hs = et_h.getText().toString().trim();
+
                     if (!isNull(ws) && !isNull(hs)) {
                         cropW = Integer.parseInt(ws);
                         cropH = Integer.parseInt(hs);
                     }
+
+                    if (!isNull(et_compress_width.getText().toString()) && !isNull(et_compress_height.getText().toString())) {
+                        compressW = Integer.parseInt(et_compress_width.getText().toString());
+                        compressH = Integer.parseInt(et_compress_height.getText().toString());
+                    }
+
                     int selector = R.drawable.select_cb;
                     FunctionConfig config = new FunctionConfig();
                     config.setType(selectType);
@@ -188,6 +206,9 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                     config.setCompressQuality(100);
                     config.setImageSpanCount(4);
                     config.setSelectMedia(selectMedia);
+                    config.setCompressFlag(compressFlag);
+                    config.setCompressW(compressW);
+                    config.setCompressH(compressH);
                     if (theme) {
                         config.setThemeStyle(ContextCompat.getColor(MainActivity.this, R.color.blue));
                         // 可以自定义底部 预览 完成 文字的颜色和背景色
@@ -307,9 +328,27 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 break;
             case R.id.rb_compress_false:
                 isCompress = false;
+                rgbs10.setVisibility(View.GONE);
+                ll_luban_wh.setVisibility(View.GONE);
+                et_compress_height.setText("");
+                et_compress_width.setText("");
                 break;
             case R.id.rb_compress_true:
                 isCompress = true;
+                if (compressFlag == 2) {
+                    ll_luban_wh.setVisibility(View.VISIBLE);
+                }
+                rgbs10.setVisibility(View.VISIBLE);
+                break;
+            case R.id.rb_system:
+                compressFlag = 1;
+                ll_luban_wh.setVisibility(View.GONE);
+                et_compress_height.setText("");
+                et_compress_width.setText("");
+                break;
+            case R.id.rb_luban:
+                compressFlag = 2;
+                ll_luban_wh.setVisibility(View.VISIBLE);
                 break;
         }
     }

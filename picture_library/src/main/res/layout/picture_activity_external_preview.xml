@@ -34,7 +34,7 @@
 
     </RelativeLayout>
 
-    <com.yalantis.ucrop.widget.PreviewViewPager
+    <com.luck.picture.lib.widget.PreviewViewPager
         android:id="@+id/preview_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

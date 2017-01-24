@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="ucrop_label_original">原始比例</string>
+    <string name="ucrop_label_edit_photo">裁切</string>
+
+    <string name="ucrop_menu_crop">裁切</string>
+
+    <string name="ucrop_error_input_data_is_absent">必須指定輸入以及輸出的 Uri</string>
+    <string name="ucrop_mutate_exception_hint">在你的 App 內覆寫顏色資源檔 (ucrop_color_toolbar_widget) 使 5.0 以前裝置正常運作</string>
+
+
+</resources>

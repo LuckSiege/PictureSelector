@@ -30,8 +30,8 @@ import java.util.List;
  */
 public class GridImageAdapter extends
         RecyclerView.Adapter<GridImageAdapter.ViewHolder> {
-    public static final int TYPE_CAMERA = 1;
-    public static final int TYPE_PICTURE = 2;
+    public final int TYPE_CAMERA = 1;
+    public final int TYPE_PICTURE = 2;
     private LayoutInflater mInflater;
     private Context mContext;
     private List<LocalMedia> list = new ArrayList<>();
@@ -59,7 +59,7 @@ public class GridImageAdapter extends
         this.list = list;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView mImg;
         LinearLayout ll_del;

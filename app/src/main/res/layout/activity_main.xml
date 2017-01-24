@@ -358,6 +358,7 @@
 
             </RadioGroup>
 
+
             <RadioGroup
                 android:id="@+id/rgbs9"
                 android:layout_width="match_parent"
@@ -381,6 +382,62 @@
                     android:text="压缩图片" />
 
             </RadioGroup>
+
+            <RadioGroup
+                android:id="@+id/rgbs10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:visibility="gone">
+
+                <RadioButton
+                    android:id="@+id/rb_system"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="系统自带压缩" />
+
+                <RadioButton
+                    android:id="@+id/rb_luban"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15sp"
+                    android:text="LuBan压缩" />
+
+            </RadioGroup>
+
+            <LinearLayout
+                android:id="@+id/ll_luban_wh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/et_compress_width"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_weight="1"
+                    android:gravity="center|left"
+                    android:hint="压缩宽"
+                    android:inputType="number"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/et_compress_height"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center|left"
+                    android:hint="压缩高"
+                    android:inputType="number"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.yalantis.ucrop">
+    package="com.luck.picture.lib">
 
     <application
         android:allowBackup="true"
+        android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
             android:name=".ui.PictureAlbumDirectoryActivity"
@@ -22,17 +22,22 @@
             android:name=".ui.PictureVideoPlayActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Slider" />
-        <activity
-            android:name=".ui.PictureSingeUCropActivity"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".ui.PictureExternalPreviewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Slider" />
+
         <activity
-            android:name=".ui.PictureMultiCuttingActivity"
+            android:name="com.yalantis.ucrop.ui.PictureMultiCuttingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Slider" />
+
+        <activity
+            android:name="com.yalantis.ucrop.ui.PictureSingeUCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Slider" />
+
     </application>
 
 </manifest>

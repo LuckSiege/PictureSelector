@@ -1,22 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:titlebar="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/ucrop_color_toolbar_widget"
     android:orientation="vertical">
 
-    <com.yalantis.ucrop.widget.PublicTitleBar
-        android:id="@+id/titleBar"
+    <RelativeLayout
+        android:id="@+id/rl_picture_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        titlebar:leftTextColor="@color/ucrop_color_toolbar_widget"
-        titlebar:left_display="true"
-        titlebar:rightText="取消"
-        titlebar:rightTextColor="@color/ucrop_color_toolbar_widget"
-        titlebar:right_display="true"
-        titlebar:titleBarBackground="@color/bar_grey"
-        titlebar:titleBarHeight="48dp" />
+        android:layout_height="48dp"
+        android:background="#393a3e">
+
+        <ImageButton
+            android:id="@+id/picture_left_back"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:background="#00000000"
+            android:src="@drawable/back"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/picture_tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:ellipsize="end"
+            android:maxEms="11"
+            android:singleLine="true"
+            android:text="标题"
+            android:textColor="@color/ucrop_color_widget_background"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/picture_tv_right"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:text="取消"
+            android:textColor="@color/ucrop_color_widget_background"
+            android:textSize="15sp" />
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"

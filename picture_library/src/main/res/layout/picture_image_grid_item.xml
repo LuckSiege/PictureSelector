@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.yalantis.ucrop.widget.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.luck.picture.lib.widget.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -48,4 +48,4 @@
             android:textColor="@color/ucrop_color_toolbar_widget"
             android:textSize="11sp" />
     </RelativeLayout>
-</com.yalantis.ucrop.widget.SquareRelativeLayout>
+</com.luck.picture.lib.widget.SquareRelativeLayout>
