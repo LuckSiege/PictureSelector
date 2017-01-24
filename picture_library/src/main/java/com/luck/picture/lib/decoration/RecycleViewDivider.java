@@ -1,4 +1,4 @@
-package com.yalantis.ucrop.decoration;
+package com.luck.picture.lib.decoration;
 
 import android.content.Context;
 import android.content.res.TypedArray;

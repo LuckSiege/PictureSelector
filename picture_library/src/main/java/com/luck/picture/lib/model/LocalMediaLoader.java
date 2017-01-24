@@ -1,4 +1,4 @@
-package com.yalantis.ucrop.util;
+package com.luck.picture.lib.model;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -8,14 +8,11 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.yalantis.ucrop.R;
+import com.luck.picture.lib.R;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.entity.LocalMediaFolder;
-
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
