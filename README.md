@@ -40,6 +40,8 @@
 
 18.新增多图裁剪功能
 
+19.新增LuBan多图压缩
+
 项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~   联系方式893855882@qq.com  希望用得着的朋友点个start，你们的支持才是我继续下去的动力，在此先谢过~  
 
 另附我的博客地址：http://blog.csdn.net/luck_mw
@@ -123,6 +125,12 @@ config.setPreviewBottomBgColor 预览界面底部背景色
 config.setBottomBgColor 选择图片页面底部背景色  
 
 config.options.setSelectMedia() 已选图片集合  
+
+config.setCompressFlag(compressFlag); // 1是系统自带压缩 2是鲁班压缩
+
+config.setCompressW(compressW); //Luban压缩宽
+
+config.setCompressH(compressH); //Luban压缩高
 
 // 先初始化参数配置，在启动相册  
 
