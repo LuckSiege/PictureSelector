@@ -3,7 +3,6 @@
        android:layout_width="match_parent"
        android:layout_height="match_parent">
 
-    <!-- Padding for both views can be different -->
 
     <com.yalantis.ucrop.view.GestureCropImageView
         android:id="@+id/image_view_crop"
