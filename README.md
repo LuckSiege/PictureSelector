@@ -46,7 +46,7 @@
 
 另附我的博客地址：http://blog.csdn.net/luck_mw
 
-app-build 引入compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.2.4'  注：之前引入如有报错，请引入最新版本、
+app-build 引入compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.2.5'  注：之前引入如有报错，请引入最新版本、
 
 项目根目录  
 
