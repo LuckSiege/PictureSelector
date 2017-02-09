@@ -63,9 +63,7 @@ public class LuBanCompress implements CompressInterface {
                 .launch(new OnCompressListener() {
                     @Override
                     public void onStart() {
-
                     }
-
                     @Override
                     public void onSuccess(File file) {
                         LocalMedia image = images.get(0);

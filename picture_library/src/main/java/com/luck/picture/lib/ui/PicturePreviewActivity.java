@@ -248,12 +248,12 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
             tv_img_num.startAnimation(animation);
             tv_img_num.setVisibility(View.VISIBLE);
             tv_img_num.setText(selectImages.size() + "");
-            tv_ok.setText("已完成");
+            tv_ok.setText(getString(R.string.ok));
         } else {
             tv_ok.setEnabled(false);
             tv_ok.setAlpha(0.5f);
             tv_img_num.setVisibility(View.INVISIBLE);
-            tv_ok.setText("请选择");
+            tv_ok.setText(getString(R.string.please_select));
         }
 
         if (isRefresh) {

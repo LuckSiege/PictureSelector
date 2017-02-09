@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PictureSelector</string>
+
+    <string name="all_image">All Pictures</string>
+    <string name="all_video">All Video</string>
+    <string name="photo">Photo</string>
+    <string name="all_photo">All Albums</string>
+    <string name="cancel">Cancel</string>
+    <string name="picture">Picture</string>
+    <string name="take_picture">Shot</string>
+    <string name="preview">Preview</string>
+    <string name="preview_num">Preview(%1$s)</string>
+    <string name="choose">Select</string>
+    <string name="done">Ok</string>
+    <string name="ok">Completed</string>
+    <string name="please_select">Please Select</string>
+    <string name="use">Use</string>
+    <string name="done_num">Ok(%1$s/%2$s)</string>
+    <string name="num_postfix">%1$sNumber</string>
+    <string name="message_max_num">You can choose the most%1$s Number Pictures</string>
+    <string name="save_ing">Save Image…</string>
+    <string name="select_photo">Select Album</string>
+    <string name="select_video">Select Video</string>
+
+    <string name="lately_image">Recent Photos</string>
+    <string name="lately_video">Recent Video</string>
+
+    <string name="no_photo">The album to shoot a few absolutely empty, quickly~</string>
+    <string name="no_video">Video to record video absolutely empty, quickly~</string>
+</resources>

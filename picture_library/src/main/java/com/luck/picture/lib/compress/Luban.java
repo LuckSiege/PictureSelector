@@ -28,10 +28,11 @@ import java.lang.annotation.Target;
 import java.util.Collections;
 import java.util.List;
 
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * author：luck
@@ -134,22 +135,45 @@ public class Luban {
      * @param listener 接收回调结果
      */
     public void launch(final OnCompressListener listener) {
-        asObservable().subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).doOnRequest(new Action1<Long>() {
+//        asObservable().subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).doOnRequest(new Action1<Long>() {
+//            @Override
+//            public void call(Long aLong) {
+//                listener.onStart();
+//            }
+//        }).subscribe(new Action1<File>() {
+//            @Override
+//            public void call(File file) {
+//                listener.onSuccess(file);
+//            }
+//        }, new Action1<Throwable>() {
+//            @Override
+//            public void call(Throwable throwable) {
+//                listener.onError(throwable);
+//            }
+//        });
+
+        asObservable().subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<File>() {
             @Override
-            public void call(Long aLong) {
+            public void onSubscribe(Disposable d) {
                 listener.onStart();
             }
-        }).subscribe(new Action1<File>() {
+
             @Override
-            public void call(File file) {
+            public void onNext(File file) {
                 listener.onSuccess(file);
             }
-        }, new Action1<Throwable>() {
+
             @Override
-            public void call(Throwable throwable) {
-                listener.onError(throwable);
+            public void onError(Throwable e) {
+                listener.onError(e);
+            }
+
+            @Override
+            public void onComplete() {
+
             }
         });
+
     }
 
     /**
@@ -158,24 +182,46 @@ public class Luban {
      * @param listener 接收回调结果
      */
     public void launch(final OnMultiCompressListener listener) {
-        asListObservable().subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread())
-                .doOnRequest(new Action1<Long>() {
-                    @Override
-                    public void call(Long aLong) {
-                        listener.onStart();
-                    }
-                })
-                .subscribe(new Action1<List<File>>() {
-                    @Override
-                    public void call(List<File> files) {
-                        listener.onSuccess(files);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        listener.onError(throwable);
-                    }
-                });
+//        asListObservable().subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread())
+//                .doOnRequest(new Action1<Long>() {
+//                    @Override
+//                    public void call(Long aLong) {
+//                        listener.onStart();
+//                    }
+//                })
+//                .subscribe(new Action1<List<File>>() {
+//                    @Override
+//                    public void call(List<File> files) {
+//                        listener.onSuccess(files);
+//                    }
+//                }, new Action1<Throwable>() {
+//                    @Override
+//                    public void call(Throwable throwable) {
+//                        listener.onError(throwable);
+//                    }
+//                });
+
+        asListObservable().subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<List<File>>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                listener.onStart();
+            }
+
+            @Override
+            public void onNext(List<File> files) {
+                listener.onSuccess(files);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                listener.onError(e);
+            }
+
+            @Override
+            public void onComplete() {
+            }
+        });
+
     }
 
     /**

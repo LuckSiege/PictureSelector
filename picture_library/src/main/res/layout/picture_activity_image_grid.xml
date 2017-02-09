@@ -66,16 +66,16 @@
         android:background="@color/color_fa"
         android:gravity="center_vertical">
 
-        <Button
+        <TextView
             android:id="@+id/id_preview"
-            android:layout_width="55dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:alpha="0.5"
-            android:background="#00000000"
             android:enabled="false"
-            android:gravity="center"
-            android:text="预览"
+            android:gravity="left|center"
+            android:padding="12dp"
+            android:text="@string/preview"
             android:textColor="@color/tab_color_true"
             android:textSize="14sp" />
 

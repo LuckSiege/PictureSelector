@@ -67,7 +67,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
     private RelativeLayout rl_picture_title;
     private TextView picture_tv_title, picture_tv_right;
 
-    private Button id_preview;
+    private TextView id_preview;
     private PictureImageGridAdapter adapter;
     private String cameraPath;
     private SweetAlertDialog dialog;
@@ -109,8 +109,10 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         rl_picture_title.setBackgroundColor(backgroundColor);
         ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
         tv_ok = (TextView) findViewById(R.id.tv_ok);
-        id_preview = (Button) findViewById(R.id.id_preview);
+        id_preview = (TextView) findViewById(R.id.id_preview);
         tv_img_num = (TextView) findViewById(R.id.tv_img_num);
+        id_preview.setText(getString(R.string.preview));
+        tv_ok.setText(getString(R.string.choose));
         id_preview.setOnClickListener(this);
         tv_ok.setOnClickListener(this);
         picture_left_back.setOnClickListener(this);
@@ -303,7 +305,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             tv_img_num.startAnimation(animation);
             tv_img_num.setVisibility(View.VISIBLE);
             tv_img_num.setText(selectImages.size() + "");
-            tv_ok.setText("已完成");
+            tv_ok.setText(getString(R.string.ok));
         } else {
             tv_ok.setEnabled(false);
             id_preview.setAlpha(0.5f);
@@ -314,7 +316,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                 tv_img_num.startAnimation(animation);
             }
             tv_img_num.setVisibility(View.INVISIBLE);
-            tv_ok.setText("请选择");
+            tv_ok.setText(getString(R.string.please_select));
         }
     }
 

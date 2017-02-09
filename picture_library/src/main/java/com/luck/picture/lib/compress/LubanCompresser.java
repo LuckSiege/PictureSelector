@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import rx.Observable;
-import rx.functions.FuncN;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.luck.picture.lib.compress.Preconditions.checkNotNull;
 
@@ -58,16 +58,27 @@ class LubanCompresser {
                 }
             }));
         }
-        return Observable.zip(observables, new FuncN<List<File>>() {
+
+        return Observable.zip(observables, new Function<Object[], List<File>>() {
             @Override
-            public List<File> call(Object... args) {
-                List<File> files = new ArrayList<>(args.length);
-                for (Object o : args) {
+            public List<File> apply(Object[] objects) throws Exception {
+                List<File> files = new ArrayList<>(objects.length);
+                for (Object o : objects) {
                     files.add((File) o);
                 }
                 return files;
             }
-        }).subscribeOn(Schedulers.computation());
+        });
+//        return Observable.zip(observables, new FuncN<List<File>>() {
+//            @Override
+//            public List<File> call(Object... args) {
+//                List<File> files = new ArrayList<>(args.length);
+//                for (Object o : args) {
+//                    files.add((File) o);
+//                }
+//                return files;
+//            }
+//        }).subscribeOn(Schedulers.computation());
     }
 
     private File compressImage(int gear, File file) throws IOException {
