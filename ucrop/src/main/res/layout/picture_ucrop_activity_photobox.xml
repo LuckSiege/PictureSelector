@@ -29,13 +29,13 @@
             android:ellipsize="end"
             android:maxEms="11"
             android:singleLine="true"
-            android:text="图片裁剪"
+            android:text="@string/ucrop_image_crop"
             android:textColor="@color/ucrop_color_widget_background"
             android:textSize="18sp" />
 
         <TextView
             android:id="@+id/tv_right"
-            android:layout_width="48dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"

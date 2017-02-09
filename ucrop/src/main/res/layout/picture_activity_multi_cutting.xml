@@ -30,7 +30,7 @@
             android:ellipsize="end"
             android:maxEms="11"
             android:singleLine="true"
-            android:text="图片裁剪"
+            android:text="@string/ucrop_image_crop"
             android:textColor="@color/ucrop_color_widget_background"
             android:textSize="18sp" />
 
