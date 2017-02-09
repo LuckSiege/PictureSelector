@@ -164,7 +164,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
     private void setupViews(@NonNull Intent intent) {
         tv_right = (TextView) findViewById(R.id.tv_right);
         rl_title = (RelativeLayout) findViewById(R.id.rl_title);
-        tv_right.setText("确定");
+        tv_right.setText(getString(R.string.determine));
         left_back = (ImageButton) findViewById(R.id.left_back);
         left_back.setOnClickListener(new View.OnClickListener() {
             @Override
