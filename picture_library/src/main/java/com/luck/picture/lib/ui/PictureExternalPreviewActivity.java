@@ -15,6 +15,7 @@ import com.luck.picture.lib.model.FunctionConfig;
 import com.luck.picture.lib.model.PictureConfig;
 import com.luck.picture.lib.widget.PreviewViewPager;
 import com.yalantis.ucrop.entity.LocalMedia;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,7 +82,18 @@ public class PictureExternalPreviewActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            PictureImagePreviewFragment fragment = PictureImagePreviewFragment.getInstance(images.get(position).getPath(), images);
+            LocalMedia media = images.get(position);
+            String path = "";
+            if (media.isCut() && !media.isCompressed()) {
+                // 裁剪过
+                path = media.getCutPath();
+            } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
+                // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
+                path = media.getCompressPath();
+            } else {
+                path = media.getPath();
+            }
+            PictureImagePreviewFragment fragment = PictureImagePreviewFragment.getInstance(path, images);
             return fragment;
         }
 
