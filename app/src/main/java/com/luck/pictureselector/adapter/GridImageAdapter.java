@@ -139,7 +139,18 @@ public class GridImageAdapter extends
             });
             LocalMedia media = list.get(position);
             int type = media.getType();
-            String path = media.getPath();
+            String path = "";
+            if (media.isCut() && !media.isCompressed()) {
+                // 裁剪过
+                path = media.getCutPath();
+            } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
+                // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
+                path = media.getCompressPath();
+            } else {
+                // 原图
+                path = media.getPath();
+            }
+
             switch (type) {
                 case 1:
                     // 图片
