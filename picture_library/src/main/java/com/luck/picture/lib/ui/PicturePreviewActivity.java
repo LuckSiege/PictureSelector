@@ -23,7 +23,6 @@ import android.widget.Toast;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.model.FunctionConfig;
 import com.luck.picture.lib.model.LocalMediaLoader;
-import com.luck.picture.lib.model.PictureConfig;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.widget.PreviewViewPager;
 import com.yalantis.ucrop.MultiUCrop;
@@ -325,19 +324,19 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
             MultiUCrop uCrop = MultiUCrop.of(Uri.parse(path), Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + ".jpg")));
             MultiUCrop.Options options = new MultiUCrop.Options();
             switch (copyMode) {
-                case FunctionConfig.COPY_MODEL_DEFAULT:
+                case FunctionConfig.CROP_MODEL_DEFAULT:
                     options.withAspectRatio(0, 0);
                     break;
-                case FunctionConfig.COPY_MODEL_1_1:
+                case FunctionConfig.CROP_MODEL_1_1:
                     options.withAspectRatio(1, 1);
                     break;
-                case FunctionConfig.COPY_MODEL_3_2:
+                case FunctionConfig.CROP_MODEL_3_2:
                     options.withAspectRatio(3, 2);
                     break;
-                case FunctionConfig.COPY_MODEL_3_4:
+                case FunctionConfig.CROP_MODEL_3_4:
                     options.withAspectRatio(3, 4);
                     break;
-                case FunctionConfig.COPY_MODEL_16_9:
+                case FunctionConfig.CROP_MODEL_16_9:
                     options.withAspectRatio(16, 9);
                     break;
             }
