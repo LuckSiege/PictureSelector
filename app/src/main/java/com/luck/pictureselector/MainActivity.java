@@ -43,7 +43,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     private LinearLayout ll_luban_wh;
     private boolean isShow = true;
     private int selectType = LocalMediaLoader.TYPE_IMAGE;
-    private int copyMode = FunctionConfig.COPY_MODEL_DEFAULT;
+    private int copyMode = FunctionConfig.CROP_MODEL_DEFAULT;
     private boolean enablePreview = true;
     private boolean isPreviewVideo = true;
     private boolean enableCrop = true;
@@ -282,19 +282,19 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 isShow = false;
                 break;
             case R.id.rb_default:
-                copyMode = FunctionConfig.COPY_MODEL_DEFAULT;
+                copyMode = FunctionConfig.CROP_MODEL_DEFAULT;
                 break;
             case R.id.rb_to1_1:
-                copyMode = FunctionConfig.COPY_MODEL_1_1;
+                copyMode = FunctionConfig.CROP_MODEL_1_1;
                 break;
             case R.id.rb_to3_2:
-                copyMode = FunctionConfig.COPY_MODEL_3_2;
+                copyMode = FunctionConfig.CROP_MODEL_3_2;
                 break;
             case R.id.rb_to3_4:
-                copyMode = FunctionConfig.COPY_MODEL_3_4;
+                copyMode = FunctionConfig.CROP_MODEL_3_4;
                 break;
             case R.id.rb_to16_9:
-                copyMode = FunctionConfig.COPY_MODEL_16_9;
+                copyMode = FunctionConfig.CROP_MODEL_16_9;
                 break;
             case R.id.rb_preview:
                 enablePreview = true;
