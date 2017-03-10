@@ -18,7 +18,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -408,19 +407,19 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         UCrop uCrop = UCrop.of(Uri.parse(path), Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + ".jpg")));
         UCrop.Options options = new UCrop.Options();
         switch (copyMode) {
-            case FunctionConfig.COPY_MODEL_DEFAULT:
+            case FunctionConfig.CROP_MODEL_DEFAULT:
                 options.withAspectRatio(0, 0);
                 break;
-            case FunctionConfig.COPY_MODEL_1_1:
+            case FunctionConfig.CROP_MODEL_1_1:
                 options.withAspectRatio(1, 1);
                 break;
-            case FunctionConfig.COPY_MODEL_3_2:
+            case FunctionConfig.CROP_MODEL_3_2:
                 options.withAspectRatio(3, 2);
                 break;
-            case FunctionConfig.COPY_MODEL_3_4:
+            case FunctionConfig.CROP_MODEL_3_4:
                 options.withAspectRatio(3, 4);
                 break;
-            case FunctionConfig.COPY_MODEL_16_9:
+            case FunctionConfig.CROP_MODEL_16_9:
                 options.withAspectRatio(16, 9);
                 break;
         }
@@ -447,19 +446,19 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             MultiUCrop uCrop = MultiUCrop.of(Uri.parse(path), Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + ".jpg")));
             MultiUCrop.Options options = new MultiUCrop.Options();
             switch (copyMode) {
-                case FunctionConfig.COPY_MODEL_DEFAULT:
+                case FunctionConfig.CROP_MODEL_DEFAULT:
                     options.withAspectRatio(0, 0);
                     break;
-                case FunctionConfig.COPY_MODEL_1_1:
+                case FunctionConfig.CROP_MODEL_1_1:
                     options.withAspectRatio(1, 1);
                     break;
-                case FunctionConfig.COPY_MODEL_3_2:
+                case FunctionConfig.CROP_MODEL_3_2:
                     options.withAspectRatio(3, 2);
                     break;
-                case FunctionConfig.COPY_MODEL_3_4:
+                case FunctionConfig.CROP_MODEL_3_4:
                     options.withAspectRatio(3, 4);
                     break;
-                case FunctionConfig.COPY_MODEL_16_9:
+                case FunctionConfig.CROP_MODEL_16_9:
                     options.withAspectRatio(16, 9);
                     break;
             }
