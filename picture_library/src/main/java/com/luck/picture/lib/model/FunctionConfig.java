@@ -18,11 +18,11 @@ import java.util.List;
 public class FunctionConfig implements Serializable {
 
     // 裁剪模式
-    public static final int COPY_MODEL_DEFAULT = 0;
-    public static final int COPY_MODEL_1_1 = 11;
-    public static final int COPY_MODEL_3_4 = 34;
-    public static final int COPY_MODEL_3_2 = 32;
-    public static final int COPY_MODEL_16_9 = 169;
+    public static final int CROP_MODEL_DEFAULT = 0;
+    public static final int CROP_MODEL_1_1 = 11;
+    public static final int CROP_MODEL_3_4 = 34;
+    public static final int CROP_MODEL_3_2 = 32;
+    public static final int CROP_MODEL_16_9 = 169;
 
     public final static int MODE_MULTIPLE = 1;// 多选
     public final static int MODE_SINGLE = 2;// 单选
@@ -79,7 +79,7 @@ public class FunctionConfig implements Serializable {
 
 
     private int type = 1; // 获取相册类型; 1 图片 2 视频
-    private int copyMode = COPY_MODEL_DEFAULT; // 裁剪模式; 默认、1:1、3:4、3:2、16:9
+    private int copyMode = CROP_MODEL_DEFAULT; // 裁剪模式; 默认、1:1、3:4、3:2、16:9
     private int maxSelectNum = SELECT_MAX_NUM; // 多选最大可选数量
     private int selectMode = MODE_MULTIPLE; // 单选 or 多选
     private boolean isShowCamera = true; // 是否显示相机
