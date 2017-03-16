@@ -136,6 +136,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         options.setCompressionQuality(mCompressQuality);
         options.withMaxResultSize(maxSizeX, maxSizeY);
         options.background_color(backgroundColor);
+        options.copyMode(copyMode);
         uCrop.withOptions(options);
         uCrop.start(PictureMultiCuttingActivity.this);
         overridePendingTransition(R.anim.fade, R.anim.hold);
@@ -310,6 +311,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
             images.get(cutIndex).setCut(true);
             cutIndex++;
             if (cutIndex >= images.size()) {
+                Log.i(TAG, "裁剪比例" + copyMode);
                 // 裁剪完成，看是否压缩
                 for (LocalMedia media : images) {
                     media.setCut(true);
@@ -319,6 +321,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
                 finish();
                 overridePendingTransition(0, R.anim.hold);
             } else {
+                Log.i(TAG, "裁剪比例" + copyMode);
                 finish();
                 startMultiCopy(images.get(cutIndex).getPath());
             }
