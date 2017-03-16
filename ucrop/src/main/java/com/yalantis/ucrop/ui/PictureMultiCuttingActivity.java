@@ -13,7 +13,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageButton;
@@ -311,7 +310,6 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
             images.get(cutIndex).setCut(true);
             cutIndex++;
             if (cutIndex >= images.size()) {
-                Log.i(TAG, "裁剪比例" + copyMode);
                 // 裁剪完成，看是否压缩
                 for (LocalMedia media : images) {
                     media.setCut(true);
@@ -321,7 +319,6 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
                 finish();
                 overridePendingTransition(0, R.anim.hold);
             } else {
-                Log.i(TAG, "裁剪比例" + copyMode);
                 finish();
                 startMultiCopy(images.get(cutIndex).getPath());
             }
