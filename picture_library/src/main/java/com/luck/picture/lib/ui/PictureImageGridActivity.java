@@ -467,6 +467,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             options.withMaxResultSize(cropW, cropH);
             options.background_color(backgroundColor);
             options.setIsCompress(isCompress);
+            options.copyMode(copyMode);
             uCrop.withOptions(options);
             uCrop.start(PictureImageGridActivity.this);
         }
