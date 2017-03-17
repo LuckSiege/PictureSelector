@@ -192,7 +192,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                 showCamera = false;
             }
         }
-        adapter = new PictureImageGridAdapter(this, showCamera, maxSelectNum, selectMode, enablePreview, enablePreviewVideo, cb_drawable, is_checked_num);
+        adapter = new PictureImageGridAdapter(this, showCamera, maxSelectNum, selectMode, enablePreview, enablePreviewVideo, cb_drawable, is_checked_num,type);
         recyclerView.setAdapter(adapter);
         if (selectMedias.size() > 0) {
             ChangeImageNumber(selectMedias);
