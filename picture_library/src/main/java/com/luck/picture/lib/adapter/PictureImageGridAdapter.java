@@ -43,8 +43,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private boolean enablePreviewVideo = false;
     private int cb_drawable;
     private boolean is_checked_num;
+    private int type;
 
-    public PictureImageGridAdapter(Context context, boolean showCamera, int maxSelectNum, int mode, boolean enablePreview, boolean enablePreviewVideo, int cb_drawable, boolean is_checked_num) {
+    public PictureImageGridAdapter(Context context, boolean showCamera, int maxSelectNum, int mode, boolean enablePreview, boolean enablePreviewVideo, int cb_drawable, boolean is_checked_num, int type) {
         this.context = context;
         this.selectMode = mode;
         this.showCamera = showCamera;
@@ -53,6 +54,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.enablePreviewVideo = enablePreviewVideo;
         this.cb_drawable = cb_drawable;
         this.is_checked_num = is_checked_num;
+        this.type = type;
+
     }
 
     public void bindImagesData(List<LocalMedia> images) {
@@ -236,7 +239,16 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         boolean isChecked = contentHolder.check.isSelected();
 
         if (selectImages.size() >= maxSelectNum && !isChecked) {
-            Toast.makeText(context, context.getString(R.string.message_max_num, maxSelectNum), Toast.LENGTH_LONG).show();
+            switch (type) {
+                case LocalMediaLoader.TYPE_IMAGE:
+                    Toast.makeText(context, context.getString(R.string.message_max_num, maxSelectNum), Toast.LENGTH_LONG).show();
+                    break;
+                case LocalMediaLoader.TYPE_VIDEO:
+                    Toast.makeText(context, context.getString(R.string.message_video_max_num, maxSelectNum), Toast.LENGTH_LONG).show();
+                    break;
+                default:
+                    break;
+            }
             return;
         }
         if (isChecked) {
