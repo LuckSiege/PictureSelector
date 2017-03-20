@@ -176,12 +176,9 @@ private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.
   };  
   
    重要的事情说三遍记得添加权限
-  
-   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-   
-   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-   
-   <uses-permission android:name="android.permission.CAMERA" />
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.CAMERA" />
   
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/A574F86A9A9F42A77D03B0ACC9E761C9.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/ABE302D298BD56DEC871F4464E64646F.jpg)
