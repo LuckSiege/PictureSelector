@@ -3,8 +3,11 @@
 顺便感谢一下，大家对我的支持~  
 
 重要的事情说三遍记得添加权限
+
   < uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+  
   < uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  
   < uses-permission android:name="android.permission.CAMERA" />
 
 功能特点：  
