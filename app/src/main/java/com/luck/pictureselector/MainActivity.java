@@ -1,6 +1,5 @@
 package com.luck.pictureselector;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -19,6 +18,7 @@ import com.luck.picture.lib.model.PictureConfig;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.util.FullyGridLayoutManager;
 import com.yalantis.ucrop.entity.LocalMedia;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +30,8 @@ import java.util.List;
  * data：16/12/31
  */
 
-public class MainActivity extends Activity implements RadioGroup.OnCheckedChangeListener {
-
+public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener {
+    public static final String TAG = "MainActivity";
     private RecyclerView recyclerView;
     private GridImageAdapter adapter;
     private RadioGroup rgbs01, rgbs0, rgbs1, rgbs2, rgbs3, rgbs4, rgbs5, rgbs6, rgbs7, rgbs8, rgbs9, rgbs10;
@@ -130,12 +130,12 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
             }
         });
 
-
     }
 
     /**
      * 删除图片回调接口
      */
+
     private GridImageAdapter.onAddPicClickListener onAddPicClickListener = new GridImageAdapter.onAddPicClickListener() {
         @Override
         public void onAddPicClick(int type, int position) {
@@ -228,6 +228,8 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                     PictureConfig.init(config);
                     PictureConfig.getPictureConfig().openPhoto(mContext, resultCallback);
 
+                    // 只拍照
+                    //PictureConfig.getPictureConfig().startOpenCamera(mContext, resultCallback);
                     break;
                 case 1:
                     // 删除图片
@@ -237,6 +239,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
             }
         }
     };
+
 
     /**
      * 图片回调方法
