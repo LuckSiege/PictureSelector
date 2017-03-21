@@ -2,6 +2,14 @@
 最近项目中用到多图选择上传的需求，考虑到android机型众多问题就自己花时间写了一个，测试了大概60款机型，出现过一些问题也都一一修复了，基本上稳定了特分享出来，界面UI也是商用级的开发者不用在做太多修改了，界面高度自定义，可以设置符合你项目主色调的风格，集成完成后就可以拿来用。
 顺便感谢一下，大家对我的支持~  
 
+重要的事情说三遍记得添加权限
+
+  < uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+  
+  < uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  
+  < uses-permission android:name="android.permission.CAMERA" />
+
 功能特点：  
 
 1.适配android7.0系统    
@@ -175,6 +183,7 @@ private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.
         }  
   };  
   
+
   
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/A574F86A9A9F42A77D03B0ACC9E761C9.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/ABE302D298BD56DEC871F4464E64646F.jpg)
