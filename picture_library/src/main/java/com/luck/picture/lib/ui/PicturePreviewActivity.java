@@ -24,6 +24,7 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.model.FunctionConfig;
 import com.luck.picture.lib.model.LocalMediaLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
+import com.luck.picture.lib.widget.Constant;
 import com.luck.picture.lib.widget.PreviewViewPager;
 import com.yalantis.ucrop.MultiUCrop;
 import com.yalantis.ucrop.UCrop;
@@ -60,7 +61,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals("app.activity.finish")) {
+            if (action.equals(Constant.ACTION_AC_FINISH)) {
                 finish();
                 overridePendingTransition(0, R.anim.slide_bottom_out);
             } else if (action.equals("app.action.finish.preview")) {
@@ -75,7 +76,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_activity_image_preview);
-        registerReceiver(receiver, "app.activity.finish", "app.action.finish.preview");
+        registerReceiver(receiver, Constant.ACTION_AC_FINISH, "app.action.finish.preview");
         rl_title = (RelativeLayout) findViewById(R.id.rl_title);
         left_back = (ImageButton) findViewById(R.id.left_back);
         viewPager = (PreviewViewPager) findViewById(R.id.preview_pager);
@@ -259,7 +260,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    sendBroadcast(new Intent().setAction("app.action.refresh.data").putExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectImages));
+                    sendBroadcast(new Intent().setAction(Constant.ACTION_AC_REFRESH_DATA).putExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectImages));
                 }
             }, 100);
         }
@@ -306,7 +307,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         for (LocalMedia media : images) {
             result.add(media);
         }
-        sendBroadcast(new Intent().setAction("app.action.crop_data").putExtra(UCrop.EXTRA_RESULT, (Serializable) result));
+        sendBroadcast(new Intent().setAction(Constant.ACTION_CROP_DATA).putExtra(UCrop.EXTRA_RESULT, (Serializable) result));
         finish();
         overridePendingTransition(0, R.anim.slide_bottom_out);
     }

@@ -40,6 +40,7 @@ public class FunctionConfig implements Serializable {
 
     public static final int SELECT_MAX_NUM = 9;
     public static final int MAX_COMPRESS_SIZE = 102400;
+    public static final String FUNCTION_TAKE = "function_take";
     public static final String EXTRA_THIS_CONFIG = "function_config";
     public static final String EXTRA_IS_TOP_ACTIVITY = "isTopActivity";
     public static final String EXTRA_BOTTOM_PREVIEW = "bottom_preview";

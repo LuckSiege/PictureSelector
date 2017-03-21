@@ -10,6 +10,7 @@ import com.luck.picture.lib.ui.PictureExternalPreviewActivity;
 import com.luck.picture.lib.ui.PictureImageGridActivity;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.util.Utils;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -72,6 +73,20 @@ public class PictureConfig {
         intent2.putExtra(FunctionConfig.EXTRA_THIS_CONFIG, config);
         mContext.startActivities(intents);
         ((Activity) mContext).overridePendingTransition(R.anim.slide_bottom_in, 0);
+        // 绑定图片接口回调函数事件
+        resultCallback = resultCall;
+    }
+
+    /**
+     * start to camera、preview、crop
+     */
+    public void startOpenCamera(Context mContext, OnSelectResultCallback resultCall) {
+        Intent intent = new Intent(mContext, PictureImageGridActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(FunctionConfig.EXTRA_THIS_CONFIG, config);
+        intent.putExtra(FunctionConfig.FUNCTION_TAKE, true);
+        mContext.startActivity(intent);
+        ((Activity) mContext).overridePendingTransition(R.anim.fade, R.anim.hold);
         // 绑定图片接口回调函数事件
         resultCallback = resultCall;
     }

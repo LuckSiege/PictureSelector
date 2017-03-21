@@ -21,6 +21,7 @@ import com.luck.picture.lib.model.LocalMediaLoader;
 import com.luck.picture.lib.model.PictureConfig;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.observable.ObserverListener;
+import com.luck.picture.lib.widget.Constant;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.entity.LocalMediaFolder;
 import com.yalantis.ucrop.util.ToolbarUtil;
@@ -50,7 +51,7 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals("app.activity.finish")) {
+            if (action.equals(Constant.ACTION_AC_FINISH)) {
                 finish();
                 overridePendingTransition(0, R.anim.slide_bottom_out);
             }
@@ -61,7 +62,7 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_activity_album);
-        registerReceiver(receiver, "app.activity.finish");
+        registerReceiver(receiver, Constant.ACTION_AC_FINISH);
         if (selectMedias == null)
             selectMedias = new ArrayList<>();
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
