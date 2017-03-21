@@ -548,6 +548,9 @@ public class UCrop {
             mOptionBundle.putBoolean("isCompress", isCompress);
         }
 
+        public void setIsTakePhoto(boolean takePhoto) {
+            mOptionBundle.putBoolean("takePhoto", takePhoto);
+        }
     }
 
 }

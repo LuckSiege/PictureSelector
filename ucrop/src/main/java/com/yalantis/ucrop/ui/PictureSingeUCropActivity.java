@@ -1,6 +1,9 @@
 package com.yalantis.ucrop.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.net.Uri;
@@ -50,6 +53,7 @@ public class PictureSingeUCropActivity extends FragmentActivity {
     private SweetAlertDialog dialog;
     private int backgroundColor = 0;
     private boolean isCompress;
+    private boolean takePhoto;
 
     @IntDef({NONE, SCALE, ROTATE, ALL})
     @Retention(RetentionPolicy.SOURCE)
@@ -68,12 +72,26 @@ public class PictureSingeUCropActivity extends FragmentActivity {
     private Bitmap.CompressFormat mCompressFormat = DEFAULT_COMPRESS_FORMAT;
     private int mCompressQuality = DEFAULT_COMPRESS_QUALITY;
     private int type = 0;
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals("app.activity.singe.ucrop.finish")) {
+                finish();
+                overridePendingTransition(0, R.anim.hold);
+            }
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_ucrop_activity_photobox);
         final Intent intent = getIntent();
+        takePhoto = intent.getBooleanExtra("takePhoto", false);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("app.activity.singe.ucrop.finish");
+        registerReceiver(receiver, filter);
         setupViews(intent);
         setImageData(intent);
     }
@@ -200,6 +218,7 @@ public class PictureSingeUCropActivity extends FragmentActivity {
         backgroundColor = intent.getIntExtra("backgroundColor", 0);
         rl_title.setBackgroundColor(backgroundColor);
         isCompress = intent.getBooleanExtra("isCompress", false);
+
         type = intent.getIntExtra("type", 0);
         ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
         initiateRootViews();
@@ -240,6 +259,13 @@ public class PictureSingeUCropActivity extends FragmentActivity {
 
     };
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+        }
+    }
 
     protected void cropAndSaveImage() {
         supportInvalidateOptionsMenu();
@@ -268,8 +294,10 @@ public class PictureSingeUCropActivity extends FragmentActivity {
         media.setType(type);
         result.add(media);
         sendBroadcast(new Intent().setAction("app.action.crop_data").putExtra(UCrop.EXTRA_RESULT, (Serializable) result));
-        finish();
-        overridePendingTransition(0, R.anim.hold);
+        if (!takePhoto) {
+            finish();
+            overridePendingTransition(0, R.anim.hold);
+        }
     }
 
     protected void setResultError(Throwable throwable) {
