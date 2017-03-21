@@ -50,6 +50,8 @@
 
 19.新增LuBan多图压缩
 
+20.新增单独拍照功能
+
 项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~  由于加好友的太多 现在集中到QQ群中讨论 619458861，个人联系方式893855882@qq.com  希望用得着的朋友点个start，你们的支持才是我继续下去的动力，在此先谢过~  
 
 另附我的博客地址：http://blog.csdn.net/luck_mw
@@ -147,6 +149,10 @@ PictureConfig.init(config);
 // 启动相册并设置回调函数  
 
 PictureConfig.getPictureConfig.openPhoto(MainActivity.this, resultCallback); 
+
+// 单独启动相机拍照
+
+PictureConfig.getPictureConfig().startOpenCamera(mContext, resultCallback);
 
 // 外部预览图片方法 (例如选完后要预览的可调用此方法)
 
