@@ -676,14 +676,14 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         if (resultCallback != null) {
             resultCallback.onSelectSuccess(result);
         }
-        finish();
-        overridePendingTransition(0, R.anim.slide_bottom_out);
         sendBroadcast(Constant.ACTION_AC_FINISH);
         if (takePhoto && takePhotoSuccess) {
             // 如果是单独拍照并且压缩可能会造成还在压缩中，但此activity已关闭
             recycleCallBack();
             sendBroadcast(Constant.ACTION_AC_SINGE_UCROP);
         }
+        finish();
+        overridePendingTransition(0, R.anim.slide_bottom_out);
     }
 
 
