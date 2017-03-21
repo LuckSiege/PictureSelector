@@ -609,7 +609,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         } else if (resultCode == RESULT_CANCELED) {
             // 取消拍照
             if (takePhoto && !takePhotoSuccess) {
-                takePhotoSuccess = false;
+
                 recycleCallBack();
             }
         }
@@ -679,7 +679,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         finish();
         overridePendingTransition(0, R.anim.slide_bottom_out);
         sendBroadcast(Constant.ACTION_AC_FINISH);
-        if (takePhoto && isCompress) {
+        if (takePhoto && takePhotoSuccess) {
             // 如果是单独拍照并且压缩可能会造成还在压缩中，但此activity已关闭
             recycleCallBack();
             sendBroadcast(Constant.ACTION_AC_SINGE_UCROP);
