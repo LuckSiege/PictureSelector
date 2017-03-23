@@ -73,7 +73,7 @@ allprojects {
 }  
 
 
-注：适配android7.0拍照问题，请在AndroidManifest.xml中添加标签  
+注：适配android6.0以上拍照问题，请在AndroidManifest.xml中添加标签  
 
  < provider 
  
