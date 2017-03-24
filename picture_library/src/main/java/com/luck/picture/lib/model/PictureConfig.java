@@ -81,6 +81,9 @@ public class PictureConfig {
      * start to camera、preview、crop
      */
     public void startOpenCamera(Context mContext, OnSelectResultCallback resultCall) {
+        if (config == null) {
+            config = new FunctionConfig();
+        }
         Intent intent = new Intent(mContext, PictureImageGridActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(FunctionConfig.EXTRA_THIS_CONFIG, config);
