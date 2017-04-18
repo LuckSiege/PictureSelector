@@ -1,5 +1,6 @@
 package com.luck.pictureselector;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -30,7 +31,7 @@ import java.util.List;
  * data：16/12/31
  */
 
-public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener {
+public class MainActivity extends Activity implements RadioGroup.OnCheckedChangeListener {
     public static final String TAG = "MainActivity";
     private RecyclerView recyclerView;
     private GridImageAdapter adapter;
@@ -51,6 +52,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     private boolean selectImageType = false;
     private int cropW = 0;
     private int cropH = 0;
+    private int maxB = 0;
     private int compressW = 0;
     private int compressH = 0;
     private boolean isCompress = false;
@@ -58,6 +60,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     private int compressFlag = 1;// 1 系统自带压缩 2 luban压缩
     private List<LocalMedia> selectMedia = new ArrayList<>();
     private Context mContext;
+    private EditText et_kb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +79,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         rgbs7 = (RadioGroup) findViewById(R.id.rgbs7);
         rgbs8 = (RadioGroup) findViewById(R.id.rgbs8);
         rgbs9 = (RadioGroup) findViewById(R.id.rgbs9);
+        et_kb = (EditText) findViewById(R.id.et_kb);
         rgbs10 = (RadioGroup) findViewById(R.id.rgbs10);
         ll_luban_wh = (LinearLayout) findViewById(R.id.ll_luban_wh);
         et_compress_width = (EditText) findViewById(R.id.et_compress_width);
@@ -174,10 +178,15 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                      */
                     String ws = et_w.getText().toString().trim();
                     String hs = et_h.getText().toString().trim();
+                    String b = et_kb.getText().toString().trim();// 压缩最大大小 单位是b
 
                     if (!isNull(ws) && !isNull(hs)) {
                         cropW = Integer.parseInt(ws);
                         cropH = Integer.parseInt(hs);
+                    }
+
+                    if (!isNull(b)) {
+                        maxB = Integer.parseInt(b);
                     }
 
                     if (!isNull(et_compress_width.getText().toString()) && !isNull(et_compress_height.getText().toString())) {
@@ -202,6 +211,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                     config.setRecordVideoSecond(60);// 视频秒数
                     config.setCropW(cropW);
                     config.setCropH(cropH);
+                    config.setMaxB(maxB);
                     config.setCheckNumMode(isCheckNumMode);
                     config.setCompressQuality(100);
                     config.setImageSpanCount(4);
@@ -332,12 +342,14 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             case R.id.rb_compress_false:
                 isCompress = false;
                 rgbs10.setVisibility(View.GONE);
+                et_kb.setVisibility(View.GONE);
                 ll_luban_wh.setVisibility(View.GONE);
                 et_compress_height.setText("");
                 et_compress_width.setText("");
                 break;
             case R.id.rb_compress_true:
                 isCompress = true;
+                et_kb.setVisibility(View.VISIBLE);
                 if (compressFlag == 2) {
                     ll_luban_wh.setVisibility(View.VISIBLE);
                 }

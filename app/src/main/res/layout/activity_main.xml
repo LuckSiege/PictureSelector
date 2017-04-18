@@ -69,6 +69,7 @@
 
             <include layout="@layout/layout_number" />
 
+
             <RadioGroup
                 android:id="@+id/rgbs01"
                 android:layout_width="match_parent"
@@ -438,6 +439,16 @@
 
             </LinearLayout>
 
+            <EditText
+                android:id="@+id/et_kb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:hint="压缩大小不超过多少b"
+                android:inputType="number"
+                android:visibility="gone"
+                android:text="102400"
+                android:textSize="13sp" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
