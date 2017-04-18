@@ -138,7 +138,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 contentHolder.tv_duration.setText("时长：" + timeParse(duration));
             } else {
                 Glide.with(context)
-                        .load(path)
+                        .load(image.getThumbnails())
                         .placeholder(R.drawable.image_placeholder)
                         .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.RESULT)
