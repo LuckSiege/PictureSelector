@@ -105,6 +105,15 @@ public class FunctionConfig implements Serializable {
     protected int compressFlag = 1; // 1 系统自带压缩 2 luban压缩
     protected int compressW;
     protected int compressH;
+    protected int maxB = FunctionConfig.MAX_COMPRESS_SIZE;
+
+    public int getMaxB() {
+        return maxB;
+    }
+
+    public void setMaxB(int maxB) {
+        this.maxB = maxB;
+    }
 
     public int getCompressW() {
         return compressW;

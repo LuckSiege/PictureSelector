@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.model.FunctionConfig;
 import com.yalantis.ucrop.entity.LocalMedia;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +59,7 @@ public class PictureBaseActivity extends FragmentActivity {
     protected int mScreenHeight = 1280;
     protected int compressW;
     protected int compressH;
+    protected int maxB = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,6 +81,10 @@ public class PictureBaseActivity extends FragmentActivity {
         spanCount = config.getImageSpanCount();
         cropW = config.getCropW();
         cropH = config.getCropH();
+        maxB = config.getMaxB();
+        if (maxB == 0) {
+            maxB = FunctionConfig.MAX_COMPRESS_SIZE;
+        }
         recordVideoSecond = config.getRecordVideoSecond();
         definition = config.getRecordVideoDefinition();
         is_checked_num = config.isCheckNumMode();

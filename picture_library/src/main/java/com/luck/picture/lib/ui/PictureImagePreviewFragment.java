@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -16,9 +17,11 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.model.FunctionConfig;
 import com.yalantis.ucrop.entity.LocalMedia;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**

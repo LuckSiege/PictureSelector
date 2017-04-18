@@ -307,9 +307,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         Animation animation = null;
         boolean enable = selectImages.size() != 0;
         if (enable) {
-            id_preview.setAlpha(1.0f);
             tv_ok.setEnabled(true);
-            tv_ok.setAlpha(1.0f);
             id_preview.setEnabled(true);
             animation = AnimationUtils.loadAnimation(mContext, R.anim.modal_in);
             tv_img_num.startAnimation(animation);
@@ -318,9 +316,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             tv_ok.setText(getString(R.string.ok));
         } else {
             tv_ok.setEnabled(false);
-            id_preview.setAlpha(0.5f);
             id_preview.setEnabled(false);
-            tv_ok.setAlpha(0.5f);
             if (selectImages.size() > 0) {
                 animation = AnimationUtils.loadAnimation(mContext, R.anim.modal_out);
                 tv_img_num.startAnimation(animation);
@@ -609,7 +605,6 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         } else if (resultCode == RESULT_CANCELED) {
             // 取消拍照
             if (takePhoto && !takePhotoSuccess) {
-
                 recycleCallBack();
             }
         }
@@ -750,13 +745,14 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                 // 系统自带压缩
                 compress_config.enablePixelCompress(config.isEnablePixelCompress());
                 compress_config.enableQualityCompress(config.isEnableQualityCompress());
+                compress_config.setMaxSize(maxB);
                 break;
             case 2:
                 // luban压缩
                 LubanOptions option = new LubanOptions.Builder()
                         .setMaxHeight(compressH)
                         .setMaxWidth(compressW)
-                        .setMaxSize(FunctionConfig.MAX_COMPRESS_SIZE)
+                        .setMaxSize(maxB)
                         .create();
                 compress_config = CompressConfig.ofLuban(option);
                 break;
