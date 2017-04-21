@@ -135,7 +135,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         adapter.setOnItemClickListener(new GridImageAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
-                // 这里可预览图片
+                // 预览图片
                 PictureConfig.getPictureConfig().externalPicturePreview(mContext, position, selectMedia);
             }
         });
@@ -202,30 +202,31 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
 
                     int selector = R.drawable.select_cb;
                     FunctionConfig config = new FunctionConfig();
-                    config.setType(selectType);
-                    config.setCopyMode(copyMode);
+                    config.setType(selectType);// type --> 1图片 or 2视频
+                    config.setCopyMode(copyMode); // copyMode -->裁剪比例，默认、1:1、3:4、3:2、16:9
                     config.setCompress(isCompress);
                     config.setEnablePixelCompress(true);
                     config.setEnableQualityCompress(true);
-                    config.setMaxSelectNum(maxSelectNum);
-                    config.setSelectMode(selectMode);
-                    config.setShowCamera(isShow);
-                    config.setEnablePreview(enablePreview);
-                    config.setEnableCrop(enableCrop);
-                    config.setPreviewVideo(isPreviewVideo);
+                    config.setMaxSelectNum(maxSelectNum); // 可选择图片的数量
+                    config.setSelectMode(selectMode); // 单选 or 多选
+                    config.setShowCamera(isShow);//是否显示拍照选项 这里自动根据type 启动拍照或录视频
+                    config.setEnablePreview(enablePreview);// 是否打开预览选项
+                    config.setEnableCrop(enableCrop); // 是否打开剪切选项
+                    config.setPreviewVideo(isPreviewVideo); // 是否预览视频(播放) mode or 多选有效
                     config.setRecordVideoDefinition(FunctionConfig.HIGH);// 视频清晰度
                     config.setRecordVideoSecond(60);// 视频秒数
-                    config.setCropW(cropW);
-                    config.setCropH(cropH);
-                    config.setMaxB(maxB);
-                    config.setCheckNumMode(isCheckNumMode);
-                    config.setCompressQuality(100);
-                    config.setImageSpanCount(4);
-                    config.setSelectMedia(selectMedia);
-                    config.setCompressFlag(compressFlag);
-                    config.setCompressW(compressW);
-                    config.setCompressH(compressH);
+                    config.setCropW(cropW); // cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
+                    config.setCropH(cropH); // cropH-->裁剪高度 值不能小于100 如果值大于图片原始宽高 将返回原图大小
+                    config.setMaxB(maxB); // 压缩最小值
+                    config.setCheckNumMode(isCheckNumMode); // 是否显示QQ风格选择图片
+                    config.setCompressQuality(100);  // 图片裁剪质量,默认无损
+                    config.setImageSpanCount(4); // 每行个数
+                    config.setSelectMedia(selectMedia); // 已选图片，传入在次进去可选中，不能传入网络图片
+                    config.setCompressFlag(compressFlag);  // 1 系统自带压缩 2 luban压缩
+                    config.setCompressW(compressW); // 压缩宽 如果值大于图片原始宽高无效
+                    config.setCompressH(compressH); // 压缩高 如果值大于图片原始宽高无效
                     if (theme) {
+                        // 设置主题样式
                         config.setThemeStyle(ContextCompat.getColor(MainActivity.this, R.color.blue));
                         // 可以自定义底部 预览 完成 文字的颜色和背景色
                         if (!isCheckNumMode) {
@@ -237,6 +238,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                         }
                     }
                     if (selectImageType) {
+                        // // 图片选择默认样式
                         config.setCheckedBoxDrawable(selector);
                     }
 
@@ -265,6 +267,17 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         public void onSelectSuccess(List<LocalMedia> resultList) {
             selectMedia = resultList;
             Log.i("callBack_result", selectMedia.size() + "");
+            LocalMedia media = resultList.get(0);
+            if (media.isCut() && !media.isCompressed()) {
+                // 裁剪过
+                String path = media.getCutPath();
+            } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
+                // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
+                String path = media.getCompressPath();
+            } else {
+                // 原图地址
+                String path = media.getPath();
+            }
             if (selectMedia != null) {
                 adapter.setList(selectMedia);
                 adapter.notifyDataSetChanged();
@@ -390,4 +403,5 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
 
         return false;
     }
+
 }
