@@ -8,7 +8,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.luck.picture.lib.R;
 import com.yalantis.ucrop.entity.LocalMedia;
@@ -37,7 +36,6 @@ public class LocalMediaLoader {
             MediaStore.Images.Media.DATA,
             MediaStore.Images.Media.DISPLAY_NAME,
             MediaStore.Images.Media.DATE_ADDED,
-            MediaStore.Images.Thumbnails.DATA,
             MediaStore.Images.Media._ID
     };
 
@@ -91,9 +89,6 @@ public class LocalMediaLoader {
                             do {
 
                                 String path = data.getString(data.getColumnIndexOrThrow(IMAGE_PROJECTION[0]));
-                                String name = data.getString(data.getColumnIndexOrThrow(IMAGE_PROJECTION[1]));
-                                String thumbnails = data.getString(data.getColumnIndexOrThrow(IMAGE_PROJECTION[3]));
-                                Log.i("LocalMediaLoader", "视频缩略图::" + thumbnails);
                                 // 如原图路径不存在或者路径存在但文件不存在,就结束当前循环
                                 if (TextUtils.isEmpty(path) || !new File(path).exists()) {
                                     continue;
@@ -101,13 +96,11 @@ public class LocalMediaLoader {
                                 long dateTime = data.getLong(data.getColumnIndexOrThrow(IMAGE_PROJECTION[2]));
                                 int duration = (type == TYPE_VIDEO ? data.getInt(data.getColumnIndexOrThrow(VIDEO_PROJECTION[4])) : 0);
                                 LocalMedia image = new LocalMedia(path, dateTime, duration, type);
-                                image.setThumbnails(thumbnails);
                                 LocalMediaFolder folder = getImageFolder(path, imageFolders);
                                 folder.getImages().add(image);
                                 folder.setType(type);
                                 index++;
                                 folder.setImageNum(folder.getImageNum() + 1);
-
                                 // 最近相册中  只添加最新的100条
                                 if (index <= 100) {
                                     allImages.add(image);

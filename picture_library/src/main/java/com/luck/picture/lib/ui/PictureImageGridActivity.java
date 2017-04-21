@@ -189,6 +189,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
             // 解决调用 notifyItemChanged 闪烁问题,取消默认动画
             ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+            recyclerView.getItemAnimator().setChangeDuration(-1);
             // 如果是显示数据风格，则默认为qq选择风格
             if (is_checked_num) {
                 tv_img_num.setBackgroundResource(R.drawable.message_oval_blue);
@@ -204,6 +205,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             }
             adapter = new PictureImageGridAdapter(this, showCamera, maxSelectNum, selectMode, enablePreview, enablePreviewVideo, cb_drawable, is_checked_num, type);
             recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
             if (selectMedias.size() > 0) {
                 ChangeImageNumber(selectMedias);
                 adapter.bindSelectImages(selectMedias);
@@ -211,6 +213,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             adapter.bindImagesData(images);
             adapter.setOnPhotoSelectChangedListener(PictureImageGridActivity.this);
         }
+
     }
 
     @Override
@@ -387,6 +390,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                     ArrayList<LocalMedia> result = new ArrayList<>();
                     LocalMedia m = new LocalMedia();
                     m.setPath(media.getPath());
+                    m.setDuration(media.getDuration());
                     m.setType(type);
                     result.add(m);
                     onSelectDone(result);
@@ -550,9 +554,14 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                             compresses.add(compress);
                             compressImage(compresses);
                         } else {
+                            // 视频
                             ArrayList<LocalMedia> result = new ArrayList<>();
                             LocalMedia m = new LocalMedia();
+                            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                            mmr.setDataSource(cameraPath);
+                            long duration = Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
                             m.setPath(cameraPath);
+                            m.setDuration(duration);
                             m.setType(type);
                             result.add(m);
                             onSelectDone(result);

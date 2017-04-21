@@ -136,9 +136,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 long duration = image.getDuration();
                 contentHolder.rl_duration.setVisibility(View.VISIBLE);
                 contentHolder.tv_duration.setText("时长：" + timeParse(duration));
+
             } else {
+
                 Glide.with(context)
-                        .load(image.getThumbnails())
+                        .load(path)
                         .placeholder(R.drawable.image_placeholder)
                         .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.RESULT)
@@ -264,7 +266,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             image.setNum(selectImages.size());
         }
         //通知点击项发生了改变
-        notifyItemRangeChanged(contentHolder.getAdapterPosition(), images.size());
+        notifyItemChanged(contentHolder.getAdapterPosition());
         selectImage(contentHolder, !isChecked, true);
         if (imageSelectChangedListener != null) {
             imageSelectChangedListener.onChange(selectImages);
