@@ -147,33 +147,31 @@ allprojects {
   * 图片回调方法
  */
 
-private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {  
-
-    @Override
-    
-    public void onSelectSuccess(List< LocalMedia> resultList) {  
-            if (media.isCompressed()){  
-            // 注意：如果压缩过，在上传的时候，取 media.getCompressPath(); // 压缩图compressPath  
-            } else {  
-            // 注意：没有压缩过，在上传的时候，取 media.getPath(); // 原图path  
-            } else{
-            
-            // 注意：如果media.getCatPath();不为空的话 就代表裁剪的图片，上传时可取，但是如果又压缩过，则取最终压缩过的compressPath  
-            
-            }
-            
-            selectMedia = resultList;  
-            
-            if (selectMedia != null) {  
-            
-                adapter.setList(selectMedia);  
-                
-                adapter.notifyDataSetChanged();  
-                
-            }  
-        }  
-  };  
-  
+```
+  private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {
+        @Override
+        public void onSelectSuccess(List<LocalMedia> resultList) {
+            selectMedia = resultList;
+            Log.i("callBack_result", selectMedia.size() + "");
+            LocalMedia media = resultList.get(0);
+            if (media.isCut() && !media.isCompressed()) {
+                // 裁剪过
+                String path = media.getCutPath();
+            } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
+                // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
+                String path = media.getCompressPath();
+            } else {
+                // 原图地址
+                String path = media.getPath();
+            }
+            if (selectMedia != null) {
+                adapter.setList(selectMedia);
+                adapter.notifyDataSetChanged();
+            }
+        }
+    };
+    
+```
 
   
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/A574F86A9A9F42A77D03B0ACC9E761C9.jpg)
