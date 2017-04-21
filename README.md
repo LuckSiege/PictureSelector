@@ -110,10 +110,10 @@ allprojects {
       // 可以自定义底部 预览 完成 文字的颜色和背景色
       if (!isCheckNumMode) {
       // QQ 风格模式下 这里自己搭配颜色，使用蓝色可能会不好看
-      config.setPreviewColor(ContextCompat.getColor(MainActivity.this, R.color.white));
-      config.setCompleteColor(ContextCompat.getColor(MainActivity.this, R.color.white));
-      config.setPreviewBottomBgColor(ContextCompat.getColor(MainActivity.this, R.color.blue));
-      config.setBottomBgColor(ContextCompat.getColor(MainActivity.this, R.color.blue));
+      config.setPreviewColor(ContextCompat.getColor(MainActivity.this, R.color.white));//预览字体颜色
+      config.setCompleteColor(ContextCompat.getColor(MainActivity.this, R.color.white));//已完成字体颜色
+      config.setPreviewBottomBgColor(ContextCompat.getColor(MainActivity.this, R.color.blue));//预览底部背景色
+      config.setBottomBgColor(ContextCompat.getColor(MainActivity.this, R.color.blue));//图片列表底部背景色
            }
        }
        if (selectImageType) {
