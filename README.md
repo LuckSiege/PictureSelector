@@ -63,19 +63,15 @@ app-build 引入compile 'com.github.LuckSiege.PictureSelector:picture_library:v1
 
 项目根目录  
 
-allprojects { 
+```
+allprojects {
+    repositories {
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
+}
 
-    repositories { 
-    
-        jcenter() 
-        
-        maven { url 'https://jitpack.io' } 
-        
-    }  
-    
-}  
-
-
+```
 ******注：适配android6.0以上拍照问题，请在AndroidManifest.xml中添加标签******  
 
 ```
