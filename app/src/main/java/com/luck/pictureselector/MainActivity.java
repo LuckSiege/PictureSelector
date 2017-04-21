@@ -81,6 +81,12 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         rgbs9 = (RadioGroup) findViewById(R.id.rgbs9);
         et_kb = (EditText) findViewById(R.id.et_kb);
         rgbs10 = (RadioGroup) findViewById(R.id.rgbs10);
+        findViewById(R.id.left_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         ll_luban_wh = (LinearLayout) findViewById(R.id.ll_luban_wh);
         et_compress_width = (EditText) findViewById(R.id.et_compress_width);
         et_compress_height = (EditText) findViewById(R.id.et_compress_height);

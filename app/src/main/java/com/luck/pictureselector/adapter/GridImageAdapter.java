@@ -164,6 +164,7 @@ public class GridImageAdapter extends
                     break;
                 case 2:
                     // 视频
+                    Log.i("时长:", media.getDuration() + "");
                     Glide.with(mContext).load(path).thumbnail(0.5f).into(viewHolder.mImg);
                     break;
                 default:
