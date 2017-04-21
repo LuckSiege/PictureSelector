@@ -6,53 +6,39 @@
 
 重要的事情说三遍记得添加权限
 
-  < uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-  
-  < uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-  
-  < uses-permission android:name="android.permission.CAMERA" />
+```
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.CAMERA" />
+    
+```
 
 功能特点：  
 
-1.适配android7.0系统    
-
-2.解决部分机型裁剪闪退问题
-
-3.解决图片过大oom闪退问题
-
-4.动态获取系统权限，避免闪退  
-
-5.支持相片or视频的单选和多选  
-
-6.支持裁剪比例设置，如常用的  1:1、3：4、3:2、16:9 默认为图片大小
-
-7.支持视频预览  
-
-8.支持gif图片  
-
-9.支持一些常用场景设置：如:是否裁剪、是否预览图片、是否显示相机等  
-
-10.新增自定义主题设置  
-
-11.新增图片勾选样式设置  
-
-12.新增图片裁剪宽高设置  
-
-13.新增图片压缩处理  
-
-14.新增录视频最大时间设置  
-
-15.新增视频清晰度设置  
-
-16.新增QQ选择风格，带数字效果  
-
-17.新增自定义 文字颜色 背景色让风格和项目更搭配  
-
-18.新增多图裁剪功能
-
-19.新增LuBan多图压缩
-
-20.新增单独拍照功能
+```
+      1.适配android6.0+系统
+      2.解决部分机型裁剪闪退问题
+      3.解决图片过大oom闪退问题
+      4.动态获取系统权限，避免闪退
+      5.支持相片or视频的单选和多选
+      6.支持裁剪比例设置，如常用的 1:1、3：4、3:2、16:9 默认为图片大小
+      7.支持视频预览
+      8.支持gif图片
+      9.支持一些常用场景设置：如:是否裁剪、是否预览图片、是否显示相机等
+      10.新增自定义主题设置
+      11.新增图片勾选样式设置
+      12.新增图片裁剪宽高设置
+      13.新增图片压缩处理
+      14.新增录视频最大时间设置
+      15.新增视频清晰度设置
+      16.新增QQ选择风格，带数字效果
+      17.新增自定义 文字颜色 背景色让风格和项目更搭配
+      18.新增多图裁剪功能
+      19.新增LuBan多图压缩
+      20.新增单独拍照功能
+      21.新增压缩大小设置
+    
+```
 
 项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~  由于加好友的太多 现在集中到QQ群中讨论 619458861，个人联系方式893855882@qq.com  希望用得着的朋友点个start，你们的支持才是我继续下去的动力，在此先谢过~  
 
@@ -62,135 +48,115 @@ app-build 引入compile 'com.github.LuckSiege.PictureSelector:picture_library:v1
 
 项目根目录  
 
-allprojects { 
+```
+allprojects {
+    repositories {
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
+}
 
-    repositories { 
-    
-        jcenter() 
-        
-        maven { url 'https://jitpack.io' } 
-        
-    }  
-    
-}  
-
-
+```
 ******注：适配android6.0以上拍照问题，请在AndroidManifest.xml中添加标签******  
 
- < provider 
- 
-            android:name="android.support.v4.content.FileProvider"
-            
-            android:authorities="${applicationId}.provider"
-            
-            android:exported="false"
-            
-            android:grantUriPermissions="true">
-            
-            < meta-data
-            
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                
-                android:resource="@xml/file_paths" />
-                
- </ provider> 
+```
+<provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+</provider>
+        
+```
  
          
 ******相册参数构造******
 
-FunctionConfig config = new FunctionConfig();  
+```
+  FunctionConfig config = new FunctionConfig();
+  config.setType(selectType);// type --> 1图片 or 2视频
+  config.setCopyMode(copyMode); // copyMode -->裁剪比例，默认、1:1、3:4、3:2、16:9
+  config.setCompress(isCompress);
+  config.setEnablePixelCompress(true);
+  config.setEnableQualityCompress(true);
+  config.setMaxSelectNum(maxSelectNum); // 可选择图片的数量
+  config.setSelectMode(selectMode); // 单选 or 多选
+  config.setShowCamera(isShow);//是否显示拍照选项 这里自动根据type 启动拍照或录视频
+  config.setEnablePreview(enablePreview);// 是否打开预览选项
+  config.setEnableCrop(enableCrop); // 是否打开剪切选项
+  config.setPreviewVideo(isPreviewVideo); // 是否预览视频(播放) mode or 多选有效
+  config.setRecordVideoDefinition(FunctionConfig.HIGH);// 视频清晰度
+  config.setRecordVideoSecond(60);// 视频秒数
+  config.setCropW(cropW); // cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
+  config.setCropH(cropH); // cropH-->裁剪高度 值不能小于100 如果值大于图片原始宽高 将返回原图大小
+  config.setMaxB(maxB); // 压缩最小值
+  config.setCheckNumMode(isCheckNumMode); // 是否显示QQ风格选择图片
+  config.setCompressQuality(100);  // 图片裁剪质量,默认无损
+  config.setImageSpanCount(4); // 每行个数
+  config.setSelectMedia(selectMedia); // 已选图片，传入在次进去可选中，不能传入网络图片
+  config.setCompressFlag(compressFlag);  // 1 系统自带压缩 2 luban压缩
+  config.setCompressW(compressW); // 压缩宽 如果值大于图片原始宽高无效
+  config.setCompressH(compressH); // 压缩高 如果值大于图片原始宽高无效
+  if (theme) {
+      // 设置主题样式
+      config.setThemeStyle(ContextCompat.getColor(MainActivity.this, R.color.blue));
+      // 可以自定义底部 预览 完成 文字的颜色和背景色
+      if (!isCheckNumMode) {
+      // QQ 风格模式下 这里自己搭配颜色，使用蓝色可能会不好看
+      config.setPreviewColor(ContextCompat.getColor(MainActivity.this, R.color.white));
+      config.setCompleteColor(ContextCompat.getColor(MainActivity.this, R.color.white));
+      config.setPreviewBottomBgColor(ContextCompat.getColor(MainActivity.this, R.color.blue));
+      config.setBottomBgColor(ContextCompat.getColor(MainActivity.this, R.color.blue));
+           }
+       }
+       if (selectImageType) {
+           // // 图片选择默认样式
+           config.setCheckedBoxDrawable(selector);
+            }
 
-config.setType(selectType); 1图片 or 2视频 LocalMediaLoader.TYPE_IMAGE,TYPE_VIDEO  
+          // 先初始化参数配置，在启动相册
+          PictureConfig.init(config);
+          PictureConfig.getPictureConfig().openPhoto(mContext, resultCallback);
 
-config.setCopyMode(copyMode); 裁剪比例 默认 1:1 3:4 3:2 16:9 可参考 Constants.COPY_MODEL_1_1  
-
-config.setCompress(isCompress); 是否压缩  
-
-config.setMaxSelectNum(maxSelectNum - images.size()); 最大可选数量  
-
-config.setSelectMode(selectMode); 2单选 or 1多选 MODE_MULTIPLE MODE_SINGLE  
-
-config.setShowCamera(isShow); 是否显示相机  
-
-config.setEnablePreview(enablePreview); 是否预览  
-
-config.setEnableCrop(enableCrop); 是否裁剪  
-
-config.setPreviewVideo(isPreviewVideo); 是否预览视频(播放)  
-
-config.setCropW(cropW); 裁剪宽  
-
-config.setCropH(cropH); 裁剪高  
-
-config.setRecordVideoDefinition(Constants.HIGH); // 视频清晰度 Constants.HIGH 清晰 Constants.ORDINARY 普通 低质量  
-
-config.setRecordVideoSecond(60);// 视频秒数  
-
-config.setCheckNumMode(isCheckNumMode); 是否显示QQ选择风格(带数字效果)  
-
-config.setPreviewColor 预览文字颜色  
-
-config.setCompleteColor 完成文字颜色 
-
-config.setPreviewBottomBgColor 预览界面底部背景色  
-
-config.setBottomBgColor 选择图片页面底部背景色  
-
-config.options.setSelectMedia() 已选图片集合  
-
-config.setCompressFlag(compressFlag); // 1是系统自带压缩 2是鲁班压缩
-
-config.setCompressW(compressW); //Luban压缩宽
-
-config.setCompressH(compressH); //Luban压缩高
-
-// 先初始化参数配置，在启动相册  
-
-PictureConfig.init(config);  
-
-// 启动相册并设置回调函数  
-
-PictureConfig.getPictureConfig.openPhoto(MainActivity.this, resultCallback); 
-
-// 单独启动相机拍照
-
-PictureConfig.getPictureConfig().startOpenCamera(mContext, resultCallback);
-
-// 外部预览图片方法 (例如选完后要预览的可调用此方法)
-
-PictureConfig.getPictureConfig.externalPicturePreview(this, position, selectMedia);
+          // 只拍照
+          //PictureConfig.getPictureConfig().startOpenCamera(mContext, resultCallback);
+                    
+          // 预览图片 视频无效
+         PictureConfig.getPictureConfig().externalPicturePreview(mContext, position, selectMedia);
+```
 
 /**
   * 图片回调方法
  */
 
-private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {  
-
-    @Override
-    
-    public void onSelectSuccess(List< LocalMedia> resultList) {  
-            if (media.isCompressed()){  
-            // 注意：如果压缩过，在上传的时候，取 media.getCompressPath(); // 压缩图compressPath  
-            } else {  
-            // 注意：没有压缩过，在上传的时候，取 media.getPath(); // 原图path  
-            } else{
-            
-            // 注意：如果media.getCatPath();不为空的话 就代表裁剪的图片，上传时可取，但是如果又压缩过，则取最终压缩过的compressPath  
-            
-            }
-            
-            selectMedia = resultList;  
-            
-            if (selectMedia != null) {  
-            
-                adapter.setList(selectMedia);  
-                
-                adapter.notifyDataSetChanged();  
-                
-            }  
-        }  
-  };  
-  
+```
+  private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {
+        @Override
+        public void onSelectSuccess(List<LocalMedia> resultList) {
+            selectMedia = resultList;
+            Log.i("callBack_result", selectMedia.size() + "");
+            LocalMedia media = resultList.get(0);
+            if (media.isCut() && !media.isCompressed()) {
+                // 裁剪过
+                String path = media.getCutPath();
+            } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
+                // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
+                String path = media.getCompressPath();
+            } else {
+                // 原图地址
+                String path = media.getPath();
+            }
+            if (selectMedia != null) {
+                adapter.setList(selectMedia);
+                adapter.notifyDataSetChanged();
+            }
+        }
+    };
+    
+```
 
   
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/A574F86A9A9F42A77D03B0ACC9E761C9.jpg)
