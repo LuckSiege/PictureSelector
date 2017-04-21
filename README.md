@@ -44,13 +44,13 @@
 
 ```
 <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
+   android:name="android.support.v4.content.FileProvider"
+   android:authorities="${applicationId}.provider"
+   android:exported="false"
+   android:grantUriPermissions="true">
+     <meta-data
+         android:name="android.support.FILE_PROVIDER_PATHS"
+         android:resource="@xml/file_paths" />
 </provider>
         
 ```
@@ -67,10 +67,10 @@ dependencies {
 
 ```
 allprojects {
-    repositories {
-        jcenter()
-        maven { url 'https://jitpack.io' }
-    }
+   repositories {
+      jcenter()
+      maven { url 'https://jitpack.io' }
+   }
 }
 
 ```
@@ -115,9 +115,9 @@ allprojects {
            }
        }
        if (selectImageType) {
-           // // 图片选择默认样式
+          // 图片选择默认样式
            config.setCheckedBoxDrawable(selector);
-            }
+          }
 
           // 先初始化参数配置，在启动相册
           PictureConfig.init(config);
