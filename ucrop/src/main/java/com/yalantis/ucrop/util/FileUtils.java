@@ -170,7 +170,8 @@ public class FileUtils {
             if (!mCacheDir.mkdirs() && (!mCacheDir.exists() || !mCacheDir.isDirectory())) {
                 return file;
             } else {
-                return new File(mCacheDir, file.getName());
+                String fileName = System.currentTimeMillis() + ".png";
+                return new File(mCacheDir, fileName);
             }
         }
         if (Log.isLoggable(TAG, Log.ERROR)) {
