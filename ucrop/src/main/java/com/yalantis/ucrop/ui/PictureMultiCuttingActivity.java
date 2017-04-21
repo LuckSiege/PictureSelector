@@ -176,6 +176,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         tv_right.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                view.setEnabled(false);
                 cropAndSaveImage();
             }
         });
@@ -298,6 +299,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
             @Override
             public void onCropFailure(@NonNull Throwable t) {
                 setResultError(t);
+                tv_right.setEnabled(true);
             }
         });
 
@@ -321,6 +323,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
             } else {
                 finish();
                 startMultiCopy(images.get(cutIndex).getPath());
+                tv_right.setEnabled(true);
             }
         } catch (Exception e) {
             e.printStackTrace();

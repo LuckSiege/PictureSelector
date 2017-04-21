@@ -14,7 +14,6 @@ public class LocalMedia implements Serializable {
     private String path;
     private String compressPath;
     private String cutPath;
-    private String thumbnails;
     private long duration;
     private long lastUpdateAt;
     private boolean isChecked;
@@ -23,7 +22,6 @@ public class LocalMedia implements Serializable {
     private int num;
     private int type;
     private boolean compressed;
-
 
 
     public LocalMedia(String path, long lastUpdateAt, long duration, int type) {
@@ -45,14 +43,6 @@ public class LocalMedia implements Serializable {
     }
 
     public LocalMedia() {
-    }
-
-    public String getThumbnails() {
-        return thumbnails;
-    }
-
-    public void setThumbnails(String thumbnails) {
-        this.thumbnails = thumbnails;
     }
 
     public String getCutPath() {

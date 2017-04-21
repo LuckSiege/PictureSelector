@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageButton;
@@ -200,6 +201,10 @@ public class PictureSingeUCropActivity extends FragmentActivity {
         left_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (takePhoto) {
+                    // 单独拍照 直接返回应用页面，防止显示空白
+                    sendBroadcast(new Intent().setAction("app.activity.finish"));
+                }
                 onBackPressed();
             }
         });
@@ -318,5 +323,19 @@ public class PictureSingeUCropActivity extends FragmentActivity {
         if (dialog != null && dialog.isShowing()) {
             dialog.cancel();
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                if (takePhoto) {
+                    // 单独拍照 直接返回应用页面，防止显示空白
+                    sendBroadcast(new Intent().setAction("app.activity.finish"));
+                    finish();
+                }
+                return false;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
