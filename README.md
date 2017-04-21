@@ -83,9 +83,9 @@ allprojects {
   FunctionConfig config = new FunctionConfig();
   config.setType(selectType);// type --> 1图片 or 2视频
   config.setCopyMode(copyMode); // copyMode -->裁剪比例，默认、1:1、3:4、3:2、16:9
-  config.setCompress(isCompress);
-  config.setEnablePixelCompress(true);
-  config.setEnableQualityCompress(true);
+  config.setCompress(isCompress);//是否压
+  config.setEnablePixelCompress(true);//是否启用像素压缩
+  config.setEnableQualityCompress(true);//是否启质量压缩
   config.setMaxSelectNum(maxSelectNum); // 可选择图片的数量
   config.setSelectMode(selectMode); // 单选 or 多选
   config.setShowCamera(isShow);//是否显示拍照选项 这里自动根据type 启动拍照或录视频
@@ -96,7 +96,7 @@ allprojects {
   config.setRecordVideoSecond(60);// 视频秒数
   config.setCropW(cropW); // cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
   config.setCropH(cropH); // cropH-->裁剪高度 值不能小于100 如果值大于图片原始宽高 将返回原图大小
-  config.setMaxB(maxB); // 压缩最小值
+  config.setMaxB(maxB); // 压缩最大值
   config.setCheckNumMode(isCheckNumMode); // 是否显示QQ风格选择图片
   config.setCompressQuality(100);  // 图片裁剪质量,默认无损
   config.setImageSpanCount(4); // 每行个数
