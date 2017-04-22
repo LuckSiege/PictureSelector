@@ -139,10 +139,7 @@ allprojects {
  PictureConfig.getPictureConfig().externalPicturePreview(mContext, position, selectMedia);
 ```
 
-/**
-  * 图片回调方法
- */
-
+******图片回调完成结果返回******
 ```
   private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {
         @Override
