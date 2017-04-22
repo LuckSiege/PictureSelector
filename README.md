@@ -80,59 +80,6 @@ allprojects {
 ```         
 
 
-  ```
-  FunctionConfig config = new FunctionConfig();
-  config.setType(selectType);// type --> 1图片 or 2视频
-  config.setCopyMode(copyMode); // copyMode -->裁剪比例，默认、1:1、3:4、3:2、16:9
-  config.setCompress(isCompress);//是否压
-  config.setEnablePixelCompress(true);//是否启用像素压缩
-  config.setEnableQualityCompress(true);//是否启质量压缩
-  config.setMaxSelectNum(maxSelectNum); // 可选择图片的数量
-  config.setSelectMode(selectMode); // 单选 or 多选
-  config.setShowCamera(isShow);//是否显示拍照选项 这里自动根据type 启动拍照或录视频
-  config.setEnablePreview(enablePreview);// 是否打开预览选项
-  config.setEnableCrop(enableCrop); // 是否打开剪切选项
-  config.setPreviewVideo(isPreviewVideo); // 是否预览视频(播放) mode or 多选有效
-  config.setRecordVideoDefinition(FunctionConfig.HIGH);// 视频清晰度
-  config.setRecordVideoSecond(60);// 视频秒数
-  config.setCropW(cropW); // cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
-  config.setCropH(cropH); // cropH-->裁剪高度 值不能小于100 如果值大于图片原始宽高 将返回原图大小
-  config.setMaxB(maxB); // 压缩最大值
-  config.setCheckNumMode(isCheckNumMode); // 是否显示QQ风格选择图片
-  config.setCompressQuality(100);  // 图片裁剪质量,默认无损
-  config.setImageSpanCount(4); // 每行个数
-  config.setSelectMedia(selectMedia); // 已选图片，传入在次进去可选中，不能传入网络图片
-  config.setCompressFlag(compressFlag);  // 1 系统自带压缩 2 luban压缩
-  config.setCompressW(compressW); // 压缩宽 如果值大于图片原始宽高无效
-  config.setCompressH(compressH); // 压缩高 如果值大于图片原始宽高无效
-  if (theme) {
-      // 设置主题样式
-      config.setThemeStyle(ContextCompat.getColor(MainActivity.this, R.color.blue));
-      // 可以自定义底部 预览 完成 文字的颜色和背景色
-      if (!isCheckNumMode) {
-      // QQ 风格模式下 这里自己搭配颜色，使用蓝色可能会不好看
-      config.setPreviewColor(ContextCompat.getColor(MainActivity.this, R.color.white));//预览字体颜色
-      config.setCompleteColor(ContextCompat.getColor(MainActivity.this, R.color.white));//已完成字体颜色
-      config.setPreviewBottomBgColor(ContextCompat.getColor(MainActivity.this, R.color.blue));//预览底部背景色
-      config.setBottomBgColor(ContextCompat.getColor(MainActivity.this, R.color.blue));//图片列表底部背景色
-           }
-       }
-       if (selectImageType) {
-          // 图片选择默认样式
-           config.setCheckedBoxDrawable(selector);
-          }
-
-          // 先初始化参数配置，在启动相册
-          PictureConfig.init(config);
-          PictureConfig.getPictureConfig().openPhoto(mContext, resultCallback);
-
-          // 只拍照
-          //PictureConfig.getPictureConfig().startOpenCamera(mContext, resultCallback);
-                    
-          // 预览图片 视频无效
-         PictureConfig.getPictureConfig().externalPicturePreview(mContext, position, selectMedia);
-    ```
-
 /**
   * 图片回调方法
  */
