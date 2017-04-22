@@ -79,8 +79,9 @@ allprojects {
 
 ```         
 
+
 ```
-FunctionConfig config = new FunctionConfig();
+  FunctionConfig config = new FunctionConfig();
   config.setType(selectType);// type --> 1图片 or 2视频
   config.setCopyMode(copyMode); // copyMode -->裁剪比例，默认、1:1、3:4、3:2、16:9
   config.setCompress(isCompress);//是否压
