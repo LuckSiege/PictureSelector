@@ -80,6 +80,7 @@ allprojects {
 ```         
 
 ``` 
+
   FunctionConfig config = new FunctionConfig();
   config.setType(selectType);// type --> 1图片 or 2视频
   config.setCopyMode(copyMode); // copyMode -->裁剪比例，默认、1:1、3:4、3:2、16:9
@@ -130,6 +131,7 @@ allprojects {
                     
           // 预览图片 视频无效
          PictureConfig.getPictureConfig().externalPicturePreview(mContext, position, selectMedia);
+
 ``` 
 
 /**
