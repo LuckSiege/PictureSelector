@@ -79,11 +79,6 @@ allprojects {
 
 ```         
 
-
-
-
-******相册参数构造******
-
 ``` 
   FunctionConfig config = new FunctionConfig();
   config.setType(selectType);// type --> 1图片 or 2视频
