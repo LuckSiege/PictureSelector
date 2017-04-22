@@ -122,17 +122,22 @@ allprojects {
           }
 
           // 先初始化参数配置，在启动相册
-          PictureConfig.init(config);
-          PictureConfig.getPictureConfig().openPhoto(mContext, resultCallback);
-
-          // 只拍照
-          //PictureConfig.getPictureConfig().startOpenCamera(mContext, resultCallback);
-                    
-          // 预览图片 视频无效
-         PictureConfig.getPictureConfig().externalPicturePreview(mContext, position, selectMedia);
+          PictureConfig.init(config);     
 ```
-       
 
+******启动相册并拍照******       
+```
+ PictureConfig.getPictureConfig().openPhoto(mContext, resultCallback);
+```
+
+******单独启动拍照******       
+```
+ PictureConfig.getPictureConfig().startOpenCamera(mContext, resultCallback);
+```
+******预览图片 注：视频无效******       
+```
+ PictureConfig.getPictureConfig().externalPicturePreview(mContext, position, selectMedia);
+```
 
 /**
   * 图片回调方法
