@@ -78,6 +78,7 @@ public class PictureSingeUCropActivity extends FragmentActivity {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals("app.activity.singe.ucrop.finish")) {
+                cancelDialog();
                 finish();
                 overridePendingTransition(0, R.anim.hold);
             }
@@ -290,7 +291,6 @@ public class PictureSingeUCropActivity extends FragmentActivity {
     }
 
     protected void setResultUri(Uri uri, float resultAspectRatio, int imageWidth, int imageHeight) {
-        cancelDialog();
         List<LocalMedia> result = new ArrayList<>();
         LocalMedia media = new LocalMedia();
         media.setCut(true);
@@ -300,6 +300,7 @@ public class PictureSingeUCropActivity extends FragmentActivity {
         result.add(media);
         sendBroadcast(new Intent().setAction("app.action.crop_data").putExtra(UCrop.EXTRA_RESULT, (Serializable) result));
         if (!takePhoto) {
+            cancelDialog();
             finish();
             overridePendingTransition(0, R.anim.hold);
         }

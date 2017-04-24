@@ -36,15 +36,15 @@
 
         <TextView
             android:id="@+id/tv_right"
-            android:layout_width="wrap_content"
+            android:layout_width="48dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="5dp"
             android:gravity="center"
-            android:text=""
+            android:text="确定"
             android:textColor="@color/ucrop_color_widget_background"
-            android:textSize="15sp" />
+            android:textSize="14sp" />
     </RelativeLayout>
 
 
