@@ -174,7 +174,16 @@ PictureConfig.getPictureConfig().externalPictureVideo(mContext, selectMedia.get(
  }  
  
  问题二
- android.content.resXmlResourceParser 异常，请在AndroidManifest.xml 下添加适配6.0+拍照闪退问题 provider标签
+ android.content.resXmlResourceParser 异常，请在AndroidManifest.xml 下添加适配6.0+拍照闪退问题
+ <provider
+      android:name="android.support.v4.content.FileProvider"
+      android:authorities="${applicationId}.provider"
+      android:exported="false"
+      android:grantUriPermissions="true">
+       <meta-data
+         android:name="android.support.FILE_PROVIDER_PATHS"
+         android:resource="@xml/file_paths" />
+</provider>
  
 ```
 
