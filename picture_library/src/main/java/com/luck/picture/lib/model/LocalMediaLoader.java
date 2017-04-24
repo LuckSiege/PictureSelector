@@ -31,6 +31,7 @@ public class LocalMediaLoader {
     // load type
     public static final int TYPE_IMAGE = 1;
     public static final int TYPE_VIDEO = 2;
+    public boolean isGif;
     public int index = 0;
     private final static String[] IMAGE_PROJECTION = {
             MediaStore.Images.Media.DATA,
@@ -51,9 +52,10 @@ public class LocalMediaLoader {
     private FragmentActivity activity;
 
 
-    public LocalMediaLoader(FragmentActivity activity, int type) {
+    public LocalMediaLoader(FragmentActivity activity, int type, boolean isGif) {
         this.activity = activity;
         this.type = type;
+        this.isGif = isGif;
     }
 
     public void loadAllImage(final LocalMediaLoadListener imageLoadListener) {
@@ -61,13 +63,23 @@ public class LocalMediaLoader {
             @Override
             public Loader<Cursor> onCreateLoader(int id, Bundle args) {
                 CursorLoader cursorLoader = null;
+                String select[] = null;
+                String condition = "";
+                if (isGif) {
+                    select = new String[]{"image/jpeg", "image/png", "image/gif"};
+                    condition = MediaStore.Images.Media.MIME_TYPE + "=? or "
+                            + MediaStore.Images.Media.MIME_TYPE + "=?" + " or "
+                            + MediaStore.Images.Media.MIME_TYPE + "=?";
+                } else {
+                    select = new String[]{"image/jpeg", "image/png"};
+                    condition = MediaStore.Images.Media.MIME_TYPE + "=? or "
+                            + MediaStore.Images.Media.MIME_TYPE + "=?";
+                }
                 if (id == TYPE_IMAGE) {
                     cursorLoader = new CursorLoader(
                             activity, MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                            IMAGE_PROJECTION, MediaStore.Images.Media.MIME_TYPE + "=? or "
-                            + MediaStore.Images.Media.MIME_TYPE + "=?" + " or "
-                            + MediaStore.Images.Media.MIME_TYPE + "=?",
-                            new String[]{"image/jpeg", "image/png", "image/gif"}, IMAGE_PROJECTION[2] + " DESC");
+                            IMAGE_PROJECTION, condition,
+                            select, IMAGE_PROJECTION[2] + " DESC");
                 } else if (id == TYPE_VIDEO) {
                     cursorLoader = new CursorLoader(
                             activity, MediaStore.Video.Media.EXTERNAL_CONTENT_URI,

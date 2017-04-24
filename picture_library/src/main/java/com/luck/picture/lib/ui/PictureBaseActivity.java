@@ -14,8 +14,8 @@ import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.widget.Toast;
 
-import com.luck.picture.lib.R;
 import com.luck.picture.lib.model.FunctionConfig;
+import com.luck.picture.lib.model.FunctionOptions;
 import com.yalantis.ucrop.entity.LocalMedia;
 
 import java.util.ArrayList;
@@ -53,54 +53,52 @@ public class PictureBaseActivity extends FragmentActivity {
     protected int previewBottomBgColor; // 预览底部背景色
     protected int compressQuality = 0;// 压缩图片质量
     protected List<LocalMedia> selectMedias = new ArrayList<>();
-    protected FunctionConfig config = new FunctionConfig();
+    protected FunctionOptions options;
     protected int compressFlag = 1;
     protected int mScreenWidth = 720;
     protected int mScreenHeight = 1280;
     protected int compressW;
     protected int compressH;
     protected int maxB = 0;
+    protected int grade;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
         initScreenWidth();
-        config = (FunctionConfig) getIntent().getSerializableExtra(FunctionConfig.EXTRA_THIS_CONFIG);
-        type = config.getType();
-        showCamera = config.isShowCamera();
-        enablePreview = config.isEnablePreview();
-        selectMode = config.getSelectMode();
-        enableCrop = config.isEnableCrop();
-        maxSelectNum = config.getMaxSelectNum();
-        copyMode = config.getCopyMode();
-        enablePreviewVideo = config.isPreviewVideo();
-        backgroundColor = config.getThemeStyle();
-        cb_drawable = config.getCheckedBoxDrawable();
-        isCompress = config.isCompress();
-        spanCount = config.getImageSpanCount();
-        cropW = config.getCropW();
-        cropH = config.getCropH();
-        maxB = config.getMaxB();
-        if (maxB == 0) {
-            maxB = FunctionConfig.MAX_COMPRESS_SIZE;
+        options = (FunctionOptions) getIntent().getSerializableExtra(FunctionConfig.EXTRA_THIS_CONFIG);
+        if (options == null) {
+            options = new FunctionOptions.Builder().create();
         }
-        recordVideoSecond = config.getRecordVideoSecond();
-        definition = config.getRecordVideoDefinition();
-        is_checked_num = config.isCheckNumMode();
-        previewColor = config.getPreviewColor();
-        completeColor = config.getCompleteColor();
-        bottomBgColor = config.getBottomBgColor();
-        previewBottomBgColor = config.getPreviewBottomBgColor();
-        compressQuality = config.getCompressQuality();
-        selectMedias = config.getSelectMedia();
-        compressFlag = config.getCompressFlag();
-        compressW = config.getCompressW();
-        compressH = config.getCompressH();
-        // 如果是显示数据风格，则默认为qq选择风格
-        if (is_checked_num) {
-            cb_drawable = R.drawable.checkbox_num_selector;
-        }
+        type = options.getType();
+        showCamera = options.isShowCamera();
+        enablePreview = options.isEnablePreview();
+        selectMode = options.getSelectMode();
+        enableCrop = options.isEnableCrop();
+        maxSelectNum = options.getMaxSelectNum();
+        copyMode = options.getCropMode();
+        enablePreviewVideo = options.isPreviewVideo();
+        backgroundColor = options.getThemeStyle();
+        cb_drawable = options.getCheckedBoxDrawable();
+        isCompress = options.isCompress();
+        spanCount = options.getImageSpanCount();
+        cropW = options.getCropW();
+        cropH = options.getCropH();
+        maxB = options.getMaxB();
+        grade = options.getGrade();
+        recordVideoSecond = options.getRecordVideoSecond();
+        definition = options.getRecordVideoDefinition();
+        is_checked_num = options.isCheckNumMode();
+        previewColor = options.getPreviewColor();
+        completeColor = options.getCompleteColor();
+        bottomBgColor = options.getBottomBgColor();
+        previewBottomBgColor = options.getPreviewBottomBgColor();
+        compressQuality = options.getCompressQuality();
+        selectMedias = options.getSelectMedia();
+        compressFlag = options.getCompressFlag();
+        compressW = options.getCompressW();
+        compressH = options.getCompressH();
     }
 
     /**

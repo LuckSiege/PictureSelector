@@ -43,9 +43,9 @@ import io.reactivex.schedulers.Schedulers;
 
 public class Luban {
 
-    public static final int FIRST_GEAR = 1;
-    public static final int THIRD_GEAR = 3;
-    public static final int CUSTOM_GEAR = 4;
+    public static final int FIRST_GEAR = 1; // 一档
+    public static final int THIRD_GEAR = 3; // 三档
+    public static final int CUSTOM_GEAR = 4;// 四档
 
     private static final String TAG = "Luban";
     private static String DEFAULT_DISK_CACHE_DIR = "luban_disk_cache";

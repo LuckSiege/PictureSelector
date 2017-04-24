@@ -44,8 +44,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private int cb_drawable;
     private boolean is_checked_num;
     private int type;
+    private boolean isGif;
 
-    public PictureImageGridAdapter(Context context, boolean showCamera, int maxSelectNum, int mode, boolean enablePreview, boolean enablePreviewVideo, int cb_drawable, boolean is_checked_num, int type) {
+    public PictureImageGridAdapter(Context context, boolean isGif, boolean showCamera, int maxSelectNum, int mode, boolean enablePreview, boolean enablePreviewVideo, int cb_drawable, boolean is_checked_num, int type) {
         this.context = context;
         this.selectMode = mode;
         this.showCamera = showCamera;
@@ -55,7 +56,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.cb_drawable = cb_drawable;
         this.is_checked_num = is_checked_num;
         this.type = type;
-
+        this.isGif = isGif;
     }
 
     public void bindImagesData(List<LocalMedia> images) {
@@ -134,20 +135,29 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             if (type == LocalMediaLoader.TYPE_VIDEO) {
                 Glide.with(context).load(path).into(contentHolder.picture);
                 long duration = image.getDuration();
-                contentHolder.rl_duration.setVisibility(View.VISIBLE);
+                if (contentHolder.rl_duration.getVisibility() == View.GONE) {
+                    contentHolder.rl_duration.setVisibility(View.VISIBLE);
+                }
                 contentHolder.tv_duration.setText("时长：" + timeParse(duration));
 
             } else {
-
+                DiskCacheStrategy result;
+                if (isGif) {
+                    result = DiskCacheStrategy.SOURCE;
+                } else {
+                    result = DiskCacheStrategy.RESULT;
+                }
                 Glide.with(context)
                         .load(path)
                         .placeholder(R.drawable.image_placeholder)
+                        .diskCacheStrategy(result)
                         .crossFade()
-                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
                         .centerCrop()
+                        .override(200, 200)
                         .into(contentHolder.picture);
-
-                contentHolder.rl_duration.setVisibility(View.GONE);
+                if (contentHolder.rl_duration.getVisibility() == View.VISIBLE) {
+                    contentHolder.rl_duration.setVisibility(View.GONE);
+                }
             }
             if (enablePreview || enablePreviewVideo) {
                 contentHolder.ll_check.setOnClickListener(new View.OnClickListener() {
@@ -333,5 +343,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         time += second;
         return time;
     }
+
 
 }

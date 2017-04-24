@@ -14,10 +14,12 @@
         android:id="@+id/ll_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/margin_text">
+        android:padding="@dimen/margin_text"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
 
         <TextView
             android:id="@+id/check"

@@ -205,7 +205,7 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
         ImagesObservable.getInstance().saveLocalMedia(images);
         ImagesObservable.getInstance().saveLocalFolders(folders);
         intent.putExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectMedias);
-        intent.putExtra(FunctionConfig.EXTRA_THIS_CONFIG, config);
+        intent.putExtra(FunctionConfig.EXTRA_THIS_CONFIG, options);
         intent.putExtra(FunctionConfig.FOLDER_NAME, folderName);
         intent.putExtra(FunctionConfig.EXTRA_IS_TOP_ACTIVITY, true);
         intent.setClass(mContext, PictureImageGridActivity.class);

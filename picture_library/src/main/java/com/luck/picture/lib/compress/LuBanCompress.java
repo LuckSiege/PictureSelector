@@ -1,6 +1,7 @@
 package com.luck.picture.lib.compress;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.yalantis.ucrop.entity.LocalMedia;
 
@@ -55,8 +56,9 @@ public class LuBanCompress implements CompressInterface {
     }
 
     private void compressOne() {
+        Log.i("压缩档次::", options.getGrade() + "");
         Luban.compress(context, files.get(0))
-                .putGear(Luban.CUSTOM_GEAR)
+                .putGear(options.getGrade())
                 .setMaxHeight(options.getMaxHeight())
                 .setMaxWidth(options.getMaxWidth())
                 .setMaxSize(options.getMaxSize() / 1000)
@@ -64,6 +66,7 @@ public class LuBanCompress implements CompressInterface {
                     @Override
                     public void onStart() {
                     }
+
                     @Override
                     public void onSuccess(File file) {
                         LocalMedia image = images.get(0);
@@ -80,8 +83,9 @@ public class LuBanCompress implements CompressInterface {
     }
 
     private void compressMulti() {
+        Log.i("压缩档次::", options.getGrade() + "");
         Luban.compress(context, files)
-                .putGear(Luban.CUSTOM_GEAR)
+                .putGear(options.getGrade())
                 .setMaxSize(
                         options.getMaxSize() / 1000)                // limit the final image size（unit：Kb）
                 .setMaxHeight(options.getMaxHeight())             // limit image height

@@ -34,6 +34,7 @@ import com.luck.picture.lib.model.LocalMediaLoader;
 import com.luck.picture.lib.model.PictureConfig;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.widget.Constant;
+import com.luck.picture.lib.widget.MyItemAnimator;
 import com.yalantis.ucrop.MultiUCrop;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.dialog.SweetAlertDialog;
@@ -189,9 +190,10 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
             // 解决调用 notifyItemChanged 闪烁问题,取消默认动画
             ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
-            recyclerView.getItemAnimator().setChangeDuration(-1);
-            // 如果是显示数据风格，则默认为qq选择风格
-            if (is_checked_num) {
+            if (!is_checked_num) {
+                recyclerView.setItemAnimator(new MyItemAnimator());
+            } else {
+                // 如果是显示数据风格，则默认为qq选择风格
                 tv_img_num.setBackgroundResource(R.drawable.message_oval_blue);
             }
             String titleText = picture_tv_title.getText().toString().trim();
@@ -203,7 +205,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                     showCamera = false;
                 }
             }
-            adapter = new PictureImageGridAdapter(this, showCamera, maxSelectNum, selectMode, enablePreview, enablePreviewVideo, cb_drawable, is_checked_num, type);
+            adapter = new PictureImageGridAdapter(this, options.isGif(), showCamera, maxSelectNum, selectMode, enablePreview, enablePreviewVideo, cb_drawable, is_checked_num, type);
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
             if (selectMedias.size() > 0) {
@@ -222,7 +224,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
          * 根据type决定，查询本地图片或视频。
          */
         showDialog("请稍候...");
-        new LocalMediaLoader(this, type).loadAllImage(new LocalMediaLoader.LocalMediaLoadListener() {
+        new LocalMediaLoader(this, type, options.isGif()).loadAllImage(new LocalMediaLoader.LocalMediaLoadListener() {
 
             @Override
             public void loadComplete(List<LocalMediaFolder> folders) {
@@ -263,7 +265,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             intent.putExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectedImages);
             intent.putExtra(FunctionConfig.EXTRA_POSITION, 0);
             intent.putExtra(FunctionConfig.EXTRA_BOTTOM_PREVIEW, true);
-            intent.putExtra(FunctionConfig.EXTRA_THIS_CONFIG, config);
+            intent.putExtra(FunctionConfig.EXTRA_THIS_CONFIG, options);
             intent.setClass(mContext, PicturePreviewActivity.class);
             startActivityForResult(intent, FunctionConfig.REQUEST_PREVIEW);
         } else if (id == R.id.tv_ok) {
@@ -378,7 +380,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                     List<LocalMedia> selectedImages = adapter.getSelectedImages();
                     intent.putExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectedImages);
                     intent.putExtra(FunctionConfig.EXTRA_POSITION, position);
-                    intent.putExtra(FunctionConfig.EXTRA_THIS_CONFIG, config);
+                    intent.putExtra(FunctionConfig.EXTRA_THIS_CONFIG, options);
                     intent.setClass(mContext, PicturePreviewActivity.class);
                     startActivityForResult(intent, FunctionConfig.REQUEST_PREVIEW);
                 }
@@ -399,7 +401,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                         return;
                     }
                     bundle.putString("video_path", media.getPath());
-                    bundle.putSerializable(FunctionConfig.EXTRA_THIS_CONFIG, config);
+                    bundle.putSerializable(FunctionConfig.EXTRA_THIS_CONFIG, options);
                     startActivity(PictureVideoPlayActivity.class, bundle);
                 }
                 break;
@@ -413,8 +415,11 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
      * @param path
      */
     protected void startCopy(String path) {
-//        // 如果开启裁剪 并且是单选
-//        // 去裁剪
+        // 如果开启裁剪 并且是单选
+        // 去裁剪
+        if (Utils.isFastDoubleClick()) {
+            return;
+        }
         UCrop uCrop = UCrop.of(Uri.parse(path), Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + ".jpg")));
         UCrop.Options options = new UCrop.Options();
         switch (copyMode) {
@@ -451,6 +456,9 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
      * @param medias
      */
     protected void startMultiCopy(List<LocalMedia> medias) {
+        if (Utils.isFastDoubleClick()) {
+            return;
+        }
         if (medias != null && medias.size() > 0) {
             LocalMedia media = medias.get(0);
             String path = media.getPath();
@@ -557,9 +565,13 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                             // 视频
                             ArrayList<LocalMedia> result = new ArrayList<>();
                             LocalMedia m = new LocalMedia();
-                            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                            mmr.setDataSource(cameraPath);
-                            long duration = Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+                            long duration = 0;
+                            // 只有视频才获取时长 图片会报错
+                            if (type == FunctionConfig.TYPE_VIDEO) {
+                                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                                mmr.setDataSource(cameraPath);
+                                duration = Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+                            }
                             m.setPath(cameraPath);
                             m.setDuration(duration);
                             m.setType(type);
@@ -730,6 +742,9 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             case 1:
                 // 返回
                 List<LocalMedia> selectedImages = adapter.getSelectedImages();
+                if (selectedImages == null) {
+                    selectedImages = new ArrayList<>();
+                }
                 ImagesObservable.getInstance().notifySelectLocalMediaObserver(selectedImages);
                 finish();
                 break;
@@ -752,8 +767,8 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         switch (compressFlag) {
             case 1:
                 // 系统自带压缩
-                compress_config.enablePixelCompress(config.isEnablePixelCompress());
-                compress_config.enableQualityCompress(config.isEnableQualityCompress());
+                compress_config.enablePixelCompress(options.isEnablePixelCompress());
+                compress_config.enableQualityCompress(options.isEnableQualityCompress());
                 compress_config.setMaxSize(maxB);
                 break;
             case 2:
@@ -762,6 +777,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                         .setMaxHeight(compressH)
                         .setMaxWidth(compressW)
                         .setMaxSize(maxB)
+                        .setGrade(grade)
                         .create();
                 compress_config = CompressConfig.ofLuban(option);
                 break;
@@ -786,7 +802,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
     }
 
     private void showDialog(String msg) {
-        if (isFinishing()) {
+        if (!isFinishing()) {
             dialog = new SweetAlertDialog(PictureImageGridActivity.this);
             dialog.setTitleText(msg);
             dialog.show();
