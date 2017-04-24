@@ -79,6 +79,28 @@ allprojects {
 }
 ```
 
+******常见错误*******
+```
+ 问题一
+ rxjava冲突：在app build.gradle下添加
+ packagingOptions {
+   exclude 'META-INF/rxjava.properties'
+ }  
+ 
+ 问题二
+ android.content.resXmlResourceParser 异常，请在AndroidManifest.xml 下添加适配6.0+拍照闪退问题
+ <provider
+      android:name="android.support.v4.content.FileProvider"
+      android:authorities="${applicationId}.provider"
+      android:exported="false"
+      android:grantUriPermissions="true">
+       <meta-data
+         android:name="android.support.FILE_PROVIDER_PATHS"
+         android:resource="@xml/file_paths" />
+</provider>
+ 
+```
+
 ******相册启动构造方法******
 ```
 FunctionOptions options = new FunctionOptions.Builder()
@@ -164,27 +186,6 @@ PictureConfig.getPictureConfig().externalPictureVideo(mContext, selectMedia.get(
         }
     };
     
-```
-******常见错误*******
-```
- 问题一
- rxjava冲突：在app build.gradle下添加
- packagingOptions {
-   exclude 'META-INF/rxjava.properties'
- }  
- 
- 问题二
- android.content.resXmlResourceParser 异常，请在AndroidManifest.xml 下添加适配6.0+拍照闪退问题
- <provider
-      android:name="android.support.v4.content.FileProvider"
-      android:authorities="${applicationId}.provider"
-      android:exported="false"
-      android:grantUriPermissions="true">
-       <meta-data
-         android:name="android.support.FILE_PROVIDER_PATHS"
-         android:resource="@xml/file_paths" />
-</provider>
- 
 ```
 
   
