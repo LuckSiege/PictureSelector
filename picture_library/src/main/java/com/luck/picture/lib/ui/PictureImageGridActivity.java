@@ -122,6 +122,9 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         picture_tv_right.setOnClickListener(this);
         is_top_activity = getIntent().getBooleanExtra(FunctionConfig.EXTRA_IS_TOP_ACTIVITY, false);
         takePhoto = getIntent().getBooleanExtra(FunctionConfig.FUNCTION_TAKE, false);
+        if (savedInstanceState != null) {
+            cameraPath = savedInstanceState.getString(FunctionConfig.BUNDLE_CAMERA_PATH);
+        }
         if (takePhoto) {
             // 只拍照
             if (savedInstanceState == null)
@@ -143,10 +146,6 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             folders = ImagesObservable.getInstance().readLocalFolders();
             if (folders == null) {
                 folders = new ArrayList<>();
-            }
-
-            if (savedInstanceState != null) {
-                cameraPath = savedInstanceState.getString(FunctionConfig.BUNDLE_CAMERA_PATH);
             }
 
             images = ImagesObservable.getInstance().readLocalMedias();
