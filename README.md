@@ -81,13 +81,15 @@ allprojects {
 
 ******常见错误*******
 ```
- 问题一
+ 问题一：
+ 
  rxjava冲突：在app build.gradle下添加
  packagingOptions {
    exclude 'META-INF/rxjava.properties'
  }  
  
- 问题二
+ 问题二：
+ 
  android.content.resXmlResourceParser 异常，请在AndroidManifest.xml 下添加适配6.0+拍照闪退问题
  <provider
       android:name="android.support.v4.content.FileProvider"
