@@ -96,8 +96,8 @@ allprojects {
   config.setRecordVideoSecond(60);// 视频秒数
   config.setCropW(cropW); // cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
   config.setCropH(cropH); // cropH-->裁剪高度 值不能小于100 如果值大于图片原始宽高 将返回原图大小
-  config.setMaxB(maxB); // 压缩最大值
-  config.setCheckNumMode(isCheckNumMode); // 是否显示QQ风格选择图片
+  config.setMaxB(maxB); // 压缩最大值 例如:200kb  就设置202400，202400 / 1024 = 200kb
+  config.setCheckNumMode(isCheckNumMode); // 是否显示QQ风格选择图片
   config.setCompressQuality(100);  // 图片裁剪质量,默认无损
   config.setImageSpanCount(4); // 每行个数
   config.setSelectMedia(selectMedia); // 已选图片，传入在次进去可选中，不能传入网络图片
