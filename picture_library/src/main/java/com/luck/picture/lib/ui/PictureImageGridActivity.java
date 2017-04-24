@@ -544,9 +544,9 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                 // 拍照返回
                 File file = new File(cameraPath);
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+                takePhotoSuccess = true;
                 // 因为加入了单独拍照功能，所有如果是单独拍照的话也默认为单选状态
                 if (selectMode == FunctionConfig.MODE_SINGLE || takePhoto) {
-                    takePhotoSuccess = true;
                     // 如果是单选 拍照后直接返回
                     if (enableCrop && type == LocalMediaLoader.TYPE_IMAGE) {
                         // 如果允许裁剪，并且是图片
