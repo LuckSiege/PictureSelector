@@ -118,11 +118,17 @@ FunctionOptions options = new FunctionOptions.Builder()
 
 ******启动相册并拍照******       
 ```
+ PictureConfig.getPictureConfig().init(options).openPhoto(mContext, resultCallback);
+ 
+ 或默认配置
  PictureConfig.getPictureConfig().openPhoto(mContext, resultCallback);
 ```
 
 ******单独启动拍照******       
 ```
+ PictureConfig.getPictureConfig().init(options).startOpenCamera(mContext, resultCallback);
+ 
+ 或默认
  PictureConfig.getPictureConfig().startOpenCamera(mContext, resultCallback);
 ```
 ******预览图片 注：视频无效******       
