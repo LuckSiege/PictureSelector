@@ -13,7 +13,9 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
+import com.luck.picture.lib.compress.Luban;
 import com.luck.picture.lib.model.FunctionConfig;
+import com.luck.picture.lib.model.FunctionOptions;
 import com.luck.picture.lib.model.LocalMediaLoader;
 import com.luck.picture.lib.model.PictureConfig;
 import com.luck.pictureselector.adapter.GridImageAdapter;
@@ -61,6 +63,8 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     private List<LocalMedia> selectMedia = new ArrayList<>();
     private Context mContext;
     private EditText et_kb;
+    private int themeStyle;
+    private int previewColor, completeColor, previewBottomBgColor, bottomBgColor, checkedBoxDrawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,8 +139,17 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         adapter.setOnItemClickListener(new GridImageAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
-                // 预览图片
-                PictureConfig.getPictureConfig().externalPicturePreview(mContext, position, selectMedia);
+                switch (selectType) {
+                    case FunctionConfig.TYPE_IMAGE:
+                        // 预览图片
+                        PictureConfig.getPictureConfig().externalPicturePreview(mContext, position, selectMedia);
+                        break;
+                    case FunctionConfig.TYPE_VIDEO:
+                        // 预览视频
+                        PictureConfig.getPictureConfig().externalPictureVideo(mContext, selectMedia.get(position).getPath());
+                        break;
+                }
+
             }
         });
 
@@ -200,54 +213,66 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                         compressH = Integer.parseInt(et_compress_height.getText().toString());
                     }
 
-                    int selector = R.drawable.select_cb;
-                    FunctionConfig config = new FunctionConfig();
-                    config.setType(selectType);// type --> 1图片 or 2视频
-                    config.setCopyMode(copyMode); // copyMode -->裁剪比例，默认、1:1、3:4、3:2、16:9
-                    config.setCompress(isCompress);
-                    config.setEnablePixelCompress(true);
-                    config.setEnableQualityCompress(true);
-                    config.setMaxSelectNum(maxSelectNum); // 可选择图片的数量
-                    config.setSelectMode(selectMode); // 单选 or 多选
-                    config.setShowCamera(isShow);//是否显示拍照选项 这里自动根据type 启动拍照或录视频
-                    config.setEnablePreview(enablePreview);// 是否打开预览选项
-                    config.setEnableCrop(enableCrop); // 是否打开剪切选项
-                    config.setPreviewVideo(isPreviewVideo); // 是否预览视频(播放) mode or 多选有效
-                    config.setRecordVideoDefinition(FunctionConfig.HIGH);// 视频清晰度
-                    config.setRecordVideoSecond(60);// 视频秒数
-                    config.setCropW(cropW); // cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
-                    config.setCropH(cropH); // cropH-->裁剪高度 值不能小于100 如果值大于图片原始宽高 将返回原图大小
-                    config.setMaxB(maxB); // 压缩最小值
-                    config.setCheckNumMode(isCheckNumMode); // 是否显示QQ风格选择图片
-                    config.setCompressQuality(100);  // 图片裁剪质量,默认无损
-                    config.setImageSpanCount(4); // 每行个数
-                    config.setSelectMedia(selectMedia); // 已选图片，传入在次进去可选中，不能传入网络图片
-                    config.setCompressFlag(compressFlag);  // 1 系统自带压缩 2 luban压缩
-                    config.setCompressW(compressW); // 压缩宽 如果值大于图片原始宽高无效
-                    config.setCompressH(compressH); // 压缩高 如果值大于图片原始宽高无效
                     if (theme) {
                         // 设置主题样式
-                        config.setThemeStyle(ContextCompat.getColor(MainActivity.this, R.color.blue));
-                        // 可以自定义底部 预览 完成 文字的颜色和背景色
-                        if (!isCheckNumMode) {
-                            // QQ 风格模式下 这里自己搭配颜色，使用蓝色可能会不好看
-                            config.setPreviewColor(ContextCompat.getColor(MainActivity.this, R.color.white));
-                            config.setCompleteColor(ContextCompat.getColor(MainActivity.this, R.color.white));
-                            config.setPreviewBottomBgColor(ContextCompat.getColor(MainActivity.this, R.color.blue));
-                            config.setBottomBgColor(ContextCompat.getColor(MainActivity.this, R.color.blue));
-                        }
+                        themeStyle = ContextCompat.getColor(MainActivity.this, R.color.blue);
+                    } else {
+                        themeStyle = ContextCompat.getColor(mContext, R.color.bar_grey);
                     }
+
+                    if (isCheckNumMode) {
+                        // QQ 风格模式下 这里自己搭配颜色
+                        previewColor = ContextCompat.getColor(MainActivity.this, R.color.blue);
+                        completeColor = ContextCompat.getColor(MainActivity.this, R.color.blue);
+                    } else {
+                        previewColor = ContextCompat.getColor(MainActivity.this, R.color.tab_color_true);
+                        completeColor = ContextCompat.getColor(MainActivity.this, R.color.tab_color_true);
+                    }
+
                     if (selectImageType) {
-                        // // 图片选择默认样式
-                        config.setCheckedBoxDrawable(selector);
+                        checkedBoxDrawable = R.drawable.select_cb;
+                    } else {
+                        checkedBoxDrawable = 0;
                     }
+
+                    FunctionOptions options = new FunctionOptions.Builder()
+                            .setType(selectType) // 图片or视频 FunctionConfig.TYPE_IMAGE  TYPE_VIDEO
+                            .setCropMode(copyMode) // 裁剪模式 默认、1:1、3:4、3:2、16:9
+                            .setCompress(isCompress) //是否压缩
+                            .setEnablePixelCompress(true) //是否启用像素压缩
+                            .setEnableQualityCompress(true) //是否启质量压缩
+                            .setMaxSelectNum(maxSelectNum) // 可选择图片的数量
+                            .setSelectMode(selectMode) // 单选 or 多选
+                            .setShowCamera(isShow) //是否显示拍照选项 这里自动根据type 启动拍照或录视频
+                            .setEnablePreview(enablePreview) // 是否打开预览选项
+                            .setEnableCrop(enableCrop) // 是否打开剪切选项
+                            .setPreviewVideo(isPreviewVideo) // 是否预览视频(播放) mode or 多选有效
+                            .setCheckedBoxDrawable(checkedBoxDrawable)
+                            .setRecordVideoDefinition(FunctionConfig.HIGH) // 视频清晰度
+                            .setRecordVideoSecond(60) // 视频秒数
+                            .setGif(false)// 是否显示gif图片，默认不显示
+                            .setCropW(cropW) // cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
+                            .setCropH(cropH) // cropH-->裁剪高度 值不能小于100 如果值大于图片原始宽高 将返回原图大小
+                            .setMaxB(maxB) // 压缩最大值 例如:200kb  就设置202400，202400 / 1024 = 200kb
+                            .setPreviewColor(previewColor) //预览字体颜色
+                            .setCompleteColor(completeColor) //已完成字体颜色
+                            .setPreviewBottomBgColor(previewBottomBgColor) //预览底部背景色
+                            .setBottomBgColor(bottomBgColor) //图片列表底部背景色
+                            .setGrade(Luban.THIRD_GEAR) // 压缩档次 默认三档
+                            .setCheckNumMode(isCheckNumMode)
+                            .setCompressQuality(100) // 图片裁剪质量,默认无损
+                            .setImageSpanCount(4) // 每行个数
+                            .setSelectMedia(selectMedia) // 已选图片，传入在次进去可选中，不能传入网络图片
+                            .setCompressFlag(compressFlag) // 1 系统自带压缩 2 luban压缩
+                            .setCompressW(compressW) // 压缩宽 如果值大于图片原始宽高无效
+                            .setCompressH(compressH) // 压缩高 如果值大于图片原始宽高无效
+                            .setThemeStyle(themeStyle) // 设置主题样式
+                            .create();
 
                     // 先初始化参数配置，在启动相册
-                    PictureConfig.init(config);
-                    PictureConfig.getPictureConfig().openPhoto(mContext, resultCallback);
-
+                    PictureConfig.getPictureConfig().init(options).openPhoto(mContext, resultCallback);
                     // 只拍照
-                    //PictureConfig.getPictureConfig().startOpenCamera(mContext, resultCallback);
+                    //PictureConfig.getPictureConfig().init(options).startOpenCamera(mContext, resultCallback);
                     break;
                 case 1:
                     // 删除图片
