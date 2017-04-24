@@ -1,6 +1,35 @@
 # PictureSelector  
-最近项目中用到多图选择上传的需求，考虑到android机型众多问题就自己花时间写了一个，测试了大概60款机型，出现过一些问题也都一一修复了，基本上稳定了特分享出来，界面UI也是商用级的开发者不用在做太多修改了，界面高度自定义，可以设置符合你项目主色调的风格，集成完成后就可以拿来用。
-顺便感谢一下，大家对我的支持~  
+   最近项目中用到多图选择上传的需求，考虑到android机型众多问题就自己花时间写了一个，测试了大概60款机型，出现过一些问题也都一一修复了，基本上稳定了特分享出来，界面UI也是商用级的开发者不用在做太多修改了，界面高度自定义，可以设置符合你项目主色调的风格，集成完成后就可以拿来用。
+  
+  项目会一直维护，发现问题欢迎提出会第一时间修复，QQ交流群 619458861，个人QQ 893855882@qq.com  希望用得着的朋友点个start。 
+   
+  另附我的博客地址：http://blog.csdn.net/luck_mw
+
+******功能特点：******  
+```
+  1.适配android6.0+系统
+  2.解决部分机型裁剪闪退问题
+  3.解决图片过大oom闪退问题
+  4.动态获取系统权限，避免闪退
+  5.支持相片or视频的单选和多选
+  6.支持裁剪比例设置，如常用的 1:1、3：4、3:2、16:9 默认为图片大小
+  7.支持视频预览
+  8.支持gif图片
+  9.支持一些常用场景设置：如:是否裁剪、是否预览图片、是否显示相机等
+  10.新增自定义主题设置
+  11.新增图片勾选样式设置
+  12.新增图片裁剪宽高设置
+  13.新增图片压缩处理
+  14.新增录视频最大时间设置
+  15.新增视频清晰度设置
+  16.新增QQ选择风格，带数字效果
+  17.新增自定义 文字颜色 背景色让风格和项目更搭配
+  18.新增多图裁剪功能
+  19.新增LuBan多图压缩
+  20.新增单独拍照功能
+  21.新增压缩大小设置
+    
+```
 
 ******那些遇到拍照闪退问题的同学，请记得看清下面适配6.0的配置~******
 
@@ -13,75 +42,50 @@
     
 ```
 
-功能特点：  
+******注：适配android6.0以上拍照问题，请在AndroidManifest.xml中添加标签******
 
 ```
-      1.适配android6.0+系统
-      2.解决部分机型裁剪闪退问题
-      3.解决图片过大oom闪退问题
-      4.动态获取系统权限，避免闪退
-      5.支持相片or视频的单选和多选
-      6.支持裁剪比例设置，如常用的 1:1、3：4、3:2、16:9 默认为图片大小
-      7.支持视频预览
-      8.支持gif图片
-      9.支持一些常用场景设置：如:是否裁剪、是否预览图片、是否显示相机等
-      10.新增自定义主题设置
-      11.新增图片勾选样式设置
-      12.新增图片裁剪宽高设置
-      13.新增图片压缩处理
-      14.新增录视频最大时间设置
-      15.新增视频清晰度设置
-      16.新增QQ选择风格，带数字效果
-      17.新增自定义 文字颜色 背景色让风格和项目更搭配
-      18.新增多图裁剪功能
-      19.新增LuBan多图压缩
-      20.新增单独拍照功能
-      21.新增压缩大小设置
-    
+<provider
+   android:name="android.support.v4.content.FileProvider"
+   android:authorities="${applicationId}.provider"
+   android:exported="false"
+   android:grantUriPermissions="true">
+     <meta-data
+         android:name="android.support.FILE_PROVIDER_PATHS"
+         android:resource="@xml/file_paths" />
+</provider>
+
 ```
 
-项目会一直维护，发现问题欢迎提出~  会第一时间修复哟~  由于加好友的太多 现在集中到QQ群中讨论 619458861，个人联系方式893855882@qq.com  希望用得着的朋友点个start，你们的支持才是我继续下去的动力，在此先谢过~  
+******集成步骤******
 
-另附我的博客地址：http://blog.csdn.net/luck_mw
+compile引入
 
-app-build 引入compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.2.8'  注：之前引入如有报错，请引入最新版本、
+```
+dependencies {
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.2.9'
+}
 
+```
 项目根目录  
 
 ```
 allprojects {
-    repositories {
-        jcenter()
-        maven { url 'https://jitpack.io' }
-    }
+   repositories {
+      jcenter()
+      maven { url 'https://jitpack.io' }
+   }
 }
+```
 
+******相册启动构造方法******
 ```
-******注：适配android6.0以上拍照问题，请在AndroidManifest.xml中添加标签******  
-
-```
-<provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-</provider>
-        
-```
- 
-         
-******相册参数构造******
-
-```
-  FunctionConfig config = new FunctionConfig();
+  FunctionConfig config = new FunctionConfig();
   config.setType(selectType);// type --> 1图片 or 2视频
   config.setCopyMode(copyMode); // copyMode -->裁剪比例，默认、1:1、3:4、3:2、16:9
-  config.setCompress(isCompress);
-  config.setEnablePixelCompress(true);
-  config.setEnableQualityCompress(true);
+  config.setCompress(isCompress);//是否压
+  config.setEnablePixelCompress(true);//是否启用像素压缩
+  config.setEnableQualityCompress(true);//是否启质量压缩
   config.setMaxSelectNum(maxSelectNum); // 可选择图片的数量
   config.setSelectMode(selectMode); // 单选 or 多选
   config.setShowCamera(isShow);//是否显示拍照选项 这里自动根据type 启动拍照或录视频
@@ -92,8 +96,8 @@ allprojects {
   config.setRecordVideoSecond(60);// 视频秒数
   config.setCropW(cropW); // cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
   config.setCropH(cropH); // cropH-->裁剪高度 值不能小于100 如果值大于图片原始宽高 将返回原图大小
-  config.setMaxB(maxB); // 压缩最小值
-  config.setCheckNumMode(isCheckNumMode); // 是否显示QQ风格选择图片
+  config.setMaxB(maxB); // 压缩最大值 例如:200kb  就设置202400，202400 / 1024 = 200kb
+  config.setCheckNumMode(isCheckNumMode); // 是否显示QQ风格选择图片
   config.setCompressQuality(100);  // 图片裁剪质量,默认无损
   config.setImageSpanCount(4); // 每行个数
   config.setSelectMedia(selectMedia); // 已选图片，传入在次进去可选中，不能传入网络图片
@@ -106,32 +110,36 @@ allprojects {
       // 可以自定义底部 预览 完成 文字的颜色和背景色
       if (!isCheckNumMode) {
       // QQ 风格模式下 这里自己搭配颜色，使用蓝色可能会不好看
-      config.setPreviewColor(ContextCompat.getColor(MainActivity.this, R.color.white));
-      config.setCompleteColor(ContextCompat.getColor(MainActivity.this, R.color.white));
-      config.setPreviewBottomBgColor(ContextCompat.getColor(MainActivity.this, R.color.blue));
-      config.setBottomBgColor(ContextCompat.getColor(MainActivity.this, R.color.blue));
+      config.setPreviewColor(ContextCompat.getColor(MainActivity.this, R.color.white));//预览字体颜色
+      config.setCompleteColor(ContextCompat.getColor(MainActivity.this, R.color.white));//已完成字体颜色
+      config.setPreviewBottomBgColor(ContextCompat.getColor(MainActivity.this, R.color.blue));//预览底部背景色
+      config.setBottomBgColor(ContextCompat.getColor(MainActivity.this, R.color.blue));//图片列表底部背景色
            }
        }
        if (selectImageType) {
-           // // 图片选择默认样式
+          // 图片选择默认样式
            config.setCheckedBoxDrawable(selector);
-            }
+          }
 
           // 先初始化参数配置，在启动相册
-          PictureConfig.init(config);
-          PictureConfig.getPictureConfig().openPhoto(mContext, resultCallback);
-
-          // 只拍照
-          //PictureConfig.getPictureConfig().startOpenCamera(mContext, resultCallback);
-                    
-          // 预览图片 视频无效
-         PictureConfig.getPictureConfig().externalPicturePreview(mContext, position, selectMedia);
+          PictureConfig.init(config);     
 ```
 
-/**
-  * 图片回调方法
- */
+******启动相册并拍照******       
+```
+ PictureConfig.getPictureConfig().openPhoto(mContext, resultCallback);
+```
 
+******单独启动拍照******       
+```
+ PictureConfig.getPictureConfig().startOpenCamera(mContext, resultCallback);
+```
+******预览图片 注：视频无效******       
+```
+ PictureConfig.getPictureConfig().externalPicturePreview(mContext, position, selectMedia);
+```
+
+******图片回调完成结果返回******
 ```
   private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {
         @Override
