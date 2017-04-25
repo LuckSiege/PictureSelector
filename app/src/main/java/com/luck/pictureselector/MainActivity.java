@@ -271,7 +271,6 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                             .setThemeStyle(themeStyle) // 设置主题样式
                             .create();
 
-
                     // 先初始化参数配置，在启动相册
                     PictureConfig.getPictureConfig().init(options).openPhoto(mContext, resultCallback);
                     // 只拍照
