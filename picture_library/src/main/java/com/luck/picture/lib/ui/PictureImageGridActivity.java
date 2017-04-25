@@ -62,7 +62,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
     private List<LocalMedia> images = new ArrayList<>();
     private RecyclerView recyclerView;
     private TextView tv_img_num;
-    private TextView tv_ok;
+    private TextView tv_ok, tv_mask;
     private RelativeLayout rl_bottom;
     private ImageButton picture_left_back;
     private RelativeLayout rl_picture_title;
@@ -114,6 +114,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         tv_ok = (TextView) findViewById(R.id.tv_ok);
         id_preview = (TextView) findViewById(R.id.id_preview);
         tv_img_num = (TextView) findViewById(R.id.tv_img_num);
+        tv_mask = (TextView) findViewById(R.id.tv_mask);
         id_preview.setText(getString(R.string.preview));
         tv_ok.setText(getString(R.string.choose));
         id_preview.setOnClickListener(this);
@@ -127,8 +128,12 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         }
         if (takePhoto) {
             // 只拍照
-            if (savedInstanceState == null)
-                onTakePhoto();
+            onTakePhoto();
+            if (!enableCrop) {
+                // 如果单独拍照，并且没有裁剪时 这里显示一个蒙版过渡一下
+                ToolbarUtil.setColorNoTranslucent(this, R.color.black);
+                tv_mask.setVisibility(View.VISIBLE);
+            }
         } else {
             if (!is_top_activity) {
                 // 第一次启动ImageActivity，没有获取过相册列表
