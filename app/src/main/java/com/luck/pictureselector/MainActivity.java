@@ -25,6 +25,8 @@ import com.yalantis.ucrop.entity.LocalMedia;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.luck.picture.lib.model.FunctionConfig.MODE_MULTIPLE;
+
 /**
  * author：luck
  * project：PictureSelector
@@ -38,7 +40,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     private RecyclerView recyclerView;
     private GridImageAdapter adapter;
     private RadioGroup rgbs01, rgbs0, rgbs1, rgbs2, rgbs3, rgbs4, rgbs5, rgbs6, rgbs7, rgbs8, rgbs9, rgbs10;
-    private int selectMode = FunctionConfig.MODE_MULTIPLE;
+    private int selectMode = MODE_MULTIPLE;
     private int maxSelectNum = 9;// 图片最大可选数量
     private ImageButton minus, plus;
     private EditText select_num;
@@ -269,10 +271,11 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                             .setThemeStyle(themeStyle) // 设置主题样式
                             .create();
 
+
                     // 先初始化参数配置，在启动相册
                     PictureConfig.getPictureConfig().init(options).openPhoto(mContext, resultCallback);
                     // 只拍照
-                    //PictureConfig.getPictureConfig().init(options).startOpenCamera(mContext, resultCallback);
+                    PictureConfig.getPictureConfig().init(options).startOpenCamera(mContext, resultCallback);
                     break;
                 case 1:
                     // 删除图片
@@ -324,7 +327,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 selectMode = FunctionConfig.MODE_SINGLE;
                 break;
             case R.id.rb_multiple:
-                selectMode = FunctionConfig.MODE_MULTIPLE;
+                selectMode = MODE_MULTIPLE;
                 break;
             case R.id.rb_image:
                 selectType = LocalMediaLoader.TYPE_IMAGE;
