@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,7 +12,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -44,7 +42,7 @@ import java.util.List;
  * email：893855882@qq.com
  * data：16/12/31
  */
-public class PicturePreviewActivity extends PictureBaseActivity implements View.OnClickListener {
+public class PicturePreviewActivity extends PictureBaseActivity implements View.OnClickListener, Animation.AnimationListener {
     private ImageButton left_back;
     private TextView tv_img_num, tv_title, tv_ok;
     private RelativeLayout select_bar_layout;
@@ -56,7 +54,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
     private List<LocalMedia> selectImages = new ArrayList<>();
     private TextView check;
     private SimpleFragmentAdapter adapter;
-    private Handler mHandler = new Handler();
+    private Animation animation;
+    private boolean refresh;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -93,6 +92,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
         tv_ok.setTextColor(completeColor);
         select_bar_layout.setBackgroundColor(previewBottomBgColor);
+        animation = OptAnimationLoader.loadAnimation(mContext, R.anim.modal_in);
+        animation.setAnimationListener(this);
         boolean is_bottom_preview = getIntent().getBooleanExtra(FunctionConfig.EXTRA_BOTTOM_PREVIEW, false);
         if (is_bottom_preview) {
             // 底部预览按钮过来
@@ -116,7 +117,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
                 if (!check.isSelected()) {
                     isChecked = true;
                     check.setSelected(true);
-                    Animation animation = OptAnimationLoader.loadAnimation(mContext, R.anim.modal_in);
                     check.startAnimation(animation);
                 } else {
                     isChecked = false;
@@ -238,30 +238,48 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
     /**
      * 更新图片选择数量
      */
+
     public void onSelectNumChange(boolean isRefresh) {
-        Animation animation = null;
+        this.refresh = isRefresh;
         boolean enable = selectImages.size() != 0;
         if (enable) {
             tv_ok.setEnabled(true);
-            animation = AnimationUtils.loadAnimation(mContext, R.anim.modal_in);
-            tv_img_num.startAnimation(animation);
             tv_img_num.setVisibility(View.VISIBLE);
+            tv_img_num.startAnimation(animation);
             tv_img_num.setText(selectImages.size() + "");
             tv_ok.setText(getString(R.string.ok));
         } else {
             tv_ok.setEnabled(false);
             tv_img_num.setVisibility(View.INVISIBLE);
             tv_ok.setText(getString(R.string.please_select));
+            updateSelector(true);
         }
+    }
 
+    /**
+     * 更新图片列表选中效果
+     *
+     * @param isRefresh
+     */
+    private void updateSelector(boolean isRefresh) {
         if (isRefresh) {
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    sendBroadcast(new Intent().setAction(Constant.ACTION_AC_REFRESH_DATA).putExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectImages));
-                }
-            }, 100);
+            sendBroadcast(new Intent().setAction(Constant.ACTION_AC_REFRESH_DATA).putExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectImages));
         }
+    }
+
+    @Override
+    public void onAnimationStart(Animation animation) {
+
+    }
+
+    @Override
+    public void onAnimationEnd(Animation animation) {
+        updateSelector(refresh);
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
+
     }
 
 

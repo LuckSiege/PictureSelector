@@ -116,7 +116,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         tv_img_num = (TextView) findViewById(R.id.tv_img_num);
         tv_mask = (TextView) findViewById(R.id.tv_mask);
         id_preview.setText(getString(R.string.preview));
-        tv_ok.setText(getString(R.string.choose));
+        tv_ok.setText(getString(R.string.please_select));
         id_preview.setOnClickListener(this);
         tv_ok.setOnClickListener(this);
         picture_left_back.setOnClickListener(this);
