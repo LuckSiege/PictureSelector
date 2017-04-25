@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">PictureSelector</string>
-
     <string name="all_image">所有图片</string>
     <string name="all_video">所有视频</string>
     <string name="photo">照片</string>

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">PictureSelector</string>
-
     <string name="all_image">All Pictures</string>
     <string name="all_video">All Video</string>
     <string name="photo">Photo</string>

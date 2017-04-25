@@ -243,7 +243,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         boolean enable = selectImages.size() != 0;
         if (enable) {
             tv_ok.setEnabled(true);
-            tv_ok.setAlpha(1.0f);
             animation = AnimationUtils.loadAnimation(mContext, R.anim.modal_in);
             tv_img_num.startAnimation(animation);
             tv_img_num.setVisibility(View.VISIBLE);
@@ -251,7 +250,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
             tv_ok.setText(getString(R.string.ok));
         } else {
             tv_ok.setEnabled(false);
-            tv_ok.setAlpha(0.5f);
             tv_img_num.setVisibility(View.INVISIBLE);
             tv_ok.setText(getString(R.string.please_select));
         }
