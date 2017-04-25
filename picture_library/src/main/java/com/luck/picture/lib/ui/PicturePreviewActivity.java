@@ -252,7 +252,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
             tv_ok.setEnabled(false);
             tv_img_num.setVisibility(View.INVISIBLE);
             tv_ok.setText(getString(R.string.please_select));
-            updateSelector(true);
+            updateSelector(refresh);
         }
     }
 
@@ -269,7 +269,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
 
     @Override
     public void onAnimationStart(Animation animation) {
-
     }
 
     @Override
@@ -279,7 +278,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
 
     @Override
     public void onAnimationRepeat(Animation animation) {
-
     }
 
 
