@@ -275,7 +275,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                     // 先初始化参数配置，在启动相册
                     PictureConfig.getPictureConfig().init(options).openPhoto(mContext, resultCallback);
                     // 只拍照
-                    PictureConfig.getPictureConfig().init(options).startOpenCamera(mContext, resultCallback);
+                    //PictureConfig.getPictureConfig().init(options).startOpenCamera(mContext, resultCallback);
                     break;
                 case 1:
                     // 删除图片
