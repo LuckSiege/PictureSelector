@@ -64,7 +64,7 @@ compile引入
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.2.9'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.3.1'
 }
 
 ```
@@ -77,6 +77,31 @@ allprojects {
       maven { url 'https://jitpack.io' }
    }
 }
+```
+
+******常见错误*******
+```
+ 问题一：
+ rxjava冲突：在app build.gradle下添加
+ packagingOptions {
+   exclude 'META-INF/rxjava.properties'
+ }  
+ 
+ 问题二：
+ android.content.resXmlResourceParser 异常，请在AndroidManifest.xml 下添加适配6.0+拍照闪退问题
+ <provider
+      android:name="android.support.v4.content.FileProvider"
+      android:authorities="${applicationId}.provider"
+      android:exported="false"
+      android:grantUriPermissions="true">
+       <meta-data
+         android:name="android.support.FILE_PROVIDER_PATHS"
+         android:resource="@xml/file_paths" />
+</provider>
+
+问题三：
+PhotoView 库冲突，可以删除自己项目中引用的，Picture_library中已经引用过，或引用com.commit451:PhotoView:1.2.4版本
+ 
 ```
 
 ******相册启动构造方法******
@@ -164,27 +189,6 @@ PictureConfig.getPictureConfig().externalPictureVideo(mContext, selectMedia.get(
         }
     };
     
-```
-******常见错误*******
-```
- 问题一
- rxjava冲突：在app build.gradle下添加
- packagingOptions {
-   exclude 'META-INF/rxjava.properties'
- }  
- 
- 问题二
- android.content.resXmlResourceParser 异常，请在AndroidManifest.xml 下添加适配6.0+拍照闪退问题
- <provider
-      android:name="android.support.v4.content.FileProvider"
-      android:authorities="${applicationId}.provider"
-      android:exported="false"
-      android:grantUriPermissions="true">
-       <meta-data
-         android:name="android.support.FILE_PROVIDER_PATHS"
-         android:resource="@xml/file_paths" />
-</provider>
- 
 ```
 
   
