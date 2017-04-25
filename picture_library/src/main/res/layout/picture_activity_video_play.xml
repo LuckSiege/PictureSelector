@@ -24,6 +24,6 @@
         android:layout_height="48dp"
         android:layout_marginTop="20dp"
         android:background="@color/transparent"
-        android:src="@drawable/back" />
+        android:src="@drawable/picture_back" />
 
 </RelativeLayout>
