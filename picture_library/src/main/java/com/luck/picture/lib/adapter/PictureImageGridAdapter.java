@@ -147,13 +147,13 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 } else {
                     result = DiskCacheStrategy.RESULT;
                 }
-                Glide.with(context)
+                Glide.with(holder.itemView.getContext())
                         .load(path)
                         .placeholder(R.drawable.image_placeholder)
                         .diskCacheStrategy(result)
                         .crossFade()
                         .centerCrop()
-                        .override(200, 200)
+                        .override(150, 150)
                         .into(contentHolder.picture);
                 if (contentHolder.rl_duration.getVisibility() == View.VISIBLE) {
                     contentHolder.rl_duration.setVisibility(View.GONE);
