@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:background="#00000000"
-            android:src="@drawable/back"
+            android:src="@drawable/picture_back"
             android:visibility="visible" />
 
         <TextView
