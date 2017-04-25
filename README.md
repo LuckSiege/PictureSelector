@@ -149,7 +149,7 @@ FunctionOptions options = new FunctionOptions.Builder()
  PictureConfig.getPictureConfig().openPhoto(mContext, resultCallback);
 ```
 
-******单独启动拍照******       
+******单独启动拍照或视频 根据type自动识别******       
 ```
  PictureConfig.getPictureConfig().init(options).startOpenCamera(mContext, resultCallback);
  
