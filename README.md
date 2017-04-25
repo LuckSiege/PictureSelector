@@ -124,8 +124,8 @@ FunctionOptions options = new FunctionOptions.Builder()
         .setGif(false)// 是否显示gif图片，默认不显示
         .setCropW(cropW) // cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
         .setCropH(cropH) // cropH-->裁剪高度 值不能小于100 如果值大于图片原始宽高 将返回原图大小
-        .setMaxB(maxB) // 压缩最大值 例如:200kb  就设置202400，202400 / 1024 = 200kb
-        .setPreviewColor(previewColor) //预览字体颜色
+        .setMaxB(maxB) // 压缩最大值 例如:200kb  就设置202400，202400 / 1024 = 200kb左右
+        .setPreviewColor(previewColor) //预览字体颜色
         .setCompleteColor(completeColor) //已完成字体颜色
         .setPreviewBottomBgColor(previewBottomBgColor) //预览底部背景色
         .setBottomBgColor(bottomBgColor) //图片列表底部背景色
@@ -153,10 +153,10 @@ FunctionOptions options = new FunctionOptions.Builder()
 ```
  PictureConfig.getPictureConfig().init(options).startOpenCamera(mContext, resultCallback);
  
- 或默认
+ 或默认配置
  PictureConfig.getPictureConfig().startOpenCamera(mContext, resultCallback);
 ```
-******预览图片 注：视频无效******       
+******预览图片******       
 ```
  PictureConfig.getPictureConfig().externalPicturePreview(mContext, position, selectMedia);
 ```
