@@ -11,9 +11,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.model.LocalMediaLoader;
+import com.luck.picture.lib.model.FunctionConfig;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.entity.LocalMediaFolder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,15 +62,16 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
             holder.tv_img_num.setVisibility(View.INVISIBLE);
         }
         int type = folder.getType();
-        if (type == LocalMediaLoader.TYPE_VIDEO) {
-            Glide.with(mContext).load(imagePath).thumbnail(0.5f).into(holder.first_image);
+        if (type == FunctionConfig.TYPE_VIDEO) {
+            Glide.with(holder.itemView.getContext()).load(imagePath).thumbnail(0.5f).into(holder.first_image);
         } else {
-            Glide.with(mContext)
+            Glide.with(holder.itemView.getContext())
                     .load(imagePath)
                     .placeholder(R.drawable.ic_placeholder)
                     .error(R.drawable.ic_placeholder)
                     .centerCrop()
                     .crossFade()
+                    .override(180, 180)
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .into(holder.first_image);
 

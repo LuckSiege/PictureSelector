@@ -8,6 +8,7 @@
             android:name="com.luck.picture.lib.ui.PictureAlbumDirectoryActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.Slider" />
         <activity
             android:name="com.luck.picture.lib.ui.PictureImageGridActivity"

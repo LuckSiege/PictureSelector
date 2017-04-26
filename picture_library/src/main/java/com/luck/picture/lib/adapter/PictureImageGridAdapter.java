@@ -18,7 +18,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.model.FunctionConfig;
-import com.luck.picture.lib.model.LocalMediaLoader;
 import com.yalantis.ucrop.dialog.OptAnimationLoader;
 import com.yalantis.ucrop.entity.LocalMedia;
 
@@ -132,7 +131,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
 
             selectImage(contentHolder, isSelected(image), false);
 
-            if (type == LocalMediaLoader.TYPE_VIDEO) {
+            if (type == FunctionConfig.TYPE_VIDEO) {
                 Glide.with(context).load(path).into(contentHolder.picture);
                 long duration = image.getDuration();
                 if (contentHolder.rl_duration.getVisibility() == View.GONE) {
@@ -170,10 +169,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             contentHolder.contentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (type == LocalMediaLoader.TYPE_VIDEO && (selectMode == FunctionConfig.MODE_SINGLE || enablePreviewVideo) && imageSelectChangedListener != null) {
+                    if (type == FunctionConfig.TYPE_VIDEO && (selectMode == FunctionConfig.MODE_SINGLE || enablePreviewVideo) && imageSelectChangedListener != null) {
                         int index = showCamera ? position - 1 : position;
                         imageSelectChangedListener.onPictureClick(image, index);
-                    } else if (type == LocalMediaLoader.TYPE_IMAGE && (selectMode == FunctionConfig.MODE_SINGLE || enablePreview) && imageSelectChangedListener != null) {
+                    } else if (type == FunctionConfig.TYPE_IMAGE && (selectMode == FunctionConfig.MODE_SINGLE || enablePreview) && imageSelectChangedListener != null) {
                         int index = showCamera ? position - 1 : position;
                         imageSelectChangedListener.onPictureClick(image, index);
                     } else {
@@ -252,10 +251,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         if (selectImages.size() >= maxSelectNum && !isChecked) {
             switch (type) {
-                case LocalMediaLoader.TYPE_IMAGE:
+                case FunctionConfig.TYPE_IMAGE:
                     Toast.makeText(context, context.getString(R.string.message_max_num, maxSelectNum), Toast.LENGTH_LONG).show();
                     break;
-                case LocalMediaLoader.TYPE_VIDEO:
+                case FunctionConfig.TYPE_VIDEO:
                     Toast.makeText(context, context.getString(R.string.message_video_max_num, maxSelectNum), Toast.LENGTH_LONG).show();
                     break;
                 default:

@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.model.FunctionConfig;
-import com.luck.picture.lib.model.LocalMediaLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.widget.Constant;
 import com.luck.picture.lib.widget.PreviewViewPager;
@@ -306,7 +305,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         if (id == R.id.left_back) {
             finish();
         } else if (id == R.id.tv_ok) {
-            if (selectMode == FunctionConfig.MODE_MULTIPLE && enableCrop && type == LocalMediaLoader.TYPE_IMAGE) {
+            if (selectMode == FunctionConfig.MODE_MULTIPLE && enableCrop && type == FunctionConfig.TYPE_IMAGE) {
                 // 是图片和选择压缩并且是多张，调用批量压缩
                 startMultiCopy(selectImages);
             } else {

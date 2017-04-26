@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+
 /**
  * author：luck
  * project：LocalMediaLoader
@@ -28,9 +29,6 @@ import java.util.List;
  */
 
 public class LocalMediaLoader {
-    // load type
-    public static final int TYPE_IMAGE = 1;
-    public static final int TYPE_VIDEO = 2;
     public boolean isGif;
     public int index = 0;
     private final static String[] IMAGE_PROJECTION = {
@@ -48,7 +46,7 @@ public class LocalMediaLoader {
             MediaStore.Video.Media.DURATION,
     };
 
-    private int type = TYPE_IMAGE;
+    private int type = FunctionConfig.TYPE_IMAGE;
     private FragmentActivity activity;
 
 
@@ -75,12 +73,12 @@ public class LocalMediaLoader {
                     condition = MediaStore.Images.Media.MIME_TYPE + "=? or "
                             + MediaStore.Images.Media.MIME_TYPE + "=?";
                 }
-                if (id == TYPE_IMAGE) {
+                if (id == FunctionConfig.TYPE_IMAGE) {
                     cursorLoader = new CursorLoader(
                             activity, MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                             IMAGE_PROJECTION, condition,
                             select, IMAGE_PROJECTION[2] + " DESC");
-                } else if (id == TYPE_VIDEO) {
+                } else if (id == FunctionConfig.TYPE_VIDEO) {
                     cursorLoader = new CursorLoader(
                             activity, MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                             VIDEO_PROJECTION, null, null, VIDEO_PROJECTION[2] + " DESC");
@@ -106,7 +104,7 @@ public class LocalMediaLoader {
                                     continue;
                                 }
                                 long dateTime = data.getLong(data.getColumnIndexOrThrow(IMAGE_PROJECTION[2]));
-                                int duration = (type == TYPE_VIDEO ? data.getInt(data.getColumnIndexOrThrow(VIDEO_PROJECTION[4])) : 0);
+                                int duration = (type == FunctionConfig.TYPE_VIDEO ? data.getInt(data.getColumnIndexOrThrow(VIDEO_PROJECTION[4])) : 0);
                                 LocalMedia image = new LocalMedia(path, dateTime, duration, type);
                                 LocalMediaFolder folder = getImageFolder(path, imageFolders);
                                 folder.getImages().add(image);
@@ -127,10 +125,10 @@ public class LocalMediaLoader {
                                 imageFolders.add(0, allImageFolder);
                                 String title = "";
                                 switch (type) {
-                                    case TYPE_VIDEO:
+                                    case FunctionConfig.TYPE_VIDEO:
                                         title = activity.getString(R.string.lately_video);
                                         break;
-                                    case TYPE_IMAGE:
+                                    case FunctionConfig.TYPE_IMAGE:
                                         title = activity.getString(R.string.lately_image);
                                         break;
                                 }

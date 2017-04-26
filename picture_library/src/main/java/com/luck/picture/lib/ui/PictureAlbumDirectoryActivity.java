@@ -17,7 +17,6 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.PictureAlbumDirectoryAdapter;
 import com.luck.picture.lib.decoration.RecycleViewDivider;
 import com.luck.picture.lib.model.FunctionConfig;
-import com.luck.picture.lib.model.LocalMediaLoader;
 import com.luck.picture.lib.model.PictureConfig;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.observable.ObserverListener;
@@ -63,6 +62,7 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_activity_album);
         registerReceiver(receiver, Constant.ACTION_AC_FINISH);
+        selectMedias = (List<LocalMedia>) getIntent().getSerializableExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST);
         if (selectMedias == null)
             selectMedias = new ArrayList<>();
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -73,10 +73,10 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
         tv_empty.setOnClickListener(this);
         ImagesObservable.getInstance().add(this);
         switch (type) {
-            case LocalMediaLoader.TYPE_IMAGE:
+            case FunctionConfig.TYPE_IMAGE:
                 picture_tv_title.setText(getString(R.string.select_photo));
                 break;
-            case LocalMediaLoader.TYPE_VIDEO:
+            case FunctionConfig.TYPE_VIDEO:
                 picture_tv_title.setText(getString(R.string.select_video));
                 break;
         }
@@ -100,6 +100,7 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
      * 初始化数据
      */
     protected void initData() {
+        folders = ImagesObservable.getInstance().readLocalFolders();
         if (folders.size() > 0) {
             tv_empty.setVisibility(View.GONE);
             adapter.bindFolderData(folders);
@@ -107,14 +108,13 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
         } else {
             tv_empty.setVisibility(View.VISIBLE);
             switch (type) {
-                case LocalMediaLoader.TYPE_IMAGE:
+                case FunctionConfig.TYPE_IMAGE:
                     tv_empty.setText(getString(R.string.no_photo));
                     break;
-                case LocalMediaLoader.TYPE_VIDEO:
+                case FunctionConfig.TYPE_VIDEO:
                     tv_empty.setText(getString(R.string.no_video));
                     break;
-                default:
-                    break;
+
             }
         }
     }
@@ -180,10 +180,10 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
         List<LocalMedia> images = new ArrayList<>();
         String title = "";
         switch (type) {
-            case LocalMediaLoader.TYPE_IMAGE:
+            case FunctionConfig.TYPE_IMAGE:
                 title = getString(R.string.lately_image);
                 break;
-            case LocalMediaLoader.TYPE_VIDEO:
+            case FunctionConfig.TYPE_VIDEO:
                 title = getString(R.string.lately_video);
                 break;
         }
@@ -271,5 +271,6 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
             }
         }
     }
+
 
 }
