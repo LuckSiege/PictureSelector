@@ -113,6 +113,8 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
                 case LocalMediaLoader.TYPE_VIDEO:
                     tv_empty.setText(getString(R.string.no_video));
                     break;
+                default:
+                    break;
             }
         }
     }
@@ -165,7 +167,7 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
         int id = view.getId();
         if (id == R.id.tv_empty) {
             startEmptyImageActivity();
-        } else if (id == R.id.picture_tv_right){
+        } else if (id == R.id.picture_tv_right) {
             finish();
             overridePendingTransition(0, R.anim.slide_bottom_out);
         }
@@ -242,7 +244,6 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
     @Override
     public void observerUpFoldersData(List<LocalMediaFolder> folders) {
         this.folders = folders;
-        adapter.bindFolderData(folders);
         initData();
     }
 
@@ -270,6 +271,5 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
             }
         }
     }
-
 
 }
