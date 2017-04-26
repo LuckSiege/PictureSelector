@@ -5,25 +5,25 @@
         android:allowBackup="true"
         android:supportsRtl="true">
         <activity
-            android:name=".ui.PictureAlbumDirectoryActivity"
+            android:name="com.luck.picture.lib.ui.PictureAlbumDirectoryActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Slider" />
         <activity
-            android:name=".ui.PictureImageGridActivity"
+            android:name="com.luck.picture.lib.ui.PictureImageGridActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Slider" />
         <activity
-            android:name=".ui.PicturePreviewActivity"
+            android:name="com.luck.picture.lib.ui.PicturePreviewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Slider" />
         <activity
-            android:name=".ui.PictureVideoPlayActivity"
+            android:name="com.luck.picture.lib.ui.PictureVideoPlayActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Slider" />
 
         <activity
-            android:name=".ui.PictureExternalPreviewActivity"
+            android:name="com.luck.picture.lib.ui.PictureExternalPreviewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Slider" />
 
