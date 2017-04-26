@@ -129,8 +129,8 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         if (takePhoto) {
             // 只拍照
             onTakePhoto();
-            if (!enableCrop) {
-                // 如果单独拍照，并且没有裁剪时 这里显示一个蒙版过渡一下
+            if (!enableCrop && isCompress) {
+                // 如果单独拍照，并且没有裁剪 但压缩 这里显示一个蒙版过渡一下
                 ToolbarUtil.setColorNoTranslucent(this, R.color.black);
                 tv_mask.setVisibility(View.VISIBLE);
             }
