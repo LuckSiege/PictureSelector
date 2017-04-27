@@ -92,7 +92,8 @@ allprojects {
  Attempt to invoke virtual method 'android.content.res.XmlResourceParser 
  android.content.pm.ProviderInfo.loadXmlMetaData(android.content.pm.PackageManager, java.lang.String)'
  on a null object reference
-
+ 
+ application下添加如下节点:
  <provider
       android:name="android.support.v4.content.FileProvider"
       android:authorities="${applicationId}.provider"
