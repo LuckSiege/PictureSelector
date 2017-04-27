@@ -15,7 +15,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,7 +46,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
     private List<LocalMedia> images = new ArrayList<>();
     public static final int DEFAULT_COMPRESS_QUALITY = 100;
     public static final Bitmap.CompressFormat DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG;
-    private ImageButton left_back;
+    private ImageView picture_left_back;
     private TextView tv_right;
     public static final int NONE = 0;
     public static final int SCALE = 1;
@@ -166,8 +165,8 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         tv_right = (TextView) findViewById(R.id.tv_right);
         rl_title = (RelativeLayout) findViewById(R.id.rl_title);
         tv_right.setText(getString(R.string.determine));
-        left_back = (ImageButton) findViewById(R.id.left_back);
-        left_back.setOnClickListener(new View.OnClickListener() {
+        picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
+        picture_left_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();

@@ -12,14 +12,13 @@
         android:layout_height="48dp"
         android:background="#393a3e">
 
-        <ImageButton
-            android:id="@+id/left_back"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
+        <ImageView
+            android:id="@+id/picture_left_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:background="#00000000"
-            android:src="@drawable/picture_back"
-            android:visibility="visible" />
+            android:padding="15dp"
+            android:src="@drawable/picture_back" />
 
         <TextView
             android:id="@+id/tv_title"
