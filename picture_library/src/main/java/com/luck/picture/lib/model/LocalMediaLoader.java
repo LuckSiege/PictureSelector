@@ -69,8 +69,9 @@ public class LocalMediaLoader {
                             + MediaStore.Images.Media.MIME_TYPE + "=?" + " or "
                             + MediaStore.Images.Media.MIME_TYPE + "=?";
                 } else {
-                    select = new String[]{"image/jpeg", "image/png"};
+                    select = new String[]{"image/jpeg", "image/png", "image/webp"};
                     condition = MediaStore.Images.Media.MIME_TYPE + "=? or "
+                            + MediaStore.Images.Media.MIME_TYPE + "=?" + " or "
                             + MediaStore.Images.Media.MIME_TYPE + "=?";
                 }
                 if (id == FunctionConfig.TYPE_IMAGE) {
