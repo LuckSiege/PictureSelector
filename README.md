@@ -64,7 +64,7 @@ compile引入
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.3.3'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.3.5'
 }
 
 ```
