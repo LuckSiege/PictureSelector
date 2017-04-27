@@ -12,13 +12,10 @@
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_minus" />
 
-    <EditText
+    <TextView
         android:id="@+id/select_num"
         android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:editable="false"
-        android:clickable="false"
-        android:focusable="false"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:inputType="number"
         android:text="9" />
