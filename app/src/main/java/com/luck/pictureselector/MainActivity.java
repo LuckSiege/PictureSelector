@@ -12,11 +12,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.luck.picture.lib.compress.Luban;
 import com.luck.picture.lib.model.FunctionConfig;
 import com.luck.picture.lib.model.FunctionOptions;
-import com.luck.picture.lib.model.LocalMediaLoader;
 import com.luck.picture.lib.model.PictureConfig;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.util.FullyGridLayoutManager;
@@ -43,11 +43,11 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     private int selectMode = MODE_MULTIPLE;
     private int maxSelectNum = 9;// 图片最大可选数量
     private ImageButton minus, plus;
-    private EditText select_num;
+    private TextView select_num;
     private EditText et_w, et_h, et_compress_width, et_compress_height;
     private LinearLayout ll_luban_wh;
     private boolean isShow = true;
-    private int selectType = LocalMediaLoader.TYPE_IMAGE;
+    private int selectType = FunctionConfig.TYPE_IMAGE;
     private int copyMode = FunctionConfig.CROP_MODEL_DEFAULT;
     private boolean enablePreview = true;
     private boolean isPreviewVideo = true;
@@ -100,7 +100,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         et_h = (EditText) findViewById(R.id.et_h);
         minus = (ImageButton) findViewById(R.id.minus);
         plus = (ImageButton) findViewById(R.id.plus);
-        select_num = (EditText) findViewById(R.id.select_num);
+        select_num = (TextView) findViewById(R.id.select_num);
         select_num.setText(maxSelectNum + "");
         FullyGridLayoutManager manager = new FullyGridLayoutManager(MainActivity.this, 4, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
@@ -329,10 +329,10 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 selectMode = MODE_MULTIPLE;
                 break;
             case R.id.rb_image:
-                selectType = LocalMediaLoader.TYPE_IMAGE;
+                selectType = FunctionConfig.TYPE_IMAGE;
                 break;
             case R.id.rb_video:
-                selectType = LocalMediaLoader.TYPE_VIDEO;
+                selectType = FunctionConfig.TYPE_VIDEO;
                 break;
             case R.id.rb_photo_display:
                 isShow = true;
