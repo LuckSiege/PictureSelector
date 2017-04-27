@@ -12,7 +12,7 @@ import com.luck.picture.lib.R;
 
 public class PictureVideoPlayActivity extends PictureBaseActivity implements MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
     private String video_path = "";
-    private ImageView left_back;
+    private ImageView picture_left_back;
     private MediaController mMediaController;
     private VideoView mVideoView;
     private ImageView iv_play;
@@ -24,13 +24,13 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_activity_video_play);
         video_path = getIntent().getStringExtra("video_path");
-        left_back = (ImageView) findViewById(R.id.left_back);
+        picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
         mVideoView = (VideoView) findViewById(R.id.video_view);
         iv_play = (ImageView) findViewById(R.id.iv_play);
         mMediaController = new MediaController(this);
         mVideoView.setOnCompletionListener(this);
         mVideoView.setMediaController(mMediaController);
-        left_back.setOnClickListener(new View.OnClickListener() {
+        picture_left_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
@@ -64,6 +64,13 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
         mVideoView.stopPlayback();
 
         super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mVideoView.stopPlayback();
+        mMediaController = null;
     }
 
     public void onResume() {

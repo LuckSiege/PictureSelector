@@ -15,15 +15,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="invisible"
-        android:src="@drawable/ic_video_play" />
+        android:src="@drawable/ic_video_play"
+        android:visibility="invisible" />
 
-    <ImageButton
-        android:id="@+id/left_back"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+    <ImageView
+        android:id="@+id/picture_left_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:background="@color/transparent"
+        android:padding="15dp"
         android:src="@drawable/picture_back" />
 
 </RelativeLayout>

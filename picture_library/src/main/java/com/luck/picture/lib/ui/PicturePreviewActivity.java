@@ -12,7 +12,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.animation.Animation;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,7 +42,7 @@ import java.util.List;
  * data：16/12/31
  */
 public class PicturePreviewActivity extends PictureBaseActivity implements View.OnClickListener, Animation.AnimationListener {
-    private ImageButton left_back;
+    private ImageView picture_left_back;
     private TextView tv_img_num, tv_title, tv_ok;
     private RelativeLayout select_bar_layout;
     private PreviewViewPager viewPager;
@@ -76,12 +76,12 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         setContentView(R.layout.picture_activity_image_preview);
         registerReceiver(receiver, Constant.ACTION_AC_FINISH, "app.action.finish.preview");
         rl_title = (RelativeLayout) findViewById(R.id.rl_title);
-        left_back = (ImageButton) findViewById(R.id.left_back);
+        picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
         viewPager = (PreviewViewPager) findViewById(R.id.preview_pager);
         ll_check = (LinearLayout) findViewById(R.id.ll_check);
         select_bar_layout = (RelativeLayout) findViewById(R.id.select_bar_layout);
         check = (TextView) findViewById(R.id.check);
-        left_back.setOnClickListener(this);
+        picture_left_back.setOnClickListener(this);
         tv_ok = (TextView) findViewById(R.id.tv_ok);
         tv_img_num = (TextView) findViewById(R.id.tv_img_num);
         tv_title = (TextView) findViewById(R.id.tv_title);
@@ -302,7 +302,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.left_back) {
+        if (id == R.id.picture_left_back) {
             finish();
         } else if (id == R.id.tv_ok) {
             if (selectMode == FunctionConfig.MODE_MULTIPLE && enableCrop && type == FunctionConfig.TYPE_IMAGE) {

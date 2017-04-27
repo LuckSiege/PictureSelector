@@ -20,7 +20,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -66,7 +66,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
     private TextView tv_img_num;
     private TextView tv_ok, tv_mask;
     private RelativeLayout rl_bottom;
-    private ImageButton picture_left_back;
+    private ImageView picture_left_back;
     private RelativeLayout rl_picture_title;
     private TextView picture_tv_title, picture_tv_right;
     private Animation animation = null;
@@ -107,7 +107,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         registerReceiver(receiver, Constant.ACTION_AC_FINISH, Constant.ACTION_AC_REFRESH_DATA, Constant.ACTION_CROP_DATA);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         rl_bottom = (RelativeLayout) findViewById(R.id.rl_bottom);
-        picture_left_back = (ImageButton) findViewById(R.id.picture_left_back);
+        picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
         rl_picture_title = (RelativeLayout) findViewById(R.id.rl_picture_title);
         picture_tv_title = (TextView) findViewById(R.id.picture_tv_title);
         picture_tv_right = (TextView) findViewById(R.id.picture_tv_right);
