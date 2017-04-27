@@ -88,7 +88,8 @@ allprojects {
  }  
  
  问题二：
- android.content.resXmlResourceParser 异常，请在AndroidManifest.xml 下添加适配6.0+拍照闪退问题
+ java.lang.NullPointerException: Attempt to invoke virtual method 'android.content.res.XmlResourceParser  android.content.pm.ProviderInfo.loadXmlMetaData(android.content.pm.PackageManager, java.lang.String)' on a null object reference
+
  <provider
       android:name="android.support.v4.content.FileProvider"
       android:authorities="${applicationId}.provider"
