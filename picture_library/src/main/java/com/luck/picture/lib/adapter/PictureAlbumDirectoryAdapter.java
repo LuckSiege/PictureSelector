@@ -70,7 +70,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
                     .placeholder(R.drawable.ic_placeholder)
                     .error(R.drawable.ic_placeholder)
                     .centerCrop()
-                    .crossFade()
+                    .crossFade(500)
                     .override(180, 180)
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .into(holder.first_image);
