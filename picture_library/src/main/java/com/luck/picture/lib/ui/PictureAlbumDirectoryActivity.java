@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -79,14 +80,16 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
             case FunctionConfig.TYPE_VIDEO:
                 picture_tv_title.setText(getString(R.string.select_video));
                 break;
+            default:
+                break;
         }
-
         ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
         rl_picture_title.setBackgroundColor(backgroundColor);
         picture_tv_right.setText(getString(R.string.cancel));
         picture_tv_right.setOnClickListener(this);
         adapter = new PictureAlbumDirectoryAdapter(this);
         LinearLayoutManager manager = new LinearLayoutManager(this);
+        ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new RecycleViewDivider(
                 mContext, LinearLayoutManager.HORIZONTAL, Utils.dip2px(this, 0.5f), ContextCompat.getColor(this, R.color.line_color)));
