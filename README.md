@@ -103,7 +103,8 @@ allprojects {
          android:name="android.support.FILE_PROVIDER_PATHS"
          android:resource="@xml/file_paths" />
 </provider>
-注意：如已添加其他sdk或项目中已使用过provider节点，请参考 http://blog.csdn.net/luck_mw/article/details/54970105
+注意：如已添加其他sdk或项目中已使用过provider节点，
+请参考<href>http://blog.csdn.net/luck_mw/article/details/54970105 方法解决!!!</herf>
 
 问题三：
 PhotoView 库冲突，可以删除自己项目中引用的，Picture_library中已经引用过，或引用com.commit451:PhotoView:1.2.4版本
