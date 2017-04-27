@@ -88,7 +88,9 @@ allprojects {
  }  
  
  问题二：
- java.lang.NullPointerException: Attempt to invoke virtual method 'android.content.res.XmlResourceParser  android.content.pm.ProviderInfo.loadXmlMetaData(android.content.pm.PackageManager, java.lang.String)' on a null object reference
+ java.lang.NullPointerException: Attempt to invoke virtual method 'android.content.res.XmlResourceParser 
+ android.content.pm.ProviderInfo.loadXmlMetaData(android.content.pm.PackageManager, java.lang.String)' on a null object 
+ reference
 
  <provider
       android:name="android.support.v4.content.FileProvider"
