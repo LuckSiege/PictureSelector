@@ -3,7 +3,7 @@
   
   项目会一直维护，发现问题欢迎提出会第一时间修复，QQ交流群 619458861，个人QQ 893855882@qq.com  希望用得着的朋友点个start。 
    
-  另附我的博客地址：http://blog.csdn.net/luck_mw
+  [我的博客地址](http://blog.csdn.net/luck_mw)
 
 ******功能特点：******  
 ```
@@ -88,7 +88,13 @@ allprojects {
  }  
  
  问题二：
- android.content.resXmlResourceParser 异常，请在AndroidManifest.xml 下添加适配6.0+拍照闪退问题
+ java.lang.NullPointerException: 
+ Attempt to invoke virtual method 'android.content.res.XmlResourceParser 
+ android.content.pm.ProviderInfo.loadXmlMetaData(android.content.pm.PackageManager, java.lang.String)'
+ on a null object reference
+ 
+ application下添加如下节点:
+ 
  <provider
       android:name="android.support.v4.content.FileProvider"
       android:authorities="${applicationId}.provider"
@@ -98,6 +104,9 @@ allprojects {
          android:name="android.support.FILE_PROVIDER_PATHS"
          android:resource="@xml/file_paths" />
 </provider>
+
+注意：如已添加其他sdk或项目中已使用过provider节点，
+[请参考我的博客](http://blog.csdn.net/luck_mw/article/details/54970105) 
 
 问题三：
 PhotoView 库冲突，可以删除自己项目中引用的，Picture_library中已经引用过，或引用com.commit451:PhotoView:1.2.4版本
