@@ -62,19 +62,23 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
             holder.tv_img_num.setVisibility(View.INVISIBLE);
         }
         int type = folder.getType();
-        if (type == FunctionConfig.TYPE_VIDEO) {
-            Glide.with(holder.itemView.getContext()).load(imagePath).thumbnail(0.5f).into(holder.first_image);
-        } else {
-            Glide.with(holder.itemView.getContext())
-                    .load(imagePath)
-                    .placeholder(R.drawable.ic_placeholder)
-                    .error(R.drawable.ic_placeholder)
-                    .centerCrop()
-                    .crossFade(500)
-                    .override(180, 180)
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .into(holder.first_image);
-
+        switch (type) {
+            case FunctionConfig.TYPE_VIDEO:
+                Glide.with(holder.itemView.getContext()).load(imagePath).thumbnail(0.5f).into(holder.first_image);
+                break;
+            case FunctionConfig.TYPE_IMAGE:
+                Glide.with(holder.itemView.getContext())
+                        .load(imagePath)
+                        .placeholder(R.drawable.ic_placeholder)
+                        .error(R.drawable.ic_placeholder)
+                        .centerCrop()
+                        .crossFade()
+                        .override(180, 180)
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .into(holder.first_image);
+                break;
+            default:
+                break;
         }
         holder.image_num.setText("(" + imageNum + ")");
         holder.tv_folder_name.setText(name);

@@ -114,7 +114,8 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
                 case FunctionConfig.TYPE_VIDEO:
                     tv_empty.setText(getString(R.string.no_video));
                     break;
-
+                default:
+                    break;
             }
         }
     }
@@ -129,7 +130,6 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
             if (medias == null) {
                 medias = new ArrayList<>();
             }
-
             List<LocalMediaFolder> folders = adapter.getFolderData();
             for (LocalMediaFolder folder : folders) {
                 // 只重置之前有选中过的文件夹，因为有可能也取消选中的
