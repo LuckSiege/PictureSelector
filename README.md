@@ -5,8 +5,6 @@
    
   [我的博客地址](http://blog.csdn.net/luck_mw)
   
-  ![github](http://github.com/unicorn.png "github")  
-
 # 更新日志：
 ###### 版本 v1.3.8
 ###### 1.修复.webp格式图片压缩后后缀变为.jpg格式问题
