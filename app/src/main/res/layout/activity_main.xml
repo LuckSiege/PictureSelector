@@ -68,6 +68,28 @@
 
             <include layout="@layout/layout_number" />
 
+            <RadioGroup
+                android:id="@+id/rgbs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp">
+
+                <RadioButton
+                    android:id="@+id/rb_photo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="相册并拍照" />
+
+                <RadioButton
+                    android:id="@+id/rb_camera"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15sp"
+                    android:text="单独拍照或录视频" />
+            </RadioGroup>
+
 
             <RadioGroup
                 android:id="@+id/rgbs01"
@@ -445,9 +467,9 @@
                 android:layout_marginLeft="15dp"
                 android:hint="压缩大小不超过多少b"
                 android:inputType="number"
-                android:visibility="gone"
                 android:text="102400"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
