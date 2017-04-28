@@ -25,7 +25,6 @@ import com.yalantis.ucrop.entity.LocalMedia;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.luck.picture.lib.model.FunctionConfig.MODE_MULTIPLE;
 
 /**
  * author：luck
@@ -39,8 +38,8 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     public static final String TAG = "MainActivity";
     private RecyclerView recyclerView;
     private GridImageAdapter adapter;
-    private RadioGroup rgbs01, rgbs0, rgbs1, rgbs2, rgbs3, rgbs4, rgbs5, rgbs6, rgbs7, rgbs8, rgbs9, rgbs10;
-    private int selectMode = MODE_MULTIPLE;
+    private RadioGroup rgbs, rgbs01, rgbs0, rgbs1, rgbs2, rgbs3, rgbs4, rgbs5, rgbs6, rgbs7, rgbs8, rgbs9, rgbs10;
+    private int selectMode = FunctionConfig.MODE_MULTIPLE;
     private int maxSelectNum = 9;// 图片最大可选数量
     private ImageButton minus, plus;
     private TextView select_num;
@@ -49,6 +48,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     private boolean isShow = true;
     private int selectType = FunctionConfig.TYPE_IMAGE;
     private int copyMode = FunctionConfig.CROP_MODEL_DEFAULT;
+    private Context mContext;
     private boolean enablePreview = true;
     private boolean isPreviewVideo = true;
     private boolean enableCrop = true;
@@ -63,10 +63,10 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     private boolean isCheckNumMode = false;
     private int compressFlag = 1;// 1 系统自带压缩 2 luban压缩
     private List<LocalMedia> selectMedia = new ArrayList<>();
-    private Context mContext;
     private EditText et_kb;
     private int themeStyle;
     private int previewColor, completeColor, previewBottomBgColor, bottomBgColor, checkedBoxDrawable;
+    private boolean mode = false;// 启动相册模式
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +74,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         setContentView(R.layout.activity_main);
         mContext = this;
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
+        rgbs = (RadioGroup) findViewById(R.id.rgbs);
         rgbs01 = (RadioGroup) findViewById(R.id.rgbs01);
         rgbs0 = (RadioGroup) findViewById(R.id.rgbs0);
         rgbs1 = (RadioGroup) findViewById(R.id.rgbs1);
@@ -105,8 +106,10 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         FullyGridLayoutManager manager = new FullyGridLayoutManager(MainActivity.this, 4, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
         adapter = new GridImageAdapter(MainActivity.this, onAddPicClickListener);
+        adapter.setList(selectMedia);
         adapter.setSelectMax(maxSelectNum);
         recyclerView.setAdapter(adapter);
+        rgbs.setOnCheckedChangeListener(this);
         rgbs0.setOnCheckedChangeListener(this);
         rgbs1.setOnCheckedChangeListener(this);
         rgbs2.setOnCheckedChangeListener(this);
@@ -119,6 +122,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         rgbs9.setOnCheckedChangeListener(this);
         rgbs01.setOnCheckedChangeListener(this);
         rgbs10.setOnCheckedChangeListener(this);
+
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,18 +221,18 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
 
                     if (theme) {
                         // 设置主题样式
-                        themeStyle = ContextCompat.getColor(MainActivity.this, R.color.blue);
+                        themeStyle = ContextCompat.getColor(getApplicationContext(), R.color.blue);
                     } else {
-                        themeStyle = ContextCompat.getColor(mContext, R.color.bar_grey);
+                        themeStyle = ContextCompat.getColor(getApplicationContext(), R.color.bar_grey);
                     }
 
                     if (isCheckNumMode) {
                         // QQ 风格模式下 这里自己搭配颜色
-                        previewColor = ContextCompat.getColor(MainActivity.this, R.color.blue);
-                        completeColor = ContextCompat.getColor(MainActivity.this, R.color.blue);
+                        previewColor = ContextCompat.getColor(getApplicationContext(), R.color.blue);
+                        completeColor = ContextCompat.getColor(getApplicationContext(), R.color.blue);
                     } else {
-                        previewColor = ContextCompat.getColor(MainActivity.this, R.color.tab_color_true);
-                        completeColor = ContextCompat.getColor(MainActivity.this, R.color.tab_color_true);
+                        previewColor = ContextCompat.getColor(getApplicationContext(), R.color.tab_color_true);
+                        completeColor = ContextCompat.getColor(getApplicationContext(), R.color.tab_color_true);
                     }
 
                     if (selectImageType) {
@@ -270,11 +274,13 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                             .setCompressH(compressH) // 压缩高 如果值大于图片原始宽高无效
                             .setThemeStyle(themeStyle) // 设置主题样式
                             .create();
-
-                    // 先初始化参数配置，在启动相册
-                    PictureConfig.getPictureConfig().init(options).openPhoto(mContext, resultCallback);
-                    // 只拍照
-                    //PictureConfig.getPictureConfig().init(options).startOpenCamera(mContext, resultCallback);
+                    if (mode) {
+                        // 只拍照
+                        PictureConfig.getPictureConfig().init(options).startOpenCamera(mContext, resultCallback);
+                    } else {
+                        // 先初始化参数配置，在启动相册
+                        PictureConfig.getPictureConfig().init(options).openPhoto(mContext, resultCallback);
+                    }
                     break;
                 case 1:
                     // 删除图片
@@ -316,6 +322,12 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
         switch (i) {
+            case R.id.rb_photo:
+                mode = false;
+                break;
+            case R.id.rb_camera:
+                mode = true;
+                break;
             case R.id.rb_ordinary:
                 isCheckNumMode = false;
                 break;
@@ -326,7 +338,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 selectMode = FunctionConfig.MODE_SINGLE;
                 break;
             case R.id.rb_multiple:
-                selectMode = MODE_MULTIPLE;
+                selectMode = FunctionConfig.MODE_MULTIPLE;
                 break;
             case R.id.rb_image:
                 selectType = FunctionConfig.TYPE_IMAGE;
