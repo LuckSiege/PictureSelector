@@ -202,14 +202,14 @@ PictureConfig.getPictureConfig().externalPictureVideo(mContext, selectMedia.get(
 ```
 
   
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/A574F86A9A9F42A77D03B0ACC9E761C9.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/ABE302D298BD56DEC871F4464E64646F.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/3483AB11C78AF4C6DCC408504768A138.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/66C119A6BD918EAF9418324836C34BA6.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/new_image.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/5F1513BFD9490AF153E3E30840964FB1.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/BA7C4A038613182020DA9CE0152DA5D4.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/1.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/2.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/3.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/4.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/5.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/6.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/0F918EB15954836F59A95A3F7E0D2012.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/2AEDE4E52CC095F5896E066C59DDDF85.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/36C818DEDF2A5AA745CD699FBBF67E7F.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/9B433C9C47C3FCA7BC42D6E3B6F27698.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/BA7C4A038613182020DA9CE0152DA5D4.jpg)
+
