@@ -6,7 +6,6 @@
   [我的博客地址](http://blog.csdn.net/luck_mw)
   
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege/PictureSelector/pulls)
-[![GitHub release](https://github.com/LuckSiege/PictureSelector/releases/tag/v1.3.8)](https://github.com/LuckSiege/PictureSelector/releases)
 [![License Apache2.0](http://img.shields.io/badge/license-Apache2.0-brightgreen.svg?style=flat)](https://github.com/LuckSiege/PictureSelector)
   
 # 更新日志：
