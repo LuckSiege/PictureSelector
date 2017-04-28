@@ -69,10 +69,9 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
             case FunctionConfig.TYPE_IMAGE:
                 Glide.with(holder.itemView.getContext())
                         .load(imagePath)
-                        .placeholder(R.drawable.ic_placeholder)
                         .error(R.drawable.ic_placeholder)
                         .centerCrop()
-                        .crossFade(800)
+                        .crossFade()
                         .override(180, 180)
                         .diskCacheStrategy(DiskCacheStrategy.RESULT)
                         .into(holder.first_image);
@@ -86,8 +85,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
             @Override
             public void onClick(View view) {
                 if (onItemClickListener != null)
-                    notifyDataSetChanged();
-                onItemClickListener.onItemClick(folder.getName(), folder.getImages());
+                    onItemClickListener.onItemClick(folder.getName(), folder.getImages());
             }
         });
     }

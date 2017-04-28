@@ -1,7 +1,5 @@
 package com.luck.picture.lib.ui;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,11 +19,15 @@ import com.luck.picture.lib.model.FunctionConfig;
 import com.luck.picture.lib.model.PictureConfig;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.observable.ObserverListener;
-import com.luck.picture.lib.widget.Constant;
+import com.yalantis.ucrop.entity.EventEntity;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.entity.LocalMediaFolder;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.util.Utils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -47,22 +49,25 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
     private RelativeLayout rl_picture_title;
     private TextView picture_tv_title, picture_tv_right;
     private List<LocalMedia> selectMedias = new ArrayList<>();
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals(Constant.ACTION_AC_FINISH)) {
+
+    //EventBus 3.0 回调
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void eventBus(EventEntity obj) {
+        switch (obj.what) {
+            case FunctionConfig.CLOSE_FLAG:
                 finish();
                 overridePendingTransition(0, R.anim.slide_bottom_out);
-            }
+                break;
         }
-    };
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_activity_album);
-        registerReceiver(receiver, Constant.ACTION_AC_FINISH);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         selectMedias = (List<LocalMedia>) getIntent().getSerializableExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST);
         if (selectMedias == null)
             selectMedias = new ArrayList<>();
@@ -228,8 +233,8 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (receiver != null) {
-            unregisterReceiver(receiver);
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
         }
         clearData();
     }
@@ -274,6 +279,4 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
             }
         }
     }
-
-
 }

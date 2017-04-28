@@ -33,6 +33,11 @@ public class FunctionConfig implements Serializable {
     public final static int REQUEST_PREVIEW = 100;
     public static final int READ_EXTERNAL_STORAGE = 0x01;
     public static final int CAMERA = 0x02;
+    public static final int CLOSE_FLAG = 2773;// 关闭activity 标识
+    public static final int UPDATE_FLAG = 2774;// 预览界面更新选中数据 标识
+    public static final int CROP_FLAG = 2775;// 裁剪数据 标识
+    public static final int CLOSE_PREVIEW_FLAG = 2776;// 只关闭预览界面activity 标识
+    public static final int CLOSE_SINE_CROP_FLAG = 2777;// 关闭单图裁剪页面 标识
 
     public static final int SELECT_MAX_NUM = 9;
     public static final int MAX_COMPRESS_SIZE = 102400;

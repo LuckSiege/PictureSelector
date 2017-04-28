@@ -48,13 +48,8 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
 
     public void onStart() {
         // Play Video
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mVideoView.setVideoPath(video_path);
-                mVideoView.start();
-            }
-        }).start();
+        mVideoView.setVideoPath(video_path);
+        mVideoView.start();
         super.onStart();
     }
 

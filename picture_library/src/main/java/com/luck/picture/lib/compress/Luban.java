@@ -64,6 +64,7 @@ public class Luban {
         Luban luban = new Luban(Luban.getPhotoCacheDir(context));
         luban.mFile = file;
         luban.mFileList = Collections.singletonList(file);
+
         return luban;
     }
 

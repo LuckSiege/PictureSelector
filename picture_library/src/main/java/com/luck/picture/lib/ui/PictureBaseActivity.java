@@ -1,9 +1,7 @@
 package com.luck.picture.lib.ui;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -173,31 +171,6 @@ public class PictureBaseActivity extends FragmentActivity {
         intent.setClass(this, act);
         intent.putExtras(bundle);
         startActivity(intent);
-    }
-
-    /**
-     * 广播发送者
-     *
-     * @param action
-     */
-    protected void sendBroadcast(String action) {
-        Intent intent = new Intent();
-        intent.setAction(action);
-        sendBroadcast(intent);
-    }
-
-
-    /**
-     * 注册发送者
-     *
-     * @param action
-     */
-    protected void registerReceiver(BroadcastReceiver receiver, String... action) {
-        IntentFilter intentFilter = new IntentFilter();
-        for (int i = 0; i < action.length; i++) {
-            intentFilter.addAction(action[i]);
-        }
-        registerReceiver(receiver, intentFilter);
     }
 
 

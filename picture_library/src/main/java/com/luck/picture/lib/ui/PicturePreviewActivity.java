@@ -1,8 +1,5 @@
 package com.luck.picture.lib.ui;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,16 +18,19 @@ import android.widget.Toast;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.model.FunctionConfig;
 import com.luck.picture.lib.observable.ImagesObservable;
-import com.luck.picture.lib.widget.Constant;
 import com.luck.picture.lib.widget.PreviewViewPager;
 import com.yalantis.ucrop.MultiUCrop;
-import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.dialog.OptAnimationLoader;
+import com.yalantis.ucrop.dialog.SweetAlertDialog;
+import com.yalantis.ucrop.entity.EventEntity;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.util.ToolbarUtil;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,26 +55,35 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
     private SimpleFragmentAdapter adapter;
     private Animation animation;
     private boolean refresh;
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals(Constant.ACTION_AC_FINISH)) {
-                finish();
-                overridePendingTransition(0, R.anim.slide_bottom_out);
-            } else if (action.equals("app.action.finish.preview")) {
-                // 多图裁剪完关闭 预览界面，在图片列表中进行压缩，所以这里区分开来，不用统一的关闭activity
-                finish();
-                overridePendingTransition(0, R.anim.slide_bottom_out);
-            }
+    private SweetAlertDialog dialog;
+
+    //EventBus 3.0 回调
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void eventBus(EventEntity obj) {
+        switch (obj.what) {
+            case FunctionConfig.CLOSE_FLAG:
+                dismiss();
+                closeActivity();
+                break;
+            case FunctionConfig.CLOSE_PREVIEW_FLAG:
+                closeActivity();
+                break;
         }
-    };
+    }
+
+    // 关闭activity
+    protected void closeActivity() {
+        finish();
+        overridePendingTransition(0, R.anim.slide_bottom_out);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_activity_image_preview);
-        registerReceiver(receiver, Constant.ACTION_AC_FINISH, "app.action.finish.preview");
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         rl_title = (RelativeLayout) findViewById(R.id.rl_title);
         picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
         viewPager = (PreviewViewPager) findViewById(R.id.preview_pager);
@@ -262,7 +271,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
      */
     private void updateSelector(boolean isRefresh) {
         if (isRefresh) {
-            sendBroadcast(new Intent().setAction(Constant.ACTION_AC_REFRESH_DATA).putExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectImages));
+            EventEntity obj = new EventEntity(FunctionConfig.UPDATE_FLAG, selectImages);
+            EventBus.getDefault().post(obj);
         }
     }
 
@@ -320,9 +330,15 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         for (LocalMedia media : images) {
             result.add(media);
         }
-        sendBroadcast(new Intent().setAction(Constant.ACTION_CROP_DATA).putExtra(UCrop.EXTRA_RESULT, (Serializable) result));
-        finish();
-        overridePendingTransition(0, R.anim.slide_bottom_out);
+        EventEntity obj = new EventEntity(FunctionConfig.CROP_FLAG, result);
+        EventBus.getDefault().post(obj);
+        // 如果开启了压缩，先不关闭此页面，PictureImageGridActivity压缩完在通知关闭
+        if (!isCompress) {
+            finish();
+            overridePendingTransition(0, R.anim.slide_bottom_out);
+        } else {
+            showDialog("请稍候...");
+        }
     }
 
     /**
@@ -358,6 +374,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
             options.setCompressionQuality(compressQuality);
             options.withMaxResultSize(cropW, cropH);
             options.background_color(backgroundColor);
+            options.setIsCompress(isCompress);
             options.copyMode(copyMode);
             uCrop.withOptions(options);
             uCrop.start(PicturePreviewActivity.this);
@@ -365,12 +382,26 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
 
     }
 
+    private void showDialog(String msg) {
+        if (!isFinishing()) {
+            dialog = new SweetAlertDialog(PicturePreviewActivity.this);
+            dialog.setTitleText(msg);
+            dialog.show();
+        }
+    }
+
+    private void dismiss() {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.cancel();
+        }
+    }
+
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (receiver != null) {
-            unregisterReceiver(receiver);
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
         }
     }
 }

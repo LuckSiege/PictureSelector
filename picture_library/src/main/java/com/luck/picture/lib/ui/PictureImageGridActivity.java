@@ -1,8 +1,6 @@
 package com.luck.picture.lib.ui;
 
 import android.Manifest;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -35,17 +33,21 @@ import com.luck.picture.lib.model.FunctionConfig;
 import com.luck.picture.lib.model.LocalMediaLoader;
 import com.luck.picture.lib.model.PictureConfig;
 import com.luck.picture.lib.observable.ImagesObservable;
-import com.luck.picture.lib.widget.Constant;
 import com.luck.picture.lib.widget.MyItemAnimator;
 import com.yalantis.ucrop.MultiUCrop;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.dialog.SweetAlertDialog;
+import com.yalantis.ucrop.entity.EventEntity;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.entity.LocalMediaFolder;
 import com.yalantis.ucrop.util.FileUtils;
 import com.yalantis.ucrop.util.ScreenUtils;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.util.Utils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.Serializable;
@@ -78,33 +80,38 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
     private boolean is_top_activity;
     private boolean takePhoto = false;// 是否只单独调用拍照
     private boolean takePhotoSuccess = false;// 单独拍照是否成功
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals(Constant.ACTION_AC_FINISH)) {
+
+    //EventBus 3.0 回调
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void eventBus(EventEntity obj) {
+        switch (obj.what) {
+            case FunctionConfig.CLOSE_FLAG:
+                // 关闭activity
                 finish();
                 overridePendingTransition(0, R.anim.slide_bottom_out);
-            } else if (action.equals(Constant.ACTION_AC_REFRESH_DATA)) {
-                List<LocalMedia> selectImages = (List<LocalMedia>) intent.getSerializableExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST);
-                if (selectImages != null)
-                    adapter.bindSelectImages(selectImages);
-            } else if (action.equals(Constant.ACTION_CROP_DATA)) {
+                break;
+            case FunctionConfig.UPDATE_FLAG:
+                // 预览时勾选图片更新回调
+                List<LocalMedia> selectImages = obj.medias;
+                adapter.bindSelectImages(selectImages);
+                break;
+            case FunctionConfig.CROP_FLAG:
                 // 裁剪返回的数据
-                List<LocalMedia> result = (List<LocalMedia>) intent.getSerializableExtra(FunctionConfig.EXTRA_RESULT);
+                List<LocalMedia> result = obj.medias;
                 if (result == null)
                     result = new ArrayList<>();
                 handleCropResult(result);
-            }
+                break;
         }
-    };
-
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_activity_image_grid);
-        registerReceiver(receiver, Constant.ACTION_AC_FINISH, Constant.ACTION_AC_REFRESH_DATA, Constant.ACTION_CROP_DATA);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         rl_bottom = (RelativeLayout) findViewById(R.id.rl_bottom);
         picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
@@ -226,6 +233,14 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (!picture_tv_right.isEnabled()) {
+            picture_tv_right.setEnabled(true);
+        }
+    }
+
+    @Override
     protected void readLocalMedia() {
         /**
          * 根据type决定，查询本地图片或视频。
@@ -335,17 +350,18 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
 
     @Override
     public void startCamera() {
-        switch (type) {
-            case FunctionConfig.TYPE_IMAGE:
-                // 拍照
-                startOpenCamera();
-                break;
-            case FunctionConfig.TYPE_VIDEO:
-                // 录视频
-                startOpenCameraVideo();
-                break;
+        if (!Utils.isFastDoubleClick()) {
+            switch (type) {
+                case FunctionConfig.TYPE_IMAGE:
+                    // 拍照
+                    startOpenCamera();
+                    break;
+                case FunctionConfig.TYPE_VIDEO:
+                    // 录视频
+                    startOpenCameraVideo();
+                    break;
+            }
         }
-
     }
 
     @Override
@@ -461,6 +477,8 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         if (Utils.isFastDoubleClick()) {
             return;
         }
+        // 这里解决一下 多图裁剪 快速点击确定时 事件会穿透到此activity取消按钮中来的奇葩问题，猜测应该是activity启动动画引起的
+        picture_tv_right.setEnabled(false);
         if (medias != null && medias.size() > 0) {
             LocalMedia media = medias.get(0);
             String path = media.getPath();
@@ -493,7 +511,6 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             uCrop.withOptions(options);
             uCrop.start(PictureImageGridActivity.this);
         }
-
     }
 
     /**
@@ -715,11 +732,13 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         if (resultCallback != null) {
             resultCallback.onSelectSuccess(result);
         }
-        sendBroadcast(Constant.ACTION_AC_FINISH);
-        if (takePhoto && takePhotoSuccess) {
-            // 如果是单独拍照并且压缩可能会造成还在压缩中，但此activity已关闭
+        EventEntity obj = new EventEntity(FunctionConfig.CLOSE_FLAG);
+        EventBus.getDefault().post(obj);
+        if ((takePhoto && takePhotoSuccess) || (enableCrop && isCompress && selectMode == FunctionConfig.MODE_SINGLE)) {
+            // 如果是单独拍照并且压缩可能会造成还在压缩中，但此activity已关闭,或单选 裁剪压缩时等压缩完在关闭PictureSingeUCropActivity
             recycleCallBack();
-            sendBroadcast(Constant.ACTION_AC_SINGE_UCROP);
+            EventEntity obj1 = new EventEntity(FunctionConfig.CLOSE_SINE_CROP_FLAG);
+            EventBus.getDefault().post(obj1);
         } else {
             clearData();
         }
@@ -779,12 +798,12 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             case 2:
                 // 取消
                 clearData();
-                sendBroadcast(Constant.ACTION_AC_FINISH);
+                EventEntity obj = new EventEntity(FunctionConfig.CLOSE_FLAG);
+                EventBus.getDefault().post(obj);
                 finish();
                 overridePendingTransition(0, R.anim.slide_bottom_out);
                 break;
         }
-
     }
 
 
@@ -859,8 +878,8 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (receiver != null) {
-            unregisterReceiver(receiver);
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
         }
     }
 }
