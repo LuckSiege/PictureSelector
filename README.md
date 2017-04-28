@@ -6,7 +6,7 @@
   [我的博客地址](http://blog.csdn.net/luck_mw)
   
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
-[![CSDN](http://img.shields.io/badge/license-Apache2.0-brightgreen.svg?style=flat)](http://blog.csdn.net/luck_mw)
+[![CSDN](https://img.shields.io/twitter/url/http/blog.csdn.net/luck_mw.svg?style=social)](http://blog.csdn.net/luck_mw)
 [![I](https://img.shields.io/github/issues/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector/issues)
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
