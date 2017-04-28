@@ -24,17 +24,22 @@ import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.dialog.SweetAlertDialog;
+import com.yalantis.ucrop.entity.EventEntity;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.model.AspectRatio;
 import com.yalantis.ucrop.util.ToolbarUtil;
+import com.yalantis.ucrop.util.Utils;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
 import com.yalantis.ucrop.view.OverlayView;
 import com.yalantis.ucrop.view.TransformImageView;
 import com.yalantis.ucrop.view.UCropView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.File;
-import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -77,11 +82,27 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
     private int mCompressQuality = DEFAULT_COMPRESS_QUALITY;
     private int copyMode = 0;// 裁剪模式
 
+    //EventBus 3.0 回调
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void eventBus(EventEntity obj) {
+        switch (obj.what) {
+            case 2773:
+                // 关闭activity
+                dismiss();
+                finish();
+                overridePendingTransition(0, R.anim.hold);
+                break;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_activity_multi_cutting);
         mContext = this;
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         images = (List<LocalMedia>) getIntent().getSerializableExtra("previewSelectList");
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         Intent intent = getIntent();
@@ -175,8 +196,9 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         tv_right.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                view.setEnabled(false);
-                cropAndSaveImage();
+                if (!Utils.isFastDoubleClick()) {
+                    cropAndSaveImage();
+                }
             }
         });
         mLogoColor = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_LOGO_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_default_logo));
@@ -286,6 +308,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
 
 
     protected void cropAndSaveImage() {
+        tv_right.setEnabled(false);
         showDialog("处理中...");
         supportInvalidateOptionsMenu();
         mGestureCropImageView.cropAndSaveImage(mCompressFormat, mCompressQuality, new BitmapCropCallback() {
@@ -312,22 +335,31 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
             cutIndex++;
             if (cutIndex >= images.size()) {
                 // 裁剪完成，看是否压缩
+                tv_right.setEnabled(false);
                 for (LocalMedia media : images) {
                     media.setCut(true);
                 }
-                sendBroadcast(new Intent().setAction("app.action.finish.preview"));
-                sendBroadcast(new Intent().setAction("app.action.crop_data").putExtra(UCrop.EXTRA_RESULT, (Serializable) images));
-                finish();
-                overridePendingTransition(0, R.anim.hold);
+
+                EventEntity obj = new EventEntity(2775, images);
+                EventBus.getDefault().post(obj);
+
+                // 如果有压缩则先关闭activity，等PictureImageGridActivity 压缩完成在通知我关闭
+                if (!isCompress) {
+                    finish();
+                    overridePendingTransition(0, R.anim.hold);
+                }
             } else {
+                tv_right.setEnabled(true);
                 finish();
                 startMultiCopy(images.get(cutIndex).getPath());
-                tv_right.setEnabled(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        dismiss();
+
+        if (!isCompress) {
+            dismiss();
+        }
     }
 
     protected void setResultError(Throwable throwable) {
@@ -354,6 +386,14 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         super.onStop();
         if (mGestureCropImageView != null) {
             mGestureCropImageView.cancelAllAnimations();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
         }
     }
 }

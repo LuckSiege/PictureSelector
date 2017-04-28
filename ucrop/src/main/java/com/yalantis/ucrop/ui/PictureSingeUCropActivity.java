@@ -1,9 +1,6 @@
 package com.yalantis.ucrop.ui;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.net.Uri;
@@ -24,16 +21,21 @@ import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.dialog.SweetAlertDialog;
+import com.yalantis.ucrop.entity.EventEntity;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.model.AspectRatio;
 import com.yalantis.ucrop.util.ToolbarUtil;
+import com.yalantis.ucrop.util.Utils;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
 import com.yalantis.ucrop.view.OverlayView;
 import com.yalantis.ucrop.view.TransformImageView;
 import com.yalantis.ucrop.view.UCropView;
 
-import java.io.Serializable;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -72,27 +74,31 @@ public class PictureSingeUCropActivity extends FragmentActivity {
     private Bitmap.CompressFormat mCompressFormat = DEFAULT_COMPRESS_FORMAT;
     private int mCompressQuality = DEFAULT_COMPRESS_QUALITY;
     private int type = 0;
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals("app.activity.singe.ucrop.finish")) {
+
+
+    //EventBus 3.0 回调
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void eventBus(EventEntity obj) {
+        switch (obj.what) {
+            case 2777:
+                // 关闭activity
                 cancelDialog();
                 finish();
                 overridePendingTransition(0, R.anim.hold);
-            }
+                break;
         }
-    };
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_ucrop_activity_photobox);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+
         final Intent intent = getIntent();
         takePhoto = intent.getBooleanExtra("takePhoto", false);
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("app.activity.singe.ucrop.finish");
-        registerReceiver(receiver, filter);
         setupViews(intent);
         setImageData(intent);
     }
@@ -203,7 +209,8 @@ public class PictureSingeUCropActivity extends FragmentActivity {
             public void onClick(View view) {
                 if (takePhoto) {
                     // 单独拍照 直接返回应用页面，防止显示空白
-                    sendBroadcast(new Intent().setAction("app.activity.finish"));
+                    EventEntity obj = new EventEntity(2773);
+                    EventBus.getDefault().post(obj);
                 }
                 onBackPressed();
             }
@@ -211,12 +218,14 @@ public class PictureSingeUCropActivity extends FragmentActivity {
         tv_right.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    showDialog("处理中...");
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (!Utils.isFastDoubleClick()) {
+                    try {
+                        showDialog("处理中...");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    cropAndSaveImage();
                 }
-                cropAndSaveImage();
             }
         });
         mLogoColor = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_LOGO_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_default_logo));
@@ -267,8 +276,8 @@ public class PictureSingeUCropActivity extends FragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (receiver != null) {
-            unregisterReceiver(receiver);
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
         }
     }
 
@@ -297,8 +306,10 @@ public class PictureSingeUCropActivity extends FragmentActivity {
         media.setCutPath(uri.getPath());
         media.setType(type);
         result.add(media);
-        sendBroadcast(new Intent().setAction("app.action.crop_data").putExtra(UCrop.EXTRA_RESULT, (Serializable) result));
-        if (!takePhoto) {
+        EventEntity obj = new EventEntity(2775, result);
+        EventBus.getDefault().post(obj);
+        // 如果有压缩则先关闭activity，等PictureImageGridActivity 压缩完成在通知我关闭
+        if (!takePhoto && !isCompress) {
             cancelDialog();
             finish();
             overridePendingTransition(0, R.anim.hold);
@@ -331,9 +342,10 @@ public class PictureSingeUCropActivity extends FragmentActivity {
             case KeyEvent.KEYCODE_BACK:
                 if (takePhoto) {
                     // 单独拍照 直接返回应用页面，防止显示空白
-                    sendBroadcast(new Intent().setAction("app.activity.finish"));
-                    finish();
+                    EventEntity obj = new EventEntity(2773);
+                    EventBus.getDefault().post(obj);
                 }
+                finish();
                 return false;
         }
         return super.onKeyDown(keyCode, event);

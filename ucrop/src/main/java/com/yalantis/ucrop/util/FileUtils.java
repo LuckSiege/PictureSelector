@@ -169,12 +169,18 @@ public class FileUtils {
 
     public static File getPhotoCacheDir(Context context, File file) {
         File cacheDir = context.getCacheDir();
+        String file_name = file.getName();
         if (cacheDir != null) {
             File mCacheDir = new File(cacheDir, DEFAULT_CACHE_DIR);
             if (!mCacheDir.mkdirs() && (!mCacheDir.exists() || !mCacheDir.isDirectory())) {
                 return file;
             } else {
-                String fileName = System.currentTimeMillis() + ".png";
+                String fileName = "";
+                if (file_name.endsWith(".webp")) {
+                    fileName = System.currentTimeMillis() + ".webp";
+                } else {
+                    fileName = System.currentTimeMillis() + ".png";
+                }
                 return new File(mCacheDir, fileName);
             }
         }
