@@ -5,9 +5,10 @@
    
   [我的博客地址](http://blog.csdn.net/luck_mw)
   
-[![Build Status](https://travis-ci.org/meolu/walle-web.svg?branch=master)](https://travis-ci.org/meolu/walle-web)
-[![Packagist](https://img.shields.io/packagist/v/meolu/walle-web.svg)](https://packagist.org/packages/meolu/walle-web)
-[![csdn](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](http://blog.csdn.net/luck_mw)
+[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege/PictureSelector/pulls)
+[![Download](https://api.bintray.com/packages/crazycodeboy/maven/TakePhoto/images/download.svg) ](https://github.com/LuckSiege/PictureSelector)
+[![GitHub release](https://img.shields.io/github/release/crazycodeboy/TakePhoto.svg?maxAge=2592000?style=flat-square)](https://github.com/LuckSiege/PictureSelector/releases)
+[![License Apache2.0](http://img.shields.io/badge/license-Apache2.0-brightgreen.svg?style=flat)](https://github.com/LuckSiege/PictureSelector)
   
 # 更新日志：
 ###### 版本 v1.3.8
