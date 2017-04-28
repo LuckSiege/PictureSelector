@@ -4,6 +4,8 @@
   项目会一直维护，发现问题欢迎提出会第一时间修复，QQ交流群 619458861，个人QQ 893855882@qq.com  希望用得着的朋友点个start。 
    
   [我的博客地址](http://blog.csdn.net/luck_mw)
+  
+  ![github](http://github.com/unicorn.png "github")  
 
 # 更新日志：
 ###### 版本 v1.3.8
