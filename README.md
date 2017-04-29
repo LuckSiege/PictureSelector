@@ -248,6 +248,7 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
     
 ```
 
+# 兼容性测试
 ******腾讯优测通过深度测试-通过率达到100%******
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/test.png)
