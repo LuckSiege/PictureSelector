@@ -163,6 +163,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                 folders = new ArrayList<>();
             }
 
+            // 获取图片
             images = ImagesObservable.getInstance().readLocalMedias();
             if (images == null) {
                 images = new ArrayList<>();
