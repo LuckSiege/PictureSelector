@@ -403,5 +403,9 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
+        if (animation != null) {
+            animation.cancel();
+            animation = null;
+        }
     }
 }

@@ -24,13 +24,17 @@ import java.util.List;
  */
 public class PictureConfig {
     public FunctionOptions options;
-    public static PictureConfig pictureConfig;
+    public static PictureConfig sInstance;
 
-    public static PictureConfig getPictureConfig() {
-        if (pictureConfig == null) {
-            pictureConfig = new PictureConfig();
+    public static PictureConfig getInstance() {
+        if (sInstance == null) {
+            synchronized (PictureConfig.class) {
+                if (sInstance == null) {
+                    sInstance = new PictureConfig();
+                }
+            }
         }
-        return pictureConfig;
+        return sInstance;
     }
 
     public PictureConfig() {
@@ -59,7 +63,6 @@ public class PictureConfig {
         if (options == null) {
             options = new FunctionOptions.Builder().create();
         }
-        // 这里仿ios微信相册启动模式
         Intent intent = new Intent(mContext, PictureImageGridActivity.class);
         intent.putExtra(FunctionConfig.EXTRA_THIS_CONFIG, options);
         mContext.startActivity(intent);
@@ -76,7 +79,6 @@ public class PictureConfig {
             options = new FunctionOptions.Builder().create();
         }
         Intent intent = new Intent(mContext, PictureImageGridActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(FunctionConfig.EXTRA_THIS_CONFIG, options);
         intent.putExtra(FunctionConfig.FUNCTION_TAKE, true);
         mContext.startActivity(intent);

@@ -729,7 +729,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         for (LocalMedia media : images) {
             result.add(media);
         }
-        PictureConfig.OnSelectResultCallback resultCallback = PictureConfig.getPictureConfig().getResultCallback();
+        PictureConfig.OnSelectResultCallback resultCallback = PictureConfig.getInstance().getResultCallback();
         if (resultCallback != null) {
             resultCallback.onSelectSuccess(result);
         }
@@ -869,8 +869,8 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
      * 释放静态
      */
     protected void clearData() {
-        PictureConfig.getPictureConfig().resultCallback = null;
-        PictureConfig.pictureConfig = null;
+        PictureConfig.getInstance().resultCallback = null;
+        PictureConfig.sInstance = null;
         ImagesObservable.getInstance().clearLocalFolders();
         ImagesObservable.getInstance().clearLocalMedia();
         ImagesObservable.getInstance().clearSelectedLocalMedia();
@@ -881,6 +881,10 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         super.onDestroy();
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
+        }
+        if (animation != null) {
+            animation.cancel();
+            animation = null;
         }
     }
 }

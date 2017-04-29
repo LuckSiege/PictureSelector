@@ -64,8 +64,8 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mVideoView.stopPlayback();
         mMediaController = null;
+        mVideoView = null;
     }
 
     public void onResume() {

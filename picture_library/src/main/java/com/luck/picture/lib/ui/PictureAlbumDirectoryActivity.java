@@ -241,8 +241,8 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
 
     protected void clearData() {
         // 释放静态变量
-        PictureConfig.getPictureConfig().resultCallback = null;
-        PictureConfig.pictureConfig = null;
+        PictureConfig.getInstance().resultCallback = null;
+        PictureConfig.sInstance = null;
         ImagesObservable.getInstance().remove(this);
         ImagesObservable.getInstance().clearLocalFolders();
         ImagesObservable.getInstance().clearLocalMedia();

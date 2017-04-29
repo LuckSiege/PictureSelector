@@ -107,7 +107,7 @@ public class PictureExternalPreviewActivity extends FragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        PictureConfig.getPictureConfig().resultCallback = null;
-        PictureConfig.pictureConfig = null;
+        PictureConfig.getInstance().resultCallback = null;
+        PictureConfig.sInstance = null;
     }
 }
