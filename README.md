@@ -98,9 +98,9 @@ dependencies {
 maven引入 
 ```
 <dependency>
-	    <groupId>com.github.LuckSiege</groupId>
-	    <artifactId>PictureSelector</artifactId>
-	    <version>v1.3.8</version>
+ <groupId>com.github.LuckSiege.PictureSelector</groupId>
+ <artifactId>picture_library</artifactId>
+ <version>v1.3.8</version>
 </dependency>
 
 ```
