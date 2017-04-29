@@ -94,7 +94,17 @@ dependencies {
 }
 
 ```
-项目根目录  
+
+maven引入 
+```
+<dependency>
+	    <groupId>com.github.LuckSiege</groupId>
+	    <artifactId>PictureSelector</artifactId>
+	    <version>v1.3.8</version>
+</dependency>
+
+```
+项目根目录  
 
 ```
 allprojects {
