@@ -14,7 +14,7 @@
 
   
 # 更新日志：
-###### 版本 v1.3.8
+###### 版本 v1.3.9
 ###### 1.修改相册启动方式
 ###### 2.修复.webp格式图片压缩后后缀变为.jpg格式问题
 ###### 3.修复多图裁剪快速点击，结果返回为空问题
@@ -92,7 +92,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.3.8'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.3.9'
 }
 
 ```
@@ -113,7 +113,7 @@ step 2.
 <dependency>
 	  <groupId>com.github.LuckSiege.PictureSelector</groupId>
 	  <artifactId>picture_library</artifactId>
-	  <version>v1.3.8</version>
+	  <version>v1.3.9</version>
 </dependency>
 
 ```
