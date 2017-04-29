@@ -156,6 +156,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         options.withMaxResultSize(maxSizeX, maxSizeY);
         options.background_color(backgroundColor);
         options.copyMode(copyMode);
+        options.setIsCompress(isCompress);
         uCrop.withOptions(options);
         uCrop.start(PictureMultiCuttingActivity.this);
         overridePendingTransition(R.anim.fade, R.anim.hold);
