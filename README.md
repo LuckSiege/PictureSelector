@@ -5,6 +5,31 @@
    
   [我的博客地址](http://blog.csdn.net/luck_mw)
 
+[![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
+[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
+[![CSDN](https://img.shields.io/twitter/url/http/blog.csdn.net/luck_mw.svg?style=social)](http://blog.csdn.net/luck_mw)
+[![I](https://img.shields.io/github/issues/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector/issues)
+[![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
+
+
+  
+# 更新日志：
+###### 版本 v1.3.8
+###### 1.修复.webp格式图片压缩后后缀变为.jpg格式问题
+###### 2.修复多图裁剪快速点击，结果返回为空问题
+###### 3.修复快速点击启动相册重复问题
+###### 4.将activity通信由广播改为EventBus3.0
+
+# 项目使用第三方库：
+###### 1.裁剪使用ucrop库
+###### 2.eventbus:3.0.0'
+###### 3.glide:3.7.0
+###### 4.rxjava:2.0.5
+###### 5.rxandroid:2.0.1
+###### 6.okhttp:3.2.0
+###### 7.PhotoView:1.2.4
+###### 8.Luban
+
 ******功能特点：******  
 ```
   1.适配android6.0+系统
@@ -65,11 +90,32 @@ compile引入
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.3.7'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.3.8'
 }
 
 ```
-项目根目录  
+
+maven引入 
+
+step 1.
+```
+<repositories>
+       <repository>
+       <id>jitpack.io</id>
+	<url>https://jitpack.io</url>
+       </repository>
+ </repositories>
+```
+step 2.
+```
+<dependency>
+	  <groupId>com.github.LuckSiege.PictureSelector</groupId>
+	  <artifactId>picture_library</artifactId>
+	  <version>v1.3.8</version>
+</dependency>
+
+```
+项目根目录  
 
 ```
 allprojects {
