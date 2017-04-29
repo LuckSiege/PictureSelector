@@ -148,11 +148,11 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 switch (selectType) {
                     case FunctionConfig.TYPE_IMAGE:
                         // 预览图片
-                        PictureConfig.getPictureConfig().externalPicturePreview(mContext, position, selectMedia);
+                        PictureConfig.getInstance().externalPicturePreview(mContext, position, selectMedia);
                         break;
                     case FunctionConfig.TYPE_VIDEO:
                         // 预览视频
-                        PictureConfig.getPictureConfig().externalPictureVideo(mContext, selectMedia.get(position).getPath());
+                        PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(position).getPath());
                         break;
                 }
 
@@ -276,10 +276,10 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                             .create();
                     if (mode) {
                         // 只拍照
-                        PictureConfig.getPictureConfig().init(options).startOpenCamera(mContext, resultCallback);
+                        PictureConfig.getInstance().init(options).startOpenCamera(mContext, resultCallback);
                     } else {
                         // 先初始化参数配置，在启动相册
-                        PictureConfig.getPictureConfig().init(options).openPhoto(mContext, resultCallback);
+                        PictureConfig.getInstance().init(options).openPhoto(mContext, resultCallback);
                     }
                     break;
                 case 1:
