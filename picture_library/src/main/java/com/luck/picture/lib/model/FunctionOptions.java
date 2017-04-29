@@ -478,7 +478,12 @@ public class FunctionOptions implements Serializable {
         }
 
         public Builder setSelectMedia(List<LocalMedia> selectMedia) {
-            options.setSelectMedia(selectMedia);
+            if (options.getSelectMode() == FunctionConfig.MODE_SINGLE) {
+                selectMedia = new ArrayList<>();
+                options.setSelectMedia(selectMedia);
+            } else {
+                options.setSelectMedia(selectMedia);
+            }
             return this;
         }
 

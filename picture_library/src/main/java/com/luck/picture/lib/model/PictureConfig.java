@@ -128,7 +128,6 @@ public class PictureConfig {
          *
          * @param resultList
          */
-        public void onSelectSuccess(List<LocalMedia> resultList);
-
+        void onSelectSuccess(List<LocalMedia> resultList);
     }
 }
