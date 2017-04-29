@@ -5,14 +5,11 @@
    
   [我的博客地址](http://blog.csdn.net/luck_mw)
   
-  ![image](http://utest.qq.com/automation/shart?token=434oiVKeHTXj0BII14eHuA==)
-
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
 [![CSDN](https://img.shields.io/twitter/url/http/blog.csdn.net/luck_mw.svg?style=social)](http://blog.csdn.net/luck_mw)
 [![I](https://img.shields.io/github/issues/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector/issues)
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
-
 
   
 # 更新日志：
@@ -251,7 +248,10 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
     
 ```
 
-  
+******腾讯优测通过深度测试 通过率达到100%，只有一个数组越界异常也只是演示demo造成的，无关PictureSelector库。******
+
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/test.png)
+ 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/1.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/2.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/3.jpg)
