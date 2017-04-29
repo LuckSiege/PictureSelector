@@ -201,26 +201,26 @@ FunctionOptions options = new FunctionOptions.Builder()
 
 ******启动相册并拍照******       
 ```
- PictureConfig.getPictureConfig().init(options).openPhoto(mContext, resultCallback);
+ PictureConfig.getInstance().init(options).openPhoto(mContext, resultCallback);
  
  或默认配置
- PictureConfig.getPictureConfig().openPhoto(mContext, resultCallback);
+ PictureConfig.getInstance().openPhoto(mContext, resultCallback);
 ```
 
 ******单独启动拍照或视频 根据type自动识别******       
 ```
- PictureConfig.getPictureConfig().init(options).startOpenCamera(mContext, resultCallback);
+ PictureConfig.getInstance().init(options).startOpenCamera(mContext, resultCallback);
  
  或默认配置
- PictureConfig.getPictureConfig().startOpenCamera(mContext, resultCallback);
+ PictureConfig.getInstance().startOpenCamera(mContext, resultCallback);
 ```
 ******预览图片******       
 ```
- PictureConfig.getPictureConfig().externalPicturePreview(mContext, position, selectMedia);
+ PictureConfig.getInstance().externalPicturePreview(mContext, position, selectMedia);
 ```
 ******预览视频****** 
 ```
-PictureConfig.getPictureConfig().externalPictureVideo(mContext, selectMedia.get(position).getPath());
+PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(position).getPath());
 ```
 ******图片回调完成结果返回******
 ```
