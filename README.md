@@ -4,6 +4,8 @@
   项目会一直维护，发现问题欢迎提出会第一时间修复，QQ交流群 619458861，个人QQ 893855882@qq.com  希望用得着的朋友点个start。 
    
   [我的博客地址](http://blog.csdn.net/luck_mw)
+  
+  ![image](http://utest.qq.com/automation/shart?token=434oiVKeHTXj0BII14eHuA==)
 
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
