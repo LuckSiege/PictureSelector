@@ -110,9 +110,9 @@ step 1.
 step 2.
 ```
 <dependency>
-	  <groupId>com.github.LuckSiege.PictureSelector</groupId>
-	  <artifactId>picture_library</artifactId>
-	  <version>v1.3.9</version>
+      <groupId>com.github.LuckSiege.PictureSelector</groupId>
+      <artifactId>picture_library</artifactId>
+      <version>v1.3.9</version>
 </dependency>
 
 ```
