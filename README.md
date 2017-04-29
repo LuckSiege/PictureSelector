@@ -96,14 +96,15 @@ dependencies {
 ```
 
 maven引入 
+
 step 1.
 ```
 <repositories>
-		<repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
-	</repositories>
+       <repository>
+       <id>jitpack.io</id>
+	<url>https://jitpack.io</url>
+       </repository>
+ </repositories>
 ```
 step 2.
 ```
