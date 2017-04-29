@@ -248,12 +248,12 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ###### 7.PhotoView:1.2.4
 ###### 8.Luban
 
-# 兼容性测试
+# 兼容性测试：
 ******腾讯优测-通过深度测试-通过率达到100%******
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/test.png)
 
-# 演示效果
+# 演示效果：
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/1.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/2.jpg)
