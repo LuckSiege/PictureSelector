@@ -86,7 +86,7 @@
 
 ******集成步骤******
 
-compile引入
+方式一 compile引入
 
 ```
 dependencies {
@@ -95,7 +95,7 @@ dependencies {
 
 ```
 
-maven引入 
+方式二 maven引入 
 
 step 1.
 ```
