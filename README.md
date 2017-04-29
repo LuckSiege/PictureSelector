@@ -248,7 +248,7 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
     
 ```
 
-******腾讯优测通过深度测试 通过率达到100%，只有一个数组越界异常也只是演示demo造成的，无关PictureLibrary库。******
+******腾讯优测通过深度测试 通过率达到100%，只有一个数组越界异常也只是演示demo造成的，无关PictureSelector库。******
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/test.png)
  
