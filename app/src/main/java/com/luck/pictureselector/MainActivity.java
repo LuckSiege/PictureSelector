@@ -152,7 +152,9 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                         break;
                     case FunctionConfig.TYPE_VIDEO:
                         // 预览视频
-                        PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(position).getPath());
+                        if (selectMedia.size() > 0) {
+                            PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(position).getPath());
+                        }
                         break;
                 }
 
