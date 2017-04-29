@@ -4,6 +4,8 @@
   项目会一直维护，发现问题欢迎提出会第一时间修复，QQ交流群 619458861，个人QQ 893855882@qq.com  希望用得着的朋友点个start。 
    
   [我的博客地址](http://blog.csdn.net/luck_mw)
+  
+  ![image](http://utest.qq.com/automation/shart?token=434oiVKeHTXj0BII14eHuA==)
 
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
@@ -14,7 +16,7 @@
 
   
 # 更新日志：
-###### 版本 v1.3.8
+###### 版本 v1.3.9
 ###### 1.修改相册启动方式
 ###### 2.修复.webp格式图片压缩后后缀变为.jpg格式问题
 ###### 3.修复多图裁剪快速点击，结果返回为空问题
@@ -92,7 +94,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.3.8'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.3.9'
 }
 
 ```
@@ -113,7 +115,7 @@ step 2.
 <dependency>
 	  <groupId>com.github.LuckSiege.PictureSelector</groupId>
 	  <artifactId>picture_library</artifactId>
-	  <version>v1.3.8</version>
+	  <version>v1.3.9</version>
 </dependency>
 
 ```
@@ -201,26 +203,26 @@ FunctionOptions options = new FunctionOptions.Builder()
 
 ******启动相册并拍照******       
 ```
- PictureConfig.getPictureConfig().init(options).openPhoto(mContext, resultCallback);
+ PictureConfig.getInstance().init(options).openPhoto(mContext, resultCallback);
  
  或默认配置
- PictureConfig.getPictureConfig().openPhoto(mContext, resultCallback);
+ PictureConfig.getInstance().openPhoto(mContext, resultCallback);
 ```
 
 ******单独启动拍照或视频 根据type自动识别******       
 ```
- PictureConfig.getPictureConfig().init(options).startOpenCamera(mContext, resultCallback);
+ PictureConfig.getInstance().init(options).startOpenCamera(mContext, resultCallback);
  
  或默认配置
- PictureConfig.getPictureConfig().startOpenCamera(mContext, resultCallback);
+ PictureConfig.getInstance().startOpenCamera(mContext, resultCallback);
 ```
 ******预览图片******       
 ```
- PictureConfig.getPictureConfig().externalPicturePreview(mContext, position, selectMedia);
+ PictureConfig.getInstance().externalPicturePreview(mContext, position, selectMedia);
 ```
 ******预览视频****** 
 ```
-PictureConfig.getPictureConfig().externalPictureVideo(mContext, selectMedia.get(position).getPath());
+PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(position).getPath());
 ```
 ******图片回调完成结果返回******
 ```
