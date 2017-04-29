@@ -96,11 +96,21 @@ dependencies {
 ```
 
 maven引入 
+step 1.
+```
+<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+```
+step 2.
 ```
 <dependency>
-    <groupId>com.github.LuckSiege.PictureSelector</groupId>
-    <artifactId>picture_library</artifactId>
-    <version>v1.3.8</version>
+	  <groupId>com.github.LuckSiege.PictureSelector</groupId>
+	  <artifactId>picture_library</artifactId>
+	  <version>v1.3.8</version>
 </dependency>
 
 ```
