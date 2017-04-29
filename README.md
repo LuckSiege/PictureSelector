@@ -5,7 +5,7 @@
    
   [我的博客地址](http://blog.csdn.net/luck_mw)
   
-  ![image](http://utest.qq.com/automation/shart?token=434oiVKeHTXj0BII14eHuA==)
+  ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/test.png)
 
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
