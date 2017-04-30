@@ -233,6 +233,8 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ###### 版本 v1.4.0
 ###### 1.减小引入大小
 ========================================================
+###### 历史版本***
+
 ###### 版本 v1.3.9
 ###### 1.修改相册启动方式
 ###### 2.修复.webp格式图片压缩后后缀变为.jpg格式问题
