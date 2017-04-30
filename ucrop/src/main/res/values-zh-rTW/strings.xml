@@ -9,6 +9,6 @@
     <string name="ucrop_mutate_exception_hint">在你的 App 內覆寫顏色資源檔 (ucrop_color_toolbar_widget) 使 5.0 以前裝置正常運作</string>
 
     <string name="ucrop_image_crop">图片裁剪</string>
-    <string name="determine">确定</string>
-
+    <string name="picture_determine">确定</string>
+    <string name="picture_please">请稍候...</string>
 </resources>

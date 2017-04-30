@@ -202,7 +202,7 @@ public class PictureSingeUCropActivity extends FragmentActivity {
     private void setupViews(@NonNull Intent intent) {
         tv_right = (TextView) findViewById(R.id.tv_right);
         rl_title = (RelativeLayout) findViewById(R.id.rl_title);
-        tv_right.setText(getString(R.string.determine));
+        tv_right.setText(getString(R.string.picture_determine));
         picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
         picture_left_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,7 +220,7 @@ public class PictureSingeUCropActivity extends FragmentActivity {
             public void onClick(View view) {
                 if (!Utils.isFastDoubleClick()) {
                     try {
-                        showDialog("处理中...");
+                        showDialog(getString(R.string.picture_please));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
