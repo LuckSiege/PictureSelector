@@ -124,8 +124,8 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         id_preview = (TextView) findViewById(R.id.id_preview);
         tv_img_num = (TextView) findViewById(R.id.tv_img_num);
         tv_mask = (TextView) findViewById(R.id.tv_mask);
-        id_preview.setText(getString(R.string.preview));
-        tv_ok.setText(getString(R.string.please_select));
+        id_preview.setText(getString(R.string.picture_preview));
+        tv_ok.setText(getString(R.string.picture_please_select));
         animation = AnimationUtils.loadAnimation(mContext, R.anim.modal_in);
         id_preview.setOnClickListener(this);
         tv_ok.setOnClickListener(this);
@@ -189,17 +189,17 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             } else {
                 switch (type) {
                     case FunctionConfig.TYPE_IMAGE:
-                        picture_tv_title.setText(getString(R.string.lately_image));
+                        picture_tv_title.setText(getString(R.string.picture_lately_image));
                         break;
                     case FunctionConfig.TYPE_VIDEO:
-                        picture_tv_title.setText(getString(R.string.lately_video));
+                        picture_tv_title.setText(getString(R.string.picture_lately_video));
                         break;
                 }
             }
             rl_bottom.setBackgroundColor(bottomBgColor);
             id_preview.setTextColor(previewColor);
             tv_ok.setTextColor(completeColor);
-            picture_tv_right.setText(getString(R.string.cancel));
+            picture_tv_right.setText(getString(R.string.picture_cancel));
             recyclerView.setHasFixedSize(true);
             recyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, ScreenUtils.dip2px(this, 2), false));
             recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
@@ -246,7 +246,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         /**
          * 根据type决定，查询本地图片或视频。
          */
-        showDialog("请稍候...");
+        showPleaseDialog(getString(R.string.picture_please));
         new LocalMediaLoader(this, type, options.isGif()).loadAllImage(new LocalMediaLoader.LocalMediaLoadListener() {
 
             @Override
@@ -340,12 +340,12 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             tv_img_num.startAnimation(animation);
             tv_img_num.setVisibility(View.VISIBLE);
             tv_img_num.setText(selectImages.size() + "");
-            tv_ok.setText(getString(R.string.ok));
+            tv_ok.setText(getString(R.string.picture_completed));
         } else {
             tv_ok.setEnabled(false);
             id_preview.setEnabled(false);
             tv_img_num.setVisibility(View.INVISIBLE);
-            tv_ok.setText(getString(R.string.please_select));
+            tv_ok.setText(getString(R.string.picture_please_select));
         }
     }
 
@@ -696,10 +696,10 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             String folderName = "";
             switch (type) {
                 case FunctionConfig.TYPE_IMAGE:
-                    folderName = getString(R.string.lately_image);
+                    folderName = getString(R.string.picture_lately_image);
                     break;
                 case FunctionConfig.TYPE_VIDEO:
-                    folderName = getString(R.string.lately_video);
+                    folderName = getString(R.string.picture_lately_video);
                     break;
             }
             newFolder.setName(folderName);
@@ -814,7 +814,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
      * 处理图片压缩
      */
     private void compressImage(List<LocalMedia> result) {
-        showDialog("处理中...");
+        showPleaseDialog(getString(R.string.picture_please));
         CompressConfig compress_config = CompressConfig.ofDefaultConfig();
         switch (compressFlag) {
             case 1:
@@ -853,7 +853,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         }).compress();
     }
 
-    private void showDialog(String msg) {
+    private void showPleaseDialog(String msg) {
         if (!isFinishing()) {
             dialog = new SweetAlertDialog(PictureImageGridActivity.this);
             dialog.setTitleText(msg);

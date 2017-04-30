@@ -80,17 +80,17 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
         ImagesObservable.getInstance().add(this);
         switch (type) {
             case FunctionConfig.TYPE_IMAGE:
-                picture_tv_title.setText(getString(R.string.select_photo));
+                picture_tv_title.setText(getString(R.string.picture_select_photo));
                 break;
             case FunctionConfig.TYPE_VIDEO:
-                picture_tv_title.setText(getString(R.string.select_video));
+                picture_tv_title.setText(getString(R.string.picture_select_video));
                 break;
             default:
                 break;
         }
         ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
         rl_picture_title.setBackgroundColor(backgroundColor);
-        picture_tv_right.setText(getString(R.string.cancel));
+        picture_tv_right.setText(getString(R.string.picture_cancel));
         picture_tv_right.setOnClickListener(this);
         adapter = new PictureAlbumDirectoryAdapter(this);
         LinearLayoutManager manager = new LinearLayoutManager(this);
@@ -117,10 +117,10 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
             tv_empty.setVisibility(View.VISIBLE);
             switch (type) {
                 case FunctionConfig.TYPE_IMAGE:
-                    tv_empty.setText(getString(R.string.no_photo));
+                    tv_empty.setText(getString(R.string.picture_no_photo));
                     break;
                 case FunctionConfig.TYPE_VIDEO:
-                    tv_empty.setText(getString(R.string.no_video));
+                    tv_empty.setText(getString(R.string.picture_no_video));
                     break;
                 default:
                     break;
@@ -189,10 +189,10 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
         String title = "";
         switch (type) {
             case FunctionConfig.TYPE_IMAGE:
-                title = getString(R.string.lately_image);
+                title = getString(R.string.picture_lately_image);
                 break;
             case FunctionConfig.TYPE_VIDEO:
-                title = getString(R.string.lately_video);
+                title = getString(R.string.picture_lately_video);
                 break;
         }
         startImageGridActivity(title, images);

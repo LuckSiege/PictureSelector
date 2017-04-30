@@ -19,6 +19,6 @@
         android:layout_below="@id/camera"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/margin_text"
-        android:text="@string/take_picture"
+        android:text="@string/picture_take_picture"
         android:textColor="@color/ucrop_color_toolbar_widget" />
 </com.luck.picture.lib.widget.SquareRelativeLayout>

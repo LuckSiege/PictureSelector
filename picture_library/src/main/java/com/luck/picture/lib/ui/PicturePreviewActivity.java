@@ -131,7 +131,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
                     check.setSelected(false);
                 }
                 if (selectImages.size() >= maxSelectNum && isChecked) {
-                    Toast.makeText(PicturePreviewActivity.this, getString(R.string.message_max_num, maxSelectNum), Toast.LENGTH_LONG).show();
+                    Toast.makeText(PicturePreviewActivity.this, getString(R.string.picture_message_max_num, maxSelectNum), Toast.LENGTH_LONG).show();
                     check.setSelected(false);
                     return;
                 }
@@ -255,11 +255,11 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
             tv_img_num.setVisibility(View.VISIBLE);
             tv_img_num.startAnimation(animation);
             tv_img_num.setText(selectImages.size() + "");
-            tv_ok.setText(getString(R.string.ok));
+            tv_ok.setText(getString(R.string.picture_completed));
         } else {
             tv_ok.setEnabled(false);
             tv_img_num.setVisibility(View.INVISIBLE);
-            tv_ok.setText(getString(R.string.please_select));
+            tv_ok.setText(getString(R.string.picture_please_select));
             updateSelector(refresh);
         }
     }
@@ -337,7 +337,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
             finish();
             overridePendingTransition(0, R.anim.slide_bottom_out);
         } else {
-            showDialog("请稍候...");
+            showPleaseDialog(getString(R.string.picture_please));
         }
     }
 
@@ -382,7 +382,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
 
     }
 
-    private void showDialog(String msg) {
+    private void showPleaseDialog(String msg) {
         if (!isFinishing()) {
             dialog = new SweetAlertDialog(PicturePreviewActivity.this);
             dialog.setTitleText(msg);

@@ -257,10 +257,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         if (selectImages.size() >= maxSelectNum && !isChecked) {
             switch (type) {
                 case FunctionConfig.TYPE_IMAGE:
-                    Toast.makeText(context, context.getString(R.string.message_max_num, maxSelectNum), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, context.getString(R.string.picture_message_max_num, maxSelectNum), Toast.LENGTH_LONG).show();
                     break;
                 case FunctionConfig.TYPE_VIDEO:
-                    Toast.makeText(context, context.getString(R.string.message_video_max_num, maxSelectNum), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, context.getString(R.string.picture_message_video_max_num, maxSelectNum), Toast.LENGTH_LONG).show();
                     break;
                 default:
                     break;

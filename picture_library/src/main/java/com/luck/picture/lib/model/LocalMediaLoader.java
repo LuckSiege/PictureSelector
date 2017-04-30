@@ -127,10 +127,10 @@ public class LocalMediaLoader {
                                 String title = "";
                                 switch (type) {
                                     case FunctionConfig.TYPE_VIDEO:
-                                        title = activity.getString(R.string.lately_video);
+                                        title = activity.getString(R.string.picture_lately_video);
                                         break;
                                     case FunctionConfig.TYPE_IMAGE:
-                                        title = activity.getString(R.string.lately_image);
+                                        title = activity.getString(R.string.picture_lately_image);
                                         break;
                                 }
                                 allImageFolder.setFirstImagePath(allImages.get(0).getPath());

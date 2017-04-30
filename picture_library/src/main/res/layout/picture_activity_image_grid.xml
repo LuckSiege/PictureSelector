@@ -80,7 +80,7 @@
             android:enabled="false"
             android:gravity="left|center"
             android:padding="12dp"
-            android:text="@string/preview"
+            android:text="@string/picture_preview"
             android:textColor="@color/tab_color_true"
             android:textSize="14sp" />
 
