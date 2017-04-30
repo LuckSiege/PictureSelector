@@ -72,7 +72,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.0'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.1'
 }
 
 ```
@@ -93,7 +93,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v1.4.0</version>
+      <version>v1.4.1</version>
 </dependency>
 
 ```
@@ -230,10 +230,14 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ```
 
 # 更新日志：
-###### 版本 v1.4.0
-###### 1.减小引入大小
+###### 版本 v1.4.1
+###### 1.修复单选快速点击重复bug
+###### 2.重命名string资源文件
 ========================================================
 ###### 历史版本***
+
+###### 版本 v1.4.0
+###### 1.减小引入大小
 
 ###### 版本 v1.3.9
 ###### 1.修改相册启动方式
