@@ -220,7 +220,7 @@ public class PictureSingeUCropActivity extends FragmentActivity {
             public void onClick(View view) {
                 if (!Utils.isFastDoubleClick()) {
                     try {
-                        showDialog(getString(R.string.picture_please));
+                        showPleaseDialog(getString(R.string.picture_please));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -324,7 +324,7 @@ public class PictureSingeUCropActivity extends FragmentActivity {
     }
 
 
-    private void showDialog(String msg) {
+    private void showPleaseDialog(String msg) {
         dialog = new SweetAlertDialog(PictureSingeUCropActivity.this);
         dialog.setTitleText(msg);
         dialog.show();

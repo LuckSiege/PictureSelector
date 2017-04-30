@@ -310,7 +310,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
 
     protected void cropAndSaveImage() {
         tv_right.setEnabled(false);
-        showDialog(getString(R.string.picture_please));
+        showPleaseDialog(getString(R.string.picture_please));
         supportInvalidateOptionsMenu();
         mGestureCropImageView.cropAndSaveImage(mCompressFormat, mCompressQuality, new BitmapCropCallback() {
 
@@ -370,7 +370,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         dismiss();
     }
 
-    private void showDialog(String msg) {
+    private void showPleaseDialog(String msg) {
         dialog = new SweetAlertDialog(PictureMultiCuttingActivity.this);
         dialog.setTitleText(msg);
         dialog.show();
