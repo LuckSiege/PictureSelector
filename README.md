@@ -72,7 +72,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.3.9'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.0'
 }
 
 ```
@@ -93,7 +93,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v1.3.9</version>
+      <version>v1.4.0</version>
 </dependency>
 
 ```
@@ -230,6 +230,11 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ```
 
 # 更新日志：
+###### 版本 v1.4.0
+###### 1.减小引入大小
+========================================================
+###### 历史版本***
+
 ###### 版本 v1.3.9
 ###### 1.修改相册启动方式
 ###### 2.修复.webp格式图片压缩后后缀变为.jpg格式问题
