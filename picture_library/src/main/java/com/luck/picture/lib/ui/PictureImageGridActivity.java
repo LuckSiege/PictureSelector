@@ -367,7 +367,9 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
 
     @Override
     public void onPictureClick(LocalMedia media, int position) {
-        startPreview(adapter.getImages(), position);
+        if (!Utils.isFastDoubleClick2()) {
+            startPreview(adapter.getImages(), position);
+        }
     }
 
     public void startPreview(List<LocalMedia> previewImages, int position) {

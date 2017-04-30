@@ -20,6 +20,7 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.model.FunctionConfig;
 import com.yalantis.ucrop.dialog.OptAnimationLoader;
 import com.yalantis.ucrop.entity.LocalMedia;
+import com.yalantis.ucrop.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,7 +163,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 contentHolder.ll_check.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        changeCheckboxState(contentHolder, image);
+                        if (!Utils.isFastDoubleClick2()) {
+                            changeCheckboxState(contentHolder, image);
+                        }
                     }
                 });
             }
@@ -176,7 +179,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                         int index = showCamera ? position - 1 : position;
                         imageSelectChangedListener.onPictureClick(image, index);
                     } else {
-                        changeCheckboxState(contentHolder, image);
+                        if (!Utils.isFastDoubleClick2()) {
+                            changeCheckboxState(contentHolder, image);
+                        }
                     }
                 }
             });
