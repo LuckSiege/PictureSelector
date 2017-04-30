@@ -73,6 +73,20 @@ public class Utils {
     }
 
     /**
+     * 防止连续点击跳转两个页面
+     */
+    public static long lastClickTime2;
+
+    public static boolean isFastDoubleClick2() {
+        long time = System.currentTimeMillis();
+        if (time - lastClickTime < 800) {
+            return true;
+        }
+        lastClickTime2 = time;
+        return false;
+    }
+
+    /**
      * 判断 一个字段的值否为空
      *
      * @param s
