@@ -11,25 +11,6 @@
 [![I](https://img.shields.io/github/issues/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector/issues)
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
-  
-# 更新日志：
-###### 版本 v1.3.9
-###### 1.修改相册启动方式
-###### 2.修复.webp格式图片压缩后后缀变为.jpg格式问题
-###### 3.修复多图裁剪快速点击，结果返回为空问题
-###### 4.修复快速点击启动相册重复问题
-###### 5.将activity通信由广播改为EventBus3.0
-###### 6.修复多图裁剪压缩bug
-
-# 项目使用第三方库：
-###### 1.裁剪使用ucrop库
-###### 2.eventbus:3.0.0'
-###### 3.glide:3.7.0
-###### 4.rxjava:2.0.5
-###### 5.rxandroid:2.0.1
-###### 6.okhttp:3.2.0
-###### 7.PhotoView:1.2.4
-###### 8.Luban
 
 ******功能特点：******  
 ```
@@ -248,12 +229,31 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
     
 ```
 
-# 兼容性测试
-******腾讯优测通过深度测试-通过率达到100%******
+# 更新日志：
+###### 版本 v1.3.9
+###### 1.修改相册启动方式
+###### 2.修复.webp格式图片压缩后后缀变为.jpg格式问题
+###### 3.修复多图裁剪快速点击，结果返回为空问题
+###### 4.修复快速点击启动相册重复问题
+###### 5.将activity通信由广播改为EventBus3.0
+###### 6.修复多图裁剪压缩bug
+
+# 项目使用第三方库：
+###### 1.裁剪使用ucrop库
+###### 2.eventbus:3.0.0'
+###### 3.glide:3.7.0
+###### 4.rxjava:2.0.5
+###### 5.rxandroid:2.0.1
+###### 6.okhttp:3.2.0
+###### 7.PhotoView:1.2.4
+###### 8.Luban
+
+# 兼容性测试：
+******腾讯优测-深度测试-通过率达到100%******
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/test.png)
 
-# 演示效果
+# 演示效果：
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/1.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/2.jpg)
