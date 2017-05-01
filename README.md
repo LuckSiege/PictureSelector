@@ -178,6 +178,22 @@ FunctionOptions options = new FunctionOptions.Builder()
         .setThemeStyle(themeStyle) // 设置主题样式
         .create();     
 ```
+```
+或在application进行初始化配置
+
+public class App extends Application {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        // application 初始化
+        FunctionOptions options = new FunctionOptions.Builder().create();
+        options.setType(FunctionConfig.TYPE_IMAGE);
+        options.setCompress(true);
+        options.setGrade(Luban.THIRD_GEAR);
+        PictureConfig.getInstance().init(options);
+    }
+}
+```
 
 ******启动相册并拍照******       
 ```
