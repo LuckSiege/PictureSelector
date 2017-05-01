@@ -72,7 +72,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.1'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.2'
 }
 
 ```
@@ -93,7 +93,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v1.4.1</version>
+      <version>v1.4.2</version>
 </dependency>
 
 ```
@@ -178,6 +178,22 @@ FunctionOptions options = new FunctionOptions.Builder()
         .setThemeStyle(themeStyle) // 设置主题样式
         .create();     
 ```
+```
+或在application进行初始化配置
+
+public class App extends Application {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        // application 初始化
+        FunctionOptions options = new FunctionOptions.Builder().create();
+        options.setType(FunctionConfig.TYPE_IMAGE);
+        options.setCompress(true);
+        options.setGrade(Luban.THIRD_GEAR);
+        PictureConfig.getInstance().init(options);
+    }
+}
+```
 
 ******启动相册并拍照******       
 ```
@@ -230,11 +246,13 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ```
 
 # 更新日志：
+###### 版本 v1.4.2
+###### 1.修复在application初始化第二次无效问题
+========================================================
+###### 历史版本：
 ###### 版本 v1.4.1
 ###### 1.修复单选快速点击重复bug
 ###### 2.重命名string资源文件
-========================================================
-###### 历史版本***
 
 ###### 版本 v1.4.0
 ###### 1.减小引入大小
