@@ -17,7 +17,6 @@
         android:layout_width="50dp"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:inputType="number"
         android:text="9" />
 
     <ImageButton
