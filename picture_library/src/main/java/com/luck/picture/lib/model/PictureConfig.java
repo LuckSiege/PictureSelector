@@ -1,7 +1,6 @@
 package com.luck.picture.lib.model;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 
 import com.luck.picture.lib.R;
@@ -56,17 +55,17 @@ public class PictureConfig {
     /**
      * 启动相册
      */
-    public void openPhoto(Context mContext, OnSelectResultCallback resultCall) {
+    public void openPhoto(Activity activity, OnSelectResultCallback resultCall) {
         if (Utils.isFastDoubleClick()) {
             return;
         }
         if (options == null) {
             options = new FunctionOptions.Builder().create();
         }
-        Intent intent = new Intent(mContext, PictureImageGridActivity.class);
+        Intent intent = new Intent(activity, PictureImageGridActivity.class);
         intent.putExtra(FunctionConfig.EXTRA_THIS_CONFIG, options);
-        mContext.startActivity(intent);
-        ((Activity) mContext).overridePendingTransition(R.anim.slide_bottom_in, 0);
+        activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_bottom_in, 0);
         // 绑定图片接口回调函数事件
         resultCallback = resultCall;
     }
@@ -74,15 +73,15 @@ public class PictureConfig {
     /**
      * start to camera、preview、crop
      */
-    public void startOpenCamera(Context mContext, OnSelectResultCallback resultCall) {
+    public void startOpenCamera(Activity activity, OnSelectResultCallback resultCall) {
         if (options == null) {
             options = new FunctionOptions.Builder().create();
         }
-        Intent intent = new Intent(mContext, PictureImageGridActivity.class);
+        Intent intent = new Intent(activity, PictureImageGridActivity.class);
         intent.putExtra(FunctionConfig.EXTRA_THIS_CONFIG, options);
         intent.putExtra(FunctionConfig.FUNCTION_TAKE, true);
-        mContext.startActivity(intent);
-        ((Activity) mContext).overridePendingTransition(R.anim.fade, R.anim.hold);
+        activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.fade, R.anim.hold);
         // 绑定图片接口回调函数事件
         resultCallback = resultCall;
     }
@@ -93,14 +92,14 @@ public class PictureConfig {
      * @param position
      * @param medias
      */
-    public void externalPicturePreview(Context mContext, int position, List<LocalMedia> medias) {
+    public void externalPicturePreview(Activity activity, int position, List<LocalMedia> medias) {
         if (medias != null && medias.size() > 0) {
             Intent intent = new Intent();
             intent.putExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
             intent.putExtra(FunctionConfig.EXTRA_POSITION, position);
-            intent.setClass(mContext, PictureExternalPreviewActivity.class);
-            mContext.startActivity(intent);
-            ((Activity) mContext).overridePendingTransition(R.anim.toast_enter, 0);
+            intent.setClass(activity, PictureExternalPreviewActivity.class);
+            activity.startActivity(intent);
+            activity.overridePendingTransition(R.anim.toast_enter, 0);
         }
     }
 
@@ -109,12 +108,12 @@ public class PictureConfig {
      *
      * @param path
      */
-    public void externalPictureVideo(Context mContext, String path) {
+    public void externalPictureVideo(Activity activity, String path) {
         if (!Utils.isNull(path)) {
             Intent intent = new Intent();
             intent.putExtra("video_path", path);
-            intent.setClass(mContext, PictureVideoPlayActivity.class);
-            mContext.startActivity(intent);
+            intent.setClass(activity, PictureVideoPlayActivity.class);
+            activity.startActivity(intent);
         }
     }
 
