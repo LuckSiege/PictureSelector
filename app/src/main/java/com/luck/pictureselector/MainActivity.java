@@ -1,7 +1,6 @@
 package com.luck.pictureselector;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -48,7 +47,6 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     private boolean isShow = true;
     private int selectType = FunctionConfig.TYPE_IMAGE;
     private int copyMode = FunctionConfig.CROP_MODEL_DEFAULT;
-    private Context mContext;
     private boolean enablePreview = true;
     private boolean isPreviewVideo = true;
     private boolean enableCrop = true;
@@ -72,7 +70,6 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mContext = this;
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         rgbs = (RadioGroup) findViewById(R.id.rgbs);
         rgbs01 = (RadioGroup) findViewById(R.id.rgbs01);
@@ -148,12 +145,12 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 switch (selectType) {
                     case FunctionConfig.TYPE_IMAGE:
                         // 预览图片
-                        PictureConfig.getInstance().externalPicturePreview(mContext, position, selectMedia);
+                        PictureConfig.getInstance().externalPicturePreview(MainActivity.this, position, selectMedia);
                         break;
                     case FunctionConfig.TYPE_VIDEO:
                         // 预览视频
                         if (selectMedia.size() > 0) {
-                            PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(position).getPath());
+                            PictureConfig.getInstance().externalPictureVideo(MainActivity.this, selectMedia.get(position).getPath());
                         }
                         break;
                 }
@@ -276,12 +273,13 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                             .setCompressH(compressH) // 压缩高 如果值大于图片原始宽高无效
                             .setThemeStyle(themeStyle) // 设置主题样式
                             .create();
+
                     if (mode) {
                         // 只拍照
-                        PictureConfig.getInstance().init(options).startOpenCamera(mContext, resultCallback);
+                        PictureConfig.getInstance().init(options).startOpenCamera(MainActivity.this, resultCallback);
                     } else {
                         // 先初始化参数配置，在启动相册
-                        PictureConfig.getInstance().init(options).openPhoto(mContext, resultCallback);
+                        PictureConfig.getInstance().init(options).openPhoto(MainActivity.this, resultCallback);
                     }
                     break;
                 case 1:
