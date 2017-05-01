@@ -30,7 +30,6 @@ public class GridImageAdapter extends
     public final int TYPE_CAMERA = 1;
     public final int TYPE_PICTURE = 2;
     private LayoutInflater mInflater;
-    private Context mContext;
     private List<LocalMedia> list = new ArrayList<>();
     private int selectMax = 9;
     /**
@@ -44,7 +43,6 @@ public class GridImageAdapter extends
 
     public GridImageAdapter(Context context, onAddPicClickListener mOnAddPicClickListener) {
         mInflater = LayoutInflater.from(context);
-        this.mContext = context;
         this.mOnAddPicClickListener = mOnAddPicClickListener;
     }
 
@@ -157,7 +155,7 @@ public class GridImageAdapter extends
                         Log.i("压缩地址::", media.getCompressPath());
                     }
 
-                    Glide.with(mContext)
+                    Glide.with(viewHolder.itemView.getContext())
                             .load(path)
                             .centerCrop()
                             .placeholder(R.color.color_f6)
@@ -167,7 +165,7 @@ public class GridImageAdapter extends
                 case 2:
                     // 视频
                     Log.i("时长:", media.getDuration() + "");
-                    Glide.with(mContext).load(path).thumbnail(0.5f).into(viewHolder.mImg);
+                    Glide.with(viewHolder.itemView.getContext()).load(path).thumbnail(0.5f).into(viewHolder.mImg);
                     break;
                 default:
 
