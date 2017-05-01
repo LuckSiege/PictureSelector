@@ -37,9 +37,8 @@ public class PictureConfig {
     }
 
     public PictureConfig() {
-        super();
-    }
 
+    }
 
     public OnSelectResultCallback resultCallback;
 

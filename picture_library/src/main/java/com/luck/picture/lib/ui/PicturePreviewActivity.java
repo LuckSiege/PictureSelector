@@ -100,7 +100,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
         tv_ok.setTextColor(completeColor);
         select_bar_layout.setBackgroundColor(previewBottomBgColor);
-        animation = OptAnimationLoader.loadAnimation(mContext, R.anim.modal_in);
+        animation = OptAnimationLoader.loadAnimation(this, R.anim.modal_in);
         animation.setAnimationListener(this);
         boolean is_bottom_preview = getIntent().getBooleanExtra(FunctionConfig.EXTRA_BOTTOM_PREVIEW, false);
         if (is_bottom_preview) {

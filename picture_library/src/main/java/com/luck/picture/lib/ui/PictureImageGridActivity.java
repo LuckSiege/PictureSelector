@@ -126,7 +126,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         tv_mask = (TextView) findViewById(R.id.tv_mask);
         id_preview.setText(getString(R.string.picture_preview));
         tv_ok.setText(getString(R.string.picture_please_select));
-        animation = AnimationUtils.loadAnimation(mContext, R.anim.modal_in);
+        animation = AnimationUtils.loadAnimation(this, R.anim.modal_in);
         id_preview.setOnClickListener(this);
         tv_ok.setOnClickListener(this);
         picture_left_back.setOnClickListener(this);
@@ -872,7 +872,6 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
      */
     protected void clearData() {
         PictureConfig.getInstance().resultCallback = null;
-        PictureConfig.sInstance = null;
         ImagesObservable.getInstance().clearLocalFolders();
         ImagesObservable.getInstance().clearLocalMedia();
         ImagesObservable.getInstance().clearSelectedLocalMedia();
