@@ -22,6 +22,7 @@ public class FunctionOptions implements Serializable {
     private int type; // 图片 or 视频
     private int cropMode; // 裁剪模式
     private int maxSelectNum; // 多选最大可选数量
+    private int minSelectNum; // 多选最低可选数量
     private int selectMode; // 单选 or 多选
     private boolean isShowCamera = true; // 是否显示相机
     private boolean enablePreview = true; // 是否预览图片
@@ -46,8 +47,9 @@ public class FunctionOptions implements Serializable {
     private int compressW; // 压缩宽
     private int compressH; // 压缩高
     private int grade;// 压缩档次
-    private int maxB;
-    private boolean isGif;
+    private int maxB;// 压缩多少kb以内
+    private boolean isGif;// 是否显示gif
+    private boolean isCircularCut;// 是否采用圆形裁剪
     /**
      * 是否启用像素压缩
      */
@@ -93,6 +95,14 @@ public class FunctionOptions implements Serializable {
         this.maxSelectNum = maxSelectNum;
     }
 
+    public int getMinSelectNum() {
+        return minSelectNum;
+    }
+
+    public void setMinSelectNum(int minSelectNum) {
+        this.minSelectNum = minSelectNum;
+    }
+
     public int getSelectMode() {
         if (selectMode == 0) {
             selectMode = FunctionConfig.MODE_MULTIPLE;
@@ -118,6 +128,14 @@ public class FunctionOptions implements Serializable {
 
     public void setGif(boolean gif) {
         isGif = gif;
+    }
+
+    public boolean isCircularCut() {
+        return isCircularCut;
+    }
+
+    public void setCircularCut(boolean circularCut) {
+        isCircularCut = circularCut;
     }
 
     public boolean isEnablePreview() {
@@ -377,6 +395,11 @@ public class FunctionOptions implements Serializable {
             return this;
         }
 
+        public Builder setMinSelectNum(int minSize) {
+            options.setMinSelectNum(minSize);
+            return this;
+        }
+
         public Builder setSelectMode(int selectMode) {
             options.setSelectMode(selectMode);
             return this;
@@ -429,6 +452,11 @@ public class FunctionOptions implements Serializable {
 
         public Builder setGif(boolean isGif) {
             options.setGif(isGif);
+            return this;
+        }
+
+        public Builder setCircularCut(boolean circularCut) {
+            options.setCircularCut(circularCut);
             return this;
         }
 

@@ -30,9 +30,11 @@ public class PictureBaseActivity extends FragmentActivity {
     protected Context mContext;
     protected int type = 0;
     protected int maxSelectNum = 0;
+    protected int minSelectNum = 0;
     protected int spanCount = 4;
     protected int copyMode = 0;
     protected boolean showCamera = false;
+    protected boolean circularCut = false;
     protected boolean enablePreview = false;
     protected boolean enableCrop = false;
     protected boolean enablePreviewVideo = true;
@@ -75,6 +77,8 @@ public class PictureBaseActivity extends FragmentActivity {
         selectMode = options.getSelectMode();
         enableCrop = options.isEnableCrop();
         maxSelectNum = options.getMaxSelectNum();
+        minSelectNum = options.getMinSelectNum();
+        circularCut = options.isCircularCut();
         copyMode = options.getCropMode();
         enablePreviewVideo = options.isPreviewVideo();
         backgroundColor = options.getThemeStyle();

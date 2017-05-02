@@ -16,6 +16,8 @@
     <string name="picture_num_postfix">%1$s张</string>
     <string name="picture_message_max_num">你最多可以选择%1$s张图片</string>
     <string name="picture_message_video_max_num">你最多可以选择%1$s个视频</string>
+    <string name="picture_min_img_num">图片最低选择不能少于%1$s张</string>
+    <string name="picture_min_video_num">视频最低选择不能少于%1$s个</string>
     <string name="picture_save_ing">保存图片中…</string>
     <string name="picture_select_photo">选择相册</string>
     <string name="picture_select_video">选择视频</string>

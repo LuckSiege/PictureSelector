@@ -133,7 +133,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             selectImage(contentHolder, isSelected(image), false);
 
             if (type == FunctionConfig.TYPE_VIDEO) {
-                Glide.with(context).load(path).into(contentHolder.picture);
+                Glide.with(context).load(path).diskCacheStrategy(DiskCacheStrategy.RESULT).crossFade()
+                        .centerCrop().override(150, 150).into(contentHolder.picture);
                 long duration = image.getDuration();
                 if (contentHolder.rl_duration.getVisibility() == View.GONE) {
                     contentHolder.rl_duration.setVisibility(View.VISIBLE);

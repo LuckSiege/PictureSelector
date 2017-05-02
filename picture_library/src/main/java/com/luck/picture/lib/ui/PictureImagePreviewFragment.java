@@ -77,6 +77,8 @@ public class PictureImagePreviewFragment extends Fragment {
         return contentView;
     }
 
+
+
     protected void activityFinish() {
         getActivity().setResult(getActivity().RESULT_OK, new Intent().putExtra("type", 1).putExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectImages));
         getActivity().finish();

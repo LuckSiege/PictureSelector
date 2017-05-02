@@ -293,6 +293,23 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             startActivityForResult(intent, FunctionConfig.REQUEST_PREVIEW);
         } else if (id == R.id.tv_ok) {
             List<LocalMedia> images = adapter.getSelectedImages();
+            // 如果设置了图片最小选择数量，则判断是否满足条件
+            int size = images.size();
+            if (minSelectNum > 0 && selectMode == FunctionConfig.MODE_MULTIPLE) {
+                if (size < minSelectNum) {
+                    switch (type) {
+                        case FunctionConfig.TYPE_IMAGE:
+                            showToast(getString(R.string.picture_min_img_num, options.getMinSelectNum()));
+                            return;
+                        case FunctionConfig.TYPE_VIDEO:
+                            showToast(getString(R.string.picture_min_video_num, options.getMinSelectNum()));
+                            return;
+                        default:
+                            break;
+                    }
+                }
+            }
+
             if (enableCrop && type == FunctionConfig.TYPE_IMAGE && selectMode == FunctionConfig.MODE_MULTIPLE) {
                 // 是图片和选择压缩并且是多张，调用批量压缩
                 startMultiCopy(images);
@@ -461,12 +478,20 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                 break;
         }
 
+        // 圆形裁剪
+        if (circularCut) {
+            options.setCircleDimmedLayer(true);// 是否为椭圆
+            options.setShowCropFrame(false);// 外部矩形
+            options.setShowCropGrid(false);// 内部网格
+            options.withAspectRatio(1, 1);
+        }
         options.setCompressionQuality(compressQuality);
         options.withMaxResultSize(cropW, cropH);
         options.background_color(backgroundColor);
         options.localType(type);
         options.setIsCompress(isCompress);
         options.setIsTakePhoto(takePhoto);
+        options.setCircularCut(circularCut);
         uCrop.withOptions(options);
         uCrop.start(PictureImageGridActivity.this);
     }
@@ -505,11 +530,19 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                     options.withAspectRatio(16, 9);
                     break;
             }
+            // 圆形裁剪
+            if (circularCut) {
+                options.setCircleDimmedLayer(true);// 是否为椭圆
+                options.setShowCropFrame(false);// 外部矩形
+                options.setShowCropGrid(false);// 内部网格
+                options.withAspectRatio(1, 1);
+            }
             options.setLocalMedia(medias);
             options.setCompressionQuality(compressQuality);
             options.withMaxResultSize(cropW, cropH);
             options.background_color(backgroundColor);
             options.setIsCompress(isCompress);
+            options.setCircularCut(circularCut);
             options.copyMode(copyMode);
             uCrop.withOptions(options);
             uCrop.start(PictureImageGridActivity.this);
