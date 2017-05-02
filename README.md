@@ -72,7 +72,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.2'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.3'
 }
 
 ```
@@ -93,7 +93,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v1.4.2</version>
+      <version>v1.4.3</version>
 </dependency>
 
 ```
@@ -246,10 +246,15 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ```
 
 # 更新日志：
-###### 版本 v1.4.2
-###### 1.修复在application初始化第二次无效问题
+###### 版本 v1.4.3
+###### 1.修复内存泄漏问题
+###### 2.新增最小选择数量
+###### 3.新增圆形头像裁剪
 ========================================================
 ###### 历史版本：
+###### 版本 v1.4.2
+###### 1.修复在application初始化第二次无效问题
+
 ###### 版本 v1.4.1
 ###### 1.修复单选快速点击重复bug
 ###### 2.重命名string资源文件
