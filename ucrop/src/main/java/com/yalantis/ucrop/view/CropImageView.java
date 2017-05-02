@@ -85,6 +85,7 @@ public class CropImageView extends TransformImageView {
         new BitmapCropTask(getViewBitmap(), imageState, cropParameters, cropCallback).execute();
     }
 
+
     /**
      * @return - maximum scale value for current image and crop ratio
      */

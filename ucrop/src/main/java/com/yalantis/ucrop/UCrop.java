@@ -551,6 +551,11 @@ public class UCrop {
         public void setIsTakePhoto(boolean takePhoto) {
             mOptionBundle.putBoolean("takePhoto", takePhoto);
         }
+
+
+        public void setCircularCut(boolean isCircularCut) {
+            mOptionBundle.putBoolean("isCircularCut", isCircularCut);
+        }
     }
 
 }

@@ -63,6 +63,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
     protected int maxSizeX, maxSizeY;
     private int backgroundColor = 0;
     private boolean isCompress;
+    private boolean circularCut;
 
     @IntDef({NONE, SCALE, ROTATE, ALL})
     @Retention(RetentionPolicy.SOURCE)
@@ -109,6 +110,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         cutIndex = intent.getIntExtra("cutIndex", 0);
         copyMode = intent.getIntExtra("copyMode", 0);
         isCompress = intent.getBooleanExtra("isCompress", false);
+        circularCut = intent.getBooleanExtra("isCircularCut", false);
         for (LocalMedia media : images) {
             media.setCut(false);
         }
@@ -150,6 +152,13 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
                 options.withAspectRatio(16, 9);
                 break;
         }
+        // 圆形裁剪
+        if (circularCut) {
+            options.setCircleDimmedLayer(true);// 是否为椭圆
+            options.setShowCropFrame(false);// 外部矩形
+            options.setShowCropGrid(false);// 内部网格
+            options.withAspectRatio(1, 1);
+        }
         options.setLocalMedia(images);
         options.setPosition(cutIndex);
         options.setCompressionQuality(mCompressQuality);
@@ -157,6 +166,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         options.background_color(backgroundColor);
         options.copyMode(copyMode);
         options.setIsCompress(isCompress);
+        options.setCircularCut(circularCut);
         uCrop.withOptions(options);
         uCrop.start(PictureMultiCuttingActivity.this);
         overridePendingTransition(R.anim.fade, R.anim.hold);

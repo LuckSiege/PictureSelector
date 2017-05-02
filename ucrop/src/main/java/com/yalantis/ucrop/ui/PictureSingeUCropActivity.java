@@ -56,6 +56,7 @@ public class PictureSingeUCropActivity extends FragmentActivity {
     private int backgroundColor = 0;
     private boolean isCompress;
     private boolean takePhoto;
+    private boolean circularCut;
 
     @IntDef({NONE, SCALE, ROTATE, ALL})
     @Retention(RetentionPolicy.SOURCE)
@@ -99,6 +100,7 @@ public class PictureSingeUCropActivity extends FragmentActivity {
 
         final Intent intent = getIntent();
         takePhoto = intent.getBooleanExtra("takePhoto", false);
+        circularCut = intent.getBooleanExtra("isCircularCut", false);
         setupViews(intent);
         setImageData(intent);
     }

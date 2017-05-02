@@ -563,5 +563,9 @@ public class MultiUCrop {
         public void setIsCompress(boolean isCompress) {
             mOptionBundle.putBoolean("isCompress", isCompress);
         }
+
+        public void setCircularCut(boolean isCircularCut) {
+            mOptionBundle.putBoolean("isCircularCut", isCircularCut);
+        }
     }
 }
