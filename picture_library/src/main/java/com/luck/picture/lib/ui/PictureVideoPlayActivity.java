@@ -1,5 +1,7 @@
 package com.luck.picture.lib.ui;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
@@ -10,7 +12,7 @@ import android.widget.VideoView;
 
 import com.luck.picture.lib.R;
 
-public class PictureVideoPlayActivity extends PictureBaseActivity implements MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
+public class PictureVideoPlayActivity extends PictureBaseActivity implements MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, View.OnClickListener {
     private String video_path = "";
     private ImageView picture_left_back;
     private MediaController mMediaController;
@@ -30,19 +32,8 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
         mMediaController = new MediaController(this);
         mVideoView.setOnCompletionListener(this);
         mVideoView.setMediaController(mMediaController);
-        picture_left_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-        iv_play.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mVideoView.start();
-                iv_play.setVisibility(View.INVISIBLE);
-            }
-        });
+        picture_left_back.setOnClickListener(this);
+        iv_play.setOnClickListener(this);
     }
 
 
@@ -84,5 +75,28 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
 
     public void onCompletion(MediaPlayer mp) {
         iv_play.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        if (id == R.id.picture_left_back) {
+            finish();
+        } else if (id == R.id.iv_play) {
+            mVideoView.start();
+            iv_play.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(new ContextWrapper(newBase) {
+            @Override
+            public Object getSystemService(String name) {
+                if (Context.AUDIO_SERVICE.equals(name))
+                    return getApplicationContext().getSystemService(name);
+                return super.getSystemService(name);
+            }
+        });
     }
 }
