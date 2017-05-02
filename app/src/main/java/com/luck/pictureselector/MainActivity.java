@@ -24,7 +24,6 @@ import com.yalantis.ucrop.entity.LocalMedia;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * author：luck
  * project：PictureSelector
@@ -33,7 +32,7 @@ import java.util.List;
  * data：16/12/31
  */
 
-public class MainActivity extends Activity implements RadioGroup.OnCheckedChangeListener {
+public class MainActivity extends Activity implements RadioGroup.OnCheckedChangeListener, View.OnClickListener {
     public static final String TAG = "MainActivity";
     private RecyclerView recyclerView;
     private GridImageAdapter adapter;
@@ -41,7 +40,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     private int selectMode = FunctionConfig.MODE_MULTIPLE;
     private int maxSelectNum = 9;// 图片最大可选数量
     private ImageButton minus, plus;
-    private TextView select_num;
+    private TextView tv_select_num;
     private EditText et_w, et_h, et_compress_width, et_compress_height;
     private LinearLayout ll_luban_wh;
     private boolean isShow = true;
@@ -98,8 +97,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         et_h = (EditText) findViewById(R.id.et_h);
         minus = (ImageButton) findViewById(R.id.minus);
         plus = (ImageButton) findViewById(R.id.plus);
-        select_num = (TextView) findViewById(R.id.select_num);
-        select_num.setText(maxSelectNum + "");
+        tv_select_num = (TextView) findViewById(R.id.tv_select_num);
         FullyGridLayoutManager manager = new FullyGridLayoutManager(MainActivity.this, 4, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
         adapter = new GridImageAdapter(MainActivity.this, onAddPicClickListener);
@@ -120,24 +118,8 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         rgbs01.setOnCheckedChangeListener(this);
         rgbs10.setOnCheckedChangeListener(this);
 
-        minus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (maxSelectNum > 1) {
-                    maxSelectNum--;
-                }
-                select_num.setText(maxSelectNum + "");
-                adapter.setSelectMax(maxSelectNum);
-            }
-        });
-        plus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                maxSelectNum++;
-                select_num.setText(maxSelectNum + "");
-                adapter.setSelectMax(maxSelectNum);
-            }
-        });
+        minus.setOnClickListener(this);
+        plus.setOnClickListener(this);
 
         adapter.setOnItemClickListener(new GridImageAdapter.OnItemClickListener() {
             @Override
@@ -247,10 +229,12 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                             .setEnablePixelCompress(true) //是否启用像素压缩
                             .setEnableQualityCompress(true) //是否启质量压缩
                             .setMaxSelectNum(maxSelectNum) // 可选择图片的数量
+                            .setMinSelectNum(0)// 图片最低选择数量，默认代表无限制
                             .setSelectMode(selectMode) // 单选 or 多选
                             .setShowCamera(isShow) //是否显示拍照选项 这里自动根据type 启动拍照或录视频
                             .setEnablePreview(enablePreview) // 是否打开预览选项
                             .setEnableCrop(enableCrop) // 是否打开剪切选项
+                            .setCircularCut(true)// 是否采用圆形裁剪
                             .setPreviewVideo(isPreviewVideo) // 是否预览视频(播放) mode or 多选有效
                             .setCheckedBoxDrawable(checkedBoxDrawable)
                             .setRecordVideoDefinition(FunctionConfig.HIGH) // 视频清晰度
@@ -443,4 +427,21 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         return false;
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.minus:
+                if (maxSelectNum > 1) {
+                    maxSelectNum--;
+                }
+                tv_select_num.setText(maxSelectNum + "");
+                adapter.setSelectMax(maxSelectNum);
+                break;
+            case R.id.plus:
+                maxSelectNum++;
+                tv_select_num.setText(maxSelectNum + "");
+                adapter.setSelectMax(maxSelectNum);
+                break;
+        }
+    }
 }
