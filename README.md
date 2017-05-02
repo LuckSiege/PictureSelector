@@ -273,7 +273,7 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ###### 6.修复多图裁剪压缩bug
 
 # 项目使用第三方库：
-###### 1.裁剪使用ucrop库
+###### 1.裁剪使用ucrop库，github精品质库
 ###### 2.eventbus:3.0.0'
 ###### 3.glide:3.7.0
 ###### 4.rxjava:2.0.5
