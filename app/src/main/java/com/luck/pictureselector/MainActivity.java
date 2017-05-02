@@ -229,12 +229,12 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                             .setEnablePixelCompress(true) //是否启用像素压缩
                             .setEnableQualityCompress(true) //是否启质量压缩
                             .setMaxSelectNum(maxSelectNum) // 可选择图片的数量
-                            .setMinSelectNum(0)// 图片最低选择数量，默认代表无限制
+                            .setMinSelectNum(0)// 图片或视频最低选择数量，默认代表无限制
                             .setSelectMode(selectMode) // 单选 or 多选
                             .setShowCamera(isShow) //是否显示拍照选项 这里自动根据type 启动拍照或录视频
                             .setEnablePreview(enablePreview) // 是否打开预览选项
                             .setEnableCrop(enableCrop) // 是否打开剪切选项
-                            .setCircularCut(true)// 是否采用圆形裁剪
+                            .setCircularCut(false)// 是否采用圆形裁剪
                             .setPreviewVideo(isPreviewVideo) // 是否预览视频(播放) mode or 多选有效
                             .setCheckedBoxDrawable(checkedBoxDrawable)
                             .setRecordVideoDefinition(FunctionConfig.HIGH) // 视频清晰度
