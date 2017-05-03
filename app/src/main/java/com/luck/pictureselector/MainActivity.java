@@ -62,7 +62,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     private List<LocalMedia> selectMedia = new ArrayList<>();
     private EditText et_kb;
     private int themeStyle;
-    private int previewColor, completeColor, previewBottomBgColor, bottomBgColor, checkedBoxDrawable;
+    private int previewColor, completeColor, previewBottomBgColor, previewTopBgColor, bottomBgColor, checkedBoxDrawable;
     private boolean mode = false;// 启动相册模式
 
     @Override
@@ -245,7 +245,8 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                             .setMaxB(maxB) // 压缩最大值 例如:200kb  就设置202400，202400 / 1024 = 200kb
                             .setPreviewColor(previewColor) //预览字体颜色
                             .setCompleteColor(completeColor) //已完成字体颜色
-                            .setPreviewBottomBgColor(previewBottomBgColor) //预览底部背景色
+                            .setPreviewBottomBgColor(previewBottomBgColor) //预览图片底部背景色
+                            .setPreviewTopBgColor(previewTopBgColor)//预览图片标题背景色
                             .setBottomBgColor(bottomBgColor) //图片列表底部背景色
                             .setGrade(Luban.THIRD_GEAR) // 压缩档次 默认三档
                             .setCheckNumMode(isCheckNumMode)
