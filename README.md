@@ -72,7 +72,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.5'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.6'
 }
 
 ```
@@ -93,7 +93,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v1.4.5</version>
+      <version>v1.4.6</version>
 </dependency>
 
 ```
@@ -250,8 +250,9 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ```
 
 # 更新日志：
-###### 版本 v1.4.5
+###### 版本 v1.4.6
 ###### 1.优化体验
+###### 2.移除okhttp
 
 # 项目使用第三方库：
 ###### 1.裁剪使用ucrop库，github精品质库
@@ -259,9 +260,8 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ###### 3.glide:3.7.0
 ###### 4.rxjava:2.0.5
 ###### 5.rxandroid:2.0.1
-###### 6.okhttp:3.2.0
-###### 7.PhotoView:1.2.4
-###### 8.Luban
+###### 6.PhotoView:1.2.4
+###### 7.Luban
 
 # 兼容性测试：
 ******腾讯优测-深度测试-通过率达到100%******
