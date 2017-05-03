@@ -41,6 +41,7 @@ public class FunctionOptions implements Serializable {
     private int completeColor; // 底部完成字体颜色
     private int bottomBgColor; // 底部背景色
     private int previewBottomBgColor; // 预览底部背景色
+    private int previewTopBgColor; // 预览标题背景色
     private int compressQuality;// 图片裁剪质量,默认无损
     private List<LocalMedia> selectMedia = new ArrayList<>();// 已选择的图片
     private int compressFlag; // 1 系统自带压缩 2 luban压缩
@@ -271,7 +272,7 @@ public class FunctionOptions implements Serializable {
 
     public int getBottomBgColor() {
         if (bottomBgColor == 0) {
-            bottomBgColor = Color.parseColor("#fafafa");
+            bottomBgColor = Color.parseColor("#f3f3f3");
         }
         return bottomBgColor;
     }
@@ -289,6 +290,17 @@ public class FunctionOptions implements Serializable {
 
     public void setPreviewBottomBgColor(int previewBottomBgColor) {
         this.previewBottomBgColor = previewBottomBgColor;
+    }
+
+    public int getPreviewTopBgColor() {
+        if (previewTopBgColor == 0) {
+            previewTopBgColor = Color.parseColor("#393a3e");
+        }
+        return previewTopBgColor;
+    }
+
+    public void setPreviewTopBgColor(int previewTopBgColor) {
+        this.previewTopBgColor = previewTopBgColor;
     }
 
     public int getCompressQuality() {
@@ -492,6 +504,11 @@ public class FunctionOptions implements Serializable {
 
         public Builder setBottomBgColor(int bottomBgColor) {
             options.setBottomBgColor(bottomBgColor);
+            return this;
+        }
+
+        public Builder setPreviewTopBgColor(int topBgColor) {
+            options.setPreviewTopBgColor(topBgColor);
             return this;
         }
 

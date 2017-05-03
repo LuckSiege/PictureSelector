@@ -51,6 +51,7 @@ public class PictureBaseActivity extends FragmentActivity {
     protected int completeColor; // 底部完成字体颜色
     protected int bottomBgColor; // 底部背景色
     protected int previewBottomBgColor; // 预览底部背景色
+    protected int previewTopBgColor; // 预览图片标题背景色
     protected int compressQuality = 0;// 压缩图片质量
     protected List<LocalMedia> selectMedias = new ArrayList<>();
     protected FunctionOptions options;
@@ -96,6 +97,7 @@ public class PictureBaseActivity extends FragmentActivity {
         completeColor = options.getCompleteColor();
         bottomBgColor = options.getBottomBgColor();
         previewBottomBgColor = options.getPreviewBottomBgColor();
+        previewTopBgColor = options.getPreviewTopBgColor();
         compressQuality = options.getCompressQuality();
         selectMedias = options.getSelectMedia();
         compressFlag = options.getCompressFlag();
