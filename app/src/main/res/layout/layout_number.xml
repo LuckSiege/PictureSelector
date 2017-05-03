@@ -13,7 +13,7 @@
         android:src="@mipmap/ic_minus" />
 
     <TextView
-        android:id="@+id/select_num"
+        android:id="@+id/tv_select_num"
         android:layout_width="50dp"
         android:layout_height="match_parent"
         android:gravity="center"
