@@ -37,7 +37,7 @@
   21.新增单独拍照功能
   22.新增压缩大小设置
   23.新增Luban压缩档次设置
-    
+  24.新增圆形头像裁剪
 ```
 
 ******那些遇到拍照闪退问题的同学，请记得看清下面适配6.0的配置~******
@@ -72,7 +72,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.2'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.3'
 }
 
 ```
@@ -93,7 +93,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v1.4.2</version>
+      <version>v1.4.3</version>
 </dependency>
 
 ```
@@ -151,10 +151,12 @@ FunctionOptions options = new FunctionOptions.Builder()
         .setEnablePixelCompress(true) //是否启用像素压缩
         .setEnableQualityCompress(true) //是否启质量压缩
         .setMaxSelectNum(maxSelectNum) // 可选择图片的数量
+	.setMinSelectNum(0)// 图片或视频最低选择数量，默认代表无限制
         .setSelectMode(selectMode) // 单选 or 多选
         .setShowCamera(isShow) //是否显示拍照选项 这里自动根据type 启动拍照或录视频
         .setEnablePreview(enablePreview) // 是否打开预览选项
         .setEnableCrop(enableCrop) // 是否打开剪切选项
+	.setCircularCut(false)// 是否采用圆形裁剪
         .setPreviewVideo(isPreviewVideo) // 是否预览视频(播放) mode or 多选有效
         .setCheckedBoxDrawable(checkedBoxDrawable)
         .setRecordVideoDefinition(FunctionConfig.HIGH) // 视频清晰度
@@ -246,10 +248,15 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ```
 
 # 更新日志：
-###### 版本 v1.4.2
-###### 1.修复在application初始化第二次无效问题
+###### 版本 v1.4.3
+###### 1.修复内存泄漏问题
+###### 2.新增最小选择数量
+###### 3.新增圆形头像裁剪
 ========================================================
 ###### 历史版本：
+###### 版本 v1.4.2
+###### 1.修复在application初始化第二次无效问题
+
 ###### 版本 v1.4.1
 ###### 1.修复单选快速点击重复bug
 ###### 2.重命名string资源文件
@@ -266,7 +273,7 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ###### 6.修复多图裁剪压缩bug
 
 # 项目使用第三方库：
-###### 1.裁剪使用ucrop库
+###### 1.裁剪使用ucrop库，github精品质库
 ###### 2.eventbus:3.0.0'
 ###### 3.glide:3.7.0
 ###### 4.rxjava:2.0.5
@@ -286,6 +293,7 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/2.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/3.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/4.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/11.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/5.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/6.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/7.jpg)
