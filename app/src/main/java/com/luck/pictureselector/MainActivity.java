@@ -207,6 +207,12 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                         themeStyle = ContextCompat.getColor(getApplicationContext(), R.color.bar_grey);
                     }
 
+                    if (selectImageType) {
+                        checkedBoxDrawable = R.drawable.select_cb;
+                    } else {
+                        checkedBoxDrawable = 0;
+                    }
+
                     if (isCheckNumMode) {
                         // QQ 风格模式下 这里自己搭配颜色
                         previewColor = ContextCompat.getColor(getApplicationContext(), R.color.blue);
@@ -214,12 +220,6 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                     } else {
                         previewColor = ContextCompat.getColor(getApplicationContext(), R.color.tab_color_true);
                         completeColor = ContextCompat.getColor(getApplicationContext(), R.color.tab_color_true);
-                    }
-
-                    if (selectImageType) {
-                        checkedBoxDrawable = R.drawable.select_cb;
-                    } else {
-                        checkedBoxDrawable = 0;
                     }
 
                     FunctionOptions options = new FunctionOptions.Builder()
@@ -239,6 +239,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                             .setCheckedBoxDrawable(checkedBoxDrawable)
                             .setRecordVideoDefinition(FunctionConfig.HIGH) // 视频清晰度
                             .setRecordVideoSecond(60) // 视频秒数
+                            .setCustomQQ_theme(0)// 可自定义QQ数字风格，不传就默认是蓝色风格
                             .setGif(false)// 是否显示gif图片，默认不显示
                             .setCropW(cropW) // cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
                             .setCropH(cropH) // cropH-->裁剪高度 值不能小于100 如果值大于图片原始宽高 将返回原图大小
