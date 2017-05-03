@@ -204,9 +204,9 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
 
                     if (theme) {
                         // 设置主题样式
-                        themeStyle = ContextCompat.getColor(getApplicationContext(), R.color.blue);
+                        themeStyle = ContextCompat.getColor(MainActivity.this, R.color.blue);
                     } else {
-                        themeStyle = ContextCompat.getColor(getApplicationContext(), R.color.bar_grey);
+                        themeStyle = ContextCompat.getColor(MainActivity.this, R.color.bar_grey);
                     }
 
                     if (selectImageType) {
@@ -217,11 +217,11 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
 
                     if (isCheckNumMode) {
                         // QQ 风格模式下 这里自己搭配颜色
-                        previewColor = ContextCompat.getColor(getApplicationContext(), R.color.blue);
-                        completeColor = ContextCompat.getColor(getApplicationContext(), R.color.blue);
+                        previewColor = ContextCompat.getColor(MainActivity.this, R.color.blue);
+                        completeColor = ContextCompat.getColor(MainActivity.this, R.color.blue);
                     } else {
-                        previewColor = ContextCompat.getColor(getApplicationContext(), R.color.tab_color_true);
-                        completeColor = ContextCompat.getColor(getApplicationContext(), R.color.tab_color_true);
+                        previewColor = ContextCompat.getColor(MainActivity.this, R.color.tab_color_true);
+                        completeColor = ContextCompat.getColor(MainActivity.this, R.color.tab_color_true);
                     }
 
                     FunctionOptions options = new FunctionOptions.Builder()
