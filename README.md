@@ -261,7 +261,7 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ###### 4.rxjava:2.0.5
 ###### 5.rxandroid:2.0.1
 ###### 6.PhotoView:1.2.4
-###### 7.Luban
+###### 7.luban
 
 # 兼容性测试：
 ******腾讯优测-深度测试-通过率达到100%******
