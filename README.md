@@ -72,7 +72,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.3'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.5'
 }
 
 ```
@@ -93,7 +93,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v1.4.3</version>
+      <version>v1.4.5</version>
 </dependency>
 
 ```
@@ -248,29 +248,8 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ```
 
 # 更新日志：
-###### 版本 v1.4.3
-###### 1.修复内存泄漏问题
-###### 2.新增最小选择数量
-###### 3.新增圆形头像裁剪
-========================================================
-###### 历史版本：
-###### 版本 v1.4.2
-###### 1.修复在application初始化第二次无效问题
-
-###### 版本 v1.4.1
-###### 1.修复单选快速点击重复bug
-###### 2.重命名string资源文件
-
-###### 版本 v1.4.0
-###### 1.减小引入大小
-
-###### 版本 v1.3.9
-###### 1.修改相册启动方式
-###### 2.修复.webp格式图片压缩后后缀变为.jpg格式问题
-###### 3.修复多图裁剪快速点击，结果返回为空问题
-###### 4.修复快速点击启动相册重复问题
-###### 5.将activity通信由广播改为EventBus3.0
-###### 6.修复多图裁剪压缩bug
+###### 版本 v1.4.5
+###### 1.优化体验
 
 # 项目使用第三方库：
 ###### 1.裁剪使用ucrop库，github精品质库
