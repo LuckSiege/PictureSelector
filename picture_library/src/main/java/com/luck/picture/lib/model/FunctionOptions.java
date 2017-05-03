@@ -51,6 +51,7 @@ public class FunctionOptions implements Serializable {
     private int maxB;// 压缩多少kb以内
     private boolean isGif;// 是否显示gif
     private boolean isCircularCut;// 是否采用圆形裁剪
+    private int qq_theme;// QQ数字风格
     /**
      * 是否启用像素压缩
      */
@@ -185,7 +186,12 @@ public class FunctionOptions implements Serializable {
     public int getCheckedBoxDrawable() {
         // 如果是QQ选择风格
         if (isCheckNumMode) {
-            checkedBoxDrawable = R.drawable.checkbox_num_selector;
+            // 如果没有自定义QQ数字风格，则使用默认
+            if (qq_theme == 0) {
+                checkedBoxDrawable = R.drawable.checkbox_num_selector;
+            } else {
+                checkedBoxDrawable = qq_theme;
+            }
         }
         if (checkedBoxDrawable == 0) {
             checkedBoxDrawable = R.drawable.checkbox_selector;
@@ -195,6 +201,14 @@ public class FunctionOptions implements Serializable {
 
     public void setCheckedBoxDrawable(int checkedBoxDrawable) {
         this.checkedBoxDrawable = checkedBoxDrawable;
+    }
+
+    public int getQq_theme() {
+        return qq_theme;
+    }
+
+    public void setQq_theme(int qq_theme) {
+        this.qq_theme = qq_theme;
     }
 
     public int getCropW() {
@@ -549,6 +563,11 @@ public class FunctionOptions implements Serializable {
 
         public Builder setGrade(int grade) {
             options.setGrade(grade);
+            return this;
+        }
+
+        public Builder setCustomQQ_theme(int qq_theme) {
+            options.setQq_theme(qq_theme);
             return this;
         }
 

@@ -111,7 +111,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         }
 
         if (is_checked_num) {
-            tv_img_num.setBackgroundResource(R.drawable.message_oval_blue);
+            tv_img_num.setBackgroundResource(cb_drawable);
+            tv_img_num.setSelected(true);
         }
 
         selectImages = (List<LocalMedia>) getIntent().getSerializableExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST);
@@ -187,7 +188,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         onSelectNumChange(false);
         onImageChecked(position);
         if (is_checked_num) {
-            tv_img_num.setBackgroundResource(R.drawable.message_oval_blue);
+            tv_img_num.setBackgroundResource(cb_drawable);
+            tv_img_num.setSelected(true);
             LocalMedia media = images.get(position);
             check.setText(media.getNum() + "");
             notifyCheckChanged(media);

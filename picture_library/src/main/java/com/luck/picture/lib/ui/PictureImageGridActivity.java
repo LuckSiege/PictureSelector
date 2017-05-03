@@ -209,7 +209,8 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                 recyclerView.setItemAnimator(new MyItemAnimator());
             } else {
                 // 如果是显示数据风格，则默认为qq选择风格
-                tv_img_num.setBackgroundResource(R.drawable.message_oval_blue);
+                tv_img_num.setBackgroundResource(cb_drawable);
+                tv_img_num.setSelected(true);
             }
             String titleText = picture_tv_title.getText().toString().trim();
             if (showCamera) {

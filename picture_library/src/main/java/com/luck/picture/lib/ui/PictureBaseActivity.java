@@ -41,6 +41,7 @@ public class PictureBaseActivity extends FragmentActivity {
     protected int selectMode = FunctionConfig.MODE_MULTIPLE;
     protected int backgroundColor = 0;
     protected int cb_drawable = 0;
+    protected int qq_theme = 0;
     protected int cropW = 0;
     protected int cropH = 0;
     protected int recordVideoSecond = 0;
@@ -84,6 +85,7 @@ public class PictureBaseActivity extends FragmentActivity {
         enablePreviewVideo = options.isPreviewVideo();
         backgroundColor = options.getThemeStyle();
         cb_drawable = options.getCheckedBoxDrawable();
+        qq_theme = options.getQq_theme();
         isCompress = options.isCompress();
         spanCount = options.getImageSpanCount();
         cropW = options.getCropW();
