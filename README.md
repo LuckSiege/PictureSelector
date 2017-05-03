@@ -145,41 +145,41 @@ PhotoView 库冲突，可以删除自己项目中引用的，Picture_library中�
 ******相册启动构造方法******
 ```
 FunctionOptions options = new FunctionOptions.Builder()
-        .setType(selectType) // 图片or视频 FunctionConfig.TYPE_IMAGE  TYPE_VIDEO
-        .setCropMode(copyMode) // 裁剪模式 默认、1:1、3:4、3:2、16:9
-        .setCompress(isCompress) //是否压缩
-        .setEnablePixelCompress(true) //是否启用像素压缩
-        .setEnableQualityCompress(true) //是否启质量压缩
-        .setMaxSelectNum(maxSelectNum) // 可选择图片的数量
-	.setMinSelectNum(0)// 图片或视频最低选择数量，默认代表无限制
-        .setSelectMode(selectMode) // 单选 or 多选
-        .setShowCamera(isShow) //是否显示拍照选项 这里自动根据type 启动拍照或录视频
-        .setEnablePreview(enablePreview) // 是否打开预览选项
-        .setEnableCrop(enableCrop) // 是否打开剪切选项
-	.setCircularCut(false)// 是否采用圆形裁剪
-        .setPreviewVideo(isPreviewVideo) // 是否预览视频(播放) mode or 多选有效
-        .setCheckedBoxDrawable(checkedBoxDrawable)
-        .setRecordVideoDefinition(FunctionConfig.HIGH) // 视频清晰度
-        .setRecordVideoSecond(60) // 视频秒数
-	.setCustomQQ_theme(0)// 可自定义QQ数字风格，不传就默认是蓝色风格
-        .setGif(false)// 是否显示gif图片，默认不显示
-        .setCropW(cropW) // cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
-        .setCropH(cropH) // cropH-->裁剪高度 值不能小于100 如果值大于图片原始宽高 将返回原图大小
-        .setMaxB(maxB) // 压缩最大值 例如:200kb  就设置202400，202400 / 1024 = 200kb左右
-        .setPreviewColor(previewColor) //预览字体颜色
-        .setCompleteColor(completeColor) //已完成字体颜色
-	.setPreviewTopBgColor(previewTopBgColor)//预览图片标题背景色
-        .setPreviewBottomBgColor(previewBottomBgColor) //预览底部背景色
-        .setBottomBgColor(bottomBgColor) //图片列表底部背景色
-        .setGrade(Luban.THIRD_GEAR) // 压缩档次 默认三档
-        .setCheckNumMode(isCheckNumMode)
-        .setCompressQuality(100) // 图片裁剪质量,默认无损
-        .setImageSpanCount(4) // 每行个数
-        .setSelectMedia(selectMedia) // 已选图片，传入在次进去可选中，不能传入网络图片
-        .setCompressFlag(compressFlag) // 1 系统自带压缩 2 luban压缩
-        .setCompressW(compressW) // 压缩宽 如果值大于图片原始宽高无效
-        .setCompressH(compressH) // 压缩高 如果值大于图片原始宽高无效
-        .setThemeStyle(themeStyle) // 设置主题样式
+        .setType() // 图片or视频 FunctionConfig.TYPE_IMAGE  TYPE_VIDEO
+        .setCropMode() // 裁剪模式 默认、1:1、3:4、3:2、16:9
+        .setCompress() //是否压缩
+        .setEnablePixelCompress() //是否启用像素压缩
+        .setEnableQualityCompress() //是否启质量压缩
+        .setMaxSelectNum() // 可选择图片的数量
+	.setMinSelectNum()// 图片或视频最低选择数量，默认代表无限制
+        .setSelectMode() // 单选 or 多选
+        .setShowCamera() //是否显示拍照选项 这里自动根据type 启动拍照或录视频
+        .setEnablePreview() // 是否打开预览选项
+        .setEnableCrop() // 是否打开剪切选项
+	.setCircularCut()// 是否采用圆形裁剪
+        .setPreviewVideo() // 是否预览视频(播放) mode or 多选有效
+        .setCheckedBoxDrawable()
+        .setRecordVideoDefinition() // 视频清晰度
+        .setRecordVideoSecond() // 视频秒数
+	.setCustomQQ_theme()// 可自定义QQ数字风格，不传就默认是蓝色风格
+        .setGif()// 是否显示gif图片，默认不显示
+        .setCropW() // cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
+        .setCropH() // cropH-->裁剪高度 值不能小于100 如果值大于图片原始宽高 将返回原图大小
+        .setMaxB() // 压缩最大值 例如:200kb  就设置202400，202400 / 1024 = 200kb左右
+        .setPreviewColor() //预览字体颜色
+        .setCompleteColor() //已完成字体颜色
+	.setPreviewTopBgColor()//预览图片标题背景色
+        .setPreviewBottomBgColor() //预览底部背景色
+        .setBottomBgColor() //图片列表底部背景色
+        .setGrade() // 压缩档次 默认三档
+        .setCheckNumMode()
+        .setCompressQuality() // 图片裁剪质量,默认无损
+        .setImageSpanCount() // 每行个数
+        .setSelectMedia() // 已选图片，传入在次进去可选中，不能传入网络图片
+        .setCompressFlag() // 1 系统自带压缩 2 luban压缩
+        .setCompressW() // 压缩宽 如果值大于图片原始宽高无效
+        .setCompressH() // 压缩高 如果值大于图片原始宽高无效
+        .setThemeStyle() // 设置主题样式
         .create();     
 ```
 ```
