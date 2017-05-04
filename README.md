@@ -2,6 +2,8 @@
    最近项目中用到多图选择上传的需求，考虑到android机型众多问题就自己花时间写了一个，测试了大概60款机型，出现过一些问题也都一一修复了，基本上稳定了特分享出来，界面UI也是商用级的开发者不用在做太多修改了，界面高度自定义，可以设置符合你项目主色调的风格，集成完成后就可以拿来用。
   
   项目会一直维护，发现问题欢迎提出会第一时间修复，QQ交流群 619458861，个人QQ 893855882@qq.com  希望用得着的朋友点个start。 
+  
+  [PictureSelector无裁剪功能版](https://github.com/LuckSiege/PictureSelectorLight)
    
   [我的博客地址](http://blog.csdn.net/luck_mw)
   
@@ -261,7 +263,7 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ###### 4.rxjava:2.0.5
 ###### 5.rxandroid:2.0.1
 ###### 6.PhotoView:1.2.4
-###### 7.Luban
+###### 7.luban
 
 # 兼容性测试：
 ******腾讯优测-深度测试-通过率达到100%******
