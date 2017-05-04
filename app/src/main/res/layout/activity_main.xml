@@ -319,7 +319,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:hint="裁剪宽度"
-                    android:inputType="number"
+                    android:inputType="number|textNoSuggestions"
                     android:textSize="13sp" />
 
                 <EditText
@@ -328,7 +328,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:hint="裁剪高度"
-                    android:inputType="number"
+                    android:inputType="number|textNoSuggestions"
                     android:textSize="13sp" />
             </LinearLayout>
 
@@ -445,7 +445,7 @@
                     android:layout_weight="1"
                     android:gravity="center|left"
                     android:hint="压缩宽"
-                    android:inputType="number"
+                    android:inputType="number|textNoSuggestions"
                     android:textSize="14sp" />
 
                 <EditText
@@ -455,7 +455,7 @@
                     android:layout_weight="1"
                     android:gravity="center|left"
                     android:hint="压缩高"
-                    android:inputType="number"
+                    android:inputType="number|textNoSuggestions"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -466,7 +466,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:hint="压缩大小不超过多少b"
-                android:inputType="number"
+                android:inputType="number|textNoSuggestions"
                 android:text="102400"
                 android:textSize="13sp"
                 android:visibility="gone" />
