@@ -7,11 +7,12 @@
         <activity
             android:name="com.luck.picture.lib.ui.PictureAlbumDirectoryActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Slider" />
         <activity
             android:name="com.luck.picture.lib.ui.PictureImageGridActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Slider" />
         <activity
