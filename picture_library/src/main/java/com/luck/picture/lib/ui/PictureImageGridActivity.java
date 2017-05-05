@@ -679,13 +679,15 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                     mediaFolder.setImages(images);
                     mediaFolder.setImageNum(mediaFolder.getImages().size());
                     // 没有到最大选择量 才做默认选中刚拍好的
-                    if (adapter.getSelectedImages().size() < maxSelectNum) {
-                        List<LocalMedia> selectedImages = adapter.getSelectedImages();
-                        selectedImages.add(media);
-                        adapter.bindSelectImages(selectedImages);
-                        ChangeImageNumber(adapter.getSelectedImages());
+                    if (adapter != null) {
+                        if (adapter.getSelectedImages().size() < maxSelectNum) {
+                            List<LocalMedia> selectedImages = adapter.getSelectedImages();
+                            selectedImages.add(media);
+                            adapter.bindSelectImages(selectedImages);
+                            ChangeImageNumber(adapter.getSelectedImages());
+                        }
+                        adapter.bindImagesData(images);
                     }
-                    adapter.bindImagesData(images);
                 }
 
             }
