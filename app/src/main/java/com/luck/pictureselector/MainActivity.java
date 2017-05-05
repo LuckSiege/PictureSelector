@@ -123,7 +123,8 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
             public void onItemClick(int position, View v) {
                 switch (selectType) {
                     case FunctionConfig.TYPE_IMAGE:
-                        // 预览图片
+                        // 预览图片 可长按保存 也可自定义保存路径
+                        //PictureConfig.getInstance().externalPicturePreview(MainActivity.this, "/custom_file", position, selectMedia);
                         PictureConfig.getInstance().externalPicturePreview(MainActivity.this, position, selectMedia);
                         break;
                     case FunctionConfig.TYPE_VIDEO:
@@ -281,6 +282,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {
         @Override
         public void onSelectSuccess(List<LocalMedia> resultList) {
+            // 多选回调
             selectMedia = resultList;
             Log.i("callBack_result", selectMedia.size() + "");
             LocalMedia media = resultList.get(0);
@@ -294,6 +296,16 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 // 原图地址
                 String path = media.getPath();
             }
+            if (selectMedia != null) {
+                adapter.setList(selectMedia);
+                adapter.notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        public void onSelectSuccess(LocalMedia media) {
+            // 单选回调
+            selectMedia.add(media);
             if (selectMedia != null) {
                 adapter.setList(selectMedia);
                 adapter.notifyDataSetChanged();
