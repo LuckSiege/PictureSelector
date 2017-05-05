@@ -117,9 +117,14 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             cameraPath = savedInstanceState.getString(FunctionConfig.BUNDLE_CAMERA_PATH);
             takePhoto = savedInstanceState.getBoolean(FunctionConfig.FUNCTION_TAKE);
         }
+        // 单独拍照
         if (takePhoto) {
-            // 只拍照
-            onTakePhoto();
+            // 如果savedInstanceState
+            // 不等于null就代表是第一次，否则是此activity被回收过，
+            // 则不重复启动拍照，针对小米等手机，拍照导致activity被回收问题
+            if (savedInstanceState == null) {
+                onTakePhoto();
+            }
             if (!enableCrop && isCompress) {
                 // 如果单独拍照，并且没有裁剪 但压缩 这里显示一个蒙版过渡一下
                 ToolbarUtil.setColorNoTranslucent(this, R.color.black);
