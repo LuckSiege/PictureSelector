@@ -232,7 +232,8 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
   private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {
         @Override
         public void onSelectSuccess(List<LocalMedia> resultList) {
-            selectMedia = resultList;
+	    // 多选回调
+	    selectMedia = resultList;
             Log.i("callBack_result", selectMedia.size() + "");
             LocalMedia media = resultList.get(0);
             if (media.isCut() && !media.isCompressed()) {
@@ -245,6 +246,16 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
                 // 原图地址
                 String path = media.getPath();
             }
+            if (selectMedia != null) {
+                adapter.setList(selectMedia);
+                adapter.notifyDataSetChanged();
+            }
+        }
+	
+	 @Override
+        public void onSelectSuccess(LocalMedia media) {
+            // 单选回调
+            selectMedia.add(media);
             if (selectMedia != null) {
                 adapter.setList(selectMedia);
                 adapter.notifyDataSetChanged();
