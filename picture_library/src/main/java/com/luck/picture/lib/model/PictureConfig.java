@@ -103,6 +103,24 @@ public class PictureConfig {
     }
 
     /**
+     * 外部图片预览
+     *
+     * @param position
+     * @param medias
+     */
+    public void externalPicturePreview(Activity activity, String directory_path, int position, List<LocalMedia> medias) {
+        if (medias != null && medias.size() > 0) {
+            Intent intent = new Intent();
+            intent.putExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
+            intent.putExtra(FunctionConfig.EXTRA_POSITION, position);
+            intent.putExtra(FunctionConfig.DIRECTORY_PATH, directory_path);
+            intent.setClass(activity, PictureExternalPreviewActivity.class);
+            activity.startActivity(intent);
+            activity.overridePendingTransition(R.anim.toast_enter, 0);
+        }
+    }
+
+    /**
      * 外部视频播放
      *
      * @param path
@@ -123,9 +141,19 @@ public class PictureConfig {
     public interface OnSelectResultCallback {
         /**
          * 处理成功
+         * 多选
          *
          * @param resultList
          */
         void onSelectSuccess(List<LocalMedia> resultList);
+
+        /**
+         * 处理成功
+         * 单选
+         *
+         * @param media
+         */
+        void onSelectSuccess(LocalMedia media);
+
     }
 }

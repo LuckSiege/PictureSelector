@@ -300,7 +300,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
 
         @Override
         public Fragment getItem(int position) {
-            PictureImagePreviewFragment fragment = PictureImagePreviewFragment.getInstance(images.get(position).getPath(), selectImages);
+            PictureImagePreviewFragment fragment = PictureImagePreviewFragment.getInstance(images.get(position).getPath(), true, "", selectImages);
             return fragment;
         }
 

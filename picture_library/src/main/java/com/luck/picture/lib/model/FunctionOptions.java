@@ -207,7 +207,7 @@ public class FunctionOptions implements Serializable {
         return qq_theme;
     }
 
-    public void setQq_theme(int qq_theme) {
+    public void setCustomQQ_theme(int qq_theme) {
         this.qq_theme = qq_theme;
     }
 
@@ -567,7 +567,7 @@ public class FunctionOptions implements Serializable {
         }
 
         public Builder setCustomQQ_theme(int qq_theme) {
-            options.setQq_theme(qq_theme);
+            options.setCustomQQ_theme(qq_theme);
             return this;
         }
 
