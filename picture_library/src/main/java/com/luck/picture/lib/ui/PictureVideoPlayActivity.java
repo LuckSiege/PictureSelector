@@ -28,6 +28,7 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
         video_path = getIntent().getStringExtra("video_path");
         picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
         mVideoView = (VideoView) findViewById(R.id.video_view);
+        mVideoView.setZOrderOnTop(true);// 解决播放视频透明问题
         iv_play = (ImageView) findViewById(R.id.iv_play);
         mMediaController = new MediaController(this);
         mVideoView.setOnCompletionListener(this);
