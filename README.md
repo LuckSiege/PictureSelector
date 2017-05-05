@@ -74,7 +74,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.6'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.7'
 }
 
 ```
@@ -95,7 +95,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v1.4.6</version>
+      <version>v1.4.7</version>
 </dependency>
 
 ```
@@ -218,6 +218,8 @@ public class App extends Application {
 ```
 ******预览图片******       
 ```
+// 预览图片 可长按保存 也可自定义保存路径
+ PictureConfig.getInstance().externalPicturePreview(MainActivity.this, "/custom_file", position, selectMedia);
  PictureConfig.getInstance().externalPicturePreview(mContext, position, selectMedia);
 ```
 ******预览视频****** 
@@ -252,9 +254,11 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ```
 
 # 更新日志：
-###### 版本 v1.4.6
-###### 1.优化体验
-###### 2.移除okhttp
+###### 版本 v1.4.7
+###### 1.新增图片预览长按保存至手机
+###### 2.新增单选图片回调接口
+###### 3.修复有时不回调OnSelectResultCallback的问题
+###### 4.部分bug
 
 # 项目使用第三方库：
 ###### 1.裁剪使用ucrop库，github精品质库
