@@ -93,7 +93,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         picture_left_back.setOnClickListener(this);
         tv_ok = (TextView) findViewById(R.id.tv_ok);
         tv_img_num = (TextView) findViewById(R.id.tv_img_num);
-        tv_title = (TextView) findViewById(R.id.tv_title);
+        tv_title = (TextView) findViewById(R.id.picture_title);
         tv_ok.setOnClickListener(this);
         position = getIntent().getIntExtra(FunctionConfig.EXTRA_POSITION, 0);
         tv_ok.setTextColor(completeColor);

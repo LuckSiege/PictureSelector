@@ -2,6 +2,7 @@ package com.luck.picture.lib.ui;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +13,7 @@ import android.widget.VideoView;
 
 import com.luck.picture.lib.R;
 
-public class PictureVideoPlayActivity extends PictureBaseActivity implements MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, View.OnClickListener {
+public class PictureVideoPlayActivity extends PictureBaseActivity implements MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, View.OnClickListener {
     private String video_path = "";
     private ImageView picture_left_back;
     private MediaController mMediaController;
@@ -32,6 +33,7 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
         iv_play = (ImageView) findViewById(R.id.iv_play);
         mMediaController = new MediaController(this);
         mVideoView.setOnCompletionListener(this);
+        mVideoView.setOnPreparedListener(this);
         mVideoView.setMediaController(mMediaController);
         picture_left_back.setOnClickListener(this);
         iv_play.setOnClickListener(this);
@@ -97,6 +99,21 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
                 if (Context.AUDIO_SERVICE.equals(name))
                     return getApplicationContext().getSystemService(name);
                 return super.getSystemService(name);
+            }
+        });
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        mp.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+            @Override
+            public boolean onInfo(MediaPlayer mp, int what, int extra) {
+                if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+                    // video started
+                    mVideoView.setBackgroundColor(Color.TRANSPARENT);
+                    return true;
+                }
+                return false;
             }
         });
     }
