@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
@@ -66,7 +67,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
     private List<LocalMedia> images = new ArrayList<>();
     private RecyclerView recyclerView;
     private TextView tv_img_num;
-    private TextView tv_ok, tv_mask;
+    private TextView tv_ok;
     private RelativeLayout rl_bottom;
     private ImageView picture_left_back;
     private RelativeLayout rl_picture_title;
@@ -108,30 +109,9 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.picture_activity_image_grid);
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        rl_bottom = (RelativeLayout) findViewById(R.id.rl_bottom);
-        picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
-        rl_picture_title = (RelativeLayout) findViewById(R.id.rl_picture_title);
-        picture_tv_title = (TextView) findViewById(R.id.picture_tv_title);
-        picture_tv_right = (TextView) findViewById(R.id.picture_tv_right);
-        rl_picture_title.setBackgroundColor(backgroundColor);
-        ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
-        tv_ok = (TextView) findViewById(R.id.tv_ok);
-        id_preview = (TextView) findViewById(R.id.id_preview);
-        tv_img_num = (TextView) findViewById(R.id.tv_img_num);
-        tv_mask = (TextView) findViewById(R.id.tv_mask);
-        id_preview.setText(getString(R.string.picture_preview));
-        tv_ok.setText(getString(R.string.picture_please_select));
-        animation = AnimationUtils.loadAnimation(this, R.anim.modal_in);
-        id_preview.setOnClickListener(this);
-        tv_ok.setOnClickListener(this);
-        picture_left_back.setOnClickListener(this);
-        picture_tv_right.setOnClickListener(this);
-        is_top_activity = getIntent().getBooleanExtra(FunctionConfig.EXTRA_IS_TOP_ACTIVITY, false);
         takePhoto = getIntent().getBooleanExtra(FunctionConfig.FUNCTION_TAKE, false);
         if (savedInstanceState != null) {
             cameraPath = savedInstanceState.getString(FunctionConfig.BUNDLE_CAMERA_PATH);
@@ -142,9 +122,31 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             if (!enableCrop && isCompress) {
                 // 如果单独拍照，并且没有裁剪 但压缩 这里显示一个蒙版过渡一下
                 ToolbarUtil.setColorNoTranslucent(this, R.color.black);
-                tv_mask.setVisibility(View.VISIBLE);
+                TextView view = new TextView(this);
+                view.setBackgroundColor(Color.BLACK);
+                setContentView(view);
             }
         } else {
+            setContentView(R.layout.picture_activity_image_grid);
+            recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+            rl_bottom = (RelativeLayout) findViewById(R.id.rl_bottom);
+            picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
+            rl_picture_title = (RelativeLayout) findViewById(R.id.rl_picture_title);
+            picture_tv_title = (TextView) findViewById(R.id.picture_tv_title);
+            picture_tv_right = (TextView) findViewById(R.id.picture_tv_right);
+            rl_picture_title.setBackgroundColor(backgroundColor);
+            ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
+            tv_ok = (TextView) findViewById(R.id.tv_ok);
+            id_preview = (TextView) findViewById(R.id.id_preview);
+            tv_img_num = (TextView) findViewById(R.id.tv_img_num);
+            id_preview.setText(getString(R.string.picture_preview));
+            tv_ok.setText(getString(R.string.picture_please_select));
+            animation = AnimationUtils.loadAnimation(this, R.anim.modal_in);
+            id_preview.setOnClickListener(this);
+            tv_ok.setOnClickListener(this);
+            picture_left_back.setOnClickListener(this);
+            picture_tv_right.setOnClickListener(this);
+            is_top_activity = getIntent().getBooleanExtra(FunctionConfig.EXTRA_IS_TOP_ACTIVITY, false);
             if (!is_top_activity) {
                 // 第一次启动ImageActivity，没有获取过相册列表
                 // 先判断手机是否有读取权限，主要是针对6.0已上系统
@@ -237,7 +239,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
     @Override
     protected void onResume() {
         super.onResume();
-        if (!picture_tv_right.isEnabled()) {
+        if (picture_tv_right != null && !picture_tv_right.isEnabled()) {
             picture_tv_right.setEnabled(true);
         }
     }
@@ -789,6 +791,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         if ((takePhoto && takePhotoSuccess) || (enableCrop && isCompress && selectMode == FunctionConfig.MODE_SINGLE)) {
             // 如果是单独拍照并且压缩可能会造成还在压缩中，但此activity已关闭,或单选 裁剪压缩时等压缩完在关闭PictureSingeUCropActivity
             recycleCallBack();
+            releaseCallBack();
             EventEntity obj1 = new EventEntity(FunctionConfig.CLOSE_SINE_CROP_FLAG);
             EventBus.getDefault().post(obj1);
         } else {
@@ -938,7 +941,6 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
-
         if (animation != null) {
             animation.cancel();
             animation = null;
