@@ -258,7 +258,7 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ###### 1.新增图片预览长按保存至手机
 ###### 2.新增单选图片回调接口
 ###### 3.修复有时不回调OnSelectResultCallback的问题
-###### 4.部分bug
+###### 4.修复部分bug
 
 # 项目使用第三方库：
 ###### 1.裁剪使用ucrop库，github精品质库
