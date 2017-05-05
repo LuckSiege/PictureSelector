@@ -793,9 +793,9 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             EventBus.getDefault().post(obj1);
         } else {
             clearData();
-            finish();
-            overridePendingTransition(0, R.anim.slide_bottom_out);
         }
+        finish();
+        overridePendingTransition(0, R.anim.slide_bottom_out);
     }
 
 
