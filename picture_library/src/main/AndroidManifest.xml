@@ -1,6 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.luck.picture.lib">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
     <application
         android:allowBackup="true"
         android:supportsRtl="true">
@@ -21,8 +29,8 @@
             android:theme="@style/Theme.Slider" />
         <activity
             android:name="com.luck.picture.lib.ui.PictureVideoPlayActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Slider" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensor" />
 
         <activity
             android:name="com.luck.picture.lib.ui.PictureExternalPreviewActivity"
