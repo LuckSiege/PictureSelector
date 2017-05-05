@@ -9,10 +9,10 @@
         android:id="@+id/rl_title"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="#393a3e"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="#393a3e">
 
         <ImageView
             android:id="@+id/picture_left_back"
@@ -23,7 +23,6 @@
             android:src="@drawable/picture_back" />
 
         <TextView
-            android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
