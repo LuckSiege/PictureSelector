@@ -218,7 +218,7 @@ public class App extends Application {
 ```
 ******预览图片******       
 ```
-// 预览图片 可长按保存 也可自定义保存路径
+ // 预览图片 可长按保存 也可自定义保存路径
  PictureConfig.getInstance().externalPicturePreview(MainActivity.this, "/custom_file", position, selectMedia);
  PictureConfig.getInstance().externalPicturePreview(mContext, position, selectMedia);
 ```
