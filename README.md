@@ -192,11 +192,12 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         // application 初始化
-        FunctionOptions options = new FunctionOptions.Builder().create();
-        options.setType(FunctionConfig.TYPE_IMAGE);
-        options.setCompress(true);
-        options.setGrade(Luban.THIRD_GEAR);
-        PictureConfig.getInstance().init(options);
+        FunctionOptions options = new FunctionOptions.Builder()
+	.setType(FunctionConfig.TYPE_IMAGE);
+        .setCompress(true);
+        .setGrade(Luban.THIRD_GEAR);
+	.create();
+        PictureConfig.getInstance().init(options);
     }
 }
 ```
