@@ -596,6 +596,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             }
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, recordVideoSecond);
+            //cameraIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 5491520L);//5*1048*1048=5MB
             cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, definition);
             startActivityForResult(cameraIntent, FunctionConfig.REQUEST_CAMERA);
         }
