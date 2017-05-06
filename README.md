@@ -155,6 +155,7 @@ FunctionOptions options = new FunctionOptions.Builder()
         .setMaxSelectNum() // 可选择图片的数量
 	.setMinSelectNum()// 图片或视频最低选择数量，默认代表无限制
         .setSelectMode() // 单选 or 多选
+	.setVideoS(0)// 查询多少秒内的视频 单位:秒
         .setShowCamera() //是否显示拍照选项 这里自动根据type 启动拍照或录视频
         .setEnablePreview() // 是否打开预览选项
         .setEnableCrop() // 是否打开剪切选项
