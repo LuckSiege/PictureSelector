@@ -31,6 +31,7 @@ import java.util.List;
 public class LocalMediaLoader {
     public boolean isGif;
     public int index = 0;
+    public long videoS = 0;
     private final static String[] IMAGE_PROJECTION = {
             MediaStore.Images.Media.DATA,
             MediaStore.Images.Media.DISPLAY_NAME,
@@ -50,10 +51,11 @@ public class LocalMediaLoader {
     private FragmentActivity activity;
 
 
-    public LocalMediaLoader(FragmentActivity activity, int type, boolean isGif) {
+    public LocalMediaLoader(FragmentActivity activity, int type, boolean isGif, long videoS) {
         this.activity = activity;
         this.type = type;
         this.isGif = isGif;
+        this.videoS = videoS;
     }
 
     public void loadAllImage(final LocalMediaLoadListener imageLoadListener) {
@@ -80,9 +82,18 @@ public class LocalMediaLoader {
                             IMAGE_PROJECTION, condition,
                             select, IMAGE_PROJECTION[2] + " DESC");
                 } else if (id == FunctionConfig.TYPE_VIDEO) {
+                    String selection;
+                    String selectionArgs[];
+                    if (videoS <= 0) {
+                        selection = null;
+                        selectionArgs = null;
+                    } else {
+                        selection = "duration <= ?";
+                        selectionArgs = new String[]{String.valueOf(videoS)};
+                    }
                     cursorLoader = new CursorLoader(
                             activity, MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                            VIDEO_PROJECTION, null, null, VIDEO_PROJECTION[2] + " DESC");
+                            VIDEO_PROJECTION, selection, selectionArgs, VIDEO_PROJECTION[2] + " DESC");
                 }
                 return cursorLoader;
             }

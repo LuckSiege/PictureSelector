@@ -256,7 +256,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
          * 根据type决定，查询本地图片或视频。
          */
         showPleaseDialog(getString(R.string.picture_please));
-        new LocalMediaLoader(this, type, options.isGif()).loadAllImage(new LocalMediaLoader.LocalMediaLoadListener() {
+        new LocalMediaLoader(this, type, options.isGif(),videoS).loadAllImage(new LocalMediaLoader.LocalMediaLoadListener() {
 
             @Override
             public void loadComplete(List<LocalMediaFolder> folders) {

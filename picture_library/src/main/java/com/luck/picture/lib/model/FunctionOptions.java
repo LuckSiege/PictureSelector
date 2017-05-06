@@ -52,6 +52,7 @@ public class FunctionOptions implements Serializable {
     private boolean isGif;// 是否显示gif
     private boolean isCircularCut;// 是否采用圆形裁剪
     private int qq_theme;// QQ数字风格
+    private long videoS = 0;
     /**
      * 是否启用像素压缩
      */
@@ -110,6 +111,14 @@ public class FunctionOptions implements Serializable {
             selectMode = FunctionConfig.MODE_MULTIPLE;
         }
         return selectMode;
+    }
+
+    public long getVideoS() {
+        return videoS * 1000;
+    }
+
+    public void setVideoS(long videoS) {
+        this.videoS = videoS;
     }
 
     public void setSelectMode(int selectMode) {
@@ -203,7 +212,7 @@ public class FunctionOptions implements Serializable {
         this.checkedBoxDrawable = checkedBoxDrawable;
     }
 
-    public int getQq_theme() {
+    public int getCustomQQ_theme() {
         return qq_theme;
     }
 
@@ -453,6 +462,11 @@ public class FunctionOptions implements Serializable {
 
         public Builder setImageSpanCount(int spanCount) {
             options.setImageSpanCount(spanCount);
+            return this;
+        }
+
+        public Builder setVideoS(long videoS) {
+            options.setVideoS(videoS);
             return this;
         }
 

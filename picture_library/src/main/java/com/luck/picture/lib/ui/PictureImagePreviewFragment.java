@@ -1,13 +1,18 @@
 package com.luck.picture.lib.ui;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +27,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.model.FunctionConfig;
+import com.luck.picture.lib.widget.Constant;
 import com.luck.picture.lib.widget.CustomDialog;
 import com.yalantis.ucrop.dialog.SweetAlertDialog;
 import com.yalantis.ucrop.entity.LocalMedia;
@@ -109,7 +115,11 @@ public class PictureImagePreviewFragment extends Fragment {
             public boolean onLongClick(View v) {
                 // 内部预览不保存
                 if (!isSave) {
-                    showDownLoadDialog(path);
+                    if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        showDownLoadDialog(path);
+                    } else {
+                        requestPermission(Constant.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    }
                 }
                 return true;
             }
@@ -280,6 +290,46 @@ public class PictureImagePreviewFragment extends Fragment {
     private void dismiss() {
         if (dialog != null && dialog.isShowing()) {
             dialog.cancel();
+        }
+    }
+
+    /**
+     * 针对6.0动态请求权限问题
+     * 判断是否允许此权限
+     *
+     * @param permissions
+     * @return
+     */
+    protected boolean hasPermission(String... permissions) {
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(getActivity(), permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 动态请求权限
+     *
+     * @param code
+     * @param permissions
+     */
+    protected void requestPermission(int code, String... permissions) {
+        ActivityCompat.requestPermissions(getActivity(), permissions, code);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case Constant.WRITE_EXTERNAL_STORAGE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    
+                } else {
+                    Toast.makeText(getContext(), "读取内存卡权限已被拒绝", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 

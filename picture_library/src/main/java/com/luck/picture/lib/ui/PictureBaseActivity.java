@@ -47,6 +47,7 @@ public class PictureBaseActivity extends FragmentActivity {
     protected int recordVideoSecond = 0;
     protected int definition = 3;
     protected boolean isCompress;
+    protected long videoS = 0;
     protected boolean is_checked_num;
     protected int previewColor; // 底部预览字体颜色
     protected int completeColor; // 底部完成字体颜色
@@ -85,8 +86,9 @@ public class PictureBaseActivity extends FragmentActivity {
         enablePreviewVideo = options.isPreviewVideo();
         backgroundColor = options.getThemeStyle();
         cb_drawable = options.getCheckedBoxDrawable();
-        qq_theme = options.getQq_theme();
+        qq_theme = options.getCustomQQ_theme();
         isCompress = options.isCompress();
+        videoS = options.getVideoS();
         spanCount = options.getImageSpanCount();
         cropW = options.getCropW();
         cropH = options.getCropH();
