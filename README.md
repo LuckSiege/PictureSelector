@@ -183,6 +183,11 @@ FunctionOptions options = new FunctionOptions.Builder()
         .setCompressW() // 压缩宽 如果值大于图片原始宽高无效
         .setCompressH() // 压缩高 如果值大于图片原始宽高无效
         .setThemeStyle() // 设置主题样式
+	.setPicture_title_color() // 设置标题字体颜色
+        .setPicture_right_color() // 设置标题右边字体颜色
+        .setLeftBackDrawable() // 设置返回键图标
+        .setStatusBar() // 设置状态栏颜色，默认是和标题栏一致
+        .setImmersive(false)// 是否改变状态栏字体颜色(黑色) 
         .create();     
 ```
 ```
