@@ -57,7 +57,9 @@ public class FunctionOptions implements Serializable {
     private int picture_title_color;
     private int picture_right_color;
     private int statusBar;
+    private boolean isNumComplete;
     private boolean isImmersive;
+
     /**
      * 是否启用像素压缩
      */
@@ -116,6 +118,14 @@ public class FunctionOptions implements Serializable {
             statusBar = themeStyle;
         }
         return statusBar;
+    }
+
+    public boolean isNumComplete() {
+        return isNumComplete;
+    }
+
+    public void setNumComplete(boolean numComplete) {
+        isNumComplete = numComplete;
     }
 
     public void setStatusBar(int statusBar) {
@@ -679,6 +689,11 @@ public class FunctionOptions implements Serializable {
 
         public Builder setImmersive(boolean immersive) {
             options.setImmersive(immersive);
+            return this;
+        }
+
+        public Builder setNumComplete(boolean numComplete) {
+            options.setNumComplete(numComplete);
             return this;
         }
 

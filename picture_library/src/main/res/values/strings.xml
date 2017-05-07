@@ -13,6 +13,7 @@
     <string name="picture_done">完成</string>
     <string name="picture_use">使用</string>
     <string name="picture_done_num">完成(%1$s/%2$s)</string>
+    <string name="picture_done_front_num">%1$s/%2$s 完成</string>
     <string name="picture_num_postfix">%1$s张</string>
     <string name="picture_message_max_num">你最多可以选择%1$s张图片</string>
     <string name="picture_message_video_max_num">你最多可以选择%1$s个视频</string>

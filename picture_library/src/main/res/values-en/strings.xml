@@ -16,6 +16,7 @@
     <string name="picture_use">Use</string>
     <string name="picture_please">Please later...</string>
     <string name="picture_done_num">Ok(%1$s/%2$s)</string>
+    <string name="picture_done_front_num">%1$s/%2$s Ok</string>
     <string name="picture_num_postfix">%1$sNumber</string>
     <string name="picture_min_img_num">Picture Selection Cannot%1$sNumber</string>
     <string name="picture_min_video_num">Video Selection Cannot%1$sNumber</string>

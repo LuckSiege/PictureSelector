@@ -83,9 +83,11 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_activity_image_preview);
-        Eyes.setStatusBarLightMode(this, Color.WHITE, false);
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
+        }
+        if (isImmersive) {
+            Eyes.setStatusBarLightMode(this, Color.WHITE, false);
         }
         rl_title = (RelativeLayout) findViewById(R.id.rl_title);
         picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
@@ -100,6 +102,11 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         tv_ok.setOnClickListener(this);
         position = getIntent().getIntExtra(FunctionConfig.EXTRA_POSITION, 0);
         tv_ok.setTextColor(completeColor);
+        if (isNumComplete) {
+            tv_ok.setText(getString(R.string.picture_done));
+        } else {
+            tv_ok.setText(getString(R.string.picture_please_select));
+        }
         select_bar_layout.setBackgroundColor(previewBottomBgColor);
         rl_title.setBackgroundColor(previewTopBgColor);
         ToolbarUtil.setColorNoTranslucent(this, previewTopBgColor);
@@ -257,14 +264,22 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         boolean enable = selectImages.size() != 0;
         if (enable) {
             tv_ok.setEnabled(true);
-            tv_img_num.setVisibility(View.VISIBLE);
-            tv_img_num.startAnimation(animation);
-            tv_img_num.setText(selectImages.size() + "");
-            tv_ok.setText(getString(R.string.picture_completed));
+            if (isNumComplete) {
+                tv_ok.setText(getString(R.string.picture_done_front_num, selectImages.size(), maxSelectNum));
+            } else {
+                tv_img_num.startAnimation(animation);
+                tv_img_num.setVisibility(View.VISIBLE);
+                tv_img_num.setText(selectImages.size() + "");
+                tv_ok.setText(getString(R.string.picture_completed));
+            }
         } else {
             tv_ok.setEnabled(false);
-            tv_img_num.setVisibility(View.INVISIBLE);
-            tv_ok.setText(getString(R.string.picture_please_select));
+            if (isNumComplete) {
+                tv_ok.setText(getString(R.string.picture_done));
+            } else {
+                tv_img_num.setVisibility(View.INVISIBLE);
+                tv_ok.setText(getString(R.string.picture_please_select));
+            }
             updateSelector(refresh);
         }
     }

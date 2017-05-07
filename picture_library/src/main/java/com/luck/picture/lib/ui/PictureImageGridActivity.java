@@ -148,8 +148,12 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             id_preview = (TextView) findViewById(R.id.id_preview);
             tv_img_num = (TextView) findViewById(R.id.tv_img_num);
             id_preview.setText(getString(R.string.picture_preview));
-            tv_ok.setText(getString(R.string.picture_please_select));
-            animation = AnimationUtils.loadAnimation(this, R.anim.modal_in);
+            if (isNumComplete) {
+                tv_ok.setText(getString(R.string.picture_done));
+            } else {
+                animation = AnimationUtils.loadAnimation(this, R.anim.modal_in);
+                tv_ok.setText(getString(R.string.picture_please_select));
+            }
             id_preview.setOnClickListener(this);
             tv_ok.setOnClickListener(this);
             picture_left_back.setImageResource(leftDrawable);
@@ -368,15 +372,23 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         if (enable) {
             tv_ok.setEnabled(true);
             id_preview.setEnabled(true);
-            tv_img_num.startAnimation(animation);
-            tv_img_num.setVisibility(View.VISIBLE);
-            tv_img_num.setText(selectImages.size() + "");
-            tv_ok.setText(getString(R.string.picture_completed));
+            if (isNumComplete) {
+                tv_ok.setText(getString(R.string.picture_done_front_num, selectImages.size(), maxSelectNum));
+            } else {
+                tv_img_num.startAnimation(animation);
+                tv_img_num.setVisibility(View.VISIBLE);
+                tv_img_num.setText(selectImages.size() + "");
+                tv_ok.setText(getString(R.string.picture_completed));
+            }
         } else {
             tv_ok.setEnabled(false);
             id_preview.setEnabled(false);
-            tv_img_num.setVisibility(View.INVISIBLE);
-            tv_ok.setText(getString(R.string.picture_please_select));
+            if (isNumComplete) {
+                tv_ok.setText(getString(R.string.picture_done));
+            } else {
+                tv_img_num.setVisibility(View.INVISIBLE);
+                tv_ok.setText(getString(R.string.picture_please_select));
+            }
         }
     }
 
