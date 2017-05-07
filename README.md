@@ -74,7 +74,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.7'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.8'
 }
 
 ```
@@ -95,7 +95,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v1.4.7</version>
+      <version>v1.4.8</version>
 </dependency>
 
 ```
@@ -161,7 +161,7 @@ FunctionOptions options = new FunctionOptions.Builder()
         .setEnableCrop() // 是否打开剪切选项
 	.setCircularCut()// 是否采用圆形裁剪
         .setPreviewVideo() // 是否预览视频(播放) mode or 多选有效
-        .setCheckedBoxDrawable()
+        .setCheckedBoxDrawable() // 选择图片样式
         .setRecordVideoDefinition() // 视频清晰度
         .setRecordVideoSecond() // 视频秒数
 	.setCustomQQ_theme()// 可自定义QQ数字风格，不传就默认是蓝色风格
@@ -175,7 +175,7 @@ FunctionOptions options = new FunctionOptions.Builder()
         .setPreviewBottomBgColor() //预览底部背景色
         .setBottomBgColor() //图片列表底部背景色
         .setGrade() // 压缩档次 默认三档
-        .setCheckNumMode()
+        .setCheckNumMode() //QQ选择风格
         .setCompressQuality() // 图片裁剪质量,默认无损
         .setImageSpanCount() // 每行个数
         .setSelectMedia() // 已选图片，传入在次进去可选中，不能传入网络图片
@@ -188,6 +188,7 @@ FunctionOptions options = new FunctionOptions.Builder()
         .setLeftBackDrawable() // 设置返回键图标
         .setStatusBar() // 设置状态栏颜色，默认是和标题栏一致
         .setImmersive(false)// 是否改变状态栏字体颜色(黑色) 
+	.setNumComplete(false) // 0/9 完成  样式
         .create();     
 ```
 ```
@@ -272,11 +273,14 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ```
 
 # 更新日志：
-###### 版本 v1.4.7
-###### 1.新增图片预览长按保存至手机
-###### 2.新增单选图片回调接口
-###### 3.修复有时不回调OnSelectResultCallback的问题
-###### 4.修复部分bug
+###### 版本 v1.4.8
+###### 新增视频秒数查询
+###### 新增状态栏字体颜色改变
+###### 新增标题栏文字颜色改变
+###### 新增状态栏颜色单独设置
+###### 新增底部已完成样式( 0/9 完成) 样式
+###### 新增返回图标的设置
+###### 修复视频播放前白屏问题
 
 # 项目使用第三方库：
 ###### 1.裁剪使用ucrop库，github精品质库
