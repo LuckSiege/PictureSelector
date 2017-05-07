@@ -257,11 +257,11 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                             .setCompressW(compressW) // 压缩宽 如果值大于图片原始宽高无效
                             .setCompressH(compressH) // 压缩高 如果值大于图片原始宽高无效
                             .setThemeStyle(themeStyle) // 设置主题样式
-                            // ContextCompat.getColor(MainActivity.this, R.color.black)
-//                            .setPicture_title_color() // 设置标题字体颜色
-//                            .setPicture_right_color() // 设置标题右边字体颜色
-//                            .setLeftBackDrawable() // 设置返回键图标
-//                            .setStatusBar() // 设置状态栏颜色，默认是和标题栏一致
+                            .setNumComplete(false) // 0/9 完成  样式
+//                            .setPicture_title_color(ContextCompat.getColor(MainActivity.this, R.color.black)) // 设置标题字体颜色
+//                            .setPicture_right_color(ContextCompat.getColor(MainActivity.this, R.color.black)) // 设置标题右边字体颜色
+//                            .setLeftBackDrawable(R.mipmap.back2) // 设置返回键图标
+//                            .setStatusBar(ContextCompat.getColor(MainActivity.this, R.color.white)) // 设置状态栏颜色，默认是和标题栏一致
 //                            .setImmersive(false)// 是否改变状态栏字体颜色(黑色)
                             .create();
 
