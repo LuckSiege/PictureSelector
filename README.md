@@ -1,7 +1,7 @@
 # PictureSelector  
    最近项目中用到多图选择上传的需求，考虑到android机型众多问题就自己花时间写了一个，测试了大概60款机型，出现过一些问题也都一一修复了，基本上稳定了特分享出来，界面UI也是商用级的开发者不用在做太多修改了，界面高度自定义，可以设置符合你项目主色调的风格，集成完成后就可以拿来用。
   
-  项目会一直维护，发现问题欢迎提出会第一时间修复，QQ交流群 619458861，个人QQ 893855882@qq.com  希望用得着的朋友点个start。 
+  项目会一直维护，有bug请描述清楚，并请Issues会第一时间修复，Android开发QQ交流群 619458861，个人QQ 893855882@qq.com  希望用得着的朋友点个start。 
   
   [PictureSelector无裁剪功能版](https://github.com/LuckSiege/PictureSelectorLight)
    
@@ -155,6 +155,7 @@ FunctionOptions options = new FunctionOptions.Builder()
         .setMaxSelectNum() // 可选择图片的数量
 	.setMinSelectNum()// 图片或视频最低选择数量，默认代表无限制
         .setSelectMode() // 单选 or 多选
+	.setVideoS(0)// 查询多少秒内的视频 单位:秒
         .setShowCamera() //是否显示拍照选项 这里自动根据type 启动拍照或录视频
         .setEnablePreview() // 是否打开预览选项
         .setEnableCrop() // 是否打开剪切选项
@@ -182,6 +183,11 @@ FunctionOptions options = new FunctionOptions.Builder()
         .setCompressW() // 压缩宽 如果值大于图片原始宽高无效
         .setCompressH() // 压缩高 如果值大于图片原始宽高无效
         .setThemeStyle() // 设置主题样式
+	.setPicture_title_color() // 设置标题字体颜色
+        .setPicture_right_color() // 设置标题右边字体颜色
+        .setLeftBackDrawable() // 设置返回键图标
+        .setStatusBar() // 设置状态栏颜色，默认是和标题栏一致
+        .setImmersive(false)// 是否改变状态栏字体颜色(黑色) 
         .create();     
 ```
 ```
