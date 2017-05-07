@@ -76,6 +76,8 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
         rl_picture_title = (RelativeLayout) findViewById(R.id.rl_picture_title);
         picture_tv_title = (TextView) findViewById(R.id.picture_tv_title);
         picture_tv_right = (TextView) findViewById(R.id.picture_tv_right);
+        picture_tv_right.setTextColor(right_color);
+        picture_tv_title.setTextColor(title_color);
         tv_empty.setOnClickListener(this);
         ImagesObservable.getInstance().add(this);
         switch (type) {
@@ -88,7 +90,7 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
             default:
                 break;
         }
-        ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
+        ToolbarUtil.setColorNoTranslucent(this, statusBar);
         rl_picture_title.setBackgroundColor(backgroundColor);
         picture_tv_right.setText(getString(R.string.picture_cancel));
         picture_tv_right.setOnClickListener(this);

@@ -140,8 +140,10 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             rl_picture_title = (RelativeLayout) findViewById(R.id.rl_picture_title);
             picture_tv_title = (TextView) findViewById(R.id.picture_tv_title);
             picture_tv_right = (TextView) findViewById(R.id.picture_tv_right);
+            picture_tv_title.setTextColor(title_color);
+            picture_tv_right.setTextColor(right_color);
             rl_picture_title.setBackgroundColor(backgroundColor);
-            ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
+            ToolbarUtil.setColorNoTranslucent(this, statusBar);
             tv_ok = (TextView) findViewById(R.id.tv_ok);
             id_preview = (TextView) findViewById(R.id.id_preview);
             tv_img_num = (TextView) findViewById(R.id.tv_img_num);
@@ -150,6 +152,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             animation = AnimationUtils.loadAnimation(this, R.anim.modal_in);
             id_preview.setOnClickListener(this);
             tv_ok.setOnClickListener(this);
+            picture_left_back.setImageResource(leftDrawable);
             picture_left_back.setOnClickListener(this);
             picture_tv_right.setOnClickListener(this);
             is_top_activity = getIntent().getBooleanExtra(FunctionConfig.EXTRA_IS_TOP_ACTIVITY, false);
@@ -242,6 +245,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
 
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -256,7 +260,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
          * 根据type决定，查询本地图片或视频。
          */
         showPleaseDialog(getString(R.string.picture_please));
-        new LocalMediaLoader(this, type, options.isGif(),videoS).loadAllImage(new LocalMediaLoader.LocalMediaLoadListener() {
+        new LocalMediaLoader(this, type, options.isGif(), videoS).loadAllImage(new LocalMediaLoader.LocalMediaLoadListener() {
 
             @Override
             public void loadComplete(List<LocalMediaFolder> folders) {
@@ -499,9 +503,14 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         options.withMaxResultSize(cropW, cropH);
         options.background_color(backgroundColor);
         options.localType(type);
+        options.setLeftBackDrawable(leftDrawable);
         options.setIsCompress(isCompress);
         options.setIsTakePhoto(takePhoto);
+        options.setTitleColor(title_color);
+        options.setRightColor(right_color);
         options.setCircularCut(circularCut);
+        options.setStatusBar(statusBar);
+        options.setImmersiver(isImmersive);
         uCrop.withOptions(options);
         uCrop.start(PictureImageGridActivity.this);
     }
@@ -551,9 +560,14 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             options.setCompressionQuality(compressQuality);
             options.withMaxResultSize(cropW, cropH);
             options.background_color(backgroundColor);
+            options.setLeftBackDrawable(leftDrawable);
             options.setIsCompress(isCompress);
             options.setCircularCut(circularCut);
+            options.setTitleColor(title_color);
+            options.setRightColor(right_color);
             options.copyMode(copyMode);
+            options.setImmersiver(isImmersive);
+            options.setStatusBar(statusBar);
             uCrop.withOptions(options);
             uCrop.start(PictureImageGridActivity.this);
         }

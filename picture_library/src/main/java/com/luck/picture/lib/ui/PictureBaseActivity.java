@@ -3,6 +3,7 @@ package com.luck.picture.lib.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.widget.Toast;
 
+import com.luck.picture.lib.flyn.Eyes;
 import com.luck.picture.lib.model.FunctionConfig;
 import com.luck.picture.lib.model.FunctionOptions;
 import com.yalantis.ucrop.entity.LocalMedia;
@@ -64,6 +66,11 @@ public class PictureBaseActivity extends FragmentActivity {
     protected int compressH;
     protected int maxB = 0;
     protected int grade;
+    protected int leftDrawable;
+    protected int title_color;
+    protected int right_color;
+    protected int statusBar;
+    protected boolean isImmersive;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,6 +81,8 @@ public class PictureBaseActivity extends FragmentActivity {
         if (options == null) {
             options = new FunctionOptions.Builder().create();
         }
+        isImmersive = options.isImmersive();
+        Eyes.setStatusBarLightMode(this, Color.WHITE, isImmersive);
         type = options.getType();
         showCamera = options.isShowCamera();
         enablePreview = options.isEnablePreview();
@@ -82,7 +91,10 @@ public class PictureBaseActivity extends FragmentActivity {
         maxSelectNum = options.getMaxSelectNum();
         minSelectNum = options.getMinSelectNum();
         circularCut = options.isCircularCut();
+        title_color = options.getPicture_title_color();
+        right_color = options.getPicture_right_color();
         copyMode = options.getCropMode();
+        leftDrawable = options.getLeftBackDrawable();
         enablePreviewVideo = options.isPreviewVideo();
         backgroundColor = options.getThemeStyle();
         cb_drawable = options.getCheckedBoxDrawable();
@@ -94,6 +106,7 @@ public class PictureBaseActivity extends FragmentActivity {
         cropH = options.getCropH();
         maxB = options.getMaxB();
         grade = options.getGrade();
+        statusBar = options.getStatusBar();
         recordVideoSecond = options.getRecordVideoSecond();
         definition = options.getRecordVideoDefinition();
         is_checked_num = options.isCheckNumMode();

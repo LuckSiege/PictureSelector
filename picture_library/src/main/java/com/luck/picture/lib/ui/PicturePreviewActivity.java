@@ -1,5 +1,6 @@
 package com.luck.picture.lib.ui;
 
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.flyn.Eyes;
 import com.luck.picture.lib.model.FunctionConfig;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.widget.PreviewViewPager;
@@ -81,6 +83,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_activity_image_preview);
+        Eyes.setStatusBarLightMode(this, Color.WHITE, false);
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -401,7 +404,12 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
             options.background_color(backgroundColor);
             options.setIsCompress(isCompress);
             options.copyMode(copyMode);
+            options.setLeftBackDrawable(leftDrawable);
             options.setCircularCut(circularCut);
+            options.setTitleColor(title_color);
+            options.setRightColor(right_color);
+            options.setStatusBar(statusBar);
+            options.setImmersiver(isImmersive);
             uCrop.withOptions(options);
             uCrop.start(PicturePreviewActivity.this);
         }
