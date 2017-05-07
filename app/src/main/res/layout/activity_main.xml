@@ -69,6 +69,30 @@
             <include layout="@layout/layout_number" />
 
             <RadioGroup
+                android:id="@+id/rgbs11"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp">
+
+                <RadioButton
+                    android:id="@+id/rb_off"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="关闭点击声音" />
+
+                <RadioButton
+                    android:id="@+id/rb_open"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15sp"
+                    android:text="开启点击声音" />
+
+            </RadioGroup>
+
+            <RadioGroup
                 android:id="@+id/rgbs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -470,6 +494,8 @@
                 android:text="102400"
                 android:textSize="13sp"
                 android:visibility="gone" />
+
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
