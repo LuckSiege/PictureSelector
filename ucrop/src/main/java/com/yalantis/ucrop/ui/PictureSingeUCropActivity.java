@@ -2,6 +2,7 @@ package com.yalantis.ucrop.ui;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.dialog.SweetAlertDialog;
 import com.yalantis.ucrop.entity.EventEntity;
 import com.yalantis.ucrop.entity.LocalMedia;
+import com.yalantis.ucrop.flyn.Eyes;
 import com.yalantis.ucrop.model.AspectRatio;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.util.Utils;
@@ -72,10 +74,14 @@ public class PictureSingeUCropActivity extends FragmentActivity {
     private GestureCropImageView mGestureCropImageView;
     private OverlayView mOverlayView;
     private RelativeLayout rl_title;
+    private TextView picture_title;
     private Bitmap.CompressFormat mCompressFormat = DEFAULT_COMPRESS_FORMAT;
     private int mCompressQuality = DEFAULT_COMPRESS_QUALITY;
     private int type = 0;
-
+    private int leftDrawable = 0;
+    private int title_color, right_color;
+    private int statusBar;
+    private boolean isImmersive;
 
     //EventBus 3.0 回调
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -97,10 +103,14 @@ public class PictureSingeUCropActivity extends FragmentActivity {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-
         final Intent intent = getIntent();
         takePhoto = intent.getBooleanExtra("takePhoto", false);
         circularCut = intent.getBooleanExtra("isCircularCut", false);
+        isImmersive = intent.getBooleanExtra("isImmersive", false);
+        Eyes.setStatusBarLightMode(this, Color.WHITE, isImmersive);
+        leftDrawable = intent.getIntExtra("leftDrawable", R.drawable.picture_back);
+        title_color = getIntent().getIntExtra("titleColor", R.color.ucrop_color_widget_background);
+        right_color = getIntent().getIntExtra("rightColor", R.color.ucrop_color_widget_background);
         setupViews(intent);
         setImageData(intent);
     }
@@ -204,8 +214,12 @@ public class PictureSingeUCropActivity extends FragmentActivity {
     private void setupViews(@NonNull Intent intent) {
         tv_right = (TextView) findViewById(R.id.tv_right);
         rl_title = (RelativeLayout) findViewById(R.id.rl_title);
+        picture_title = (TextView) findViewById(R.id.picture_title);
         tv_right.setText(getString(R.string.picture_determine));
+        picture_title.setTextColor(title_color);
+        tv_right.setTextColor(right_color);
         picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
+        picture_left_back.setImageResource(leftDrawable);
         picture_left_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -234,9 +248,9 @@ public class PictureSingeUCropActivity extends FragmentActivity {
         backgroundColor = intent.getIntExtra("backgroundColor", 0);
         rl_title.setBackgroundColor(backgroundColor);
         isCompress = intent.getBooleanExtra("isCompress", false);
-
+        statusBar = getIntent().getIntExtra("statusBar", backgroundColor);
         type = intent.getIntExtra("type", 0);
-        ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
+        ToolbarUtil.setColorNoTranslucent(this, statusBar);
         initiateRootViews();
 
     }

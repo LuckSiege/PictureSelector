@@ -567,5 +567,26 @@ public class MultiUCrop {
         public void setCircularCut(boolean isCircularCut) {
             mOptionBundle.putBoolean("isCircularCut", isCircularCut);
         }
+
+        public void setLeftBackDrawable(int leftBackDrawable) {
+            mOptionBundle.putInt("leftDrawable", leftBackDrawable);
+        }
+
+        public void setTitleColor(int titleColor) {
+            mOptionBundle.putInt("titleColor", titleColor);
+        }
+
+        public void setRightColor(int rightColor) {
+            mOptionBundle.putInt("rightColor", rightColor);
+        }
+
+        public void setStatusBar(int statusBar) {
+            mOptionBundle.putInt("statusBar", statusBar);
+        }
+
+
+        public void setImmersiver(boolean isImmersive) {
+            mOptionBundle.putBoolean("isImmersive", isImmersive);
+        }
     }
 }

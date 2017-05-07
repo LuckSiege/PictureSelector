@@ -3,6 +3,7 @@ package com.yalantis.ucrop.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.dialog.SweetAlertDialog;
 import com.yalantis.ucrop.entity.EventEntity;
 import com.yalantis.ucrop.entity.LocalMedia;
+import com.yalantis.ucrop.flyn.Eyes;
 import com.yalantis.ucrop.model.AspectRatio;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.util.Utils;
@@ -64,6 +66,8 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
     private int backgroundColor = 0;
     private boolean isCompress;
     private boolean circularCut;
+    private int statusBar;
+    private boolean isImmersive;
 
     @IntDef({NONE, SCALE, ROTATE, ALL})
     @Retention(RetentionPolicy.SOURCE)
@@ -79,9 +83,12 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
     private GestureCropImageView mGestureCropImageView;
     private OverlayView mOverlayView;
     private RelativeLayout rl_title;
+    private TextView picture_title;
     private Bitmap.CompressFormat mCompressFormat = DEFAULT_COMPRESS_FORMAT;
     private int mCompressQuality = DEFAULT_COMPRESS_QUALITY;
     private int copyMode = 0;// 裁剪模式
+    private int leftDrawable;
+    private int title_color, right_color;
 
     //EventBus 3.0 回调
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -110,7 +117,13 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         cutIndex = intent.getIntExtra("cutIndex", 0);
         copyMode = intent.getIntExtra("copyMode", 0);
         isCompress = intent.getBooleanExtra("isCompress", false);
+        isImmersive = intent.getBooleanExtra("isImmersive", false);
+        Eyes.setStatusBarLightMode(this, Color.WHITE, isImmersive);
         circularCut = intent.getBooleanExtra("isCircularCut", false);
+        leftDrawable = intent.getIntExtra("leftDrawable", R.drawable.picture_back);
+        title_color = getIntent().getIntExtra("titleColor", R.color.ucrop_color_widget_background);
+        right_color = getIntent().getIntExtra("rightColor", R.color.ucrop_color_widget_background);
+
         for (LocalMedia media : images) {
             media.setCut(false);
         }
@@ -165,8 +178,13 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         options.withMaxResultSize(maxSizeX, maxSizeY);
         options.background_color(backgroundColor);
         options.copyMode(copyMode);
+        options.setLeftBackDrawable(leftDrawable);
+        options.setTitleColor(title_color);
+        options.setRightColor(right_color);
         options.setIsCompress(isCompress);
         options.setCircularCut(circularCut);
+        options.setStatusBar(statusBar);
+        options.setImmersiver(isImmersive);
         uCrop.withOptions(options);
         uCrop.start(PictureMultiCuttingActivity.this);
         overridePendingTransition(R.anim.fade, R.anim.hold);
@@ -194,10 +212,14 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
     }
 
     private void setupViews(@NonNull Intent intent) {
+        picture_title = (TextView) findViewById(R.id.picture_title);
         tv_right = (TextView) findViewById(R.id.tv_right);
         rl_title = (RelativeLayout) findViewById(R.id.rl_title);
         tv_right.setText(getString(R.string.picture_determine));
+        picture_title.setTextColor(title_color);
+        tv_right.setTextColor(right_color);
         picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
+        picture_left_back.setImageResource(leftDrawable);
         picture_left_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -214,8 +236,9 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         });
         mLogoColor = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_LOGO_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_default_logo));
         backgroundColor = intent.getIntExtra("backgroundColor", 0);
+        statusBar = getIntent().getIntExtra("statusBar", backgroundColor);
         rl_title.setBackgroundColor(backgroundColor);
-        ToolbarUtil.setColorNoTranslucent(this, backgroundColor);
+        ToolbarUtil.setColorNoTranslucent(this, statusBar);
         initiateRootViews();
     }
 
