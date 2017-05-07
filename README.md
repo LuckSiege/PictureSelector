@@ -74,7 +74,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.8'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.9'
 }
 
 ```
@@ -95,7 +95,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v1.4.8</version>
+      <version>v1.4.9</version>
 </dependency>
 
 ```
@@ -189,6 +189,7 @@ FunctionOptions options = new FunctionOptions.Builder()
         .setStatusBar() // 设置状态栏颜色，默认是和标题栏一致
         .setImmersive(false)// 是否改变状态栏字体颜色(黑色) 
 	.setNumComplete(false) // 0/9 完成  样式
+	.setClickVideo()// 点击声音
         .create();     
 ```
 ```
@@ -273,8 +274,9 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ```
 
 # 更新日志：
-###### 版本 v1.4.8
+###### 版本 v1.4.9
 ###### 新增视频秒数查询
+###### 新增点击音效效果
 ###### 新增状态栏字体颜色改变
 ###### 新增标题栏文字颜色改变
 ###### 新增状态栏颜色单独设置
