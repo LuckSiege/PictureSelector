@@ -161,7 +161,7 @@ FunctionOptions options = new FunctionOptions.Builder()
         .setEnableCrop() // 是否打开剪切选项
 	.setCircularCut()// 是否采用圆形裁剪
         .setPreviewVideo() // 是否预览视频(播放) mode or 多选有效
-        .setCheckedBoxDrawable()
+        .setCheckedBoxDrawable() // 选择图片样式
         .setRecordVideoDefinition() // 视频清晰度
         .setRecordVideoSecond() // 视频秒数
 	.setCustomQQ_theme()// 可自定义QQ数字风格，不传就默认是蓝色风格
@@ -175,7 +175,7 @@ FunctionOptions options = new FunctionOptions.Builder()
         .setPreviewBottomBgColor() //预览底部背景色
         .setBottomBgColor() //图片列表底部背景色
         .setGrade() // 压缩档次 默认三档
-        .setCheckNumMode()
+        .setCheckNumMode() //QQ选择风格
         .setCompressQuality() // 图片裁剪质量,默认无损
         .setImageSpanCount() // 每行个数
         .setSelectMedia() // 已选图片，传入在次进去可选中，不能传入网络图片
