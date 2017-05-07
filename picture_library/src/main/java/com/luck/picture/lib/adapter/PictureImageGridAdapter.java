@@ -2,6 +2,7 @@ package com.luck.picture.lib.adapter;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.media.SoundPool;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,7 +32,6 @@ import java.util.List;
 public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final int TYPE_CAMERA = 1;
     public static final int TYPE_PICTURE = 2;
-
     private Context context;
     private boolean showCamera = true;
     private OnPhotoSelectChangedListener imageSelectChangedListener;
@@ -45,8 +45,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private boolean is_checked_num;
     private int type;
     private boolean isGif;
+    private boolean clickVideo;
+    private SoundPool soundPool;
+    private int soundID;
 
-    public PictureImageGridAdapter(Context context, boolean isGif, boolean showCamera, int maxSelectNum, int mode, boolean enablePreview, boolean enablePreviewVideo, int cb_drawable, boolean is_checked_num, int type) {
+    public PictureImageGridAdapter(Context context, boolean isGif, boolean showCamera, int maxSelectNum, int mode, boolean enablePreview, boolean enablePreviewVideo, int cb_drawable, boolean is_checked_num, int type, boolean clickVideo, SoundPool soundPool, int soundID) {
         this.context = context;
         this.selectMode = mode;
         this.showCamera = showCamera;
@@ -57,6 +60,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.is_checked_num = is_checked_num;
         this.type = type;
         this.isGif = isGif;
+        this.clickVideo = clickVideo;
+        this.soundPool = soundPool;
+        this.soundID = soundID;
     }
 
     public void bindImagesData(List<LocalMedia> images) {
@@ -64,6 +70,21 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         notifyDataSetChanged();
     }
 
+    /**
+     * 播放点击声音
+     */
+    private void playSound() {
+        if (clickVideo) {
+            soundPool.play(
+                    soundID,
+                    0.1f,   //左耳道音量【0~1】
+                    0.5f,   //右耳道音量【0~1】
+                    0,     //播放优先级【0表示最低优先级】
+                    1,     //循环模式【0表示循环一次，-1表示一直循环，其他表示数字+1表示当前数字对应的循环次数】
+                    1     //播放速度【1是正常，范围从0~2】
+            );
+        }
+    }
 
     public void bindSelectImages(List<LocalMedia> images) {
         this.selectImages = images;
@@ -279,6 +300,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         } else {
             selectImages.add(image);
             image.setNum(selectImages.size());
+            playSound();
         }
         //通知点击项发生了改变
         notifyItemChanged(contentHolder.getAdapterPosition());

@@ -1,6 +1,7 @@
 package com.luck.picture.lib.ui;
 
 import android.graphics.Color;
+import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -58,6 +59,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
     private Animation animation;
     private boolean refresh;
     private SweetAlertDialog dialog;
+    private SoundPool soundPool;//声明一个SoundPool
+    private int soundID;//创建某个声音对应的音频ID
 
     //EventBus 3.0 回调
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -89,6 +92,14 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         if (isImmersive) {
             Eyes.setStatusBarLightMode(this, Color.WHITE, false);
         }
+
+        if (clickVideo) {
+            if (soundPool == null) {
+                soundPool = new SoundPool.Builder().build();
+                soundID = soundPool.load(PicturePreviewActivity.this, R.raw.music, 1);
+            }
+        }
+
         rl_title = (RelativeLayout) findViewById(R.id.rl_title);
         picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
         viewPager = (PreviewViewPager) findViewById(R.id.preview_pager);
@@ -148,6 +159,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
                 }
                 LocalMedia image = images.get(viewPager.getCurrentItem());
                 if (isChecked) {
+                    playSound();
                     selectImages.add(image);
                     image.setNum(selectImages.size());
                     if (is_checked_num) {
@@ -455,6 +467,27 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         if (animation != null) {
             animation.cancel();
             animation = null;
+        }
+
+        if (soundPool != null) {
+            soundPool.stop(soundID);
+        }
+    }
+
+
+    /**
+     * 播放点击声音
+     */
+    private void playSound() {
+        if (clickVideo) {
+            soundPool.play(
+                    soundID,
+                    0.1f,   //左耳道音量【0~1】
+                    0.5f,   //右耳道音量【0~1】
+                    0,     //播放优先级【0表示最低优先级】
+                    1,     //循环模式【0表示循环一次，-1表示一直循环，其他表示数字+1表示当前数字对应的循环次数】
+                    1     //播放速度【1是正常，范围从0~2】
+            );
         }
     }
 }
