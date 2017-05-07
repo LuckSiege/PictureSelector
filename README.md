@@ -188,6 +188,7 @@ FunctionOptions options = new FunctionOptions.Builder()
         .setLeftBackDrawable() // 设置返回键图标
         .setStatusBar() // 设置状态栏颜色，默认是和标题栏一致
         .setImmersive(false)// 是否改变状态栏字体颜色(黑色) 
+	.setNumComplete(false) // 0/9 完成  样式
         .create();     
 ```
 ```
