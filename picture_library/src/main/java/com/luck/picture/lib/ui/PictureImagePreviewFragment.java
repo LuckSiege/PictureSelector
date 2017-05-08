@@ -325,7 +325,7 @@ public class PictureImagePreviewFragment extends Fragment {
         switch (requestCode) {
             case Constant.WRITE_EXTERNAL_STORAGE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    
+
                 } else {
                     Toast.makeText(getContext(), "读取内存卡权限已被拒绝", Toast.LENGTH_SHORT).show();
                 }
