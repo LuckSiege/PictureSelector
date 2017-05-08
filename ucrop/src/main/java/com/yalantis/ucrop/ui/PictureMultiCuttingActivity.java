@@ -118,7 +118,9 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         copyMode = intent.getIntExtra("copyMode", 0);
         isCompress = intent.getBooleanExtra("isCompress", false);
         isImmersive = intent.getBooleanExtra("isImmersive", false);
-        Eyes.setStatusBarLightMode(this, Color.WHITE, isImmersive);
+        if (isImmersive) {
+            Eyes.setStatusBarLightMode(this, Color.WHITE, isImmersive);
+        }
         circularCut = intent.getBooleanExtra("isCircularCut", false);
         leftDrawable = intent.getIntExtra("leftDrawable", R.drawable.picture_back);
         title_color = getIntent().getIntExtra("titleColor", R.color.ucrop_color_widget_background);

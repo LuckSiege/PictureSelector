@@ -107,7 +107,9 @@ public class PictureSingeUCropActivity extends FragmentActivity {
         takePhoto = intent.getBooleanExtra("takePhoto", false);
         circularCut = intent.getBooleanExtra("isCircularCut", false);
         isImmersive = intent.getBooleanExtra("isImmersive", false);
-        Eyes.setStatusBarLightMode(this, Color.WHITE, isImmersive);
+        if (isImmersive) {
+            Eyes.setStatusBarLightMode(this, Color.WHITE, isImmersive);
+        }
         leftDrawable = intent.getIntExtra("leftDrawable", R.drawable.picture_back);
         title_color = getIntent().getIntExtra("titleColor", R.color.ucrop_color_widget_background);
         right_color = getIntent().getIntExtra("rightColor", R.color.ucrop_color_widget_background);
