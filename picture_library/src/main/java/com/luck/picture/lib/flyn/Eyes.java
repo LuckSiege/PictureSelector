@@ -4,9 +4,7 @@ package com.luck.picture.lib.flyn;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
-import android.support.v4.view.ViewCompat;
 import android.util.TypedValue;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -48,19 +46,6 @@ public class Eyes {
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//4.4
                     //调用修改状态栏颜色的方法
                     setStatusBarColor(activity, color);
-                }
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                //如果是6.0以上将状态栏文字改为黑色，并设置状态栏颜色
-                activity.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                activity.getWindow().setStatusBarColor(color);
-
-                //fitsSystemWindow 为 false, 不预留系统栏位置.
-                ViewGroup mContentView = (ViewGroup) activity.getWindow().findViewById(Window.ID_ANDROID_CONTENT);
-                View mChildView = mContentView.getChildAt(0);
-                if (mChildView != null) {
-                    ViewCompat.setFitsSystemWindows(mChildView, isStatus);
-                    ViewCompat.requestApplyInsets(mChildView);
                 }
             }
         }
