@@ -3,7 +3,6 @@ package com.luck.picture.lib.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,10 +12,10 @@ import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.widget.Toast;
 
-import com.luck.picture.lib.flyn.Eyes;
 import com.luck.picture.lib.model.FunctionConfig;
 import com.luck.picture.lib.model.FunctionOptions;
 import com.yalantis.ucrop.entity.LocalMedia;
+import com.yalantis.ucrop.util.LightStatusBarUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +84,7 @@ public class PictureBaseActivity extends FragmentActivity {
         }
         isImmersive = options.isImmersive();
         if (isImmersive) {
-            Eyes.setStatusBarLightMode(this, Color.WHITE, isImmersive);
+            LightStatusBarUtils.setLightStatusBar(this, isImmersive);
         }
         type = options.getType();
         showCamera = options.isShowCamera();

@@ -1,6 +1,5 @@
 package com.luck.picture.lib.ui;
 
-import android.graphics.Color;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.flyn.Eyes;
 import com.luck.picture.lib.model.FunctionConfig;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.widget.PreviewViewPager;
@@ -27,6 +25,7 @@ import com.yalantis.ucrop.dialog.OptAnimationLoader;
 import com.yalantis.ucrop.dialog.SweetAlertDialog;
 import com.yalantis.ucrop.entity.EventEntity;
 import com.yalantis.ucrop.entity.LocalMedia;
+import com.yalantis.ucrop.util.LightStatusBarUtils;
 import com.yalantis.ucrop.util.ToolbarUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -90,7 +89,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
             EventBus.getDefault().register(this);
         }
         if (isImmersive) {
-            Eyes.setStatusBarLightMode(this, Color.WHITE, false);
+            LightStatusBarUtils.setLightStatusBar(this, false);
         }
 
         if (clickVideo) {
