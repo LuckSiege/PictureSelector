@@ -74,7 +74,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.4.9'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.5.0'
 }
 
 ```
@@ -95,7 +95,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v1.4.9</version>
+      <version>v1.5.0</version>
 </dependency>
 
 ```
@@ -274,15 +274,9 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ```
 
 # 更新日志：
-###### 版本 v1.4.9
-###### 新增视频秒数查询
-###### 新增点击音效效果
-###### 新增状态栏字体颜色改变
-###### 新增标题栏文字颜色改变
-###### 新增状态栏颜色单独设置
-###### 新增底部已完成样式( 0/9 完成) 样式
-###### 新增返回图标的设置
-###### 修复视频播放前白屏问题
+###### 版本 v1.5.0
+###### 修复三星s6标题栏遮挡问题
+
 
 # 项目使用第三方库：
 ###### 1.裁剪使用ucrop库，github精品质库
