@@ -2,7 +2,6 @@ package com.yalantis.ucrop.ui;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,8 +23,8 @@ import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.dialog.SweetAlertDialog;
 import com.yalantis.ucrop.entity.EventEntity;
 import com.yalantis.ucrop.entity.LocalMedia;
-import com.yalantis.ucrop.flyn.Eyes;
 import com.yalantis.ucrop.model.AspectRatio;
+import com.yalantis.ucrop.util.LightStatusBarUtils;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.util.Utils;
 import com.yalantis.ucrop.view.CropImageView;
@@ -108,7 +107,7 @@ public class PictureSingeUCropActivity extends FragmentActivity {
         circularCut = intent.getBooleanExtra("isCircularCut", false);
         isImmersive = intent.getBooleanExtra("isImmersive", false);
         if (isImmersive) {
-            Eyes.setStatusBarLightMode(this, Color.WHITE, isImmersive);
+            LightStatusBarUtils.setLightStatusBar(this, true);
         }
         leftDrawable = intent.getIntExtra("leftDrawable", R.drawable.picture_back);
         title_color = getIntent().getIntExtra("titleColor", R.color.ucrop_color_widget_background);
