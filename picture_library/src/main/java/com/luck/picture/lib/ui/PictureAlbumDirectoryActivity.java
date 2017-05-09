@@ -22,12 +22,11 @@ import com.luck.picture.lib.observable.ObserverListener;
 import com.yalantis.ucrop.entity.EventEntity;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.entity.LocalMediaFolder;
+import com.yalantis.ucrop.rxbus2.RxBus;
+import com.yalantis.ucrop.rxbus2.Subscribe;
+import com.yalantis.ucrop.rxbus2.ThreadMode;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.util.Utils;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -50,7 +49,6 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
     private TextView picture_tv_title, picture_tv_right;
     private List<LocalMedia> selectMedias = new ArrayList<>();
 
-    //EventBus 3.0 回调
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void eventBus(EventEntity obj) {
         switch (obj.what) {
@@ -61,12 +59,13 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
         }
     }
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_activity_album);
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
+        if (!RxBus.getDefault().isRegistered(this)) {
+            RxBus.getDefault().register(this);
         }
         selectMedias = (List<LocalMedia>) getIntent().getSerializableExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST);
         if (selectMedias == null)
@@ -235,15 +234,15 @@ public class PictureAlbumDirectoryActivity extends PictureBaseActivity implement
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
+        if (RxBus.getDefault().isRegistered(this)) {
+            RxBus.getDefault().unregister(this);
         }
         clearData();
     }
 
     protected void clearData() {
         // 释放静态变量
-        PictureConfig.getInstance().resultCallback = null;
+        PictureConfig.resultCallback = null;
         ImagesObservable.getInstance().remove(this);
         ImagesObservable.getInstance().clearLocalFolders();
         ImagesObservable.getInstance().clearLocalMedia();

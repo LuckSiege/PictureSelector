@@ -25,12 +25,11 @@ import com.yalantis.ucrop.dialog.OptAnimationLoader;
 import com.yalantis.ucrop.dialog.SweetAlertDialog;
 import com.yalantis.ucrop.entity.EventEntity;
 import com.yalantis.ucrop.entity.LocalMedia;
+import com.yalantis.ucrop.rxbus2.RxBus;
+import com.yalantis.ucrop.rxbus2.Subscribe;
+import com.yalantis.ucrop.rxbus2.ThreadMode;
 import com.yalantis.ucrop.util.LightStatusBarUtils;
 import com.yalantis.ucrop.util.ToolbarUtil;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -85,8 +84,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_activity_image_preview);
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
+        if (!RxBus.getDefault().isRegistered(this)) {
+            RxBus.getDefault().register(this);
         }
         if (isImmersive) {
             LightStatusBarUtils.setLightStatusBar(this, false);
@@ -303,7 +302,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
     private void updateSelector(boolean isRefresh) {
         if (isRefresh) {
             EventEntity obj = new EventEntity(FunctionConfig.UPDATE_FLAG, selectImages);
-            EventBus.getDefault().post(obj);
+            RxBus.getDefault().post(obj);
         }
     }
 
@@ -378,7 +377,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
             result.add(media);
         }
         EventEntity obj = new EventEntity(FunctionConfig.CROP_FLAG, result);
-        EventBus.getDefault().post(obj);
+        RxBus.getDefault().post(obj);
         // 如果开启了压缩，先不关闭此页面，PictureImageGridActivity压缩完在通知关闭
         if (!isCompress) {
             finish();
@@ -460,8 +459,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
+        if (RxBus.getDefault().isRegistered(this)) {
+            RxBus.getDefault().unregister(this);
         }
         if (animation != null) {
             animation.cancel();

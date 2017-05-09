@@ -2,6 +2,7 @@ package com.luck.picture.lib.ui;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -32,6 +33,7 @@ import com.luck.picture.lib.compress.CompressInterface;
 import com.luck.picture.lib.compress.LubanOptions;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.model.FunctionConfig;
+import com.luck.picture.lib.model.FunctionOptions;
 import com.luck.picture.lib.model.LocalMediaLoader;
 import com.luck.picture.lib.model.PictureConfig;
 import com.luck.picture.lib.observable.ImagesObservable;
@@ -42,14 +44,13 @@ import com.yalantis.ucrop.dialog.SweetAlertDialog;
 import com.yalantis.ucrop.entity.EventEntity;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.entity.LocalMediaFolder;
+import com.yalantis.ucrop.rxbus2.RxBus;
+import com.yalantis.ucrop.rxbus2.Subscribe;
+import com.yalantis.ucrop.rxbus2.ThreadMode;
 import com.yalantis.ucrop.util.FileUtils;
 import com.yalantis.ucrop.util.ScreenUtils;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.util.Utils;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.Serializable;
@@ -109,22 +110,19 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         }
     }
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
+        if (!RxBus.getDefault().isRegistered(this)) {
+            RxBus.getDefault().register(this);
         }
         takePhoto = getIntent().getBooleanExtra(FunctionConfig.FUNCTION_TAKE, false);
         if (savedInstanceState != null) {
-            cameraPath = savedInstanceState.getString(FunctionConfig.BUNDLE_CAMERA_PATH);
-            takePhoto = savedInstanceState.getBoolean(FunctionConfig.FUNCTION_TAKE);
+            getOnSaveValues(savedInstanceState);
         }
         // 单独拍照
         if (takePhoto) {
-            // 如果savedInstanceState
-            // 不等于null就代表是第一次，否则是此activity被回收过，
-            // 则不重复启动拍照，针对小米等手机，拍照导致activity被回收问题
             if (savedInstanceState == null) {
                 onTakePhoto();
             }
@@ -260,6 +258,22 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             adapter.setOnPhotoSelectChangedListener(PictureImageGridActivity.this);
         }
 
+    }
+
+    /**
+     * 取拍照时 此activity被暂时回收存储的值
+     *
+     * @param savedInstanceState
+     */
+    private void getOnSaveValues(Bundle savedInstanceState) {
+        cameraPath = savedInstanceState.getString(FunctionConfig.BUNDLE_CAMERA_PATH);
+        takePhoto = savedInstanceState.getBoolean(FunctionConfig.FUNCTION_TAKE);
+        takePhotoSuccess = savedInstanceState.getBoolean(FunctionConfig.TAKE_PHOTO_SUCCESS);
+        takePhotoSuccess = true;
+        options = (FunctionOptions) savedInstanceState.getSerializable(FunctionConfig.EXTRA_THIS_CONFIG);
+        enableCrop = options.isEnableCrop();
+        isCompress = options.isCompress();
+        selectMode = options.getSelectMode();
     }
 
 
@@ -817,7 +831,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         for (LocalMedia media : images) {
             result.add(media);
         }
-        PictureConfig.OnSelectResultCallback resultCallback = PictureConfig.getInstance().getResultCallback();
+        PictureConfig.OnSelectResultCallback resultCallback = PictureConfig.getResultCallback();
         if (resultCallback != null) {
             switch (selectMode) {
                 case FunctionConfig.MODE_SINGLE:
@@ -836,13 +850,13 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             showToast("回调接口为空了");
         }
         EventEntity obj = new EventEntity(FunctionConfig.CLOSE_FLAG);
-        EventBus.getDefault().post(obj);
+        RxBus.getDefault().post(obj);
         if ((takePhoto && takePhotoSuccess) || (enableCrop && isCompress && selectMode == FunctionConfig.MODE_SINGLE)) {
             // 如果是单独拍照并且压缩可能会造成还在压缩中，但此activity已关闭,或单选 裁剪压缩时等压缩完在关闭PictureSingeUCropActivity
             recycleCallBack();
             releaseCallBack();
             EventEntity obj1 = new EventEntity(FunctionConfig.CLOSE_SINE_CROP_FLAG);
-            EventBus.getDefault().post(obj1);
+            RxBus.getDefault().post(obj1);
         } else {
             clearData();
         }
@@ -855,6 +869,8 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString(FunctionConfig.BUNDLE_CAMERA_PATH, cameraPath);
         outState.putBoolean(FunctionConfig.FUNCTION_TAKE, takePhoto);
+        outState.putBoolean(FunctionConfig.TAKE_PHOTO_SUCCESS, takePhotoSuccess);
+        outState.putSerializable(FunctionConfig.EXTRA_THIS_CONFIG, options);
     }
 
 
@@ -904,7 +920,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                 // 取消
                 clearData();
                 EventEntity obj = new EventEntity(FunctionConfig.CLOSE_FLAG);
-                EventBus.getDefault().post(obj);
+                RxBus.getDefault().post(obj);
                 finish();
                 overridePendingTransition(0, R.anim.slide_bottom_out);
                 break;
@@ -982,14 +998,14 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
      * 释放回调 导致的内存泄漏
      */
     protected void releaseCallBack() {
-        PictureConfig.getInstance().resultCallback = null;
+        PictureConfig.resultCallback = null;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
+        if (RxBus.getDefault().isRegistered(this)) {
+            RxBus.getDefault().unregister(this);
         }
         if (animation != null) {
             animation.cancel();
@@ -999,5 +1015,11 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         if (soundPool != null) {
             soundPool.stop(soundID);
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
     }
 }

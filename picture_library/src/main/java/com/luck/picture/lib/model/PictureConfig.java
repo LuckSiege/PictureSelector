@@ -40,9 +40,9 @@ public class PictureConfig {
 
     }
 
-    public OnSelectResultCallback resultCallback;
+    public static OnSelectResultCallback resultCallback;
 
-    public OnSelectResultCallback getResultCallback() {
+    public static OnSelectResultCallback getResultCallback() {
         return resultCallback;
     }
 

@@ -1,6 +1,7 @@
 package com.luck.picture.lib.model;
 
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
@@ -150,7 +151,9 @@ public class LocalMediaLoader {
                                 allImageFolder.setImages(allImages);
                             }
                             imageLoadListener.loadComplete(imageFolders);
-                            data.close();
+                            if (Build.VERSION.SDK_INT < 14) {
+                                data.close();
+                            }
                         } else {
                             // 如果没有相册
                             imageLoadListener.loadComplete(imageFolders);
