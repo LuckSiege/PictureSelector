@@ -24,6 +24,9 @@ import com.yalantis.ucrop.dialog.SweetAlertDialog;
 import com.yalantis.ucrop.entity.EventEntity;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.model.AspectRatio;
+import com.yalantis.ucrop.rxbus2.RxBus;
+import com.yalantis.ucrop.rxbus2.Subscribe;
+import com.yalantis.ucrop.rxbus2.ThreadMode;
 import com.yalantis.ucrop.util.LightStatusBarUtils;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.util.Utils;
@@ -32,10 +35,6 @@ import com.yalantis.ucrop.view.GestureCropImageView;
 import com.yalantis.ucrop.view.OverlayView;
 import com.yalantis.ucrop.view.TransformImageView;
 import com.yalantis.ucrop.view.UCropView;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -99,8 +98,8 @@ public class PictureSingeUCropActivity extends FragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_ucrop_activity_photobox);
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
+        if (!RxBus.getDefault().isRegistered(this)) {
+            RxBus.getDefault().register(this);
         }
         final Intent intent = getIntent();
         takePhoto = intent.getBooleanExtra("takePhoto", false);
@@ -227,7 +226,7 @@ public class PictureSingeUCropActivity extends FragmentActivity {
                 if (takePhoto) {
                     // 单独拍照 直接返回应用页面，防止显示空白
                     EventEntity obj = new EventEntity(2773);
-                    EventBus.getDefault().post(obj);
+                    RxBus.getDefault().post(obj);
                 }
                 onBackPressed();
             }
@@ -293,8 +292,8 @@ public class PictureSingeUCropActivity extends FragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
+        if (RxBus.getDefault().isRegistered(this)) {
+            RxBus.getDefault().unregister(this);
         }
     }
 
@@ -324,7 +323,7 @@ public class PictureSingeUCropActivity extends FragmentActivity {
         media.setType(type);
         result.add(media);
         EventEntity obj = new EventEntity(2775, result);
-        EventBus.getDefault().post(obj);
+        RxBus.getDefault().post(obj);
         // 如果有压缩则先关闭activity，等PictureImageGridActivity 压缩完成在通知我关闭
         if (!takePhoto && !isCompress) {
             cancelDialog();
@@ -360,7 +359,7 @@ public class PictureSingeUCropActivity extends FragmentActivity {
                 if (takePhoto) {
                     // 单独拍照 直接返回应用页面，防止显示空白
                     EventEntity obj = new EventEntity(2773);
-                    EventBus.getDefault().post(obj);
+                    RxBus.getDefault().post(obj);
                 }
                 finish();
                 return false;

@@ -27,6 +27,9 @@ import com.yalantis.ucrop.dialog.SweetAlertDialog;
 import com.yalantis.ucrop.entity.EventEntity;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.model.AspectRatio;
+import com.yalantis.ucrop.rxbus2.RxBus;
+import com.yalantis.ucrop.rxbus2.Subscribe;
+import com.yalantis.ucrop.rxbus2.ThreadMode;
 import com.yalantis.ucrop.util.LightStatusBarUtils;
 import com.yalantis.ucrop.util.ToolbarUtil;
 import com.yalantis.ucrop.util.Utils;
@@ -35,10 +38,6 @@ import com.yalantis.ucrop.view.GestureCropImageView;
 import com.yalantis.ucrop.view.OverlayView;
 import com.yalantis.ucrop.view.TransformImageView;
 import com.yalantis.ucrop.view.UCropView;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.lang.annotation.Retention;
@@ -107,8 +106,8 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_activity_multi_cutting);
         mContext = this;
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
+        if (!RxBus.getDefault().isRegistered(this)) {
+            RxBus.getDefault().register(this);
         }
         images = (List<LocalMedia>) getIntent().getSerializableExtra("previewSelectList");
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -376,7 +375,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
                 }
 
                 EventEntity obj = new EventEntity(2775, images);
-                EventBus.getDefault().post(obj);
+                RxBus.getDefault().post(obj);
 
                 // 如果有压缩则先关闭activity，等PictureImageGridActivity 压缩完成在通知我关闭
                 if (!isCompress) {
@@ -427,8 +426,8 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
+        if (RxBus.getDefault().isRegistered(this)) {
+            RxBus.getDefault().unregister(this);
         }
     }
 }
