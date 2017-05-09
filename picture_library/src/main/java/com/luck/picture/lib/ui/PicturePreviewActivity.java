@@ -1,5 +1,6 @@
 package com.luck.picture.lib.ui;
 
+import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
@@ -93,8 +94,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
 
         if (clickVideo) {
             if (soundPool == null) {
-                soundPool = new SoundPool.Builder().build();
-                soundID = soundPool.load(PicturePreviewActivity.this, R.raw.music, 1);
+                soundPool = new SoundPool(1, AudioManager.STREAM_ALARM, 0);
+                soundID = soundPool.load(mContext, R.raw.music, 1);
             }
         }
 

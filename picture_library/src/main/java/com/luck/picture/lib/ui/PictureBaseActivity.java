@@ -3,12 +3,13 @@ package com.luck.picture.lib.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.content.PermissionChecker;
 import android.util.DisplayMetrics;
 import android.widget.Toast;
 
@@ -19,6 +20,8 @@ import com.yalantis.ucrop.util.LightStatusBarUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.R.attr.targetSdkVersion;
 
 /**
  * author：luck
@@ -131,17 +134,24 @@ public class PictureBaseActivity extends FragmentActivity {
      * 针对6.0动态请求权限问题
      * 判断是否允许此权限
      *
-     * @param permissions
+     * @param permission
      * @return
      */
-    protected boolean hasPermission(String... permissions) {
-        for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(this, permission)
-                    != PackageManager.PERMISSION_GRANTED) {
-                return false;
+    protected boolean hasPermission(String permission) {
+        boolean result = true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (targetSdkVersion >= Build.VERSION_CODES.M) {
+                // targetSdkVersion >= Android M, we can
+                // use Context#checkSelfPermission
+                result = mContext.checkSelfPermission(permission)
+                        == PackageManager.PERMISSION_GRANTED;
+            } else {
+                // targetSdkVersion < Android M, we have to use PermissionChecker
+                result = PermissionChecker.checkSelfPermission(mContext, permission)
+                        == PermissionChecker.PERMISSION_GRANTED;
             }
         }
-        return true;
+        return result;
     }
 
     /**

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.SoundPool;
 import android.net.Uri;
@@ -237,7 +238,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             }
             if (clickVideo) {
                 if (soundPool == null) {
-                    soundPool = new SoundPool.Builder().build();
+                    soundPool = new SoundPool(1, AudioManager.STREAM_ALARM, 0);
                     soundID = soundPool.load(mContext, R.raw.music, 1);
                 }
             }
