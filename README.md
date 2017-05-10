@@ -99,7 +99,7 @@ step 2.
 </dependency>
 
 ```
-项目根目录  
+项目根目录build.gradle加入
 
 ```
 allprojects {
