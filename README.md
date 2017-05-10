@@ -274,6 +274,14 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ```
 
 # 更新日志：
+###### 版本 v1.5.1
+###### 修复6.0手机单独拍照无权限闪退问题
+###### 修复SoundPool在低于sdk21闪退问题
+###### 修复中兴手机单独拍照闪退问题
+###### 修复三星SM A9100单独拍照闪退问题
+###### 移除eventbus 3.0
+
+# 历史版本：
 ###### 版本 v1.5.0
 ###### 修复三星s6标题栏遮挡问题
 
