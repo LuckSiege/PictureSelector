@@ -124,7 +124,11 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         // 单独拍照
         if (takePhoto) {
             if (savedInstanceState == null) {
-                onTakePhoto();
+                if (hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    onTakePhoto();
+                } else {
+                    requestPermission(FunctionConfig.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
+                }
             }
             if (!enableCrop && isCompress) {
                 // 如果单独拍照，并且没有裁剪 但压缩 这里显示一个蒙版过渡一下
@@ -164,7 +168,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                 // 第一次启动ImageActivity，没有获取过相册列表
                 // 先判断手机是否有读取权限，主要是针对6.0已上系统
                 if (hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    readLocalMedia();
+                    onTakePhoto();
                 } else {
                     requestPermission(FunctionConfig.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
                 }
@@ -242,6 +246,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                     soundID = soundPool.load(mContext, R.raw.music, 1);
                 }
             }
+
             adapter = new PictureImageGridAdapter(this, options.isGif(), showCamera, maxSelectNum,
                     selectMode, enablePreview, enablePreviewVideo, cb_drawable,
                     is_checked_num, type, clickVideo, soundPool, soundID);
@@ -285,27 +290,31 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
 
     @Override
     protected void readLocalMedia() {
-        /**
-         * 根据type决定，查询本地图片或视频。
-         */
-        showPleaseDialog(getString(R.string.picture_please));
-        new LocalMediaLoader(this, type, options.isGif(), videoS).loadAllImage(new LocalMediaLoader.LocalMediaLoadListener() {
+        if (takePhoto) {
+            // 单独拍照 先判断下是否有sdCard权限
+            onTakePhoto();
+        } else {
+            /**
+             * 根据type决定，查询本地图片或视频。
+             */
+            showPleaseDialog(getString(R.string.picture_please));
+            new LocalMediaLoader(this, type, options.isGif(), videoS).loadAllImage(new LocalMediaLoader.LocalMediaLoadListener() {
 
-            @Override
-            public void loadComplete(List<LocalMediaFolder> folders) {
-                dismiss();
-                if (folders.size() > 0) {
-                    // 取最近相册或视频数据
-                    LocalMediaFolder folder = folders.get(0);
-                    images = folder.getImages();
-                    adapter.bindImagesData(images);
-                    PictureImageGridActivity.this.folders = folders;
-                    ImagesObservable.getInstance().saveLocalFolders(folders);
-                    ImagesObservable.getInstance().notifyFolderObserver(folders);
+                @Override
+                public void loadComplete(List<LocalMediaFolder> folders) {
+                    dismiss();
+                    if (folders.size() > 0) {
+                        // 取最近相册或视频数据
+                        LocalMediaFolder folder = folders.get(0);
+                        images = folder.getImages();
+                        adapter.bindImagesData(images);
+                        PictureImageGridActivity.this.folders = folders;
+                        ImagesObservable.getInstance().saveLocalFolders(folders);
+                        ImagesObservable.getInstance().notifyFolderObserver(folders);
+                    }
                 }
-            }
-        });
-
+            });
+        }
     }
 
 
@@ -929,7 +938,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
     /**
      * 处理图片压缩
      */
-    private void compressImage(List<LocalMedia> result) {
+    private void compressImage(final List<LocalMedia> result) {
         showPleaseDialog(getString(R.string.picture_please));
         CompressConfig compress_config = CompressConfig.ofDefaultConfig();
         switch (compressFlag) {
@@ -962,8 +971,16 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             @Override
             public void onCompressError(List<LocalMedia> images, String msg) {
                 // 压缩失败回调 返回原图
-                List<LocalMedia> selectedImages = adapter.getSelectedImages();
-                onResult(selectedImages);
+                List<LocalMedia> selectedImages;
+                if (takePhoto) {
+                    // 单独拍照的情况下是没有初始化adapter的,直接返回原图
+                    selectedImages = result;
+                } else {
+                    selectedImages = adapter.getSelectedImages();
+                }
+                if (selectedImages != null) {
+                    onResult(selectedImages);
+                }
                 dismiss();
             }
         }).compress();
