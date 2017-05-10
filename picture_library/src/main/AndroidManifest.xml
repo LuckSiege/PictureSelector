@@ -21,7 +21,8 @@
             android:theme="@style/Theme.Slider" />
         <activity
             android:name="com.luck.picture.lib.ui.PictureImageGridActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|navigation"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Slider" />
         <activity
