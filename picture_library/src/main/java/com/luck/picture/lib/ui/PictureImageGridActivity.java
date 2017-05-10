@@ -168,7 +168,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                 // 第一次启动ImageActivity，没有获取过相册列表
                 // 先判断手机是否有读取权限，主要是针对6.0已上系统
                 if (hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    onTakePhoto();
+                    readLocalMedia();
                 } else {
                     requestPermission(FunctionConfig.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
                 }
