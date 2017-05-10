@@ -280,6 +280,7 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ###### 修复中兴手机单独拍照闪退问题
 ###### 修复三星SM A9100单独拍照闪退问题
 
+# 历史版本：
 ###### 版本 v1.5.0
 ###### 修复三星s6标题栏遮挡问题
 
