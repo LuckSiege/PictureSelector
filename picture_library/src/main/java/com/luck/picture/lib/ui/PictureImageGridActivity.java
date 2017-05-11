@@ -966,6 +966,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             public void onCompressSuccess(List<LocalMedia> images) {
                 // 压缩成功回调
                 onResult(images);
+
                 dismiss();
             }
 
