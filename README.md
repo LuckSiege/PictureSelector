@@ -300,10 +300,9 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 
 # 混淆配置
 ```
-   -keep class com.luck.picture.lib.model.** { *; }
-   
-   -dontwarn com.yalantis.ucrop**
-   -keep class com.yalantis.ucrop.entity.** { *; }
+   -keep class com.luck.picture.lib.** { *; }
+
+   -dontwarn com.yalantis.ucrop**
    -keep class com.yalantis.ucrop** { *; }
    -keep interface com.yalantis.ucrop** { *; }
 ```
