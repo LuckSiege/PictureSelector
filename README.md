@@ -298,6 +298,16 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ###### 6.PhotoView:1.2.4
 ###### 7.luban
 
+# 混淆配置
+```
+   -keep class com.yalantis.ucrop.entity.** { *; }
+   -keep class com.luck.picture.lib.model.** { *; }
+   
+   -dontwarn com.yalantis.ucrop**
+   -keep class com.yalantis.ucrop** { *; }
+   -keep interface com.yalantis.ucrop** { *; }
+```
+
 # 兼容性测试：
 ******腾讯优测-深度测试-通过率达到100%******
 
