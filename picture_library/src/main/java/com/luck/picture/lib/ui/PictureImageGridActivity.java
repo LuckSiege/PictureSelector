@@ -913,14 +913,15 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         switch (type) {
             case 1:
                 // 返回
-                List<LocalMedia> selectedImages = adapter.getSelectedImages();
-                if (selectedImages == null) {
-                    selectedImages = new ArrayList<>();
+                if (adapter != null) {
+                    List<LocalMedia> selectedImages = adapter.getSelectedImages();
+                    // 这里使用Activity启动模式singleTask，所以启动过该activity 刚不会重复启动
+                    startActivity(new Intent(mContext, PictureAlbumDirectoryActivity.class).putExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectedImages).putExtra(FunctionConfig.EXTRA_THIS_CONFIG, options));
+                    overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
+                    ImagesObservable.getInstance().notifySelectLocalMediaObserver(selectedImages);
+                } else {
+                    releaseCallBack();
                 }
-                // 这里使用Activity启动模式singleTask，所以启动过该activity 刚不会重复启动
-                startActivity(new Intent(mContext, PictureAlbumDirectoryActivity.class).putExtra(FunctionConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) selectedImages).putExtra(FunctionConfig.EXTRA_THIS_CONFIG, options));
-                overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
-                ImagesObservable.getInstance().notifySelectLocalMediaObserver(selectedImages);
                 finish();
                 break;
             case 2:
