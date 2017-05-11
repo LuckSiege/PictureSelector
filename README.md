@@ -74,7 +74,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.5.2'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.5.3'
 }
 
 ```
@@ -106,7 +106,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v1.5.2</version>
+      <version>v1.5.3</version>
 </dependency>
 
 ```
@@ -275,6 +275,10 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ```
 
 # 更新日志：
+###### 版本 v1.5.3
+###### 修复多图裁剪压缩模式下页面不关闭问题
+
+# 历史版本：
 ###### 版本 v1.5.2
 ###### 修复6.0手机单独拍照无权限闪退问题
 ###### 修复SoundPool在低于sdk21闪退问题
@@ -282,7 +286,6 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ###### 修复三星SM A9100单独拍照闪退问题
 ###### 移除eventbus 3.0
 
-# 历史版本：
 ###### 版本 v1.5.0
 ###### 修复三星s6标题栏遮挡问题
 
