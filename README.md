@@ -74,9 +74,20 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.5.0'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.5.2'
 }
 
+```
+
+项目根目录build.gradle加入
+
+```
+allprojects {
+   repositories {
+      jcenter()
+      maven { url 'https://jitpack.io' }
+   }
+}
 ```
 
 方式二 maven引入 
@@ -95,19 +106,9 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v1.5.0</version>
+      <version>v1.5.2</version>
 </dependency>
 
-```
-项目根目录  
-
-```
-allprojects {
-   repositories {
-      jcenter()
-      maven { url 'https://jitpack.io' }
-   }
-}
 ```
 
 ******常见错误*******
@@ -154,7 +155,7 @@ FunctionOptions options = new FunctionOptions.Builder()
         .setEnableQualityCompress() //是否启质量压缩
         .setMaxSelectNum() // 可选择图片的数量
 	.setMinSelectNum()// 图片或视频最低选择数量，默认代表无限制
-        .setSelectMode() // 单选 or 多选
+        .setSelectMode() // 单选 or 多选 FunctionConfig.MODE_SINGLE FunctionConfig.MODE_MULTIPLE
 	.setVideoS(0)// 查询多少秒内的视频 单位:秒
         .setShowCamera() //是否显示拍照选项 这里自动根据type 启动拍照或录视频
         .setEnablePreview() // 是否打开预览选项
@@ -274,7 +275,7 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ```
 
 # 更新日志：
-###### 版本 v1.5.1
+###### 版本 v1.5.2
 ###### 修复6.0手机单独拍照无权限闪退问题
 ###### 修复SoundPool在低于sdk21闪退问题
 ###### 修复中兴手机单独拍照闪退问题
