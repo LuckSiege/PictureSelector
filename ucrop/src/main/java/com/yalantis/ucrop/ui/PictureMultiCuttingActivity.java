@@ -188,6 +188,8 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         uCrop.withOptions(options);
         uCrop.start(PictureMultiCuttingActivity.this);
         overridePendingTransition(R.anim.fade, R.anim.hold);
+        dismiss();
+        finish();
     }
 
     /**
@@ -373,7 +375,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
                 for (LocalMedia media : images) {
                     media.setCut(true);
                 }
-
+                RxBus.getDefault().register(this);
                 EventEntity obj = new EventEntity(2775, images);
                 RxBus.getDefault().post(obj);
 
@@ -384,8 +386,8 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
                 }
             } else {
                 tv_right.setEnabled(true);
-                finish();
                 startMultiCopy(images.get(cutIndex).getPath());
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -404,9 +406,11 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
     }
 
     private void showPleaseDialog(String msg) {
-        dialog = new SweetAlertDialog(PictureMultiCuttingActivity.this);
-        dialog.setTitleText(msg);
-        dialog.show();
+        if (!isFinishing()) {
+            dialog = new SweetAlertDialog(PictureMultiCuttingActivity.this);
+            dialog.setTitleText(msg);
+            dialog.show();
+        }
     }
 
     private void dismiss() {
