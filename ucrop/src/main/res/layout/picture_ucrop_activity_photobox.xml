@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/ucrop_color_crop_background"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -50,7 +51,7 @@
         android:id="@+id/ucrop_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/ucrop_color_crop_background">
+      >
 
         <ImageView
             android:id="@+id/image_view_logo"

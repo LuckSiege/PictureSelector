@@ -4,6 +4,7 @@
     android:id="@+id/ucrop_photobox"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/ucrop_color_toolbar_widget"
     android:orientation="vertical">
 
     <RelativeLayout
