@@ -248,7 +248,11 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
      * @param position
      */
     public void onImageChecked(int position) {
-        check.setSelected(isSelected(images.get(position)));
+        if (images != null && images.size() > 0) {
+            check.setSelected(isSelected(images.get(position)));
+        } else {
+            check.setSelected(false);
+        }
     }
 
     /**
