@@ -262,7 +262,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                             .setThemeStyle(themeStyle) // 设置主题样式
                             .setNumComplete(false) // 0/9 完成  样式
                             .setClickVideo(clickVideo)// 点击声音
-                            .setFreeStyleCrop(true) // 裁剪是移动矩形框或是图片
+                            .setFreeStyleCrop(false) // 裁剪是移动矩形框或是图片
 //                            .setPicture_title_color(ContextCompat.getColor(MainActivity.this, R.color.black)) // 设置标题字体颜色
 //                            .setPicture_right_color(ContextCompat.getColor(MainActivity.this, R.color.black)) // 设置标题右边字体颜色
 //                            .setLeftBackDrawable(R.mipmap.back2) // 设置返回键图标
