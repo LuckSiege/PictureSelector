@@ -553,10 +553,6 @@ public class UCrop {
         }
 
 
-        public void setCircularCut(boolean isCircularCut) {
-            mOptionBundle.putBoolean("isCircularCut", isCircularCut);
-        }
-
         public void setLeftBackDrawable(int leftBackDrawable) {
             mOptionBundle.putInt("leftDrawable", leftBackDrawable);
         }

@@ -33,8 +33,7 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="4dp"
         android:padding="4dp"
-        android:scaleType="centerCrop"
-        android:src="@color/grey" />
+        android:scaleType="centerCrop" />
 
     <ImageView
         android:id="@+id/iv_delete"
