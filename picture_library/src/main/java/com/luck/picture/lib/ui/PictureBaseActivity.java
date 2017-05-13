@@ -66,6 +66,7 @@ public class PictureBaseActivity extends FragmentActivity {
     protected int mScreenHeight = 1280;
     protected int compressW;
     protected int compressH;
+    protected boolean freeStyleCrop;
     protected int maxB = 0;
     protected int grade;
     protected int leftDrawable;
@@ -128,6 +129,7 @@ public class PictureBaseActivity extends FragmentActivity {
         compressFlag = options.getCompressFlag();
         compressW = options.getCompressW();
         compressH = options.getCompressH();
+        freeStyleCrop = options.isFreeStyleCrop();
     }
 
     /**

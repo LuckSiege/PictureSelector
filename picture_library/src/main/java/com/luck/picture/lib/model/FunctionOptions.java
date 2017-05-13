@@ -60,6 +60,7 @@ public class FunctionOptions implements Serializable {
     private boolean isNumComplete;
     private boolean isImmersive;
     private boolean isClickVideo;
+    private boolean freeStyleCrop;
     /**
      * 是否启用像素压缩
      */
@@ -107,6 +108,14 @@ public class FunctionOptions implements Serializable {
             maxSelectNum = FunctionConfig.SELECT_MAX_NUM;
         }
         return maxSelectNum;
+    }
+
+    public boolean isFreeStyleCrop() {
+        return freeStyleCrop;
+    }
+
+    public void setFreeStyleCrop(boolean freeStyleCrop) {
+        this.freeStyleCrop = freeStyleCrop;
     }
 
     public boolean isImmersive() {
@@ -707,6 +716,11 @@ public class FunctionOptions implements Serializable {
 
         public Builder setClickVideo(boolean isClickVideo) {
             options.setClickVideo(isClickVideo);
+            return this;
+        }
+
+        public Builder setFreeStyleCrop(boolean freeStyleCrop) {
+            options.setFreeStyleCrop(freeStyleCrop);
             return this;
         }
 

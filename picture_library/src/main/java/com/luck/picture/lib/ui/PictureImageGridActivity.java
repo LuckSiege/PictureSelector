@@ -546,7 +546,9 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             options.setShowCropGrid(false);// 内部网格
             options.withAspectRatio(1, 1);
         }
+        options.setFreeStyleCropEnabled(freeStyleCrop);
         options.setCompressionQuality(compressQuality);
+        options.setFreeStyleCropEnabled(freeStyleCrop);
         options.withMaxResultSize(cropW, cropH);
         options.background_color(backgroundColor);
         options.localType(type);
@@ -602,6 +604,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                 options.setShowCropGrid(false);// 内部网格
                 options.withAspectRatio(1, 1);
             }
+            options.setFreeStyleCropEnabled(freeStyleCrop);
             options.setLocalMedia(medias);
             options.setCompressionQuality(compressQuality);
             options.withMaxResultSize(cropW, cropH);

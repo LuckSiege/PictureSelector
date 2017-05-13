@@ -429,6 +429,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
                 options.withAspectRatio(1, 1);
             }
             options.setLocalMedia(medias);
+            options.setFreeStyleCropEnabled(freeStyleCrop);
             options.setCompressionQuality(compressQuality);
             options.withMaxResultSize(cropW, cropH);
             options.background_color(backgroundColor);
