@@ -555,7 +555,6 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         options.setIsTakePhoto(takePhoto);
         options.setTitleColor(title_color);
         options.setRightColor(right_color);
-        options.setCircularCut(circularCut);
         options.setStatusBar(statusBar);
         options.setImmersiver(isImmersive);
         uCrop.withOptions(options);
