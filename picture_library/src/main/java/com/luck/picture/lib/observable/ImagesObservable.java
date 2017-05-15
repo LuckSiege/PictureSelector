@@ -67,6 +67,9 @@ public class ImagesObservable implements SubjectListener {
      * 读取图片
      */
     public List<LocalMedia> readLocalMedias() {
+        if (medias == null) {
+            medias = new ArrayList<>();
+        }
         return medias;
     }
 
@@ -74,6 +77,9 @@ public class ImagesObservable implements SubjectListener {
      * 读取所有文件夹图片
      */
     public List<LocalMediaFolder> readLocalFolders() {
+        if (folders == null) {
+            folders = new ArrayList<>();
+        }
         return folders;
     }
 
