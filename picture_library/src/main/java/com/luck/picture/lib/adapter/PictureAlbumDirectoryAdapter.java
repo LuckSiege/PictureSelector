@@ -40,6 +40,9 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
     }
 
     public List<LocalMediaFolder> getFolderData() {
+        if (folders == null){
+            folders = new ArrayList<>();
+        }
         return folders;
     }
 

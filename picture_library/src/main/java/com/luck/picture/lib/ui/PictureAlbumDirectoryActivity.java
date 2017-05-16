@@ -41,7 +41,7 @@ import java.util.List;
  */
 public class PictureAlbumDirectoryActivity extends PictureBaseActivity implements View.OnClickListener, PictureAlbumDirectoryAdapter.OnItemClickListener, ObserverListener {
 
-    private List<LocalMediaFolder> folders = new ArrayList<>();
+    private List<LocalMediaFolder> folders;
     private PictureAlbumDirectoryAdapter adapter;
     private RecyclerView recyclerView;
     private TextView tv_empty;

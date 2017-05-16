@@ -66,7 +66,7 @@ import java.util.List;
  */
 public class PictureImageGridActivity extends PictureBaseActivity implements View.OnClickListener, PictureImageGridAdapter.OnPhotoSelectChangedListener {
     public final String TAG = PictureImageGridActivity.class.getSimpleName();
-    private List<LocalMedia> images = new ArrayList<>();
+    private List<LocalMedia> images;
     private RecyclerView recyclerView;
     private TextView tv_img_num;
     private TextView tv_ok;
@@ -79,7 +79,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
     private PictureImageGridAdapter adapter;
     private String cameraPath;
     private SweetAlertDialog dialog;
-    private List<LocalMediaFolder> folders = new ArrayList<>();
+    private List<LocalMediaFolder> folders;
     private boolean is_top_activity;
     private boolean takePhoto = false;// 是否只单独调用拍照
     private boolean takePhotoSuccess = false;// 单独拍照是否成功
