@@ -14,40 +14,35 @@
         android:id="@+id/ll_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/margin_text"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        android:padding="@dimen/margin_text">
 
         <TextView
             android:id="@+id/check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:background="@drawable/checkbox_selector"
+            android:gravity="center"
             android:textColor="@color/ucrop_color_toolbar_widget"
             android:textSize="12sp" />
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/rl_duration"
+
+    <TextView
+        android:id="@+id/tv_duration"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/buybuybuy"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/tv_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="5dp"
-            android:text="时长："
-            android:textColor="@color/ucrop_color_toolbar_widget"
-            android:textSize="11sp" />
-    </RelativeLayout>
+        android:gravity="center|bottom|right"
+        android:paddingBottom="4dp"
+        android:paddingRight="5dp"
+        android:text="00:04"
+        android:textColor="@color/ucrop_color_toolbar_widget"
+        android:textSize="11sp"
+        android:visibility="gone" />
 </com.luck.picture.lib.widget.SquareRelativeLayout>

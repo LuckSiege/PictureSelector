@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -157,10 +156,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 Glide.with(context).load(path).diskCacheStrategy(DiskCacheStrategy.RESULT).crossFade()
                         .centerCrop().override(150, 150).into(contentHolder.picture);
                 long duration = image.getDuration();
-                if (contentHolder.rl_duration.getVisibility() == View.GONE) {
-                    contentHolder.rl_duration.setVisibility(View.VISIBLE);
+                if (contentHolder.tv_duration.getVisibility() == View.GONE) {
+                    contentHolder.tv_duration.setVisibility(View.VISIBLE);
                 }
-                contentHolder.tv_duration.setText("时长：" + timeParse(duration));
+                contentHolder.tv_duration.setText(timeParse(duration));
 
             } else {
                 DiskCacheStrategy result;
@@ -177,8 +176,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                         .centerCrop()
                         .override(150, 150)
                         .into(contentHolder.picture);
-                if (contentHolder.rl_duration.getVisibility() == View.VISIBLE) {
-                    contentHolder.rl_duration.setVisibility(View.GONE);
+                if (contentHolder.tv_duration.getVisibility() == View.VISIBLE) {
+                    contentHolder.tv_duration.setVisibility(View.GONE);
                 }
             }
             if (enablePreview || enablePreviewVideo) {
@@ -231,7 +230,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         TextView tv_duration;
         View contentView;
         LinearLayout ll_check;
-        RelativeLayout rl_duration;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -240,7 +238,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             check = (TextView) itemView.findViewById(R.id.check);
             ll_check = (LinearLayout) itemView.findViewById(R.id.ll_check);
             tv_duration = (TextView) itemView.findViewById(R.id.tv_duration);
-            rl_duration = (RelativeLayout) itemView.findViewById(R.id.rl_duration);
         }
     }
 
