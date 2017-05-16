@@ -144,7 +144,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
     /**
      * 多图裁剪
      */
-    protected void startMultiCopy(String path) {
+    protected void startMultiCrop(String path) {
         // 去裁剪
         MultiUCrop uCrop = MultiUCrop.of(Uri.parse(path), Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + ".jpg")));
         MultiUCrop.Options options = new MultiUCrop.Options();
@@ -388,7 +388,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
                 }
             } else {
                 tv_right.setEnabled(true);
-                startMultiCopy(images.get(cutIndex).getPath());
+                startMultiCrop(images.get(cutIndex).getPath());
 
             }
         } catch (Exception e) {
