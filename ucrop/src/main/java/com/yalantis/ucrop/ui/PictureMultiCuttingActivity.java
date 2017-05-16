@@ -66,6 +66,7 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
     private boolean circularCut;
     private int statusBar;
     private boolean isImmersive;
+    private float aspectRatioX, aspectRatioY;
 
     @IntDef({NONE, SCALE, ROTATE, ALL})
     @Retention(RetentionPolicy.SOURCE)
@@ -285,8 +286,8 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         mOverlayView.setCropGridStrokeWidth(intent.getIntExtra(UCrop.Options.EXTRA_CROP_GRID_STROKE_WIDTH, getResources().getDimensionPixelSize(R.dimen.ucrop_default_crop_grid_stoke_width)));
 
         // Aspect ratio options
-        float aspectRatioX = intent.getFloatExtra(UCrop.EXTRA_ASPECT_RATIO_X, 0);
-        float aspectRatioY = intent.getFloatExtra(UCrop.EXTRA_ASPECT_RATIO_Y, 0);
+        aspectRatioX = intent.getFloatExtra(UCrop.EXTRA_ASPECT_RATIO_X, 0);
+        aspectRatioY = intent.getFloatExtra(UCrop.EXTRA_ASPECT_RATIO_Y, 0);
 
         int aspectRationSelectedByDefault = intent.getIntExtra(UCrop.Options.EXTRA_ASPECT_RATIO_SELECTED_BY_DEFAULT, 0);
         ArrayList<AspectRatio> aspectRatioList = intent.getParcelableArrayListExtra(UCrop.Options.EXTRA_ASPECT_RATIO_OPTIONS);
@@ -389,7 +390,6 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
             } else {
                 tv_right.setEnabled(true);
                 startMultiCrop(images.get(cutIndex).getPath());
-
             }
         } catch (Exception e) {
             e.printStackTrace();
