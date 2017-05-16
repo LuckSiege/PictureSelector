@@ -59,7 +59,7 @@ public class PictureBaseActivity extends FragmentActivity {
     protected int previewBottomBgColor; // 预览底部背景色
     protected int previewTopBgColor; // 预览图片标题背景色
     protected int compressQuality = 0;// 压缩图片质量
-    protected List<LocalMedia> selectMedias = new ArrayList<>();
+    protected List<LocalMedia> selectMedias;
     protected FunctionOptions options;
     protected int compressFlag = 1;
     protected int mScreenWidth = 720;
