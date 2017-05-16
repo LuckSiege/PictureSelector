@@ -351,7 +351,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
 
             if (enableCrop && type == FunctionConfig.TYPE_IMAGE && selectMode == FunctionConfig.MODE_MULTIPLE) {
                 // 是图片和选择压缩并且是多张，调用批量压缩
-                startMultiCopy(images);
+                startMultiCrop(images);
             } else {
                 // 图片才压缩，视频不管
                 if (isCompress && type == FunctionConfig.TYPE_IMAGE) {
@@ -445,7 +445,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         switch (type) {
             case FunctionConfig.TYPE_IMAGE:
                 if (enableCrop && selectMode == FunctionConfig.MODE_SINGLE) {
-                    startCopy(media.getPath());
+                    startCrop(media.getPath());
                 } else if (!enableCrop && selectMode == FunctionConfig.MODE_SINGLE) {
                     ArrayList<LocalMedia> result = new ArrayList<>();
                     LocalMedia m = new LocalMedia();
@@ -500,7 +500,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
      *
      * @param path
      */
-    protected void startCopy(String path) {
+    protected void startCrop(String path) {
         // 如果开启裁剪 并且是单选
         // 去裁剪
         if (Utils.isFastDoubleClick()) {
@@ -555,7 +555,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
      *
      * @param medias
      */
-    protected void startMultiCopy(List<LocalMedia> medias) {
+    protected void startMultiCrop(List<LocalMedia> medias) {
         if (Utils.isFastDoubleClick()) {
             return;
         }
@@ -676,7 +676,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                     if (type == FunctionConfig.TYPE_IMAGE) {
                         if (enableCrop) {
                             // 去裁剪
-                            startCopy(cameraPath);
+                            startCrop(cameraPath);
                         } else if (isCompress) {
                             // 去压缩
                             result = new ArrayList<>();

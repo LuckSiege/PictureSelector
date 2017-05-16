@@ -368,7 +368,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
             }
             if (selectMode == FunctionConfig.MODE_MULTIPLE && enableCrop && type == FunctionConfig.TYPE_IMAGE) {
                 // 是图片和选择压缩并且是多张，调用批量压缩
-                startMultiCopy(selectImages);
+                startMultiCrop(selectImages);
             } else {
                 onResult(selectImages);
             }
@@ -397,7 +397,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
      *
      * @param medias
      */
-    protected void startMultiCopy(List<LocalMedia> medias) {
+    protected void startMultiCrop(List<LocalMedia> medias) {
         if (medias != null && medias.size() > 0) {
             LocalMedia media = medias.get(0);
             String path = media.getPath();
