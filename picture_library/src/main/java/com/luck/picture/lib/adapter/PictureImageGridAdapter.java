@@ -352,7 +352,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
      * @param duration
      * @return
      */
-    public String timeParse(long duration) {
+    public static String timeParse(long duration) {
         String time = "";
         long minute = duration / 60000;
         long seconds = duration % 60000;
