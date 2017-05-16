@@ -291,7 +291,7 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 
 
 # 项目使用第三方库：
-###### 1.裁剪使用ucrop库，github精品质库
+###### 1.裁剪使用ucrop库
 ###### 3.glide:3.7.0
 ###### 4.rxjava:2.0.5
 ###### 5.rxandroid:2.0.1
