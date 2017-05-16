@@ -18,7 +18,6 @@ import com.luck.picture.lib.model.FunctionOptions;
 import com.yalantis.ucrop.entity.LocalMedia;
 import com.yalantis.ucrop.util.LightStatusBarUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static android.R.attr.targetSdkVersion;
