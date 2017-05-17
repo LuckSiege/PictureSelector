@@ -301,7 +301,7 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ###### 3.glide:3.7.0
 ###### 4.rxjava:2.0.5
 ###### 5.rxandroid:2.0.1
-###### 6.PhotoView:1.2.4
+###### 6.photoView
 ###### 7.luban
 
 # 混淆配置
