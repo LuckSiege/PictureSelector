@@ -17,6 +17,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -257,7 +258,6 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             cameraPath = savedInstanceState.getString(FunctionConfig.BUNDLE_CAMERA_PATH);
             takePhoto = savedInstanceState.getBoolean(FunctionConfig.FUNCTION_TAKE);
             takePhotoSuccess = savedInstanceState.getBoolean(FunctionConfig.TAKE_PHOTO_SUCCESS);
-            takePhotoSuccess = true;
             options = (FunctionOptions) savedInstanceState.getSerializable(FunctionConfig.EXTRA_THIS_CONFIG);
             enableCrop = options.isEnableCrop();
             isCompress = options.isCompress();
@@ -721,13 +721,16 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                     mediaFolder.setFirstImagePath(media.getPath());
                     mediaFolder.setType(type);
                     List<LocalMedia> localMedias = mediaFolder.getImages();
+
                     if (localMedias.size() >= 100) {
                         localMedias.remove(localMedias.size() - 1);
                     }
                     List<LocalMedia> images = adapter.getImages();
-                    images.add(0, media);
+                    images.add(0, media);// 将新拍的相片，放在图片列表第一位
                     mediaFolder.setImages(images);
                     mediaFolder.setImageNum(mediaFolder.getImages().size());
+                    Log.i(mediaFolder.getName() + "::", mediaFolder.getImages().size() + "");
+
                     // 没有到最大选择量 才做默认选中刚拍好的
                     if (adapter != null) {
                         if (adapter.getSelectedImages().size() < maxSelectNum) {

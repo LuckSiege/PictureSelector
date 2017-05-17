@@ -1,7 +1,6 @@
 package com.luck.picture.lib.model;
 
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
@@ -102,9 +101,10 @@ public class LocalMediaLoader {
             @Override
             public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
                 try {
-                    ArrayList<LocalMediaFolder> imageFolders = new ArrayList<LocalMediaFolder>();
+                    List<LocalMediaFolder> imageFolders = new ArrayList<LocalMediaFolder>();
                     LocalMediaFolder allImageFolder = new LocalMediaFolder();
-                    List<LocalMedia> allImages = new ArrayList<LocalMedia>();
+                    List<LocalMedia> latelyImages = new ArrayList<LocalMedia>();
+                    index = 0;
                     if (data != null) {
                         int count = data.getCount();
                         if (count > 0) {
@@ -126,14 +126,14 @@ public class LocalMediaLoader {
                                 folder.setImageNum(folder.getImageNum() + 1);
                                 // 最近相册中  只添加最新的100条
                                 if (index <= 100) {
-                                    allImages.add(image);
+                                    latelyImages.add(image);
                                     allImageFolder.setType(type);
                                     allImageFolder.setImageNum(allImageFolder.getImageNum() + 1);
                                 }
 
                             } while (data.moveToNext());
 
-                            if (allImages.size() > 0) {
+                            if (latelyImages.size() > 0) {
                                 sortFolder(imageFolders);
                                 imageFolders.add(0, allImageFolder);
                                 String title = "";
@@ -145,15 +145,12 @@ public class LocalMediaLoader {
                                         title = activity.getString(R.string.picture_lately_image);
                                         break;
                                 }
-                                allImageFolder.setFirstImagePath(allImages.get(0).getPath());
+                                allImageFolder.setFirstImagePath(latelyImages.get(0).getPath());
                                 allImageFolder.setName(title);
                                 allImageFolder.setType(type);
-                                allImageFolder.setImages(allImages);
+                                allImageFolder.setImages(latelyImages);
                             }
                             imageLoadListener.loadComplete(imageFolders);
-                            if (Build.VERSION.SDK_INT < 14) {
-                                data.close();
-                            }
                         } else {
                             // 如果没有相册
                             imageLoadListener.loadComplete(imageFolders);
