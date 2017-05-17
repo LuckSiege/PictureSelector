@@ -379,7 +379,7 @@ public class FunctionOptions implements Serializable {
 
     public int getBottomBgColor() {
         if (bottomBgColor == 0) {
-            bottomBgColor = Color.parseColor("#f3f3f3");
+            bottomBgColor = Color.parseColor("#fafafa");
         }
         return bottomBgColor;
     }
