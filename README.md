@@ -278,7 +278,7 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 
 ###### 版本 v1.5.5
 ###### 1.修复QQ选择风格不同相册下选择数字下标不刷新问题
-###### 2.修复拍照和裁剪时图片列表图片错乱问题
+###### 2.修复拍照和截屏时图片列表图片错乱问题
 
 # 历史版本：
 
