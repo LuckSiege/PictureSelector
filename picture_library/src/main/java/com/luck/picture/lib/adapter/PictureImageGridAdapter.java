@@ -312,7 +312,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
      */
     private void subSelectPosition() {
         if (is_checked_num) {
-            for (int index = 0, len = selectImages.size(); index < len; index++) {
+            int size = selectImages.size();
+            for (int index = 0, len = size; index < len; index++) {
                 LocalMedia media = selectImages.get(index);
                 media.setNum(index + 1);
                 notifyItemChanged(media.position);
