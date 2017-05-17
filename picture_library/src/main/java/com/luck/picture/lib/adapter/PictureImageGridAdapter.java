@@ -47,6 +47,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private boolean clickVideo;
     private SoundPool soundPool;
     private int soundID;
+    private Animation animation;
 
     public PictureImageGridAdapter(Context context, boolean isGif, boolean showCamera, int maxSelectNum, int mode, boolean enablePreview, boolean enablePreviewVideo, int cb_drawable, boolean is_checked_num, int type, boolean clickVideo, SoundPool soundPool, int soundID) {
         this.context = context;
@@ -62,6 +63,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.clickVideo = clickVideo;
         this.soundPool = soundPool;
         this.soundID = soundID;
+        animation = OptAnimationLoader.loadAnimation(context, R.anim.modal_in);
     }
 
     public void bindImagesData(List<LocalMedia> images) {
@@ -87,8 +89,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     public void bindSelectImages(List<LocalMedia> images) {
         this.selectImages = images;
-        notifyDataSetChanged();
         subSelectPosition();
+        notifyDataSetChanged();
         if (imageSelectChangedListener != null) {
             imageSelectChangedListener.onChange(selectImages);
         }
@@ -258,6 +260,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         for (LocalMedia media : selectImages) {
             if (media.getPath().equals(imageBean.getPath())) {
                 imageBean.setNum(media.getNum());
+                media.setPosition(imageBean.getPosition());
                 viewHolder.check.setText(String.valueOf(imageBean.getNum()));
             }
         }
@@ -325,8 +328,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         holder.check.setSelected(isChecked);
         if (isChecked) {
             if (isAnim) {
-                Animation animation = OptAnimationLoader.loadAnimation(context, R.anim.modal_in);
-                holder.check.startAnimation(animation);
+                if (animation != null)
+                    holder.check.startAnimation(animation);
             }
             holder.picture.setColorFilter(ContextCompat.getColor(context, R.color.image_overlay2), PorterDuff.Mode.SRC_ATOP);
         } else {
