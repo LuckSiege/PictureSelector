@@ -845,7 +845,6 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             }
             releaseCallBack();
         } else {
-            showToast("回调接口为空了");
         }
         EventEntity obj = new EventEntity(FunctionConfig.CLOSE_FLAG);
         RxBus.getDefault().post(obj);
