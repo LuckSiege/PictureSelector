@@ -27,8 +27,8 @@ import java.util.List;
  */
 public class GridImageAdapter extends
         RecyclerView.Adapter<GridImageAdapter.ViewHolder> {
-    public final int TYPE_CAMERA = 1;
-    public final int TYPE_PICTURE = 2;
+    public static final int TYPE_CAMERA = 1;
+    public static final int TYPE_PICTURE = 2;
     private LayoutInflater mInflater;
     private List<LocalMedia> list = new ArrayList<>();
     private int selectMax = 9;
