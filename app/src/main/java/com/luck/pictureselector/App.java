@@ -24,6 +24,6 @@ public class App extends Application {
         }
         LeakCanary.install(this);
         //bugly追踪的上报测试时候设置为true
-        CrashReport.initCrashReport(getApplicationContext(), "84c42856dd", true);
+        CrashReport.initCrashReport(getApplicationContext(), "84c42856dd", false);
     }
 }

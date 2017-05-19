@@ -226,6 +226,8 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                     FunctionOptions options = new FunctionOptions.Builder()
                             .setType(selectType) // 图片or视频 FunctionConfig.TYPE_IMAGE  TYPE_VIDEO
                             .setCropMode(copyMode) // 裁剪模式 默认、1:1、3:4、3:2、16:9
+//                            .setOffsetX() // 自定义裁剪比例
+//                            .setOffsetY() // 自定义裁剪比例
                             .setCompress(isCompress) //是否压缩
                             .setEnablePixelCompress(true) //是否启用像素压缩
                             .setEnableQualityCompress(true) //是否启质量压缩
