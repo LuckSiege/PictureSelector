@@ -153,22 +153,26 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         // 去裁剪
         MultiUCrop uCrop = MultiUCrop.of(Uri.parse(path), Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + ".jpg")));
         MultiUCrop.Options options = new MultiUCrop.Options();
-        switch (copyMode) {
-            case 0:
-                options.withAspectRatio(0, 0);
-                break;
-            case 11:
-                options.withAspectRatio(1, 1);
-                break;
-            case 32:
-                options.withAspectRatio(3, 2);
-                break;
-            case 34:
-                options.withAspectRatio(3, 4);
-                break;
-            case 169:
-                options.withAspectRatio(16, 9);
-                break;
+        if (aspectRatioX > 0 && aspectRatioY > 0) {
+            options.withAspectRatio(aspectRatioX, aspectRatioY);
+        } else {
+            switch (copyMode) {
+                case 0:
+                    options.withAspectRatio(0, 0);
+                    break;
+                case 11:
+                    options.withAspectRatio(1, 1);
+                    break;
+                case 32:
+                    options.withAspectRatio(3, 2);
+                    break;
+                case 34:
+                    options.withAspectRatio(3, 4);
+                    break;
+                case 169:
+                    options.withAspectRatio(16, 9);
+                    break;
+            }
         }
         // 圆形裁剪
         if (circularCut) {
