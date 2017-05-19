@@ -88,6 +88,8 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
     private int copyMode = 0;// 裁剪模式
     private int leftDrawable;
     private int title_color, right_color;
+    private boolean rotateEnabled;
+    private boolean scaleEnabled;
 
     //EventBus 3.0 回调
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -117,14 +119,16 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         copyMode = intent.getIntExtra("copyMode", 0);
         isCompress = intent.getBooleanExtra("isCompress", false);
         isImmersive = intent.getBooleanExtra("isImmersive", false);
-        if (isImmersive) {
-            LightStatusBarUtils.setLightStatusBar(this, true);
-        }
         circularCut = intent.getBooleanExtra("isCircularCut", false);
+        scaleEnabled = intent.getBooleanExtra("scaleEnabled", true);
+        rotateEnabled = intent.getBooleanExtra("rotateEnabled", true);
+
         leftDrawable = intent.getIntExtra("leftDrawable", R.drawable.picture_back);
         title_color = getIntent().getIntExtra("titleColor", R.color.ucrop_color_widget_background);
         right_color = getIntent().getIntExtra("rightColor", R.color.ucrop_color_widget_background);
-
+        if (isImmersive) {
+            LightStatusBarUtils.setLightStatusBar(this, true);
+        }
         for (LocalMedia media : images) {
             media.setCut(false);
         }
@@ -319,6 +323,8 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         mUCropView = (UCropView) findViewById(R.id.ucrop);
         mGestureCropImageView = mUCropView.getCropImageView();
         mOverlayView = mUCropView.getOverlayView();
+        mGestureCropImageView.setRotateEnabled(rotateEnabled);
+        mGestureCropImageView.setScaleEnabled(scaleEnabled);
 
         mGestureCropImageView.setTransformImageListener(mImageListener);
 

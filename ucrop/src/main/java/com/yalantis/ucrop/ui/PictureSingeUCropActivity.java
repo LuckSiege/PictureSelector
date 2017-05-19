@@ -79,6 +79,8 @@ public class PictureSingeUCropActivity extends FragmentActivity {
     private int title_color, right_color;
     private int statusBar;
     private boolean isImmersive;
+    private boolean rotateEnabled;
+    private boolean scaleEnabled;
 
     //EventBus 3.0 回调
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -103,12 +105,14 @@ public class PictureSingeUCropActivity extends FragmentActivity {
         final Intent intent = getIntent();
         takePhoto = intent.getBooleanExtra("takePhoto", false);
         isImmersive = intent.getBooleanExtra("isImmersive", false);
-        if (isImmersive) {
-            LightStatusBarUtils.setLightStatusBar(this, true);
-        }
+        scaleEnabled = intent.getBooleanExtra("scaleEnabled", true);
+        rotateEnabled = intent.getBooleanExtra("rotateEnabled", true);
         leftDrawable = intent.getIntExtra("leftDrawable", R.drawable.picture_back);
         title_color = getIntent().getIntExtra("titleColor", R.color.ucrop_color_widget_background);
         right_color = getIntent().getIntExtra("rightColor", R.color.ucrop_color_widget_background);
+        if (isImmersive) {
+            LightStatusBarUtils.setLightStatusBar(this, true);
+        }
         setupViews(intent);
         setImageData(intent);
     }
@@ -257,7 +261,8 @@ public class PictureSingeUCropActivity extends FragmentActivity {
         mUCropView = (UCropView) findViewById(R.id.ucrop);
         mGestureCropImageView = mUCropView.getCropImageView();
         mOverlayView = mUCropView.getOverlayView();
-
+        mGestureCropImageView.setRotateEnabled(rotateEnabled);
+        mGestureCropImageView.setScaleEnabled(scaleEnabled);
         mGestureCropImageView.setTransformImageListener(mImageListener);
 
         ((ImageView) findViewById(R.id.image_view_logo)).setColorFilter(mLogoColor, PorterDuff.Mode.SRC_ATOP);
