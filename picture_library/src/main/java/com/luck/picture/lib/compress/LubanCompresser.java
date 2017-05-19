@@ -82,6 +82,10 @@ class LubanCompresser {
     }
 
     private File compressImage(int gear, File file) throws IOException {
+        // 网络图片返回原图
+        if (file != null && file.getPath().startsWith("http")) {
+            return file;
+        }
         switch (gear) {
             case Luban.THIRD_GEAR:
                 return thirdCompress(file);

@@ -110,9 +110,15 @@ public class LuBanCompress implements CompressInterface {
 
     private void handleCompressCallBack(List<File> files) {
         for (int i = 0, j = images.size(); i < j; i++) {
+            String path = files.get(i).getPath();// 压缩成功后的地址
             LocalMedia image = images.get(i);
-            image.setCompressed(true);
-            image.setCompressPath(files.get(i).getPath());
+            // 如果是网络图片则不压缩
+            if (path != null && path.startsWith("http")) {
+                image.setCompressPath("");
+            } else {
+                image.setCompressed(true);
+                image.setCompressPath(path);
+            }
         }
         listener.onCompressSuccess(images);
     }
