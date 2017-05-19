@@ -63,6 +63,8 @@ public class FunctionOptions implements Serializable {
     private boolean freeStyleCrop;
     private boolean rotateEnabled = true;
     private boolean scaleEnabled = true;
+    private int offsetX;
+    private int offsetY;
 
     /**
      * 是否启用像素压缩
@@ -92,6 +94,22 @@ public class FunctionOptions implements Serializable {
             type = FunctionConfig.TYPE_IMAGE;
         }
         return type;
+    }
+
+    public int getOffsetX() {
+        return offsetX;
+    }
+
+    public void setOffsetX(int offsetX) {
+        this.offsetX = offsetX;
+    }
+
+    public int getOffsetY() {
+        return offsetY;
+    }
+
+    public void setOffsetY(int offsetY) {
+        this.offsetY = offsetY;
     }
 
     public boolean isRotateEnabled() {
@@ -753,6 +771,16 @@ public class FunctionOptions implements Serializable {
 
         public Builder setScaleEnabled(boolean scaleEnabled) {
             options.setScaleEnabled(scaleEnabled);
+            return this;
+        }
+
+        public Builder setOffsetX(int offsetX) {
+            options.setOffsetX(offsetX);
+            return this;
+        }
+
+        public Builder setOffsetY(int offsetY) {
+            options.setOffsetY(offsetY);
             return this;
         }
 

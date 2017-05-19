@@ -404,22 +404,26 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
             // 去裁剪
             MultiUCrop uCrop = MultiUCrop.of(Uri.parse(path), Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + ".jpg")));
             MultiUCrop.Options options = new MultiUCrop.Options();
-            switch (copyMode) {
-                case FunctionConfig.CROP_MODEL_DEFAULT:
-                    options.withAspectRatio(0, 0);
-                    break;
-                case FunctionConfig.CROP_MODEL_1_1:
-                    options.withAspectRatio(1, 1);
-                    break;
-                case FunctionConfig.CROP_MODEL_3_2:
-                    options.withAspectRatio(3, 2);
-                    break;
-                case FunctionConfig.CROP_MODEL_3_4:
-                    options.withAspectRatio(3, 4);
-                    break;
-                case FunctionConfig.CROP_MODEL_16_9:
-                    options.withAspectRatio(16, 9);
-                    break;
+            if (offsetX > 0 && offsetY > 0) {
+                options.withAspectRatio(offsetX, offsetY);
+            } else {
+                switch (copyMode) {
+                    case FunctionConfig.CROP_MODEL_DEFAULT:
+                        options.withAspectRatio(0, 0);
+                        break;
+                    case FunctionConfig.CROP_MODEL_1_1:
+                        options.withAspectRatio(1, 1);
+                        break;
+                    case FunctionConfig.CROP_MODEL_3_2:
+                        options.withAspectRatio(3, 2);
+                        break;
+                    case FunctionConfig.CROP_MODEL_3_4:
+                        options.withAspectRatio(3, 4);
+                        break;
+                    case FunctionConfig.CROP_MODEL_16_9:
+                        options.withAspectRatio(16, 9);
+                        break;
+                }
             }
             // 圆形裁剪
             if (circularCut) {

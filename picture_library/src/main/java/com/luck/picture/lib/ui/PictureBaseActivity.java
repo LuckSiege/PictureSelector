@@ -77,6 +77,8 @@ public class PictureBaseActivity extends FragmentActivity {
     protected boolean clickVideo;
     protected boolean rotateEnabled;
     protected boolean scaleEnabled;
+    protected int offsetX;
+    protected int offsetY;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -116,6 +118,8 @@ public class PictureBaseActivity extends FragmentActivity {
         spanCount = options.getImageSpanCount();
         cropW = options.getCropW();
         cropH = options.getCropH();
+        offsetX = options.getOffsetX();
+        offsetY = options.getOffsetY();
         maxB = options.getMaxB();
         grade = options.getGrade();
         statusBar = options.getStatusBar();
