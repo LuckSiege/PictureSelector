@@ -75,6 +75,8 @@ public class PictureBaseActivity extends FragmentActivity {
     protected boolean isImmersive;
     protected boolean isNumComplete;
     protected boolean clickVideo;
+    protected boolean rotateEnabled;
+    protected boolean scaleEnabled;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,6 +100,8 @@ public class PictureBaseActivity extends FragmentActivity {
         minSelectNum = options.getMinSelectNum();
         circularCut = options.isCircularCut();
         clickVideo = options.isClickVideo();
+        rotateEnabled = options.isRotateEnabled();
+        scaleEnabled = options.isScaleEnabled();
         title_color = options.getPicture_title_color();
         right_color = options.getPicture_right_color();
         copyMode = options.getCropMode();

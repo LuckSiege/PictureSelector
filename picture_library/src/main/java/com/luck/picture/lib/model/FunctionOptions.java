@@ -61,6 +61,9 @@ public class FunctionOptions implements Serializable {
     private boolean isImmersive;
     private boolean isClickVideo;
     private boolean freeStyleCrop;
+    private boolean rotateEnabled = true;
+    private boolean scaleEnabled = true;
+
     /**
      * 是否启用像素压缩
      */
@@ -89,6 +92,22 @@ public class FunctionOptions implements Serializable {
             type = FunctionConfig.TYPE_IMAGE;
         }
         return type;
+    }
+
+    public boolean isRotateEnabled() {
+        return rotateEnabled;
+    }
+
+    public void setRotateEnabled(boolean rotateEnabled) {
+        this.rotateEnabled = rotateEnabled;
+    }
+
+    public boolean isScaleEnabled() {
+        return scaleEnabled;
+    }
+
+    public void setScaleEnabled(boolean scaleEnabled) {
+        this.scaleEnabled = scaleEnabled;
     }
 
     public void setType(int type) {
@@ -724,6 +743,16 @@ public class FunctionOptions implements Serializable {
 
         public Builder setFreeStyleCrop(boolean freeStyleCrop) {
             options.setFreeStyleCrop(freeStyleCrop);
+            return this;
+        }
+
+        public Builder setRotateEnabled(boolean rotateEnabled) {
+            options.setRotateEnabled(rotateEnabled);
+            return this;
+        }
+
+        public Builder setScaleEnabled(boolean scaleEnabled) {
+            options.setScaleEnabled(scaleEnabled);
             return this;
         }
 

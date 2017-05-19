@@ -441,6 +441,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
             options.setRightColor(right_color);
             options.setStatusBar(statusBar);
             options.setImmersiver(isImmersive);
+            options.setRotateEnabled(rotateEnabled);
+            options.setScaleEnabled(scaleEnabled);
             uCrop.withOptions(options);
             uCrop.start(PicturePreviewActivity.this);
         }

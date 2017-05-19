@@ -545,6 +545,8 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         options.setRightColor(right_color);
         options.setStatusBar(statusBar);
         options.setImmersiver(isImmersive);
+        options.setRotateEnabled(rotateEnabled);
+        options.setScaleEnabled(scaleEnabled);
         uCrop.withOptions(options);
         uCrop.start(PictureImageGridActivity.this);
     }
@@ -603,6 +605,8 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             options.copyMode(copyMode);
             options.setImmersiver(isImmersive);
             options.setStatusBar(statusBar);
+            options.setRotateEnabled(rotateEnabled);
+            options.setScaleEnabled(scaleEnabled);
             uCrop.withOptions(options);
             uCrop.start(PictureImageGridActivity.this);
         }
