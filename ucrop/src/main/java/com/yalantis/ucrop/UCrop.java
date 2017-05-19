@@ -572,7 +572,7 @@ public class UCrop {
         public void setImmersiver(boolean isImmersive) {
             mOptionBundle.putBoolean("isImmersive", isImmersive);
         }
-
+        
         public void setRotateEnabled(boolean rotateEnabled) {
             mOptionBundle.putBoolean("rotateEnabled", rotateEnabled);
         }
