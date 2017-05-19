@@ -204,6 +204,10 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
 
         if (inputUri != null && outputUri != null) {
             try {
+                String path = inputUri.toString();
+                if (path.startsWith("http")) {
+                    showPleaseDialog(getString(R.string.picture_please));
+                }
                 mGestureCropImageView.setImageUri(inputUri, outputUri);
             } catch (Exception e) {
                 setResultError(e);
@@ -335,11 +339,13 @@ public class PictureMultiCuttingActivity extends FragmentActivity {
         public void onLoadComplete() {
             mUCropView.animate().alpha(1).setDuration(300).setInterpolator(new AccelerateInterpolator());
             supportInvalidateOptionsMenu();
+            dismiss();
         }
 
         @Override
         public void onLoadFailure(@NonNull Exception e) {
             setResultError(e);
+            dismiss();
             finish();
         }
 

@@ -1,8 +1,6 @@
 package com.yalantis.ucrop.task;
 
-import android.Manifest.permission;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -12,15 +10,15 @@ import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.yalantis.ucrop.callback.BitmapLoadCallback;
 import com.yalantis.ucrop.model.ExifInfo;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
-import com.yalantis.ucrop.util.FileUtils;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -29,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 
 /**
  * Creates and returns a Bitmap for a given Uri(String url).
@@ -159,22 +158,54 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
         if (!TextUtils.isEmpty(path) && new File(path).exists()) {
             mInputUri = Uri.fromFile(new File(path));
         } else {
-            try {
-                copyFile(mInputUri, mOutputUri);
-            } catch (NullPointerException | IOException e) {
-                Log.e(TAG, "Copying failed", e);
-                throw e;
+            String inputUriScheme = mInputUri.getScheme();
+            Log.d(TAG, "Uri scheme: " + inputUriScheme);
+            if ("http".equals(inputUriScheme) || "https".equals(inputUriScheme)) {
+                try {
+                    downloadFile(mInputUri, mOutputUri);
+                } catch (NullPointerException | IOException e) {
+                    Log.e(TAG, "Downloading failed", e);
+                    throw e;
+                }
+            } else {
+                try {
+                    copyFile(mInputUri, mOutputUri);
+                } catch (NullPointerException | IOException e) {
+                    Log.e(TAG, "Copying failed", e);
+                    throw e;
+                }
             }
         }
     }
 
-    private String getFilePath() {
-        if (ContextCompat.checkSelfPermission(mContext, permission.READ_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED) {
-            return FileUtils.getPath(mContext, mInputUri);
-        } else {
-            return null;
+    private void downloadFile(@NonNull Uri inputUri, @Nullable Uri outputUri) throws NullPointerException, IOException {
+        Log.d(TAG, "downloadFile");
+
+        if (outputUri == null) {
+            throw new NullPointerException("Output Uri is null - cannot download image");
         }
+        try {
+            URL u = new URL(inputUri.toString());
+            byte[] buffer = new byte[1024];
+            int read;
+            BufferedInputStream bin;
+            bin = new BufferedInputStream(u.openStream());
+            OutputStream outputStream = mContext.getContentResolver().openOutputStream(outputUri);
+            BufferedOutputStream bout = new BufferedOutputStream(
+                    outputStream);
+            while ((read = bin.read(buffer)) > -1) {
+                bout.write(buffer, 0, read);
+            }
+            bout.flush();
+            bout.close();
+            bin.close();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+        mInputUri = mOutputUri;
     }
 
     private void copyFile(@NonNull Uri inputUri, @Nullable Uri outputUri) throws NullPointerException, IOException {
