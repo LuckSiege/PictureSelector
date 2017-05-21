@@ -227,7 +227,7 @@ public class PictureSingeUCropActivity extends FragmentActivity {
             public void onClick(View view) {
                 if (takePhoto) {
                     // 单独拍照 直接返回应用页面，防止显示空白
-                    EventEntity obj = new EventEntity(2773);
+                    EventEntity obj = new EventEntity(2018);
                     RxBus.getDefault().post(obj);
                 }
                 onBackPressed();
@@ -360,8 +360,8 @@ public class PictureSingeUCropActivity extends FragmentActivity {
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
                 if (takePhoto) {
-                    // 单独拍照 直接返回应用页面，防止显示空白
-                    EventEntity obj = new EventEntity(2773);
+                    // 单独拍照 直接返回应用页面，防止显示空白 PictureImageGridActivity
+                    EventEntity obj = new EventEntity(2018);
                     RxBus.getDefault().post(obj);
                 }
                 finish();
