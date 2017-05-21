@@ -481,6 +481,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         }
     }
 
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(new ContextWrapper(newBase) {
