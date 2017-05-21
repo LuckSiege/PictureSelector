@@ -23,6 +23,13 @@ import java.util.List;
  */
 public class PictureConfig {
     public FunctionOptions options;
+
+    public static OnSelectResultCallback resultCallback;
+
+    public static OnSelectResultCallback getResultCallback() {
+        return resultCallback;
+    }
+
     public static PictureConfig sInstance;
 
     public static PictureConfig getInstance() {
@@ -36,15 +43,6 @@ public class PictureConfig {
         return sInstance;
     }
 
-    public PictureConfig() {
-
-    }
-
-    public static OnSelectResultCallback resultCallback;
-
-    public static OnSelectResultCallback getResultCallback() {
-        return resultCallback;
-    }
 
     public PictureConfig init(FunctionOptions options) {
         this.options = options;
@@ -133,7 +131,6 @@ public class PictureConfig {
             activity.startActivity(intent);
         }
     }
-
 
     /**
      * 处理结果

@@ -13,6 +13,7 @@
 
     <application
         android:allowBackup="true"
+        android:persistent="true"
         android:supportsRtl="true">
         <activity
             android:name="com.luck.picture.lib.ui.PictureAlbumDirectoryActivity"
@@ -22,8 +23,7 @@
             android:theme="@style/Theme.Slider" />
         <activity
             android:name="com.luck.picture.lib.ui.PictureImageGridActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|navigation"
-            android:launchMode="singleTop"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Slider" />
         <activity

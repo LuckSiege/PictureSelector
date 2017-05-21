@@ -2,7 +2,6 @@ package com.luck.picture.lib.ui;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -86,6 +85,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
     private boolean takePhotoSuccess = false;// 单独拍照是否成功
     private SoundPool soundPool;//声明一个SoundPool
     private int soundID;//创建某个声音对应的音频ID
+    PictureConfig.OnSelectResultCallback resultCallback;
 
     //EventBus 3.0 回调
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -107,6 +107,12 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                 if (result == null)
                     result = new ArrayList<>();
                 handleCropResult(result);
+                break;
+            case FunctionConfig.CLOSE_SINGE_CROP_FLAG:
+                // 只拍照模式下，单独裁剪页面按返回键时 关闭activity，并且释放静态
+                releaseCallBack();
+                finish();
+                overridePendingTransition(0, R.anim.slide_bottom_out);
                 break;
         }
     }
@@ -258,6 +264,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             cameraPath = savedInstanceState.getString(FunctionConfig.BUNDLE_CAMERA_PATH);
             takePhoto = savedInstanceState.getBoolean(FunctionConfig.FUNCTION_TAKE);
             takePhotoSuccess = savedInstanceState.getBoolean(FunctionConfig.TAKE_PHOTO_SUCCESS);
+            takePhotoSuccess = true;
             options = (FunctionOptions) savedInstanceState.getSerializable(FunctionConfig.EXTRA_THIS_CONFIG);
             enableCrop = options.isEnableCrop();
             isCompress = options.isCompress();
@@ -761,6 +768,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             // 取消拍照
             if (takePhoto && !takePhotoSuccess) {
                 recycleCallBack();
+                releaseCallBack();
             }
         }
     }
@@ -842,7 +850,7 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         for (LocalMedia media : images) {
             result.add(media);
         }
-        PictureConfig.OnSelectResultCallback resultCallback = PictureConfig.getResultCallback();
+        resultCallback = PictureConfig.getResultCallback();
         if (resultCallback != null) {
             switch (selectMode) {
                 case FunctionConfig.MODE_SINGLE:
@@ -857,8 +865,8 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                     break;
             }
             releaseCallBack();
-        } else {
         }
+
         EventEntity obj = new EventEntity(FunctionConfig.CLOSE_FLAG);
         RxBus.getDefault().post(obj);
         if ((takePhoto && takePhotoSuccess) || (enableCrop && isCompress && selectMode == FunctionConfig.MODE_SINGLE)) {
@@ -1037,9 +1045,4 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         }
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-    }
 }

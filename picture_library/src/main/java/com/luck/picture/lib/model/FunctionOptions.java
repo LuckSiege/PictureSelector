@@ -1,7 +1,6 @@
 package com.luck.picture.lib.model;
 
 import android.graphics.Color;
-
 import com.luck.picture.lib.R;
 import com.yalantis.ucrop.entity.LocalMedia;
 
