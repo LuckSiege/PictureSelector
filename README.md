@@ -74,7 +74,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.5.5'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.5.6'
 }
 
 ```
@@ -106,7 +106,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v1.5.5</version>
+      <version>v1.5.6</version>
 </dependency>
 
 ```
@@ -276,29 +276,19 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 
 # 更新日志：
 
+###### 版本 v1.5.6
+###### 1.修复传入网络图片压缩失败问题
+###### 2.修复传入网络图片裁剪失败问题
+
+# 历史版本：
+
 ###### 版本 v1.5.5
 ###### 1.修复QQ选择风格不同相册下选择数字下标不刷新问题
 ###### 2.修复拍照和截屏时图片列表图片错乱问题
 
-# 历史版本：
-
 ###### 版本 v1.5.4
 ###### 移除多余代码，删除多余资源文件
 ###### 新增图片裁剪框是否可滑动设置
-
-###### 版本 v1.5.3
-###### 修复多图裁剪压缩模式下页面不关闭问题
-
-###### 版本 v1.5.2
-###### 修复6.0手机单独拍照无权限闪退问题
-###### 修复SoundPool在低于sdk21闪退问题
-###### 修复中兴手机单独拍照闪退问题
-###### 修复三星SM A9100单独拍照闪退问题
-###### 移除eventbus 3.0
-
-###### 版本 v1.5.0
-###### 修复三星s6标题栏遮挡问题
-
 
 # 项目使用第三方库：
 ###### 1.裁剪使用ucrop库
