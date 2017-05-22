@@ -13,7 +13,6 @@
 
     <application
         android:allowBackup="true"
-        android:persistent="true"
         android:supportsRtl="true">
         <activity
             android:name="com.luck.picture.lib.ui.PictureAlbumDirectoryActivity"
