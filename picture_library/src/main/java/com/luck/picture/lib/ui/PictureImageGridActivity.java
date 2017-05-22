@@ -16,7 +16,6 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -85,7 +84,6 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
     private boolean takePhotoSuccess = false;// 单独拍照是否成功
     private SoundPool soundPool;//声明一个SoundPool
     private int soundID;//创建某个声音对应的音频ID
-    PictureConfig.OnSelectResultCallback resultCallback;
 
     //EventBus 3.0 回调
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -749,7 +747,6 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
                     images.add(0, media);// 将新拍的相片，放在图片列表第一位
                     mediaFolder.setImages(images);
                     mediaFolder.setImageNum(mediaFolder.getImages().size());
-                    Log.i(mediaFolder.getName() + "::", mediaFolder.getImages().size() + "");
 
                     // 没有到最大选择量 才做默认选中刚拍好的
                     if (adapter != null) {
@@ -850,23 +847,27 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
         for (LocalMedia media : images) {
             result.add(media);
         }
-        resultCallback = PictureConfig.getResultCallback();
-        if (resultCallback != null) {
-            switch (selectMode) {
-                case FunctionConfig.MODE_SINGLE:
-                    // 单选
-                    if (result.size() > 0) {
-                        resultCallback.onSelectSuccess(result.get(0));
-                    }
-                    break;
-                case FunctionConfig.MODE_MULTIPLE:
-                    // 多选
-                    resultCallback.onSelectSuccess(result);
-                    break;
+        if (takePhoto) {
+            // 单独拍照在手机内存不足时会让单例回收，导致回调失败，所以单独拍照采用setResult()返回图片
+            setResult(RESULT_OK, new Intent().putExtra(FunctionConfig.EXTRA_RESULT, (Serializable) result));
+        } else {
+            PictureConfig.OnSelectResultCallback resultCallback = PictureConfig.getResultCallback();
+            if (resultCallback != null) {
+                switch (selectMode) {
+                    case FunctionConfig.MODE_SINGLE:
+                        // 单选
+                        if (result.size() > 0) {
+                            resultCallback.onSelectSuccess(result.get(0));
+                        }
+                        break;
+                    case FunctionConfig.MODE_MULTIPLE:
+                        // 多选
+                        resultCallback.onSelectSuccess(result);
+                        break;
+                }
+                releaseCallBack();
             }
-            releaseCallBack();
         }
-
         EventEntity obj = new EventEntity(FunctionConfig.CLOSE_FLAG);
         RxBus.getDefault().post(obj);
         if ((takePhoto && takePhotoSuccess) || (enableCrop && isCompress && selectMode == FunctionConfig.MODE_SINGLE)) {
@@ -1044,5 +1045,4 @@ public class PictureImageGridActivity extends PictureBaseActivity implements Vie
             soundPool.stop(soundID);
         }
     }
-
 }

@@ -70,17 +70,15 @@ public class PictureConfig {
     /**
      * start to camera、preview、crop
      */
-    public void startOpenCamera(Activity activity, OnSelectResultCallback resultCall) {
+    public void startOpenCamera(Activity activity) {
         if (options == null) {
             options = new FunctionOptions.Builder().create();
         }
         Intent intent = new Intent(activity, PictureImageGridActivity.class);
         intent.putExtra(FunctionConfig.EXTRA_THIS_CONFIG, options);
         intent.putExtra(FunctionConfig.FUNCTION_TAKE, true);
-        activity.startActivity(intent);
+        activity.startActivityForResult(intent, FunctionConfig.CAMERA_RESULT);
         activity.overridePendingTransition(R.anim.fade, R.anim.hold);
-        // 绑定图片接口回调函数事件
-        resultCallback = resultCall;
     }
 
     /**
@@ -132,9 +130,6 @@ public class PictureConfig {
         }
     }
 
-    /**
-     * 处理结果
-     */
     public interface OnSelectResultCallback {
         /**
          * 处理成功
@@ -151,6 +146,5 @@ public class PictureConfig {
          * @param media
          */
         void onSelectSuccess(LocalMedia media);
-
     }
 }
