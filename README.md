@@ -305,7 +305,7 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 ###### 版本 v1.5.7
 ###### 1.修复传入网络图片压缩失败问题
 ###### 2.修复传入网络图片裁剪无响应问题
-###### 3.修复单独拍照在内存不足，导致activity回收回调失败问题
+###### 3.修复单独拍照在内存不足时导致activity被回收，回调失败问题
 ###### 4.单独拍照回调改成走onActivityResult();
 
 # 历史版本：
