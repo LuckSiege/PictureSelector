@@ -74,7 +74,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.5.6'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.5.5'
 }
 
 ```
@@ -106,7 +106,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v1.5.6</version>
+      <version>v1.5.5</version>
 </dependency>
 
 ```
@@ -276,15 +276,11 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 
 # 更新日志：
 
-###### 版本 v1.5.6
-###### 1.修复传入网络图片压缩失败问题
-###### 2.修复传入网络图片裁剪失败问题
-
-# 历史版本：
-
 ###### 版本 v1.5.5
 ###### 1.修复QQ选择风格不同相册下选择数字下标不刷新问题
 ###### 2.修复拍照和截屏时图片列表图片错乱问题
+
+# 历史版本：
 
 ###### 版本 v1.5.4
 ###### 移除多余代码，删除多余资源文件
