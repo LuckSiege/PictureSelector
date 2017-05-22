@@ -3,6 +3,7 @@ package com.luck.pictureselector;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -276,7 +277,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
 
                     if (mode) {
                         // 只拍照
-                        PictureConfig.getInstance().init(options).startOpenCamera(MainActivity.this, resultCallback);
+                        PictureConfig.getInstance().init(options).startOpenCamera(MainActivity.this);
                     } else {
                         // 先初始化参数配置，在启动相册
                         PictureConfig.getInstance().init(options).openPhoto(MainActivity.this, resultCallback);
@@ -328,6 +329,29 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
             }
         }
     };
+
+    /**
+     * 単独拍照图片回调
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == FunctionConfig.CAMERA_RESULT) {
+                if (data != null) {
+                    selectMedia = (List<LocalMedia>) data.getSerializableExtra(FunctionConfig.EXTRA_RESULT);
+                    if (selectMedia != null) {
+                        adapter.setList(selectMedia);
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        }
+    }
 
 
     @Override
@@ -493,4 +517,5 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
             }
         });
     }
+
 }
