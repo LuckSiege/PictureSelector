@@ -320,11 +320,11 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 
 # 项目使用第三方库：
 ###### 1.裁剪使用ucrop库
-###### 3.glide:3.7.0
-###### 4.rxjava:2.0.5
-###### 5.rxandroid:2.0.1
-###### 6.photoView
-###### 7.luban
+###### 2.glide:3.7.0
+###### 3.rxjava:2.0.5
+###### 4.rxandroid:2.0.1
+###### 5.photoView
+###### 6.luban
 
 # 混淆配置
 ```
