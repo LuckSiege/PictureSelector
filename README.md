@@ -74,7 +74,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.5.5'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.5.7'
 }
 
 ```
@@ -106,7 +106,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v1.5.5</version>
+      <version>v1.5.7</version>
 </dependency>
 
 ```
@@ -221,10 +221,10 @@ public class App extends Application {
 
 ******单独启动拍照或视频 根据type自动识别******       
 ```
- PictureConfig.getInstance().init(options).startOpenCamera(mContext, resultCallback);
+ PictureConfig.getInstance().init(options).startOpenCamera(mContext);
  
  或默认配置
- PictureConfig.getInstance().startOpenCamera(mContext, resultCallback);
+ PictureConfig.getInstance().startOpenCamera(mContext);
 ```
 ******预览图片******       
 ```
@@ -236,7 +236,7 @@ public class App extends Application {
 ```
 PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(position).getPath());
 ```
-******图片回调完成结果返回******
+******图片回调完成结果返回 注意:单独拍照不走此回调，往下看↵******
 ```
   private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {
         @Override
@@ -274,13 +274,45 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
     
 ```
 
+******单独拍照回调******
+```
+    /**
+     * 単独拍照图片回调
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == FunctionConfig.CAMERA_RESULT) {
+                if (data != null) {
+                    selectMedia = (List<LocalMedia>) data.getSerializableExtra(FunctionConfig.EXTRA_RESULT);
+                    if (selectMedia != null) {
+                        adapter.setList(selectMedia);
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        }
+    }
+```
+
 # 更新日志：
+
+###### 版本 v1.5.7
+###### 1.修复传入网络图片压缩失败问题
+###### 2.修复传入网络图片裁剪无响应问题
+###### 3.修复单独拍照在内存不足时导致activity被回收，回调失败问题
+###### 4.单独拍照回调改成走onActivityResult();
+
+# 历史版本：
 
 ###### 版本 v1.5.5
 ###### 1.修复QQ选择风格不同相册下选择数字下标不刷新问题
 ###### 2.修复拍照和截屏时图片列表图片错乱问题
-
-# 历史版本：
 
 ###### 版本 v1.5.4
 ###### 移除多余代码，删除多余资源文件
@@ -288,11 +320,11 @@ PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(posit
 
 # 项目使用第三方库：
 ###### 1.裁剪使用ucrop库
-###### 3.glide:3.7.0
-###### 4.rxjava:2.0.5
-###### 5.rxandroid:2.0.1
-###### 6.photoView
-###### 7.luban
+###### 2.glide:3.7.0
+###### 3.rxjava:2.0.5
+###### 4.rxandroid:2.0.1
+###### 5.photoView
+###### 6.luban
 
 # 混淆配置
 ```
