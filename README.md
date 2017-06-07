@@ -300,7 +300,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ###### PictureSelector 2.0 启动模式由单例模式，改为链式调用
 ###### UI主题 改为style.xml 配置，各界面随意定制更加方便
 ###### 优化部分代码和体验去除多余逻辑
-###### 重构PictureSelector和urop库关系，解耦两者
+###### 重构PictureSelector和urop库关系，解耦两者关系
 ###### 修复1.0版本在fragment不回调onActivityResult()
 
 # 项目使用第三方库：
