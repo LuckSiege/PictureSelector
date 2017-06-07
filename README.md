@@ -147,184 +147,160 @@ PhotoView 库冲突，可以删除自己项目中引用的，Picture_library中�
 
 ******相册启动构造方法******
 ```
-FunctionOptions options = new FunctionOptions.Builder()
-        .setType() // 图片or视频 FunctionConfig.TYPE_IMAGE  TYPE_VIDEO
-        .setCropMode() // 裁剪模式 默认、1:1、3:4、3:2、16:9
-        .setCompress() //是否压缩
-        .setEnablePixelCompress() //是否启用像素压缩
-        .setEnableQualityCompress() //是否启质量压缩
-        .setMaxSelectNum() // 可选择图片的数量
-	.setMinSelectNum()// 图片或视频最低选择数量，默认代表无限制
-        .setSelectMode() // 单选 or 多选 FunctionConfig.MODE_SINGLE FunctionConfig.MODE_MULTIPLE
-	.setVideoS(0)// 查询多少秒内的视频 单位:秒
-        .setShowCamera() //是否显示拍照选项 这里自动根据type 启动拍照或录视频
-        .setEnablePreview() // 是否打开预览选项
-        .setEnableCrop() // 是否打开剪切选项
-	.setCircularCut()// 是否采用圆形裁剪
-        .setPreviewVideo() // 是否预览视频(播放) mode or 多选有效
-        .setCheckedBoxDrawable() // 选择图片样式
-        .setRecordVideoDefinition() // 视频清晰度
-        .setRecordVideoSecond() // 视频秒数
-	.setCustomQQ_theme()// 可自定义QQ数字风格，不传就默认是蓝色风格
-        .setGif()// 是否显示gif图片，默认不显示
-        .setCropW() // cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
-        .setCropH() // cropH-->裁剪高度 值不能小于100 如果值大于图片原始宽高 将返回原图大小
-        .setMaxB() // 压缩最大值 例如:200kb  就设置202400，202400 / 1024 = 200kb左右
-        .setPreviewColor() //预览字体颜色
-        .setCompleteColor() //已完成字体颜色
-	.setPreviewTopBgColor()//预览图片标题背景色
-        .setPreviewBottomBgColor() //预览底部背景色
-        .setBottomBgColor() //图片列表底部背景色
-        .setGrade() // 压缩档次 默认三档
-        .setCheckNumMode() //QQ选择风格
-        .setCompressQuality() // 图片裁剪质量,默认无损
-        .setImageSpanCount() // 每行个数
-        .setSelectMedia() // 已选图片，传入在次进去可选中，不能传入网络图片
-        .setCompressFlag() // 1 系统自带压缩 2 luban压缩
-        .setCompressW() // 压缩宽 如果值大于图片原始宽高无效
-        .setCompressH() // 压缩高 如果值大于图片原始宽高无效
-        .setThemeStyle() // 设置主题样式
-	.setPicture_title_color() // 设置标题字体颜色
-        .setPicture_right_color() // 设置标题右边字体颜色
-        .setLeftBackDrawable() // 设置返回键图标
-        .setStatusBar() // 设置状态栏颜色，默认是和标题栏一致
-        .setImmersive(false)// 是否改变状态栏字体颜色(黑色) 
-	.setNumComplete(false) // 0/9 完成  样式
-	.setClickVideo()// 点击声音
-        .create();     
+// 进入相册 以下是例子：用不到的api可以不写
+ PictureSelector.create(MainActivity.this)
+ 	.openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()
+ 	.theme(themeId)// 主题样式设置 具体参考 values/styles  例如：R.style.picture.white.style
+ 	.maxSelectNum(maxSelectNum)// 最大图片选择数量
+ 	.minSelectNum(1)// 最小选择数量
+ 	.selectionMode(cb_choose_mode.isChecked() ?
+          PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
+ 	.previewImage(cb_preview_img.isChecked())// 是否可预览图片
+ 	.previewVideo(cb_preview_video.isChecked())// 是否可预览视频
+ 	.compressGrade(Luban.THIRD_GEAR)// luban压缩档次，默认3档 Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
+ 	.isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
+ 	.enableCrop(cb_crop.isChecked())// 是否裁剪
+ 	.compress(cb_compress.isChecked())// 是否压缩
+ 	.compressMode(compressMode)//系统自带 or 鲁班压缩 PictureConfig.SYSTEM_COMPRESS_MODE or LUBAN_COMPRESS_MODE
+ 	.glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
+ 	.withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
+ 	.hideBottomControls(cb_hide.isChecked() ? false : true)// 是否显示uCrop工具栏，默认不显示
+ 	.isGif(cb_isGif.isChecked())// 是否显示gif图片
+ 	.freeStyleCropEnabled(cb_styleCrop.isChecked())// 裁剪框是否可拖拽
+ 	.circleDimmedLayer(cb_crop_circular.isChecked())// 是否圆形裁剪
+ 	.showCropFrame(cb_showCropFrame.isChecked())// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
+ 	.showCropGrid(cb_showCropGrid.isChecked())// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
+ 	.openClickSound(cb_voice.isChecked())// 是否开启点击声音
+ 	.selectionMedia(selectList)// 是否传入已选图片
+ 	//.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+ 	//.isRemove(true)//是否移除图片列表已损坏的图片
+ 	//.cropCompressQuality(90)// 裁剪压缩质量
+ 	//.compressMaxKB()//压缩最大值kb compressGrade()为Luban.CUSTOM_GEAR有效
+ 	//.compressWH() // 压缩宽高比 compressGrade()为Luban.CUSTOM_GEAR有效
+ 	//.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
+ 	//.rotateEnabled() // 裁剪是否可旋转图片
+ 	//.scaleEnabled()// 裁剪是否可放大缩小图片
+ 	//.videoQuality()// 视频录制质量 0 or 1
+ 	//.videoSecond()//显示多少秒以内的视频
+ 	.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code     
 ```
-```
-或在application进行初始化配置
+******PictureSelector 2.0 主题配置****** 
 
-public class App extends Application {
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        // application 初始化
-        FunctionOptions options = new FunctionOptions.Builder()
-	.setType(FunctionConfig.TYPE_IMAGE);
-        .setCompress(true);
-        .setGrade(Luban.THIRD_GEAR);
-	.create();
-        PictureConfig.getInstance().init(options);
-    }
-}
 ```
+<!--默认样式 注意* 样式只可修改，不能删除任何一项 否则报错-->
+    <style name="picture.default.style" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <!--标题栏背景色-->
+        <item name="colorPrimary">@color/bar_grey</item>
+        <!--状态栏背景色-->
+        <item name="colorPrimaryDark">@color/bar_grey</item>
+        <!--是否改变图片列表界面状态栏字体颜色为黑色-->
+        <item name="picture.statusFontColor">false</item>
+        <!--返回键图标-->
+        <item name="picture.leftBack.icon">@drawable/picture_back</item>
+        <!--标题下拉箭头-->
+        <item name="picture.arrow_down.icon">@drawable/arrow_down</item>
+        <!--标题上拉箭头-->
+        <item name="picture.arrow_up.icon">@drawable/arrow_up</item>
+        <!--标题文字颜色-->
+        <item name="picture.title.textColor">@color/white</item>
+        <!--标题栏右边文字-->
+        <item name="picture.right.textColor">@color/white</item>
+        <!--图片列表勾选样式-->
+        <item name="picture.checked.style">@drawable/checkbox_selector</item>
+        <!--开启图片列表勾选数字模式-->
+        <item name="picture.style.checkNumMode">false</item>
+        <!--选择图片样式0/9-->
+        <item name="picture.style.numComplete">false</item>
+        <!--图片列表底部背景色-->
+        <item name="picture.bottom.bg">@color/color_fa</item>
+        <!--图片列表预览文字颜色-->
+        <item name="picture.preview.textColor">@color/tab_color_true</item>
+        <!--图片列表已完成文字颜色-->
+        <item name="picture.complete.textColor">@color/tab_color_true</item>
+        <!--图片已选数量圆点背景色-->
+        <item name="picture.num.style">@drawable/num_oval</item>
+        <!--预览界面标题文字颜色-->
+        <item name="picture.ac_preview.title.textColor">@color/white</item>
+        <!--预览界面已完成文字颜色-->
+        <item name="picture.ac_preview.complete.textColor">@color/tab_color_true</item>
+        <!--预览界面标题栏背景色-->
+        <item name="picture.ac_preview.title.bg">@color/bar_grey</item>
+        <!--预览界面底部背景色-->
+        <item name="picture.ac_preview.bottom.bg">@color/bar_grey_90</item>
+        <!--预览界面状态栏颜色-->
+        <item name="picture.status.color">@color/bar_grey_90</item>
+        <!--预览界面返回箭头-->
+        <item name="picture.preview.leftBack.icon">@drawable/picture_back</item>
+        <!--是否改变预览界面状态栏字体颜色为黑色-->
+        <item name="picture.preview.statusFontColor">false</item>
+        <!--裁剪页面标题背景色-->
+        <item name="picture.crop.toolbar.bg">@color/bar_grey</item>
+        <!--裁剪页面状态栏颜色-->
+        <item name="picture.crop.status.color">@color/bar_grey</item>
+        <!--裁剪页面标题文字颜色-->
+        <item name="picture.crop.title.color">@color/white</item>
+        <!--相册文件夹列表选中图标-->
+        <item name="picture.folder_checked_dot">@drawable/orange_oval</item>
+    </style>
 
+```
 ******启动相册并拍照******       
 ```
- PictureConfig.getInstance().init(options).openPhoto(mContext, resultCallback);
- 
- 或默认配置
- PictureConfig.getInstance().openPhoto(mContext, resultCallback);
+ PictureSelector.create(MainActivity.this)
+       .openGallery(PictureMimeType.ofImage())
+       .forResult(PictureConfig.CHOOSE_REQUEST);
+       
 ```
 
 ******单独启动拍照或视频 根据type自动识别******       
 ```
- PictureConfig.getInstance().init(options).startOpenCamera(mContext);
- 
- 或默认配置
- PictureConfig.getInstance().startOpenCamera(mContext);
+  PictureSelector.create(MainActivity.this)
+       .openCamera(PictureMimeType.ofImage())
+       .forResult(PictureConfig.CHOOSE_REQUEST);
 ```
 ******预览图片******       
 ```
- // 预览图片 可长按保存 也可自定义保存路径
- PictureConfig.getInstance().externalPicturePreview(MainActivity.this, "/custom_file", position, selectMedia);
- PictureConfig.getInstance().externalPicturePreview(mContext, position, selectMedia);
+// 预览图片 可自定长按保存路径
+PictureSelector.create(MainActivity.this).externalPicturePreview(position, "/custom_file", selectList);
+PictureSelector.create(MainActivity.this).externalPicturePreview(position, selectList);
+
 ```
 ******预览视频****** 
 ```
-PictureConfig.getInstance().externalPictureVideo(mContext, selectMedia.get(position).getPath());
-```
-******图片回调完成结果返回 注意:单独拍照不走此回调，往下看↵******
-```
-  private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {
-        @Override
-        public void onSelectSuccess(List<LocalMedia> resultList) {
-	    // 多选回调
-	    selectMedia = resultList;
-            Log.i("callBack_result", selectMedia.size() + "");
-            LocalMedia media = resultList.get(0);
-            if (media.isCut() && !media.isCompressed()) {
-                // 裁剪过
-                String path = media.getCutPath();
-            } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
-                // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
-                String path = media.getCompressPath();
-            } else {
-                // 原图地址
-                String path = media.getPath();
-            }
-            if (selectMedia != null) {
-                adapter.setList(selectMedia);
-                adapter.notifyDataSetChanged();
-            }
-        }
-	
-	 @Override
-        public void onSelectSuccess(LocalMedia media) {
-            // 单选回调
-            selectMedia.add(media);
-            if (selectMedia != null) {
-                adapter.setList(selectMedia);
-                adapter.notifyDataSetChanged();
-            }
-        }
-    };
-    
-```
+PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
-******单独拍照回调******
 ```
-    /**
-     * 単独拍照图片回调
-     *
-     * @param requestCode
-     * @param resultCode
-     * @param data
-     */
-    @Override
+******图片回调完成结果返回******
+```
+  @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == FunctionConfig.CAMERA_RESULT) {
-                if (data != null) {
-                    selectMedia = (List<LocalMedia>) data.getSerializableExtra(FunctionConfig.EXTRA_RESULT);
-                    if (selectMedia != null) {
-                        adapter.setList(selectMedia);
-                        adapter.notifyDataSetChanged();
-                    }
-                }
+            switch (requestCode) {
+                case PictureConfig.CHOOSE_REQUEST:
+                    // 图片选择结果回调
+                    selectList = PictureSelector.obtainMultipleResult(data);
+                    adapter.setList(selectList);
+                    adapter.notifyDataSetChanged();
+                    DebugUtil.i(TAG, "onActivityResult:" + selectList.size());
+                    break;
             }
         }
     }
+    
 ```
+
 
 # 更新日志：
 
-###### 版本 v1.5.7
-###### 1.修复传入网络图片压缩失败问题
-###### 2.修复传入网络图片裁剪无响应问题
-###### 3.修复单独拍照在内存不足时导致activity被回收，回调失败问题
-###### 4.单独拍照回调改成走onActivityResult();
-
-# 历史版本：
-
-###### 版本 v1.5.5
-###### 1.修复QQ选择风格不同相册下选择数字下标不刷新问题
-###### 2.修复拍照和截屏时图片列表图片错乱问题
-
-###### 版本 v1.5.4
-###### 移除多余代码，删除多余资源文件
-###### 新增图片裁剪框是否可滑动设置
-
-# 项目使用第三方库：
-###### 1.裁剪使用ucrop库
-###### 2.glide:3.7.0
-###### 3.rxjava:2.0.5
-###### 4.rxandroid:2.0.1
-###### 5.photoView
-###### 6.luban
+###### 版本 v2.0.0
+###### PictureSelector 2.0 UI界面大改版
+###### PictureSelector 2.0 启动模式由单例模式，改为链式调用
+###### UI主题 改为style.xml 配置，各界面随意定制更加方便
+###### 优化部分代码和体验去除多余逻辑
+###### 重构PictureSelector和urop库关系，解耦两者
+###### 修复1.0版本在fragment不回调onActivityResult()
 
 # 混淆配置
 ```
