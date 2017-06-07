@@ -3,7 +3,7 @@
   
   项目会一直维护，有bug请描述清楚，并请Issues会第一时间修复，Android开发QQ交流群 619458861，个人QQ 893855882@qq.com  希望用得着的朋友点个start。 
   
-  [PictureSelector无裁剪功能版](https://github.com/LuckSiege/PictureSelectorLight)
+  [PictureSelector 2.0 无裁剪功能版](https://github.com/LuckSiege/PictureSelectorLight)
    
   [我的博客地址](http://blog.csdn.net/luck_mw)
   
