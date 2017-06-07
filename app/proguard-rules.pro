@@ -79,8 +79,7 @@
     void *(**On*Event);
 }
 
--keep class com.yalantis.ucrop.entity.** { *; }
--keep class com.luck.picture.lib.model.** { *; }
+-keep class com.luck.picture.lib.** { *; }
 
 #glide
 -keep public class * implements com.bumptech.glide.module.GlideModule
