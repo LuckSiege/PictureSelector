@@ -149,31 +149,31 @@ PhotoView 库冲突，可以删除自己项目中引用的，Picture_library中�
 ```
 // 进入相册 以下是例子：用不到的api可以不写
  PictureSelector.create(MainActivity.this)
- 	.openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()
- 	.theme(themeId)// 主题样式设置 具体参考 values/styles  例如：R.style.picture.white.style
- 	.maxSelectNum(maxSelectNum)// 最大图片选择数量
- 	.minSelectNum(1)// 最小选择数量
- 	.selectionMode(cb_choose_mode.isChecked() ?PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
- 	.previewImage(cb_preview_img.isChecked())// 是否可预览图片
- 	.previewVideo(cb_preview_video.isChecked())// 是否可预览视频
- 	.compressGrade(Luban.THIRD_GEAR)// luban压缩档次，默认3档 Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
- 	.isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
- 	.enableCrop(cb_crop.isChecked())// 是否裁剪
- 	.compress(cb_compress.isChecked())// 是否压缩
- 	.compressMode(compressMode)//系统自带 or 鲁班压缩 PictureConfig.SYSTEM_COMPRESS_MODE or LUBAN_COMPRESS_MODE
- 	.glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
- 	.withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
- 	.hideBottomControls(cb_hide.isChecked() ? false : true)// 是否显示uCrop工具栏，默认不显示
- 	.isGif(cb_isGif.isChecked())// 是否显示gif图片
- 	.freeStyleCropEnabled(cb_styleCrop.isChecked())// 裁剪框是否可拖拽
- 	.circleDimmedLayer(cb_crop_circular.isChecked())// 是否圆形裁剪
- 	.showCropFrame(cb_showCropFrame.isChecked())// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
- 	.showCropGrid(cb_showCropGrid.isChecked())// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
- 	.openClickSound(cb_voice.isChecked())// 是否开启点击声音
- 	.selectionMedia(selectList)// 是否传入已选图片
- 	//.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
- 	//.isRemove(true)//是否移除图片列表已损坏的图片
- 	//.cropCompressQuality(90)// 裁剪压缩质量
+ 	.openGallery()// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()
+ 	.theme()// 主题样式设置 具体参考 values/styles  例如：R.style.picture.white.style
+ 	.maxSelectNum()// 最大图片选择数量
+ 	.minSelectNum()// 最小选择数量
+ 	.selectionMode()// 多选 or 单选
+ 	.previewImage()// 是否可预览图片
+ 	.previewVideo()// 是否可预览视频
+ 	.compressGrade()// luban压缩档次，默认3档 Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
+ 	.isCamera()// 是否显示拍照按钮
+ 	.enableCrop()// 是否裁剪
+ 	.compress()// 是否压缩
+ 	.compressMode()//系统自带 or 鲁班压缩 PictureConfig.SYSTEM_COMPRESS_MODE or LUBAN_COMPRESS_MODE
+ 	.glideOverride()// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
+ 	.withAspectRatio()// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
+ 	.hideBottomControls()// 是否显示uCrop工具栏，默认不显示
+ 	.isGif()// 是否显示gif图片
+ 	.freeStyleCropEnabled()// 裁剪框是否可拖拽
+ 	.circleDimmedLayer()// 是否圆形裁剪
+ 	.showCropFrame()// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
+ 	.showCropGrid()// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
+ 	.openClickSound()// 是否开启点击声音
+ 	.selectionMedia()// 是否传入已选图片
+ 	//.previewEggs()// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+ 	//.isRemove()//是否移除图片列表已损坏的图片
+ 	//.cropCompressQuality()// 裁剪压缩质量 默认90
  	//.compressMaxKB()//压缩最大值kb compressGrade()为Luban.CUSTOM_GEAR有效
  	//.compressWH() // 压缩宽高比 compressGrade()为Luban.CUSTOM_GEAR有效
  	//.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
