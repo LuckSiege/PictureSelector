@@ -79,6 +79,7 @@
     void *(**On*Event);
 }
 
+#PictureSelector
 -keep class com.luck.picture.lib.** { *; }
 
 #glide
