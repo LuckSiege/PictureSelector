@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!--uCrop Activity-->
     <color name="ucrop_color_toolbar">#FF6E40</color>
     <color name="ucrop_color_statusbar">#CC5833</color>
@@ -10,28 +11,11 @@
     <color name="ucrop_color_widget_text">#000</color>
     <color name="ucrop_color_progress_wheel_line">#808080</color>
     <color name="ucrop_color_crop_background">#000</color>
+
     <!--Crop View-->
     <color name="ucrop_color_default_crop_grid">#80ffffff</color>
     <color name="ucrop_color_default_crop_frame">#ffffff</color>
     <color name="ucrop_color_default_dimmed">#8c000000</color>
     <color name="ucrop_color_default_logo">#4f212121</color>
-    <color name="color_fa">#fafafa</color>
-    <color name="color_f2">#F2F2F2</color>
-    <color name="color_4d">#4d4d4d</color>
-    <color name="black">#000000</color>
     <color name="grey">#999999</color>
-    <color name="line_color">#EEEEEE</color>
-    <color name="green_70">#AD43c117</color>
-    <color name="green">#43c117</color>
-    <color name="bar_grey">#393a3e</color>
-    <color name="transparent">#00000000</color>
-    <color name="content_grey">#353535</color>
-    <color name="tab_color_true">#FA632D</color>
-    <color name="tab_color_false">#9b9b9b</color>
-    <color name="image_overlay">#20000000</color>
-    <color name="image_overlay2">#80000000</color>
-    <color name="color_f6">#f6f6f6</color>
-    <color name="bar_grey_90">#dd393a3e</color>
-    <color name="blue">#00AFFF</color>
-
 </resources>

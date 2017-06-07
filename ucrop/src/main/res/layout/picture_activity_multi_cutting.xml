@@ -1,59 +1,44 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ucrop_photobox"
+    android:id="@+id/ucrop_mulit_photobox"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ucrop_color_toolbar_widget"
+    android:background="@color/ucrop_color_crop_background"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/rl_title"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="#393a3e">
-
-        <ImageView
-            android:id="@+id/picture_left_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:padding="15dp"
-            android:src="@drawable/picture_back" />
+        android:layout_height="wrap_content"
+        android:background="@color/ucrop_color_toolbar"
+        android:minHeight="?attr/actionBarSize">
 
         <TextView
-            android:id="@+id/picture_title"
+            android:id="@+id/toolbar_title"
+            style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_centerVertical="true"
-            android:ellipsize="end"
-            android:maxEms="11"
-            android:singleLine="true"
-            android:text="@string/ucrop_image_crop"
-            android:textColor="@color/ucrop_color_widget_background"
-            android:textSize="18sp" />
+            android:layout_gravity="center"
+            android:text="@string/ucrop_label_edit_photo"
+            android:textColor="@color/ucrop_color_toolbar_widget"
+            android:textSize="17sp" />
 
-        <TextView
-            android:id="@+id/tv_right"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:gravity="center"
-            android:padding="10dp"
-            android:text="确定"
-            android:textColor="@color/ucrop_color_widget_background"
-            android:textSize="14sp" />
-    </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/ucrop_color_toolbar_widget" />
 
     <FrameLayout
         android:id="@+id/ucrop_frame"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/ucrop_color_crop_background">
+        android:layout_height="match_parent"
+        android:layout_above="@id/recyclerView"
+        android:layout_below="@id/toolbar">
 
         <ImageView
             android:id="@+id/image_view_logo"
@@ -72,20 +57,4 @@
 
     </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_gallery"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#d2d2d7" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="90dp" />
-    </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

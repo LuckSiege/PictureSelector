@@ -3,7 +3,6 @@ package com.yalantis.ucrop.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -138,11 +137,6 @@ public class OverlayView extends View {
      */
     public void setCircleDimmedLayer(boolean circleDimmedLayer) {
         mCircleDimmedLayer = circleDimmedLayer;
-        if (mCircleDimmedLayer) {
-            mDimmedStrokePaint.setColor(Color.WHITE);
-            mDimmedStrokePaint.setStyle(Paint.Style.STROKE);
-            mDimmedStrokePaint.setStrokeWidth(2);
-        }
     }
 
     /**
@@ -530,10 +524,14 @@ public class OverlayView extends View {
     protected void processStyledAttributes(@NonNull TypedArray a) {
         mCircleDimmedLayer = a.getBoolean(R.styleable.ucrop_UCropView_ucrop_circle_dimmed_layer, DEFAULT_CIRCLE_DIMMED_LAYER);
         mDimmedColor = a.getColor(R.styleable.ucrop_UCropView_ucrop_dimmed_color,
-                getResources().getColor(R.color.ucrop_color_default_dimmed));
+                getResources().getColor(R.color.ucrop_color_toolbar_widget));
         mDimmedStrokePaint.setColor(mDimmedColor);
         mDimmedStrokePaint.setStyle(Paint.Style.STROKE);
-        mDimmedStrokePaint.setStrokeWidth(1);
+        if (mCircleDimmedLayer) {
+            mDimmedStrokePaint.setStrokeWidth(2);
+        } else {
+            mDimmedStrokePaint.setStrokeWidth(1);
+        }
 
         initCropFrameStyle(a);
         mShowCropFrame = a.getBoolean(R.styleable.ucrop_UCropView_ucrop_show_frame, DEFAULT_SHOW_CROP_FRAME);

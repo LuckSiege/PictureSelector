@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 
 /**
- * Hack class to properly support state drawable picture_back to Android 1.6
+ * Hack class to properly support state drawable back to Android 1.6
  */
 public class SelectedStateListDrawable extends StateListDrawable {
 

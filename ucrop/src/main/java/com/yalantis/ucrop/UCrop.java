@@ -18,7 +18,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.yalantis.ucrop.model.AspectRatio;
-import com.yalantis.ucrop.ui.PictureSingeUCropActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +25,7 @@ import java.util.Locale;
 
 /**
  * Created by Oleksii Shliama (https://github.com/shliama).
- * <p>
+ * <p/>
  * Builder class to ease Intent setup.
  */
 public class UCrop {
@@ -36,12 +35,13 @@ public class UCrop {
 
     private static final String EXTRA_PREFIX = BuildConfig.APPLICATION_ID;
 
-    public static final String EXTRA_RESULT = "select_result";
     public static final String EXTRA_INPUT_URI = EXTRA_PREFIX + ".InputUri";
     public static final String EXTRA_OUTPUT_URI = EXTRA_PREFIX + ".OutputUri";
     public static final String EXTRA_OUTPUT_CROP_ASPECT_RATIO = EXTRA_PREFIX + ".CropAspectRatio";
     public static final String EXTRA_OUTPUT_IMAGE_WIDTH = EXTRA_PREFIX + ".ImageWidth";
     public static final String EXTRA_OUTPUT_IMAGE_HEIGHT = EXTRA_PREFIX + ".ImageHeight";
+    public static final String EXTRA_OUTPUT_OFFSET_X = EXTRA_PREFIX + ".OffsetX";
+    public static final String EXTRA_OUTPUT_OFFSET_Y = EXTRA_PREFIX + ".OffsetY";
     public static final String EXTRA_ERROR = EXTRA_PREFIX + ".Error";
 
     public static final String EXTRA_ASPECT_RATIO_X = EXTRA_PREFIX + ".AspectRatioX";
@@ -69,7 +69,6 @@ public class UCrop {
         mCropOptionsBundle.putParcelable(EXTRA_INPUT_URI, source);
         mCropOptionsBundle.putParcelable(EXTRA_OUTPUT_URI, destination);
     }
-
 
     /**
      * Set an aspect ratio for crop bounds.
@@ -170,12 +169,12 @@ public class UCrop {
     }
 
     /**
-     * Get Intent to start {@link PictureSingeUCropActivity}
+     * Get Intent to start {@link UCropActivity}
      *
-     * @return Intent for {@link PictureSingeUCropActivity}
+     * @return Intent for {@link UCropActivity}
      */
     public Intent getIntent(@NonNull Context context) {
-        mCropIntent.setClass(context, PictureSingeUCropActivity.class);
+        mCropIntent.setClass(context, UCropActivity.class);
         mCropIntent.putExtras(mCropOptionsBundle);
         return mCropIntent;
     }
@@ -272,6 +271,10 @@ public class UCrop {
         public static final String EXTRA_HIDE_BOTTOM_CONTROLS = EXTRA_PREFIX + ".HideBottomControls";
         public static final String EXTRA_FREE_STYLE_CROP = EXTRA_PREFIX + ".FreeStyleCrop";
 
+        public static final String EXTRA_CUT_CROP = EXTRA_PREFIX + ".cuts";
+
+        public static final String EXTRA_FREE_STATUS_FONT = EXTRA_PREFIX + ".StatusFont";
+
         public static final String EXTRA_ASPECT_RATIO_SELECTED_BY_DEFAULT = EXTRA_PREFIX + ".AspectRatioSelectedByDefault";
         public static final String EXTRA_ASPECT_RATIO_OPTIONS = EXTRA_PREFIX + ".AspectRatioOptions";
 
@@ -296,7 +299,6 @@ public class UCrop {
             mOptionBundle.putString(EXTRA_COMPRESSION_FORMAT_NAME, format.name());
         }
 
-
         /**
          * Set compression quality [0-100] that will be used to save resulting Bitmap.
          */
@@ -307,9 +309,9 @@ public class UCrop {
         /**
          * Choose what set of gestures will be enabled on each tab - if any.
          */
-        public void setAllowedGestures(@PictureSingeUCropActivity.GestureTypes int tabScale,
-                                       @PictureSingeUCropActivity.GestureTypes int tabRotate,
-                                       @PictureSingeUCropActivity.GestureTypes int tabAspectRatio) {
+        public void setAllowedGestures(@UCropActivity.GestureTypes int tabScale,
+                                       @UCropActivity.GestureTypes int tabRotate,
+                                       @UCropActivity.GestureTypes int tabAspectRatio) {
             mOptionBundle.putIntArray(EXTRA_ALLOWED_GESTURES, new int[]{tabScale, tabRotate, tabAspectRatio});
         }
 
@@ -474,10 +476,24 @@ public class UCrop {
         }
 
         /**
+         * @param -set cuts path
+         */
+        public void setCutListData(ArrayList<String> list) {
+            mOptionBundle.putStringArrayList(EXTRA_CUT_CROP, list);
+        }
+
+        /**
          * @param enabled - set to true to let user resize crop bounds (disabled by default)
          */
         public void setFreeStyleCropEnabled(boolean enabled) {
             mOptionBundle.putBoolean(EXTRA_FREE_STYLE_CROP, enabled);
+        }
+
+        /**
+         * @param statusFont - Set status bar black
+         */
+        public void setStatusFont(boolean statusFont) {
+            mOptionBundle.putBoolean(EXTRA_FREE_STATUS_FONT, statusFont);
         }
 
         /**
@@ -515,7 +531,6 @@ public class UCrop {
             mOptionBundle.putFloat(EXTRA_ASPECT_RATIO_Y, y);
         }
 
-
         /**
          * Set an aspect ratio for crop bounds that is evaluated from source image width and height.
          * User won't see the menu with other ratios options.
@@ -536,50 +551,6 @@ public class UCrop {
             mOptionBundle.putInt(EXTRA_MAX_SIZE_Y, height);
         }
 
-        public void background_color(int color) {
-            mOptionBundle.putInt("backgroundColor", color);
-        }
-
-        public void localType(int type) {
-            mOptionBundle.putInt("type", type);
-        }
-
-        public void setIsCompress(boolean isCompress) {
-            mOptionBundle.putBoolean("isCompress", isCompress);
-        }
-
-        public void setIsTakePhoto(boolean takePhoto) {
-            mOptionBundle.putBoolean("takePhoto", takePhoto);
-        }
-
-
-        public void setLeftBackDrawable(int leftBackDrawable) {
-            mOptionBundle.putInt("leftDrawable", leftBackDrawable);
-        }
-
-        public void setTitleColor(int titleColor) {
-            mOptionBundle.putInt("titleColor", titleColor);
-        }
-
-        public void setRightColor(int rightColor) {
-            mOptionBundle.putInt("rightColor", rightColor);
-        }
-
-        public void setStatusBar(int statusBar) {
-            mOptionBundle.putInt("statusBar", statusBar);
-        }
-
-        public void setImmersiver(boolean isImmersive) {
-            mOptionBundle.putBoolean("isImmersive", isImmersive);
-        }
-        
-        public void setRotateEnabled(boolean rotateEnabled) {
-            mOptionBundle.putBoolean("rotateEnabled", rotateEnabled);
-        }
-
-        public void setScaleEnabled(boolean scaleEnabled) {
-            mOptionBundle.putBoolean("scaleEnabled", scaleEnabled);
-        }
     }
 
 }
