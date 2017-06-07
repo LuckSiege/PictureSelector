@@ -28,8 +28,7 @@
             android:layout_centerVertical="true"
             android:ellipsize="end"
             android:maxEms="11"
-            android:singleLine="true"
-            android:textColor="@color/ucrop_color_toolbar_widget"
+            android:textColor="@color/white"
             android:textSize="18sp" />
 
     </RelativeLayout>

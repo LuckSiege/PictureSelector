@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.luck.picture.lib">
 
@@ -15,40 +16,31 @@
         android:allowBackup="true"
         android:supportsRtl="true">
         <activity
-            android:name="com.luck.picture.lib.ui.PictureAlbumDirectoryActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTask"
+            android:name=".PictureSelectorActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Slider" />
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/activity.Theme" />
         <activity
-            android:name="com.luck.picture.lib.ui.PictureImageGridActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Slider" />
+            android:name=".PictureBaseActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:name="com.luck.picture.lib.ui.PicturePreviewActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Slider" />
+            android:name=".PicturePreviewActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:name="com.luck.picture.lib.ui.PictureVideoPlayActivity"
+            android:name=".PictureVideoPlayActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="sensor" />
-
         <activity
-            android:name="com.luck.picture.lib.ui.PictureExternalPreviewActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Slider" />
-
+            android:name=".PictureExternalPreviewActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:name="com.yalantis.ucrop.ui.PictureMultiCuttingActivity"
+            android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Slider" />
-
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.yalantis.ucrop.ui.PictureSingeUCropActivity"
+            android:name="com.yalantis.ucrop.PictureMultiCuttingActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Slider" />
-
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 
 </manifest>

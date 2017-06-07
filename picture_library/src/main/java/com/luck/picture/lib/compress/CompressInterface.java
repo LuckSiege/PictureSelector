@@ -1,6 +1,6 @@
 package com.luck.picture.lib.compress;
 
-import com.yalantis.ucrop.entity.LocalMedia;
+import com.luck.picture.lib.entity.LocalMedia;
 
 import java.util.List;
 

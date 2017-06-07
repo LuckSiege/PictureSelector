@@ -3,7 +3,7 @@ package com.luck.picture.lib.compress;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.yalantis.ucrop.entity.LocalMedia;
+import com.luck.picture.lib.entity.LocalMedia;
 
 import java.io.File;
 import java.util.List;

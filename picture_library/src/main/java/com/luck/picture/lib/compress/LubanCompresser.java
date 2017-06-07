@@ -69,16 +69,6 @@ class LubanCompresser {
                 return files;
             }
         });
-//        return Observable.zip(observables, new FuncN<List<File>>() {
-//            @Override
-//            public List<File> call(Object... args) {
-//                List<File> files = new ArrayList<>(args.length);
-//                for (Object o : args) {
-//                    files.add((File) o);
-//                }
-//                return files;
-//            }
-//        }).subscribeOn(Schedulers.computation());
     }
 
     private File compressImage(int gear, File file) throws IOException {

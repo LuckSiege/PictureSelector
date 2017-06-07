@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+<resources>
+
+    <attr name="picture.title.textColor" format="reference|color" />
+    <attr name="picture.right.textColor" format="reference|color" />
+    <attr name="picture.leftBack.icon" format="reference" />
+    <attr name="picture.arrow_down.icon" format="reference" />
+    <attr name="picture.arrow_up.icon" format="reference" />
+    <attr name="picture.num.style" format="reference" />
+    <attr name="picture.checked.style" format="reference" />
+    <attr name="picture.bottom.bg" format="reference|color" />
+    <attr name="picture.preview.textColor" format="reference|color" />
+    <attr name="picture.complete.textColor" format="reference|color" />
+    <attr name="picture.ac_preview.title.textColor" format="reference|color" />
+    <attr name="picture.ac_preview.complete.textColor" format="reference|color" />
+    <attr name="picture.ac_preview.title.bg" format="reference|color" />
+    <attr name="picture.ac_preview.bottom.bg" format="reference|color" />
+    <attr name="picture.status.color" format="reference|color" />
+    <attr name="picture.preview.leftBack.icon" format="reference" />
+    <attr name="picture.statusFontColor" format="boolean" />
+    <attr name="picture.preview.statusFontColor" format="boolean" />
+    <attr name="picture.style.numComplete" format="boolean" />
+    <attr name="picture.style.checkNumMode" format="boolean" />
+    <attr name="picture.crop.toolbar.bg" format="reference|color" />
+    <attr name="picture.crop.status.color" format="reference|color" />
+    <attr name="picture.crop.title.color" format="reference|color" />
+    <attr name="picture.folder_checked_dot" format="reference" />
+</resources>

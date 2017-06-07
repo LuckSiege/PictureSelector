@@ -6,7 +6,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 
-import com.yalantis.ucrop.util.FileUtils;
+import com.luck.picture.lib.tools.PictureFileUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -153,7 +153,7 @@ public class CompressImageUtil {
 
     private File getThumbnailFile(File file) {
         if (file == null || !file.exists()) return file;
-        return FileUtils.getPhotoCacheDir(context, file);
+        return PictureFileUtils.getPhotoCacheDir(context, file);
     }
 
     /**

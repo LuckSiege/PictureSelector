@@ -1,34 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="picture_all_image">All Pictures</string>
-    <string name="picture_all_video">All Video</string>
-    <string name="picture_photo">Photo</string>
-    <string name="picture_all_photo">All Albums</string>
+    <string name="picture_camera_roll">CameraRoll</string>
     <string name="picture_cancel">Cancel</string>
-    <string name="picture">Picture</string>
     <string name="picture_take_picture">Shot</string>
-    <string name="picture_preview">Preview</string>
-    <string name="picture_preview_num">Preview(%1$s)</string>
-    <string name="picture_choose">Select</string>
-    <string name="picture_done">Ok</string>
-    <string name="picture_completed">Completed</string>
-    <string name="picture_please_select">Please Select</string>
-    <string name="picture_use">Use</string>
-    <string name="picture_please">Please later...</string>
-    <string name="picture_done_num">Ok(%1$s/%2$s)</string>
-    <string name="picture_done_front_num">%1$s/%2$s Ok</string>
-    <string name="picture_num_postfix">%1$sNumber</string>
-    <string name="picture_min_img_num">Picture Selection Cannot%1$sNumber</string>
+    <string name="picture_rule">not pictures or video</string>
     <string name="picture_min_video_num">Video Selection Cannot%1$sNumber</string>
     <string name="picture_message_max_num">You can choose the most%1$s Number Pictures</string>
-    <string name="picture_message_video_max_num">You can choose the most%1$s Number Video</string>
-    <string name="picture_save_ing">Save Image…</string>
-    <string name="picture_select_photo">Select Album</string>
-    <string name="picture_select_video">Select Video</string>
-
-    <string name="picture_lately_image">Recent Photos</string>
-    <string name="picture_lately_video">Recent Video</string>
-
-    <string name="picture_no_photo">The album to shoot a few absolutely empty, quickly~</string>
-    <string name="picture_no_video">Video to record video absolutely empty, quickly~</string>
+    <string name="picture_preview">Preview</string>
+    <string name="picture_please">Please later...</string>
+    <string name="picture_done_front_num">%1$s/%2$s Ok</string>
+    <string name="picture_completed">Completed</string>
+    <string name="picture_done">Ok</string>
+    <string name="picture_please_select">Please Select</string>
+    <string name="picture_empty_title">No video or photos\n</string>
+    <string name="picture_empty">you can use your camera to take photos or videos</string>
+    <string name="picture_min_img_num">Picture Selection Cannot%1$sNumber</string>
+    <string name="gif_tag">gif</string>
+    <string name="picture_jurisdiction">Read memory card access denied</string>
+    <string name="picture_camera">Get system camera permission denied</string>
+    <string name="picture_video_toast">Video not Preview</string>
+    <string name="picture_record_video">Record Video</string>
+    <string name="picture_photograph">Photograph</string>
+    <string name="picture_long_chart">Long</string>
+    <string name="picture_warning">Media files！</string>
 </resources>

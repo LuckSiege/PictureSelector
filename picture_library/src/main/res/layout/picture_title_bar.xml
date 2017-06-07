@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rl_picture_title"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?colorPrimary"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/picture_left_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:padding="15dp"
+            android:src="?attr/picture.leftBack.icon" />
+
+        <TextView
+            android:id="@+id/picture_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:drawablePadding="2dp"
+            android:drawableRight="?attr/picture.arrow_down.icon"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxEms="11"
+            android:padding="6dp"
+            android:text="@string/picture_camera_roll"
+            android:textColor="?picture.title.textColor"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/picture_right"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/picture_cancel"
+            android:textColor="?picture.right.textColor"
+            android:textSize="14sp" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/line_color" />
+</LinearLayout>
+

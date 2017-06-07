@@ -4,14 +4,29 @@
     android:layout_height="wrap_content"
     android:background="@drawable/item_select_bg"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="6dp">
 
-    <ImageView
-        android:id="@+id/first_image"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_centerVertical="true"
-        android:scaleType="centerCrop" />
+    <RelativeLayout
+        android:id="@+id/rl_first_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerVertical="true">
+
+        <ImageView
+            android:id="@+id/first_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <TextView
+            android:id="@+id/tv_sign"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_alignParentRight="true"
+            android:layout_margin="5dp"
+            android:background="?attr/picture.folder_checked_dot"
+            android:visibility="invisible" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/tv_folder_name"
@@ -19,9 +34,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
-        android:layout_toRightOf="@id/first_image"
+        android:layout_toRightOf="@id/rl_first_image"
         android:text="相机胶卷"
-        android:textColor="@color/black"
+        android:textColor="@color/color_4d"
         android:textSize="16sp" />
 
     <TextView
@@ -32,30 +47,8 @@
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@id/tv_folder_name"
         android:text="(0)"
-        android:textColor="@color/grey"
-        android:textSize="16sp" />
+        android:textColor="@color/color_4d"
+        android:textSize="14sp" />
 
-
-    <ImageView
-        android:id="@+id/iv_more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:scaleType="centerCrop"
-        android:src="@drawable/more_1x" />
-
-    <TextView
-        android:id="@+id/tv_img_num"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/iv_more"
-        android:background="@drawable/message_oval"
-        android:gravity="center"
-        android:text="0"
-        android:textColor="@color/ucrop_color_toolbar_widget"
-        android:textSize="12sp"
-        android:visibility="invisible" />
 
 </RelativeLayout>

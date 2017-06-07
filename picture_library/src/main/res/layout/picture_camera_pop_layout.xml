@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fl_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#70000000">
+
+    <LinearLayout
+        android:id="@+id/ll_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/color_fa"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/picture_tv_photo"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/item_select_bg"
+            android:gravity="center"
+            android:text="@string/picture_photograph"
+            android:textColor="@color/color_53"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/line_color" />
+
+        <TextView
+            android:id="@+id/picture_tv_video"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/item_select_bg"
+            android:gravity="center"
+            android:text="@string/picture_record_video"
+            android:textColor="@color/color_53"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/line_color" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="6dp"
+            android:background="@color/line_color" />
+
+        <TextView
+            android:id="@+id/picture_tv_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/item_select_bg"
+            android:gravity="center"
+            android:text="@string/picture_cancel"
+            android:textColor="@color/color_53"
+            android:textSize="14sp" />
+    </LinearLayout>
+</FrameLayout>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="com.luck.picture.lib.PictureSelectorActivity">
+
+    <include
+        android:id="@+id/id_titleBar"
+        layout="@layout/picture_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <RelativeLayout
+        android:id="@+id/rl_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="?attr/picture.bottom.bg"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/picture_id_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:enabled="false"
+            android:gravity="left|center"
+            android:padding="12dp"
+            android:text="@string/picture_preview"
+            android:textColor="?attr/picture.preview.textColor"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:id="@+id/id_ll_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:enabled="false"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/picture_tv_img_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:background="?attr/picture.num.style"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/picture_tv_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center|left"
+                android:paddingRight="12dp"
+                android:text="@string/picture_please_select"
+                android:textColor="?attr/picture.complete.textColor"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/picture_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/rl_bottom"
+        android:layout_below="@id/id_titleBar"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp" />
+
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:gravity="center"
+        android:lineSpacingExtra="3dp"
+        android:text="@string/picture_empty"
+        android:textColor="@color/tab_color_false"
+        android:textSize="18sp"
+        android:visibility="invisible" />
+
+</RelativeLayout>

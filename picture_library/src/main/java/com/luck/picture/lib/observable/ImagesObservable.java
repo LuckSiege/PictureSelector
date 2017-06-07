@@ -1,7 +1,9 @@
 package com.luck.picture.lib.observable;
 
-import com.yalantis.ucrop.entity.LocalMedia;
-import com.yalantis.ucrop.entity.LocalMediaFolder;
+
+import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.entity.LocalMediaFolder;
+import com.luck.picture.lib.tools.DebugUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,6 +102,7 @@ public class ImagesObservable implements SubjectListener {
     public void clearLocalMedia() {
         if (medias != null)
             medias.clear();
+        DebugUtil.i("ImagesObservable:", "clearLocalMedia success!");
     }
 
     public void clearSelectedLocalMedia() {
@@ -110,30 +113,6 @@ public class ImagesObservable implements SubjectListener {
     @Override
     public void add(ObserverListener observerListener) {
         observers.add(observerListener);
-    }
-
-    /**
-     * 相册所有列表文件夹
-     *
-     * @param folders
-     */
-    @Override
-    public void notifyFolderObserver(List<LocalMediaFolder> folders) {
-        for (ObserverListener observerListener : observers) {
-            observerListener.observerUpFoldersData(folders);
-        }
-    }
-
-    /**
-     * 选中图片集合观察者
-     *
-     * @param selectMedias
-     */
-    @Override
-    public void notifySelectLocalMediaObserver(List<LocalMedia> selectMedias) {
-        for (ObserverListener observerListener : observers) {
-            observerListener.observerUpSelectsData(selectMedias);
-        }
     }
 
     @Override
