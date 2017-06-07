@@ -296,6 +296,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 ###### 版本 v2.0.0
 ###### PictureSelector 2.0 UI界面大改版
+###### PictureSelector 2.0 新增全部模式查询 包括图片or视频
 ###### PictureSelector 2.0 启动模式由单例模式，改为链式调用
 ###### UI主题 改为style.xml 配置，各界面随意定制更加方便
 ###### 优化部分代码和体验去除多余逻辑
