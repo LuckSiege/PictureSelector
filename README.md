@@ -303,8 +303,17 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ###### 重构PictureSelector和urop库关系，解耦两者
 ###### 修复1.0版本在fragment不回调onActivityResult()
 
+# 项目使用第三方库：
+###### 1.glide:3.7.0
+###### 2.rxjava:2.0.5
+###### 3.rxandroid:2.0.1
+###### 4.PhotoView:1.2.4
+###### 5.luban
+###### 6.裁剪使用ucrop
+
 # 混淆配置
 ```
+#PictureSelector 2.0
 -keep class com.luck.picture.lib.** { *; }
 
 -dontwarn com.yalantis.ucrop**
