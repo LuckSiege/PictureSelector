@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+
 android {
     compileSdkVersion 23
     buildToolsVersion '25.0.0'
@@ -8,6 +9,7 @@ android {
         targetSdkVersion 23
         versionCode 22
         versionName "2.2.0-native"
+
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -23,7 +25,9 @@ android {
     lintOptions {
         abortOnError false
     }
+
     resourcePrefix 'ucrop_'
+
     sourceSets.main {
         jni.srcDirs = [];
     }
@@ -34,7 +38,4 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:recyclerview-v7:23.4.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'com.github.chrisbanes.photoview:library:1.2.4'
-    compile 'io.reactivex.rxjava2:rxjava:2.0.5'
-    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
 }
