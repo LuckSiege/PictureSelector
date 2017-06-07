@@ -153,8 +153,7 @@ PhotoView 库冲突，可以删除自己项目中引用的，Picture_library中�
  	.theme(themeId)// 主题样式设置 具体参考 values/styles  例如：R.style.picture.white.style
  	.maxSelectNum(maxSelectNum)// 最大图片选择数量
  	.minSelectNum(1)// 最小选择数量
- 	.selectionMode(cb_choose_mode.isChecked() ?
-        PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
+ 	.selectionMode(cb_choose_mode.isChecked() ?PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
  	.previewImage(cb_preview_img.isChecked())// 是否可预览图片
  	.previewVideo(cb_preview_video.isChecked())// 是否可预览视频
  	.compressGrade(Luban.THIRD_GEAR)// luban压缩档次，默认3档 Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
