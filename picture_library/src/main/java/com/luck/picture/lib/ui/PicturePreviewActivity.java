@@ -276,6 +276,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
 
     public void onSelectNumChange(boolean isRefresh) {
         this.refresh = isRefresh;
+        updateSelector(refresh);
         boolean enable = selectImages.size() != 0;
         if (enable) {
             tv_ok.setEnabled(true);
@@ -295,7 +296,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
                 tv_img_num.setVisibility(View.INVISIBLE);
                 tv_ok.setText(getString(R.string.picture_please_select));
             }
-            updateSelector(refresh);
         }
     }
 
