@@ -13,13 +13,14 @@
         android:layout_height="48dp"
         android:background="@color/bar_grey">
 
-        <ImageButton
+        <ImageView
             android:id="@+id/left_back"
-            android:layout_width="48dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:background="@color/transparent"
-            android:src="@mipmap/back"
+            android:padding="15dp"
+            android:src="@drawable/picture_back"
             android:visibility="visible" />
 
         <TextView
@@ -47,7 +48,6 @@
             android:textSize="15sp" />
     </RelativeLayout>
 
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_width="match_parent"
@@ -63,439 +63,309 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <include layout="@layout/layout_number" />
 
             <RadioGroup
-                android:id="@+id/rgbs11"
+                android:id="@+id/rgb_style"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
+                android:gravity="center_vertical"
+                android:orientation="vertical">
 
                 <RadioButton
-                    android:id="@+id/rb_off"
+                    android:id="@+id/rb_default_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="关闭点击声音" />
+                    android:text="默认样式"
+                    android:textColor="@color/color_53"
+                    android:textSize="14sp" />
 
                 <RadioButton
-                    android:id="@+id/rb_open"
+                    android:id="@+id/rb_white_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
-                    android:text="开启点击声音" />
+                    android:text="样式一"
+                    android:textColor="@color/color_53"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_num_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="样式二"
+                    android:textColor="@color/color_53"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_sina_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="样式三"
+                    android:textColor="@color/color_53"
+                    android:textSize="14sp" />
 
             </RadioGroup>
 
-            <RadioGroup
-                android:id="@+id/rgbs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
-
-                <RadioButton
-                    android:id="@+id/rb_photo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="相册并拍照" />
-
-                <RadioButton
-                    android:id="@+id/rb_camera"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
-                    android:text="单独拍照或录视频" />
-            </RadioGroup>
-
-
-            <RadioGroup
-                android:id="@+id/rgbs01"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
-
-                <RadioButton
-                    android:id="@+id/rb_ordinary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="普通选择模式" />
-
-                <RadioButton
-                    android:id="@+id/rb_qq"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
-                    android:text="qq风格选择模式(带数字效果)" />
-            </RadioGroup>
-
-            <RadioGroup
-                android:id="@+id/rgbs0"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
-
-                <RadioButton
-                    android:id="@+id/rb_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="获取图片" />
-
-                <RadioButton
-                    android:id="@+id/rb_video"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
-                    android:text="获取视频" />
-            </RadioGroup>
-
-            <RadioGroup
-                android:id="@+id/rgbs1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
-
-                <RadioButton
-                    android:id="@+id/rb_single"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="单选" />
-
-                <RadioButton
-                    android:id="@+id/rb_multiple"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
-                    android:checked="true"
-                    android:text="多选" />
-            </RadioGroup>
-
-            <RadioGroup
-                android:id="@+id/rgbs2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
-
-                <RadioButton
-                    android:id="@+id/rb_photo_display"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="显示拍摄" />
-
-                <RadioButton
-                    android:id="@+id/rb_photo_hide"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
-                    android:text="隐藏拍摄" />
-            </RadioGroup>
-
-            <TextView
+            <CheckBox
+                android:id="@+id/cb_voice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:text="裁剪模式"
-                android:textColor="@color/black" />
+                android:gravity="center_vertical"
+                android:text="是否开启点击声音"
+                android:textColor="@color/color_53"
+                android:textSize="14sp" />
 
             <RadioGroup
-                android:id="@+id/rgbs3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
-
-                <RadioButton
-                    android:id="@+id/rb_default"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="默认" />
-
-                <RadioButton
-                    android:id="@+id/rb_to1_1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
-                    android:text="1:1" />
-
-                <RadioButton
-                    android:id="@+id/rb_to3_2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
-                    android:text="3:2" />
-
-                <RadioButton
-                    android:id="@+id/rb_to3_4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
-                    android:text="3:4" />
-
-                <RadioButton
-                    android:id="@+id/rb_to16_9"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
-                    android:text="16:9" />
-            </RadioGroup>
-
-            <RadioGroup
-                android:id="@+id/rgbs4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
-
-                <RadioButton
-                    android:id="@+id/rb_preview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="预览图片" />
-
-                <RadioButton
-                    android:id="@+id/rb_preview_false"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
-
-                    android:text="禁止预览" />
-
-            </RadioGroup>
-
-            <RadioGroup
-                android:id="@+id/rgbs5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
-
-                <RadioButton
-                    android:id="@+id/rb_preview_video"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="预览视频(播放)" />
-
-                <RadioButton
-                    android:id="@+id/rb_preview_video_false"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
-                    android:text="禁止预览" />
-
-            </RadioGroup>
-
-            <LinearLayout
+                android:id="@+id/rgb_photo_mode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <RadioGroup
-                    android:id="@+id/rgbs6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:orientation="horizontal"
-                    android:paddingLeft="10dp">
-
-                    <RadioButton
-                        android:id="@+id/rb_yes_copy"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="允许裁剪" />
-
-                    <RadioButton
-                        android:id="@+id/rb_no_copy"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15sp"
-                        android:text="禁止裁剪" />
-
-                </RadioGroup>
-
-                <EditText
-                    android:id="@+id/et_w"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:hint="裁剪宽度"
-                    android:inputType="number|textNoSuggestions"
-                    android:textSize="13sp" />
-
-                <EditText
-                    android:id="@+id/et_h"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:hint="裁剪高度"
-                    android:inputType="number|textNoSuggestions"
-                    android:textSize="13sp" />
-            </LinearLayout>
-
-            <RadioGroup
-                android:id="@+id/rgbs7"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
-
                 <RadioButton
-                    android:id="@+id/rb_theme1"
+                    android:id="@+id/rb_all"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="默认主题" />
-
-                <RadioButton
-                    android:id="@+id/rb_theme2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
-                    android:text="蓝色主题" />
-
-            </RadioGroup>
-
-            <RadioGroup
-                android:id="@+id/rgbs8"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
-
-                <RadioButton
-                    android:id="@+id/rb_select1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="默认图片选择样式" />
-
-                <RadioButton
-                    android:id="@+id/rb_select2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
-                    android:text="自定义图片选择样式" />
-
-            </RadioGroup>
-
-
-            <RadioGroup
-                android:id="@+id/rgbs9"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp">
-
-                <RadioButton
-                    android:id="@+id/rb_compress_false"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="默认不压缩图片" />
-
-                <RadioButton
-                    android:id="@+id/rb_compress_true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
-                    android:text="压缩图片" />
-
-            </RadioGroup>
-
-            <RadioGroup
-                android:id="@+id/rgbs10"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp"
-                android:visibility="gone">
-
-                <RadioButton
-                    android:id="@+id/rb_system"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="系统自带压缩" />
-
-                <RadioButton
-                    android:id="@+id/rb_luban"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
-                    android:text="LuBan压缩" />
-
-            </RadioGroup>
-
-            <LinearLayout
-                android:id="@+id/ll_luban_wh"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <EditText
-                    android:id="@+id/et_compress_width"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_weight="1"
-                    android:gravity="center|left"
-                    android:hint="压缩宽"
-                    android:inputType="number|textNoSuggestions"
+                    android:text="全部"
+                    android:textColor="@color/color_53"
                     android:textSize="14sp" />
 
-                <EditText
-                    android:id="@+id/et_compress_height"
-                    android:layout_width="0dp"
+                <RadioButton
+                    android:id="@+id/rb_image"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center|left"
-                    android:hint="压缩高"
-                    android:inputType="number|textNoSuggestions"
+                    android:layout_marginLeft="5dp"
+                    android:text="图片"
+                    android:textColor="@color/color_53"
                     android:textSize="14sp" />
 
-            </LinearLayout>
+                <RadioButton
+                    android:id="@+id/rb_video"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="视频"
+                    android:textColor="@color/color_53"
+                    android:textSize="14sp" />
+            </RadioGroup>
 
-            <EditText
-                android:id="@+id/et_kb"
+
+            <CheckBox
+                android:id="@+id/cb_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:hint="压缩大小不超过多少b"
-                android:inputType="number|textNoSuggestions"
-                android:text="102400"
-                android:textSize="13sp"
+                android:checked="true"
+                android:gravity="center_vertical"
+                android:text="相册or单独拍照"
+                android:textColor="@color/color_53"
+                android:textSize="14sp" />
+
+            <CheckBox
+                android:id="@+id/cb_choose_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:gravity="center_vertical"
+                android:text="单选or多选"
+                android:textColor="@color/color_53"
+                android:textSize="14sp" />
+
+            <CheckBox
+                android:id="@+id/cb_isCamera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:gravity="center_vertical"
+                android:text="显示or隐藏拍摄"
+                android:textColor="@color/color_53"
+                android:textSize="14sp" />
+
+
+            <CheckBox
+                android:id="@+id/cb_isGif"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="是否显示Gif图片"
+                android:textColor="@color/color_53"
+                android:textSize="14sp" />
+
+            <CheckBox
+                android:id="@+id/cb_preview_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:gravity="center_vertical"
+                android:text="是否预览图片"
+                android:textColor="@color/color_53"
+                android:textSize="14sp" />
+
+            <CheckBox
+                android:id="@+id/cb_preview_video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:gravity="center_vertical"
+                android:text="是否预览视频"
+                android:textColor="@color/color_53"
+                android:textSize="14sp" />
+
+            <CheckBox
+                android:id="@+id/cb_compress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="是否压缩图片"
+                android:textColor="@color/color_53"
+                android:textSize="14sp" />
+
+            <RadioGroup
+                android:id="@+id/rgb_compress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <RadioButton
+                    android:id="@+id/rb_compress_system"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="系统自带"
+                    android:textColor="@color/color_53"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_compress_luban"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Luban压缩"
+                    android:textColor="@color/color_53"
+                    android:textSize="14sp" />
+            </RadioGroup>
+
+            <CheckBox
+                android:id="@+id/cb_crop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="是否裁剪图片"
+                android:textColor="@color/color_53"
+                android:textSize="14sp" />
+
+            <RadioGroup
+                android:id="@+id/rgb_crop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <RadioButton
+                    android:id="@+id/rb_crop_default"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="默认"
+                    android:textColor="@color/color_53"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_crop_1to1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="1:1"
+                    android:textColor="@color/color_53"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_crop_3to4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="3:4"
+                    android:textColor="@color/color_53"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_crop_3to2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="3:2"
+                    android:textColor="@color/color_53"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_crop_16to9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="16:9"
+                    android:textColor="@color/color_53"
+                    android:textSize="14sp" />
+
+            </RadioGroup>
+
+            <CheckBox
+                android:id="@+id/cb_crop_circular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="圆形头像裁剪模式"
+                android:textColor="@color/color_53"
+                android:textSize="14sp"
                 android:visibility="gone" />
 
 
+            <CheckBox
+                android:id="@+id/cb_showCropGrid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:gravity="center_vertical"
+                android:text="是否显示裁剪框网格"
+                android:textColor="@color/color_53"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <CheckBox
+                android:id="@+id/cb_showCropFrame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:gravity="center_vertical"
+                android:text="是否显示裁剪边框"
+                android:textColor="@color/color_53"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <CheckBox
+                android:id="@+id/cb_styleCrop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="裁剪框or图片拖动"
+                android:textColor="@color/color_53"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <CheckBox
+                android:id="@+id/cb_hide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="是否显示裁剪菜单栏"
+                android:textColor="@color/color_53"
+                android:textSize="14sp"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

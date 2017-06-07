@@ -11,8 +11,9 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.tools.DebugUtil;
 import com.luck.pictureselector.R;
-import com.yalantis.ucrop.entity.LocalMedia;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,8 +21,8 @@ import java.util.List;
 
 /**
  * author：luck
- * project：LeTuGolf
- * package：com.tongyu.luck.paradisegolf.adapter
+ * project：PictureSelector
+ * package：com.luck.pictureselector.adapter
  * email：893855882@qq.com
  * data：16/7/27
  */
@@ -38,7 +39,7 @@ public class GridImageAdapter extends
     private onAddPicClickListener mOnAddPicClickListener;
 
     public interface onAddPicClickListener {
-        void onAddPicClick(int type, int position);
+        void onAddPicClick();
     }
 
     public GridImageAdapter(Context context, onAddPicClickListener mOnAddPicClickListener) {
@@ -92,15 +93,6 @@ public class GridImageAdapter extends
         View view = mInflater.inflate(R.layout.gv_filter_image,
                 viewGroup, false);
         final ViewHolder viewHolder = new ViewHolder(view);
-        //itemView 的点击事件
-        if (mItemClickListener != null) {
-            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mItemClickListener.onItemClick(viewHolder.getAdapterPosition(), v);
-                }
-            });
-        }
         return viewHolder;
     }
 
@@ -116,11 +108,11 @@ public class GridImageAdapter extends
     public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
         //少于8张，显示继续添加的图标
         if (getItemViewType(position) == TYPE_CAMERA) {
-            viewHolder.mImg.setImageResource(R.mipmap.addimg_1x);
+            viewHolder.mImg.setImageResource(R.drawable.addimg_1x);
             viewHolder.mImg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnAddPicClickListener.onAddPicClick(0, viewHolder.getAdapterPosition());
+                    mOnAddPicClickListener.onAddPicClick();
                 }
             });
             viewHolder.ll_del.setVisibility(View.INVISIBLE);
@@ -129,11 +121,14 @@ public class GridImageAdapter extends
             viewHolder.ll_del.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mOnAddPicClickListener.onAddPicClick(1, viewHolder.getAdapterPosition());
+                    int index = viewHolder.getAdapterPosition();
+                    list.remove(index);
+                    notifyItemRemoved(index);
+                    notifyItemRangeChanged(index, list.size());
+                    DebugUtil.i("delete position:", index + "--->remove after:" + list.size());
                 }
             });
             LocalMedia media = list.get(position);
-            int type = media.getType();
             String path = "";
             if (media.isCut() && !media.isCompressed()) {
                 // 裁剪过
@@ -145,33 +140,34 @@ public class GridImageAdapter extends
                 // 原图
                 path = media.getPath();
             }
-
-            switch (type) {
-                case 1:
-                    // 图片
-                    if (media.isCompressed()) {
-                        Log.i("compress image result", new File(media.getCompressPath()).length() / 1024 + "k");
-                        Log.i("原图地址::", media.getPath());
-                        Log.i("压缩地址::", media.getCompressPath());
-                    }
-
-                    Glide.with(viewHolder.itemView.getContext())
-                            .load(path)
-                            .centerCrop()
-                            .placeholder(R.color.color_f6)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(viewHolder.mImg);
-                    break;
-                case 2:
-                    // 视频
-                    Log.i("时长:", media.getDuration() + "");
-                    Glide.with(viewHolder.itemView.getContext()).load(path).thumbnail(0.5f).into(viewHolder.mImg);
-                    break;
-                default:
-
-                    break;
+            // 图片
+            if (media.isCompressed()) {
+                Log.i("compress image result:", new File(media.getCompressPath()).length() / 1024 + "k");
+                Log.i("压缩地址::", media.getCompressPath());
             }
 
+            Log.i("原图地址::", media.getPath());
+
+            if (media.isCut()) {
+                Log.i("裁剪地址::", media.getCutPath());
+            }
+            Glide.with(viewHolder.itemView.getContext())
+                    .load(path)
+                    .centerCrop()
+                    .placeholder(R.color.color_f6)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .into(viewHolder.mImg);
+
+            //itemView 的点击事件
+            if (mItemClickListener != null) {
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int adapterPosition = viewHolder.getAdapterPosition();
+                        mItemClickListener.onItemClick(adapterPosition, v);
+                    }
+                });
+            }
         }
     }
 

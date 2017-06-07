@@ -3,10 +3,10 @@
     android:shape="oval"
     android:useLevel="false">
 
-    <solid android:color="@color/blue" />
+    <solid android:color="@color/transparent" />
     <stroke
         android:width="0.5dp"
-        android:color="@color/ucrop_color_toolbar_widget" />
+        android:color="@color/white" />
     <size
         android:width="18dp"
         android:height="18dp" />

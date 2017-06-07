@@ -2,26 +2,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:layout_marginTop="5dp"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_horizontal_margin">
+    android:paddingLeft="6dp">
 
-    <ImageButton
+    <ImageView
         android:id="@+id/minus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_minus" />
+        android:background="@color/tab_color_false"
+        android:padding="3dp"
+        android:src="@drawable/ic_minus" />
 
     <TextView
         android:id="@+id/tv_select_num"
-        android:layout_width="50dp"
+        android:layout_width="35dp"
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="9" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/plus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_plus" />
+        android:background="@color/tab_color_false"
+        android:padding="3dp"
+        android:src="@drawable/ic_plus" />
 </LinearLayout>

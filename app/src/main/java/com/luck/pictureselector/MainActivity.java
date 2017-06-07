@@ -1,487 +1,250 @@
 package com.luck.pictureselector;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.ContextWrapper;
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import android.support.annotation.IdRes;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.compress.Luban;
-import com.luck.picture.lib.model.FunctionConfig;
-import com.luck.picture.lib.model.FunctionOptions;
-import com.luck.picture.lib.model.PictureConfig;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.permissions.RxPermissions;
+import com.luck.picture.lib.tools.DebugUtil;
+import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.pictureselector.adapter.GridImageAdapter;
-import com.luck.pictureselector.util.FullyGridLayoutManager;
-import com.yalantis.ucrop.entity.LocalMedia;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * author：luck
- * project：PictureSelector
- * package：com.luck.picture.ui
- * email：邮箱->893855882@qq.com
- * data：16/12/31
- */
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
-public class MainActivity extends Activity implements RadioGroup.OnCheckedChangeListener, View.OnClickListener {
-    public static final String TAG = "MainActivity";
+import static com.luck.picture.lib.config.PictureMimeType.ofImage;
+import static com.luck.picture.lib.config.PictureMimeType.ofVideo;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,
+        RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
+    private final static String TAG = MainActivity.class.getSimpleName();
+    private List<LocalMedia> selectList = new ArrayList<>();
     private RecyclerView recyclerView;
     private GridImageAdapter adapter;
-    private RadioGroup rgbs, rgbs01, rgbs0, rgbs1, rgbs2, rgbs3, rgbs4, rgbs5, rgbs6, rgbs7, rgbs8, rgbs9, rgbs10, rgbs11;
-    private int selectMode = FunctionConfig.MODE_MULTIPLE;
-    private int maxSelectNum = 9;// 图片最大可选数量
-    private ImageButton minus, plus;
+    private int maxSelectNum = 9;
     private TextView tv_select_num;
-    private EditText et_w, et_h, et_compress_width, et_compress_height;
-    private LinearLayout ll_luban_wh;
-    private boolean isShow = true;
-    private int selectType = FunctionConfig.TYPE_IMAGE;
-    private int copyMode = FunctionConfig.CROP_MODEL_DEFAULT;
-    private boolean enablePreview = true;
-    private boolean isPreviewVideo = true;
-    private boolean enableCrop = true;
-    private boolean theme = false;
-    private boolean selectImageType = false;
-    private int cropW = 0;
-    private int cropH = 0;
-    private int maxB = 0;
-    private int compressW = 0;
-    private int compressH = 0;
-    private boolean isCompress = false;
-    private boolean isCheckNumMode = false;
-    private int compressFlag = 1;// 1 系统自带压缩 2 luban压缩
-    private List<LocalMedia> selectMedia = new ArrayList<>();
-    private EditText et_kb;
-    private int themeStyle;
-    private int previewColor, completeColor, previewBottomBgColor, previewTopBgColor, bottomBgColor, checkedBoxDrawable;
-    private boolean mode = false;// 启动相册模式
-    private boolean clickVideo = false;
+    private ImageView left_back, minus, plus;
+    private RadioGroup rgb_crop, rgb_compress, rgb_style, rgb_photo_mode;
+    private int aspect_ratio_x, aspect_ratio_y;
+    private CheckBox cb_voice, cb_choose_mode, cb_isCamera, cb_isGif,
+            cb_preview_img, cb_preview_video, cb_crop, cb_compress,
+            cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid, cb_showCropFrame;
+    private int compressMode = PictureConfig.SYSTEM_COMPRESS_MODE;
+    private int themeId;
+    private int chooseMode = PictureMimeType.ofAll();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        recyclerView = (RecyclerView) findViewById(R.id.recycler);
-        rgbs = (RadioGroup) findViewById(R.id.rgbs);
-        rgbs01 = (RadioGroup) findViewById(R.id.rgbs01);
-        rgbs0 = (RadioGroup) findViewById(R.id.rgbs0);
-        rgbs1 = (RadioGroup) findViewById(R.id.rgbs1);
-        rgbs2 = (RadioGroup) findViewById(R.id.rgbs2);
-        rgbs3 = (RadioGroup) findViewById(R.id.rgbs3);
-        rgbs4 = (RadioGroup) findViewById(R.id.rgbs4);
-        rgbs5 = (RadioGroup) findViewById(R.id.rgbs5);
-        rgbs6 = (RadioGroup) findViewById(R.id.rgbs6);
-        rgbs7 = (RadioGroup) findViewById(R.id.rgbs7);
-        rgbs8 = (RadioGroup) findViewById(R.id.rgbs8);
-        rgbs9 = (RadioGroup) findViewById(R.id.rgbs9);
-        rgbs10 = (RadioGroup) findViewById(R.id.rgbs10);
-        et_kb = (EditText) findViewById(R.id.et_kb);
-        rgbs11 = (RadioGroup) findViewById(R.id.rgbs11);
-        findViewById(R.id.left_back).setOnClickListener(this);
-        ll_luban_wh = (LinearLayout) findViewById(R.id.ll_luban_wh);
-        et_compress_width = (EditText) findViewById(R.id.et_compress_width);
-        et_compress_height = (EditText) findViewById(R.id.et_compress_height);
-        et_w = (EditText) findViewById(R.id.et_w);
-        et_h = (EditText) findViewById(R.id.et_h);
-        minus = (ImageButton) findViewById(R.id.minus);
-        plus = (ImageButton) findViewById(R.id.plus);
+        themeId = R.style.picture_default_style;
+        minus = (ImageView) findViewById(R.id.minus);
+        plus = (ImageView) findViewById(R.id.plus);
         tv_select_num = (TextView) findViewById(R.id.tv_select_num);
+        rgb_crop = (RadioGroup) findViewById(R.id.rgb_crop);
+        rgb_style = (RadioGroup) findViewById(R.id.rgb_style);
+        rgb_photo_mode = (RadioGroup) findViewById(R.id.rgb_photo_mode);
+        rgb_compress = (RadioGroup) findViewById(R.id.rgb_compress);
+        cb_voice = (CheckBox) findViewById(R.id.cb_voice);
+        cb_choose_mode = (CheckBox) findViewById(R.id.cb_choose_mode);
+        cb_isCamera = (CheckBox) findViewById(R.id.cb_isCamera);
+        cb_isGif = (CheckBox) findViewById(R.id.cb_isGif);
+        cb_preview_img = (CheckBox) findViewById(R.id.cb_preview_img);
+        cb_preview_video = (CheckBox) findViewById(R.id.cb_preview_video);
+        cb_crop = (CheckBox) findViewById(R.id.cb_crop);
+        cb_styleCrop = (CheckBox) findViewById(R.id.cb_styleCrop);
+        cb_compress = (CheckBox) findViewById(R.id.cb_compress);
+        cb_mode = (CheckBox) findViewById(R.id.cb_mode);
+        cb_showCropGrid = (CheckBox) findViewById(R.id.cb_showCropGrid);
+        cb_showCropFrame = (CheckBox) findViewById(R.id.cb_showCropFrame);
+        cb_hide = (CheckBox) findViewById(R.id.cb_hide);
+        cb_crop_circular = (CheckBox) findViewById(R.id.cb_crop_circular);
+        rgb_crop.setOnCheckedChangeListener(this);
+        rgb_compress.setOnCheckedChangeListener(this);
+        rgb_style.setOnCheckedChangeListener(this);
+        rgb_photo_mode.setOnCheckedChangeListener(this);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler);
+        left_back = (ImageView) findViewById(R.id.left_back);
+        left_back.setOnClickListener(this);
+        minus.setOnClickListener(this);
+        plus.setOnClickListener(this);
+        cb_crop.setOnCheckedChangeListener(this);
+        cb_crop_circular.setOnCheckedChangeListener(this);
+        cb_compress.setOnCheckedChangeListener(this);
         FullyGridLayoutManager manager = new FullyGridLayoutManager(MainActivity.this, 4, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
         adapter = new GridImageAdapter(MainActivity.this, onAddPicClickListener);
-        adapter.setList(selectMedia);
+        adapter.setList(selectList);
         adapter.setSelectMax(maxSelectNum);
         recyclerView.setAdapter(adapter);
-        rgbs.setOnCheckedChangeListener(this);
-        rgbs0.setOnCheckedChangeListener(this);
-        rgbs1.setOnCheckedChangeListener(this);
-        rgbs2.setOnCheckedChangeListener(this);
-        rgbs3.setOnCheckedChangeListener(this);
-        rgbs4.setOnCheckedChangeListener(this);
-        rgbs5.setOnCheckedChangeListener(this);
-        rgbs6.setOnCheckedChangeListener(this);
-        rgbs7.setOnCheckedChangeListener(this);
-        rgbs8.setOnCheckedChangeListener(this);
-        rgbs9.setOnCheckedChangeListener(this);
-        rgbs01.setOnCheckedChangeListener(this);
-        rgbs10.setOnCheckedChangeListener(this);
-        rgbs11.setOnCheckedChangeListener(this);
-
-        minus.setOnClickListener(this);
-        plus.setOnClickListener(this);
-
         adapter.setOnItemClickListener(new GridImageAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
-                switch (selectType) {
-                    case FunctionConfig.TYPE_IMAGE:
-                        // 预览图片 可长按保存 也可自定义保存路径
-                        //PictureConfig.getInstance().externalPicturePreview(MainActivity.this, "/custom_file", position, selectMedia);
-                        PictureConfig.getInstance().externalPicturePreview(MainActivity.this, position, selectMedia);
-                        break;
-                    case FunctionConfig.TYPE_VIDEO:
-                        // 预览视频
-                        if (selectMedia.size() > 0) {
-                            PictureConfig.getInstance().externalPictureVideo(MainActivity.this, selectMedia.get(position).getPath());
-                        }
-                        break;
+                if (selectList.size() > 0) {
+                    LocalMedia media = selectList.get(position);
+                    String pictureType = media.getPictureType();
+                    int mediaType = PictureMimeType.pictureToVideo(pictureType);
+                    switch (mediaType) {
+                        case 1:
+                            // 预览图片 可自定长按保存路径
+                            //PictureSelector.create(MainActivity.this).externalPicturePreview(position, "/custom_file", selectList);
+                            PictureSelector.create(MainActivity.this).externalPicturePreview(position, selectList);
+                            break;
+                        case 2:
+                            // 预览视频
+                            PictureSelector.create(MainActivity.this).externalPictureVideo(media.getPath());
+                            break;
+                    }
                 }
+            }
+        });
 
+        // 清空图片缓存，包括裁剪、压缩后的图片 注意:必须要在上传完成后调用 必须要获取权限
+        RxPermissions permissions = new RxPermissions(this);
+        permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Observer<Boolean>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                if (aBoolean) {
+                    PictureFileUtils.deleteCacheDirFile(MainActivity.this);
+                } else {
+                    Toast.makeText(MainActivity.this,
+                            getString(R.string.picture_jurisdiction), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onComplete() {
             }
         });
 
     }
 
-    /**
-     * 删除图片回调接口
-     */
-
     private GridImageAdapter.onAddPicClickListener onAddPicClickListener = new GridImageAdapter.onAddPicClickListener() {
         @Override
-        public void onAddPicClick(int type, int position) {
-            switch (type) {
-                case 0:
-                    // 进入相册
-                    /**
-                     * type --> 1图片 or 2视频
-                     * copyMode -->裁剪比例，默认、1:1、3:4、3:2、16:9
-                     * maxSelectNum --> 可选择图片的数量
-                     * selectMode         --> 单选 or 多选
-                     * isShow       --> 是否显示拍照选项 这里自动根据type 启动拍照或录视频
-                     * isPreview    --> 是否打开预览选项
-                     * isCrop       --> 是否打开剪切选项
-                     * isPreviewVideo -->是否预览视频(播放) mode or 多选有效
-                     * ThemeStyle -->主题颜色
-                     * CheckedBoxDrawable -->图片勾选样式
-                     * cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
-                     * cropH-->裁剪高度 值不能小于100
-                     * isCompress -->是否压缩图片
-                     * setEnablePixelCompress 是否启用像素压缩
-                     * setEnableQualityCompress 是否启用质量压缩
-                     * setRecordVideoSecond 录视频的秒数，默认不限制
-                     * setRecordVideoDefinition 视频清晰度  Constants.HIGH 清晰  Constants.ORDINARY 低质量
-                     * setImageSpanCount -->每行显示个数
-                     * setCheckNumMode 是否显示QQ选择风格(带数字效果)
-                     * setPreviewColor 预览文字颜色
-                     * setCompleteColor 完成文字颜色
-                     * setPreviewBottomBgColor 预览界面底部背景色
-                     * setBottomBgColor 选择图片页面底部背景色
-                     * setCompressQuality 设置裁剪质量，默认无损裁剪
-                     * setSelectMedia 已选择的图片
-                     * setCompressFlag 1为系统自带压缩  2为第三方luban压缩
-                     * 注意-->type为2时 设置isPreview or isCrop 无效
-                     * 注意：Options可以为空，默认标准模式
-                     */
-                    String ws = et_w.getText().toString().trim();
-                    String hs = et_h.getText().toString().trim();
-                    String b = et_kb.getText().toString().trim();// 压缩最大大小 单位是b
-
-                    if (!isNull(ws) && !isNull(hs)) {
-                        cropW = Integer.parseInt(ws);
-                        cropH = Integer.parseInt(hs);
-                    }
-
-                    if (!isNull(b)) {
-                        maxB = Integer.parseInt(b);
-                    }
-
-                    if (!isNull(et_compress_width.getText().toString()) && !isNull(et_compress_height.getText().toString())) {
-                        compressW = Integer.parseInt(et_compress_width.getText().toString());
-                        compressH = Integer.parseInt(et_compress_height.getText().toString());
-                    }
-
-                    if (theme) {
-                        // 设置主题样式
-                        themeStyle = ContextCompat.getColor(MainActivity.this, R.color.blue);
-                    } else {
-                        themeStyle = ContextCompat.getColor(MainActivity.this, R.color.bar_grey);
-                    }
-
-                    if (selectImageType) {
-                        checkedBoxDrawable = R.drawable.select_cb;
-                    } else {
-                        checkedBoxDrawable = 0;
-                    }
-
-                    if (isCheckNumMode) {
-                        // QQ 风格模式下 这里自己搭配颜色
-                        previewColor = ContextCompat.getColor(MainActivity.this, R.color.blue);
-                        completeColor = ContextCompat.getColor(MainActivity.this, R.color.blue);
-                    } else {
-                        previewColor = ContextCompat.getColor(MainActivity.this, R.color.tab_color_true);
-                        completeColor = ContextCompat.getColor(MainActivity.this, R.color.tab_color_true);
-                    }
-
-                    FunctionOptions options = new FunctionOptions.Builder()
-                            .setType(selectType) // 图片or视频 FunctionConfig.TYPE_IMAGE  TYPE_VIDEO
-                            .setCropMode(copyMode) // 裁剪模式 默认、1:1、3:4、3:2、16:9
-//                            .setOffsetX() // 自定义裁剪比例
-//                            .setOffsetY() // 自定义裁剪比例
-                            .setCompress(isCompress) //是否压缩
-                            .setEnablePixelCompress(true) //是否启用像素压缩
-                            .setEnableQualityCompress(true) //是否启质量压缩
-                            .setMaxSelectNum(maxSelectNum) // 可选择图片的数量
-                            .setMinSelectNum(0)// 图片或视频最低选择数量，默认代表无限制
-                            .setSelectMode(selectMode) // 单选 or 多选
-                            .setShowCamera(isShow) //是否显示拍照选项 这里自动根据type 启动拍照或录视频
-                            .setEnablePreview(enablePreview) // 是否打开预览选项
-                            .setEnableCrop(enableCrop) // 是否打开剪切选项
-                            .setCircularCut(false)// 是否采用圆形裁剪
-                            .setPreviewVideo(isPreviewVideo) // 是否预览视频(播放) mode or 多选有效
-                            .setCheckedBoxDrawable(checkedBoxDrawable)
-                            .setRecordVideoDefinition(FunctionConfig.HIGH) // 视频清晰度
-                            .setRecordVideoSecond(60) // 视频秒数
-                            .setCustomQQ_theme(0)// 可自定义QQ数字风格，不传就默认是蓝色风格
-                            .setGif(false)// 是否显示gif图片，默认不显示
-                            .setCropW(cropW) // cropW-->裁剪宽度 值不能小于100  如果值大于图片原始宽高 将返回原图大小
-                            .setCropH(cropH) // cropH-->裁剪高度 值不能小于100 如果值大于图片原始宽高 将返回原图大小
-                            .setMaxB(maxB) // 压缩最大值 例如:200kb  就设置202400，202400 / 1024 = 200kb
-                            .setPreviewColor(previewColor) //预览字体颜色
-                            .setCompleteColor(completeColor) //已完成字体颜色
-                            .setPreviewBottomBgColor(previewBottomBgColor) //预览图片底部背景色
-                            .setPreviewTopBgColor(previewTopBgColor)//预览图片标题背景色
-                            .setBottomBgColor(bottomBgColor) //图片列表底部背景色
-                            .setGrade(Luban.THIRD_GEAR) // 压缩档次 默认三档
-                            .setCheckNumMode(isCheckNumMode)
-                            .setCompressQuality(100) // 图片裁剪质量,默认无损
-                            .setImageSpanCount(4) // 每行个数
-                            .setVideoS(0)// 查询多少秒内的视频 单位:秒
-                            .setSelectMedia(selectMedia) // 已选图片，传入在次进去可选中，不能传入网络图片
-                            .setCompressFlag(compressFlag) // 1 系统自带压缩 2 luban压缩
-                            .setCompressW(compressW) // 压缩宽 如果值大于图片原始宽高无效
-                            .setCompressH(compressH) // 压缩高 如果值大于图片原始宽高无效
-                            .setThemeStyle(themeStyle) // 设置主题样式
-                            .setNumComplete(false) // 0/9 完成  样式
-                            .setClickVideo(clickVideo)// 点击声音
-                            .setFreeStyleCrop(false) // 裁剪是移动矩形框或是图片
-//                            .setRotateEnabled(false) // 裁剪时是否旋转图片
-//                            .setScaleEnabled(false)// 裁剪时是否放大小图片
-//                            .setPicture_title_color(ContextCompat.getColor(MainActivity.this, R.color.black)) // 设置标题字体颜色
-//                            .setPicture_right_color(ContextCompat.getColor(MainActivity.this, R.color.black)) // 设置标题右边字体颜色
-//                            .setLeftBackDrawable(R.mipmap.back2) // 设置返回键图标
-//                            .setStatusBar(ContextCompat.getColor(MainActivity.this, R.color.white)) // 设置状态栏颜色，默认是和标题栏一致
-//                            .setImmersive(false)// 是否改变状态栏字体颜色(黑色)
-                            .create();
-
-                    if (mode) {
-                        // 只拍照
-                        PictureConfig.getInstance().init(options).startOpenCamera(MainActivity.this);
-                    } else {
-                        // 先初始化参数配置，在启动相册
-                        PictureConfig.getInstance().init(options).openPhoto(MainActivity.this, resultCallback);
-                    }
-                    break;
-                case 1:
-                    // 删除图片
-                    selectMedia.remove(position);
-                    adapter.notifyItemRemoved(position);
-                    break;
-            }
-        }
-    };
-
-
-    /**
-     * 图片回调方法
-     */
-    private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {
-        @Override
-        public void onSelectSuccess(List<LocalMedia> resultList) {
-            // 多选回调
-            selectMedia = resultList;
-            Log.i("callBack_result", selectMedia.size() + "");
-            LocalMedia media = resultList.get(0);
-            if (media.isCut() && !media.isCompressed()) {
-                // 裁剪过
-                String path = media.getCutPath();
-            } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
-                // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
-                String path = media.getCompressPath();
+        public void onAddPicClick() {
+            boolean mode = cb_mode.isChecked();
+            if (mode) {
+                // 进入相册 以下是例子：不需要的api可以不写
+                PictureSelector.create(MainActivity.this)
+                        .openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()
+                        .theme(themeId)// 主题样式设置 具体参考 values/styles
+                        .maxSelectNum(maxSelectNum)// 最大图片选择数量
+                        .minSelectNum(1)// 最小选择数量
+                        .selectionMode(cb_choose_mode.isChecked() ?
+                                PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
+                        .previewImage(cb_preview_img.isChecked())// 是否可预览图片
+                        .previewVideo(cb_preview_video.isChecked())// 是否可预览视频
+                        .compressGrade(Luban.THIRD_GEAR)// luban压缩档次，默认3档 Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
+                        .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
+                        .enableCrop(cb_crop.isChecked())// 是否裁剪
+                        .compress(cb_compress.isChecked())// 是否压缩
+                        .compressMode(compressMode)//系统自带 or 鲁班压缩 PictureConfig.SYSTEM_COMPRESS_MODE or LUBAN_COMPRESS_MODE
+                        .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
+                        .withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
+                        .hideBottomControls(cb_hide.isChecked() ? false : true)// 是否显示uCrop工具栏，默认不显示
+                        .isGif(cb_isGif.isChecked())// 是否显示gif图片
+                        .freeStyleCropEnabled(cb_styleCrop.isChecked())// 裁剪框是否可拖拽
+                        .circleDimmedLayer(cb_crop_circular.isChecked())// 是否圆形裁剪
+                        .showCropFrame(cb_showCropFrame.isChecked())// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
+                        .showCropGrid(cb_showCropGrid.isChecked())// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
+                        .openClickSound(cb_voice.isChecked())// 是否开启点击声音
+                        .selectionMedia(selectList)// 是否传入已选图片
+                        //.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+                        //.isRemove(true)//是否移除图片列表已损坏的图片
+                        //.cropCompressQuality(90)// 裁剪压缩质量
+                        //.compressMaxKB()//压缩最大值kb compressGrade()为Luban.CUSTOM_GEAR有效
+                        //.compressWH() // 压缩宽高比 compressGrade()为Luban.CUSTOM_GEAR有效
+                        //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
+                        //.rotateEnabled() // 裁剪是否可旋转图片
+                        //.scaleEnabled()// 裁剪是否可放大缩小图片
+                        //.videoQuality()// 视频录制质量 0 or 1
+                        //.videoSecond()//显示多少秒以内的视频
+                        .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
             } else {
-                // 原图地址
-                String path = media.getPath();
-            }
-            if (selectMedia != null) {
-                adapter.setList(selectMedia);
-                adapter.notifyDataSetChanged();
+                // 单独拍照
+                PictureSelector.create(MainActivity.this)
+                        .openCamera(chooseMode)// 单独拍照，也可录像 看你传入的类型是图片or视频
+                        .theme(themeId)// 主题样式设置 具体参考 values/styles
+                        .maxSelectNum(maxSelectNum)// 最大图片选择数量
+                        .minSelectNum(1)// 最小选择数量
+                        .selectionMode(cb_choose_mode.isChecked() ?
+                                PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
+                        .previewImage(cb_preview_img.isChecked())// 是否可预览图片
+                        .previewVideo(cb_preview_video.isChecked())// 是否可预览视频
+                        .compressGrade(Luban.THIRD_GEAR)// luban压缩档次，默认3档 Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
+                        .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
+                        .enableCrop(cb_crop.isChecked())// 是否裁剪
+                        .compress(cb_compress.isChecked())// 是否压缩
+                        .compressMode(compressMode)//系统自带 or 鲁班压缩 PictureConfig.SYSTEM_COMPRESS_MODE or LUBAN_COMPRESS_MODE
+                        .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
+                        .withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
+                        .hideBottomControls(cb_hide.isChecked() ? false : true)// 是否显示uCrop工具栏，默认不显示
+                        .isGif(cb_isGif.isChecked())// 是否显示gif图片
+                        .freeStyleCropEnabled(cb_styleCrop.isChecked())// 裁剪框是否可拖拽
+                        .circleDimmedLayer(cb_crop_circular.isChecked())// 是否圆形裁剪
+                        .showCropFrame(cb_showCropFrame.isChecked())// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
+                        .showCropGrid(cb_showCropGrid.isChecked())// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
+                        .openClickSound(cb_voice.isChecked())// 是否开启点击声音
+                        .selectionMedia(selectList)// 是否传入已选图片
+                        .previewEggs(false)//预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+                        .isRemove(true)//是否移除图片列表已损坏的图片
+                        //.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+                        //.isRemove(true)//是否移除图片列表已损坏的图片
+                        //.cropCompressQuality(90)// 裁剪压缩质量 默认为90
+                        //.compressMaxKB()//压缩最大值kb compressGrade()为Luban.CUSTOM_GEAR有效
+                        //.compressWH() // 压缩宽高比 compressGrade()为Luban.CUSTOM_GEAR有效
+                        //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
+                        //.rotateEnabled() // 裁剪是否可旋转图片
+                        //.scaleEnabled()// 裁剪是否可放大缩小图片
+                        //.videoQuality()// 视频录制质量 0 or 1
+                        //.videoSecond()//显示多少秒以内的视频
+                        .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
             }
         }
 
-        @Override
-        public void onSelectSuccess(LocalMedia media) {
-            // 单选回调
-            selectMedia.add(media);
-            if (selectMedia != null) {
-                adapter.setList(selectMedia);
-                adapter.notifyDataSetChanged();
-            }
-        }
     };
 
-    /**
-     * 単独拍照图片回调
-     *
-     * @param requestCode
-     * @param resultCode
-     * @param data
-     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == FunctionConfig.CAMERA_RESULT) {
-                if (data != null) {
-                    selectMedia = (List<LocalMedia>) data.getSerializableExtra(FunctionConfig.EXTRA_RESULT);
-                    if (selectMedia != null) {
-                        adapter.setList(selectMedia);
-                        adapter.notifyDataSetChanged();
-                    }
-                }
+            switch (requestCode) {
+                case PictureConfig.CHOOSE_REQUEST:
+                    // 图片选择结果回调
+                    selectList = PictureSelector.obtainMultipleResult(data);
+                    adapter.setList(selectList);
+                    adapter.notifyDataSetChanged();
+                    DebugUtil.i(TAG, "onActivityResult:" + selectList.size());
+                    break;
             }
         }
-    }
-
-
-    @Override
-    public void onCheckedChanged(RadioGroup radioGroup, int i) {
-        switch (i) {
-            case R.id.rb_photo:
-                mode = false;
-                break;
-            case R.id.rb_camera:
-                mode = true;
-                break;
-            case R.id.rb_ordinary:
-                isCheckNumMode = false;
-                break;
-            case R.id.rb_qq:
-                isCheckNumMode = true;
-                break;
-            case R.id.rb_single:
-                selectMode = FunctionConfig.MODE_SINGLE;
-                break;
-            case R.id.rb_multiple:
-                selectMode = FunctionConfig.MODE_MULTIPLE;
-                break;
-            case R.id.rb_image:
-                selectType = FunctionConfig.TYPE_IMAGE;
-                break;
-            case R.id.rb_video:
-                selectType = FunctionConfig.TYPE_VIDEO;
-                break;
-            case R.id.rb_photo_display:
-                isShow = true;
-                break;
-            case R.id.rb_photo_hide:
-                isShow = false;
-                break;
-            case R.id.rb_default:
-                copyMode = FunctionConfig.CROP_MODEL_DEFAULT;
-                break;
-            case R.id.rb_to1_1:
-                copyMode = FunctionConfig.CROP_MODEL_1_1;
-                break;
-            case R.id.rb_to3_2:
-                copyMode = FunctionConfig.CROP_MODEL_3_2;
-                break;
-            case R.id.rb_to3_4:
-                copyMode = FunctionConfig.CROP_MODEL_3_4;
-                break;
-            case R.id.rb_to16_9:
-                copyMode = FunctionConfig.CROP_MODEL_16_9;
-                break;
-            case R.id.rb_preview:
-                enablePreview = true;
-                break;
-            case R.id.rb_preview_false:
-                enablePreview = false;
-                break;
-            case R.id.rb_preview_video:
-                isPreviewVideo = true;
-                break;
-            case R.id.rb_preview_video_false:
-                isPreviewVideo = false;
-                break;
-            case R.id.rb_yes_copy:
-                enableCrop = true;
-                break;
-            case R.id.rb_no_copy:
-                enableCrop = false;
-                break;
-            case R.id.rb_theme1:
-                theme = false;
-                break;
-            case R.id.rb_theme2:
-                theme = true;
-                break;
-            case R.id.rb_select1:
-                selectImageType = false;
-                break;
-            case R.id.rb_select2:
-                selectImageType = true;
-                break;
-            case R.id.rb_compress_false:
-                isCompress = false;
-                rgbs10.setVisibility(View.GONE);
-                et_kb.setVisibility(View.GONE);
-                ll_luban_wh.setVisibility(View.GONE);
-                et_compress_height.setText("");
-                et_compress_width.setText("");
-                break;
-            case R.id.rb_compress_true:
-                isCompress = true;
-                et_kb.setVisibility(View.VISIBLE);
-                if (compressFlag == 2) {
-                    ll_luban_wh.setVisibility(View.VISIBLE);
-                }
-                rgbs10.setVisibility(View.VISIBLE);
-                break;
-            case R.id.rb_system:
-                compressFlag = 1;
-                ll_luban_wh.setVisibility(View.GONE);
-                et_compress_height.setText("");
-                et_compress_width.setText("");
-                break;
-            case R.id.rb_luban:
-                compressFlag = 2;
-                ll_luban_wh.setVisibility(View.VISIBLE);
-                break;
-            case R.id.rb_off:
-                clickVideo = false;
-                break;
-            case R.id.rb_open:
-                clickVideo = true;
-                break;
-        }
-    }
-
-
-    /**
-     * 判断 一个字段的值否为空
-     *
-     * @param s
-     * @return
-     * @author Michael.Zhang 2013-9-7 下午4:39:00
-     */
-
-    public boolean isNull(String s) {
-        if (null == s || s.equals("") || s.equalsIgnoreCase("null")) {
-            return true;
-        }
-
-        return false;
     }
 
     @Override
@@ -505,17 +268,124 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         }
     }
 
-
     @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(new ContextWrapper(newBase) {
-            @Override
-            public Object getSystemService(String name) {
-                if (Context.AUDIO_SERVICE.equals(name))
-                    return getApplicationContext().getSystemService(name);
-                return super.getSystemService(name);
-            }
-        });
+    public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+        switch (checkedId) {
+            case R.id.rb_all:
+                chooseMode = PictureMimeType.ofAll();
+                cb_preview_img.setChecked(true);
+                cb_preview_video.setChecked(true);
+                cb_isGif.setChecked(false);
+                cb_preview_video.setChecked(true);
+                cb_preview_img.setChecked(true);
+                cb_preview_video.setVisibility(View.VISIBLE);
+                cb_preview_img.setVisibility(View.VISIBLE);
+                cb_compress.setVisibility(View.VISIBLE);
+                cb_crop.setVisibility(View.VISIBLE);
+                cb_isGif.setVisibility(View.VISIBLE);
+                break;
+            case R.id.rb_image:
+                chooseMode = ofImage();
+                cb_preview_img.setChecked(true);
+                cb_preview_video.setChecked(false);
+                cb_isGif.setChecked(false);
+                cb_preview_video.setChecked(false);
+                cb_preview_video.setVisibility(View.GONE);
+                cb_preview_img.setChecked(true);
+                cb_preview_img.setVisibility(View.VISIBLE);
+                cb_compress.setVisibility(View.VISIBLE);
+                cb_crop.setVisibility(View.VISIBLE);
+                cb_isGif.setVisibility(View.VISIBLE);
+                break;
+            case R.id.rb_video:
+                chooseMode = ofVideo();
+                cb_preview_img.setChecked(false);
+                cb_preview_video.setChecked(true);
+                cb_isGif.setChecked(false);
+                cb_isGif.setVisibility(View.GONE);
+                cb_preview_video.setChecked(true);
+                cb_preview_video.setVisibility(View.VISIBLE);
+                cb_preview_img.setVisibility(View.GONE);
+                cb_preview_img.setChecked(false);
+                cb_compress.setVisibility(View.GONE);
+                cb_crop.setVisibility(View.GONE);
+                break;
+            case R.id.rb_crop_default:
+                aspect_ratio_x = 0;
+                aspect_ratio_y = 0;
+                break;
+            case R.id.rb_crop_1to1:
+                aspect_ratio_x = 1;
+                aspect_ratio_y = 1;
+                break;
+            case R.id.rb_crop_3to4:
+                aspect_ratio_x = 3;
+                aspect_ratio_y = 4;
+                break;
+            case R.id.rb_crop_3to2:
+                aspect_ratio_x = 3;
+                aspect_ratio_y = 2;
+                break;
+            case R.id.rb_crop_16to9:
+                aspect_ratio_x = 16;
+                aspect_ratio_y = 9;
+                break;
+            case R.id.rb_compress_system:
+                compressMode = PictureConfig.SYSTEM_COMPRESS_MODE;
+                break;
+            case R.id.rb_compress_luban:
+                compressMode = PictureConfig.LUBAN_COMPRESS_MODE;
+                break;
+            case R.id.rb_default_style:
+                themeId = R.style.picture_default_style;
+                break;
+            case R.id.rb_white_style:
+                themeId = R.style.picture_white_style;
+                break;
+            case R.id.rb_num_style:
+                themeId = R.style.picture_QQ_style;
+                break;
+            case R.id.rb_sina_style:
+                themeId = R.style.picture_Sina_style;
+                break;
+        }
     }
 
+    private int x = 0, y = 0;
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.cb_crop:
+                rgb_crop.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                cb_hide.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                cb_crop_circular.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                cb_styleCrop.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                cb_showCropFrame.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                cb_showCropGrid.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                break;
+            case R.id.cb_crop_circular:
+                if (isChecked) {
+                    x = aspect_ratio_x;
+                    y = aspect_ratio_y;
+                    aspect_ratio_x = 1;
+                    aspect_ratio_y = 1;
+                } else {
+                    aspect_ratio_x = x;
+                    aspect_ratio_y = y;
+                }
+                rgb_crop.setVisibility(isChecked ? View.GONE : View.VISIBLE);
+                if (isChecked) {
+                    cb_showCropFrame.setChecked(false);
+                    cb_showCropGrid.setChecked(false);
+                } else {
+                    cb_showCropFrame.setChecked(true);
+                    cb_showCropGrid.setChecked(true);
+                }
+                break;
+            case R.id.cb_compress:
+                rgb_compress.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                break;
+        }
+    }
 }
