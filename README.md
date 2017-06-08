@@ -330,7 +330,9 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ###### 修改启动动画
 ###### 移除isRemove() api
 
-###### 历史版本 v2.0.0
+******历史版本******
+
+###### 版本 v2.0.0
 ###### PictureSelector 2.0 UI界面大改版
 ###### PictureSelector 2.0 新增全部模式查询 包括图片or视频
 ###### PictureSelector 2.0 启动模式由单例模式，改为链式调用
