@@ -174,7 +174,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .openClickSound(cb_voice.isChecked())// 是否开启点击声音
                         .selectionMedia(selectList)// 是否传入已选图片
                         //.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
-                        //.isRemove(true)//是否移除图片列表已损坏的图片
                         //.cropCompressQuality(90)// 裁剪压缩质量
                         //.compressMaxKB()//压缩最大值kb compressGrade()为Luban.CUSTOM_GEAR有效
                         //.compressWH() // 压缩宽高比 compressGrade()为Luban.CUSTOM_GEAR有效
@@ -212,9 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .openClickSound(cb_voice.isChecked())// 是否开启点击声音
                         .selectionMedia(selectList)// 是否传入已选图片
                         .previewEggs(false)//预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
-                        .isRemove(true)//是否移除图片列表已损坏的图片
                         //.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
-                        //.isRemove(true)//是否移除图片列表已损坏的图片
                         //.cropCompressQuality(90)// 裁剪压缩质量 默认为90
                         //.compressMaxKB()//压缩最大值kb compressGrade()为Luban.CUSTOM_GEAR有效
                         //.compressWH() // 压缩宽高比 compressGrade()为Luban.CUSTOM_GEAR有效
