@@ -386,10 +386,6 @@ public class PictureBaseActivity extends FragmentActivity {
      */
     protected void closeActivity() {
         finish();
-        if (camera) {
-            overridePendingTransition(0, R.anim.a3);
-        } else {
-            overridePendingTransition(0, R.anim.slide_bottom_out);
-        }
+        overridePendingTransition(0, R.anim.a3);
     }
 }

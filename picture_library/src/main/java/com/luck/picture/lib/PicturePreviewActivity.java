@@ -71,7 +71,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
                 // 压缩完后关闭预览界面
                 dismissDialog();
                 finish();
-                overridePendingTransition(0, R.anim.slide_bottom_out);
+                overridePendingTransition(0, R.anim.a3);
                 break;
         }
     }
@@ -421,7 +421,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         if (!isCompress) {
             DebugUtil.i("**** not compress finish");
             finish();
-            overridePendingTransition(0, R.anim.slide_bottom_out);
+            overridePendingTransition(0, R.anim.a3);
         } else {
             DebugUtil.i("**** loading compress");
             showPleaseDialog();
