@@ -169,6 +169,7 @@ if (savedInstanceState == null) {
  	.theme()// 主题样式设置 具体参考 values/styles  例如：R.style.picture.white.style
  	.maxSelectNum()// 最大图片选择数量
  	.minSelectNum()// 最小选择数量
+	.imageSpanCount(4)// 每行显示个数
  	.selectionMode()// 多选 or 单选
  	.previewImage()// 是否可预览图片
  	.previewVideo()// 是否可预览视频
