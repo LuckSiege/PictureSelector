@@ -1,9 +1,7 @@
 package com.luck.picture.lib.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -18,8 +16,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.anim.OptAnimationLoader;
 import com.luck.picture.lib.config.PictureConfig;
@@ -29,7 +25,6 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DebugUtil;
 import com.luck.picture.lib.tools.VoiceUtils;
-import com.luck.picture.lib.widget.CustomToast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +48,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private int overrideWidth, overrideHeight;
     private Animation animation;
     private PictureSelectionConfig config;
-    private boolean isRemove;
 
     public PictureImageGridAdapter(Context context, PictureSelectionConfig config) {
         this.context = context;
@@ -67,7 +61,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.overrideWidth = config.overrideWidth;
         this.overrideHeight = config.overrideHeight;
         this.enableVoice = config.openClickSound;
-        isRemove = config.isRemove;
         animation = OptAnimationLoader.loadAnimation(context, R.anim.modal_in);
         overrideWidth = overrideWidth <= 0 ? 180 : overrideWidth;
         overrideHeight = overrideHeight <= 0 ? 180 : overrideHeight;
@@ -170,25 +163,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
 
             Glide.with(context).load(path).asBitmap().diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .centerCrop().placeholder(R.drawable.image_placeholder)
-                    .override(overrideWidth, overrideHeight).into(new SimpleTarget<Bitmap>() {
-                @Override
-                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                    contentHolder.iv_picture.setImageBitmap(resource);
-                }
-
-                @Override
-                public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                    super.onLoadFailed(e, errorDrawable);
-                    if (isRemove) {
-                        images.remove(image);
-                        notifyDataSetChanged();
-                        if (images.size() == 0) {
-                            new CustomToast().showToast(context,
-                                    context.getString(R.string.picture_warning));
-                        }
-                    }
-                }
-            });
+                    .override(overrideWidth, overrideHeight).into(contentHolder.iv_picture);
 
             if (enablePreview || enablePreviewVideo) {
                 contentHolder.ll_check.setOnClickListener(new View.OnClickListener() {

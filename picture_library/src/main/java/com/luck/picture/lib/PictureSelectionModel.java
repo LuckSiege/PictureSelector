@@ -325,15 +325,6 @@ public class PictureSelectionModel {
     }
 
     /**
-     * @param isRemove Load failed image or video Whether remove Picture list
-     * @return
-     */
-    public PictureSelectionModel isRemove(boolean isRemove) {
-        selectionConfig.isRemove = isRemove;
-        return this;
-    }
-
-    /**
      * @param selectionMedia Select the selected picture set
      * @return
      */

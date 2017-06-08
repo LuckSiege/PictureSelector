@@ -696,6 +696,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
                                 adapter.notifyDataSetChanged();
                             }
+
                             // 解决部分手机拍照完Intent.ACTION_MEDIA_SCANNER_SCAN_FILE不及时刷新问题手动添加
                             manualSaveFolder(media);
                         }

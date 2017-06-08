@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.TextUtils;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
@@ -200,6 +201,10 @@ public class LocalMediaLoader {
                                     do {
                                         String path = data.getString
                                                 (data.getColumnIndexOrThrow(IMAGE_PROJECTION[1]));
+                                        // 如原图路径不存在或者路径存在但文件不存在,就结束当前循环
+                                        if (TextUtils.isEmpty(path) || !new File(path).exists()) {
+                                            continue;
+                                        }
                                         String pictureType = data.getString
                                                 (data.getColumnIndexOrThrow(IMAGE_PROJECTION[6]));
                                         boolean eqImg = pictureType.startsWith(PictureConfig.IMAGE);
