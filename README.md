@@ -323,7 +323,14 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 # 更新日志：
 
-###### 版本 v2.0.0
+###### 当前版本 v2.0.1
+###### 修复图片排序问题
+###### 修复设置预览图片为false时，单选无效问题
+###### 过滤已损坏图片or视频
+###### 修改启动动画
+###### 移除isRemove() api
+
+###### 历史版本 v2.0.0
 ###### PictureSelector 2.0 UI界面大改版
 ###### PictureSelector 2.0 新增全部模式查询 包括图片or视频
 ###### PictureSelector 2.0 启动模式由单例模式，改为链式调用
