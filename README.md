@@ -200,6 +200,13 @@ if (savedInstanceState == null) {
 	//.recordVideoSecond()//视频秒数录制 默认60s
  	.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code     
 ```
+
+******清除PictureSelector 2.0缓存******
+```
+ //包括裁剪和压缩后的缓存，要在上传成功后调用，注意：需要系统权限 
+ PictureFileUtils.deleteCacheDirFile(MainActivity.this);
+ 
+```
 ******PictureSelector 2.0 主题配置****** 
 
 ```
