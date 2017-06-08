@@ -173,7 +173,7 @@ public class LocalMediaLoader {
                                 cursorLoader = new CursorLoader(
                                         activity, MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                                         IMAGE_PROJECTION, isGif ? CONDITION_GIF : CONDITION,
-                                        isGif ? SELECT_GIF : SELECT, IMAGE_PROJECTION[2] + " DESC");
+                                        isGif ? SELECT_GIF : SELECT, IMAGE_PROJECTION[0] + " DESC");
                                 break;
                             case PictureConfig.TYPE_VIDEO:
                                 cursorLoader = new CursorLoader(
@@ -181,7 +181,7 @@ public class LocalMediaLoader {
                                         VIDEO_PROJECTION, videoS > 0 ? DURATION + " <= ?" : ""
                                         + MediaStore.Video.Media.DURATION + ">0"
                                         , videoS > 0
-                                        ? new String[]{String.valueOf(videoS)} : null, VIDEO_PROJECTION[2]
+                                        ? new String[]{String.valueOf(videoS)} : null, VIDEO_PROJECTION[0]
                                         + " DESC");
                                 break;
                         }
