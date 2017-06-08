@@ -31,9 +31,6 @@ import java.util.List;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
-import static com.luck.picture.lib.config.PictureMimeType.ofImage;
-import static com.luck.picture.lib.config.PictureMimeType.ofVideo;
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
     private final static String TAG = MainActivity.class.getSimpleName();
@@ -291,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cb_isGif.setVisibility(View.VISIBLE);
                 break;
             case R.id.rb_image:
-                chooseMode = ofImage();
+                chooseMode = PictureMimeType.ofImage();
                 cb_preview_img.setChecked(true);
                 cb_preview_video.setChecked(false);
                 cb_isGif.setChecked(false);
@@ -304,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cb_isGif.setVisibility(View.VISIBLE);
                 break;
             case R.id.rb_video:
-                chooseMode = ofVideo();
+                chooseMode = PictureMimeType.ofVideo();
                 cb_preview_img.setChecked(false);
                 cb_preview_video.setChecked(true);
                 cb_isGif.setChecked(false);
