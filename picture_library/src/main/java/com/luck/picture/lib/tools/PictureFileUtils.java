@@ -50,7 +50,7 @@ public class PictureFileUtils {
 
     public static final String POSTFIX = ".JPEG";
     public static final String POST_VIDEO = ".mp4";
-    public static final String APP_NAME = "ImageSelector";
+    public static final String APP_NAME = "PictureSelector";
     public static final String CAMERA_PATH = "/" + APP_NAME + "/CameraImage/";
     public static final String CROP_PATH = "/" + APP_NAME + "/CropImage/";
 
