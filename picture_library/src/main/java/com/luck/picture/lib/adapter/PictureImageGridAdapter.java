@@ -202,10 +202,13 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             contentHolder.contentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (picture == PictureConfig.TYPE_IMAGE && enablePreview) {
+
+                    if (picture == PictureConfig.TYPE_IMAGE && (enablePreview
+                            || selectMode == PictureConfig.SINGLE)) {
                         int index = showCamera ? position - 1 : position;
                         imageSelectChangedListener.onPictureClick(image, index);
-                    } else if (picture == PictureConfig.TYPE_VIDEO && enablePreviewVideo) {
+                    } else if (picture == PictureConfig.TYPE_VIDEO && (enablePreviewVideo
+                            || selectMode == PictureConfig.SINGLE)) {
                         int index = showCamera ? position - 1 : position;
                         imageSelectChangedListener.onPictureClick(image, index);
                     } else {
