@@ -181,7 +181,7 @@ PhotoView 库冲突，可以删除自己项目中引用的，Picture_library中�
  	//.scaleEnabled()// 裁剪是否可放大缩小图片
  	//.videoQuality()// 视频录制质量 0 or 1
  	//.videoSecond()//显示多少秒以内的视频
-	//.recordVideoSecond()//录制视频秒数
+	//.recordVideoSecond()//视频秒数录制 默认60s
  	.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code     
 ```
 ******PictureSelector 2.0 主题配置****** 
@@ -273,7 +273,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ```
 ******图片回调完成结果返回******
 ```
-  @Override
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
@@ -281,6 +281,11 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
                 case PictureConfig.CHOOSE_REQUEST:
                     // 图片选择结果回调
                     selectList = PictureSelector.obtainMultipleResult(data);
+                    // 例如 LocalMedia 里面返回三种path
+                    // 1.media.getPath(); 为原图path
+                    // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
+                    // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
+                    // 如果裁剪并压缩了，已取压缩路径为准，因为是先裁剪后压缩的
                     adapter.setList(selectList);
                     adapter.notifyDataSetChanged();
                     DebugUtil.i(TAG, "onActivityResult:" + selectList.size());
