@@ -141,8 +141,23 @@ step 2.
 [请参考我的博客](http://blog.csdn.net/luck_mw/article/details/54970105)的解决方案
 
 问题三：
-PhotoView 库冲突，可以删除自己项目中引用的，Picture_library中已经引用过
- 
+PhotoView 库冲突，可以删除自己项目中引用的，Picture_library中已经引用过 com.github.chrisbanes.photoview:library:1.2.4
+
+问题四：
+经测试在小米部分低端机中，Fragment调用PictureSelector 2.0 拍照有时内存不足会暂时回收activity,导致其fragment会重新创建 建议在fragment所依赖的activity加上如下代码
+:
+if (savedInstanceState == null) {
+      // 添加显示第一个fragment
+      	fragment = new PhotoFragment();
+      		getSupportFragmentManager().beginTransaction().add(R.id.tab_content, fragment,
+                    PictureConfig.FC_TAG).show(fragment)
+                    .commit();
+     } else {
+      	fragment = (PhotoFragment) getSupportFragmentManager()
+          .findFragmentByTag(PictureConfig.FC_TAG);
+}
+这里就是如果是被回收时，则不重新创建 通过tag取出fragment的实例。
+
 ```
 
 ******相册启动构造方法******
