@@ -182,10 +182,16 @@ public final class PictureMimeType {
      * @return
      */
     public static int getLocalVideoDuration(String videoPath) {
-        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        mmr.setDataSource(videoPath);
-        int duration = Integer.parseInt(mmr.extractMetadata
-                (MediaMetadataRetriever.METADATA_KEY_DURATION));
+        int duration;
+        try {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            mmr.setDataSource(videoPath);
+            duration = Integer.parseInt(mmr.extractMetadata
+                    (MediaMetadataRetriever.METADATA_KEY_DURATION));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
         return duration;
     }
 
