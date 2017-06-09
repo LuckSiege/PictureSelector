@@ -174,8 +174,8 @@ ndk {
 ```
 // 进入相册 以下是例子：用不到的api可以不写
  PictureSelector.create(MainActivity.this)
- 	.openGallery()// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()
- 	.theme()// 主题样式设置(不设置为默认样式) 也可参考demo values/styles下  例如：R.style.picture.white.style
+ 	.openGallery()//全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()
+ 	.theme()//主题样式设置(不设置为默认样式) 也可参考demo values/styles下 例如：R.style.picture.white.style
  	.maxSelectNum()// 最大图片选择数量 int
  	.minSelectNum()// 最小选择数量 int
 	.imageSpanCount(4)// 每行显示个数 int
@@ -196,7 +196,7 @@ ndk {
  	.showCropFrame()// 是否显示裁剪矩形边框 圆形裁剪时建议设为false   true or false
  	.showCropGrid()// 是否显示裁剪矩形网格 圆形裁剪时建议设为false    true or false
  	.openClickSound()// 是否开启点击声音 true or false
- 	.selectionMedia()// 是否传入已选图片 List<LocalMedia>
+ 	.selectionMedia()// 是否传入已选图片 List<LocalMedia> list
  	//.previewEggs()// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中) true or false
  	//.cropCompressQuality()// 裁剪压缩质量 默认90 int
  	//.compressMaxKB()//压缩最大值kb compressGrade()为Luban.CUSTOM_GEAR有效 int 
