@@ -162,6 +162,7 @@ if (savedInstanceState == null) {
 问题五(较重要)：
 当在使用ucrop裁剪功能时经测试在对部分大图片进行裁剪时会导致特别慢，后经过查找发现是加载.so的原因
 不要在app下的build.gradle 设置如下标签，如果强行要指定也要指定对应机型所支持的cpu架构的.so文件
+
 ndk {
        //设置支持的SO库架构
        abiFilters ''
