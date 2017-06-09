@@ -145,14 +145,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             setContentView(R.layout.picture_empty);
         } else {
             setContentView(R.layout.picture_selector);
-            initView();
+            initView(savedInstanceState);
         }
     }
+
 
     /**
      * init views
      */
-    private void initView() {
+    private void initView(Bundle savedInstanceState) {
         preview_textColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_preview_textColor);
         complete_textColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_complete_textColor);
         rl_picture_title = (RelativeLayout) findViewById(R.id.rl_picture_title);
@@ -217,6 +218,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     }
                 });
         StringUtils.tempTextFont(tv_empty);
+        if (savedInstanceState != null) {
+            // 防止拍照内存不足时activity被回收，导致拍照后的图片未选中
+            selectionMedias = PictureSelector.obtainSelectorList(savedInstanceState);
+        }
         adapter = new PictureImageGridAdapter(mContext, config);
         adapter.bindSelectImages(selectionMedias);
         changeImageNumber(selectionMedias);
@@ -228,6 +233,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (adapter != null) {
+            List<LocalMedia> selectedImages = adapter.getSelectedImages();
+            PictureSelector.saveSelectorList(outState, selectedImages);
+        }
+    }
 
     /**
      * none number style
@@ -669,10 +682,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                 }
                                 tv_empty.setVisibility(images.size() > 0
                                         ? View.INVISIBLE : View.VISIBLE);
-
                                 adapter.notifyDataSetChanged();
                             }
-
                             // 解决部分手机拍照完Intent.ACTION_MEDIA_SCANNER_SCAN_FILE不及时刷新问题手动添加
                             manualSaveFolder(media);
                         }
@@ -696,20 +707,25 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * @param media
      */
     private void manualSaveFolder(LocalMedia media) {
-        createNewFolder(foldersList);
-        LocalMediaFolder folder = getImageFolder(media.getPath(), foldersList);
-        LocalMediaFolder cameraFolder = foldersList.size() > 0 ? foldersList.get(0) : null;
-        if (cameraFolder != null && folder != null) {
-            // 相机胶卷
-            cameraFolder.setFirstImagePath(media.getPath());
-            cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
-            // 拍照相册
-            int num = folder.getImageNum() + 1;
-            folder.setImageNum(num);
-            folder.getImages().add(0, media);
-            folder.setFirstImagePath(cameraPath);
-            folderWindow.bindFolder(foldersList);
+        try {
+            createNewFolder(foldersList);
+            LocalMediaFolder folder = getImageFolder(media.getPath(), foldersList);
+            LocalMediaFolder cameraFolder = foldersList.size() > 0 ? foldersList.get(0) : null;
+            if (cameraFolder != null && folder != null) {
+                // 相机胶卷
+                cameraFolder.setFirstImagePath(media.getPath());
+                cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
+                // 拍照相册
+                int num = folder.getImageNum() + 1;
+                folder.setImageNum(num);
+                folder.getImages().add(0, media);
+                folder.setFirstImagePath(cameraPath);
+                folderWindow.bindFolder(foldersList);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     @Override

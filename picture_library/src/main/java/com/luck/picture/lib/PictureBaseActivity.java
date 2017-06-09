@@ -22,7 +22,6 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.rxbus2.RxBus;
 import com.luck.picture.lib.tools.AttrsUtils;
-import com.luck.picture.lib.tools.DebugUtil;
 import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.yalantis.ucrop.UCrop;
@@ -48,6 +47,7 @@ public class PictureBaseActivity extends FragmentActivity {
     protected PictureDialog dialog;
     protected PictureDialog compressDialog;
     protected List<LocalMedia> selectionMedias;
+    protected boolean ca;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +55,7 @@ public class PictureBaseActivity extends FragmentActivity {
             config = (PictureSelectionConfig) savedInstanceState.getSerializable(PictureConfig.EXTRA_CONFIG);
             cameraPath = savedInstanceState.getString(PictureConfig.BUNDLE_CAMERA_PATH);
             originalPath = savedInstanceState.getString(PictureConfig.BUNDLE_ORIGINAL_PATH);
+            ca = true;
         } else {
             config = PictureSelectionConfig.getInstance();
         }
@@ -114,6 +115,9 @@ public class PictureBaseActivity extends FragmentActivity {
         scaleEnabled = config.scaleEnabled;
         previewEggs = config.previewEggs;
         hideBottomControls = config.hideBottomControls;
+        if (ca) {
+            showToast("我被回收了");
+        }
     }
 
 
@@ -161,9 +165,14 @@ public class PictureBaseActivity extends FragmentActivity {
      * dismiss dialog
      */
     protected void dismissDialog() {
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
+        try {
+            if (dialog != null && dialog.isShowing()) {
+                dialog.dismiss();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     /**
@@ -181,8 +190,14 @@ public class PictureBaseActivity extends FragmentActivity {
      * dismiss compress dialog
      */
     protected void dismissCompressDialog() {
-        if (compressDialog != null && compressDialog.isShowing()) {
-            compressDialog.dismiss();
+        try {
+            if (!isFinishing()
+                    && compressDialog != null
+                    && compressDialog.isShowing()) {
+                compressDialog.dismiss();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -193,7 +208,6 @@ public class PictureBaseActivity extends FragmentActivity {
     protected void compressImage(final List<LocalMedia> result) {
         showCompressDialog();
         CompressConfig compress_config = CompressConfig.ofDefaultConfig();
-        DebugUtil.i("compressImage--->", compressMaxKB + "");
         switch (compressMode) {
             case PictureConfig.SYSTEM_COMPRESS_MODE:
                 // 系统自带压缩
@@ -203,7 +217,6 @@ public class PictureBaseActivity extends FragmentActivity {
                 break;
             case PictureConfig.LUBAN_COMPRESS_MODE:
                 // luban压缩
-                DebugUtil.i("compressImage WH--->", compressHeight + "\n" + compressHeight);
                 LubanOptions option = new LubanOptions.Builder()
                         .setMaxHeight(compressHeight)
                         .setMaxWidth(compressWidth)
@@ -373,12 +386,12 @@ public class PictureBaseActivity extends FragmentActivity {
      * @param images
      */
     protected void onResult(List<LocalMedia> images) {
+        dismissCompressDialog();
         if (camera && selectionMode == PictureConfig.MULTIPLE)
             images.addAll(selectionMedias);
         Intent intent = PictureSelector.putIntentResult(images);
         setResult(RESULT_OK, intent);
         closeActivity();
-        dismissCompressDialog();
     }
 
     /**
@@ -387,5 +400,12 @@ public class PictureBaseActivity extends FragmentActivity {
     protected void closeActivity() {
         finish();
         overridePendingTransition(0, R.anim.a3);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dismissCompressDialog();
+        dismissDialog();
     }
 }

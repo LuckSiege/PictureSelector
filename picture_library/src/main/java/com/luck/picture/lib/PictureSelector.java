@@ -2,6 +2,7 @@ package com.luck.picture.lib;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
@@ -97,6 +98,29 @@ public final class PictureSelector {
      */
     public static Intent putIntentResult(List<LocalMedia> data) {
         return new Intent().putExtra(PictureConfig.EXTRA_RESULT_SELECTION, (Serializable) data);
+    }
+
+    /**
+     * @param bundle
+     * @return get Selector  LocalMedia
+     */
+    public static List<LocalMedia> obtainSelectorList(Bundle bundle) {
+        List<LocalMedia> selectionMedias;
+        if (bundle != null) {
+            selectionMedias = (List<LocalMedia>) bundle
+                    .getSerializable(PictureConfig.EXTRA_SELECT_LIST);
+            return selectionMedias;
+        }
+        selectionMedias = new ArrayList<>();
+        return selectionMedias;
+    }
+
+    /**
+     * @param selectedImages
+     * @return put Selector  LocalMedia
+     */
+    public static void saveSelectorList(Bundle outState, List<LocalMedia> selectedImages) {
+        outState.putSerializable(PictureConfig.EXTRA_SELECT_LIST, (Serializable) selectedImages);
     }
 
     /**
