@@ -383,9 +383,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 folderWindow.dismiss();
             } else {
                 if (images != null && images.size() > 0) {
+                    folderWindow.showAsDropDown(rl_picture_title);
                     List<LocalMedia> selectedImages = adapter.getSelectedImages();
                     folderWindow.notifyDataCheckedStatus(selectedImages);
-                    folderWindow.showAsDropDown(rl_picture_title);
                 }
             }
         }
