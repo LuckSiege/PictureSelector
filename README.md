@@ -91,7 +91,7 @@ allprojects {
 }
 ```
 
-方式二 maven引入 
+方式二 maven引入
 
 step 1.
 ```
