@@ -49,4 +49,12 @@ public class StringUtils {
             v.setCompoundDrawables(null, null, null, drawable);
         }
     }
+
+
+    public static boolean isFolderDCIM(String path) {
+        if (path.indexOf("DCIM") != -1) {
+            return true;
+        }
+        return false;
+    }
 }

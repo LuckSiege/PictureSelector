@@ -15,6 +15,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.tools.DebugUtil;
+import com.luck.picture.lib.tools.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -202,7 +203,8 @@ public class LocalMediaLoader {
                                         String path = data.getString
                                                 (data.getColumnIndexOrThrow(IMAGE_PROJECTION[1]));
                                         // 如原图路径不存在或者路径存在但文件不存在,就结束当前循环
-                                        if (TextUtils.isEmpty(path) || !new File(path).exists()) {
+                                        if (TextUtils.isEmpty(path) || !new File(path).exists()
+                                                || StringUtils.isFolderDCIM(path)) {
                                             continue;
                                         }
                                         String pictureType = data.getString
