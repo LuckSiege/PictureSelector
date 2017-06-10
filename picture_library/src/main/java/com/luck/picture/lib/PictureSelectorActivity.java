@@ -181,7 +181,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         id_ll_ok.setOnClickListener(this);
         picture_title.setOnClickListener(this);
         picture_title.setText(getString(R.string.picture_camera_roll));
-        folderWindow = new FolderPopWindow(this, selectionMode == PictureConfig.SINGLE ? 0 : 94);
+        folderWindow = new FolderPopWindow(this);
         folderWindow.setPictureTitleView(picture_title);
         folderWindow.setOnItemClickListener(this);
         picture_recycler.setHasFixedSize(true);

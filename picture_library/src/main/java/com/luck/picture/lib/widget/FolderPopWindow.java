@@ -48,12 +48,12 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
     private TextView picture_title;
     private Drawable drawableUp, drawableDown;
 
-    public FolderPopWindow(Context context, int height) {
+    public FolderPopWindow(Context context) {
         this.context = context;
         window = LayoutInflater.from(context).inflate(R.layout.picture_window_folder, null);
         this.setContentView(window);
         this.setWidth(ScreenUtils.getScreenWidth(context));
-        this.setHeight(ScreenUtils.getScreenHeight(context) - ScreenUtils.dip2px(context, height));
+        this.setHeight(ScreenUtils.getScreenHeight(context));
         this.setAnimationStyle(R.style.WindowStyle);
         this.setFocusable(true);
         this.setOutsideTouchable(true);
