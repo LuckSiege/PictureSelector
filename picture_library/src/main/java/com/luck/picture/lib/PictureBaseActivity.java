@@ -47,7 +47,6 @@ public class PictureBaseActivity extends FragmentActivity {
     protected PictureDialog dialog;
     protected PictureDialog compressDialog;
     protected List<LocalMedia> selectionMedias;
-    protected boolean ca;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +54,6 @@ public class PictureBaseActivity extends FragmentActivity {
             config = (PictureSelectionConfig) savedInstanceState.getSerializable(PictureConfig.EXTRA_CONFIG);
             cameraPath = savedInstanceState.getString(PictureConfig.BUNDLE_CAMERA_PATH);
             originalPath = savedInstanceState.getString(PictureConfig.BUNDLE_ORIGINAL_PATH);
-            ca = true;
         } else {
             config = PictureSelectionConfig.getInstance();
         }
@@ -115,9 +113,6 @@ public class PictureBaseActivity extends FragmentActivity {
         scaleEnabled = config.scaleEnabled;
         previewEggs = config.previewEggs;
         hideBottomControls = config.hideBottomControls;
-        if (ca) {
-            showToast("我被回收了");
-        }
     }
 
 
