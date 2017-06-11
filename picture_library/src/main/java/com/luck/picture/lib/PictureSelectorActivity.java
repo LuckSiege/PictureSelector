@@ -277,10 +277,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     images = localImg;
                 }
                 if (adapter != null) {
-                    adapter.bindImagesData(images);
                     if (images == null) {
                         images = new ArrayList<>();
                     }
+                    adapter.bindImagesData(images);
                     tv_empty.setVisibility(images.size() > 0
                             ? View.INVISIBLE : View.VISIBLE);
                 }
