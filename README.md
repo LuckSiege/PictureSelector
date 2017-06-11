@@ -1,4 +1,4 @@
-# PictureSelector 2.0  
+# PictureSelector 2.0
   一款针对android平台下的图片选择器，支持从相册或拍照选择图片或视频，支持动态权限获取、裁剪(多图裁剪)、压缩、主题自定义配置等功能、适配android 6.0+系统的开源图片选择框架。
   
   
@@ -286,7 +286,7 @@ ndk {
        
 ```
 
-******单独启动拍照或视频 根据type自动识别******       
+******单独启动拍照或视频 根据PictureMimeType自动识别******       
 ```
   PictureSelector.create(MainActivity.this)
        .openCamera(PictureMimeType.ofImage())
@@ -318,7 +318,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
                     // 1.media.getPath(); 为原图path
                     // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
                     // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
-                    // 如果裁剪并压缩了，已取压缩路径为准，因为是先裁剪后压缩的
+                    // 如果裁剪并压缩了，以取压缩路径为准，因为是先裁剪后压缩的
                     adapter.setList(selectList);
                     adapter.notifyDataSetChanged();
                     DebugUtil.i(TAG, "onActivityResult:" + selectList.size());
