@@ -274,7 +274,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     if (localImg.size() >= images.size()) {
                         images = localImg;
                     }
-                    images = localImg;
                 }
                 if (adapter != null) {
                     if (images == null) {
