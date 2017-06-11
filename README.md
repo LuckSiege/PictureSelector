@@ -336,6 +336,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ###### 修复三星低配手机在拍照时luban压缩时闪退问题
 ###### 修复弹出相册PopupWindow卡顿问题
 ###### 修复拍照内存不足导致activity被回收，拍照图片未选中问题
+###### 修复部分手机拍照出现2张图片的问题
 ###### 修复部分已知bug
 
 # 历史版本：
