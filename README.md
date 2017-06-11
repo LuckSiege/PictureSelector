@@ -318,7 +318,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
                     // 1.media.getPath(); 为原图path
                     // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
                     // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
-                    // 如果裁剪并压缩了，已取压缩路径为准，因为是先裁剪后压缩的
+                    // 如果裁剪并压缩了，以取压缩路径为准，因为是先裁剪后压缩的
                     adapter.setList(selectList);
                     adapter.notifyDataSetChanged();
                     DebugUtil.i(TAG, "onActivityResult:" + selectList.size());
