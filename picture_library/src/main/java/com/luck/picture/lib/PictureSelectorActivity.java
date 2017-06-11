@@ -278,7 +278,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
                 if (adapter != null) {
                     adapter.bindImagesData(images);
-                    tv_empty.setVisibility(folders.size() > 0
+                    if (images == null) {
+                        images = new ArrayList<>();
+                    }
+                    tv_empty.setVisibility(images.size() > 0
                             ? View.INVISIBLE : View.VISIBLE);
                 }
                 dismissDialog();
