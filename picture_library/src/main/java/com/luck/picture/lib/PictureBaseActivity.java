@@ -387,8 +387,11 @@ public class PictureBaseActivity extends FragmentActivity {
      */
     protected void onResult(List<LocalMedia> images) {
         dismissCompressDialog();
-        if (camera && selectionMode == PictureConfig.MULTIPLE)
+        if (camera
+                && selectionMode == PictureConfig.MULTIPLE
+                && selectionMedias != null) {
             images.addAll(selectionMedias);
+        }
         Intent intent = PictureSelector.putIntentResult(images);
         setResult(RESULT_OK, intent);
         closeActivity();

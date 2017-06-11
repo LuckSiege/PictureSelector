@@ -83,12 +83,14 @@ public final class PictureSelector {
      * @return Selector Multiple LocalMedia
      */
     public static List<LocalMedia> obtainMultipleResult(Intent data) {
-        List<LocalMedia> result;
+        List<LocalMedia> result = new ArrayList<>();
         if (data != null) {
             result = (List<LocalMedia>) data.getSerializableExtra(PictureConfig.EXTRA_RESULT_SELECTION);
+            if (result == null) {
+                result = new ArrayList<>();
+            }
             return result;
         }
-        result = new ArrayList<>();
         return result;
     }
 
