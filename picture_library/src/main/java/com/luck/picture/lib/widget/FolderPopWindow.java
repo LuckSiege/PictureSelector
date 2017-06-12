@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -131,12 +132,28 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
             @Override
             public void onAnimationEnd(Animation animation) {
                 isDismiss = false;
-                FolderPopWindow.super.dismiss();
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+                    dismiss4Pop();
+                } else {
+                    FolderPopWindow.super.dismiss();
+                }
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {
 
+            }
+        });
+    }
+
+    /**
+     * 在android4.1.1和4.1.2版本关闭PopWindow
+     */
+    private void dismiss4Pop() {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                FolderPopWindow.super.dismiss();
             }
         });
     }

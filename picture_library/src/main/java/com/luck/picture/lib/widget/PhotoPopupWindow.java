@@ -3,6 +3,7 @@ package com.luck.picture.lib.widget;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,11 +91,27 @@ public class PhotoPopupWindow extends PopupWindow implements View.OnClickListene
             @Override
             public void onAnimationEnd(Animation animation) {
                 isDismiss = false;
-                PhotoPopupWindow.super.dismiss();
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+                    dismiss4Pop();
+                } else {
+                    PhotoPopupWindow.super.dismiss();
+                }
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {
+            }
+        });
+    }
+
+    /**
+     * 在android4.1.1和4.1.2版本关闭PopWindow
+     */
+    private void dismiss4Pop() {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                PhotoPopupWindow.super.dismiss();
             }
         });
     }

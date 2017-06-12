@@ -12,6 +12,7 @@ package com.luck.picture.lib.config;
 public final class PictureConfig {
     public final static String FC_TAG = "picture";
     public final static String EXTRA_RESULT_SELECTION = "extra_result_media";
+    public final static String EXTRA_LOCAL_MEDIAS = "localMedias";
     public final static String EXTRA_PREVIEW_SELECT_LIST = "previewSelectList";
     public final static String EXTRA_SELECT_LIST = "selectList";
     public final static String EXTRA_POSITION = "position";
