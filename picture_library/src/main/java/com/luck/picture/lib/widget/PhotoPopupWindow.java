@@ -56,17 +56,21 @@ public class PhotoPopupWindow extends PopupWindow implements View.OnClickListene
 
     @Override
     public void showAsDropDown(View parent) {
-        int[] location = new int[2];
-        parent.getLocationOnScreen(location);
-        if (Build.VERSION.SDK_INT >= 24) {
-            int x = location[0];
-            int y = location[1] + parent.getHeight();
-            this.showAtLocation(parent, Gravity.BOTTOM, x, y);
-        } else {
-            this.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
+        try {
+            if (Build.VERSION.SDK_INT >= 24) {
+                int[] location = new int[2];
+                parent.getLocationOnScreen(location);
+                int x = location[0];
+                int y = location[1] + parent.getHeight();
+                this.showAtLocation(parent, Gravity.BOTTOM, x, y);
+            } else {
+                this.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
+            }
+            isDismiss = false;
+            ll_root.startAnimation(animationIn);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        isDismiss = false;
-        ll_root.startAnimation(animationIn);
     }
 
     @Override

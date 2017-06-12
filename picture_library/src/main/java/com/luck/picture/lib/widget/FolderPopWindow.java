@@ -88,19 +88,23 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
 
     @Override
     public void showAsDropDown(View anchor) {
-        int[] location = new int[2];
-        anchor.getLocationOnScreen(location);
-        if (Build.VERSION.SDK_INT >= 24) {
-            int height = anchor.getHeight();
-            int x = location[0];
-            int y = location[1];
-            super.showAtLocation(anchor, Gravity.NO_GRAVITY, x, y + height);
-        } else {
-            super.showAsDropDown(anchor);
+        try {
+            if (Build.VERSION.SDK_INT >= 24) {
+                int[] location = new int[2];
+                anchor.getLocationOnScreen(location);
+                int height = anchor.getHeight();
+                int x = location[0];
+                int y = location[1];
+                super.showAtLocation(anchor, Gravity.NO_GRAVITY, x, y + height);
+            } else {
+                super.showAsDropDown(anchor);
+            }
+            isDismiss = false;
+            recyclerView.startAnimation(animationIn);
+            StringUtils.modifyTextViewDrawable(picture_title, drawableUp, 2);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        isDismiss = false;
-        recyclerView.startAnimation(animationIn);
-        StringUtils.modifyTextViewDrawable(picture_title, drawableUp, 2);
     }
 
     public void setOnItemClickListener(PictureAlbumDirectoryAdapter.OnItemClickListener onItemClickListener) {
