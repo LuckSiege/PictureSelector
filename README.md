@@ -1,5 +1,5 @@
-# PictureSelector 2.0 
-  一款针对android平台下的图片选择器，支持从相册或拍照选择图片或视频，支持动态权限获取、裁剪(多图裁剪)、压缩、主题自定义配置等功能、适配android 6.0+系统的开源图片选择框架。
+# PictureSelector 2.0
+  一款针对android平台下的图片选择器，支持从相册或拍照选择图片或视频，支持动态权限获取、裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能、适配android 6.0+系统的开源图片选择框架。
   
   
   项目会一直维护，有bug请描述清楚，并请Issues会第一时间修复，Android开发QQ交流群 619458861，个人QQ 893855882@qq.com  希望用得着的朋友点个start。 
@@ -75,7 +75,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.0.1'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.0.2'
 }
 
 ```
@@ -107,7 +107,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.0.1</version>
+      <version>v2.0.2</version>
 </dependency>
 
 ```
@@ -332,14 +332,21 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 # 更新日志：
 
-###### 当前版本 v2.0.1
+###### 当前版本 v2.0.2
+###### 修复三星低配手机在拍照时luban压缩时闪退问题
+###### 修复弹出相册PopupWindow卡顿问题
+###### 修复拍照内存不足导致activity被回收，拍照图片未选中问题
+###### 修复部分手机拍照出现2张图片的问题
+###### 修复部分已知bug
+
+# 历史版本：
+
+###### 版本 v2.0.1
 ###### 修复图片排序问题
 ###### 修复设置预览图片为false时，单选无效问题
 ###### 过滤已损坏图片or视频
 ###### 修改启动动画
 ###### 移除isRemove() api
-
-# 历史版本：
 
 ###### 版本 v2.0.0
 ###### PictureSelector 2.0 UI界面大改版
