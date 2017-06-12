@@ -122,10 +122,14 @@ public class GridImageAdapter extends
                 @Override
                 public void onClick(View view) {
                     int index = viewHolder.getAdapterPosition();
-                    list.remove(index);
-                    notifyItemRemoved(index);
-                    notifyItemRangeChanged(index, list.size());
-                    DebugUtil.i("delete position:", index + "--->remove after:" + list.size());
+                    // 这里有时会返回-1造成数据下标越界,具体可参考getAdapterPosition()源码，
+                    // 通过源码分析应该是bindViewHolder()暂未绘制完成导致，知道原因的也可联系我~感谢
+                    if (index != RecyclerView.NO_POSITION) {
+                        list.remove(index);
+                        notifyItemRemoved(index);
+                        notifyItemRangeChanged(index, list.size());
+                        DebugUtil.i("delete position:", index + "--->remove after:" + list.size());
+                    }
                 }
             });
             LocalMedia media = list.get(position);
