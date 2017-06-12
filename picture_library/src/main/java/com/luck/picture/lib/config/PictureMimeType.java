@@ -1,7 +1,6 @@
 package com.luck.picture.lib.config;
 
 
-import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.text.TextUtils;
 
@@ -193,24 +192,5 @@ public final class PictureMimeType {
             return 0;
         }
         return duration;
-    }
-
-    /**
-     * image is Damage
-     *
-     * @param path
-     * @return
-     */
-    public static int isDamage(String path) {
-        BitmapFactory.Options options = null;
-        if (options == null) options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, options); //filePath代表图片路径
-        if (options.mCancel || options.outWidth == -1
-                || options.outHeight == -1) {
-            //表示图片已损毁
-            return -1;
-        }
-        return 0;
     }
 }

@@ -23,8 +23,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.luck.picture.lib.config.PictureMimeType;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -435,23 +433,22 @@ public class PictureFileUtils {
         return path + "/" + filename;
     }
 
+
     /**
-     * 判断图片是否损坏
+     * image is Damage
      *
      * @param path
      * @return
      */
-    public static int isDamage(String path, String pictureType) {
-        int i = PictureMimeType.pictureToVideo(pictureType);
-        if (i == 1) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(path, options); //filePath代表图片路径
-            if (options.mCancel || options.outWidth == -1
-                    || options.outHeight == -1) {
-                //表示图片已损毁
-                return -1;
-            }
+    public static int isDamage(String path) {
+        BitmapFactory.Options options = null;
+        if (options == null) options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options); //filePath代表图片路径
+        if (options.mCancel || options.outWidth == -1
+                || options.outHeight == -1) {
+            //表示图片已损毁
+            return -1;
         }
         return 0;
     }
