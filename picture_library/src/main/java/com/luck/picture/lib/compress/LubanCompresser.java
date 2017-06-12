@@ -6,6 +6,8 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.support.annotation.NonNull;
 
+import com.luck.picture.lib.config.PictureMimeType;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -73,7 +75,8 @@ class LubanCompresser {
 
     private File compressImage(int gear, File file) throws IOException {
         // 网络图片返回原图
-        if (file != null && file.getPath().startsWith("http")) {
+        boolean eqHttp = PictureMimeType.isHttp(file.getPath());
+        if (file != null && eqHttp) {
             return file;
         }
         switch (gear) {
