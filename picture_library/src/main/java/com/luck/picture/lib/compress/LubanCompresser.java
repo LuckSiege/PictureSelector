@@ -297,21 +297,26 @@ class LubanCompresser {
      *
      * @param path path of target image
      */
-    private int getImageSpinAngle(String path) throws IOException {
+    private int getImageSpinAngle(String path) {
         int degree = 0;
-        ExifInterface exifInterface = new ExifInterface(path);
-        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_NORMAL);
-        switch (orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                degree = 90;
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                degree = 180;
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                degree = 270;
-                break;
+        try {
+            ExifInterface exifInterface = new ExifInterface(path);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return degree;
         }
         return degree;
     }
