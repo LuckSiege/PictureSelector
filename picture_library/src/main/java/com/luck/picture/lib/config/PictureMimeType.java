@@ -90,7 +90,7 @@ public final class PictureMimeType {
      * @return
      */
     public static boolean isHttp(String path) {
-        if (null != path) {
+        if (!TextUtils.isEmpty(path)) {
             if (path.startsWith("http")
                     || path.startsWith("https")) {
                 return true;
