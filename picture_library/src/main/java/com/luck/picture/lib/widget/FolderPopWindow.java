@@ -99,6 +99,7 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
             } else {
                 super.showAsDropDown(anchor);
             }
+
             isDismiss = false;
             recyclerView.startAnimation(animationIn);
             StringUtils.modifyTextViewDrawable(picture_title, drawableUp, 2);

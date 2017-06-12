@@ -66,6 +66,7 @@ public class PhotoPopupWindow extends PopupWindow implements View.OnClickListene
             } else {
                 this.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
             }
+
             isDismiss = false;
             ll_root.startAnimation(animationIn);
         } catch (Exception e) {
