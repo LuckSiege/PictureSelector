@@ -1,5 +1,7 @@
 package com.luck.picture.lib.entity;
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
 
 /**
@@ -57,7 +59,7 @@ public class LocalMedia implements Serializable {
     }
 
     public String getPictureType() {
-        if (pictureType.equals("") || pictureType == null) {
+        if (TextUtils.isEmpty(pictureType)) {
             pictureType = "image/jpeg";
         }
         return pictureType;

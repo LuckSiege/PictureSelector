@@ -474,6 +474,18 @@ public class PictureFileUtils {
         return list;
     }
 
+    public static String getDCIMCameraPath() {
+        String absolutePath;
+        try {
+            absolutePath = "%" + Environment.getExternalStoragePublicDirectory
+                    (Environment.DIRECTORY_DCIM).getAbsolutePath() + "/Camera";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+        return absolutePath;
+    }
+
     /**
      * set empty PictureSelector Cache
      *

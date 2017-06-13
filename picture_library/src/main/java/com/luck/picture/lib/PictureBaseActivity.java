@@ -1,11 +1,14 @@
 package com.luck.picture.lib;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
@@ -48,12 +51,14 @@ public class PictureBaseActivity extends FragmentActivity {
     protected PictureDialog compressDialog;
     protected List<LocalMedia> selectionMedias;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             config = (PictureSelectionConfig) savedInstanceState.getSerializable(PictureConfig.EXTRA_CONFIG);
             cameraPath = savedInstanceState.getString(PictureConfig.BUNDLE_CAMERA_PATH);
             originalPath = savedInstanceState.getString(PictureConfig.BUNDLE_ORIGINAL_PATH);
+
         } else {
             config = PictureSelectionConfig.getInstance();
         }
@@ -113,6 +118,7 @@ public class PictureBaseActivity extends FragmentActivity {
         scaleEnabled = config.scaleEnabled;
         previewEggs = config.previewEggs;
         hideBottomControls = config.hideBottomControls;
+
     }
 
 
@@ -405,5 +411,60 @@ public class PictureBaseActivity extends FragmentActivity {
         super.onDestroy();
         dismissCompressDialog();
         dismissDialog();
+    }
+
+
+    /**
+     * 获取DCIM文件下最新一条拍照记录
+     *
+     * @return
+     */
+    protected int getLastImageId(boolean eqVideo) {
+        try {
+            //selection: 指定查询条件
+            String absolutePath = PictureFileUtils.getDCIMCameraPath();
+            String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
+            String selection = eqVideo ? MediaStore.Video.Media.DATA + " like ?" :
+                    MediaStore.Images.Media.DATA + " like ?";
+            //定义selectionArgs：
+            String[] selectionArgs = {absolutePath + "%"};
+            Cursor imageCursor = this.getContentResolver().query(eqVideo ?
+                            MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                            : MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null,
+                    selection, selectionArgs, ORDER_BY);
+            if (imageCursor.moveToFirst()) {
+                int id = imageCursor.getInt(eqVideo ?
+                        imageCursor.getColumnIndex(MediaStore.Video.Media._ID)
+                        : imageCursor.getColumnIndex(MediaStore.Images.Media._ID));
+                imageCursor.close();
+                return id;
+            } else {
+                return -1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    /**
+     * 删除部分手机 拍照在DCIM也生成一张的问题
+     *
+     * @param id
+     * @param eqVideo
+     */
+    protected void removeImage(int id, boolean eqVideo) {
+        try {
+            ContentResolver cr = getContentResolver();
+            Uri uri = eqVideo ? MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                    : MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            String selection = eqVideo ? MediaStore.Video.Media._ID + "=?"
+                    : MediaStore.Images.Media._ID + "=?";
+            cr.delete(uri,
+                    selection,
+                    new String[]{Long.toString(id)});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -154,8 +154,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * init views
      */
     private void initView(Bundle savedInstanceState) {
-        preview_textColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_preview_textColor);
-        complete_textColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_complete_textColor);
+
         rl_picture_title = (RelativeLayout) findViewById(R.id.rl_picture_title);
         picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
         picture_title = (TextView) findViewById(R.id.picture_title);
@@ -221,6 +220,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (savedInstanceState != null) {
             // 防止拍照内存不足时activity被回收，导致拍照后的图片未选中
             selectionMedias = PictureSelector.obtainSelectorList(savedInstanceState);
+            preview_textColor = savedInstanceState.getInt("preview_textColor");
+            complete_textColor = savedInstanceState.getInt("complete_textColor");
+        } else {
+            preview_textColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_preview_textColor);
+            complete_textColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_complete_textColor);
         }
         adapter = new PictureImageGridAdapter(mContext, config);
         adapter.bindSelectImages(selectionMedias);
@@ -237,6 +241,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (adapter != null) {
+            outState.putInt("preview_textColor", preview_textColor);
+            outState.putInt("complete_textColor", complete_textColor);
             List<LocalMedia> selectedImages = adapter.getSelectedImages();
             PictureSelector.saveSelectorList(outState, selectedImages);
         }
@@ -266,15 +272,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     foldersList = folders;
                     LocalMediaFolder folder = folders.get(0);
                     folder.setChecked(true);
-                    folderWindow.bindFolder(folders);
                     List<LocalMedia> localImg = folder.getImages();
                     // 这里解决有些机型会出现拍照完，相册列表不及时刷新问题
                     // 因为onActivityResult里手动添加拍照后的照片，
                     // 如果查询出来的图片大于或等于当前adapter集合的图片则取更新后的，否则就取本地的
                     if (localImg.size() >= images.size()) {
                         images = localImg;
+                        folderWindow.bindFolder(folders);
                     }
                 }
+
                 if (adapter != null) {
                     if (images == null) {
                         images = new ArrayList<>();
@@ -682,15 +689,21 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                         changeImageNumber(selectedImages);
                                     }
                                 }
-                                tv_empty.setVisibility(images.size() > 0
-                                        ? View.INVISIBLE : View.VISIBLE);
                                 adapter.notifyDataSetChanged();
                             }
-                            // 解决部分手机拍照完Intent.ACTION_MEDIA_SCANNER_SCAN_FILE不及时刷新问题手动添加
-                            manualSaveFolder(media);
                         }
                     }
+                    if (adapter != null) {
+                        // 解决部分手机拍照完Intent.ACTION_MEDIA_SCANNER_SCAN_FILE不及时刷新问题手动添加
+                        manualSaveFolder(media);
+                        tv_empty.setVisibility(images.size() > 0
+                                ? View.INVISIBLE : View.VISIBLE);
+                    }
 
+                    int lastImageId = getLastImageId(eqVideo);
+                    if (lastImageId != -1) {
+                        removeImage(lastImageId, eqVideo);
+                    }
                     break;
             }
         } else if (resultCode == RESULT_CANCELED) {
@@ -702,6 +715,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             showToast(throwable.getMessage());
         }
     }
+
 
     /**
      * 手动添加拍照后的相片到图片列表，并设为选中
@@ -716,6 +730,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (cameraFolder != null && folder != null) {
                 // 相机胶卷
                 cameraFolder.setFirstImagePath(media.getPath());
+                cameraFolder.setImages(images);
                 cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
                 // 拍照相册
                 int num = folder.getImageNum() + 1;
