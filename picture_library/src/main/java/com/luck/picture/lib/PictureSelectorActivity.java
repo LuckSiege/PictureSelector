@@ -418,16 +418,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             String pictureType = images.size() > 0 ? images.get(0).getPictureType() : "";
             // 如果设置了图片最小选择数量，则判断是否满足条件
             int size = images.size();
+            boolean eqImg = pictureType.startsWith(PictureConfig.IMAGE);
             if (minSelectNum > 0 && selectionMode == PictureConfig.MULTIPLE) {
                 if (size < minSelectNum) {
-                    boolean eqImg = pictureType.startsWith("image");
                     String str = eqImg ? getString(R.string.picture_min_img_num, minSelectNum)
                             : getString(R.string.picture_min_video_num, minSelectNum);
                     showToast(str);
                     return;
                 }
             }
-            boolean eqImg = pictureType.startsWith(PictureConfig.IMAGE);
             if (enableCrop && eqImg) {
                 // 是图片和选择压缩并且是多张，调用批量压缩
                 ArrayList<String> medias = new ArrayList<>();
