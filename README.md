@@ -333,7 +333,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 # 更新日志：
 
 # 当前版本：
-
+###### 版本 v2.0.3
 ###### 修复部分手机拍照重复2张问题
 ###### 修复内存不足导致activity被回收引发的问题
 ###### 修复PopWindow弹出卡顿一下的问题
