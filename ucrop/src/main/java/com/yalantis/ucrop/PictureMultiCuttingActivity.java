@@ -34,7 +34,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.model.AspectRatio;
@@ -704,8 +703,10 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         setContentView(R.layout.picture_activity_multi_cutting);
         Intent intent = new Intent();
         Bundle extras = getIntent().getExtras();
-        extras.putParcelable(UCropMulti.EXTRA_INPUT_URI,
-                Uri.fromFile(new File(cutInfos.get(cutIndex).getPath())));
+        String path = cutInfos.get(cutIndex).getPath();
+        boolean isHttp = FileUtils.isHttp(path);
+        Uri uri = isHttp ? Uri.parse(path) : Uri.fromFile(new File(path));
+        extras.putParcelable(UCropMulti.EXTRA_INPUT_URI, uri);
         extras.putParcelable(UCropMulti.EXTRA_OUTPUT_URI,
                 Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + ".jpg")));
         intent.putExtras(extras);

@@ -251,4 +251,21 @@ public class FileUtils {
         }
         return "image/jpeg";
     }
+
+    /**
+     * 是否是网络图片
+     *
+     * @param path
+     * @return
+     */
+    public static boolean isHttp(String path) {
+        if (!TextUtils.isEmpty(path)) {
+            if (path.startsWith("http")
+                    || path.startsWith("https")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
