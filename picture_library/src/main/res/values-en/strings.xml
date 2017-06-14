@@ -22,4 +22,8 @@
     <string name="picture_photograph">Photograph</string>
     <string name="picture_long_chart">Long</string>
     <string name="picture_warning">Media files！</string>
+    <string name="picture_prompt">Prompt</string>
+    <string name="picture_prompt_content">Do you want to save pictures to your phone?</string>
+    <string name="picture_save_error">Picture save failed</string>
+    <string name="picture_save_success">Save picture successfully until</string>
 </resources>

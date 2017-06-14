@@ -31,4 +31,21 @@ public class DateUtils {
         time += second;
         return time;
     }
+
+    /**
+     * 判断两个时间戳相差多少秒
+     *
+     * @param d
+     * @return
+     */
+    public static int dateDiffer(long d) {
+        try {
+            long l1 = Long.parseLong(String.valueOf(System.currentTimeMillis()).substring(0, 10));
+            long interval = l1 - d;
+            return (int) Math.abs(interval);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
 }

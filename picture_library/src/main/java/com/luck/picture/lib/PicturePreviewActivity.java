@@ -1,20 +1,26 @@
 package com.luck.picture.lib;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.luck.picture.lib.anim.OptAnimationLoader;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -39,6 +45,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.co.senab.photoview.PhotoView;
+import uk.co.senab.photoview.PhotoViewAttacher;
+
 /**
  * author：luck
  * project：PictureSelector
@@ -62,6 +71,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
     private int index;
     private int preview_complete_textColor;
     private int screenWidth;
+    private LayoutInflater inflater;
 
     //EventBus 3.0 回调
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -83,6 +93,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         if (!RxBus.getDefault().isRegistered(this)) {
             RxBus.getDefault().register(this);
         }
+        inflater = LayoutInflater.from(this);
         screenWidth = ScreenUtils.getScreenWidth(this);
         int status_color = AttrsUtils.getTypeValueColor(this, R.attr.picture_status_color);
         ToolbarUtil.setColorNoTranslucent(this, status_color);
@@ -232,7 +243,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
 
     private void initViewPageAdapterData() {
         tv_title.setText(position + 1 + "/" + images.size());
-        adapter = new SimpleFragmentAdapter(getSupportFragmentManager());
+        adapter = new SimpleFragmentAdapter();
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(position);
         onSelectNumChange(false);
@@ -361,22 +372,83 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
     }
 
 
-    public class SimpleFragmentAdapter extends FragmentPagerAdapter {
-
-        public SimpleFragmentAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            PictureImagePreviewFragment fragment =
-                    PictureImagePreviewFragment.getInstance(images.get(position), true, "");
-            return fragment;
-        }
+    public class SimpleFragmentAdapter extends PagerAdapter {
 
         @Override
         public int getCount() {
             return images.size();
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            (container).removeView((View) object);
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            View contentView = inflater.inflate(R.layout.picture_image_preview, container, false);
+            final PhotoView imageView = (PhotoView) contentView.findViewById(R.id.preview_image);
+            ImageView iv_play = (ImageView) contentView.findViewById(R.id.iv_play);
+            LocalMedia media = images.get(position);
+            if (media != null) {
+                final String pictureType = media.getPictureType();
+                boolean eqVideo = pictureType.startsWith(PictureConfig.VIDEO);
+                iv_play.setVisibility(eqVideo ? View.VISIBLE : View.GONE);
+                final String path;
+                if (media.isCut() && !media.isCompressed()) {
+                    // 裁剪过
+                    path = media.getCutPath();
+                } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
+                    // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
+                    path = media.getCompressPath();
+                } else {
+                    path = media.getPath();
+                }
+                boolean isGif = PictureMimeType.isGif(pictureType);
+                // 压缩过的gif就不是gif了
+                if (isGif && !media.isCompressed()) {
+                    Glide.with(PicturePreviewActivity.this)
+                            .load(path)
+                            .asGif()
+                            .override(480, 800)
+                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                            .priority(Priority.HIGH)
+                            .into(imageView);
+                } else {
+                    Glide.with(PicturePreviewActivity.this)
+                            .load(path)
+                            .asBitmap()
+                            .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                            .into(new SimpleTarget<Bitmap>(480, 800) {
+                                @Override
+                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                    imageView.setImageBitmap(resource);
+                                }
+                            });
+                }
+                imageView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
+                    @Override
+                    public void onViewTap(View view, float x, float y) {
+                        finish();
+                        overridePendingTransition(0, R.anim.a3);
+                    }
+                });
+                iv_play.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("video_path", path);
+                        startActivity(PictureVideoPlayActivity.class, bundle);
+                    }
+                });
+            }
+            (container).addView(contentView, 0);
+            return contentView;
         }
     }
 
@@ -444,6 +516,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
             showToast(throwable.getMessage());
         }
     }
+
 
     @Override
     public void onBackPressed() {

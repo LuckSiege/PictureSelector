@@ -23,4 +23,8 @@
     <string name="picture_photograph">拍照</string>
     <string name="picture_long_chart">长图</string>
     <string name="picture_warning">暂无媒体文件！</string>
+    <string name="picture_prompt">提示</string>
+    <string name="picture_prompt_content">是否保存图片至手机？</string>
+    <string name="picture_save_error">图片保存失败</string>
+    <string name="picture_save_success">图片保存成功至</string>
 </resources>

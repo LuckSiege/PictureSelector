@@ -10,4 +10,11 @@
         android:layout_marginLeft="3dp"
         android:layout_marginRight="3dp" />
 
+    <ImageView
+        android:id="@+id/iv_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_video_play"
+        android:visibility="invisible" />
 </FrameLayout>
