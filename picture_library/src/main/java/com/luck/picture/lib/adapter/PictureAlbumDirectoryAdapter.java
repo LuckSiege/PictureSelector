@@ -87,13 +87,14 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (onItemClickListener != null)
+                if (onItemClickListener != null) {
                     for (LocalMediaFolder mediaFolder : folders) {
                         mediaFolder.setChecked(false);
                     }
-                folder.setChecked(true);
-                notifyDataSetChanged();
-                onItemClickListener.onItemClick(folder.getName(), folder.getImages());
+                    folder.setChecked(true);
+                    notifyDataSetChanged();
+                    onItemClickListener.onItemClick(folder.getName(), folder.getImages());
+                }
             }
         });
     }
