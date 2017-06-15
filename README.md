@@ -75,7 +75,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.0.3'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.0.4'
 }
 
 ```
@@ -107,7 +107,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.0.3</version>
+      <version>v2.0.4</version>
 </dependency>
 
 ```
@@ -333,14 +333,20 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 # 更新日志：
 
 # 当前版本：
+
+###### 版本 v2.0.4
+###### 修复多图裁剪网络图片时报错bug
+###### 重构预览图片代码
+###### 修复几处bug
+
+# 历版版本：
+
 ###### 版本 v2.0.3
 ###### 修复部分手机拍照重复2张问题
 ###### 修复内存不足导致activity被回收引发的问题
 ###### 修复PopWindow弹出卡顿一下的问题
 ###### 修复部分相片显示不全问题
 ###### 修复部分已知bug
-
-# 历版版本：
 
 ###### 版本 v2.0.1
 ###### 修复图片排序问题
