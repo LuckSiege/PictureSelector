@@ -15,8 +15,8 @@
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 ## 目录
-[功能特点](#功能特点)
-[混淆](#混淆)
+-[功能特点](#功能特点)
+-[混淆](#混淆)
 
 ## 功能特点  
 ```
