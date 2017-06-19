@@ -41,6 +41,7 @@
   22.新增压缩大小设置
   23.新增Luban压缩档次设置
   24.新增圆形头像裁剪
+  25.新增音频功能查询
 ```
 
 ******那些遇到拍照闪退问题的同学，请记得看清下面适配6.0的配置~******
@@ -75,7 +76,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.0.4'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.0.5'
 }
 
 ```
@@ -107,7 +108,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.0.4</version>
+      <version>v2.0.5</version>
 </dependency>
 
 ```
@@ -183,6 +184,7 @@ ndk {
  	.selectionMode()// 多选 or 单选 PictureConfig.MULTIPLE or PictureConfig.SINGLE
  	.previewImage()// 是否可预览图片 true or false
  	.previewVideo()// 是否可预览视频 true or false
+	.enablePreviewAudio() // 是否可播放音频 true or false
  	.compressGrade()// luban压缩档次，默认3档 Luban.THIRD_GEAR、Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
  	.isCamera()// 是否显示拍照按钮 true or false
  	.enableCrop()// 是否裁剪 true or false
@@ -206,7 +208,7 @@ ndk {
  	.rotateEnabled() // 裁剪是否可旋转图片 true or false
  	.scaleEnabled()// 裁剪是否可放大缩小图片 true or false
  	.videoQuality()// 视频录制质量 0 or 1 int
- 	.videoSecond()//显示多少秒以内的视频 int 
+ 	.videoSecond()// 显示多少秒以内的视频or音频也可适用 int 
 	.recordVideoSecond()//视频秒数录制 默认60s int
  	.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code     
 ```
@@ -333,13 +335,17 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 # 更新日志：
 
 # 当前版本：
+###### 版本 v2.0.5
+###### 新增音频功能查询
+###### 修复设置查询视频秒数，0秒视频也能获取到的bug
+###### 修复部分已知bug
+
+# 历版版本：
 
 ###### 版本 v2.0.4
 ###### 修复多图裁剪网络图片时报错bug
 ###### 重构预览图片代码
 ###### 修复几处bug
-
-# 历版版本：
 
 ###### 版本 v2.0.3
 ###### 修复部分手机拍照重复2张问题
@@ -434,6 +440,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/6.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/7.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/8.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/audio.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/9.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/10.jpg)
 
