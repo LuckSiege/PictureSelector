@@ -14,8 +14,10 @@
 [![I](https://img.shields.io/github/issues/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector/issues)
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
+## 目录
+[功能特点](#功能特点)
 
-******功能特点：******  
+## 安装说明  
 ```
   1.适配android6.0+系统
   2.解决部分机型裁剪闪退问题
