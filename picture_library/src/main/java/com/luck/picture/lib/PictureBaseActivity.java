@@ -46,7 +46,7 @@ public class PictureBaseActivity extends FragmentActivity {
             enPreviewVideo, checkNumMode, openClickSound, numComplete, camera, freeStyleCropEnabled,
             circleDimmedLayer, hideBottomControls, rotateEnabled, scaleEnabled, previewEggs, statusFont,
             showCropFrame, showCropGrid, previewStatusFont;
-    protected String cameraPath;
+    protected String cameraPath, outputCameraPath;
     protected String originalPath;
     protected PictureDialog dialog;
     protected PictureDialog compressDialog;
@@ -75,6 +75,7 @@ public class PictureBaseActivity extends FragmentActivity {
      */
     private void initConfig() {
         camera = config.camera;
+        outputCameraPath = config.outputCameraPath;
         statusFont = AttrsUtils.getTypeValueBoolean
                 (this, R.attr.picture_statusFontColor);
         previewStatusFont = AttrsUtils.getTypeValueBoolean

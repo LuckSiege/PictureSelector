@@ -56,9 +56,18 @@ public class PictureFileUtils {
     public static final String CAMERA_AUDIO_PATH = "/" + APP_NAME + "/CameraAudio/";
     public static final String CROP_PATH = "/" + APP_NAME + "/CropImage/";
 
-    public static File createCameraFile(Context context, int type) {
-        return type == PictureConfig.TYPE_AUDIO ? createMediaFile(context, CAMERA_AUDIO_PATH, type)
-                : createMediaFile(context, CAMERA_PATH, type);
+    public static File createCameraFile(Context context, int type, String outputCameraPath) {
+        String path;
+        if (type == PictureConfig.TYPE_AUDIO) {
+            path = !TextUtils.isEmpty(outputCameraPath)
+                    ? outputCameraPath : CAMERA_AUDIO_PATH;
+        } else {
+            path = !TextUtils.isEmpty(outputCameraPath)
+                    ? outputCameraPath : CAMERA_PATH;
+        }
+        return type == PictureConfig.TYPE_AUDIO ?
+                createMediaFile(context, path, type) :
+                createMediaFile(context, path, type);
     }
 
     public static File createCropFile(Context context, int type) {
@@ -67,7 +76,8 @@ public class PictureFileUtils {
 
     private static File createMediaFile(Context context, String parentPath, int type) {
         String state = Environment.getExternalStorageState();
-        File rootDir = state.equals(Environment.MEDIA_MOUNTED) ? Environment.getExternalStorageDirectory() : context.getCacheDir();
+        File rootDir = state.equals(Environment.MEDIA_MOUNTED) ?
+                Environment.getExternalStorageDirectory() : context.getCacheDir();
 
         File folderDir = new File(rootDir.getAbsolutePath() + parentPath);
         if (!folderDir.exists() && folderDir.mkdirs()) {
@@ -78,13 +88,13 @@ public class PictureFileUtils {
         String fileName = APP_NAME + "_" + timeStamp + "";
         File tmpFile = null;
         switch (type) {
-            case 1:
+            case PictureConfig.TYPE_IMAGE:
                 tmpFile = new File(folderDir, fileName + POSTFIX);
                 break;
-            case 2:
+            case PictureConfig.TYPE_VIDEO:
                 tmpFile = new File(folderDir, fileName + POST_VIDEO);
                 break;
-            case 3:
+            case PictureConfig.TYPE_AUDIO:
                 tmpFile = new File(folderDir, fileName + POST_AUDIO);
                 break;
         }

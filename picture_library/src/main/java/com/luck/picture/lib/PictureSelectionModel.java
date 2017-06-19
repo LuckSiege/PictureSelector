@@ -298,6 +298,15 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param outputCameraPath Camera save path
+     * @return
+     */
+    public PictureSelectionModel setOutputCameraPath(String outputCameraPath) {
+        selectionConfig.outputCameraPath = outputCameraPath;
+        return this;
+    }
+
+    /**
      * @param isGif Whether to open gif
      * @return
      */
