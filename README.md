@@ -13,7 +13,7 @@
 
 ```
 dependencies {
-    待上传
+    compile 'com.github.wyh497823256.PictureSelector_WXUI:picture_library:v2.0.6-wx'
 }
 
 ```
