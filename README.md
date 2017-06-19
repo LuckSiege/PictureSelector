@@ -1,4 +1,33 @@
-# PictureSelector 2.0 
+#  基于原项目内核，保留原项目所有功能，高仿微信UI
+   使用方式请参考原项目
+  [PictureSelector 2.0 无裁剪功能版](https://github.com/LuckSiege/PictureSelectorLight)
+  
+  
+ 
+ 
+******修改版集成步骤******
+
+方式一 compile引入
+
+```
+dependencies {
+    待上传
+}
+
+```
+
+项目根目录build.gradle加入
+
+```
+allprojects {
+   repositories {
+      jcenter()
+      maven { url 'https://jitpack.io' }
+   }
+}
+```
+
+#  原项目 PictureSelector 2.0 简介
   一款针对android平台下的图片选择器，支持从相册或拍照选择图片或视频，支持动态权限获取、裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能、适配android 6.0+系统的开源图片选择框架。
   
   
@@ -69,48 +98,6 @@
 
 ```
 
-******集成步骤******
-
-方式一 compile引入
-
-```
-dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.0.4'
-}
-
-```
-
-项目根目录build.gradle加入
-
-```
-allprojects {
-   repositories {
-      jcenter()
-      maven { url 'https://jitpack.io' }
-   }
-}
-```
-
-方式二 maven引入
-
-step 1.
-```
-<repositories>
-       <repository>
-       <id>jitpack.io</id>
-	<url>https://jitpack.io</url>
-       </repository>
- </repositories>
-```
-step 2.
-```
-<dependency>
-      <groupId>com.github.LuckSiege.PictureSelector</groupId>
-      <artifactId>picture_library</artifactId>
-      <version>v2.0.4</version>
-</dependency>
-
-```
 
 ******常见错误*******
 ```
