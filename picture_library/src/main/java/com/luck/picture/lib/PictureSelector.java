@@ -173,6 +173,20 @@ public final class PictureSelector {
     }
 
     /**
+     * set preview audio
+     *
+     * @param path
+     */
+    public void externalPictureAudio(String path) {
+        if (!DoubleUtils.isFastDoubleClick()) {
+            Intent intent = new Intent(getActivity(), PicturePlayAudioActivity.class);
+            intent.putExtra("audio_path", path);
+            getActivity().startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.a5, 0);
+        }
+    }
+
+    /**
      * @return Activity.
      */
     @Nullable

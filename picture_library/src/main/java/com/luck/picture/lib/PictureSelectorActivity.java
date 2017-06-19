@@ -1,10 +1,13 @@
 package com.luck.picture.lib;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -18,6 +21,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.luck.picture.lib.adapter.PictureAlbumDirectoryAdapter;
@@ -25,6 +29,7 @@ import com.luck.picture.lib.adapter.PictureImageGridAdapter;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
+import com.luck.picture.lib.dialog.CustomDialog;
 import com.luck.picture.lib.entity.EventEntity;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
@@ -35,6 +40,7 @@ import com.luck.picture.lib.rxbus2.RxBus;
 import com.luck.picture.lib.rxbus2.Subscribe;
 import com.luck.picture.lib.rxbus2.ThreadMode;
 import com.luck.picture.lib.tools.AttrsUtils;
+import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DebugUtil;
 import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.LightStatusBarUtils;
@@ -61,7 +67,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private final static String TAG = PictureSelectorActivity.class.getSimpleName();
     private ImageView picture_left_back;
     private TextView picture_title, picture_right, picture_tv_ok, tv_empty,
-            picture_tv_img_num, picture_id_preview;
+            picture_tv_img_num, picture_id_preview, tv_PlayPause, tv_Stop, tv_Quit,
+            tv_musicStatus, tv_musicTotal, tv_musicTime;
     private RelativeLayout rl_picture_title, rl_bottom;
     private LinearLayout id_ll_ok;
     private RecyclerView picture_recycler;
@@ -75,8 +82,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private RxPermissions rxPermissions;
     private PhotoPopupWindow popupWindow;
     private LocalMediaLoader mediaLoader;
-
-
+    private MediaPlayer mediaPlayer;
+    private SeekBar musicSeekBar;
+    private boolean isPlayAudio = false;
+    private CustomDialog audioDialog;
+    private int audioH;
     //EventBus 3.0 回调
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void eventBus(EventEntity obj) {
@@ -173,14 +183,23 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             popupWindow.setOnItemClickListener(this);
         }
         picture_id_preview.setOnClickListener(this);
-        picture_id_preview.setVisibility(mimeType == PictureConfig.TYPE_VIDEO
-                ? View.GONE : View.VISIBLE);
+        if (mimeType == PictureMimeType.ofAudio()) {
+            picture_id_preview.setVisibility(View.GONE);
+            audioH = ScreenUtils.getScreenHeight(mContext)
+                    + ScreenUtils.getStatusBarHeight(mContext);
+        } else {
+            picture_id_preview.setVisibility(mimeType == PictureConfig.TYPE_VIDEO
+                    ? View.GONE : View.VISIBLE);
+        }
         picture_left_back.setOnClickListener(this);
         picture_right.setOnClickListener(this);
         id_ll_ok.setOnClickListener(this);
         picture_title.setOnClickListener(this);
-        picture_title.setText(getString(R.string.picture_camera_roll));
-        folderWindow = new FolderPopWindow(this);
+        String title = mimeType == PictureMimeType.ofAudio() ?
+                getString(R.string.picture_all_audio)
+                : getString(R.string.picture_camera_roll);
+        picture_title.setText(title);
+        folderWindow = new FolderPopWindow(this, mimeType);
         folderWindow.setPictureTitleView(picture_title);
         folderWindow.setOnItemClickListener(this);
         picture_recycler.setHasFixedSize(true);
@@ -216,7 +235,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     public void onComplete() {
                     }
                 });
-        StringUtils.tempTextFont(tv_empty);
+        tv_empty.setText(mimeType == PictureMimeType.ofAudio() ?
+                getString(R.string.picture_audio_empty)
+                : getString(R.string.picture_empty));
+        StringUtils.tempTextFont(tv_empty, mimeType);
         if (savedInstanceState != null) {
             // 防止拍照内存不足时activity被回收，导致拍照后的图片未选中
             selectionMedias = PictureSelector.obtainSelectorList(savedInstanceState);
@@ -281,7 +303,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         folderWindow.bindFolder(folders);
                     }
                 }
-
                 if (adapter != null) {
                     if (images == null) {
                         images = new ArrayList<>();
@@ -321,6 +342,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     // 录视频
                     startOpenCameraVideo();
                     break;
+                case PictureConfig.TYPE_AUDIO:
+                    // 录音
+                    startOpenCameraAudio();
+                    break;
             }
         }
     }
@@ -356,6 +381,40 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, videoQuality);
             startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
         }
+    }
+
+    /**
+     * start to camera audio
+     */
+    public void startOpenCameraAudio() {
+        rxPermissions.request(Manifest.permission.RECORD_AUDIO).subscribe(new Observer<Boolean>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                if (aBoolean) {
+                    Intent cameraIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+                    if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+                        File cameraFile = PictureFileUtils.createCameraFile
+                                (PictureSelectorActivity.this, mimeType);
+                        cameraPath = cameraFile.getAbsolutePath();
+                        startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
+                    }
+                } else {
+                    showToast(getString(R.string.picture_audio));
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onComplete() {
+            }
+        });
     }
 
     /**
@@ -398,6 +457,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
             }
         }
+
         if (id == R.id.picture_id_preview) {
             List<LocalMedia> selectedImages = adapter.getSelectedImages();
 
@@ -443,6 +503,210 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
     }
 
+    /**
+     * 播放音频
+     *
+     * @param path
+     */
+    private void audioDialog(final String path) {
+        audioDialog = new CustomDialog(mContext,
+                LinearLayout.LayoutParams.MATCH_PARENT, audioH
+                ,
+                R.layout.picture_audio_dialog, R.style.Theme_dialog);
+        audioDialog.getWindow().setWindowAnimations(R.style.Dialog_Audio_StyleAnim);
+        tv_musicStatus = (TextView) audioDialog.findViewById(R.id.tv_musicStatus);
+        tv_musicTime = (TextView) audioDialog.findViewById(R.id.tv_musicTime);
+        musicSeekBar = (SeekBar) audioDialog.findViewById(R.id.musicSeekBar);
+        tv_musicTotal = (TextView) audioDialog.findViewById(R.id.tv_musicTotal);
+        tv_PlayPause = (TextView) audioDialog.findViewById(R.id.tv_PlayPause);
+        tv_Stop = (TextView) audioDialog.findViewById(R.id.tv_Stop);
+        tv_Quit = (TextView) audioDialog.findViewById(R.id.tv_Quit);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                initPlayer(path);
+            }
+        }, 30);
+        tv_PlayPause.setOnClickListener(new audioOnClick(path));
+        tv_Stop.setOnClickListener(new audioOnClick(path));
+        tv_Quit.setOnClickListener(new audioOnClick(path));
+        musicSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser == true) {
+                    mediaPlayer.seekTo(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+        audioDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                handler.removeCallbacks(runnable);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        stop(path);
+                    }
+                }, 30);
+                try {
+                    if (audioDialog != null
+                            && audioDialog.isShowing()) {
+                        audioDialog.dismiss();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        handler.post(runnable);
+        audioDialog.show();
+    }
+
+    //  通过 Handler 更新 UI 上的组件状态
+    public Handler handler = new Handler();
+    public Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                if (mediaPlayer != null) {
+                    tv_musicTime.setText(DateUtils.timeParse(mediaPlayer.getCurrentPosition()));
+                    musicSeekBar.setProgress(mediaPlayer.getCurrentPosition());
+                    musicSeekBar.setMax(mediaPlayer.getDuration());
+                    tv_musicTotal.setText(DateUtils.timeParse(mediaPlayer.getDuration()));
+                    handler.postDelayed(runnable, 200);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    /**
+     * 初始化音频播放组件
+     *
+     * @param path
+     */
+    private void initPlayer(String path) {
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(path);
+            mediaPlayer.prepare();
+            mediaPlayer.setLooping(true);
+            playAudio();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 播放音频点击事件
+     */
+    public class audioOnClick implements View.OnClickListener {
+        private String path;
+
+        public audioOnClick(String path) {
+            super();
+            this.path = path;
+        }
+
+        @Override
+        public void onClick(View v) {
+            int id = v.getId();
+            if (id == R.id.tv_PlayPause) {
+                playAudio();
+            }
+            if (id == R.id.tv_Stop) {
+                tv_musicStatus.setText(getString(R.string.picture_stop_audio));
+                tv_PlayPause.setText(getString(R.string.picture_play_audio));
+                stop(path);
+            }
+            if (id == R.id.tv_Quit) {
+                handler.removeCallbacks(runnable);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        stop(path);
+                    }
+                }, 30);
+                try {
+                    if (audioDialog != null
+                            && audioDialog.isShowing()) {
+                        audioDialog.dismiss();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * 播放音频
+     */
+    private void playAudio() {
+        if (mediaPlayer != null) {
+            musicSeekBar.setProgress(mediaPlayer.getCurrentPosition());
+            musicSeekBar.setMax(mediaPlayer.getDuration());
+        }
+        String ppStr = tv_PlayPause.getText().toString();
+        if (ppStr.equals(getString(R.string.picture_play_audio))) {
+            tv_PlayPause.setText(getString(R.string.picture_pause_audio));
+            tv_musicStatus.setText(getString(R.string.picture_play_audio));
+            playOrPause();
+        } else {
+            tv_PlayPause.setText(getString(R.string.picture_play_audio));
+            tv_musicStatus.setText(getString(R.string.picture_pause_audio));
+            playOrPause();
+        }
+        if (isPlayAudio == false) {
+            handler.post(runnable);
+            isPlayAudio = true;
+        }
+    }
+
+    /**
+     * 停止播放
+     *
+     * @param path
+     */
+    public void stop(String path) {
+        if (mediaPlayer != null) {
+            try {
+                mediaPlayer.stop();
+                mediaPlayer.reset();
+                mediaPlayer.setDataSource(path);
+                mediaPlayer.prepare();
+                mediaPlayer.seekTo(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 暂停播放
+     */
+    public void playOrPause() {
+        try {
+            if (mediaPlayer != null) {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.pause();
+                } else {
+                    mediaPlayer.start();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void onItemClick(String folderName, List<LocalMedia> images) {
@@ -547,6 +811,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     startActivity(PictureVideoPlayActivity.class, bundle);
                 }
                 break;
+            case PictureConfig.TYPE_AUDIO:
+                // audio
+                if (selectionMode == PictureConfig.SINGLE) {
+                    result.add(media);
+                    onResult(result);
+                } else {
+                    audioDialog(media.getPath());
+                }
+                break;
         }
     }
 
@@ -560,8 +833,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         // 如果选择的视频没有预览功能
         String pictureType = selectImages.size() > 0
                 ? selectImages.get(0).getPictureType() : "";
-        boolean isVideo = PictureMimeType.isVideo(pictureType);
-        picture_id_preview.setVisibility(isVideo ? View.GONE : View.VISIBLE);
+        if (mimeType == PictureMimeType.ofAudio()) {
+            picture_id_preview.setVisibility(View.GONE);
+        } else {
+            boolean isVideo = PictureMimeType.isVideo(pictureType);
+            picture_id_preview.setVisibility(isVideo ? View.GONE : View.VISIBLE);
+        }
         boolean enable = selectImages.size() != 0;
         if (enable) {
             id_ll_ok.setEnabled(true);
@@ -630,22 +907,29 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     handlerResult(medias);
                     break;
                 case PictureConfig.REQUEST_CAMERA:
+                    isAudio(data);
                     // on take photo success
                     final File file = new File(cameraPath);
                     sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
                     String toType = PictureMimeType.fileToType(file);
                     DebugUtil.i(TAG, "camera result:" + toType);
-                    int degree = PictureFileUtils.readPictureDegree(file.getAbsolutePath());
-                    rotateImage(degree, file);
+                    if (mimeType != PictureMimeType.ofAudio()) {
+                        int degree = PictureFileUtils.readPictureDegree(file.getAbsolutePath());
+                        rotateImage(degree, file);
+                    }
                     // 生成新拍照片或视频对象
                     media = new LocalMedia();
                     media.setPath(cameraPath);
 
                     boolean eqVideo = toType.startsWith(PictureConfig.VIDEO);
                     int duration = eqVideo ? PictureMimeType.getLocalVideoDuration(cameraPath) : 0;
-                    String pictureType = eqVideo ? PictureMimeType.createVideoType(cameraPath)
-                            : PictureMimeType.createImageType(cameraPath);
-
+                    String pictureType = "";
+                    if (mimeType == PictureMimeType.ofAudio()) {
+                        pictureType = "audio/mpeg";
+                    } else {
+                        pictureType = eqVideo ? PictureMimeType.createVideoType(cameraPath)
+                                : PictureMimeType.createImageType(cameraPath);
+                    }
                     media.setPictureType(pictureType);
                     media.setDuration(duration);
                     media.setMimeType(mimeType);
@@ -693,15 +977,18 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         }
                     }
                     if (adapter != null) {
-                        // 解决部分手机拍照完Intent.ACTION_MEDIA_SCANNER_SCAN_FILE不及时刷新问题手动添加
+                        // 解决部分手机拍照完Intent.ACTION_MEDIA_SCANNER_SCAN_FILE
+                        // 不及时刷新问题手动添加
                         manualSaveFolder(media);
                         tv_empty.setVisibility(images.size() > 0
                                 ? View.INVISIBLE : View.VISIBLE);
                     }
 
-                    int lastImageId = getLastImageId(eqVideo);
-                    if (lastImageId != -1) {
-                        removeImage(lastImageId, eqVideo);
+                    if (mimeType != PictureMimeType.ofAudio()) {
+                        int lastImageId = getLastImageId(eqVideo);
+                        if (lastImageId != -1) {
+                            removeImage(lastImageId, eqVideo);
+                        }
                     }
                     break;
             }
@@ -760,6 +1047,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (animation != null) {
             animation.cancel();
             animation = null;
+        }
+        if (mediaPlayer != null && handler != null) {
+            handler.removeCallbacks(runnable);
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
     }
 

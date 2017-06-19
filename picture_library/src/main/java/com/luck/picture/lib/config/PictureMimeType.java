@@ -29,6 +29,9 @@ public final class PictureMimeType {
         return PictureConfig.TYPE_VIDEO;
     }
 
+    public static int ofAudio() {
+        return PictureConfig.TYPE_AUDIO;
+    }
 
     public static int isPictureType(String pictureType) {
         switch (pictureType) {
@@ -45,7 +48,16 @@ public final class PictureMimeType {
             case "video/3gpp":
             case "video/avi":
             case "video/mp4":
+            case "video/x-msvideo":
                 return PictureConfig.TYPE_VIDEO;
+            case "audio/mpeg":
+            case "audio/x-ms-wma":
+            case "audio/x-wav":
+            case "audio/amr":
+            case "audio/wav":
+            case "audio/aac":
+            case "audio/quicktime":
+                return PictureConfig.TYPE_AUDIO;
         }
         return PictureConfig.TYPE_IMAGE;
     }
@@ -77,6 +89,7 @@ public final class PictureMimeType {
             case "video/3gpp":
             case "video/avi":
             case "video/mp4":
+            case "video/x-msvideo":
                 return true;
         }
         return false;
@@ -115,6 +128,10 @@ public final class PictureMimeType {
                     || name.endsWith(".gif") || name.endsWith(".GIF") || name.endsWith(".jpg")
                     || name.endsWith(".webp") || name.endsWith(".WEBP") || name.endsWith(".JPEG")) {
                 return "image/jpeg";
+            } else if (name.endsWith(".mp3") || name.endsWith(".amr")
+                    || name.endsWith(".aac") || name.endsWith(".war")
+                    || name.endsWith(".flac")) {
+                return "audio/mpeg";
             }
         }
         return "image/jpeg";
@@ -169,8 +186,12 @@ public final class PictureMimeType {
      * @return
      */
     public static int pictureToVideo(String pictureType) {
-        if (pictureType.startsWith("video")) {
-            return PictureConfig.TYPE_VIDEO;
+        if (!TextUtils.isEmpty(pictureType)) {
+            if (pictureType.startsWith("video")) {
+                return PictureConfig.TYPE_VIDEO;
+            } else if (pictureType.startsWith("audio")) {
+                return PictureConfig.TYPE_AUDIO;
+            }
         }
         return PictureConfig.TYPE_IMAGE;
     }

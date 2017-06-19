@@ -12,6 +12,7 @@ import android.text.TextUtils;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.tools.DebugUtil;
@@ -34,6 +35,7 @@ import java.util.List;
 public class LocalMediaLoader {
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
     private static final String DURATION = "duration";
+    private static final int AUDIO_DURATION = 500;// 过滤掉小于500毫秒的录音
     private int type = PictureConfig.TYPE_IMAGE;
     private FragmentActivity activity;
     private boolean isGif;
@@ -74,6 +76,16 @@ public class LocalMediaLoader {
             MediaStore.MediaColumns.HEIGHT,
     };
 
+    private final static String[] AUDIO_PROJECTION = {
+            MediaStore.Audio.Media._ID,
+            MediaStore.Audio.Media.DATA,
+            MediaStore.Audio.Media.DISPLAY_NAME,
+            MediaStore.Audio.Media.DATE_ADDED,
+            MediaStore.Audio.Media.IS_MUSIC,
+            MediaStore.Audio.Media.IS_PODCAST,
+            MediaStore.Audio.Media.MIME_TYPE,
+            MediaStore.Audio.Media.DURATION,
+    };
 
     /**
      * 查询全部图片和视频，并且过滤掉已损坏图片和视频
@@ -178,10 +190,21 @@ public class LocalMediaLoader {
                             case PictureConfig.TYPE_VIDEO:
                                 cursorLoader = new CursorLoader(
                                         activity, MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                                        VIDEO_PROJECTION, videoS > 0 ? DURATION + " <= ?" : ""
-                                        + MediaStore.Video.Media.DURATION + ">0"
+                                        VIDEO_PROJECTION, videoS > 0 ? DURATION + " <= ? and "
+                                        + DURATION + "> 0" :
+                                        DURATION + "> 0"
                                         , videoS > 0
                                         ? new String[]{String.valueOf(videoS)} : null, VIDEO_PROJECTION[0]
+                                        + " DESC");
+                                break;
+                            case PictureConfig.TYPE_AUDIO:
+                                cursorLoader = new CursorLoader(
+                                        activity, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                                        AUDIO_PROJECTION, videoS > 0 ? DURATION + " <= ? and "
+                                        + DURATION + ">" + AUDIO_DURATION :
+                                        DURATION + "> " + AUDIO_DURATION
+                                        , videoS > 0
+                                        ? new String[]{String.valueOf(videoS)} : null, AUDIO_PROJECTION[0]
                                         + " DESC");
                                 break;
                         }
@@ -232,7 +255,10 @@ public class LocalMediaLoader {
                                         imageFolders.add(0, allImageFolder);
                                         allImageFolder.setFirstImagePath
                                                 (latelyImages.get(0).getPath());
-                                        allImageFolder.setName(activity.getString(R.string.picture_camera_roll));
+                                        String title = type == PictureMimeType.ofAudio() ?
+                                                activity.getString(R.string.picture_all_audio)
+                                                : activity.getString(R.string.picture_camera_roll);
+                                        allImageFolder.setName(title);
                                         allImageFolder.setImages(latelyImages);
                                     }
                                     imageLoadListener.loadComplete(imageFolders);

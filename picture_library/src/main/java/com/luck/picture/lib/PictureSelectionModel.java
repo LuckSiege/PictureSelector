@@ -65,6 +65,15 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param enablePreviewAudio Do you want to play audio ?
+     * @return
+     */
+    public PictureSelectionModel enablePreviewAudio(boolean enablePreviewAudio) {
+        selectionConfig.enablePreviewAudio = enablePreviewAudio;
+        return this;
+    }
+
+    /**
      * @param freeStyleCropEnabled Crop frame is move ?
      * @return
      */

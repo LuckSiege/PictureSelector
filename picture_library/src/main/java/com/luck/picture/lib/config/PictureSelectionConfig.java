@@ -48,6 +48,7 @@ public final class PictureSelectionConfig implements Serializable {
     public boolean isGif;
     public boolean enablePreview;
     public boolean enPreviewVideo;
+    public boolean enablePreviewAudio;
     public boolean checkNumMode;
     public boolean openClickSound;
     public boolean enableCrop;
@@ -90,6 +91,7 @@ public final class PictureSelectionConfig implements Serializable {
         isGif = false;
         enablePreview = true;
         enPreviewVideo = true;
+        enablePreviewAudio = true;
         checkNumMode = false;
         openClickSound = false;
         enableCrop = false;

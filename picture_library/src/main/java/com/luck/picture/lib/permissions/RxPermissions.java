@@ -35,16 +35,21 @@ public class RxPermissions {
     }
 
     private RxPermissionsFragment getRxPermissionsFragment(Activity activity) {
-        RxPermissionsFragment rxPermissionsFragment = findRxPermissionsFragment(activity);
-        boolean isNewInstance = rxPermissionsFragment == null;
-        if (isNewInstance) {
-            rxPermissionsFragment = new RxPermissionsFragment();
-            FragmentManager fragmentManager = activity.getFragmentManager();
-            fragmentManager
-                    .beginTransaction()
-                    .add(rxPermissionsFragment, TAG)
-                    .commit();
-            fragmentManager.executePendingTransactions();
+        RxPermissionsFragment rxPermissionsFragment = null;
+        try {
+            rxPermissionsFragment = findRxPermissionsFragment(activity);
+            boolean isNewInstance = rxPermissionsFragment == null;
+            if (isNewInstance) {
+                rxPermissionsFragment = new RxPermissionsFragment();
+                FragmentManager fragmentManager = activity.getFragmentManager();
+                fragmentManager
+                        .beginTransaction()
+                        .add(rxPermissionsFragment, TAG)
+                        .commitAllowingStateLoss();
+                fragmentManager.executePendingTransactions();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return rxPermissionsFragment;
     }

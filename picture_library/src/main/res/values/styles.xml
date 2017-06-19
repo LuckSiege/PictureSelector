@@ -11,6 +11,11 @@
         <item name="android:windowExitAnimation">@anim/modal_out</item>
     </style>
 
+    <style name="Dialog_Audio_StyleAnim">
+        <item name="android:windowEnterAnimation">@anim/a5</item>
+        <item name="android:windowExitAnimation">@anim/a3</item>
+    </style>
+
     <style name="activity.Theme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>

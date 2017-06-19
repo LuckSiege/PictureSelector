@@ -12,9 +12,12 @@
     <string name="picture_done">Ok</string>
     <string name="picture_please_select">Please Select</string>
     <string name="picture_empty_title">No video or photos\n</string>
+    <string name="picture_empty_audio_title">No audio file\n</string>
+    <string name="picture_audio_empty">You can use system recordings to record audio</string>
     <string name="picture_empty">you can use your camera to take photos or videos</string>
     <string name="picture_min_img_num">Picture Selection Cannot%1$sNumber</string>
     <string name="gif_tag">gif</string>
+    <string name="picture_audio">Access to system recording permission denied</string>
     <string name="picture_jurisdiction">Read memory card access denied</string>
     <string name="picture_camera">Get system camera permission denied</string>
     <string name="picture_video_toast">Video not Preview</string>
@@ -26,4 +29,10 @@
     <string name="picture_prompt_content">Do you want to save pictures to your phone?</string>
     <string name="picture_save_error">Picture save failed</string>
     <string name="picture_save_success">Save picture successfully until</string>
+    <string name="picture_all_audio">All audio</string>
+    <string name="picture_tape">Tape</string>
+    <string name="picture_play_audio">Play</string>
+    <string name="picture_stop_audio">Stop</string>
+    <string name="picture_quit_audio">Quit</string>
+    <string name="picture_pause_audio">Pause</string>
 </resources>

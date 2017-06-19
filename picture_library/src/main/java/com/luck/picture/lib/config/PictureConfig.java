@@ -32,6 +32,7 @@ public final class PictureConfig {
     public final static int TYPE_ALL = 0;
     public final static int TYPE_IMAGE = 1;
     public final static int TYPE_VIDEO = 2;
+    public final static int TYPE_AUDIO = 3;
 
     public static final int MAX_COMPRESS_SIZE = 102400;
     public static final int TYPE_CAMERA = 1;
