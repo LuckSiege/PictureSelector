@@ -1,12 +1,11 @@
-<<<<<<< HEAD
-# PictureSelector 2.0
-=======
+
 #  基于原项目内核，保留原项目所有功能，高仿微信UI
    使用方式请参考原项目
   [PictureSelector 2.0 无裁剪功能版](https://github.com/LuckSiege/PictureSelectorLight)
   
-  
- 
+  ![image](https://github.com/wyh497823256/PictureSelector/blob/master/image/device-2017-06-19-111306.png)
+  ![image](https://github.com/wyh497823256/PictureSelector/blob/master/image/device-2017-06-19-111320.png)
+  ![image](https://github.com/wyh497823256/PictureSelector/blob/master/image/device-2017-06-19-111929.png)
  
 ******修改版集成步骤******
 
