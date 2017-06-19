@@ -1,5 +1,5 @@
 # PictureSelector 2.0 
-  一款针对android平台下的图片选择器，支持从相册或拍照选择图片或视频，支持动态权限获取、裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能、适配android 6.0+系统的开源图片选择框架。
+  一款针对android平台下的图片选择器，支持从相册或拍照选择图片或视频、音频，支持动态权限获取、裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能、适配android 6.0+系统的开源图片选择框架。
   
   
   项目会一直维护(有bug修复完成，一般周末会更新)，有bug请描述清楚，并请Issues会第一时间修复，Android开发QQ交流群 619458861，个人QQ 893855882@qq.com  希望用得着的朋友点个start。 
@@ -14,8 +14,21 @@
 [![I](https://img.shields.io/github/issues/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector/issues)
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
+## 目录
+-[功能特点](#功能特点)<br>
+-[集成方式](#集成方式)<br>
+-[常见错误](#常见错误)<br>
+-[功能配置](#功能配置)<br>
+-[缓存清除](#缓存清除)<br>
+-[主题配置](#主题配置)<br>
+-[常用功能](#常用功能)<br>
+-[结果回调](#结果回调)<br>
+-[更新日志](#更新日志)<br>
+-[混淆配置](#混淆配置)<br>
+-[兼容性测试](#兼容性测试)<br>
+-[演示效果](#演示效果)<br>
 
-******功能特点：******  
+## 功能特点  
 ```
   1.适配android6.0+系统
   2.解决部分机型裁剪闪退问题
@@ -41,6 +54,7 @@
   22.新增压缩大小设置
   23.新增Luban压缩档次设置
   24.新增圆形头像裁剪
+  25.新增音频功能查询
 ```
 
 ******那些遇到拍照闪退问题的同学，请记得看清下面适配6.0的配置~******
@@ -69,13 +83,13 @@
 
 ```
 
-******集成步骤******
+## 集成方式
 
 方式一 compile引入
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.0.4'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.0.5'
 }
 
 ```
@@ -107,12 +121,12 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.0.4</version>
+      <version>v2.0.5</version>
 </dependency>
 
 ```
 
-******常见错误*******
+## 常见错误
 ```
  问题一：
  rxjava冲突：在app build.gradle下添加
@@ -171,7 +185,7 @@ ndk {
 
 ```
 
-******相册启动构造方法******
+## 功能配置
 ```
 // 进入相册 以下是例子：用不到的api可以不写
  PictureSelector.create(MainActivity.this)
@@ -183,6 +197,7 @@ ndk {
  	.selectionMode()// 多选 or 单选 PictureConfig.MULTIPLE or PictureConfig.SINGLE
  	.previewImage()// 是否可预览图片 true or false
  	.previewVideo()// 是否可预览视频 true or false
+	.enablePreviewAudio() // 是否可播放音频 true or false
  	.compressGrade()// luban压缩档次，默认3档 Luban.THIRD_GEAR、Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
  	.isCamera()// 是否显示拍照按钮 true or false
  	.enableCrop()// 是否裁剪 true or false
@@ -206,18 +221,18 @@ ndk {
  	.rotateEnabled() // 裁剪是否可旋转图片 true or false
  	.scaleEnabled()// 裁剪是否可放大缩小图片 true or false
  	.videoQuality()// 视频录制质量 0 or 1 int
- 	.videoSecond()//显示多少秒以内的视频 int 
+ 	.videoSecond()// 显示多少秒以内的视频or音频也可适用 int 
 	.recordVideoSecond()//视频秒数录制 默认60s int
  	.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code     
 ```
 
-******清除PictureSelector 2.0缓存******
+## 缓存清除
 ```
  //包括裁剪和压缩后的缓存，要在上传成功后调用，注意：需要系统sd卡权限 
  PictureFileUtils.deleteCacheDirFile(MainActivity.this);
  
 ```
-******PictureSelector 2.0 主题配置****** 
+## 主题配置
 
 ```
 <!--默认样式 注意* 样式只可修改，不能删除任何一项 否则报错-->
@@ -278,6 +293,9 @@ ndk {
     </style>
 
 ```
+
+## 常用功能
+
 ******启动相册并拍照******       
 ```
  PictureSelector.create(MainActivity.this)
@@ -285,7 +303,6 @@ ndk {
        .forResult(PictureConfig.CHOOSE_REQUEST);
        
 ```
-
 ******单独启动拍照或视频 根据PictureMimeType自动识别******       
 ```
   PictureSelector.create(MainActivity.this)
@@ -304,7 +321,7 @@ PictureSelector.create(MainActivity.this).externalPicturePreview(position, selec
 PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 ```
-******图片回调完成结果返回******
+## 结果回调
 ```
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -330,16 +347,20 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ```
 
 
-# 更新日志：
+## 更新日志
 
 # 当前版本：
+###### 版本 v2.0.5
+###### 新增音频功能查询
+###### 修复设置查询视频秒数，0秒视频也能获取到的bug
+###### 修复部分已知bug
+
+# 历版版本：
 
 ###### 版本 v2.0.4
 ###### 修复多图裁剪网络图片时报错bug
 ###### 重构预览图片代码
 ###### 修复几处bug
-
-# 历版版本：
 
 ###### 版本 v2.0.3
 ###### 修复部分手机拍照重复2张问题
@@ -372,7 +393,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ###### 5.luban
 ###### 6.裁剪使用ucrop
 
-# 混淆配置
+## 混淆配置 
 ```
 #PictureSelector 2.0
 -keep class com.luck.picture.lib.** { *; }
@@ -416,12 +437,12 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 ```
 
-# 兼容性测试：
+## 兼容性测试
 ******腾讯优测-深度测试-通过率达到100%******
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/test.png)
 
-# 演示效果：
+## 演示效果
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/1.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/2.jpg)
@@ -434,6 +455,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/6.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/7.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/8.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/audio.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/9.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/10.jpg)
 
