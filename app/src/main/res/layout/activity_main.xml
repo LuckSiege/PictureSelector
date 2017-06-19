@@ -152,6 +152,15 @@
                     android:text="视频"
                     android:textColor="@color/color_53"
                     android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_audio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="音频"
+                    android:textColor="@color/color_53"
+                    android:textSize="14sp" />
             </RadioGroup>
 
 
@@ -214,6 +223,17 @@
                 android:text="是否预览视频"
                 android:textColor="@color/color_53"
                 android:textSize="14sp" />
+
+            <CheckBox
+                android:id="@+id/cb_preview_audio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:gravity="center_vertical"
+                android:text="是否预览音频"
+                android:textColor="@color/color_53"
+                android:textSize="14sp"
+                android:visibility="gone" />
 
             <CheckBox
                 android:id="@+id/cb_compress"

@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:allowBackup="true"
@@ -18,8 +19,8 @@
         <activity
             android:name=".PictureSelectorActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/activity.Theme" />
+            android:theme="@style/activity.Theme"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".PictureBaseActivity"
             android:screenOrientation="portrait" />
@@ -39,6 +40,10 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name="com.yalantis.ucrop.PictureMultiCuttingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".PicturePlayAudioActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>

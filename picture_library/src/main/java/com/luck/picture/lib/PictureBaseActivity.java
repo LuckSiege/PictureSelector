@@ -350,7 +350,8 @@ public class PictureBaseActivity extends FragmentActivity {
         if (folders.size() == 0) {
             // 没有相册 先创建一个最近相册出来
             LocalMediaFolder newFolder = new LocalMediaFolder();
-            String folderName = getString(R.string.picture_camera_roll);
+            String folderName = mimeType == PictureMimeType.ofAudio() ?
+                    getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll);
             newFolder.setName(folderName);
             newFolder.setPath("");
             newFolder.setFirstImagePath("");
@@ -472,5 +473,42 @@ public class PictureBaseActivity extends FragmentActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 录音
+     *
+     * @param data
+     */
+    protected void isAudio(Intent data) {
+        if (data != null && mimeType == PictureMimeType.ofAudio()) {
+            try {
+                Uri uri = data.getData();
+                String audioPath = getAudioFilePathFromUri(uri);
+                PictureFileUtils.copyAudioFile(audioPath, cameraPath);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 获取刚录取的音频文件
+     *
+     * @param uri
+     * @return
+     */
+    protected String getAudioFilePathFromUri(Uri uri) {
+        String path = "";
+        try {
+            Cursor cursor = getContentResolver()
+                    .query(uri, null, null, null, null);
+            cursor.moveToFirst();
+            int index = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
+            path = cursor.getString(index);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return path;
     }
 }

@@ -50,9 +50,11 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
     private FrameLayout id_ll_root;
     private TextView picture_title;
     private Drawable drawableUp, drawableDown;
+    private int mimeType;
 
-    public FolderPopWindow(Context context) {
+    public FolderPopWindow(Context context, int mimeType) {
         this.context = context;
+<<<<<<< HEAD
 
 
         initView();
@@ -65,6 +67,14 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
         this.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         this.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         // 设置弹出窗体可点击
+=======
+        this.mimeType = mimeType;
+        window = LayoutInflater.from(context).inflate(R.layout.picture_window_folder, null);
+        this.setContentView(window);
+        this.setWidth(ScreenUtils.getScreenWidth(context));
+        this.setHeight(ScreenUtils.getScreenHeight(context));
+        this.setAnimationStyle(R.style.WindowStyle);
+>>>>>>> upstream/master
         this.setFocusable(true);
         ColorDrawable dw = new ColorDrawable(Color.argb(0, 0, 0, 0));
         this.setBackgroundDrawable(dw);
@@ -95,6 +105,7 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
     }
 
     public void bindFolder(List<LocalMediaFolder> folders) {
+        adapter.setMimeType(mimeType);
         adapter.bindFolderData(folders);
     }
 

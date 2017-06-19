@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 
@@ -31,6 +32,7 @@ import java.util.List;
 public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAlbumDirectoryAdapter.ViewHolder> {
     private Context mContext;
     private List<LocalMediaFolder> folders = new ArrayList<>();
+    private int mimeType;
 
     public PictureAlbumDirectoryAdapter(Context mContext) {
         super();
@@ -40,6 +42,10 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
     public void bindFolderData(List<LocalMediaFolder> folders) {
         this.folders = folders;
         notifyDataSetChanged();
+    }
+
+    public void setMimeType(int mimeType) {
+        this.mimeType = mimeType;
     }
 
     public List<LocalMediaFolder> getFolderData() {
@@ -65,23 +71,27 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         int checkedNum = folder.getCheckedNum();
         holder.tv_sign.setVisibility(checkedNum > 0 ? View.VISIBLE : View.INVISIBLE);
         holder.itemView.setSelected(isChecked);
-        Glide.with(holder.itemView.getContext())
-                .load(imagePath)
-                .asBitmap()
-                .error(R.drawable.ic_placeholder)
-                .centerCrop()
-                .override(150, 150)
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                .into(new BitmapImageViewTarget(holder.first_image) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.
-                                        create(mContext.getResources(), resource);
-                        circularBitmapDrawable.setCornerRadius(8);
-                        holder.first_image.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
+        if (mimeType == PictureMimeType.ofAudio()) {
+            holder.first_image.setImageResource(R.drawable.audio_placeholder);
+        } else {
+            Glide.with(holder.itemView.getContext())
+                    .load(imagePath)
+                    .asBitmap()
+                    .error(R.drawable.ic_placeholder)
+                    .centerCrop()
+                    .override(150, 150)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .into(new BitmapImageViewTarget(holder.first_image) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable circularBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.
+                                            create(mContext.getResources(), resource);
+                            circularBitmapDrawable.setCornerRadius(8);
+                            holder.first_image.setImageDrawable(circularBitmapDrawable);
+                        }
+                    });
+        }
         holder.image_num.setText("(" + imageNum + ")");
         holder.tv_folder_name.setText(name);
         holder.itemView.setOnClickListener(new View.OnClickListener() {

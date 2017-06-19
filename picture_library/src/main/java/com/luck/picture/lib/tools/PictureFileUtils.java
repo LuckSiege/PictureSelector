@@ -23,6 +23,8 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.luck.picture.lib.config.PictureConfig;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,12 +50,15 @@ public class PictureFileUtils {
 
     public static final String POSTFIX = ".JPEG";
     public static final String POST_VIDEO = ".mp4";
+    public static final String POST_AUDIO = ".mp3";
     public static final String APP_NAME = "PictureSelector";
     public static final String CAMERA_PATH = "/" + APP_NAME + "/CameraImage/";
+    public static final String CAMERA_AUDIO_PATH = "/" + APP_NAME + "/CameraAudio/";
     public static final String CROP_PATH = "/" + APP_NAME + "/CropImage/";
 
     public static File createCameraFile(Context context, int type) {
-        return createMediaFile(context, CAMERA_PATH, type);
+        return type == PictureConfig.TYPE_AUDIO ? createMediaFile(context, CAMERA_AUDIO_PATH, type)
+                : createMediaFile(context, CAMERA_PATH, type);
     }
 
     public static File createCropFile(Context context, int type) {
@@ -78,6 +83,9 @@ public class PictureFileUtils {
                 break;
             case 2:
                 tmpFile = new File(folderDir, fileName + POST_VIDEO);
+                break;
+            case 3:
+                tmpFile = new File(folderDir, fileName + POST_AUDIO);
                 break;
         }
         return tmpFile;
@@ -287,6 +295,31 @@ public class PictureFileUtils {
         } finally {
             if (inputChannel != null) inputChannel.close();
             if (outputChannel != null) outputChannel.close();
+        }
+    }
+
+    /**
+     * Copies one file into the other with the given paths.
+     * In the event that the paths are the same, trying to copy one file to the other
+     * will cause both files to become null.
+     * Simply skipping this step if the paths are identical.
+     */
+    public static void copyAudioFile(@NonNull String pathFrom, @NonNull String pathTo) throws IOException {
+        if (pathFrom.equalsIgnoreCase(pathTo)) {
+            return;
+        }
+
+        FileChannel outputChannel = null;
+        FileChannel inputChannel = null;
+        try {
+            inputChannel = new FileInputStream(new File(pathFrom)).getChannel();
+            outputChannel = new FileOutputStream(new File(pathTo)).getChannel();
+            inputChannel.transferTo(0, inputChannel.size(), outputChannel);
+            inputChannel.close();
+        } finally {
+            if (inputChannel != null) inputChannel.close();
+            if (outputChannel != null) outputChannel.close();
+            PictureFileUtils.deleteFile(pathFrom);
         }
     }
 
@@ -523,4 +556,21 @@ public class PictureFileUtils {
         DebugUtil.i(TAG, "Cache delete success!");
     }
 
+    /**
+     * delete file
+     *
+     * @param path
+     */
+    public static void deleteFile(String path) {
+        try {
+            if (!TextUtils.isEmpty(path)) {
+                File file = new File(path);
+                if (file != null) {
+                    file.delete();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

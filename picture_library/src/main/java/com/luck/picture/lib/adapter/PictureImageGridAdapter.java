@@ -2,6 +2,7 @@ package com.luck.picture.lib.adapter;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -24,6 +25,7 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DebugUtil;
+import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.VoiceUtils;
 
 import java.util.ArrayList;
@@ -43,11 +45,13 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private boolean enablePreview;
     private int selectMode = PictureConfig.MULTIPLE;
     private boolean enablePreviewVideo = false;
+    private boolean enablePreviewAudio = false;
     private boolean is_checked_num;
     private boolean enableVoice;
     private int overrideWidth, overrideHeight;
     private Animation animation;
     private PictureSelectionConfig config;
+    private int mimeType;
 
     public PictureImageGridAdapter(Context context, PictureSelectionConfig config) {
         this.context = context;
@@ -57,10 +61,12 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.maxSelectNum = config.maxSelectNum;
         this.enablePreview = config.enablePreview;
         this.enablePreviewVideo = config.enPreviewVideo;
+        this.enablePreviewAudio = config.enablePreviewAudio;
         this.is_checked_num = config.checkNumMode;
         this.overrideWidth = config.overrideWidth;
         this.overrideHeight = config.overrideHeight;
         this.enableVoice = config.openClickSound;
+        mimeType = config.mimeType;
         animation = OptAnimationLoader.loadAnimation(context, R.anim.modal_in);
         overrideWidth = overrideWidth <= 0 ? 180 : overrideWidth;
         overrideHeight = overrideHeight <= 0 ? 180 : overrideHeight;
@@ -152,20 +158,30 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             final int picture = PictureMimeType.isPictureType(pictureType);
             boolean gif = PictureMimeType.isGif(pictureType);
             contentHolder.tv_isGif.setVisibility(gif ? View.VISIBLE : View.GONE);
-            contentHolder.tv_duration.setVisibility(picture == PictureConfig.TYPE_VIDEO
-                    ? View.VISIBLE : View.GONE);
+            if (mimeType == PictureMimeType.ofAudio()) {
+                contentHolder.tv_duration.setVisibility(View.VISIBLE);
+                Drawable drawable = ContextCompat.getDrawable(context, R.drawable.picture_audio);
+                StringUtils.modifyTextViewDrawable(contentHolder.tv_duration, drawable, 0);
+            } else {
+                Drawable drawable = ContextCompat.getDrawable(context, R.drawable.video_icon);
+                StringUtils.modifyTextViewDrawable(contentHolder.tv_duration, drawable, 0);
+                contentHolder.tv_duration.setVisibility(picture == PictureConfig.TYPE_VIDEO
+                        ? View.VISIBLE : View.GONE);
+            }
             int width = image.getWidth();
             int height = image.getHeight();
             int h = width * 5;
             contentHolder.tv_long_chart.setVisibility(height > h ? View.VISIBLE : View.GONE);
             long duration = image.getDuration();
             contentHolder.tv_duration.setText(DateUtils.timeParse(duration));
-
-            Glide.with(context).load(path).asBitmap().diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .centerCrop().placeholder(R.drawable.image_placeholder)
-                    .override(overrideWidth, overrideHeight).into(contentHolder.iv_picture);
-
-            if (enablePreview || enablePreviewVideo) {
+            if (mimeType == PictureMimeType.ofAudio()) {
+                contentHolder.iv_picture.setImageResource(R.drawable.audio_placeholder);
+            } else {
+                Glide.with(context).load(path).asBitmap().diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .centerCrop().placeholder(R.drawable.image_placeholder)
+                        .override(overrideWidth, overrideHeight).into(contentHolder.iv_picture);
+            }
+            if (enablePreview || enablePreviewVideo || enablePreviewAudio) {
                 contentHolder.ll_check.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -186,6 +202,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                             || selectMode == PictureConfig.SINGLE)) {
                         int index = showCamera ? position - 1 : position;
                         imageSelectChangedListener.onPictureClick(image, index);
+                    } else if (picture == PictureConfig.TYPE_AUDIO && (enablePreviewAudio
+                            || selectMode == PictureConfig.SINGLE)) {
+                        int index = showCamera ? position - 1 : position;
+                        imageSelectChangedListener.onPictureClick(image, index);
                     } else {
                         changeCheckboxState(contentHolder, image);
                     }
@@ -202,10 +222,16 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
         View headerView;
+        TextView tv_title_camera;
 
         public HeaderViewHolder(View itemView) {
             super(itemView);
             headerView = itemView;
+            tv_title_camera = (TextView) itemView.findViewById(R.id.tv_title_camera);
+            String title = mimeType == PictureMimeType.ofAudio() ?
+                    context.getString(R.string.picture_tape)
+                    : context.getString(R.string.picture_take_picture);
+            tv_title_camera.setText(title);
         }
     }
 
