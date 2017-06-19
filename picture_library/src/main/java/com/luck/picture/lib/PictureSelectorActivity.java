@@ -66,14 +66,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         PictureImageGridAdapter.OnPhotoSelectChangedListener, PhotoPopupWindow.OnItemClickListener {
     private final static String TAG = PictureSelectorActivity.class.getSimpleName();
     private ImageView picture_left_back;
-<<<<<<< HEAD
+
+
     private TextView picture_title, picture_right, tv_empty,
-            picture_tv_img_num, picture_id_preview;
-=======
-    private TextView picture_title, picture_right, picture_tv_ok, tv_empty,
             picture_tv_img_num, picture_id_preview, tv_PlayPause, tv_Stop, tv_Quit,
             tv_musicStatus, tv_musicTotal, tv_musicTime;
->>>>>>> upstream/master
+
     private RelativeLayout rl_picture_title, rl_bottom;
     private LinearLayout id_ll_ok;
     private RecyclerView picture_recycler;

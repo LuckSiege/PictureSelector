@@ -54,7 +54,6 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
 
     public FolderPopWindow(Context context, int mimeType) {
         this.context = context;
-<<<<<<< HEAD
 
 
         initView();
@@ -63,18 +62,9 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
     }
 
     private void setPopConfig() {
-//        this.setContentView(mDataView);//设置要显示的视图
         this.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         this.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        // 设置弹出窗体可点击
-=======
-        this.mimeType = mimeType;
-        window = LayoutInflater.from(context).inflate(R.layout.picture_window_folder, null);
-        this.setContentView(window);
-        this.setWidth(ScreenUtils.getScreenWidth(context));
-        this.setHeight(ScreenUtils.getScreenHeight(context));
         this.setAnimationStyle(R.style.WindowStyle);
->>>>>>> upstream/master
         this.setFocusable(true);
         ColorDrawable dw = new ColorDrawable(Color.argb(0, 0, 0, 0));
         this.setBackgroundDrawable(dw);
@@ -114,13 +104,16 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
     }
 
     @Override
-    public void showAsDropDown(View v) {
+    public void showAsDropDown(View anchor) {
         try {
-            //获取需要在其上方显示的控件的位置信息
+
             int[] location = new int[2];
-            v.getLocationOnScreen(location);
-            //在控件上方显示
-            showAtLocation(v, Gravity.NO_GRAVITY, (location[0] + v.getWidth() / 2) - popupWidth / 2, location[1] - popupHeight);
+            anchor.getLocationOnScreen(location);
+            int x = location[0];
+            int y = location[1];
+
+            showAtLocation(anchor, Gravity.NO_GRAVITY, x - popupWidth / 2, y - popupHeight);
+
             isDismiss = false;
             recyclerView.startAnimation(animationIn);
             StringUtils.modifyTextViewDrawable(picture_title, drawableUp, 2);
