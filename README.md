@@ -24,10 +24,9 @@
 -[常用功能](#常用功能)<br>
 -[结果回调](#结果回调)<br>
 -[更新日志](#更新日志)<br>
--[混淆](#混淆)<br>
+-[混淆配置](#混淆配置)<br>
 -[兼容性测试](#兼容性测试)<br>
 -[演示效果](#演示效果)<br>
-
 
 ## 功能特点  
 ```
@@ -394,7 +393,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ###### 5.luban
 ###### 6.裁剪使用ucrop
 
-## 混淆 
+## 混淆配置 
 ```
 #PictureSelector 2.0
 -keep class com.luck.picture.lib.** { *; }
