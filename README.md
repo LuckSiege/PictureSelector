@@ -22,6 +22,7 @@
 -[缓存清除](#缓存清除)<br>
 -[主题配置](#主题配置)<br>
 -[常用功能](#常用功能)<br>
+-[结果回调](#结果回调)<br>
 -[更新日志](#更新日志)<br>
 -[混淆](#混淆)<br>
 -[兼容性测试](#兼容性测试)<br>
@@ -321,7 +322,7 @@ PictureSelector.create(MainActivity.this).externalPicturePreview(position, selec
 PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 ```
-******图片回调完成结果返回******
+## 结果回调
 ```
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
