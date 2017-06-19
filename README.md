@@ -16,7 +16,17 @@
 
 ## 目录
 -[功能特点](#功能特点)<br>
--[混淆](#混淆)
+-[集成方式](#集成方式)<br>
+-[常见错误](#常见错误)<br>
+-[功能配置](#功能配置)<br>
+-[缓存清除](#缓存清除)<br>
+-[主题配置](#主题配置)<br>
+-[常见功能](#常见功能)<br>
+-[更新日志](#更新日志)<br>
+-[混淆](#混淆)<br>
+-[兼容性测试](#兼容性测试)<br>
+-[演示效果](#演示效果)<br>
+
 
 ## 功能特点  
 ```
@@ -73,7 +83,7 @@
 
 ```
 
-******集成步骤******
+## 集成方式
 
 方式一 compile引入
 
@@ -116,7 +126,7 @@ step 2.
 
 ```
 
-******常见错误*******
+## 常见错误
 ```
  问题一：
  rxjava冲突：在app build.gradle下添加
@@ -175,7 +185,7 @@ ndk {
 
 ```
 
-******相册启动构造方法******
+## 功能配置
 ```
 // 进入相册 以下是例子：用不到的api可以不写
  PictureSelector.create(MainActivity.this)
@@ -216,13 +226,13 @@ ndk {
  	.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code     
 ```
 
-******清除PictureSelector 2.0缓存******
+## 缓存清除
 ```
  //包括裁剪和压缩后的缓存，要在上传成功后调用，注意：需要系统sd卡权限 
  PictureFileUtils.deleteCacheDirFile(MainActivity.this);
  
 ```
-******PictureSelector 2.0 主题配置****** 
+## 主题配置
 
 ```
 <!--默认样式 注意* 样式只可修改，不能删除任何一项 否则报错-->
@@ -283,6 +293,9 @@ ndk {
     </style>
 
 ```
+
+## 常见功能
+
 ******启动相册并拍照******       
 ```
  PictureSelector.create(MainActivity.this)
@@ -290,7 +303,6 @@ ndk {
        .forResult(PictureConfig.CHOOSE_REQUEST);
        
 ```
-
 ******单独启动拍照或视频 根据PictureMimeType自动识别******       
 ```
   PictureSelector.create(MainActivity.this)
@@ -335,7 +347,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ```
 
 
-# 更新日志：
+## 更新日志
 
 # 当前版本：
 ###### 版本 v2.0.5
@@ -425,12 +437,12 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 ```
 
-# 兼容性测试：
+## 兼容性测试
 ******腾讯优测-深度测试-通过率达到100%******
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/test.png)
 
-# 演示效果：
+## 演示效果
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/1.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/2.jpg)
