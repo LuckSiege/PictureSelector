@@ -16,6 +16,7 @@
 
 ## 目录
 [功能特点](#功能特点)
+[混淆](#混淆)
 
 ## 功能特点  
 ```
@@ -380,7 +381,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ###### 5.luban
 ###### 6.裁剪使用ucrop
 
-# 混淆配置
+## 混淆 
 ```
 #PictureSelector 2.0
 -keep class com.luck.picture.lib.** { *; }
