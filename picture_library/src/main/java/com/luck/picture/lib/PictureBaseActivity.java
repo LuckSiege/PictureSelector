@@ -82,6 +82,9 @@ public class PictureBaseActivity extends FragmentActivity {
                 (this, R.attr.picture_preview_statusFontColor);
         mimeType = config.mimeType;
         selectionMedias = config.selectionMedias;
+        if (selectionMedias == null) {
+            selectionMedias = new ArrayList<>();
+        }
         selectionMode = config.selectionMode;
         if (selectionMode == PictureConfig.SINGLE) {
             selectionMedias = new ArrayList<>();

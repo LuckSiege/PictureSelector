@@ -9,6 +9,7 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DoubleUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -347,6 +348,9 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel selectionMedia(List<LocalMedia> selectionMedia) {
+        if (selectionMedia == null) {
+            selectionMedia = new ArrayList<>();
+        }
         selectionConfig.selectionMedias = selectionMedia;
         return this;
     }
