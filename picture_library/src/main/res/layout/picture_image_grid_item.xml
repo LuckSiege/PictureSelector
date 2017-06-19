@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.luck.picture.lib.widget.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+                                                  android:layout_width="match_parent"
+                                                  android:layout_height="wrap_content"
+                                                  android:background="@color/image_overlay_true">
 
     <ImageView
         android:id="@+id/iv_picture"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/image_placeholder" />
+        android:src="@drawable/image_placeholder"/>
 
     <LinearLayout
         android:id="@+id/ll_check"
@@ -26,7 +27,7 @@
             android:background="?attr/picture.checked.style"
             android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="12sp"/>
     </LinearLayout>
 
     <TextView
@@ -39,7 +40,7 @@
         android:text="@string/gif_tag"
         android:textColor="@color/white"
         android:textSize="11sp"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tv_long_chart"
@@ -51,7 +52,7 @@
         android:text="@string/picture_long_chart"
         android:textColor="@color/white"
         android:textSize="11sp"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tv_duration"
@@ -67,5 +68,5 @@
         android:text="00:00"
         android:textColor="@color/white"
         android:textSize="11sp"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 </com.luck.picture.lib.widget.SquareRelativeLayout>

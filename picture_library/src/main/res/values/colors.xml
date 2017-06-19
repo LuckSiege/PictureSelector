@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bar_grey">#393a3e</color>
+    <color name="bar_grey">#393A3F</color>
+    <color name="bar_grey_dark">#2D2E33</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="blue">#7D7DFF</color>
@@ -20,4 +21,7 @@
     <color name="bar_grey_90">#dd393a3e</color>
     <color name="color_4d">#4d4d4d</color>
     <color name="color_orange">#E0FF6100</color>
+    <color name="ui_color_41bd55">#31874b</color>
+    <color name="ui_color_388e3c">#218631</color>
+    <color name="ui_color_disable">#7731874b</color>
 </resources>

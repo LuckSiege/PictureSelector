@@ -1,5 +1,5 @@
 <resources>
-    <string name="picture_camera_roll">相机胶卷</string>
+    <string name="picture_camera_roll">图片和视频</string>
     <string name="picture_cancel">取消</string>
     <string name="picture_take_picture">拍摄</string>
     <string name="picture_rule">不能同时选择图片或视频</string>

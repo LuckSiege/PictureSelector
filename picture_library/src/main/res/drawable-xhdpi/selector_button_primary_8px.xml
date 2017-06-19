@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/shape_rectangle_8px_primary_dark" android:state_pressed="true" android:state_enabled="true"/>
+    <item android:drawable="@drawable/shape_rectangle_8px_disable" android:state_pressed="false" android:state_enabled="false"/>
+    <item android:drawable="@drawable/shape_rectangle_8px_primary"/>
+</selector>

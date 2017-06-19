@@ -66,9 +66,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         PictureImageGridAdapter.OnPhotoSelectChangedListener, PhotoPopupWindow.OnItemClickListener {
     private final static String TAG = PictureSelectorActivity.class.getSimpleName();
     private ImageView picture_left_back;
-    private TextView picture_title, picture_right, picture_tv_ok, tv_empty,
+
+
+    private TextView picture_title, picture_right, tv_empty,
             picture_tv_img_num, picture_id_preview, tv_PlayPause, tv_Stop, tv_Quit,
             tv_musicStatus, tv_musicTotal, tv_musicTime;
+
     private RelativeLayout rl_picture_title, rl_bottom;
     private LinearLayout id_ll_ok;
     private RecyclerView picture_recycler;
@@ -169,7 +172,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
         picture_title = (TextView) findViewById(R.id.picture_title);
         picture_right = (TextView) findViewById(R.id.picture_right);
-        picture_tv_ok = (TextView) findViewById(R.id.picture_tv_ok);
+
         picture_id_preview = (TextView) findViewById(R.id.picture_id_preview);
         picture_tv_img_num = (TextView) findViewById(R.id.picture_tv_img_num);
         picture_recycler = (RecyclerView) findViewById(R.id.picture_recycler);
@@ -274,8 +277,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * none number style
      */
     private void isNumComplete(boolean numComplete) {
-        picture_tv_ok.setText(numComplete ? getString(R.string.picture_done_front_num, 0, maxSelectNum)
-                : getString(R.string.picture_please_select));
+        picture_right.setText(numComplete ? getString(R.string.picture_done_front_num, 0, maxSelectNum)
+                : getString(R.string.picture_done));
         if (!numComplete) {
             animation = AnimationUtils.loadAnimation(this, R.anim.modal_in);
         }
@@ -439,7 +442,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.picture_left_back || id == R.id.picture_right) {
+        if (id == R.id.picture_left_back) {
             if (folderWindow.isShowing()) {
                 folderWindow.dismiss();
             } else {
@@ -451,7 +454,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 folderWindow.dismiss();
             } else {
                 if (images != null && images.size() > 0) {
-                    folderWindow.showAsDropDown(rl_picture_title);
+                    folderWindow.showAsDropDown(rl_bottom);
                     List<LocalMedia> selectedImages = adapter.getSelectedImages();
                     folderWindow.notifyDataCheckedStatus(selectedImages);
                 }
@@ -473,7 +476,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             overridePendingTransition(R.anim.a5, 0);
         }
 
-        if (id == R.id.id_ll_ok) {
+        if (id == R.id.picture_right) {
             List<LocalMedia> images = adapter.getSelectedImages();
             String pictureType = images.size() > 0 ? images.get(0).getPictureType() : "";
             // 如果设置了图片最小选择数量，则判断是否满足条件
@@ -844,30 +847,36 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             id_ll_ok.setEnabled(true);
             picture_id_preview.setEnabled(true);
             picture_id_preview.setTextColor(preview_textColor);
-            picture_tv_ok.setTextColor(complete_textColor);
+            picture_id_preview.setText(getString
+                    (R.string.picture_preview_num, selectImages.size()));
+            picture_right.setEnabled(true);
             if (numComplete) {
-                picture_tv_ok.setText(getString
-                        (R.string.picture_done_front_num, selectImages.size(), maxSelectNum));
+
+                picture_right.setText(enable ? getString
+                        (R.string.picture_done_front_num, selectImages.size(), maxSelectNum) : getString
+                        (R.string.picture_done_front_num));
             } else {
                 if (!anim) {
                     picture_tv_img_num.startAnimation(animation);
                 }
                 picture_tv_img_num.setVisibility(View.VISIBLE);
                 picture_tv_img_num.setText(selectImages.size() + "");
-                picture_tv_ok.setText(getString(R.string.picture_completed));
+                picture_right.setText(getString(R.string.picture_done));
                 anim = false;
             }
         } else {
             id_ll_ok.setEnabled(false);
+            picture_right.setEnabled(false);
             picture_id_preview.setEnabled(false);
-            picture_tv_ok.setTextColor(ContextCompat.getColor(mContext, R.color.tab_color_false));
             picture_id_preview.setTextColor
                     (ContextCompat.getColor(mContext, R.color.tab_color_false));
+            picture_id_preview.setText(getString
+                    (R.string.picture_preview));
             if (numComplete) {
-                picture_tv_ok.setText(getString(R.string.picture_done_front_num, 0, maxSelectNum));
+                picture_right.setText(getString(R.string.picture_done));
             } else {
                 picture_tv_img_num.setVisibility(View.INVISIBLE);
-                picture_tv_ok.setText(getString(R.string.picture_please_select));
+                picture_right.setText(getString(R.string.picture_done));
             }
         }
     }

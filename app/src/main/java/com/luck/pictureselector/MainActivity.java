@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .theme(themeId)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
-                        .imageSpanCount(4)// 每行显示个数
+                        .imageSpanCount(3)// 每行显示个数
                         .selectionMode(cb_choose_mode.isChecked() ?
                                 PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
                         .previewImage(cb_preview_img.isChecked())// 是否可预览图片

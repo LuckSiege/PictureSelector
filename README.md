@@ -1,8 +1,42 @@
+
+#  基于原项目内核，保留原项目所有功能，高仿微信UI
+ 使用方式请参考原项目,项目基于v2.0.5
+ 
+### 修改后的UI
+![IMAGE](https://github.com/wyh497823256/PictureSelector_WXUI/blob/master/image/device-2017-06-19-111306.png)
+![IMAGE](https://github.com/wyh497823256/PictureSelector_WXUI/blob/master/image/device-2017-06-19-111320.png)
+![IMAGE](https://github.com/wyh497823256/PictureSelector_WXUI/blob/master/image/device-2017-06-19-111929.png)
+
+******修改版集成步骤******
+
+方式一 compile引入
+
+```
+dependencies {
+    compile 'com.github.wyh497823256.PictureSelector_WXUI:picture_library:v2.0.6-wx'
+}
+
+```
+
+项目根目录build.gradle加入
+
+```
+allprojects {
+   repositories {
+      jcenter()
+      maven { url 'https://jitpack.io' }
+   }
+}
+```
+
+#  原项目 PictureSelector 2.0 简介
+
 # PictureSelector 2.0 
   一款针对android平台下的图片选择器，支持从相册或拍照选择图片或视频、音频，支持动态权限获取、裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能、适配android 6.0+系统的开源图片选择框架。
+
   
   
-  项目会一直维护(有bug修复完成，一般周末会更新)，有bug请描述清楚，并请Issues会第一时间修复，Android开发QQ交流群 619458861，个人QQ 893855882@qq.com  希望用得着的朋友点个start。 
+ 项目会一直维护(有bug修复完成，一般周末会更新)，有bug请描述清楚，并请Issues会第一时间修复，Android开发QQ交流群 619458861，个人QQ 893855882@qq.com  希望用得着的朋友点个start。 
   
   [PictureSelector 2.0 无裁剪功能版](https://github.com/LuckSiege/PictureSelectorLight)
    
@@ -80,49 +114,6 @@
          android:name="android.support.FILE_PROVIDER_PATHS"
          android:resource="@xml/file_paths" />
 </provider>
-
-```
-
-## 集成方式
-
-方式一 compile引入
-
-```
-dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.0.5'
-}
-
-```
-
-项目根目录build.gradle加入
-
-```
-allprojects {
-   repositories {
-      jcenter()
-      maven { url 'https://jitpack.io' }
-   }
-}
-```
-
-方式二 maven引入
-
-step 1.
-```
-<repositories>
-       <repository>
-       <id>jitpack.io</id>
-	<url>https://jitpack.io</url>
-       </repository>
- </repositories>
-```
-step 2.
-```
-<dependency>
-      <groupId>com.github.LuckSiege.PictureSelector</groupId>
-      <artifactId>picture_library</artifactId>
-      <version>v2.0.5</version>
-</dependency>
 
 ```
 

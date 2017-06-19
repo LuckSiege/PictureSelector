@@ -12,9 +12,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -39,41 +40,53 @@ import java.util.List;
  */
 
 public class FolderPopWindow extends PopupWindow implements View.OnClickListener {
+    private int popupHeight, popupWidth;
     private Context context;
     private View window;
     private RecyclerView recyclerView;
     private PictureAlbumDirectoryAdapter adapter;
     private Animation animationIn, animationOut;
     private boolean isDismiss = false;
-    private LinearLayout id_ll_root;
+    private FrameLayout id_ll_root;
     private TextView picture_title;
     private Drawable drawableUp, drawableDown;
     private int mimeType;
 
     public FolderPopWindow(Context context, int mimeType) {
         this.context = context;
-        this.mimeType = mimeType;
-        window = LayoutInflater.from(context).inflate(R.layout.picture_window_folder, null);
-        this.setContentView(window);
-        this.setWidth(ScreenUtils.getScreenWidth(context));
-        this.setHeight(ScreenUtils.getScreenHeight(context));
+
+
+        initView();
+        setPopConfig();
+
+    }
+
+    private void setPopConfig() {
+        this.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        this.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         this.setAnimationStyle(R.style.WindowStyle);
         this.setFocusable(true);
-        this.setOutsideTouchable(true);
-        this.update();
-        this.setBackgroundDrawable(new ColorDrawable(Color.argb(123, 0, 0, 0)));
+        ColorDrawable dw = new ColorDrawable(Color.argb(0, 0, 0, 0));
+        this.setBackgroundDrawable(dw);
+        this.setOutsideTouchable(true);// 设置外部触摸会关闭窗口
+        this.setAnimationStyle(R.style.WindowStyle);
         drawableUp = AttrsUtils.getTypeValuePopWindowImg(context, R.attr.picture_arrow_up_icon);
         drawableDown = AttrsUtils.getTypeValuePopWindowImg(context, R.attr.picture_arrow_down_icon);
         animationIn = AnimationUtils.loadAnimation(context, R.anim.photo_album_show);
         animationOut = AnimationUtils.loadAnimation(context, R.anim.photo_album_dismiss);
-        initView();
+        //获取自身的长宽高
+        window.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        popupHeight = window.getMeasuredHeight();
+        popupWidth = window.getMeasuredWidth();
     }
 
     public void initView() {
-        id_ll_root = (LinearLayout) window.findViewById(R.id.id_ll_root);
+        window = LayoutInflater.from(context).inflate(R.layout.picture_window_folder, null);
+        this.setContentView(window);
+        id_ll_root = (FrameLayout) window.findViewById(R.id.id_ll_root);
         adapter = new PictureAlbumDirectoryAdapter(context);
         recyclerView = (RecyclerView) window.findViewById(R.id.folder_list);
-        recyclerView.getLayoutParams().height = (int) (ScreenUtils.getScreenHeight(context) * 0.6);
+        recyclerView.getLayoutParams().height = (int) (ScreenUtils.getScreenHeight(context) * 0.8);
         recyclerView.addItemDecoration(new RecycleViewDivider(
                 context, LinearLayoutManager.HORIZONTAL, ScreenUtils.dip2px(context, 0), ContextCompat.getColor(context, R.color.transparent)));
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -93,16 +106,13 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
     @Override
     public void showAsDropDown(View anchor) {
         try {
-            if (Build.VERSION.SDK_INT >= 24) {
-                int[] location = new int[2];
-                anchor.getLocationOnScreen(location);
-                int height = anchor.getHeight();
-                int x = location[0];
-                int y = location[1];
-                super.showAtLocation(anchor, Gravity.NO_GRAVITY, x, y + height);
-            } else {
-                super.showAsDropDown(anchor);
-            }
+
+            int[] location = new int[2];
+            anchor.getLocationOnScreen(location);
+            int x = location[0];
+            int y = location[1];
+
+            showAtLocation(anchor, Gravity.NO_GRAVITY, x - popupWidth / 2, y - popupHeight);
 
             isDismiss = false;
             recyclerView.startAnimation(animationIn);
