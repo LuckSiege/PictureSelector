@@ -49,7 +49,8 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
     private int aspect_ratio_x, aspect_ratio_y;
     private CheckBox cb_voice, cb_choose_mode, cb_isCamera, cb_isGif,
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
-            cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid, cb_showCropFrame;
+            cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
+            cb_showCropFrame, cb_preview_audio;
     private int compressMode = PictureConfig.SYSTEM_COMPRESS_MODE;
     private int themeId;
     private int chooseMode = PictureMimeType.ofAll();
@@ -85,6 +86,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         cb_mode = (CheckBox) rootView.findViewById(R.id.cb_mode);
         cb_showCropGrid = (CheckBox) rootView.findViewById(R.id.cb_showCropGrid);
         cb_showCropFrame = (CheckBox) rootView.findViewById(R.id.cb_showCropFrame);
+        cb_preview_audio = (CheckBox) rootView.findViewById(R.id.cb_preview_audio);
         cb_hide = (CheckBox) rootView.findViewById(R.id.cb_hide);
         cb_crop_circular = (CheckBox) rootView.findViewById(R.id.cb_crop_circular);
         rgb_crop.setOnCheckedChangeListener(this);
@@ -120,6 +122,10 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         // 预览视频
                         PictureSelector.create(PhotoFragment.this).externalPictureVideo(media.getPath());
                         break;
+                    case 3:
+                        // 预览音频
+                        PictureSelector.create(PhotoFragment.this).externalPictureAudio(media.getPath());
+                        break;
                 }
             }
         });
@@ -139,6 +145,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         .selectionMode(cb_choose_mode.isChecked() ? PictureConfig.MULTIPLE : PictureConfig.SINGLE)
                         .previewImage(cb_preview_img.isChecked())
                         .previewVideo(cb_preview_video.isChecked())
+                        .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
                         .compressGrade(Luban.THIRD_GEAR)
                         .isCamera(cb_isCamera.isChecked())
                         .enableCrop(cb_crop.isChecked())
@@ -166,6 +173,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         .selectionMode(cb_choose_mode.isChecked() ? PictureConfig.MULTIPLE : PictureConfig.SINGLE)
                         .previewImage(cb_preview_img.isChecked())
                         .previewVideo(cb_preview_video.isChecked())
+                        .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
                         .compressGrade(Luban.THIRD_GEAR)
                         .isCamera(cb_isCamera.isChecked())
                         .enableCrop(cb_crop.isChecked())
@@ -236,6 +244,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                 cb_preview_img.setChecked(true);
                 cb_preview_video.setVisibility(View.VISIBLE);
                 cb_preview_img.setVisibility(View.VISIBLE);
+                cb_preview_audio.setVisibility(View.GONE);
                 break;
             case R.id.rb_image:
                 chooseMode = PictureMimeType.ofImage();
@@ -247,6 +256,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                 cb_preview_video.setVisibility(View.GONE);
                 cb_preview_img.setChecked(true);
                 cb_preview_img.setVisibility(View.VISIBLE);
+                cb_preview_audio.setVisibility(View.GONE);
                 break;
             case R.id.rb_video:
                 chooseMode = PictureMimeType.ofVideo();
@@ -257,7 +267,12 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                 cb_preview_video.setChecked(true);
                 cb_preview_video.setVisibility(View.VISIBLE);
                 cb_preview_img.setVisibility(View.GONE);
+                cb_preview_audio.setVisibility(View.GONE);
                 cb_preview_img.setChecked(false);
+                break;
+            case R.id.rb_audio:
+                chooseMode = PictureMimeType.ofAudio();
+                cb_preview_audio.setVisibility(View.VISIBLE);
                 break;
             case R.id.rb_crop_default:
                 aspect_ratio_x = 0;

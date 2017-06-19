@@ -1,6 +1,8 @@
 package com.luck.pictureselector.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,11 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DebugUtil;
+import com.luck.picture.lib.tools.StringUtils;
 import com.luck.pictureselector.R;
 
 import java.io.File;
@@ -33,6 +40,7 @@ public class GridImageAdapter extends
     private LayoutInflater mInflater;
     private List<LocalMedia> list = new ArrayList<>();
     private int selectMax = 9;
+    private Context context;
     /**
      * 点击添加图片跳转
      */
@@ -43,6 +51,7 @@ public class GridImageAdapter extends
     }
 
     public GridImageAdapter(Context context, onAddPicClickListener mOnAddPicClickListener) {
+        this.context = context;
         mInflater = LayoutInflater.from(context);
         this.mOnAddPicClickListener = mOnAddPicClickListener;
     }
@@ -59,11 +68,13 @@ public class GridImageAdapter extends
 
         ImageView mImg;
         LinearLayout ll_del;
+        TextView tv_duration;
 
         public ViewHolder(View view) {
             super(view);
             mImg = (ImageView) view.findViewById(R.id.fiv);
             ll_del = (LinearLayout) view.findViewById(R.id.ll_del);
+            tv_duration = (TextView) view.findViewById(R.id.tv_duration);
         }
     }
 
@@ -133,6 +144,7 @@ public class GridImageAdapter extends
                 }
             });
             LocalMedia media = list.get(position);
+            int mimeType = media.getMimeType();
             String path = "";
             if (media.isCut() && !media.isCompressed()) {
                 // 裁剪过
@@ -151,17 +163,32 @@ public class GridImageAdapter extends
             }
 
             Log.i("原图地址::", media.getPath());
-
+            int pictureType = PictureMimeType.isPictureType(media.getPictureType());
             if (media.isCut()) {
                 Log.i("裁剪地址::", media.getCutPath());
             }
-            Glide.with(viewHolder.itemView.getContext())
-                    .load(path)
-                    .centerCrop()
-                    .placeholder(R.color.color_f6)
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .into(viewHolder.mImg);
-
+            long duration = media.getDuration();
+            viewHolder.tv_duration.setVisibility(pictureType == PictureConfig.TYPE_VIDEO
+                    ? View.VISIBLE : View.GONE);
+            if (mimeType == PictureMimeType.ofAudio()) {
+                viewHolder.tv_duration.setVisibility(View.VISIBLE);
+                Drawable drawable = ContextCompat.getDrawable(context, R.drawable.picture_audio);
+                StringUtils.modifyTextViewDrawable(viewHolder.tv_duration, drawable, 0);
+            } else {
+                Drawable drawable = ContextCompat.getDrawable(context, R.drawable.video_icon);
+                StringUtils.modifyTextViewDrawable(viewHolder.tv_duration, drawable, 0);
+            }
+            viewHolder.tv_duration.setText(DateUtils.timeParse(duration));
+            if (mimeType == PictureMimeType.ofAudio()) {
+                viewHolder.mImg.setImageResource(R.drawable.audio_placeholder);
+            } else {
+                Glide.with(viewHolder.itemView.getContext())
+                        .load(path)
+                        .centerCrop()
+                        .placeholder(R.color.color_f6)
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .into(viewHolder.mImg);
+            }
             //itemView 的点击事件
             if (mItemClickListener != null) {
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {

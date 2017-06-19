@@ -44,7 +44,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int aspect_ratio_x, aspect_ratio_y;
     private CheckBox cb_voice, cb_choose_mode, cb_isCamera, cb_isGif,
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
-            cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid, cb_showCropFrame;
+            cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
+            cb_showCropFrame, cb_preview_audio;
     private int compressMode = PictureConfig.SYSTEM_COMPRESS_MODE;
     private int themeId;
     private int chooseMode = PictureMimeType.ofAll();
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_mode = (CheckBox) findViewById(R.id.cb_mode);
         cb_showCropGrid = (CheckBox) findViewById(R.id.cb_showCropGrid);
         cb_showCropFrame = (CheckBox) findViewById(R.id.cb_showCropFrame);
+        cb_preview_audio = (CheckBox) findViewById(R.id.cb_preview_audio);
         cb_hide = (CheckBox) findViewById(R.id.cb_hide);
         cb_crop_circular = (CheckBox) findViewById(R.id.cb_crop_circular);
         rgb_crop.setOnCheckedChangeListener(this);
@@ -109,6 +111,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         case 2:
                             // 预览视频
                             PictureSelector.create(MainActivity.this).externalPictureVideo(media.getPath());
+                            break;
+                        case 3:
+                            // 预览音频
+                            PictureSelector.create(MainActivity.this).externalPictureAudio(media.getPath());
                             break;
                     }
                 }
@@ -150,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (mode) {
                 // 进入相册 以下是例子：不需要的api可以不写
                 PictureSelector.create(MainActivity.this)
-                        .openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()
+                        .openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
                         .theme(themeId)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
@@ -159,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
                         .previewImage(cb_preview_img.isChecked())// 是否可预览图片
                         .previewVideo(cb_preview_video.isChecked())// 是否可预览视频
+                        .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
                         .compressGrade(Luban.THIRD_GEAR)// luban压缩档次，默认3档 Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
                         .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
                         .enableCrop(cb_crop.isChecked())// 是否裁剪
@@ -182,13 +189,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.rotateEnabled() // 裁剪是否可旋转图片
                         //.scaleEnabled()// 裁剪是否可放大缩小图片
                         //.videoQuality()// 视频录制质量 0 or 1
-                        //.videoSecond()//显示多少秒以内的视频
+                        //.videoSecond()//显示多少秒以内的视频or音频也可适用
                         //.recordVideoSecond()//录制视频秒数 默认60s
                         .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
             } else {
                 // 单独拍照
                 PictureSelector.create(MainActivity.this)
-                        .openCamera(chooseMode)// 单独拍照，也可录像 看你传入的类型是图片or视频
+                        .openCamera(chooseMode)// 单独拍照，也可录像或也可音频 看你传入的类型是图片or视频
                         .theme(themeId)// 主题样式设置 具体参考 values/styles
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
@@ -196,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
                         .previewImage(cb_preview_img.isChecked())// 是否可预览图片
                         .previewVideo(cb_preview_video.isChecked())// 是否可预览视频
+                        .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
                         .compressGrade(Luban.THIRD_GEAR)// luban压缩档次，默认3档 Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
                         .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
                         .enableCrop(cb_crop.isChecked())// 是否裁剪
@@ -220,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.rotateEnabled() // 裁剪是否可旋转图片
                         //.scaleEnabled()// 裁剪是否可放大缩小图片
                         //.videoQuality()// 视频录制质量 0 or 1
-                        //.videoSecond()//显示多少秒以内的视频
+                        //.videoSecond()////显示多少秒以内的视频or音频也可适用
                         .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
             }
         }
@@ -284,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cb_compress.setVisibility(View.VISIBLE);
                 cb_crop.setVisibility(View.VISIBLE);
                 cb_isGif.setVisibility(View.VISIBLE);
+                cb_preview_audio.setVisibility(View.GONE);
                 break;
             case R.id.rb_image:
                 chooseMode = PictureMimeType.ofImage();
@@ -293,6 +302,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cb_preview_video.setChecked(false);
                 cb_preview_video.setVisibility(View.GONE);
                 cb_preview_img.setChecked(true);
+                cb_preview_audio.setVisibility(View.GONE);
                 cb_preview_img.setVisibility(View.VISIBLE);
                 cb_compress.setVisibility(View.VISIBLE);
                 cb_crop.setVisibility(View.VISIBLE);
@@ -309,7 +319,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cb_preview_img.setVisibility(View.GONE);
                 cb_preview_img.setChecked(false);
                 cb_compress.setVisibility(View.GONE);
+                cb_preview_audio.setVisibility(View.GONE);
                 cb_crop.setVisibility(View.GONE);
+                break;
+            case R.id.rb_audio:
+                chooseMode = PictureMimeType.ofAudio();
+                cb_preview_audio.setVisibility(View.VISIBLE);
                 break;
             case R.id.rb_crop_default:
                 aspect_ratio_x = 0;
