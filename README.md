@@ -1,6 +1,12 @@
 
 #  基于原项目内核，保留原项目所有功能，高仿微信UI
-   使用方式请参考原项目
+ 使用方式请参考原项目
+ 
+### 修改后的UI
+![IMAGE](https://github.com/wyh497823256/PictureSelector_WXUI/blob/master/image/device-2017-06-19-111306.png)
+![IMAGE](https://github.com/wyh497823256/PictureSelector_WXUI/blob/master/image/device-2017-06-19-111320.png)
+![IMAGE](https://github.com/wyh497823256/PictureSelector_WXUI/blob/master/image/device-2017-06-19-111929.png)
+
 ******修改版集成步骤******
 
 方式一 compile引入
