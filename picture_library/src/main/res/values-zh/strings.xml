@@ -1,14 +1,15 @@
 <resources>
-    <string name="picture_camera_roll">相机胶卷</string>
+    <string name="picture_camera_roll">图片和视频</string>
     <string name="picture_cancel">取消</string>
     <string name="picture_take_picture">拍摄</string>
     <string name="picture_rule">不能同时选择图片或视频</string>
     <string name="picture_message_max_num">你最多可以选择%1$s张图片</string>
     <string name="picture_min_video_num">视频最低选择不能少于%1$s个</string>
     <string name="picture_message_video_max_num">你最多可以选择%1$s个视频</string>
-    <string name="picture_preview">预览</string>
+    <string name="picture_preview_num">预览(%1$s)</string>
+    <string name="picture_preview_">预览</string>
     <string name="picture_please">请稍候...</string>
-    <string name="picture_done_front_num">%1$s/%2$s 完成</string>
+    <string name="picture_done_front_num"> 完成(%1$s/%2$s)</string>
     <string name="picture_completed">已完成</string>
     <string name="picture_done">完成</string>
     <string name="picture_please_select">请选择</string>
@@ -24,6 +25,7 @@
     <string name="picture_long_chart">长图</string>
     <string name="picture_warning">暂无媒体文件！</string>
     <string name="picture_prompt">提示</string>
+    <string name="picture_choose">选择</string>
     <string name="picture_prompt_content">是否保存图片至手机？</string>
     <string name="picture_save_error">图片保存失败</string>
     <string name="picture_save_success">图片保存成功至</string>

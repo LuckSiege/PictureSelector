@@ -48,6 +48,8 @@ import java.util.List;
 import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
+import static com.luck.picture.lib.R.id.id_ll_ok;
+
 /**
  * author：luck
  * project：PictureSelector
@@ -59,7 +61,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
     private ImageView picture_left_back;
     private TextView tv_img_num, tv_title, tv_ok;
     private PreviewViewPager viewPager;
-    private LinearLayout id_ll_ok;
     private int position;
     private LinearLayout ll_check;
     private List<LocalMedia> images = new ArrayList<>();
@@ -104,16 +105,14 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
         viewPager = (PreviewViewPager) findViewById(R.id.preview_pager);
         ll_check = (LinearLayout) findViewById(R.id.ll_check);
-        id_ll_ok = (LinearLayout) findViewById(R.id.id_ll_ok);
         check = (TextView) findViewById(R.id.check);
         picture_left_back.setOnClickListener(this);
-        tv_ok = (TextView) findViewById(R.id.tv_ok);
-        id_ll_ok.setOnClickListener(this);
+        tv_ok = (TextView) findViewById(R.id.picture_right);
+
         tv_img_num = (TextView) findViewById(R.id.tv_img_num);
-        tv_title = (TextView) findViewById(R.id.picture_title);
+        tv_title = (TextView) findViewById(R.id.picture_toolbar_title);
         position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
-        tv_ok.setText(numComplete ? getString(R.string.picture_done_front_num, 0, maxSelectNum)
-                : getString(R.string.picture_please_select));
+        tv_ok.setOnClickListener(this);
 
         tv_img_num.setSelected(checkNumMode ? true : false);
 
@@ -321,8 +320,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         this.refresh = isRefresh;
         boolean enable = selectImages.size() != 0;
         if (enable) {
-            tv_ok.setTextColor(preview_complete_textColor);
-            id_ll_ok.setEnabled(true);
+
+            tv_ok.setEnabled(true);
             if (numComplete) {
                 tv_ok.setText(getString(R.string.picture_done_front_num, selectImages.size(), maxSelectNum));
             } else {
@@ -334,8 +333,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
                 tv_ok.setText(getString(R.string.picture_completed));
             }
         } else {
-            id_ll_ok.setEnabled(false);
-            tv_ok.setTextColor(ContextCompat.getColor(this, R.color.tab_color_false));
+            tv_ok.setEnabled(false);
             if (numComplete) {
                 tv_ok.setText(getString(R.string.picture_done_front_num, 0, maxSelectNum));
             } else {
@@ -460,7 +458,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
             finish();
             overridePendingTransition(0, R.anim.a3);
         }
-        if (id == R.id.id_ll_ok) {
+        if (id == R.id.picture_right) {
             // 如果设置了图片最小选择数量，则判断是否满足条件
             int size = selectImages.size();
             String pictureType = selectImages.size() > 0 ? selectImages.get(0).getPictureType() : "";

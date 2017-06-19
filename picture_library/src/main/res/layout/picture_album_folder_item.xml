@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/item_select_bg"
-    android:orientation="vertical"
-    android:padding="6dp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/item_select_bg"
+                android:orientation="vertical"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+
+    >
 
     <RelativeLayout
         android:id="@+id/rl_first_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_centerVertical="true">
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerVertical="true"
+        android:layout_margin="10dp">
 
         <ImageView
             android:id="@+id/first_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp" />
+            android:layout_width="60dp"
+            android:layout_height="60dp"/>
 
         <TextView
             android:id="@+id/tv_sign"
@@ -24,7 +28,7 @@
             android:layout_alignParentRight="true"
             android:layout_margin="5dp"
             android:background="?attr/picture.folder_checked_dot"
-            android:visibility="invisible" />
+            android:visibility="invisible"/>
 
     </RelativeLayout>
 
@@ -32,23 +36,25 @@
         android:id="@+id/tv_folder_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@id/rl_first_image"
         android:text="相机胶卷"
         android:textColor="@color/color_4d"
-        android:textSize="16sp" />
+        android:textSize="16sp"/>
 
     <TextView
         android:id="@+id/image_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@id/tv_folder_name"
         android:text="(0)"
         android:textColor="@color/color_4d"
-        android:textSize="14sp" />
+        android:textSize="14sp"/>
 
 
 </RelativeLayout>

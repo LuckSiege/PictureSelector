@@ -17,6 +17,7 @@
     <attr name="picture.title.textColor" format="reference|color" />
     <attr name="picture.right.textColor" format="reference|color" />
     <attr name="picture.leftBack.icon" format="reference" />
+    <attr name="picture.leftBack.icon.line" format="reference" />
     <attr name="picture.arrow_down.icon" format="reference" />
     <attr name="picture.arrow_up.icon" format="reference" />
     <attr name="picture.num.style" format="reference" />

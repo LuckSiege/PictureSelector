@@ -59,27 +59,29 @@
         <!--是否改变图片列表界面状态栏字体颜色为黑色-->
         <item name="picture.statusFontColor">false</item>
         <!--返回键图标-->
-        <item name="picture.leftBack.icon">@drawable/picture_back</item>
+        <item name="picture.leftBack.icon">@drawable/ac_back_icon</item>
+
+        <item name="picture.leftBack.icon.line">@drawable/ac_back_icon_line</item>
         <!--标题下拉箭头-->
-        <item name="picture.arrow_down.icon">@drawable/arrow_down</item>
+        <item name="picture.arrow_down.icon">@drawable/arrow_up</item>
         <!--标题上拉箭头-->
-        <item name="picture.arrow_up.icon">@drawable/arrow_up</item>
+        <item name="picture.arrow_up.icon">@drawable/arrow_down</item>
         <!--标题文字颜色-->
         <item name="picture.title.textColor">@color/white</item>
         <!--标题栏右边文字-->
-        <item name="picture.right.textColor">@color/white</item>
+        <item name="picture.right.textColor">@drawable/item_select_text</item>
         <!--图片列表勾选样式-->
         <item name="picture.checked.style">@drawable/checkbox_selector</item>
         <!--开启图片列表勾选数字模式-->
         <item name="picture.style.checkNumMode">false</item>
         <!--选择图片样式0/9-->
-        <item name="picture.style.numComplete">false</item>
+        <item name="picture.style.numComplete">true</item>
         <!--图片列表底部背景色-->
-        <item name="picture.bottom.bg">@color/color_fa</item>
+        <item name="picture.bottom.bg">@color/bar_grey</item>
         <!--图片列表预览文字颜色-->
-        <item name="picture.preview.textColor">@color/tab_color_true</item>
+        <item name="picture.preview.textColor">@color/white</item>
         <!--图片列表已完成文字颜色-->
-        <item name="picture.complete.textColor">@color/tab_color_true</item>
+        <item name="picture.complete.textColor">@color/white</item>
         <!--图片已选数量圆点背景色-->
         <item name="picture.num.style">@drawable/num_oval</item>
         <!--预览界面标题文字颜色-->
