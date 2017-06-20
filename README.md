@@ -89,7 +89,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.0.6'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.0.7'
 }
 
 ```
@@ -121,7 +121,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.0.6</version>
+      <version>v2.0.7</version>
 </dependency>
 
 ```
@@ -351,6 +351,10 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
+######  v2.0.7
+###### 1.修复已知bug
+
+# 历史版本：
 ######  v2.0.6
 ###### 1.新增自定拍照保存路径
 ###### 2.修复录音不显示时长问题
