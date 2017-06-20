@@ -350,7 +350,8 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 ## 更新日志
 
-# 当前版本：
+# 当前版本 v2.0.6：
+
 ###### 1.新增自定拍照保存路径
 ###### 2.修复录音不显示时长问题
 
