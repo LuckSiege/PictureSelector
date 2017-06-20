@@ -39,7 +39,7 @@
                 android:layout_centerVertical="true"
                 android:text="00:00"
                 android:textColor="@color/tab_color_false"
-                android:textSize="13sp" />
+                android:textSize="12sp" />
 
 
             <SeekBar
@@ -67,7 +67,7 @@
                 android:layout_toRightOf="@+id/musicSeekBar"
                 android:text="00:00"
                 android:textColor="@color/tab_color_false"
-                android:textSize="13sp" />
+                android:textSize="12sp" />
 
         </RelativeLayout>
 

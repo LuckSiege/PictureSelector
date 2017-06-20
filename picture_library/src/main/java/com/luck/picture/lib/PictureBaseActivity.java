@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
@@ -488,7 +489,12 @@ public class PictureBaseActivity extends FragmentActivity {
         if (data != null && mimeType == PictureMimeType.ofAudio()) {
             try {
                 Uri uri = data.getData();
-                String audioPath = getAudioFilePathFromUri(uri);
+                String audioPath;
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+                    audioPath = uri.getPath();
+                } else {
+                    audioPath = getAudioFilePathFromUri(uri);
+                }
                 PictureFileUtils.copyAudioFile(audioPath, cameraPath);
             } catch (Exception e) {
                 e.printStackTrace();

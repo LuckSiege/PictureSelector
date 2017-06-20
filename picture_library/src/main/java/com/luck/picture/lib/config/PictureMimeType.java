@@ -56,6 +56,7 @@ public final class PictureMimeType {
             case "audio/amr":
             case "audio/wav":
             case "audio/aac":
+            case "audio/mp4":
             case "audio/quicktime":
                 return PictureConfig.TYPE_AUDIO;
         }
