@@ -729,6 +729,6 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
 
     protected void closeActivity() {
         finish();
-        overridePendingTransition(0, R.anim.close);
+        overridePendingTransition(0, R.anim.ucrop_close);
     }
 }
