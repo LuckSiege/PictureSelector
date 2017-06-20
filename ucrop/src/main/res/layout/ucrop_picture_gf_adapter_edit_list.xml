@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="3dp"
-        android:src="@drawable/crop_oval_true" />
+        android:src="@drawable/ucrop_oval_true" />
 
     <ImageView
         android:id="@+id/iv_photo"

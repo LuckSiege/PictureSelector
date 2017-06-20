@@ -121,7 +121,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.picture_activity_multi_cutting);
+        setContentView(R.layout.ucrop_picture_activity_multi_cutting);
         final Intent intent = getIntent();
         list = getIntent().getStringArrayListExtra(UCropMulti.Options.EXTRA_CUT_CROP);
         // Crop cut list
@@ -700,7 +700,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
      * 重置裁剪参数
      */
     protected void resetCutData() {
-        setContentView(R.layout.picture_activity_multi_cutting);
+        setContentView(R.layout.ucrop_picture_activity_multi_cutting);
         Intent intent = new Intent();
         Bundle extras = getIntent().getExtras();
         String path = cutInfos.get(cutIndex).getPath();
