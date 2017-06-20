@@ -23,7 +23,7 @@ import android.widget.ImageView;
 
 import com.luck.picture.lib.R;
 
-class PictureSpinView extends ImageView implements PictureIndeterminate {
+public class PictureSpinView extends ImageView implements PictureIndeterminate {
 
     private float mRotateDegrees;
     private int mFrameTime;
