@@ -200,7 +200,7 @@ ndk {
 	.enablePreviewAudio() // 是否可播放音频 true or false
  	.compressGrade()// luban压缩档次，默认3档 Luban.THIRD_GEAR、Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
  	.isCamera()// 是否显示拍照按钮 true or false
-	.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径
+	.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径,可不填
  	.enableCrop()// 是否裁剪 true or false
  	.compress()// 是否压缩 true or false
  	.compressMode()//系统自带 or 鲁班压缩 PictureConfig.SYSTEM_COMPRESS_MODE or LUBAN_COMPRESS_MODE
