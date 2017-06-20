@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginTop="4dp"
-        android:src="@drawable/ic_delete_photo"
+        android:src="@drawable/ucrop_ic_delete_photo"
         android:visibility="gone" />
 
 </RelativeLayout>
