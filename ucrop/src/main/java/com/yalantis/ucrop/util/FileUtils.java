@@ -236,6 +236,27 @@ public class FileUtils {
         return false;
     }
 
+    public static boolean isWebp(String path) {
+        String imageType = createImageType(path);
+        switch (imageType) {
+            case "image/webp":
+            case "image/WEBP":
+                return true;
+        }
+        return false;
+    }
+
+    public static boolean isEnable(String path) {
+        try {
+            if (isGif(path) || isWebp(path)) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static String createImageType(String path) {
         try {
             if (!TextUtils.isEmpty(path)) {

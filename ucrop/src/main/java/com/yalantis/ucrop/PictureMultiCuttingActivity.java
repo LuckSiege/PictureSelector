@@ -217,9 +217,10 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
 
         if (inputUri != null && outputUri != null) {
             try {
-                boolean gif = FileUtils.isGif(inputUri.getPath());
-                mGestureCropImageView.setRotateEnabled(gif ? false : rotateEnabled);
-                mGestureCropImageView.setScaleEnabled(gif ? false : scaleEnabled);
+                boolean enable = FileUtils.isEnable(inputUri.getPath());
+
+                mGestureCropImageView.setRotateEnabled(enable ? false : rotateEnabled);
+                mGestureCropImageView.setScaleEnabled(enable ? false : scaleEnabled);
                 mGestureCropImageView.setImageUri(inputUri, outputUri);
             } catch (Exception e) {
                 setResultError(e);
