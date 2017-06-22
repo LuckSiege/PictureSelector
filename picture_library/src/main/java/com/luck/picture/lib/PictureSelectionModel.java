@@ -2,6 +2,8 @@ package com.luck.picture.lib;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.FloatRange;
+import android.support.annotation.IntRange;
 import android.support.annotation.StyleRes;
 import android.support.v4.app.Fragment;
 
@@ -209,9 +211,21 @@ public class PictureSelectionModel {
      * @param height glide height
      * @return
      */
-    public PictureSelectionModel glideOverride(int width, int height) {
+    public PictureSelectionModel glideOverride(@IntRange(from = 100) int width,
+                                               @IntRange(from = 100) int height) {
         selectionConfig.overrideWidth = width;
         selectionConfig.overrideHeight = height;
+        return this;
+    }
+
+    /**
+     * @param sizeMultiplier The multiplier to apply to the
+     *                       {@link com.bumptech.glide.request.target.Target}'s dimensions when
+     *                       loading the resource.
+     * @return
+     */
+    public PictureSelectionModel sizeMultiplier(@FloatRange(from = 0.1f) float sizeMultiplier) {
+        selectionConfig.sizeMultiplier = sizeMultiplier;
         return this;
     }
 

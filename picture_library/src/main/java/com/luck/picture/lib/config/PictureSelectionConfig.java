@@ -42,6 +42,7 @@ public final class PictureSelectionConfig implements Serializable {
     public int overrideHeight;
     public int aspect_ratio_x;
     public int aspect_ratio_y;
+    public float sizeMultiplier;
     public int cropWidth;
     public int cropHeight;
     public boolean isCompress;
@@ -105,6 +106,7 @@ public final class PictureSelectionConfig implements Serializable {
         scaleEnabled = true;
         previewEggs = false;
         outputCameraPath = "";
+        sizeMultiplier = 0.5f;
         selectionMedias = new ArrayList<>();
         DebugUtil.i("*******", "reset PictureSelectionConfig");
     }

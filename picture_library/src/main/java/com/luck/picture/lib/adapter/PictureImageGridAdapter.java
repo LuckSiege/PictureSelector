@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.anim.OptAnimationLoader;
 import com.luck.picture.lib.config.PictureConfig;
@@ -49,6 +51,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private boolean is_checked_num;
     private boolean enableVoice;
     private int overrideWidth, overrideHeight;
+    private float sizeMultiplier;
     private Animation animation;
     private PictureSelectionConfig config;
     private int mimeType;
@@ -66,11 +69,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.overrideWidth = config.overrideWidth;
         this.overrideHeight = config.overrideHeight;
         this.enableVoice = config.openClickSound;
+        this.sizeMultiplier = config.sizeMultiplier;
         mimeType = config.mimeType;
         animation = OptAnimationLoader.loadAnimation(context, R.anim.modal_in);
-        overrideWidth = overrideWidth <= 0 ? 180 : overrideWidth;
-        overrideHeight = overrideHeight <= 0 ? 180 : overrideHeight;
-        DebugUtil.i("image glide wh:", overrideWidth + ":" + overrideHeight);
     }
 
     public void setShowCamera(boolean showCamera) {
@@ -143,7 +144,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             });
         } else {
             final ViewHolder contentHolder = (ViewHolder) holder;
-            DebugUtil.i("onBindViewHolder:", "this is refresh position--->" + position);
             final LocalMedia image = images.get(showCamera ? position - 1 : position);
             image.position = contentHolder.getAdapterPosition();
             String path = image.getPath();
@@ -177,9 +177,21 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             if (mimeType == PictureMimeType.ofAudio()) {
                 contentHolder.iv_picture.setImageResource(R.drawable.audio_placeholder);
             } else {
-                Glide.with(context).load(path).asBitmap().diskCacheStrategy(DiskCacheStrategy.RESULT)
-                        .centerCrop().placeholder(R.drawable.image_placeholder)
-                        .override(overrideWidth, overrideHeight).into(contentHolder.iv_picture);
+                RequestOptions options = new RequestOptions();
+                if (overrideWidth <= 0 && overrideHeight <= 0) {
+                    options.sizeMultiplier(sizeMultiplier);
+                } else {
+                    options.override(overrideWidth, overrideHeight);
+                }
+                options.diskCacheStrategy(DiskCacheStrategy.ALL);
+                options.centerCrop();
+                options.placeholder(R.drawable.image_placeholder);
+                Glide.with(context)
+                        .asBitmap()
+                        .load(path)
+                        .apply(options)
+                        .transition(new BitmapTransitionOptions().crossFade(500))
+                        .into(contentHolder.iv_picture);
             }
             if (enablePreview || enablePreviewVideo || enablePreviewAudio) {
                 contentHolder.ll_check.setOnClickListener(new View.OnClickListener() {

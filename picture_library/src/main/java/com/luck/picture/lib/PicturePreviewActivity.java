@@ -1,7 +1,6 @@
 package com.luck.picture.lib;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -19,8 +18,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.RequestOptions;
 import com.luck.picture.lib.anim.OptAnimationLoader;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -412,24 +410,24 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
                 boolean isGif = PictureMimeType.isGif(pictureType);
                 // 压缩过的gif就不是gif了
                 if (isGif && !media.isCompressed()) {
-                    Glide.with(PicturePreviewActivity.this)
-                            .load(path)
-                            .asGif()
+                    RequestOptions gifOptions = new RequestOptions()
                             .override(480, 800)
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                             .priority(Priority.HIGH)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE);
+                    Glide.with(PicturePreviewActivity.this)
+                            .asGif()
+                            .load(path)
+                            .apply(gifOptions)
                             .into(imageView);
                 } else {
+                    RequestOptions options = new RequestOptions()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .override(480, 800);
                     Glide.with(PicturePreviewActivity.this)
-                            .load(path)
                             .asBitmap()
-                            .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                            .into(new SimpleTarget<Bitmap>(480, 800) {
-                                @Override
-                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                    imageView.setImageBitmap(resource);
-                                }
-                            });
+                            .load(path)
+                            .apply(options)
+                            .into(imageView);
                 }
                 imageView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
                     @Override
