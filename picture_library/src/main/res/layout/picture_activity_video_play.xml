@@ -24,5 +24,5 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:padding="15dp"
-        android:src="?attr/picture.leftBack.icon" />
+        android:src="@drawable/picture_back" />
 </RelativeLayout>
