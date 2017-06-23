@@ -295,6 +295,15 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param zoomAnim Picture list zoom anim
+     * @return
+     */
+    public PictureSelectionModel isZoomAnim(boolean zoomAnim) {
+        selectionConfig.zoomAnim = zoomAnim;
+        return this;
+    }
+
+    /**
      * @param previewEggs preview eggs  It doesn't make much sense
      * @return
      */

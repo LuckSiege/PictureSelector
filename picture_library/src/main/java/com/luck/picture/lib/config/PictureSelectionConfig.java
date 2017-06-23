@@ -45,6 +45,7 @@ public final class PictureSelectionConfig implements Serializable {
     public float sizeMultiplier;
     public int cropWidth;
     public int cropHeight;
+    public boolean zoomAnim;
     public boolean isCompress;
     public boolean isCamera;
     public boolean isGif;
@@ -105,6 +106,7 @@ public final class PictureSelectionConfig implements Serializable {
         rotateEnabled = true;
         scaleEnabled = true;
         previewEggs = false;
+        zoomAnim = true;
         outputCameraPath = "";
         sizeMultiplier = 0.5f;
         selectionMedias = new ArrayList<>();

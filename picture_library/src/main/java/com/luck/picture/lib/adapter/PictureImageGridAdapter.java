@@ -1,5 +1,7 @@
 package com.luck.picture.lib.adapter;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -37,7 +39,7 @@ import java.util.List;
  * Created by dee on 15/11/19.
  */
 public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
+    private final static int DURATION = 450;
     private Context context;
     private boolean showCamera = true;
     private OnPhotoSelectChangedListener imageSelectChangedListener;
@@ -55,6 +57,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private Animation animation;
     private PictureSelectionConfig config;
     private int mimeType;
+    private boolean zoomAnim;
 
     public PictureImageGridAdapter(Context context, PictureSelectionConfig config) {
         this.context = context;
@@ -70,7 +73,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.overrideHeight = config.overrideHeight;
         this.enableVoice = config.openClickSound;
         this.sizeMultiplier = config.sizeMultiplier;
-        mimeType = config.mimeType;
+        this.mimeType = config.mimeType;
+        this.zoomAnim = config.zoomAnim;
         animation = OptAnimationLoader.loadAnimation(context, R.anim.modal_in);
     }
 
@@ -321,6 +325,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     selectImages.remove(media);
                     DebugUtil.i("selectImages remove::", config.selectionMedias.size() + "");
                     subSelectPosition();
+                    disZoom(contentHolder.iv_picture);
                     break;
                 }
             }
@@ -329,6 +334,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             DebugUtil.i("selectImages add::", config.selectionMedias.size() + "");
             image.setNum(selectImages.size());
             VoiceUtils.playVoice(context, enableVoice);
+            zoom(contentHolder.iv_picture);
         }
         //通知点击项发生了改变
         notifyItemChanged(contentHolder.getAdapterPosition());
@@ -356,8 +362,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         holder.check.setSelected(isChecked);
         if (isChecked) {
             if (isAnim) {
-                if (animation != null)
+                if (animation != null) {
                     holder.check.startAnimation(animation);
+                }
             }
             holder.iv_picture.setColorFilter(ContextCompat.getColor
                     (context, R.color.image_overlay_true), PorterDuff.Mode.SRC_ATOP);
@@ -381,4 +388,27 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.imageSelectChangedListener = imageSelectChangedListener;
     }
 
+    private void zoom(ImageView iv_img) {
+        if (zoomAnim) {
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(
+                    ObjectAnimator.ofFloat(iv_img, "scaleX", 1f, 1.12f),
+                    ObjectAnimator.ofFloat(iv_img, "scaleY", 1f, 1.12f)
+            );
+            set.setDuration(DURATION);
+            set.start();
+        }
+    }
+
+    private void disZoom(ImageView iv_img) {
+        if (zoomAnim) {
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(
+                    ObjectAnimator.ofFloat(iv_img, "scaleX", 1.12f, 1f),
+                    ObjectAnimator.ofFloat(iv_img, "scaleY", 1.12f, 1f)
+            );
+            set.setDuration(DURATION);
+            set.start();
+        }
+    }
 }
