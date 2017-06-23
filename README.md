@@ -355,17 +355,17 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ###### 1.修复已知bug
 
 # 历史版本：
-######  v2.0.6
-###### 1.新增自定拍照保存路径
-###### 2.修复录音不显示时长问题
+### v2.0.6
+* 新增自定拍照保存路径
+* 修复录音不显示时长问题
 
 # 项目使用第三方库：
-###### 1.glide:3.7.0
-###### 2.rxjava:2.0.5
-###### 3.rxandroid:2.0.1
-###### 4.PhotoView:1.2.4
-###### 5.luban
-###### 6.裁剪使用ucrop
+* glide:3.7.0
+* rxjava:2.0.5
+* rxandroid:2.0.1
+* PhotoView:1.2.4
+* luban
+* 裁剪使用ucrop
 
 ## 混淆配置 
 ```
