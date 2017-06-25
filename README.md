@@ -88,7 +88,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.0.7'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.0.8'
 }
 
 ```
@@ -120,7 +120,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.0.7</version>
+      <version>v2.0.8</version>
 </dependency>
 
 ```
@@ -199,6 +199,8 @@ ndk {
 	.enablePreviewAudio() // 是否可播放音频 true or false
  	.compressGrade()// luban压缩档次，默认3档 Luban.THIRD_GEAR、Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
  	.isCamera()// 是否显示拍照按钮 true or false
+	.isZoomAnim(true)// 图片列表点击 缩放效果 默认true
+	.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
 	.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径,可不填
  	.enableCrop()// 是否裁剪 true or false
  	.compress()// 是否压缩 true or false
@@ -349,12 +351,17 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 ## 更新日志
 
-### 当前版本：
+# 当前版本：
+* v2.0.8
+* 修复直接播放视频闪退bug
+* 升级glide为4.0rc
+* 新增图片列表点击缩放效果api
+
+# 历史版本：
 * v2.0.7
 * 修复已知bug
 
-# 历史版本：
-### v2.0.6
+* v2.0.6
 * 新增自定拍照保存路径
 * 修复录音不显示时长问题
 
