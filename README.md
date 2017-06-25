@@ -366,7 +366,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 修复录音不显示时长问题
 
 # 项目使用第三方库：
-* glide:3.7.0
+* glide:4.0.0 RC	
 * rxjava:2.0.5
 * rxandroid:2.0.1
 * PhotoView:1.2.4
