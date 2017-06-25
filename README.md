@@ -88,7 +88,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.0.8'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.0.7'
 }
 
 ```
@@ -120,7 +120,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.0.8</version>
+      <version>v2.0.7</version>
 </dependency>
 
 ```
