@@ -14,7 +14,7 @@ import com.yalantis.ucrop.callback.OverlayViewChangeListener;
 
 public class UCropView extends FrameLayout {
 
-    private GestureCropImageView mGestureCropImageView;
+    private final GestureCropImageView mGestureCropImageView;
     private final OverlayView mViewOverlay;
 
     public UCropView(Context context, AttributeSet attrs) {
@@ -34,10 +34,6 @@ public class UCropView extends FrameLayout {
         a.recycle();
 
 
-        setListenersToViews();
-    }
-
-    private void setListenersToViews() {
         mGestureCropImageView.setCropBoundsChangeListener(new CropBoundsChangeListener() {
             @Override
             public void onCropAspectRatioChanged(float cropRatio) {
@@ -67,15 +63,4 @@ public class UCropView extends FrameLayout {
         return mViewOverlay;
     }
 
-    /**
-     * Method for reset state for UCropImageView such as rotation, scale, translation.
-     * Be careful: this method recreate UCropImageView instance and reattach it to layout.
-     */
-    public void resetCropImageView() {
-        removeView(mGestureCropImageView);
-        mGestureCropImageView = new GestureCropImageView(getContext());
-        setListenersToViews();
-        mGestureCropImageView.setCropRect(getOverlayView().getCropViewRect());
-        addView(mGestureCropImageView, 0);
-    }
 }

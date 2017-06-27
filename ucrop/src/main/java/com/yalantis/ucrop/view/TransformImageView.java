@@ -332,11 +332,8 @@ public class TransformImageView extends ImageView {
      * Those are used for several calculations.
      */
     private void updateCurrentImagePoints() {
-        try {
-            mCurrentImageMatrix.mapPoints(mCurrentImageCorners, mInitialImageCorners);
-            mCurrentImageMatrix.mapPoints(mCurrentImageCenter, mInitialImageCenter);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        mCurrentImageMatrix.mapPoints(mCurrentImageCorners, mInitialImageCorners);
+        mCurrentImageMatrix.mapPoints(mCurrentImageCenter, mInitialImageCenter);
     }
+
 }
