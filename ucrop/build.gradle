@@ -1,11 +1,12 @@
 apply plugin: 'com.android.library'
+apply from: '../mavenpush.gradle'
 
 android {
     compileSdkVersion 23
     buildToolsVersion '25.0.0'
 
     defaultConfig {
-        minSdkVersion 10
+        minSdkVersion 14
         targetSdkVersion 23
         versionCode 22
         versionName "2.2.0-native"
@@ -27,10 +28,6 @@ android {
     }
 
     resourcePrefix 'ucrop_'
-
-    sourceSets.main {
-        jni.srcDirs = [];
-    }
 
 }
 
