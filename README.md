@@ -358,6 +358,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 新增图片列表点击缩放效果api
 
 # 历史版本：
+
 * v2.0.7
 * 修复已知bug
 
