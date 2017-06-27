@@ -63,7 +63,7 @@ import java.util.Locale;
 @SuppressWarnings("ConstantConditions")
 public class PictureMultiCuttingActivity extends AppCompatActivity {
 
-    public static final int DEFAULT_COMPRESS_QUALITY = 100;
+    public static final int DEFAULT_COMPRESS_QUALITY = 90;
     public static final Bitmap.CompressFormat DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG;
 
     public static final int NONE = 0;
@@ -217,10 +217,9 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
 
         if (inputUri != null && outputUri != null) {
             try {
-                boolean enable = FileUtils.isEnable(inputUri.getPath());
-
-                mGestureCropImageView.setRotateEnabled(enable ? false : rotateEnabled);
-                mGestureCropImageView.setScaleEnabled(enable ? false : scaleEnabled);
+                boolean isGif = FileUtils.isGif(inputUri.getPath());
+                mGestureCropImageView.setRotateEnabled(isGif ? false : rotateEnabled);
+                mGestureCropImageView.setScaleEnabled(isGif ? false : scaleEnabled);
                 mGestureCropImageView.setImageUri(inputUri, outputUri);
             } catch (Exception e) {
                 setResultError(e);
