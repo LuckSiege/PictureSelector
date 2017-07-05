@@ -173,6 +173,13 @@ if (savedInstanceState == null) {
 }
 这里就是如果是被回收时，则不重新创建 通过tag取出fragment的实例。
 
+问题五：
+glide冲突
+由于PictureSelector 2.0引入的是最新的glide 4.0.0 rc1,你把3.7的删除，把报错的代码换成
+RequestOptions options = new RequestOptions();
+options.placeholder(R.drawable.image);
+Glide.with(context).load(url).apply(options).into(imageView);
+
 ```
 
 ## 功能配置
