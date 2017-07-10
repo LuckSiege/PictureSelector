@@ -2,7 +2,7 @@
   一款针对android平台下的图片选择器，支持从相册或拍照选择图片或视频、音频，支持动态权限获取、裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能、适配android 6.0+系统的开源图片选择框架。
   
   
-  项目会一直维护(有bug修复完成，一般周末会更新)，有bug请描述清楚，并请Issues会第一时间修复，Android开发QQ交流群 619458861，个人QQ 893855882@qq.com  希望用得着的朋友点个star。 
+  项目会一直维护(有bug修复完成，一般周末会更新)，有bug请描述清楚，并请Issues会第一时间修复，Android开发QQ交流群[619458861](http://shang.qq.com/wpa/qunwpa?idkey=91eb68229f9106b90ae9fa12d01b74815dd86b26c6c8d1dcbc9a27c1d87c42a0)，个人QQ 893855882@qq.com  希望用得着的朋友点个star。 
   
   [PictureSelector 2.0 无裁剪功能版](https://github.com/LuckSiege/PictureSelectorLight)
    
@@ -88,7 +88,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.0.9'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.0'
 }
 
 ```
@@ -120,7 +120,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.0.9</version>
+      <version>v2.1.0</version>
 </dependency>
 
 ```
@@ -173,14 +173,12 @@ if (savedInstanceState == null) {
 }
 这里就是如果是被回收时，则不重新创建 通过tag取出fragment的实例。
 
-问题五(较重要)：
-当在使用ucrop裁剪功能时经测试在对部分大图片进行裁剪时会导致特别慢，后经过查找发现是加载.so的原因
-不要在app下的build.gradle 设置如下标签，如果强行要指定也要指定对应机型所支持的cpu架构的.so文件
-
-ndk {
-       //设置支持的SO库架构
-       abiFilters ''
-    }
+问题五：
+glide冲突
+由于PictureSelector 2.0引入的是最新的glide 4.0.0 rc1,所以将项目中老版本的glide删除,并且将报错代码换成如下写法：
+RequestOptions options = new RequestOptions();
+options.placeholder(R.drawable.image);
+Glide.with(context).load(url).apply(options).into(imageView);
 
 ```
 
@@ -352,12 +350,14 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
+* v2.1.0
+* 修复裁剪速度慢的问题
+
+# 历史版本：
 * v2.0.9
 * 修复直接播放视频闪退bug
 * 升级glide为4.0.0 rc1
 * 新增图片列表点击缩放效果api
-
-# 历史版本：
 
 * v2.0.7
 * 修复已知bug
