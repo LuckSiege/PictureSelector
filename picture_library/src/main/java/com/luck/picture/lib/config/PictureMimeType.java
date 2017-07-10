@@ -48,6 +48,7 @@ public final class PictureMimeType {
             case "video/3gpp":
             case "video/avi":
             case "video/mp4":
+            case "video/mov":
             case "video/x-msvideo":
                 return PictureConfig.TYPE_VIDEO;
             case "audio/mpeg":
@@ -90,6 +91,7 @@ public final class PictureMimeType {
             case "video/3gpp":
             case "video/avi":
             case "video/mp4":
+            case "video/mov":
             case "video/x-msvideo":
                 return true;
         }
@@ -123,7 +125,7 @@ public final class PictureMimeType {
             String name = file.getName();
             DebugUtil.i("**** fileToType:", name);
             if (name.endsWith(".mp4") || name.endsWith(".avi")
-                    || name.endsWith(".3gpp") || name.endsWith(".3gp")) {
+                    || name.endsWith(".3gpp") || name.endsWith(".3gp") || name.startsWith(".mov")) {
                 return "video/mp4";
             } else if (name.endsWith(".PNG") || name.endsWith(".png") || name.endsWith(".jpeg")
                     || name.endsWith(".gif") || name.endsWith(".GIF") || name.endsWith(".jpg")
