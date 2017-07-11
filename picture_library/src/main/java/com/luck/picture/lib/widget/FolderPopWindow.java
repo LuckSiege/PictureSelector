@@ -2,6 +2,7 @@ package com.luck.picture.lib.widget;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -9,7 +10,6 @@ import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -94,16 +94,12 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
     public void showAsDropDown(View anchor) {
         try {
             if (Build.VERSION.SDK_INT >= 24) {
-                int[] location = new int[2];
-                anchor.getLocationOnScreen(location);
-                int height = anchor.getHeight();
-                int x = location[0];
-                int y = location[1];
-                super.showAtLocation(anchor, Gravity.NO_GRAVITY, x, y + height);
-            } else {
-                super.showAsDropDown(anchor);
+                Rect rect = new Rect();
+                anchor.getGlobalVisibleRect(rect);
+                int h = anchor.getResources().getDisplayMetrics().heightPixels - rect.bottom;
+                setHeight(h);
             }
-
+            super.showAsDropDown(anchor);
             isDismiss = false;
             recyclerView.startAnimation(animationIn);
             StringUtils.modifyTextViewDrawable(picture_title, drawableUp, 2);
