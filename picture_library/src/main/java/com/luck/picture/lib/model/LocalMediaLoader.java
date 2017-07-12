@@ -176,9 +176,33 @@ public class LocalMediaLoader {
                         CursorLoader cursorLoader = null;
                         switch (id) {
                             case PictureConfig.TYPE_ALL:
+                                String condition = videoS > 0 ? DURATION + " <= " + videoS + " and "
+                                        + DURATION + "> 0" :
+                                        DURATION + "> 0";
+                                String selection_all =
+                                        "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
+                                                + " OR "
+                                                + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" +
+                                                " and " + condition + ")"
+                                                + " AND " + MediaStore.MediaColumns.SIZE + ">0"
+                                                + " AND " + MediaStore.MediaColumns.WIDTH + ">0";
+
+                                String selection_not_gif =
+                                        "(" + MediaStore.Images.Media.MIME_TYPE + "=?"
+                                                + " OR "
+                                                + MediaStore.Images.Media.MIME_TYPE + "=?"
+                                                + " OR "
+                                                + MediaStore.Images.Media.MIME_TYPE + "=?"
+                                                + " OR "
+                                                + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? " +
+                                                "and " + condition + ")"
+
+                                                + " AND " + MediaStore.MediaColumns.SIZE + ">0"
+                                                + " AND " + MediaStore.MediaColumns.WIDTH + ">0";
+
                                 cursorLoader = new CursorLoader(
                                         activity, QUERY_URI,
-                                        PROJECTION, isGif ? SELECTION_ALL : SELECTION_NOT_GIF,
+                                        PROJECTION, isGif ? selection_all : selection_not_gif,
                                         isGif ? SELECTION_ALL_ARGS : SELECTION_NOT_GIF_ARGS, ORDER_BY);
                                 break;
                             case PictureConfig.TYPE_IMAGE:
