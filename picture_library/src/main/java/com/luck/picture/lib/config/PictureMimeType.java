@@ -80,6 +80,22 @@ public final class PictureMimeType {
     }
 
     /**
+     * 是否是gif
+     *
+     * @param path
+     * @return
+     */
+    public static boolean isImageGif(String path) {
+        if (!TextUtils.isEmpty(path)) {
+            int lastIndex = path.lastIndexOf(".");
+            String pictureType = path.substring(lastIndex, path.length());
+            return pictureType.startsWith(".gif")
+                    || pictureType.startsWith(".GIF");
+        }
+        return false;
+    }
+
+    /**
      * 是否是视频
      *
      * @param pictureType
