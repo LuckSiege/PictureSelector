@@ -3,7 +3,6 @@ package com.luck.pictureselector;
 import android.app.Application;
 
 import com.squareup.leakcanary.LeakCanary;
-import com.tencent.bugly.crashreport.CrashReport;
 
 
 /**
@@ -25,7 +24,5 @@ public class App extends Application {
         }
         LeakCanary.install(this);
         LeakCanary.install(this);
-        //bugly追踪的上报测试时候设置为true
-        CrashReport.initCrashReport(getApplicationContext(), "b43cc54bf9", true);
     }
 }
