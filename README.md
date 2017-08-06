@@ -88,7 +88,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.0'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.1'
 }
 
 ```
@@ -120,7 +120,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.1.0</version>
+      <version>v2.1.1</version>
 </dependency>
 
 ```
@@ -350,10 +350,14 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
+* v2.1.1
+* 升级glide 4.0为正式版
+* 修复7.1.1系统PopupWindow弹出位置错误bug
+
+# 历史版本：
 * v2.1.0
 * 修复裁剪速度慢的问题
 
-# 历史版本：
 * v2.0.9
 * 修复直接播放视频闪退bug
 * 升级glide为4.0.0 rc1
