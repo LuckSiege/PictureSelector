@@ -40,7 +40,7 @@ public class PictureBaseActivity extends FragmentActivity {
     protected Context mContext;
     protected PictureSelectionConfig config;
     protected int spanCount, maxSelectNum, minSelectNum, compressQuality,
-            selectionMode, mimeType, videoSecond, compressMaxKB, compressMode,
+            selectionMode, mimeType, videoMaxSecond, videoMinSecond, compressMaxKB, compressMode,
             compressGrade, compressWidth, compressHeight, aspect_ratio_x, aspect_ratio_y,
             recordVideoSecond, videoQuality, cropWidth, cropHeight;
     protected boolean isGif, isCamera, enablePreview, enableCrop, isCompress,
@@ -101,7 +101,8 @@ public class PictureBaseActivity extends FragmentActivity {
         checkNumMode = config.checkNumMode = AttrsUtils.getTypeValueBoolean
                 (this, R.attr.picture_style_checkNumMode);
         openClickSound = config.openClickSound;
-        videoSecond = config.videoSecond;
+        videoMaxSecond = config.videoMaxSecond;
+        videoMinSecond = config.videoMinSecond;
         enableCrop = config.enableCrop;
         isCompress = config.isCompress;
         compressQuality = config.cropCompressQuality;
