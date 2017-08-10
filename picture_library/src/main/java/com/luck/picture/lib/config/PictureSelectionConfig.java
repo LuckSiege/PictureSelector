@@ -30,7 +30,8 @@ public final class PictureSelectionConfig implements Serializable {
     public int minSelectNum;
     public int videoQuality;
     public int cropCompressQuality;
-    public int videoSecond;
+    public int videoMaxSecond;
+    public int videoMinSecond;
     public int recordVideoSecond;
     public int compressMaxkB;
     public int compressGrade;
@@ -75,7 +76,8 @@ public final class PictureSelectionConfig implements Serializable {
         minSelectNum = 0;
         videoQuality = 1;
         cropCompressQuality = 90;
-        videoSecond = 0;
+        videoMaxSecond = 0;
+        videoMinSecond = 0;
         recordVideoSecond = 60;
         compressMaxkB = PictureConfig.MAX_COMPRESS_SIZE;
         compressGrade = Luban.THIRD_GEAR;

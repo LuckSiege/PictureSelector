@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -39,7 +40,8 @@ public class LocalMediaLoader {
     private int type = PictureConfig.TYPE_IMAGE;
     private FragmentActivity activity;
     private boolean isGif;
-    private long videoS = 0;
+    private long videoMaxS = 0;
+    private long videoMinS = 0;
 
     private final static String[] IMAGE_PROJECTION = {
             MediaStore.Images.Media._ID,
@@ -161,11 +163,12 @@ public class LocalMediaLoader {
 
     private static final String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
 
-    public LocalMediaLoader(FragmentActivity activity, int type, boolean isGif, long videoS) {
+    public LocalMediaLoader(FragmentActivity activity, int type, boolean isGif, long videoMaxS, long videoMinS) {
         this.activity = activity;
         this.type = type;
         this.isGif = isGif;
-        this.videoS = videoS;
+        this.videoMaxS = videoMaxS;
+        this.videoMinS = videoMinS;
     }
 
     public void loadAllMedia(final LocalMediaLoadListener imageLoadListener) {
@@ -176,9 +179,7 @@ public class LocalMediaLoader {
                         CursorLoader cursorLoader = null;
                         switch (id) {
                             case PictureConfig.TYPE_ALL:
-                                String condition = videoS > 0 ? DURATION + " <= " + videoS + " and "
-                                        + DURATION + "> 0" :
-                                        DURATION + "> 0";
+                                String condition = getDurationCondition(0, 0);
                                 String selection_all =
                                         "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
                                                 + " OR "
@@ -213,23 +214,14 @@ public class LocalMediaLoader {
                                 break;
                             case PictureConfig.TYPE_VIDEO:
                                 cursorLoader = new CursorLoader(
-                                        activity, MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                                        VIDEO_PROJECTION, videoS > 0 ? DURATION + " <= ? and "
-                                        + DURATION + "> 0" :
-                                        DURATION + "> 0"
-                                        , videoS > 0
-                                        ? new String[]{String.valueOf(videoS)} : null, VIDEO_PROJECTION[0]
-                                        + " DESC");
+                                        activity, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_PROJECTION,
+                                        getDurationCondition(0, 0), null, VIDEO_PROJECTION[0] + " DESC");
                                 break;
                             case PictureConfig.TYPE_AUDIO:
                                 cursorLoader = new CursorLoader(
-                                        activity, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                                        AUDIO_PROJECTION, videoS > 0 ? DURATION + " <= ? and "
-                                        + DURATION + ">" + AUDIO_DURATION :
-                                        DURATION + "> " + AUDIO_DURATION
-                                        , videoS > 0
-                                        ? new String[]{String.valueOf(videoS)} : null, AUDIO_PROJECTION[0]
-                                        + " DESC");
+                                        activity, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, AUDIO_PROJECTION,
+                                        getDurationCondition(0, AUDIO_DURATION),
+                                        null, AUDIO_PROJECTION[0] + " DESC");
                                 break;
                         }
                         return cursorLoader;
@@ -336,5 +328,15 @@ public class LocalMediaLoader {
 
     public interface LocalMediaLoadListener {
         void loadComplete(List<LocalMediaFolder> folders);
+    }
+
+    private String getDurationCondition(long exMaxLimit, long exMinLimit) {
+        long maxS = videoMaxS == 0 ? Long.MAX_VALUE : videoMaxS;
+        if (exMaxLimit != 0) maxS = Math.min(maxS, exMaxLimit);
+
+        return String.format(Locale.CHINA, "%d <%s duration and duration <= %d",
+                Math.max(exMinLimit, videoMinS),
+                Math.max(exMinLimit, videoMinS) == 0 ? "" : "=",
+                maxS);
     }
 }
