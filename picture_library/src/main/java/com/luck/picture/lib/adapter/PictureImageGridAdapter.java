@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.anim.OptAnimationLoader;
@@ -36,7 +35,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by dee on 15/11/19.
+ * author：luck
+ * project：PictureSelector
+ * package：com.luck.picture.lib.adapter
+ * email：893855882@qq.com
+ * data：2016/12/30
  */
 public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final static int DURATION = 450;
@@ -194,7 +197,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                         .asBitmap()
                         .load(path)
                         .apply(options)
-                        .transition(new BitmapTransitionOptions().crossFade(500))
                         .into(contentHolder.iv_picture);
             }
             if (enablePreview || enablePreviewVideo || enablePreviewAudio) {

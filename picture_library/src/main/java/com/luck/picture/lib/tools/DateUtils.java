@@ -70,4 +70,16 @@ public class DateUtils {
             return -1;
         }
     }
+
+    /**
+     * 计算两个时间间隔
+     *
+     * @param sTime
+     * @param eTime
+     * @return
+     */
+    public static String cdTime(long sTime, long eTime) {
+        long diff = eTime - sTime;
+        return diff > 1000 ? diff / 1000 + "秒" : diff + "毫秒";
+    }
 }

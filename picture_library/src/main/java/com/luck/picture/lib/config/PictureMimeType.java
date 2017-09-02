@@ -43,13 +43,19 @@ public final class PictureMimeType {
             case "image/WEBP":
             case "image/gif":
             case "image/GIF":
+            case "imagex-ms-bmp":
                 return PictureConfig.TYPE_IMAGE;
             case "video/3gp":
             case "video/3gpp":
+            case "video/3gpp2":
             case "video/avi":
             case "video/mp4":
-            case "video/mov":
+            case "video/quicktime":
             case "video/x-msvideo":
+            case "video/x-matroska":
+            case "video/mpeg":
+            case "video/webm":
+            case "video/mp2ts":
                 return PictureConfig.TYPE_VIDEO;
             case "audio/mpeg":
             case "audio/x-ms-wma":
@@ -59,6 +65,7 @@ public final class PictureMimeType {
             case "audio/aac":
             case "audio/mp4":
             case "audio/quicktime":
+            case "audio/3gpp":
                 return PictureConfig.TYPE_AUDIO;
         }
         return PictureConfig.TYPE_IMAGE;
@@ -105,10 +112,15 @@ public final class PictureMimeType {
         switch (pictureType) {
             case "video/3gp":
             case "video/3gpp":
+            case "video/3gpp2":
             case "video/avi":
             case "video/mp4":
-            case "video/mov":
+            case "video/quicktime":
             case "video/x-msvideo":
+            case "video/x-matroska":
+            case "video/mpeg":
+            case "video/webm":
+            case "video/mp2ts":
                 return true;
         }
         return false;
