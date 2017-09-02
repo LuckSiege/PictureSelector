@@ -70,8 +70,8 @@
 ******注：适配android6.0以上拍照问题，请在AndroidManifest.xml中添加标签******
 
 ```
-<provider
-   android:name="android.support.v4.content.FileProvider"
+<provider 
+   android:name="android.support.v4.content.FileProvider"
    android:authorities="${applicationId}.provider"
    android:exported="false"
    android:grantUriPermissions="true">
