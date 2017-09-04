@@ -8,14 +8,12 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.text.TextUtils;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
-import com.luck.picture.lib.tools.DebugUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -230,7 +228,7 @@ public class LocalMediaLoader {
                     @Override
                     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
                         try {
-                            List<LocalMediaFolder> imageFolders = new ArrayList<LocalMediaFolder>();
+                            List<LocalMediaFolder> imageFolders = new ArrayList<>();
                             LocalMediaFolder allImageFolder = new LocalMediaFolder();
                             List<LocalMedia> latelyImages = new ArrayList<>();
                             if (data != null) {
@@ -240,11 +238,6 @@ public class LocalMediaLoader {
                                     do {
                                         String path = data.getString
                                                 (data.getColumnIndexOrThrow(IMAGE_PROJECTION[1]));
-                                        // 如原图路径不存在或者路径存在但文件不存在,就结束当前循环
-                                        if (TextUtils.isEmpty(path) || !new File(path).exists()
-                                                ) {
-                                            continue;
-                                        }
                                         String pictureType = data.getString
                                                 (data.getColumnIndexOrThrow(IMAGE_PROJECTION[6]));
                                         boolean eqImg = pictureType.startsWith(PictureConfig.IMAGE);
@@ -254,9 +247,9 @@ public class LocalMediaLoader {
                                                 (data.getColumnIndexOrThrow(IMAGE_PROJECTION[4])) : 0;
                                         int h = eqImg ? data.getInt
                                                 (data.getColumnIndexOrThrow(IMAGE_PROJECTION[5])) : 0;
-                                        DebugUtil.i("media mime type:", pictureType);
                                         LocalMedia image = new LocalMedia
                                                 (path, duration, type, pictureType, w, h);
+
                                         LocalMediaFolder folder = getImageFolder(path, imageFolders);
                                         List<LocalMedia> images = folder.getImages();
                                         images.add(image);
@@ -312,8 +305,8 @@ public class LocalMediaLoader {
     private LocalMediaFolder getImageFolder(String path, List<LocalMediaFolder> imageFolders) {
         File imageFile = new File(path);
         File folderFile = imageFile.getParentFile();
-
         for (LocalMediaFolder folder : imageFolders) {
+            // 同一个文件夹下，返回自己，否则创建新文件夹
             if (folder.getName().equals(folderFile.getName())) {
                 return folder;
             }

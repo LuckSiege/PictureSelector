@@ -31,6 +31,7 @@ import com.luck.picture.lib.tools.DebugUtil;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.VoiceUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -153,7 +154,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             final ViewHolder contentHolder = (ViewHolder) holder;
             final LocalMedia image = images.get(showCamera ? position - 1 : position);
             image.position = contentHolder.getAdapterPosition();
-            String path = image.getPath();
+            final String path = image.getPath();
             final String pictureType = image.getPictureType();
             contentHolder.ll_check.setVisibility(selectMode ==
                     PictureConfig.SINGLE ? View.GONE : View.VISIBLE);
@@ -212,7 +213,12 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             contentHolder.contentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    // 如原图路径不存在或者路径存在但文件不存在
+                    if (!new File(path).exists()) {
+                        Toast.makeText(context, context.getString(R.string.picture_error), Toast.LENGTH_LONG)
+                                .show();
+                        return;
+                    }
                     if (picture == PictureConfig.TYPE_IMAGE && (enablePreview
                             || selectMode == PictureConfig.SINGLE)) {
                         int index = showCamera ? position - 1 : position;

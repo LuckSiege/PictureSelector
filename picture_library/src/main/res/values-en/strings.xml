@@ -35,4 +35,5 @@
     <string name="picture_stop_audio">Stop</string>
     <string name="picture_quit_audio">Quit</string>
     <string name="picture_pause_audio">Pause</string>
+    <string name="picture_error">The picture is corrupted</string>
 </resources>

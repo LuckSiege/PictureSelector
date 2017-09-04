@@ -57,7 +57,7 @@ public class PictureBaseActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            config = (PictureSelectionConfig) savedInstanceState.getSerializable(PictureConfig.EXTRA_CONFIG);
+            config = savedInstanceState.getParcelable(PictureConfig.EXTRA_CONFIG);
             cameraPath = savedInstanceState.getString(PictureConfig.BUNDLE_CAMERA_PATH);
             originalPath = savedInstanceState.getString(PictureConfig.BUNDLE_ORIGINAL_PATH);
 
@@ -133,7 +133,7 @@ public class PictureBaseActivity extends FragmentActivity {
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString(PictureConfig.BUNDLE_CAMERA_PATH, cameraPath);
         outState.putString(PictureConfig.BUNDLE_ORIGINAL_PATH, originalPath);
-        outState.putSerializable(PictureConfig.EXTRA_CONFIG, config);
+        outState.putParcelable(PictureConfig.EXTRA_CONFIG, config);
     }
 
     protected void startActivity(Class clz, Bundle bundle) {

@@ -1,8 +1,8 @@
 package com.luck.picture.lib.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
-
-import java.io.Serializable;
 
 /**
  * author：luck
@@ -13,7 +13,7 @@ import java.io.Serializable;
  * data：2017/5/24
  */
 
-public class LocalMedia implements Serializable {
+public class LocalMedia implements Parcelable {
     private String path;
     private String compressPath;
     private String cutPath;
@@ -165,4 +165,54 @@ public class LocalMedia implements Serializable {
     public void setHeight(int height) {
         this.height = height;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.path);
+        dest.writeString(this.compressPath);
+        dest.writeString(this.cutPath);
+        dest.writeLong(this.duration);
+        dest.writeByte(this.isChecked ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isCut ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.position);
+        dest.writeInt(this.num);
+        dest.writeInt(this.mimeType);
+        dest.writeString(this.pictureType);
+        dest.writeByte(this.compressed ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.width);
+        dest.writeInt(this.height);
+    }
+
+    protected LocalMedia(Parcel in) {
+        this.path = in.readString();
+        this.compressPath = in.readString();
+        this.cutPath = in.readString();
+        this.duration = in.readLong();
+        this.isChecked = in.readByte() != 0;
+        this.isCut = in.readByte() != 0;
+        this.position = in.readInt();
+        this.num = in.readInt();
+        this.mimeType = in.readInt();
+        this.pictureType = in.readString();
+        this.compressed = in.readByte() != 0;
+        this.width = in.readInt();
+        this.height = in.readInt();
+    }
+
+    public static final Parcelable.Creator<LocalMedia> CREATOR = new Parcelable.Creator<LocalMedia>() {
+        @Override
+        public LocalMedia createFromParcel(Parcel source) {
+            return new LocalMedia(source);
+        }
+
+        @Override
+        public LocalMedia[] newArray(int size) {
+            return new LocalMedia[size];
+        }
+    };
 }
