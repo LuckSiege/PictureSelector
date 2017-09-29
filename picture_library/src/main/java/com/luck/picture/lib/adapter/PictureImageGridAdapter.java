@@ -205,6 +205,12 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 contentHolder.ll_check.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        // 如原图路径不存在或者路径存在但文件不存在
+                        if (!new File(path).exists()) {
+                            Toast.makeText(context, context.getString(R.string.picture_error), Toast.LENGTH_LONG)
+                                    .show();
+                            return;
+                        }
                         changeCheckboxState(contentHolder, image);
                     }
                 });

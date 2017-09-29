@@ -8,12 +8,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -65,6 +67,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         PictureAlbumDirectoryAdapter.OnItemClickListener,
         PictureImageGridAdapter.OnPhotoSelectChangedListener, PhotoPopupWindow.OnItemClickListener {
     private final static String TAG = PictureSelectorActivity.class.getSimpleName();
+    private static final int SHOW_DIALOG = 0;
+    private static final int DISMISS_DIALOG = 1;
+    private static final int STATUSBAR = 2;
     private ImageView picture_left_back;
     private TextView picture_title, picture_right, picture_tv_ok, tv_empty,
             picture_tv_img_num, picture_id_preview, tv_PlayPause, tv_Stop, tv_Quit,
@@ -87,6 +92,23 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private boolean isPlayAudio = false;
     private CustomDialog audioDialog;
     private int audioH;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case SHOW_DIALOG:
+                    showPleaseDialog();
+                    break;
+                case DISMISS_DIALOG:
+                    dismissDialog();
+                    break;
+                case STATUSBAR:
+                    LightStatusBarUtils.setLightStatusBar(PictureSelectorActivity.this, statusFont);
+                    break;
+            }
+        }
+    };
 
     //EventBus 3.0 回调
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -97,7 +119,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 List<LocalMedia> selectImages = obj.medias;
                 anim = selectImages.size() > 0 ? true : false;
                 int position = obj.position;
-                DebugUtil.i(TAG, "刷新下标::" + position);
                 adapter.bindSelectImages(selectImages);
                 adapter.notifyItemChanged(position);
                 break;
@@ -116,14 +137,24 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
     }
 
+    long st, et;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        et = System.currentTimeMillis();
+        Log.i("一共耗时:", DateUtils.cdTime(st, et));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        st = System.currentTimeMillis();
         if (!RxBus.getDefault().isRegistered(this)) {
             RxBus.getDefault().register(this);
         }
         rxPermissions = new RxPermissions(this);
-        LightStatusBarUtils.setLightStatusBar(this, statusFont);
+        mHandler.sendEmptyMessage(STATUSBAR);
         if (camera) {
             if (savedInstanceState == null) {
                 rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -219,12 +250,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
                     @Override
                     public void onNext(Boolean aBoolean) {
-                        showPleaseDialog();
                         if (aBoolean) {
+                            mHandler.sendEmptyMessage(SHOW_DIALOG);
                             readLocalMedia();
                         } else {
                             showToast(getString(R.string.picture_jurisdiction));
-                            dismissDialog();
                         }
                     }
 
@@ -311,7 +341,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     tv_empty.setVisibility(images.size() > 0
                             ? View.INVISIBLE : View.VISIBLE);
                 }
-                dismissDialog();
+                mHandler.sendEmptyMessage(DISMISS_DIALOG);
             }
         });
     }
