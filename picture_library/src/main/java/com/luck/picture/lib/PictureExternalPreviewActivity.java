@@ -1,6 +1,8 @@
 package com.luck.picture.lib;
 
 import android.Manifest;
+import android.graphics.Bitmap;
+import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -23,16 +26,23 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.dialog.CustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.permissions.RxPermissions;
+import com.luck.picture.lib.photoview.OnViewTapListener;
+import com.luck.picture.lib.photoview.PhotoView;
 import com.luck.picture.lib.tools.DebugUtil;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.widget.PreviewViewPager;
+import com.luck.picture.lib.widget.longimage.ImageSource;
+import com.luck.picture.lib.widget.longimage.ImageViewState;
+import com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -44,8 +54,6 @@ import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import uk.co.senab.photoview.PhotoView;
-import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * author：luck
@@ -129,7 +137,11 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             View contentView = inflater.inflate(R.layout.picture_image_preview, container, false);
+            // 常规图控件
             final PhotoView imageView = (PhotoView) contentView.findViewById(R.id.preview_image);
+            // 长图控件
+            final SubsamplingScaleImageView longImg = (SubsamplingScaleImageView) contentView.findViewById(R.id.longImg);
+
             LocalMedia media = images.get(position);
             if (media != null) {
                 final String pictureType = media.getPictureType();
@@ -149,6 +161,9 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     showPleaseDialog();
                 }
                 boolean isGif = PictureMimeType.isGif(pictureType);
+                final boolean eqLongImg = PictureMimeType.isLongImg(media);
+                imageView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
+                longImg.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
                 // 压缩过的gif就不是gif了
                 if (isGif && !media.isCompressed()) {
                     RequestOptions gifOptions = new RequestOptions()
@@ -178,38 +193,47 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                             .into(imageView);
                 } else {
                     RequestOptions options = new RequestOptions()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .override(480, 800);
+                            .diskCacheStrategy(DiskCacheStrategy.ALL);
                     Glide.with(PictureExternalPreviewActivity.this)
+                            .asBitmap()
                             .load(path)
                             .apply(options)
-                            .listener(new RequestListener<Drawable>() {
+                            .into(new SimpleTarget<Bitmap>(480, 800) {
                                 @Override
-                                public boolean onLoadFailed(@Nullable GlideException e, Object model
-                                        , Target<Drawable> target, boolean isFirstResource) {
+                                public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                                    super.onLoadFailed(errorDrawable);
                                     dismissDialog();
-                                    return false;
                                 }
 
                                 @Override
-                                public boolean onResourceReady(Drawable resource, Object model,
-                                                               Target<Drawable> target,
-                                                               DataSource dataSource,
-                                                               boolean isFirstResource) {
+                                public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
                                     dismissDialog();
-                                    return false;
+                                    if (eqLongImg) {
+                                        displayLongPic(resource, longImg);
+                                    } else {
+                                        // 适配有些手机 图片不能充满全屏
+                                        if (resource.getWidth() > 480 && resource.getHeight() > 1080) {
+                                            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                                        }
+                                        imageView.setImageBitmap(resource);
+                                    }
                                 }
-                            })
-                            .into(imageView);
+                            });
                 }
-                imageView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
+                imageView.setOnViewTapListener(new OnViewTapListener() {
                     @Override
                     public void onViewTap(View view, float x, float y) {
                         finish();
                         overridePendingTransition(0, R.anim.a3);
                     }
                 });
-
+                longImg.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        finish();
+                        overridePendingTransition(0, R.anim.a3);
+                    }
+                });
                 imageView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
@@ -246,6 +270,22 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             (container).addView(contentView, 0);
             return contentView;
         }
+    }
+
+    /**
+     * 加载长图
+     *
+     * @param bmp
+     * @param longImg
+     */
+    private void displayLongPic(Bitmap bmp, SubsamplingScaleImageView longImg) {
+        longImg.setQuickScaleEnabled(true);
+        longImg.setZoomEnabled(true);
+        longImg.setPanEnabled(true);
+        longImg.setDoubleTapZoomDuration(100);
+        longImg.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
+        longImg.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
+        longImg.setImage(ImageSource.cachedBitmap(bmp), new ImageViewState(0, new PointF(0, 0), 0));
     }
 
     /**

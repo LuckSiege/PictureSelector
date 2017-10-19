@@ -36,23 +36,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class PictureBaseActivity extends FragmentActivity {
     protected Context mContext;
     protected PictureSelectionConfig config;
-    protected int spanCount, maxSelectNum, minSelectNum, compressQuality,
-            selectionMode, mimeType, videoMaxSecond, videoMinSecond, compressMaxKB, compressMode,
-            compressGrade, compressWidth, compressHeight, aspect_ratio_x, aspect_ratio_y,
-            recordVideoSecond, videoQuality, cropWidth, cropHeight;
-    protected boolean isGif, isCamera, enablePreview, enableCrop, isCompress,
-            enPreviewVideo, checkNumMode, openClickSound, numComplete, camera, freeStyleCropEnabled,
-            circleDimmedLayer, hideBottomControls, rotateEnabled, scaleEnabled, previewEggs, statusFont,
-            showCropFrame, showCropGrid, previewStatusFont;
+    protected boolean statusFont, previewStatusFont, numComplete;
     protected String cameraPath, outputCameraPath;
     protected String originalPath;
     protected PictureDialog dialog;
     protected PictureDialog compressDialog;
     protected List<LocalMedia> selectionMedias;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +53,6 @@ public class PictureBaseActivity extends FragmentActivity {
             config = savedInstanceState.getParcelable(PictureConfig.EXTRA_CONFIG);
             cameraPath = savedInstanceState.getString(PictureConfig.BUNDLE_CAMERA_PATH);
             originalPath = savedInstanceState.getString(PictureConfig.BUNDLE_ORIGINAL_PATH);
-
         } else {
             config = PictureSelectionConfig.getInstance();
         }
@@ -75,57 +67,19 @@ public class PictureBaseActivity extends FragmentActivity {
      * 获取配置参数
      */
     private void initConfig() {
-        camera = config.camera;
         outputCameraPath = config.outputCameraPath;
         statusFont = AttrsUtils.getTypeValueBoolean
                 (this, R.attr.picture_statusFontColor);
         previewStatusFont = AttrsUtils.getTypeValueBoolean
                 (this, R.attr.picture_preview_statusFontColor);
-        mimeType = config.mimeType;
+        numComplete = AttrsUtils.getTypeValueBoolean(this, R.attr.picture_style_numComplete);
         selectionMedias = config.selectionMedias;
         if (selectionMedias == null) {
             selectionMedias = new ArrayList<>();
         }
-        selectionMode = config.selectionMode;
-        if (selectionMode == PictureConfig.SINGLE) {
+        if (config.selectionMode == PictureConfig.SINGLE) {
             selectionMedias = new ArrayList<>();
         }
-        spanCount = config.imageSpanCount;
-        isGif = config.isGif;
-        isCamera = config.isCamera;
-        freeStyleCropEnabled = config.freeStyleCropEnabled;
-        maxSelectNum = config.maxSelectNum;
-        minSelectNum = config.minSelectNum;
-        enablePreview = config.enablePreview;
-        enPreviewVideo = config.enPreviewVideo;
-        checkNumMode = config.checkNumMode = AttrsUtils.getTypeValueBoolean
-                (this, R.attr.picture_style_checkNumMode);
-        openClickSound = config.openClickSound;
-        videoMaxSecond = config.videoMaxSecond;
-        videoMinSecond = config.videoMinSecond;
-        enableCrop = config.enableCrop;
-        isCompress = config.isCompress;
-        compressQuality = config.cropCompressQuality;
-        numComplete = AttrsUtils.getTypeValueBoolean(this, R.attr.picture_style_numComplete);
-        compressMaxKB = config.compressMaxkB;
-        compressMode = config.compressMode;
-        compressGrade = config.compressGrade;
-        compressWidth = config.compressWidth;
-        compressHeight = config.compressHeight;
-        recordVideoSecond = config.recordVideoSecond;
-        videoQuality = config.videoQuality;
-        cropWidth = config.cropWidth;
-        cropHeight = config.cropHeight;
-        aspect_ratio_x = config.aspect_ratio_x;
-        aspect_ratio_y = config.aspect_ratio_y;
-        circleDimmedLayer = config.circleDimmedLayer;
-        showCropFrame = config.showCropFrame;
-        showCropGrid = config.showCropGrid;
-        rotateEnabled = config.rotateEnabled;
-        scaleEnabled = config.scaleEnabled;
-        previewEggs = config.previewEggs;
-        hideBottomControls = config.hideBottomControls;
-
     }
 
 
@@ -216,20 +170,20 @@ public class PictureBaseActivity extends FragmentActivity {
     protected void compressImage(final List<LocalMedia> result) {
         showCompressDialog();
         CompressConfig compress_config = CompressConfig.ofDefaultConfig();
-        switch (compressMode) {
+        switch (config.compressMode) {
             case PictureConfig.SYSTEM_COMPRESS_MODE:
                 // 系统自带压缩
                 compress_config.enablePixelCompress(true);
                 compress_config.enableQualityCompress(true);
-                compress_config.setMaxSize(compressMaxKB);
+                compress_config.setMaxSize(config.compressMaxkB);
                 break;
             case PictureConfig.LUBAN_COMPRESS_MODE:
                 // luban压缩
                 LubanOptions option = new LubanOptions.Builder()
-                        .setMaxHeight(compressHeight)
-                        .setMaxWidth(compressWidth)
-                        .setMaxSize(compressMaxKB)
-                        .setGrade(compressGrade)
+                        .setMaxHeight(config.compressHeight)
+                        .setMaxWidth(config.compressWidth)
+                        .setMaxSize(config.compressMaxkB)
+                        .setGrade(config.compressGrade)
                         .create();
                 compress_config = CompressConfig.ofLuban(option);
                 break;
@@ -264,17 +218,18 @@ public class PictureBaseActivity extends FragmentActivity {
         options.setToolbarColor(toolbarColor);
         options.setStatusBarColor(statusColor);
         options.setToolbarWidgetColor(titleColor);
-        options.setCircleDimmedLayer(circleDimmedLayer);
-        options.setShowCropFrame(showCropFrame);
-        options.setShowCropGrid(showCropGrid);
-        options.setCompressionQuality(compressQuality);
-        options.setHideBottomControls(hideBottomControls);
-        options.setFreeStyleCropEnabled(freeStyleCropEnabled);
+        options.setCircleDimmedLayer(config.circleDimmedLayer);
+        options.setShowCropFrame(config.showCropFrame);
+        options.setShowCropGrid(config.showCropGrid);
+        options.setCompressionQuality(config.cropCompressQuality);
+        options.setHideBottomControls(config.hideBottomControls);
+        options.setFreeStyleCropEnabled(config.freeStyleCropEnabled);
         boolean isHttp = PictureMimeType.isHttp(originalPath);
+        String imgType = PictureMimeType.getLastImgType(originalPath);
         Uri uri = isHttp ? Uri.parse(originalPath) : Uri.fromFile(new File(originalPath));
-        UCrop.of(uri, Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + ".jpg")))
-                .withAspectRatio(aspect_ratio_x, aspect_ratio_y)
-                .withMaxResultSize(cropWidth, cropHeight)
+        UCrop.of(uri, Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + imgType)))
+                .withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y)
+                .withMaxResultSize(config.cropWidth, config.cropHeight)
                 .withOptions(options)
                 .start(this);
     }
@@ -292,21 +247,22 @@ public class PictureBaseActivity extends FragmentActivity {
         options.setToolbarColor(toolbarColor);
         options.setStatusBarColor(statusColor);
         options.setToolbarWidgetColor(titleColor);
-        options.setCircleDimmedLayer(circleDimmedLayer);
-        options.setShowCropFrame(showCropFrame);
-        options.setShowCropGrid(showCropGrid);
-        options.setScaleEnabled(scaleEnabled);
-        options.setRotateEnabled(rotateEnabled);
+        options.setCircleDimmedLayer(config.circleDimmedLayer);
+        options.setShowCropFrame(config.showCropFrame);
+        options.setShowCropGrid(config.showCropGrid);
+        options.setScaleEnabled(config.scaleEnabled);
+        options.setRotateEnabled(config.rotateEnabled);
         options.setHideBottomControls(true);
-        options.setCompressionQuality(compressQuality);
+        options.setCompressionQuality(config.cropCompressQuality);
         options.setCutListData(list);
-        options.setFreeStyleCropEnabled(freeStyleCropEnabled);
+        options.setFreeStyleCropEnabled(config.freeStyleCropEnabled);
         String path = list.size() > 0 ? list.get(0) : "";
         boolean isHttp = PictureMimeType.isHttp(path);
+        String imgType = PictureMimeType.getLastImgType(originalPath);
         Uri uri = isHttp ? Uri.parse(path) : Uri.fromFile(new File(path));
-        UCropMulti.of(uri, Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + ".jpg")))
-                .withAspectRatio(aspect_ratio_x, aspect_ratio_y)
-                .withMaxResultSize(cropWidth, cropHeight)
+        UCropMulti.of(uri, Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + imgType)))
+                .withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y)
+                .withMaxResultSize(config.cropWidth, config.cropHeight)
                 .withOptions(options)
                 .start(this);
     }
@@ -339,7 +295,7 @@ public class PictureBaseActivity extends FragmentActivity {
      * @param result
      */
     protected void handlerResult(List<LocalMedia> result) {
-        if (isCompress) {
+        if (config.isCompress) {
             compressImage(result);
         } else {
             onResult(result);
@@ -356,7 +312,7 @@ public class PictureBaseActivity extends FragmentActivity {
         if (folders.size() == 0) {
             // 没有相册 先创建一个最近相册出来
             LocalMediaFolder newFolder = new LocalMediaFolder();
-            String folderName = mimeType == PictureMimeType.ofAudio() ?
+            String folderName = config.mimeType == PictureMimeType.ofAudio() ?
                     getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll);
             newFolder.setName(folderName);
             newFolder.setPath("");
@@ -396,8 +352,8 @@ public class PictureBaseActivity extends FragmentActivity {
      */
     protected void onResult(List<LocalMedia> images) {
         dismissCompressDialog();
-        if (camera
-                && selectionMode == PictureConfig.MULTIPLE
+        if (config.camera
+                && config.selectionMode == PictureConfig.MULTIPLE
                 && selectionMedias != null) {
             images.addAll(selectionMedias);
         }
@@ -411,7 +367,11 @@ public class PictureBaseActivity extends FragmentActivity {
      */
     protected void closeActivity() {
         finish();
-        overridePendingTransition(0, R.anim.a3);
+        if (config.camera) {
+            overridePendingTransition(0, R.anim.fade_out);
+        } else {
+            overridePendingTransition(0, R.anim.a3);
+        }
     }
 
     @Override
@@ -487,7 +447,7 @@ public class PictureBaseActivity extends FragmentActivity {
      * @param data
      */
     protected void isAudio(Intent data) {
-        if (data != null && mimeType == PictureMimeType.ofAudio()) {
+        if (data != null && config.mimeType == PictureMimeType.ofAudio()) {
             try {
                 Uri uri = data.getData();
                 String audioPath;

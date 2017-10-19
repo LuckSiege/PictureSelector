@@ -176,10 +176,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 contentHolder.tv_duration.setVisibility(picture == PictureConfig.TYPE_VIDEO
                         ? View.VISIBLE : View.GONE);
             }
-            int width = image.getWidth();
-            int height = image.getHeight();
-            int h = width * 5;
-            contentHolder.tv_long_chart.setVisibility(height > h ? View.VISIBLE : View.GONE);
+            boolean eqLongImg = PictureMimeType.isLongImg(image);
+            contentHolder.tv_long_chart.setVisibility(eqLongImg ? View.VISIBLE : View.GONE);
             long duration = image.getDuration();
             contentHolder.tv_duration.setText(DateUtils.timeParse(duration));
             if (mimeType == PictureMimeType.ofAudio()) {

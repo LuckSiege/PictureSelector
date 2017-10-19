@@ -4,6 +4,7 @@ package com.luck.picture.lib.config;
 import android.media.MediaMetadataRetriever;
 import android.text.TextUtils;
 
+import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DebugUtil;
 
 import java.io.File;
@@ -244,5 +245,53 @@ public final class PictureMimeType {
             return 0;
         }
         return duration;
+    }
+
+    /**
+     * 是否是长图
+     *
+     * @param media
+     * @return true 是 or false 不是
+     */
+    public static boolean isLongImg(LocalMedia media) {
+        if (null != media) {
+            int width = media.getWidth();
+            int height = media.getHeight();
+            int h = width * 3;
+            return height > h;
+        }
+        return false;
+    }
+
+    /**
+     * 获取图片后缀
+     *
+     * @param path
+     * @return
+     */
+    public static String getLastImgType(String path) {
+        try {
+            int index = path.lastIndexOf(".");
+            if (index > 0) {
+                String imageType = path.substring(index, path.length());
+                switch (imageType) {
+                    case ".png":
+                    case ".PNG":
+                    case ".jpg":
+                    case ".jpeg":
+                    case ".JPEG":
+                    case ".WEBP":
+                    case ".webp":
+                        return imageType;
+                    default:
+                        return ".png";
+                }
+            } else {
+                return ".png";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ".png";
+        }
     }
 }
