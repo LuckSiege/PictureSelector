@@ -64,7 +64,7 @@ import java.util.Locale;
 public class PictureMultiCuttingActivity extends AppCompatActivity {
 
     public static final int DEFAULT_COMPRESS_QUALITY = 90;
-    public static final Bitmap.CompressFormat DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG;
+    public static final Bitmap.CompressFormat DEFAULT_COMPRESS_FORMAT = Bitmap.CompressFormat.PNG;
 
     public static final int NONE = 0;
     public static final int SCALE = 1;
@@ -388,9 +388,9 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         mOverlayView = mUCropView.getOverlayView();
         mGestureCropImageView.setTransformImageListener(mImageListener);
 
-        ((ImageView) findViewById(R.id.image_view_logo)).setColorFilter(mLogoColor, PorterDuff.Mode.SRC_ATOP);
-
-        findViewById(R.id.ucrop_frame).setBackgroundColor(mRootViewBackgroundColor);
+//        ((ImageView) findViewById(R.id.image_view_logo)).setColorFilter(mLogoColor, PorterDuff.Mode.SRC_ATOP);
+//
+//        findViewById(R.id.ucrop_frame).setBackgroundColor(mRootViewBackgroundColor);
     }
 
     private TransformImageView.TransformImageListener mImageListener = new TransformImageView.TransformImageListener() {
