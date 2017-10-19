@@ -339,6 +339,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 去除使用者主动添加适配android 6.0以上系统拍照适配配置
 * 升级PhotoView版本为最新版本
 * 解决部分图片预览时没有填充满屏幕问题
+* 优化相册启动时间，去除一些耗时操作
 * 优化代码结构
 * 修复已知问题
 
