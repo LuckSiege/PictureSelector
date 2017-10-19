@@ -4,7 +4,6 @@
   
   项目会一直维护(有bug修复完成，一般周末会更新)，有bug请描述清楚，并请Issues会第一时间修复，Android开发QQ交流群[619458861](http://shang.qq.com/wpa/qunwpa?idkey=91eb68229f9106b90ae9fa12d01b74815dd86b26c6c8d1dcbc9a27c1d87c42a0)，个人QQ 893855882@qq.com  希望用得着的朋友点个star。 
   
-  [PictureSelector 2.0 无裁剪功能版](https://github.com/LuckSiege/PictureSelectorLight)
    
   [我的博客地址](http://blog.csdn.net/luck_mw)
   
@@ -67,20 +66,6 @@
     
 ```
 
-******注：适配android6.0以上拍照问题，请在AndroidManifest.xml中添加标签******
-
-```
-<provider 
-   android:name="android.support.v4.content.FileProvider"
-   android:authorities="${applicationId}.provider"
-   android:exported="false"
-   android:grantUriPermissions="true">
-     <meta-data
-         android:name="android.support.FILE_PROVIDER_PATHS"
-         android:resource="@xml/file_paths" />
-</provider>
-
-```
 
 ## 集成方式
 
@@ -88,7 +73,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.1'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.3'
 }
 
 ```
@@ -156,10 +141,6 @@ step 2.
 [请参考我的博客](http://blog.csdn.net/luck_mw/article/details/54970105)的解决方案
 
 问题三：
-PhotoView 库冲突，可以删除自己项目中引用的，Picture_library中已经引用过 
-com.github.chrisbanes.photoview:library:1.2.4
-
-问题四：
 经测试在小米部分低端机中，Fragment调用PictureSelector 2.0 拍照有时内存不足会暂时回收activity,
 导致其fragment会重新创建 建议在fragment所依赖的activity加上如下代码:
 if (savedInstanceState == null) {
@@ -174,7 +155,7 @@ if (savedInstanceState == null) {
 }
 这里就是如果是被回收时，则不重新创建 通过tag取出fragment的实例。
 
-问题五：
+问题四：
 glide冲突
 由于PictureSelector 2.0引入的是最新的glide 4.0.0,所以将项目中老版本的glide删除,并且将报错代码换成如下写法：
 RequestOptions options = new RequestOptions();
@@ -222,7 +203,8 @@ Glide.with(context).load(url).apply(options).into(imageView);
  	.rotateEnabled() // 裁剪是否可旋转图片 true or false
  	.scaleEnabled()// 裁剪是否可放大缩小图片 true or false
  	.videoQuality()// 视频录制质量 0 or 1 int
- 	.videoSecond()// 显示多少秒以内的视频or音频也可适用 int 
+	.videoMaxSecond(15)// 显示多少秒以内的视频or音频也可适用 int 
+        .videoMinSecond(10)// 显示多少秒以内的视频or音频也可适用 int 
 	.recordVideoSecond()//视频秒数录制 默认60s int
  	.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code     
 ```
@@ -351,11 +333,20 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
+* v2.1.3
+* 支持长图预览功能
+* 修复部分图片或视频查询不出来bug
+* 去除使用者主动添加适配android 6.0以上系统拍照适配配置
+* 升级PhotoView版本为最新版本
+* 解决部分图片预览时没有填充满屏幕问题
+* 优化代码结构
+* 修复已知问题
+
+# 历史版本：
 * v2.1.1
 * 升级glide 4.0为正式版
 * 修复7.1.1系统PopupWindow弹出位置错误bug
 
-# 历史版本：
 * v2.1.0
 * 修复裁剪速度慢的问题
 
@@ -372,10 +363,10 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 修复录音不显示时长问题
 
 # 项目使用第三方库：
-* glide:4.0.0 RC1	
+* glide:4.0.0	
 * rxjava:2.0.5
 * rxandroid:2.0.1
-* PhotoView:1.2.4
+* PhotoView:2.1.3
 * luban
 * 裁剪使用ucrop
 
