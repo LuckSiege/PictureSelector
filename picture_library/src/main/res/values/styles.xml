@@ -81,7 +81,7 @@
         <!--标题栏右边文字-->
         <item name="picture.right.textColor">@color/white</item>
         <!--图片列表勾选样式-->
-        <item name="picture.checked.style">@drawable/checkbox_selector</item>
+        <item name="picture.checked.style">@drawable/picture_checkbox_selector</item>
         <!--开启图片列表勾选数字模式-->
         <item name="picture.style.checkNumMode">false</item>
         <!--选择图片样式0/9-->
