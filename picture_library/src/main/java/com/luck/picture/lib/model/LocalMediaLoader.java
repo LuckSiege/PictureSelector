@@ -35,6 +35,7 @@ public class LocalMediaLoader {
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
     private static final String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
     private static final String DURATION = "duration";
+    private static final String NOT_GIF = "!='image/gif'";
     private static final int AUDIO_DURATION = 500;// 过滤掉小于500毫秒的录音
     private int type = PictureConfig.TYPE_IMAGE;
     private FragmentActivity activity;
@@ -57,7 +58,7 @@ public class LocalMediaLoader {
 
     private static final String SELECTION_NOT_GIF = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
             + " AND " + MediaStore.MediaColumns.SIZE + ">0"
-            + " AND " + MediaStore.MediaColumns.MIME_TYPE + "!='image/gif'";
+            + " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF;
 
     // 查询条件(音视频)
     private static String getSelectionArgsForSingleMediaCondition(String time_condition) {
@@ -69,7 +70,7 @@ public class LocalMediaLoader {
     // 全部模式下条件
     private static String getSelectionArgsForAllMediaCondition(String time_condition, boolean isGif) {
         String condition = "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                + (isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + "!='image/gif'")
+                + (isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF)
                 + " OR "
                 + (MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + time_condition) + ")"
                 + " AND " + MediaStore.MediaColumns.SIZE + ">0";
