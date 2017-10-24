@@ -355,7 +355,7 @@ public class PictureBaseActivity extends FragmentActivity {
         if (config.camera
                 && config.selectionMode == PictureConfig.MULTIPLE
                 && selectionMedias != null) {
-            images.addAll(selectionMedias);
+            images.addAll(images.size() > 0 ? images.size() - 1 : 0, selectionMedias);
         }
         Intent intent = PictureSelector.putIntentResult(images);
         setResult(RESULT_OK, intent);
