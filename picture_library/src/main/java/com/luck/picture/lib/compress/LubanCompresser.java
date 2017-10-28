@@ -7,6 +7,7 @@ import android.media.ExifInterface;
 import android.support.annotation.NonNull;
 
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.tools.FileExtensionUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -386,12 +387,20 @@ class LubanCompresser {
         }
 
         int options = 100;
-        bitmap.compress(mLuban.compressFormat, options, mByteArrayOutputStream);
+
+        Bitmap.CompressFormat compressFormat;
+        if (FileExtensionUtils.getFileExtension(filePath).equals("png")) {
+            compressFormat = Bitmap.CompressFormat.PNG;
+        } else {
+            compressFormat = mLuban.compressFormat;
+        }
+
+        bitmap.compress(compressFormat, options, mByteArrayOutputStream);
 
         while (mByteArrayOutputStream.size() / 1024 > size && options > 6) {
             mByteArrayOutputStream.reset();
             options -= 6;
-            bitmap.compress(mLuban.compressFormat, options, mByteArrayOutputStream);
+            bitmap.compress(compressFormat, options, mByteArrayOutputStream);
         }
         bitmap.recycle();
 
