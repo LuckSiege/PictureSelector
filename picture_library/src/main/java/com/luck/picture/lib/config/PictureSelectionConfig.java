@@ -5,7 +5,6 @@ import android.os.Parcelable;
 import android.support.annotation.StyleRes;
 
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.compress.Luban;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DebugUtil;
 
@@ -24,6 +23,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public int mimeType;
     public boolean camera;
     public String outputCameraPath;
+    public String compressSavePath;
     @StyleRes
     public int themeStyleId;
     public int selectionMode;
@@ -34,12 +34,8 @@ public final class PictureSelectionConfig implements Parcelable {
     public int videoMaxSecond;
     public int videoMinSecond;
     public int recordVideoSecond;
-    public int compressMaxkB;
-    public int compressGrade;
+    public int minimumCompressSize;
     public int imageSpanCount;
-    public int compressMode;
-    public int compressWidth;
-    public int compressHeight;
     public int overrideWidth;
     public int overrideHeight;
     public int aspect_ratio_x;
@@ -65,6 +61,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean rotateEnabled;
     public boolean scaleEnabled;
     public boolean previewEggs;
+    public boolean synOrAsy;
 
     public List<LocalMedia> selectionMedias;
 
@@ -80,12 +77,8 @@ public final class PictureSelectionConfig implements Parcelable {
         videoMaxSecond = 0;
         videoMinSecond = 0;
         recordVideoSecond = 60;
-        compressMaxkB = PictureConfig.MAX_COMPRESS_SIZE;
-        compressGrade = Luban.THIRD_GEAR;
+        minimumCompressSize = PictureConfig.MAX_COMPRESS_SIZE;
         imageSpanCount = 4;
-        compressMode = PictureConfig.LUBAN_COMPRESS_MODE;
-        compressWidth = 0;
-        compressHeight = 0;
         overrideWidth = 0;
         overrideHeight = 0;
         isCompress = false;
@@ -109,8 +102,10 @@ public final class PictureSelectionConfig implements Parcelable {
         rotateEnabled = true;
         scaleEnabled = true;
         previewEggs = false;
+        synOrAsy = true;
         zoomAnim = true;
         outputCameraPath = "";
+        compressSavePath = "";
         sizeMultiplier = 0.5f;
         selectionMedias = new ArrayList<>();
         DebugUtil.i("*******", "reset PictureSelectionConfig");
@@ -140,6 +135,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(this.mimeType);
         dest.writeByte(this.camera ? (byte) 1 : (byte) 0);
         dest.writeString(this.outputCameraPath);
+        dest.writeString(this.compressSavePath);
         dest.writeInt(this.themeStyleId);
         dest.writeInt(this.selectionMode);
         dest.writeInt(this.maxSelectNum);
@@ -149,12 +145,8 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(this.videoMaxSecond);
         dest.writeInt(this.videoMinSecond);
         dest.writeInt(this.recordVideoSecond);
-        dest.writeInt(this.compressMaxkB);
-        dest.writeInt(this.compressGrade);
+        dest.writeInt(this.minimumCompressSize);
         dest.writeInt(this.imageSpanCount);
-        dest.writeInt(this.compressMode);
-        dest.writeInt(this.compressWidth);
-        dest.writeInt(this.compressHeight);
         dest.writeInt(this.overrideWidth);
         dest.writeInt(this.overrideHeight);
         dest.writeInt(this.aspect_ratio_x);
@@ -180,6 +172,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte(this.rotateEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(this.scaleEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(this.previewEggs ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.synOrAsy ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.selectionMedias);
     }
 
@@ -190,6 +183,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.mimeType = in.readInt();
         this.camera = in.readByte() != 0;
         this.outputCameraPath = in.readString();
+        this.compressSavePath = in.readString();
         this.themeStyleId = in.readInt();
         this.selectionMode = in.readInt();
         this.maxSelectNum = in.readInt();
@@ -199,12 +193,8 @@ public final class PictureSelectionConfig implements Parcelable {
         this.videoMaxSecond = in.readInt();
         this.videoMinSecond = in.readInt();
         this.recordVideoSecond = in.readInt();
-        this.compressMaxkB = in.readInt();
-        this.compressGrade = in.readInt();
+        this.minimumCompressSize = in.readInt();
         this.imageSpanCount = in.readInt();
-        this.compressMode = in.readInt();
-        this.compressWidth = in.readInt();
-        this.compressHeight = in.readInt();
         this.overrideWidth = in.readInt();
         this.overrideHeight = in.readInt();
         this.aspect_ratio_x = in.readInt();
@@ -230,6 +220,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.rotateEnabled = in.readByte() != 0;
         this.scaleEnabled = in.readByte() != 0;
         this.previewEggs = in.readByte() != 0;
+        this.synOrAsy = in.readByte() != 0;
         this.selectionMedias = in.createTypedArrayList(LocalMedia.CREATOR);
     }
 

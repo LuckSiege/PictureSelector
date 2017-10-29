@@ -1,275 +1,96 @@
-/*Copyright 2016 Zheng Zibin
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.*/
 package com.luck.picture.lib.compress;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.annotation.IntDef;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
+import android.support.annotation.WorkerThread;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
+
 import java.io.File;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.util.Collections;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-
-/**
- * author：luck
- * project：PictureSelector
- * email：893855882@qq.com
- * data：16/12/31
- */
-
-public class Luban {
-
-    public static final int FIRST_GEAR = 1; // 一档
-    public static final int THIRD_GEAR = 3; // 三档
-    public static final int CUSTOM_GEAR = 4;// 四档
-
+public class Luban implements Handler.Callback {
     private static final String TAG = "Luban";
-    private static String DEFAULT_DISK_CACHE_DIR = "luban_disk_cache";
+    private static final String DEFAULT_DISK_CACHE_DIR = "luban_disk_cache";
 
-    private File mFile;
+    private static final int MSG_COMPRESS_START = 1;
+    private static final int MSG_COMPRESS_ERROR = 2;
+    private static final int MSG_COMPRESS_MULTIPLE_SUCCESS = 3;
+    private String mTargetDir;
+    private List<String> mPaths;
+    private List<LocalMedia> medias;
+    private int mLeastCompressSize;
+    private OnCompressListener mCompressListener;
+    private int index = -1;
+    private Handler mHandler;
+    private Context context;
 
-    private List<File> mFileList;
-
-    private LubanBuilder mBuilder;
-
-    private Luban(File cacheDir) {
-        mBuilder = new LubanBuilder(cacheDir);
+    private Luban(Builder builder) {
+        this.mPaths = builder.mPaths;
+        this.medias = builder.medias;
+        this.context = builder.context;
+        this.mTargetDir = builder.mTargetDir;
+        this.mCompressListener = builder.mCompressListener;
+        this.mLeastCompressSize = builder.mLeastCompressSize;
+        mHandler = new Handler(Looper.getMainLooper(), this);
     }
 
-    public static Luban compress(Context context, File file) {
-        Luban luban = new Luban(Luban.getPhotoCacheDir(context));
-        luban.mFile = file;
-        luban.mFileList = Collections.singletonList(file);
-
-        return luban;
-    }
-
-    public static Luban compress(Context context, List<File> files) {
-        Luban luban = new Luban(Luban.getPhotoCacheDir(context));
-        luban.mFileList = files;
-        luban.mFile = files.get(0);
-        return luban;
-    }
-
-    /**
-     * 自定义压缩模式 FIRST_GEAR、THIRD_GEAR、CUSTOM_GEAR
-     *
-     * @param gear
-     * @return
-     */
-    public Luban putGear(@GEAR int gear) {
-        mBuilder.gear = gear;
-        return this;
+    public static Builder with(Context context) {
+        return new Builder(context);
     }
 
     /**
-     * 自定义图片压缩格式
+     * Returns a mFile with a cache audio name in the private cache directory.
      *
-     * @param compressFormat
-     * @return
+     * @param context A context.
      */
-    public Luban setCompressFormat(Bitmap.CompressFormat compressFormat) {
-        mBuilder.compressFormat = compressFormat;
-        return this;
+    private File getImageCacheFile(Context context, String suffix) {
+        if (TextUtils.isEmpty(mTargetDir)) {
+            mTargetDir = getImageCacheDir(context).getAbsolutePath();
+        }
+
+        String cacheBuilder = mTargetDir + "/" +
+                System.currentTimeMillis() +
+                (int) (Math.random() * 1000) +
+                (TextUtils.isEmpty(suffix) ? ".jpg" : suffix);
+
+        return new File(cacheBuilder);
     }
-
-    /**
-     * CUSTOM_GEAR 指定目标图片的最大体积
-     *
-     * @param size
-     * @return
-     */
-    public Luban setMaxSize(int size) {
-        mBuilder.maxSize = size;
-        return this;
-    }
-
-    /**
-     * CUSTOM_GEAR 指定目标图片的最大宽度
-     *
-     * @param width 最大宽度
-     * @return
-     */
-    public Luban setMaxWidth(int width) {
-        mBuilder.maxWidth = width;
-        return this;
-    }
-
-    /**
-     * CUSTOM_GEAR 指定目标图片的最大高度
-     *
-     * @param height 最大高度
-     * @return
-     */
-    public Luban setMaxHeight(int height) {
-        mBuilder.maxHeight = height;
-        return this;
-    }
-
-    /**
-     * listener调用方式，在主线程订阅并将返回结果通过 listener 通知调用方
-     *
-     * @param listener 接收回调结果
-     */
-    public void launch(final OnCompressListener listener) {
-//        asObservable().subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).doOnRequest(new Action1<Long>() {
-//            @Override
-//            public void call(Long aLong) {
-//                listener.onStart();
-//            }
-//        }).subscribe(new Action1<File>() {
-//            @Override
-//            public void call(File file) {
-//                listener.onSuccess(file);
-//            }
-//        }, new Action1<Throwable>() {
-//            @Override
-//            public void call(Throwable throwable) {
-//                listener.onError(throwable);
-//            }
-//        });
-
-        asObservable().subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<File>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-                listener.onStart();
-            }
-
-            @Override
-            public void onNext(File file) {
-                listener.onSuccess(file);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                listener.onError(e);
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
-
-    }
-
-    /**
-     * listener调用方式，在主线程订阅并将返回结果通过 listener 通知调用方
-     *
-     * @param listener 接收回调结果
-     */
-    public void launch(final OnMultiCompressListener listener) {
-//        asListObservable().subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread())
-//                .doOnRequest(new Action1<Long>() {
-//                    @Override
-//                    public void call(Long aLong) {
-//                        listener.onStart();
-//                    }
-//                })
-//                .subscribe(new Action1<List<File>>() {
-//                    @Override
-//                    public void call(List<File> files) {
-//                        listener.onSuccess(files);
-//                    }
-//                }, new Action1<Throwable>() {
-//                    @Override
-//                    public void call(Throwable throwable) {
-//                        listener.onError(throwable);
-//                    }
-//                });
-
-        asListObservable().subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<List<File>>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-                listener.onStart();
-            }
-
-            @Override
-            public void onNext(List<File> files) {
-                listener.onSuccess(files);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                listener.onError(e);
-            }
-
-            @Override
-            public void onComplete() {
-            }
-        });
-
-    }
-
-    /**
-     * 返回File Observable
-     *
-     * @return
-     */
-    public Observable<File> asObservable() {
-        LubanCompresser compresser = new LubanCompresser(mBuilder);
-        return compresser.singleAction(mFile);
-    }
-
-    /**
-     * 返回fileList Observable
-     *
-     * @return
-     */
-    public Observable<List<File>> asListObservable() {
-        LubanCompresser compresser = new LubanCompresser(mBuilder);
-        return compresser.multiAction(mFileList);
-    }
-
-    // Utils
 
     /**
      * Returns a directory with a default name in the private cache directory of the application to
-     * use to store
-     * retrieved media and thumbnails.
+     * use to store retrieved audio.
      *
      * @param context A context.
-     * @see #getPhotoCacheDir(Context, String)
+     * @see #getImageCacheDir(Context, String)
      */
-    private static File getPhotoCacheDir(Context context) {
-        return getPhotoCacheDir(context, Luban.DEFAULT_DISK_CACHE_DIR);
+    @Nullable
+    private File getImageCacheDir(Context context) {
+        return getImageCacheDir(context, DEFAULT_DISK_CACHE_DIR);
     }
 
     /**
      * Returns a directory with the given name in the private cache directory of the application to
-     * use to store
-     * retrieved media and thumbnails.
+     * use to store retrieved media and thumbnails.
      *
      * @param context   A context.
      * @param cacheName The name of the subdirectory in which to store the cache.
-     * @see #getPhotoCacheDir(Context)
+     * @see #getImageCacheDir(Context)
      */
-    private static File getPhotoCacheDir(Context context, String cacheName) {
-        File cacheDir = context.getCacheDir();
+    @Nullable
+    private File getImageCacheDir(Context context, String cacheName) {
+        File cacheDir = context.getExternalCacheDir();
         if (cacheDir != null) {
             File result = new File(cacheDir, cacheName);
             if (!result.mkdirs() && (!result.exists() || !result.isDirectory())) {
@@ -284,38 +105,179 @@ public class Luban {
         return null;
     }
 
-    /**
-     * 清空Luban所产生的缓存
-     * Clears the cache generated by Luban
-     *
-     * @return
-     */
-    public Luban clearCache() {
-        if (mBuilder.cacheDir.exists()) {
-            deleteFile(mBuilder.cacheDir);
-        }
-        return this;
-    }
 
     /**
-     * 清空目标文件或文件夹
-     * Empty the target file or folder
+     * start asynchronous compress thread
      */
-    private void deleteFile(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory()) {
-            for (File file : fileOrDirectory.listFiles()) {
-                deleteFile(file);
+    @UiThread
+    private void launch(final Context context) {
+        if (mPaths == null || mPaths.size() == 0 && mCompressListener != null) {
+            mCompressListener.onError(new NullPointerException("image file cannot be null"));
+        }
+
+        Iterator<String> iterator = mPaths.iterator();
+        index = -1;// 当前压缩下标
+        while (iterator.hasNext()) {
+            final String path = iterator.next();
+            if (Checker.isImage(path)) {
+                AsyncTask.SERIAL_EXECUTOR.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            index++;
+                            mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_START));
+                            File result = Checker.isNeedCompress(mLeastCompressSize, path) ?
+                                    new Engine(path, getImageCacheFile(context, Checker.checkSuffix(path))).compress() :
+                                    new File(path);
+                            if (medias != null && medias.size() > 0) {
+                                LocalMedia media = medias.get(index);
+                                String path = result.getAbsolutePath();
+                                boolean eqHttp = PictureMimeType.isHttp(path);
+                                media.setCompressed(eqHttp ? false : true);
+                                media.setCompressPath(eqHttp ? "" : result.getAbsolutePath());
+                                boolean isLast = index == medias.size() - 1;
+                                if (isLast) {
+                                    mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_MULTIPLE_SUCCESS, medias));
+                                }
+                            } else {
+                                mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_ERROR, new IOException()));
+                            }
+                        } catch (IOException e) {
+                            mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_ERROR, e));
+                        }
+                    }
+                });
+            } else {
+                mCompressListener.onError(new IllegalArgumentException("can not read the path : " + path));
             }
+            iterator.remove();
         }
-        fileOrDirectory.delete();
     }
 
-    @IntDef({FIRST_GEAR, THIRD_GEAR, CUSTOM_GEAR})
-    @Target(ElementType.PARAMETER)
-    @Retention(RetentionPolicy.SOURCE)
-    @Documented
-    @Inherited
-    @interface GEAR {
+    /**
+     * start compress and return the mFile
+     */
+    @WorkerThread
+    private File get(String path, Context context) throws IOException {
+        return new Engine(path, getImageCacheFile(context, Checker.checkSuffix(path))).compress();
+    }
 
+    @WorkerThread
+    private List<File> get(Context context) throws IOException {
+        List<File> results = new ArrayList<>();
+        Iterator<String> iterator = mPaths.iterator();
+
+        while (iterator.hasNext()) {
+            String path = iterator.next();
+            if (Checker.isImage(path)) {
+                results.add(new Engine(path, getImageCacheFile(context, Checker.checkSuffix(path))).compress());
+            }
+            iterator.remove();
+        }
+
+        return results;
+    }
+
+    @Override
+    public boolean handleMessage(Message msg) {
+        if (mCompressListener == null) return false;
+
+        switch (msg.what) {
+            case MSG_COMPRESS_START:
+                mCompressListener.onStart();
+                break;
+            case MSG_COMPRESS_MULTIPLE_SUCCESS:
+                mCompressListener.onSuccess((List<LocalMedia>) msg.obj);
+                break;
+            case MSG_COMPRESS_ERROR:
+                mCompressListener.onError((Throwable) msg.obj);
+                break;
+        }
+        return false;
+    }
+
+    public static class Builder {
+        private Context context;
+        private String mTargetDir;
+        private List<String> mPaths;
+        private List<LocalMedia> medias;
+        private int mLeastCompressSize = 100;
+        private OnCompressListener mCompressListener;
+
+        Builder(Context context) {
+            this.context = context;
+            this.mPaths = new ArrayList<>();
+        }
+
+        private Luban build() {
+            return new Luban(this);
+        }
+
+        public Builder load(File file) {
+            this.mPaths.add(file.getAbsolutePath());
+            return this;
+        }
+
+        public Builder load(String string) {
+            this.mPaths.add(string);
+            return this;
+        }
+
+        public Builder load(List<String> list) {
+            this.mPaths.addAll(list);
+            return this;
+        }
+
+        public Builder loadLocalMedia(List<LocalMedia> list) {
+            if (list == null)
+            {
+                list = new ArrayList<>();
+            }
+            this.medias = list;
+            for (LocalMedia media : list) {
+                this.mPaths.add(media.isCut() ? media.getCutPath() : media.getPath());
+            }
+            return this;
+        }
+
+        public Builder setCompressListener(OnCompressListener listener) {
+            this.mCompressListener = listener;
+            return this;
+        }
+
+        public Builder setTargetDir(String targetDir) {
+            this.mTargetDir = targetDir;
+            return this;
+        }
+
+        /**
+         * do not compress when the origin image file size less than one value
+         *
+         * @param size the value of file size, unit KB, default 100K
+         */
+        public Builder ignoreBy(int size) {
+            this.mLeastCompressSize = size;
+            return this;
+        }
+
+        /**
+         * begin compress image with asynchronous
+         */
+        public void launch() {
+            build().launch(context);
+        }
+
+        public File get(String path) throws IOException {
+            return build().get(path, context);
+        }
+
+        /**
+         * begin compress image with synchronize
+         *
+         * @return the thumb image file list
+         */
+        public List<File> get() throws IOException {
+            return build().get(context);
+        }
     }
 }

@@ -1,14 +1,11 @@
 package com.luck.picture.lib.compress;
 
-import java.io.File;
+import com.luck.picture.lib.entity.LocalMedia;
 
-/**
- * author：luck
- * project：PictureSelector
- * email：893855882@qq.com
- * data：2017/1/24
- */
+import java.util.List;
+
 public interface OnCompressListener {
+
     /**
      * Fired when the compression is started, override to handle in your own code
      */
@@ -17,7 +14,7 @@ public interface OnCompressListener {
     /**
      * Fired when a compression returns successfully, override to handle in your own code
      */
-    void onSuccess(File file);
+    void onSuccess(List<LocalMedia> list);
 
     /**
      * Fired when a compression fails to complete, override to handle in your own code

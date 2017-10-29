@@ -194,7 +194,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 options.placeholder(R.drawable.image_placeholder);
                 Glide.with(context)
                         .asBitmap()
-
                         .load(path)
                         .apply(options)
                         .into(contentHolder.iv_picture);

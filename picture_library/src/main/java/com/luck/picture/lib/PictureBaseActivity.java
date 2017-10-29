@@ -10,13 +10,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.luck.picture.lib.compress.CompressConfig;
-import com.luck.picture.lib.compress.CompressImageOptions;
-import com.luck.picture.lib.compress.CompressInterface;
-import com.luck.picture.lib.compress.LubanOptions;
+import com.luck.picture.lib.compress.Luban;
+import com.luck.picture.lib.compress.OnCompressListener;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -35,6 +35,12 @@ import com.yalantis.ucrop.UCropMulti;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class PictureBaseActivity extends FragmentActivity {
@@ -169,40 +175,68 @@ public class PictureBaseActivity extends FragmentActivity {
      */
     protected void compressImage(final List<LocalMedia> result) {
         showCompressDialog();
-        CompressConfig compress_config = CompressConfig.ofDefaultConfig();
-        switch (config.compressMode) {
-            case PictureConfig.SYSTEM_COMPRESS_MODE:
-                // 系统自带压缩
-                compress_config.enablePixelCompress(true);
-                compress_config.enableQualityCompress(true);
-                compress_config.setMaxSize(config.compressMaxkB);
-                break;
-            case PictureConfig.LUBAN_COMPRESS_MODE:
-                // luban压缩
-                LubanOptions option = new LubanOptions.Builder()
-                        .setMaxHeight(config.compressHeight)
-                        .setMaxWidth(config.compressWidth)
-                        .setMaxSize(config.compressMaxkB)
-                        .setGrade(config.compressGrade)
-                        .create();
-                compress_config = CompressConfig.ofLuban(option);
-                break;
+        if (config.synOrAsy) {
+            Flowable.just(result)
+                    .observeOn(Schedulers.io())
+                    .map(new Function<List<LocalMedia>, List<File>>() {
+                        @Override
+                        public List<File> apply(@NonNull List<LocalMedia> list) throws Exception {
+                            return Luban.with(mContext)
+                                    .setTargetDir(config.compressSavePath)
+                                    .ignoreBy(config.minimumCompressSize)
+                                    .loadLocalMedia(list).get();
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<List<File>>() {
+                        @Override
+                        public void accept(@NonNull List<File> files) throws Exception {
+                            handleCompressCallBack(result, files);
+                        }
+                    });
+        } else {
+            Luban.with(this)
+                    .loadLocalMedia(result)
+                    .ignoreBy(config.minimumCompressSize)
+                    .setTargetDir(config.compressSavePath)
+                    .setCompressListener(new OnCompressListener() {
+                        @Override
+                        public void onStart() {
+                        }
+
+                        @Override
+                        public void onSuccess(List<LocalMedia> list) {
+                            RxBus.getDefault().post(new EventEntity(PictureConfig.CLOSE_PREVIEW_FLAG));
+                            onResult(list);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            RxBus.getDefault().post(new EventEntity(PictureConfig.CLOSE_PREVIEW_FLAG));
+                            onResult(result);
+                        }
+                    }).launch();
         }
+    }
 
-        CompressImageOptions.compress(this, compress_config, result,
-                new CompressInterface.CompressListener() {
-                    @Override
-                    public void onCompressSuccess(List<LocalMedia> images) {
-                        RxBus.getDefault().post(new EventEntity(PictureConfig.CLOSE_PREVIEW_FLAG));
-                        onResult(images);
-                    }
-
-                    @Override
-                    public void onCompressError(List<LocalMedia> images, String msg) {
-                        RxBus.getDefault().post(new EventEntity(PictureConfig.CLOSE_PREVIEW_FLAG));
-                        onResult(result);
-                    }
-                }).compress();
+    /**
+     * 重新构造已压缩的图片返回集合
+     *
+     * @param images
+     * @param files
+     */
+    private void handleCompressCallBack(List<LocalMedia> images, List<File> files) {
+        for (int i = 0, j = images.size(); i < j; i++) {
+            String path = files.get(i).getPath();// 压缩成功后的地址
+            LocalMedia image = images.get(i);
+            // 如果是网络图片则不压缩
+            boolean http = PictureMimeType.isHttp(path);
+            boolean eqTrue = !TextUtils.isEmpty(path) && http;
+            image.setCompressed(eqTrue ? false : true);
+            image.setCompressPath(eqTrue ? "" : path);
+        }
+        RxBus.getDefault().post(new EventEntity(PictureConfig.CLOSE_PREVIEW_FLAG));
+        onResult(images);
     }
 
     /**
