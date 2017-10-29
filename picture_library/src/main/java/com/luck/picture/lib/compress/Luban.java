@@ -159,7 +159,9 @@ public class Luban implements Handler.Callback {
      */
     @WorkerThread
     private File get(String path, Context context) throws IOException {
-        return new Engine(path, getImageCacheFile(context, Checker.checkSuffix(path))).compress();
+        return Checker.isNeedCompress(mLeastCompressSize, path) ?
+                new Engine(path, getImageCacheFile(context, Checker.checkSuffix(path))).compress() :
+                new File(path);
     }
 
     @WorkerThread
