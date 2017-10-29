@@ -170,7 +170,10 @@ public class Luban implements Handler.Callback {
         while (iterator.hasNext()) {
             String path = iterator.next();
             if (Checker.isImage(path)) {
-                results.add(new Engine(path, getImageCacheFile(context, Checker.checkSuffix(path))).compress());
+                File result = Checker.isNeedCompress(mLeastCompressSize, path) ?
+                        new Engine(path, getImageCacheFile(context, Checker.checkSuffix(path))).compress() :
+                        new File(path);
+                results.add(result);
             }
             iterator.remove();
         }
@@ -229,8 +232,7 @@ public class Luban implements Handler.Callback {
         }
 
         public Builder loadLocalMedia(List<LocalMedia> list) {
-            if (list == null)
-            {
+            if (list == null) {
                 list = new ArrayList<>();
             }
             this.medias = list;
