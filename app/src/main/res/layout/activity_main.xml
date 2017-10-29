@@ -244,32 +244,6 @@
                 android:textColor="@color/color_53"
                 android:textSize="14sp" />
 
-            <RadioGroup
-                android:id="@+id/rgb_compress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <RadioButton
-                    android:id="@+id/rb_compress_system"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="系统自带"
-                    android:textColor="@color/color_53"
-                    android:textSize="14sp" />
-
-                <RadioButton
-                    android:id="@+id/rb_compress_luban"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Luban压缩"
-                    android:textColor="@color/color_53"
-                    android:textSize="14sp" />
-            </RadioGroup>
-
             <CheckBox
                 android:id="@+id/cb_crop"
                 android:layout_width="wrap_content"

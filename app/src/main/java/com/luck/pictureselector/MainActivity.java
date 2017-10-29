@@ -3,6 +3,7 @@ package com.luck.pictureselector;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.luck.picture.lib.PictureSelector;
-import com.luck.picture.lib.compress.Luban;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -25,6 +25,7 @@ import com.luck.picture.lib.tools.DebugUtil;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,13 +41,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int maxSelectNum = 9;
     private TextView tv_select_num;
     private ImageView left_back, minus, plus;
-    private RadioGroup rgb_crop, rgb_compress, rgb_style, rgb_photo_mode;
+    private RadioGroup rgb_crop, rgb_style, rgb_photo_mode;
     private int aspect_ratio_x, aspect_ratio_y;
     private CheckBox cb_voice, cb_choose_mode, cb_isCamera, cb_isGif,
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
             cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
             cb_showCropFrame, cb_preview_audio;
-    private int compressMode = PictureConfig.SYSTEM_COMPRESS_MODE;
     private int themeId;
     private int chooseMode = PictureMimeType.ofAll();
 
@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rgb_crop = (RadioGroup) findViewById(R.id.rgb_crop);
         rgb_style = (RadioGroup) findViewById(R.id.rgb_style);
         rgb_photo_mode = (RadioGroup) findViewById(R.id.rgb_photo_mode);
-        rgb_compress = (RadioGroup) findViewById(R.id.rgb_compress);
         cb_voice = (CheckBox) findViewById(R.id.cb_voice);
         cb_choose_mode = (CheckBox) findViewById(R.id.cb_choose_mode);
         cb_isCamera = (CheckBox) findViewById(R.id.cb_isCamera);
@@ -78,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_hide = (CheckBox) findViewById(R.id.cb_hide);
         cb_crop_circular = (CheckBox) findViewById(R.id.cb_crop_circular);
         rgb_crop.setOnCheckedChangeListener(this);
-        rgb_compress.setOnCheckedChangeListener(this);
         rgb_style.setOnCheckedChangeListener(this);
         rgb_photo_mode.setOnCheckedChangeListener(this);
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
@@ -166,13 +164,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .previewImage(cb_preview_img.isChecked())// 是否可预览图片
                         .previewVideo(cb_preview_video.isChecked())// 是否可预览视频
                         .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
-                        .compressGrade(Luban.THIRD_GEAR)// luban压缩档次，默认3档 Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
                         .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
                         .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
                         //.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径
                         .enableCrop(cb_crop.isChecked())// 是否裁剪
                         .compress(cb_compress.isChecked())// 是否压缩
-                        .compressMode(compressMode)//系统自带 or 鲁班压缩 PictureConfig.SYSTEM_COMPRESS_MODE or LUBAN_COMPRESS_MODE
+                        .synOrAsy(true)//同步true或异步false 压缩 默认同步
+                        //.compressSavePath(getPath())//压缩图片保存地址
                         //.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
                         .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
                         .withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
@@ -188,8 +186,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                        .videoMinSecond(10)
                         //.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                         //.cropCompressQuality(90)// 裁剪压缩质量 默认100
-                        //.compressMaxKB()//压缩最大值kb compressGrade()为Luban.CUSTOM_GEAR有效
-                        //.compressWH() // 压缩宽高比 compressGrade()为Luban.CUSTOM_GEAR有效
+                        .minimumCompressSize(100)// 小于100kb的图片不压缩
                         //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
                         //.rotateEnabled() // 裁剪是否可旋转图片
                         //.scaleEnabled()// 裁剪是否可放大缩小图片
@@ -209,11 +206,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .previewImage(cb_preview_img.isChecked())// 是否可预览图片
                         .previewVideo(cb_preview_video.isChecked())// 是否可预览视频
                         .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
-                        .compressGrade(Luban.THIRD_GEAR)// luban压缩档次，默认3档 Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
                         .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
                         .enableCrop(cb_crop.isChecked())// 是否裁剪
                         .compress(cb_compress.isChecked())// 是否压缩
-                        .compressMode(compressMode)//系统自带 or 鲁班压缩 PictureConfig.SYSTEM_COMPRESS_MODE or LUBAN_COMPRESS_MODE
                         .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
                         .withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
                         .hideBottomControls(cb_hide.isChecked() ? false : true)// 是否显示uCrop工具栏，默认不显示
@@ -227,8 +222,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .previewEggs(false)//预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                         //.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                         //.cropCompressQuality(90)// 裁剪压缩质量 默认为100
-                        //.compressMaxKB()//压缩最大值kb compressGrade()为Luban.CUSTOM_GEAR有效
-                        //.compressWH() // 压缩宽高比 compressGrade()为Luban.CUSTOM_GEAR有效
+                        .minimumCompressSize(100)// 小于100kb的图片不压缩
                         //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
                         //.rotateEnabled() // 裁剪是否可旋转图片
                         //.scaleEnabled()// 裁剪是否可放大缩小图片
@@ -351,12 +345,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 aspect_ratio_x = 16;
                 aspect_ratio_y = 9;
                 break;
-            case R.id.rb_compress_system:
-                compressMode = PictureConfig.SYSTEM_COMPRESS_MODE;
-                break;
-            case R.id.rb_compress_luban:
-                compressMode = PictureConfig.LUBAN_COMPRESS_MODE;
-                break;
             case R.id.rb_default_style:
                 themeId = R.style.picture_default_style;
                 break;
@@ -404,9 +392,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     cb_showCropGrid.setChecked(true);
                 }
                 break;
-            case R.id.cb_compress:
-                rgb_compress.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-                break;
         }
+    }
+
+    /**
+     * 自定义压缩存储地址
+     *
+     * @return
+     */
+    private String getPath() {
+        String path = Environment.getExternalStorageDirectory() + "/Luban/image/";
+        File file = new File(path);
+        if (file.mkdirs()) {
+            return path;
+        }
+        return path;
     }
 }
