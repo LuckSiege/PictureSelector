@@ -105,7 +105,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.1.1</version> 
+      <version>v2.1.4</version> 
 </dependency>
 
 ```
