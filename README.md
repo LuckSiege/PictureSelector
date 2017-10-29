@@ -72,7 +72,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.4'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.5'
 }
 
 ```
@@ -105,7 +105,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.1.4</version> 
+      <version>v2.1.5</version> 
 </dependency>
 
 ```
@@ -331,10 +331,11 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
-* v2.1.4
+* v2.1.5
 * 简化压缩代码，只保留luban最新版本压缩
 * 增加压缩自定义保存路径
 * 增加过滤多少kb范围内的图片不压缩处理
+* 修复压缩透明图片出现黑色背景问题
 * 修复开启点击音效第一次不响bug
 
 # 历史版本：
