@@ -176,7 +176,6 @@ Glide.with(context).load(url).apply(options).into(imageView);
  	.previewImage()// 是否可预览图片 true or false
  	.previewVideo()// 是否可预览视频 true or false
 	.enablePreviewAudio() // 是否可播放音频 true or false
- 	.compressGrade()// luban压缩档次，默认3档 Luban.THIRD_GEAR、Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
  	.isCamera()// 是否显示拍照按钮 true or false
 	.isZoomAnim(true)// 图片列表点击 缩放效果 默认true
 	.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
