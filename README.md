@@ -338,8 +338,6 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 增加过滤多少kb范围内的图片不压缩处理
 * 修复开启点击音效第一次不响bug
 
-* 优化相册启动时间，去除一些耗时操作
-
 # 历史版本：
 * v2.1.3
 * 支持长图预览功能
