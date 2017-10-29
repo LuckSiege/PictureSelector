@@ -72,7 +72,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.3'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.4'
 }
 
 ```
@@ -105,7 +105,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.1.1</version> 
+      <version>v2.1.4</version> 
 </dependency>
 
 ```
@@ -176,7 +176,6 @@ Glide.with(context).load(url).apply(options).into(imageView);
  	.previewImage()// 是否可预览图片 true or false
  	.previewVideo()// 是否可预览视频 true or false
 	.enablePreviewAudio() // 是否可播放音频 true or false
- 	.compressGrade()// luban压缩档次，默认3档 Luban.THIRD_GEAR、Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
  	.isCamera()// 是否显示拍照按钮 true or false
 	.isZoomAnim(true)// 图片列表点击 缩放效果 默认true
 	.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
@@ -332,6 +331,13 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
+* v2.1.4
+* 简化压缩代码，只保留luban最新版本压缩
+* 增加压缩自定义保存路径
+* 增加过滤多少kb范围内的图片不压缩处理
+* 修复开启点击音效第一次不响bug
+
+# 历史版本：
 * v2.1.3
 * 支持长图预览功能
 * 修复部分图片或视频查询不出来bug
@@ -342,7 +348,6 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 优化代码结构
 * 修复已知问题
 
-# 历史版本：
 * v2.1.1
 * 升级glide 4.0为正式版
 * 修复7.1.1系统PopupWindow弹出位置错误bug
