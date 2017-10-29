@@ -72,7 +72,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.3'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.4'
 }
 
 ```
@@ -332,6 +332,15 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
+* v2.1.4
+* 简化压缩代码，只保留luban最新版本压缩
+* 增加压缩自定义保存路径
+* 增加过滤多少kb范围内的图片不压缩处理
+* 修复开启点击音效第一次不响bug
+
+* 优化相册启动时间，去除一些耗时操作
+
+# 历史版本：
 * v2.1.3
 * 支持长图预览功能
 * 修复部分图片或视频查询不出来bug
@@ -342,7 +351,6 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 优化代码结构
 * 修复已知问题
 
-# 历史版本：
 * v2.1.1
 * 升级glide 4.0为正式版
 * 修复7.1.1系统PopupWindow弹出位置错误bug
