@@ -26,6 +26,7 @@
 -[混淆配置](#混淆配置)<br>
 -[兼容性测试](#兼容性测试)<br>
 -[演示效果](#演示效果)<br>
+-[打赏](#打赏)<br>
 
 # 功能特点  
 
@@ -72,7 +73,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.3'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.5'
 }
 
 ```
@@ -105,7 +106,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.1.1</version> 
+      <version>v2.1.5</version> 
 </dependency>
 
 ```
@@ -176,18 +177,17 @@ Glide.with(context).load(url).apply(options).into(imageView);
  	.previewImage()// 是否可预览图片 true or false
  	.previewVideo()// 是否可预览视频 true or false
 	.enablePreviewAudio() // 是否可播放音频 true or false
- 	.compressGrade()// luban压缩档次，默认3档 Luban.THIRD_GEAR、Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
  	.isCamera()// 是否显示拍照按钮 true or false
 	.isZoomAnim(true)// 图片列表点击 缩放效果 默认true
 	.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
 	.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径,可不填
  	.enableCrop()// 是否裁剪 true or false
  	.compress()// 是否压缩 true or false
- 	.compressMode()//系统自带 or 鲁班压缩 PictureConfig.SYSTEM_COMPRESS_MODE or LUBAN_COMPRESS_MODE
  	.glideOverride()// int glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
  	.withAspectRatio()// int 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
  	.hideBottomControls()// 是否显示uCrop工具栏，默认不显示 true or false
  	.isGif()// 是否显示gif图片 true or false
+	.compressSavePath(getPath())//压缩图片保存地址
  	.freeStyleCropEnabled()// 裁剪框是否可拖拽 true or false
  	.circleDimmedLayer()// 是否圆形裁剪 true or false
  	.showCropFrame()// 是否显示裁剪矩形边框 圆形裁剪时建议设为false   true or false
@@ -196,8 +196,8 @@ Glide.with(context).load(url).apply(options).into(imageView);
  	.selectionMedia()// 是否传入已选图片 List<LocalMedia> list
  	.previewEggs()// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中) true or false
  	.cropCompressQuality()// 裁剪压缩质量 默认90 int
- 	.compressMaxKB()//压缩最大值kb compressGrade()为Luban.CUSTOM_GEAR有效 int 
- 	.compressWH() // 压缩宽高比 compressGrade()为Luban.CUSTOM_GEAR有效  int 
+ 	.minimumCompressSize(100)// 小于100kb的图片不压缩 
+ 	.synOrAsy(true)//同步true或异步false 压缩 默认同步
  	.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效 int 
  	.rotateEnabled() // 裁剪是否可旋转图片 true or false
  	.scaleEnabled()// 裁剪是否可放大缩小图片 true or false
@@ -332,6 +332,14 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
+* v2.1.5
+* 简化压缩代码，只保留luban最新版本压缩
+* 增加压缩自定义保存路径
+* 增加过滤多少kb范围内的图片不压缩处理
+* 修复压缩透明图片出现黑色背景问题
+* 修复开启点击音效第一次不响bug
+
+# 历史版本：
 * v2.1.3
 * 支持长图预览功能
 * 修复部分图片或视频查询不出来bug
@@ -342,7 +350,6 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 优化代码结构
 * 修复已知问题
 
-# 历史版本：
 * v2.1.1
 * 升级glide 4.0为正式版
 * 修复7.1.1系统PopupWindow弹出位置错误bug
@@ -417,6 +424,9 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 -keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 
 ```
+## 打赏
+# ~如果您觉得好，对你有帮助，可以给我一点打赏当做鼓励，蚊子再小也是肉呀(*^__^*) 嘻嘻…… 
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/apply.png)
 
 ## 兼容性测试
 ******腾讯优测-深度测试-通过率达到100%******
