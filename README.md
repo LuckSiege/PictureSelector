@@ -424,7 +424,8 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 -keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 
 ```
-## ~如果您觉得好，对你有帮助，可以给我一点打赏当做鼓励，蚊子再小也是肉呀(*^__^*) 嘻嘻…… 
+## 打赏
+# ~如果您觉得好，对你有帮助，可以给我一点打赏当做鼓励，蚊子再小也是肉呀(*^__^*) 嘻嘻…… 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/apply.png)
 
 ## 兼容性测试
