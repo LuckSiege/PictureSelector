@@ -1,5 +1,5 @@
 # PictureSelector 2.0  
-  一款针对android平台下的图片选择器，支持从相册或拍照选择图片或视频、音频，支持动态权限获取、裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能、适配android 6.0+系统的开源图片选择框架。  
+  一款针对android平台下的图片选择器，支持从相册或拍照选择图片或视频、音频，支持动态权限获取、裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能、适配android 6.0+系统的开源图片选择框架。
   
   
   项目会一直维护(有bug修复完成，一般周末会更新)，有bug请描述清楚，并请Issues会第一时间修复，Android开发QQ交流群[619458861](http://shang.qq.com/wpa/qunwpa?idkey=91eb68229f9106b90ae9fa12d01b74815dd86b26c6c8d1dcbc9a27c1d87c42a0)，个人QQ 893855882@qq.com  希望用得着的朋友点个star。 
@@ -26,7 +26,6 @@
 -[混淆配置](#混淆配置)<br>
 -[兼容性测试](#兼容性测试)<br>
 -[演示效果](#演示效果)<br>
--[打赏](#打赏)<br>
 
 # 功能特点  
 
@@ -73,7 +72,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.5'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.3'
 }
 
 ```
@@ -106,7 +105,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.1.5</version> 
+      <version>v2.1.1</version> 
 </dependency>
 
 ```
@@ -177,17 +176,18 @@ Glide.with(context).load(url).apply(options).into(imageView);
  	.previewImage()// 是否可预览图片 true or false
  	.previewVideo()// 是否可预览视频 true or false
 	.enablePreviewAudio() // 是否可播放音频 true or false
+ 	.compressGrade()// luban压缩档次，默认3档 Luban.THIRD_GEAR、Luban.FIRST_GEAR、Luban.CUSTOM_GEAR
  	.isCamera()// 是否显示拍照按钮 true or false
 	.isZoomAnim(true)// 图片列表点击 缩放效果 默认true
 	.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
 	.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径,可不填
  	.enableCrop()// 是否裁剪 true or false
  	.compress()// 是否压缩 true or false
+ 	.compressMode()//系统自带 or 鲁班压缩 PictureConfig.SYSTEM_COMPRESS_MODE or LUBAN_COMPRESS_MODE
  	.glideOverride()// int glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
  	.withAspectRatio()// int 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
  	.hideBottomControls()// 是否显示uCrop工具栏，默认不显示 true or false
  	.isGif()// 是否显示gif图片 true or false
-	.compressSavePath(getPath())//压缩图片保存地址
  	.freeStyleCropEnabled()// 裁剪框是否可拖拽 true or false
  	.circleDimmedLayer()// 是否圆形裁剪 true or false
  	.showCropFrame()// 是否显示裁剪矩形边框 圆形裁剪时建议设为false   true or false
@@ -196,8 +196,8 @@ Glide.with(context).load(url).apply(options).into(imageView);
  	.selectionMedia()// 是否传入已选图片 List<LocalMedia> list
  	.previewEggs()// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中) true or false
  	.cropCompressQuality()// 裁剪压缩质量 默认90 int
- 	.minimumCompressSize(100)// 小于100kb的图片不压缩 
- 	.synOrAsy(true)//同步true或异步false 压缩 默认同步
+ 	.compressMaxKB()//压缩最大值kb compressGrade()为Luban.CUSTOM_GEAR有效 int 
+ 	.compressWH() // 压缩宽高比 compressGrade()为Luban.CUSTOM_GEAR有效  int 
  	.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效 int 
  	.rotateEnabled() // 裁剪是否可旋转图片 true or false
  	.scaleEnabled()// 裁剪是否可放大缩小图片 true or false
@@ -332,14 +332,111 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
-* v2.1.5
-* 简化压缩代码，只保留luban最新版本压缩
-* 增加压缩自定义保存路径
-* 增加过滤多少kb范围内的图片不压缩处理
-* 修复压缩透明图片出现黑色背景问题
-* 修复开启点击音效第一次不响bug
-
-# 历史版本：
 * v2.1.3
 * 支持长图预览功能
-* 修复部分图片或视频查询不出
+* 修复部分图片或视频查询不出来bug
+* 去除使用者主动添加适配android 6.0以上系统拍照适配配置
+* 升级PhotoView版本为最新版本
+* 解决部分图片预览时没有填充满屏幕问题
+* 优化相册启动时间，去除一些耗时操作
+* 优化代码结构
+* 修复已知问题
+
+# 历史版本：
+* v2.1.1
+* 升级glide 4.0为正式版
+* 修复7.1.1系统PopupWindow弹出位置错误bug
+
+* v2.1.0
+* 修复裁剪速度慢的问题
+
+* v2.0.9
+* 修复直接播放视频闪退bug
+* 升级glide为4.0.0 rc1
+* 新增图片列表点击缩放效果api
+
+* v2.0.7
+* 修复已知bug
+
+* v2.0.6
+* 新增自定拍照保存路径
+* 修复录音不显示时长问题
+
+# 项目使用第三方库：
+* glide:4.0.0	
+* rxjava:2.0.5
+* rxandroid:2.0.1
+* PhotoView:2.1.3
+* luban
+* 裁剪使用ucrop
+
+## 混淆配置 
+```
+#PictureSelector 2.0
+-keep class com.luck.picture.lib.** { *; }
+
+-dontwarn com.yalantis.ucrop**
+-keep class com.yalantis.ucrop** { *; }
+-keep interface com.yalantis.ucrop** { *; }
+   
+ #rxjava
+-dontwarn sun.misc.**
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+ long producerIndex;
+ long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+ rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+ rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}
+
+#rxandroid
+-dontwarn sun.misc.**
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+   long producerIndex;
+   long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}
+
+#glide
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.AppGlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+
+# for DexGuard only
+-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+
+```
+
+## 兼容性测试
+******腾讯优测-深度测试-通过率达到100%******
+
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/test.png)
+
+## 演示效果
+
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/1.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/2.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/3.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/4.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/white.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/blue.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/11.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/5.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/6.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/7.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/8.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/audio.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/9.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/10.jpg)
+
