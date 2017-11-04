@@ -178,6 +178,7 @@ Glide.with(context).load(url).apply(options).into(imageView);
  	.previewVideo()// 是否可预览视频 true or false
 	.enablePreviewAudio() // 是否可播放音频 true or false
  	.isCamera()// 是否显示拍照按钮 true or false
+	.imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg
 	.isZoomAnim(true)// 图片列表点击 缩放效果 默认true
 	.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
 	.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径,可不填
