@@ -335,7 +335,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * v2.1.6
 
 * 1.增加拍照自定义相片后缀名
-* 2.修复设置数字选择风格，不显示数量问题
+* 2.修复设置数字选择风格，不显示数量问题(.imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg)
 * 3.修复已知bug
 
 # 历史版本：
