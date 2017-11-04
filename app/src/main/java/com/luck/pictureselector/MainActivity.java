@@ -8,6 +8,7 @@ import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -21,7 +22,6 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.permissions.RxPermissions;
-import com.luck.picture.lib.tools.DebugUtil;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 
@@ -166,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
                         .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
                         .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
+                        //.imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg
                         //.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径
                         .enableCrop(cb_crop.isChecked())// 是否裁剪
                         .compress(cb_compress.isChecked())// 是否压缩
@@ -247,9 +248,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
                     // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
                     // 如果裁剪并压缩了，已取压缩路径为准，因为是先裁剪后压缩的
+                    for (LocalMedia media : selectList) {
+                        Log.i("图片-----》", media.getPath());
+                    }
                     adapter.setList(selectList);
                     adapter.notifyDataSetChanged();
-                    DebugUtil.i(TAG, "onActivityResult:" + selectList.size());
                     break;
             }
         }

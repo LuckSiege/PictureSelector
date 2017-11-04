@@ -44,7 +44,7 @@
         <!--预览界面标题文字颜色-->
         <item name="picture.ac_preview.title.textColor">@color/white</item>
         <!--预览界面已完成文字颜色-->
-        <item name="picture.ac_preview.complete.textColor">@color/tab_color_true</item>
+        <item name="picture.ac_preview.complete.textColor">@color/tab_color_false</item>
         <!--预览界面标题栏背景色-->
         <item name="picture.ac_preview.title.bg">@color/bar_grey</item>
         <!--预览界面底部背景色-->
@@ -143,7 +143,7 @@
         <!--标题栏右边文字-->
         <item name="picture.right.textColor">@color/color_53</item>
         <!--图片列表勾选样式-->
-        <item name="picture.checked.style">@drawable/select_cb</item>
+        <item name="picture.checked.style">@drawable/picture_checkbox_selector</item>
         <!--开启图片列表勾选数字模式,开启的话勾选样式要换-->
         <item name="picture.style.checkNumMode">false</item>
         <!--选择图片样式0/9-->
@@ -151,15 +151,16 @@
         <!--图片列表底部背景色-->
         <item name="picture.bottom.bg">@color/color_fa</item>
         <!--图片列表预览文字颜色-->
-        <item name="picture.preview.textColor">@color/color_orange</item>
+        <item name="picture.preview.textColor">@color/picture_list_sina_text_color</item>
         <!--图片列表已完成文字颜色-->
-        <item name="picture.complete.textColor">@color/color_orange</item>
+        <item name="picture.complete.textColor">@color/picture_list_sina_text_color</item>
         <!--图片已选数量圆点背景色-->
         <item name="picture.num.style">@drawable/num_oval_orange</item>
         <!--预览界面标题文字颜色-->
         <item name="picture.ac_preview.title.textColor">@color/color_53</item>
         <!--预览界面已完成文字颜色-->
-        <item name="picture.ac_preview.complete.textColor">@color/color_orange</item>
+        <item name="picture.ac_preview.complete.textColor">@color/picture_list_sina_text_color
+        </item>
         <!--预览界面标题栏背景色-->
         <item name="picture.ac_preview.title.bg">@color/white</item>
         <!--预览界面底部背景色-->
