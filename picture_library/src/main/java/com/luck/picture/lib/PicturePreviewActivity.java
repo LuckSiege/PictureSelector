@@ -442,10 +442,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
                                     if (eqLongImg) {
                                         displayLongPic(resource, longImg);
                                     } else {
-                                        // 适配有些手机 图片不能充满全屏
-                                        if (resource.getWidth() > 480 && resource.getHeight() > 1080) {
-                                            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                                        }
                                         imageView.setImageBitmap(resource);
                                     }
                                 }
