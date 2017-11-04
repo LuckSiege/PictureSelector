@@ -78,7 +78,8 @@ public class PictureBaseActivity extends FragmentActivity {
                 (this, R.attr.picture_statusFontColor);
         previewStatusFont = AttrsUtils.getTypeValueBoolean
                 (this, R.attr.picture_preview_statusFontColor);
-        numComplete = AttrsUtils.getTypeValueBoolean(this, R.attr.picture_style_numComplete);
+        numComplete = AttrsUtils.getTypeValueBoolean(this,
+                R.attr.picture_style_numComplete);
         config.checkNumMode = AttrsUtils.getTypeValueBoolean
                 (this, R.attr.picture_style_checkNumMode);
         selectionMedias = config.selectionMedias;
