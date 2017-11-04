@@ -333,6 +333,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 # 当前版本：
 * v2.1.6
+
 * 1.增加拍照自定义相片后缀名
 * 2.修复设置数字选择风格，不显示数量问题
 * 3.修复已知bug
