@@ -7,6 +7,7 @@ import android.support.annotation.StyleRes;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DebugUtil;
+import com.luck.picture.lib.tools.PictureFileUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean camera;
     public String outputCameraPath;
     public String compressSavePath;
+    public String suffixType;
     @StyleRes
     public int themeStyleId;
     public int selectionMode;
@@ -106,6 +108,7 @@ public final class PictureSelectionConfig implements Parcelable {
         zoomAnim = true;
         outputCameraPath = "";
         compressSavePath = "";
+        suffixType = PictureFileUtils.POSTFIX;
         sizeMultiplier = 0.5f;
         selectionMedias = new ArrayList<>();
         DebugUtil.i("*******", "reset PictureSelectionConfig");
@@ -136,6 +139,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte(this.camera ? (byte) 1 : (byte) 0);
         dest.writeString(this.outputCameraPath);
         dest.writeString(this.compressSavePath);
+        dest.writeString(this.suffixType);
         dest.writeInt(this.themeStyleId);
         dest.writeInt(this.selectionMode);
         dest.writeInt(this.maxSelectNum);
@@ -184,6 +188,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.camera = in.readByte() != 0;
         this.outputCameraPath = in.readString();
         this.compressSavePath = in.readString();
+        this.suffixType = in.readString();
         this.themeStyleId = in.readInt();
         this.selectionMode = in.readInt();
         this.maxSelectNum = in.readInt();

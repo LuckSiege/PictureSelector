@@ -89,15 +89,15 @@
         <!--图片列表底部背景色-->
         <item name="picture.bottom.bg">@color/color_fa</item>
         <!--图片列表预览文字颜色-->
-        <item name="picture.preview.textColor">@color/tab_color_true</item>
+        <item name="picture.preview.textColor">@color/picture_list_text_color</item>
         <!--图片列表已完成文字颜色-->
-        <item name="picture.complete.textColor">@color/tab_color_true</item>
+        <item name="picture.complete.textColor">@color/picture_list_text_color</item>
         <!--图片已选数量圆点背景色-->
         <item name="picture.num.style">@drawable/num_oval</item>
         <!--预览界面标题文字颜色-->
         <item name="picture.ac_preview.title.textColor">@color/white</item>
         <!--预览界面已完成文字颜色-->
-        <item name="picture.ac_preview.complete.textColor">@color/tab_color_true</item>
+        <item name="picture.ac_preview.complete.textColor">@color/picture_preview_text_color</item>
         <!--预览界面标题栏背景色-->
         <item name="picture.ac_preview.title.bg">@color/bar_grey</item>
         <!--预览界面底部背景色-->

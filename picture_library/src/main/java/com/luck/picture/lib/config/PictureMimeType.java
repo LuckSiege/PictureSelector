@@ -294,4 +294,8 @@ public final class PictureMimeType {
             return ".png";
         }
     }
+
+    public final static String JPEG = ".JPEG";
+
+    public final static String PNG = ".png";
 }

@@ -178,6 +178,16 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param suffixType PictureSelector media format
+     * @return
+     */
+    public PictureSelectionModel imageFormat(String suffixType) {
+        selectionConfig.suffixType = suffixType;
+        return this;
+    }
+
+
+    /**
      * @param cropWidth  crop width
      * @param cropHeight crop height
      * @return

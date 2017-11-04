@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -73,7 +72,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
     private Animation animation;
     private boolean refresh;
     private int index;
-    private int preview_complete_textColor;
     private int screenWidth;
     private LayoutInflater inflater;
 
@@ -101,7 +99,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         screenWidth = ScreenUtils.getScreenWidth(this);
         int status_color = AttrsUtils.getTypeValueColor(this, R.attr.picture_status_color);
         ToolbarUtil.setColorNoTranslucent(this, status_color);
-        preview_complete_textColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_preview_textColor);
         LightStatusBarUtils.setLightStatusBar(this, previewStatusFont);
         animation = OptAnimationLoader.loadAnimation(this, R.anim.modal_in);
         animation.setAnimationListener(this);
@@ -325,7 +322,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         this.refresh = isRefresh;
         boolean enable = selectImages.size() != 0;
         if (enable) {
-            tv_ok.setTextColor(preview_complete_textColor);
+            tv_ok.setSelected(true);
             id_ll_ok.setEnabled(true);
             if (numComplete) {
                 tv_ok.setText(getString(R.string.picture_done_front_num, selectImages.size(), config.maxSelectNum));
@@ -339,7 +336,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
             }
         } else {
             id_ll_ok.setEnabled(false);
-            tv_ok.setTextColor(ContextCompat.getColor(this, R.color.tab_color_false));
+            tv_ok.setSelected(false);
             if (numComplete) {
                 tv_ok.setText(getString(R.string.picture_done_front_num, 0, config.maxSelectNum));
             } else {

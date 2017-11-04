@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,7 +39,6 @@ import com.luck.picture.lib.permissions.RxPermissions;
 import com.luck.picture.lib.rxbus2.RxBus;
 import com.luck.picture.lib.rxbus2.Subscribe;
 import com.luck.picture.lib.rxbus2.ThreadMode;
-import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DebugUtil;
 import com.luck.picture.lib.tools.DoubleUtils;
@@ -83,7 +81,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private FolderPopWindow folderWindow;
     private Animation animation = null;
     private boolean anim = false;
-    private int preview_textColor, complete_textColor;
     private RxPermissions rxPermissions;
     private PhotoPopupWindow popupWindow;
     private LocalMediaLoader mediaLoader;
@@ -265,11 +262,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (savedInstanceState != null) {
             // 防止拍照内存不足时activity被回收，导致拍照后的图片未选中
             selectionMedias = PictureSelector.obtainSelectorList(savedInstanceState);
-            preview_textColor = savedInstanceState.getInt("preview_textColor");
-            complete_textColor = savedInstanceState.getInt("complete_textColor");
-        } else {
-            preview_textColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_preview_textColor);
-            complete_textColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_complete_textColor);
         }
         adapter = new PictureImageGridAdapter(mContext, config);
         adapter.setOnPhotoSelectChangedListener(PictureSelectorActivity.this);
@@ -285,8 +277,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (adapter != null) {
-            outState.putInt("preview_textColor", preview_textColor);
-            outState.putInt("complete_textColor", complete_textColor);
             List<LocalMedia> selectedImages = adapter.getSelectedImages();
             PictureSelector.saveSelectorList(outState, selectedImages);
         }
@@ -378,9 +368,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     public void startOpenCamera() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+            int type = config.mimeType == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_IMAGE : config.mimeType;
             File cameraFile = PictureFileUtils.createCameraFile(this,
-                    config.mimeType == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_IMAGE : config.mimeType,
-                    outputCameraPath);
+                    type,
+                    outputCameraPath, config.suffixType);
             cameraPath = cameraFile.getAbsolutePath();
             Uri imageUri = parUri(cameraFile);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
@@ -396,7 +387,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             File cameraFile = PictureFileUtils.createCameraFile(this, config.mimeType ==
                             PictureConfig.TYPE_ALL ? PictureConfig.TYPE_VIDEO : config.mimeType,
-                    outputCameraPath);
+                    outputCameraPath, config.suffixType);
             cameraPath = cameraFile.getAbsolutePath();
             Uri imageUri = parUri(cameraFile);
             DebugUtil.i(TAG, "video second:" + config.recordVideoSecond);
@@ -423,7 +414,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     if (cameraIntent.resolveActivity(getPackageManager()) != null) {
                         File cameraFile = PictureFileUtils.createCameraFile
                                 (PictureSelectorActivity.this, config.mimeType,
-                                        outputCameraPath);
+                                        outputCameraPath, config.suffixType);
                         cameraPath = cameraFile.getAbsolutePath();
                         Uri imageUri = parUri(cameraFile);
                         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
@@ -870,8 +861,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (enable) {
             id_ll_ok.setEnabled(true);
             picture_id_preview.setEnabled(true);
-            picture_id_preview.setTextColor(preview_textColor);
-            picture_tv_ok.setTextColor(complete_textColor);
+            picture_id_preview.setSelected(true);
+            picture_tv_ok.setSelected(true);
             if (numComplete) {
                 picture_tv_ok.setText(getString
                         (R.string.picture_done_front_num, selectImages.size(), config.maxSelectNum));
@@ -887,9 +878,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         } else {
             id_ll_ok.setEnabled(false);
             picture_id_preview.setEnabled(false);
-            picture_tv_ok.setTextColor(ContextCompat.getColor(mContext, R.color.tab_color_false));
-            picture_id_preview.setTextColor
-                    (ContextCompat.getColor(mContext, R.color.tab_color_false));
+            picture_id_preview.setSelected(false);
+            picture_tv_ok.setSelected(false);
             if (numComplete) {
                 picture_tv_ok.setText(getString(R.string.picture_done_front_num, 0, config.maxSelectNum));
             } else {

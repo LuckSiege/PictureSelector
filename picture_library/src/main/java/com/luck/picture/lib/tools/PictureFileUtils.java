@@ -56,7 +56,14 @@ public class PictureFileUtils {
     public static final String CAMERA_AUDIO_PATH = "/" + APP_NAME + "/CameraAudio/";
     public static final String CROP_PATH = "/" + APP_NAME + "/CropImage/";
 
-    public static File createCameraFile(Context context, int type, String outputCameraPath) {
+    /**
+     * @param context
+     * @param type
+     * @param outputCameraPath
+     * @param format
+     * @return
+     */
+    public static File createCameraFile(Context context, int type, String outputCameraPath, String format) {
         String path;
         if (type == PictureConfig.TYPE_AUDIO) {
             path = !TextUtils.isEmpty(outputCameraPath)
@@ -66,15 +73,21 @@ public class PictureFileUtils {
                     ? outputCameraPath : CAMERA_PATH;
         }
         return type == PictureConfig.TYPE_AUDIO ?
-                createMediaFile(context, path, type) :
-                createMediaFile(context, path, type);
+                createMediaFile(context, path, type, format) :
+                createMediaFile(context, path, type, format);
     }
 
-    public static File createCropFile(Context context, int type) {
-        return createMediaFile(context, CROP_PATH, type);
+    /**
+     * @param context
+     * @param type
+     * @param format
+     * @return
+     */
+    public static File createCropFile(Context context, int type, String format) {
+        return createMediaFile(context, CROP_PATH, type, format);
     }
 
-    private static File createMediaFile(Context context, String parentPath, int type) {
+    private static File createMediaFile(Context context, String parentPath, int type, String format) {
         String state = Environment.getExternalStorageState();
         File rootDir = state.equals(Environment.MEDIA_MOUNTED) ?
                 Environment.getExternalStorageDirectory() : context.getCacheDir();
@@ -87,9 +100,11 @@ public class PictureFileUtils {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINA).format(new Date());
         String fileName = APP_NAME + "_" + timeStamp + "";
         File tmpFile = null;
+        String suffixType;
         switch (type) {
             case PictureConfig.TYPE_IMAGE:
-                tmpFile = new File(folderDir, fileName + POSTFIX);
+                suffixType = TextUtils.isEmpty(format) ? POSTFIX : format;
+                tmpFile = new File(folderDir, fileName + suffixType);
                 break;
             case PictureConfig.TYPE_VIDEO:
                 tmpFile = new File(folderDir, fileName + POST_VIDEO);
@@ -563,7 +578,6 @@ public class PictureFileUtils {
                         file.delete();
                 }
         }
-        DebugUtil.i(TAG, "Cache delete success!");
     }
 
     /**
