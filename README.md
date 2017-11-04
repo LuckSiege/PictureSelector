@@ -73,7 +73,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.5'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.6'
 }
 
 ```
@@ -106,7 +106,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.1.5</version> 
+      <version>v2.1.6</version> 
 </dependency>
 
 ```
@@ -331,8 +331,13 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 
 ## 更新日志
-
 # 当前版本：
+* v2.1.6
+1.增加拍照自定义相片后缀名
+2.修复设置数字选择风格，不显示数量问题
+3.修复已知bug
+
+# 历史版本：
 * v2.1.5
 * 简化压缩代码，只保留luban最新版本压缩
 * 增加压缩自定义保存路径
@@ -340,7 +345,6 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 修复压缩透明图片出现黑色背景问题
 * 修复开启点击音效第一次不响bug
 
-# 历史版本：
 * v2.1.3
 * 支持长图预览功能
 * 修复部分图片或视频查询不出来bug
