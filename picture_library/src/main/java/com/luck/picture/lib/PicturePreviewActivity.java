@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -74,6 +75,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
     private int index;
     private int screenWidth;
     private LayoutInflater inflater;
+    private Handler mHandler;
 
     //EventBus 3.0 回调
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -82,8 +84,12 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
             case PictureConfig.CLOSE_PREVIEW_FLAG:
                 // 压缩完后关闭预览界面
                 dismissDialog();
-                finish();
-                overridePendingTransition(0, R.anim.a3);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        onBackPressed();
+                    }
+                }, 150);
                 break;
         }
     }
@@ -95,6 +101,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         if (!RxBus.getDefault().isRegistered(this)) {
             RxBus.getDefault().register(this);
         }
+        mHandler = new Handler();
         inflater = LayoutInflater.from(this);
         screenWidth = ScreenUtils.getScreenWidth(this);
         int status_color = AttrsUtils.getTypeValueColor(this, R.attr.picture_status_color);
@@ -450,15 +457,13 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
                 imageView.setOnViewTapListener(new OnViewTapListener() {
                     @Override
                     public void onViewTap(View view, float x, float y) {
-                        finish();
-                        overridePendingTransition(0, R.anim.a3);
+                        onBackPressed();
                     }
                 });
                 longImg.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        finish();
-                        overridePendingTransition(0, R.anim.a3);
+                        onBackPressed();
                     }
                 });
                 iv_play.setOnClickListener(new View.OnClickListener() {
@@ -495,8 +500,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.picture_left_back) {
-            finish();
-            overridePendingTransition(0, R.anim.a3);
+            onBackPressed();
         }
         if (id == R.id.id_ll_ok) {
             // 如果设置了图片最小选择数量，则判断是否满足条件
@@ -530,8 +534,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         // 如果开启了压缩，先不关闭此页面，PictureImageGridActivity压缩完在通知关闭
         if (!config.isCompress) {
             DebugUtil.i("**** not compress finish");
-            finish();
-            overridePendingTransition(0, R.anim.a3);
+            onBackPressed();
         } else {
             DebugUtil.i("**** loading compress");
             showPleaseDialog();
@@ -558,9 +561,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-        overridePendingTransition(0, R.anim.a3);
+        closeActivity();
     }
 
     @Override
@@ -568,6 +569,10 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
         super.onDestroy();
         if (RxBus.getDefault().isRegistered(this)) {
             RxBus.getDefault().unregister(this);
+        }
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+            mHandler = null;
         }
         if (animation != null) {
             animation.cancel();

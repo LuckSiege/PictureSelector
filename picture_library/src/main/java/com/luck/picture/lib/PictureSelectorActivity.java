@@ -855,7 +855,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             picture_id_preview.setVisibility(View.GONE);
         } else {
             boolean isVideo = PictureMimeType.isVideo(pictureType);
-            picture_id_preview.setVisibility(isVideo ? View.GONE : View.VISIBLE);
+            boolean eqVideo = config.mimeType == PictureConfig.TYPE_VIDEO;
+            picture_id_preview.setVisibility(isVideo || eqVideo ? View.GONE : View.VISIBLE);
         }
         boolean enable = selectImages.size() != 0;
         if (enable) {
