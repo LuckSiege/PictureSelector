@@ -7,58 +7,60 @@ import java.util.ArrayList;
 import java.util.List;
 
 class Checker {
-  private static List<String> format = new ArrayList<>();
-  private static final String JPG = "jpg";
-  private static final String JPEG = "jpeg";
-  private static final String PNG = "png";
-  private static final String WEBP = "webp";
-  private static final String GIF = "gif";
+    private static List<String> format = new ArrayList<>();
+    private static final String JPG = "jpg";
+    private static final String JPEG = "jpeg";
+    private static final String PNG = "png";
+    private static final String WEBP = "webp";
+    private static final String GIF = "gif";
+    private static final String BMP = "bmp";
 
-  static {
-    format.add(JPG);
-    format.add(JPEG);
-    format.add(PNG);
-    format.add(WEBP);
-    format.add(GIF);
-  }
-
-  static boolean isImage(String path) {
-    if (TextUtils.isEmpty(path)) {
-      return false;
+    static {
+        format.add(JPG);
+        format.add(JPEG);
+        format.add(PNG);
+        format.add(WEBP);
+        format.add(GIF);
+        format.add(BMP);
     }
 
-    String suffix = path.substring(path.lastIndexOf(".") + 1, path.length());
-    return format.contains(suffix.toLowerCase());
-  }
+    static boolean isImage(String path) {
+        if (TextUtils.isEmpty(path)) {
+            return false;
+        }
 
-  static boolean isJPG(String path) {
-    if (TextUtils.isEmpty(path)) {
-      return false;
+        String suffix = path.substring(path.lastIndexOf(".") + 1, path.length());
+        return format.contains(suffix.toLowerCase());
     }
 
-    String suffix = path.substring(path.lastIndexOf("."), path.length()).toLowerCase();
-    return suffix.contains(JPG) || suffix.contains(JPEG);
-  }
+    static boolean isJPG(String path) {
+        if (TextUtils.isEmpty(path)) {
+            return false;
+        }
 
-  static String checkSuffix(String path) {
-    if (TextUtils.isEmpty(path)) {
-      return ".jpg";
+        String suffix = path.substring(path.lastIndexOf("."), path.length()).toLowerCase();
+        return suffix.contains(JPG) || suffix.contains(JPEG);
     }
 
-    return path.substring(path.lastIndexOf("."), path.length());
-  }
+    static String checkSuffix(String path) {
+        if (TextUtils.isEmpty(path)) {
+            return ".jpg";
+        }
 
-  static boolean isNeedCompress(int leastCompressSize, String path) {
-    if (leastCompressSize > 0) {
-      File source = new File(path);
-      if (!source.exists()) {
-        return false;
-      }
-
-      if (source.length() <= (leastCompressSize << 10)) {
-        return false;
-      }
+        return path.substring(path.lastIndexOf("."), path.length());
     }
-    return true;
-  }
+
+    static boolean isNeedCompress(int leastCompressSize, String path) {
+        if (leastCompressSize > 0) {
+            File source = new File(path);
+            if (!source.exists()) {
+                return false;
+            }
+
+            if (source.length() <= (leastCompressSize << 10)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

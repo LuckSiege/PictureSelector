@@ -184,10 +184,14 @@ public class PictureBaseActivity extends FragmentActivity {
                     .map(new Function<List<LocalMedia>, List<File>>() {
                         @Override
                         public List<File> apply(@NonNull List<LocalMedia> list) throws Exception {
-                            return Luban.with(mContext)
+                            List<File> files = Luban.with(mContext)
                                     .setTargetDir(config.compressSavePath)
                                     .ignoreBy(config.minimumCompressSize)
                                     .loadLocalMedia(list).get();
+                            if (files == null) {
+                                files = new ArrayList<>();
+                            }
+                            return files;
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
@@ -229,14 +233,16 @@ public class PictureBaseActivity extends FragmentActivity {
      * @param files
      */
     private void handleCompressCallBack(List<LocalMedia> images, List<File> files) {
-        for (int i = 0, j = images.size(); i < j; i++) {
-            String path = files.get(i).getPath();// 压缩成功后的地址
-            LocalMedia image = images.get(i);
-            // 如果是网络图片则不压缩
-            boolean http = PictureMimeType.isHttp(path);
-            boolean eqTrue = !TextUtils.isEmpty(path) && http;
-            image.setCompressed(eqTrue ? false : true);
-            image.setCompressPath(eqTrue ? "" : path);
+        if (files.size() == images.size()) {
+            for (int i = 0, j = images.size(); i < j; i++) {
+                String path = files.get(i).getPath();// 压缩成功后的地址
+                LocalMedia image = images.get(i);
+                // 如果是网络图片则不压缩
+                boolean http = PictureMimeType.isHttp(path);
+                boolean eqTrue = !TextUtils.isEmpty(path) && http;
+                image.setCompressed(eqTrue ? false : true);
+                image.setCompressPath(eqTrue ? "" : path);
+            }
         }
         RxBus.getDefault().post(new EventEntity(PictureConfig.CLOSE_PREVIEW_FLAG));
         onResult(images);
@@ -295,7 +301,7 @@ public class PictureBaseActivity extends FragmentActivity {
         options.setFreeStyleCropEnabled(config.freeStyleCropEnabled);
         String path = list.size() > 0 ? list.get(0) : "";
         boolean isHttp = PictureMimeType.isHttp(path);
-        String imgType = PictureMimeType.getLastImgType(originalPath);
+        String imgType = PictureMimeType.getLastImgType(path);
         Uri uri = isHttp ? Uri.parse(path) : Uri.fromFile(new File(path));
         UCropMulti.of(uri, Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + imgType)))
                 .withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y)

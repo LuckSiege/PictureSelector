@@ -43,6 +43,7 @@ public final class PictureMimeType {
             case "image/webp":
             case "image/WEBP":
             case "image/gif":
+            case "image/bmp":
             case "image/GIF":
             case "imagex-ms-bmp":
                 return PictureConfig.TYPE_IMAGE;
@@ -66,6 +67,7 @@ public final class PictureMimeType {
             case "audio/aac":
             case "audio/mp4":
             case "audio/quicktime":
+            case "audio/lamr":
             case "audio/3gpp":
                 return PictureConfig.TYPE_AUDIO;
         }
@@ -158,11 +160,12 @@ public final class PictureMimeType {
                 return "video/mp4";
             } else if (name.endsWith(".PNG") || name.endsWith(".png") || name.endsWith(".jpeg")
                     || name.endsWith(".gif") || name.endsWith(".GIF") || name.endsWith(".jpg")
-                    || name.endsWith(".webp") || name.endsWith(".WEBP") || name.endsWith(".JPEG")) {
+                    || name.endsWith(".webp") || name.endsWith(".WEBP") || name.endsWith(".JPEG")
+                    || name.endsWith(".bmp")) {
                 return "image/jpeg";
             } else if (name.endsWith(".mp3") || name.endsWith(".amr")
                     || name.endsWith(".aac") || name.endsWith(".war")
-                    || name.endsWith(".flac")) {
+                    || name.endsWith(".flac") || name.endsWith(".lamr")) {
                 return "audio/mpeg";
             }
         }
@@ -281,6 +284,8 @@ public final class PictureMimeType {
                     case ".jpeg":
                     case ".JPEG":
                     case ".WEBP":
+                    case ".bmp":
+                    case ".BMP":
                     case ".webp":
                         return imageType;
                     default:
