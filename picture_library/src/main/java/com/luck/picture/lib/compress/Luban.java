@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.tools.PictureFileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -90,7 +91,8 @@ public class Luban implements Handler.Callback {
      */
     @Nullable
     private File getImageCacheDir(Context context, String cacheName) {
-        File cacheDir = context.getExternalCacheDir();
+        String dir = PictureFileUtils.getDiskCacheDir(context);
+        File cacheDir = new File(dir);
         if (cacheDir != null) {
             File result = new File(cacheDir, cacheName);
             if (!result.mkdirs() && (!result.exists() || !result.isDirectory())) {

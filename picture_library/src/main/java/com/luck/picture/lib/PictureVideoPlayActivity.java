@@ -55,9 +55,10 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         mMediaController = null;
         mVideoView = null;
+        iv_play = null;
+        super.onDestroy();
     }
 
     public void onResume() {
@@ -77,7 +78,10 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        iv_play.setVisibility(View.VISIBLE);
+        if (null != iv_play) {
+            iv_play.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override

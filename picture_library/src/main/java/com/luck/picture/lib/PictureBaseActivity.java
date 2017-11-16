@@ -270,7 +270,8 @@ public class PictureBaseActivity extends FragmentActivity {
         boolean isHttp = PictureMimeType.isHttp(originalPath);
         String imgType = PictureMimeType.getLastImgType(originalPath);
         Uri uri = isHttp ? Uri.parse(originalPath) : Uri.fromFile(new File(originalPath));
-        UCrop.of(uri, Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + imgType)))
+        UCrop.of(uri, Uri.fromFile(new File(PictureFileUtils.getDiskCacheDir(this),
+                System.currentTimeMillis() + imgType)))
                 .withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y)
                 .withMaxResultSize(config.cropWidth, config.cropHeight)
                 .withOptions(options)
@@ -303,12 +304,14 @@ public class PictureBaseActivity extends FragmentActivity {
         boolean isHttp = PictureMimeType.isHttp(path);
         String imgType = PictureMimeType.getLastImgType(path);
         Uri uri = isHttp ? Uri.parse(path) : Uri.fromFile(new File(path));
-        UCropMulti.of(uri, Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + imgType)))
+        UCropMulti.of(uri, Uri.fromFile(new File(PictureFileUtils.getDiskCacheDir(this),
+                System.currentTimeMillis() + imgType)))
                 .withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y)
                 .withMaxResultSize(config.cropWidth, config.cropHeight)
                 .withOptions(options)
                 .start(this);
     }
+
 
     /**
      * 判断拍照 图片是否旋转
