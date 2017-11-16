@@ -168,7 +168,7 @@ Glide.with(context).load(url).apply(options).into(imageView);
 ```
 // 进入相册 以下是例子：用不到的api可以不写
  PictureSelector.create(MainActivity.this)
- 	.openGallery()//全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()
+ 	.openGallery()//全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
  	.theme()//主题样式(不设置为默认样式) 也可参考demo values/styles下 例如：R.style.picture.white.style
  	.maxSelectNum()// 最大图片选择数量 int
  	.minSelectNum()// 最小选择数量 int
