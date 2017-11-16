@@ -73,7 +73,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.6'
+    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.7'
 }
 
 ```
@@ -106,7 +106,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.1.6</version> 
+      <version>v2.1.7</version> 
 </dependency>
 
 ```
@@ -332,14 +332,17 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 ## 更新日志
 # 当前版本：
-* v2.1.6
+* v2.1.7
+* 1.修复.bmp格式图片，同步压缩会出现闪退问题
+* 2.修复部分机型在使用裁剪或压缩路径时报FileNotfoundException异常问题
 
+# 历史版本：
+* v2.1.6
 * 1.增加拍照自定义相片后缀名(.imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg)
 * 2.修复设置数字选择风格，不显示数量问题
 * 3.修复预览界面文字设置无效问题
 * 4.修复已知bug
 
-# 历史版本：
 * v2.1.5
 * 简化压缩代码，只保留luban最新版本压缩
 * 增加压缩自定义保存路径
