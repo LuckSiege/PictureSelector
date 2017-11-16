@@ -321,7 +321,6 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
                     // 如果裁剪并压缩了，以取压缩路径为准，因为是先裁剪后压缩的
                     adapter.setList(selectList);
                     adapter.notifyDataSetChanged();
-                    DebugUtil.i(TAG, "onActivityResult:" + selectList.size());
                     break;
             }
         }
