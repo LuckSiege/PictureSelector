@@ -2,10 +2,14 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/PictureSelector.iml" filepath="$PROJECT_DIR$/PictureSelector.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/PictureSelector.iml" filepath="$PROJECT_DIR$/.idea/PictureSelector.iml" />
+      <module fileurl="file://D:\android\ASworkspace\PictureSelector\PictureSelector.iml" filepath="D:\android\ASworkspace\PictureSelector\PictureSelector.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://D:\android\ASworkspace\PictureSelector\app\app.iml" filepath="D:\android\ASworkspace\PictureSelector\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/picture_library/picture_library.iml" filepath="$PROJECT_DIR$/picture_library/picture_library.iml" />
+      <module fileurl="file://D:\android\ASworkspace\PictureSelector\picture_library\picture_library.iml" filepath="D:\android\ASworkspace\PictureSelector\picture_library\picture_library.iml" />
       <module fileurl="file://$PROJECT_DIR$/ucrop/ucrop.iml" filepath="$PROJECT_DIR$/ucrop/ucrop.iml" />
+      <module fileurl="file://D:\android\ASworkspace\PictureSelector\ucrop\ucrop.iml" filepath="D:\android\ASworkspace\PictureSelector\ucrop\ucrop.iml" />
     </modules>
   </component>
 </project>

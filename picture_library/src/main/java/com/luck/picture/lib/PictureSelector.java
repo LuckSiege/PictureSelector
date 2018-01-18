@@ -9,6 +9,9 @@ import android.support.v4.app.Fragment;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DoubleUtils;
+import com.yalantis.ucrop.callback.ImageLoder;
+import com.yalantis.ucrop.util.DefImageLoder;
+import com.yalantis.ucrop.util.ImageLoderTools;
 
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
@@ -40,6 +43,12 @@ public final class PictureSelector {
     private PictureSelector(Activity activity, Fragment fragment) {
         mActivity = new WeakReference<>(activity);
         mFragment = new WeakReference<>(fragment);
+        if (ImageLoderTools.getLoder()==null){
+            ImageLoderTools.setLoder(new DefImageLoder());
+        }
+    }
+    public static void initImageLoader(ImageLoder loder) {
+            ImageLoderTools.setLoder(loder);
     }
 
     /**
@@ -201,5 +210,7 @@ public final class PictureSelector {
     Fragment getFragment() {
         return mFragment != null ? mFragment.get() : null;
     }
+
+
 
 }
