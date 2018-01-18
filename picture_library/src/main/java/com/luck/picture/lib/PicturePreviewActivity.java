@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -17,12 +18,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.luck.picture.lib.anim.OptAnimationLoader;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -46,7 +41,10 @@ import com.luck.picture.lib.widget.longimage.ImageViewState;
 import com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropMulti;
+import com.yalantis.ucrop.callback.BitmapLoadCallback;
 import com.yalantis.ucrop.model.CutInfo;
+import com.yalantis.ucrop.model.ExifInfo;
+import com.yalantis.ucrop.util.ImageLoderTools;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -427,7 +425,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
                 longImg.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
                 // 压缩过的gif就不是gif了
                 if (isGif && !media.isCompressed()) {
-                    RequestOptions gifOptions = new RequestOptions()
+                   /* RequestOptions gifOptions = new RequestOptions()
                             .override(480, 800)
                             .priority(Priority.HIGH)
                             .diskCacheStrategy(DiskCacheStrategy.NONE);
@@ -435,9 +433,25 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
                             .asGif()
                             .load(path)
                             .apply(gifOptions)
-                            .into(imageView);
+                            .into(imageView);*/
+
+                    if (ImageLoderTools.loder!=null){
+                        ImageLoderTools.loder.displayImage(PicturePreviewActivity.this,path,imageView,ImageLoderTools.GIF_CALLBACK,new BitmapLoadCallback(){
+
+                            @Override
+                            public void onBitmapLoaded(@NonNull Bitmap bitmap, @NonNull ExifInfo exifInfo, @NonNull String imageInputPath, @Nullable String imageOutputPath) {
+                                dismissDialog();
+                                imageView.setImageBitmap(bitmap);
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Exception bitmapWorkerException) {
+                                dismissDialog();
+                            }
+                        });
+                    }
                 } else {
-                    RequestOptions options = new RequestOptions()
+                  /*  RequestOptions options = new RequestOptions()
                             .diskCacheStrategy(DiskCacheStrategy.ALL);
                     Glide.with(PicturePreviewActivity.this)
                             .asBitmap()
@@ -452,7 +466,31 @@ public class PicturePreviewActivity extends PictureBaseActivity implements View.
                                         imageView.setImageBitmap(resource);
                                     }
                                 }
-                            });
+                            });*/
+
+                    if (ImageLoderTools.loder!=null){
+                        ImageLoderTools.loder.displayImage(PicturePreviewActivity.this,path,imageView,ImageLoderTools.LONG_CALLBACK,new BitmapLoadCallback(){
+
+                            @Override
+                            public void onBitmapLoaded(@NonNull Bitmap resource, @NonNull ExifInfo exifInfo, @NonNull String imageInputPath, @Nullable String imageOutputPath) {
+                                dismissDialog();
+                                if (eqLongImg) {
+                                    displayLongPic(resource, longImg);
+                                } else {
+                                    // 适配有些手机 图片不能充满全屏
+                                    if (resource.getWidth() > 480 && resource.getHeight() > 1080) {
+                                        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                                    }
+                                    imageView.setImageBitmap(resource);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Exception bitmapWorkerException) {
+                                dismissDialog();
+                            }
+                        });
+                    }
                 }
                 imageView.setOnViewTapListener(new OnViewTapListener() {
                     @Override

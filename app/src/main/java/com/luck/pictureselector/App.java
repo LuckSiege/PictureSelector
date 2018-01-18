@@ -3,6 +3,7 @@ package com.luck.pictureselector;
 import android.app.Application;
 
 import com.squareup.leakcanary.LeakCanary;
+import com.yalantis.ucrop.util.ImageLoderTools;
 
 
 /**
@@ -24,5 +25,6 @@ public class App extends Application {
         }
         LeakCanary.install(this);
         LeakCanary.install(this);
+        ImageLoderTools.setLoder(new MyImageLoder());
     }
 }

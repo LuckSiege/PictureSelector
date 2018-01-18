@@ -11,14 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
+import com.yalantis.ucrop.util.ImageLoderTools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +72,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         if (mimeType == PictureMimeType.ofAudio()) {
             holder.first_image.setImageResource(R.drawable.audio_placeholder);
         } else {
-            RequestOptions options = new RequestOptions()
+            /*RequestOptions options = new RequestOptions()
                     .placeholder(R.drawable.ic_placeholder)
                     .centerCrop()
                     .sizeMultiplier(0.5f)
@@ -94,7 +91,10 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
                             circularBitmapDrawable.setCornerRadius(8);
                             holder.first_image.setImageDrawable(circularBitmapDrawable);
                         }
-                    });
+                    });*/
+            if (ImageLoderTools.loder!=null){
+                ImageLoderTools.loder.displayImage(holder.itemView.getContext(),imagePath,holder.first_image,ImageLoderTools.C8);
+            }
         }
         holder.image_num.setText("(" + imageNum + ")");
         holder.tv_folder_name.setText(name);
