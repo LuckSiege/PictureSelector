@@ -8,7 +8,7 @@
     <string name="picture_message_video_max_num">你最多可以选择%1$s个视频</string>
     <string name="picture_preview">预览</string>
     <string name="picture_please">请稍候...</string>
-    <string name="picture_done_front_num">%1$s/%2$s 完成</string>
+    <string name="picture_done_front_num">%1$d/%2$d 完成</string>
     <string name="picture_completed">已完成</string>
     <string name="picture_done">完成</string>
     <string name="picture_please_select">请选择</string>

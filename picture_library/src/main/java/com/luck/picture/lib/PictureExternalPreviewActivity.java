@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -211,10 +210,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                                     if (eqLongImg) {
                                         displayLongPic(resource, longImg);
                                     } else {
-                                        // 适配有些手机 图片不能充满全屏
-                                        if (resource.getWidth() > 480 && resource.getHeight() > 1080) {
-                                            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                                        }
                                         imageView.setImageBitmap(resource);
                                     }
                                 }

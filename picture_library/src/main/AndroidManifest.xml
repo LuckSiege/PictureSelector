@@ -28,15 +28,10 @@
 
         <activity
             android:name=".PictureSelectorActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/activity.Theme"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".PictureBaseActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".PicturePreviewActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/activity.Theme" />
         <activity
             android:name=".PictureVideoPlayActivity"
@@ -45,19 +40,15 @@
             android:theme="@style/activity.Theme" />
         <activity
             android:name=".PictureExternalPreviewActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/activity.Theme" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name="com.yalantis.ucrop.PictureMultiCuttingActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".PicturePlayAudioActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 
