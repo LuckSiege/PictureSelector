@@ -24,7 +24,6 @@ import com.luck.picture.lib.decoration.RecycleViewDivider;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.tools.AttrsUtils;
-import com.luck.picture.lib.tools.DebugUtil;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.StringUtils;
 
@@ -114,7 +113,6 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
 
     @Override
     public void dismiss() {
-        DebugUtil.i("PopWindow:", "dismiss");
         if (isDismiss) {
             return;
         }

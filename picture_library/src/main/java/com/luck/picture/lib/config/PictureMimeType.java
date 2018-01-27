@@ -5,7 +5,6 @@ import android.media.MediaMetadataRetriever;
 import android.text.TextUtils;
 
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.tools.DebugUtil;
 
 import java.io.File;
 
@@ -154,7 +153,6 @@ public final class PictureMimeType {
     public static String fileToType(File file) {
         if (file != null) {
             String name = file.getName();
-            DebugUtil.i("**** fileToType:", name);
             if (name.endsWith(".mp4") || name.endsWith(".avi")
                     || name.endsWith(".3gpp") || name.endsWith(".3gp") || name.startsWith(".mov")) {
                 return "video/mp4";

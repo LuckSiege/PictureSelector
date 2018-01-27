@@ -6,7 +6,6 @@ import android.support.annotation.StyleRes;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.tools.DebugUtil;
 import com.luck.picture.lib.tools.PictureFileUtils;
 
 import java.util.ArrayList;
@@ -111,7 +110,6 @@ public final class PictureSelectionConfig implements Parcelable {
         suffixType = PictureFileUtils.POSTFIX;
         sizeMultiplier = 0.5f;
         selectionMedias = new ArrayList<>();
-        DebugUtil.i("*******", "reset PictureSelectionConfig");
     }
 
     public static PictureSelectionConfig getInstance() {

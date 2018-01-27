@@ -35,7 +35,6 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.permissions.RxPermissions;
 import com.luck.picture.lib.photoview.OnViewTapListener;
 import com.luck.picture.lib.photoview.PhotoView;
-import com.luck.picture.lib.tools.DebugUtil;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.widget.PreviewViewPager;
@@ -368,8 +367,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 bout.write(buffer, 0, read);
                 ava += read;
                 long speed = ava / (System.currentTimeMillis() - start);
-                DebugUtil.i("Download: " + ava + " byte(s)"
-                        + "    avg speed: " + speed + "  (kb/s)");
             }
             bout.flush();
             bout.close();

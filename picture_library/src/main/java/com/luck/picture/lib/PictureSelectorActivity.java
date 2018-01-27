@@ -14,6 +14,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -40,7 +41,6 @@ import com.luck.picture.lib.rxbus2.RxBus;
 import com.luck.picture.lib.rxbus2.Subscribe;
 import com.luck.picture.lib.rxbus2.ThreadMode;
 import com.luck.picture.lib.tools.DateUtils;
-import com.luck.picture.lib.tools.DebugUtil;
 import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.LightStatusBarUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
@@ -60,7 +60,11 @@ import java.util.List;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
-
+/**
+ * @author：luck
+ * @data：2018/1/27 19:12
+ * @描述: Media 选择页面
+ */
 public class PictureSelectorActivity extends PictureBaseActivity implements View.OnClickListener,
         PictureAlbumDirectoryAdapter.OnItemClickListener,
         PictureImageGridAdapter.OnPhotoSelectChangedListener, PhotoPopupWindow.OnItemClickListener {
@@ -116,6 +120,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 List<LocalMedia> selectImages = obj.medias;
                 anim = selectImages.size() > 0 ? true : false;
                 int position = obj.position;
+                Log.i("刷新下标:", String.valueOf(position));
                 adapter.bindSelectImages(selectImages);
                 adapter.notifyItemChanged(position);
                 break;
@@ -197,7 +202,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         rl_bottom = (RelativeLayout) findViewById(R.id.rl_bottom);
         id_ll_ok = (LinearLayout) findViewById(R.id.id_ll_ok);
         tv_empty = (TextView) findViewById(R.id.tv_empty);
-        rl_bottom.setVisibility(config.selectionMode == PictureConfig.SINGLE ? View.GONE : View.VISIBLE);
         isNumComplete(numComplete);
         if (config.mimeType == PictureMimeType.ofAll()) {
             popupWindow = new PhotoPopupWindow(this);
@@ -286,7 +290,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * none number style
      */
     private void isNumComplete(boolean numComplete) {
-        picture_tv_ok.setText(numComplete ? getString(R.string.picture_done_front_num, 0, config.maxSelectNum)
+        picture_tv_ok.setText(numComplete ? getString(R.string.picture_done_front_num,
+                0, config.selectionMode == PictureConfig.SINGLE ? 1 : config.maxSelectNum)
                 : getString(R.string.picture_please_select));
         if (!numComplete) {
             animation = AnimationUtils.loadAnimation(this, R.anim.modal_in);
@@ -301,7 +306,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mediaLoader.loadAllMedia(new LocalMediaLoader.LocalMediaLoadListener() {
             @Override
             public void loadComplete(List<LocalMediaFolder> folders) {
-                DebugUtil.i("loadComplete:" + folders.size());
                 if (folders.size() > 0) {
                     foldersList = folders;
                     LocalMediaFolder folder = folders.get(0);
@@ -390,7 +394,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     outputCameraPath, config.suffixType);
             cameraPath = cameraFile.getAbsolutePath();
             Uri imageUri = parUri(cameraFile);
-            DebugUtil.i(TAG, "video second:" + config.recordVideoSecond);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, config.recordVideoSecond);
             cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, config.videoQuality);
@@ -792,32 +795,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         Bundle bundle = new Bundle();
         List<LocalMedia> result = new ArrayList<>();
         int mediaType = PictureMimeType.isPictureType(pictureType);
-        DebugUtil.i(TAG, "mediaType:" + mediaType);
         switch (mediaType) {
             case PictureConfig.TYPE_IMAGE:
                 // image
-                if (config.selectionMode == PictureConfig.SINGLE) {
-                    if (config.enableCrop) {
-                        originalPath = media.getPath();
-                        boolean gif = PictureMimeType.isGif(pictureType);
-                        if (gif) {
-                            result.add(media);
-                            handlerResult(result);
-                        } else {
-                            startCrop(originalPath);
-                        }
-                    } else {
-                        result.add(media);
-                        handlerResult(result);
-                    }
-                } else {
-                    List<LocalMedia> selectedImages = adapter.getSelectedImages();
-                    ImagesObservable.getInstance().saveLocalMedia(previewImages);
-                    bundle.putSerializable(PictureConfig.EXTRA_SELECT_LIST, (Serializable) selectedImages);
-                    bundle.putInt(PictureConfig.EXTRA_POSITION, position);
-                    startActivity(PicturePreviewActivity.class, bundle, UCropMulti.REQUEST_MULTI_CROP);
-                    overridePendingTransition(R.anim.a5, 0);
-                }
+                List<LocalMedia> selectedImages = adapter.getSelectedImages();
+                ImagesObservable.getInstance().saveLocalMedia(previewImages);
+                bundle.putSerializable(PictureConfig.EXTRA_SELECT_LIST, (Serializable) selectedImages);
+                bundle.putInt(PictureConfig.EXTRA_POSITION, position);
+                startActivity(PicturePreviewActivity.class, bundle, UCropMulti.REQUEST_MULTI_CROP);
+                overridePendingTransition(R.anim.a5, 0);
                 break;
             case PictureConfig.TYPE_VIDEO:
                 // video
@@ -866,13 +852,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             picture_tv_ok.setSelected(true);
             if (numComplete) {
                 picture_tv_ok.setText(getString
-                        (R.string.picture_done_front_num, selectImages.size(), config.maxSelectNum));
+                        (R.string.picture_done_front_num, selectImages.size(),
+                                config.selectionMode == PictureConfig.SINGLE ? 1 : config.maxSelectNum));
             } else {
                 if (!anim) {
                     picture_tv_img_num.startAnimation(animation);
                 }
                 picture_tv_img_num.setVisibility(View.VISIBLE);
-                picture_tv_img_num.setText(selectImages.size() + "");
+                picture_tv_img_num.setText(String.valueOf(selectImages.size()));
                 picture_tv_ok.setText(getString(R.string.picture_completed));
                 anim = false;
             }
@@ -882,7 +869,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             picture_id_preview.setSelected(false);
             picture_tv_ok.setSelected(false);
             if (numComplete) {
-                picture_tv_ok.setText(getString(R.string.picture_done_front_num, 0, config.maxSelectNum));
+                picture_tv_ok.setText(getString(R.string.picture_done_front_num, 0,
+                        config.selectionMode == PictureConfig.SINGLE ? 1 : config.maxSelectNum));
             } else {
                 picture_tv_img_num.setVisibility(View.INVISIBLE);
                 picture_tv_ok.setText(getString(R.string.picture_please_select));
@@ -901,13 +889,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 case UCrop.REQUEST_CROP:
                     Uri resultUri = UCrop.getOutput(data);
                     String cutPath = resultUri.getPath();
-                    media = new LocalMedia(originalPath, 0, false, 0, 0, config.mimeType);
+                    media = new LocalMedia(originalPath, 0, false,
+                            config.isCamera ? 1 : 0, 0, config.mimeType);
                     media.setCutPath(cutPath);
                     media.setCut(true);
                     imageType = PictureMimeType.createImageType(cutPath);
                     media.setPictureType(imageType);
                     medias.add(media);
-                    DebugUtil.i(TAG, "cut createImageType:" + imageType);
                     handlerResult(medias);
                     break;
                 case UCropMulti.REQUEST_MULTI_CROP:
@@ -930,7 +918,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     final File file = new File(cameraPath);
                     sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
                     String toType = PictureMimeType.fileToType(file);
-                    DebugUtil.i(TAG, "camera result:" + toType);
                     if (config.mimeType != PictureMimeType.ofAudio()) {
                         int degree = PictureFileUtils.readPictureDegree(file.getAbsolutePath());
                         rotateImage(degree, file);
@@ -954,7 +941,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     media.setMimeType(config.mimeType);
 
                     // 因为加入了单独拍照功能，所有如果是单独拍照的话也默认为单选状态
-                    if (config.selectionMode == PictureConfig.SINGLE || config.camera) {
+                    if (config.camera) {
                         // 如果是单选 拍照后直接返回
                         boolean eqImg = toType.startsWith(PictureConfig.IMAGE);
                         if (config.enableCrop && eqImg) {
@@ -986,12 +973,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                 // 类型相同或还没有选中才加进选中集合中
                                 if (toEqual || selectedImages.size() == 0) {
                                     if (selectedImages.size() < config.maxSelectNum) {
+                                        // 如果是单选，则清空已选中的并刷新列表(作单一选择)
+                                        if (config.selectionMode == PictureConfig.SINGLE) {
+                                            singleRadioMediaImage();
+                                        }
                                         selectedImages.add(media);
                                         adapter.bindSelectImages(selectedImages);
                                     }
                                 }
-                                adapter.notifyDataSetChanged();
                             }
+                            adapter.notifyDataSetChanged();
                         }
                     }
                     if (adapter != null) {
@@ -1017,6 +1008,19 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         } else if (resultCode == UCrop.RESULT_ERROR) {
             Throwable throwable = (Throwable) data.getSerializableExtra(UCrop.EXTRA_ERROR);
             showToast(throwable.getMessage());
+        }
+    }
+
+    /**
+     * 单选图片
+     */
+    private void singleRadioMediaImage() {
+        if (adapter != null) {
+            List<LocalMedia> selectImages = adapter.getSelectedImages();
+            if (selectImages != null
+                    && selectImages.size() > 0) {
+                selectImages.clear();
+            }
         }
     }
 

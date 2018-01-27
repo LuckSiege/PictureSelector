@@ -27,7 +27,6 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DateUtils;
-import com.luck.picture.lib.tools.DebugUtil;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.VoiceUtils;
 
@@ -156,14 +155,12 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             image.position = contentHolder.getAdapterPosition();
             final String path = image.getPath();
             final String pictureType = image.getPictureType();
-            contentHolder.ll_check.setVisibility(selectMode ==
-                    PictureConfig.SINGLE ? View.GONE : View.VISIBLE);
             if (is_checked_num) {
                 notifyCheckChanged(contentHolder, image);
             }
             selectImage(contentHolder, isSelected(image), false);
 
-            final int picture = PictureMimeType.isPictureType(pictureType);
+            final int mediaMimeType = PictureMimeType.isPictureType(pictureType);
             boolean gif = PictureMimeType.isGif(pictureType);
             contentHolder.tv_isGif.setVisibility(gif ? View.VISIBLE : View.GONE);
             if (mimeType == PictureMimeType.ofAudio()) {
@@ -173,7 +170,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             } else {
                 Drawable drawable = ContextCompat.getDrawable(context, R.drawable.video_icon);
                 StringUtils.modifyTextViewDrawable(contentHolder.tv_duration, drawable, 0);
-                contentHolder.tv_duration.setVisibility(picture == PictureConfig.TYPE_VIDEO
+                contentHolder.tv_duration.setVisibility(mediaMimeType == PictureConfig.TYPE_VIDEO
                         ? View.VISIBLE : View.GONE);
             }
             boolean eqLongImg = PictureMimeType.isLongImg(image);
@@ -204,35 +201,33 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     public void onClick(View v) {
                         // 如原图路径不存在或者路径存在但文件不存在
                         if (!new File(path).exists()) {
-                            Toast.makeText(context, context.getString(R.string.picture_error), Toast.LENGTH_LONG)
+                            Toast.makeText(contentHolder.itemView.getContext(),
+                                    context.getString(R.string.picture_error), Toast.LENGTH_LONG)
                                     .show();
                             return;
                         }
                         changeCheckboxState(contentHolder, image);
                     }
                 });
-
             }
             contentHolder.contentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // 如原图路径不存在或者路径存在但文件不存在
                     if (!new File(path).exists()) {
-                        Toast.makeText(context, context.getString(R.string.picture_error), Toast.LENGTH_LONG)
+                        Toast.makeText(contentHolder.itemView.getContext(),
+                                context.getString(R.string.picture_error), Toast.LENGTH_LONG)
                                 .show();
                         return;
                     }
-                    if (picture == PictureConfig.TYPE_IMAGE && (enablePreview
-                            || selectMode == PictureConfig.SINGLE)) {
-                        int index = showCamera ? position - 1 : position;
-                        imageSelectChangedListener.onPictureClick(image, index);
-                    } else if (picture == PictureConfig.TYPE_VIDEO && (enablePreviewVideo
-                            || selectMode == PictureConfig.SINGLE)) {
-                        int index = showCamera ? position - 1 : position;
-                        imageSelectChangedListener.onPictureClick(image, index);
-                    } else if (picture == PictureConfig.TYPE_AUDIO && (enablePreviewAudio
-                            || selectMode == PictureConfig.SINGLE)) {
-                        int index = showCamera ? position - 1 : position;
+                    int index = showCamera ? position - 1 : position;
+                    boolean eqResult =
+                            mediaMimeType == PictureConfig.TYPE_IMAGE && enablePreview
+                                    || mediaMimeType == PictureConfig.TYPE_VIDEO && (enablePreviewVideo
+                                    || selectMode == PictureConfig.SINGLE)
+                                    || mediaMimeType == PictureConfig.TYPE_AUDIO && (enablePreviewAudio
+                                    || selectMode == PictureConfig.SINGLE);
+                    if (eqResult) {
                         imageSelectChangedListener.onPictureClick(image, index);
                     } else {
                         changeCheckboxState(contentHolder, image);
@@ -335,15 +330,17 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             for (LocalMedia media : selectImages) {
                 if (media.getPath().equals(image.getPath())) {
                     selectImages.remove(media);
-                    DebugUtil.i("selectImages remove::", config.selectionMedias.size() + "");
                     subSelectPosition();
                     disZoom(contentHolder.iv_picture);
                     break;
                 }
             }
         } else {
+            // 如果是单选，则清空已选中的并刷新列表(作单一选择)
+            if (selectMode == PictureConfig.SINGLE) {
+                singleRadioMediaImage();
+            }
             selectImages.add(image);
-            DebugUtil.i("selectImages add::", config.selectionMedias.size() + "");
             image.setNum(selectImages.size());
             VoiceUtils.playVoice(context, enableVoice);
             zoom(contentHolder.iv_picture);
@@ -353,6 +350,18 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         selectImage(contentHolder, !isChecked, true);
         if (imageSelectChangedListener != null) {
             imageSelectChangedListener.onChange(selectImages);
+        }
+    }
+
+    /**
+     * 单选图片
+     */
+    private void singleRadioMediaImage() {
+        if (selectImages != null
+                && selectImages.size() > 0) {
+            LocalMedia media = selectImages.get(0);
+            notifyItemChanged(media.position);
+            selectImages.clear();
         }
     }
 
@@ -370,6 +379,13 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
+    /**
+     * 选中的图片并执行动画
+     *
+     * @param holder
+     * @param isChecked
+     * @param isAnim
+     */
     public void selectImage(ViewHolder holder, boolean isChecked, boolean isAnim) {
         holder.check.setSelected(isChecked);
         if (isChecked) {
@@ -387,11 +403,24 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public interface OnPhotoSelectChangedListener {
+        /**
+         * 拍照回调
+         */
         void onTakePhoto();
 
+        /**
+         * 已选Media回调
+         *
+         * @param selectImages
+         */
         void onChange(List<LocalMedia> selectImages);
 
-
+        /**
+         * 图片预览回调
+         *
+         * @param media
+         * @param position
+         */
         void onPictureClick(LocalMedia media, int position);
     }
 

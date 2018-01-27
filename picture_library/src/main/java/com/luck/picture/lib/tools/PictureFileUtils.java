@@ -556,29 +556,77 @@ public class PictureFileUtils {
         if (cutDir != null) {
             File[] files = cutDir.listFiles();
             for (File file : files) {
-                if (file.isFile())
+                if (file.isFile()) {
                     file.delete();
+                }
             }
         }
 
         if (compressDir != null) {
             File[] files = compressDir.listFiles();
-            if (files != null)
+            if (files != null) {
                 for (File file : files) {
-                    if (file.isFile())
+                    if (file.isFile()) {
                         file.delete();
+                    }
                 }
+            }
         }
 
         if (lubanDir != null) {
             File[] files = lubanDir.listFiles();
-            if (files != null)
+            if (files != null) {
                 for (File file : files) {
-                    if (file.isFile())
+                    if (file.isFile()) {
                         file.delete();
+                    }
                 }
+            }
         }
     }
+
+    /**
+     * set empty PictureSelector Cache
+     *
+     * @param mContext
+     */
+    public static void deleteExternalCacheDirFile(Context mContext) {
+
+        File cutDir = mContext.getExternalCacheDir();
+        File compressDir = new File(mContext.getExternalCacheDir() + "/picture_cache");
+        File lubanDir = new File(mContext.getExternalCacheDir() + "/luban_disk_cache");
+        if (cutDir != null) {
+            File[] files = cutDir.listFiles();
+            for (File file : files) {
+                if (file.isFile()) {
+                    file.delete();
+                }
+            }
+        }
+
+        if (compressDir != null) {
+            File[] files = compressDir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        file.delete();
+                    }
+                }
+            }
+        }
+
+        if (lubanDir != null) {
+            File[] files = lubanDir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        file.delete();
+                    }
+                }
+            }
+        }
+    }
+
 
     /**
      * delete file

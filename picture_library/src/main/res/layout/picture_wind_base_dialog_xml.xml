@@ -15,7 +15,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="提示"
+            android:text="@string/picture_prompt"
             android:textColor="#ff572e"
             android:textSize="16sp" />
 
@@ -40,7 +40,7 @@
                 android:gravity="center"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
-                android:text="更新内容"
+                android:text="@string/picture_prompt_content"
                 android:textColor="#53575e"
                 android:textSize="15sp" />
         </LinearLayout>
@@ -69,7 +69,7 @@
                     android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@drawable/btn_left_bottom_selector"
-                    android:text="取消"
+                    android:text="@string/picture_cancel"
                     android:textColor="#529BeA" />
 
                 <TextView
@@ -83,7 +83,7 @@
                     android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@drawable/btn_right_bottom_selector"
-                    android:text="确定"
+                    android:text="@string/picture_confirm"
                     android:textColor="#529BeA" />
             </LinearLayout>
         </LinearLayout>

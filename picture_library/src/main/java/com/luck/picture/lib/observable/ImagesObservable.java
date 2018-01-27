@@ -3,8 +3,6 @@ package com.luck.picture.lib.observable;
 
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
-import com.luck.picture.lib.tools.DebugUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,19 +93,21 @@ public class ImagesObservable implements SubjectListener {
 
 
     public void clearLocalFolders() {
-        if (folders != null)
+        if (folders != null) {
             folders.clear();
+        }
     }
 
     public void clearLocalMedia() {
-        if (medias != null)
+        if (medias != null) {
             medias.clear();
-        DebugUtil.i("ImagesObservable:", "clearLocalMedia success!");
+        }
     }
 
     public void clearSelectedLocalMedia() {
-        if (selectedImages != null)
+        if (selectedImages != null) {
             selectedImages.clear();
+        }
     }
 
     @Override
