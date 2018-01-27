@@ -1,5 +1,6 @@
 package com.luck.pictureselector;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -20,7 +21,6 @@ import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.tools.DebugUtil;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 
 import java.util.ArrayList;
@@ -189,14 +189,13 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == getActivity().RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case PictureConfig.CHOOSE_REQUEST:
                     // 图片选择
                     selectList = PictureSelector.obtainMultipleResult(data);
                     adapter.setList(selectList);
                     adapter.notifyDataSetChanged();
-                    DebugUtil.i(TAG, "onActivityResult:" + selectList.size());
                     break;
             }
         }
