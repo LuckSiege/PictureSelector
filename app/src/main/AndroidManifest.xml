@@ -9,6 +9,11 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <!-- 全面屏-->
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.1"/>
+
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait" />
