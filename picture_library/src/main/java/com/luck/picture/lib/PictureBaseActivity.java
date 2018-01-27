@@ -86,9 +86,6 @@ public class PictureBaseActivity extends FragmentActivity {
         if (selectionMedias == null) {
             selectionMedias = new ArrayList<>();
         }
-        if (config.selectionMode == PictureConfig.SINGLE) {
-            selectionMedias = new ArrayList<>();
-        }
     }
 
 
