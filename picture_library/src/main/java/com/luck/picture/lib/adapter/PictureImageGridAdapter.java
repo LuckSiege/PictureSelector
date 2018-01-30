@@ -129,10 +129,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == PictureConfig.TYPE_CAMERA) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.picture_item_camera, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.picture_item_camera, parent, false);
             return new HeaderViewHolder(view);
         } else {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.picture_image_grid_item, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.picture_image_grid_item, parent, false);
             return new ViewHolder(view);
         }
     }
@@ -201,7 +201,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     public void onClick(View v) {
                         // 如原图路径不存在或者路径存在但文件不存在
                         if (!new File(path).exists()) {
-                            Toast.makeText(contentHolder.itemView.getContext(),
+                            Toast.makeText(context.getApplicationContext(),
                                     context.getString(R.string.picture_error), Toast.LENGTH_LONG)
                                     .show();
                             return;
@@ -215,7 +215,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 public void onClick(View v) {
                     // 如原图路径不存在或者路径存在但文件不存在
                     if (!new File(path).exists()) {
-                        Toast.makeText(contentHolder.itemView.getContext(),
+                        Toast.makeText(context.getApplicationContext(),
                                 context.getString(R.string.picture_error), Toast.LENGTH_LONG)
                                 .show();
                         return;
@@ -313,7 +313,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         if (!TextUtils.isEmpty(pictureType)) {
             boolean toEqual = PictureMimeType.mimeToEqual(pictureType, image.getPictureType());
             if (!toEqual) {
-                Toast.makeText(context, context.getString(R.string.picture_rule), Toast.LENGTH_LONG)
+                Toast.makeText(context.getApplicationContext(), context.getString(R.string.picture_rule), Toast.LENGTH_LONG)
                         .show();
                 return;
             }
@@ -322,7 +322,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             boolean eqImg = pictureType.startsWith(PictureConfig.IMAGE);
             String str = eqImg ? context.getString(R.string.picture_message_max_num, maxSelectNum)
                     : context.getString(R.string.picture_message_video_max_num, maxSelectNum);
-            Toast.makeText(context, str, Toast.LENGTH_LONG).show();
+            Toast.makeText(context.getApplicationContext(), str, Toast.LENGTH_LONG).show();
             return;
         }
 

@@ -38,6 +38,7 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
     }
 
 
+    @Override
     public void onStart() {
         // Play Video
         mVideoView.setVideoPath(video_path);
@@ -45,6 +46,7 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
         super.onStart();
     }
 
+    @Override
     public void onPause() {
         // Stop video when the activity is pause.
         mPositionWhenPaused = mVideoView.getCurrentPosition();
@@ -61,6 +63,7 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
         super.onDestroy();
     }
 
+    @Override
     public void onResume() {
         // Resume video player
         if (mPositionWhenPaused >= 0) {
@@ -100,8 +103,9 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
         super.attachBaseContext(new ContextWrapper(newBase) {
             @Override
             public Object getSystemService(String name) {
-                if (Context.AUDIO_SERVICE.equals(name))
+                if (Context.AUDIO_SERVICE.equals(name)) {
                     return getApplicationContext().getSystemService(name);
+                }
                 return super.getSystemService(name);
             }
         });

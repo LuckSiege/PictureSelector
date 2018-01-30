@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.ImageView;
@@ -60,7 +59,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     private boolean refresh;
     private int index;
     private int screenWidth;
-    private LayoutInflater inflater;
     private Handler mHandler;
 
     //EventBus 3.0 回调
@@ -88,7 +86,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             RxBus.getDefault().register(this);
         }
         mHandler = new Handler();
-        inflater = LayoutInflater.from(this);
         screenWidth = ScreenUtils.getScreenWidth(this);
         int status_color = AttrsUtils.getTypeValueColor(this, R.attr.picture_status_color);
         ToolbarUtil.setColorNoTranslucent(this, status_color);

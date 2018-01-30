@@ -154,8 +154,9 @@ public class SimpleFragmentAdapter extends PagerAdapter {
                     Intent intent = new Intent();
                     Bundle bundle = new Bundle();
                     bundle.putString("video_path", path);
+                    intent.putExtras(bundle);
                     intent.setClass(mContext, PictureVideoPlayActivity.class);
-                    mContext.startActivity(intent, bundle);
+                    mContext.startActivity(intent);
                 }
             });
         }

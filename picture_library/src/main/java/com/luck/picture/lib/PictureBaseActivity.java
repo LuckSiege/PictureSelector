@@ -116,7 +116,7 @@ public class PictureBaseActivity extends FragmentActivity {
     }
 
     protected void showToast(String msg) {
-        Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }
 
     /**
