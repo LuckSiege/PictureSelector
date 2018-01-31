@@ -396,7 +396,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         if (id == R.id.id_ll_ok) {
             // 如果设置了图片最小选择数量，则判断是否满足条件
             int size = selectImages.size();
-            String pictureType = selectImages.size() > 0 ? selectImages.get(0).getPictureType() : "";
+            LocalMedia image = selectImages.size() > 0 ? selectImages.get(0) : null;
+            String pictureType = image != null ? image.getPictureType() : "";
             if (config.minSelectNum > 0) {
                 if (size < config.minSelectNum && config.selectionMode == PictureConfig.MULTIPLE) {
                     boolean eqImg = pictureType.startsWith(PictureConfig.IMAGE);
@@ -406,14 +407,18 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     return;
                 }
             }
-            if (config.enableCrop && pictureType.startsWith(PictureConfig.IMAGE)
-                    && config.selectionMode == PictureConfig.MULTIPLE) {
-                // 是图片和选择压缩并且是多张，调用批量压缩
-                ArrayList<String> cuts = new ArrayList<>();
-                for (LocalMedia media : selectImages) {
-                    cuts.add(media.getPath());
+            if (config.enableCrop && pictureType.startsWith(PictureConfig.IMAGE)) {
+                if (config.selectionMode == PictureConfig.SINGLE) {
+                    originalPath = image.getPath();
+                    startCrop(originalPath);
+                } else {
+                    // 是图片和选择压缩并且是多张，调用批量压缩
+                    ArrayList<String> cuts = new ArrayList<>();
+                    for (LocalMedia media : selectImages) {
+                        cuts.add(media.getPath());
+                    }
+                    startCrop(cuts);
                 }
-                startCrop(cuts);
             } else {
                 onResult(selectImages);
             }
@@ -439,6 +444,12 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     List<CutInfo> list = UCropMulti.getOutput(data);
                     setResult(RESULT_OK, new Intent().putExtra(UCropMulti.EXTRA_OUTPUT_URI_LIST,
                             (Serializable) list));
+                    finish();
+                    break;
+                case UCrop.REQUEST_CROP:
+                    if (data != null) {
+                        setResult(RESULT_OK, data);
+                    }
                     finish();
                     break;
             }

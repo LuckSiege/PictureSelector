@@ -362,7 +362,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         if (selectImages != null
                 && selectImages.size() > 0) {
             LocalMedia media = selectImages.get(0);
-            notifyItemChanged(config.isCamera ? media.position : isGo ? media.position : media.position - 1);
+            notifyItemChanged(config.isCamera ? media.position :
+                    isGo ? media.position : media.position > 0 ? media.position - 1 : 0);
             selectImages.clear();
             isGo = true;
         }

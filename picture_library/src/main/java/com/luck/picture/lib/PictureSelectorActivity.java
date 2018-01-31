@@ -490,13 +490,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             bundle.putSerializable(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
             bundle.putSerializable(PictureConfig.EXTRA_SELECT_LIST, (Serializable) selectedImages);
             bundle.putBoolean(PictureConfig.EXTRA_BOTTOM_PREVIEW, true);
-            startActivity(PicturePreviewActivity.class, bundle, UCropMulti.REQUEST_MULTI_CROP);
+            startActivity(PicturePreviewActivity.class, bundle,
+                    config.selectionMode == PictureConfig.SINGLE ? UCrop.REQUEST_CROP : UCropMulti.REQUEST_MULTI_CROP);
             overridePendingTransition(R.anim.a5, 0);
         }
 
         if (id == R.id.id_ll_ok) {
             List<LocalMedia> images = adapter.getSelectedImages();
-            String pictureType = images.size() > 0 ? images.get(0).getPictureType() : "";
+            LocalMedia image = images.size() > 0 ? images.get(0) : null;
+            String pictureType = image != null ? image.getPictureType() : "";
             // 如果设置了图片最小选择数量，则判断是否满足条件
             int size = images.size();
             boolean eqImg = pictureType.startsWith(PictureConfig.IMAGE);
@@ -509,12 +511,17 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
             }
             if (config.enableCrop && eqImg) {
-                // 是图片和选择压缩并且是多张，调用批量压缩
-                ArrayList<String> medias = new ArrayList<>();
-                for (LocalMedia media : images) {
-                    medias.add(media.getPath());
+                if (config.selectionMode == PictureConfig.SINGLE) {
+                    originalPath = image.getPath();
+                    startCrop(originalPath);
+                } else {
+                    // 是图片和选择压缩并且是多张，调用批量压缩
+                    ArrayList<String> medias = new ArrayList<>();
+                    for (LocalMedia media : images) {
+                        medias.add(media.getPath());
+                    }
+                    startCrop(medias);
                 }
-                startCrop(medias);
             } else if (config.isCompress && eqImg) {
                 // 图片才压缩，视频不管
                 compressImage(images);
@@ -802,7 +809,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 ImagesObservable.getInstance().saveLocalMedia(previewImages);
                 bundle.putSerializable(PictureConfig.EXTRA_SELECT_LIST, (Serializable) selectedImages);
                 bundle.putInt(PictureConfig.EXTRA_POSITION, position);
-                startActivity(PicturePreviewActivity.class, bundle, UCropMulti.REQUEST_MULTI_CROP);
+                startActivity(PicturePreviewActivity.class, bundle,
+                        config.selectionMode == PictureConfig.SINGLE ? UCrop.REQUEST_CROP : UCropMulti.REQUEST_MULTI_CROP);
                 overridePendingTransition(R.anim.a5, 0);
                 break;
             case PictureConfig.TYPE_VIDEO:
@@ -887,6 +895,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             String imageType;
             switch (requestCode) {
                 case UCrop.REQUEST_CROP:
+                    if (adapter != null) {
+                        // 取单张裁剪已选中图片的path作为原图
+                        List<LocalMedia> mediaList = adapter.getSelectedImages();
+                        originalPath = mediaList != null && mediaList.size() > 0 ? mediaList.get(0).getPath() : "";
+                    }
                     Uri resultUri = UCrop.getOutput(data);
                     String cutPath = resultUri.getPath();
                     media = new LocalMedia(originalPath, 0, false,
