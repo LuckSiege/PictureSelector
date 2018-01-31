@@ -626,7 +626,6 @@ public class UCropActivity extends AppCompatActivity {
             @Override
             public void onBitmapCropped(@NonNull Uri resultUri, int offsetX, int offsetY, int imageWidth, int imageHeight) {
                 setResultUri(resultUri, mGestureCropImageView.getTargetAspectRatio(), offsetX, offsetY, imageWidth, imageHeight);
-                closeActivity();
             }
 
             @Override
@@ -646,6 +645,7 @@ public class UCropActivity extends AppCompatActivity {
                 .putExtra(UCrop.EXTRA_OUTPUT_OFFSET_X, offsetX)
                 .putExtra(UCrop.EXTRA_OUTPUT_OFFSET_Y, offsetY)
         );
+        closeActivity();
     }
 
     protected void setResultError(Throwable throwable) {
