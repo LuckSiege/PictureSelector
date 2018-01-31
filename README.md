@@ -1,4 +1,4 @@
-# PictureSelector 2.0 
+# PictureSelector 2.0
    一款针对android平台下的图片选择器，支持从相册或拍照选择图片或视频、音频，支持动态权限获取、裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能、适配android 6.0+系统的开源图片选择框架。<br>
   
   <br>项目会一直维护(有bug修复完成，一般周末会更新)，有bug请描述清楚，并请Issues会第一时间修复，个人QQ 893855882@qq.com  希望用得着的朋友点个star。 <br>
@@ -73,7 +73,7 @@
 
 ```
 dependencies {
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.7'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.7'
 }
 
 ```
@@ -157,7 +157,7 @@ if (savedInstanceState == null) {
 
 问题四：
 glide冲突
-由于PictureSelector 2.0引入的是最新的glide 4.0.0,所以将项目中老版本的glide删除,并且将报错代码换成如下写法：
+由于PictureSelector 2.0引入的是最新的glide 4.5.0,所以将项目中老版本的glide删除,并且将报错代码换成如下写法：
 RequestOptions options = new RequestOptions();
 options.placeholder(R.drawable.image);
 Glide.with(context).load(url).apply(options).into(imageView);
@@ -336,6 +336,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 2.修复部分机型在使用裁剪或压缩路径时报FileNotfoundException异常问题
 
 # 历史版本：
+
 * v2.1.6
 * 1.增加拍照自定义相片后缀名(.imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg)
 * 2.修复设置数字选择风格，不显示数量问题
@@ -379,7 +380,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 修复录音不显示时长问题
 
 # 项目使用第三方库：
-* glide:4.0.0	
+* glide:4.5.0	
 * rxjava:2.0.5
 * rxandroid:2.0.1
 * PhotoView:2.1.3
