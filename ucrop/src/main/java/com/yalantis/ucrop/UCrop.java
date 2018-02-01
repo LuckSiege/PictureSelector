@@ -280,6 +280,10 @@ public class UCrop {
 
         public static final String EXTRA_UCROP_ROOT_VIEW_BACKGROUND_COLOR = EXTRA_PREFIX + ".UcropRootViewBackgroundColor";
 
+        public static final String EXTRA_ROTATE = EXTRA_PREFIX + ".rotate";
+        public static final String EXTRA_SCALE = EXTRA_PREFIX + ".scale";
+
+        public static final String EXTRA_DRAG_CROP_FRAME = EXTRA_PREFIX + ".DragCropFrame";
 
         private final Bundle mOptionBundle;
 
@@ -382,6 +386,21 @@ public class UCrop {
          */
         public void setShowCropGrid(boolean show) {
             mOptionBundle.putBoolean(EXTRA_SHOW_CROP_GRID, show);
+        }
+
+        /**
+         * @param isDragFrame - 是否可拖动裁剪框
+         */
+        public void setDragFrameEnabled(boolean isDragFrame) {
+            mOptionBundle.putBoolean(EXTRA_DRAG_CROP_FRAME, isDragFrame);
+        }
+
+        public void setScaleEnabled(boolean scaleEnabled) {
+            mOptionBundle.putBoolean(EXTRA_SCALE, scaleEnabled);
+        }
+
+        public void setRotateEnabled(boolean rotateEnabled) {
+            mOptionBundle.putBoolean(EXTRA_ROTATE, rotateEnabled);
         }
 
         /**

@@ -279,6 +279,8 @@ public class UCropMulti {
 
         public static final String EXTRA_FREE_STATUS_FONT = EXTRA_PREFIX + ".StatusFont";
 
+        public static final String EXTRA_DRAG_CROP_FRAME = EXTRA_PREFIX + ".DragCropFrame";
+
         public static final String EXTRA_ROTATE = EXTRA_PREFIX + ".rotate";
         public static final String EXTRA_SCALE = EXTRA_PREFIX + ".scale";
 
@@ -397,6 +399,13 @@ public class UCropMulti {
 
         public void setRotateEnabled(boolean rotateEnabled) {
             mOptionBundle.putBoolean(EXTRA_ROTATE, rotateEnabled);
+        }
+
+        /**
+         * @param isDragFrame - 是否可拖动裁剪框
+         */
+        public void setDragFrameEnabled(boolean isDragFrame) {
+            mOptionBundle.putBoolean(EXTRA_DRAG_CROP_FRAME, isDragFrame);
         }
 
         /**

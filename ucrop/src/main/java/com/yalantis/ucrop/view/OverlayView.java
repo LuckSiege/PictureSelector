@@ -26,14 +26,14 @@ import com.yalantis.ucrop.util.RectUtils;
  * This must have LAYER_TYPE_SOFTWARE to draw itself properly.
  */
 public class OverlayView extends View {
-
+    public static final boolean DEFAULT_DRAG_FRAME = true;
     public static final boolean DEFAULT_SHOW_CROP_FRAME = true;
     public static final boolean DEFAULT_SHOW_CROP_GRID = true;
     public static final boolean DEFAULT_CIRCLE_DIMMED_LAYER = false;
     public static final boolean DEFAULT_FREESTYLE_CROP_ENABLED = false;
     public static final int DEFAULT_CROP_GRID_ROW_COUNT = 2;
     public static final int DEFAULT_CROP_GRID_COLUMN_COUNT = 2;
-
+    private boolean mIsDragFrame = DEFAULT_DRAG_FRAME;
     private final RectF mCropViewRect = new RectF();
     private final RectF mTempRect = new RectF();
 
@@ -102,6 +102,14 @@ public class OverlayView extends View {
 
     public void setFreestyleCropEnabled(boolean freestyleCropEnabled) {
         mIsFreestyleCropEnabled = freestyleCropEnabled;
+    }
+
+    public boolean ismIsDragFrame() {
+        return mIsDragFrame;
+    }
+
+    public void setDragFrame(boolean mIsDragFrame) {
+        this.mIsDragFrame = mIsDragFrame;
     }
 
     /**
@@ -328,16 +336,28 @@ public class OverlayView extends View {
         switch (mCurrentTouchCornerIndex) {
             // resize rectangle
             case 0:
-                mTempRect.set(touchX, touchY, mCropViewRect.right, mCropViewRect.bottom);
+                // 是否可拖动裁剪框
+                if (mIsDragFrame) {
+                    mTempRect.set(touchX, touchY, mCropViewRect.right, mCropViewRect.bottom);
+                }
                 break;
             case 1:
-                mTempRect.set(mCropViewRect.left, touchY, touchX, mCropViewRect.bottom);
+                // 是否可拖动裁剪框
+                if (mIsDragFrame) {
+                    mTempRect.set(mCropViewRect.left, touchY, touchX, mCropViewRect.bottom);
+                }
                 break;
             case 2:
-                mTempRect.set(mCropViewRect.left, mCropViewRect.top, touchX, touchY);
+                // 是否可拖动裁剪框
+                if (mIsDragFrame) {
+                    mTempRect.set(mCropViewRect.left, mCropViewRect.top, touchX, touchY);
+                }
                 break;
             case 3:
-                mTempRect.set(touchX, mCropViewRect.top, mCropViewRect.right, touchY);
+                // 是否可拖动裁剪框
+                if (mIsDragFrame) {
+                    mTempRect.set(touchX, mCropViewRect.top, mCropViewRect.right, touchY);
+                }
                 break;
             // move rectangle
             case 4:

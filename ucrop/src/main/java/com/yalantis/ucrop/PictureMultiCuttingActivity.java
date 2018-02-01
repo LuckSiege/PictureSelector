@@ -115,7 +115,16 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     private int mCompressQuality = DEFAULT_COMPRESS_QUALITY;
     private int[] mAllowedGestures = new int[]{SCALE, ROTATE, ALL};
     private List<CutInfo> cutInfos = new ArrayList<>();
+    /**
+     * 是否可拖动裁剪框
+     */
+    private boolean isDragFrame;
+
+    /**
+     * 图片是否可拖动或旋转
+     */
     private boolean scaleEnabled, rotateEnabled;
+
     private int cutIndex;
 
     @Override
@@ -218,8 +227,13 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         if (inputUri != null && outputUri != null) {
             try {
                 boolean isGif = FileUtils.isGif(inputUri.getPath());
-                mGestureCropImageView.setRotateEnabled(isGif ? false : rotateEnabled);
-                mGestureCropImageView.setScaleEnabled(isGif ? false : scaleEnabled);
+                if (isGif) {
+                    mGestureCropImageView.setRotateEnabled(false);
+                    mGestureCropImageView.setScaleEnabled(false);
+                } else {
+                    mGestureCropImageView.setRotateEnabled(rotateEnabled);
+                    mGestureCropImageView.setScaleEnabled(scaleEnabled);
+                }
                 mGestureCropImageView.setImageUri(inputUri, outputUri);
             } catch (Exception e) {
                 setResultError(e);
@@ -259,6 +273,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         mGestureCropImageView.setImageToWrapCropBoundsAnimDuration(intent.getIntExtra(UCropMulti.Options.EXTRA_IMAGE_TO_CROP_BOUNDS_ANIM_DURATION, CropImageView.DEFAULT_IMAGE_TO_CROP_BOUNDS_ANIM_DURATION));
 
         // Overlay view options
+        mOverlayView.setDragFrame(isDragFrame);
         mOverlayView.setFreestyleCropEnabled(intent.getBooleanExtra(UCropMulti.Options.EXTRA_FREE_STYLE_CROP, false));
         circleDimmedLayer = intent.getBooleanExtra(UCropMulti.Options.EXTRA_CIRCLE_DIMMED_LAYER, OverlayView.DEFAULT_CIRCLE_DIMMED_LAYER);
         mOverlayView.setDimmedColor(intent.getIntExtra(UCropMulti.Options.EXTRA_DIMMED_LAYER_COLOR, getResources().getColor(R.color.ucrop_color_default_dimmed)));
@@ -632,8 +647,8 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     }
 
     private void setAllowedGestures(int tab) {
-        mGestureCropImageView.setScaleEnabled(mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == SCALE);
-        mGestureCropImageView.setRotateEnabled(mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == ROTATE);
+        //mGestureCropImageView.setScaleEnabled(mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == SCALE);
+        //mGestureCropImageView.setRotateEnabled(mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == ROTATE);
     }
 
     /**

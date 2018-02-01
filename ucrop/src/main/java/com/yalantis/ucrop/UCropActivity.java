@@ -107,6 +107,15 @@ public class UCropActivity extends AppCompatActivity {
     private Bitmap.CompressFormat mCompressFormat = DEFAULT_COMPRESS_FORMAT;
     private int mCompressQuality = DEFAULT_COMPRESS_QUALITY;
     private int[] mAllowedGestures = new int[]{SCALE, ROTATE, ALL};
+    /**
+     * 是否可拖动裁剪框
+     */
+    private boolean isDragFrame;
+
+    /**
+     * 图片是否可拖动或旋转
+     */
+    private boolean scaleEnabled, rotateEnabled;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -186,6 +195,8 @@ public class UCropActivity extends AppCompatActivity {
 
         if (inputUri != null && outputUri != null) {
             try {
+                mGestureCropImageView.setRotateEnabled(rotateEnabled);
+                mGestureCropImageView.setScaleEnabled(scaleEnabled);
                 mGestureCropImageView.setImageUri(inputUri, outputUri);
             } catch (Exception e) {
                 setResultError(e);
@@ -226,6 +237,8 @@ public class UCropActivity extends AppCompatActivity {
 
         // Overlay view options
         mOverlayView.setFreestyleCropEnabled(intent.getBooleanExtra(UCrop.Options.EXTRA_FREE_STYLE_CROP, false));
+
+        mOverlayView.setDragFrame(isDragFrame);
 
         mOverlayView.setDimmedColor(intent.getIntExtra(UCrop.Options.EXTRA_DIMMED_LAYER_COLOR, getResources().getColor(R.color.ucrop_color_default_dimmed)));
         mOverlayView.setCircleDimmedLayer(intent.getBooleanExtra(UCrop.Options.EXTRA_CIRCLE_DIMMED_LAYER, OverlayView.DEFAULT_CIRCLE_DIMMED_LAYER));
@@ -270,6 +283,13 @@ public class UCropActivity extends AppCompatActivity {
     }
 
     private void setupViews(@NonNull Intent intent) {
+        scaleEnabled = intent.getBooleanExtra(UCrop.Options.EXTRA_SCALE, true);
+
+        rotateEnabled = intent.getBooleanExtra(UCrop.Options.EXTRA_ROTATE, true);
+
+        // 是否可拖动裁剪框
+        isDragFrame = intent.getBooleanExtra(UCrop.Options.EXTRA_DRAG_CROP_FRAME, true);
+
         mStatusBarColor = intent.getIntExtra(UCrop.Options.EXTRA_STATUS_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_statusbar));
         mToolbarColor = intent.getIntExtra(UCrop.Options.EXTRA_TOOL_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_toolbar));
         if (mToolbarColor == -1) {
@@ -596,8 +616,10 @@ public class UCropActivity extends AppCompatActivity {
     }
 
     private void setAllowedGestures(int tab) {
-        mGestureCropImageView.setScaleEnabled(mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == SCALE);
-        mGestureCropImageView.setRotateEnabled(mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == ROTATE);
+        if (mShowBottomControls) {
+            mGestureCropImageView.setScaleEnabled(mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == SCALE);
+            mGestureCropImageView.setRotateEnabled(mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == ROTATE);
+        }
     }
 
     /**
