@@ -132,6 +132,7 @@ public class PictureSelectionModel {
 
     /**
      * @param hideBottomControls Whether is Clipping function bar
+     *                           单选有效
      * @return
      */
     public PictureSelectionModel hideBottomControls(boolean hideBottomControls) {
@@ -295,7 +296,7 @@ public class PictureSelectionModel {
     }
 
     /**
-     * @param compress save path
+     * @param path save path
      * @return
      */
     public PictureSelectionModel compressSavePath(String path) {
@@ -372,6 +373,14 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel openClickSound(boolean openClickSound) {
         selectionConfig.openClickSound = openClickSound;
+        return this;
+    }
+
+    /**
+     * 是否可拖动裁剪框(setFreeStyleCropEnabled 为true 有效)
+     */
+    public PictureSelectionModel isDragFrame(boolean isDragFrame) {
+        selectionConfig.isDragFrame = isDragFrame;
         return this;
     }
 

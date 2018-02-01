@@ -262,6 +262,9 @@ public class PictureBaseActivity extends FragmentActivity {
         options.setCircleDimmedLayer(config.circleDimmedLayer);
         options.setShowCropFrame(config.showCropFrame);
         options.setShowCropGrid(config.showCropGrid);
+        options.setDragFrameEnabled(config.isDragFrame);
+        options.setScaleEnabled(config.scaleEnabled);
+        options.setRotateEnabled(config.rotateEnabled);
         options.setCompressionQuality(config.cropCompressQuality);
         options.setHideBottomControls(config.hideBottomControls);
         options.setFreeStyleCropEnabled(config.freeStyleCropEnabled);
@@ -291,6 +294,7 @@ public class PictureBaseActivity extends FragmentActivity {
         options.setToolbarWidgetColor(titleColor);
         options.setCircleDimmedLayer(config.circleDimmedLayer);
         options.setShowCropFrame(config.showCropFrame);
+        options.setDragFrameEnabled(config.isDragFrame);
         options.setShowCropGrid(config.showCropGrid);
         options.setScaleEnabled(config.scaleEnabled);
         options.setRotateEnabled(config.rotateEnabled);
