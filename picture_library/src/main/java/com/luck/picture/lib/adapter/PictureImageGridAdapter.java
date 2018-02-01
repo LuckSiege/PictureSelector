@@ -61,6 +61,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private PictureSelectionConfig config;
     private int mimeType;
     private boolean zoomAnim;
+    /**
+     * 单选图片
+     */
+    private boolean isGo;
 
     public PictureImageGridAdapter(Context context, PictureSelectionConfig config) {
         this.context = context;
@@ -97,6 +101,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             selection.add(media);
         }
         this.selectImages = selection;
+        isGo = true;
         subSelectPosition();
         if (imageSelectChangedListener != null) {
             imageSelectChangedListener.onChange(selectImages);
@@ -352,11 +357,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             imageSelectChangedListener.onChange(selectImages);
         }
     }
-
-    /**
-     * 单选图片
-     */
-    private boolean isGo;
 
     private void singleRadioMediaImage() {
         if (selectImages != null

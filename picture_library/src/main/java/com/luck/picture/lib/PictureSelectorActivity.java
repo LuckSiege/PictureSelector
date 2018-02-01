@@ -898,22 +898,25 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     if (adapter != null) {
                         // 取单张裁剪已选中图片的path作为原图
                         List<LocalMedia> mediaList = adapter.getSelectedImages();
-                        originalPath = mediaList != null && mediaList.size() > 0 ? mediaList.get(0).getPath() : "";
+                        LocalMedia image = mediaList != null && mediaList.size() > 0 ? mediaList.get(0) : null;
+                        if (image != null) {
+                            originalPath = image.getPath();
+                            Uri resultUri = UCrop.getOutput(data);
+                            String cutPath = resultUri.getPath();
+                            media = new LocalMedia(originalPath, image.getDuration(), false,
+                                    image.getPosition(), image.getNum(), config.mimeType);
+                            media.setCutPath(cutPath);
+                            media.setCut(true);
+                            imageType = PictureMimeType.createImageType(cutPath);
+                            media.setPictureType(imageType);
+                            medias.add(media);
+                            handlerResult(medias);
+                        }
                     }
-                    Uri resultUri = UCrop.getOutput(data);
-                    String cutPath = resultUri.getPath();
-                    media = new LocalMedia(originalPath, 0, false,
-                            config.isCamera ? 1 : 0, 0, config.mimeType);
-                    media.setCutPath(cutPath);
-                    media.setCut(true);
-                    imageType = PictureMimeType.createImageType(cutPath);
-                    media.setPictureType(imageType);
-                    medias.add(media);
-                    handlerResult(medias);
                     break;
                 case UCropMulti.REQUEST_MULTI_CROP:
-                    List<CutInfo> cuts = UCropMulti.getOutput(data);
-                    for (CutInfo c : cuts) {
+                    List<CutInfo> mCuts = UCropMulti.getOutput(data);
+                    for (CutInfo c : mCuts) {
                         media = new LocalMedia();
                         imageType = PictureMimeType.createImageType(c.getPath());
                         media.setCut(true);
