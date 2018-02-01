@@ -1,4 +1,4 @@
-# PictureSelector 2.0 
+# PictureSelector 2.0  
    一款针对android平台下的图片选择器，支持从相册或拍照选择图片或视频、音频，支持动态权限获取、裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能、适配android 6.0+系统的开源图片选择框架。<br>
   
   <br>项目会一直维护(有bug修复完成，一般周末会更新)，有bug请描述清楚，并请Issues会第一时间修复，个人QQ 893855882@qq.com  希望用得着的朋友点个star。 <br>
@@ -73,7 +73,7 @@
 
 ```
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.7'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.9'
 }
 
 ```
@@ -106,7 +106,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.1.7</version> 
+      <version>v2.1.9</version> 
 </dependency>
 
 ```
@@ -330,12 +330,23 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 
 ## 更新日志
+
 # 当前版本：
+* v2.1.9
+* 1.修改单选策略，也支持预览模式
+* 2.修复8.0部分手机闪退问题
+* 3.修复图片到了最大可选数量，在拍照返回图片不出现问题
+* 4.修改单选模式在拍照返回图片不存在问题
+* 5.升级glide为最新版本4.5.0
+* 6.修复parUri() sdk判断错误问题
+* 7.修复预览图片变形问题
+* 8.修复Toast内存泄漏问题
+* 9.修复若干已知bug
+
+# 历史版本：
 * v2.1.7
 * 1.修复.bmp格式图片，同步压缩会出现闪退问题
 * 2.修复部分机型在使用裁剪或压缩路径时报FileNotfoundException异常问题
-
-# 历史版本：
 
 * v2.1.6
 * 1.增加拍照自定义相片后缀名(.imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg)
