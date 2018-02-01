@@ -895,16 +895,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             String imageType;
             switch (requestCode) {
                 case UCrop.REQUEST_CROP:
+                    Uri resultUri = UCrop.getOutput(data);
+                    String cutPath = resultUri.getPath();
                     if (adapter != null) {
                         // 取单张裁剪已选中图片的path作为原图
                         List<LocalMedia> mediaList = adapter.getSelectedImages();
-                        LocalMedia image = mediaList != null && mediaList.size() > 0 ? mediaList.get(0) : null;
-                        if (image != null) {
-                            originalPath = image.getPath();
-                            Uri resultUri = UCrop.getOutput(data);
-                            String cutPath = resultUri.getPath();
-                            media = new LocalMedia(originalPath, image.getDuration(), false,
-                                    image.getPosition(), image.getNum(), config.mimeType);
+                        media = mediaList != null && mediaList.size() > 0 ? mediaList.get(0) : null;
+                        if (media != null) {
+                            originalPath = media.getPath();
+                            media = new LocalMedia(originalPath, media.getDuration(), false,
+                                    media.getPosition(), media.getNum(), config.mimeType);
                             media.setCutPath(cutPath);
                             media.setCut(true);
                             imageType = PictureMimeType.createImageType(cutPath);
@@ -912,6 +912,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             medias.add(media);
                             handlerResult(medias);
                         }
+                    } else if (config.camera) {
+                        // 单独拍照
+                        media = new LocalMedia(cameraPath, 0, false,
+                                config.isCamera ? 1 : 0, 0, config.mimeType);
+                        media.setCut(true);
+                        media.setCutPath(cutPath);
+                        imageType = PictureMimeType.createImageType(cutPath);
+                        media.setPictureType(imageType);
+                        medias.add(media);
+                        handlerResult(medias);
                     }
                     break;
                 case UCropMulti.REQUEST_MULTI_CROP:
