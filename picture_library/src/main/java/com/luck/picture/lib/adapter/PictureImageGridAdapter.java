@@ -358,6 +358,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
+    /**
+     * 单选模式
+     */
     private void singleRadioMediaImage() {
         if (selectImages != null
                 && selectImages.size() > 0) {
