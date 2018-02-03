@@ -113,6 +113,8 @@ step 2.
 
 ## 常见错误
 ```
+ 重要：PictureSelector.create()；调用此方法时，在activity中传activity.this，在fragment中请传fragment.this,影响回调到哪个地方的onActivityResult()。
+ 
  问题一：
  rxjava冲突：在app build.gradle下添加
  packagingOptions {
