@@ -511,20 +511,21 @@ public class PictureBaseActivity extends FragmentActivity {
         }
     }
 
-    /**
+   /**
      * 获取刚录取的音频文件
      *
      * @param uri
      * @return
      */
     protected String getAudioFilePathFromUri(Uri uri) {
-        String path = "";
+        String path = uri.getPath();
         try {
-            Cursor cursor = getContentResolver()
-                    .query(uri, null, null, null, null);
-            cursor.moveToFirst();
-            int index = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
-            path = cursor.getString(index);
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            if(cursor!=null){
+                cursor.moveToFirst();
+                int index = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
+                path = cursor.getString(index);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
