@@ -37,12 +37,6 @@ public class LocalMediaLoader {
     private static final String DURATION = "duration";
     private static final String NOT_GIF = "!='image/gif'";
     private static final int AUDIO_DURATION = 500;// 过滤掉小于500毫秒的录音
-    private int type = PictureConfig.TYPE_IMAGE;
-    private FragmentActivity activity;
-    private boolean isGif;
-    private long videoMaxS = 0;
-    private long videoMinS = 0;
-
     // 媒体文件数据库字段
     private static final String[] PROJECTION = {
             MediaStore.Files.FileColumns._ID,
@@ -51,19 +45,39 @@ public class LocalMediaLoader {
             MediaStore.MediaColumns.WIDTH,
             MediaStore.MediaColumns.HEIGHT,
             DURATION};
-
     // 图片
     private static final String SELECTION = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-            + " AND " + MediaStore.MediaColumns.SIZE + ">0";
-
-    private static final String SELECTION_NOT_GIF = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-            + " AND " + MediaStore.MediaColumns.SIZE + ">0"
+            + " AND " + MediaStore.MediaColumns.SIZE + ">?";
+    private static final String SELECTION_NOT_GIF = SELECTION
             + " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF;
+    private int type = PictureConfig.TYPE_IMAGE;
+    private FragmentActivity activity;
+    private boolean isGif;
+    private long videoMaxS = 0;
+    private long minFileSize = 0;
+    private long videoMinS = 0;
+
+    public LocalMediaLoader(FragmentActivity activity, int type, boolean isGif, long videoMaxS, long videoMinS) {
+        this.activity = activity;
+        this.type = type;
+        this.isGif = isGif;
+        this.videoMaxS = videoMaxS;
+        this.videoMinS = videoMinS;
+    }
+
+    public LocalMediaLoader(FragmentActivity activity, int type, int minFileSizeKB, boolean isGif, long videoMaxS, long videoMinS) {
+        this.activity = activity;
+        this.type = type;
+        this.minFileSize = minFileSizeKB * 1024L;
+        this.isGif = isGif;
+        this.videoMaxS = videoMaxS;
+        this.videoMinS = videoMinS;
+    }
 
     // 查询条件(音视频)
     private static String getSelectionArgsForSingleMediaCondition(String time_condition) {
         return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                + " AND " + MediaStore.MediaColumns.SIZE + ">0"
+                + " AND " + MediaStore.MediaColumns.SIZE + ">?"
                 + " AND " + time_condition;
     }
 
@@ -73,32 +87,32 @@ public class LocalMediaLoader {
                 + (isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF)
                 + " OR "
                 + (MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + time_condition) + ")"
-                + " AND " + MediaStore.MediaColumns.SIZE + ">0";
+                + " AND " + MediaStore.MediaColumns.SIZE + ">?";
         return condition;
     }
 
-    // 获取图片or视频
-    private static final String[] SELECTION_ALL_ARGS = {
-            String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
-            String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO),
-    };
-
     /**
-     * 获取指定类型的文件
+     * 获取指定类型和最小Size的文件
      *
      * @param mediaType
+     * @param minSize
      * @return
      */
-    private static String[] getSelectionArgsForSingleMediaType(int mediaType) {
-        return new String[]{String.valueOf(mediaType)};
+    private static String[] getSelectionArgsForSingleMediaType(int mediaType, long minSize) {
+        return new String[]{String.valueOf(mediaType), String.valueOf(minSize < 0 ? 0 : minSize)};
     }
 
-    public LocalMediaLoader(FragmentActivity activity, int type, boolean isGif, long videoMaxS, long videoMinS) {
-        this.activity = activity;
-        this.type = type;
-        this.isGif = isGif;
-        this.videoMaxS = videoMaxS;
-        this.videoMinS = videoMinS;
+    /**
+     * 获取全部类型和最小Size的文件
+     *
+     * @param minSize
+     * @return
+     */
+    private static String[] getSelectionArgsForSupportMediaType(long minSize) {
+        return new String[]{
+                String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
+                String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO),
+                String.valueOf(minSize < 0 ? 0 : minSize)};
     }
 
     public void loadAllMedia(final LocalMediaLoadListener imageLoadListener) {
@@ -113,11 +127,11 @@ public class LocalMediaLoader {
                                 cursorLoader = new CursorLoader(
                                         activity, QUERY_URI,
                                         PROJECTION, all_condition,
-                                        SELECTION_ALL_ARGS, ORDER_BY);
+                                        getSelectionArgsForSupportMediaType(minFileSize), ORDER_BY);
                                 break;
                             case PictureConfig.TYPE_IMAGE:
                                 // 只获取图片
-                                String[] MEDIA_TYPE_IMAGE = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
+                                String[] MEDIA_TYPE_IMAGE = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE, minFileSize);
                                 cursorLoader = new CursorLoader(
                                         activity, QUERY_URI,
                                         PROJECTION, isGif ? SELECTION : SELECTION_NOT_GIF, MEDIA_TYPE_IMAGE
@@ -126,14 +140,14 @@ public class LocalMediaLoader {
                             case PictureConfig.TYPE_VIDEO:
                                 // 只获取视频
                                 String video_condition = getSelectionArgsForSingleMediaCondition(getDurationCondition(0, 0));
-                                String[] MEDIA_TYPE_VIDEO = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO);
+                                String[] MEDIA_TYPE_VIDEO = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO, minFileSize);
                                 cursorLoader = new CursorLoader(
                                         activity, QUERY_URI, PROJECTION, video_condition, MEDIA_TYPE_VIDEO
                                         , ORDER_BY);
                                 break;
                             case PictureConfig.TYPE_AUDIO:
                                 String audio_condition = getSelectionArgsForSingleMediaCondition(getDurationCondition(0, AUDIO_DURATION));
-                                String[] MEDIA_TYPE_AUDIO = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO);
+                                String[] MEDIA_TYPE_AUDIO = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO, minFileSize);
                                 cursorLoader = new CursorLoader(
                                         activity, QUERY_URI, PROJECTION, audio_condition, MEDIA_TYPE_AUDIO
                                         , ORDER_BY);

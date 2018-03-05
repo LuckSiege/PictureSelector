@@ -44,6 +44,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public float sizeMultiplier;
     public int cropWidth;
     public int cropHeight;
+    public int minFileSizeKB;
     public boolean zoomAnim;
     public boolean isCompress;
     public boolean isCamera;
@@ -112,6 +113,7 @@ public final class PictureSelectionConfig implements Parcelable {
         suffixType = PictureFileUtils.POSTFIX;
         sizeMultiplier = 0.5f;
         selectionMedias = new ArrayList<>();
+        minFileSizeKB = 0;
     }
 
     public static PictureSelectionConfig getInstance() {
@@ -158,6 +160,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeFloat(this.sizeMultiplier);
         dest.writeInt(this.cropWidth);
         dest.writeInt(this.cropHeight);
+        dest.writeInt(this.minFileSizeKB);
         dest.writeByte(this.zoomAnim ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isCompress ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isCamera ? (byte) 1 : (byte) 0);
@@ -208,6 +211,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.sizeMultiplier = in.readFloat();
         this.cropWidth = in.readInt();
         this.cropHeight = in.readInt();
+        this.minFileSizeKB = in.readInt();
         this.zoomAnim = in.readByte() != 0;
         this.isCompress = in.readByte() != 0;
         this.isCamera = in.readByte() != 0;

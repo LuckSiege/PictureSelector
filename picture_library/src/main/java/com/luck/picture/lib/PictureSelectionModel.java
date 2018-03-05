@@ -228,6 +228,15 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param minFileSizeKB filter:the minimum size of file,default 0KB
+     * @return
+     */
+    public PictureSelectionModel minSizeKB(int minFileSizeKB) {
+        selectionConfig.minFileSizeKB = minFileSizeKB;
+        return this;
+    }
+
+    /**
      * @param width  glide width
      * @param height glide height
      * @return

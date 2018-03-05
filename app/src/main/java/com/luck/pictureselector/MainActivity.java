@@ -189,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                         //.cropCompressQuality(90)// 裁剪压缩质量 默认100
                         .minimumCompressSize(100)// 小于100kb的图片不压缩
+                        .minSizeKB(50)
                         //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
                         //.rotateEnabled(true) // 裁剪是否可旋转图片
                         //.scaleEnabled(true)// 裁剪是否可放大缩小图片
