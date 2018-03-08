@@ -73,7 +73,7 @@
 
 ```
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.9'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.0'
 }
 
 ```
@@ -106,7 +106,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.1.9</version> 
+      <version>v2.2.0</version> 
 </dependency>
 
 ```
@@ -334,6 +334,10 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
+* v2.2.0
+* 1.修复单独拍照+裁剪图片不返回问题
+
+# 历史版本：
 * v2.1.9
 * 1.修改单选策略，也支持预览模式
 * 2.修复8.0部分手机闪退问题
@@ -345,7 +349,6 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 8.修复Toast内存泄漏问题
 * 9.修复若干已知bug
 
-# 历史版本：
 * v2.1.7
 * 1.修复.bmp格式图片，同步压缩会出现闪退问题
 * 2.修复部分机型在使用裁剪或压缩路径时报FileNotfoundException异常问题
