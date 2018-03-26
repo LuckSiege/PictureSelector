@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion cfgs.compileSdkVersion
 
     defaultConfig {
         applicationId "com.luck.pictureselector"
-        minSdkVersion 14
-        targetSdkVersion 26
-        versionCode 5
-        versionName "2.0.5"
+        minSdkVersion cfgs.minSdkVersion
+        targetSdkVersion cfgs.targetSdkVersion
+        versionCode cfgs.versionCode
+        versionName cfgs.versionName
     }
     buildTypes {
         release {

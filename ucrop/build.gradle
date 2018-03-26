@@ -1,13 +1,13 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion cfgs.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 26
-        versionCode 22
-        versionName "2.2.0-native"
+        minSdkVersion cfgs.minSdkVersion
+        targetSdkVersion cfgs.targetSdkVersion
+        versionCode cfgs.ucropVersionCode
+        versionName cfgs.ucropVersionName
 
         vectorDrawables.useSupportLibrary = true
     }
@@ -31,9 +31,8 @@ android {
 
 dependencies {
     //noinspection GradleCompatible
-    compile 'com.android.support:appcompat-v7:27.0.2'
+    compile "com.android.support:appcompat-v7:${cfgs.androidSupportVersion}"
     //noinspection GradleCompatible
-    compile 'com.android.support:recyclerview-v7:27.0.2'
-    compile 'com.github.bumptech.glide:glide:4.5.0'
-    implementation 'com.github.bumptech.glide:glide:4.5.0'
+    compile "com.android.support:recyclerview-v7:${cfgs.androidSupportVersion}"
+    implementation "com.github.bumptech.glide:glide:${cfgs.glide}"
 }
