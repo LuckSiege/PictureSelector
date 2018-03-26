@@ -1,4 +1,4 @@
-# PictureSelector 2.0
+# PictureSelector 2.0 
    一款针对android平台下的图片选择器，支持从相册或拍照选择图片或视频、音频，支持动态权限获取、裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能、适配android 6.0+系统的开源图片选择框架。<br>
   
   <br>项目会一直维护(有bug修复完成，一般周末会更新)，有bug请描述清楚，并请Issues会第一时间修复，个人QQ 893855882@qq.com  希望用得着的朋友点个star。 <br>
@@ -73,7 +73,7 @@
 
 ```
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.1.9'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.0'
 }
 
 ```
@@ -106,13 +106,15 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.1.9</version> 
+      <version>v2.2.0</version> 
 </dependency>
 
 ```
 
 ## 常见错误
 ```
+ 重要：PictureSelector.create()；调用此方法时，在activity中传activity.this，在fragment中请传fragment.this,影响回调到哪个地方的onActivityResult()。
+ 
  问题一：
  rxjava冲突：在app build.gradle下添加
  packagingOptions {
@@ -332,6 +334,10 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
+* v2.2.0
+* 1.修复单独拍照+裁剪图片不返回问题
+
+# 历史版本：
 * v2.1.9
 * 1.修改单选策略，也支持预览模式
 * 2.修复8.0部分手机闪退问题
@@ -343,7 +349,6 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 8.修复Toast内存泄漏问题
 * 9.修复若干已知bug
 
-# 历史版本：
 * v2.1.7
 * 1.修复.bmp格式图片，同步压缩会出现闪退问题
 * 2.修复部分机型在使用裁剪或压缩路径时报FileNotfoundException异常问题
