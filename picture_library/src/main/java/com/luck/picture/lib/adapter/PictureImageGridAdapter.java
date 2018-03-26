@@ -363,11 +363,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private void singleRadioMediaImage() {
         if (selectImages != null
                 && selectImages.size() > 0) {
+            isGo = true;
             LocalMedia media = selectImages.get(0);
             notifyItemChanged(config.isCamera ? media.position :
                     isGo ? media.position : media.position > 0 ? media.position - 1 : 0);
             selectImages.clear();
-            isGo = true;
         }
     }
 
