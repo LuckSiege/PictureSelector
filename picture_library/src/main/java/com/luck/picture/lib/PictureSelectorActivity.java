@@ -123,6 +123,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 Log.i("刷新下标:", String.valueOf(position));
                 adapter.bindSelectImages(selectImages);
                 adapter.notifyItemChanged(position);
+
                 break;
             case PictureConfig.PREVIEW_DATA_FLAG:
                 List<LocalMedia> medias = obj.medias;
