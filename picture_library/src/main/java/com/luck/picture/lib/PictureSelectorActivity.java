@@ -42,7 +42,6 @@ import com.luck.picture.lib.rxbus2.Subscribe;
 import com.luck.picture.lib.rxbus2.ThreadMode;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DoubleUtils;
-import com.luck.picture.lib.tools.LightStatusBarUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.StringUtils;
@@ -71,12 +70,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private final static String TAG = PictureSelectorActivity.class.getSimpleName();
     private static final int SHOW_DIALOG = 0;
     private static final int DISMISS_DIALOG = 1;
-    private static final int STATUSBAR = 2;
     private ImageView picture_left_back;
     private TextView picture_title, picture_right, picture_tv_ok, tv_empty,
             picture_tv_img_num, picture_id_preview, tv_PlayPause, tv_Stop, tv_Quit,
             tv_musicStatus, tv_musicTotal, tv_musicTime;
-    private RelativeLayout rl_picture_title, rl_bottom;
+    private RelativeLayout rl_picture_title;
     private LinearLayout id_ll_ok;
     private RecyclerView picture_recycler;
     private PictureImageGridAdapter adapter;
@@ -104,14 +102,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 case DISMISS_DIALOG:
                     dismissDialog();
                     break;
-                case STATUSBAR:
-                    LightStatusBarUtils.setLightStatusBar(PictureSelectorActivity.this, statusFont);
-                    break;
             }
         }
     };
 
-    //EventBus 3.0 回调
+    /**
+     * EventBus 3.0 回调
+     *
+     * @param obj
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void eventBus(EventEntity obj) {
         switch (obj.what) {
@@ -148,9 +147,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             RxBus.getDefault().register(this);
         }
         rxPermissions = new RxPermissions(this);
-        mHandler.sendEmptyMessage(STATUSBAR);
         if (config.camera) {
-            setTheme(R.style.activity_Theme_Transparent);
             if (savedInstanceState == null) {
                 rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE)
                         .subscribe(new Observer<Boolean>() {
@@ -200,7 +197,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         picture_id_preview = (TextView) findViewById(R.id.picture_id_preview);
         picture_tv_img_num = (TextView) findViewById(R.id.picture_tv_img_num);
         picture_recycler = (RecyclerView) findViewById(R.id.picture_recycler);
-        rl_bottom = (RelativeLayout) findViewById(R.id.rl_bottom);
         id_ll_ok = (LinearLayout) findViewById(R.id.id_ll_ok);
         tv_empty = (TextView) findViewById(R.id.tv_empty);
         isNumComplete(numComplete);

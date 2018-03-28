@@ -26,12 +26,11 @@
     <attr name="picture.complete.textColor" format="reference|color" />
     <attr name="picture.ac_preview.title.textColor" format="reference|color" />
     <attr name="picture.ac_preview.complete.textColor" format="reference|color" />
-    <attr name="picture.ac_preview.title.bg" format="reference|color" />
     <attr name="picture.ac_preview.bottom.bg" format="reference|color" />
     <attr name="picture.status.color" format="reference|color" />
+    <attr name="picture.ac_preview.title.bg" format="reference|color" />
     <attr name="picture.preview.leftBack.icon" format="reference" />
     <attr name="picture.statusFontColor" format="boolean" />
-    <attr name="picture.preview.statusFontColor" format="boolean" />
     <attr name="picture.style.numComplete" format="boolean" />
     <attr name="picture.style.checkNumMode" format="boolean" />
     <attr name="picture.crop.toolbar.bg" format="reference|color" />

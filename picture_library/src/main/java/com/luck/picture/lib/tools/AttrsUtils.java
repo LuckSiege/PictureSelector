@@ -6,15 +6,12 @@ import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 
 /**
- * author：luck
- * project：PictureSelector
- * package：com.luck.picture.lib.tools
- * email：893855882@qq.com
- * data：2017/5/27
+ * @author：luck
+ * @data：2018/3/28 下午1:26
+ * @描述:style动态获取
  */
 
 public class AttrsUtils {
-
     /**
      * get attrs color
      *

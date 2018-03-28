@@ -7,10 +7,12 @@ import android.support.annotation.IntRange;
 import android.support.annotation.StyleRes;
 import android.support.v4.app.Fragment;
 
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DoubleUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -415,6 +417,34 @@ public class PictureSelectionModel {
                 activity.startActivityForResult(intent, requestCode);
             }
             activity.overridePendingTransition(R.anim.a5, 0);
+        }
+    }
+
+    /**
+     * 提供外部预览图片方法
+     *
+     * @param position
+     * @param medias
+     */
+    public void openExternalPreview(int position, List<LocalMedia> medias) {
+        if (selector != null) {
+            selector.externalPicturePreview(position, medias);
+        } else {
+            throw new NullPointerException("This PictureSelector is Null");
+        }
+    }
+
+    /**
+     * 提供外部预览图片方法-带自定义下载保存路径
+     *
+     * @param position
+     * @param medias
+     */
+    public void openExternalPreview(int position, String directory_path, List<LocalMedia> medias) {
+        if (selector != null) {
+            selector.externalPicturePreview(position, directory_path, medias);
+        } else {
+            throw new NullPointerException("This PictureSelector is Null");
         }
     }
 

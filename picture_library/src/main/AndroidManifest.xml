@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.luck.picture.lib">
 
-    <application>
+    <application android:theme="@style/AppTheme">
+
         <provider
             android:name="com.luck.picture.lib.PictureFileProvider"
             android:authorities="${applicationId}.provider"
@@ -15,28 +16,18 @@
 
         <activity
             android:name=".PictureSelectorActivity"
-            android:theme="@style/activity.Theme"
             android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".PicturePreviewActivity"
-            android:theme="@style/activity.Theme" />
+        <activity android:name=".PicturePreviewActivity" />
         <activity
             android:name=".PictureVideoPlayActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensor"
-            android:theme="@style/activity.Theme" />
-        <activity
-            android:name=".PictureExternalPreviewActivity"
-            android:theme="@style/activity.Theme" />
-        <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name="com.yalantis.ucrop.PictureMultiCuttingActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".PicturePlayAudioActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:screenOrientation="sensor" />
+        <activity android:name=".PictureExternalPreviewActivity" />
+        <activity android:name="com.yalantis.ucrop.UCropActivity" />
+        <activity android:name="com.yalantis.ucrop.PictureMultiCuttingActivity" />
+        <activity android:name=".PicturePlayAudioActivity" />
+
+
     </application>
 
 </manifest>

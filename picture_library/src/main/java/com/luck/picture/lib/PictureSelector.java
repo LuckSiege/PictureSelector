@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DoubleUtils;
 
@@ -76,6 +77,16 @@ public final class PictureSelector {
      */
     public PictureSelectionModel openCamera(int mimeType) {
         return new PictureSelectionModel(this, mimeType, true);
+    }
+
+    /**
+     * 外部预览时设置样式
+     *
+     * @param themeStyle
+     * @return
+     */
+    public PictureSelectionModel themeStyle(int themeStyle) {
+        return new PictureSelectionModel(this, PictureMimeType.ofImage()).theme(themeStyle);
     }
 
     /**
