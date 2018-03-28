@@ -5,7 +5,7 @@
  Android开发交流 群一 619458861）(已满) <br>
  Android开发交流 群二 679824206 <br> 
    
-  [我的博客地址](http://blog.csdn.net/luck_mw)
+  [我的博客地址](http://blog.csdn.net/luck_mw) 
   
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
@@ -208,6 +208,7 @@ Glide.with(context).load(url).apply(options).into(imageView);
 	.videoMaxSecond(15)// 显示多少秒以内的视频or音频也可适用 int 
         .videoMinSecond(10)// 显示多少秒以内的视频or音频也可适用 int 
 	.recordVideoSecond()//视频秒数录制 默认60s int
+	.isDragFrame(false)// 是否可拖动裁剪框(固定)
  	.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code     
 ```
 
@@ -261,8 +262,6 @@ Glide.with(context).load(url).apply(options).into(imageView);
         <item name="picture.ac_preview.title.bg">@color/bar_grey</item>
         <!--预览界面底部背景色-->
         <item name="picture.ac_preview.bottom.bg">@color/bar_grey_90</item>
-        <!--预览界面状态栏颜色-->
-        <item name="picture.status.color">@color/bar_grey_90</item>
         <!--预览界面返回箭头-->
         <item name="picture.preview.leftBack.icon">@drawable/picture_back</item>
         <!--是否改变预览界面状态栏字体颜色为黑色-->
@@ -297,8 +296,10 @@ Glide.with(context).load(url).apply(options).into(imageView);
 ******预览图片******       
 ```
 // 预览图片 可自定长按保存路径
-PictureSelector.create(MainActivity.this).externalPicturePreview(position, "/custom_file", selectList);
-PictureSelector.create(MainActivity.this).externalPicturePreview(position, selectList);
+*注意 .themeStyle(themeId)；不可少，否则闪退...
+
+PictureSelector.create(MainActivity.this).themeStyle(themeId).openExternalPreview(position, "/custom_file", selectList);
+PictureSelector.create(MainActivity.this).themeStyle(themeId).openExternalPreview(position, selectList);
 
 ```
 ******预览视频****** 
