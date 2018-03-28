@@ -37,6 +37,7 @@ import com.luck.picture.lib.photoview.OnViewTapListener;
 import com.luck.picture.lib.photoview.PhotoView;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
+import com.luck.picture.lib.tools.ToastManage;
 import com.luck.picture.lib.widget.PreviewViewPager;
 import com.luck.picture.lib.widget.longimage.ImageSource;
 import com.luck.picture.lib.widget.longimage.ImageViewState;
@@ -245,7 +246,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                                         if (aBoolean) {
                                             showDownLoadDialog(path);
                                         } else {
-                                            showToast(getString(R.string.picture_jurisdiction));
+                                            ToastManage.s(mContext, getString(R.string.picture_jurisdiction));
                                         }
                                     }
 
@@ -316,10 +317,10 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                         String dirPath = PictureFileUtils.createDir(PictureExternalPreviewActivity.this,
                                 System.currentTimeMillis() + ".png", directory_path);
                         PictureFileUtils.copyFile(path, dirPath);
-                        showToast(getString(R.string.picture_save_success) + "\n" + dirPath);
+                        ToastManage.s(mContext, getString(R.string.picture_save_success) + "\n" + dirPath);
                         dismissDialog();
                     } catch (IOException e) {
-                        showToast(getString(R.string.picture_save_error) + "\n" + e.getMessage());
+                        ToastManage.s(mContext, getString(R.string.picture_save_error) + "\n" + e.getMessage());
                         dismissDialog();
                         e.printStackTrace();
                     }
@@ -340,6 +341,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             this.path = path;
         }
 
+        @Override
         public void run() {
             try {
                 showLoadingImage(path);
@@ -375,7 +377,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             message.obj = path;
             handler.sendMessage(message);
         } catch (IOException e) {
-            showToast(getString(R.string.picture_save_error) + "\n" + e.getMessage());
+            ToastManage.s(mContext, getString(R.string.picture_save_error) + "\n" + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -388,7 +390,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             switch (msg.what) {
                 case 200:
                     String path = (String) msg.obj;
-                    showToast(getString(R.string.picture_save_success) + "\n" + path);
+                    ToastManage.s(mContext, getString(R.string.picture_save_success) + "\n" + path);
                     dismissDialog();
                     break;
             }

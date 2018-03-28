@@ -13,7 +13,6 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.luck.picture.lib.compress.Luban;
 import com.luck.picture.lib.compress.OnCompressListener;
@@ -149,10 +148,6 @@ public class PictureBaseActivity extends FragmentActivity {
         }
     }
 
-    protected void showToast(String msg) {
-        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-    }
-
     /**
      * loading dialog
      */
@@ -278,7 +273,7 @@ public class PictureBaseActivity extends FragmentActivity {
             }
         }
         RxBus.getDefault().post(new EventEntity(PictureConfig.CLOSE_PREVIEW_FLAG));
-        //onResult(images);
+        onResult(images);
     }
 
     /**
