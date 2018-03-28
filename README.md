@@ -151,7 +151,7 @@ if (savedInstanceState == null) {
       		getSupportFragmentManager().beginTransaction().add(R.id.tab_content, fragment,
                     PictureConfig.FC_TAG).show(fragment)
                     .commit();
-     } else {
+     } else { 
       	fragment = (PhotoFragment) getSupportFragmentManager()
           .findFragmentByTag(PictureConfig.FC_TAG);
 }
