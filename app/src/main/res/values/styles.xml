@@ -41,20 +41,16 @@
         <item name="picture.complete.textColor">@color/tab_color_false</item>
         <!--图片已选数量圆点背景色-->
         <item name="picture.num.style">@drawable/num_oval</item>
+        <!--预览界面标题栏背景色-->
+        <item name="picture.ac_preview.title.bg">@color/white</item>
         <!--预览界面标题文字颜色-->
-        <item name="picture.ac_preview.title.textColor">@color/white</item>
+        <item name="picture.ac_preview.title.textColor">@color/black</item>
         <!--预览界面已完成文字颜色-->
         <item name="picture.ac_preview.complete.textColor">@color/tab_color_false</item>
-        <!--预览界面标题栏背景色-->
-        <item name="picture.ac_preview.title.bg">@color/bar_grey</item>
         <!--预览界面底部背景色-->
-        <item name="picture.ac_preview.bottom.bg">@color/bar_grey_90</item>
-        <!--预览界面状态栏颜色-->
-        <item name="picture.status.color">@color/bar_grey_90</item>
+        <item name="picture.ac_preview.bottom.bg">@color/color_fa</item>
         <!--预览界面返回箭头-->
-        <item name="picture.preview.leftBack.icon">@drawable/picture_back</item>
-        <!--是否改变预览界面状态栏字体颜色为黑色-->
-        <item name="picture.preview.statusFontColor">false</item>
+        <item name="picture.preview.leftBack.icon">@drawable/back2</item>
         <!--裁剪页面标题背景色-->
         <item name="picture.crop.toolbar.bg">@color/bar_grey</item>
         <!--裁剪页面状态栏颜色-->
@@ -106,12 +102,8 @@
         <item name="picture.ac_preview.title.bg">@color/blue</item>
         <!--预览界面底部背景色-->
         <item name="picture.ac_preview.bottom.bg">@color/color_fa</item>
-        <!--预览界面状态栏颜色-->
-        <item name="picture.status.color">@color/blue</item>
         <!--预览界面返回箭头-->
         <item name="picture.preview.leftBack.icon">@drawable/picture_back</item>
-        <!--是否改变预览界面状态栏字体颜色为黑色-->
-        <item name="picture.preview.statusFontColor">false</item>
         <!--裁剪页面标题背景色-->
         <item name="picture.crop.toolbar.bg">@color/bar_grey</item>
         <!--裁剪页面状态栏颜色-->
@@ -165,12 +157,8 @@
         <item name="picture.ac_preview.title.bg">@color/white</item>
         <!--预览界面底部背景色-->
         <item name="picture.ac_preview.bottom.bg">@color/color_fa</item>
-        <!--预览界面状态栏颜色-->
-        <item name="picture.status.color">@color/white</item>
         <!--预览界面返回箭头-->
         <item name="picture.preview.leftBack.icon">@drawable/back2</item>
-        <!--是否改变预览界面状态栏字体颜色为黑色-->
-        <item name="picture.preview.statusFontColor">true</item>
         <!--裁剪页面标题背景色-->
         <item name="picture.crop.toolbar.bg">@color/bar_grey</item>
         <!--裁剪页面状态栏颜色-->

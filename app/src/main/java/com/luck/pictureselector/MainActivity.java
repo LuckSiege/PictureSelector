@@ -103,8 +103,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     switch (mediaType) {
                         case 1:
                             // 预览图片 可自定长按保存路径
-                            //PictureSelector.create(MainActivity.this).externalPicturePreview(position, "/custom_file", selectList);
-                            PictureSelector.create(MainActivity.this).externalPicturePreview(position, selectList);
+                            //PictureSelector.create(MainActivity.this).themeStyle(themeId).externalPicturePreview(position, "/custom_file", selectList);
+                            PictureSelector.create(MainActivity.this).themeStyle(themeId).openExternalPreview(position, selectList);
                             break;
                         case 2:
                             // 预览视频
