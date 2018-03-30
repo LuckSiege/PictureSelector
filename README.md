@@ -73,7 +73,7 @@
 
 ```
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.1'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.0'
 }
 
 ```
