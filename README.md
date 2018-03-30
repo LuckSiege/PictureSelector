@@ -106,7 +106,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.2.0</version> 
+      <version>v2.2.1</version> 
 </dependency>
 
 ```
@@ -335,10 +335,16 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
+* v2.2.1
+* 1.优化外部预览界面样式不同步问题
+* 2.优化沉浸式方案，适配更多机型
+* 3.新增isDragFrame(false) API  是否可拖动裁剪框(固定)
+* 4.修复录音会生成重复文件问题
+
+# 历史版本：
 * v2.2.0
 * 1.修复单独拍照+裁剪图片不返回问题
 
-# 历史版本：
 * v2.1.9
 * 1.修改单选策略，也支持预览模式
 * 2.修复8.0部分手机闪退问题
@@ -476,4 +482,5 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/audio.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/9.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/10.jpg)
+
 
