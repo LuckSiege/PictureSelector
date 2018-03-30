@@ -931,7 +931,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     handlerResult(medias);
                     break;
                 case PictureConfig.REQUEST_CAMERA:
-                    cameraPath = getAudioPath(data);
+                    if (config.mimeType == PictureMimeType.ofAudio()) {
+                        cameraPath = getAudioPath(data);
+                    }
                     // on take photo success
                     final File file = new File(cameraPath);
                     sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
