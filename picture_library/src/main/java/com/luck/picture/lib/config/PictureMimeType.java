@@ -16,6 +16,7 @@ import java.io.File;
  * package：com.luck.picture.lib.config
  * email：893855882@qq.com
  * data：2017/5/24
+ * @author luck
  */
 
 public final class PictureMimeType {

@@ -413,12 +413,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (aBoolean) {
                     Intent cameraIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
                     if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-                        File cameraFile = PictureFileUtils.createCameraFile
-                                (PictureSelectorActivity.this, config.mimeType,
-                                        outputCameraPath, config.suffixType);
-                        cameraPath = cameraFile.getAbsolutePath();
-                        Uri imageUri = parUri(cameraFile);
-                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                         startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
                     }
                 } else {
@@ -504,7 +498,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (size < config.minSelectNum) {
                     String str = eqImg ? getString(R.string.picture_min_img_num, config.minSelectNum)
                             : getString(R.string.picture_min_video_num, config.minSelectNum);
-                    ToastManage.s(mContext,str);
+                    ToastManage.s(mContext, str);
                     return;
                 }
             }
@@ -758,7 +752,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (aBoolean) {
                     startCamera();
                 } else {
-                    ToastManage.s(mContext,getString(R.string.picture_camera));
+                    ToastManage.s(mContext, getString(R.string.picture_camera));
                     if (config.camera) {
                         closeActivity();
                     }
@@ -937,7 +931,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     handlerResult(medias);
                     break;
                 case PictureConfig.REQUEST_CAMERA:
-                    isAudio(data);
+                    cameraPath = getAudioPath(data);
                     // on take photo success
                     final File file = new File(cameraPath);
                     sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));

@@ -50,10 +50,8 @@ public class PictureFileUtils {
 
     public static final String POSTFIX = ".JPEG";
     public static final String POST_VIDEO = ".mp4";
-    public static final String POST_AUDIO = ".mp3";
     public static final String APP_NAME = "PictureSelector";
     public static final String CAMERA_PATH = "/" + APP_NAME + "/CameraImage/";
-    public static final String CAMERA_AUDIO_PATH = "/" + APP_NAME + "/CameraAudio/";
     public static final String CROP_PATH = "/" + APP_NAME + "/CropImage/";
 
     /**
@@ -64,17 +62,10 @@ public class PictureFileUtils {
      * @return
      */
     public static File createCameraFile(Context context, int type, String outputCameraPath, String format) {
-        String path;
-        if (type == PictureConfig.TYPE_AUDIO) {
-            path = !TextUtils.isEmpty(outputCameraPath)
-                    ? outputCameraPath : CAMERA_AUDIO_PATH;
-        } else {
-            path = !TextUtils.isEmpty(outputCameraPath)
-                    ? outputCameraPath : CAMERA_PATH;
-        }
-        return type == PictureConfig.TYPE_AUDIO ?
-                createMediaFile(context, path, type, format) :
-                createMediaFile(context, path, type, format);
+        String path = !TextUtils.isEmpty(outputCameraPath)
+                ? outputCameraPath : CAMERA_PATH;
+
+        return createMediaFile(context, path, type, format);
     }
 
     /**
@@ -108,9 +99,6 @@ public class PictureFileUtils {
                 break;
             case PictureConfig.TYPE_VIDEO:
                 tmpFile = new File(folderDir, fileName + POST_VIDEO);
-                break;
-            case PictureConfig.TYPE_AUDIO:
-                tmpFile = new File(folderDir, fileName + POST_AUDIO);
                 break;
         }
         return tmpFile;
@@ -318,8 +306,12 @@ public class PictureFileUtils {
             inputChannel.transferTo(0, inputChannel.size(), outputChannel);
             inputChannel.close();
         } finally {
-            if (inputChannel != null) inputChannel.close();
-            if (outputChannel != null) outputChannel.close();
+            if (inputChannel != null) {
+                inputChannel.close();
+            }
+            if (outputChannel != null) {
+                outputChannel.close();
+            }
         }
     }
 
@@ -329,9 +321,9 @@ public class PictureFileUtils {
      * will cause both files to become null.
      * Simply skipping this step if the paths are identical.
      */
-    public static void copyAudioFile(@NonNull String pathFrom, @NonNull String pathTo) throws IOException {
+    public static boolean copyAudioFile(@NonNull String pathFrom, @NonNull String pathTo) throws IOException {
         if (pathFrom.equalsIgnoreCase(pathTo)) {
-            return;
+            return false;
         }
 
         FileChannel outputChannel = null;
@@ -342,9 +334,14 @@ public class PictureFileUtils {
             inputChannel.transferTo(0, inputChannel.size(), outputChannel);
             inputChannel.close();
         } finally {
-            if (inputChannel != null) inputChannel.close();
-            if (outputChannel != null) outputChannel.close();
-            PictureFileUtils.deleteFile(pathFrom);
+            if (inputChannel != null) {
+                inputChannel.close();
+            }
+            if (outputChannel != null) {
+                outputChannel.close();
+            }
+            boolean success = PictureFileUtils.deleteFile(pathFrom);
+            return success;
         }
     }
 
@@ -485,8 +482,10 @@ public class PictureFileUtils {
             path = new File(rootDir.getAbsolutePath() + "/PictureSelector");
         }
         if (!path.exists())
-            // 若不存在，创建目录，可以在应用启动的时候创建
+        // 若不存在，创建目录，可以在应用启动的时候创建
+        {
             path.mkdirs();
+        }
 
         return path + "/" + filename;
     }
@@ -633,17 +632,19 @@ public class PictureFileUtils {
      *
      * @param path
      */
-    public static void deleteFile(String path) {
+    public static boolean deleteFile(String path) {
         try {
             if (!TextUtils.isEmpty(path)) {
                 File file = new File(path);
                 if (file != null) {
-                    file.delete();
+                    return file.delete();
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
+        return false;
     }
 
     /**

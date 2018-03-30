@@ -524,21 +524,24 @@ public class PictureBaseActivity extends FragmentActivity {
      *
      * @param data
      */
-    protected void isAudio(Intent data) {
+    protected String getAudioPath(Intent data) {
+        boolean compare_SDK_19 = Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT;
         if (data != null && config.mimeType == PictureMimeType.ofAudio()) {
             try {
                 Uri uri = data.getData();
-                String audioPath;
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+                final String audioPath;
+                if (compare_SDK_19) {
                     audioPath = uri.getPath();
                 } else {
                     audioPath = getAudioFilePathFromUri(uri);
                 }
-                PictureFileUtils.copyAudioFile(audioPath, cameraPath);
+                return audioPath;
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        return "";
     }
 
     /**
