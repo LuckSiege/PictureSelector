@@ -128,6 +128,8 @@ step 2.
  android.content.pm.ProviderInfo.loadXmlMetaData(android.content.pm.PackageManager, java.lang.String)'
  on a null object reference
  
+ * 注意 从v2.1.3版本中，将不需要配制以下内容
+ 
  application下添加如下节点:
  
  <provider
