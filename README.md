@@ -73,7 +73,7 @@
 
 ```
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.2'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
 }
 
 ```
@@ -106,7 +106,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.2.2</version> 
+      <version>v2.2.3</version> 
 </dependency>
 
 ```
@@ -338,13 +338,16 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
+* v2.2.3
+* 1.修复沉浸式在部分机型标题栏遮挡情况
+
+# 历史版本：
 * v2.2.2
 * 1.优化外部预览界面样式不同步问题
 * 2.优化沉浸式方案，适配更多机型
 * 3.新增isDragFrame(false) API  是否可拖动裁剪框(固定)
 * 4.修复录音会生成重复文件问题
 
-# 历史版本：
 * v2.2.0
 * 1.修复单独拍照+裁剪图片不返回问题
 
