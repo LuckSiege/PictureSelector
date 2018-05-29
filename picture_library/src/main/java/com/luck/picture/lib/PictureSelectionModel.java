@@ -61,6 +61,15 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param videoSelectionMode PictureSelector Selection model and PictureConfig.MULTIPLE or PictureConfig.SINGLE
+     * @return
+     */
+    public PictureSelectionModel videoSelectionMode(int videoSelectionMode) {
+        selectionConfig.videoSelectionMode = videoSelectionMode;
+        return this;
+    }
+
+    /**
      * @param enableCrop Do you want to start cutting ?
      * @return
      */
