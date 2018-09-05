@@ -32,4 +32,6 @@
 
     </declare-styleable>
 
+    <attr name="ucrop.title_bar.height" format="reference|dimension" />
+
 </resources>

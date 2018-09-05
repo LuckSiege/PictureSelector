@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="48dp"
     android:gravity="center_vertical"
@@ -8,17 +9,22 @@
     <RelativeLayout
         android:id="@+id/rl_picture_title"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="?attr/picture.title_bar.height"
         android:background="?colorPrimary"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        tools:layout_height="48dp">
 
         <ImageView
             android:id="@+id/picture_left_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="?attr/picture.title_bar.height"
+            android:layout_height="?attr/picture.title_bar.height"
             android:layout_centerVertical="true"
-            android:padding="15dp"
-            android:src="?attr/picture.leftBack.icon" />
+            android:padding="?attr/picture.leftBack.icon.padding"
+            android:src="?attr/picture.leftBack.icon"
+            tools:layout_height="48dp"
+            tools:layout_width="48dp"
+            tools:padding="15dp"
+            tools:src="@drawable/picture_back" />
 
         <TextView
             android:id="@+id/picture_title"
@@ -48,9 +54,5 @@
             android:textSize="14sp" />
     </RelativeLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/line_color" />
 </LinearLayout>
 

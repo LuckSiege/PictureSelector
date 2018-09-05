@@ -416,7 +416,6 @@ public class PictureSelectionModel {
             } else {
                 activity.startActivityForResult(intent, requestCode);
             }
-            activity.overridePendingTransition(R.anim.a5, 0);
         }
     }
 

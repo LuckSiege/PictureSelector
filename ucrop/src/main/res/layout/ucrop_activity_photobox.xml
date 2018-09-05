@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ucrop_photobox"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/ucrop_color_crop_background">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -26,17 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/wrapper_controls"
-        android:layout_below="@+id/toolbar"
-        android:background="@color/ucrop_color_default_crop_frame">
-
-        <!--<ImageView-->
-        <!--android:id="@+id/image_view_logo"-->
-        <!--android:layout_width="200dp"-->
-        <!--android:layout_height="200dp"-->
-        <!--android:layout_gravity="center"-->
-        <!--app:srcCompat="@drawable/ucrop_vector_ic_crop"-->
-        <!--tools:background="@drawable/ucrop_vector_ic_crop"-->
-        <!--tools:ignore="MissingPrefix" />-->
+        android:layout_below="@+id/toolbar">
 
         <com.yalantis.ucrop.view.UCropView
             android:id="@+id/ucrop"

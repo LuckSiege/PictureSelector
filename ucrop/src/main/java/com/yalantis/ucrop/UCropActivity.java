@@ -80,6 +80,7 @@ public class UCropActivity extends AppCompatActivity {
     private String mToolbarTitle;
 
     // Enables dynamic coloring
+    private float mToolbarHeight;
     private int mToolbarColor;
     private int mStatusBarColor;
     private int mActiveWidgetColor;
@@ -290,6 +291,7 @@ public class UCropActivity extends AppCompatActivity {
         // 是否可拖动裁剪框
         isDragFrame = intent.getBooleanExtra(UCrop.Options.EXTRA_DRAG_CROP_FRAME, true);
 
+        mToolbarHeight = intent.getFloatExtra(UCrop.Options.EXTRA_TOOL_BAR_HEIGHT, getResources().getDimension(R.dimen.ucrop_toolbar_height));
         mStatusBarColor = intent.getIntExtra(UCrop.Options.EXTRA_STATUS_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_statusbar));
         mToolbarColor = intent.getIntExtra(UCrop.Options.EXTRA_TOOL_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_toolbar));
         if (mToolbarColor == -1) {
@@ -346,6 +348,9 @@ public class UCropActivity extends AppCompatActivity {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         // Set all of the Toolbar coloring
+        ViewGroup.LayoutParams params = toolbar.getLayoutParams();
+        params.height = (int) mToolbarHeight;
+        toolbar.setLayoutParams(params);
         toolbar.setBackgroundColor(mToolbarColor);
         toolbar.setTitleTextColor(mToolbarWidgetColor);
 

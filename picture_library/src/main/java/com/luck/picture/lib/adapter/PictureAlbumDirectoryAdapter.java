@@ -91,7 +91,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
                             RoundedBitmapDrawable circularBitmapDrawable =
                                     RoundedBitmapDrawableFactory.
                                             create(mContext.getResources(), resource);
-                            circularBitmapDrawable.setCornerRadius(8);
+                            circularBitmapDrawable.setCornerRadius(0);
                             holder.first_image.setImageDrawable(circularBitmapDrawable);
                         }
                     });

@@ -25,6 +25,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastManage;
@@ -193,7 +194,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 }
                 options.diskCacheStrategy(DiskCacheStrategy.ALL);
                 options.centerCrop();
-                options.placeholder(R.drawable.image_placeholder);
                 Glide.with(context)
                         .asBitmap()
                         .load(path)

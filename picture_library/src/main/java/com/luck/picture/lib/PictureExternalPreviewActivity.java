@@ -113,7 +113,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     @Override
     public void onClick(View v) {
         finish();
-        overridePendingTransition(0, R.anim.a3);
     }
 
     public class SimpleFragmentAdapter extends PagerAdapter {
@@ -219,14 +218,12 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     @Override
                     public void onViewTap(View view, float x, float y) {
                         finish();
-                        overridePendingTransition(0, R.anim.a3);
                     }
                 });
                 longImg.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         finish();
-                        overridePendingTransition(0, R.anim.a3);
                     }
                 });
                 imageView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -401,7 +398,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-        overridePendingTransition(0, R.anim.a3);
     }
 
     @Override

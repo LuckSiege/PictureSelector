@@ -27,6 +27,21 @@ public class AttrsUtils {
         array.recycle();
         return color;
     }
+    /**
+     * get attrs color
+     *
+     * @param mContext
+     * @param attr
+     * @return
+     */
+    public static float getTypeValueDimension(Context mContext, int attr) {
+        TypedValue typedValue = new TypedValue();
+        int[] attribute = new int[]{attr};
+        TypedArray array = mContext.obtainStyledAttributes(typedValue.resourceId, attribute);
+        float color = array.getDimension(0, -1);
+        array.recycle();
+        return color;
+    }
 
     /**
      * attrs status color or black

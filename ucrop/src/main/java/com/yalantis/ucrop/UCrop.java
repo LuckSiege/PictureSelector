@@ -257,6 +257,7 @@ public class UCrop {
         public static final String EXTRA_CROP_GRID_COLOR = EXTRA_PREFIX + ".CropGridColor";
         public static final String EXTRA_CROP_GRID_STROKE_WIDTH = EXTRA_PREFIX + ".CropGridStrokeWidth";
 
+        public static final String EXTRA_TOOL_BAR_HEIGHT = EXTRA_PREFIX + ".ToolbarHeight";
         public static final String EXTRA_TOOL_BAR_COLOR = EXTRA_PREFIX + ".ToolbarColor";
         public static final String EXTRA_STATUS_BAR_COLOR = EXTRA_PREFIX + ".StatusBarColor";
         public static final String EXTRA_UCROP_COLOR_WIDGET_ACTIVE = EXTRA_PREFIX + ".UcropColorWidgetActive";
@@ -431,6 +432,10 @@ public class UCrop {
             mOptionBundle.putInt(EXTRA_CROP_GRID_STROKE_WIDTH, width);
         }
 
+        public void setToolbarHeight(float height) {
+            mOptionBundle.putFloat(EXTRA_TOOL_BAR_HEIGHT, height);
+        }
+
         /**
          * @param color - desired resolved color of the toolbar
          */
@@ -569,7 +574,6 @@ public class UCrop {
             mOptionBundle.putInt(EXTRA_MAX_SIZE_X, width);
             mOptionBundle.putInt(EXTRA_MAX_SIZE_Y, height);
         }
-
     }
 
 }

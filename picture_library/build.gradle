@@ -19,13 +19,13 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':ucrop')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(':ucrop')
     //noinspection GradleCompatible
-    compile "com.android.support:appcompat-v7:${cfgs.androidSupportVersion}"
+    implementation "com.android.support:appcompat-v7:${cfgs.androidSupportVersion}"
     //noinspection GradleCompatible
-    compile "com.android.support:recyclerview-v7:${cfgs.androidSupportVersion}"
-    compile "com.github.bumptech.glide:glide:${cfgs.glide}"
-    compile "io.reactivex.rxjava2:rxjava:${cfgs.rxjava}"
-    compile "io.reactivex.rxjava2:rxandroid:${cfgs.rxandroid}"
+    implementation "com.android.support:recyclerview-v7:${cfgs.androidSupportVersion}"
+    implementation "com.github.bumptech.glide:glide:${cfgs.glide}"
+    implementation "io.reactivex.rxjava2:rxjava:${cfgs.rxjava}"
+    implementation "io.reactivex.rxjava2:rxandroid:${cfgs.rxandroid}"
 }

@@ -283,9 +283,11 @@ public class PictureBaseActivity extends FragmentActivity {
      */
     protected void startCrop(String originalPath) {
         UCrop.Options options = new UCrop.Options();
+        float toolbarHeight = AttrsUtils.getTypeValueDimension(this, R.attr.picture_crop_toolbar_height);
         int toolbarColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_toolbar_bg);
         int statusColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_status_color);
         int titleColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_title_color);
+        options.setToolbarHeight(toolbarHeight);
         options.setToolbarColor(toolbarColor);
         options.setStatusBarColor(statusColor);
         options.setToolbarWidgetColor(titleColor);
@@ -446,9 +448,7 @@ public class PictureBaseActivity extends FragmentActivity {
     protected void closeActivity() {
         finish();
         if (config.camera) {
-            overridePendingTransition(0, R.anim.fade_out);
         } else {
-            overridePendingTransition(0, R.anim.a3);
         }
     }
 

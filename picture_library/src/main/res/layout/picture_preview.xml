@@ -2,23 +2,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="?attr/picture.ac_preview.bg"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/rl_title"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="?attr/picture.title_bar.height"
+        tools:layout_height="48dp"
         android:background="?attr/picture.ac_preview.title.bg">
 
         <ImageView
             android:id="@+id/picture_left_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="?attr/picture.title_bar.height"
+            android:layout_height="?attr/picture.title_bar.height"
             android:layout_centerVertical="true"
-            android:padding="15dp"
-            android:src="?attr/picture.preview.leftBack.icon" />
+            android:padding="?attr/picture.leftBack.icon.padding"
+            android:src="?attr/picture.preview.leftBack.icon"
+            tools:layout_height="48dp"
+            tools:layout_width="48dp"
+            tools:padding="15dp"
+            tools:src="@drawable/picture_back" />
 
         <TextView
             android:id="@+id/picture_title"

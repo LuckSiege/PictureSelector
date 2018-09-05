@@ -31,8 +31,8 @@ android {
 
 dependencies {
     //noinspection GradleCompatible
-    compile "com.android.support:appcompat-v7:${cfgs.androidSupportVersion}"
+    implementation "com.android.support:appcompat-v7:${cfgs.androidSupportVersion}"
     //noinspection GradleCompatible
-    compile "com.android.support:recyclerview-v7:${cfgs.androidSupportVersion}"
+    implementation "com.android.support:recyclerview-v7:${cfgs.androidSupportVersion}"
     implementation "com.github.bumptech.glide:glide:${cfgs.glide}"
 }

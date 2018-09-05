@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
@@ -72,7 +73,9 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
         id_ll_root = (LinearLayout) window.findViewById(R.id.id_ll_root);
         adapter = new PictureAlbumDirectoryAdapter(context);
         recyclerView = (RecyclerView) window.findViewById(R.id.folder_list);
-        recyclerView.getLayoutParams().height = (int) (ScreenUtils.getScreenHeight(context) * 0.6);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) recyclerView.getLayoutParams();
+        params.bottomMargin = (int) (ScreenUtils.getScreenHeight(context) * 0.3);
+        recyclerView.setLayoutParams(params);
         recyclerView.addItemDecoration(new RecycleViewDivider(
                 context, LinearLayoutManager.HORIZONTAL, ScreenUtils.dip2px(context, 0), ContextCompat.getColor(context, R.color.transparent)));
         recyclerView.setLayoutManager(new LinearLayoutManager(context));

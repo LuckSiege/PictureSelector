@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.luck.picture.lib">
 
-    <application android:theme="@style/AppTheme">
+    <application>
 
         <provider
             android:name="com.luck.picture.lib.PictureFileProvider"

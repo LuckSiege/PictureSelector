@@ -11,20 +11,6 @@
         <item name="android:windowExitAnimation">@anim/modal_out</item>
     </style>
 
-    <style name="Dialog_Audio_StyleAnim">
-        <item name="android:windowEnterAnimation">@anim/a5</item>
-        <item name="android:windowExitAnimation">@anim/a3</item>
-    </style>
-
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/bar_grey</item>
-        <item name="colorPrimaryDark">@color/bar_grey</item>
-        <item name="colorAccent">@color/bar_grey</item>
-    </style>
-
     <style name="picture_alert_dialog" parent="android:Theme.Dialog">
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowIsTranslucent">false</item>
@@ -57,16 +43,26 @@
 
 
     <!--默认样式-->
-    <style name="picture.default.style" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="picture.default.style" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+        <!--标题栏高度-->
+        <item name="picture.title_bar.height">48dp</item>
         <!--标题栏背景色-->
         <item name="colorPrimary">@color/bar_grey</item>
         <!--状态栏背景色-->
         <item name="colorPrimaryDark">@color/bar_grey</item>
+        <!--图片列表占位图-->
+        <item name="picture.image.holder">@drawable/image_placeholder</item>
+        <!--拍摄按钮背图标-->
+        <item name="picture.camera.icon">@drawable/ic_camera</item>
+        <!--拍摄按钮背景色-->
+        <item name="picture.camera.bg">@color/color_69</item>
         <!--是否改变图片列表界面状态栏字体颜色为黑色-->
         <item name="picture.statusFontColor">false</item>
         <!--返回键图标-->
         <item name="picture.leftBack.icon">@drawable/picture_back</item>
+        <!--返回键图标边距，高度宽度为标题栏高度-->
+        <item name="picture.leftBack.icon.padding">15dp</item>
         <!--标题下拉箭头-->
         <item name="picture.arrow_down.icon">@drawable/arrow_down</item>
         <!--标题上拉箭头-->
@@ -81,8 +77,12 @@
         <item name="picture.style.checkNumMode">false</item>
         <!--选择图片样式0/9-->
         <item name="picture.style.numComplete">false</item>
+        <!--图片列表背景色-->
+        <item name="picture.bg">@color/black</item>
         <!--图片列表底部背景色-->
         <item name="picture.bottom.bg">@color/color_fa</item>
+        <!--图片列表底部高度-->
+        <item name="picture.bottom.height">45dp</item>
         <!--图片列表预览文字颜色-->
         <item name="picture.preview.textColor">@color/picture_list_text_color</item>
         <!--图片列表已完成文字颜色-->
@@ -95,10 +95,16 @@
         <item name="picture.ac_preview.complete.textColor">@color/picture_preview_text_color</item>
         <!--预览界面标题栏背景色-->
         <item name="picture.ac_preview.title.bg">@color/bar_grey</item>
+        <!--预览界面背景色-->
+        <item name="picture.ac_preview.bg">@color/black</item>
         <!--预览界面底部背景色-->
         <item name="picture.ac_preview.bottom.bg">@color/bar_grey_90</item>
+        <!--预览界面底部高度-->
+        <item name="picture.ac_preview.bottom.height">45dp</item>
         <!--预览界面返回箭头-->
         <item name="picture.preview.leftBack.icon">@drawable/picture_back</item>
+        <!--裁剪页面标题高度-->
+        <item name="picture.crop.toolbar.height">48dp</item>
         <!--裁剪页面标题背景色-->
         <item name="picture.crop.toolbar.bg">@color/bar_grey</item>
         <!--裁剪页面状态栏颜色-->

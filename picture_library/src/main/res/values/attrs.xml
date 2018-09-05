@@ -13,19 +13,27 @@
   limitations under the License.
   -->
 <resources>
-
+    <attr name="picture.title_bar.height" format="reference|dimension" />
+    <attr name="picture.camera.icon" format="reference" />
+    <attr name="picture.camera.bg" format="reference|color" />
+    <attr name="picture.image.holder" format="reference" />
     <attr name="picture.title.textColor" format="reference|color" />
     <attr name="picture.right.textColor" format="reference|color" />
     <attr name="picture.leftBack.icon" format="reference" />
+    <attr name="picture.leftBack.icon.padding" format="reference|dimension" />
     <attr name="picture.arrow_down.icon" format="reference" />
     <attr name="picture.arrow_up.icon" format="reference" />
     <attr name="picture.num.style" format="reference" />
     <attr name="picture.checked.style" format="reference" />
+    <attr name="picture.bg" format="reference|color" />
+    <attr name="picture.bottom.height" format="reference|dimension" />
     <attr name="picture.bottom.bg" format="reference|color" />
     <attr name="picture.preview.textColor" format="reference|color" />
     <attr name="picture.complete.textColor" format="reference|color" />
     <attr name="picture.ac_preview.title.textColor" format="reference|color" />
     <attr name="picture.ac_preview.complete.textColor" format="reference|color" />
+    <attr name="picture.ac_preview.bg" format="reference|color" />
+    <attr name="picture.ac_preview.bottom.height" format="reference|dimension" />
     <attr name="picture.ac_preview.bottom.bg" format="reference|color" />
     <attr name="picture.status.color" format="reference|color" />
     <attr name="picture.ac_preview.title.bg" format="reference|color" />
@@ -33,6 +41,7 @@
     <attr name="picture.statusFontColor" format="boolean" />
     <attr name="picture.style.numComplete" format="boolean" />
     <attr name="picture.style.checkNumMode" format="boolean" />
+    <attr name="picture.crop.toolbar.height" format="reference|dimension" />
     <attr name="picture.crop.toolbar.bg" format="reference|color" />
     <attr name="picture.crop.status.color" format="reference|color" />
     <attr name="picture.crop.title.color" format="reference|color" />

@@ -9,7 +9,7 @@
     </style>
 
     <!--白色主题样式，，注意每一项都不能少-->
-    <style name="picture.white.style" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="picture.white.style" parent="picture.default.style">
         <!-- Customize your theme here. -->
         <!--标题栏背景色-->
         <item name="colorPrimary">@color/white</item>
@@ -62,7 +62,7 @@
     </style>
 
     <!--QQ数字风格样式，注意每一项都不能少-->
-    <style name="picture.QQ.style" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="picture.QQ.style" parent="picture.default.style">
         <!-- Customize your theme here. -->
         <!--标题栏背景色-->
         <item name="colorPrimary">@color/blue</item>
@@ -116,7 +116,7 @@
 
 
     <!--新浪微博样式，注意每一项都不能少-->
-    <style name="picture.Sina.style" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="picture.Sina.style" parent="picture.default.style">
         <!-- Customize your theme here. -->
         <!--标题栏背景色-->
         <item name="colorPrimary">@color/white</item>
@@ -151,8 +151,7 @@
         <!--预览界面标题文字颜色-->
         <item name="picture.ac_preview.title.textColor">@color/color_53</item>
         <!--预览界面已完成文字颜色-->
-        <item name="picture.ac_preview.complete.textColor">@color/picture_list_sina_text_color
-        </item>
+        <item name="picture.ac_preview.complete.textColor">@color/picture_list_sina_text_color</item>
         <!--预览界面标题栏背景色-->
         <item name="picture.ac_preview.title.bg">@color/white</item>
         <!--预览界面底部背景色-->

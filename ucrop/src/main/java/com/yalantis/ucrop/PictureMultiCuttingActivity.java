@@ -87,6 +87,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     private String mToolbarTitle;
     private ArrayList<String> list;
     // Enables dynamic coloring
+    private float mToolbarHeight;
     private int mToolbarColor;
     private int mStatusBarColor;
     private int mActiveWidgetColor;
@@ -322,6 +323,10 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         scaleEnabled = intent.getBooleanExtra(UCropMulti.Options.EXTRA_SCALE, false);
         rotateEnabled = intent.getBooleanExtra(UCropMulti.Options.EXTRA_ROTATE, false);
 
+        // 是否可拖动裁剪框
+        isDragFrame = intent.getBooleanExtra(UCrop.Options.EXTRA_DRAG_CROP_FRAME, true);
+
+        mToolbarHeight = intent.getFloatExtra(UCrop.Options.EXTRA_TOOL_BAR_HEIGHT, getResources().getDimension(R.dimen.ucrop_toolbar_height));
         mStatusBarColor = intent.getIntExtra(UCropMulti.Options.EXTRA_STATUS_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_statusbar));
         mToolbarColor = intent.getIntExtra(UCropMulti.Options.EXTRA_TOOL_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_toolbar));
         if (mToolbarColor == -1) {
@@ -378,6 +383,10 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         // Set all of the Toolbar coloring
+
+        ViewGroup.LayoutParams params = toolbar.getLayoutParams();
+        params.height = (int) mToolbarHeight;
+        toolbar.setLayoutParams(params);
         toolbar.setBackgroundColor(mToolbarColor);
         toolbar.setTitleTextColor(mToolbarWidgetColor);
 

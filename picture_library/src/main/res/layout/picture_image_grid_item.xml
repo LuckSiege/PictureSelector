@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/image_placeholder" />
+        android:src="?attr/picture.image.holder" />
 
     <LinearLayout
         android:id="@+id/ll_check"
