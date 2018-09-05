@@ -17,6 +17,22 @@
 - style新增裁剪页面标题栏高度自定义
 - 修复DEMO裁剪框不可拖动开关无效BUG
 
+# 本分支集成方式
+
+Step 1. Add the JitPack repository to your build file
+Add it in your root build.gradle at the end of repositories:
+
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://www.jitpack.io' }
+		}
+	}
+Step 2. Add the dependency
+
+	dependencies {
+	        implementation 'com.github.goweii:PictureSelector:v2.3.0'
+	}
 
 
 # PictureSelector 2.0 
