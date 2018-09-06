@@ -2,15 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
+    android:layout_height="wrap_content"
+    android:background="?colorPrimary"
     android:gravity="center_vertical"
     android:orientation="vertical">
+
+    <View
+        android:id="@+id/view_status_bar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
 
     <RelativeLayout
         android:id="@+id/rl_picture_title"
         android:layout_width="match_parent"
         android:layout_height="?attr/picture.title_bar.height"
-        android:background="?colorPrimary"
         android:gravity="center_vertical"
         tools:layout_height="48dp">
 

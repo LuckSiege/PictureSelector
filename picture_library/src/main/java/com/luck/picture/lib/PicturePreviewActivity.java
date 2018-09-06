@@ -83,6 +83,10 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onViewCreate(Bundle savedInstanceState) {
         setContentView(R.layout.picture_preview);
         if (!RxBus.getDefault().isRegistered(this)) {
             RxBus.getDefault().register(this);

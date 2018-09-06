@@ -76,6 +76,10 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onViewCreate(Bundle savedInstanceState) {
         setContentView(R.layout.picture_activity_external_preview);
         inflater = LayoutInflater.from(this);
         tv_title = (TextView) findViewById(R.id.picture_title);

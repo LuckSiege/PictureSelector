@@ -21,9 +21,18 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void initWindow() {
+        super.initWindow();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
                 , WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onViewCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_picture_play_audio);
         audio_path = getIntent().getStringExtra("audio_path");
         tv_musicStatus = (TextView) findViewById(R.id.tv_musicStatus);

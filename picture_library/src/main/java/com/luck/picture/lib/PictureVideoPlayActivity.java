@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,8 +22,19 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void initWindow() {
+        super.initWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+    }
+
+    @Override
+    protected void onViewCreate(Bundle savedInstanceState) {
         setContentView(R.layout.picture_activity_video_play);
         video_path = getIntent().getStringExtra("video_path");
         picture_left_back = (ImageView) findViewById(R.id.picture_left_back);

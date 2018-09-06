@@ -3,6 +3,7 @@ package com.yalantis.ucrop;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
@@ -36,6 +37,7 @@ import android.widget.TextView;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.model.AspectRatio;
 import com.yalantis.ucrop.util.SelectedStateListDrawable;
+import com.yalantis.ucrop.util.StatusBarUtils;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
 import com.yalantis.ucrop.view.OverlayView;
@@ -121,6 +123,7 @@ public class UCropActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initWindow();
         setContentView(R.layout.ucrop_activity_photobox);
 
         final Intent intent = getIntent();
@@ -339,19 +342,60 @@ public class UCropActivity extends AppCompatActivity {
         }
     }
 
+    protected void initWindow() {
+        Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(Color.TRANSPARENT);
+        }
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+        StatusBarUtils.translucentStatusBar(this);
+    }
+
+    private void initStatusBar() {
+        int id = R.id.view_status_bar;
+        View view = findViewById(id);
+        if (view == null) {
+            return;
+        }
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.height = getStatusBarHeight();
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        view.setLayoutParams(params);
+        view.setBackgroundColor(mStatusBarColor);
+        view.setVisibility(View.VISIBLE);
+    }
+
+    public int getStatusBarHeight() {
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            return getResources().getDimensionPixelSize(resourceId);
+        }
+        return 0;
+    }
+
     /**
      * Configures and styles both status bar and toolbar.
      */
     private void setupAppBar() {
-        setStatusBarColor(mStatusBarColor);
+//        setStatusBarColor(mStatusBarColor);
+        initStatusBar();
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final LinearLayout action_bar = (LinearLayout) findViewById(R.id.action_bar);
+        action_bar.setBackgroundColor(mToolbarColor);
 
         // Set all of the Toolbar coloring
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         ViewGroup.LayoutParams params = toolbar.getLayoutParams();
         params.height = (int) mToolbarHeight;
         toolbar.setLayoutParams(params);
-        toolbar.setBackgroundColor(mToolbarColor);
         toolbar.setTitleTextColor(mToolbarWidgetColor);
 
         final TextView toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);

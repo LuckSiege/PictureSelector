@@ -3,65 +3,75 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="?attr/picture.ac_preview.bg"
-    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/rl_title"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/picture.title_bar.height"
-        tools:layout_height="48dp"
-        android:background="?attr/picture.ac_preview.title.bg">
+        android:layout_height="wrap_content"
+        android:background="?attr/picture.ac_preview.title.bg"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/picture_left_back"
-            android:layout_width="?attr/picture.title_bar.height"
+        <View
+            android:id="@+id/view_status_bar"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
+        <RelativeLayout
+            android:id="@+id/rl_title"
+            android:layout_width="match_parent"
             android:layout_height="?attr/picture.title_bar.height"
-            android:layout_centerVertical="true"
-            android:padding="?attr/picture.leftBack.icon.padding"
-            android:src="?attr/picture.preview.leftBack.icon"
-            tools:layout_height="48dp"
-            tools:layout_width="48dp"
-            tools:padding="15dp"
-            tools:src="@drawable/picture_back" />
+            tools:layout_height="48dp">
 
-        <TextView
-            android:id="@+id/picture_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_centerVertical="true"
-            android:ellipsize="end"
-            android:maxEms="11"
-            android:textColor="?attr/picture.ac_preview.title.textColor"
-            android:textSize="18sp" />
-
-        <LinearLayout
-            android:id="@+id/ll_check"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
+            <ImageView
+                android:id="@+id/picture_left_back"
+                android:layout_width="?attr/picture.title_bar.height"
+                android:layout_height="?attr/picture.title_bar.height"
+                android:layout_centerVertical="true"
+                android:padding="?attr/picture.leftBack.icon.padding"
+                android:src="?attr/picture.preview.leftBack.icon"
+                tools:layout_height="48dp"
+                tools:layout_width="48dp"
+                tools:padding="15dp"
+                tools:src="@drawable/picture_back" />
 
             <TextView
-                android:id="@+id/check"
+                android:id="@+id/picture_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="?attr/picture.checked.style"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="12sp" />
-        </LinearLayout>
-    </RelativeLayout>
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:ellipsize="end"
+                android:maxEms="11"
+                android:textColor="?attr/picture.ac_preview.title.textColor"
+                android:textSize="18sp" />
 
+            <LinearLayout
+                android:id="@+id/ll_check"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+
+                <TextView
+                    android:id="@+id/check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/picture.checked.style"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+    </LinearLayout>
 
     <com.luck.picture.lib.widget.PreviewViewPager
         android:id="@+id/preview_pager"
         android:layout_width="match_parent"
+        android:background="?attr/picture.ac_preview.bg"
         android:layout_height="0dp"
         android:layout_weight="1" />
 

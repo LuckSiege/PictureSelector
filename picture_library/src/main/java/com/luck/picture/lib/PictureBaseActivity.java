@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,6 +14,10 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.luck.picture.lib.compress.Luban;
 import com.luck.picture.lib.compress.OnCompressListener;
@@ -29,6 +34,7 @@ import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
+import com.luck.picture.lib.tools.StatusBarUtils;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropMulti;
 
@@ -47,7 +53,7 @@ import io.reactivex.schedulers.Schedulers;
  * @data：2018/3/28 下午1:00
  * @描述: Activity基类
  */
-public class PictureBaseActivity extends FragmentActivity {
+public abstract class PictureBaseActivity extends FragmentActivity {
     protected Context mContext;
     protected PictureSelectionConfig config;
     protected boolean openWhiteStatusBar, numComplete;
@@ -63,10 +69,10 @@ public class PictureBaseActivity extends FragmentActivity {
      *
      * @return 是否沉浸式，默认true
      */
-    @Override
-    public boolean isImmersive() {
-        return true;
-    }
+//    @Override
+//    public boolean isImmersive() {
+//        return true;
+//    }
 
     /**
      * 具体沉浸的样式，可以根据需要自行修改状态栏和导航栏的颜色
@@ -76,6 +82,42 @@ public class PictureBaseActivity extends FragmentActivity {
                 , colorPrimaryDark
                 , colorPrimary
                 , openWhiteStatusBar);
+    }
+
+    protected void initWindow() {
+        Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(Color.TRANSPARENT);
+        }
+        StatusBarUtils.translucentStatusBar(this);
+    }
+
+    protected void initStatusBar() {
+        int id = R.id.view_status_bar;
+        View view = findViewById(id);
+        if (view == null) {
+            return;
+        }
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.height = getStatusBarHeight();
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        view.setLayoutParams(params);
+        view.setBackgroundColor(colorPrimaryDark);
+        view.setVisibility(View.VISIBLE);
+    }
+
+    public int getStatusBarHeight() {
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            return getResources().getDimensionPixelSize(resourceId);
+        }
+        return 0;
     }
 
     @Override
@@ -92,10 +134,16 @@ public class PictureBaseActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         mContext = this;
         initConfig();
-        if (isImmersive()) {
-            immersive();
-        }
+//        if (isImmersive()) {
+//            immersive();
+//        }
+        initWindow();
+        StatusBarUtils.setStatusBarMode(this, openWhiteStatusBar);
+        onViewCreate(savedInstanceState);
+        initStatusBar();
     }
+
+    protected abstract void onViewCreate(Bundle savedInstanceState);
 
     /**
      * 获取配置参数

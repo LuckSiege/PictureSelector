@@ -7,23 +7,37 @@
     android:background="@color/ucrop_color_crop_background"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+
+    <LinearLayout
+        android:id="@+id/action_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/ucrop_color_toolbar"
-        android:minHeight="?attr/actionBarSize">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/toolbar_title"
-            android:layout_width="wrap_content"
+        <View
+            android:id="@+id/view_status_bar"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/ucrop_label_edit_photo"
-            android:textColor="@color/ucrop_color_toolbar_widget"
-            android:textSize="18sp" />
+            android:minHeight="?attr/actionBarSize">
 
-    </android.support.v7.widget.Toolbar>
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/ucrop_label_edit_photo"
+                android:textColor="@color/ucrop_color_toolbar_widget"
+                android:textSize="18sp" />
+
+        </android.support.v7.widget.Toolbar>
+
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -37,16 +51,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/recyclerView"
-        android:layout_below="@id/toolbar">
+        android:layout_below="@id/action_bar">
 
         <!--<ImageView-->
-            <!--android:id="@+id/image_view_logo"-->
-            <!--android:layout_width="200dp"-->
-            <!--android:layout_height="200dp"-->
-            <!--android:layout_gravity="center"-->
-            <!--app:srcCompat="@drawable/ucrop_vector_ic_crop"-->
-            <!--tools:background="@drawable/ucrop_vector_ic_crop"-->
-            <!--tools:ignore="MissingPrefix" />-->
+        <!--android:id="@+id/image_view_logo"-->
+        <!--android:layout_width="200dp"-->
+        <!--android:layout_height="200dp"-->
+        <!--android:layout_gravity="center"-->
+        <!--app:srcCompat="@drawable/ucrop_vector_ic_crop"-->
+        <!--tools:background="@drawable/ucrop_vector_ic_crop"-->
+        <!--tools:ignore="MissingPrefix" />-->
 
         <com.yalantis.ucrop.view.UCropView
             android:id="@+id/ucrop"
