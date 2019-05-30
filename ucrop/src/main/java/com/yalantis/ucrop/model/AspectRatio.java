@@ -2,7 +2,8 @@ package com.yalantis.ucrop.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 /**
  * Created by Oleksii Shliama [https://github.com/shliama] on 6/24/16.

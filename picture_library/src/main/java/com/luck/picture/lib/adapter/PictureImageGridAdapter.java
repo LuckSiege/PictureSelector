@@ -5,8 +5,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +13,9 @@ import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -56,7 +57,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private boolean is_checked_num;
     private boolean enableVoice;
     private int overrideWidth, overrideHeight;
-    private float sizeMultiplier;
+    private float sizeMultiplierOf;
     private Animation animation;
     private PictureSelectionConfig config;
     private int mimeType;
@@ -79,7 +80,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.overrideWidth = config.overrideWidth;
         this.overrideHeight = config.overrideHeight;
         this.enableVoice = config.openClickSound;
-        this.sizeMultiplier = config.sizeMultiplier;
+        this.sizeMultiplierOf = config.sizeMultiplierOf;
         this.mimeType = config.mimeType;
         this.zoomAnim = config.zoomAnim;
         animation = OptAnimationLoader.loadAnimation(context, R.anim.modal_in);
@@ -187,9 +188,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             } else {
                 RequestOptions options = new RequestOptions();
                 if (overrideWidth <= 0 && overrideHeight <= 0) {
-                    options.sizeMultiplier(sizeMultiplier);
+                    options.sizeMultiplierOf(sizeMultiplierOf);
                 } else {
-                    options.override(overrideWidth, overrideHeight);
+                    options.overrideOf(overrideWidth, overrideHeight);
                 }
                 options.diskCacheStrategy(DiskCacheStrategy.ALL);
                 options.centerCrop();
