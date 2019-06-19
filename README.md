@@ -45,7 +45,7 @@
 * 25.新增音频功能查询
 
 
-重要的事情说三遍记得添加权限
+添加权限
 
 ```
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -303,11 +303,13 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 ## 更新日志
 
-# 当前版本：
+[Lastest release & changes](https://github.com/labmem005/PictureSelector/releases)
+
+# 历史版本：
+
 * v2.2.3
 * 1.修复沉浸式在部分机型标题栏遮挡情况
 
-# 历史版本：
 * v2.2.2
 * 1.优化外部预览界面样式不同步问题
 * 2.优化沉浸式方案，适配更多机型
@@ -375,12 +377,12 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 修复录音不显示时长问题
 
 # 项目使用第三方库：
-* glide:4.5.0	
-* rxjava:2.0.5
-* rxandroid:2.0.1
-* PhotoView:2.1.3
+* glide
+* rxjava
+* rxandroid
+* PhotoView
 * luban
-* 裁剪使用ucrop
+* ucrop
 
 ## 混淆配置 
 ```
