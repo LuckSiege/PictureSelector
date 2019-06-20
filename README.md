@@ -66,7 +66,7 @@ allprojects {
 
 ```
 dependencies {
-    implementation 'com.github.labmem005.PictureSelector:picture_library:v2.3.0'
+    implementation 'com.github.labmem005.PictureSelector:picture_library:v2.3.1'
 }
 
 ```
