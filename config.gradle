@@ -1,10 +1,10 @@
 ext {
     cfgs = [
             compileSdkVersion    : 28,
-            minSdkVersion        : 22,
+            minSdkVersion        : 19,
             targetSdkVersion     : 28,
-            versionCode          : 10,
-            versionName          : "2.0.0",
+            versionCode          : 11,
+            versionName          : "2.3.1",
             ucropVersionCode     : 22,
             ucropVersionName     : "2.2.0-native",
     ]
