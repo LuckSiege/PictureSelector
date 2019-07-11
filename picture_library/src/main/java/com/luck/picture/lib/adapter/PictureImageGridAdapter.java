@@ -5,8 +5,8 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +33,10 @@ import com.luck.picture.lib.tools.VoiceUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.bumptech.glide.request.RequestOptions.centerCropTransform;
+import static com.bumptech.glide.request.RequestOptions.overrideOf;
+import static com.bumptech.glide.request.RequestOptions.sizeMultiplierOf;
 
 /**
  * author：luck
@@ -185,20 +189,32 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             if (mimeType == PictureMimeType.ofAudio()) {
                 contentHolder.iv_picture.setImageResource(R.drawable.audio_placeholder);
             } else {
-                RequestOptions options = new RequestOptions();
+//                RequestOptions options = new RequestOptions();
                 if (overrideWidth <= 0 && overrideHeight <= 0) {
-                    options.sizeMultiplier(sizeMultiplier);
+//                    RequestOptions.sizeMultiplierOf(sizeMultiplier);
+                    Glide.with(context)
+                            .asBitmap()
+                            .load(path)
+                            .sizeMultiplier(sizeMultiplier)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .centerCrop()
+                            .placeholder(R.drawable.image_placeholder)
+                            .into(contentHolder.iv_picture);
                 } else {
-                    options.override(overrideWidth, overrideHeight);
+//                    RequestOptions.overrideOf(overrideWidth, overrideHeight);
+                    Glide.with(context)
+                            .asBitmap()
+                            .load(path)
+                            .override(overrideWidth, overrideHeight)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .centerCrop()
+                            .placeholder(R.drawable.image_placeholder)
+                            .into(contentHolder.iv_picture);
                 }
-                options.diskCacheStrategy(DiskCacheStrategy.ALL);
-                options.centerCrop();
-                options.placeholder(R.drawable.image_placeholder);
-                Glide.with(context)
-                        .asBitmap()
-                        .load(path)
-                        .apply(options)
-                        .into(contentHolder.iv_picture);
+//                RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL);
+//                centerCropTransform();
+//                RequestOptions.placeholderOf(R.drawable.image_placeholder);
+
             }
             if (enablePreview || enablePreviewVideo || enablePreviewAudio) {
                 contentHolder.ll_check.setOnClickListener(new View.OnClickListener() {
