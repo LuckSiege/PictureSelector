@@ -2,7 +2,8 @@ package com.luck.picture.lib.config;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.StyleRes;
+
+import androidx.annotation.StyleRes;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -41,7 +42,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public int overrideHeight;
     public int aspect_ratio_x;
     public int aspect_ratio_y;
-    public float sizeMultiplier;
+    public float sizeMultiplierOf;
     public int cropWidth;
     public int cropHeight;
     public boolean zoomAnim;
@@ -110,7 +111,7 @@ public final class PictureSelectionConfig implements Parcelable {
         outputCameraPath = "";
         compressSavePath = "";
         suffixType = PictureFileUtils.POSTFIX;
-        sizeMultiplier = 0.5f;
+        sizeMultiplierOf = 0.5f;
         selectionMedias = new ArrayList<>();
     }
 
@@ -155,7 +156,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(this.overrideHeight);
         dest.writeInt(this.aspect_ratio_x);
         dest.writeInt(this.aspect_ratio_y);
-        dest.writeFloat(this.sizeMultiplier);
+        dest.writeFloat(this.sizeMultiplierOf);
         dest.writeInt(this.cropWidth);
         dest.writeInt(this.cropHeight);
         dest.writeByte(this.zoomAnim ? (byte) 1 : (byte) 0);
@@ -205,7 +206,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.overrideHeight = in.readInt();
         this.aspect_ratio_x = in.readInt();
         this.aspect_ratio_y = in.readInt();
-        this.sizeMultiplier = in.readFloat();
+        this.sizeMultiplierOf = in.readFloat();
         this.cropWidth = in.readInt();
         this.cropHeight = in.readInt();
         this.zoomAnim = in.readByte() != 0;

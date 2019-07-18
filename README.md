@@ -1,17 +1,5 @@
 # PictureSelector 2.0 
-   一款针对android平台下的图片选择器，支持从相册或拍照选择图片或视频、音频，支持动态权限获取、裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能、适配android 6.0+系统的开源图片选择框架。<br>  
-  
-  <br>项目会一直维护(有bug修复完成，一般周末会更新(不好意思，最近比较忙有时间会解决~有问题先提issue))，有bug请描述清楚，并请Issues会第一时间修复，个人QQ 893855882@qq.com  希望用得着的朋友点个star。 <br>
- Android开发交流 群一 619458861 (已满) <br> 
- Android开发交流 群二 679824206 (已满) <br> 
-   
-  [我的博客地址](http://blog.csdn.net/luck_mw) 
-  
-[![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
-[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
-[![CSDN](https://img.shields.io/twitter/url/http/blog.csdn.net/luck_mw.svg?style=social)](http://blog.csdn.net/luck_mw)
-[![I](https://img.shields.io/github/issues/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector/issues)
-[![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
+   一款针对android平台下的图片选择器，支持从相册或拍照选择图片或视频、音频，支持动态权限获取、裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能的开源图片选择框架。<br>  
 
 ## 目录
 -[功能特点](#功能特点)<br>
@@ -24,40 +12,35 @@
 -[结果回调](#结果回调)<br>
 -[更新日志](#更新日志)<br>
 -[混淆配置](#混淆配置)<br>
--[兼容性测试](#兼容性测试)<br>
 -[演示效果](#演示效果)<br>
--[打赏](#打赏)<br>
 
 # 功能特点
 
-* 1.适配android6.0+系统
-* 2.解决部分机型裁剪闪退问题
-* 3.解决图片过大oom闪退问题
-* 4.动态获取系统权限，避免闪退
-* 5.支持相片or视频的单选和多选
-* 6.支持裁剪比例设置，如常用的 1:1、3：4、3:2、16:9 默认为图片大小
-* 7.支持视频预览
-* 8.支持gif图片
-* 9.支持.webp格式图片 
-* 10.支持一些常用场景设置：如:是否裁剪、是否预览图片、是否显示相机等
-* 11.新增自定义主题设置
-* 12.新增图片勾选样式设置
-* 13.新增图片裁剪宽高设置
-* 14.新增图片压缩处理
-* 15.新增录视频最大时间设置
-* 16.新增视频清晰度设置
-* 17.新增QQ选择风格，带数字效果 
-* 18.新增自定义 文字颜色 背景色让风格和项目更搭配
-* 19.新增多图裁剪功能
-* 20.新增LuBan多图压缩
-* 21.新增单独拍照功能
-* 22.新增压缩大小设置
-* 23.新增Luban压缩档次设置
-* 24.新增圆形头像裁剪
-* 25.新增音频功能查询
+* 兼容至Android 4.4
+* 支持相片or视频的单选和多选
+* 支持裁剪比例设置，如常用的 1:1、3：4、3:2、16:9 默认为图片大小
+* 支持视频预览
+* 支持gif图片
+* 支持.webp格式图片 
+* 支持一些常用场景设置：如:是否裁剪、是否预览图片、是否显示相机等
+* 新增自定义主题设置
+* 新增图片勾选样式设置
+* 新增图片裁剪宽高设置
+* 新增图片压缩处理
+* 新增录视频最大时间设置
+* 新增视频清晰度设置
+* 新增QQ选择风格，带数字效果 
+* 新增自定义 文字颜色 背景色让风格和项目更搭配
+* 新增多图裁剪功能
+* 新增LuBan多图压缩
+* 新增单独拍照功能
+* 新增压缩大小设置
+* 新增Luban压缩档次设置
+* 新增圆形头像裁剪
+* 新增音频功能查询
 
 
-重要的事情说三遍记得添加权限
+添加权限
 
 ```
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -69,47 +52,25 @@
 
 ## 集成方式
 
-方式一 compile引入
-
-```
-dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
-}
-
-```
-
 项目根目录build.gradle加入
 
 ```
 allprojects {
    repositories {
-      jcenter()
+      ...
       maven { url 'https://jitpack.io' }
    }
 }
 ```
-
-方式二 maven引入
-
-step 1.
-```
-<repositories>
-       <repository>
-       <id>jitpack.io</id>
-	<url>https://jitpack.io</url>
-       </repository>
- </repositories>
-```
-step 2.
-```
-
-<dependency>
-      <groupId>com.github.LuckSiege.PictureSelector</groupId>
-      <artifactId>picture_library</artifactId>
-      <version>v2.2.3</version> 
-</dependency>
+添加依赖项
 
 ```
+dependencies {
+    implementation 'com.github.labmem005.PictureSelector:picture_library:v2.3.1'
+}
+
+```
+
 
 ## 常见错误
 ```
@@ -185,7 +146,7 @@ Glide.with(context).load(url).apply(options).into(imageView);
  	.isCamera()// 是否显示拍照按钮 true or false
 	.imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg
 	.isZoomAnim(true)// 图片列表点击 缩放效果 默认true
-	.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
+	.sizeMultiplierOf(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
 	.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径,可不填
  	.enableCrop()// 是否裁剪 true or false
  	.compress()// 是否压缩 true or false
@@ -337,11 +298,13 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 ## 更新日志
 
-# 当前版本：
+[Lastest release & changes](https://github.com/labmem005/PictureSelector/releases)
+
+# 历史版本：
+
 * v2.2.3
 * 1.修复沉浸式在部分机型标题栏遮挡情况
 
-# 历史版本：
 * v2.2.2
 * 1.优化外部预览界面样式不同步问题
 * 2.优化沉浸式方案，适配更多机型
@@ -409,12 +372,12 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 修复录音不显示时长问题
 
 # 项目使用第三方库：
-* glide:4.5.0	
-* rxjava:2.0.5
-* rxandroid:2.0.1
-* PhotoView:2.1.3
+* glide
+* rxjava
+* rxandroid
+* PhotoView
 * luban
-* 裁剪使用ucrop
+* ucrop
 
 ## 混淆配置 
 ```
@@ -463,14 +426,6 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 -keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 
 ```
-## 打赏
-# ~如果您觉得好，对你有帮助，可以给我一点打赏当做鼓励，蚊子再小也是肉呀(*^__^*) 嘻嘻…… 
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/apply.png)
-
-## 兼容性测试
-******腾讯优测-深度测试-通过率达到100%******
-
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/test.png)
 
 ## 演示效果
 

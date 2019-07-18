@@ -2,17 +2,16 @@ package com.luck.picture.lib;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.annotation.FloatRange;
-import android.support.annotation.IntRange;
-import android.support.annotation.StyleRes;
-import android.support.v4.app.Fragment;
 
-import com.luck.picture.lib.config.PictureConfig;
+import androidx.annotation.FloatRange;
+import androidx.annotation.IntRange;
+import androidx.annotation.StyleRes;
+import androidx.fragment.app.Fragment;
+
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DoubleUtils;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -242,13 +241,13 @@ public class PictureSelectionModel {
     }
 
     /**
-     * @param sizeMultiplier The multiplier to apply to the
+     * @param sizeMultiplierOf The multiplier to apply to the
      *                       {@link com.bumptech.glide.request.target.Target}'s dimensions when
      *                       loading the resource.
      * @return
      */
-    public PictureSelectionModel sizeMultiplier(@FloatRange(from = 0.1f) float sizeMultiplier) {
-        selectionConfig.sizeMultiplier = sizeMultiplier;
+    public PictureSelectionModel sizeMultiplierOf(@FloatRange(from = 0.1f) float sizeMultiplierOf) {
+        selectionConfig.sizeMultiplierOf = sizeMultiplierOf;
         return this;
     }
 
