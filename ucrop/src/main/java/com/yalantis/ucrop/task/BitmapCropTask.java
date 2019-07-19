@@ -171,9 +171,12 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
             }
             return true;
         } else {
-//            FileUtils.copyFile(mImageInputUri.getPath(), mImageOutputPath);
-//            return false;
-            return true;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                return true;
+            } else {
+                FileUtils.copyFile(mImageInputUri.getPath(), mImageOutputPath);
+            }
+            return false;
         }
     }
 
