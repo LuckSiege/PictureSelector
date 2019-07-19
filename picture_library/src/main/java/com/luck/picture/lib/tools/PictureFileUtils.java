@@ -81,7 +81,7 @@ public class PictureFileUtils {
     private static File createMediaFile(Context context, String parentPath, int type, String format) {
         String state = Environment.getExternalStorageState();
         File rootDir = state.equals(Environment.MEDIA_MOUNTED) ?
-                Environment.getExternalStorageDirectory() : context.getCacheDir();
+                context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) : context.getCacheDir();
 
         File folderDir = new File(rootDir.getAbsolutePath() + parentPath);
         if (!folderDir.exists() && folderDir.mkdirs()) {
@@ -99,6 +99,8 @@ public class PictureFileUtils {
                 break;
             case PictureConfig.TYPE_VIDEO:
                 tmpFile = new File(folderDir, fileName + POST_VIDEO);
+                break;
+            default:
                 break;
         }
         return tmpFile;
@@ -232,7 +234,8 @@ public class PictureFileUtils {
                 final String type = split[0];
 
                 if ("primary".equalsIgnoreCase(type)) {
-                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                    return context
+                            .getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + split[1];
                 }
 
                 // TODO handle non-primary volumes
@@ -373,11 +376,12 @@ public class PictureFileUtils {
         return degree;
     }
 
-    /*
-     * 旋转图片
+    /**
+     * 旋转Bitmap
+     *
      * @param angle
      * @param bitmap
-     * @return Bitmap
+     * @return
      */
     public static Bitmap rotaingImageView(int angle, Bitmap bitmap) {
         //旋转图片 动作
@@ -473,8 +477,9 @@ public class PictureFileUtils {
      */
     public static String createDir(Context context, String filename, String directory_path) {
         String state = Environment.getExternalStorageState();
-        File rootDir = state.equals(Environment.MEDIA_MOUNTED) ? Environment.getExternalStorageDirectory() : context.getCacheDir();
-        File path = null;
+        File rootDir = state.equals(Environment.MEDIA_MOUNTED) ? context
+                .getExternalFilesDir(Environment.DIRECTORY_PICTURES) : context.getCacheDir();
+        File path;
         if (!TextUtils.isEmpty(directory_path)) {
             // 自定义保存目录
             path = new File(rootDir.getAbsolutePath() + directory_path);
@@ -531,11 +536,10 @@ public class PictureFileUtils {
         return list;
     }
 
-    public static String getDCIMCameraPath() {
+    public static String getDCIMCameraPath(Context ctx) {
         String absolutePath;
         try {
-            absolutePath = "%" + Environment.getExternalStoragePublicDirectory
-                    (Environment.DIRECTORY_DCIM).getAbsolutePath() + "/Camera";
+            absolutePath = "%" + ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath() + "/Camera";
         } catch (Exception e) {
             e.printStackTrace();
             return "";
@@ -592,8 +596,8 @@ public class PictureFileUtils {
     public static void deleteExternalCacheDirFile(Context mContext) {
 
         File cutDir = mContext.getExternalCacheDir();
-        File compressDir = new File(mContext.getExternalCacheDir() + "/picture_cache");
-        File lubanDir = new File(mContext.getExternalCacheDir() + "/luban_disk_cache");
+        File compressDir = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/picture_cache");
+        File lubanDir = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/luban_disk_cache");
         if (cutDir != null) {
             File[] files = cutDir.listFiles();
             for (File file : files) {
@@ -648,14 +652,16 @@ public class PictureFileUtils {
     }
 
     /**
-     * @param context
+     * @param ctx
      * @return
      */
-    public static String getDiskCacheDir(Context context) {
-        String cachePath = null;
+    public static String getDiskCacheDir(Context ctx) {
+        Context context = ctx.getApplicationContext();
+        String cachePath;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
                 || !Environment.isExternalStorageRemovable()) {
-            cachePath = context.getExternalCacheDir().getPath();
+            // context.getFilesDir().getPath(); 不这样写  有些机型会报错
+            cachePath = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
         } else {
             cachePath = context.getCacheDir().getPath();
         }

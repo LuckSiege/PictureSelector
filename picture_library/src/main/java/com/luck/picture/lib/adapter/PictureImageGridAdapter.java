@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -26,6 +27,8 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DateUtils;
+import com.luck.picture.lib.tools.PictureFileUtils;
+import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastManage;
 import com.luck.picture.lib.tools.VoiceUtils;
@@ -145,12 +148,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (getItemViewType(position) == PictureConfig.TYPE_CAMERA) {
             HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
-            headerHolder.headerView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (imageSelectChangedListener != null) {
-                        imageSelectChangedListener.onTakePhoto();
-                    }
+            headerHolder.headerView.setOnClickListener(v -> {
+                if (imageSelectChangedListener != null) {
+                    imageSelectChangedListener.onTakePhoto();
                 }
             });
         } else {
@@ -205,7 +205,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     @Override
                     public void onClick(View v) {
                         // 如原图路径不存在或者路径存在但文件不存在
-                        if (!new File(path).exists()) {
+                        String newPath = SdkVersionUtils.checkedAndroid_Q()
+                                ? PictureFileUtils.getPath(context, Uri.parse(path)) : path;
+                        if (!new File(newPath).exists()) {
                             ToastManage.s(context, PictureMimeType.s(context, mediaMimeType));
                             return;
                         }
@@ -217,7 +219,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 @Override
                 public void onClick(View v) {
                     // 如原图路径不存在或者路径存在但文件不存在
-                    if (!new File(path).exists()) {
+                    String newPath = SdkVersionUtils.checkedAndroid_Q()
+                            ? PictureFileUtils.getPath(context, Uri.parse(path)) : path;
+                    if (!new File(newPath).exists()) {
                         ToastManage.s(context, PictureMimeType.s(context, mediaMimeType));
                         return;
                     }

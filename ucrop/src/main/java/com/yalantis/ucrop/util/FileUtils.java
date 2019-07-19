@@ -147,7 +147,8 @@ public class FileUtils {
                 final String type = split[0];
 
                 if ("primary".equalsIgnoreCase(type)) {
-                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                    return context
+                            .getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + split[1];
                 }
 
                 // TODO handle non-primary volumes
@@ -289,4 +290,12 @@ public class FileUtils {
         return false;
     }
 
+    public static String getDirName(String filePath) {
+        if (TextUtils.isEmpty(filePath)) {
+            return filePath;
+        } else {
+            int lastSep = filePath.lastIndexOf(File.separator);
+            return lastSep == -1 ? "" : filePath.substring(0, lastSep + 1);
+        }
+    }
 }

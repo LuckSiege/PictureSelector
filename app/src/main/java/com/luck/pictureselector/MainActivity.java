@@ -250,7 +250,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
                     // 如果裁剪并压缩了，已取压缩路径为准，因为是先裁剪后压缩的
                     for (LocalMedia media : selectList) {
-                        Log.i("图片-----》", media.getPath());
+                        Log.i(TAG, "压缩---->" + media.getCompressPath());
+                        Log.i(TAG, "原图---->" + media.getPath());
+                        Log.i(TAG, "裁剪---->" + media.getCutPath());
                     }
                     adapter.setList(selectList);
                     adapter.notifyDataSetChanged();

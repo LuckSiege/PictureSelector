@@ -404,10 +404,12 @@ public class ImageHeaderParser {
         try {
             ExifInterface newExif = new ExifInterface(imageOutputPath);
             String value;
-            for (String attribute : attributes) {
-                value = originalExif.getAttribute(attribute);
-                if (!TextUtils.isEmpty(value)) {
-                    newExif.setAttribute(attribute, value);
+            if (originalExif != null) {
+                for (String attribute : attributes) {
+                    value = originalExif.getAttribute(attribute);
+                    if (!TextUtils.isEmpty(value)) {
+                        newExif.setAttribute(attribute, value);
+                    }
                 }
             }
             newExif.setAttribute(ExifInterface.TAG_IMAGE_WIDTH, String.valueOf(width));

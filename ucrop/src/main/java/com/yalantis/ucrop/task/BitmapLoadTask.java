@@ -19,6 +19,7 @@ import android.util.Log;
 import com.yalantis.ucrop.callback.BitmapLoadCallback;
 import com.yalantis.ucrop.model.ExifInfo;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
+import com.yalantis.ucrop.util.BitmapUtils;
 import com.yalantis.ucrop.util.FileUtils;
 
 import java.io.BufferedInputStream;
@@ -167,15 +168,24 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
                 throw e;
             }
         } else {
-            String path = getFilePath();
-            if (!TextUtils.isEmpty(path) && new File(path).exists()) {
-                mInputUri = Uri.fromFile(new File(path));
-            } else {
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 try {
-                    copyFile(mInputUri, mOutputUri);
-                } catch (NullPointerException | IOException e) {
-                    Log.e(TAG, "Copying failed", e);
-                    throw e;
+                    Bitmap bitmapFromUri = BitmapUtils.getBitmapFromUri(mContext, mInputUri);
+                    BitmapUtils.saveBitmap(bitmapFromUri, mOutputUri.getPath());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                String path = getFilePath();
+                if (!TextUtils.isEmpty(path) && new File(path).exists()) {
+                    mInputUri = Uri.fromFile(new File(path));
+                } else {
+                    try {
+                        copyFile(mInputUri, mOutputUri);
+                    } catch (NullPointerException | IOException e) {
+                        Log.e(TAG, "Copying failed", e);
+                        throw e;
+                    }
                 }
             }
         }
@@ -294,7 +304,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
     @Override
     protected void onPostExecute(@NonNull BitmapWorkerResult result) {
         if (result.mBitmapWorkerException == null) {
-            mBitmapLoadCallback.onBitmapLoaded(result.mBitmapResult, result.mExifInfo, mInputUri.getPath(), (mOutputUri == null) ? null : mOutputUri.getPath());
+            mBitmapLoadCallback.onBitmapLoaded(result.mBitmapResult, result.mExifInfo, mInputUri, (mOutputUri == null) ? null : mOutputUri);
         } else {
             mBitmapLoadCallback.onFailure(result.mBitmapWorkerException);
         }

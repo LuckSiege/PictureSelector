@@ -3,7 +3,6 @@ package com.luck.picture.lib.compress;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.media.ExifInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -14,24 +13,22 @@ import java.io.IOException;
  * Responsible for starting compress and managing active and cached resources.
  */
 class Engine {
-  private ExifInterface srcExif;
-  private String srcImg;
+  private InputStreamProvider srcImg;
   private File tagImg;
   private int srcWidth;
   private int srcHeight;
+  private boolean focusAlpha;
 
-  Engine(String srcImg, File tagImg) throws IOException {
-    if (Checker.isJPG(srcImg)) {
-      this.srcExif = new ExifInterface(srcImg);
-    }
+  Engine(InputStreamProvider srcImg, File tagImg, boolean focusAlpha) throws IOException {
     this.tagImg = tagImg;
     this.srcImg = srcImg;
+    this.focusAlpha = focusAlpha;
 
     BitmapFactory.Options options = new BitmapFactory.Options();
     options.inJustDecodeBounds = true;
     options.inSampleSize = 1;
 
-    BitmapFactory.decodeFile(srcImg, options);
+    BitmapFactory.decodeStream(srcImg.open(), null, options);
     this.srcWidth = options.outWidth;
     this.srcHeight = options.outHeight;
   }
@@ -47,7 +44,7 @@ class Engine {
     if (scale <= 1 && scale > 0.5625) {
       if (longSide < 1664) {
         return 1;
-      } else if (longSide >= 1664 && longSide < 4990) {
+      } else if (longSide < 4990) {
         return 2;
       } else if (longSide > 4990 && longSide < 10240) {
         return 4;
@@ -61,23 +58,8 @@ class Engine {
     }
   }
 
-  private Bitmap rotatingImage(Bitmap bitmap) {
-    if (srcExif == null) return bitmap;
-
+  private Bitmap rotatingImage(Bitmap bitmap, int angle) {
     Matrix matrix = new Matrix();
-    int angle = 0;
-    int orientation = srcExif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-    switch (orientation) {
-      case ExifInterface.ORIENTATION_ROTATE_90:
-        angle = 90;
-        break;
-      case ExifInterface.ORIENTATION_ROTATE_180:
-        angle = 180;
-        break;
-      case ExifInterface.ORIENTATION_ROTATE_270:
-        angle = 270;
-        break;
-    }
 
     matrix.postRotate(angle);
 
@@ -88,11 +70,13 @@ class Engine {
     BitmapFactory.Options options = new BitmapFactory.Options();
     options.inSampleSize = computeSize();
 
-    Bitmap tagBitmap = BitmapFactory.decodeFile(srcImg, options);
+    Bitmap tagBitmap = BitmapFactory.decodeStream(srcImg.open(), null, options);
     ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
-    tagBitmap = rotatingImage(tagBitmap);
-    tagBitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+    if (Checker.SINGLE.isJPG(srcImg.open())) {
+      tagBitmap = rotatingImage(tagBitmap, Checker.SINGLE.getOrientation(srcImg.open()));
+    }
+    tagBitmap.compress(focusAlpha ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 60, stream);
     tagBitmap.recycle();
 
     FileOutputStream fos = new FileOutputStream(tagImg);

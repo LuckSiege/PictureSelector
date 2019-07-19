@@ -30,7 +30,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".PhotoFragmentActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|keyboard|"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
             android:screenOrientation="portrait" />
         <activity
             android:name=".SimpleActivity"
