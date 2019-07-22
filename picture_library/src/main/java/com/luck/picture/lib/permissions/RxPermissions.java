@@ -4,8 +4,9 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
