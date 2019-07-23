@@ -2,7 +2,7 @@
 
 package com.luck.picture.lib.rxbus2;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.concurrent.TimeUnit;
 
