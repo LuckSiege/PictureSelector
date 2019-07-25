@@ -19,6 +19,13 @@ import java.io.IOException;
  * @describe：Bitmap处理类
  */
 public class BitmapUtils {
+    /**
+     * 获取Bitmap
+     *
+     * @param context
+     * @param uri
+     * @return
+     */
     public static Bitmap getBitmapFromUri(Context context, Uri uri) {
         try {
             ParcelFileDescriptor parcelFileDescriptor =
@@ -33,6 +40,12 @@ public class BitmapUtils {
         return null;
     }
 
+    /**
+     * 把Bitmap写入到sdcard中
+     *
+     * @param bitmap
+     * @param savePath
+     */
     public static void saveBitmap(Bitmap bitmap, String savePath) {
         if (bitmap == null) {
             return;
