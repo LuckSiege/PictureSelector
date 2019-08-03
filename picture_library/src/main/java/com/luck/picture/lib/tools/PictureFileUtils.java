@@ -80,8 +80,14 @@ public class PictureFileUtils {
 
     private static File createMediaFile(Context context, String parentPath, int type, String format) {
         String state = Environment.getExternalStorageState();
-        File rootDir = state.equals(Environment.MEDIA_MOUNTED) ?
-                context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) : context.getCacheDir();
+        File rootDir;
+        if (SdkVersionUtils.checkedAndroid_Q()) {
+            rootDir = state.equals(Environment.MEDIA_MOUNTED) ?
+                    context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) : context.getCacheDir();
+        } else {
+            rootDir = state.equals(Environment.MEDIA_MOUNTED) ?
+                    Environment.getExternalStorageDirectory() : context.getCacheDir();
+        }
 
         File folderDir = new File(rootDir.getAbsolutePath() + parentPath);
         if (!folderDir.exists() && folderDir.mkdirs()) {
@@ -234,8 +240,11 @@ public class PictureFileUtils {
                 final String type = split[0];
 
                 if ("primary".equalsIgnoreCase(type)) {
-                    return context
-                            .getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + split[1];
+                    if (SdkVersionUtils.checkedAndroid_Q()) {
+                        return context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + split[1];
+                    } else {
+                        return Environment.getExternalStorageDirectory() + "/" + split[1];
+                    }
                 }
 
                 // TODO handle non-primary volumes
@@ -477,8 +486,12 @@ public class PictureFileUtils {
      */
     public static String createDir(Context context, String filename, String directory_path) {
         String state = Environment.getExternalStorageState();
-        File rootDir = state.equals(Environment.MEDIA_MOUNTED) ? context
-                .getExternalFilesDir(Environment.DIRECTORY_PICTURES) : context.getCacheDir();
+        File rootDir;
+        if (SdkVersionUtils.checkedAndroid_Q()) {
+            rootDir = state.equals(Environment.MEDIA_MOUNTED) ? context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) : context.getCacheDir();
+        } else {
+            rootDir = state.equals(Environment.MEDIA_MOUNTED) ? Environment.getExternalStorageDirectory() : context.getCacheDir();
+        }
         File path;
         if (!TextUtils.isEmpty(directory_path)) {
             // 自定义保存目录
@@ -539,7 +552,12 @@ public class PictureFileUtils {
     public static String getDCIMCameraPath(Context ctx) {
         String absolutePath;
         try {
-            absolutePath = "%" + ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath() + "/Camera";
+            if (SdkVersionUtils.checkedAndroid_Q()) {
+                absolutePath = "%" + ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/Camera";
+            } else {
+                absolutePath = "%" + Environment.getExternalStoragePublicDirectory
+                        (Environment.DIRECTORY_DCIM).getAbsolutePath() + "/Camera";
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return "";
@@ -661,7 +679,11 @@ public class PictureFileUtils {
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
                 || !Environment.isExternalStorageRemovable()) {
             // context.getFilesDir().getPath(); 不这样写  有些机型会报错
-            cachePath = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
+            if (SdkVersionUtils.checkedAndroid_Q()) {
+                cachePath = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
+            } else {
+                cachePath = context.getExternalCacheDir().getPath();
+            }
         } else {
             cachePath = context.getCacheDir().getPath();
         }
