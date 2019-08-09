@@ -441,19 +441,26 @@ public class PictureBaseActivity extends FragmentActivity {
             public List<LocalMedia> doSth(Object... objects) {
                 if (androidQ && !isVideo) {
                     // Android Q 版本做拷贝应用内沙盒适配
-                    String cachedDir = PictureFileUtils.getDiskCacheDir(getApplicationContext());
                     int size = images.size();
                     for (int i = 0; i < size; i++) {
                         LocalMedia media = images.get(i);
                         if (media == null || TextUtils.isEmpty(media.getPath())) {
                             continue;
                         }
-                        String imgType = PictureMimeType.getLastImgType(media.getPath());
-                        String newPath = cachedDir + File.separator + System.currentTimeMillis() + imgType;
-                        Bitmap bitmapFromUri = BitmapUtils.getBitmapFromUri(getApplicationContext(),
-                                Uri.parse(media.getPath()));
-                        BitmapUtils.saveBitmap(bitmapFromUri, newPath);
-                        media.setPath(newPath);
+                        if (media.isCompressed()) {
+                            media.setPath(media.getCompressPath());
+                        } else if (media.isCut()) {
+                            media.setPath(media.getCutPath());
+                        } else {
+                            String cachedDir = PictureFileUtils.getDiskCacheDir(getApplicationContext());
+                            String imgType = PictureMimeType.getLastImgType(media.getPath());
+                            String newPath = cachedDir + File.separator + System.currentTimeMillis() + imgType;
+                            Bitmap bitmapFromUri = BitmapUtils.getBitmapFromUri(getApplicationContext(),
+                                    Uri.parse(media.getPath()));
+                            BitmapUtils.saveBitmap(bitmapFromUri, newPath);
+                            media.setPath(newPath);
+                        }
+
                     }
                     return images;
                 }
