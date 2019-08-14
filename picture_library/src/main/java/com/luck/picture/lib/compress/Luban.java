@@ -314,7 +314,7 @@ public class Luban implements Handler.Callback {
 
                 @Override
                 public String getPath() {
-                    return media.isCut() ? media.getCutPath() : media.getCompressPath();
+                    return media.isCut() ? media.getCutPath() : media.getPath();//media.getCompressPath();
                 }
 
             });
