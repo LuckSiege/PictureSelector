@@ -7,7 +7,7 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.text.TextUtils;
 
 import com.luck.picture.lib.R;

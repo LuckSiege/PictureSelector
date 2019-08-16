@@ -4,8 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.NonNull;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
