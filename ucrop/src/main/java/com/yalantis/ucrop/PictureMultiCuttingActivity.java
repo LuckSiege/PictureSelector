@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
@@ -721,10 +722,14 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         String path = cutInfos.get(cutIndex).getPath();
         boolean isHttp = FileUtils.isHttp(path);
         String imgType = getLastImgType(path);
-        Uri uri = isHttp ? Uri.parse(path) : Uri.fromFile(new File(path));
+        boolean isAndroidQ = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
+        Uri uri = isHttp || isAndroidQ ? Uri.parse(path) : Uri.fromFile(new File(path));
         extras.putParcelable(UCropMulti.EXTRA_INPUT_URI, uri);
+
+        File file = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ?
+                getExternalFilesDir(Environment.DIRECTORY_PICTURES) : getCacheDir();
         extras.putParcelable(UCropMulti.EXTRA_OUTPUT_URI,
-                Uri.fromFile(new File(getCacheDir(), System.currentTimeMillis() + imgType)));
+                Uri.fromFile(new File(file, System.currentTimeMillis() + imgType)));
         intent.putExtras(extras);
         setupViews(intent);
         setInitialState();
