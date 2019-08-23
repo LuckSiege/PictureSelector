@@ -73,7 +73,7 @@
 
 ```
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.4'
 }
 
 ```
@@ -106,7 +106,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.2.3</version> 
+      <version>v2.2.4</version> 
 </dependency>
 
 ```
@@ -338,10 +338,16 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
+* v2.2.4
+1.适配Android Q 版本
+2.修复Android Q多图裁剪失败问题
+3.升级glide、Luan 最新版本
+4.修复了部分已知问题
+
+# 历史版本：
 * v2.2.3
 * 1.修复沉浸式在部分机型标题栏遮挡情况
 
-# 历史版本：
 * v2.2.2
 * 1.优化外部预览界面样式不同步问题
 * 2.优化沉浸式方案，适配更多机型
