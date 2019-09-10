@@ -138,31 +138,27 @@ public class Luban implements Handler.Callback {
         while (iterator.hasNext()) {
             final InputStreamProvider path = iterator.next();
 
-            AsyncTask.SERIAL_EXECUTOR.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        index++;
-                        mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_START));
-                        File result = compress(context, path);
+            AsyncTask.SERIAL_EXECUTOR.execute(() -> {
+                try {
+                    index++;
+                    mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_START));
+                    File result = compress(context, path);
 
-                        if (mediaList != null && mediaList.size() > 0) {
-                            LocalMedia media = mediaList.get(index);
-                            String path = result.getAbsolutePath();
-                            boolean eqHttp = PictureMimeType.isHttp(path);
-                            media.setCompressed(eqHttp ? false : true);
-                            media.setCompressPath(eqHttp ? "" : result.getAbsolutePath());
-                            boolean isLast = index == mediaList.size() - 1;
-                            if (isLast) {
-                                mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_MULTIPLE_SUCCESS, mediaList));
-                            }
-                        } else {
-                            mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_ERROR, new IOException()));
+                    if (mediaList != null && mediaList.size() > 0) {
+                        LocalMedia media = mediaList.get(index);
+                        String path1 = result.getAbsolutePath();
+                        boolean eqHttp = PictureMimeType.isHttp(path1);
+                        media.setCompressed(eqHttp ? false : true);
+                        media.setCompressPath(eqHttp ? "" : result.getAbsolutePath());
+                        boolean isLast = index == mediaList.size() - 1;
+                        if (isLast) {
+                            mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_MULTIPLE_SUCCESS, mediaList));
                         }
-                        mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_SUCCESS, result));
-                    } catch (IOException e) {
-                        mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_ERROR, e));
+                    } else {
+                        mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_ERROR, new IOException()));
                     }
+                } catch (IOException e) {
+                    mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_ERROR, e));
                 }
             });
 
