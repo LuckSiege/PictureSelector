@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             cb_showCropFrame, cb_preview_audio;
     private int themeId;
     private int chooseMode = PictureMimeType.ofAll();
+    private CheckBox cb_video_choose_mode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rgb_photo_mode = (RadioGroup) findViewById(R.id.rgb_photo_mode);
         cb_voice = (CheckBox) findViewById(R.id.cb_voice);
         cb_choose_mode = (CheckBox) findViewById(R.id.cb_choose_mode);
+        cb_video_choose_mode = (CheckBox) findViewById(R.id.cb_video_choose_mode);
         cb_isCamera = (CheckBox) findViewById(R.id.cb_isCamera);
         cb_isGif = (CheckBox) findViewById(R.id.cb_isGif);
         cb_preview_img = (CheckBox) findViewById(R.id.cb_preview_img);
@@ -161,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .imageSpanCount(4)// 每行显示个数
                         .selectionMode(cb_choose_mode.isChecked() ?
                                 PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
+                        .videoSelectionMode(cb_video_choose_mode.isChecked() ? PictureConfig.MULTIPLE : PictureConfig.SINGLE)
                         .previewImage(cb_preview_img.isChecked())// 是否可预览图片
                         .previewVideo(cb_preview_video.isChecked())// 是否可预览视频
                         .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
@@ -205,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .minSelectNum(1)// 最小选择数量
                         .selectionMode(cb_choose_mode.isChecked() ?
                                 PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
+                        .videoSelectionMode(cb_video_choose_mode.isChecked() ? PictureConfig.MULTIPLE : PictureConfig.SINGLE)
                         .previewImage(cb_preview_img.isChecked())// 是否可预览图片
                         .previewVideo(cb_preview_video.isChecked())// 是否可预览视频
                         .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频

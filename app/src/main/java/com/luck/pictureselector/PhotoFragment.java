@@ -46,7 +46,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
     private ImageView left_back, minus, plus;
     private RadioGroup rgb_crop, rgb_style, rgb_photo_mode;
     private int aspect_ratio_x, aspect_ratio_y;
-    private CheckBox cb_voice, cb_choose_mode, cb_isCamera, cb_isGif,
+    private CheckBox cb_voice, cb_choose_mode, cb_video_choose_mode, cb_isCamera, cb_isGif,
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
             cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
             cb_showCropFrame, cb_preview_audio;
@@ -73,6 +73,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         rgb_photo_mode = (RadioGroup) rootView.findViewById(R.id.rgb_photo_mode);
         cb_voice = (CheckBox) rootView.findViewById(R.id.cb_voice);
         cb_choose_mode = (CheckBox) rootView.findViewById(R.id.cb_choose_mode);
+        cb_video_choose_mode = (CheckBox) rootView.findViewById(R.id.cb_video_choose_mode);
         cb_isCamera = (CheckBox) rootView.findViewById(R.id.cb_isCamera);
         cb_isGif = (CheckBox) rootView.findViewById(R.id.cb_isGif);
         cb_preview_img = (CheckBox) rootView.findViewById(R.id.cb_preview_img);
@@ -139,6 +140,8 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         .maxSelectNum(maxSelectNum)
                         .minSelectNum(1)
                         .selectionMode(cb_choose_mode.isChecked() ? PictureConfig.MULTIPLE : PictureConfig.SINGLE)
+                        .videoSelectionMode(cb_video_choose_mode.isChecked() ? PictureConfig.MULTIPLE : PictureConfig.SINGLE)
+
                         .previewImage(cb_preview_img.isChecked())
                         .previewVideo(cb_preview_video.isChecked())
                         .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
@@ -165,6 +168,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         .maxSelectNum(maxSelectNum)
                         .minSelectNum(1)
                         .selectionMode(cb_choose_mode.isChecked() ? PictureConfig.MULTIPLE : PictureConfig.SINGLE)
+                        .videoSelectionMode(cb_video_choose_mode.isChecked() ? PictureConfig.MULTIPLE : PictureConfig.SINGLE)
                         .previewImage(cb_preview_img.isChecked())
                         .previewVideo(cb_preview_video.isChecked())
                         .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频

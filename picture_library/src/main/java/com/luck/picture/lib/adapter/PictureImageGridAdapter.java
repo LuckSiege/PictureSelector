@@ -64,6 +64,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private PictureSelectionConfig config;
     private int mimeType;
     private boolean zoomAnim;
+    private int videoSelectionMode;
     /**
      * 单选图片
      */
@@ -85,6 +86,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.sizeMultiplier = config.sizeMultiplier;
         this.mimeType = config.mimeType;
         this.zoomAnim = config.zoomAnim;
+        this.videoSelectionMode = config.videoSelectionMode;
         animation = OptAnimationLoader.loadAnimation(context, R.anim.modal_in);
     }
 
@@ -341,7 +343,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
         } else {
             // 如果是单选，则清空已选中的并刷新列表(作单一选择)
-            if (selectMode == PictureConfig.SINGLE) {
+            if (selectMode == PictureConfig.SINGLE && PictureMimeType.isPictureType(pictureType) == PictureConfig.TYPE_IMAGE) {
+                singleRadioMediaImage();
+            }
+            if (videoSelectionMode == PictureConfig.SINGLE && PictureMimeType.isPictureType(pictureType) == PictureConfig.TYPE_VIDEO) {
                 singleRadioMediaImage();
             }
             selectImages.add(image);
