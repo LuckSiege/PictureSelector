@@ -169,6 +169,12 @@ RequestOptions options = new RequestOptions();
 options.placeholder(R.drawable.image);
 Glide.with(context).load(url).apply(options).into(imageView);
 
+问题五：
+拍照出现损坏问题
+如果出现拍照返回后图片加载不出来出现已损坏现象，建议提前获取一下存储权限，也就是通过RxPermissions.request  
+WRITE_EXTERNAL_STORAGE 
+READ_EXTERNAL_STORAGE
+
 ```
 
 ## 功能配置
