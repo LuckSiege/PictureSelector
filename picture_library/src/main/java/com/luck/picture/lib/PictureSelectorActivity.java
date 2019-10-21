@@ -1,6 +1,7 @@
 package com.luck.picture.lib;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -42,6 +43,7 @@ import com.luck.picture.lib.rxbus2.Subscribe;
 import com.luck.picture.lib.rxbus2.ThreadMode;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DoubleUtils;
+import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PhotoTools;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
@@ -94,6 +96,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private boolean isPlayAudio = false;
     private CustomDialog audioDialog;
     private int audioH;
+
+    @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -104,6 +108,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     break;
                 case DISMISS_DIALOG:
                     dismissDialog();
+                    break;
+                default:
                     break;
             }
         }
@@ -572,24 +578,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
-        audioDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                handler.removeCallbacks(runnable);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        stop(path);
-                    }
-                }, 30);
-                try {
-                    if (audioDialog != null
-                            && audioDialog.isShowing()) {
-                        audioDialog.dismiss();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        audioDialog.setOnDismissListener(dialog -> {
+            handler.removeCallbacks(runnable);
+            new Handler().postDelayed(() -> stop(path), 30);
+            try {
+                if (audioDialog != null
+                        && audioDialog.isShowing()) {
+                    audioDialog.dismiss();
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
         handler.post(runnable);
@@ -825,6 +823,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     audioDialog(media.getPath());
                 }
                 break;
+            default:
+                break;
         }
     }
 
@@ -967,15 +967,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         boolean eqVideo = toType.startsWith(PictureConfig.VIDEO);
         int duration;
         if (eqVideo && androidQ) {
-            duration = PictureMimeType
+            duration = MediaUtils
                     .getLocalVideoDurationToAndroidQ(getApplicationContext(), cameraPath);
         } else {
-            duration = eqVideo ? PictureMimeType.getLocalVideoDuration(cameraPath) : 0;
+            duration = eqVideo ? MediaUtils.getLocalVideoDuration(cameraPath) : 0;
         }
         String pictureType;
         if (config.mimeType == PictureMimeType.ofAudio()) {
             pictureType = "audio/mpeg";
-            duration = PictureMimeType.getLocalVideoDuration(cameraPath);
+            duration = MediaUtils.getLocalVideoDuration(cameraPath);
         } else {
             pictureType = eqVideo ? PictureMimeType.createVideoType(getApplicationContext(), cameraPath)
                     : PictureMimeType.createImageType(cameraPath);
@@ -1162,6 +1162,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             case 1:
                 // 录视频
                 startOpenCameraVideo();
+                break;
+            default:
                 break;
         }
     }

@@ -14,6 +14,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.rxbus2.RxUtils;
+import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 
 import java.io.File;
@@ -194,9 +195,7 @@ public class LocalMediaLoader {
 
                                 if (type == PictureConfig.TYPE_VIDEO) {
                                     if (duration == 0) {
-                                        duration = isAndroidQ ? PictureMimeType
-                                                .getLocalVideoDurationToAndroidQ(mContext, path)
-                                                : PictureMimeType.getLocalVideoDuration(path);
+                                        duration = MediaUtils.extractVideoDuration(mContext, isAndroidQ, path);
                                     }
                                     if (videoMinS > 0 && duration < videoMinS) {
                                         // 如果设置了最小显示多少秒的视频
@@ -204,6 +203,10 @@ public class LocalMediaLoader {
                                     }
                                     if (videoMaxS > 0 && duration > videoMaxS) {
                                         // 如果设置了最大显示多少秒的视频
+                                        continue;
+                                    }
+                                    if (duration == 0) {
+                                        // 时长如果为0，就当做损坏的视频处理过滤掉
                                         continue;
                                     }
                                 }

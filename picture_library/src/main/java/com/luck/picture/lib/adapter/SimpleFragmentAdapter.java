@@ -24,6 +24,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.photoview.OnViewTapListener;
 import com.luck.picture.lib.photoview.PhotoView;
+import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.widget.longimage.ImageSource;
 import com.luck.picture.lib.widget.longimage.ImageViewState;
 import com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView;
@@ -100,7 +101,7 @@ public class SimpleFragmentAdapter extends PagerAdapter {
                 path = media.getPath();
             }
             boolean isGif = PictureMimeType.isGif(pictureType);
-            final boolean eqLongImg = PictureMimeType.isLongImg(media);
+            final boolean eqLongImg = MediaUtils.isLongImg(media);
             imageView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
             longImg.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
             // 压缩过的gif就不是gif了

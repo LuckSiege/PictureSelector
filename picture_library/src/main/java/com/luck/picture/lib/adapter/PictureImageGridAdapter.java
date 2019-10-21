@@ -27,6 +27,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DateUtils;
+import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
@@ -178,7 +179,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 contentHolder.tv_duration.setVisibility(mediaMimeType == PictureConfig.TYPE_VIDEO
                         ? View.VISIBLE : View.GONE);
             }
-            boolean eqLongImg = PictureMimeType.isLongImg(image);
+            boolean eqLongImg = MediaUtils.isLongImg(image);
             contentHolder.tv_long_chart.setVisibility(eqLongImg ? View.VISIBLE : View.GONE);
             long duration = image.getDuration();
             contentHolder.tv_duration.setText(DateUtils.timeParse(duration));

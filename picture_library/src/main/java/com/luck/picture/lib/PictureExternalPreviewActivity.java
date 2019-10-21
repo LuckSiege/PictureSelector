@@ -35,6 +35,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.permissions.RxPermissions;
 import com.luck.picture.lib.photoview.OnViewTapListener;
 import com.luck.picture.lib.photoview.PhotoView;
+import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.ToastManage;
@@ -160,7 +161,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     showPleaseDialog();
                 }
                 boolean isGif = PictureMimeType.isGif(pictureType);
-                final boolean eqLongImg = PictureMimeType.isLongImg(media);
+                final boolean eqLongImg = MediaUtils.isLongImg(media);
                 imageView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
                 longImg.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
                 // 压缩过的gif就不是gif了
