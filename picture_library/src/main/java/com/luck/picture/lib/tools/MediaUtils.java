@@ -1,14 +1,14 @@
 package com.luck.picture.lib.tools;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
+
+import androidx.annotation.RequiresApi;
 
 import com.luck.picture.lib.entity.LocalMedia;
 

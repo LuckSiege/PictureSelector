@@ -4,10 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.IdRes;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -16,6 +12,11 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.IdRes;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
@@ -55,32 +56,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         themeId = R.style.picture_default_style;
-        minus = (ImageView) findViewById(R.id.minus);
-        plus = (ImageView) findViewById(R.id.plus);
-        tv_select_num = (TextView) findViewById(R.id.tv_select_num);
-        rgb_crop = (RadioGroup) findViewById(R.id.rgb_crop);
-        rgb_style = (RadioGroup) findViewById(R.id.rgb_style);
-        rgb_photo_mode = (RadioGroup) findViewById(R.id.rgb_photo_mode);
-        cb_voice = (CheckBox) findViewById(R.id.cb_voice);
-        cb_choose_mode = (CheckBox) findViewById(R.id.cb_choose_mode);
-        cb_isCamera = (CheckBox) findViewById(R.id.cb_isCamera);
-        cb_isGif = (CheckBox) findViewById(R.id.cb_isGif);
-        cb_preview_img = (CheckBox) findViewById(R.id.cb_preview_img);
-        cb_preview_video = (CheckBox) findViewById(R.id.cb_preview_video);
-        cb_crop = (CheckBox) findViewById(R.id.cb_crop);
-        cb_styleCrop = (CheckBox) findViewById(R.id.cb_styleCrop);
-        cb_compress = (CheckBox) findViewById(R.id.cb_compress);
-        cb_mode = (CheckBox) findViewById(R.id.cb_mode);
-        cb_showCropGrid = (CheckBox) findViewById(R.id.cb_showCropGrid);
-        cb_showCropFrame = (CheckBox) findViewById(R.id.cb_showCropFrame);
-        cb_preview_audio = (CheckBox) findViewById(R.id.cb_preview_audio);
-        cb_hide = (CheckBox) findViewById(R.id.cb_hide);
-        cb_crop_circular = (CheckBox) findViewById(R.id.cb_crop_circular);
+        minus = findViewById(R.id.minus);
+        plus = findViewById(R.id.plus);
+        tv_select_num = findViewById(R.id.tv_select_num);
+        rgb_crop = findViewById(R.id.rgb_crop);
+        rgb_style = findViewById(R.id.rgb_style);
+        rgb_photo_mode = findViewById(R.id.rgb_photo_mode);
+        cb_voice = findViewById(R.id.cb_voice);
+        cb_choose_mode = findViewById(R.id.cb_choose_mode);
+        cb_isCamera = findViewById(R.id.cb_isCamera);
+        cb_isGif = findViewById(R.id.cb_isGif);
+        cb_preview_img = findViewById(R.id.cb_preview_img);
+        cb_preview_video = findViewById(R.id.cb_preview_video);
+        cb_crop = findViewById(R.id.cb_crop);
+        cb_styleCrop = findViewById(R.id.cb_styleCrop);
+        cb_compress = findViewById(R.id.cb_compress);
+        cb_mode = findViewById(R.id.cb_mode);
+        cb_showCropGrid = findViewById(R.id.cb_showCropGrid);
+        cb_showCropFrame = findViewById(R.id.cb_showCropFrame);
+        cb_preview_audio = findViewById(R.id.cb_preview_audio);
+        cb_hide = findViewById(R.id.cb_hide);
+        cb_crop_circular = findViewById(R.id.cb_crop_circular);
         rgb_crop.setOnCheckedChangeListener(this);
         rgb_style.setOnCheckedChangeListener(this);
         rgb_photo_mode.setOnCheckedChangeListener(this);
-        recyclerView = (RecyclerView) findViewById(R.id.recycler);
-        left_back = (ImageView) findViewById(R.id.left_back);
+        recyclerView = findViewById(R.id.recycler);
+        left_back = findViewById(R.id.left_back);
         left_back.setOnClickListener(this);
         minus.setOnClickListener(this);
         plus.setOnClickListener(this);
@@ -93,28 +94,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter.setList(selectList);
         adapter.setSelectMax(maxSelectNum);
         recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(new GridImageAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position, View v) {
-                if (selectList.size() > 0) {
-                    LocalMedia media = selectList.get(position);
-                    String pictureType = media.getPictureType();
-                    int mediaType = PictureMimeType.pictureToVideo(pictureType);
-                    switch (mediaType) {
-                        case 1:
-                            // 预览图片 可自定长按保存路径
-                            //PictureSelector.create(MainActivity.this).themeStyle(themeId).externalPicturePreview(position, "/custom_file", selectList);
-                            PictureSelector.create(MainActivity.this).themeStyle(themeId).openExternalPreview(position, selectList);
-                            break;
-                        case 2:
-                            // 预览视频
-                            PictureSelector.create(MainActivity.this).externalPictureVideo(media.getPath());
-                            break;
-                        case 3:
-                            // 预览音频
-                            PictureSelector.create(MainActivity.this).externalPictureAudio(media.getPath());
-                            break;
-                    }
+        adapter.setOnItemClickListener((position, v) -> {
+            if (selectList.size() > 0) {
+                LocalMedia media = selectList.get(position);
+                String pictureType = media.getPictureType();
+                int mediaType = PictureMimeType.pictureToVideo(pictureType);
+                switch (mediaType) {
+                    case 1:
+                        // 预览图片 可自定长按保存路径
+                        //PictureSelector.create(MainActivity.this).themeStyle(themeId).externalPicturePreview(position, "/custom_file", selectList);
+                        PictureSelector.create(MainActivity.this).themeStyle(themeId).openExternalPreview(position, selectList);
+                        break;
+                    case 2:
+                        // 预览视频
+                        PictureSelector.create(MainActivity.this).externalPictureVideo(media.getPath());
+                        break;
+                    case 3:
+                        // 预览音频
+                        PictureSelector.create(MainActivity.this).externalPictureAudio(media.getPath());
+                        break;
                 }
             }
         });

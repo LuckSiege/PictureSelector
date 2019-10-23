@@ -3,14 +3,15 @@ package com.luck.picture.lib;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.ViewPager;
 
 import com.luck.picture.lib.adapter.SimpleFragmentAdapter;
 import com.luck.picture.lib.anim.OptAnimationLoader;
@@ -91,16 +92,16 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         screenWidth = ScreenUtils.getScreenWidth(this);
         animation = OptAnimationLoader.loadAnimation(this, R.anim.modal_in);
         animation.setAnimationListener(this);
-        picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
-        viewPager = (PreviewViewPager) findViewById(R.id.preview_pager);
-        ll_check = (LinearLayout) findViewById(R.id.ll_check);
-        id_ll_ok = (LinearLayout) findViewById(R.id.id_ll_ok);
-        check = (TextView) findViewById(R.id.check);
+        picture_left_back = findViewById(R.id.picture_left_back);
+        viewPager = findViewById(R.id.preview_pager);
+        ll_check = findViewById(R.id.ll_check);
+        id_ll_ok = findViewById(R.id.id_ll_ok);
+        check = findViewById(R.id.check);
         picture_left_back.setOnClickListener(this);
-        tv_ok = (TextView) findViewById(R.id.tv_ok);
+        tv_ok = findViewById(R.id.tv_ok);
         id_ll_ok.setOnClickListener(this);
-        tv_img_num = (TextView) findViewById(R.id.tv_img_num);
-        tv_title = (TextView) findViewById(R.id.picture_title);
+        tv_img_num = findViewById(R.id.tv_img_num);
+        tv_title = findViewById(R.id.picture_title);
         position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
         tv_ok.setText(numComplete ? getString(R.string.picture_done_front_num,
                 0, config.selectionMode == PictureConfig.SINGLE ? 1 : config.maxSelectNum)
@@ -131,7 +132,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         boolean toEqual = PictureMimeType.
                                 mimeToEqual(pictureType, image.getPictureType());
                         if (!toEqual) {
-                            ToastManage.s(mContext,getString(R.string.picture_rule));
+                            ToastManage.s(mContext, getString(R.string.picture_rule));
                             return;
                         }
                     }
@@ -402,7 +403,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     boolean eqImg = pictureType.startsWith(PictureConfig.IMAGE);
                     String str = eqImg ? getString(R.string.picture_min_img_num, config.minSelectNum)
                             : getString(R.string.picture_min_video_num, config.minSelectNum);
-                    ToastManage.s(mContext,str);
+                    ToastManage.s(mContext, str);
                     return;
                 }
             }
@@ -454,7 +455,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             }
         } else if (resultCode == UCrop.RESULT_ERROR) {
             Throwable throwable = (Throwable) data.getSerializableExtra(UCrop.EXTRA_ERROR);
-            ToastManage.s(mContext,throwable.getMessage());
+            ToastManage.s(mContext, throwable.getMessage());
         }
     }
 

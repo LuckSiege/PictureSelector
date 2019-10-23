@@ -2,8 +2,10 @@ package com.luck.pictureselector.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,9 +74,9 @@ public class GridImageAdapter extends
 
         public ViewHolder(View view) {
             super(view);
-            mImg = (ImageView) view.findViewById(R.id.fiv);
-            ll_del = (LinearLayout) view.findViewById(R.id.ll_del);
-            tv_duration = (TextView) view.findViewById(R.id.tv_duration);
+            mImg = view.findViewById(R.id.fiv);
+            ll_del = view.findViewById(R.id.ll_del);
+            tv_duration = view.findViewById(R.id.tv_duration);
         }
     }
 
@@ -120,26 +122,18 @@ public class GridImageAdapter extends
         //少于8张，显示继续添加的图标
         if (getItemViewType(position) == TYPE_CAMERA) {
             viewHolder.mImg.setImageResource(R.drawable.addimg_1x);
-            viewHolder.mImg.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mOnAddPicClickListener.onAddPicClick();
-                }
-            });
+            viewHolder.mImg.setOnClickListener(v -> mOnAddPicClickListener.onAddPicClick());
             viewHolder.ll_del.setVisibility(View.INVISIBLE);
         } else {
             viewHolder.ll_del.setVisibility(View.VISIBLE);
-            viewHolder.ll_del.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int index = viewHolder.getAdapterPosition();
-                    // 这里有时会返回-1造成数据下标越界,具体可参考getAdapterPosition()源码，
-                    // 通过源码分析应该是bindViewHolder()暂未绘制完成导致，知道原因的也可联系我~感谢
-                    if (index != RecyclerView.NO_POSITION) {
-                        list.remove(index);
-                        notifyItemRemoved(index);
-                        notifyItemRangeChanged(index, list.size());
-                    }
+            viewHolder.ll_del.setOnClickListener(view -> {
+                int index = viewHolder.getAdapterPosition();
+                // 这里有时会返回-1造成数据下标越界,具体可参考getAdapterPosition()源码，
+                // 通过源码分析应该是bindViewHolder()暂未绘制完成导致，知道原因的也可联系我~感谢
+                if (index != RecyclerView.NO_POSITION) {
+                    list.remove(index);
+                    notifyItemRemoved(index);
+                    notifyItemRangeChanged(index, list.size());
                 }
             });
             LocalMedia media = list.get(position);
@@ -192,12 +186,9 @@ public class GridImageAdapter extends
             }
             //itemView 的点击事件
             if (mItemClickListener != null) {
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int adapterPosition = viewHolder.getAdapterPosition();
-                        mItemClickListener.onItemClick(adapterPosition, v);
-                    }
+                viewHolder.itemView.setOnClickListener(v -> {
+                    int adapterPosition = viewHolder.getAdapterPosition();
+                    mItemClickListener.onItemClick(adapterPosition, v);
                 });
             }
         }
