@@ -4,8 +4,7 @@
   <br>项目会一直维护(有bug修复完成，一般周末会更新(不好意思，最近比较忙有时间会解决~有问题先提issue))，有bug请描述清楚，并请Issues会第一时间修复，个人QQ 893855882@qq.com  希望用得着的朋友点个star。 <br>
  Android开发交流 群一 619458861 (已满) <br> 
  Android开发交流 群二 679824206 <br> 
-
-   
+ 
   [我的博客地址](http://blog.csdn.net/luck_mw) 
   
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
