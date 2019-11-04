@@ -347,10 +347,10 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 # 当前版本：
 * v2.2.4
-1.适配Android Q 版本
-2.修复Android Q多图裁剪失败问题
-3.升级glide、Luan 最新版本
-4.修复了部分已知问题
+* 1.适配Android Q 版本
+* 2.修复Android Q多图裁剪失败问题
+* 3.升级glide、Luan 最新版本
+* 4.修复了部分已知问题
 
 # 历史版本：
 * v2.2.3
