@@ -9,7 +9,7 @@ import android.widget.Toast;
  * @描述: Toast工具类
  */
 
-public final class ToastManage {
+public final class ToastUtils {
 
     public static void s(Context mContext, String s) {
         Toast.makeText(mContext.getApplicationContext(), s, Toast.LENGTH_LONG)

@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
@@ -27,6 +29,7 @@ import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.immersive.ImmersiveManage;
 import com.luck.picture.lib.rxbus2.RxBus;
 import com.luck.picture.lib.rxbus2.RxUtils;
+import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DoubleUtils;
@@ -35,8 +38,11 @@ import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropMulti;
 import com.yalantis.ucrop.util.BitmapUtils;
+import com.yalantis.ucrop.util.FileUtils;
 
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -438,7 +444,7 @@ public class PictureBaseActivity extends FragmentActivity {
             @NonNull
             @Override
             public List<LocalMedia> doSth(Object... objects) {
-                if (androidQ && !isVideo) {
+                if (androidQ) {
                     // Android Q 版本做拷贝应用内沙盒适配
                     int size = images.size();
                     for (int i = 0; i < size; i++) {
@@ -451,13 +457,15 @@ public class PictureBaseActivity extends FragmentActivity {
                         } else if (media.isCut()) {
                             media.setPath(media.getCutPath());
                         } else {
-                            String cachedDir = PictureFileUtils.getDiskCacheDir(getApplicationContext());
-                            String imgType = PictureMimeType.getLastImgType(media.getPath());
-                            String newPath = cachedDir + File.separator + System.currentTimeMillis() + imgType;
-                            Bitmap bitmapFromUri = BitmapUtils.getBitmapFromUri(getApplicationContext(),
-                                    Uri.parse(media.getPath()));
-                            BitmapUtils.saveBitmap(bitmapFromUri, newPath);
-                            media.setAndroidQToPath(newPath);
+                            if (isVideo) {
+                                String path = AndroidQTransformUtils.parseVideoPathToAndroidQ
+                                        (getApplicationContext(), media.getPath());
+                                media.setAndroidQToPath(path);
+                            } else {
+                                String path = AndroidQTransformUtils.parseImagePathToAndroidQ
+                                        (getApplicationContext(), media.getPath());
+                                media.setAndroidQToPath(path);
+                            }
                         }
 
                     }

@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.util.Locale;
 
@@ -298,5 +299,57 @@ public class FileUtils {
             int lastSep = filePath.lastIndexOf(File.separator);
             return lastSep == -1 ? "" : filePath.substring(0, lastSep + 1);
         }
+    }
+
+
+    /**
+     * 复制文件至指定目录
+     *
+     * @param fileInputStream
+     * @param outFilePath
+     * @return
+     */
+    public static boolean copyFile(FileInputStream fileInputStream, String outFilePath) {
+        // 判断目录是否存在。如不存在则创建一个目录
+        File file = new File(FileUtils.getDirName(outFilePath));
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        try {
+            file = new File(outFilePath);
+            if (!file.exists()) {
+                FileUtils.mkDirs(FileUtils.getDirName(outFilePath));
+            }
+            OutputStream myOutput = new FileOutputStream(outFilePath);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = fileInputStream.read(buffer)) > 0) {
+                myOutput.write(buffer, 0, length);
+            }
+            myOutput.flush();
+            myOutput.close();
+            fileInputStream.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean mkDirs(String path) {
+        if (path == null) {
+            return false;
+        }
+        File dir = new File(path);
+        if (dir.isDirectory()) {
+            if (!dir.exists()) {
+                return dir.mkdirs();
+            }
+        } else {
+            if (!dir.exists()) {
+                return dir.mkdirs();
+            }
+        }
+        return true;
     }
 }

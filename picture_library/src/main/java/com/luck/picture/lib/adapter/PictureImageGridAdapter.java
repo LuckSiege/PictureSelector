@@ -4,7 +4,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 import androidx.core.content.ContextCompat;
@@ -32,8 +31,7 @@ import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
-import com.luck.picture.lib.tools.StringUtils;
-import com.luck.picture.lib.tools.ToastManage;
+import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.VoiceUtils;
 
 import java.io.File;
@@ -209,7 +207,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     String newPath = SdkVersionUtils.checkedAndroid_Q()
                             ? PictureFileUtils.getPath(context, Uri.parse(path)) : path;
                     if (!new File(newPath).exists()) {
-                        ToastManage.s(context, PictureMimeType.s(context, mediaMimeType));
+                        ToastUtils.s(context, PictureMimeType.s(context, mediaMimeType));
                         return;
                     }
                     changeCheckboxState(contentHolder, image);
@@ -220,7 +218,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 String newPath = SdkVersionUtils.checkedAndroid_Q()
                         ? PictureFileUtils.getPath(context, Uri.parse(path)) : path;
                 if (!new File(newPath).exists()) {
-                    ToastManage.s(context, PictureMimeType.s(context, mediaMimeType));
+                    ToastUtils.s(context, PictureMimeType.s(context, mediaMimeType));
                     return;
                 }
                 int index = showCamera ? position - 1 : position;
@@ -315,7 +313,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         if (!TextUtils.isEmpty(pictureType)) {
             boolean toEqual = PictureMimeType.mimeToEqual(pictureType, image.getPictureType());
             if (!toEqual) {
-                ToastManage.s(context, context.getString(R.string.picture_rule));
+                ToastUtils.s(context, context.getString(R.string.picture_rule));
                 return;
             }
         }
@@ -323,7 +321,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             boolean eqImg = pictureType.startsWith(PictureConfig.IMAGE);
             String str = eqImg ? context.getString(R.string.picture_message_max_num, maxSelectNum)
                     : context.getString(R.string.picture_message_video_max_num, maxSelectNum);
-            ToastManage.s(context, str);
+            ToastUtils.s(context, str);
             return;
         }
 

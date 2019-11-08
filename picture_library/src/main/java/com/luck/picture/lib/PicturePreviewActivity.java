@@ -24,7 +24,7 @@ import com.luck.picture.lib.rxbus2.RxBus;
 import com.luck.picture.lib.rxbus2.Subscribe;
 import com.luck.picture.lib.rxbus2.ThreadMode;
 import com.luck.picture.lib.tools.ScreenUtils;
-import com.luck.picture.lib.tools.ToastManage;
+import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.VoiceUtils;
 import com.luck.picture.lib.widget.PreviewViewPager;
 import com.yalantis.ucrop.UCrop;
@@ -132,7 +132,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         boolean toEqual = PictureMimeType.
                                 mimeToEqual(pictureType, image.getPictureType());
                         if (!toEqual) {
-                            ToastManage.s(mContext, getString(R.string.picture_rule));
+                            ToastUtils.s(mContext, getString(R.string.picture_rule));
                             return;
                         }
                     }
@@ -147,7 +147,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         check.setSelected(false);
                     }
                     if (selectImages.size() >= config.maxSelectNum && isChecked) {
-                        ToastManage.s(mContext, getString(R.string.picture_message_max_num, config.maxSelectNum));
+                        ToastUtils.s(mContext, getString(R.string.picture_message_max_num, config.maxSelectNum));
                         check.setSelected(false);
                         return;
                     }
@@ -403,7 +403,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     boolean eqImg = pictureType.startsWith(PictureConfig.IMAGE);
                     String str = eqImg ? getString(R.string.picture_min_img_num, config.minSelectNum)
                             : getString(R.string.picture_min_video_num, config.minSelectNum);
-                    ToastManage.s(mContext, str);
+                    ToastUtils.s(mContext, str);
                     return;
                 }
             }
@@ -455,7 +455,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             }
         } else if (resultCode == UCrop.RESULT_ERROR) {
             Throwable throwable = (Throwable) data.getSerializableExtra(UCrop.EXTRA_ERROR);
-            ToastManage.s(mContext, throwable.getMessage());
+            ToastUtils.s(mContext, throwable.getMessage());
         }
     }
 
