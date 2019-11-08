@@ -457,15 +457,18 @@ public class PictureBaseActivity extends FragmentActivity {
                         } else if (media.isCut()) {
                             media.setPath(media.getCutPath());
                         } else {
+                            String path;
                             if (isVideo) {
-                                String path = AndroidQTransformUtils.parseVideoPathToAndroidQ
+                                path = AndroidQTransformUtils.parseVideoPathToAndroidQ
                                         (getApplicationContext(), media.getPath());
-                                media.setAndroidQToPath(path);
+                            } else if (config.mimeType == PictureMimeType.ofAudio()) {
+                                path = AndroidQTransformUtils.parseAudioPathToAndroidQ
+                                        (getApplicationContext(), media.getPath());
                             } else {
-                                String path = AndroidQTransformUtils.parseImagePathToAndroidQ
+                                path = AndroidQTransformUtils.parseImagePathToAndroidQ
                                         (getApplicationContext(), media.getPath());
-                                media.setAndroidQToPath(path);
                             }
+                            media.setAndroidQToPath(path);
                         }
 
                     }

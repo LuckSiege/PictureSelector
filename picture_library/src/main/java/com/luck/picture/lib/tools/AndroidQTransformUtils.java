@@ -39,8 +39,8 @@ public class AndroidQTransformUtils {
                         ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
                 FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
                 FileInputStream inputStream = new FileInputStream(fileDescriptor);
-                boolean copyFile = FileUtils.copyFile(inputStream, newPath);
-                if (copyFile) {
+                boolean copyFileSuccess = FileUtils.copyFile(inputStream, newPath);
+                if (copyFileSuccess) {
                     return newPath;
                 }
             }
@@ -66,5 +66,31 @@ public class AndroidQTransformUtils {
                 Uri.parse(path));
         BitmapUtils.saveBitmap(bitmapFromUri, newPath);
         return newPath;
+    }
+
+    /**
+     * 解析Android Q版本下音频
+     * #耗时操作需要放在子线程中操作
+     *
+     * @param ctx
+     * @param path
+     * @return
+     */
+    public static String parseAudioPathToAndroidQ(Context ctx, String path) {
+        try {
+            File filesDir = ctx.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+            String newPath = filesDir + File.separator + System.currentTimeMillis() + ".mp3";
+            ParcelFileDescriptor parcelFileDescriptor =
+                    ctx.getApplicationContext().getContentResolver().openFileDescriptor(Uri.parse(path), "r");
+            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+            FileInputStream inputStream = new FileInputStream(fileDescriptor);
+            boolean copyFileSuccess = FileUtils.copyFile(inputStream, newPath);
+            if (copyFileSuccess) {
+                return newPath;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }
