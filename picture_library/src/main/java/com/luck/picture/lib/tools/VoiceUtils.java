@@ -8,17 +8,13 @@ import android.os.Handler;
 import com.luck.picture.lib.R;
 
 /**
- * author：luck
- * project：PictureSelector
- * package：com.luck.picture.lib.tool
- * email：893855882@qq.com
- * data：2017/5/25
+ * @author：luck
+ * @data：2017/5/25 19:12
+ * @描述: voice utils
  */
-
 public class VoiceUtils {
     private static SoundPool soundPool;
     private static int soundID;//创建某个声音对应的音频ID
-    private boolean isPlay;
 
     /**
      * start SoundPool
@@ -29,12 +25,7 @@ public class VoiceUtils {
             soundPool = new SoundPool(1, AudioManager.STREAM_ALARM, 0);
             soundID = soundPool.load(mContext, R.raw.music, 1);
         }
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                play(enableVoice, soundPool);
-            }
-        }, 20);
+        new Handler().postDelayed(() -> play(enableVoice, soundPool), 20);
     }
 
     public static void play(boolean enableVoice, SoundPool soundPool) {
@@ -48,15 +39,5 @@ public class VoiceUtils {
                     1
             );
         }
-    }
-
-    /**
-     * release SoundPool
-     */
-    public static void release() {
-        if (soundPool != null) {
-            soundPool.stop(soundID);
-        }
-        soundPool = null;
     }
 }

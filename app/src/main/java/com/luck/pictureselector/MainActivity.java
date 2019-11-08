@@ -3,7 +3,6 @@ package com.luck.pictureselector;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -247,10 +246,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
                     // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
                     // 如果裁剪并压缩了，已取压缩路径为准，因为是先裁剪后压缩的
+                    // 4.media.getAndroidQToPath();为Android Q版本特有返回的字段，此字段有值就用来做上传使用
                     for (LocalMedia media : selectList) {
                         Log.i(TAG, "压缩---->" + media.getCompressPath());
                         Log.i(TAG, "原图---->" + media.getPath());
                         Log.i(TAG, "裁剪---->" + media.getCutPath());
+                        Log.i(TAG, "Android Q 特有Path---->" + media.getAndroidQToPath());
                     }
                     adapter.setList(selectList);
                     adapter.notifyDataSetChanged();
@@ -397,19 +398,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
         }
-    }
-
-    /**
-     * 自定义压缩存储地址
-     *
-     * @return
-     */
-    private String getPath() {
-        String path = Environment.getExternalStorageDirectory() + "/Luban/image/";
-        File file = new File(path);
-        if (file.mkdirs()) {
-            return path;
-        }
-        return path;
     }
 }

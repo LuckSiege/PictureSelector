@@ -4,8 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- *
- * Created by gorden on 2016/7/23.
+ * @author：luck
+ * @date：2019-3-18 10:12
+ * @describe：
  */
 public class SubscriberMethod {
     public Method method;

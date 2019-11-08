@@ -1,8 +1,9 @@
 package com.luck.picture.lib.rxbus2;
 
 /**
- *
- * Created by gorden on 2016/7/23.
+ * @author：luck
+ * @date：2019-3-18 10:12
+ * @describe：
  */
 public enum ThreadMode {
     /**

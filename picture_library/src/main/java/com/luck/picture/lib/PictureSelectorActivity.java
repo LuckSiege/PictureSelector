@@ -44,7 +44,6 @@ import com.luck.picture.lib.rxbus2.ThreadMode;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.MediaUtils;
-import com.luck.picture.lib.tools.PhotoTools;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
@@ -75,13 +74,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private final static String TAG = PictureSelectorActivity.class.getSimpleName();
     private static final int SHOW_DIALOG = 0;
     private static final int DISMISS_DIALOG = 1;
-    private ImageView picture_left_back;
-    private TextView picture_title, picture_right, picture_tv_ok, tv_empty,
-            picture_tv_img_num, picture_id_preview, tv_PlayPause, tv_Stop, tv_Quit,
-            tv_musicStatus, tv_musicTotal, tv_musicTime;
-    private RelativeLayout rl_picture_title;
-    private LinearLayout id_ll_ok;
-    private RecyclerView picture_recycler;
+    private ImageView mIvPictureLeftBack;
+    private TextView mTvPictureTitle, mTvPictureRight, mTvPictureOk, mTvEmpty,
+            mTvPictureImgNum, mTvPicturePreview, mTvPlayPause, mTvStop, mTvQuit,
+            mTvMusicStatus, mTvMusicTotal, mTvMusicTime;
+    private RelativeLayout mRlPictureTitle;
+    private LinearLayout mOkLayout;
+    private RecyclerView mPictureRecycler;
     private PictureImageGridAdapter adapter;
     private List<LocalMedia> images = new ArrayList<>();
     private List<LocalMediaFolder> foldersList = new ArrayList<>();
@@ -198,50 +197,50 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * init views
      */
     private void initView(Bundle savedInstanceState) {
-
-        rl_picture_title = findViewById(R.id.rl_picture_title);
-        picture_left_back = findViewById(R.id.picture_left_back);
-        picture_title = findViewById(R.id.picture_title);
-        picture_right = findViewById(R.id.picture_right);
-        picture_tv_ok = findViewById(R.id.picture_tv_ok);
-        picture_id_preview = findViewById(R.id.picture_id_preview);
-        picture_tv_img_num = findViewById(R.id.picture_tv_img_num);
-        picture_recycler = findViewById(R.id.picture_recycler);
-        id_ll_ok = findViewById(R.id.id_ll_ok);
-        tv_empty = findViewById(R.id.tv_empty);
+        mRlPictureTitle = findViewById(R.id.rl_picture_title);
+        mIvPictureLeftBack = findViewById(R.id.picture_left_back);
+        mTvPictureTitle = findViewById(R.id.picture_title);
+        mTvPictureRight = findViewById(R.id.picture_right);
+        mTvPictureOk = findViewById(R.id.picture_tv_ok);
+        mTvPicturePreview = findViewById(R.id.picture_id_preview);
+        mTvPictureImgNum = findViewById(R.id.picture_tv_img_num);
+        mPictureRecycler = findViewById(R.id.picture_recycler);
+        mOkLayout = findViewById(R.id.id_ll_ok);
+        mTvEmpty = findViewById(R.id.tv_empty);
         isNumComplete(numComplete);
         if (config.mimeType == PictureMimeType.ofAll()) {
             popupWindow = new PhotoPopupWindow(this);
             popupWindow.setOnItemClickListener(this);
         }
-        picture_id_preview.setOnClickListener(this);
+        mTvPicturePreview.setOnClickListener(this);
         if (config.mimeType == PictureMimeType.ofAudio()) {
-            picture_id_preview.setVisibility(View.GONE);
+            mTvPicturePreview.setVisibility(View.GONE);
             audioH = ScreenUtils.getScreenHeight(mContext)
                     + ScreenUtils.getStatusBarHeight(mContext);
         } else {
-            picture_id_preview.setVisibility(config.mimeType == PictureConfig.TYPE_VIDEO
+            mTvPicturePreview.setVisibility(config.mimeType == PictureConfig.TYPE_VIDEO
                     ? View.GONE : View.VISIBLE);
         }
-        picture_left_back.setOnClickListener(this);
-        picture_right.setOnClickListener(this);
-        id_ll_ok.setOnClickListener(this);
-        picture_title.setOnClickListener(this);
+        mIvPictureLeftBack.setOnClickListener(this);
+        mTvPictureRight.setOnClickListener(this);
+        mOkLayout.setOnClickListener(this);
+        mTvPictureTitle.setOnClickListener(this);
         String title = config.mimeType == PictureMimeType.ofAudio() ?
                 getString(R.string.picture_all_audio)
                 : getString(R.string.picture_camera_roll);
-        picture_title.setText(title);
+        mTvPictureTitle.setText(title);
         folderWindow = new FolderPopWindow(this, config.mimeType);
-        folderWindow.setPictureTitleView(picture_title);
+        folderWindow.setPictureTitleView(mTvPictureTitle);
         folderWindow.setOnItemClickListener(this);
-        picture_recycler.setHasFixedSize(true);
-        picture_recycler.addItemDecoration(new GridSpacingItemDecoration(config.imageSpanCount,
+        mPictureRecycler.setHasFixedSize(true);
+        mPictureRecycler.addItemDecoration(new GridSpacingItemDecoration(config.imageSpanCount,
                 ScreenUtils.dip2px(this, 2), false));
-        picture_recycler.setLayoutManager(new GridLayoutManager(this, config.imageSpanCount));
+        mPictureRecycler.setLayoutManager(new GridLayoutManager(this, config.imageSpanCount));
         // 解决调用 notifyItemChanged 闪烁问题,取消默认动画
-        ((SimpleItemAnimator) picture_recycler.getItemAnimator())
+        ((SimpleItemAnimator) mPictureRecycler.getItemAnimator())
                 .setSupportsChangeAnimations(false);
-        mediaLoader = new LocalMediaLoader(this, config.mimeType, config.isGif, config.videoMaxSecond, config.videoMinSecond);
+        mediaLoader = new LocalMediaLoader(this, config.mimeType, config.isGif,
+                config.videoMaxSecond, config.videoMinSecond);
         rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE)
                 .subscribe(new Observer<Boolean>() {
                     @Override
@@ -266,10 +265,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     public void onComplete() {
                     }
                 });
-        tv_empty.setText(config.mimeType == PictureMimeType.ofAudio() ?
+        mTvEmpty.setText(config.mimeType == PictureMimeType.ofAudio() ?
                 getString(R.string.picture_audio_empty)
                 : getString(R.string.picture_empty));
-        StringUtils.tempTextFont(tv_empty, config.mimeType);
+        StringUtils.tempTextFont(mTvEmpty, config.mimeType);
         if (savedInstanceState != null) {
             // 防止拍照内存不足时activity被回收，导致拍照后的图片未选中
             selectionMedias = PictureSelector.obtainSelectorList(savedInstanceState);
@@ -277,8 +276,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         adapter = new PictureImageGridAdapter(mContext, config);
         adapter.setOnPhotoSelectChangedListener(PictureSelectorActivity.this);
         adapter.bindSelectImages(selectionMedias);
-        picture_recycler.setAdapter(adapter);
-        String titleText = picture_title.getText().toString().trim();
+        mPictureRecycler.setAdapter(adapter);
+        String titleText = mTvPictureTitle.getText().toString().trim();
         if (config.isCamera) {
             config.isCamera = StringUtils.isCamera(titleText);
         }
@@ -297,7 +296,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * none number style
      */
     private void isNumComplete(boolean numComplete) {
-        picture_tv_ok.setText(numComplete ? getString(R.string.picture_done_front_num,
+        mTvPictureOk.setText(numComplete ? getString(R.string.picture_done_front_num,
                 0, config.selectionMode == PictureConfig.SINGLE ? 1 : config.maxSelectNum)
                 : getString(R.string.picture_please_select));
         if (!numComplete) {
@@ -329,7 +328,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     images = new ArrayList<>();
                 }
                 adapter.bindImagesData(images);
-                tv_empty.setVisibility(images.size() > 0
+                mTvEmpty.setVisibility(images.size() > 0
                         ? View.INVISIBLE : View.VISIBLE);
             }
             mHandler.sendEmptyMessage(DISMISS_DIALOG);
@@ -349,7 +348,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         if (popupWindow.isShowing()) {
                             popupWindow.dismiss();
                         }
-                        popupWindow.showAsDropDown(rl_picture_title);
+                        popupWindow.showAsDropDown(mRlPictureTitle);
                     } else {
                         startOpenCamera();
                     }
@@ -380,7 +379,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             Uri imageUri;
             if (SdkVersionUtils.checkedAndroid_Q()) {
-                imageUri = PhotoTools.createImagePathUri(getApplicationContext());
+                imageUri = MediaUtils.createImagePathUri(getApplicationContext());
                 cameraPath = imageUri.toString();
             } else {
                 int type = config.mimeType == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_IMAGE
@@ -404,7 +403,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             Uri imageUri;
             if (SdkVersionUtils.checkedAndroid_Q()) {
-                imageUri = PhotoTools.createImageVideoUri(getApplicationContext());
+                imageUri = MediaUtils.createImageVideoUri(getApplicationContext());
                 cameraPath = imageUri.toString();
             } else {
                 File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(), config.mimeType ==
@@ -485,7 +484,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 folderWindow.dismiss();
             } else {
                 if (images != null && images.size() > 0) {
-                    folderWindow.showAsDropDown(rl_picture_title);
+                    folderWindow.showAsDropDown(mRlPictureTitle);
                     List<LocalMedia> selectedImages = adapter.getSelectedImages();
                     folderWindow.notifyDataCheckedStatus(selectedImages);
                 }
@@ -555,17 +554,17 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 ,
                 R.layout.picture_audio_dialog, R.style.Theme_dialog);
         audioDialog.getWindow().setWindowAnimations(R.style.Dialog_Audio_StyleAnim);
-        tv_musicStatus = audioDialog.findViewById(R.id.tv_musicStatus);
-        tv_musicTime = audioDialog.findViewById(R.id.tv_musicTime);
+        mTvMusicStatus = audioDialog.findViewById(R.id.tv_musicStatus);
+        mTvMusicTime = audioDialog.findViewById(R.id.tv_musicTime);
         musicSeekBar = audioDialog.findViewById(R.id.musicSeekBar);
-        tv_musicTotal = audioDialog.findViewById(R.id.tv_musicTotal);
-        tv_PlayPause = audioDialog.findViewById(R.id.tv_PlayPause);
-        tv_Stop = audioDialog.findViewById(R.id.tv_Stop);
-        tv_Quit = audioDialog.findViewById(R.id.tv_Quit);
+        mTvMusicTotal = audioDialog.findViewById(R.id.tv_musicTotal);
+        mTvPlayPause = audioDialog.findViewById(R.id.tv_PlayPause);
+        mTvStop = audioDialog.findViewById(R.id.tv_Stop);
+        mTvQuit = audioDialog.findViewById(R.id.tv_Quit);
         handler.postDelayed(() -> initPlayer(path), 30);
-        tv_PlayPause.setOnClickListener(new audioOnClick(path));
-        tv_Stop.setOnClickListener(new audioOnClick(path));
-        tv_Quit.setOnClickListener(new audioOnClick(path));
+        mTvPlayPause.setOnClickListener(new audioOnClick(path));
+        mTvStop.setOnClickListener(new audioOnClick(path));
+        mTvQuit.setOnClickListener(new audioOnClick(path));
         musicSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -605,10 +604,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         public void run() {
             try {
                 if (mediaPlayer != null) {
-                    tv_musicTime.setText(DateUtils.timeParse(mediaPlayer.getCurrentPosition()));
+                    mTvMusicTime.setText(DateUtils.timeParse(mediaPlayer.getCurrentPosition()));
                     musicSeekBar.setProgress(mediaPlayer.getCurrentPosition());
                     musicSeekBar.setMax(mediaPlayer.getDuration());
-                    tv_musicTotal.setText(DateUtils.timeParse(mediaPlayer.getDuration()));
+                    mTvMusicTotal.setText(DateUtils.timeParse(mediaPlayer.getDuration()));
                     handler.postDelayed(runnable, 200);
                 }
             } catch (Exception e) {
@@ -652,8 +651,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 playAudio();
             }
             if (id == R.id.tv_Stop) {
-                tv_musicStatus.setText(getString(R.string.picture_stop_audio));
-                tv_PlayPause.setText(getString(R.string.picture_play_audio));
+                mTvMusicStatus.setText(getString(R.string.picture_stop_audio));
+                mTvPlayPause.setText(getString(R.string.picture_play_audio));
                 stop(path);
             }
             if (id == R.id.tv_Quit) {
@@ -679,14 +678,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             musicSeekBar.setProgress(mediaPlayer.getCurrentPosition());
             musicSeekBar.setMax(mediaPlayer.getDuration());
         }
-        String ppStr = tv_PlayPause.getText().toString();
+        String ppStr = mTvPlayPause.getText().toString();
         if (ppStr.equals(getString(R.string.picture_play_audio))) {
-            tv_PlayPause.setText(getString(R.string.picture_pause_audio));
-            tv_musicStatus.setText(getString(R.string.picture_play_audio));
+            mTvPlayPause.setText(getString(R.string.picture_pause_audio));
+            mTvMusicStatus.setText(getString(R.string.picture_play_audio));
             playOrPause();
         } else {
-            tv_PlayPause.setText(getString(R.string.picture_play_audio));
-            tv_musicStatus.setText(getString(R.string.picture_pause_audio));
+            mTvPlayPause.setText(getString(R.string.picture_play_audio));
+            mTvMusicStatus.setText(getString(R.string.picture_pause_audio));
             playOrPause();
         }
         if (isPlayAudio == false) {
@@ -736,7 +735,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         boolean camera = StringUtils.isCamera(folderName);
         camera = config.isCamera ? camera : false;
         adapter.setShowCamera(camera);
-        picture_title.setText(folderName);
+        mTvPictureTitle.setText(folderName);
         adapter.bindImagesData(images);
         folderWindow.dismiss();
     }
@@ -843,47 +842,48 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         String pictureType = selectImages.size() > 0
                 ? selectImages.get(0).getPictureType() : "";
         if (config.mimeType == PictureMimeType.ofAudio()) {
-            picture_id_preview.setVisibility(View.GONE);
+            mTvPicturePreview.setVisibility(View.GONE);
         } else {
             boolean isVideo = PictureMimeType.isVideo(pictureType);
             boolean eqVideo = config.mimeType == PictureConfig.TYPE_VIDEO;
-            picture_id_preview.setVisibility(isVideo || eqVideo ? View.GONE : View.VISIBLE);
+            mTvPicturePreview.setVisibility(isVideo || eqVideo ? View.GONE : View.VISIBLE);
         }
         boolean enable = selectImages.size() != 0;
         if (enable) {
-            id_ll_ok.setEnabled(true);
-            picture_id_preview.setEnabled(true);
-            picture_id_preview.setSelected(true);
-            picture_tv_ok.setSelected(true);
+            mOkLayout.setEnabled(true);
+            mTvPicturePreview.setEnabled(true);
+            mTvPicturePreview.setSelected(true);
+            mTvPictureOk.setSelected(true);
             if (numComplete) {
-                picture_tv_ok.setText(getString
+                mTvPictureOk.setText(getString
                         (R.string.picture_done_front_num, selectImages.size(),
                                 config.selectionMode == PictureConfig.SINGLE ? 1 : config.maxSelectNum));
             } else {
                 if (!anim) {
-                    picture_tv_img_num.startAnimation(animation);
+                    mTvPictureImgNum.startAnimation(animation);
                 }
-                picture_tv_img_num.setVisibility(View.VISIBLE);
-                picture_tv_img_num.setText(String.valueOf(selectImages.size()));
-                picture_tv_ok.setText(getString(R.string.picture_completed));
+                mTvPictureImgNum.setVisibility(View.VISIBLE);
+                mTvPictureImgNum.setText(String.valueOf(selectImages.size()));
+                mTvPictureOk.setText(getString(R.string.picture_completed));
                 anim = false;
             }
         } else {
-            id_ll_ok.setEnabled(false);
-            picture_id_preview.setEnabled(false);
-            picture_id_preview.setSelected(false);
-            picture_tv_ok.setSelected(false);
+            mOkLayout.setEnabled(false);
+            mTvPicturePreview.setEnabled(false);
+            mTvPicturePreview.setSelected(false);
+            mTvPictureOk.setSelected(false);
             if (numComplete) {
-                picture_tv_ok.setText(getString(R.string.picture_done_front_num, 0,
+                mTvPictureOk.setText(getString(R.string.picture_done_front_num, 0,
                         config.selectionMode == PictureConfig.SINGLE ? 1 : config.maxSelectNum));
             } else {
-                picture_tv_img_num.setVisibility(View.INVISIBLE);
-                picture_tv_ok.setText(getString(R.string.picture_please_select));
+                mTvPictureImgNum.setVisibility(View.INVISIBLE);
+                mTvPictureOk.setText(getString(R.string.picture_please_select));
             }
         }
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -1019,7 +1019,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             // 解决部分手机拍照完Intent.ACTION_MEDIA_SCANNER_SCAN_FILE
             // 不及时刷新问题手动添加
             manualSaveFolder(media);
-            tv_empty.setVisibility(images.size() > 0
+            mTvEmpty.setVisibility(images.size() > 0
                     ? View.INVISIBLE : View.VISIBLE);
         }
 

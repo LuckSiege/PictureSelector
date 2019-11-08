@@ -2,6 +2,7 @@ package com.luck.picture.lib.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.recyclerview.widget.RecyclerView;
@@ -71,10 +72,10 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         String imagePath = folder.getFirstImagePath();
         boolean isChecked = folder.isChecked();
         int checkedNum = folder.getCheckedNum();
-        holder.tv_sign.setVisibility(checkedNum > 0 ? View.VISIBLE : View.INVISIBLE);
+        holder.tvSign.setVisibility(checkedNum > 0 ? View.VISIBLE : View.INVISIBLE);
         holder.itemView.setSelected(isChecked);
         if (mimeType == PictureMimeType.ofAudio()) {
-            holder.first_image.setImageResource(R.drawable.audio_placeholder);
+            holder.ivFirstImage.setImageResource(R.drawable.audio_placeholder);
         } else {
             RequestOptions options = new RequestOptions()
                     .placeholder(R.drawable.ic_placeholder)
@@ -86,30 +87,27 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
                     .asBitmap()
                     .load(imagePath)
                     .apply(options)
-                    .into(new BitmapImageViewTarget(holder.first_image) {
+                    .into(new BitmapImageViewTarget(holder.ivFirstImage) {
                         @Override
                         protected void setResource(Bitmap resource) {
                             RoundedBitmapDrawable circularBitmapDrawable =
                                     RoundedBitmapDrawableFactory.
                                             create(mContext.getResources(), resource);
                             circularBitmapDrawable.setCornerRadius(8);
-                            holder.first_image.setImageDrawable(circularBitmapDrawable);
+                            holder.ivFirstImage.setImageDrawable(circularBitmapDrawable);
                         }
                     });
         }
-        holder.image_num.setText("(" + imageNum + ")");
-        holder.tv_folder_name.setText(name);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (onItemClickListener != null) {
-                    for (LocalMediaFolder mediaFolder : folders) {
-                        mediaFolder.setChecked(false);
-                    }
-                    folder.setChecked(true);
-                    notifyDataSetChanged();
-                    onItemClickListener.onItemClick(folder.getName(), folder.getImages());
+        holder.imageNum.setText("(" + imageNum + ")");
+        holder.tvFolderName.setText(name);
+        holder.itemView.setOnClickListener(view -> {
+            if (onItemClickListener != null) {
+                for (LocalMediaFolder mediaFolder : folders) {
+                    mediaFolder.setChecked(false);
                 }
+                folder.setChecked(true);
+                notifyDataSetChanged();
+                onItemClickListener.onItemClick(folder.getName(), folder.getImages());
             }
         });
     }
@@ -120,15 +118,15 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView first_image;
-        TextView tv_folder_name, image_num, tv_sign;
+        ImageView ivFirstImage;
+        TextView tvFolderName, imageNum, tvSign;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            first_image = (ImageView) itemView.findViewById(R.id.first_image);
-            tv_folder_name = (TextView) itemView.findViewById(R.id.tv_folder_name);
-            image_num = (TextView) itemView.findViewById(R.id.image_num);
-            tv_sign = (TextView) itemView.findViewById(R.id.tv_sign);
+            ivFirstImage = itemView.findViewById(R.id.first_image);
+            tvFolderName = itemView.findViewById(R.id.tv_folder_name);
+            imageNum = itemView.findViewById(R.id.image_num);
+            tvSign = itemView.findViewById(R.id.tv_sign);
         }
     }
 

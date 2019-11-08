@@ -7,11 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * author：luck
- * project：PictureSelector
- * package：com.luck.picture.lib.model
- * email：893855882@qq.com
- * data：2017/4/28
+ * @author：luck
+ * @date：2017-4-28 16:21
+ * @describe：EventBus Entity
  */
 
 public class EventEntity implements Parcelable {

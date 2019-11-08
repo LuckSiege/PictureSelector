@@ -1,13 +1,17 @@
 package com.luck.picture.lib.rxbus2;
 
 /**
- * RxBus data
- * Created by gorden on 2016/7/8.
+ * @author：luck
+ * @date：2016-7-08 16:21
+ * @describe：Rx BusData
  */
 public class BusData {
     String id;
     String status;
-    public BusData() {}
+
+    public BusData() {
+    }
+
     public BusData(String id, String status) {
         this.id = id;
         this.status = status;

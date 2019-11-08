@@ -457,7 +457,7 @@ public class PictureBaseActivity extends FragmentActivity {
                             Bitmap bitmapFromUri = BitmapUtils.getBitmapFromUri(getApplicationContext(),
                                     Uri.parse(media.getPath()));
                             BitmapUtils.saveBitmap(bitmapFromUri, newPath);
-                            media.setPath(newPath);
+                            media.setAndroidQToPath(newPath);
                         }
 
                     }

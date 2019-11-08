@@ -7,18 +7,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * author：luck
- * project：PictureSelector
- * package：com.luck.picture.entity
- * email：893855882@qq.com
- * data：16/12/31
+ * @author：luck
+ * @date：2016-12-31 15:21
+ * @describe：MediaFolder Entity
  */
+
 public class LocalMediaFolder implements Parcelable {
+    /**
+     * Folder name
+     */
     private String name;
+    /**
+     * Folder cover
+     */
     private String path;
+    /**
+     * Folder first path
+     */
     private String firstImagePath;
+    /**
+     * Folder media num
+     */
     private int imageNum;
+    /**
+     * If the selected num
+     */
     private int checkedNum;
+    /**
+     * If the selected
+     */
     private boolean isChecked;
     private List<LocalMedia> images = new ArrayList<LocalMedia>();
 

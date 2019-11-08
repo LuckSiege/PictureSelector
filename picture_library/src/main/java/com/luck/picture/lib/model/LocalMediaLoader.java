@@ -24,13 +24,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-
 /**
- * author：luck
- * project：LocalMediaLoader
- * package：com.luck.picture.ui
- * email：893855882@qq.com
- * data：16/12/31
+ * @author：luck
+ * @data：2016/12/31 19:12
+ * @描述: Local media database query class
  */
 
 public class LocalMediaLoader {
@@ -140,34 +137,7 @@ public class LocalMediaLoader {
             @NonNull
             @Override
             public List<LocalMediaFolder> doSth(Object... objects) {
-                String selection = null;
-                String[] selectionArgs = null;
-                switch (type) {
-                    case PictureConfig.TYPE_ALL:
-                        selection = getSelectionArgsForAllMediaCondition(getDurationCondition(0, 0), isGif);
-                        selectionArgs = SELECTION_ALL_ARGS;
-                        break;
-                    case PictureConfig.TYPE_IMAGE:
-                        // 只获取图片
-                        selection = isGif ? SELECTION : SELECTION_NOT_GIF;
-                        String[] MEDIA_TYPE_IMAGE = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
-                        selectionArgs = MEDIA_TYPE_IMAGE;
-                        break;
-                    case PictureConfig.TYPE_VIDEO:
-                        // 只获取视频
-                        selection = getSelectionArgsForSingleMediaCondition();
-                        selectionArgs = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO);
-                        break;
-                    case PictureConfig.TYPE_AUDIO:
-                        selection = getSelectionArgsForSingleMediaCondition(getDurationCondition(0, AUDIO_DURATION));
-                        String[] MEDIA_TYPE_AUDIO = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO);
-                        selectionArgs = MEDIA_TYPE_AUDIO;
-                        break;
-                    default:
-                        break;
-                }
-
-                Cursor data = mContext.getContentResolver().query(QUERY_URI, PROJECTION, selection, selectionArgs, ORDER_BY);
+                Cursor data = mContext.getContentResolver().query(QUERY_URI, PROJECTION, getSelection(), getSelectionArgs(), ORDER_BY);
                 try {
                     List<LocalMediaFolder> imageFolders = new ArrayList<>();
                     LocalMediaFolder allImageFolder = new LocalMediaFolder();
@@ -256,6 +226,40 @@ public class LocalMediaLoader {
                 }
             }
         });
+    }
+
+    private String getSelection() {
+        switch (type) {
+            case PictureConfig.TYPE_ALL:
+                return getSelectionArgsForAllMediaCondition(getDurationCondition(0, 0), isGif);
+            case PictureConfig.TYPE_IMAGE:
+                // 只获取图片
+                return isGif ? SELECTION : SELECTION_NOT_GIF;
+            case PictureConfig.TYPE_VIDEO:
+                // 只获取视频
+                return getSelectionArgsForSingleMediaCondition();
+            case PictureConfig.TYPE_AUDIO:
+                return getSelectionArgsForSingleMediaCondition(getDurationCondition(0, AUDIO_DURATION));
+        }
+        return null;
+    }
+
+    private String[] getSelectionArgs() {
+        switch (type) {
+            case PictureConfig.TYPE_ALL:
+                return SELECTION_ALL_ARGS;
+            case PictureConfig.TYPE_IMAGE:
+                // 只获取图片
+                String[] MEDIA_TYPE_IMAGE = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
+                return MEDIA_TYPE_IMAGE;
+            case PictureConfig.TYPE_VIDEO:
+                // 只获取视频
+                return getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO);
+            case PictureConfig.TYPE_AUDIO:
+                String[] MEDIA_TYPE_AUDIO = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO);
+                return MEDIA_TYPE_AUDIO;
+        }
+        return null;
     }
 
     /**

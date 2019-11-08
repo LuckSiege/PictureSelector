@@ -21,10 +21,11 @@ import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 
 /**
- * RxBus
- * Created by gorden on 2016/5/12.
- * update 2017/3/1
+ * @author：luck
+ * @date：2016-3-01 12:21
+ * @describe：Rx BusData
  */
+
 @SuppressWarnings("unused")
 public class RxBus {
     public static final String LOG_BUS = "RXBUS_LOG";
@@ -62,7 +63,7 @@ public class RxBus {
      * @param eventType 事件类型
      * @return return
      */
-    public  <T> Flowable<T> toObservable(Class<T> eventType) {
+    public <T> Flowable<T> toObservable(Class<T> eventType) {
         return bus.toFlowable(BackpressureStrategy.BUFFER).ofType(eventType);
     }
 

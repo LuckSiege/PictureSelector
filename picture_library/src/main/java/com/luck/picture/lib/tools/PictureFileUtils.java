@@ -39,11 +39,9 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * author：luck
- * project：PictureSelector
- * package：com.luck.picture.lib.tools
- * email：893855882@qq.com
- * data：2017/5/30
+ * @author：luck
+ * @date：2017-5-30 19:30
+ * @describe：PictureFileUtils
  */
 
 public class PictureFileUtils {

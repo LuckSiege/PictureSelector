@@ -1,9 +1,6 @@
 package com.luck.pictureselector.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -21,7 +18,6 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DateUtils;
-import com.luck.picture.lib.tools.StringUtils;
 import com.luck.pictureselector.R;
 
 import java.io.File;
@@ -69,14 +65,14 @@ public class GridImageAdapter extends
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView mImg;
-        LinearLayout ll_del;
-        TextView tv_duration;
+        LinearLayout llDel;
+        TextView tvDuration;
 
         public ViewHolder(View view) {
             super(view);
             mImg = view.findViewById(R.id.fiv);
-            ll_del = view.findViewById(R.id.ll_del);
-            tv_duration = view.findViewById(R.id.tv_duration);
+            llDel = view.findViewById(R.id.ll_del);
+            tvDuration = view.findViewById(R.id.tv_duration);
         }
     }
 
@@ -123,10 +119,10 @@ public class GridImageAdapter extends
         if (getItemViewType(position) == TYPE_CAMERA) {
             viewHolder.mImg.setImageResource(R.drawable.addimg_1x);
             viewHolder.mImg.setOnClickListener(v -> mOnAddPicClickListener.onAddPicClick());
-            viewHolder.ll_del.setVisibility(View.INVISIBLE);
+            viewHolder.llDel.setVisibility(View.INVISIBLE);
         } else {
-            viewHolder.ll_del.setVisibility(View.VISIBLE);
-            viewHolder.ll_del.setOnClickListener(view -> {
+            viewHolder.llDel.setVisibility(View.VISIBLE);
+            viewHolder.llDel.setOnClickListener(view -> {
                 int index = viewHolder.getAdapterPosition();
                 // 这里有时会返回-1造成数据下标越界,具体可参考getAdapterPosition()源码，
                 // 通过源码分析应该是bindViewHolder()暂未绘制完成导致，知道原因的也可联系我~感谢
@@ -138,7 +134,7 @@ public class GridImageAdapter extends
             });
             LocalMedia media = list.get(position);
             int mimeType = media.getMimeType();
-            String path = "";
+            String path;
             if (media.isCut() && !media.isCompressed()) {
                 // 裁剪过
                 path = media.getCutPath();
@@ -161,17 +157,18 @@ public class GridImageAdapter extends
                 Log.i("裁剪地址::", media.getCutPath());
             }
             long duration = media.getDuration();
-            viewHolder.tv_duration.setVisibility(pictureType == PictureConfig.TYPE_VIDEO
+            viewHolder.tvDuration.setVisibility(pictureType == PictureConfig.TYPE_VIDEO
                     ? View.VISIBLE : View.GONE);
             if (mimeType == PictureMimeType.ofAudio()) {
-                viewHolder.tv_duration.setVisibility(View.VISIBLE);
-                Drawable drawable = ContextCompat.getDrawable(context, R.drawable.picture_audio);
-                StringUtils.modifyTextViewDrawable(viewHolder.tv_duration, drawable, 0);
+                viewHolder.tvDuration.setVisibility(View.VISIBLE);
+                viewHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
+                        (R.drawable.picture_audio, 0, 0, 0);
+
             } else {
-                Drawable drawable = ContextCompat.getDrawable(context, R.drawable.video_icon);
-                StringUtils.modifyTextViewDrawable(viewHolder.tv_duration, drawable, 0);
+                viewHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
+                        (R.drawable.video_icon, 0, 0, 0);
             }
-            viewHolder.tv_duration.setText(DateUtils.timeParse(duration));
+            viewHolder.tvDuration.setText(DateUtils.timeParse(duration));
             if (mimeType == PictureMimeType.ofAudio()) {
                 viewHolder.mImg.setImageResource(R.drawable.audio_placeholder);
             } else {

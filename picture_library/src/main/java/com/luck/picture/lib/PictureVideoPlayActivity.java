@@ -25,10 +25,10 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_activity_video_play);
         video_path = getIntent().getStringExtra("video_path");
-        picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
-        mVideoView = (VideoView) findViewById(R.id.video_view);
+        picture_left_back = findViewById(R.id.picture_left_back);
+        mVideoView = findViewById(R.id.video_view);
         mVideoView.setBackgroundColor(Color.BLACK);
-        iv_play = (ImageView) findViewById(R.id.iv_play);
+        iv_play = findViewById(R.id.iv_play);
         mMediaController = new MediaController(this);
         mVideoView.setOnCompletionListener(this);
         mVideoView.setOnPreparedListener(this);

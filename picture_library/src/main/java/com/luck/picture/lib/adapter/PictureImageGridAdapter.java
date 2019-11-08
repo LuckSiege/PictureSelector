@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -169,21 +170,21 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             final int mediaMimeType = PictureMimeType.isPictureType(pictureType);
             boolean gif = PictureMimeType.isGif(pictureType);
 
-            contentHolder.tv_isGif.setVisibility(gif ? View.VISIBLE : View.GONE);
+            contentHolder.tvIsGif.setVisibility(gif ? View.VISIBLE : View.GONE);
             if (mimeType == PictureMimeType.ofAudio()) {
-                contentHolder.tv_duration.setVisibility(View.VISIBLE);
-                Drawable drawable = ContextCompat.getDrawable(context, R.drawable.picture_audio);
-                StringUtils.modifyTextViewDrawable(contentHolder.tv_duration, drawable, 0);
+                contentHolder.tvDuration.setVisibility(View.VISIBLE);
+                contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
+                        (R.drawable.picture_audio, 0, 0, 0);
             } else {
-                Drawable drawable = ContextCompat.getDrawable(context, R.drawable.video_icon);
-                StringUtils.modifyTextViewDrawable(contentHolder.tv_duration, drawable, 0);
-                contentHolder.tv_duration.setVisibility(mediaMimeType == PictureConfig.TYPE_VIDEO
+                contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
+                        (R.drawable.video_icon, 0, 0, 0);
+                contentHolder.tvDuration.setVisibility(mediaMimeType == PictureConfig.TYPE_VIDEO
                         ? View.VISIBLE : View.GONE);
             }
             boolean eqLongImg = MediaUtils.isLongImg(image);
-            contentHolder.tv_long_chart.setVisibility(eqLongImg ? View.VISIBLE : View.GONE);
+            contentHolder.tvLongChart.setVisibility(eqLongImg ? View.VISIBLE : View.GONE);
             long duration = image.getDuration();
-            contentHolder.tv_duration.setText(DateUtils.timeParse(duration));
+            contentHolder.tvDuration.setText(DateUtils.timeParse(duration));
             if (mimeType == PictureMimeType.ofAudio()) {
                 contentHolder.iv_picture.setImageResource(R.drawable.audio_placeholder);
             } else {
@@ -203,23 +204,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                         .into(contentHolder.iv_picture);
             }
             if (enablePreview || enablePreviewVideo || enablePreviewAudio) {
-                contentHolder.ll_check.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // 如原图路径不存在或者路径存在但文件不存在
-                        String newPath = SdkVersionUtils.checkedAndroid_Q()
-                                ? PictureFileUtils.getPath(context, Uri.parse(path)) : path;
-                        if (!new File(newPath).exists()) {
-                            ToastManage.s(context, PictureMimeType.s(context, mediaMimeType));
-                            return;
-                        }
-                        changeCheckboxState(contentHolder, image);
-                    }
-                });
-            }
-            contentHolder.contentView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+                contentHolder.ll_check.setOnClickListener(v -> {
                     // 如原图路径不存在或者路径存在但文件不存在
                     String newPath = SdkVersionUtils.checkedAndroid_Q()
                             ? PictureFileUtils.getPath(context, Uri.parse(path)) : path;
@@ -227,18 +212,28 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                         ToastManage.s(context, PictureMimeType.s(context, mediaMimeType));
                         return;
                     }
-                    int index = showCamera ? position - 1 : position;
-                    boolean eqResult =
-                            mediaMimeType == PictureConfig.TYPE_IMAGE && enablePreview
-                                    || mediaMimeType == PictureConfig.TYPE_VIDEO && (enablePreviewVideo
-                                    || selectMode == PictureConfig.SINGLE)
-                                    || mediaMimeType == PictureConfig.TYPE_AUDIO && (enablePreviewAudio
-                                    || selectMode == PictureConfig.SINGLE);
-                    if (eqResult) {
-                        imageSelectChangedListener.onPictureClick(image, index);
-                    } else {
-                        changeCheckboxState(contentHolder, image);
-                    }
+                    changeCheckboxState(contentHolder, image);
+                });
+            }
+            contentHolder.contentView.setOnClickListener(v -> {
+                // 如原图路径不存在或者路径存在但文件不存在
+                String newPath = SdkVersionUtils.checkedAndroid_Q()
+                        ? PictureFileUtils.getPath(context, Uri.parse(path)) : path;
+                if (!new File(newPath).exists()) {
+                    ToastManage.s(context, PictureMimeType.s(context, mediaMimeType));
+                    return;
+                }
+                int index = showCamera ? position - 1 : position;
+                boolean eqResult =
+                        mediaMimeType == PictureConfig.TYPE_IMAGE && enablePreview
+                                || mediaMimeType == PictureConfig.TYPE_VIDEO && (enablePreviewVideo
+                                || selectMode == PictureConfig.SINGLE)
+                                || mediaMimeType == PictureConfig.TYPE_AUDIO && (enablePreviewAudio
+                                || selectMode == PictureConfig.SINGLE);
+                if (eqResult) {
+                    imageSelectChangedListener.onPictureClick(image, index);
+                } else {
+                    changeCheckboxState(contentHolder, image);
                 }
             });
         }
@@ -268,19 +263,19 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView iv_picture;
         TextView check;
-        TextView tv_duration, tv_isGif, tv_long_chart;
+        TextView tvDuration, tvIsGif, tvLongChart;
         View contentView;
         LinearLayout ll_check;
 
         public ViewHolder(View itemView) {
             super(itemView);
             contentView = itemView;
-            iv_picture = (ImageView) itemView.findViewById(R.id.iv_picture);
-            check = (TextView) itemView.findViewById(R.id.check);
-            ll_check = (LinearLayout) itemView.findViewById(R.id.ll_check);
-            tv_duration = (TextView) itemView.findViewById(R.id.tv_duration);
-            tv_isGif = (TextView) itemView.findViewById(R.id.tv_isGif);
-            tv_long_chart = (TextView) itemView.findViewById(R.id.tv_long_chart);
+            iv_picture = itemView.findViewById(R.id.iv_picture);
+            check = itemView.findViewById(R.id.check);
+            ll_check = itemView.findViewById(R.id.ll_check);
+            tvDuration = itemView.findViewById(R.id.tv_duration);
+            tvIsGif = itemView.findViewById(R.id.tv_isGif);
+            tvLongChart = itemView.findViewById(R.id.tv_long_chart);
         }
     }
 

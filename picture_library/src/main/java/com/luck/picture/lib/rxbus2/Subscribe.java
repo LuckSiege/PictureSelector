@@ -7,9 +7,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Rxbus
- * Created by gorden on 2016/7/23.
+ * @author：luck
+ * @date：2019-3-18 10:12
+ * @describe：
  */
+
 @Documented
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

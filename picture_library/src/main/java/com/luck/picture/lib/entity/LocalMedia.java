@@ -5,27 +5,68 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 /**
- * author：luck
- * project：PictureSelector
- * package：com.luck.picture.lib.entity
- * describe：for PictureSelector media entity.
- * email：893855882@qq.com
- * data：2017/5/24
+ * @author：luck
+ * @date：2017-5-24 16:21
+ * @describe：Media Entity
  */
 
 public class LocalMedia implements Parcelable {
+    /**
+     * original path
+     */
     private String path;
+    /**
+     * compress path
+     */
     private String compressPath;
+    /**
+     * cut path
+     */
     private String cutPath;
+
+    /**
+     * Note: this field is only returned in Android Q version
+     * <p>
+     * Android Q image or video path
+     */
+    private String androidQToPath;
+    /**
+     * video duration
+     */
     private long duration;
+    /**
+     * If the selected
+     */
     private boolean isChecked;
+    /**
+     * If the cut
+     */
     private boolean isCut;
+    /**
+     * media position of list
+     */
     public int position;
+    /**
+     * The media number of qq choose styles
+     */
     private int num;
+    /**
+     * The media resource type
+     */
     private int mimeType;
+
     private String pictureType;
+    /**
+     * If the compressed
+     */
     private boolean compressed;
+    /**
+     * image or video width
+     */
     private int width;
+    /**
+     * image or video height
+     */
     private int height;
 
     public LocalMedia() {
@@ -91,6 +132,14 @@ public class LocalMedia implements Parcelable {
 
     public void setCutPath(String cutPath) {
         this.cutPath = cutPath;
+    }
+
+    public String getAndroidQToPath() {
+        return androidQToPath;
+    }
+
+    public void setAndroidQToPath(String androidQToPath) {
+        this.androidQToPath = androidQToPath;
     }
 
     public long getDuration() {
@@ -176,6 +225,7 @@ public class LocalMedia implements Parcelable {
         dest.writeString(this.path);
         dest.writeString(this.compressPath);
         dest.writeString(this.cutPath);
+        dest.writeString(this.androidQToPath);
         dest.writeLong(this.duration);
         dest.writeByte(this.isChecked ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isCut ? (byte) 1 : (byte) 0);
@@ -192,6 +242,7 @@ public class LocalMedia implements Parcelable {
         this.path = in.readString();
         this.compressPath = in.readString();
         this.cutPath = in.readString();
+        this.androidQToPath = in.readString();
         this.duration = in.readLong();
         this.isChecked = in.readByte() != 0;
         this.isCut = in.readByte() != 0;
@@ -204,7 +255,7 @@ public class LocalMedia implements Parcelable {
         this.height = in.readInt();
     }
 
-    public static final Parcelable.Creator<LocalMedia> CREATOR = new Parcelable.Creator<LocalMedia>() {
+    public static final Creator<LocalMedia> CREATOR = new Creator<LocalMedia>() {
         @Override
         public LocalMedia createFromParcel(Parcel source) {
             return new LocalMedia(source);

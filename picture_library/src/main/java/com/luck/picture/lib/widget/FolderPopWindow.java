@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
+
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,7 +47,7 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
     private Animation animationIn, animationOut;
     private boolean isDismiss = false;
     private LinearLayout id_ll_root;
-    private TextView picture_title;
+    private TextView tvPictureTitle;
     private Drawable drawableUp, drawableDown;
     private int mimeType;
 
@@ -70,9 +71,9 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
     }
 
     public void initView() {
-        id_ll_root = (LinearLayout) window.findViewById(R.id.id_ll_root);
+        id_ll_root = window.findViewById(R.id.id_ll_root);
         adapter = new PictureAlbumDirectoryAdapter(context);
-        recyclerView = (RecyclerView) window.findViewById(R.id.folder_list);
+        recyclerView = window.findViewById(R.id.folder_list);
         recyclerView.getLayoutParams().height = (int) (ScreenUtils.getScreenHeight(context) * 0.6);
         recyclerView.addItemDecoration(new RecycleViewDivider(
                 context, LinearLayoutManager.HORIZONTAL, ScreenUtils.dip2px(context, 0), ContextCompat.getColor(context, R.color.transparent)));
@@ -86,8 +87,8 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
         adapter.bindFolderData(folders);
     }
 
-    public void setPictureTitleView(TextView picture_title) {
-        this.picture_title = picture_title;
+    public void setPictureTitleView(TextView tvPictureTitle) {
+        this.tvPictureTitle = tvPictureTitle;
     }
 
     @Override
@@ -102,7 +103,8 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
             super.showAsDropDown(anchor);
             isDismiss = false;
             recyclerView.startAnimation(animationIn);
-            StringUtils.modifyTextViewDrawable(picture_title, drawableUp, 2);
+            tvPictureTitle.setCompoundDrawablesRelativeWithIntrinsicBounds
+                    (null, null, drawableUp, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -117,7 +119,8 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
         if (isDismiss) {
             return;
         }
-        StringUtils.modifyTextViewDrawable(picture_title, drawableDown, 2);
+        tvPictureTitle.setCompoundDrawablesRelativeWithIntrinsicBounds
+                (null, null, drawableDown, null);
         isDismiss = true;
         recyclerView.startAnimation(animationOut);
         dismiss();
@@ -148,12 +151,7 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
      * 在android4.1.1和4.1.2版本关闭PopWindow
      */
     private void dismiss4Pop() {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                FolderPopWindow.super.dismiss();
-            }
-        });
+        new Handler().post(() -> FolderPopWindow.super.dismiss());
     }
 
 
