@@ -81,6 +81,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private RelativeLayout mRlPictureTitle;
     private LinearLayout mOkLayout;
     private RecyclerView mPictureRecycler;
+    private RelativeLayout mBottomLayout;
     private PictureImageGridAdapter adapter;
     private List<LocalMedia> images = new ArrayList<>();
     private List<LocalMediaFolder> foldersList = new ArrayList<>();
@@ -205,6 +206,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mTvPicturePreview = findViewById(R.id.picture_id_preview);
         mTvPictureImgNum = findViewById(R.id.picture_tv_img_num);
         mPictureRecycler = findViewById(R.id.picture_recycler);
+        mBottomLayout = findViewById(R.id.rl_bottom);
         mOkLayout = findViewById(R.id.id_ll_ok);
         mTvEmpty = findViewById(R.id.tv_empty);
         isNumComplete(numComplete);
@@ -221,6 +223,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             mTvPicturePreview.setVisibility(config.chooseMode == PictureMimeType.ofVideo()
                     ? View.GONE : View.VISIBLE);
         }
+        mBottomLayout.setVisibility(config.selectionMode == PictureConfig.SINGLE
+                && config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
         mIvPictureLeftBack.setOnClickListener(this);
         mTvPictureRight.setOnClickListener(this);
         mOkLayout.setOnClickListener(this);
@@ -379,14 +383,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             Uri imageUri;
             if (SdkVersionUtils.checkedAndroid_Q()) {
-                imageUri = MediaUtils.createImagePathUri(getApplicationContext());
+                imageUri = MediaUtils.createImagePathUri(getApplicationContext(), config.cameraFileName);
                 cameraPath = imageUri.toString();
             } else {
                 int type = config.chooseMode == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_IMAGE
                         : config.chooseMode;
                 File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(),
-                        type,
-                        outputCameraPath, config.suffixType);
+                        type, config.cameraFileName, config.suffixType);
                 cameraPath = cameraFile.getAbsolutePath();
                 imageUri = parUri(cameraFile);
             }
@@ -403,12 +406,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             Uri imageUri;
             if (SdkVersionUtils.checkedAndroid_Q()) {
-                imageUri = MediaUtils.createImageVideoUri(getApplicationContext());
+                imageUri = MediaUtils.createImageVideoUri(getApplicationContext(), config.cameraFileName);
                 cameraPath = imageUri.toString();
             } else {
                 File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(), config.chooseMode ==
-                                PictureConfig.TYPE_ALL ? PictureConfig.TYPE_VIDEO : config.chooseMode,
-                        outputCameraPath, config.suffixType);
+                                PictureConfig.TYPE_ALL ? PictureConfig.TYPE_VIDEO : config.chooseMode, config.cameraFileName,
+                        config.suffixType);
                 cameraPath = cameraFile.getAbsolutePath();
                 imageUri = parUri(cameraFile);
             }
@@ -780,8 +783,19 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
     @Override
     public void onPictureClick(LocalMedia media, int position) {
-        List<LocalMedia> images = adapter.getImages();
-        startPreview(images, position);
+        if (config.selectionMode == PictureConfig.SINGLE && config.isSingleDirectReturn) {
+            List<LocalMedia> list = new ArrayList<>();
+            list.add(media);
+            if (config.enableCrop) {
+                adapter.bindSelectImages(list);
+                startCrop(media.getPath());
+            } else {
+                handlerResult(list);
+            }
+        } else {
+            List<LocalMedia> images = adapter.getImages();
+            startPreview(images, position);
+        }
     }
 
     /**
@@ -951,11 +965,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             cameraPath = getAudioPath(data);
         }
         // on take photo success
+        String mimeType;
         final File file = new File(cameraPath);
         sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
         String toType;
-        boolean androidQ = SdkVersionUtils.checkedAndroid_Q();
-        if (androidQ) {
+        boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
+        if (isAndroidQ) {
             String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(cameraPath));
             toType = PictureMimeType.fileToType(new File(path));
         } else {
@@ -969,28 +984,33 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         LocalMedia media = new LocalMedia();
         media.setPath(cameraPath);
         boolean eqVideo = toType.startsWith(PictureConfig.VIDEO);
-        int duration;
-        if (eqVideo && androidQ) {
-            duration = MediaUtils
-                    .getLocalVideoDurationToAndroidQ(getApplicationContext(), cameraPath);
-        } else {
-            duration = eqVideo ? MediaUtils.getLocalVideoDuration(cameraPath) : 0;
-        }
-        String mimeType;
         if (config.chooseMode == PictureMimeType.ofAudio()) {
             mimeType = PictureMimeType.MIME_TYPE_AUDIO;
-            duration = MediaUtils.getLocalVideoDuration(cameraPath);
         } else {
-            mimeType = eqVideo ? PictureMimeType.createVideoType(getApplicationContext(), cameraPath)
-                    : PictureMimeType.createImageType(cameraPath);
+            if (eqVideo) {
+                mimeType = isAndroidQ ? PictureMimeType.getMimeType(mContext, Uri.parse(cameraPath))
+                        : PictureMimeType.getVideoMimeType(cameraPath);
+            } else {
+                mimeType = isAndroidQ ? PictureMimeType.getMimeType(mContext, Uri.parse(cameraPath))
+                        : PictureMimeType.getImageMimeType(cameraPath);
+            }
         }
+
+        long duration = MediaUtils.extractDuration(mContext, isAndroidQ, cameraPath);
         media.setMimeType(mimeType);
         media.setDuration(duration);
         media.setChooseModel(config.chooseMode);
 
-        // 因为加入了单独拍照功能，所有如果是单独拍照的话也默认为单选状态
+        // 因为加入了单独拍照功能，所以如果是单独拍照的话也默认为单选状态
         if (config.camera) {
             cameraHandleResult(medias, media, toType);
+        } else if (config.selectionMode == PictureConfig.SINGLE && config.isSingleDirectReturn) {
+            // 单选直接返回模式
+            if (adapter != null) {
+                medias.add(media);
+                adapter.bindSelectImages(medias);
+                cameraHandleResult(medias, media, toType);
+            }
         } else {
             // 多选 返回列表并选中当前拍照的
             images.add(0, media);
@@ -1051,8 +1071,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         media.getPosition(), media.getNum(), config.chooseMode);
                 media.setCutPath(cutPath);
                 media.setCut(true);
-                mimeType = PictureMimeType.createImageType(cutPath);
+                mimeType = PictureMimeType.getImageMimeType(cutPath);
                 media.setMimeType(mimeType);
+                media.setAndroidQToPath(cutPath);
                 medias.add(media);
                 handlerResult(medias);
             }
@@ -1062,7 +1083,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     config.isCamera ? 1 : 0, 0, config.chooseMode);
             media.setCut(true);
             media.setCutPath(cutPath);
-            mimeType = PictureMimeType.createImageType(cutPath);
+            mimeType = PictureMimeType.getImageMimeType(cutPath);
             media.setMimeType(mimeType);
             medias.add(media);
             handlerResult(medias);
@@ -1079,7 +1100,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         List<CutInfo> mCuts = UCropMulti.getOutput(data);
         for (CutInfo c : mCuts) {
             LocalMedia media = new LocalMedia();
-            String imageType = PictureMimeType.createImageType(c.getCutPath());
+            String imageType = PictureMimeType.getImageMimeType(c.getCutPath());
             media.setCut(true);
             media.setPath(c.getPath());
             media.setCutPath(c.getCutPath());

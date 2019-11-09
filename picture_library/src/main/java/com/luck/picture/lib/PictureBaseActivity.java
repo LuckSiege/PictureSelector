@@ -213,7 +213,7 @@ public class PictureBaseActivity extends FragmentActivity {
                     .map(list -> {
                         List<File> files =
                                 Luban.with(mContext)
-                                        .loadMediaData(list)
+                                        .loadMediaData(list, config.cameraFileName)
                                         .setTargetDir(config.compressSavePath)
                                         .ignoreBy(config.minimumCompressSize)
                                         .get();
@@ -226,7 +226,7 @@ public class PictureBaseActivity extends FragmentActivity {
                     .subscribe(files -> handleCompressCallBack(result, files));
         } else {
             Luban.with(this)
-                    .loadMediaData(result)
+                    .loadMediaData(result, config.cameraFileName)
                     .ignoreBy(config.minimumCompressSize)
                     .setTargetDir(config.compressSavePath)
                     .setCompressListener(new OnCompressListener() {
@@ -297,11 +297,11 @@ public class PictureBaseActivity extends FragmentActivity {
         boolean isHttp = PictureMimeType.isHttp(originalPath);
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         String imgType = isAndroidQ ? PictureMimeType
-                .getLastImgSuffix(PictureFileUtils.getImageMimeType(Uri.parse(originalPath), mContext))
+                .getLastImgSuffix(PictureMimeType.getMimeType(mContext, Uri.parse(originalPath)))
                 : PictureMimeType.getLastImgType(originalPath);
         Uri uri = isHttp || isAndroidQ ? Uri.parse(originalPath) : Uri.fromFile(new File(originalPath));
         File file = new File(PictureFileUtils.getDiskCacheDir(this),
-                System.currentTimeMillis() + imgType);
+                TextUtils.isEmpty(config.cameraFileName) ? System.currentTimeMillis() + imgType : config.cameraFileName + imgType);
         UCrop.of(uri, Uri.fromFile(file))
                 .withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y)
                 .withMaxResultSize(config.cropWidth, config.cropHeight)
@@ -328,7 +328,7 @@ public class PictureBaseActivity extends FragmentActivity {
         options.setShowCropGrid(config.showCropGrid);
         options.setScaleEnabled(config.scaleEnabled);
         options.setRotateEnabled(config.rotateEnabled);
-        options.setHideBottomControls(true);
+        options.setHideBottomControls(config.hideBottomControls);
         options.setCompressionQuality(config.cropCompressQuality);
         options.setCutListData(list);
         options.setFreeStyleCropEnabled(config.freeStyleCropEnabled);
@@ -336,11 +336,11 @@ public class PictureBaseActivity extends FragmentActivity {
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         boolean isHttp = PictureMimeType.isHttp(path);
         String imgType = isAndroidQ ? PictureMimeType
-                .getLastImgSuffix(PictureFileUtils.getImageMimeType(Uri.parse(path), mContext))
+                .getLastImgSuffix(PictureMimeType.getMimeType(mContext, Uri.parse(path)))
                 : PictureMimeType.getLastImgType(path);
         Uri uri = isHttp || isAndroidQ ? Uri.parse(path) : Uri.fromFile(new File(path));
         File file = new File(PictureFileUtils.getDiskCacheDir(this),
-                System.currentTimeMillis() + imgType);
+                TextUtils.isEmpty(config.cameraFileName) ? System.currentTimeMillis() + imgType : config.cameraFileName + imgType);
         UCropMulti.of(uri, Uri.fromFile(file))
                 .withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y)
                 .withMaxResultSize(config.cropWidth, config.cropHeight)
@@ -460,13 +460,13 @@ public class PictureBaseActivity extends FragmentActivity {
                             String path;
                             if (isVideo) {
                                 path = AndroidQTransformUtils.parseVideoPathToAndroidQ
-                                        (getApplicationContext(), media.getPath(), media.getMimeType());
+                                        (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
                             } else if (config.chooseMode == PictureMimeType.ofAudio()) {
                                 path = AndroidQTransformUtils.parseAudioPathToAndroidQ
-                                        (getApplicationContext(), media.getPath(), media.getMimeType());
+                                        (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
                             } else {
                                 path = AndroidQTransformUtils.parseImagePathToAndroidQ
-                                        (getApplicationContext(), media.getPath(), media.getMimeType());
+                                        (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
                             }
                             media.setAndroidQToPath(path);
                         }
@@ -612,6 +612,7 @@ public class PictureBaseActivity extends FragmentActivity {
             cursor.moveToFirst();
             int index = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
             path = cursor.getString(index);
+            cursor.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

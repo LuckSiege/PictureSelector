@@ -41,7 +41,7 @@ public class PictureSpinView extends ImageView implements PictureIndeterminate {
     }
 
     private void init() {
-        setImageResource(R.drawable.kprogresshud_spinner);
+        setImageResource(R.drawable.ic_picture_progress_);
         mFrameTime = 1000 / 12;
         mUpdateViewRunnable = new Runnable() {
             @Override

@@ -33,10 +33,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -46,72 +42,55 @@ import java.util.Locale;
  */
 
 public class PictureFileUtils {
-    private static String DEFAULT_CACHE_DIR = "picture_cache";
 
     public static final String POSTFIX = ".JPEG";
     public static final String POST_VIDEO = ".mp4";
+    @Deprecated
     public static final String APP_NAME = "PictureSelector";
+    @Deprecated
     public static final String CAMERA_PATH = "/" + APP_NAME + "/CameraImage/";
+    @Deprecated
     public static final String CROP_PATH = "/" + APP_NAME + "/CropImage/";
 
     /**
      * @param context
      * @param type
-     * @param outputCameraPath
      * @param format
      * @return
      */
-    public static File createCameraFile(Context context, int type, String outputCameraPath, String format) {
-        String path = !TextUtils.isEmpty(outputCameraPath)
-                ? outputCameraPath : CAMERA_PATH;
-
-        return createMediaFile(context, path, type, format);
+    public static File createCameraFile(Context context, int type, String fileName, String format) {
+        return createMediaFile(context, type, fileName, format);
     }
 
     /**
+     * create file
+     *
      * @param context
      * @param type
      * @param format
      * @return
      */
-    public static File createCropFile(Context context, int type, String format) {
-        return createMediaFile(context, CROP_PATH, type, format);
-    }
-
-    private static File createMediaFile(Context context, String parentPath, int type, String format) {
-        String state = Environment.getExternalStorageState();
-        File rootDir;
-        if (SdkVersionUtils.checkedAndroid_Q()) {
-            rootDir = state.equals(Environment.MEDIA_MOUNTED) ?
-                    context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) : context.getCacheDir();
-        } else {
-            rootDir = state.equals(Environment.MEDIA_MOUNTED) ?
-                    Environment.getExternalStorageDirectory() : context.getCacheDir();
-        }
-
-        File folderDir = new File(rootDir.getAbsolutePath() + parentPath);
-        if (!folderDir.exists() && folderDir.mkdirs()) {
+    private static File createMediaFile(Context context, int type, String fileName, String format) {
+        File rootDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (!rootDir.exists() && rootDir.mkdirs()) {
 
         }
-
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINA).format(new Date());
-        String fileName = APP_NAME + "_" + timeStamp + "";
+        fileName = TextUtils.isEmpty(fileName) ? String.valueOf(System.currentTimeMillis()) : fileName;
         File tmpFile = null;
         String suffixType;
         switch (type) {
             case PictureConfig.TYPE_IMAGE:
                 suffixType = TextUtils.isEmpty(format) ? POSTFIX : format;
-                tmpFile = new File(folderDir, fileName + suffixType);
+                tmpFile = new File(rootDir, fileName + suffixType);
                 break;
             case PictureConfig.TYPE_VIDEO:
-                tmpFile = new File(folderDir, fileName + POST_VIDEO);
+                tmpFile = new File(rootDir, fileName + POST_VIDEO);
                 break;
             default:
                 break;
         }
         return tmpFile;
     }
-
 
     /**
      * TAG for log messages.
@@ -191,29 +170,6 @@ public class PictureFileUtils {
             }
         }
         return null;
-    }
-
-    public static File getPhotoCacheDir(Context context, File file) {
-        File cacheDir = context.getCacheDir();
-        String file_name = file.getName();
-        if (cacheDir != null) {
-            File mCacheDir = new File(cacheDir, DEFAULT_CACHE_DIR);
-            if (!mCacheDir.mkdirs() && (!mCacheDir.exists() || !mCacheDir.isDirectory())) {
-                return file;
-            } else {
-                String fileName = "";
-                if (file_name.endsWith(".webp")) {
-                    fileName = System.currentTimeMillis() + ".webp";
-                } else {
-                    fileName = System.currentTimeMillis() + ".png";
-                }
-                return new File(mCacheDir, fileName);
-            }
-        }
-        if (Log.isLoggable(TAG, Log.ERROR)) {
-            Log.e(TAG, "default disk cache dir is null");
-        }
-        return file;
     }
 
     /**
@@ -328,36 +284,6 @@ public class PictureFileUtils {
     }
 
     /**
-     * Copies one file into the other with the given paths.
-     * In the event that the paths are the same, trying to copy one file to the other
-     * will cause both files to become null.
-     * Simply skipping this step if the paths are identical.
-     */
-    public static boolean copyAudioFile(@NonNull String pathFrom, @NonNull String pathTo) throws IOException {
-        if (pathFrom.equalsIgnoreCase(pathTo)) {
-            return false;
-        }
-
-        FileChannel outputChannel = null;
-        FileChannel inputChannel = null;
-        try {
-            inputChannel = new FileInputStream(new File(pathFrom)).getChannel();
-            outputChannel = new FileOutputStream(new File(pathTo)).getChannel();
-            inputChannel.transferTo(0, inputChannel.size(), outputChannel);
-            inputChannel.close();
-        } finally {
-            if (inputChannel != null) {
-                inputChannel.close();
-            }
-            if (outputChannel != null) {
-                outputChannel.close();
-            }
-            boolean success = PictureFileUtils.deleteFile(pathFrom);
-            return success;
-        }
-    }
-
-    /**
      * 读取图片属性：旋转的角度
      *
      * @param path 图片绝对路径
@@ -415,139 +341,21 @@ public class PictureFileUtils {
     }
 
     /**
-     * 转换图片成圆形
-     *
-     * @param bitmap 传入Bitmap对象
-     * @return
-     */
-    public static Bitmap toRoundBitmap(Bitmap bitmap) {
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-        float roundPx;
-        float left, top, right, bottom, dst_left, dst_top, dst_right, dst_bottom;
-        if (width <= height) {
-            roundPx = width / 2;
-
-            left = 0;
-            top = 0;
-            right = width;
-            bottom = width;
-
-            height = width;
-
-            dst_left = 0;
-            dst_top = 0;
-            dst_right = width;
-            dst_bottom = width;
-        } else {
-            roundPx = height / 2;
-
-            float clip = (width - height) / 2;
-
-            left = clip;
-            right = width - clip;
-            top = 0;
-            bottom = height;
-            width = height;
-
-            dst_left = 0;
-            dst_top = 0;
-            dst_right = height;
-            dst_bottom = height;
-        }
-
-        Bitmap output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
-
-        final Paint paint = new Paint();
-        final Rect src = new Rect((int) left, (int) top, (int) right, (int) bottom);
-        final Rect dst = new Rect((int) dst_left, (int) dst_top, (int) dst_right, (int) dst_bottom);
-        final RectF rectF = new RectF(dst);
-
-        paint.setAntiAlias(true);// 设置画笔无锯齿
-
-        canvas.drawARGB(0, 0, 0, 0); // 填充整个Canvas
-
-        // 以下有两种方法画圆,drawRounRect和drawCircle
-        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);// 画圆角矩形，第一个参数为图形显示区域，第二个参数和第三个参数分别是水平圆角半径和垂直圆角半径。
-        // canvas.drawCircle(roundPx, roundPx, roundPx, paint);
-
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));// 设置两张图片相交时的模式,参考http://trylovecatch.iteye.com/blog/1189452
-        canvas.drawBitmap(bitmap, src, dst, paint); // 以Mode.SRC_IN模式合并bitmap和已经draw了的Circle
-
-        return output;
-    }
-
-    /**
      * 创建文件夹
      *
      * @param filename
      * @return
      */
-    public static String createDir(Context context, String filename, String directory_path) {
-        String state = Environment.getExternalStorageState();
-        File rootDir;
-        if (SdkVersionUtils.checkedAndroid_Q()) {
-            rootDir = state.equals(Environment.MEDIA_MOUNTED) ? context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) : context.getCacheDir();
-        } else {
-            rootDir = state.equals(Environment.MEDIA_MOUNTED) ? Environment.getExternalStorageDirectory() : context.getCacheDir();
-        }
-        File path;
-        if (!TextUtils.isEmpty(directory_path)) {
-            // 自定义保存目录
-            path = new File(rootDir.getAbsolutePath() + directory_path);
-        } else {
-            path = new File(rootDir.getAbsolutePath() + "/PictureSelector");
-        }
-        if (!path.exists())
+    public static String createDir(Context context, String filename) {
+        File rootDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (!rootDir.exists())
         // 若不存在，创建目录，可以在应用启动的时候创建
         {
-            path.mkdirs();
+            rootDir.mkdirs();
         }
-
-        return path + "/" + filename;
+        return rootDir + "/" + filename;
     }
 
-
-    /**
-     * image is Damage
-     *
-     * @param path
-     * @return
-     */
-    public static int isDamage(String path) {
-        BitmapFactory.Options options = null;
-        if (options == null) options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, options); //filePath代表图片路径
-        if (options.mCancel || options.outWidth == -1
-                || options.outHeight == -1) {
-            //表示图片已损毁
-            return -1;
-        }
-        return 0;
-    }
-
-    /**
-     * 获取某目录下所有文件路径
-     *
-     * @param dir
-     */
-    public static List<String> getDirFiles(String dir) {
-        File scanner5Directory = new File(dir);
-        List<String> list = new ArrayList<>();
-        if (scanner5Directory.isDirectory()) {
-            for (File file : scanner5Directory.listFiles()) {
-                String path = file.getAbsolutePath();
-                if (path.endsWith(".jpg") || path.endsWith(".jpeg")
-                        || path.endsWith(".png") || path.endsWith(".gif")
-                        || path.endsWith(".webp")) {
-                    list.add(path);
-                }
-            }
-        }
-        return list;
-    }
 
     public static String getDCIMCameraPath(Context ctx) {
         String absolutePath;
@@ -600,56 +408,11 @@ public class PictureFileUtils {
         }
     }
 
-
-    /**
-     * delete file
-     *
-     * @param path
-     */
-    public static boolean deleteFile(String path) {
-        try {
-            if (!TextUtils.isEmpty(path)) {
-                File file = new File(path);
-                if (file != null) {
-                    return file.delete();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return false;
-    }
-
     /**
      * @param ctx
      * @return
      */
     public static String getDiskCacheDir(Context ctx) {
         return ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
-    }
-
-    /**
-     * 根据uri获取MIME_TYPE
-     *
-     * @param uri
-     * @return
-     */
-    public static String getImageMimeType(Uri uri, Context context) {
-        String mimeType = "";
-        if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
-            Cursor cursor = context.getApplicationContext().getContentResolver().query(uri,
-                    new String[]{MediaStore.Images.Media.MIME_TYPE}, null, null, null);
-            if (cursor != null) {
-                if (cursor.moveToFirst()) {
-                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE);
-                    if (columnIndex > -1) {
-                        mimeType = cursor.getString(columnIndex);
-                    }
-                }
-                cursor.close();
-            }
-        }
-        return mimeType;
     }
 }

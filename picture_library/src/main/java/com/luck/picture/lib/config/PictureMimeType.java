@@ -1,8 +1,11 @@
 package com.luck.picture.lib.config;
 
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import com.luck.picture.lib.R;
@@ -85,22 +88,6 @@ public final class PictureMimeType {
     }
 
     /**
-     * 是否是gif
-     *
-     * @param path
-     * @return
-     */
-    public static boolean isImageGif(String path) {
-        if (!TextUtils.isEmpty(path)) {
-            int lastIndex = path.lastIndexOf(".");
-            String pictureType = path.substring(lastIndex);
-            return pictureType.startsWith(".gif")
-                    || pictureType.startsWith(".GIF");
-        }
-        return false;
-    }
-
-    /**
      * 是否是视频
      *
      * @param pictureType
@@ -178,7 +165,7 @@ public final class PictureMimeType {
         return isPictureType(p1) == isPictureType(p2);
     }
 
-    public static String createImageType(String path) {
+    public static String getImageMimeType(String path) {
         try {
             if (!TextUtils.isEmpty(path)) {
                 File file = new File(path);
@@ -194,18 +181,10 @@ public final class PictureMimeType {
         return "image/jpeg";
     }
 
-    public static String createVideoType(Context context, String path) {
+    public static String getVideoMimeType(String path) {
         try {
             if (!TextUtils.isEmpty(path)) {
-                boolean androidQ = SdkVersionUtils.checkedAndroid_Q();
-                File file;
-                if (androidQ) {
-                    String newPath = PictureFileUtils.getPath(context.getApplicationContext(),
-                            Uri.parse(path));
-                    file = new File(newPath);
-                } else {
-                    file = new File(path);
-                }
+                File file = new File(path);
                 String fileName = file.getName();
                 int last = fileName.lastIndexOf(".") + 1;
                 String temp = fileName.substring(last);
@@ -219,19 +198,44 @@ public final class PictureMimeType {
     }
 
     /**
+     * 根据uri获取MIME_TYPE
+     *
+     * @param uri
+     * @return
+     */
+    public static String getMimeType(Context context, Uri uri) {
+        if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
+            Cursor cursor = context.getApplicationContext().getContentResolver().query(uri,
+                    new String[]{MediaStore.Files.FileColumns.MIME_TYPE}, null, null, null);
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE);
+                    if (columnIndex > -1) {
+                        return cursor.getString(columnIndex);
+                    }
+                }
+                cursor.close();
+            }
+        }
+        return "image/jpeg";
+    }
+
+    /**
      * Picture or video
      *
      * @return
      */
-    public static int pictureToVideo(String pictureType) {
-        if (!TextUtils.isEmpty(pictureType)) {
-            if (pictureType.startsWith("video")) {
-                return PictureConfig.TYPE_VIDEO;
-            } else if (pictureType.startsWith("audio")) {
-                return PictureConfig.TYPE_AUDIO;
-            }
+    public static int getMimeType(String mimeType) {
+        if (TextUtils.isEmpty(mimeType)) {
+            return PictureConfig.TYPE_IMAGE;
         }
-        return PictureConfig.TYPE_IMAGE;
+        if (mimeType.startsWith("video")) {
+            return PictureConfig.TYPE_VIDEO;
+        } else if (mimeType.startsWith("audio")) {
+            return PictureConfig.TYPE_AUDIO;
+        } else {
+            return PictureConfig.TYPE_IMAGE;
+        }
     }
 
 
@@ -313,7 +317,7 @@ public final class PictureMimeType {
 
     public final static String PNG = ".png";
 
-    public final static String MIME_TYPE_IMAGE = "";
-    public final static String MIME_TYPE_VIDEO = "";
+    public final static String MIME_TYPE_IMAGE = "image/jpeg";
+    public final static String MIME_TYPE_VIDEO = "video/mp4";
     public final static String MIME_TYPE_AUDIO = "audio/mpeg";
 }

@@ -2,11 +2,13 @@ package com.luck.picture.lib;
 
 import android.app.Activity;
 import android.content.Intent;
+
 import androidx.annotation.FloatRange;
 import androidx.annotation.IntRange;
 import androidx.annotation.StyleRes;
 import androidx.fragment.app.Fragment;
 
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DoubleUtils;
@@ -170,6 +172,16 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param Select whether to return directly
+     * @return
+     */
+    public PictureSelectionModel isSingleDirectReturn(boolean isSingleDirectReturn) {
+        selectionConfig.isSingleDirectReturn = selectionConfig.selectionMode
+                == PictureConfig.SINGLE ? isSingleDirectReturn : false;
+        return this;
+    }
+
+    /**
      * @param videoQuality video quality and 0 or 1
      * @return
      */
@@ -305,6 +317,17 @@ public class PictureSelectionModel {
     }
 
     /**
+     * Camera custom local file name
+     *
+     * @param fileName
+     * @return
+     */
+    public PictureSelectionModel cameraFileName(String fileName) {
+        selectionConfig.cameraFileName = fileName;
+        return this;
+    }
+
+    /**
      * @param zoomAnim Picture list zoom anim
      * @return
      */
@@ -332,9 +355,13 @@ public class PictureSelectionModel {
     }
 
     /**
+     * # Responding to the Q version of Android, it's all in the app
+     * sandbox so customizations are no longer provided
+     *
      * @param outputCameraPath Camera save path
      * @return
      */
+    @Deprecated
     public PictureSelectionModel setOutputCameraPath(String outputCameraPath) {
         selectionConfig.outputCameraPath = outputCameraPath;
         return this;

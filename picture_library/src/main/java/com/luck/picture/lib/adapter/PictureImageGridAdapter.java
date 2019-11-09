@@ -65,6 +65,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private PictureSelectionConfig config;
     private int chooseMode;
     private boolean zoomAnim;
+    private boolean isSingleDirectReturn;
     /**
      * 单选图片
      */
@@ -86,6 +87,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.sizeMultiplier = config.sizeMultiplier;
         this.chooseMode = config.chooseMode;
         this.zoomAnim = config.zoomAnim;
+        this.isSingleDirectReturn = config.isSingleDirectReturn;
         animation = OptAnimationLoader.loadAnimation(context, R.anim.modal_in);
     }
 
@@ -167,7 +169,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
 
             final int mediaMimeType = PictureMimeType.isPictureType(mimeType);
             boolean gif = PictureMimeType.isGif(mimeType);
-
+            contentHolder.llCheck.setVisibility(isSingleDirectReturn ? View.GONE : View.VISIBLE);
             contentHolder.tvIsGif.setVisibility(gif ? View.VISIBLE : View.GONE);
             if (chooseMode == PictureMimeType.ofAudio()) {
                 contentHolder.tvDuration.setVisibility(View.VISIBLE);
@@ -202,7 +204,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                         .into(contentHolder.iv_picture);
             }
             if (enablePreview || enablePreviewVideo || enablePreviewAudio) {
-                contentHolder.ll_check.setOnClickListener(v -> {
+                contentHolder.llCheck.setOnClickListener(v -> {
                     // 如原图路径不存在或者路径存在但文件不存在
                     String newPath = SdkVersionUtils.checkedAndroid_Q()
                             ? PictureFileUtils.getPath(context, Uri.parse(path)) : path;
@@ -263,14 +265,14 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         TextView check;
         TextView tvDuration, tvIsGif, tvLongChart;
         View contentView;
-        LinearLayout ll_check;
+        LinearLayout llCheck;
 
         public ViewHolder(View itemView) {
             super(itemView);
             contentView = itemView;
             iv_picture = itemView.findViewById(R.id.iv_picture);
             check = itemView.findViewById(R.id.check);
-            ll_check = itemView.findViewById(R.id.ll_check);
+            llCheck = itemView.findViewById(R.id.ll_check);
             tvDuration = itemView.findViewById(R.id.tv_duration);
             tvIsGif = itemView.findViewById(R.id.tv_isGif);
             tvLongChart = itemView.findViewById(R.id.tv_long_chart);

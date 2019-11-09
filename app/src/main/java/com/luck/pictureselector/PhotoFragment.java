@@ -108,21 +108,20 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         adapter.setOnItemClickListener((position, v) -> {
             LocalMedia media = selectList.get(position);
             String mimeType = media.getMimeType();
-            int mediaType = PictureMimeType.pictureToVideo(mimeType);
+            int mediaType = PictureMimeType.getMimeType(mimeType);
             switch (mediaType) {
-                case 1:
-                    // 预览图片
-                    PictureSelector.create(PhotoFragment.this).themeStyle(themeId).openExternalPreview(position, selectList);
-                    break;
-                case 2:
+                case PictureConfig.TYPE_VIDEO:
                     // 预览视频
                     PictureSelector.create(PhotoFragment.this).externalPictureVideo(media.getPath());
                     break;
-                case 3:
+                case PictureConfig.TYPE_AUDIO:
                     // 预览音频
                     PictureSelector.create(PhotoFragment.this).externalPictureAudio(media.getPath());
                     break;
                 default:
+                    // 预览图片
+                    PictureSelector.create(PhotoFragment.this).themeStyle(themeId)
+                            .openExternalPreview(position, selectList);
                     break;
             }
         });

@@ -1,7 +1,6 @@
 package com.luck.picture.lib.compress;
 
 import android.content.Context;
-import android.graphics.Picture;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -14,7 +13,6 @@ import android.util.Log;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
-import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 
 import java.io.File;
@@ -32,9 +30,9 @@ public class Luban implements Handler.Callback {
     private static final int MSG_COMPRESS_SUCCESS = 0;
     private static final int MSG_COMPRESS_START = 1;
     private static final int MSG_COMPRESS_ERROR = 2;
-    private static final int MSG_COMPRESS_MULTIPLE_SUCCESS = 3;
 
     private String mTargetDir;
+    private String customFileName;
     private boolean focusAlpha;
     private int mLeastCompressSize;
     private OnRenameListener mRenameListener;
@@ -55,6 +53,7 @@ public class Luban implements Handler.Callback {
         this.mCompressListener = builder.mCompressListener;
         this.mLeastCompressSize = builder.mLeastCompressSize;
         this.mCompressionPredicate = builder.mCompressionPredicate;
+        this.customFileName = builder.customFileName;
         mHandler = new Handler(Looper.getMainLooper(), this);
     }
 
@@ -71,10 +70,8 @@ public class Luban implements Handler.Callback {
         if (TextUtils.isEmpty(mTargetDir)) {
             mTargetDir = getImageCacheDir(context).getAbsolutePath();
         }
-
-        String cacheBuilder = mTargetDir + "/" +
-                System.currentTimeMillis() +
-                (int) (Math.random() * 1000) +
+        String fileName = TextUtils.isEmpty(customFileName) ? System.currentTimeMillis() + "" : customFileName;
+        String cacheBuilder = mTargetDir + "/" + fileName +
                 (TextUtils.isEmpty(suffix) ? ".jpg" : suffix);
 
         return new File(cacheBuilder);
@@ -125,7 +122,6 @@ public class Luban implements Handler.Callback {
         index = -1;
         while (iterator.hasNext()) {
             final InputStreamProvider path = iterator.next();
-
             AsyncTask.SERIAL_EXECUTOR.execute(() -> {
                 try {
                     index++;
@@ -140,7 +136,7 @@ public class Luban implements Handler.Callback {
                         media.setCompressPath(eqHttp ? "" : result.getAbsolutePath());
                         boolean isLast = index == mediaList.size() - 1;
                         if (isLast) {
-                            mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_MULTIPLE_SUCCESS, mediaList));
+                            mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_SUCCESS, mediaList));
                         }
                     } else {
                         mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_ERROR, new IOException()));
@@ -170,7 +166,8 @@ public class Luban implements Handler.Callback {
         Iterator<InputStreamProvider> iterator = mStreamProviders.iterator();
 
         while (iterator.hasNext()) {
-            results.add(compress(context, iterator.next()));
+            InputStreamProvider provider = iterator.next();
+            results.add(compress(context, provider));
             iterator.remove();
         }
 
@@ -188,8 +185,19 @@ public class Luban implements Handler.Callback {
     private File compressReal(Context context, InputStreamProvider path) throws IOException {
         File result;
 
-        File outFile = getImageCacheFile(context, Checker.SINGLE.extSuffix(path));
-
+        File outFile;
+        if (SdkVersionUtils.checkedAndroid_Q()) {
+            // 如果是Android Q在压缩之前已经创建过一份图片至沙盒内，这里压缩完后就直接覆盖了，防止生成两张图片
+            LocalMedia media = path.getMedia();
+            String androidQToPath = media.getAndroidQToPath();
+            if (!TextUtils.isEmpty(androidQToPath)) {
+                outFile = new File(androidQToPath);
+            } else {
+                outFile = getImageCacheFile(context, Checker.SINGLE.extSuffix(path));
+            }
+        } else {
+            outFile = getImageCacheFile(context, Checker.SINGLE.extSuffix(path));
+        }
         if (mRenameListener != null) {
             String filename = mRenameListener.rename(path.getPath());
             outFile = getImageCustomFile(context, filename);
@@ -244,6 +252,7 @@ public class Luban implements Handler.Callback {
         private List<InputStreamProvider> mStreamProviders;
         private List<String> mPaths;
         private List<LocalMedia> mediaList;
+        private String customFileName;
 
         Builder(Context context) {
             this.context = context;
@@ -273,6 +282,11 @@ public class Luban implements Handler.Callback {
                     return file.getAbsolutePath();
                 }
 
+                @Override
+                public LocalMedia getMedia() {
+                    return null;
+                }
+
             });
             return this;
         }
@@ -288,7 +302,13 @@ public class Luban implements Handler.Callback {
 
                 @Override
                 public String getPath() {
-                    return media.isCut() ? media.getCutPath() : media.getCompressPath();
+                    return media.isCut() ? media.getCutPath() : SdkVersionUtils.checkedAndroid_Q()
+                            ? media.getAndroidQToPath() : media.getPath();
+                }
+
+                @Override
+                public LocalMedia getMedia() {
+                    return media;
                 }
 
             });
@@ -305,6 +325,11 @@ public class Luban implements Handler.Callback {
                 @Override
                 public String getPath() {
                     return string;
+                }
+
+                @Override
+                public LocalMedia getMedia() {
+                    return null;
                 }
 
             });
@@ -326,6 +351,22 @@ public class Luban implements Handler.Callback {
             return this;
         }
 
+        public <T> Builder loadMediaData(List<LocalMedia> list, String fileName) {
+            this.mediaList = list;
+            this.customFileName = fileName;
+            boolean checkedAndroidQ = SdkVersionUtils.checkedAndroid_Q();
+            for (LocalMedia src : list) {
+                if (checkedAndroidQ && !src.isCut()) {
+                    Uri parse = Uri.parse(src.getPath());
+                    String newPath = AndroidQTransformUtils.parseImagePathToAndroidQ
+                            (context, src.getPath(), fileName, src.getMimeType());
+                    src.setAndroidQToPath(newPath);
+                }
+                load(src);
+            }
+            return this;
+        }
+
         public <T> Builder loadMediaData(List<LocalMedia> list) {
             this.mediaList = list;
             boolean checkedAndroidQ = SdkVersionUtils.checkedAndroid_Q();
@@ -333,7 +374,7 @@ public class Luban implements Handler.Callback {
                 if (checkedAndroidQ && !src.isCut()) {
                     Uri parse = Uri.parse(src.getPath());
                     String newPath = AndroidQTransformUtils.parseImagePathToAndroidQ
-                            (context, src.getPath(), src.getMimeType());
+                            (context, src.getPath(), "", src.getMimeType());
                     src.setAndroidQToPath(newPath);
                     src.setCompressPath(newPath);
                 }
@@ -352,6 +393,11 @@ public class Luban implements Handler.Callback {
                 @Override
                 public String getPath() {
                     return uri.getPath();
+                }
+
+                @Override
+                public LocalMedia getMedia() {
+                    return null;
                 }
             });
             return this;
@@ -425,6 +471,11 @@ public class Luban implements Handler.Callback {
                 @Override
                 public String getPath() {
                     return path;
+                }
+
+                @Override
+                public LocalMedia getMedia() {
+                    return null;
                 }
 
             }, context);

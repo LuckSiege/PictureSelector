@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.text.TextUtils;
 
 import com.luck.picture.lib.config.PictureMimeType;
 import com.yalantis.ucrop.util.FileUtils;
@@ -27,13 +28,16 @@ public class AndroidQTransformUtils {
      * @param path
      * @return
      */
-    public static String parseVideoPathToAndroidQ(Context ctx, String path, String mineType) {
+    public static String parseVideoPathToAndroidQ(Context ctx, String path, String fileName, String mineType) {
         try {
             String suffix = PictureMimeType.getLastImgSuffix(mineType);
             File filesDir = ctx.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES);
             if (filesDir != null) {
-                String cachedDir = filesDir.getAbsolutePath();
-                String newPath = cachedDir + File.separator + System.currentTimeMillis() + suffix;
+                String newPath = new StringBuffer()
+                        .append(filesDir)
+                        .append(File.separator)
+                        .append(TextUtils.isEmpty(fileName) ? System.currentTimeMillis() : fileName)
+                        .append(suffix).toString();
                 ParcelFileDescriptor parcelFileDescriptor =
                         ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
                 FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
@@ -57,18 +61,24 @@ public class AndroidQTransformUtils {
      * @param path
      * @return
      */
-    public static String parseImagePathToAndroidQ(Context ctx, String path, String mineType) {
+    public static String parseImagePathToAndroidQ(Context ctx, String path, String fileName, String mineType) {
         try {
             String suffix = PictureMimeType.getLastImgSuffix(mineType);
-            String cachedDir = PictureFileUtils.getDiskCacheDir(ctx.getApplicationContext());
-            String newPath = cachedDir + File.separator + System.currentTimeMillis() + suffix;
-            ParcelFileDescriptor parcelFileDescriptor =
-                    ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
-            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-            FileInputStream inputStream = new FileInputStream(fileDescriptor);
-            boolean copyFileSuccess = FileUtils.copyFile(inputStream, newPath);
-            if (copyFileSuccess) {
-                return newPath;
+            String filesDir = PictureFileUtils.getDiskCacheDir(ctx.getApplicationContext());
+            if (filesDir != null) {
+                String newPath = new StringBuffer()
+                        .append(filesDir)
+                        .append(File.separator)
+                        .append(TextUtils.isEmpty(fileName) ? System.currentTimeMillis() : fileName)
+                        .append(suffix).toString();
+                ParcelFileDescriptor parcelFileDescriptor =
+                        ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
+                FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                FileInputStream inputStream = new FileInputStream(fileDescriptor);
+                boolean copyFileSuccess = FileUtils.copyFile(inputStream, newPath);
+                if (copyFileSuccess) {
+                    return newPath;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,18 +94,25 @@ public class AndroidQTransformUtils {
      * @param path
      * @return
      */
-    public static String parseAudioPathToAndroidQ(Context ctx, String path, String mineType) {
+    public static String parseAudioPathToAndroidQ(Context ctx, String path, String fileName, String mineType) {
         try {
             String suffix = PictureMimeType.getLastImgSuffix(mineType);
             File filesDir = ctx.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-            String newPath = filesDir + File.separator + System.currentTimeMillis() + suffix;
-            ParcelFileDescriptor parcelFileDescriptor =
-                    ctx.getApplicationContext().getContentResolver().openFileDescriptor(Uri.parse(path), "r");
-            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-            FileInputStream inputStream = new FileInputStream(fileDescriptor);
-            boolean copyFileSuccess = FileUtils.copyFile(inputStream, newPath);
-            if (copyFileSuccess) {
-                return newPath;
+            if (filesDir != null) {
+                String newPath = new StringBuffer()
+                        .append(filesDir)
+                        .append(File.separator)
+                        .append(TextUtils.isEmpty(fileName) ? System.currentTimeMillis() : fileName)
+                        .append(suffix).toString();
+
+                ParcelFileDescriptor parcelFileDescriptor =
+                        ctx.getApplicationContext().getContentResolver().openFileDescriptor(Uri.parse(path), "r");
+                FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                FileInputStream inputStream = new FileInputStream(fileDescriptor);
+                boolean copyFileSuccess = FileUtils.copyFile(inputStream, newPath);
+                if (copyFileSuccess) {
+                    return newPath;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

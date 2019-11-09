@@ -24,6 +24,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.permissions.RxPermissions;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.pictureselector.adapter.GridImageAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,20 +96,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (selectList.size() > 0) {
                 LocalMedia media = selectList.get(position);
                 String mimeType = media.getMimeType();
-                int mediaType = PictureMimeType.pictureToVideo(mimeType);
+                int mediaType = PictureMimeType.getMimeType(mimeType);
                 switch (mediaType) {
-                    case 1:
-                        // 预览图片 可自定长按保存路径
-                        //PictureSelector.create(MainActivity.this).themeStyle(themeId).externalPicturePreview(position, "/custom_file", selectList);
-                        PictureSelector.create(MainActivity.this).themeStyle(themeId).openExternalPreview(position, selectList);
-                        break;
-                    case 2:
+                    case PictureConfig.TYPE_VIDEO:
                         // 预览视频
                         PictureSelector.create(MainActivity.this).externalPictureVideo(media.getPath());
                         break;
-                    case 3:
+                    case PictureConfig.TYPE_AUDIO:
                         // 预览音频
                         PictureSelector.create(MainActivity.this).externalPictureAudio(media.getPath());
+                        break;
+                    default:
+                        // 预览图片 可自定长按保存路径
+                        PictureSelector.create(MainActivity.this).themeStyle(themeId).openExternalPreview(position, selectList);
                         break;
                 }
             }
@@ -154,8 +154,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
                         .imageSpanCount(4)// 每行显示个数
+                        .cameraFileName("")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用，选图时不要用
                         .selectionMode(cb_choose_mode.isChecked() ?
                                 PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
+                        .isSingleDirectReturn(false)// 单选模式下是否直接返回
                         .previewImage(cb_preview_img.isChecked())// 是否可预览图片
                         .previewVideo(cb_preview_video.isChecked())// 是否可预览视频
                         .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
@@ -165,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径
                         .enableCrop(cb_crop.isChecked())// 是否裁剪
                         .compress(cb_compress.isChecked())// 是否压缩
-                        .synOrAsy(true)//同步true或异步false 压缩 默认同步
+                        .synOrAsy(false)//同步true或异步false 压缩 默认同步
                         //.compressSavePath(getPath())//压缩图片保存地址
                         //.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
                         .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度

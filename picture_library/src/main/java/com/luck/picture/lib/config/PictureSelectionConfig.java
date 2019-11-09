@@ -23,9 +23,12 @@ import java.util.List;
 public final class PictureSelectionConfig implements Parcelable {
     public int chooseMode;
     public boolean camera;
+    public boolean isSingleDirectReturn;
+    @Deprecated
     public String outputCameraPath;
     public String compressSavePath;
     public String suffixType;
+    public String cameraFileName;
     @StyleRes
     public int themeStyleId;
     public int selectionMode;
@@ -91,6 +94,7 @@ public final class PictureSelectionConfig implements Parcelable {
         cropHeight = 0;
         isCamera = true;
         isGif = false;
+        isSingleDirectReturn = false;
         enablePreview = true;
         enPreviewVideo = true;
         enablePreviewAudio = true;
@@ -111,6 +115,7 @@ public final class PictureSelectionConfig implements Parcelable {
         outputCameraPath = "";
         compressSavePath = "";
         suffixType = PictureFileUtils.POSTFIX;
+        cameraFileName = "";
         sizeMultiplier = 0.5f;
         selectionMedias = new ArrayList<>();
     }

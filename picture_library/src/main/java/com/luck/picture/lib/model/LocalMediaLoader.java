@@ -154,7 +154,7 @@ public class LocalMediaLoader {
                                 String path = isAndroidQ ? getRealPathAndroid_Q(id) : data.getString
                                         (data.getColumnIndexOrThrow(PROJECTION[1]));
 
-                                String pictureType = data.getString
+                                String mimeType = data.getString
                                         (data.getColumnIndexOrThrow(PROJECTION[2]));
 
                                 int w = data.getInt
@@ -166,11 +166,11 @@ public class LocalMediaLoader {
                                 long duration = data.getLong
                                         (data.getColumnIndexOrThrow(PROJECTION[5]));
 
-                                Log.i("Mike", "doSth: "+pictureType);
+                                Log.i("Mike", "doSth: " + mimeType + "----" + path);
 
                                 if (type == PictureConfig.TYPE_VIDEO) {
                                     if (duration == 0) {
-                                        duration = MediaUtils.extractVideoDuration(mContext, isAndroidQ, path);
+                                        duration = MediaUtils.extractDuration(mContext, isAndroidQ, path);
                                     }
                                     if (videoMinS > 0 && duration < videoMinS) {
                                         // 如果设置了最小显示多少秒的视频
@@ -186,7 +186,7 @@ public class LocalMediaLoader {
                                     }
                                 }
                                 LocalMedia image = new LocalMedia
-                                        (path, duration, type, pictureType, w, h);
+                                        (path, duration, type, mimeType, w, h);
                                 LocalMediaFolder folder = getImageFolder(path, imageFolders);
                                 List<LocalMedia> images = folder.getImages();
                                 images.add(image);

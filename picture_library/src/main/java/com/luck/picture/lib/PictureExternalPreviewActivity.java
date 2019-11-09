@@ -66,6 +66,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     private PreviewViewPager viewPager;
     private List<LocalMedia> images = new ArrayList<>();
     private int position = 0;
+    @Deprecated
     private String directory_path;
     private SimpleFragmentAdapter adapter;
     private LayoutInflater inflater;
@@ -298,7 +299,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 // 有可能本地图片
                 try {
                     String dirPath = PictureFileUtils.createDir(PictureExternalPreviewActivity.this,
-                            System.currentTimeMillis() + ".png", directory_path);
+                            System.currentTimeMillis() + ".png");
                     PictureFileUtils.copyFile(path, dirPath);
                     ToastUtils.s(mContext, getString(R.string.picture_save_success) + "\n" + dirPath);
                     dismissDialog();
@@ -338,7 +339,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         try {
             URL u = new URL(urlPath);
             String path = PictureFileUtils.createDir(PictureExternalPreviewActivity.this,
-                    System.currentTimeMillis() + ".png", directory_path);
+                    System.currentTimeMillis() + ".png");
             byte[] buffer = new byte[1024 * 8];
             int read;
             int ava = 0;
