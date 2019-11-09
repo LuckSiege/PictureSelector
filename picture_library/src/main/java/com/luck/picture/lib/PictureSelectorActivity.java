@@ -971,7 +971,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         final File file = new File(cameraPath);
         sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
         String toType;
-        long size = 0;
+        long size;
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         if (isAndroidQ) {
             String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(cameraPath));
