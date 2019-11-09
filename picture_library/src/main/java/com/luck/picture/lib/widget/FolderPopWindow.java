@@ -22,12 +22,11 @@ import android.widget.TextView;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.PictureAlbumDirectoryAdapter;
+import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.decoration.RecycleViewDivider;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
-import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
-import com.luck.picture.lib.tools.StringUtils;
 
 import java.util.List;
 
@@ -51,7 +50,7 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
     private Drawable drawableUp, drawableDown;
     private int mimeType;
 
-    public FolderPopWindow(Context context, int mimeType) {
+    public FolderPopWindow(Context context, int mimeType, PictureSelectionConfig config) {
         this.context = context;
         this.mimeType = mimeType;
         window = LayoutInflater.from(context).inflate(R.layout.picture_window_folder, null);
@@ -63,8 +62,9 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
         this.setOutsideTouchable(true);
         this.update();
         this.setBackgroundDrawable(new ColorDrawable(Color.argb(123, 0, 0, 0)));
-        drawableUp = AttrsUtils.getTypeValuePopWindowImg(context, R.attr.picture_arrow_up_icon);
-        drawableDown = AttrsUtils.getTypeValuePopWindowImg(context, R.attr.picture_arrow_down_icon);
+
+        drawableUp = ContextCompat.getDrawable(context, config.upResId <= 0 ? R.drawable.arrow_up : config.upResId);
+        drawableDown = ContextCompat.getDrawable(context, config.downResId <= 0 ? R.drawable.arrow_down : config.downResId);
         animationIn = AnimationUtils.loadAnimation(context, R.anim.photo_album_show);
         animationOut = AnimationUtils.loadAnimation(context, R.anim.photo_album_dismiss);
         initView();

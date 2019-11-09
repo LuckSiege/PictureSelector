@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.luck.picture.lib.compress.Luban;
@@ -28,7 +29,6 @@ import com.luck.picture.lib.immersive.ImmersiveManage;
 import com.luck.picture.lib.rxbus2.RxBus;
 import com.luck.picture.lib.rxbus2.RxUtils;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
-import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
@@ -105,18 +105,19 @@ public class PictureBaseActivity extends FragmentActivity {
     private void initConfig() {
         outputCameraPath = config.outputCameraPath;
         // 是否开启白色状态栏
-        openWhiteStatusBar = AttrsUtils.getTypeValueBoolean
-                (this, R.attr.picture_statusFontColor);
+        openWhiteStatusBar = config.isChangeStatusBarFontColor;
         // 是否是0/9样式
-        numComplete = AttrsUtils.getTypeValueBoolean(this,
-                R.attr.picture_style_numComplete);
+        numComplete = config.isOpenStyleNumComplete;
         // 是否开启数字勾选模式
-        config.checkNumMode = AttrsUtils.getTypeValueBoolean
-                (this, R.attr.picture_style_checkNumMode);
+        config.checkNumMode = config.isOpenStyleCheckNumMode;
         // 标题栏背景色
-        colorPrimary = AttrsUtils.getTypeValueColor(this, R.attr.colorPrimary);
+        colorPrimary = config.titleBarBackgroundColor <= 0 ?
+                ContextCompat.getColor(this, R.color.bar_grey)
+                : ContextCompat.getColor(this, config.titleBarBackgroundColor);
         // 状态栏背景色
-        colorPrimaryDark = AttrsUtils.getTypeValueColor(this, R.attr.colorPrimaryDark);
+        colorPrimaryDark = config.statusBarColorPrimaryDark <= 0 ?
+                ContextCompat.getColor(this, R.color.bar_grey)
+                : ContextCompat.getColor(this, config.statusBarColorPrimaryDark);
         // 已选图片列表
         selectionMedias = config.selectionMedias;
         if (selectionMedias == null) {
@@ -279,9 +280,12 @@ public class PictureBaseActivity extends FragmentActivity {
      */
     protected void startCrop(String originalPath) {
         UCrop.Options options = new UCrop.Options();
-        int toolbarColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_toolbar_bg);
-        int statusColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_status_color);
-        int titleColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_title_color);
+        int toolbarColor = config.cropTitleBarBackgroundColor <= 0 ?
+                ContextCompat.getColor(this, R.color.bar_grey) : ContextCompat.getColor(this, config.cropTitleBarBackgroundColor);
+        int statusColor = config.cropStatusBarColorPrimaryDark <= 0 ?
+                ContextCompat.getColor(this, R.color.bar_grey) : ContextCompat.getColor(this, config.cropStatusBarColorPrimaryDark);
+        int titleColor = config.cropTitleColor <= 0 ?
+                ContextCompat.getColor(this, R.color.white) : ContextCompat.getColor(this, config.cropTitleColor);
         options.setToolbarColor(toolbarColor);
         options.setStatusBarColor(statusColor);
         options.setToolbarWidgetColor(titleColor);
@@ -316,9 +320,12 @@ public class PictureBaseActivity extends FragmentActivity {
      */
     protected void startCrop(ArrayList<String> list) {
         UCropMulti.Options options = new UCropMulti.Options();
-        int toolbarColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_toolbar_bg);
-        int statusColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_status_color);
-        int titleColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_title_color);
+        int toolbarColor = config.cropTitleBarBackgroundColor <= 0 ?
+                ContextCompat.getColor(this, R.color.bar_grey) : ContextCompat.getColor(this, config.cropTitleBarBackgroundColor);
+        int statusColor = config.cropStatusBarColorPrimaryDark <= 0 ?
+                ContextCompat.getColor(this, R.color.bar_grey) : ContextCompat.getColor(this, config.cropStatusBarColorPrimaryDark);
+        int titleColor = config.cropTitleColor <= 0 ?
+                ContextCompat.getColor(this, R.color.white) : ContextCompat.getColor(this, config.cropTitleColor);
         options.setToolbarColor(toolbarColor);
         options.setStatusBarColor(statusColor);
         options.setToolbarWidgetColor(titleColor);

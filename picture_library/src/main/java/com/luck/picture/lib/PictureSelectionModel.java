@@ -419,7 +419,126 @@ public class PictureSelectionModel {
         if (selectionMedia == null) {
             selectionMedia = new ArrayList<>();
         }
+        if (selectionConfig.selectionMode == PictureConfig.SINGLE
+                && selectionConfig.isSingleDirectReturn) {
+            selectionMedia.clear();
+        }
         selectionConfig.selectionMedias = selectionMedia;
+        return this;
+    }
+
+    /**
+     * 是否开启白色状态栏
+     * #适合所有style使用
+     *
+     * @param isChangeStatusBarFontColor
+     * @return
+     */
+    public PictureSelectionModel isChangeStatusBarFontColor(boolean isChangeStatusBarFontColor) {
+        selectionConfig.isChangeStatusBarFontColor = isChangeStatusBarFontColor;
+        return this;
+    }
+
+    /**
+     * 选择图片样式0/9
+     * #适合所有style使用
+     *
+     * @param isOpenStyleNumComplete
+     * @return
+     */
+    public PictureSelectionModel isOpenStyleNumComplete(boolean isOpenStyleNumComplete) {
+        selectionConfig.isOpenStyleNumComplete = isOpenStyleNumComplete;
+        return this;
+    }
+
+    /**
+     * 是否开启数字选择模式
+     * #适合qq style 样式使用
+     *
+     * @param isOpenStyleCheckNumMode
+     * @return
+     */
+    public PictureSelectionModel isOpenStyleCheckNumMode(boolean isOpenStyleCheckNumMode) {
+        selectionConfig.isOpenStyleCheckNumMode = isOpenStyleCheckNumMode;
+        return this;
+    }
+
+    /**
+     * 设置标题栏背景色
+     *
+     * @param color
+     * @return
+     */
+    public PictureSelectionModel setTitleBarBackgroundColor(int color) {
+        selectionConfig.titleBarBackgroundColor = color;
+        return this;
+    }
+
+
+    /**
+     * 状态栏背景色
+     *
+     * @param color
+     * @return
+     */
+    public PictureSelectionModel setStatusBarColorPrimaryDark(int color) {
+        selectionConfig.statusBarColorPrimaryDark = color;
+        return this;
+    }
+
+
+    /**
+     * 裁剪页面标题背景色
+     *
+     * @param color
+     * @return
+     */
+    public PictureSelectionModel setCropTitleBarBackgroundColor(int color) {
+        selectionConfig.cropTitleBarBackgroundColor = color;
+        return this;
+    }
+
+    /**
+     * 裁剪页面状态栏背景色
+     *
+     * @param color
+     * @return
+     */
+    public PictureSelectionModel setCropStatusBarColorPrimaryDark(int color) {
+        selectionConfig.cropStatusBarColorPrimaryDark = color;
+        return this;
+    }
+
+    /**
+     * 裁剪页面标题文字颜色
+     *
+     * @param color
+     * @return
+     */
+    public PictureSelectionModel setCropTitleColor(int color) {
+        selectionConfig.cropTitleColor = color;
+        return this;
+    }
+
+    /**
+     * 设置相册标题右侧向上箭头图标
+     *
+     * @param resId
+     * @return
+     */
+    public PictureSelectionModel setUpArrowDrawable(int resId) {
+        selectionConfig.upResId = resId;
+        return this;
+    }
+
+    /**
+     * 设置相册标题右侧向下箭头图标
+     *
+     * @param resId
+     * @return
+     */
+    public PictureSelectionModel setDownArrowDrawable(int resId) {
+        selectionConfig.downResId = resId;
         return this;
     }
 
