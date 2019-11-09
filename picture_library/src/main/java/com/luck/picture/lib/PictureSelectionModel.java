@@ -27,17 +27,17 @@ public class PictureSelectionModel {
     private PictureSelectionConfig selectionConfig;
     private PictureSelector selector;
 
-    public PictureSelectionModel(PictureSelector selector, int mimeType) {
+    public PictureSelectionModel(PictureSelector selector, int chooseMode) {
         this.selector = selector;
         selectionConfig = PictureSelectionConfig.getCleanInstance();
-        selectionConfig.mimeType = mimeType;
+        selectionConfig.chooseMode = chooseMode;
     }
 
-    public PictureSelectionModel(PictureSelector selector, int mimeType, boolean camera) {
+    public PictureSelectionModel(PictureSelector selector, int chooseMode, boolean camera) {
         this.selector = selector;
         selectionConfig = PictureSelectionConfig.getCleanInstance();
         selectionConfig.camera = camera;
-        selectionConfig.mimeType = mimeType;
+        selectionConfig.chooseMode = chooseMode;
     }
 
     /**

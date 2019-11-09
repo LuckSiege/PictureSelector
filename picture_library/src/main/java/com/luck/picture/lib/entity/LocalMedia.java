@@ -53,9 +53,13 @@ public class LocalMedia implements Parcelable {
     /**
      * The media resource type
      */
-    private int mimeType;
+    private String mimeType;
 
-    private String pictureType;
+    /**
+     * Gallery selection mode
+     */
+    private int chooseModel;
+
     /**
      * If the compressed
      */
@@ -73,41 +77,30 @@ public class LocalMedia implements Parcelable {
 
     }
 
-    public LocalMedia(String path, long duration, int mimeType, String pictureType) {
+    public LocalMedia(String path, long duration, int chooseModel, String mimeType) {
         this.path = path;
         this.duration = duration;
+        this.chooseModel = chooseModel;
         this.mimeType = mimeType;
-        this.pictureType = pictureType;
     }
 
-    public LocalMedia(String path, long duration, int mimeType, String pictureType, int width, int height) {
+    public LocalMedia(String path, long duration, int chooseModel, String mimeType, int width, int height) {
         this.path = path;
         this.duration = duration;
+        this.chooseModel = chooseModel;
         this.mimeType = mimeType;
-        this.pictureType = pictureType;
         this.width = width;
         this.height = height;
     }
 
     public LocalMedia(String path, long duration,
-                      boolean isChecked, int position, int num, int mimeType) {
+                      boolean isChecked, int position, int num, int chooseModel) {
         this.path = path;
         this.duration = duration;
         this.isChecked = isChecked;
         this.position = position;
         this.num = num;
-        this.mimeType = mimeType;
-    }
-
-    public String getPictureType() {
-        if (TextUtils.isEmpty(pictureType)) {
-            pictureType = "image/jpeg";
-        }
-        return pictureType;
-    }
-
-    public void setPictureType(String pictureType) {
-        this.pictureType = pictureType;
+        this.chooseModel = chooseModel;
     }
 
     public String getPath() {
@@ -183,11 +176,11 @@ public class LocalMedia implements Parcelable {
         this.num = num;
     }
 
-    public int getMimeType() {
-        return mimeType;
+    public String getMimeType() {
+        return TextUtils.isEmpty(mimeType) ? "image/jpeg" : mimeType;
     }
 
-    public void setMimeType(int mimeType) {
+    public void setMimeType(String mimeType) {
         this.mimeType = mimeType;
     }
 
@@ -215,6 +208,14 @@ public class LocalMedia implements Parcelable {
         this.height = height;
     }
 
+    public int getChooseModel() {
+        return chooseModel;
+    }
+
+    public void setChooseModel(int chooseModel) {
+        this.chooseModel = chooseModel;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -231,8 +232,8 @@ public class LocalMedia implements Parcelable {
         dest.writeByte(this.isCut ? (byte) 1 : (byte) 0);
         dest.writeInt(this.position);
         dest.writeInt(this.num);
-        dest.writeInt(this.mimeType);
-        dest.writeString(this.pictureType);
+        dest.writeString(this.mimeType);
+        dest.writeInt(this.chooseModel);
         dest.writeByte(this.compressed ? (byte) 1 : (byte) 0);
         dest.writeInt(this.width);
         dest.writeInt(this.height);
@@ -248,8 +249,8 @@ public class LocalMedia implements Parcelable {
         this.isCut = in.readByte() != 0;
         this.position = in.readInt();
         this.num = in.readInt();
-        this.mimeType = in.readInt();
-        this.pictureType = in.readString();
+        this.mimeType = in.readString();
+        this.chooseModel = in.readInt();
         this.compressed = in.readByte() != 0;
         this.width = in.readInt();
         this.height = in.readInt();

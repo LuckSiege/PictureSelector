@@ -17,9 +17,11 @@
 package com.yalantis.ucrop.util;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -34,6 +36,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.util.Locale;
@@ -351,5 +354,60 @@ public class FileUtils {
             }
         }
         return true;
+    }
+
+    /**
+     * 根据uri获取MIME_TYPE
+     *
+     * @param uri
+     * @return
+     */
+    public static String getImageMimeType(Uri uri, Context context) {
+        String mimeType = "";
+        if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
+            Cursor cursor = context.getApplicationContext().getContentResolver().query(uri,
+                    new String[]{MediaStore.Images.Media.DATA}, null, null, null);
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE);
+                    if (columnIndex > -1) {
+                        mimeType = cursor.getString(columnIndex);
+                    }
+                }
+                cursor.close();
+            }
+        }
+        return mimeType;
+    }
+
+    /**
+     * 获取图片后缀
+     *
+     * @param mineType
+     * @return
+     */
+    public static String getLastImgSuffix(String mineType) {
+        String defaultSuffix = ".png";
+        try {
+            int index = mineType.lastIndexOf("/") + 1;
+            if (index > 0) {
+                return "." + mineType.substring(index);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return defaultSuffix;
+        }
+        return defaultSuffix;
+    }
+
+    public static String extSuffix(InputStream input) {
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(input, null, options);
+            return options.outMimeType.replace("image/", ".");
+        } catch (Exception e) {
+            return ".jpg";
+        }
     }
 }

@@ -121,59 +121,56 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             images = ImagesObservable.getInstance().readLocalMedias();
         }
         initViewPageAdapterData();
-        ll_check.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (images != null && images.size() > 0) {
-                    LocalMedia image = images.get(viewPager.getCurrentItem());
-                    String pictureType = selectImages.size() > 0 ?
-                            selectImages.get(0).getPictureType() : "";
-                    if (!TextUtils.isEmpty(pictureType)) {
-                        boolean toEqual = PictureMimeType.
-                                mimeToEqual(pictureType, image.getPictureType());
-                        if (!toEqual) {
-                            ToastUtils.s(mContext, getString(R.string.picture_rule));
-                            return;
-                        }
-                    }
-                    // 刷新图片列表中图片状态
-                    boolean isChecked;
-                    if (!check.isSelected()) {
-                        isChecked = true;
-                        check.setSelected(true);
-                        check.startAnimation(animation);
-                    } else {
-                        isChecked = false;
-                        check.setSelected(false);
-                    }
-                    if (selectImages.size() >= config.maxSelectNum && isChecked) {
-                        ToastUtils.s(mContext, getString(R.string.picture_message_max_num, config.maxSelectNum));
-                        check.setSelected(false);
+        ll_check.setOnClickListener(view -> {
+            if (images != null && images.size() > 0) {
+                LocalMedia image = images.get(viewPager.getCurrentItem());
+                String mimeType = selectImages.size() > 0 ?
+                        selectImages.get(0).getMimeType() : "";
+                if (!TextUtils.isEmpty(mimeType)) {
+                    boolean toEqual = PictureMimeType.
+                            mimeToEqual(mimeType, image.getMimeType());
+                    if (!toEqual) {
+                        ToastUtils.s(mContext, getString(R.string.picture_rule));
                         return;
                     }
-                    if (isChecked) {
-                        VoiceUtils.playVoice(mContext, config.openClickSound);
-                        // 如果是单选，则清空已选中的并刷新列表(作单一选择)
-                        if (config.selectionMode == PictureConfig.SINGLE) {
-                            singleRadioMediaImage();
-                        }
-                        selectImages.add(image);
-                        image.setNum(selectImages.size());
-                        if (config.checkNumMode) {
-                            check.setText(String.valueOf(image.getNum()));
-                        }
-                    } else {
-                        for (LocalMedia media : selectImages) {
-                            if (media.getPath().equals(image.getPath())) {
-                                selectImages.remove(media);
-                                subSelectPosition();
-                                notifyCheckChanged(media);
-                                break;
-                            }
+                }
+                // 刷新图片列表中图片状态
+                boolean isChecked;
+                if (!check.isSelected()) {
+                    isChecked = true;
+                    check.setSelected(true);
+                    check.startAnimation(animation);
+                } else {
+                    isChecked = false;
+                    check.setSelected(false);
+                }
+                if (selectImages.size() >= config.maxSelectNum && isChecked) {
+                    ToastUtils.s(mContext, getString(R.string.picture_message_max_num, config.maxSelectNum));
+                    check.setSelected(false);
+                    return;
+                }
+                if (isChecked) {
+                    VoiceUtils.playVoice(mContext, config.openClickSound);
+                    // 如果是单选，则清空已选中的并刷新列表(作单一选择)
+                    if (config.selectionMode == PictureConfig.SINGLE) {
+                        singleRadioMediaImage();
+                    }
+                    selectImages.add(image);
+                    image.setNum(selectImages.size());
+                    if (config.checkNumMode) {
+                        check.setText(String.valueOf(image.getNum()));
+                    }
+                } else {
+                    for (LocalMedia media : selectImages) {
+                        if (media.getPath().equals(image.getPath())) {
+                            selectImages.remove(media);
+                            subSelectPosition();
+                            notifyCheckChanged(media);
+                            break;
                         }
                     }
-                    onSelectNumChange(true);
                 }
+                onSelectNumChange(true);
             }
         });
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -397,17 +394,17 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             // 如果设置了图片最小选择数量，则判断是否满足条件
             int size = selectImages.size();
             LocalMedia image = selectImages.size() > 0 ? selectImages.get(0) : null;
-            String pictureType = image != null ? image.getPictureType() : "";
+            String mimeType = image != null ? image.getMimeType() : "";
             if (config.minSelectNum > 0) {
                 if (size < config.minSelectNum && config.selectionMode == PictureConfig.MULTIPLE) {
-                    boolean eqImg = pictureType.startsWith(PictureConfig.IMAGE);
+                    boolean eqImg = mimeType.startsWith(PictureConfig.IMAGE);
                     String str = eqImg ? getString(R.string.picture_min_img_num, config.minSelectNum)
                             : getString(R.string.picture_min_video_num, config.minSelectNum);
                     ToastUtils.s(mContext, str);
                     return;
                 }
             }
-            if (config.enableCrop && pictureType.startsWith(PictureConfig.IMAGE)) {
+            if (config.enableCrop && mimeType.startsWith(PictureConfig.IMAGE)) {
                 if (config.selectionMode == PictureConfig.SINGLE) {
                     originalPath = image.getPath();
                     startCrop(originalPath);

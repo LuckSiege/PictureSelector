@@ -14,19 +14,20 @@ import android.os.ParcelFileDescriptor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.yalantis.ucrop.callback.BitmapLoadCallback;
 import com.yalantis.ucrop.model.ExifInfo;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
-import com.yalantis.ucrop.util.BitmapUtils;
 import com.yalantis.ucrop.util.FileUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -171,8 +172,11 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
         } else {
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 try {
-                    Bitmap bitmapFromUri = BitmapUtils.getBitmapFromUri(mContext, mInputUri);
-                    BitmapUtils.saveBitmap(bitmapFromUri, mOutputUri.getPath());
+                    ParcelFileDescriptor parcelFileDescriptor =
+                            mContext.getContentResolver().openFileDescriptor(mInputUri, "r");
+                    FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                    FileInputStream inputStream = new FileInputStream(fileDescriptor);
+                    FileUtils.copyFile(inputStream, mOutputUri.getPath());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

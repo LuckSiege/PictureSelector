@@ -133,7 +133,7 @@ public class GridImageAdapter extends
                 }
             });
             LocalMedia media = list.get(position);
-            int mimeType = media.getMimeType();
+            int chooseModel = media.getChooseModel();
             String path;
             if (media.isCut() && !media.isCompressed()) {
                 // 裁剪过
@@ -143,7 +143,7 @@ public class GridImageAdapter extends
                 path = media.getCompressPath();
             } else {
                 // 原图
-                path = media.getPath();
+                path = media.getAndroidQToPath();
             }
             // 图片
             if (media.isCompressed()) {
@@ -152,14 +152,14 @@ public class GridImageAdapter extends
             }
 
             Log.i("原图地址::", media.getPath());
-            int pictureType = PictureMimeType.isPictureType(media.getPictureType());
+            int pictureType = PictureMimeType.isPictureType(media.getMimeType());
             if (media.isCut()) {
                 Log.i("裁剪地址::", media.getCutPath());
             }
             long duration = media.getDuration();
             viewHolder.tvDuration.setVisibility(pictureType == PictureConfig.TYPE_VIDEO
                     ? View.VISIBLE : View.GONE);
-            if (mimeType == PictureMimeType.ofAudio()) {
+            if (chooseModel == PictureMimeType.ofAudio()) {
                 viewHolder.tvDuration.setVisibility(View.VISIBLE);
                 viewHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
                         (R.drawable.picture_audio, 0, 0, 0);
@@ -169,7 +169,7 @@ public class GridImageAdapter extends
                         (R.drawable.video_icon, 0, 0, 0);
             }
             viewHolder.tvDuration.setText(DateUtils.timeParse(duration));
-            if (mimeType == PictureMimeType.ofAudio()) {
+            if (chooseModel == PictureMimeType.ofAudio()) {
                 viewHolder.mImg.setImageResource(R.drawable.audio_placeholder);
             } else {
                 RequestOptions options = new RequestOptions()

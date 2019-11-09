@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -164,6 +165,8 @@ public class LocalMediaLoader {
 
                                 long duration = data.getLong
                                         (data.getColumnIndexOrThrow(PROJECTION[5]));
+
+                                Log.i("Mike", "doSth: "+pictureType);
 
                                 if (type == PictureConfig.TYPE_VIDEO) {
                                     if (duration == 0) {

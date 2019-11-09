@@ -63,7 +63,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private float sizeMultiplier;
     private Animation animation;
     private PictureSelectionConfig config;
-    private int mimeType;
+    private int chooseMode;
     private boolean zoomAnim;
     /**
      * 单选图片
@@ -84,7 +84,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.overrideHeight = config.overrideHeight;
         this.enableVoice = config.openClickSound;
         this.sizeMultiplier = config.sizeMultiplier;
-        this.mimeType = config.mimeType;
+        this.chooseMode = config.chooseMode;
         this.zoomAnim = config.zoomAnim;
         animation = OptAnimationLoader.loadAnimation(context, R.anim.modal_in);
     }
@@ -159,17 +159,17 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             final LocalMedia image = images.get(showCamera ? position - 1 : position);
             image.position = contentHolder.getAdapterPosition();
             final String path = image.getPath();
-            final String pictureType = image.getPictureType();
+            final String mimeType = image.getMimeType();
             if (is_checked_num) {
                 notifyCheckChanged(contentHolder, image);
             }
             selectImage(contentHolder, isSelected(image), false);
 
-            final int mediaMimeType = PictureMimeType.isPictureType(pictureType);
-            boolean gif = PictureMimeType.isGif(pictureType);
+            final int mediaMimeType = PictureMimeType.isPictureType(mimeType);
+            boolean gif = PictureMimeType.isGif(mimeType);
 
             contentHolder.tvIsGif.setVisibility(gif ? View.VISIBLE : View.GONE);
-            if (mimeType == PictureMimeType.ofAudio()) {
+            if (chooseMode == PictureMimeType.ofAudio()) {
                 contentHolder.tvDuration.setVisibility(View.VISIBLE);
                 contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
                         (R.drawable.picture_audio, 0, 0, 0);
@@ -183,7 +183,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             contentHolder.tvLongChart.setVisibility(eqLongImg ? View.VISIBLE : View.GONE);
             long duration = image.getDuration();
             contentHolder.tvDuration.setText(DateUtils.timeParse(duration));
-            if (mimeType == PictureMimeType.ofAudio()) {
+            if (chooseMode == PictureMimeType.ofAudio()) {
                 contentHolder.iv_picture.setImageResource(R.drawable.audio_placeholder);
             } else {
                 RequestOptions options = new RequestOptions();
@@ -251,7 +251,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             super(itemView);
             headerView = itemView;
             tv_title_camera = itemView.findViewById(R.id.tv_title_camera);
-            String title = mimeType == PictureMimeType.ofAudio() ?
+            String title = chooseMode == PictureMimeType.ofAudio() ?
                     context.getString(R.string.picture_tape)
                     : context.getString(R.string.picture_take_picture);
             tv_title_camera.setText(title);
@@ -309,16 +309,16 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private void changeCheckboxState(ViewHolder contentHolder, LocalMedia image) {
         boolean isChecked = contentHolder.check.isSelected();
-        String pictureType = selectImages.size() > 0 ? selectImages.get(0).getPictureType() : "";
-        if (!TextUtils.isEmpty(pictureType)) {
-            boolean toEqual = PictureMimeType.mimeToEqual(pictureType, image.getPictureType());
+        String mimeType = selectImages.size() > 0 ? selectImages.get(0).getMimeType() : "";
+        if (!TextUtils.isEmpty(mimeType)) {
+            boolean toEqual = PictureMimeType.mimeToEqual(mimeType, image.getMimeType());
             if (!toEqual) {
                 ToastUtils.s(context, context.getString(R.string.picture_rule));
                 return;
             }
         }
         if (selectImages.size() >= maxSelectNum && !isChecked) {
-            boolean eqImg = pictureType.startsWith(PictureConfig.IMAGE);
+            boolean eqImg = mimeType.startsWith(PictureConfig.IMAGE);
             String str = eqImg ? context.getString(R.string.picture_message_max_num, maxSelectNum)
                     : context.getString(R.string.picture_message_video_max_num, maxSelectNum);
             ToastUtils.s(context, str);

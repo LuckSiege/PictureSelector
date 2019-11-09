@@ -18,12 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * author：luck
- * project：PictureSelector
- * package：com.luck.picture.lib
- * describe：for PictureSelector's media selection.
- * email：893855882@qq.com
- * data：2017/5/24
+ * @author：luck
+ * @date：2017-5-24 22:30
+ * @describe：PictureSelector
  */
 
 public final class PictureSelector {
@@ -65,19 +62,19 @@ public final class PictureSelector {
     }
 
     /**
-     * @param mimeType Select the type of picture you want，all or Picture or Video .
+     * @param chooseMode Select the type of picture you want，all or Picture or Video .
      * @return LocalMedia PictureSelectionModel
      */
-    public PictureSelectionModel openGallery(int mimeType) {
-        return new PictureSelectionModel(this, mimeType);
+    public PictureSelectionModel openGallery(int chooseMode) {
+        return new PictureSelectionModel(this, chooseMode);
     }
 
     /**
-     * @param mimeType Select the type of picture you want，Picture or Video.
+     * @param chooseMode Select the type of picture you want，Picture or Video.
      * @return LocalMedia PictureSelectionModel
      */
-    public PictureSelectionModel openCamera(int mimeType) {
-        return new PictureSelectionModel(this, mimeType, true);
+    public PictureSelectionModel openCamera(int chooseMode) {
+        return new PictureSelectionModel(this, chooseMode, true);
     }
 
     /**

@@ -24,8 +24,6 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.permissions.RxPermissions;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.pictureselector.adapter.GridImageAdapter;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,8 +94,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter.setOnItemClickListener((position, v) -> {
             if (selectList.size() > 0) {
                 LocalMedia media = selectList.get(position);
-                String pictureType = media.getPictureType();
-                int mediaType = PictureMimeType.pictureToVideo(pictureType);
+                String mimeType = media.getMimeType();
+                int mediaType = PictureMimeType.pictureToVideo(mimeType);
                 switch (mediaType) {
                     case 1:
                         // 预览图片 可自定长按保存路径

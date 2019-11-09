@@ -23,6 +23,7 @@ import com.yalantis.ucrop.util.FileUtils;
 import com.yalantis.ucrop.util.ImageHeaderParser;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -150,13 +151,18 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
 
         boolean shouldCrop = shouldCrop(mCroppedImageWidth, mCroppedImageHeight);
         Log.i(TAG, "Should crop: " + shouldCrop);
-
+        ParcelFileDescriptor parcelFileDescriptor =
+                mContext.get().getContentResolver().openFileDescriptor(mImageInputUri, "r");
+        FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
+        String suffix = FileUtils.extSuffix(inputStream);
+        if (suffix.startsWith(".gif")) {
+            // gif 不裁剪
+            return true;
+        }
         if (shouldCrop) {
             ExifInterface originalExif = null;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    ParcelFileDescriptor parcelFileDescriptor =
-                            mContext.get().getContentResolver().openFileDescriptor(mImageInputUri, "r");
                     originalExif = new ExifInterface(parcelFileDescriptor.getFileDescriptor());
                 }
                 saveImage(Bitmap.createBitmap(mViewBitmap, cropOffsetX, cropOffsetY, mCroppedImageWidth, mCroppedImageHeight));

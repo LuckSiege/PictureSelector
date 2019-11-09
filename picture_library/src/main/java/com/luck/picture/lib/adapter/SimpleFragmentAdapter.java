@@ -81,15 +81,15 @@ public class SimpleFragmentAdapter extends PagerAdapter {
         final View contentView = LayoutInflater.from(container.getContext())
                 .inflate(R.layout.picture_image_preview, container, false);
         // 常规图控件
-        final PhotoView imageView = (PhotoView) contentView.findViewById(R.id.preview_image);
+        final PhotoView imageView = contentView.findViewById(R.id.preview_image);
         // 长图控件
-        final SubsamplingScaleImageView longImg = (SubsamplingScaleImageView) contentView.findViewById(R.id.longImg);
+        final SubsamplingScaleImageView longImg = contentView.findViewById(R.id.longImg);
 
-        ImageView iv_play = (ImageView) contentView.findViewById(R.id.iv_play);
+        ImageView iv_play = contentView.findViewById(R.id.iv_play);
         LocalMedia media = images.get(position);
         if (media != null) {
-            final String pictureType = media.getPictureType();
-            boolean eqVideo = pictureType.startsWith(PictureConfig.VIDEO);
+            final String mimeType = media.getMimeType();
+            boolean eqVideo = mimeType.startsWith(PictureConfig.VIDEO);
             iv_play.setVisibility(eqVideo ? View.VISIBLE : View.GONE);
             final String path;
             if (media.isCut() && !media.isCompressed()) {
@@ -101,7 +101,7 @@ public class SimpleFragmentAdapter extends PagerAdapter {
             } else {
                 path = media.getPath();
             }
-            boolean isGif = PictureMimeType.isGif(pictureType);
+            boolean isGif = PictureMimeType.isGif(mimeType);
             final boolean eqLongImg = MediaUtils.isLongImg(media);
             imageView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
             longImg.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);

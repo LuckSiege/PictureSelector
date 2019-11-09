@@ -4,6 +4,7 @@ package com.luck.picture.lib.config;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
+
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
@@ -269,6 +270,26 @@ public final class PictureMimeType {
     }
 
     /**
+     * 获取图片后缀
+     *
+     * @param mineType
+     * @return
+     */
+    public static String getLastImgSuffix(String mineType) {
+        String defaultSuffix = ".png";
+        try {
+            int index = mineType.lastIndexOf("/") + 1;
+            if (index > 0) {
+                return "." + mineType.substring(index);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return defaultSuffix;
+        }
+        return defaultSuffix;
+    }
+
+    /**
      * 根据不同的类型，返回不同的错误提示
      *
      * @param mediaMimeType
@@ -291,4 +312,8 @@ public final class PictureMimeType {
     public final static String JPEG = ".JPEG";
 
     public final static String PNG = ".png";
+
+    public final static String MIME_TYPE_IMAGE = "";
+    public final static String MIME_TYPE_VIDEO = "";
+    public final static String MIME_TYPE_AUDIO = "audio/mpeg";
 }

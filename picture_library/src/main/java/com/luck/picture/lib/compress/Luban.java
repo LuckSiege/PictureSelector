@@ -1,9 +1,10 @@
 package com.luck.picture.lib.compress;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.graphics.Picture;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -12,9 +13,9 @@ import android.util.Log;
 
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
-import com.yalantis.ucrop.util.BitmapUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,7 +28,6 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class Luban implements Handler.Callback {
     private static final String TAG = "Luban";
-    private static final String DEFAULT_DISK_CACHE_DIR = "luban_disk_cache";
 
     private static final int MSG_COMPRESS_SUCCESS = 0;
     private static final int MSG_COMPRESS_START = 1;
@@ -91,17 +91,6 @@ public class Luban implements Handler.Callback {
     }
 
     /**
-     * Returns a directory with a default name in the private cache directory of the application to
-     * use to store retrieved audio.
-     *
-     * @param context A context.
-     * @see #getImageCacheDir(Context, String)
-     */
-    private File getImageCacheDir(Context context) {
-        return getImageCacheDir(context, DEFAULT_DISK_CACHE_DIR);
-    }
-
-    /**
      * Returns a directory with the given name in the private cache directory of the application to
      * use to store retrieved media and thumbnails.
      *
@@ -109,15 +98,14 @@ public class Luban implements Handler.Callback {
      * @param cacheName The name of the subdirectory in which to store the cache.
      * @see #getImageCacheDir(Context)
      */
-    private static File getImageCacheDir(Context context, String cacheName) {
-        File cacheDir = context.getExternalCacheDir();
+    private static File getImageCacheDir(Context context) {
+        File cacheDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         if (cacheDir != null) {
-            File result = new File(cacheDir, cacheName);
-            if (!result.mkdirs() && (!result.exists() || !result.isDirectory())) {
+            if (!cacheDir.mkdirs() && (!cacheDir.exists() || !cacheDir.isDirectory())) {
                 // File wasn't able to create a directory, or the result exists but not a directory
                 return null;
             }
-            return result;
+            return cacheDir;
         }
         if (Log.isLoggable(TAG, Log.ERROR)) {
             Log.e(TAG, "default disk cache dir is null");
@@ -146,8 +134,8 @@ public class Luban implements Handler.Callback {
 
                     if (mediaList != null && mediaList.size() > 0) {
                         LocalMedia media = mediaList.get(index);
-                        String path1 = result.getAbsolutePath();
-                        boolean eqHttp = PictureMimeType.isHttp(path1);
+                        String newPath = result.getAbsolutePath();
+                        boolean eqHttp = PictureMimeType.isHttp(newPath);
                         media.setCompressed(eqHttp ? false : true);
                         media.setCompressPath(eqHttp ? "" : result.getAbsolutePath());
                         boolean isLast = index == mediaList.size() - 1;
@@ -215,11 +203,15 @@ public class Luban implements Handler.Callback {
                 result = new File(path.getPath());
             }
         } else {
-            result = Checker.SINGLE.needCompress(mLeastCompressSize, path.getPath()) ?
-                    new Engine(path, outFile, focusAlpha).compress() :
-                    new File(path.getPath());
+            if (Checker.SINGLE.extSuffix(path).startsWith(".gif")) {
+                // GIF without compression
+                result = new File(path.getPath());
+            } else {
+                result = Checker.SINGLE.needCompress(mLeastCompressSize, path.getPath()) ?
+                        new Engine(path, outFile, focusAlpha).compress() :
+                        new File(path.getPath());
+            }
         }
-
         return result;
     }
 
@@ -289,23 +281,9 @@ public class Luban implements Handler.Callback {
             mStreamProviders.add(new InputStreamAdapter() {
                 @Override
                 public InputStream openInternal() throws IOException {
-                    boolean androidQ = SdkVersionUtils.checkedAndroid_Q();
-                    if (androidQ) {
-                        // Android Q 由于沙盒原因需要把外部图片资源复制到自己应用内
-                        boolean isCut = media.isCut();
-                        String path;
-                        if (isCut) {
-                            path = media.getCutPath();
-                        } else {
-                            Uri parse = Uri.parse(media.getPath());
-                            Bitmap bitmapFromUri = BitmapUtils.getBitmapFromUri(context, parse);
-                            path = PictureFileUtils.getDiskCacheDir(context) + System.currentTimeMillis() + ".png";
-                            BitmapUtils.saveBitmap(bitmapFromUri, path);
-                            media.setCompressPath(path);
-                        }
-                        return new FileInputStream(path);
-                    }
-                    return new FileInputStream(media.isCut() ? media.getCutPath() : media.getPath());
+                    return new FileInputStream(media.isCut() ? media.getCutPath()
+                            : SdkVersionUtils.checkedAndroid_Q() ? media.getAndroidQToPath()
+                            : media.getPath());
                 }
 
                 @Override
@@ -350,7 +328,15 @@ public class Luban implements Handler.Callback {
 
         public <T> Builder loadMediaData(List<LocalMedia> list) {
             this.mediaList = list;
+            boolean checkedAndroidQ = SdkVersionUtils.checkedAndroid_Q();
             for (LocalMedia src : list) {
+                if (checkedAndroidQ && !src.isCut()) {
+                    Uri parse = Uri.parse(src.getPath());
+                    String newPath = AndroidQTransformUtils.parseImagePathToAndroidQ
+                            (context, src.getPath(), src.getMimeType());
+                    src.setAndroidQToPath(newPath);
+                    src.setCompressPath(newPath);
+                }
                 load(src);
             }
             return this;

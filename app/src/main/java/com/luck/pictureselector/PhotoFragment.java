@@ -107,8 +107,8 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener((position, v) -> {
             LocalMedia media = selectList.get(position);
-            String pictureType = media.getPictureType();
-            int mediaType = PictureMimeType.pictureToVideo(pictureType);
+            String mimeType = media.getMimeType();
+            int mediaType = PictureMimeType.pictureToVideo(mimeType);
             switch (mediaType) {
                 case 1:
                     // 预览图片

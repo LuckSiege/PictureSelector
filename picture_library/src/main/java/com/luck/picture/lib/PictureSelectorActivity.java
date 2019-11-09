@@ -135,8 +135,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 List<LocalMedia> medias = obj.medias;
                 if (medias.size() > 0) {
                     // 取出第1个判断是否是图片，视频和图片只能二选一，不必考虑图片和视频混合
-                    String pictureType = medias.get(0).getPictureType();
-                    if (config.isCompress && pictureType.startsWith(PictureConfig.IMAGE)) {
+                    String mimeType = medias.get(0).getMimeType();
+                    if (config.isCompress && mimeType.startsWith(PictureConfig.IMAGE)) {
                         compressImage(medias);
                     } else {
                         onResult(medias);
@@ -208,28 +208,28 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mOkLayout = findViewById(R.id.id_ll_ok);
         mTvEmpty = findViewById(R.id.tv_empty);
         isNumComplete(numComplete);
-        if (config.mimeType == PictureMimeType.ofAll()) {
+        if (config.chooseMode == PictureMimeType.ofAll()) {
             popupWindow = new PhotoPopupWindow(this);
             popupWindow.setOnItemClickListener(this);
         }
         mTvPicturePreview.setOnClickListener(this);
-        if (config.mimeType == PictureMimeType.ofAudio()) {
+        if (config.chooseMode == PictureMimeType.ofAudio()) {
             mTvPicturePreview.setVisibility(View.GONE);
             audioH = ScreenUtils.getScreenHeight(mContext)
                     + ScreenUtils.getStatusBarHeight(mContext);
         } else {
-            mTvPicturePreview.setVisibility(config.mimeType == PictureConfig.TYPE_VIDEO
+            mTvPicturePreview.setVisibility(config.chooseMode == PictureMimeType.ofVideo()
                     ? View.GONE : View.VISIBLE);
         }
         mIvPictureLeftBack.setOnClickListener(this);
         mTvPictureRight.setOnClickListener(this);
         mOkLayout.setOnClickListener(this);
         mTvPictureTitle.setOnClickListener(this);
-        String title = config.mimeType == PictureMimeType.ofAudio() ?
+        String title = config.chooseMode == PictureMimeType.ofAudio() ?
                 getString(R.string.picture_all_audio)
                 : getString(R.string.picture_camera_roll);
         mTvPictureTitle.setText(title);
-        folderWindow = new FolderPopWindow(this, config.mimeType);
+        folderWindow = new FolderPopWindow(this, config.chooseMode);
         folderWindow.setPictureTitleView(mTvPictureTitle);
         folderWindow.setOnItemClickListener(this);
         mPictureRecycler.setHasFixedSize(true);
@@ -239,7 +239,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         // 解决调用 notifyItemChanged 闪烁问题,取消默认动画
         ((SimpleItemAnimator) mPictureRecycler.getItemAnimator())
                 .setSupportsChangeAnimations(false);
-        mediaLoader = new LocalMediaLoader(this, config.mimeType, config.isGif,
+        mediaLoader = new LocalMediaLoader(this, config.chooseMode, config.isGif,
                 config.videoMaxSecond, config.videoMinSecond);
         rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE)
                 .subscribe(new Observer<Boolean>() {
@@ -265,10 +265,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     public void onComplete() {
                     }
                 });
-        mTvEmpty.setText(config.mimeType == PictureMimeType.ofAudio() ?
+        mTvEmpty.setText(config.chooseMode == PictureMimeType.ofAudio() ?
                 getString(R.string.picture_audio_empty)
                 : getString(R.string.picture_empty));
-        StringUtils.tempTextFont(mTvEmpty, config.mimeType);
+        StringUtils.tempTextFont(mTvEmpty, config.chooseMode);
         if (savedInstanceState != null) {
             // 防止拍照内存不足时activity被回收，导致拍照后的图片未选中
             selectionMedias = PictureSelector.obtainSelectorList(savedInstanceState);
@@ -341,7 +341,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     public void startCamera() {
         // 防止快速点击，但是单独拍照不管
         if (!DoubleUtils.isFastDoubleClick() || config.camera) {
-            switch (config.mimeType) {
+            switch (config.chooseMode) {
                 case PictureConfig.TYPE_ALL:
                     // 如果是全部类型下，单独拍照就默认图片 (因为单独拍照不会new此PopupWindow对象)
                     if (popupWindow != null) {
@@ -382,8 +382,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 imageUri = MediaUtils.createImagePathUri(getApplicationContext());
                 cameraPath = imageUri.toString();
             } else {
-                int type = config.mimeType == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_IMAGE
-                        : config.mimeType;
+                int type = config.chooseMode == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_IMAGE
+                        : config.chooseMode;
                 File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(),
                         type,
                         outputCameraPath, config.suffixType);
@@ -406,8 +406,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 imageUri = MediaUtils.createImageVideoUri(getApplicationContext());
                 cameraPath = imageUri.toString();
             } else {
-                File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(), config.mimeType ==
-                                PictureConfig.TYPE_ALL ? PictureConfig.TYPE_VIDEO : config.mimeType,
+                File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(), config.chooseMode ==
+                                PictureConfig.TYPE_ALL ? PictureConfig.TYPE_VIDEO : config.chooseMode,
                         outputCameraPath, config.suffixType);
                 cameraPath = cameraFile.getAbsolutePath();
                 imageUri = parUri(cameraFile);
@@ -510,10 +510,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (id == R.id.id_ll_ok) {
             List<LocalMedia> images = adapter.getSelectedImages();
             LocalMedia image = images.size() > 0 ? images.get(0) : null;
-            String pictureType = image != null ? image.getPictureType() : "";
+            String mimeType = image != null ? image.getMimeType() : "";
             // 如果设置了图片最小选择数量，则判断是否满足条件
             int size = images.size();
-            boolean eqImg = pictureType.startsWith(PictureConfig.IMAGE);
+            boolean eqImg = mimeType.startsWith(PictureConfig.IMAGE);
             if (config.minSelectNum > 0 && config.selectionMode == PictureConfig.MULTIPLE) {
                 if (size < config.minSelectNum) {
                     String str = eqImg ? getString(R.string.picture_min_img_num, config.minSelectNum)
@@ -792,10 +792,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     public void startPreview(List<LocalMedia> previewImages, int position) {
         LocalMedia media = previewImages.get(position);
-        String pictureType = media.getPictureType();
+        String mimeType = media.getMimeType();
         Bundle bundle = new Bundle();
         List<LocalMedia> result = new ArrayList<>();
-        int mediaType = PictureMimeType.isPictureType(pictureType);
+        int mediaType = PictureMimeType.isPictureType(mimeType);
         switch (mediaType) {
             case PictureConfig.TYPE_IMAGE:
                 // image
@@ -839,13 +839,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     public void changeImageNumber(List<LocalMedia> selectImages) {
         // 如果选择的视频没有预览功能
-        String pictureType = selectImages.size() > 0
-                ? selectImages.get(0).getPictureType() : "";
-        if (config.mimeType == PictureMimeType.ofAudio()) {
+        String mimeType = selectImages.size() > 0
+                ? selectImages.get(0).getMimeType() : "";
+        if (config.chooseMode == PictureMimeType.ofAudio()) {
             mTvPicturePreview.setVisibility(View.GONE);
         } else {
-            boolean isVideo = PictureMimeType.isVideo(pictureType);
-            boolean eqVideo = config.mimeType == PictureConfig.TYPE_VIDEO;
+            boolean isVideo = PictureMimeType.isVideo(mimeType);
+            boolean eqVideo = config.chooseMode == PictureConfig.TYPE_VIDEO;
             mTvPicturePreview.setVisibility(isVideo || eqVideo ? View.GONE : View.VISIBLE);
         }
         boolean enable = selectImages.size() != 0;
@@ -947,7 +947,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void requestCamera(Intent data) {
         List<LocalMedia> medias = new ArrayList<>();
-        if (config.mimeType == PictureMimeType.ofAudio()) {
+        if (config.chooseMode == PictureMimeType.ofAudio()) {
             cameraPath = getAudioPath(data);
         }
         // on take photo success
@@ -961,7 +961,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         } else {
             toType = PictureMimeType.fileToType(file);
         }
-        if (config.mimeType != PictureMimeType.ofAudio()) {
+        if (config.chooseMode != PictureMimeType.ofAudio()) {
             int degree = PictureFileUtils.readPictureDegree(file.getAbsolutePath());
             rotateImage(degree, file);
         }
@@ -976,17 +976,17 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         } else {
             duration = eqVideo ? MediaUtils.getLocalVideoDuration(cameraPath) : 0;
         }
-        String pictureType;
-        if (config.mimeType == PictureMimeType.ofAudio()) {
-            pictureType = "audio/mpeg";
+        String mimeType;
+        if (config.chooseMode == PictureMimeType.ofAudio()) {
+            mimeType = PictureMimeType.MIME_TYPE_AUDIO;
             duration = MediaUtils.getLocalVideoDuration(cameraPath);
         } else {
-            pictureType = eqVideo ? PictureMimeType.createVideoType(getApplicationContext(), cameraPath)
+            mimeType = eqVideo ? PictureMimeType.createVideoType(getApplicationContext(), cameraPath)
                     : PictureMimeType.createImageType(cameraPath);
         }
-        media.setPictureType(pictureType);
+        media.setMimeType(mimeType);
         media.setDuration(duration);
-        media.setMimeType(config.mimeType);
+        media.setChooseModel(config.chooseMode);
 
         // 因为加入了单独拍照功能，所有如果是单独拍照的话也默认为单选状态
         if (config.camera) {
@@ -998,8 +998,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 List<LocalMedia> selectedImages = adapter.getSelectedImages();
                 // 没有到最大选择量 才做默认选中刚拍好的
                 if (selectedImages.size() < config.maxSelectNum) {
-                    pictureType = selectedImages.size() > 0 ? selectedImages.get(0).getPictureType() : "";
-                    boolean toEqual = PictureMimeType.mimeToEqual(pictureType, media.getPictureType());
+                    mimeType = selectedImages.size() > 0 ? selectedImages.get(0).getMimeType() : "";
+                    boolean toEqual = PictureMimeType.mimeToEqual(mimeType, media.getMimeType());
                     // 类型相同或还没有选中才加进选中集合中
                     if (toEqual || selectedImages.size() == 0) {
                         if (selectedImages.size() < config.maxSelectNum) {
@@ -1023,7 +1023,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     ? View.INVISIBLE : View.VISIBLE);
         }
 
-        if (config.mimeType != PictureMimeType.ofAudio()) {
+        if (config.chooseMode != PictureMimeType.ofAudio()) {
             int lastImageId = getLastImageId(eqVideo);
             if (lastImageId != -1) {
                 removeImage(lastImageId, eqVideo);
@@ -1040,7 +1040,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         List<LocalMedia> medias = new ArrayList<>();
         Uri resultUri = UCrop.getOutput(data);
         String cutPath = resultUri.getPath();
-        String imageType;
+        String mimeType;
         if (adapter != null) {
             // 取单张裁剪已选中图片的path作为原图
             List<LocalMedia> mediaList = adapter.getSelectedImages();
@@ -1048,22 +1048,22 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (media != null) {
                 originalPath = media.getPath();
                 media = new LocalMedia(originalPath, media.getDuration(), false,
-                        media.getPosition(), media.getNum(), config.mimeType);
+                        media.getPosition(), media.getNum(), config.chooseMode);
                 media.setCutPath(cutPath);
                 media.setCut(true);
-                imageType = PictureMimeType.createImageType(cutPath);
-                media.setPictureType(imageType);
+                mimeType = PictureMimeType.createImageType(cutPath);
+                media.setMimeType(mimeType);
                 medias.add(media);
                 handlerResult(medias);
             }
         } else if (config.camera) {
             // 单独拍照
             LocalMedia media = new LocalMedia(cameraPath, 0, false,
-                    config.isCamera ? 1 : 0, 0, config.mimeType);
+                    config.isCamera ? 1 : 0, 0, config.chooseMode);
             media.setCut(true);
             media.setCutPath(cutPath);
-            imageType = PictureMimeType.createImageType(cutPath);
-            media.setPictureType(imageType);
+            mimeType = PictureMimeType.createImageType(cutPath);
+            media.setMimeType(mimeType);
             medias.add(media);
             handlerResult(medias);
         }
@@ -1079,12 +1079,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         List<CutInfo> mCuts = UCropMulti.getOutput(data);
         for (CutInfo c : mCuts) {
             LocalMedia media = new LocalMedia();
-            String imageType = PictureMimeType.createImageType(c.getPath());
+            String imageType = PictureMimeType.createImageType(c.getCutPath());
             media.setCut(true);
             media.setPath(c.getPath());
             media.setCutPath(c.getCutPath());
-            media.setPictureType(imageType);
-            media.setMimeType(config.mimeType);
+            media.setMimeType(imageType);
+            media.setAndroidQToPath(c.getCutPath());
+            media.setChooseModel(config.chooseMode);
             medias.add(media);
         }
         handlerResult(medias);

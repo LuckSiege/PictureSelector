@@ -1,6 +1,7 @@
 package com.luck.picture.lib.tools;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -570,36 +571,12 @@ public class PictureFileUtils {
      * @param mContext
      */
     public static void deleteCacheDirFile(Context mContext) {
-        File cutDir = mContext.getCacheDir();
-        File compressDir = new File(mContext.getCacheDir() + "/picture_cache");
-        File lubanDir = new File(mContext.getCacheDir() + "/luban_disk_cache");
+        File cutDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         if (cutDir != null) {
             File[] files = cutDir.listFiles();
             for (File file : files) {
                 if (file.isFile()) {
                     file.delete();
-                }
-            }
-        }
-
-        if (compressDir != null) {
-            File[] files = compressDir.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isFile()) {
-                        file.delete();
-                    }
-                }
-            }
-        }
-
-        if (lubanDir != null) {
-            File[] files = lubanDir.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isFile()) {
-                        file.delete();
-                    }
                 }
             }
         }
@@ -610,38 +587,14 @@ public class PictureFileUtils {
      *
      * @param mContext
      */
+    @Deprecated
     public static void deleteExternalCacheDirFile(Context mContext) {
-
-        File cutDir = mContext.getExternalCacheDir();
-        File compressDir = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/picture_cache");
-        File lubanDir = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/luban_disk_cache");
+        File cutDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         if (cutDir != null) {
             File[] files = cutDir.listFiles();
             for (File file : files) {
                 if (file.isFile()) {
                     file.delete();
-                }
-            }
-        }
-
-        if (compressDir != null) {
-            File[] files = compressDir.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isFile()) {
-                        file.delete();
-                    }
-                }
-            }
-        }
-
-        if (lubanDir != null) {
-            File[] files = lubanDir.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isFile()) {
-                        file.delete();
-                    }
                 }
             }
         }
@@ -673,19 +626,30 @@ public class PictureFileUtils {
      * @return
      */
     public static String getDiskCacheDir(Context ctx) {
-        Context context = ctx.getApplicationContext();
-        String cachePath;
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-                || !Environment.isExternalStorageRemovable()) {
-            // context.getFilesDir().getPath(); 不这样写  有些机型会报错
-            if (SdkVersionUtils.checkedAndroid_Q()) {
-                cachePath = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
-            } else {
-                cachePath = context.getExternalCacheDir().getPath();
+        return ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
+    }
+
+    /**
+     * 根据uri获取MIME_TYPE
+     *
+     * @param uri
+     * @return
+     */
+    public static String getImageMimeType(Uri uri, Context context) {
+        String mimeType = "";
+        if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
+            Cursor cursor = context.getApplicationContext().getContentResolver().query(uri,
+                    new String[]{MediaStore.Images.Media.MIME_TYPE}, null, null, null);
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE);
+                    if (columnIndex > -1) {
+                        mimeType = cursor.getString(columnIndex);
+                    }
+                }
+                cursor.close();
             }
-        } else {
-            cachePath = context.getCacheDir().getPath();
         }
-        return cachePath;
+        return mimeType;
     }
 }
