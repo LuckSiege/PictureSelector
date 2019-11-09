@@ -20,7 +20,6 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -899,7 +898,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -960,7 +958,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      *
      * @param data
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void requestCamera(Intent data) {
         List<LocalMedia> medias = new ArrayList<>();
         if (config.chooseMode == PictureMimeType.ofAudio()) {

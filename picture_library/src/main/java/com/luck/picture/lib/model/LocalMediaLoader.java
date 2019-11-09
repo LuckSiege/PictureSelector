@@ -3,12 +3,10 @@ package com.luck.picture.lib.model;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
@@ -135,7 +133,6 @@ public class LocalMediaLoader {
 
     public void loadAllMedia(final LocalMediaLoadListener imageLoadListener) {
         RxUtils.io(new RxUtils.RxSimpleTask<List<LocalMediaFolder>>() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
             @NonNull
             @Override
             public List<LocalMediaFolder> doSth(Object... objects) {

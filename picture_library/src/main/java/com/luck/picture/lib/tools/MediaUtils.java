@@ -4,12 +4,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
-import androidx.annotation.RequiresApi;
 
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -86,7 +84,6 @@ public class MediaUtils {
      * @param path
      * @return
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public static long extractDuration(Context context, boolean isAndroidQ, String path) {
         return isAndroidQ ? getLocalDuration(context, Uri.parse(path))
                 : new File(path).length();
