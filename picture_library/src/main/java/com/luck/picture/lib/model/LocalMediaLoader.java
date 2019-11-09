@@ -55,7 +55,8 @@ public class LocalMediaLoader {
             MediaStore.MediaColumns.MIME_TYPE,
             MediaStore.MediaColumns.WIDTH,
             MediaStore.MediaColumns.HEIGHT,
-            MediaStore.MediaColumns.DURATION};
+            MediaStore.MediaColumns.DURATION,
+            MediaStore.MediaColumns.SIZE};
 
     /**
      * 图片
@@ -166,7 +167,10 @@ public class LocalMediaLoader {
                                 long duration = data.getLong
                                         (data.getColumnIndexOrThrow(PROJECTION[5]));
 
-                                Log.i("Mike", "doSth: " + mimeType + "----" + path);
+                                long size = data.getLong
+                                        (data.getColumnIndexOrThrow(PROJECTION[6]));
+
+                                Log.i("Mike", "doSth: " + mimeType + "----" + path + "---" + size);
 
                                 if (type == PictureConfig.TYPE_VIDEO) {
                                     if (duration == 0) {
@@ -184,9 +188,13 @@ public class LocalMediaLoader {
                                         // 时长如果为0，就当做损坏的视频处理过滤掉
                                         continue;
                                     }
+                                    if (size <= 0) {
+                                        // 视频大小为0过滤掉
+                                        continue;
+                                    }
                                 }
                                 LocalMedia image = new LocalMedia
-                                        (path, duration, type, mimeType, w, h);
+                                        (path, duration, type, mimeType, w, h, size);
                                 LocalMediaFolder folder = getImageFolder(path, imageFolders);
                                 List<LocalMedia> images = folder.getImages();
                                 images.add(image);

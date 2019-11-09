@@ -159,7 +159,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         rxPermissions = new RxPermissions(this);
         if (config.camera) {
             if (savedInstanceState == null) {
-                rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE)
+                rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         .subscribe(new Observer<Boolean>() {
                             @Override
                             public void onSubscribe(Disposable d) {
@@ -245,7 +246,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 .setSupportsChangeAnimations(false);
         mediaLoader = new LocalMediaLoader(this, config.chooseMode, config.isGif,
                 config.videoMaxSecond, config.videoMinSecond);
-        rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE)
+        rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .subscribe(new Observer<Boolean>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -969,12 +971,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         final File file = new File(cameraPath);
         sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
         String toType;
+        long size = 0;
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         if (isAndroidQ) {
             String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(cameraPath));
-            toType = PictureMimeType.fileToType(new File(path));
+            File f = new File(path);
+            size = f.length();
+            toType = PictureMimeType.fileToType(f);
         } else {
             toType = PictureMimeType.fileToType(file);
+            size = new File(cameraPath).length();
         }
         if (config.chooseMode != PictureMimeType.ofAudio()) {
             int degree = PictureFileUtils.readPictureDegree(file.getAbsolutePath());
@@ -999,6 +1005,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         long duration = MediaUtils.extractDuration(mContext, isAndroidQ, cameraPath);
         media.setMimeType(mimeType);
         media.setDuration(duration);
+        media.setSize(size);
         media.setChooseModel(config.chooseMode);
 
         // 因为加入了单独拍照功能，所以如果是单独拍照的话也默认为单选状态
@@ -1067,9 +1074,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             LocalMedia media = mediaList != null && mediaList.size() > 0 ? mediaList.get(0) : null;
             if (media != null) {
                 originalPath = media.getPath();
-                media = new LocalMedia(originalPath, media.getDuration(), false,
-                        media.getPosition(), media.getNum(), config.chooseMode);
                 media.setCutPath(cutPath);
+                media.setSize(new File(cutPath).length());
+                media.setChooseModel(config.chooseMode);
                 media.setCut(true);
                 mimeType = PictureMimeType.getImageMimeType(cutPath);
                 media.setMimeType(mimeType);
@@ -1105,6 +1112,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             media.setPath(c.getPath());
             media.setCutPath(c.getCutPath());
             media.setMimeType(imageType);
+            media.setWidth(c.getImageWidth());
+            media.setHeight(c.getImageHeight());
+            media.setSize(new File(c.getCutPath()).length());
             media.setAndroidQToPath(c.getCutPath());
             media.setChooseModel(config.chooseMode);
             medias.add(media);

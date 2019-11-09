@@ -1,9 +1,7 @@
 package com.luck.picture.lib.tools;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
@@ -15,6 +13,8 @@ import androidx.annotation.RequiresApi;
 
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+
+import java.io.File;
 
 /**
  * @author：luck
@@ -78,10 +78,18 @@ public class MediaUtils {
         return imageFilePath[0];
     }
 
+    /**
+     * 获取视频时长
+     *
+     * @param context
+     * @param isAndroidQ
+     * @param path
+     * @return
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static long extractDuration(Context context, boolean isAndroidQ, String path) {
-        return isAndroidQ ? getLocalDurationToAndroidQ(context, Uri.parse(path))
-                : getLocalDuration(path);
+        return isAndroidQ ? getLocalDuration(context, Uri.parse(path))
+                : new File(path).length();
     }
 
     /**
@@ -101,54 +109,19 @@ public class MediaUtils {
     }
 
     /**
-     * get Local  duration
-     *
-     * @return
-     */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private static long getLocalDurationToAndroidQ(Context context, Uri uri) {
-        try {
-            if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
-                Cursor cursor = context.getApplicationContext().getContentResolver().query(uri,
-                        new String[]{MediaStore.Files.FileColumns.DURATION},
-                        null, null, null);
-                if (cursor != null) {
-                    if (cursor.moveToFirst()) {
-                        int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DURATION);
-                        if (columnIndex > -1) {
-                            return cursor.getLong(columnIndex);
-                        }
-                    }
-                    cursor.close();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    /**
      * get Local video duration
      *
      * @return
      */
-    private static int getLocalDuration(String videoPath) {
-        int duration = 0;
-        if (TextUtils.isEmpty(videoPath)) {
-            return duration;
-        }
+    private static long getLocalDuration(Context context, Uri uri) {
         try {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(videoPath);
-            duration = Integer.parseInt(mmr.extractMetadata
+            mmr.setDataSource(context, uri);
+            return Long.parseLong(mmr.extractMetadata
                     (MediaMetadataRetriever.METADATA_KEY_DURATION));
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
-        return duration;
     }
-
-
 }

@@ -73,6 +73,11 @@ public class LocalMedia implements Parcelable {
      */
     private int height;
 
+    /**
+     * file size
+     */
+    private long size;
+
     public LocalMedia() {
 
     }
@@ -84,13 +89,14 @@ public class LocalMedia implements Parcelable {
         this.mimeType = mimeType;
     }
 
-    public LocalMedia(String path, long duration, int chooseModel, String mimeType, int width, int height) {
+    public LocalMedia(String path, long duration, int chooseModel, String mimeType, int width, int height, long size) {
         this.path = path;
         this.duration = duration;
         this.chooseModel = chooseModel;
         this.mimeType = mimeType;
         this.width = width;
         this.height = height;
+        this.size = size;
     }
 
     public LocalMedia(String path, long duration,
@@ -216,6 +222,14 @@ public class LocalMedia implements Parcelable {
         this.chooseModel = chooseModel;
     }
 
+    public long getSize() {
+        return size;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -237,6 +251,7 @@ public class LocalMedia implements Parcelable {
         dest.writeByte(this.compressed ? (byte) 1 : (byte) 0);
         dest.writeInt(this.width);
         dest.writeInt(this.height);
+        dest.writeLong(this.size);
     }
 
     protected LocalMedia(Parcel in) {
@@ -254,6 +269,7 @@ public class LocalMedia implements Parcelable {
         this.compressed = in.readByte() != 0;
         this.width = in.readInt();
         this.height = in.readInt();
+        this.size = in.readLong();
     }
 
     public static final Creator<LocalMedia> CREATOR = new Creator<LocalMedia>() {
