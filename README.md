@@ -75,7 +75,7 @@
 
 ```
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.4'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.7'
 }
 
 ```
@@ -108,7 +108,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.2.4</version> 
+      <version>v2.2.7</version> 
 </dependency>
 
 ```
@@ -175,6 +175,14 @@ Glide.with(context).load(url).apply(options).into(imageView);
 WRITE_EXTERNAL_STORAGE 
 READ_EXTERNAL_STORAGE
 
+问题六：
+如果出现如下Invoke-customs are only supported starting with Android O (--min-api 26) 错误
+请在app目录下的build.gradle android{ }末尾添加    
+compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
 ```
 
 ## 功能配置
@@ -186,6 +194,13 @@ READ_EXTERNAL_STORAGE
  	.maxSelectNum()// 最大图片选择数量 int
  	.minSelectNum()// 最小选择数量 int
 	.imageSpanCount(4)// 每行显示个数 int
+	.cameraFileName("")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用，选图时不要用
+	.isSingleDirectReturn(false)// 单选模式下是否直接返回
+	.isChangeStatusBarFontColor(isChangeStatusBarFontColor)// 是否关闭白色状态栏字体颜色
+        .setStatusBarColorPrimaryDark(statusBarColorPrimaryDark)// 状态栏背景色
+        .setUpArrowDrawable(upResId)// 设置标题栏右侧箭头图标
+        .setDownArrowDrawable(downResId)// 设置标题栏右侧箭头图标
+        .isOpenStyleCheckNumMode(isOpenStyleCheckNumMode)// 是否开启数字选择模式 类似QQ相册
  	.selectionMode()// 多选 or 单选 PictureConfig.MULTIPLE or PictureConfig.SINGLE
  	.previewImage()// 是否可预览图片 true or false
  	.previewVideo()// 是否可预览视频 true or false
@@ -333,6 +348,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
                     // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true  注意：音视频除外
                     // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true  注意：音视频除外
                     // 如果裁剪并压缩了，以取压缩路径为准，因为是先裁剪后压缩的
+		    // 4.media.getAndroidQToPath();为Android Q版本特有返回的字段，此字段有值就用来做上传使用
                     adapter.setList(selectList);
                     adapter.notifyDataSetChanged();
                     break;
@@ -346,13 +362,48 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
+
+* 1.PictureConfig.SINGLE模式下新增isSingleDirectReturn(true); api选择
+* 图片可立即返回不需要点击确认.
+
+* 新增几个动态配制样式api，移除了原有动态获取TypedValue导致内存不足闪退问题
+* 1.isChangeStatusBarFontColor(); 是否改变状态栏字段颜色(黑白转换)
+* 2.isOpenStyleNumComplete(); 选择图片样式0/9
+* 3.isOpenStyleCheckNumMode(); 是否开启数字选择模式
+* 4.setTitleBarBackgroundColor(); 设置标题栏背景色
+* 5.setStatusBarColorPrimaryDark(); 设置状态栏背景色
+* 6.setCropTitleBarBackgroundColor(); 设置裁剪页标题栏背景色
+* 7.setCropStatusBarColorPrimaryDark(); 设置裁剪状态栏颜色 8.setCropTitleColor(); 设置裁剪页标题字体颜色
+* 9.setUpArrowDrawable(); 设置相册右侧箭头图标
+* 10.setDownArrowDrawable(); 设置相册右侧箭头图标
+* 以上api具体参考demo使用场景
+
+* fix
+* 1.修复多选裁剪时框不能拖动问题
+* 2.修复Android Q压缩时会在DIRECTORY_PICTURES目录重复生成文件问题
+* 3.返回视频或图片文件大小
+* 4.适配Android X
+* 5.修复gif压缩和裁剪会变成静态图问题
+* 6.LocalMedia对象新增AndroidQToPath路径，适用于 Android Q版本
+* 7.修复异步压缩失败问题
+* 8.修复部分手机拍照后图片生成不出来问题&权限问题
+* 9.修复minSdkVersion设置过大问题
+* 10.修复多图裁剪下setHideBottomControls无效问题
+* 11.新增拍照自定义生成文件名 .cameraFileName("") * 使用相机时保存至本地的文件
+* 名称,注意这个只在拍照时可以使用，选图时不要用
+
+* 修复一些已知bug
+* ...
+
+
+# 历史版本：
+
 * v2.2.4
 * 1.适配Android Q 版本
 * 2.修复Android Q多图裁剪失败问题
 * 3.升级glide、Luan 最新版本
 * 4.修复了部分已知问题
 
-# 历史版本：
 * v2.2.3
 * 1.修复沉浸式在部分机型标题栏遮挡情况
 
