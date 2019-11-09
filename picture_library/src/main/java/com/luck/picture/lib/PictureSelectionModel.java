@@ -428,7 +428,7 @@ public class PictureSelectionModel {
     }
 
     /**
-     * 是否开启白色状态栏
+     * 是否改变状态栏字段颜色(黑白字体转换)
      * #适合所有style使用
      *
      * @param isChangeStatusBarFontColor
