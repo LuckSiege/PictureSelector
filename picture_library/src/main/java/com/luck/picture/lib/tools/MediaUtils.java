@@ -86,7 +86,7 @@ public class MediaUtils {
      */
     public static long extractDuration(Context context, boolean isAndroidQ, String path) {
         return isAndroidQ ? getLocalDuration(context, Uri.parse(path))
-                : new File(path).length();
+                : getLocalDuration(path);
     }
 
     /**
@@ -114,6 +114,23 @@ public class MediaUtils {
         try {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
             mmr.setDataSource(context, uri);
+            return Long.parseLong(mmr.extractMetadata
+                    (MediaMetadataRetriever.METADATA_KEY_DURATION));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * get Local video duration
+     *
+     * @return
+     */
+    private static long getLocalDuration(String path) {
+        try {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            mmr.setDataSource(path);
             return Long.parseLong(mmr.extractMetadata
                     (MediaMetadataRetriever.METADATA_KEY_DURATION));
         } catch (Exception e) {

@@ -33,6 +33,12 @@ public final class PictureMimeType {
         return PictureConfig.TYPE_IMAGE;
     }
 
+
+    /**
+     * Audio correlation is no longer maintained
+     * 不再维护音频相关功能，但可以继续使用但会有机型兼容性问题
+     */
+    @Deprecated
     public static int ofVideo() {
         return PictureConfig.TYPE_VIDEO;
     }

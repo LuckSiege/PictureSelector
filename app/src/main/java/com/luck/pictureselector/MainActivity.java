@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onNext(Boolean aBoolean) {
                 if (aBoolean) {
-                    PictureFileUtils.deleteCacheDirFile(MainActivity.this);
+                    PictureFileUtils.deleteCacheDirFile(MainActivity.this, PictureMimeType.ofImage());
                 } else {
                     Toast.makeText(MainActivity.this,
                             getString(R.string.picture_jurisdiction), Toast.LENGTH_SHORT).show();

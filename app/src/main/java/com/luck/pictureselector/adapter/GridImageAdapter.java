@@ -1,6 +1,7 @@
 package com.luck.pictureselector.adapter;
 
 import android.content.Context;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -18,6 +19,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DateUtils;
+import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.pictureselector.R;
 
 import java.io.File;
@@ -143,7 +145,7 @@ public class GridImageAdapter extends
                 path = media.getCompressPath();
             } else {
                 // 原图
-                path = media.getAndroidQToPath();
+                path = SdkVersionUtils.checkedAndroid_Q() ? media.getAndroidQToPath() : media.getPath();
             }
             // 图片
             if (media.isCompressed()) {

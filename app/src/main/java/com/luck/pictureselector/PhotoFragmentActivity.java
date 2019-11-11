@@ -7,6 +7,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.permissions.RxPermissions;
 import com.luck.picture.lib.tools.PictureFileUtils;
 
@@ -41,7 +42,8 @@ public class PhotoFragmentActivity extends AppCompatActivity {
             @Override
             public void onNext(Boolean aBoolean) {
                 if (aBoolean) {
-                    PictureFileUtils.deleteCacheDirFile(PhotoFragmentActivity.this);
+                    PictureFileUtils.deleteCacheDirFile(PhotoFragmentActivity.this,
+                            PictureMimeType.ofImage());
                 } else {
                     Toast.makeText(PhotoFragmentActivity.this,
                             getString(R.string.picture_jurisdiction), Toast.LENGTH_SHORT).show();

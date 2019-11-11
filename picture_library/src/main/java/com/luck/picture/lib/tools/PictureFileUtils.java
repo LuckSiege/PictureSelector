@@ -1,19 +1,11 @@
 package com.luck.picture.lib.tools;
 
 import android.annotation.SuppressLint;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
@@ -26,6 +18,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -45,12 +38,11 @@ public class PictureFileUtils {
 
     public static final String POSTFIX = ".JPEG";
     public static final String POST_VIDEO = ".mp4";
-    @Deprecated
+    public static final String POST_AUDIO = ".mp3";
     public static final String APP_NAME = "PictureSelector";
-    @Deprecated
-    public static final String CAMERA_PATH = "/" + APP_NAME + "/CameraImage/";
-    @Deprecated
-    public static final String CROP_PATH = "/" + APP_NAME + "/CropImage/";
+    public static final String CAMERA_PATH_IMAGE = "/" + APP_NAME + "/CameraImage/";
+    public static final String CAMERA_PATH_VIDEO = "/" + APP_NAME + "/CameraVideo/";
+    public static final String CAMERA_PATH_AUDIO = "/" + APP_NAME + "/CameraAudio/";
 
     /**
      * @param context
@@ -63,33 +55,82 @@ public class PictureFileUtils {
     }
 
     /**
-     * create file
+     * 创建文件
      *
      * @param context
      * @param type
+     * @param fileName
      * @param format
      * @return
      */
     private static File createMediaFile(Context context, int type, String fileName, String format) {
-        File rootDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        if (!rootDir.exists() && rootDir.mkdirs()) {
-
+        File rootDir;
+        if (SdkVersionUtils.checkedAndroid_Q()) {
+            rootDir = getRootDirFile(context, type);
+        } else {
+            String state = Environment.getExternalStorageState();
+            rootDir = state.equals(Environment.MEDIA_MOUNTED) ?
+                    Environment.getExternalStorageDirectory() : context.getCacheDir();
+        }
+        if (rootDir != null && !rootDir.exists() && rootDir.mkdirs()) {
+        }
+        String parentPath = getParentPath(type);
+        File folderDir = new File(SdkVersionUtils.checkedAndroid_Q()
+                ? rootDir.getAbsolutePath() : rootDir.getAbsolutePath() + parentPath);
+        if (folderDir != null && !folderDir.exists() && folderDir.mkdirs()) {
         }
         fileName = TextUtils.isEmpty(fileName) ? String.valueOf(System.currentTimeMillis()) : fileName;
-        File tmpFile = null;
+        File tmpFile;
         String suffixType;
         switch (type) {
-            case PictureConfig.TYPE_IMAGE:
-                suffixType = TextUtils.isEmpty(format) ? POSTFIX : format;
-                tmpFile = new File(rootDir, fileName + suffixType);
-                break;
             case PictureConfig.TYPE_VIDEO:
-                tmpFile = new File(rootDir, fileName + POST_VIDEO);
+                tmpFile = new File(folderDir, fileName + POST_VIDEO);
+                break;
+            case PictureConfig.TYPE_AUDIO:
+                tmpFile = new File(folderDir, fileName + POST_AUDIO);
                 break;
             default:
+                suffixType = TextUtils.isEmpty(format) ? POSTFIX : format;
+                tmpFile = new File(folderDir, fileName + suffixType);
                 break;
         }
+        Log.i("Mike", "createMediaFile: " + tmpFile.getAbsolutePath());
         return tmpFile;
+    }
+
+    /**
+     * 文件根目录
+     *
+     * @param context
+     * @param type
+     * @return
+     */
+    private static File getRootDirFile(Context context, int type) {
+        switch (type) {
+            case PictureConfig.TYPE_VIDEO:
+                return context.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
+            case PictureConfig.TYPE_AUDIO:
+                return context.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+            default:
+                return context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        }
+    }
+
+    /**
+     * 内存卡目录下的媒体文件目录
+     *
+     * @param type
+     * @return
+     */
+    private static String getParentPath(int type) {
+        switch (type) {
+            case PictureConfig.TYPE_VIDEO:
+                return CAMERA_PATH_VIDEO;
+            case PictureConfig.TYPE_AUDIO:
+                return CAMERA_PATH_AUDIO;
+            default:
+                return CAMERA_PATH_IMAGE;
+        }
     }
 
     /**
@@ -377,27 +418,11 @@ public class PictureFileUtils {
      * set empty PictureSelector Cache
      *
      * @param mContext
+     * @param type     image or video ...
      */
-    public static void deleteCacheDirFile(Context mContext) {
-        File cutDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        if (cutDir != null) {
-            File[] files = cutDir.listFiles();
-            for (File file : files) {
-                if (file.isFile()) {
-                    file.delete();
-                }
-            }
-        }
-    }
-
-    /**
-     * set empty PictureSelector Cache
-     *
-     * @param mContext
-     */
-    @Deprecated
-    public static void deleteExternalCacheDirFile(Context mContext) {
-        File cutDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+    public static void deleteCacheDirFile(Context mContext, int type) {
+        File cutDir = mContext.getExternalFilesDir(type == PictureMimeType.ofImage()
+                ? Environment.DIRECTORY_PICTURES : Environment.DIRECTORY_MOVIES);
         if (cutDir != null) {
             File[] files = cutDir.listFiles();
             for (File file : files) {
