@@ -224,7 +224,8 @@ compileOptions {
  	.openClickSound()// 是否开启点击声音 true or false
  	.selectionMedia()// 是否传入已选图片 List<LocalMedia> list
  	.previewEggs()// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中) true or false
- 	.cropCompressQuality()// 裁剪压缩质量 默认90 int
+ 	.cropCompressQuality(90)// 废弃 改用cutOutQuality()
+        .cutOutQuality(90)// 裁剪输出质量 默认100
  	.minimumCompressSize(100)// 小于100kb的图片不压缩 
  	.synOrAsy(true)//同步true或异步false 压缩 默认同步
  	.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效 int 
