@@ -67,10 +67,10 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
         public void run() {
             try {
                 if (mediaPlayer != null) {
-                    tv_musicTime.setText(DateUtils.timeParse(mediaPlayer.getCurrentPosition()));
+                    tv_musicTime.setText(DateUtils.formatDurationTime(mediaPlayer.getCurrentPosition()));
                     musicSeekBar.setProgress(mediaPlayer.getCurrentPosition());
                     musicSeekBar.setMax(mediaPlayer.getDuration());
-                    tv_musicTotal.setText(DateUtils.timeParse(mediaPlayer.getDuration()));
+                    tv_musicTotal.setText(DateUtils.formatDurationTime(mediaPlayer.getDuration()));
                     handler.postDelayed(runnable, 200);
                 }
             } catch (Exception e) {

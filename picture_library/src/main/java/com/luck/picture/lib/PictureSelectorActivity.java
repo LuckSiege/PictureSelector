@@ -608,10 +608,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         public void run() {
             try {
                 if (mediaPlayer != null) {
-                    mTvMusicTime.setText(DateUtils.timeParse(mediaPlayer.getCurrentPosition()));
+                    mTvMusicTime.setText(DateUtils.formatDurationTime(mediaPlayer.getCurrentPosition()));
                     musicSeekBar.setProgress(mediaPlayer.getCurrentPosition());
                     musicSeekBar.setMax(mediaPlayer.getDuration());
-                    mTvMusicTotal.setText(DateUtils.timeParse(mediaPlayer.getDuration()));
+                    mTvMusicTotal.setText(DateUtils.formatDurationTime(mediaPlayer.getDuration()));
                     handler.postDelayed(runnable, 200);
                 }
             } catch (Exception e) {

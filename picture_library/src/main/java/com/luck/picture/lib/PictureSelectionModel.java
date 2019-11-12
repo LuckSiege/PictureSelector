@@ -584,6 +584,28 @@ public class PictureSelectionModel {
     }
 
     /**
+     * Start to select media and wait for result.
+     *
+     * @param requestCode Identity of the request Activity or Fragment.
+     */
+    public void forResult(int requestCode, int enterAnim, int exitAnim) {
+        if (!DoubleUtils.isFastDoubleClick()) {
+            Activity activity = selector.getActivity();
+            if (activity == null) {
+                return;
+            }
+            Intent intent = new Intent(activity, PictureSelectorActivity.class);
+            Fragment fragment = selector.getFragment();
+            if (fragment != null) {
+                fragment.startActivityForResult(intent, requestCode);
+            } else {
+                activity.startActivityForResult(intent, requestCode);
+            }
+            activity.overridePendingTransition(enterAnim, exitAnim);
+        }
+    }
+
+    /**
      * 提供外部预览图片方法
      *
      * @param position

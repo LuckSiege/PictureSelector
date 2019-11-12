@@ -1,6 +1,7 @@
 package com.luck.picture.lib.tools;
 
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 /**
  * author：luck
@@ -19,6 +20,7 @@ public class DateUtils {
      * @param duration Millisecond
      * @return Every minute
      */
+    @Deprecated
     public static String timeParse(long duration) {
         String time = "";
         if (duration > 1000) {
@@ -69,6 +71,16 @@ public class DateUtils {
             e.printStackTrace();
             return -1;
         }
+    }
+
+    public static String formatDurationTime(long duration) {
+        String formatStr = "mm:ss";
+        if (duration > 60 * 60 * 1000) {
+            formatStr = "HH:mm:ss";
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat(formatStr);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+        return dateFormat.format(duration);
     }
 
     /**

@@ -190,7 +190,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             boolean eqLongImg = MediaUtils.isLongImg(image);
             contentHolder.tvLongChart.setVisibility(eqLongImg ? View.VISIBLE : View.GONE);
             long duration = image.getDuration();
-            contentHolder.tvDuration.setText(DateUtils.timeParse(duration));
+            contentHolder.tvDuration.setText(DateUtils.formatDurationTime(duration));
             if (chooseMode == PictureMimeType.ofAudio()) {
                 contentHolder.iv_picture.setImageResource(R.drawable.audio_placeholder);
             } else {

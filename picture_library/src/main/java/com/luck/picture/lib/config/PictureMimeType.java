@@ -192,7 +192,7 @@ public final class PictureMimeType {
         if (file != null) {
             String name = file.getName();
             if (name.endsWith(".mp4") || name.endsWith(".avi")
-                    || name.endsWith(".3gpp") || name.endsWith(".3gp") || name.startsWith(".mov")) {
+                    || name.endsWith(".3gpp") || name.endsWith(".3gp") || name.endsWith(".mov")) {
                 return "video/mp4";
             } else if (name.endsWith(".PNG") || name.endsWith(".png") || name.endsWith(".jpeg")
                     || name.endsWith(".gif") || name.endsWith(".GIF") || name.endsWith(".jpg")

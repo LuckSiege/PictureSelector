@@ -170,7 +170,7 @@ public class GridImageAdapter extends
                 viewHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
                         (R.drawable.video_icon, 0, 0, 0);
             }
-            viewHolder.tvDuration.setText(DateUtils.timeParse(duration));
+            viewHolder.tvDuration.setText(DateUtils.formatDurationTime(duration));
             if (chooseModel == PictureMimeType.ofAudio()) {
                 viewHolder.mImg.setImageResource(R.drawable.audio_placeholder);
             } else {
