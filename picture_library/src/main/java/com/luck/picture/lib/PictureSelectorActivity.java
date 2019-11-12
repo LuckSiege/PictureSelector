@@ -244,8 +244,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         // 解决调用 notifyItemChanged 闪烁问题,取消默认动画
         ((SimpleItemAnimator) mPictureRecycler.getItemAnimator())
                 .setSupportsChangeAnimations(false);
-        mediaLoader = new LocalMediaLoader(this, config.chooseMode, config.isGif,
-                config.videoMaxSecond, config.videoMinSecond);
+        mediaLoader = new LocalMediaLoader(this, config);
         rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .subscribe(new Observer<Boolean>() {

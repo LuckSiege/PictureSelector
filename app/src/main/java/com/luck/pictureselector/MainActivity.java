@@ -164,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .isSingleDirectReturn(false)// 单选模式下是否直接返回
                         .previewImage(cb_preview_img.isChecked())// 是否可预览图片
                         .previewVideo(cb_preview_video.isChecked())// 是否可预览视频
+                        //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
                         .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
                         .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
                         .isChangeStatusBarFontColor(isChangeStatusBarFontColor)// 是否关闭白色状态栏字体颜色
@@ -210,6 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .theme(themeId)// 主题样式设置 具体参考 values/styles
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
+                        //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
                         .selectionMode(cb_choose_mode.isChecked() ?
                                 PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
                         .previewImage(cb_preview_img.isChecked())// 是否可预览图片

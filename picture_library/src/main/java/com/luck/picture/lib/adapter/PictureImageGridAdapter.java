@@ -230,6 +230,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     return;
                 }
                 int index = showCamera ? position - 1 : position;
+                if (index == -1) {
+                    return;
+                }
                 boolean eqResult =
                         mediaMimeType == PictureConfig.TYPE_IMAGE && enablePreview
                                 || mediaMimeType == PictureConfig.TYPE_VIDEO && (enablePreviewVideo

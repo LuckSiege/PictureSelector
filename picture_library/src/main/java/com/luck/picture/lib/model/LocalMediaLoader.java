@@ -4,13 +4,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.Log;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.rxbus2.RxUtils;
@@ -30,7 +31,6 @@ import java.util.Locale;
  */
 
 public class LocalMediaLoader {
-    private int type;
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
     private static final String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
     private static final String NOT_GIF = "!='image/gif'";
@@ -39,10 +39,8 @@ public class LocalMediaLoader {
      */
     private static final int AUDIO_DURATION = 500;
     private Context mContext;
-    private boolean isGif;
-    private long videoMaxS;
-    private long videoMinS;
     private boolean isAndroidQ;
+    private PictureSelectionConfig config;
 
     /**
      * 媒体文件数据库字段
@@ -65,6 +63,12 @@ public class LocalMediaLoader {
     private static final String SELECTION_NOT_GIF = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
             + " AND " + MediaStore.MediaColumns.SIZE + ">0"
             + " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF;
+    /**
+     * 查询指定后缀名的图片
+     */
+    private static final String SELECTION_SPECIFIED_FORMAT = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
+            + " AND " + MediaStore.MediaColumns.SIZE + ">0"
+            + " AND " + MediaStore.MediaColumns.MIME_TYPE;
 
     /**
      * 查询条件(音视频)
@@ -79,7 +83,7 @@ public class LocalMediaLoader {
     }
 
     /**
-     * 查询条件(视频)
+     * 查询(视频)
      *
      * @return
      */
@@ -122,14 +126,13 @@ public class LocalMediaLoader {
         return new String[]{String.valueOf(mediaType)};
     }
 
-    public LocalMediaLoader(Context context, int type, boolean isGif, long videoMaxS, long videoMinS) {
+
+    public LocalMediaLoader(Context context, PictureSelectionConfig config) {
         this.mContext = context.getApplicationContext();
-        this.type = type;
-        this.isGif = isGif;
-        this.videoMaxS = videoMaxS;
-        this.videoMinS = videoMinS;
         this.isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
+        this.config = config;
     }
+
 
     public void loadAllMedia(final LocalMediaLoadListener imageLoadListener) {
         RxUtils.io(new RxUtils.RxSimpleTask<List<LocalMediaFolder>>() {
@@ -167,7 +170,7 @@ public class LocalMediaLoader {
                                 long size = data.getLong
                                         (data.getColumnIndexOrThrow(PROJECTION[6]));
 
-                                if (type == PictureConfig.TYPE_VIDEO) {
+                                if (config.chooseMode == PictureMimeType.ofVideo()) {
                                     if (duration == 0) {
                                         duration = MediaUtils.extractDuration(mContext, isAndroidQ, path);
                                     }
@@ -178,11 +181,11 @@ public class LocalMediaLoader {
                                         w = newSize[0];
                                         h = newSize[1];
                                     }
-                                    if (videoMinS > 0 && duration < videoMinS) {
+                                    if (config.videoMinSecond > 0 && duration < config.videoMinSecond) {
                                         // 如果设置了最小显示多少秒的视频
                                         continue;
                                     }
-                                    if (videoMaxS > 0 && duration > videoMaxS) {
+                                    if (config.videoMaxSecond > 0 && duration > config.videoMaxSecond) {
                                         // 如果设置了最大显示多少秒的视频
                                         continue;
                                     }
@@ -196,7 +199,7 @@ public class LocalMediaLoader {
                                     }
                                 }
                                 LocalMedia image = new LocalMedia
-                                        (path, duration, type, mimeType, w, h, size);
+                                        (path, duration, config.chooseMode, mimeType, w, h, size);
                                 LocalMediaFolder folder = getImageFolder(path, imageFolders);
                                 List<LocalMedia> images = folder.getImages();
                                 images.add(image);
@@ -211,7 +214,7 @@ public class LocalMediaLoader {
                                 imageFolders.add(0, allImageFolder);
                                 allImageFolder.setFirstImagePath
                                         (latelyImages.get(0).getPath());
-                                String title = type == PictureMimeType.ofAudio() ?
+                                String title = config.chooseMode == PictureMimeType.ofAudio() ?
                                         mContext.getString(R.string.picture_all_audio)
                                         : mContext.getString(R.string.picture_camera_roll);
                                 allImageFolder.setName(title);
@@ -242,23 +245,32 @@ public class LocalMediaLoader {
     }
 
     private String getSelection() {
-        switch (type) {
+        switch (config.chooseMode) {
             case PictureConfig.TYPE_ALL:
-                return getSelectionArgsForAllMediaCondition(getDurationCondition(0, 0), isGif);
+                // 获取全部，不包括音频
+                return getSelectionArgsForAllMediaCondition(getDurationCondition(0, 0), config.isGif);
             case PictureConfig.TYPE_IMAGE:
-                // 只获取图片
-                return isGif ? SELECTION : SELECTION_NOT_GIF;
+                if (!TextUtils.isEmpty(config.specifiedFormat)) {
+                    // 获取指定的类型的图片
+                    return SELECTION_SPECIFIED_FORMAT + "='" + config.specifiedFormat + "'";
+                }
+                return config.isGif ? SELECTION : SELECTION_NOT_GIF;
             case PictureConfig.TYPE_VIDEO:
-                // 只获取视频
+                // 获取视频
+                if (!TextUtils.isEmpty(config.specifiedFormat)) {
+                    // 获取指定的类型的图片
+                    return SELECTION_SPECIFIED_FORMAT + "='" + config.specifiedFormat + "'";
+                }
                 return getSelectionArgsForSingleMediaCondition();
             case PictureConfig.TYPE_AUDIO:
+                // 获取音频
                 return getSelectionArgsForSingleMediaCondition(getDurationCondition(0, AUDIO_DURATION));
         }
         return null;
     }
 
     private String[] getSelectionArgs() {
-        switch (type) {
+        switch (config.chooseMode) {
             case PictureConfig.TYPE_ALL:
                 return SELECTION_ALL_ARGS;
             case PictureConfig.TYPE_IMAGE:
@@ -334,14 +346,13 @@ public class LocalMediaLoader {
      * @return
      */
     private String getDurationCondition(long exMaxLimit, long exMinLimit) {
-        long maxS = videoMaxS == 0 ? Long.MAX_VALUE : videoMaxS;
+        long maxS = config.videoMaxSecond == 0 ? Long.MAX_VALUE : config.videoMaxSecond;
         if (exMaxLimit != 0) {
             maxS = Math.min(maxS, exMaxLimit);
         }
-
         return String.format(Locale.CHINA, "%d <%s " + MediaStore.MediaColumns.DURATION + " and " + MediaStore.MediaColumns.DURATION + " <= %d",
-                Math.max(exMinLimit, videoMinS),
-                Math.max(exMinLimit, videoMinS) == 0 ? "" : "=",
+                Math.max(exMinLimit, config.videoMinSecond),
+                Math.max(exMinLimit, config.videoMinSecond) == 0 ? "" : "=",
                 maxS);
     }
 

@@ -39,6 +39,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public String compressSavePath;
     public String suffixType;
     public String cameraFileName;
+    public String specifiedFormat;
     @StyleRes
     public int themeStyleId;
     public int selectionMode;
@@ -136,6 +137,7 @@ public final class PictureSelectionConfig implements Parcelable {
         compressSavePath = "";
         suffixType = PictureFileUtils.POSTFIX;
         cameraFileName = "";
+        specifiedFormat = "";
         sizeMultiplier = 0.5f;
         selectionMedias = new ArrayList<>();
     }

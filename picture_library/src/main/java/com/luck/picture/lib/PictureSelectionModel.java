@@ -405,6 +405,15 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param Specify get image format
+     * @return
+     */
+    public PictureSelectionModel querySpecifiedFormatSuffix(String specifiedFormat) {
+        selectionConfig.specifiedFormat = specifiedFormat;
+        return this;
+    }
+
+    /**
      * @param openClickSound Whether to open click voice
      * @return
      */
