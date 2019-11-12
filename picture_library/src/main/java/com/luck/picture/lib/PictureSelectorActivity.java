@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -233,7 +234,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 getString(R.string.picture_all_audio)
                 : getString(R.string.picture_camera_roll);
         mTvPictureTitle.setText(title);
-        folderWindow = new FolderPopWindow(this, config.chooseMode,config);
+        folderWindow = new FolderPopWindow(this, config.chooseMode, config);
         folderWindow.setPictureTitleView(mTvPictureTitle);
         folderWindow.setOnItemClickListener(this);
         mPictureRecycler.setHasFixedSize(true);
@@ -966,6 +967,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         // on take photo success
         String mimeType;
         final File file = new File(cameraPath);
+        if (file == null) {
+            return;
+        }
         sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
         String toType;
         long size;
@@ -1077,7 +1081,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 media.setCut(true);
                 mimeType = PictureMimeType.getImageMimeType(cutPath);
                 media.setMimeType(mimeType);
-                media.setAndroidQToPath(cutPath);
+                if (SdkVersionUtils.checkedAndroid_Q()) {
+                    media.setAndroidQToPath(cutPath);
+                }
                 medias.add(media);
                 handlerResult(medias);
             }
@@ -1105,14 +1111,17 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         for (CutInfo c : mCuts) {
             LocalMedia media = new LocalMedia();
             String imageType = PictureMimeType.getImageMimeType(c.getCutPath());
-            media.setCut(true);
+            media.setCut(TextUtils.isEmpty(c.getCutPath()) ? false : true);
             media.setPath(c.getPath());
             media.setCutPath(c.getCutPath());
             media.setMimeType(imageType);
             media.setWidth(c.getImageWidth());
             media.setHeight(c.getImageHeight());
-            media.setSize(new File(c.getCutPath()).length());
-            media.setAndroidQToPath(c.getCutPath());
+            media.setSize(new File(TextUtils.isEmpty(c.getCutPath())
+                    ? c.getPath() : c.getCutPath()).length());
+            if (SdkVersionUtils.checkedAndroid_Q()) {
+                media.setAndroidQToPath(c.getCutPath());
+            }
             media.setChooseModel(config.chooseMode);
             medias.add(media);
         }

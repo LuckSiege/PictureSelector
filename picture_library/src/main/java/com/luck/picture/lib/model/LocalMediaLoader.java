@@ -167,11 +167,16 @@ public class LocalMediaLoader {
                                 long size = data.getLong
                                         (data.getColumnIndexOrThrow(PROJECTION[6]));
 
-                                Log.i("Mike", "doSth: " + mimeType + "----" + path + "---" + size);
-
                                 if (type == PictureConfig.TYPE_VIDEO) {
                                     if (duration == 0) {
                                         duration = MediaUtils.extractDuration(mContext, isAndroidQ, path);
+                                    }
+                                    if (w == 0 && h == 0) {
+                                        int[] newSize = isAndroidQ ? MediaUtils
+                                                .getLocalVideoWidthOrHeightToAndroidQ(mContext, path)
+                                                : MediaUtils.getLocalVideoWidthOrHeight(path);
+                                        w = newSize[0];
+                                        h = newSize[1];
                                     }
                                     if (videoMinS > 0 && duration < videoMinS) {
                                         // 如果设置了最小显示多少秒的视频

@@ -62,6 +62,7 @@ public final class PictureMimeType {
             case "video/mp2ts":
                 return PictureConfig.TYPE_VIDEO;
             case "audio/mpeg":
+            case "audio/amr-wb":
             case "audio/x-ms-wma":
             case "audio/x-wav":
             case "audio/amr":

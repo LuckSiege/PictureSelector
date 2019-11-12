@@ -152,7 +152,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -162,6 +162,13 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         cutInfos.get(cutIndex).setCut(true);
         adapter = new PicturePhotoGalleryAdapter(this, cutInfos);
         recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener((position, view) -> {
+            if (cutIndex == position) {
+                return;
+            }
+            cutIndex = position;
+            resetCutData();
+        });
     }
 
     @Override

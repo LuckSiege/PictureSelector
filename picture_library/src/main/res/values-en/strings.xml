@@ -5,6 +5,7 @@
     <string name="picture_rule">not pictures or video</string>
     <string name="picture_min_video_num">Video Selection Cannot%1$sNumber</string>
     <string name="picture_message_max_num">You can choose the most%1$s Number Pictures</string>
+    <string name="picture_message_audio_max_num">You can choose the most%1$s Number Audio</string>
     <string name="picture_preview">Preview</string>
     <string name="picture_please">Please later...</string>
     <string name="picture_done_front_num">%1$d/%2$d Ok</string>
@@ -38,6 +39,6 @@
     <string name="picture_error">The picture is corrupted</string>
     <string name="picture_video_error">The video is corrupted</string>
     <string name="picture_audio_error">The audio is corrupted</string>
-    <string name="picture_confirm">Cancel</string>
+    <string name="picture_confirm">Confirm</string>
     <string name="picture_message_video_max_num">You can choose%1$s videos at most</string>
 </resources>

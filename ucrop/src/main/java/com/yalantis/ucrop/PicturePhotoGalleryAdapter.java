@@ -29,8 +29,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.yalantis.ucrop.model.CutInfo;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,18 +42,13 @@ import java.util.List;
 public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhotoGalleryAdapter.ViewHolder> {
 
     private Context context;
-    private List<CutInfo> list = new ArrayList<>();
+    private List<CutInfo> list;
     private LayoutInflater mInflater;
 
     public PicturePhotoGalleryAdapter(Context context, List<CutInfo> list) {
         mInflater = LayoutInflater.from(context);
         this.context = context;
         this.list = list;
-    }
-
-    public void bindData(List<CutInfo> list) {
-        this.list = list;
-        notifyDataSetChanged();
     }
 
     @Override
@@ -89,6 +82,11 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .apply(options)
                 .into(holder.mIvPhoto);
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(holder.getAdapterPosition(), v);
+            }
+        });
     }
 
 
@@ -104,9 +102,18 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
 
         public ViewHolder(View view) {
             super(view);
-            mIvPhoto = (ImageView) view.findViewById(R.id.iv_photo);
-            iv_dot = (ImageView) view.findViewById(R.id.iv_dot);
+            mIvPhoto = view.findViewById(R.id.iv_photo);
+            iv_dot = view.findViewById(R.id.iv_dot);
         }
     }
 
+    private OnItemClickListener listener;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position, View view);
+    }
 }

@@ -2,12 +2,16 @@ package com.luck.picture.lib.tools;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
+
+import androidx.annotation.RequiresApi;
 
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -137,5 +141,51 @@ public class MediaUtils {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    /**
+     * get Local video width or height for api 29
+     *
+     * @return
+     */
+    public static int[] getLocalVideoWidthOrHeightToAndroidQ(Context context, String videoPath) {
+        int[] wh = new int[2];
+        try {
+            Cursor query = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                query = context.getApplicationContext().getContentResolver().query(Uri.parse(videoPath),
+                        null, null, null);
+            }
+            if (query != null) {
+                query.moveToFirst();
+                wh[0] = query.getInt(query.getColumnIndexOrThrow(MediaStore.Video
+                        .Media.WIDTH));
+                wh[1] = query.getInt(query.getColumnIndexOrThrow(MediaStore.Video
+                        .Media.HEIGHT));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return wh;
+    }
+
+    /**
+     * get Local video width or height
+     *
+     * @return
+     */
+    public static int[] getLocalVideoWidthOrHeight(String videoPath) {
+        int[] wh = new int[2];
+        try {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            mmr.setDataSource(videoPath);
+            wh[0] = ValueOf.toInt(mmr.extractMetadata
+                    (MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
+            wh[1] = ValueOf.toInt(mmr.extractMetadata
+                    (MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return wh;
     }
 }

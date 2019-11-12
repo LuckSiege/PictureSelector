@@ -24,6 +24,7 @@ public final class PictureConfig {
     public final static String EXTRA_CONFIG = "PictureSelectorConfig";
     public final static String IMAGE = "image";
     public final static String VIDEO = "video";
+    public final static String AUDIO = "audio";
 
 
     public final static int UPDATE_FLAG = 2774;// 预览界面更新选中数据 标识

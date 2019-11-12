@@ -2,6 +2,7 @@ package com.luck.picture.lib.adapter;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.net.Uri;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Build;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -173,11 +175,15 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             contentHolder.tvIsGif.setVisibility(gif ? View.VISIBLE : View.GONE);
             if (chooseMode == PictureMimeType.ofAudio()) {
                 contentHolder.tvDuration.setVisibility(View.VISIBLE);
-                contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                        (R.drawable.picture_audio, 0, 0, 0);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
+                            (R.drawable.picture_audio, 0, 0, 0);
+                }
             } else {
-                contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                        (R.drawable.video_icon, 0, 0, 0);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
+                            (R.drawable.video_icon, 0, 0, 0);
+                }
                 contentHolder.tvDuration.setVisibility(mediaMimeType == PictureConfig.TYPE_VIDEO
                         ? View.VISIBLE : View.GONE);
             }
@@ -309,6 +315,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
      * @param image
      */
 
+    @SuppressLint("StringFormatMatches")
     private void changeCheckboxState(ViewHolder contentHolder, LocalMedia image) {
         boolean isChecked = contentHolder.check.isSelected();
         String mimeType = selectImages.size() > 0 ? selectImages.get(0).getMimeType() : "";
@@ -320,9 +327,14 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
         }
         if (selectImages.size() >= maxSelectNum && !isChecked) {
-            boolean eqImg = mimeType.startsWith(PictureConfig.IMAGE);
-            String str = eqImg ? context.getString(R.string.picture_message_max_num, maxSelectNum)
-                    : context.getString(R.string.picture_message_video_max_num, maxSelectNum);
+            String str;
+            if (mimeType.startsWith(PictureConfig.VIDEO)) {
+                str = context.getString(R.string.picture_message_video_max_num, maxSelectNum);
+            } else if (mimeType.startsWith(PictureConfig.AUDIO)) {
+                str = context.getString(R.string.picture_message_audio_max_num, maxSelectNum);
+            } else {
+                str = context.getString(R.string.picture_message_max_num, maxSelectNum);
+            }
             ToastUtils.s(context, str);
             return;
         }
