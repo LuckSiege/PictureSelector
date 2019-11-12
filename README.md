@@ -182,6 +182,21 @@ compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    
+ 问题七：
+ bug：UCropActivity继承AppCompatActivity没有添加Theme会出现一个下面的bug
+java.lang.IllegalStateException: This Activity already has an action bar supplied by the window decor. Do not request       Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme to use a Toolbar instead.
+ 解决：1.在styles文件中添加去掉ActionBar的theme
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+在Manifest.xml中，修改UCropActivity的theme
+<activity
+        android:name="com.yalantis.ucrop.UCropActivity"
+         android:theme="@style/AppTheme.NoActionBar" />
+ 
 
 ```
 
