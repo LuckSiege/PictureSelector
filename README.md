@@ -194,6 +194,7 @@ compileOptions {
  	.maxSelectNum()// 最大图片选择数量 int
  	.minSelectNum()// 最小选择数量 int
 	.imageSpanCount(4)// 每行显示个数 int
+	.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
 	.cameraFileName("")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用，选图时不要用
 	.isSingleDirectReturn(false)// 单选模式下是否直接返回
 	.isChangeStatusBarFontColor(isChangeStatusBarFontColor)// 是否关闭白色状态栏字体颜色
