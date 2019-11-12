@@ -57,6 +57,10 @@
 * 23.新增Luban压缩档次设置
 * 24.新增圆形头像裁剪
 * 25.新增音频功能查询
+* 26.新增可自定义启动相册动画 forResult(int requestCode, int enterAnim, int exitAnim); 
+* 27.新增指定精确查询 querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
+* 28.新增单选模式可设置点击选择后直接返回控制 isSingleDirectReturn(false)// 单选模式下是否直接返回
+* 29.多图裁剪下可自由选择某图不裁剪不在强制一张张裁剪，但最后一张除外
 
 
 重要的事情说三遍记得添加权限
@@ -75,7 +79,7 @@
 
 ```
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.8'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.9'
 }
 
 ```
@@ -108,7 +112,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.2.8</version> 
+      <version>v2.2.9</version> 
 </dependency>
 
 ```
@@ -380,6 +384,15 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 # 当前版本：
 
+* v2.2.9
+* 1.新增 querySpecifiedFormatSuffix(PictureMimeType.ofPNG());// 查询指定后缀格式资源
+* 2.新增启动相册支持自定义启动动画设置  forResult(int requestCode, int enterAnim, int exitAnim);
+* 3.优化多图裁剪时可选择性裁剪图片
+* 4.修复部分issues
+
+# 历史版本：
+
+* v2.2.8
 * 1.PictureConfig.SINGLE模式下新增isSingleDirectReturn(true); api选择
 * 图片可立即返回不需要点击确认.
 
@@ -411,9 +424,6 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 * 修复一些已知bug
 * ...
-
-
-# 历史版本：
 
 * v2.2.4
 * 1.适配Android Q 版本
