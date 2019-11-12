@@ -193,7 +193,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                        .videoMaxSecond(15)
 //                        .videoMinSecond(10)
                         //.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
-                        //.cropCompressQuality(90)// 裁剪压缩质量 默认100
+                        //.cropCompressQuality(90)// 废弃 改用cutOutQuality()
+                        .cutOutQuality(90)// 裁剪输出质量 默认100
                         .minimumCompressSize(100)// 小于100kb的图片不压缩
                         //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
                         //.rotateEnabled(true) // 裁剪是否可旋转图片
@@ -234,7 +235,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .selectionMedia(selectList)// 是否传入已选图片
                         .previewEggs(false)//预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                         //.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
-                        //.cropCompressQuality(90)// 裁剪压缩质量 默认为100
+                        //.cropCompressQuality(90)// 废弃 改用cutOutQuality()
+                        .cutOutQuality(90)// 裁剪输出质量 默认100
                         .minimumCompressSize(100)// 小于100kb的图片不压缩
                         //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
                         //.rotateEnabled() // 裁剪是否可旋转图片

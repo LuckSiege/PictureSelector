@@ -284,8 +284,18 @@ public class PictureSelectionModel {
      * @param compressQuality crop compress quality default 90
      * @return
      */
+    @Deprecated
     public PictureSelectionModel cropCompressQuality(int compressQuality) {
         selectionConfig.cropCompressQuality = compressQuality;
+        return this;
+    }
+
+    /**
+     * @param cutQuality crop compress quality default 90
+     * @return
+     */
+    public PictureSelectionModel cutOutQuality(int cutQuality) {
+        selectionConfig.cropCompressQuality = cutQuality;
         return this;
     }
 
