@@ -1,9 +1,8 @@
 package com.luck.picture.lib;
 
 import android.Manifest;
-import android.graphics.Bitmap;
 import android.graphics.PointF;
-import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,21 +13,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.transition.Transition;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.dialog.CustomDialog;
@@ -38,6 +25,7 @@ import com.luck.picture.lib.photoview.PhotoView;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
+import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.widget.PreviewViewPager;
 import com.luck.picture.lib.widget.longimage.ImageSource;
@@ -46,6 +34,7 @@ import com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -66,8 +55,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     private PreviewViewPager viewPager;
     private List<LocalMedia> images = new ArrayList<>();
     private int position = 0;
-    @Deprecated
-    private String directory_path;
     private SimpleFragmentAdapter adapter;
     private LayoutInflater inflater;
     private RxPermissions rxPermissions;
@@ -82,7 +69,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         left_back = findViewById(R.id.left_back);
         viewPager = findViewById(R.id.preview_pager);
         position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
-        directory_path = getIntent().getStringExtra(PictureConfig.DIRECTORY_PATH);
         images = (List<LocalMedia>) getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
         left_back.setOnClickListener(this);
         initViewPageAdapterData();
@@ -165,55 +151,22 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 longImg.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
                 // 压缩过的gif就不是gif了
                 if (isGif && !media.isCompressed()) {
-                    RequestOptions gifOptions = new RequestOptions()
-                            .override(480, 800)
-                            .priority(Priority.HIGH)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE);
-                    Glide.with(PictureExternalPreviewActivity.this)
-                            .asGif()
-                            .apply(gifOptions)
-                            .load(path)
-                            .listener(new RequestListener<GifDrawable>() {
-                                @Override
-                                public boolean onLoadFailed(@Nullable GlideException e, Object model
-                                        , Target<GifDrawable> target, boolean isFirstResource) {
-                                    dismissDialog();
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onResourceReady(GifDrawable resource, Object model
-                                        , Target<GifDrawable> target, DataSource dataSource,
-                                                               boolean isFirstResource) {
-                                    dismissDialog();
-                                    return false;
-                                }
-                            })
-                            .into(imageView);
+                    if (config != null && config.imageEngine != null) {
+                        config.imageEngine.loadAsGifImage
+                                (PictureExternalPreviewActivity.this,
+                                        path, imageView, 480, 800);
+                        dismissDialog();
+                    }
                 } else {
-                    RequestOptions options = new RequestOptions()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL);
-                    Glide.with(PictureExternalPreviewActivity.this)
-                            .asBitmap()
-                            .load(path)
-                            .apply(options)
-                            .into(new SimpleTarget<Bitmap>(480, 800) {
-                                @Override
-                                public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                                    super.onLoadFailed(errorDrawable);
-                                    dismissDialog();
-                                }
-
-                                @Override
-                                public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                                    dismissDialog();
-                                    if (eqLongImg) {
-                                        displayLongPic(resource, longImg);
-                                    } else {
-                                        imageView.setImageBitmap(resource);
-                                    }
-                                }
-                            });
+                    if (config != null && config.imageEngine != null) {
+                        if (eqLongImg) {
+                            displayLongPic(SdkVersionUtils.checkedAndroid_Q()
+                                    ? Uri.parse(path) : Uri.fromFile(new File(path)), longImg);
+                        } else {
+                            config.imageEngine.loadAsBitmapImage
+                                    (contentView.getContext(), path, imageView, 480, 800);
+                        }
+                    }
                 }
                 imageView.setOnViewTapListener((view, x, y) -> {
                     finish();
@@ -261,17 +214,17 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     /**
      * 加载长图
      *
-     * @param bmp
+     * @param uri
      * @param longImg
      */
-    private void displayLongPic(Bitmap bmp, SubsamplingScaleImageView longImg) {
+    private void displayLongPic(Uri uri, SubsamplingScaleImageView longImg) {
         longImg.setQuickScaleEnabled(true);
         longImg.setZoomEnabled(true);
         longImg.setPanEnabled(true);
         longImg.setDoubleTapZoomDuration(100);
         longImg.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
         longImg.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
-        longImg.setImage(ImageSource.cachedBitmap(bmp), new ImageViewState(0, new PointF(0, 0), 0));
+        longImg.setImage(ImageSource.uri(uri), new ImageViewState(0, new PointF(0, 0), 0));
     }
 
     /**

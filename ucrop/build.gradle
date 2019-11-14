@@ -34,5 +34,4 @@ dependencies {
     implementation "androidx.appcompat:appcompat:${cfgs.version_appcompat}"
     //noinspection GradleCompatible
     implementation "androidx.recyclerview:recyclerview:${cfgs.version_recyclerview}"
-    implementation "com.github.bumptech.glide:glide:${cfgs.glide}"
 }

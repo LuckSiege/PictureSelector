@@ -29,15 +29,6 @@
         android:layout_below="@+id/toolbar"
         android:background="@color/ucrop_color_default_crop_frame">
 
-        <!--<ImageView-->
-        <!--android:id="@+id/image_view_logo"-->
-        <!--android:layout_width="200dp"-->
-        <!--android:layout_height="200dp"-->
-        <!--android:layout_gravity="center"-->
-        <!--app:srcCompat="@drawable/ucrop_vector_ic_crop"-->
-        <!--tools:background="@drawable/ucrop_vector_ic_crop"-->
-        <!--tools:ignore="MissingPrefix" />-->
-
         <com.yalantis.ucrop.view.UCropView
             android:id="@+id/ucrop"
             android:layout_width="match_parent"

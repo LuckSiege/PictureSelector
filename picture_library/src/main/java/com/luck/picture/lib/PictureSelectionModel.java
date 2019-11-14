@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DoubleUtils;
 
@@ -17,12 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * author：luck
- * project：PictureSelector
- * package：com.luck.picture.lib
- * describe：PictureSelector selection configuration.
- * email：893855882@qq.com
- * data：2017/5/24
+ * @author：luck
+ * @date：2017-5-24 21:30
+ * @describe：PictureSelectionModel
  */
 
 public class PictureSelectionModel {
@@ -48,6 +46,17 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel theme(@StyleRes int themeStyleId) {
         selectionConfig.themeStyleId = themeStyleId;
+        return this;
+    }
+
+    /**
+     * @param engine Image Load the engine
+     * @return
+     */
+    public PictureSelectionModel loadImageEngine(ImageEngine engine) {
+        if (selectionConfig.imageEngine != engine) {
+            selectionConfig.imageEngine = engine;
+        }
         return this;
     }
 
@@ -244,6 +253,7 @@ public class PictureSelectionModel {
      * @param height glide height
      * @return
      */
+    @Deprecated
     public PictureSelectionModel glideOverride(@IntRange(from = 100) int width,
                                                @IntRange(from = 100) int height) {
         selectionConfig.overrideWidth = width;
@@ -257,6 +267,7 @@ public class PictureSelectionModel {
      *                       loading the resource.
      * @return
      */
+    @Deprecated
     public PictureSelectionModel sizeMultiplier(@FloatRange(from = 0.1f) float sizeMultiplier) {
         selectionConfig.sizeMultiplier = sizeMultiplier;
         return this;
@@ -305,6 +316,15 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel compress(boolean isCompress) {
         selectionConfig.isCompress = isCompress;
+        return this;
+    }
+
+    /**
+     * @param compressQuality Image compressed output quality
+     * @return
+     */
+    public PictureSelectionModel compressQuality(int compressQuality) {
+        selectionConfig.compressQuality = compressQuality;
         return this;
     }
 

@@ -234,7 +234,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 getString(R.string.picture_all_audio)
                 : getString(R.string.picture_camera_roll);
         mTvPictureTitle.setText(title);
-        folderWindow = new FolderPopWindow(this, config.chooseMode, config);
+        folderWindow = new FolderPopWindow(this, config);
         folderWindow.setPictureTitleView(mTvPictureTitle);
         folderWindow.setOnItemClickListener(this);
         mPictureRecycler.setHasFixedSize(true);

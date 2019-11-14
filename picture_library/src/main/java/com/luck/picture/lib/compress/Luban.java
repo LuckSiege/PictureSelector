@@ -30,7 +30,7 @@ public class Luban implements Handler.Callback {
     private static final int MSG_COMPRESS_SUCCESS = 0;
     private static final int MSG_COMPRESS_START = 1;
     private static final int MSG_COMPRESS_ERROR = 2;
-
+    private int compressQuality;
     private String mTargetDir;
     private String customFileName;
     private boolean focusAlpha;
@@ -54,6 +54,7 @@ public class Luban implements Handler.Callback {
         this.mLeastCompressSize = builder.mLeastCompressSize;
         this.mCompressionPredicate = builder.mCompressionPredicate;
         this.customFileName = builder.customFileName;
+        this.compressQuality = builder.compressQuality;
         mHandler = new Handler(Looper.getMainLooper(), this);
     }
 
@@ -155,7 +156,7 @@ public class Luban implements Handler.Callback {
      */
     private File get(InputStreamProvider input, Context context) throws IOException {
         try {
-            return new Engine(input, getImageCacheFile(context, Checker.SINGLE.extSuffix(input)), focusAlpha).compress();
+            return new Engine(input, getImageCacheFile(context, Checker.SINGLE.extSuffix(input)), focusAlpha, compressQuality).compress();
         } finally {
             input.close();
         }
@@ -206,7 +207,7 @@ public class Luban implements Handler.Callback {
         if (mCompressionPredicate != null) {
             if (mCompressionPredicate.apply(path.getPath())
                     && Checker.SINGLE.needCompress(mLeastCompressSize, path.getPath())) {
-                result = new Engine(path, outFile, focusAlpha).compress();
+                result = new Engine(path, outFile, focusAlpha, compressQuality).compress();
             } else {
                 result = new File(path.getPath());
             }
@@ -216,7 +217,7 @@ public class Luban implements Handler.Callback {
                 result = new File(path.getPath());
             } else {
                 result = Checker.SINGLE.needCompress(mLeastCompressSize, path.getPath()) ?
-                        new Engine(path, outFile, focusAlpha).compress() :
+                        new Engine(path, outFile, focusAlpha, compressQuality).compress() :
                         new File(path.getPath());
             }
         }
@@ -245,6 +246,7 @@ public class Luban implements Handler.Callback {
         private Context context;
         private String mTargetDir;
         private boolean focusAlpha;
+        private int compressQuality;
         private int mLeastCompressSize = 100;
         private OnRenameListener mRenameListener;
         private OnCompressListener mCompressListener;
@@ -432,6 +434,17 @@ public class Luban implements Handler.Callback {
             this.focusAlpha = focusAlpha;
             return this;
         }
+
+        /**
+         * Image compressed output quality
+         *
+         * @param compressQuality The quality is better than
+         */
+        public Builder setCompressQuality(int compressQuality) {
+            this.compressQuality = compressQuality;
+            return this;
+        }
+
 
         /**
          * do not compress when the origin image file size less than one value

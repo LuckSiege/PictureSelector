@@ -120,7 +120,8 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                     break;
                 default:
                     // 预览图片
-                    PictureSelector.create(PhotoFragment.this).themeStyle(themeId)
+                    PictureSelector.create(PhotoFragment.this)
+                            .themeStyle(themeId)
                             .openExternalPreview(position, selectList);
                     break;
             }

@@ -20,9 +20,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.anim.OptAnimationLoader;
 import com.luck.picture.lib.config.PictureConfig;
@@ -40,12 +37,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
- * author：luck
- * project：PictureSelector
- * package：com.luck.picture.lib.adapter
- * email：893855882@qq.com
- * data：2016/12/30
+ * @author：luck
+ * @date：2016-12-30 12:02
+ * @describe：图片列表
  */
 public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final static int DURATION = 450;
@@ -61,8 +57,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private boolean enablePreviewAudio;
     private boolean is_checked_num;
     private boolean enableVoice;
-    private int overrideWidth, overrideHeight;
-    private float sizeMultiplier;
     private Animation animation;
     private PictureSelectionConfig config;
     private int chooseMode;
@@ -83,10 +77,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.enablePreviewVideo = config.enPreviewVideo;
         this.enablePreviewAudio = config.enablePreviewAudio;
         this.is_checked_num = config.checkNumMode;
-        this.overrideWidth = config.overrideWidth;
-        this.overrideHeight = config.overrideHeight;
         this.enableVoice = config.openClickSound;
-        this.sizeMultiplier = config.sizeMultiplier;
         this.chooseMode = config.chooseMode;
         this.zoomAnim = config.zoomAnim;
         this.isSingleDirectReturn = config.isSingleDirectReturn;
@@ -194,20 +185,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             if (chooseMode == PictureMimeType.ofAudio()) {
                 contentHolder.iv_picture.setImageResource(R.drawable.audio_placeholder);
             } else {
-                RequestOptions options = new RequestOptions();
-                if (overrideWidth <= 0 && overrideHeight <= 0) {
-                    options.sizeMultiplier(sizeMultiplier);
-                } else {
-                    options.override(overrideWidth, overrideHeight);
+                if (config != null && config.imageEngine != null) {
+                    config.imageEngine
+                            .loadAsBitmapGridImage(context, path,
+                                    contentHolder.iv_picture, R.drawable.image_placeholder);
                 }
-                options.diskCacheStrategy(DiskCacheStrategy.ALL);
-                options.centerCrop();
-                options.placeholder(R.drawable.image_placeholder);
-                Glide.with(context)
-                        .asBitmap()
-                        .load(path)
-                        .apply(options)
-                        .into(contentHolder.iv_picture);
             }
             if (enablePreview || enablePreviewVideo || enablePreviewAudio) {
                 contentHolder.llCheck.setOnClickListener(v -> {

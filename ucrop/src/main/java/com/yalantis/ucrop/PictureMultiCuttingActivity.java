@@ -85,7 +85,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     private static final int TABS_COUNT = 3;
     private static final int SCALE_WIDGET_SENSITIVITY_COEFFICIENT = 15000;
     private static final int ROTATE_WIDGET_SENSITIVITY_COEFFICIENT = 42;
-    private RecyclerView recyclerView;
+    private RecyclerView mRecyclerView;
     private PicturePhotoGalleryAdapter adapter;
     private String mToolbarTitle;
     private ArrayList<String> list;
@@ -113,11 +113,11 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     private List<ViewGroup> mCropAspectRatioViews = new ArrayList<>();
     private TextView mTextViewRotateAngle, mTextViewScalePercent;
     private View mBlockingView;
-
+    private RelativeLayout uCropMultiplePhotoBox;
     private Bitmap.CompressFormat mCompressFormat = DEFAULT_COMPRESS_FORMAT;
     private int mCompressQuality = DEFAULT_COMPRESS_QUALITY;
     private int[] mAllowedGestures = new int[]{SCALE, ROTATE, ALL};
-    private List<CutInfo> cutInfos = new ArrayList<>();
+    private List<CutInfo> mCutImages = new ArrayList<>();
     /**
      * 是否可拖动裁剪框
      */
@@ -134,34 +134,48 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ucrop_picture_activity_multi_cutting);
+        uCropMultiplePhotoBox = findViewById(R.id.ucrop_mulit_photobox);
         final Intent intent = getIntent();
-        list = getIntent().getStringArrayListExtra(UCropMulti.Options.EXTRA_CUT_CROP);
-        // Crop cut list
-        if (list != null && list.size() > 0) {
-            CutInfo cutInfo;
-            for (String path : list) {
-                cutInfo = new CutInfo(path, false);
-                cutInfos.add(cutInfo);
-            }
-            initData();
-        }
+        initLoadCutData();
+        addPhotoRecyclerView();
         setupViews(intent);
         setInitialState();
         addBlockingView();
         setImageData(intent);
     }
 
-    private void initData() {
-        recyclerView = findViewById(R.id.recyclerView);
+    /**
+     * 装载裁剪数据
+     */
+    private void initLoadCutData() {
+        list = getIntent().getStringArrayListExtra(UCropMulti.Options.EXTRA_CUT_CROP);
+        // Crop cut list
+        if (list == null || list.size() == 0) {
+            closeActivity();
+            return;
+        }
+        for (String path : list) {
+            mCutImages.add(new CutInfo(path, false));
+        }
+    }
+
+    /**
+     * 动态添加多图裁剪底部预览图片列表
+     */
+    private void addPhotoRecyclerView() {
+        mRecyclerView = new RecyclerView(this);
+        mRecyclerView.setId(R.id.id_recycler);
+        mRecyclerView.setBackgroundColor(ContextCompat.getColor(this, R.color.ucrop_color_widget_background));
+        RelativeLayout.LayoutParams lp =
+                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, dip2px(90));
+        mRecyclerView.setLayoutParams(lp);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        recyclerView.setLayoutManager(mLayoutManager);
-        for (CutInfo info : cutInfos) {
-            info.setCut(false);
-        }
-        cutInfos.get(cutIndex).setCut(true);
-        adapter = new PicturePhotoGalleryAdapter(this, cutInfos);
-        recyclerView.setAdapter(adapter);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        resetCutDataStatus();
+        mCutImages.get(cutIndex).setCut(true);
+        adapter = new PicturePhotoGalleryAdapter(this, mCutImages);
+        mRecyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener((position, view) -> {
             if (cutIndex == position) {
                 return;
@@ -169,14 +183,42 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
             cutIndex = position;
             resetCutData();
         });
+
+        uCropMultiplePhotoBox.addView(mRecyclerView);
+        changeLayoutParams(mShowBottomControls);
+        FrameLayout uCropFrame = findViewById(R.id.ucrop_frame);
+        ((RelativeLayout.LayoutParams) uCropFrame.getLayoutParams())
+                .addRule(RelativeLayout.ABOVE, R.id.id_recycler);
+    }
+
+    /**
+     * 切换裁剪图片
+     */
+    private void refreshPhotoRecyclerData() {
+        resetCutDataStatus();
+        mCutImages.get(cutIndex).setCut(true);
+        adapter.notifyDataSetChanged();
+
+        uCropMultiplePhotoBox.addView(mRecyclerView);
+        changeLayoutParams(mShowBottomControls);
+        FrameLayout uCropFrame = findViewById(R.id.ucrop_frame);
+        ((RelativeLayout.LayoutParams) uCropFrame.getLayoutParams())
+                .addRule(RelativeLayout.ABOVE, R.id.id_recycler);
+    }
+
+    /**
+     * 重置数据裁剪状态
+     */
+    private void resetCutDataStatus() {
+        for (CutInfo info : mCutImages) {
+            info.setCut(false);
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.ucrop_menu_activity, menu);
-
         // Change crop & loader menu icons color to match the rest of the UI colors
-
         MenuItem menuItemLoader = menu.findItem(R.id.menu_loader);
         Drawable menuItemLoaderIcon = menuItemLoader.getIcon();
         if (menuItemLoaderIcon != null) {
@@ -197,7 +239,6 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
             menuItemCropIcon.setColorFilter(mToolbarWidgetColor, PorterDuff.Mode.SRC_ATOP);
             menuItemCrop.setIcon(menuItemCropIcon);
         }
-
         return true;
     }
 
@@ -329,6 +370,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     }
 
     private void setupViews(@NonNull Intent intent) {
+
         scaleEnabled = intent.getBooleanExtra(UCropMulti.Options.EXTRA_SCALE, false);
         rotateEnabled = intent.getBooleanExtra(UCropMulti.Options.EXTRA_ROTATE, false);
         // 是否可拖动裁剪框
@@ -360,37 +402,25 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         initiateRootViews();
 
         if (mShowBottomControls) {
-            ViewGroup photoBox = findViewById(R.id.ucrop_mulit_photobox);
-            View.inflate(this, R.layout.ucrop_controls, photoBox);
+            View.inflate(this, R.layout.ucrop_controls, uCropMultiplePhotoBox);
 
-            ((RelativeLayout.LayoutParams) recyclerView.getLayoutParams())
-                    .addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
-
-            ((RelativeLayout.LayoutParams) recyclerView.getLayoutParams())
-                    .addRule(RelativeLayout.ABOVE, R.id.wrapper_controls);
-
-            mWrapperStateAspectRatio = (ViewGroup) findViewById(R.id.state_aspect_ratio);
+            mWrapperStateAspectRatio = findViewById(R.id.state_aspect_ratio);
             mWrapperStateAspectRatio.setOnClickListener(mStateClickListener);
-            mWrapperStateRotate = (ViewGroup) findViewById(R.id.state_rotate);
+            mWrapperStateRotate = findViewById(R.id.state_rotate);
             mWrapperStateRotate.setOnClickListener(mStateClickListener);
-            mWrapperStateScale = (ViewGroup) findViewById(R.id.state_scale);
+            mWrapperStateScale = findViewById(R.id.state_scale);
             mWrapperStateScale.setOnClickListener(mStateClickListener);
 
-            mLayoutAspectRatio = (ViewGroup) findViewById(R.id.layout_aspect_ratio);
-            mLayoutRotate = (ViewGroup) findViewById(R.id.layout_rotate_wheel);
-            mLayoutScale = (ViewGroup) findViewById(R.id.layout_scale_wheel);
+            mLayoutAspectRatio = findViewById(R.id.layout_aspect_ratio);
+            mLayoutRotate = findViewById(R.id.layout_rotate_wheel);
+            mLayoutScale = findViewById(R.id.layout_scale_wheel);
 
             setupAspectRatioWidget(intent);
             setupRotateWidget();
             setupScaleWidget();
             setupStatesWrapper();
-        } else {
-            ((RelativeLayout.LayoutParams) recyclerView.getLayoutParams())
-                    .addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-
-            ((RelativeLayout.LayoutParams) recyclerView.getLayoutParams())
-                    .addRule(RelativeLayout.ABOVE, 0);
         }
+        changeLayoutParams(mShowBottomControls);
     }
 
     /**
@@ -399,13 +429,13 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     private void setupAppBar() {
         setStatusBarColor(mStatusBarColor);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = findViewById(R.id.toolbar);
 
         // Set all of the Toolbar coloring
         toolbar.setBackgroundColor(mToolbarColor);
         toolbar.setTitleTextColor(mToolbarWidgetColor);
 
-        final TextView toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        final TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         toolbarTitle.setTextColor(mToolbarWidgetColor);
         toolbarTitle.setText(mToolbarTitle);
 
@@ -422,7 +452,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     }
 
     private void initiateRootViews() {
-        mUCropView = (UCropView) findViewById(R.id.ucrop);
+        mUCropView = findViewById(R.id.ucrop);
         mGestureCropImageView = mUCropView.getCropImageView();
         mOverlayView = mUCropView.getOverlayView();
         mGestureCropImageView.setTransformImageListener(mImageListener);
@@ -463,9 +493,9 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
      * Use {@link #mActiveWidgetColor} for color filter
      */
     private void setupStatesWrapper() {
-        ImageView stateScaleImageView = (ImageView) findViewById(R.id.image_view_state_scale);
-        ImageView stateRotateImageView = (ImageView) findViewById(R.id.image_view_state_rotate);
-        ImageView stateAspectRatioImageView = (ImageView) findViewById(R.id.image_view_state_aspect_ratio);
+        ImageView stateScaleImageView = findViewById(R.id.image_view_state_scale);
+        ImageView stateRotateImageView = findViewById(R.id.image_view_state_rotate);
+        ImageView stateAspectRatioImageView = findViewById(R.id.image_view_state_aspect_ratio);
 
         stateScaleImageView.setImageDrawable(new SelectedStateListDrawable(stateScaleImageView.getDrawable(), mActiveWidgetColor));
         stateRotateImageView.setImageDrawable(new SelectedStateListDrawable(stateRotateImageView.getDrawable(), mActiveWidgetColor));
@@ -506,7 +536,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
             aspectRatioList.add(new AspectRatio(null, 16, 9));
         }
 
-        LinearLayout wrapperAspectRatioList = (LinearLayout) findViewById(R.id.layout_aspect_ratio);
+        LinearLayout wrapperAspectRatioList = findViewById(R.id.layout_aspect_ratio);
 
         FrameLayout wrapperAspectRatio;
         AspectRatioTextView aspectRatioTextView;
@@ -526,16 +556,13 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         mCropAspectRatioViews.get(aspectRationSelectedByDefault).setSelected(true);
 
         for (ViewGroup cropAspectRatioView : mCropAspectRatioViews) {
-            cropAspectRatioView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mGestureCropImageView.setTargetAspectRatio(
-                            ((AspectRatioTextView) ((ViewGroup) v).getChildAt(0)).getAspectRatio(v.isSelected()));
-                    mGestureCropImageView.setImageToWrapCropBounds();
-                    if (!v.isSelected()) {
-                        for (ViewGroup cropAspectRatioView : mCropAspectRatioViews) {
-                            cropAspectRatioView.setSelected(cropAspectRatioView == v);
-                        }
+            cropAspectRatioView.setOnClickListener(v -> {
+                mGestureCropImageView.setTargetAspectRatio(
+                        ((AspectRatioTextView) ((ViewGroup) v).getChildAt(0)).getAspectRatio(v.isSelected()));
+                mGestureCropImageView.setImageToWrapCropBounds();
+                if (!v.isSelected()) {
+                    for (ViewGroup cropAspectRatioView1 : mCropAspectRatioViews) {
+                        cropAspectRatioView1.setSelected(cropAspectRatioView1 == v);
                     }
                 }
             });
@@ -543,7 +570,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     }
 
     private void setupRotateWidget() {
-        mTextViewRotateAngle = ((TextView) findViewById(R.id.text_view_rotate));
+        mTextViewRotateAngle = findViewById(R.id.text_view_rotate);
         ((HorizontalProgressWheelView) findViewById(R.id.rotate_scroll_wheel))
                 .setScrollingListener(new HorizontalProgressWheelView.ScrollingListener() {
                     @Override
@@ -565,22 +592,12 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         ((HorizontalProgressWheelView) findViewById(R.id.rotate_scroll_wheel)).setMiddleLineColor(mActiveWidgetColor);
 
 
-        findViewById(R.id.wrapper_reset_rotate).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetRotation();
-            }
-        });
-        findViewById(R.id.wrapper_rotate_by_angle).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rotateByAngle(90);
-            }
-        });
+        findViewById(R.id.wrapper_reset_rotate).setOnClickListener(v -> resetRotation());
+        findViewById(R.id.wrapper_rotate_by_angle).setOnClickListener(v -> rotateByAngle(90));
     }
 
     private void setupScaleWidget() {
-        mTextViewScalePercent = ((TextView) findViewById(R.id.text_view_scale));
+        mTextViewScalePercent = findViewById(R.id.text_view_scale);
         ((HorizontalProgressWheelView) findViewById(R.id.scale_scroll_wheel))
                 .setScrollingListener(new HorizontalProgressWheelView.ScrollingListener() {
                     @Override
@@ -629,12 +646,9 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         mGestureCropImageView.setImageToWrapCropBounds();
     }
 
-    private final View.OnClickListener mStateClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (!v.isSelected()) {
-                setWidgetState(v.getId());
-            }
+    private final View.OnClickListener mStateClickListener = v -> {
+        if (!v.isSelected()) {
+            setWidgetState(v.getId());
         }
     };
 
@@ -688,7 +702,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
             mBlockingView.setLayoutParams(lp);
             mBlockingView.setClickable(true);
         }
-        ((RelativeLayout) findViewById(R.id.ucrop_mulit_photobox)).addView(mBlockingView);
+        uCropMultiplePhotoBox.addView(mBlockingView);
     }
 
     protected void cropAndSaveImage() {
@@ -712,7 +726,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
 
     protected void setResultUri(Uri uri, float resultAspectRatio, int offsetX, int offsetY, int imageWidth, int imageHeight) {
         try {
-            CutInfo info = cutInfos.get(cutIndex);
+            CutInfo info = mCutImages.get(cutIndex);
             info.setCutPath(uri.getPath());
             info.setCut(true);
             info.setResultAspectRatio(resultAspectRatio);
@@ -721,9 +735,9 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
             info.setImageWidth(imageWidth);
             info.setImageHeight(imageHeight);
             cutIndex++;
-            if (cutIndex >= cutInfos.size()) {
+            if (cutIndex >= mCutImages.size()) {
                 setResult(RESULT_OK, new Intent()
-                        .putExtra(UCropMulti.EXTRA_OUTPUT_URI_LIST, (Serializable) cutInfos)
+                        .putExtra(UCropMulti.EXTRA_OUTPUT_URI_LIST, (Serializable) mCutImages)
                 );
                 closeActivity();
             } else {
@@ -739,13 +753,16 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
      * 重置裁剪参数
      */
     protected void resetCutData() {
+        uCropMultiplePhotoBox.removeView(mRecyclerView);
         setContentView(R.layout.ucrop_picture_activity_multi_cutting);
-        Intent intent = new Intent();
-        Bundle extras = getIntent().getExtras();
-        String path = cutInfos.get(cutIndex).getPath();
-        boolean isHttp = FileUtils.isHttp(path);
-        String imgType = getLastImgType(path);
+        uCropMultiplePhotoBox = findViewById(R.id.ucrop_mulit_photobox);
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
         boolean isAndroidQ = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
+        String path = mCutImages.get(cutIndex).getPath();
+        boolean isHttp = FileUtils.isHttp(path);
+        String imgType = getLastImgType(isAndroidQ ? FileUtils.getPath(this, Uri.parse(path)) : path);
+
         Uri uri = isHttp || isAndroidQ ? Uri.parse(path) : Uri.fromFile(new File(path));
         extras.putParcelable(UCropMulti.EXTRA_INPUT_URI, uri);
 
@@ -754,28 +771,31 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         extras.putParcelable(UCropMulti.EXTRA_OUTPUT_URI,
                 Uri.fromFile(new File(file, System.currentTimeMillis() + imgType)));
         intent.putExtras(extras);
+        refreshPhotoRecyclerData();
         setupViews(intent);
-        setInitialState();
-        ((RelativeLayout) findViewById(R.id.ucrop_mulit_photobox)).removeView(mBlockingView);
-        mBlockingView = null;
-        addBlockingView();
         setImageData(intent);
-        initData();
         // 预览图 一页5个,裁剪到第6个的时候滚动到最新位置，不然预览图片看不到
         if (cutIndex >= 5) {
-            recyclerView.scrollToPosition(cutIndex);
+            mRecyclerView.scrollToPosition(cutIndex);
+        }
+        changeLayoutParams(mShowBottomControls);
+    }
+
+    private void changeLayoutParams(boolean mShowBottomControls) {
+        if (mRecyclerView.getLayoutParams() == null) {
+            return;
         }
         if (mShowBottomControls) {
-            ((RelativeLayout.LayoutParams) recyclerView.getLayoutParams())
+            ((RelativeLayout.LayoutParams) mRecyclerView.getLayoutParams())
                     .addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
 
-            ((RelativeLayout.LayoutParams) recyclerView.getLayoutParams())
+            ((RelativeLayout.LayoutParams) mRecyclerView.getLayoutParams())
                     .addRule(RelativeLayout.ABOVE, R.id.wrapper_controls);
         } else {
-            ((RelativeLayout.LayoutParams) recyclerView.getLayoutParams())
+            ((RelativeLayout.LayoutParams) mRecyclerView.getLayoutParams())
                     .addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 
-            ((RelativeLayout.LayoutParams) recyclerView.getLayoutParams())
+            ((RelativeLayout.LayoutParams) mRecyclerView.getLayoutParams())
                     .addRule(RelativeLayout.ABOVE, 0);
         }
     }
@@ -821,5 +841,9 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     protected void closeActivity() {
         finish();
         overridePendingTransition(0, R.anim.ucrop_close);
+    }
+
+    public int dip2px(float dpValue) {
+        return (int) (0.5f + dpValue * getResources().getDisplayMetrics().density);
     }
 }

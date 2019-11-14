@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import androidx.annotation.StyleRes;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.PictureFileUtils;
 
@@ -13,11 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * author：luck
- * project：PictureSelector
- * package：com.luck.picture.lib.config
- * email：893855882@qq.com
- * data：2017/5/24
+ * @author：luck
+ * @date：2017-05-24 17:02
+ * @describe：PictureSelector Config
  */
 
 public final class PictureSelectionConfig implements Parcelable {
@@ -52,13 +51,17 @@ public final class PictureSelectionConfig implements Parcelable {
     public int recordVideoSecond;
     public int minimumCompressSize;
     public int imageSpanCount;
+    @Deprecated
     public int overrideWidth;
+    @Deprecated
     public int overrideHeight;
     public int aspect_ratio_x;
     public int aspect_ratio_y;
+    @Deprecated
     public float sizeMultiplier;
     public int cropWidth;
     public int cropHeight;
+    public int compressQuality;
     public boolean zoomAnim;
     public boolean isCompress;
     public boolean isCamera;
@@ -79,6 +82,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean previewEggs;
     public boolean synOrAsy;
     public boolean isDragFrame;
+    public ImageEngine imageEngine;
 
     public List<LocalMedia> selectionMedias;
 
@@ -94,6 +98,7 @@ public final class PictureSelectionConfig implements Parcelable {
         videoMaxSecond = 0;
         videoMinSecond = 0;
         recordVideoSecond = 60;
+        compressQuality = 60;
         minimumCompressSize = PictureConfig.MAX_COMPRESS_SIZE;
         imageSpanCount = 4;
         overrideWidth = 0;
@@ -140,6 +145,7 @@ public final class PictureSelectionConfig implements Parcelable {
         specifiedFormat = "";
         sizeMultiplier = 0.5f;
         selectionMedias = new ArrayList<>();
+        imageEngine = null;
     }
 
     public static PictureSelectionConfig getInstance() {

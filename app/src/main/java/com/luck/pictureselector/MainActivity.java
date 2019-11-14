@@ -112,7 +112,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     default:
                         // 预览图片 可自定长按保存路径
-                        PictureSelector.create(MainActivity.this).themeStyle(themeId).openExternalPreview(position, selectList);
+                        PictureSelector.create(MainActivity.this)
+                                .themeStyle(themeId)
+                                .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
+                                .openExternalPreview(position, selectList);
                         break;
                 }
             }
@@ -154,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // 进入相册 以下是例子：不需要的api可以不写
                 PictureSelector.create(MainActivity.this)
                         .openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
+                        .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                         .theme(themeId)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
@@ -177,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径
                         .enableCrop(cb_crop.isChecked())// 是否裁剪
                         .compress(cb_compress.isChecked())// 是否压缩
+                        .compressQuality(80)// 图片压缩后输出质量 0~ 100
                         .synOrAsy(false)//同步true或异步false 压缩 默认同步
                         //.compressSavePath(getPath())//压缩图片保存地址
                         //.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
@@ -184,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
                         .hideBottomControls(cb_hide.isChecked() ? false : true)// 是否显示uCrop工具栏，默认不显示
                         .isGif(cb_isGif.isChecked())// 是否显示gif图片
-                        .freeStyleCropEnabled(true)// 裁剪框是否可拖拽
+                        .freeStyleCropEnabled(cb_styleCrop.isChecked())// 裁剪框是否可拖拽
                         .circleDimmedLayer(cb_crop_circular.isChecked())// 是否圆形裁剪
                         .showCropFrame(cb_showCropFrame.isChecked())// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
                         .showCropGrid(cb_showCropGrid.isChecked())// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
@@ -209,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 PictureSelector.create(MainActivity.this)
                         .openCamera(chooseMode)// 单独拍照，也可录像或也可音频 看你传入的类型是图片or视频
                         .theme(themeId)// 主题样式设置 具体参考 values/styles
+                        .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
                         //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
@@ -225,6 +231,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setDownArrowDrawable(downResId)// 设置标题栏右侧箭头图标
                         .enableCrop(cb_crop.isChecked())// 是否裁剪
                         .compress(cb_compress.isChecked())// 是否压缩
+                        .compressQuality(60)// 图片压缩后输出质量
                         .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
                         .withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
                         .hideBottomControls(cb_hide.isChecked() ? false : true)// 是否显示uCrop工具栏，默认不显示

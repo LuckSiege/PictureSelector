@@ -17,18 +17,24 @@
 package com.yalantis.ucrop;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.RequestOptions;
+import com.yalantis.ucrop.callback.BitmapLoadCallback;
 import com.yalantis.ucrop.model.CutInfo;
+import com.yalantis.ucrop.model.ExifInfo;
+import com.yalantis.ucrop.util.BitmapLoadUtils;
+
+import java.io.File;
 import java.util.List;
 
 /**
@@ -40,7 +46,8 @@ import java.util.List;
  */
 
 public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhotoGalleryAdapter.ViewHolder> {
-
+    private final int maxImageWidth = 200;
+    private final int maxImageHeight = 220;
     private Context context;
     private List<CutInfo> list;
     private LayoutInflater mInflater;
@@ -49,6 +56,11 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
         mInflater = LayoutInflater.from(context);
         this.context = context;
         this.list = list;
+    }
+
+    public void setData(List<CutInfo> list) {
+        this.list = list;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -72,16 +84,23 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
             holder.iv_dot.setVisibility(View.GONE);
         }
 
-        RequestOptions options = new RequestOptions()
-                .placeholder(R.color.ucrop_color_grey)
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.ALL);
+        Uri uri = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? Uri.parse(path)
+                : Uri.fromFile(new File(path));
+        BitmapLoadUtils.decodeBitmapInBackground(context, uri, null, maxImageWidth,
+                maxImageHeight,
+                new BitmapLoadCallback() {
 
-        Glide.with(context)
-                .load(path)
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .apply(options)
-                .into(holder.mIvPhoto);
+                    @Override
+                    public void onBitmapLoaded(@NonNull Bitmap bitmap, @NonNull ExifInfo exifInfo,
+                                               @NonNull Uri imageInputUri, @Nullable Uri imageOutputUri) {
+                        holder.mIvPhoto.setImageBitmap(bitmap);
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Exception bitmapWorkerException) {
+                    }
+                });
+
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onItemClick(holder.getAdapterPosition(), v);
@@ -92,7 +111,7 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list != null ? list.size() : 0;
     }
 
 

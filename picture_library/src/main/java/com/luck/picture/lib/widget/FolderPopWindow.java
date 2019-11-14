@@ -31,11 +31,9 @@ import com.luck.picture.lib.tools.ScreenUtils;
 import java.util.List;
 
 /**
- * author：luck
- * project：PictureSelector
- * package：com.luck.picture.lib.widget
- * email：893855882@qq.com
- * data：2017/5/25
+ * @author：luck
+ * @date：2017-5-25 17:02
+ * @describe：文件目录PopupWindow
  */
 
 public class FolderPopWindow extends PopupWindow implements View.OnClickListener {
@@ -48,11 +46,13 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
     private LinearLayout id_ll_root;
     private TextView tvPictureTitle;
     private Drawable drawableUp, drawableDown;
-    private int mimeType;
+    private int chooseMode;
+    private PictureSelectionConfig config;
 
-    public FolderPopWindow(Context context, int mimeType, PictureSelectionConfig config) {
+    public FolderPopWindow(Context context, PictureSelectionConfig config) {
         this.context = context;
-        this.mimeType = mimeType;
+        this.config = config;
+        this.chooseMode = config.chooseMode;
         window = LayoutInflater.from(context).inflate(R.layout.picture_window_folder, null);
         this.setContentView(window);
         this.setWidth(ScreenUtils.getScreenWidth(context));
@@ -72,7 +72,7 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
 
     public void initView() {
         id_ll_root = window.findViewById(R.id.id_ll_root);
-        adapter = new PictureAlbumDirectoryAdapter(context);
+        adapter = new PictureAlbumDirectoryAdapter(context, config);
         recyclerView = window.findViewById(R.id.folder_list);
         recyclerView.getLayoutParams().height = (int) (ScreenUtils.getScreenHeight(context) * 0.6);
         recyclerView.addItemDecoration(new RecycleViewDivider(
@@ -83,7 +83,7 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
     }
 
     public void bindFolder(List<LocalMediaFolder> folders) {
-        adapter.setMimeType(mimeType);
+        adapter.setChooseMode(chooseMode);
         adapter.bindFolderData(folders);
     }
 

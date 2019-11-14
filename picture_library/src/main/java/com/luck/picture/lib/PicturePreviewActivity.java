@@ -36,11 +36,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * author：luck
- * project：PictureSelector
- * package：com.luck.picture.ui
- * email：893855882@qq.com
- * data：16/12/31
+ * @author：luck
+ * @data：2016/1/29 下午21:50
+ * @描述:图片预览
  */
 public class PicturePreviewActivity extends PictureBaseActivity implements
         View.OnClickListener, Animation.AnimationListener, SimpleFragmentAdapter.OnCallBackActivity {
@@ -253,7 +251,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      */
     private void initViewPageAdapterData() {
         tv_title.setText(position + 1 + "/" + images.size());
-        adapter = new SimpleFragmentAdapter(images, this, this);
+        adapter = new SimpleFragmentAdapter(config,images, this, this);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(position);
         onSelectNumChange(false);

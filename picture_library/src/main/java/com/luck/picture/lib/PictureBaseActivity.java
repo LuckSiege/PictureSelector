@@ -216,6 +216,7 @@ public class PictureBaseActivity extends FragmentActivity {
                                 Luban.with(mContext)
                                         .loadMediaData(list, config.cameraFileName)
                                         .setTargetDir(config.compressSavePath)
+                                        .setCompressQuality(config.compressQuality)
                                         .ignoreBy(config.minimumCompressSize)
                                         .get();
                         if (files == null) {
@@ -229,6 +230,7 @@ public class PictureBaseActivity extends FragmentActivity {
             Luban.with(this)
                     .loadMediaData(result, config.cameraFileName)
                     .ignoreBy(config.minimumCompressSize)
+                    .setCompressQuality(config.compressQuality)
                     .setTargetDir(config.compressSavePath)
                     .setCompressListener(new OnCompressListener() {
                         @Override
