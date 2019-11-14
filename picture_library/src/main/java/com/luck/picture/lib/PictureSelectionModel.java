@@ -425,6 +425,15 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param isNotPreviewDownload Previews do not show downloads
+     * @return
+     */
+    public PictureSelectionModel isNotPreviewDownload(boolean isNotPreviewDownload) {
+        selectionConfig.isNotPreviewDownload = isNotPreviewDownload;
+        return this;
+    }
+
+    /**
      * @param Specify get image format
      * @return
      */

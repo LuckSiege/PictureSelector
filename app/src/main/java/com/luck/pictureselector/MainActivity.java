@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         // 预览图片 可自定长按保存路径
                         PictureSelector.create(MainActivity.this)
                                 .themeStyle(themeId)
+                                .isNotPreviewDownload(true)// 预览图片长按是否可以下载
                                 .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                                 .openExternalPreview(position, selectList);
                         break;

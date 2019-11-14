@@ -82,6 +82,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean previewEggs;
     public boolean synOrAsy;
     public boolean isDragFrame;
+    public boolean isNotPreviewDownload;
     public ImageEngine imageEngine;
 
     public List<LocalMedia> selectionMedias;
@@ -125,6 +126,7 @@ public final class PictureSelectionConfig implements Parcelable {
         enPreviewVideo = true;
         enablePreviewAudio = true;
         checkNumMode = false;
+        isNotPreviewDownload = false;
         openClickSound = false;
         enableCrop = false;
         freeStyleCropEnabled = false;

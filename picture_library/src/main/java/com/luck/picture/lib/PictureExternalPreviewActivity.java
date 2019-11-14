@@ -177,32 +177,34 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     overridePendingTransition(0, R.anim.a3);
                 });
                 imageView.setOnLongClickListener(v -> {
-                    if (rxPermissions == null) {
-                        rxPermissions = new RxPermissions(PictureExternalPreviewActivity.this);
-                    }
-                    rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                            .subscribe(new Observer<Boolean>() {
-                                @Override
-                                public void onSubscribe(Disposable d) {
-                                }
-
-                                @Override
-                                public void onNext(Boolean aBoolean) {
-                                    if (aBoolean) {
-                                        showDownLoadDialog(path);
-                                    } else {
-                                        ToastUtils.s(mContext, getString(R.string.picture_jurisdiction));
+                    if (config.isNotPreviewDownload) {
+                        if (rxPermissions == null) {
+                            rxPermissions = new RxPermissions(PictureExternalPreviewActivity.this);
+                        }
+                        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                .subscribe(new Observer<Boolean>() {
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
                                     }
-                                }
 
-                                @Override
-                                public void onError(Throwable e) {
-                                }
+                                    @Override
+                                    public void onNext(Boolean aBoolean) {
+                                        if (aBoolean) {
+                                            showDownLoadDialog(path);
+                                        } else {
+                                            ToastUtils.s(mContext, getString(R.string.picture_jurisdiction));
+                                        }
+                                    }
 
-                                @Override
-                                public void onComplete() {
-                                }
-                            });
+                                    @Override
+                                    public void onError(Throwable e) {
+                                    }
+
+                                    @Override
+                                    public void onComplete() {
+                                    }
+                                });
+                    }
                     return true;
                 });
             }
