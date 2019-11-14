@@ -140,11 +140,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 } else {
                     path = media.getPath();
                 }
-                boolean isHttp = PictureMimeType.isHttp(path);
-                // 可以长按保存并且是网络图片显示一个对话框
-                if (isHttp) {
-                    showPleaseDialog();
-                }
                 boolean isGif = PictureMimeType.isGif(mimeType);
                 final boolean eqLongImg = MediaUtils.isLongImg(media);
                 imageView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
@@ -155,7 +150,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                         config.imageEngine.loadAsGifImage
                                 (PictureExternalPreviewActivity.this,
                                         path, imageView, 480, 800);
-                        dismissDialog();
                     }
                 } else {
                     if (config != null && config.imageEngine != null) {
@@ -245,9 +239,9 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         tv_content.setText(getString(R.string.picture_prompt_content));
         btn_cancel.setOnClickListener(view -> dialog.dismiss());
         btn_commit.setOnClickListener(view -> {
-            showPleaseDialog();
             boolean isHttp = PictureMimeType.isHttp(path);
             if (isHttp) {
+                showPleaseDialog();
                 loadDataThread = new loadDataThread(path);
                 loadDataThread.start();
             } else {
