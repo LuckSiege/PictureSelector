@@ -210,6 +210,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mBottomLayout = findViewById(R.id.rl_bottom);
         mOkLayout = findViewById(R.id.id_ll_ok);
         mTvEmpty = findViewById(R.id.tv_empty);
+
+        mRlPictureTitle.setBackgroundColor(colorPrimary);
+
         isNumComplete(numComplete);
         if (config.chooseMode == PictureMimeType.ofAll()) {
             popupWindow = new PhotoPopupWindow(this);

@@ -173,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
                         .isChangeStatusBarFontColor(isChangeStatusBarFontColor)// 是否关闭白色状态栏字体颜色
                         .setStatusBarColorPrimaryDark(statusBarColorPrimaryDark)// 状态栏背景色
+//                        .setTitleBarBackgroundColor(R.color.blue)// 设置标题色
                         .setUpArrowDrawable(upResId)// 设置标题栏右侧箭头图标
                         .setDownArrowDrawable(downResId)// 设置标题栏右侧箭头图标
                         .isOpenStyleCheckNumMode(isOpenStyleCheckNumMode)// 是否开启数字选择模式 类似QQ相册
