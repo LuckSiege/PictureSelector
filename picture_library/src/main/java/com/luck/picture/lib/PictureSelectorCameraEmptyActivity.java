@@ -42,8 +42,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             RxBus.getDefault().register(this);
         }
         rxPermissions = new RxPermissions(this);
-        rxPermissions.request(Manifest.permission.CAMERA,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
+        rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .subscribe(new Observer<Boolean>() {
                     @Override
