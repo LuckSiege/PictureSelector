@@ -13,9 +13,15 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
         <activity
             android:name=".PictureSelectorActivity"
             android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".PictureSelectorCameraEmptyActivity"
+            android:theme="@style/MyTheme.Translucent"
+            android:windowSoftInputMode="adjustPan" />
+
         <activity android:name=".PicturePreviewActivity" />
         <activity
             android:name=".PictureVideoPlayActivity"
@@ -25,7 +31,6 @@
         <activity android:name="com.yalantis.ucrop.UCropActivity" />
         <activity android:name="com.yalantis.ucrop.PictureMultiCuttingActivity" />
         <activity android:name=".PicturePlayAudioActivity" />
-
 
     </application>
 

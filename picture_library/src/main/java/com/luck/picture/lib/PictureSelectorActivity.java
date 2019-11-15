@@ -5,14 +5,10 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -20,8 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
-import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
@@ -53,8 +47,6 @@ import com.luck.picture.lib.widget.FolderPopWindow;
 import com.luck.picture.lib.widget.PhotoPopupWindow;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropMulti;
-import com.yalantis.ucrop.model.CutInfo;
-
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -88,7 +80,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private FolderPopWindow folderWindow;
     private Animation animation = null;
     private boolean anim = false;
-    private RxPermissions rxPermissions;
     private PhotoPopupWindow popupWindow;
     private LocalMediaLoader mediaLoader;
     private MediaPlayer mediaPlayer;
@@ -156,42 +147,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (!RxBus.getDefault().isRegistered(this)) {
             RxBus.getDefault().register(this);
         }
-        rxPermissions = new RxPermissions(this);
-        if (config.camera) {
-            if (savedInstanceState == null) {
-                rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        .subscribe(new Observer<Boolean>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-                            }
-
-                            @Override
-                            public void onNext(Boolean aBoolean) {
-                                if (aBoolean) {
-                                    onTakePhoto();
-                                } else {
-                                    ToastUtils.s(mContext, getString(R.string.picture_camera));
-                                    closeActivity();
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                            }
-
-                            @Override
-                            public void onComplete() {
-                            }
-                        });
-            }
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
-                    , WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            setContentView(R.layout.picture_empty);
-        } else {
-            setContentView(R.layout.picture_selector);
-            initView(savedInstanceState);
-        }
+        setContentView(R.layout.picture_selector);
+        initView(savedInstanceState);
     }
 
 
@@ -248,6 +205,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         ((SimpleItemAnimator) mPictureRecycler.getItemAnimator())
                 .setSupportsChangeAnimations(false);
         mediaLoader = new LocalMediaLoader(this, config);
+        if (rxPermissions == null) {
+            rxPermissions = new RxPermissions(this);
+        }
         rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .subscribe(new Observer<Boolean>() {
@@ -348,7 +308,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     public void startCamera() {
         // 防止快速点击，但是单独拍照不管
-        if (!DoubleUtils.isFastDoubleClick() || config.camera) {
+        if (!DoubleUtils.isFastDoubleClick()) {
             switch (config.chooseMode) {
                 case PictureConfig.TYPE_ALL:
                     // 如果是全部类型下，单独拍照就默认图片 (因为单独拍照不会new此PopupWindow对象)
@@ -377,102 +337,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     break;
             }
         }
-    }
-
-    /**
-     * start to camera、preview、crop
-     */
-    public void startOpenCamera() {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            Uri imageUri;
-            if (SdkVersionUtils.checkedAndroid_Q()) {
-                imageUri = MediaUtils.createImagePathUri(getApplicationContext(), config.cameraFileName);
-                cameraPath = imageUri.toString();
-            } else {
-                int type = config.chooseMode == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_IMAGE
-                        : config.chooseMode;
-                File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(),
-                        type, config.cameraFileName, config.suffixType);
-                cameraPath = cameraFile.getAbsolutePath();
-                imageUri = parUri(cameraFile);
-            }
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-            startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
-        }
-    }
-
-    /**
-     * start to camera、video
-     */
-    public void startOpenCameraVideo() {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            Uri imageUri;
-            if (SdkVersionUtils.checkedAndroid_Q()) {
-                imageUri = MediaUtils.createImageVideoUri(getApplicationContext(), config.cameraFileName);
-                cameraPath = imageUri.toString();
-            } else {
-                File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(), config.chooseMode ==
-                                PictureConfig.TYPE_ALL ? PictureConfig.TYPE_VIDEO : config.chooseMode, config.cameraFileName,
-                        config.suffixType);
-                cameraPath = cameraFile.getAbsolutePath();
-                imageUri = parUri(cameraFile);
-            }
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-            cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, config.recordVideoSecond);
-            cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, config.videoQuality);
-            startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
-        }
-    }
-
-    /**
-     * start to camera audio
-     */
-    public void startOpenCameraAudio() {
-        rxPermissions.request(Manifest.permission.RECORD_AUDIO).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                if (aBoolean) {
-                    Intent cameraIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-                    if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-                        startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
-                    }
-                } else {
-                    ToastUtils.s(mContext, getString(R.string.picture_audio));
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-            }
-
-            @Override
-            public void onComplete() {
-            }
-        });
-    }
-
-    /**
-     * 生成uri
-     *
-     * @param cameraFile
-     * @return
-     */
-    private Uri parUri(File cameraFile) {
-        Uri imageUri;
-        String authority = getPackageName() + ".provider";
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-            //通过FileProvider创建一个content类型的Uri
-            imageUri = FileProvider.getUriForFile(mContext, authority, cameraFile);
-        } else {
-            imageUri = Uri.fromFile(cameraFile);
-        }
-        return imageUri;
     }
 
 
@@ -750,10 +614,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     @Override
     public void onTakePhoto() {
         // 启动相机拍照,先判断手机是否有拍照权限
+        if (rxPermissions == null) {
+            rxPermissions = new RxPermissions(this);
+        }
         rxPermissions.request(Manifest.permission.CAMERA).subscribe(new Observer<Boolean>() {
             @Override
             public void onSubscribe(Disposable d) {
-
             }
 
             @Override
@@ -762,20 +628,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     startCamera();
                 } else {
                     ToastUtils.s(mContext, getString(R.string.picture_camera));
-                    if (config.camera) {
-                        closeActivity();
-                    }
                 }
             }
 
             @Override
             public void onError(Throwable e) {
-
             }
 
             @Override
             public void onComplete() {
-
             }
         });
     }
@@ -917,10 +778,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 default:
                     break;
             }
-        } else if (resultCode == RESULT_CANCELED) {
-            if (config.camera) {
-                closeActivity();
-            }
         } else if (resultCode == UCrop.RESULT_ERROR) {
             Throwable throwable = (Throwable) data.getSerializableExtra(UCrop.EXTRA_ERROR);
             ToastUtils.s(mContext, throwable.getMessage());
@@ -1011,10 +868,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         media.setSize(size);
         media.setChooseModel(config.chooseMode);
 
-        // 因为加入了单独拍照功能，所以如果是单独拍照的话也默认为单选状态
-        if (config.camera) {
-            cameraHandleResult(medias, media, toType);
-        } else if (config.selectionMode == PictureConfig.SINGLE && config.isSingleDirectReturn) {
+        if (config.selectionMode == PictureConfig.SINGLE && config.isSingleDirectReturn) {
             // 单选直接返回模式
             if (adapter != null) {
                 medias.add(media);
@@ -1089,46 +943,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 medias.add(media);
                 handlerResult(medias);
             }
-        } else if (config.camera) {
-            // 单独拍照
-            LocalMedia media = new LocalMedia(cameraPath, 0, false,
-                    config.isCamera ? 1 : 0, 0, config.chooseMode);
-            media.setCut(true);
-            media.setCutPath(cutPath);
-            mimeType = PictureMimeType.getImageMimeType(cutPath);
-            media.setMimeType(mimeType);
-            medias.add(media);
-            handlerResult(medias);
         }
     }
 
-    /**
-     * 多张图片裁剪
-     *
-     * @param data
-     */
-    private void multiCropHandleResult(Intent data) {
-        List<LocalMedia> medias = new ArrayList<>();
-        List<CutInfo> mCuts = UCropMulti.getOutput(data);
-        for (CutInfo c : mCuts) {
-            LocalMedia media = new LocalMedia();
-            String imageType = PictureMimeType.getImageMimeType(c.getCutPath());
-            media.setCut(TextUtils.isEmpty(c.getCutPath()) ? false : true);
-            media.setPath(c.getPath());
-            media.setCutPath(c.getCutPath());
-            media.setMimeType(imageType);
-            media.setWidth(c.getImageWidth());
-            media.setHeight(c.getImageHeight());
-            media.setSize(new File(TextUtils.isEmpty(c.getCutPath())
-                    ? c.getPath() : c.getCutPath()).length());
-            if (SdkVersionUtils.checkedAndroid_Q()) {
-                media.setAndroidQToPath(c.getCutPath());
-            }
-            media.setChooseModel(config.chooseMode);
-            medias.add(media);
-        }
-        handlerResult(medias);
-    }
 
     /**
      * 单选图片

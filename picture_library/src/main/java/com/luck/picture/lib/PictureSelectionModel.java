@@ -601,7 +601,8 @@ public class PictureSelectionModel {
             if (activity == null) {
                 return;
             }
-            Intent intent = new Intent(activity, PictureSelectorActivity.class);
+            Intent intent = new Intent(activity, selectionConfig != null && selectionConfig.camera
+                    ? PictureSelectorCameraEmptyActivity.class : PictureSelectorActivity.class);
             Fragment fragment = selector.getFragment();
             if (fragment != null) {
                 fragment.startActivityForResult(intent, requestCode);
@@ -623,7 +624,8 @@ public class PictureSelectionModel {
             if (activity == null) {
                 return;
             }
-            Intent intent = new Intent(activity, PictureSelectorActivity.class);
+            Intent intent = new Intent(activity, selectionConfig != null && selectionConfig.camera
+                    ? PictureSelectorCameraEmptyActivity.class : PictureSelectorActivity.class);
             Fragment fragment = selector.getFragment();
             if (fragment != null) {
                 fragment.startActivityForResult(intent, requestCode);

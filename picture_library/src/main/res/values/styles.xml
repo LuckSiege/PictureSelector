@@ -16,7 +16,6 @@
         <item name="android:windowExitAnimation">@anim/a3</item>
     </style>
 
-
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
@@ -109,4 +108,9 @@
         <item name="picture.folder_checked_dot">@drawable/orange_oval</item>
     </style>
 
+    <style name="MyTheme.Translucent" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowBackground">#00000000</item> <!-- 背景色透明度 -->
+        <item name="android:windowNoTitle">true</item><!-- 无标题 -->
+        <item name="android:windowIsTranslucent">true</item><!-- 半透明,设置为false无透明效果 -->
+    </style>
 </resources>

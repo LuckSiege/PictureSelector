@@ -1,5 +1,6 @@
 package com.luck.picture.lib;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,22 +27,28 @@ import com.luck.picture.lib.entity.EventEntity;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.immersive.ImmersiveManage;
+import com.luck.picture.lib.permissions.RxPermissions;
 import com.luck.picture.lib.rxbus2.RxBus;
 import com.luck.picture.lib.rxbus2.RxUtils;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DoubleUtils;
+import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
+import com.luck.picture.lib.tools.ToastUtils;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropMulti;
+import com.yalantis.ucrop.model.CutInfo;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -59,6 +66,7 @@ public class PictureBaseActivity extends FragmentActivity {
     protected PictureDialog dialog;
     protected PictureDialog compressDialog;
     protected List<LocalMedia> selectionMedias;
+    protected RxPermissions rxPermissions;
 
     /**
      * 是否使用沉浸式，子类复写该方法来确定是否采用沉浸式
@@ -67,7 +75,7 @@ public class PictureBaseActivity extends FragmentActivity {
      */
     @Override
     public boolean isImmersive() {
-        return true;
+        return config != null && config.isCamera ? false : true;
     }
 
     /**
@@ -93,6 +101,7 @@ public class PictureBaseActivity extends FragmentActivity {
         setTheme(themeStyleId);
         super.onCreate(savedInstanceState);
         mContext = this;
+        rxPermissions = new RxPermissions(this);
         initConfig();
         if (isImmersive()) {
             immersive();
@@ -462,9 +471,9 @@ public class PictureBaseActivity extends FragmentActivity {
                             continue;
                         }
                         if (media.isCompressed()) {
-
+                            media.setAndroidQToPath(media.getCompressPath());
                         } else if (media.isCut()) {
-
+                            media.setAndroidQToPath(media.getCutPath());
                         } else {
                             String path;
                             if (isVideo) {
@@ -626,5 +635,116 @@ public class PictureBaseActivity extends FragmentActivity {
             e.printStackTrace();
         }
         return path;
+    }
+
+
+    /**
+     * start to camera、preview、crop
+     */
+    protected void startOpenCamera() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+            Uri imageUri;
+            if (SdkVersionUtils.checkedAndroid_Q()) {
+                imageUri = MediaUtils.createImagePathUri(getApplicationContext(), config.cameraFileName);
+                cameraPath = imageUri.toString();
+            } else {
+                int type = config.chooseMode == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_IMAGE
+                        : config.chooseMode;
+                File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(),
+                        type, config.cameraFileName, config.suffixType);
+                cameraPath = cameraFile.getAbsolutePath();
+                imageUri = PictureFileUtils.parUri(this, cameraFile);
+            }
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+            startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
+        }
+    }
+
+
+    /**
+     * start to camera、video
+     */
+    protected void startOpenCameraVideo() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+            Uri imageUri;
+            if (SdkVersionUtils.checkedAndroid_Q()) {
+                imageUri = MediaUtils.createImageVideoUri(getApplicationContext(), config.cameraFileName);
+                cameraPath = imageUri.toString();
+            } else {
+                File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(), config.chooseMode ==
+                                PictureConfig.TYPE_ALL ? PictureConfig.TYPE_VIDEO : config.chooseMode, config.cameraFileName,
+                        config.suffixType);
+                cameraPath = cameraFile.getAbsolutePath();
+                imageUri = PictureFileUtils.parUri(this, cameraFile);
+            }
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+            cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, config.recordVideoSecond);
+            cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, config.videoQuality);
+            startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
+        }
+    }
+
+    /**
+     * start to camera audio
+     */
+    public void startOpenCameraAudio() {
+        if (rxPermissions == null) {
+            rxPermissions = new RxPermissions(this);
+        }
+        rxPermissions.request(Manifest.permission.RECORD_AUDIO).subscribe(new Observer<Boolean>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                if (aBoolean) {
+                    Intent cameraIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+                    if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
+                    }
+                } else {
+                    ToastUtils.s(mContext, getString(R.string.picture_audio));
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onComplete() {
+            }
+        });
+    }
+
+    /**
+     * 多张图片裁剪
+     *
+     * @param data
+     */
+    protected void multiCropHandleResult(Intent data) {
+        List<LocalMedia> medias = new ArrayList<>();
+        List<CutInfo> mCuts = UCropMulti.getOutput(data);
+        for (CutInfo c : mCuts) {
+            LocalMedia media = new LocalMedia();
+            String imageType = PictureMimeType.getImageMimeType(c.getCutPath());
+            media.setCut(TextUtils.isEmpty(c.getCutPath()) ? false : true);
+            media.setPath(c.getPath());
+            media.setCutPath(c.getCutPath());
+            media.setMimeType(imageType);
+            media.setWidth(c.getImageWidth());
+            media.setHeight(c.getImageHeight());
+            media.setSize(new File(TextUtils.isEmpty(c.getCutPath())
+                    ? c.getPath() : c.getCutPath()).length());
+            if (SdkVersionUtils.checkedAndroid_Q()) {
+                media.setAndroidQToPath(c.getCutPath());
+            }
+            media.setChooseModel(config.chooseMode);
+            medias.add(media);
+        }
+        handlerResult(medias);
     }
 }

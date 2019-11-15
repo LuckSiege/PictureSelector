@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -439,5 +440,24 @@ public class PictureFileUtils {
      */
     public static String getDiskCacheDir(Context ctx) {
         return ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
+    }
+
+    /**
+     * 生成uri
+     *
+     * @param context
+     * @param cameraFile
+     * @return
+     */
+    public static Uri parUri(Context context, File cameraFile) {
+        Uri imageUri;
+        String authority = context.getPackageName() + ".provider";
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            //通过FileProvider创建一个content类型的Uri
+            imageUri = FileProvider.getUriForFile(context, authority, cameraFile);
+        } else {
+            imageUri = Uri.fromFile(cameraFile);
+        }
+        return imageUri;
     }
 }
