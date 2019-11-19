@@ -79,7 +79,7 @@
 
 ```
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.9'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.0'
 }
 
 ```
@@ -112,7 +112,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.2.9</version> 
+      <version>v2.3.0</version> 
 </dependency>
 
 ```
@@ -210,6 +210,7 @@ java.lang.IllegalStateException: This Activity already has an action bar supplie
  PictureSelector.create(MainActivity.this)
  	.openGallery()//全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
  	.theme()//主题样式(不设置为默认样式) 也可参考demo values/styles下 例如：R.style.picture.white.style
+	.loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项   参考Demo MainActivity中代码
  	.maxSelectNum()// 最大图片选择数量 int
  	.minSelectNum()// 最小选择数量 int
 	.imageSpanCount(4)// 每行显示个数 int
@@ -331,6 +332,7 @@ java.lang.IllegalStateException: This Activity already has an action bar supplie
 ```
  PictureSelector.create(MainActivity.this)
        .openGallery(PictureMimeType.ofImage())
+       .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
        .forResult(PictureConfig.CHOOSE_REQUEST);
        
 ```
@@ -338,6 +340,7 @@ java.lang.IllegalStateException: This Activity already has an action bar supplie
 ```
   PictureSelector.create(MainActivity.this)
        .openCamera(PictureMimeType.ofImage())
+       .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
        .forResult(PictureConfig.CHOOSE_REQUEST);
 ```
 ******预览图片******       
@@ -384,13 +387,19 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 # 当前版本：
 
+* v2.3.0
+* 1.去除了对Glide的依赖，新增api .loadImageEngine(GlideEngine.createGlideEngine()); 自定义图片加载引擎，Demo中MainActivity中有示例代码
+* 2.修复动态设置setTitleBarBackgroundColor();无效问题
+* 3.修复Android Q如果设置裁剪或压缩时 androidQToPath字段没值的问题
+* 4.修复部分issues
+
+# 历史版本：
+
 * v2.2.9
 * 1.新增 querySpecifiedFormatSuffix(PictureMimeType.ofPNG());// 查询指定后缀格式资源
 * 2.新增启动相册支持自定义启动动画设置  forResult(int requestCode, int enterAnim, int exitAnim);
 * 3.优化多图裁剪时可选择性裁剪图片
 * 4.修复部分issues
-
-# 历史版本：
 
 * v2.2.8
 * 1.PictureConfig.SINGLE模式下新增isSingleDirectReturn(true); api选择
@@ -542,17 +551,6 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 -keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
-
-#glide
--keep public class * implements com.bumptech.glide.module.GlideModule
--keep public class * extends com.bumptech.glide.AppGlideModule
--keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
-  **[] $VALUES;
-  public *;
-}
-
-# for DexGuard only
--keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 
 ```
 ## 打赏
