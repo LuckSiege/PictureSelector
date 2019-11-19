@@ -136,6 +136,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                 // 进入相册 以下是例子：不需要的api可以不写
                 PictureSelector.create(PhotoFragment.this)
                         .openGallery(chooseMode)
+                        .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                         .theme(themeId)
                         .maxSelectNum(maxSelectNum)
                         .minSelectNum(1)
@@ -163,6 +164,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                 PictureSelector.create(PhotoFragment.this)
                         .openCamera(chooseMode)
                         .theme(themeId)
+                        .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                         .maxSelectNum(maxSelectNum)
                         .minSelectNum(1)
                         .selectionMode(cb_choose_mode.isChecked() ? PictureConfig.MULTIPLE : PictureConfig.SINGLE)

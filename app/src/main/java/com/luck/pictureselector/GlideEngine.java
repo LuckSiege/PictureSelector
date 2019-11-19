@@ -49,34 +49,12 @@ public class GlideEngine implements ImageEngine {
                 });
     }
 
-    @Override
-    public void loadAsBitmapImage(@NonNull Context context, @NonNull String url,
-                                  @NonNull ImageView imageView, int placeholderId,
-                                  int width, int height) {
-        Glide.with(context)
-                .asBitmap()
-                .placeholder(placeholderId)
-                .override(width, height)
-                .load(url)
-                .into(imageView);
-    }
-
-    @Override
-    public void loadAsBitmapImage(@NonNull Context context, @NonNull String url,
-                                  @NonNull ImageView imageView, int width, int height) {
-        Glide.with(context)
-                .asBitmap()
-                .override(width, height)
-                .load(url)
-                .into(imageView);
-    }
 
     @Override
     public void loadAsGifImage(@NonNull Context context, @NonNull String url,
-                               @NonNull ImageView imageView, int width, int height) {
+                               @NonNull ImageView imageView) {
         Glide.with(context)
                 .asGif()
-                .override(width, height)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .priority(Priority.HIGH)
                 .load(url)

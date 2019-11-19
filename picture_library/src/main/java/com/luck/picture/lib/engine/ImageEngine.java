@@ -33,42 +33,13 @@ public interface ImageEngine {
                            @NonNull ImageView imageView, @DrawableRes int placeholderId);
 
     /**
-     * 加载图片
-     *
-     * @param context       上下文
-     * @param url           图片路径
-     * @param imageView     承载图片ImageView
-     * @param placeholderId 占位图
-     * @param width         宽
-     * @param height        高
-     */
-    void loadAsBitmapImage(@NonNull Context context, @NonNull String url,
-                           @NonNull ImageView imageView, @DrawableRes int placeholderId, int width, int height);
-
-    /**
-     * 加载图片
-     *
-     * @param context   上下文
-     * @param url       图片路径
-     * @param imageView 承载图片ImageView
-     * @param width     宽
-     * @param height    高
-     */
-    void loadAsBitmapImage(@NonNull Context context, @NonNull String url,
-                           @NonNull ImageView imageView, int width, int height);
-
-
-    /**
      * 加载gif图片
      *
      * @param context   上下文
      * @param url       图片路径
      * @param imageView 承载图片ImageView
-     * @param width     宽
-     * @param height    高
      */
-    void loadAsGifImage(@NonNull Context context, @NonNull String url,
-                        @NonNull ImageView imageView, int width, int height);
+    void loadAsGifImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView);
 
     /**
      * 加载图片

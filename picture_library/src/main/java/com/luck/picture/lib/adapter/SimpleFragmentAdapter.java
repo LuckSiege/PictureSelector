@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.viewpager.widget.PagerAdapter;
+
 import com.luck.picture.lib.PictureVideoPlayActivity;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
@@ -103,7 +104,7 @@ public class SimpleFragmentAdapter extends PagerAdapter {
             if (isGif && !media.isCompressed()) {
                 if (config != null && config.imageEngine != null) {
                     config.imageEngine.loadAsGifImage
-                            (contentView.getContext(), path, imageView, 480, 800);
+                            (contentView.getContext(), path, imageView);
                 }
             } else {
                 if (config != null && config.imageEngine != null) {
@@ -112,7 +113,7 @@ public class SimpleFragmentAdapter extends PagerAdapter {
                                 ? Uri.parse(path) : Uri.fromFile(new File(path)), longImg);
                     } else {
                         config.imageEngine.loadAsBitmapImage
-                                (contentView.getContext(), path, imageView, 480, 800);
+                                (contentView.getContext(), path, imageView, 0);
                     }
                 }
             }

@@ -149,7 +149,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     if (config != null && config.imageEngine != null) {
                         config.imageEngine.loadAsGifImage
                                 (PictureExternalPreviewActivity.this,
-                                        path, imageView, 480, 800);
+                                        path, imageView);
                     }
                 } else {
                     if (config != null && config.imageEngine != null) {
@@ -157,8 +157,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                             displayLongPic(SdkVersionUtils.checkedAndroid_Q()
                                     ? Uri.parse(path) : Uri.fromFile(new File(path)), longImg);
                         } else {
-                            config.imageEngine.loadAsBitmapImage
-                                    (contentView.getContext(), path, imageView, 480, 800);
+                            config.imageEngine.loadImage(contentView.getContext(), path, imageView);
                         }
                     }
                 }
