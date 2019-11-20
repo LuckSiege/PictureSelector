@@ -553,6 +553,24 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 }
 
 ```
+## LICENSE
+```
+   Copyright [2017] [luck of copyright owner]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+   
+```
+
 ## 打赏
 # ~如果您觉得好，对你有帮助，可以给我一点打赏当做鼓励，蚊子再小也是肉呀(*^__^*) 嘻嘻…… 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/apply.png)
@@ -579,3 +597,4 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/audio.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/9.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/10.jpg)  
+
