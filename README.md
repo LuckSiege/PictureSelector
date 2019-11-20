@@ -190,7 +190,8 @@ compileOptions {
     
  问题七：
  bug：UCropActivity继承AppCompatActivity没有添加Theme会出现一个下面的bug
-java.lang.IllegalStateException: This Activity already has an action bar supplied by the window decor. Do not request       Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme to use a Toolbar instead.
+java.lang.IllegalStateException: This Activity already has an action bar supplied by the window decor. Do not request 
+Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme to use a Toolbar instead.
  解决：1.在styles文件中添加去掉ActionBar的theme
 
     <style name="AppTheme.NoActionBar">
@@ -204,7 +205,8 @@ java.lang.IllegalStateException: This Activity already has an action bar supplie
  
  问题八：
  如果出现图片全部加载不出来的情况时，包括预览、相册列表等，一定要传入
- .loadImageEngine(GlideEngine.createGlideEngine()); //图片加载引擎，必传项，也可以自定义成除glide外的其他第三方加载框架，具体请参考Demo
+ .loadImageEngine(GlideEngine.createGlideEngine()); //图片加载引擎，必传项，
+ 也可以自定义成除glide外的其他第三方加载框架，具体请参考Demo
 
 ```
 
@@ -353,8 +355,15 @@ java.lang.IllegalStateException: This Activity already has an action bar supplie
 // 预览图片 可自定长按保存路径
 *注意 .themeStyle(themeId)；不可少，否则闪退...
 
-PictureSelector.create(MainActivity.this).themeStyle(themeId).openExternalPreview(position, "/custom_file", selectList);
-PictureSelector.create(MainActivity.this).themeStyle(themeId).openExternalPreview(position, selectList);
+PictureSelector.create(MainActivity.this)
+.themeStyle(themeId)//UI界面风格
+.loadImageEngine(GlideEngine.createGlideEngine())// 自定义图片加载引擎
+.openExternalPreview(position, "/custom_file", selectList);
+
+PictureSelector.create(MainActivity.this)
+.themeStyle(themeId)//UI界面风格
+.loadImageEngine(GlideEngine.createGlideEngine())// 自定义图片加载引擎
+.openExternalPreview(position, selectList);
 
 ```
 ******预览视频****** 
