@@ -172,7 +172,6 @@ public class LocalMediaLoader implements Handler.Callback {
                             long size = data.getLong
                                     (data.getColumnIndexOrThrow(PROJECTION[6]));
 
-                            Log.i("Mike", "loadAllMedia: " + mimeType);
                             if (PictureMimeType.eqVideo(mimeType)) {
                                 if (duration == 0) {
                                     duration = MediaUtils.extractDuration(mContext, isAndroidQ, path);
