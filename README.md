@@ -80,7 +80,7 @@
 
 ```
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.9'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.1'
 }
 
 ```
@@ -113,7 +113,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.2.9</version> 
+      <version>v2.3.1</version> 
 </dependency>
 
 ```
@@ -202,6 +202,9 @@ java.lang.IllegalStateException: This Activity already has an action bar supplie
         android:name="com.yalantis.ucrop.UCropActivity"
          android:theme="@style/AppTheme.NoActionBar" />
  
+ 问题八：
+ 如果出现图片全部加载不出来的情况时，包括预览、相册列表等，一定要传入
+ .loadImageEngine(GlideEngine.createGlideEngine()); //图片加载引擎，必传项，也可以自定义成除glide外的其他第三方加载框架，具体请参考Demo
 
 ```
 
@@ -218,6 +221,7 @@ java.lang.IllegalStateException: This Activity already has an action bar supplie
 	.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
 	.cameraFileName("")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用，选图时不要用
 	.isSingleDirectReturn(false)// 单选模式下是否直接返回
+	.setTitleBarBackgroundColor(titleBarBackgroundColor)//相册标题栏背景色
 	.isChangeStatusBarFontColor(isChangeStatusBarFontColor)// 是否关闭白色状态栏字体颜色
         .setStatusBarColorPrimaryDark(statusBarColorPrimaryDark)// 状态栏背景色
         .setUpArrowDrawable(upResId)// 设置标题栏右侧箭头图标
@@ -271,7 +275,7 @@ java.lang.IllegalStateException: This Activity already has an action bar supplie
 
 ```
 <!--默认样式 注意* 样式只可修改，不能删除任何一项 否则报错-->
-    <style name="picture.default.style" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="picture.default.style" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <!--标题栏背景色-->
         <item name="colorPrimary">@color/bar_grey</item>
@@ -388,13 +392,20 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 # 当前版本：
 
+* v2.3.1
+* 移除对RxJava依赖
+* 移除对RxPermissions依赖改为原生权限申请方式
+* 优化一些不必要的判断逻辑
+* 修复预览时保存gif至本地变成静态图问题
+* 修复一些issues
+
+# 历史版本：
+
 * v2.3.0
 * 1.去除了对Glide的依赖，新增api .loadImageEngine(GlideEngine.createGlideEngine()); 自定义图片加载引擎，Demo中MainActivity中有示例代码
 * 2.修复动态设置setTitleBarBackgroundColor();无效问题
 * 3.修复Android Q如果设置裁剪或压缩时 androidQToPath字段没值的问题
 * 4.修复部分issues
-
-# 历史版本：
 
 * v2.2.9
 * 1.新增 querySpecifiedFormatSuffix(PictureMimeType.ofPNG());// 查询指定后缀格式资源
@@ -527,32 +538,6 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 -keep class com.yalantis.ucrop** { *; }
 -keep interface com.yalantis.ucrop** { *; }
    
- #rxjava
--dontwarn sun.misc.**
--keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
- long producerIndex;
- long consumerIndex;
-}
--keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
- rx.internal.util.atomic.LinkedQueueNode producerNode;
-}
--keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
- rx.internal.util.atomic.LinkedQueueNode consumerNode;
-}
-
-#rxandroid
--dontwarn sun.misc.**
--keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
-   long producerIndex;
-   long consumerIndex;
-}
--keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
-    rx.internal.util.atomic.LinkedQueueNode producerNode;
-}
--keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
-    rx.internal.util.atomic.LinkedQueueNode consumerNode;
-}
-
 ```
 ## LICENSE
 ```
