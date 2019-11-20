@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="MyTheme.Translucent" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="MyTheme.Translucent" parent="BaseNoActionBarTheme">
 
         <item name="android:windowBackground">#00000000</item> <!-- 背景色透明度 -->
         <item name="android:windowNoTitle">true</item><!-- 无标题 -->

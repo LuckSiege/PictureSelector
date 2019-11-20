@@ -2,6 +2,7 @@ package com.luck.pictureselector;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,15 +23,13 @@ import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.permissions.RxPermissions;
+import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int themeId;
     private int chooseMode = PictureMimeType.ofAll();
     private boolean isChangeStatusBarFontColor;
+    private int titleBarBackgroundColor;
     private int statusBarColorPrimaryDark;
     private int upResId, downResId;
     private boolean isOpenStyleCheckNumMode;
@@ -114,6 +115,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         // 预览图片 可自定长按保存路径
                         PictureSelector.create(MainActivity.this)
                                 .themeStyle(themeId)
+                                .setTitleBarBackgroundColor(titleBarBackgroundColor)//相册标题栏背景色
+                                .isChangeStatusBarFontColor(isChangeStatusBarFontColor)// 是否关闭白色状态栏字体颜色
+                                .setStatusBarColorPrimaryDark(statusBarColorPrimaryDark)// 状态栏背景色
                                 .isNotPreviewDownload(true)// 预览图片长按是否可以下载
                                 .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                                 .openExternalPreview(position, selectList);
@@ -123,31 +127,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         // 清空图片缓存，包括裁剪、压缩后的图片 注意:必须要在上传完成后调用 必须要获取权限
-        RxPermissions permissions = new RxPermissions(this);
-        permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                if (aBoolean) {
-                    PictureFileUtils.deleteCacheDirFile(MainActivity.this, PictureMimeType.ofImage());
-                } else {
-                    Toast.makeText(MainActivity.this,
-                            getString(R.string.picture_jurisdiction), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-            }
-
-            @Override
-            public void onComplete() {
-            }
-        });
-
+        if (PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            PictureFileUtils.deleteCacheDirFile(MainActivity.this, PictureMimeType.ofImage());
+        } else {
+            PermissionChecker.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
+        }
     }
 
     private GridImageAdapter.onAddPicClickListener onAddPicClickListener = new GridImageAdapter.onAddPicClickListener() {
@@ -172,9 +157,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
                         .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
                         .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
+                        .setTitleBarBackgroundColor(titleBarBackgroundColor)//相册标题栏背景色
                         .isChangeStatusBarFontColor(isChangeStatusBarFontColor)// 是否关闭白色状态栏字体颜色
                         .setStatusBarColorPrimaryDark(statusBarColorPrimaryDark)// 状态栏背景色
-//                        .setTitleBarBackgroundColor(R.color.blue)// 设置标题色
                         .setUpArrowDrawable(upResId)// 设置标题栏右侧箭头图标
                         .setDownArrowDrawable(downResId)// 设置标题栏右侧箭头图标
                         .isOpenStyleCheckNumMode(isOpenStyleCheckNumMode)// 是否开启数字选择模式 类似QQ相册
@@ -184,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .enableCrop(cb_crop.isChecked())// 是否裁剪
                         .compress(cb_compress.isChecked())// 是否压缩
                         .compressQuality(80)// 图片压缩后输出质量 0~ 100
-                        .synOrAsy(false)//同步true或异步false 压缩 默认同步
+                        .synOrAsy(true)//同步false或异步true 压缩 默认同步
                         //.compressSavePath(getPath())//压缩图片保存地址
                         //.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
                         .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
@@ -226,6 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .previewVideo(cb_preview_video.isChecked())// 是否可预览视频
                         .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
                         .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
+                        .setTitleBarBackgroundColor(titleBarBackgroundColor)//相册标题栏背景色
                         .isChangeStatusBarFontColor(isChangeStatusBarFontColor)// 是否关闭白色状态栏字体颜色
                         .setStatusBarColorPrimaryDark(statusBarColorPrimaryDark)// 状态栏背景色
                         .isOpenStyleCheckNumMode(isOpenStyleCheckNumMode)// 是否开启数字选择模式 类似QQ相册
@@ -381,6 +367,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 themeId = R.style.picture_default_style;
                 isChangeStatusBarFontColor = false;
                 statusBarColorPrimaryDark = R.color.bar_grey;
+                titleBarBackgroundColor = R.color.bar_grey;
                 upResId = R.drawable.arrow_up;
                 downResId = R.drawable.arrow_down;
                 isOpenStyleCheckNumMode = false;
@@ -388,6 +375,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.rb_white_style:
                 themeId = R.style.picture_white_style;
                 isChangeStatusBarFontColor = true;
+                titleBarBackgroundColor = R.color.white;
                 statusBarColorPrimaryDark = R.color.white;
                 upResId = R.drawable.orange_arrow_up;
                 downResId = R.drawable.orange_arrow_down;
@@ -397,6 +385,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 themeId = R.style.picture_QQ_style;
                 isChangeStatusBarFontColor = false;
                 statusBarColorPrimaryDark = R.color.blue;
+                titleBarBackgroundColor = R.color.blue;
                 upResId = R.drawable.arrow_up;
                 downResId = R.drawable.arrow_down;
                 isOpenStyleCheckNumMode = true;
@@ -405,6 +394,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 themeId = R.style.picture_Sina_style;
                 isChangeStatusBarFontColor = true;
                 statusBarColorPrimaryDark = R.color.white;
+                titleBarBackgroundColor = R.color.white;
                 upResId = R.drawable.orange_arrow_up;
                 downResId = R.drawable.orange_arrow_down;
                 isOpenStyleCheckNumMode = false;
@@ -442,6 +432,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     cb_showCropFrame.setChecked(true);
                     cb_showCropGrid.setChecked(true);
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE:
+                // 存储权限
+                for (int i = 0; i < grantResults.length; i++) {
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        PictureFileUtils.deleteCacheDirFile(MainActivity.this, PictureMimeType.ofImage());
+                    } else {
+                        Toast.makeText(MainActivity.this,
+                                getString(R.string.picture_jurisdiction), Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
         }

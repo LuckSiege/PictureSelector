@@ -1,8 +1,11 @@
 package com.luck.picture.lib;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
@@ -15,14 +18,12 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.luck.picture.lib.adapter.SimpleFragmentAdapter;
 import com.luck.picture.lib.anim.OptAnimationLoader;
+import com.luck.picture.lib.broadcast.BroadcastAction;
+import com.luck.picture.lib.broadcast.BroadcastManager;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.entity.EventEntity;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.observable.ImagesObservable;
-import com.luck.picture.lib.rxbus2.RxBus;
-import com.luck.picture.lib.rxbus2.Subscribe;
-import com.luck.picture.lib.rxbus2.ThreadMode;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.VoiceUtils;
@@ -41,7 +42,7 @@ import java.util.List;
  * @描述:图片预览
  */
 public class PicturePreviewActivity extends PictureBaseActivity implements
-        View.OnClickListener, Animation.AnimationListener, SimpleFragmentAdapter.OnCallBackActivity {
+        View.OnClickListener, SimpleFragmentAdapter.OnCallBackActivity {
     private ImageView picture_left_back;
     private TextView tv_img_num, tv_title, tv_ok;
     private PreviewViewPager viewPager;
@@ -58,38 +59,16 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     private int screenWidth;
     private Handler mHandler;
 
-    /**
-     * EventBus 3.0 回调
-     *
-     * @param obj
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void eventBus(EventEntity obj) {
-        switch (obj.what) {
-            case PictureConfig.CLOSE_PREVIEW_FLAG:
-                // 压缩完后关闭预览界面
-                dismissDialog();
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        onBackPressed();
-                    }
-                }, 150);
-                break;
-        }
-    }
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_preview);
-        if (!RxBus.getDefault().isRegistered(this)) {
-            RxBus.getDefault().register(this);
-        }
+
+        BroadcastManager.getInstance(this).registerReceiver(commonBroadcastReceiver,
+                BroadcastAction.ACTION_CLOSE_PREVIEW);
         mHandler = new Handler();
         screenWidth = ScreenUtils.getScreenWidth(this);
         animation = OptAnimationLoader.loadAnimation(this, R.anim.modal_in);
-        animation.setAnimationListener(this);
         picture_left_back = findViewById(R.id.picture_left_back);
         viewPager = findViewById(R.id.preview_pager);
         ll_check = findViewById(R.id.ll_check);
@@ -125,9 +104,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 String mimeType = selectImages.size() > 0 ?
                         selectImages.get(0).getMimeType() : "";
                 if (!TextUtils.isEmpty(mimeType)) {
-                    boolean toEqual = PictureMimeType.
-                            mimeToEqual(mimeType, image.getMimeType());
-                    if (!toEqual) {
+                    boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, image.getMimeType());
+                    if (!mimeTypeSame) {
                         ToastUtils.s(mContext, getString(R.string.picture_rule));
                         return;
                     }
@@ -236,12 +214,15 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      * 单选图片
      */
     private void singleRadioMediaImage() {
-        if (selectImages != null
-                && selectImages.size() > 0) {
-            LocalMedia media = selectImages.get(0);
-            RxBus.getDefault()
-                    .post(new EventEntity(PictureConfig.UPDATE_FLAG,
-                            selectImages, media.getPosition()));
+        LocalMedia media = selectImages != null && selectImages.size() > 0 ? selectImages.get(0) : null;
+        if (media != null) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("position", media.getPosition());
+            bundle.putParcelableArrayList("selectImages", (ArrayList<? extends Parcelable>) selectImages);
+            BroadcastManager.getInstance(this)
+                    .action(BroadcastAction.ACTION_SELECTED_DATA)
+                    .extras(bundle)
+                    .broadcast();
             selectImages.clear();
         }
     }
@@ -251,7 +232,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      */
     private void initViewPageAdapterData() {
         tv_title.setText(position + 1 + "/" + images.size());
-        adapter = new SimpleFragmentAdapter(config,images, this, this);
+        adapter = new SimpleFragmentAdapter(config, images, this, this);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(position);
         onSelectNumChange(false);
@@ -363,24 +344,15 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      */
     private void updateSelector(boolean isRefresh) {
         if (isRefresh) {
-            EventEntity obj = new EventEntity(PictureConfig.UPDATE_FLAG, selectImages, index);
-            RxBus.getDefault().post(obj);
+            Bundle bundle = new Bundle();
+            bundle.putInt("position", index);
+            bundle.putParcelableArrayList("selectImages", (ArrayList<? extends Parcelable>) selectImages);
+            BroadcastManager.getInstance(this)
+                    .action(BroadcastAction.ACTION_SELECTED_DATA)
+                    .extras(bundle)
+                    .broadcast();
         }
     }
-
-    @Override
-    public void onAnimationStart(Animation animation) {
-    }
-
-    @Override
-    public void onAnimationEnd(Animation animation) {
-        updateSelector(refresh);
-    }
-
-    @Override
-    public void onAnimationRepeat(Animation animation) {
-    }
-
 
     @Override
     public void onClick(View view) {
@@ -395,14 +367,14 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             String mimeType = image != null ? image.getMimeType() : "";
             if (config.minSelectNum > 0) {
                 if (size < config.minSelectNum && config.selectionMode == PictureConfig.MULTIPLE) {
-                    boolean eqImg = mimeType.startsWith(PictureConfig.IMAGE);
+                    boolean eqImg = PictureMimeType.eqImage(mimeType);
                     String str = eqImg ? getString(R.string.picture_min_img_num, config.minSelectNum)
                             : getString(R.string.picture_min_video_num, config.minSelectNum);
                     ToastUtils.s(mContext, str);
                     return;
                 }
             }
-            if (config.enableCrop && mimeType.startsWith(PictureConfig.IMAGE)) {
+            if (config.enableCrop && PictureMimeType.eqImage(mimeType)) {
                 if (config.selectionMode == PictureConfig.SINGLE) {
                     originalPath = image.getPath();
                     startCrop(originalPath);
@@ -422,8 +394,12 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
 
     @Override
     public void onResult(List<LocalMedia> images) {
-        RxBus.getDefault().post(new EventEntity(PictureConfig.PREVIEW_DATA_FLAG, images));
-        // 如果开启了压缩，先不关闭此页面，PictureImageGridActivity压缩完在通知关闭
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("selectImages", (ArrayList<? extends Parcelable>) images);
+        BroadcastManager.getInstance(this)
+                .action(BroadcastAction.ACTION_PREVIEW_COMPRESSION)
+                .extras(bundle)
+                .broadcast();
         if (!config.isCompress) {
             onBackPressed();
         } else {
@@ -463,8 +439,9 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (RxBus.getDefault().isRegistered(this)) {
-            RxBus.getDefault().unregister(this);
+        if (commonBroadcastReceiver != null) {
+            BroadcastManager.getInstance(this).unregisterReceiver(commonBroadcastReceiver,
+                    BroadcastAction.ACTION_CLOSE_PREVIEW);
         }
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
@@ -480,4 +457,21 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     public void onActivityBackPressed() {
         onBackPressed();
     }
+
+
+    private BroadcastReceiver commonBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            switch (action) {
+                case BroadcastAction.ACTION_CLOSE_PREVIEW:
+                    // 压缩完后关闭预览界面
+                    dismissDialog();
+                    mHandler.postDelayed(() -> onBackPressed(), 150);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 }

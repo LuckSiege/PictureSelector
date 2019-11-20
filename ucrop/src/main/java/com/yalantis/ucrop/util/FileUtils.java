@@ -17,7 +17,6 @@
 package com.yalantis.ucrop.util;
 
 import android.annotation.SuppressLint;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -269,7 +268,7 @@ public class FileUtils {
                 File file = new File(path);
                 String fileName = file.getName();
                 int last = fileName.lastIndexOf(".") + 1;
-                String temp = fileName.substring(last, fileName.length());
+                String temp = fileName.substring(last);
                 return "image/" + temp;
             }
         } catch (Exception e) {
@@ -354,50 +353,6 @@ public class FileUtils {
             }
         }
         return true;
-    }
-
-    /**
-     * 根据uri获取MIME_TYPE
-     *
-     * @param uri
-     * @return
-     */
-    public static String getImageMimeType(Uri uri, Context context) {
-        String mimeType = "";
-        if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
-            Cursor cursor = context.getApplicationContext().getContentResolver().query(uri,
-                    new String[]{MediaStore.Images.Media.DATA}, null, null, null);
-            if (cursor != null) {
-                if (cursor.moveToFirst()) {
-                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE);
-                    if (columnIndex > -1) {
-                        mimeType = cursor.getString(columnIndex);
-                    }
-                }
-                cursor.close();
-            }
-        }
-        return mimeType;
-    }
-
-    /**
-     * 获取图片后缀
-     *
-     * @param mineType
-     * @return
-     */
-    public static String getLastImgSuffix(String mineType) {
-        String defaultSuffix = ".png";
-        try {
-            int index = mineType.lastIndexOf("/") + 1;
-            if (index > 0) {
-                return "." + mineType.substring(index);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return defaultSuffix;
-        }
-        return defaultSuffix;
     }
 
     public static String extSuffix(InputStream input) {

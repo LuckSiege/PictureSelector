@@ -23,11 +23,11 @@ public class GlideEngine implements ImageEngine {
 
     @Override
     public void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
-        Glide.with(context).asBitmap().load(url).into(imageView);
+        Glide.with(context).load(url).into(imageView);
     }
 
     @Override
-    public void loadAsBitmapImage(@NonNull Context context, @NonNull String url,
+    public void loadFolderAsBitmapImage(@NonNull Context context, @NonNull String url,
                                   @NonNull ImageView imageView, int placeholderId) {
         Glide.with(context)
                 .asBitmap()
@@ -62,7 +62,8 @@ public class GlideEngine implements ImageEngine {
     }
 
     @Override
-    public void loadAsBitmapGridImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView, int placeholderId) {
+    public void loadAsBitmapGridImage(@NonNull Context context, @NonNull String url,
+                                      @NonNull ImageView imageView, int placeholderId) {
         Glide.with(context)
                 .asBitmap()
                 .override(200, 200)

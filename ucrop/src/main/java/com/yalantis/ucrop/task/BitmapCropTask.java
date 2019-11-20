@@ -155,7 +155,7 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
                 mContext.get().getContentResolver().openFileDescriptor(mImageInputUri, "r");
         FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
         String suffix = FileUtils.extSuffix(inputStream);
-        if (suffix.startsWith(".gif")) {
+        if (suffix.startsWith(".gif") || suffix.startsWith(".GIF")) {
             // gif 不裁剪
             return true;
         }

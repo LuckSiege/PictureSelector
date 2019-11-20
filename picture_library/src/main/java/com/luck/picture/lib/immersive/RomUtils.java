@@ -2,6 +2,7 @@ package com.luck.picture.lib.immersive;
 
 import android.os.Build;
 import android.text.TextUtils;
+import com.luck.picture.lib.tools.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,47 +22,57 @@ public class RomUtils {
         public static final int NA = 4;
     }
 
-    public static boolean isLightStatusBarAvailable() {
-        if (isMIUIV6OrAbove() || isFlymeV4OrAbove() || isAndroidMOrAbove()) {
-            return true;
-        }
-        return false;
-    }
 
-    public static int getLightStatusBarAvailableRomType() {
+    private static Integer romType;
+
+    public static int getLightStatausBarAvailableRomType() {
+        if (romType != null) {
+            return romType;
+        }
+
         if (isMIUIV6OrAbove()) {
-            return AvailableRomType.MIUI;
+            romType = AvailableRomType.MIUI;
+            return romType;
         }
 
         if (isFlymeV4OrAbove()) {
-            return AvailableRomType.FLYME;
+            romType = AvailableRomType.FLYME;
+            return romType;
         }
 
         if (isAndroid5OrAbove()) {
-            return AvailableRomType.ANDROID_NATIVE;
+            romType = AvailableRomType.ANDROID_NATIVE;
+            return romType;
         }
 
-        return AvailableRomType.NA;
+        romType = AvailableRomType.NA;
+        return romType;
     }
 
-    /**
-     * Flyme V4的displayId格式为 [Flyme OS 4.x.x.xA]
-     * Flyme V5的displayId格式为 [Flyme 5.x.x.x beta]
-     *
-     * @return
-     */
+    //Flyme V4的displayId格式为 [Flyme OS 4.x.x.xA]
+    //Flyme V5的displayId格式为 [Flyme 5.x.x.x beta]
     private static boolean isFlymeV4OrAbove() {
+        return (getFlymeVersion() >= 4);
+    }
+
+
+    //Flyme V4的displayId格式为 [Flyme OS 4.x.x.xA]
+    //Flyme V5的displayId格式为 [Flyme 5.x.x.x beta]
+    public static int getFlymeVersion() {
         String displayId = Build.DISPLAY;
         if (!TextUtils.isEmpty(displayId) && displayId.contains("Flyme")) {
-            String[] displayIdArray = displayId.split(" ");
-            for (String temp : displayIdArray) {
-                //版本号4以上，形如4.x.
-                if (temp.matches("^[4-9]\\.(\\d+\\.)+\\S*")) {
-                    return true;
-                }
+            displayId = displayId.replaceAll("Flyme", "");
+            displayId = displayId.replaceAll("OS", "");
+            displayId = displayId.replaceAll(" ", "");
+
+
+            String version = displayId.substring(0, 1);
+
+            if (version != null) {
+                return StringUtils.stringToInt(version);
             }
         }
-        return false;
+        return 0;
     }
 
     //MIUI V6对应的versionCode是4
@@ -94,20 +105,8 @@ public class RomUtils {
         return miuiVersionCode;
     }
 
+
     //Android Api 23以上
-    private static boolean isAndroidMOrAbove() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return true;
-        }
-        return false;
-    }
-
-
-    /**
-     * Android Api 23以上
-     *
-     * @return
-     */
     private static boolean isAndroid5OrAbove() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return true;
@@ -115,22 +114,6 @@ public class RomUtils {
         return false;
     }
 
-    /**
-     * 获取小米 rom 版本号，获取失败返回 -1
-     *
-     * @return miui rom version code, if fail , return -1
-     */
-    public static int getMiuiVersion() {
-        String version = RomUtils.getSystemProperty("ro.miui.ui.version.name");
-        if (version != null) {
-            try {
-                return Integer.parseInt(version.substring(1));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return -1;
-    }
 
     public static String getSystemProperty(String propName) {
         String line;
@@ -152,4 +135,5 @@ public class RomUtils {
         }
         return line;
     }
+
 }

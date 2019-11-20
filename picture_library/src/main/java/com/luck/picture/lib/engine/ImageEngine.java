@@ -29,8 +29,8 @@ public interface ImageEngine {
      * @param imageView     承载图片ImageView
      * @param placeholderId 占位图
      */
-    void loadAsBitmapImage(@NonNull Context context, @NonNull String url,
-                           @NonNull ImageView imageView, @DrawableRes int placeholderId);
+    void loadFolderAsBitmapImage(@NonNull Context context, @NonNull String url,
+                                 @NonNull ImageView imageView, @DrawableRes int placeholderId);
 
     /**
      * 加载gif图片

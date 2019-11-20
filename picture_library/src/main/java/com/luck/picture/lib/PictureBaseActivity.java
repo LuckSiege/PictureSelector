@@ -4,32 +4,36 @@ import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
 
+import com.luck.picture.lib.broadcast.BroadcastAction;
+import com.luck.picture.lib.broadcast.BroadcastManager;
 import com.luck.picture.lib.compress.Luban;
 import com.luck.picture.lib.compress.OnCompressListener;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.dialog.PictureDialog;
-import com.luck.picture.lib.entity.EventEntity;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.immersive.ImmersiveManage;
-import com.luck.picture.lib.permissions.RxPermissions;
-import com.luck.picture.lib.rxbus2.RxBus;
-import com.luck.picture.lib.rxbus2.RxUtils;
+import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DoubleUtils;
@@ -45,18 +49,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Flowable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * @author：luck
  * @data：2018/3/28 下午1:00
  * @描述: Activity基类
  */
-public class PictureBaseActivity extends FragmentActivity {
+public class PictureBaseActivity extends AppCompatActivity implements Handler.Callback {
+    private static final int MSG_CHOOSE_RESULT_SUCCESS = 200;
+    private static final int MSG_ASY_COMPRESSION_RESULT_SUCCESS = 300;
     protected Context mContext;
     protected PictureSelectionConfig config;
     protected boolean openWhiteStatusBar, numComplete;
@@ -66,7 +67,7 @@ public class PictureBaseActivity extends FragmentActivity {
     protected PictureDialog dialog;
     protected PictureDialog compressDialog;
     protected List<LocalMedia> selectionMedias;
-    protected RxPermissions rxPermissions;
+    protected Handler mHandler;
 
     /**
      * 是否使用沉浸式，子类复写该方法来确定是否采用沉浸式
@@ -75,7 +76,7 @@ public class PictureBaseActivity extends FragmentActivity {
      */
     @Override
     public boolean isImmersive() {
-        return config != null && config.isCamera ? false : true;
+        return true;
     }
 
     /**
@@ -101,7 +102,7 @@ public class PictureBaseActivity extends FragmentActivity {
         setTheme(themeStyleId);
         super.onCreate(savedInstanceState);
         mContext = this;
-        rxPermissions = new RxPermissions(this);
+        mHandler = new Handler(Looper.getMainLooper(), this);
         initConfig();
         if (isImmersive()) {
             immersive();
@@ -218,23 +219,20 @@ public class PictureBaseActivity extends FragmentActivity {
     protected void compressImage(final List<LocalMedia> result) {
         showCompressDialog();
         if (config.synOrAsy) {
-            Flowable.just(result)
-                    .observeOn(Schedulers.io())
-                    .map(list -> {
-                        List<File> files =
-                                Luban.with(mContext)
-                                        .loadMediaData(list, config.cameraFileName)
-                                        .setTargetDir(config.compressSavePath)
-                                        .setCompressQuality(config.compressQuality)
-                                        .ignoreBy(config.minimumCompressSize)
-                                        .get();
-                        if (files == null) {
-                            files = new ArrayList<>();
-                        }
-                        return files;
-                    })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(files -> handleCompressCallBack(result, files));
+            AsyncTask.SERIAL_EXECUTOR.execute(() -> {
+                try {
+                    List<File> files =
+                            Luban.with(mContext)
+                                    .loadMediaData(result, config.cameraFileName)
+                                    .setTargetDir(config.compressSavePath)
+                                    .setCompressQuality(config.compressQuality)
+                                    .ignoreBy(config.minimumCompressSize).get();
+                    // 线程切换
+                    mHandler.sendMessage(mHandler.obtainMessage(MSG_ASY_COMPRESSION_RESULT_SUCCESS, new Object[]{result, files}));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
         } else {
             Luban.with(this)
                     .loadMediaData(result, config.cameraFileName)
@@ -248,13 +246,15 @@ public class PictureBaseActivity extends FragmentActivity {
 
                         @Override
                         public void onSuccess(List<LocalMedia> list) {
-                            RxBus.getDefault().post(new EventEntity(PictureConfig.CLOSE_PREVIEW_FLAG));
+                            BroadcastManager.getInstance(getApplicationContext())
+                                    .action(BroadcastAction.ACTION_CLOSE_PREVIEW).broadcast();
                             onResult(list);
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            RxBus.getDefault().post(new EventEntity(PictureConfig.CLOSE_PREVIEW_FLAG));
+                            BroadcastManager.getInstance(getApplicationContext())
+                                    .action(BroadcastAction.ACTION_CLOSE_PREVIEW).broadcast();
                             onResult(result);
                         }
                     }).launch();
@@ -268,6 +268,10 @@ public class PictureBaseActivity extends FragmentActivity {
      * @param files
      */
     private void handleCompressCallBack(List<LocalMedia> images, List<File> files) {
+        if (images == null || files == null) {
+            closeActivity();
+            return;
+        }
         if (files.size() == images.size()) {
             for (int i = 0, j = images.size(); i < j; i++) {
                 // 压缩成功后的地址
@@ -275,12 +279,13 @@ public class PictureBaseActivity extends FragmentActivity {
                 LocalMedia image = images.get(i);
                 // 如果是网络图片则不压缩
                 boolean http = PictureMimeType.isHttp(path);
-                boolean eqTrue = !TextUtils.isEmpty(path) && http;
-                image.setCompressed(eqTrue ? false : true);
-                image.setCompressPath(eqTrue ? "" : path);
+                boolean flag = !TextUtils.isEmpty(path) && http;
+                image.setCompressed(flag ? false : true);
+                image.setCompressPath(flag ? "" : path);
             }
         }
-        RxBus.getDefault().post(new EventEntity(PictureConfig.CLOSE_PREVIEW_FLAG));
+        BroadcastManager.getInstance(getApplicationContext())
+                .action(BroadcastAction.ACTION_CLOSE_PREVIEW).broadcast();
         onResult(images);
     }
 
@@ -453,62 +458,61 @@ public class PictureBaseActivity extends FragmentActivity {
      */
     protected void onResult(List<LocalMedia> images) {
         boolean androidQ = SdkVersionUtils.checkedAndroid_Q();
-        boolean isVideo = PictureMimeType.isVideo(images != null && images.size() > 0
+        boolean isVideo = PictureMimeType.eqVideo(images != null && images.size() > 0
                 ? images.get(0).getMimeType() : "");
         if (androidQ && !isVideo) {
             showCompressDialog();
         }
-        RxUtils.io(new RxUtils.RxSimpleTask<List<LocalMedia>>() {
-            @NonNull
-            @Override
-            public List<LocalMedia> doSth(Object... objects) {
-                if (androidQ) {
-                    // Android Q 版本做拷贝应用内沙盒适配
-                    int size = images.size();
-                    for (int i = 0; i < size; i++) {
-                        LocalMedia media = images.get(i);
-                        if (media == null || TextUtils.isEmpty(media.getPath())) {
-                            continue;
-                        }
-                        if (media.isCompressed()) {
-                            media.setAndroidQToPath(media.getCompressPath());
-                        } else if (media.isCut()) {
-                            media.setAndroidQToPath(media.getCutPath());
-                        } else {
-                            String path;
-                            if (isVideo) {
-                                path = AndroidQTransformUtils.parseVideoPathToAndroidQ
-                                        (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
-                            } else if (config.chooseMode == PictureMimeType.ofAudio()) {
-                                path = AndroidQTransformUtils.parseAudioPathToAndroidQ
-                                        (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
-                            } else {
-                                path = AndroidQTransformUtils.parseImagePathToAndroidQ
-                                        (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
-                            }
-                            media.setAndroidQToPath(path);
-                        }
+        if (androidQ) {
+            onResultToAndroidAsy(images);
+        } else {
+            dismissCompressDialog();
+            if (config.camera
+                    && config.selectionMode == PictureConfig.MULTIPLE
+                    && selectionMedias != null) {
+                images.addAll(images.size() > 0 ? images.size() - 1 : 0, selectionMedias);
+            }
+            Intent intent = PictureSelector.putIntentResult(images);
+            setResult(RESULT_OK, intent);
+            closeActivity();
+        }
+    }
 
+    /**
+     * 针对Android 异步处理
+     *
+     * @param images
+     */
+    private void onResultToAndroidAsy(List<LocalMedia> images) {
+        AsyncTask.SERIAL_EXECUTOR.execute(() -> {
+            // Android Q 版本做拷贝应用内沙盒适配
+            int size = images.size();
+            for (int i = 0; i < size; i++) {
+                LocalMedia media = images.get(i);
+                if (media == null || TextUtils.isEmpty(media.getPath())) {
+                    continue;
+                }
+                if (media.isCompressed()) {
+                    media.setAndroidQToPath(media.getCompressPath());
+                } else if (media.isCut()) {
+                    media.setAndroidQToPath(media.getCutPath());
+                } else {
+                    String path;
+                    if (PictureMimeType.eqVideo(media.getMimeType())) {
+                        path = AndroidQTransformUtils.parseVideoPathToAndroidQ
+                                (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
+                    } else if (config.chooseMode == PictureMimeType.ofAudio()) {
+                        path = AndroidQTransformUtils.parseAudioPathToAndroidQ
+                                (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
+                    } else {
+                        path = AndroidQTransformUtils.parseImagePathToAndroidQ
+                                (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
                     }
-                    return images;
+                    media.setAndroidQToPath(path);
                 }
-                // 非Q版本不做处理
-                return images;
             }
-
-            @Override
-            public void onNext(List<LocalMedia> mediaList) {
-                super.onNext(mediaList);
-                dismissCompressDialog();
-                if (config.camera
-                        && config.selectionMode == PictureConfig.MULTIPLE
-                        && selectionMedias != null) {
-                    mediaList.addAll(mediaList.size() > 0 ? mediaList.size() - 1 : 0, selectionMedias);
-                }
-                Intent intent = PictureSelector.putIntentResult(mediaList);
-                setResult(RESULT_OK, intent);
-                closeActivity();
-            }
+            // 线程切换
+            mHandler.sendMessage(mHandler.obtainMessage(MSG_CHOOSE_RESULT_SUCCESS, images));
         });
     }
 
@@ -690,34 +694,15 @@ public class PictureBaseActivity extends FragmentActivity {
      * start to camera audio
      */
     public void startOpenCameraAudio() {
-        if (rxPermissions == null) {
-            rxPermissions = new RxPermissions(this);
+        if (PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)) {
+            Intent cameraIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+            if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
+            }
+        } else {
+            PermissionChecker.requestPermissions(this,
+                    new String[]{Manifest.permission.RECORD_AUDIO}, PictureConfig.APPLY_AUDIO_PERMISSIONS_CODE);
         }
-        rxPermissions.request(Manifest.permission.RECORD_AUDIO).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                if (aBoolean) {
-                    Intent cameraIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-                    if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-                        startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
-                    }
-                } else {
-                    ToastUtils.s(mContext, getString(R.string.picture_audio));
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-            }
-
-            @Override
-            public void onComplete() {
-            }
-        });
     }
 
     /**
@@ -746,5 +731,56 @@ public class PictureBaseActivity extends FragmentActivity {
             medias.add(media);
         }
         handlerResult(medias);
+    }
+
+    @Override
+    public boolean handleMessage(@NonNull Message msg) {
+        switch (msg.what) {
+            case MSG_CHOOSE_RESULT_SUCCESS:
+                // 选择完成回调
+                List<LocalMedia> images = (List<LocalMedia>) msg.obj;
+                dismissCompressDialog();
+                if (images != null) {
+                    if (config.camera
+                            && config.selectionMode == PictureConfig.MULTIPLE
+                            && selectionMedias != null) {
+                        images.addAll(images.size() > 0 ? images.size() - 1 : 0, selectionMedias);
+                    }
+                    Intent intent = PictureSelector.putIntentResult(images);
+                    setResult(RESULT_OK, intent);
+                    closeActivity();
+                }
+                break;
+            case MSG_ASY_COMPRESSION_RESULT_SUCCESS:
+                // 异步压缩回调
+                if (msg.obj != null && msg.obj instanceof Object[]) {
+                    Object[] objects = (Object[]) msg.obj;
+                    if (objects.length > 0) {
+                        List<LocalMedia> result = (List<LocalMedia>) objects[0];
+                        List<File> files = (List<File>) objects[1];
+                        handleCompressCallBack(result, files);
+                    }
+                }
+                break;
+        }
+        return false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PictureConfig.APPLY_AUDIO_PERMISSIONS_CODE:
+                // 录音权限
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent cameraIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+                    if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
+                    }
+                } else {
+                    ToastUtils.s(mContext, getString(R.string.picture_audio));
+                }
+                break;
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.luck.picture.lib.adapter;
 
 import android.content.Context;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -72,7 +74,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         } else {
             if (config != null && config.imageEngine != null) {
                 config.imageEngine
-                        .loadAsBitmapImage(holder.itemView.getContext(),
+                        .loadFolderAsBitmapImage(holder.itemView.getContext(),
                                 imagePath, holder.ivFirstImage, R.drawable.ic_placeholder);
             }
         }

@@ -1,6 +1,5 @@
 package com.luck.picture.lib.immersive;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
 import android.view.Window;
@@ -16,15 +15,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ImmersiveManage {
     /**
-     * 注意：使用最好将布局xml 跟布局加入    android:fitsSystemWindows="true" ，这样可以避免有些手机上布局顶边的问题
-     *
-     * @param baseActivity        这个会留出来状态栏和底栏的空白
-     * @param statusBarColor      状态栏的颜色
-     * @param navigationBarColor  导航栏的颜色
-     * @param isDarkStatusBarIcon 状态栏图标颜色是否是深（黑）色  false状态栏图标颜色为白色
+     * 判定是否使用沉浸式
      */
-    public static void immersiveAboveAPI19(AppCompatActivity baseActivity, int statusBarColor, int navigationBarColor, boolean isDarkStatusBarIcon) {
-        immersiveAboveAPI23(baseActivity, false, false, statusBarColor, navigationBarColor, isDarkStatusBarIcon);
+    public static boolean immersiveUseful() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return true;
+        }
+
+        return false;
     }
 
 
@@ -36,7 +34,7 @@ public class ImmersiveManage {
      * @param navigationBarColor  导航栏的颜色
      * @param isDarkStatusBarIcon 状态栏图标颜色是否是深（黑）色  false状态栏图标颜色为白色
      */
-    public static void immersiveAboveAPI23(Activity baseActivity, int statusBarColor, int navigationBarColor, boolean isDarkStatusBarIcon) {
+    public static void immersiveAboveAPI23(AppCompatActivity baseActivity, int statusBarColor, int navigationBarColor, boolean isDarkStatusBarIcon) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             immersiveAboveAPI23(baseActivity, false, false, statusBarColor, navigationBarColor, isDarkStatusBarIcon);
         }
@@ -48,7 +46,7 @@ public class ImmersiveManage {
      * @param statusBarColor     状态栏的颜色
      * @param navigationBarColor 导航栏的颜色
      */
-    public static void immersiveAboveAPI23(Activity baseActivity, boolean isMarginStatusBar
+    public static void immersiveAboveAPI23(AppCompatActivity baseActivity, boolean isMarginStatusBar
             , boolean isMarginNavigationBar, int statusBarColor, int navigationBarColor, boolean isDarkStatusBarIcon) {
         try {
             Window window = baseActivity.getWindow();
@@ -103,7 +101,6 @@ public class ImmersiveManage {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

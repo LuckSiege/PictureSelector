@@ -9,6 +9,8 @@ import android.widget.TextView;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureMimeType;
 
+import java.util.regex.Pattern;
+
 /**
  * @author：luck
  * @data：2017/5/25 19:12
@@ -38,4 +40,11 @@ public class StringUtils {
         tv.setText(placeSpan);
     }
 
+    public static int stringToInt(String str) {
+        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]+$");
+        if (pattern.matcher(str).matches()) {
+            return Integer.valueOf(str);
+        }
+        return 0;
+    }
 }

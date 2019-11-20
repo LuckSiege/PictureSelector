@@ -17,7 +17,7 @@
     </style>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="BaseNoActionBarTheme">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/bar_grey</item>
         <item name="colorPrimaryDark">@color/bar_grey</item>
@@ -56,7 +56,7 @@
 
 
     <!--默认样式-->
-    <style name="picture.default.style" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="picture.default.style" parent="BaseNoActionBarTheme">
         <!-- Customize your theme here. -->
         <!--标题栏背景色-->
         <item name="colorPrimary">@color/bar_grey</item>
@@ -108,9 +108,12 @@
         <item name="picture.folder_checked_dot">@drawable/orange_oval</item>
     </style>
 
-    <style name="MyTheme.Translucent" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="MyTheme.Translucent" parent="BaseNoActionBarTheme">
         <item name="android:windowBackground">#00000000</item> <!-- 背景色透明度 -->
         <item name="android:windowNoTitle">true</item><!-- 无标题 -->
         <item name="android:windowIsTranslucent">true</item><!-- 半透明,设置为false无透明效果 -->
     </style>
+
+
+    <style name="BaseNoActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar" />
 </resources>

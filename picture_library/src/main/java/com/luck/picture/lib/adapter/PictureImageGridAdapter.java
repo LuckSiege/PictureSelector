@@ -160,7 +160,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
             selectImage(contentHolder, isSelected(image), false);
 
-            final int mediaMimeType = PictureMimeType.isPictureType(mimeType);
             boolean gif = PictureMimeType.isGif(mimeType);
             contentHolder.llCheck.setVisibility(isSingleDirectReturn ? View.GONE : View.VISIBLE);
             contentHolder.tvIsGif.setVisibility(gif ? View.VISIBLE : View.GONE);
@@ -175,7 +174,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
                             (R.drawable.video_icon, 0, 0, 0);
                 }
-                contentHolder.tvDuration.setVisibility(mediaMimeType == PictureConfig.TYPE_VIDEO
+                contentHolder.tvDuration.setVisibility(PictureMimeType.eqVideo(mimeType)
                         ? View.VISIBLE : View.GONE);
             }
             boolean eqLongImg = MediaUtils.isLongImg(image);
@@ -197,7 +196,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     String newPath = SdkVersionUtils.checkedAndroid_Q()
                             ? PictureFileUtils.getPath(context, Uri.parse(path)) : path;
                     if (!new File(newPath).exists()) {
-                        ToastUtils.s(context, PictureMimeType.s(context, mediaMimeType));
+                        ToastUtils.s(context, PictureMimeType.s(context, mimeType));
                         return;
                     }
                     changeCheckboxState(contentHolder, image);
@@ -208,7 +207,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 String newPath = SdkVersionUtils.checkedAndroid_Q()
                         ? PictureFileUtils.getPath(context, Uri.parse(path)) : path;
                 if (!new File(newPath).exists()) {
-                    ToastUtils.s(context, PictureMimeType.s(context, mediaMimeType));
+                    ToastUtils.s(context, PictureMimeType.s(context, mimeType));
                     return;
                 }
                 int index = showCamera ? position - 1 : position;
@@ -216,10 +215,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     return;
                 }
                 boolean eqResult =
-                        mediaMimeType == PictureConfig.TYPE_IMAGE && enablePreview
-                                || mediaMimeType == PictureConfig.TYPE_VIDEO && (enablePreviewVideo
+                        PictureMimeType.eqImage(mimeType) && enablePreview
+                                || PictureMimeType.eqVideo(mimeType) && (enablePreviewVideo
                                 || selectMode == PictureConfig.SINGLE)
-                                || mediaMimeType == PictureConfig.TYPE_AUDIO && (enablePreviewAudio
+                                || PictureMimeType.eqAudio(mimeType) && (enablePreviewAudio
                                 || selectMode == PictureConfig.SINGLE);
                 if (eqResult) {
                     imageSelectChangedListener.onPictureClick(image, index);
@@ -305,17 +304,17 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         boolean isChecked = contentHolder.check.isSelected();
         String mimeType = selectImages.size() > 0 ? selectImages.get(0).getMimeType() : "";
         if (!TextUtils.isEmpty(mimeType)) {
-            boolean toEqual = PictureMimeType.mimeToEqual(mimeType, image.getMimeType());
-            if (!toEqual) {
+            boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, image.getMimeType());
+            if (!mimeTypeSame) {
                 ToastUtils.s(context, context.getString(R.string.picture_rule));
                 return;
             }
         }
         if (selectImages.size() >= maxSelectNum && !isChecked) {
             String str;
-            if (mimeType.startsWith(PictureConfig.VIDEO)) {
+            if (PictureMimeType.eqVideo(mimeType)) {
                 str = context.getString(R.string.picture_message_video_max_num, maxSelectNum);
-            } else if (mimeType.startsWith(PictureConfig.AUDIO)) {
+            } else if (PictureMimeType.eqAudio(mimeType)) {
                 str = context.getString(R.string.picture_message_audio_max_num, maxSelectNum);
             } else {
                 str = context.getString(R.string.picture_message_max_num, maxSelectNum);

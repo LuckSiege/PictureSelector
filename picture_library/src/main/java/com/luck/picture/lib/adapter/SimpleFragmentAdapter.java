@@ -84,7 +84,7 @@ public class SimpleFragmentAdapter extends PagerAdapter {
         LocalMedia media = images.get(position);
         if (media != null) {
             final String mimeType = media.getMimeType();
-            boolean eqVideo = mimeType.startsWith(PictureConfig.VIDEO);
+            boolean eqVideo =  PictureMimeType.eqVideo(mimeType);
             iv_play.setVisibility(eqVideo ? View.VISIBLE : View.GONE);
             final String path;
             if (media.isCut() && !media.isCompressed()) {
@@ -112,8 +112,8 @@ public class SimpleFragmentAdapter extends PagerAdapter {
                         displayLongPic(SdkVersionUtils.checkedAndroid_Q()
                                 ? Uri.parse(path) : Uri.fromFile(new File(path)), longImg);
                     } else {
-                        config.imageEngine.loadAsBitmapImage
-                                (contentView.getContext(), path, imageView, 0);
+                        config.imageEngine.loadImage
+                                (contentView.getContext(), path, imageView);
                     }
                 }
             }

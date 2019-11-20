@@ -95,7 +95,6 @@ public class PictureFileUtils {
                 tmpFile = new File(folderDir, fileName + suffixType);
                 break;
         }
-        Log.i("Mike", "createMediaFile: " + tmpFile.getAbsolutePath());
         return tmpFile;
     }
 

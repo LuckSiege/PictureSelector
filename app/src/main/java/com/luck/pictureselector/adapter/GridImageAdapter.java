@@ -154,12 +154,11 @@ public class GridImageAdapter extends
             }
 
             Log.i("原图地址::", media.getPath());
-            int pictureType = PictureMimeType.isPictureType(media.getMimeType());
             if (media.isCut()) {
                 Log.i("裁剪地址::", media.getCutPath());
             }
             long duration = media.getDuration();
-            viewHolder.tvDuration.setVisibility(pictureType == PictureConfig.TYPE_VIDEO
+            viewHolder.tvDuration.setVisibility(PictureMimeType.eqVideo(media.getMimeType())
                     ? View.VISIBLE : View.GONE);
             if (chooseModel == PictureMimeType.ofAudio()) {
                 viewHolder.tvDuration.setVisibility(View.VISIBLE);

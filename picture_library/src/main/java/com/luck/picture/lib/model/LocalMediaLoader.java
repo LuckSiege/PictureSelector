@@ -3,8 +3,13 @@ package com.luck.picture.lib.model;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -14,7 +19,6 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
-import com.luck.picture.lib.rxbus2.RxUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 
@@ -30,7 +34,8 @@ import java.util.Locale;
  * @描述: Local media database query class
  */
 
-public class LocalMediaLoader {
+public class LocalMediaLoader implements Handler.Callback {
+    private static final int MSG_QUERY_MEDIA_SUCCESS = 0;
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
     private static final String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
     private static final String NOT_GIF = "!='image/gif'";
@@ -41,7 +46,7 @@ public class LocalMediaLoader {
     private Context mContext;
     private boolean isAndroidQ;
     private PictureSelectionConfig config;
-
+    private Handler mHandler;
     /**
      * 媒体文件数据库字段
      */
@@ -131,115 +136,99 @@ public class LocalMediaLoader {
         this.mContext = context.getApplicationContext();
         this.isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         this.config = config;
+        this.mHandler = new Handler(Looper.getMainLooper(), this);
     }
 
+    public void loadAllMedia() {
+        AsyncTask.SERIAL_EXECUTOR.execute(() -> {
+            Cursor data = mContext.getContentResolver().query(QUERY_URI, PROJECTION, getSelection(), getSelectionArgs(), ORDER_BY);
+            try {
+                List<LocalMediaFolder> imageFolders = new ArrayList<>();
+                LocalMediaFolder allImageFolder = new LocalMediaFolder();
+                List<LocalMedia> latelyImages = new ArrayList<>();
+                if (data != null) {
+                    int count = data.getCount();
+                    if (count > 0) {
+                        data.moveToFirst();
+                        do {
+                            long id = data.getLong
+                                    (data.getColumnIndexOrThrow(PROJECTION[0]));
 
-    public void loadAllMedia(final LocalMediaLoadListener imageLoadListener) {
-        RxUtils.io(new RxUtils.RxSimpleTask<List<LocalMediaFolder>>() {
-            @NonNull
-            @Override
-            public List<LocalMediaFolder> doSth(Object... objects) {
-                Cursor data = mContext.getContentResolver().query(QUERY_URI, PROJECTION, getSelection(), getSelectionArgs(), ORDER_BY);
-                try {
-                    List<LocalMediaFolder> imageFolders = new ArrayList<>();
-                    LocalMediaFolder allImageFolder = new LocalMediaFolder();
-                    List<LocalMedia> latelyImages = new ArrayList<>();
-                    if (data != null) {
-                        int count = data.getCount();
-                        if (count > 0) {
-                            data.moveToFirst();
-                            do {
-                                long id = data.getLong
-                                        (data.getColumnIndexOrThrow(PROJECTION[0]));
+                            String path = isAndroidQ ? getRealPathAndroid_Q(id) : data.getString
+                                    (data.getColumnIndexOrThrow(PROJECTION[1]));
 
-                                String path = isAndroidQ ? getRealPathAndroid_Q(id) : data.getString
-                                        (data.getColumnIndexOrThrow(PROJECTION[1]));
+                            String mimeType = data.getString
+                                    (data.getColumnIndexOrThrow(PROJECTION[2]));
 
-                                String mimeType = data.getString
-                                        (data.getColumnIndexOrThrow(PROJECTION[2]));
+                            int w = data.getInt
+                                    (data.getColumnIndexOrThrow(PROJECTION[3]));
 
-                                int w = data.getInt
-                                        (data.getColumnIndexOrThrow(PROJECTION[3]));
+                            int h = data.getInt
+                                    (data.getColumnIndexOrThrow(PROJECTION[4]));
 
-                                int h = data.getInt
-                                        (data.getColumnIndexOrThrow(PROJECTION[4]));
+                            long duration = data.getLong
+                                    (data.getColumnIndexOrThrow(PROJECTION[5]));
 
-                                long duration = data.getLong
-                                        (data.getColumnIndexOrThrow(PROJECTION[5]));
+                            long size = data.getLong
+                                    (data.getColumnIndexOrThrow(PROJECTION[6]));
 
-                                long size = data.getLong
-                                        (data.getColumnIndexOrThrow(PROJECTION[6]));
-
-                                if (config.chooseMode == PictureMimeType.ofVideo()) {
-                                    if (duration == 0) {
-                                        duration = MediaUtils.extractDuration(mContext, isAndroidQ, path);
-                                    }
-                                    if (w == 0 && h == 0) {
-                                        int[] newSize = isAndroidQ ? MediaUtils
-                                                .getLocalVideoWidthOrHeightToAndroidQ(mContext, path)
-                                                : MediaUtils.getLocalVideoWidthOrHeight(path);
-                                        w = newSize[0];
-                                        h = newSize[1];
-                                    }
-                                    if (config.videoMinSecond > 0 && duration < config.videoMinSecond) {
-                                        // 如果设置了最小显示多少秒的视频
-                                        continue;
-                                    }
-                                    if (config.videoMaxSecond > 0 && duration > config.videoMaxSecond) {
-                                        // 如果设置了最大显示多少秒的视频
-                                        continue;
-                                    }
-                                    if (duration == 0) {
-                                        // 时长如果为0，就当做损坏的视频处理过滤掉
-                                        continue;
-                                    }
-                                    if (size <= 0) {
-                                        // 视频大小为0过滤掉
-                                        continue;
-                                    }
+                            Log.i("Mike", "loadAllMedia: " + mimeType);
+                            if (PictureMimeType.eqVideo(mimeType)) {
+                                if (duration == 0) {
+                                    duration = MediaUtils.extractDuration(mContext, isAndroidQ, path);
                                 }
-                                LocalMedia image = new LocalMedia
-                                        (path, duration, config.chooseMode, mimeType, w, h, size);
-                                LocalMediaFolder folder = getImageFolder(path, imageFolders);
-                                List<LocalMedia> images = folder.getImages();
-                                images.add(image);
-                                folder.setImageNum(folder.getImageNum() + 1);
-                                latelyImages.add(image);
-                                int imageNum = allImageFolder.getImageNum();
-                                allImageFolder.setImageNum(imageNum + 1);
-                            } while (data.moveToNext());
-
-                            if (latelyImages.size() > 0) {
-                                sortFolder(imageFolders);
-                                imageFolders.add(0, allImageFolder);
-                                allImageFolder.setFirstImagePath
-                                        (latelyImages.get(0).getPath());
-                                String title = config.chooseMode == PictureMimeType.ofAudio() ?
-                                        mContext.getString(R.string.picture_all_audio)
-                                        : mContext.getString(R.string.picture_camera_roll);
-                                allImageFolder.setName(title);
-                                allImageFolder.setImages(latelyImages);
+                                if (w == 0 && h == 0) {
+                                    int[] newSize = isAndroidQ ? MediaUtils
+                                            .getLocalVideoWidthOrHeightToAndroidQ(mContext, path)
+                                            : MediaUtils.getLocalVideoWidthOrHeight(path);
+                                    w = newSize[0];
+                                    h = newSize[1];
+                                }
+                                if (config.videoMinSecond > 0 && duration < config.videoMinSecond) {
+                                    // 如果设置了最小显示多少秒的视频
+                                    continue;
+                                }
+                                if (config.videoMaxSecond > 0 && duration > config.videoMaxSecond) {
+                                    // 如果设置了最大显示多少秒的视频
+                                    continue;
+                                }
+                                if (duration == 0) {
+                                    // 时长如果为0，就当做损坏的视频处理过滤掉
+                                    continue;
+                                }
+                                if (size <= 0) {
+                                    // 视频大小为0过滤掉
+                                    continue;
+                                }
                             }
-                            return imageFolders;
+                            LocalMedia image = new LocalMedia
+                                    (path, duration, config.chooseMode, mimeType, w, h, size);
+                            LocalMediaFolder folder = getImageFolder(path, imageFolders);
+                            List<LocalMedia> images = folder.getImages();
+                            images.add(image);
+                            folder.setImageNum(folder.getImageNum() + 1);
+                            latelyImages.add(image);
+                            int imageNum = allImageFolder.getImageNum();
+                            allImageFolder.setImageNum(imageNum + 1);
+                        } while (data.moveToNext());
+
+                        if (latelyImages.size() > 0) {
+                            sortFolder(imageFolders);
+                            imageFolders.add(0, allImageFolder);
+                            allImageFolder.setFirstImagePath
+                                    (latelyImages.get(0).getPath());
+                            String title = config.chooseMode == PictureMimeType.ofAudio() ?
+                                    mContext.getString(R.string.picture_all_audio)
+                                    : mContext.getString(R.string.picture_camera_roll);
+                            allImageFolder.setName(title);
+                            allImageFolder.setImages(latelyImages);
                         }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    // 线程切换
+                    mHandler.sendMessage(mHandler.obtainMessage(MSG_QUERY_MEDIA_SUCCESS, imageFolders));
                 }
-                return getDefault();
-            }
-
-            @Override
-            public List<LocalMediaFolder> getDefault() {
-                return new ArrayList<>();
-            }
-
-            @Override
-            public void onNext(List<LocalMediaFolder> imageFolders) {
-                super.onNext(imageFolders);
-                if (imageLoadListener != null) {
-                    imageLoadListener.loadComplete(imageFolders);
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }
@@ -264,6 +253,10 @@ public class LocalMediaLoader {
                 return getSelectionArgsForSingleMediaCondition();
             case PictureConfig.TYPE_AUDIO:
                 // 获取音频
+                if (!TextUtils.isEmpty(config.specifiedFormat)) {
+                    // 获取指定的类型的图片
+                    return SELECTION_SPECIFIED_FORMAT + "='" + config.specifiedFormat + "'";
+                }
                 return getSelectionArgsForSingleMediaCondition(getDurationCondition(0, AUDIO_DURATION));
         }
         return null;
@@ -356,6 +349,22 @@ public class LocalMediaLoader {
                 maxS);
     }
 
+    @Override
+    public boolean handleMessage(@NonNull Message msg) {
+        if (mCompleteListener == null) return false;
+        switch (msg.what) {
+            case MSG_QUERY_MEDIA_SUCCESS:
+                mCompleteListener.loadComplete((List<LocalMediaFolder>) msg.obj);
+                break;
+        }
+        return false;
+    }
+
+    private LocalMediaLoadListener mCompleteListener;
+
+    public void setCompleteListener(LocalMediaLoadListener mCompleteListener) {
+        this.mCompleteListener = mCompleteListener;
+    }
 
     public interface LocalMediaLoadListener {
         void loadComplete(List<LocalMediaFolder> folders);

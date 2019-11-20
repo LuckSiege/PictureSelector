@@ -17,7 +17,12 @@ import java.lang.reflect.Method;
  */
 
 public class LightStatusBarUtils {
-    private final static int VERSION_7 = 7;
+    public static void setLightStatusBarAboveAPI23(Activity activity, boolean isMarginStatusBar
+            , boolean isMarginNavigationBar, boolean isTransStatusBar, boolean dark) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setLightStatusBar(activity, isMarginStatusBar, isMarginNavigationBar, isTransStatusBar, dark);
+        }
+    }
 
     public static void setLightStatusBar(Activity activity, boolean dark) {
         setLightStatusBar(activity, false, false, false, dark);
@@ -25,9 +30,9 @@ public class LightStatusBarUtils {
 
     public static void setLightStatusBar(Activity activity, boolean isMarginStatusBar
             , boolean isMarginNavigationBar, boolean isTransStatusBar, boolean dark) {
-        switch (RomUtils.getLightStatusBarAvailableRomType()) {
+        switch (RomUtils.getLightStatausBarAvailableRomType()) {
             case RomUtils.AvailableRomType.MIUI:
-                if (RomUtils.getMIUIVersionCode() >= VERSION_7) {
+                if (RomUtils.getMIUIVersionCode() >= 7) {
                     setAndroidNativeLightStatusBar(activity, isMarginStatusBar, isMarginNavigationBar, isTransStatusBar, dark);
                 } else {
                     setMIUILightStatusBar(activity, isMarginStatusBar, isMarginNavigationBar, isTransStatusBar, dark);
@@ -91,6 +96,10 @@ public class LightStatusBarUtils {
                 meizuFlags.setInt(lp, value);
                 activity.getWindow().setAttributes(lp);
                 result = true;
+
+                if (RomUtils.getFlymeVersion() >= 7) {
+                    setAndroidNativeLightStatusBar(activity, isMarginStatusBar, isMarginNavigationBar, isTransStatusBar, dark);
+                }
             } catch (Exception e) {
                 setAndroidNativeLightStatusBar(activity, isMarginStatusBar, isMarginNavigationBar, isTransStatusBar, dark);
             }
@@ -118,10 +127,12 @@ public class LightStatusBarUtils {
 
                         if (isDarkStatusBarIcon && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                                     | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                         } else {
                             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
                         }
 
@@ -154,7 +165,6 @@ public class LightStatusBarUtils {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -167,9 +177,13 @@ public class LightStatusBarUtils {
                 activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             } else if (!isMarginStatusBar && isMarginNavigationBar) {
+
                 activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            } else {
+                //留出来状态栏 不留出来导航栏 没找到办法。。
             }
         }
+
     }
 }

@@ -54,6 +54,11 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
             cb_showCropFrame, cb_preview_audio;
     private int themeId;
     private int chooseMode = PictureMimeType.ofAll();
+    private boolean isChangeStatusBarFontColor;
+    private int titleBarBackgroundColor;
+    private int statusBarColorPrimaryDark;
+    private int upResId, downResId;
+    private boolean isOpenStyleCheckNumMode;
 
     @Nullable
     @Override
@@ -122,6 +127,10 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                     // 预览图片
                     PictureSelector.create(PhotoFragment.this)
                             .themeStyle(themeId)
+                            .loadImageEngine(GlideEngine.createGlideEngine())
+                            .setTitleBarBackgroundColor(titleBarBackgroundColor)//相册标题栏背景色
+                            .isChangeStatusBarFontColor(isChangeStatusBarFontColor)// 是否关闭白色状态栏字体颜色
+                            .setStatusBarColorPrimaryDark(statusBarColorPrimaryDark)// 状态栏背景色
                             .openExternalPreview(position, selectList);
                     break;
             }
@@ -145,6 +154,12 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         .previewVideo(cb_preview_video.isChecked())
                         .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
                         .isCamera(cb_isCamera.isChecked())
+                        .setTitleBarBackgroundColor(titleBarBackgroundColor)//相册标题栏背景色
+                        .isChangeStatusBarFontColor(isChangeStatusBarFontColor)// 是否关闭白色状态栏字体颜色
+                        .setStatusBarColorPrimaryDark(statusBarColorPrimaryDark)// 状态栏背景色
+                        .setUpArrowDrawable(upResId)// 设置标题栏右侧箭头图标
+                        .setDownArrowDrawable(downResId)// 设置标题栏右侧箭头图标
+                        .isOpenStyleCheckNumMode(isOpenStyleCheckNumMode)// 是否开启数字选择模式 类似QQ相册
                         .enableCrop(cb_crop.isChecked())
                         .compress(cb_compress.isChecked())
                         .glideOverride(160, 160)
@@ -172,6 +187,12 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         .previewVideo(cb_preview_video.isChecked())
                         .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
                         .isCamera(cb_isCamera.isChecked())
+                        .setTitleBarBackgroundColor(titleBarBackgroundColor)//相册标题栏背景色
+                        .isChangeStatusBarFontColor(isChangeStatusBarFontColor)// 是否关闭白色状态栏字体颜色
+                        .setStatusBarColorPrimaryDark(statusBarColorPrimaryDark)// 状态栏背景色
+                        .setUpArrowDrawable(upResId)// 设置标题栏右侧箭头图标
+                        .setDownArrowDrawable(downResId)// 设置标题栏右侧箭头图标
+                        .isOpenStyleCheckNumMode(isOpenStyleCheckNumMode)// 是否开启数字选择模式 类似QQ相册
                         .enableCrop(cb_crop.isChecked())
                         .compress(cb_compress.isChecked())
                         .glideOverride(160, 160)
@@ -290,15 +311,39 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                 break;
             case R.id.rb_default_style:
                 themeId = R.style.picture_default_style;
+                isChangeStatusBarFontColor = false;
+                statusBarColorPrimaryDark = R.color.bar_grey;
+                titleBarBackgroundColor = R.color.bar_grey;
+                upResId = R.drawable.arrow_up;
+                downResId = R.drawable.arrow_down;
+                isOpenStyleCheckNumMode = false;
                 break;
             case R.id.rb_white_style:
                 themeId = R.style.picture_white_style;
+                isChangeStatusBarFontColor = true;
+                titleBarBackgroundColor = R.color.white;
+                statusBarColorPrimaryDark = R.color.white;
+                upResId = R.drawable.orange_arrow_up;
+                downResId = R.drawable.orange_arrow_down;
+                isOpenStyleCheckNumMode = false;
                 break;
             case R.id.rb_num_style:
                 themeId = R.style.picture_QQ_style;
+                isChangeStatusBarFontColor = false;
+                statusBarColorPrimaryDark = R.color.blue;
+                titleBarBackgroundColor = R.color.blue;
+                upResId = R.drawable.arrow_up;
+                downResId = R.drawable.arrow_down;
+                isOpenStyleCheckNumMode = true;
                 break;
             case R.id.rb_sina_style:
                 themeId = R.style.picture_Sina_style;
+                isChangeStatusBarFontColor = true;
+                statusBarColorPrimaryDark = R.color.white;
+                titleBarBackgroundColor = R.color.white;
+                upResId = R.drawable.orange_arrow_up;
+                downResId = R.drawable.orange_arrow_down;
+                isOpenStyleCheckNumMode = false;
                 break;
         }
     }

@@ -1,11 +1,13 @@
 package com.luck.picture.lib;
 
 import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -20,7 +23,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.dialog.CustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.permissions.RxPermissions;
+import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.photoview.PhotoView;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
@@ -41,9 +44,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-
 /**
  * @author：luck
  * @data：2017/01/18 下午1:00
@@ -57,8 +57,8 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     private int position = 0;
     private SimpleFragmentAdapter adapter;
     private LayoutInflater inflater;
-    private RxPermissions rxPermissions;
     private loadDataThread loadDataThread;
+    private String downloadPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,32 +171,13 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 });
                 imageView.setOnLongClickListener(v -> {
                     if (config.isNotPreviewDownload) {
-                        if (rxPermissions == null) {
-                            rxPermissions = new RxPermissions(PictureExternalPreviewActivity.this);
+                        if (PermissionChecker.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                            downloadPath = path;
+                            showDownLoadDialog();
+                        } else {
+                            PermissionChecker.requestPermissions(PictureExternalPreviewActivity.this,
+                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
                         }
-                        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                .subscribe(new Observer<Boolean>() {
-                                    @Override
-                                    public void onSubscribe(Disposable d) {
-                                    }
-
-                                    @Override
-                                    public void onNext(Boolean aBoolean) {
-                                        if (aBoolean) {
-                                            showDownLoadDialog(path);
-                                        } else {
-                                            ToastUtils.s(mContext, getString(R.string.picture_jurisdiction));
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onError(Throwable e) {
-                                    }
-
-                                    @Override
-                                    public void onComplete() {
-                                    }
-                                });
                     }
                     return true;
                 });
@@ -225,7 +206,10 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     /**
      * 下载图片提示
      */
-    private void showDownLoadDialog(final String path) {
+    private void showDownLoadDialog() {
+        if (TextUtils.isEmpty(downloadPath)) {
+            return;
+        }
         final CustomDialog dialog = new CustomDialog(PictureExternalPreviewActivity.this,
                 ScreenUtils.getScreenWidth(PictureExternalPreviewActivity.this) * 3 / 4,
                 ScreenUtils.getScreenHeight(PictureExternalPreviewActivity.this) / 4,
@@ -238,17 +222,17 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         tv_content.setText(getString(R.string.picture_prompt_content));
         btn_cancel.setOnClickListener(view -> dialog.dismiss());
         btn_commit.setOnClickListener(view -> {
-            boolean isHttp = PictureMimeType.isHttp(path);
+            boolean isHttp = PictureMimeType.isHttp(downloadPath);
             if (isHttp) {
                 showPleaseDialog();
-                loadDataThread = new loadDataThread(path);
+                loadDataThread = new loadDataThread(downloadPath);
                 loadDataThread.start();
             } else {
                 // 有可能本地图片
                 try {
                     String dirPath = PictureFileUtils.createDir(PictureExternalPreviewActivity.this,
                             System.currentTimeMillis() + ".png");
-                    PictureFileUtils.copyFile(path, dirPath);
+                    PictureFileUtils.copyFile(downloadPath, dirPath);
                     ToastUtils.s(mContext, getString(R.string.picture_save_success) + "\n" + dirPath);
                     dismissDialog();
                 } catch (IOException e) {
@@ -341,6 +325,23 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         if (loadDataThread != null) {
             handler.removeCallbacks(loadDataThread);
             loadDataThread = null;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE:
+                // 存储权限
+                for (int i = 0; i < grantResults.length; i++) {
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        showDownLoadDialog();
+                    } else {
+                        ToastUtils.s(mContext, getString(R.string.picture_jurisdiction));
+                    }
+                }
+                break;
         }
     }
 }
