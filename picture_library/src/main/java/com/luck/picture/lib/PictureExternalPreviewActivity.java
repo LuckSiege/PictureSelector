@@ -59,6 +59,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     private LayoutInflater inflater;
     private loadDataThread loadDataThread;
     private String downloadPath;
+    private String mimeType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +130,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
             LocalMedia media = images.get(position);
             if (media != null) {
-                final String mimeType = media.getMimeType();
+                mimeType = media.getMimeType();
                 final String path;
                 if (media.isCut() && !media.isCompressed()) {
                     // 裁剪过
@@ -138,7 +139,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
                     path = media.getCompressPath();
                 } else {
-                    path = media.getPath();
+                    path = SdkVersionUtils.checkedAndroid_Q() ? media.getAndroidQToPath() : media.getPath();
                 }
                 boolean isGif = PictureMimeType.isGif(mimeType);
                 final boolean eqLongImg = MediaUtils.isLongImg(media);
@@ -230,8 +231,9 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             } else {
                 // 有可能本地图片
                 try {
+                    String suffix = PictureMimeType.getLastImgSuffix(mimeType);
                     String dirPath = PictureFileUtils.createDir(PictureExternalPreviewActivity.this,
-                            System.currentTimeMillis() + ".png");
+                            System.currentTimeMillis() + suffix);
                     PictureFileUtils.copyFile(downloadPath, dirPath);
                     ToastUtils.s(mContext, getString(R.string.picture_save_success) + "\n" + dirPath);
                     dismissDialog();
@@ -270,8 +272,9 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     public void showLoadingImage(String urlPath) {
         try {
             URL u = new URL(urlPath);
+            String suffix = PictureMimeType.getLastImgSuffix(mimeType);
             String path = PictureFileUtils.createDir(PictureExternalPreviewActivity.this,
-                    System.currentTimeMillis() + ".png");
+                    System.currentTimeMillis() + suffix);
             byte[] buffer = new byte[1024 * 8];
             int read;
             int ava = 0;
