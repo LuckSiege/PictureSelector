@@ -80,7 +80,7 @@
 
 ```
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.1'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.2'
 }
 
 ```
@@ -113,7 +113,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.3.1</version> 
+      <version>v2.3.2</version> 
 </dependency>
 
 ```
@@ -401,7 +401,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 # 当前版本：
 
-* v2.3.1
+* v2.3.2
 * 移除对RxJava依赖
 * 移除对RxPermissions依赖改为原生权限申请方式
 * 优化一些不必要的判断逻辑
