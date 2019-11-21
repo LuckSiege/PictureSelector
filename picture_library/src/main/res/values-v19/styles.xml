@@ -3,7 +3,7 @@
 
     <style name="MyTheme.Translucent" parent="BaseNoActionBarTheme">
 
-        <item name="android:windowBackground">#00000000</item> <!-- 背景色透明度 -->
+        <item name="android:windowBackground">@color/transparent</item> <!-- 背景色透明度 -->
         <item name="android:windowNoTitle">true</item><!-- 无标题 -->
         <item name="android:windowIsTranslucent">true</item><!-- 半透明,设置为false无透明效果 -->
     </style>
