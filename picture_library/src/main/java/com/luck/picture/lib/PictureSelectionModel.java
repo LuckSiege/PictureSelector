@@ -322,6 +322,7 @@ public class PictureSelectionModel {
         return this;
     }
 
+
     /**
      * @param compressQuality Image compressed output quality
      * @return
@@ -634,6 +635,17 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel setPictureStyle(PictureParameterStyle style) {
         selectionConfig.style = style;
+        return this;
+    }
+
+    /**
+     * # 要使用此方法时最好先咨询作者！！！
+     *
+     * @param isFallbackVersion 仅供特殊情况内部使用 如果某功能出错此开关可以回退至之前版本
+     * @return
+     */
+    public PictureSelectionModel isFallbackVersion(boolean isFallbackVersion) {
+        selectionConfig.isFallbackVersion = isFallbackVersion;
         return this;
     }
 

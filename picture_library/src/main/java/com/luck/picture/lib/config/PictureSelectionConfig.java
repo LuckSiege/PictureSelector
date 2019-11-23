@@ -70,6 +70,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean synOrAsy;
     public boolean isDragFrame;
     public boolean isNotPreviewDownload;
+    public boolean isFallbackVersion;
     public ImageEngine imageEngine;
     public List<LocalMedia> selectionMedias;
     @Deprecated
@@ -131,6 +132,7 @@ public final class PictureSelectionConfig implements Parcelable {
         checkNumMode = false;
         isNotPreviewDownload = false;
         openClickSound = false;
+        isFallbackVersion = false;
         enableCrop = false;
         freeStyleCropEnabled = false;
         circleDimmedLayer = false;
