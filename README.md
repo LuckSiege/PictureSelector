@@ -80,7 +80,7 @@
 
 ```
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.2'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.3'
 }
 
 ```
@@ -113,7 +113,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.3.2</version> 
+      <version>v2.3.3</version> 
 </dependency>
 
 ```
@@ -401,14 +401,31 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 # 当前版本：
 
+* v2.3.3
+* 1.新增动态设置相册和裁剪主题功能api，动态设置主题的权限最高！！！
+  .setPictureStyle(mPictureParameterStyle); // 动态自定义相册主题
+  .setPictureCropStyle(mCropParameterStyle); // 动态自定义裁剪主题
+  ##注意：如果动态设置了主题 以上相册和裁剪两者的主题优先级都高于.theme(themeId);方式，所以个人建议动态设置主题和.theme(themeId);
+  二选一最好！！！
+* 2.新增api .queryMaxFileSize(10) // 只查多少M以内的图片、视频、音频 单位:M
+* 3.修复FolderPopWindow未点在超过屏幕高度60%时关闭不了问题
+* 4.修复预览问题java.lang.IllegalStateException: The application's PagerAdapter changed the adapter's contents without calling 
+  PagerAdapter#notifyDataSetChanged! Expected adapter item count: 86, found: 0 bug
+* 5.修复.theme(themeId);方式修改裁剪主题不生效问题
+* 6.修复裁剪问题java.lang.IllegalStateException: This Activity already has an action bar supplied by the window decor.
+  Do not request Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme to use a Toolbar instead.
+* 7.修复单独拍照会出现白屏问题
+* 8.优化布局层次
+* 9.修复issues
+
+# 历史版本：
+
 * v2.3.2
 * 移除对RxJava依赖
 * 移除对RxPermissions依赖改为原生权限申请方式
 * 优化一些不必要的判断逻辑
 * 修复预览时保存gif至本地变成静态图问题
 * 修复一些issues
-
-# 历史版本：
 
 * v2.3.0
 * 1.去除了对Glide的依赖，新增api .loadImageEngine(GlideEngine.createGlideEngine()); 自定义图片加载引擎，Demo中MainActivity中有示例代码
