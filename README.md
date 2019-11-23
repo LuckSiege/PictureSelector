@@ -63,6 +63,8 @@
 * 27.新增指定精确查询 querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
 * 28.新增单选模式可设置点击选择后直接返回控制 isSingleDirectReturn(false)// 单选模式下是否直接返回
 * 29.多图裁剪下可自由选择某图不裁剪不在强制一张张裁剪，但最后一张除外
+* 30.新增动态配制相册主题 .setPictureStyle(mPictureParameterStyle);
+* 31.新增动态配制裁剪主题 .setPictureCropStyle(mCropParameterStyle);
 
 
 重要的事情说三遍记得添加权限
@@ -217,13 +219,16 @@ Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme
  PictureSelector.create(MainActivity.this)
  	.openGallery()//全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
  	.theme()//主题样式(不设置为默认样式) 也可参考demo values/styles下 例如：R.style.picture.white.style
+	.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
+        .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
 	.loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项   参考Demo MainActivity中代码
  	.maxSelectNum()// 最大图片选择数量 int
  	.minSelectNum()// 最小选择数量 int
 	.imageSpanCount(4)// 每行显示个数 int
+	.queryMaxFileSize(10)// 只查多少M以内的图片、视频、音频  单位M
 	.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
 	.cameraFileName("")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用，选图时不要用
-	.isSingleDirectReturn(false)// 单选模式下是否直接返回
+	.isSingleDirectReturn(false)// 单选模式下是否直接返回，PictureConfig.SINGLE模式下有效
 	.setTitleBarBackgroundColor(titleBarBackgroundColor)//相册标题栏背景色
 	.isChangeStatusBarFontColor(isChangeStatusBarFontColor)// 是否关闭白色状态栏字体颜色
         .setStatusBarColorPrimaryDark(statusBarColorPrimaryDark)// 状态栏背景色
