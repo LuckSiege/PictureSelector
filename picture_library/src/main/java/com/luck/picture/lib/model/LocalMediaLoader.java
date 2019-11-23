@@ -9,7 +9,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -48,6 +47,10 @@ public class LocalMediaLoader implements Handler.Callback {
     private PictureSelectionConfig config;
     private Handler mHandler;
     /**
+     * unit
+     */
+    private static final long FILE_SIZE_UNIT = 1024 * 1024L;
+    /**
      * 媒体文件数据库字段
      */
     private static final String[] PROJECTION = {
@@ -57,7 +60,8 @@ public class LocalMediaLoader implements Handler.Callback {
             MediaStore.MediaColumns.WIDTH,
             MediaStore.MediaColumns.HEIGHT,
             MediaStore.MediaColumns.DURATION,
-            MediaStore.MediaColumns.SIZE};
+            MediaStore.MediaColumns.SIZE,
+            MediaStore.MediaColumns.BUCKET_DISPLAY_NAME};
 
     /**
      * 图片
@@ -172,6 +176,13 @@ public class LocalMediaLoader implements Handler.Callback {
                             long size = data.getLong
                                     (data.getColumnIndexOrThrow(PROJECTION[6]));
 
+
+                            if (config.filterFileSize > 0) {
+                                if (size > config.filterFileSize * FILE_SIZE_UNIT) {
+                                    continue;
+                                }
+                            }
+
                             if (PictureMimeType.eqVideo(mimeType)) {
                                 if (duration == 0) {
                                     duration = MediaUtils.extractDuration(mContext, isAndroidQ, path);
@@ -200,6 +211,7 @@ public class LocalMediaLoader implements Handler.Callback {
                                     continue;
                                 }
                             }
+
                             LocalMedia image = new LocalMedia
                                     (path, duration, config.chooseMode, mimeType, w, h, size);
                             LocalMediaFolder folder = getImageFolder(path, imageFolders);
@@ -209,6 +221,7 @@ public class LocalMediaLoader implements Handler.Callback {
                             latelyImages.add(image);
                             int imageNum = allImageFolder.getImageNum();
                             allImageFolder.setImageNum(imageNum + 1);
+
                         } while (data.moveToNext());
 
                         if (latelyImages.size() > 0) {
@@ -324,7 +337,6 @@ public class LocalMediaLoader implements Handler.Callback {
         }
         LocalMediaFolder newFolder = new LocalMediaFolder();
         newFolder.setName(folderFile.getName());
-        newFolder.setPath(folderFile.getAbsolutePath());
         newFolder.setFirstImagePath(path);
         imageFolders.add(newFolder);
         return newFolder;

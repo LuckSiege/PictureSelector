@@ -20,7 +20,6 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.luck.picture.lib.broadcast.BroadcastAction;
 import com.luck.picture.lib.broadcast.BroadcastManager;
@@ -29,14 +28,14 @@ import com.luck.picture.lib.compress.OnCompressListener;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
-import com.luck.picture.lib.dialog.PictureDialog;
+import com.luck.picture.lib.dialog.PictureLoadingDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.immersive.ImmersiveManage;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
+import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.DateUtils;
-import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
@@ -64,8 +63,8 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
     protected int colorPrimary, colorPrimaryDark;
     protected String cameraPath, outputCameraPath;
     protected String originalPath;
-    protected PictureDialog dialog;
-    protected PictureDialog compressDialog;
+    protected PictureLoadingDialog dialog;
+    protected PictureLoadingDialog compressDialog;
     protected List<LocalMedia> selectionMedias;
     protected Handler mHandler;
 
@@ -98,12 +97,11 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
         } else {
             config = PictureSelectionConfig.getInstance();
         }
-        int themeStyleId = config.themeStyleId;
-        setTheme(themeStyleId);
+        setTheme(config.themeStyleId);
         super.onCreate(savedInstanceState);
+        initConfig();
         mContext = this;
         mHandler = new Handler(Looper.getMainLooper(), this);
-        initConfig();
         if (isImmersive()) {
             immersive();
         }
@@ -115,19 +113,61 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
     private void initConfig() {
         outputCameraPath = config.outputCameraPath;
         // 是否开启白色状态栏
-        openWhiteStatusBar = config.isChangeStatusBarFontColor;
+        openWhiteStatusBar = config.style != null ? config.style.isChangeStatusBarFontColor : false;
+        if (!openWhiteStatusBar) {
+            // 兼容单独动态设置主题方式
+            openWhiteStatusBar = config.isChangeStatusBarFontColor;
+            if (!openWhiteStatusBar) {
+                // 兼容老的Theme方式
+                openWhiteStatusBar = AttrsUtils.getTypeValueBoolean(this, R.attr.picture_statusFontColor);
+            }
+        }
+
         // 是否是0/9样式
-        numComplete = config.isOpenStyleNumComplete;
+        numComplete = config.style != null ? config.style.isOpenCompletedNumStyle : false;
+        if (!numComplete) {
+            // 兼容单独动态设置主题方式
+            numComplete = config.isOpenStyleNumComplete;
+            if (!numComplete) {
+                // 兼容老的Theme方式
+                numComplete = AttrsUtils.getTypeValueBoolean(this, R.attr.picture_style_numComplete);
+            }
+        }
+
         // 是否开启数字勾选模式
-        config.checkNumMode = config.isOpenStyleCheckNumMode;
+        config.checkNumMode = config.style != null ? config.style.isOpenCheckNumStyle : false;
+        if (!config.checkNumMode) {
+            // 兼容单独动态设置主题方式
+            config.checkNumMode = config.isOpenStyleCheckNumMode;
+            if (!config.checkNumMode) {
+                // 兼容老的Theme方式
+                config.checkNumMode = AttrsUtils.getTypeValueBoolean(this, R.attr.picture_style_checkNumMode);
+            }
+        }
+
         // 标题栏背景色
-        colorPrimary = config.titleBarBackgroundColor <= 0 ?
-                ContextCompat.getColor(this, R.color.bar_grey)
-                : ContextCompat.getColor(this, config.titleBarBackgroundColor);
-        // 状态栏背景色
-        colorPrimaryDark = config.statusBarColorPrimaryDark <= 0 ?
-                ContextCompat.getColor(this, R.color.bar_grey)
-                : ContextCompat.getColor(this, config.statusBarColorPrimaryDark);
+        if (config.style != null && config.style.pictureTitleBarBackgroundColor != 0) {
+            colorPrimary = config.style.pictureTitleBarBackgroundColor;
+        } else {
+            if (config.titleBarBackgroundColor != 0) {
+                colorPrimary = config.titleBarBackgroundColor;
+            } else {
+                // 兼容老的Theme方式
+                colorPrimary = AttrsUtils.getTypeValueColor(this, R.attr.colorPrimary);
+            }
+        }
+        // 状态栏色值
+        if (config.style != null && config.style.pictureStatusBarColor != 0) {
+            colorPrimaryDark = config.style.pictureStatusBarColor;
+        } else {
+            if (config.pictureStatusBarColor != 0) {
+                colorPrimaryDark = config.pictureStatusBarColor;
+            } else {
+                // 兼容老的Theme方式
+                colorPrimaryDark = AttrsUtils.getTypeValueColor(this, R.attr.colorPrimaryDark);
+            }
+        }
+
         // 已选图片列表
         selectionMedias = config.selectionMedias;
         if (selectionMedias == null) {
@@ -143,23 +183,7 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
         outState.putParcelable(PictureConfig.EXTRA_CONFIG, config);
     }
 
-    protected void startActivity(Class clz, Bundle bundle) {
-        if (!DoubleUtils.isFastDoubleClick()) {
-            Intent intent = new Intent();
-            intent.setClass(this, clz);
-            intent.putExtras(bundle);
-            startActivity(intent);
-        }
-    }
 
-    protected void startActivity(Class clz, Bundle bundle, int requestCode) {
-        if (!DoubleUtils.isFastDoubleClick()) {
-            Intent intent = new Intent();
-            intent.setClass(this, clz);
-            intent.putExtras(bundle);
-            startActivityForResult(intent, requestCode);
-        }
-    }
 
     /**
      * loading dialog
@@ -167,7 +191,7 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
     protected void showPleaseDialog() {
         if (!isFinishing()) {
             dismissDialog();
-            dialog = new PictureDialog(this);
+            dialog = new PictureLoadingDialog(this);
             dialog.show();
         }
     }
@@ -192,7 +216,7 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
     protected void showCompressDialog() {
         if (!isFinishing()) {
             dismissCompressDialog();
-            compressDialog = new PictureDialog(this);
+            compressDialog = new PictureLoadingDialog(this);
             compressDialog.show();
         }
     }
@@ -228,7 +252,8 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
                                     .setCompressQuality(config.compressQuality)
                                     .ignoreBy(config.minimumCompressSize).get();
                     // 线程切换
-                    mHandler.sendMessage(mHandler.obtainMessage(MSG_ASY_COMPRESSION_RESULT_SUCCESS, new Object[]{result, files}));
+                    mHandler.sendMessage(mHandler.obtainMessage(MSG_ASY_COMPRESSION_RESULT_SUCCESS,
+                            new Object[]{result, files}));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -296,12 +321,47 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
      */
     protected void startCrop(String originalPath) {
         UCrop.Options options = new UCrop.Options();
-        int toolbarColor = config.cropTitleBarBackgroundColor <= 0 ?
-                ContextCompat.getColor(this, R.color.bar_grey) : ContextCompat.getColor(this, config.cropTitleBarBackgroundColor);
-        int statusColor = config.cropStatusBarColorPrimaryDark <= 0 ?
-                ContextCompat.getColor(this, R.color.bar_grey) : ContextCompat.getColor(this, config.cropStatusBarColorPrimaryDark);
-        int titleColor = config.cropTitleColor <= 0 ?
-                ContextCompat.getColor(this, R.color.white) : ContextCompat.getColor(this, config.cropTitleColor);
+        int toolbarColor = 0, statusColor = 0, titleColor = 0;
+        boolean isChangeStatusBarFontColor;
+        if (config.cropStyle != null) {
+            if (config.cropStyle.cropTitleBarBackgroundColor != 0) {
+                toolbarColor = config.cropStyle.cropTitleBarBackgroundColor;
+            }
+            if (config.cropStyle.cropStatusBarColorPrimaryDark != 0) {
+                statusColor = config.cropStyle.cropStatusBarColorPrimaryDark;
+            }
+            if (config.cropStyle.cropTitleColor != 0) {
+                titleColor = config.cropStyle.cropTitleColor;
+            }
+            isChangeStatusBarFontColor = config.cropStyle.isChangeStatusBarFontColor;
+        } else {
+            if (config.cropTitleBarBackgroundColor != 0) {
+                toolbarColor = config.cropTitleBarBackgroundColor;
+            } else {
+                // 兼容老的Theme方式
+                toolbarColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_toolbar_bg);
+            }
+            if (config.cropStatusBarColorPrimaryDark != 0) {
+                statusColor = config.cropStatusBarColorPrimaryDark;
+            } else {
+                // 兼容老的Theme方式
+                statusColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_status_color);
+            }
+            if (config.cropTitleColor != 0) {
+                titleColor = config.cropTitleColor;
+            } else {
+                // 兼容老的Theme方式
+                titleColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_title_color);
+            }
+
+            // 兼容单独动态设置主题方式
+            isChangeStatusBarFontColor = config.isChangeStatusBarFontColor;
+            if (!isChangeStatusBarFontColor) {
+                // 是否改变裁剪页状态栏字体颜色 黑白切换
+                isChangeStatusBarFontColor = AttrsUtils.getTypeValueBoolean(this, R.attr.picture_statusFontColor);
+            }
+        }
+        options.isOpenWhiteStatusBar(isChangeStatusBarFontColor);
         options.setToolbarColor(toolbarColor);
         options.setStatusBarColor(statusColor);
         options.setToolbarWidgetColor(titleColor);
@@ -336,12 +396,47 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
      */
     protected void startCrop(ArrayList<String> list) {
         UCropMulti.Options options = new UCropMulti.Options();
-        int toolbarColor = config.cropTitleBarBackgroundColor <= 0 ?
-                ContextCompat.getColor(this, R.color.bar_grey) : ContextCompat.getColor(this, config.cropTitleBarBackgroundColor);
-        int statusColor = config.cropStatusBarColorPrimaryDark <= 0 ?
-                ContextCompat.getColor(this, R.color.bar_grey) : ContextCompat.getColor(this, config.cropStatusBarColorPrimaryDark);
-        int titleColor = config.cropTitleColor <= 0 ?
-                ContextCompat.getColor(this, R.color.white) : ContextCompat.getColor(this, config.cropTitleColor);
+        int toolbarColor = 0, statusColor = 0, titleColor = 0;
+        boolean isChangeStatusBarFontColor;
+        if (config.cropStyle != null) {
+            if (config.cropStyle.cropTitleBarBackgroundColor != 0) {
+                toolbarColor = config.cropStyle.cropTitleBarBackgroundColor;
+            }
+            if (config.cropStyle.cropStatusBarColorPrimaryDark != 0) {
+                statusColor = config.cropStyle.cropStatusBarColorPrimaryDark;
+            }
+            if (config.cropStyle.cropTitleColor != 0) {
+                titleColor = config.cropStyle.cropTitleColor;
+            }
+            isChangeStatusBarFontColor = config.cropStyle.isChangeStatusBarFontColor;
+        } else {
+            if (config.cropTitleBarBackgroundColor != 0) {
+                toolbarColor = config.cropTitleBarBackgroundColor;
+            } else {
+                // 兼容老的Theme方式
+                toolbarColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_toolbar_bg);
+            }
+            if (config.cropStatusBarColorPrimaryDark != 0) {
+                statusColor = config.cropStatusBarColorPrimaryDark;
+            } else {
+                // 兼容老的Theme方式
+                statusColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_status_color);
+            }
+            if (config.cropTitleColor != 0) {
+                titleColor = config.cropTitleColor;
+            } else {
+                // 兼容老的Theme方式
+                titleColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_title_color);
+            }
+
+            // 兼容单独动态设置主题方式
+            isChangeStatusBarFontColor = config.isChangeStatusBarFontColor;
+            if (!isChangeStatusBarFontColor) {
+                // 是否改变裁剪页状态栏字体颜色 黑白切换
+                isChangeStatusBarFontColor = AttrsUtils.getTypeValueBoolean(this, R.attr.picture_statusFontColor);
+            }
+        }
+        options.isOpenWhiteStatusBar(isChangeStatusBarFontColor);
         options.setToolbarColor(toolbarColor);
         options.setStatusBarColor(statusColor);
         options.setToolbarWidgetColor(titleColor);
@@ -421,7 +516,6 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
             String folderName = config.chooseMode == PictureMimeType.ofAudio() ?
                     getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll);
             newFolder.setName(folderName);
-            newFolder.setPath("");
             newFolder.setFirstImagePath("");
             folders.add(newFolder);
         }
@@ -445,7 +539,6 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
         }
         LocalMediaFolder newFolder = new LocalMediaFolder();
         newFolder.setName(folderFile.getName());
-        newFolder.setPath(folderFile.getAbsolutePath());
         newFolder.setFirstImagePath(path);
         imageFolders.add(newFolder);
         return newFolder;
@@ -501,7 +594,7 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
                     if (PictureMimeType.eqVideo(media.getMimeType())) {
                         path = AndroidQTransformUtils.parseVideoPathToAndroidQ
                                 (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
-                    } else if (config.chooseMode == PictureMimeType.ofAudio()) {
+                    } else if (PictureMimeType.eqAudio(media.getMimeType())) {
                         path = AndroidQTransformUtils.parseAudioPathToAndroidQ
                                 (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
                     } else {
@@ -522,9 +615,9 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
     protected void closeActivity() {
         finish();
         if (config.camera) {
-            overridePendingTransition(0, R.anim.fade_out);
+            overridePendingTransition(0, R.anim.picture_anim_fade_out);
         } else {
-            overridePendingTransition(0, R.anim.a3);
+            overridePendingTransition(0, R.anim.picture_anim_a3);
         }
     }
 

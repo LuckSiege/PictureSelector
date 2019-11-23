@@ -6,11 +6,9 @@ import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
- * author：luck
- * project：GridSpacingItemDecoration
- * package：com.luck.picture.adapter
- * email：893855882@qq.com
- * data：16/12/31
+ * @author：luck
+ * @data：2016/12/27 下午23:50
+ * @描述:图片预览
  */
 
 public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {

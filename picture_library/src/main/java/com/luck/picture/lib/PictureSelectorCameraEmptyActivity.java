@@ -48,7 +48,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             closeActivity();
             return;
         }
-        setTheme(R.style.MyTheme_Translucent);
+        setTheme(R.style.Picture_Theme_Translucent);
         setContentView(R.layout.picture_empty);
     }
 

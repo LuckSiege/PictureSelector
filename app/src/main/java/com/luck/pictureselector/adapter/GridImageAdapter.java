@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DateUtils;
@@ -40,7 +39,6 @@ public class GridImageAdapter extends
     private LayoutInflater mInflater;
     private List<LocalMedia> list = new ArrayList<>();
     private int selectMax = 9;
-    private Context context;
     /**
      * 点击添加图片跳转
      */
@@ -51,7 +49,6 @@ public class GridImageAdapter extends
     }
 
     public GridImageAdapter(Context context, onAddPicClickListener mOnAddPicClickListener) {
-        this.context = context;
         mInflater = LayoutInflater.from(context);
         this.mOnAddPicClickListener = mOnAddPicClickListener;
     }
@@ -119,7 +116,7 @@ public class GridImageAdapter extends
     public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
         //少于8张，显示继续添加的图标
         if (getItemViewType(position) == TYPE_CAMERA) {
-            viewHolder.mImg.setImageResource(R.drawable.addimg_1x);
+            viewHolder.mImg.setImageResource(R.drawable.ic_add_image);
             viewHolder.mImg.setOnClickListener(v -> mOnAddPicClickListener.onAddPicClick());
             viewHolder.llDel.setVisibility(View.INVISIBLE);
         } else {
@@ -163,19 +160,19 @@ public class GridImageAdapter extends
             if (chooseModel == PictureMimeType.ofAudio()) {
                 viewHolder.tvDuration.setVisibility(View.VISIBLE);
                 viewHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                        (R.drawable.picture_audio, 0, 0, 0);
+                        (R.drawable.picture_icon_audio, 0, 0, 0);
 
             } else {
                 viewHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                        (R.drawable.video_icon, 0, 0, 0);
+                        (R.drawable.picture_icon_video, 0, 0, 0);
             }
             viewHolder.tvDuration.setText(DateUtils.formatDurationTime(duration));
             if (chooseModel == PictureMimeType.ofAudio()) {
-                viewHolder.mImg.setImageResource(R.drawable.audio_placeholder);
+                viewHolder.mImg.setImageResource(R.drawable.picture_audio_placeholder);
             } else {
                 RequestOptions options = new RequestOptions()
                         .centerCrop()
-                        .placeholder(R.color.color_f6)
+                        .placeholder(R.color.app_color_f6)
                         .diskCacheStrategy(DiskCacheStrategy.ALL);
                 Glide.with(viewHolder.itemView.getContext())
                         .load(path)

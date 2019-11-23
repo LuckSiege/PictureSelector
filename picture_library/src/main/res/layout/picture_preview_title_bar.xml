@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/picture_title"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?attr/picture.ac_preview.title.bg"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxEms="11"
+        android:textColor="?attr/picture.ac_preview.title.textColor"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/picture_left_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/picture_title"
+        android:layout_alignBottom="@id/picture_title"
+        android:padding="15dp"
+        android:src="?attr/picture.preview.leftBack.icon" />
+
+
+    <TextView
+        android:id="@+id/check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/picture_title"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:background="?attr/picture.checked.style"
+        android:gravity="center"
+        android:textColor="@color/picture_color_white"
+        android:textSize="12sp" />
+
+    <View
+        android:id="@+id/btnCheck"
+        android:layout_width="45dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:background="@color/picture_color_transparent" />
+</merge>

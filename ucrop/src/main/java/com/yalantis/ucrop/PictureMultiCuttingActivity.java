@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.IdRes;
@@ -22,7 +21,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -37,8 +35,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.yalantis.ucrop.callback.BitmapCropCallback;
+import com.yalantis.ucrop.immersion.CropImmersiveManage;
 import com.yalantis.ucrop.model.AspectRatio;
 import com.yalantis.ucrop.model.CutInfo;
 import com.yalantis.ucrop.util.FileUtils;
@@ -50,7 +48,6 @@ import com.yalantis.ucrop.view.TransformImageView;
 import com.yalantis.ucrop.view.UCropView;
 import com.yalantis.ucrop.view.widget.AspectRatioTextView;
 import com.yalantis.ucrop.view.widget.HorizontalProgressWheelView;
-
 import java.io.File;
 import java.io.Serializable;
 import java.lang.annotation.Retention;
@@ -126,22 +123,48 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     /**
      * 图片是否可拖动或旋转
      */
-    private boolean scaleEnabled, rotateEnabled;
+    private boolean scaleEnabled, rotateEnabled, openWhiteStatusBar;
 
     private int cutIndex;
+
+    /**
+     * 是否使用沉浸式，子类复写该方法来确定是否采用沉浸式
+     *
+     * @return 是否沉浸式，默认true
+     */
+    @Override
+    public boolean isImmersive() {
+        return true;
+    }
+
+
+    /**
+     * 具体沉浸的样式，可以根据需要自行修改状态栏和导航栏的颜色
+     */
+    public void immersive() {
+        CropImmersiveManage.immersiveAboveAPI23(this
+                , mStatusBarColor
+                , mToolbarColor
+                , openWhiteStatusBar);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final Intent intent = getIntent();
+        getIntentData(intent);
+        if (isImmersive()) {
+            immersive();
+        }
         setContentView(R.layout.ucrop_picture_activity_multi_cutting);
         uCropMultiplePhotoBox = findViewById(R.id.ucrop_mulit_photobox);
-        final Intent intent = getIntent();
         initLoadCutData();
         addPhotoRecyclerView();
         setupViews(intent);
         setInitialState();
         addBlockingView();
         setImageData(intent);
+
     }
 
     /**
@@ -363,25 +386,26 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         }
     }
 
-    private void setupViews(@NonNull Intent intent) {
+    private void getIntentData(@NonNull Intent intent) {
+        openWhiteStatusBar = intent.getBooleanExtra(UCrop.Options.EXTRA_UCROP_WIDGET_CROP_OPEN_WHITE_STATUSBAR, false);
+        mStatusBarColor = intent.getIntExtra(UCropMulti.Options.EXTRA_STATUS_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_statusbar));
+        mToolbarColor = intent.getIntExtra(UCropMulti.Options.EXTRA_TOOL_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_toolbar));
+        if (mToolbarColor == 0) {
+            mToolbarColor = ContextCompat.getColor(this, R.color.ucrop_color_toolbar);
+        }
+        if (mStatusBarColor == 0) {
+            mStatusBarColor = ContextCompat.getColor(this, R.color.ucrop_color_statusbar);
+        }
+    }
 
+    private void setupViews(@NonNull Intent intent) {
         scaleEnabled = intent.getBooleanExtra(UCropMulti.Options.EXTRA_SCALE, false);
         rotateEnabled = intent.getBooleanExtra(UCropMulti.Options.EXTRA_ROTATE, false);
         // 是否可拖动裁剪框
         isDragFrame = intent.getBooleanExtra(UCrop.Options.EXTRA_DRAG_CROP_FRAME, true);
-
-        mStatusBarColor = intent.getIntExtra(UCropMulti.Options.EXTRA_STATUS_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_statusbar));
-        mToolbarColor = intent.getIntExtra(UCropMulti.Options.EXTRA_TOOL_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_toolbar));
-        if (mToolbarColor == -1) {
-            mToolbarColor = ContextCompat.getColor(this, R.color.ucrop_color_toolbar);
-        }
-        if (mStatusBarColor == -1) {
-            mStatusBarColor = ContextCompat.getColor(this, R.color.ucrop_color_statusbar);
-        }
-
         mActiveWidgetColor = intent.getIntExtra(UCropMulti.Options.EXTRA_UCROP_COLOR_WIDGET_ACTIVE, ContextCompat.getColor(this, R.color.ucrop_color_widget_active));
         mToolbarWidgetColor = intent.getIntExtra(UCropMulti.Options.EXTRA_UCROP_WIDGET_COLOR_TOOLBAR, ContextCompat.getColor(this, R.color.ucrop_color_toolbar_widget));
-        if (mToolbarWidgetColor == -1) {
+        if (mToolbarWidgetColor == 0) {
             mToolbarWidgetColor = ContextCompat.getColor(this, R.color.ucrop_color_toolbar_widget);
         }
         mToolbarCancelDrawable = intent.getIntExtra(UCropMulti.Options.EXTRA_UCROP_WIDGET_CANCEL_DRAWABLE, R.drawable.ucrop_ic_cross);

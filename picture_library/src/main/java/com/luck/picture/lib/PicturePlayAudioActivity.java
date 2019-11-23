@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
 import com.luck.picture.lib.tools.DateUtils;
 
 @Deprecated
@@ -23,15 +24,15 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
                 , WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_picture_play_audio);
+        setContentView(R.layout.picture_play_audio);
         audio_path = getIntent().getStringExtra("audio_path");
-        tv_musicStatus =  findViewById(R.id.tv_musicStatus);
-        tv_musicTime =  findViewById(R.id.tv_musicTime);
+        tv_musicStatus = findViewById(R.id.tv_musicStatus);
+        tv_musicTime = findViewById(R.id.tv_musicTime);
         musicSeekBar = findViewById(R.id.musicSeekBar);
-        tv_musicTotal =  findViewById(R.id.tv_musicTotal);
+        tv_musicTotal = findViewById(R.id.tv_musicTotal);
         tv_PlayPause = findViewById(R.id.tv_PlayPause);
-        tv_Stop =  findViewById(R.id.tv_Stop);
-        tv_Quit =  findViewById(R.id.tv_Quit);
+        tv_Stop = findViewById(R.id.tv_Stop);
+        tv_Quit = findViewById(R.id.tv_Quit);
         handler.postDelayed(() -> initPlayer(audio_path), 30);
         tv_PlayPause.setOnClickListener(this);
         tv_Stop.setOnClickListener(this);

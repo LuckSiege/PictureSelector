@@ -8,16 +8,14 @@ import android.view.Window;
 
 import com.luck.picture.lib.R;
 
-public class PictureDialog extends Dialog {
-    public Context context;
+public class PictureLoadingDialog extends Dialog {
 
-    public PictureDialog(Context context) {
-        super(context, R.style.picture_alert_dialog);
-        this.context = context;
+    public PictureLoadingDialog(Context context) {
+        super(context, R.style.Picture_Theme_AlertDialog);
         setCancelable(true);
         setCanceledOnTouchOutside(false);
         Window window = getWindow();
-        window.setWindowAnimations(R.style.DialogWindowStyle);
+        window.setWindowAnimations(R.style.PictureThemeDialogWindowStyle);
     }
 
 

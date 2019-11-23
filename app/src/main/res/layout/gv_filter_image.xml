@@ -13,7 +13,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:scaleType="centerCrop"
-            android:src="@color/color_f6" />
+            android:src="@color/app_color_f6" />
 
         <LinearLayout
             android:id="@+id/ll_del"
@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:scaleType="center"
-                android:src="@drawable/delet_zhaopian_1x" />
+                android:src="@drawable/ic_delet_menu" />
         </LinearLayout>
 
         <TextView
@@ -37,14 +37,14 @@
             android:layout_height="30dp"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="5dp"
-            android:background="@drawable/buybuybuy"
-            android:drawableLeft="@drawable/video_icon"
+            android:background="@drawable/picture_icon_shadow_bg"
+            android:drawableLeft="@drawable/picture_icon_video"
             android:drawablePadding="5dp"
             android:gravity="center_vertical"
             android:paddingLeft="5dp"
             android:paddingTop="8dp"
             android:text="00:00"
-            android:textColor="@color/white"
+            android:textColor="@color/app_color_white"
             android:textSize="11sp"
             android:visibility="gone" />
     </RelativeLayout>

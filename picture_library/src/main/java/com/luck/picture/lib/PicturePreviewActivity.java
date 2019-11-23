@@ -10,13 +10,13 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 
-import com.luck.picture.lib.adapter.SimpleFragmentAdapter;
+import com.luck.picture.lib.adapter.PictureSimpleFragmentAdapter;
 import com.luck.picture.lib.anim.OptAnimationLoader;
 import com.luck.picture.lib.broadcast.BroadcastAction;
 import com.luck.picture.lib.broadcast.BroadcastManager;
@@ -42,22 +42,46 @@ import java.util.List;
  * @描述:图片预览
  */
 public class PicturePreviewActivity extends PictureBaseActivity implements
-        View.OnClickListener, SimpleFragmentAdapter.OnCallBackActivity {
+        View.OnClickListener, PictureSimpleFragmentAdapter.OnCallBackActivity {
     private ImageView picture_left_back;
-    private TextView tv_img_num, tv_title, tv_ok;
+    private TextView tv_img_num, tv_title, mTvPictureOk;
     private PreviewViewPager viewPager;
-    private LinearLayout id_ll_ok;
     private int position;
-    private LinearLayout ll_check;
     private List<LocalMedia> images = new ArrayList<>();
     private List<LocalMedia> selectImages = new ArrayList<>();
     private TextView check;
-    private SimpleFragmentAdapter adapter;
+    private PictureSimpleFragmentAdapter adapter;
     private Animation animation;
+    private View btnCheck;
     private boolean refresh;
     private int index;
     private int screenWidth;
     private Handler mHandler;
+    private RelativeLayout selectBarLayout;
+
+    private void initPictureSelectorStyle() {
+        if (config.style != null) {
+            if (config.style.pictureTitleTextColor != 0) {
+                tv_title.setTextColor(config.style.pictureTitleTextColor);
+            }
+            if (config.style.pictureLeftBackIcon != 0) {
+                picture_left_back.setImageResource(config.style.pictureLeftBackIcon);
+            }
+            if (config.style.picturePreviewBottomBgColor != 0) {
+                selectBarLayout.setBackgroundColor(config.style.picturePreviewBottomBgColor);
+            }
+            if (config.style.pictureCheckNumBgStyle != 0) {
+                tv_img_num.setBackgroundResource(config.style.pictureCheckNumBgStyle);
+            }
+            if (config.style.pictureCheckedStyle != 0) {
+                check.setBackgroundResource(config.style.pictureCheckedStyle);
+            }
+            if (config.style.pictureUnCompleteTextColor != 0) {
+                mTvPictureOk.setTextColor(config.style.pictureUnCompleteTextColor);
+            }
+        }
+        tv_title.setBackgroundColor(colorPrimary);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,37 +92,35 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 BroadcastAction.ACTION_CLOSE_PREVIEW);
         mHandler = new Handler();
         screenWidth = ScreenUtils.getScreenWidth(this);
-        animation = OptAnimationLoader.loadAnimation(this, R.anim.modal_in);
+        animation = OptAnimationLoader.loadAnimation(this, R.anim.picture_anim_modal_in);
         picture_left_back = findViewById(R.id.picture_left_back);
         viewPager = findViewById(R.id.preview_pager);
-        ll_check = findViewById(R.id.ll_check);
-        id_ll_ok = findViewById(R.id.id_ll_ok);
+        btnCheck = findViewById(R.id.btnCheck);
         check = findViewById(R.id.check);
         picture_left_back.setOnClickListener(this);
-        tv_ok = findViewById(R.id.tv_ok);
-        id_ll_ok.setOnClickListener(this);
+        mTvPictureOk = findViewById(R.id.tv_ok);
         tv_img_num = findViewById(R.id.tv_img_num);
+        selectBarLayout = findViewById(R.id.select_bar_layout);
+        mTvPictureOk.setOnClickListener(this);
+        tv_img_num.setOnClickListener(this);
         tv_title = findViewById(R.id.picture_title);
         position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
-        tv_ok.setText(numComplete ? getString(R.string.picture_done_front_num,
+        mTvPictureOk.setText(numComplete ? getString(R.string.picture_done_front_num,
                 0, config.selectionMode == PictureConfig.SINGLE ? 1 : config.maxSelectNum)
                 : getString(R.string.picture_please_select));
-
         tv_img_num.setSelected(config.checkNumMode ? true : false);
+        initPictureSelectorStyle();
 
-        selectImages = (List<LocalMedia>) getIntent().
-                getSerializableExtra(PictureConfig.EXTRA_SELECT_LIST);
+        selectImages = getIntent().
+                getParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST);
         boolean is_bottom_preview = getIntent().
                 getBooleanExtra(PictureConfig.EXTRA_BOTTOM_PREVIEW, false);
-        if (is_bottom_preview) {
-            // 底部预览按钮过来
-            images = (List<LocalMedia>) getIntent().
-                    getSerializableExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
-        } else {
-            images = ImagesObservable.getInstance().readLocalMedias();
-        }
+        // 底部预览按钮过来
+        images = is_bottom_preview ? getIntent().
+                getParcelableArrayListExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST)
+                : ImagesObservable.getInstance().readPreviewMediaData();
         initViewPageAdapterData();
-        ll_check.setOnClickListener(view -> {
+        btnCheck.setOnClickListener(view -> {
             if (images != null && images.size() > 0) {
                 LocalMedia image = images.get(viewPager.getCurrentItem());
                 String mimeType = selectImages.size() > 0 ?
@@ -232,7 +254,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      */
     private void initViewPageAdapterData() {
         tv_title.setText(position + 1 + "/" + images.size());
-        adapter = new SimpleFragmentAdapter(config, images, this, this);
+        adapter = new PictureSimpleFragmentAdapter(config, images, this, this);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(position);
         onSelectNumChange(false);
@@ -310,10 +332,13 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         this.refresh = isRefresh;
         boolean enable = selectImages.size() != 0;
         if (enable) {
-            tv_ok.setSelected(true);
-            id_ll_ok.setEnabled(true);
+            mTvPictureOk.setEnabled(true);
+            mTvPictureOk.setSelected(true);
+            if (config.style != null && config.style.pictureCompleteTextColor != 0) {
+                mTvPictureOk.setTextColor(config.style.pictureCompleteTextColor);
+            }
             if (numComplete) {
-                tv_ok.setText(getString(R.string.picture_done_front_num, selectImages.size(),
+                mTvPictureOk.setText(getString(R.string.picture_done_front_num, selectImages.size(),
                         config.selectionMode == PictureConfig.SINGLE ? 1 : config.maxSelectNum));
             } else {
                 if (refresh) {
@@ -321,17 +346,20 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 }
                 tv_img_num.setVisibility(View.VISIBLE);
                 tv_img_num.setText(String.valueOf(selectImages.size()));
-                tv_ok.setText(getString(R.string.picture_completed));
+                mTvPictureOk.setText(getString(R.string.picture_completed));
             }
         } else {
-            id_ll_ok.setEnabled(false);
-            tv_ok.setSelected(false);
+            mTvPictureOk.setEnabled(false);
+            mTvPictureOk.setSelected(false);
+            if (config.style != null && config.style.pictureUnCompleteTextColor != 0) {
+                mTvPictureOk.setTextColor(config.style.pictureUnCompleteTextColor);
+            }
             if (numComplete) {
-                tv_ok.setText(getString(R.string.picture_done_front_num, 0,
+                mTvPictureOk.setText(getString(R.string.picture_done_front_num, 0,
                         config.selectionMode == PictureConfig.SINGLE ? 1 : config.maxSelectNum));
             } else {
                 tv_img_num.setVisibility(View.INVISIBLE);
-                tv_ok.setText(getString(R.string.picture_please_select));
+                mTvPictureOk.setText(getString(R.string.picture_please_select));
             }
         }
         updateSelector(refresh);
@@ -360,7 +388,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         if (id == R.id.picture_left_back) {
             onBackPressed();
         }
-        if (id == R.id.id_ll_ok) {
+        if (id == R.id.tv_ok || id == R.id.tv_img_num) {
             // 如果设置了图片最小选择数量，则判断是否满足条件
             int size = selectImages.size();
             LocalMedia image = selectImages.size() > 0 ? selectImages.get(0) : null;
@@ -439,6 +467,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ImagesObservable.getInstance().clearPreviewMediaData();
         if (commonBroadcastReceiver != null) {
             BroadcastManager.getInstance(this).unregisterReceiver(commonBroadcastReceiver,
                     BroadcastAction.ACTION_CLOSE_PREVIEW);
@@ -458,7 +487,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         onBackPressed();
     }
 
-
     private BroadcastReceiver commonBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -474,4 +502,5 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             }
         }
     };
+
 }

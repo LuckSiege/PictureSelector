@@ -3,6 +3,7 @@ package com.luck.picture.lib;
 import android.app.Activity;
 import android.content.Intent;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.FloatRange;
 import androidx.annotation.IntRange;
 import androidx.annotation.StyleRes;
@@ -12,6 +13,8 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.style.PictureCropParameterStyle;
+import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.tools.DoubleUtils;
 
 import java.util.ArrayList;
@@ -42,7 +45,7 @@ public class PictureSelectionModel {
 
     /**
      * @param themeStyleId PictureSelector Theme style
-     * @return
+     * @return 废弃 改为动态设置
      */
     public PictureSelectionModel theme(@StyleRes int themeStyleId) {
         selectionConfig.themeStyleId = themeStyleId;
@@ -79,7 +82,7 @@ public class PictureSelectionModel {
     }
 
     /**
-     * @param enablePreviewAudio Do you want to play audio ?
+     * @param enablePreviewAudio Do you want to ic_play audio ?
      * @return
      */
     public PictureSelectionModel enablePreviewAudio(boolean enablePreviewAudio) {
@@ -251,7 +254,7 @@ public class PictureSelectionModel {
     /**
      * @param width  glide width
      * @param height glide height
-     * @return
+     * @return 2.2.9开始Glide改为外部用户自己定义此方法没有意义了
      */
     @Deprecated
     public PictureSelectionModel glideOverride(@IntRange(from = 100) int width,
@@ -265,7 +268,7 @@ public class PictureSelectionModel {
      * @param sizeMultiplier The multiplier to apply to the
      *                       {@link com.bumptech.glide.request.target.Target}'s dimensions when
      *                       loading the resource.
-     * @return
+     * @return 2.2.9开始Glide改为外部用户自己定义此方法没有意义了
      */
     @Deprecated
     public PictureSelectionModel sizeMultiplier(@FloatRange(from = 0.1f) float sizeMultiplier) {
@@ -293,7 +296,7 @@ public class PictureSelectionModel {
 
     /**
      * @param compressQuality crop compress quality default 90
-     * @return
+     * @return 请使用 cutOutQuality();方法
      */
     @Deprecated
     public PictureSelectionModel cropCompressQuality(int compressQuality) {
@@ -388,12 +391,24 @@ public class PictureSelectionModel {
      * # Responding to the Q version of Android, it's all in the app
      * sandbox so customizations are no longer provided
      *
-     * @param outputCameraPath Camera save path
+     * @param outputCameraPath Camera save path   由于Android Q的原因 其实此方法作用的意义就没了
      * @return
      */
     @Deprecated
     public PictureSelectionModel setOutputCameraPath(String outputCameraPath) {
         selectionConfig.outputCameraPath = outputCameraPath;
+        return this;
+    }
+
+
+    /**
+     * # file size The unit is M
+     *
+     * @param fileSize Filter file size
+     * @return
+     */
+    public PictureSelectionModel queryMaxFileSize(int fileSize) {
+        selectionConfig.filterFileSize = fileSize;
         return this;
     }
 
@@ -482,6 +497,7 @@ public class PictureSelectionModel {
      * @param isChangeStatusBarFontColor
      * @return
      */
+    @Deprecated
     public PictureSelectionModel isChangeStatusBarFontColor(boolean isChangeStatusBarFontColor) {
         selectionConfig.isChangeStatusBarFontColor = isChangeStatusBarFontColor;
         return this;
@@ -492,8 +508,9 @@ public class PictureSelectionModel {
      * #适合所有style使用
      *
      * @param isOpenStyleNumComplete
-     * @return
+     * @return 使用setPictureStyle方法
      */
+    @Deprecated
     public PictureSelectionModel isOpenStyleNumComplete(boolean isOpenStyleNumComplete) {
         selectionConfig.isOpenStyleNumComplete = isOpenStyleNumComplete;
         return this;
@@ -504,8 +521,9 @@ public class PictureSelectionModel {
      * #适合qq style 样式使用
      *
      * @param isOpenStyleCheckNumMode
-     * @return
+     * @return 使用setPictureStyle方法
      */
+    @Deprecated
     public PictureSelectionModel isOpenStyleCheckNumMode(boolean isOpenStyleCheckNumMode) {
         selectionConfig.isOpenStyleCheckNumMode = isOpenStyleCheckNumMode;
         return this;
@@ -515,9 +533,10 @@ public class PictureSelectionModel {
      * 设置标题栏背景色
      *
      * @param color
-     * @return
+     * @return 使用setPictureStyle方法
      */
-    public PictureSelectionModel setTitleBarBackgroundColor(int color) {
+    @Deprecated
+    public PictureSelectionModel setTitleBarBackgroundColor(@ColorInt int color) {
         selectionConfig.titleBarBackgroundColor = color;
         return this;
     }
@@ -527,10 +546,11 @@ public class PictureSelectionModel {
      * 状态栏背景色
      *
      * @param color
-     * @return
+     * @return 使用setPictureStyle方法
      */
-    public PictureSelectionModel setStatusBarColorPrimaryDark(int color) {
-        selectionConfig.statusBarColorPrimaryDark = color;
+    @Deprecated
+    public PictureSelectionModel setStatusBarColorPrimaryDark(@ColorInt int color) {
+        selectionConfig.pictureStatusBarColor = color;
         return this;
     }
 
@@ -539,9 +559,10 @@ public class PictureSelectionModel {
      * 裁剪页面标题背景色
      *
      * @param color
-     * @return
+     * @return 使用setPictureCropStyle方法
      */
-    public PictureSelectionModel setCropTitleBarBackgroundColor(int color) {
+    @Deprecated
+    public PictureSelectionModel setCropTitleBarBackgroundColor(@ColorInt int color) {
         selectionConfig.cropTitleBarBackgroundColor = color;
         return this;
     }
@@ -550,9 +571,10 @@ public class PictureSelectionModel {
      * 裁剪页面状态栏背景色
      *
      * @param color
-     * @return
+     * @return 使用setPictureCropStyle方法
      */
-    public PictureSelectionModel setCropStatusBarColorPrimaryDark(int color) {
+    @Deprecated
+    public PictureSelectionModel setCropStatusBarColorPrimaryDark(@ColorInt int color) {
         selectionConfig.cropStatusBarColorPrimaryDark = color;
         return this;
     }
@@ -561,9 +583,10 @@ public class PictureSelectionModel {
      * 裁剪页面标题文字颜色
      *
      * @param color
-     * @return
+     * @return 使用setPictureCropStyle方法
      */
-    public PictureSelectionModel setCropTitleColor(int color) {
+    @Deprecated
+    public PictureSelectionModel setCropTitleColor(@ColorInt int color) {
         selectionConfig.cropTitleColor = color;
         return this;
     }
@@ -572,8 +595,9 @@ public class PictureSelectionModel {
      * 设置相册标题右侧向上箭头图标
      *
      * @param resId
-     * @return
+     * @return 使用setPictureStyle方法
      */
+    @Deprecated
     public PictureSelectionModel setUpArrowDrawable(int resId) {
         selectionConfig.upResId = resId;
         return this;
@@ -583,10 +607,33 @@ public class PictureSelectionModel {
      * 设置相册标题右侧向下箭头图标
      *
      * @param resId
-     * @return
+     * @return 使用setPictureStyle方法
      */
+    @Deprecated
     public PictureSelectionModel setDownArrowDrawable(int resId) {
         selectionConfig.downResId = resId;
+        return this;
+    }
+
+    /**
+     * 动态设置裁剪主题样式
+     *
+     * @param style 裁剪页主题
+     * @return
+     */
+    public PictureSelectionModel setPictureCropStyle(PictureCropParameterStyle style) {
+        selectionConfig.cropStyle = style;
+        return this;
+    }
+
+    /**
+     * 动态设置相册主题样式
+     *
+     * @param style 主题
+     * @return
+     */
+    public PictureSelectionModel setPictureStyle(PictureParameterStyle style) {
+        selectionConfig.style = style;
         return this;
     }
 
@@ -609,7 +656,7 @@ public class PictureSelectionModel {
             } else {
                 activity.startActivityForResult(intent, requestCode);
             }
-            activity.overridePendingTransition(R.anim.a5, 0);
+            activity.overridePendingTransition(R.anim.picture_anim_a5, 0);
         }
     }
 

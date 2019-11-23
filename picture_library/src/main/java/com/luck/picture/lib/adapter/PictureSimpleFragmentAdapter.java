@@ -34,7 +34,7 @@ import java.util.List;
  * @描述:图片预览
  */
 
-public class SimpleFragmentAdapter extends PagerAdapter {
+public class PictureSimpleFragmentAdapter extends PagerAdapter {
     private List<LocalMedia> images;
     private Context mContext;
     private OnCallBackActivity onBackPressed;
@@ -47,8 +47,8 @@ public class SimpleFragmentAdapter extends PagerAdapter {
         void onActivityBackPressed();
     }
 
-    public SimpleFragmentAdapter(PictureSelectionConfig config, List<LocalMedia> images, Context context,
-                                 OnCallBackActivity onBackPressed) {
+    public PictureSimpleFragmentAdapter(PictureSelectionConfig config, List<LocalMedia> images, Context context,
+                                        OnCallBackActivity onBackPressed) {
         super();
         this.config = config;
         this.images = images;

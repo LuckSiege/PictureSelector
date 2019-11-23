@@ -19,6 +19,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -35,6 +36,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.yalantis.ucrop.callback.BitmapCropCallback;
+import com.yalantis.ucrop.immersion.CropImmersiveManage;
 import com.yalantis.ucrop.model.AspectRatio;
 import com.yalantis.ucrop.util.SelectedStateListDrawable;
 import com.yalantis.ucrop.view.CropImageView;
@@ -116,15 +118,38 @@ public class UCropActivity extends AppCompatActivity {
     /**
      * 图片是否可拖动或旋转
      */
-    private boolean scaleEnabled, rotateEnabled;
+    private boolean scaleEnabled, rotateEnabled, openWhiteStatusBar;
+
+    /**
+     * 是否使用沉浸式，子类复写该方法来确定是否采用沉浸式
+     *
+     * @return 是否沉浸式，默认true
+     */
+    @Override
+    public boolean isImmersive() {
+        return true;
+    }
+
+
+    /**
+     * 具体沉浸的样式，可以根据需要自行修改状态栏和导航栏的颜色
+     */
+    public void immersive() {
+        CropImmersiveManage.immersiveAboveAPI23(this
+                , mStatusBarColor
+                , mToolbarColor
+                , openWhiteStatusBar);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ucrop_activity_photobox);
-
         final Intent intent = getIntent();
-
+        getIntentData(intent);
+        if (isImmersive()) {
+            immersive();
+        }
+        setContentView(R.layout.ucrop_activity_photobox);
         setupViews(intent);
         setImageData(intent);
         setInitialState();
@@ -283,6 +308,20 @@ public class UCropActivity extends AppCompatActivity {
         }
     }
 
+
+    private void getIntentData(@NonNull Intent intent) {
+        openWhiteStatusBar = intent.getBooleanExtra(UCrop.Options.EXTRA_UCROP_WIDGET_CROP_OPEN_WHITE_STATUSBAR, false);
+        mStatusBarColor = intent.getIntExtra(UCrop.Options.EXTRA_STATUS_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_statusbar));
+        mToolbarColor = intent.getIntExtra(UCrop.Options.EXTRA_TOOL_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_toolbar));
+        if (mToolbarColor == 0) {
+            mToolbarColor = ContextCompat.getColor(this, R.color.ucrop_color_toolbar);
+        }
+        if (mStatusBarColor == 0) {
+            mStatusBarColor = ContextCompat.getColor(this, R.color.ucrop_color_statusbar);
+        }
+
+    }
+
     private void setupViews(@NonNull Intent intent) {
         scaleEnabled = intent.getBooleanExtra(UCrop.Options.EXTRA_SCALE, true);
 
@@ -291,18 +330,9 @@ public class UCropActivity extends AppCompatActivity {
         // 是否可拖动裁剪框
         isDragFrame = intent.getBooleanExtra(UCrop.Options.EXTRA_DRAG_CROP_FRAME, true);
 
-        mStatusBarColor = intent.getIntExtra(UCrop.Options.EXTRA_STATUS_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_statusbar));
-        mToolbarColor = intent.getIntExtra(UCrop.Options.EXTRA_TOOL_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_toolbar));
-        if (mToolbarColor == -1) {
-            mToolbarColor = ContextCompat.getColor(this, R.color.ucrop_color_toolbar);
-        }
-        if (mStatusBarColor == -1) {
-            mStatusBarColor = ContextCompat.getColor(this, R.color.ucrop_color_statusbar);
-        }
-
         mActiveWidgetColor = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_COLOR_WIDGET_ACTIVE, ContextCompat.getColor(this, R.color.ucrop_color_widget_active));
         mToolbarWidgetColor = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_WIDGET_COLOR_TOOLBAR, ContextCompat.getColor(this, R.color.ucrop_color_toolbar_widget));
-        if (mToolbarWidgetColor == -1) {
+        if (mToolbarWidgetColor == 0) {
             mToolbarWidgetColor = ContextCompat.getColor(this, R.color.ucrop_color_toolbar_widget);
         }
         mToolbarCancelDrawable = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_WIDGET_CANCEL_DRAWABLE, R.drawable.ucrop_ic_cross);

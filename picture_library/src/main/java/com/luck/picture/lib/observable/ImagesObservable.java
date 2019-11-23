@@ -1,32 +1,19 @@
 package com.luck.picture.lib.observable;
 
-
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.entity.LocalMediaFolder;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * author：luck
- * project：PictureSelector
- * package：com.luck.picture.lib.observable
- * email：893855882@qq.com
- * data：17/1/11
+ * @author：luck
+ * @date：2017-1-12 21:30
+ * @describe：解决预览时传值过大问题
  */
-public class ImagesObservable implements SubjectListener {
+public class ImagesObservable {
     //观察者接口集合
-    private List<ObserverListener> observers = new ArrayList<>();
-
-    private List<LocalMediaFolder> folders;
-    private List<LocalMedia> medias;
-    private List<LocalMedia> selectedImages;
+    private List<LocalMedia> previewList;
     private static ImagesObservable sObserver;
-
-    private ImagesObservable() {
-        folders = new ArrayList<>();
-        medias = new ArrayList<>();
-        selectedImages = new ArrayList<>();
-    }
 
     public static ImagesObservable getInstance() {
         if (sObserver == null) {
@@ -39,86 +26,31 @@ public class ImagesObservable implements SubjectListener {
         return sObserver;
     }
 
-
     /**
-     * 存储文件夹图片
+     * 存储图片用于预览时用
      *
-     * @param list
+     * @param previewList
      */
-
-    public void saveLocalFolders(List<LocalMediaFolder> list) {
-        if (list != null) {
-            folders = list;
-        }
-    }
-
-
-    /**
-     * 存储图片
-     *
-     * @param list
-     */
-    public void saveLocalMedia(List<LocalMedia> list) {
-        medias = list;
-    }
-
-
-    /**
-     * 读取图片
-     */
-    public List<LocalMedia> readLocalMedias() {
-        if (medias == null) {
-            medias = new ArrayList<>();
-        }
-        return medias;
+    public void savePreviewMediaData(List<LocalMedia> previewList) {
+        this.previewList = previewList;
     }
 
     /**
-     * 读取所有文件夹图片
+     * 读取预览的图片
      */
-    public List<LocalMediaFolder> readLocalFolders() {
-        if (folders == null) {
-            folders = new ArrayList<>();
+    public List<LocalMedia> readPreviewMediaData() {
+        if (previewList == null) {
+            previewList = new ArrayList<>();
         }
-        return folders;
+        return previewList;
     }
-
 
     /**
-     * 读取选中的图片
+     * 清空预览的图片
      */
-    public List<LocalMedia> readSelectLocalMedias() {
-        return selectedImages;
-    }
-
-
-    public void clearLocalFolders() {
-        if (folders != null) {
-            folders.clear();
-        }
-    }
-
-    public void clearLocalMedia() {
-        if (medias != null) {
-            medias.clear();
-        }
-    }
-
-    public void clearSelectedLocalMedia() {
-        if (selectedImages != null) {
-            selectedImages.clear();
-        }
-    }
-
-    @Override
-    public void add(ObserverListener observerListener) {
-        observers.add(observerListener);
-    }
-
-    @Override
-    public void remove(ObserverListener observerListener) {
-        if (observers.contains(observerListener)) {
-            observers.remove(observerListener);
+    public void clearPreviewMediaData() {
+        if (previewList != null) {
+            previewList.clear();
         }
     }
 }

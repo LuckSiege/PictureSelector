@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <set xmlns:android="http://schemas.android.com/apk/res/android"
-    android:interpolator="@anim/photo_anticipate_interpolator">
+    android:interpolator="@anim/picture_anim_anticipate_interpolator">
     <translate
         android:duration="350"
         android:fromYDelta="0.0%"

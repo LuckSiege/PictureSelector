@@ -10,7 +10,7 @@
         android:layout_gravity="center"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/dialog_shadow"
+        android:background="@drawable/picture_dialog_shadow"
         android:gravity="center"
         android:orientation="vertical"
         android:paddingBottom="15dp"
@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="播放"
-            android:textColor="@color/tab_color_false"
+            android:textColor="@color/picture_color_9b"
             android:textSize="14sp" />
 
         <RelativeLayout
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="00:00"
-                android:textColor="@color/tab_color_false"
+                android:textColor="@color/picture_color_9b"
                 android:textSize="12sp" />
 
 
@@ -66,7 +66,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/musicSeekBar"
                 android:text="00:00"
-                android:textColor="@color/tab_color_false"
+                android:textColor="@color/picture_color_9b"
                 android:textSize="12sp" />
 
         </RelativeLayout>
@@ -87,7 +87,7 @@
                 android:background="@drawable/picture_btn_music_shape"
                 android:gravity="center"
                 android:text="@string/picture_play_audio"
-                android:textColor="@color/white"
+                android:textColor="@color/picture_color_white"
                 android:textSize="14sp" />
 
             <TextView
@@ -99,7 +99,7 @@
                 android:background="@drawable/picture_btn_music_shape"
                 android:gravity="center"
                 android:text="@string/picture_stop_audio"
-                android:textColor="@color/white"
+                android:textColor="@color/picture_color_white"
                 android:textSize="14sp" />
 
             <TextView
@@ -112,7 +112,7 @@
                 android:background="@drawable/picture_btn_music_shape"
                 android:gravity="center"
                 android:text="@string/picture_quit_audio"
-                android:textColor="@color/white"
+                android:textColor="@color/picture_color_white"
                 android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>

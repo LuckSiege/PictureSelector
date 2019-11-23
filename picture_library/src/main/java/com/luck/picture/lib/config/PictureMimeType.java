@@ -127,13 +127,7 @@ public final class PictureMimeType {
      * @return
      */
     public static boolean isGif(String mimeType) {
-        switch (mimeType) {
-            case "image/gif":
-            case "image/GIF":
-                return true;
-            default:
-                return false;
-        }
+        return mimeType != null && (mimeType.equals("image/gif") || mimeType.equals("image/GIF"));
     }
 
     /**
@@ -199,13 +193,7 @@ public final class PictureMimeType {
      * @return
      */
     public static boolean isHttp(String path) {
-        if (!TextUtils.isEmpty(path)) {
-            if (path.startsWith("http")
-                    || path.startsWith("https")) {
-                return true;
-            }
-        }
-        return false;
+        return !TextUtils.isEmpty(path) && (path.startsWith("http") || path.startsWith("https"));
     }
 
     /**
@@ -219,19 +207,19 @@ public final class PictureMimeType {
             String name = file.getName();
             if (name.endsWith(".mp4") || name.endsWith(".avi")
                     || name.endsWith(".3gpp") || name.endsWith(".3gp") || name.endsWith(".mov")) {
-                return "video/mp4";
+                return MIME_TYPE_VIDEO;
             } else if (name.endsWith(".PNG") || name.endsWith(".png") || name.endsWith(".jpeg")
                     || name.endsWith(".gif") || name.endsWith(".GIF") || name.endsWith(".jpg")
                     || name.endsWith(".webp") || name.endsWith(".WEBP") || name.endsWith(".JPEG")
                     || name.endsWith(".bmp")) {
-                return "image/jpeg";
+                return MIME_TYPE_IMAGE;
             } else if (name.endsWith(".mp3") || name.endsWith(".amr")
                     || name.endsWith(".aac") || name.endsWith(".war")
                     || name.endsWith(".flac") || name.endsWith(".lamr")) {
-                return "audio/mpeg";
+                return MIME_TYPE_AUDIO;
             }
         }
-        return "image/jpeg";
+        return MIME_TYPE_IMAGE;
     }
 
     /**
@@ -269,9 +257,9 @@ public final class PictureMimeType {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return "image/jpeg";
+            return MIME_TYPE_IMAGE;
         }
-        return "image/jpeg";
+        return MIME_TYPE_IMAGE;
     }
 
     public static String getVideoMimeType(String path) {
@@ -285,9 +273,9 @@ public final class PictureMimeType {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return "video/mp4";
+            return MIME_TYPE_VIDEO;
         }
-        return "video/mp4";
+        return MIME_TYPE_VIDEO;
     }
 
     /**
@@ -310,7 +298,7 @@ public final class PictureMimeType {
                 cursor.close();
             }
         }
-        return "image/jpeg";
+        return MIME_TYPE_IMAGE;
     }
 
     /**
@@ -355,14 +343,14 @@ public final class PictureMimeType {
                     case ".webp":
                         return imageType;
                     default:
-                        return ".png";
+                        return PNG;
                 }
             } else {
-                return ".png";
+                return PNG;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return ".png";
+            return PNG;
         }
     }
 
@@ -373,7 +361,7 @@ public final class PictureMimeType {
      * @return
      */
     public static String getLastImgSuffix(String mineType) {
-        String defaultSuffix = ".png";
+        String defaultSuffix = PNG;
         try {
             int index = mineType.lastIndexOf("/") + 1;
             if (index > 0) {
@@ -403,9 +391,9 @@ public final class PictureMimeType {
         }
     }
 
-    public final static String JPEG = ".JPEG";
+    public final static String JPEG = ".jpeg";
 
-    public final static String PNG = ".PNG";
+    public final static String PNG = ".png";
 
 
     public final static String MIME_TYPE_IMAGE = "image/jpeg";

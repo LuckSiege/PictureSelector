@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="MyTheme.Translucent" parent="BaseNoActionBarTheme">
+    <style name="Picture.Theme.Translucent" parent="Base.Theme.NoActionBar">
 
-        <item name="android:windowBackground">@color/transparent</item> <!-- 背景色透明度 -->
-        <item name="android:windowNoTitle">true</item><!-- 无标题 -->
-        <item name="android:windowIsTranslucent">true</item><!-- 半透明,设置为false无透明效果 -->
+        <item name="android:windowBackground">@color/picture_color_transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 </resources>

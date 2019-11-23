@@ -17,11 +17,9 @@ import android.widget.TextView;
 import com.luck.picture.lib.R;
 
 /**
- * author：luck
- * project：PictureSelector
- * package：com.luck.picture.lib.widget
- * email：893855882@qq.com
- * data：2017/6/2
+ * @author：luck
+ * @date：2017-6-2 21:12
+ * @describe：PhotoPopupWindow
  */
 
 public class PhotoPopupWindow extends PopupWindow implements View.OnClickListener {
@@ -42,13 +40,13 @@ public class PhotoPopupWindow extends PopupWindow implements View.OnClickListene
         this.update();
         this.setBackgroundDrawable(new ColorDrawable());
         this.setContentView(inflate);
-        animationIn = AnimationUtils.loadAnimation(context, R.anim.up_in);
-        animationOut = AnimationUtils.loadAnimation(context, R.anim.down_out);
-        ll_root = (LinearLayout) inflate.findViewById(R.id.ll_root);
-        fl_content = (FrameLayout) inflate.findViewById(R.id.fl_content);
-        picture_tv_photo = (TextView) inflate.findViewById(R.id.picture_tv_photo);
-        picture_tv_cancel = (TextView) inflate.findViewById(R.id.picture_tv_cancel);
-        picture_tv_video = (TextView) inflate.findViewById(R.id.picture_tv_video);
+        animationIn = AnimationUtils.loadAnimation(context, R.anim.picture_anim_up_in);
+        animationOut = AnimationUtils.loadAnimation(context, R.anim.picture_anim_down_out);
+        ll_root = inflate.findViewById(R.id.ll_root);
+        fl_content = inflate.findViewById(R.id.fl_content);
+        picture_tv_photo = inflate.findViewById(R.id.picture_tv_photo);
+        picture_tv_cancel = inflate.findViewById(R.id.picture_tv_cancel);
+        picture_tv_video = inflate.findViewById(R.id.picture_tv_video);
         picture_tv_video.setOnClickListener(this);
         picture_tv_cancel.setOnClickListener(this);
         picture_tv_photo.setOnClickListener(this);
@@ -108,12 +106,7 @@ public class PhotoPopupWindow extends PopupWindow implements View.OnClickListene
      * 在android4.1.1和4.1.2版本关闭PopWindow
      */
     private void dismiss4Pop() {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                PhotoPopupWindow.super.dismiss();
-            }
-        });
+        new Handler().post(() -> PhotoPopupWindow.super.dismiss());
     }
 
     @Override
@@ -141,6 +134,6 @@ public class PhotoPopupWindow extends PopupWindow implements View.OnClickListene
     }
 
     public interface OnItemClickListener {
-        void onItemClick(int positon);
+        void onItemClick(int position);
     }
 }

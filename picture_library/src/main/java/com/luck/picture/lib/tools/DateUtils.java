@@ -1,7 +1,9 @@
 package com.luck.picture.lib.tools;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 /**
  * author：luck
@@ -13,48 +15,6 @@ import java.util.TimeZone;
 
 public class DateUtils {
     private static SimpleDateFormat msFormat = new SimpleDateFormat("mm:ss");
-
-    /**
-     * MS turn every minute
-     *
-     * @param duration Millisecond
-     * @return Every minute
-     */
-    @Deprecated
-    public static String timeParse(long duration) {
-        String time = "";
-        if (duration > 1000) {
-            time = timeParseMinute(duration);
-        } else {
-            long minute = duration / 60000;
-            long seconds = duration % 60000;
-            long second = Math.round((float) seconds / 1000);
-            if (minute < 10) {
-                time += "0";
-            }
-            time += minute + ":";
-            if (second < 10) {
-                time += "0";
-            }
-            time += second;
-        }
-        return time;
-    }
-
-    /**
-     * MS turn every minute
-     *
-     * @param duration Millisecond
-     * @return Every minute
-     */
-    public static String timeParseMinute(long duration) {
-        try {
-            return msFormat.format(duration);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "0:00";
-        }
-    }
 
     /**
      * 判断两个时间戳相差多少秒
@@ -74,13 +34,10 @@ public class DateUtils {
     }
 
     public static String formatDurationTime(long duration) {
-        String formatStr = "mm:ss";
-        if (duration > 60 * 60 * 1000) {
-            formatStr = "HH:mm:ss";
-        }
-        SimpleDateFormat dateFormat = new SimpleDateFormat(formatStr);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
-        return dateFormat.format(duration);
+        return String.format(Locale.getDefault(), "%02d:%02d",
+                TimeUnit.MILLISECONDS.toMinutes(duration),
+                TimeUnit.MILLISECONDS.toSeconds(duration)
+                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
     }
 
     /**

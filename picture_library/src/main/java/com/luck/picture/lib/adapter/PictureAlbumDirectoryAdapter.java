@@ -15,6 +15,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
+import com.luck.picture.lib.tools.AttrsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,12 +71,12 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         holder.tvSign.setVisibility(checkedNum > 0 ? View.VISIBLE : View.INVISIBLE);
         holder.itemView.setSelected(isChecked);
         if (chooseMode == PictureMimeType.ofAudio()) {
-            holder.ivFirstImage.setImageResource(R.drawable.audio_placeholder);
+            holder.ivFirstImage.setImageResource(R.drawable.picture_audio_placeholder);
         } else {
             if (config != null && config.imageEngine != null) {
                 config.imageEngine
                         .loadFolderAsBitmapImage(holder.itemView.getContext(),
-                                imagePath, holder.ivFirstImage, R.drawable.ic_placeholder);
+                                imagePath, holder.ivFirstImage, R.drawable.picture_icon_placeholder);
             }
         }
         holder.imageNum.setText("(" + imageNum + ")");
@@ -107,6 +108,9 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
             tvFolderName = itemView.findViewById(R.id.tv_folder_name);
             imageNum = itemView.findViewById(R.id.image_num);
             tvSign = itemView.findViewById(R.id.tv_sign);
+            if (config.style != null && config.style.pictureFolderCheckedDotStyle != 0) {
+                tvSign.setBackgroundResource(config.style.pictureFolderCheckedDotStyle);
+            }
         }
     }
 

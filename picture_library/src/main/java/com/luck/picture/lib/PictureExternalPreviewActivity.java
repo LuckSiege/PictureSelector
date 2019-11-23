@@ -21,7 +21,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.dialog.CustomDialog;
+import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.photoview.PhotoView;
@@ -100,7 +100,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     @Override
     public void onClick(View v) {
         finish();
-        overridePendingTransition(0, R.anim.a3);
+        overridePendingTransition(0, R.anim.picture_anim_a3);
     }
 
     public class SimpleFragmentAdapter extends PagerAdapter {
@@ -164,11 +164,11 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 }
                 imageView.setOnViewTapListener((view, x, y) -> {
                     finish();
-                    overridePendingTransition(0, R.anim.a3);
+                    overridePendingTransition(0, R.anim.picture_anim_a3);
                 });
                 longImg.setOnClickListener(v -> {
                     finish();
-                    overridePendingTransition(0, R.anim.a3);
+                    overridePendingTransition(0, R.anim.picture_anim_a3);
                 });
                 imageView.setOnLongClickListener(v -> {
                     if (config.isNotPreviewDownload) {
@@ -211,10 +211,10 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         if (TextUtils.isEmpty(downloadPath)) {
             return;
         }
-        final CustomDialog dialog = new CustomDialog(PictureExternalPreviewActivity.this,
+        final PictureCustomDialog dialog = new PictureCustomDialog(PictureExternalPreviewActivity.this,
                 ScreenUtils.getScreenWidth(PictureExternalPreviewActivity.this) * 3 / 4,
                 ScreenUtils.getScreenHeight(PictureExternalPreviewActivity.this) / 4,
-                R.layout.picture_wind_base_dialog_xml, R.style.Theme_dialog);
+                R.layout.picture_wind_base_dialog_xml, R.style.Picture_Theme_Dialog);
         Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
         Button btn_commit = dialog.findViewById(R.id.btn_commit);
         TextView tv_title = dialog.findViewById(R.id.tv_title);
@@ -236,6 +236,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                             System.currentTimeMillis() + suffix);
                     PictureFileUtils.copyFile(downloadPath, dirPath);
                     ToastUtils.s(mContext, getString(R.string.picture_save_success) + "\n" + dirPath);
+
                     dismissDialog();
                 } catch (IOException e) {
                     ToastUtils.s(mContext, getString(R.string.picture_save_error) + "\n" + e.getMessage());
@@ -319,7 +320,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-        overridePendingTransition(0, R.anim.a3);
+        overridePendingTransition(0, R.anim.picture_anim_a3);
     }
 
     @Override

@@ -18,10 +18,6 @@ public class LocalMediaFolder implements Parcelable {
      */
     private String name;
     /**
-     * Folder cover
-     */
-    private String path;
-    /**
      * Folder first path
      */
     private String firstImagePath;
@@ -56,13 +52,6 @@ public class LocalMediaFolder implements Parcelable {
         this.name = name;
     }
 
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
 
     public String getFirstImagePath() {
         return firstImagePath;
@@ -107,7 +96,6 @@ public class LocalMediaFolder implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.name);
-        dest.writeString(this.path);
         dest.writeString(this.firstImagePath);
         dest.writeInt(this.imageNum);
         dest.writeInt(this.checkedNum);
@@ -120,7 +108,6 @@ public class LocalMediaFolder implements Parcelable {
 
     protected LocalMediaFolder(Parcel in) {
         this.name = in.readString();
-        this.path = in.readString();
         this.firstImagePath = in.readString();
         this.imageNum = in.readInt();
         this.checkedNum = in.readInt();

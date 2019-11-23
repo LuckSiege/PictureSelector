@@ -23,7 +23,7 @@ public class VoiceUtils {
 
         if (soundPool == null) {
             soundPool = new SoundPool(1, AudioManager.STREAM_ALARM, 0);
-            soundID = soundPool.load(mContext, R.raw.music, 1);
+            soundID = soundPool.load(mContext, R.raw.picture_music, 1);
         }
         new Handler().postDelayed(() -> play(enableVoice, soundPool), 20);
     }

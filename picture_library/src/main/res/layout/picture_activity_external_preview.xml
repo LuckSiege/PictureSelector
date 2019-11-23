@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@color/picture_color_black"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
@@ -17,7 +17,7 @@
             android:layout_width="48dp"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:background="@color/transparent"
+            android:background="@color/picture_color_transparent"
             android:src="?attr/picture.preview.leftBack.icon"
             android:visibility="visible" />
 

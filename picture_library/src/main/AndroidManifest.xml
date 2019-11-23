@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.luck.picture.lib">
 
-    <application android:theme="@style/AppTheme">
-
+    <application >
         <provider
             android:name="com.luck.picture.lib.PictureFileProvider"
             android:authorities="${applicationId}.provider"
@@ -19,7 +18,7 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".PictureSelectorCameraEmptyActivity"
-            android:theme="@style/MyTheme.Translucent"
+            android:theme="@style/Picture.Theme.Translucent"
             android:windowSoftInputMode="adjustPan" />
 
         <activity android:name=".PicturePreviewActivity" />
@@ -28,8 +27,13 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="sensor" />
         <activity android:name=".PictureExternalPreviewActivity" />
-        <activity android:name="com.yalantis.ucrop.UCropActivity" />
-        <activity android:name="com.yalantis.ucrop.PictureMultiCuttingActivity" />
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:theme="@style/Base.Theme.NoActionBar" />
+        <activity
+            android:name="com.yalantis.ucrop.PictureMultiCuttingActivity"
+            android:theme="@style/Base.Theme.NoActionBar" />
+
         <activity android:name=".PicturePlayAudioActivity" />
 
     </application>
