@@ -219,8 +219,8 @@ Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme
  PictureSelector.create(MainActivity.this)
  	.openGallery()//全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
  	.theme()//主题样式(不设置为默认样式) 也可参考demo values/styles下 例如：R.style.picture.white.style
-	.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
-        .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
+	.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题  注意：此方法最好不要与.theme();同时存在， 二选一
+        .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题 注意：此方法最好不要与.theme();同时存在， 二选一
 	.loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项   参考Demo MainActivity中代码
  	.maxSelectNum()// 最大图片选择数量 int
  	.minSelectNum()// 最小选择数量 int
@@ -459,7 +459,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
-
+```
 * v2.3.3
 * 1.新增动态设置相册和裁剪主题功能api，动态设置主题的权限最高！！！
   .setPictureStyle(mPictureParameterStyle); // 动态自定义相册主题
@@ -476,6 +476,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 7.修复单独拍照会出现白屏问题
 * 8.优化布局层次
 * 9.修复issues
+```
 
 # 历史版本：
 
