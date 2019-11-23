@@ -21,6 +21,7 @@
 -[功能配置](#功能配置)<br>
 -[缓存清除](#缓存清除)<br>
 -[主题配置](#主题配置)<br>
+-[动态主题配置](#动态主题配置)<br>
 -[常用功能](#常用功能)<br>
 -[结果回调](#结果回调)<br>
 -[更新日志](#更新日志)<br>
@@ -62,6 +63,8 @@
 * 27.新增指定精确查询 querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
 * 28.新增单选模式可设置点击选择后直接返回控制 isSingleDirectReturn(false)// 单选模式下是否直接返回
 * 29.多图裁剪下可自由选择某图不裁剪不在强制一张张裁剪，但最后一张除外
+* 30.新增动态配制相册主题 .setPictureStyle(mPictureParameterStyle);
+* 31.新增动态配制裁剪主题 .setPictureCropStyle(mCropParameterStyle);
 
 
 重要的事情说三遍记得添加权限
@@ -216,13 +219,16 @@ Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme
  PictureSelector.create(MainActivity.this)
  	.openGallery()//全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
  	.theme()//主题样式(不设置为默认样式) 也可参考demo values/styles下 例如：R.style.picture.white.style
+	.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题  注意：此方法最好不要与.theme();同时存在， 二选一
+        .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题 注意：此方法最好不要与.theme();同时存在， 二选一
 	.loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项   参考Demo MainActivity中代码
  	.maxSelectNum()// 最大图片选择数量 int
  	.minSelectNum()// 最小选择数量 int
 	.imageSpanCount(4)// 每行显示个数 int
+	.queryMaxFileSize(10)// 只查多少M以内的图片、视频、音频  单位M
 	.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
 	.cameraFileName("")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用，选图时不要用
-	.isSingleDirectReturn(false)// 单选模式下是否直接返回
+	.isSingleDirectReturn(false)// 单选模式下是否直接返回，PictureConfig.SINGLE模式下有效
 	.setTitleBarBackgroundColor(titleBarBackgroundColor)//相册标题栏背景色
 	.isChangeStatusBarFontColor(isChangeStatusBarFontColor)// 是否关闭白色状态栏字体颜色
         .setStatusBarColorPrimaryDark(statusBarColorPrimaryDark)// 状态栏背景色
@@ -333,6 +339,59 @@ Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme
 
 ```
 
+## 动态主题配置
+
+```
+// 相册主题
+PictureParameterStyle mPictureParameterStyle = new PictureParameterStyle();
+// 是否改变状态栏字体颜色(黑白切换)
+mPictureParameterStyle.isChangeStatusBarFontColor = false;
+// 是否开启右下角已完成(0/9)风格
+mPictureParameterStyle.isOpenCompletedNumStyle = false;
+// 是否开启类似QQ相册带数字选择风格
+mPictureParameterStyle.isOpenCheckNumStyle = false;
+// 相册状态栏背景色
+mPictureParameterStyle.pictureStatusBarColor = Color.parseColor("#393a3e");
+// 相册列表标题栏背景色
+mPictureParameterStyle.pictureTitleBarBackgroundColor = Color.parseColor("#393a3e");
+// 相册列表标题栏右侧上拉箭头
+mPictureParameterStyle.pictureTitleUpResId = R.drawable.picture_icon_arrow_up;
+// 相册列表标题栏右侧下拉箭头
+mPictureParameterStyle.pictureTitleDownResId = R.drawable.picture_icon_arrow_down;
+// 相册文件夹列表选中圆点
+mPictureParameterStyle.pictureFolderCheckedDotStyle = R.drawable.picture_orange_oval;
+// 相册返回箭头
+mPictureParameterStyle.pictureLeftBackIcon = R.drawable.picture_icon_back;
+// 标题栏字体颜色
+mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(this, R.color.picture_color_white);
+// 相册右侧取消按钮字体颜色
+mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(this, R.color.picture_color_white);
+// 相册列表勾选图片样式
+mPictureParameterStyle.pictureCheckedStyle = R.drawable.picture_checkbox_selector;
+// 相册列表底部背景色
+mPictureParameterStyle.pictureBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_fa);
+// 已选数量圆点背景样式
+mPictureParameterStyle.pictureCheckNumBgStyle = R.drawable.picture_num_oval;
+// 相册列表底下预览文字色值(预览按钮可点击时的色值)
+mPictureParameterStyle.picturePreviewTextColor = ContextCompat.getColor(this, R.color.picture_color_fa632d);
+// 相册列表底下不可预览文字色值(预览按钮不可点击时的色值)
+mPictureParameterStyle.pictureUnPreviewTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
+// 相册列表已完成色值(已完成 可点击色值)
+mPictureParameterStyle.pictureCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_fa632d);
+// 相册列表未完成色值(请选择 不可点击色值)
+mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
+// 预览界面底部背景色
+mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_grey_3e);
+
+// 裁剪主题
+PictureCropParameterStyle mCropParameterStyle = new PictureCropParameterStyle(
+    ContextCompat.getColor(MainActivity.this, R.color.app_color_grey),
+    ContextCompat.getColor(MainActivity.this, R.color.app_color_grey),
+    ContextCompat.getColor(MainActivity.this, R.color.app_color_white),
+    mPictureParameterStyle.isChangeStatusBarFontColor);
+		
+```
+
 ## 常用功能
 
 ******启动相册并拍照******       
@@ -400,7 +459,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
-
+```
 * v2.3.3
 * 1.新增动态设置相册和裁剪主题功能api，动态设置主题的权限最高！！！
   .setPictureStyle(mPictureParameterStyle); // 动态自定义相册主题
@@ -417,9 +476,10 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 7.修复单独拍照会出现白屏问题
 * 8.优化布局层次
 * 9.修复issues
+```
 
 # 历史版本：
-
+```
 * v2.3.2
 * 移除对RxJava依赖
 * 移除对RxPermissions依赖改为原生权限申请方式
@@ -547,10 +607,10 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 新增自定拍照保存路径
 * 修复录音不显示时长问题
 
+```
+
 # 项目使用第三方库：
-* glide:4.5.0	
-* rxjava:2.0.5
-* rxandroid:2.0.1
+
 * PhotoView:2.1.3
 * luban
 * 裁剪使用ucrop
