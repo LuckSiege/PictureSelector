@@ -479,7 +479,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ```
 
 # 历史版本：
-
+```
 * v2.3.2
 * 移除对RxJava依赖
 * 移除对RxPermissions依赖改为原生权限申请方式
@@ -607,10 +607,10 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 新增自定拍照保存路径
 * 修复录音不显示时长问题
 
+```
+
 # 项目使用第三方库：
-* glide:4.5.0	
-* rxjava:2.0.5
-* rxandroid:2.0.1
+
 * PhotoView:2.1.3
 * luban
 * 裁剪使用ucrop
