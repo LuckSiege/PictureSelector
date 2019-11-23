@@ -342,53 +342,53 @@ Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme
 ## 动态主题配置
 
 ```
-	// 相册主题
-        mPictureParameterStyle = new PictureParameterStyle();
-        // 是否改变状态栏字体颜色(黑白切换)
-        mPictureParameterStyle.isChangeStatusBarFontColor = false;
-        // 是否开启右下角已完成(0/9)风格
-        mPictureParameterStyle.isOpenCompletedNumStyle = false;
-        // 是否开启类似QQ相册带数字选择风格
-        mPictureParameterStyle.isOpenCheckNumStyle = false;
-        // 相册状态栏背景色
-        mPictureParameterStyle.pictureStatusBarColor = Color.parseColor("#393a3e");
-        // 相册列表标题栏背景色
-        mPictureParameterStyle.pictureTitleBarBackgroundColor = Color.parseColor("#393a3e");
-        // 相册列表标题栏右侧上拉箭头
-        mPictureParameterStyle.pictureTitleUpResId = R.drawable.picture_icon_arrow_up;
-        // 相册列表标题栏右侧下拉箭头
-        mPictureParameterStyle.pictureTitleDownResId = R.drawable.picture_icon_arrow_down;
-        // 相册文件夹列表选中圆点
-        mPictureParameterStyle.pictureFolderCheckedDotStyle = R.drawable.picture_orange_oval;
-        // 相册返回箭头
-        mPictureParameterStyle.pictureLeftBackIcon = R.drawable.picture_icon_back;
-        // 标题栏字体颜色
-        mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(this, R.color.picture_color_white);
-        // 相册右侧取消按钮字体颜色
-        mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(this, R.color.picture_color_white);
-        // 相册列表勾选图片样式
-        mPictureParameterStyle.pictureCheckedStyle = R.drawable.picture_checkbox_selector;
-        // 相册列表底部背景色
-        mPictureParameterStyle.pictureBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_fa);
-        // 已选数量圆点背景样式
-        mPictureParameterStyle.pictureCheckNumBgStyle = R.drawable.picture_num_oval;
-        // 相册列表底下预览文字色值(预览按钮可点击时的色值)
-        mPictureParameterStyle.picturePreviewTextColor = ContextCompat.getColor(this, R.color.picture_color_fa632d);
-        // 相册列表底下不可预览文字色值(预览按钮不可点击时的色值)
-        mPictureParameterStyle.pictureUnPreviewTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
-        // 相册列表已完成色值(已完成 可点击色值)
-        mPictureParameterStyle.pictureCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_fa632d);
-        // 相册列表未完成色值(请选择 不可点击色值)
-        mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
-        // 预览界面底部背景色
-        mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_grey_3e);
+// 相册主题
+PictureParameterStyle mPictureParameterStyle = new PictureParameterStyle();
+// 是否改变状态栏字体颜色(黑白切换)
+mPictureParameterStyle.isChangeStatusBarFontColor = false;
+// 是否开启右下角已完成(0/9)风格
+mPictureParameterStyle.isOpenCompletedNumStyle = false;
+// 是否开启类似QQ相册带数字选择风格
+mPictureParameterStyle.isOpenCheckNumStyle = false;
+// 相册状态栏背景色
+mPictureParameterStyle.pictureStatusBarColor = Color.parseColor("#393a3e");
+// 相册列表标题栏背景色
+mPictureParameterStyle.pictureTitleBarBackgroundColor = Color.parseColor("#393a3e");
+// 相册列表标题栏右侧上拉箭头
+mPictureParameterStyle.pictureTitleUpResId = R.drawable.picture_icon_arrow_up;
+// 相册列表标题栏右侧下拉箭头
+mPictureParameterStyle.pictureTitleDownResId = R.drawable.picture_icon_arrow_down;
+// 相册文件夹列表选中圆点
+mPictureParameterStyle.pictureFolderCheckedDotStyle = R.drawable.picture_orange_oval;
+// 相册返回箭头
+mPictureParameterStyle.pictureLeftBackIcon = R.drawable.picture_icon_back;
+// 标题栏字体颜色
+mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(this, R.color.picture_color_white);
+// 相册右侧取消按钮字体颜色
+mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(this, R.color.picture_color_white);
+// 相册列表勾选图片样式
+mPictureParameterStyle.pictureCheckedStyle = R.drawable.picture_checkbox_selector;
+// 相册列表底部背景色
+mPictureParameterStyle.pictureBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_fa);
+// 已选数量圆点背景样式
+mPictureParameterStyle.pictureCheckNumBgStyle = R.drawable.picture_num_oval;
+// 相册列表底下预览文字色值(预览按钮可点击时的色值)
+mPictureParameterStyle.picturePreviewTextColor = ContextCompat.getColor(this, R.color.picture_color_fa632d);
+// 相册列表底下不可预览文字色值(预览按钮不可点击时的色值)
+mPictureParameterStyle.pictureUnPreviewTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
+// 相册列表已完成色值(已完成 可点击色值)
+mPictureParameterStyle.pictureCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_fa632d);
+// 相册列表未完成色值(请选择 不可点击色值)
+mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
+// 预览界面底部背景色
+mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_grey_3e);
 
-        // 裁剪主题
-        mCropParameterStyle = new PictureCropParameterStyle(
-                ContextCompat.getColor(MainActivity.this, R.color.app_color_grey),
-                ContextCompat.getColor(MainActivity.this, R.color.app_color_grey),
-                ContextCompat.getColor(MainActivity.this, R.color.app_color_white),
-                mPictureParameterStyle.isChangeStatusBarFontColor);
+// 裁剪主题
+PictureCropParameterStyle mCropParameterStyle = new PictureCropParameterStyle(
+    ContextCompat.getColor(MainActivity.this, R.color.app_color_grey),
+    ContextCompat.getColor(MainActivity.this, R.color.app_color_grey),
+    ContextCompat.getColor(MainActivity.this, R.color.app_color_white),
+    mPictureParameterStyle.isChangeStatusBarFontColor);
 		
 ```
 
