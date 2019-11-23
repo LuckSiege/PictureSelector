@@ -15,6 +15,7 @@
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 ## 目录
+-[注意事项](#注意事项)<br>
 -[功能特点](#功能特点)<br>
 -[集成方式](#集成方式)<br>
 -[常见错误](#常见错误)<br>
@@ -31,6 +32,25 @@
 -[演示效果](#演示效果)<br>
 -[打赏](#打赏)<br>
 
+# 注意事项  重要！！！
+
+```
+v2.2.3 新增动态配制主题，建议不要与.theme(R.theme.style);方法共用 两者只选其一配制 个人建议使用动态配制为好！！！
+.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
+.setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
+
+v2.2.2开始移除了glide，所以使用v2.2.2版本的用户一定要配制好图片加载引擎 否则列表图片加载不出来！！！
+.loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
+
+新增api 
+.isSingleDirectReturn(false)// 单选模式下是否直接返回，PictureConfig.SINGLE模式下有效
+.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
+.queryMaxFileSize(10)// 只查多少M以内的图片、视频、音频  单位M
+.cutOutQuality(90)// 裁剪输出质量 默认100
+.compressQuality(80)// 图片压缩后输出质量 0~ 100
+.isNotPreviewDownload(true)// 预览图片长按是否可以下载
+
+```
 
 # 功能特点
 
@@ -63,8 +83,8 @@
 * 27.新增指定精确查询 querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
 * 28.新增单选模式可设置点击选择后直接返回控制 isSingleDirectReturn(false)// 单选模式下是否直接返回
 * 29.多图裁剪下可自由选择某图不裁剪不在强制一张张裁剪，但最后一张除外
-* 30.新增动态配制相册主题 .setPictureStyle(mPictureParameterStyle);
-* 31.新增动态配制裁剪主题 .setPictureCropStyle(mCropParameterStyle);
+* 30.新增动态配制相册主题 .setPictureStyle(mPictureParameterStyle);  请参考Demo
+* 31.新增动态配制裁剪主题 .setPictureCropStyle(mCropParameterStyle); 请参考Demo
 
 
 重要的事情说三遍记得添加权限
@@ -225,6 +245,7 @@ Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme
  	.maxSelectNum()// 最大图片选择数量 int
  	.minSelectNum()// 最小选择数量 int
 	.imageSpanCount(4)// 每行显示个数 int
+	.isNotPreviewDownload(true)// 预览图片长按是否可以下载
 	.queryMaxFileSize(10)// 只查多少M以内的图片、视频、音频  单位M
 	.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
 	.cameraFileName("")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用，选图时不要用
