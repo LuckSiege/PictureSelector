@@ -1,6 +1,7 @@
 package com.luck.picture.lib;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
 import android.net.Uri;
@@ -19,6 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.luck.picture.lib.broadcast.BroadcastAction;
+import com.luck.picture.lib.broadcast.BroadcastManager;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
@@ -50,8 +53,8 @@ import java.util.List;
  * @描述: 预览图片
  */
 public class PictureExternalPreviewActivity extends PictureBaseActivity implements View.OnClickListener {
-    private ImageButton left_back;
-    private TextView tv_title;
+    private ImageButton ibLeftBack;
+    private TextView tvTitle;
     private PreviewViewPager viewPager;
     private List<LocalMedia> images = new ArrayList<>();
     private int position = 0;
@@ -60,23 +63,48 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     private loadDataThread loadDataThread;
     private String downloadPath;
     private String mimeType;
+    private ImageButton ibDelete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picture_activity_external_preview);
         inflater = LayoutInflater.from(this);
-        tv_title = findViewById(R.id.picture_title);
-        left_back = findViewById(R.id.left_back);
+        tvTitle = findViewById(R.id.picture_title);
+        ibLeftBack = findViewById(R.id.left_back);
+        ibDelete = findViewById(R.id.ib_delete);
         viewPager = findViewById(R.id.preview_pager);
         position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
         images = (List<LocalMedia>) getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
-        left_back.setOnClickListener(this);
+        ibLeftBack.setOnClickListener(this);
+        ibDelete.setOnClickListener(this);
+        ibDelete.setVisibility(config.style != null ? config.style.pictureExternalPreviewGonePreviewDelete
+                ? View.VISIBLE : View.GONE : View.GONE);
         initViewPageAdapterData();
+        initPictureSelectorStyle();
+    }
+
+    /**
+     * 设置样式
+     */
+    private void initPictureSelectorStyle() {
+        if (config.style != null) {
+            if (config.style.pictureTitleTextColor != 0) {
+                tvTitle.setTextColor(config.style.pictureTitleTextColor);
+            }
+            if (config.style.pictureLeftBackIcon != 0) {
+                ibLeftBack.setImageResource(config.style.pictureLeftBackIcon);
+            }
+            if (config.style.pictureExternalPreviewDeleteStyle != 0) {
+                ibDelete.setImageResource(config.style.pictureExternalPreviewDeleteStyle);
+            }
+        }
+        tvTitle.setBackgroundColor(colorPrimary);
     }
 
     private void initViewPageAdapterData() {
-        tv_title.setText(position + 1 + "/" + images.size());
+        tvTitle.setText(getString(R.string.picture_preview_image_num,
+                position + 1, images.size()));
         adapter = new SimpleFragmentAdapter();
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(position);
@@ -87,8 +115,10 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             }
 
             @Override
-            public void onPageSelected(int position) {
-                tv_title.setText(position + 1 + "/" + images.size());
+            public void onPageSelected(int index) {
+                tvTitle.setText(getString(R.string.picture_preview_image_num,
+                        index + 1, images.size()));
+                position = index;
             }
 
             @Override
@@ -99,20 +129,47 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
     @Override
     public void onClick(View v) {
-        finish();
-        overridePendingTransition(0, R.anim.picture_anim_a3);
+        int id = v.getId();
+        if (id == R.id.left_back) {
+            finish();
+            overridePendingTransition(0, R.anim.picture_anim_a3);
+        } else if (id == R.id.ib_delete) {
+            if (images != null && images.size() > 0) {
+                int currentItem = viewPager.getCurrentItem();
+                images.remove(currentItem);
+                // 删除通知用户更新
+                Bundle bundle = new Bundle();
+                bundle.putInt(PictureConfig.EXTRA_PREVIEW_DELETE_POSITION, currentItem);
+                BroadcastManager.getInstance(this)
+                        .action(BroadcastAction.ACTION_DELETE_PREVIEW_POSITION)
+                        .extras(bundle).broadcast();
+                if (images.size() == 0) {
+                    onBackPressed();
+                    return;
+                }
+                tvTitle.setText(getString(R.string.picture_preview_image_num,
+                        position + 1, images.size()));
+                position = currentItem;
+                adapter.notifyDataSetChanged();
+            }
+        }
     }
 
     public class SimpleFragmentAdapter extends PagerAdapter {
 
         @Override
         public int getCount() {
-            return images.size();
+            return images != null ? images.size() : 0;
         }
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             (container).removeView((View) object);
+        }
+
+        @Override
+        public int getItemPosition(@NonNull Object object) {
+            return POSITION_NONE;
         }
 
         @Override
@@ -236,6 +293,11 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                             System.currentTimeMillis() + suffix);
                     PictureFileUtils.copyFile(downloadPath, dirPath);
                     ToastUtils.s(mContext, getString(R.string.picture_save_success) + "\n" + dirPath);
+
+                    Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                    Uri uri = Uri.fromFile(new File(dirPath));
+                    intent.setData(uri);
+                    sendBroadcast(intent);
 
                     dismissDialog();
                 } catch (IOException e) {

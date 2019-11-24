@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.tools.DoubleUtils;
 
 import java.io.Serializable;
@@ -84,7 +85,19 @@ public final class PictureSelector {
      * @return
      */
     public PictureSelectionModel themeStyle(int themeStyle) {
-        return new PictureSelectionModel(this, PictureMimeType.ofImage()).theme(themeStyle);
+        return new PictureSelectionModel(this, PictureMimeType.ofImage())
+                .theme(themeStyle);
+    }
+
+    /**
+     * 外部预览时动态代码设置样式
+     *
+     * @param style
+     * @return
+     */
+    public PictureSelectionModel setPictureStyle(PictureParameterStyle style) {
+        return new PictureSelectionModel(this, PictureMimeType.ofImage())
+                .setPictureStyle(style);
     }
 
     /**

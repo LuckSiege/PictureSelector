@@ -1,6 +1,8 @@
 package com.luck.pictureselector;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -21,6 +23,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.luck.picture.lib.broadcast.BroadcastAction;
+import com.luck.picture.lib.broadcast.BroadcastManager;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.PictureSelector;
@@ -29,6 +33,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.tools.PictureFileUtils;
+import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 
 import java.util.ArrayList;
@@ -116,8 +121,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     default:
                         // 预览图片 可自定长按保存路径
                         PictureSelector.create(MainActivity.this)
-                                .themeStyle(themeId)
-                                .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题, 这个是配合 .theme();结合使用
+                                //.themeStyle(themeId) // xml设置主题
+                                .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
                                 .isNotPreviewDownload(true)// 预览图片长按是否可以下载
                                 .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                                 .openExternalPreview(position, selectList);
@@ -133,6 +138,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             PermissionChecker.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
         }
+
+        // 注册外部预览图片删除按钮回调
+        BroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
+                BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
     }
 
     private GridImageAdapter.onAddPicClickListener onAddPicClickListener = new GridImageAdapter.onAddPicClickListener() {
@@ -417,6 +426,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
         // 预览界面底部背景色
         mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_grey_3e);
+        // 外部预览界面删除按钮样式
+        mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_delete;
+        // 外部预览界面是否显示删除按钮
+        mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
 
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(
@@ -467,6 +480,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
         // 预览界面底部背景色
         mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_grey_3e);
+        // 外部预览界面删除按钮样式
+        mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_black_delete;
+        // 外部预览界面是否显示删除按钮
+        mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
 
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(
@@ -517,6 +534,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(this, R.color.app_color_blue);
         // 预览界面底部背景色
         mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_fa);
+        // 外部预览界面删除按钮样式
+        mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_delete;
+        // 外部预览界面是否显示删除按钮
+        mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
 
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(
@@ -567,6 +588,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
         // 预览界面底部背景色
         mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_grey_3e);
+        // 外部预览界面删除按钮样式
+        mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_black_delete;
+        // 外部预览界面是否显示删除按钮
+        mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
 
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(
@@ -626,6 +651,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
                 break;
+        }
+    }
+
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            switch (action) {
+                case BroadcastAction.ACTION_DELETE_PREVIEW_POSITION:
+                    // 外部预览删除按钮回调
+                    Bundle extras = intent.getExtras();
+                    int position = extras.getInt(PictureConfig.EXTRA_PREVIEW_DELETE_POSITION);
+                    ToastUtils.s(context, "delete image index:" + position);
+                    if (position < adapter.getItemCount()) {
+                        selectList.remove(position);
+                        adapter.notifyItemRemoved(position);
+                    }
+                    break;
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (broadcastReceiver != null) {
+            BroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver,
+                    BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
         }
     }
 }

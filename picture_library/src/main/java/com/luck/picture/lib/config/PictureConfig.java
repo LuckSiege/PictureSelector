@@ -10,6 +10,7 @@ public final class PictureConfig {
     public static final int APPLY_CAMERA_PERMISSIONS_CODE = 2;
     public static final int APPLY_AUDIO_PERMISSIONS_CODE = 3;
 
+    public final static String EXTRA_PREVIEW_DELETE_POSITION = "position";
     public final static String FC_TAG = "picture";
     public final static String EXTRA_RESULT_SELECTION = "extra_result_media";
     public final static String EXTRA_PREVIEW_SELECT_LIST = "previewSelectList";

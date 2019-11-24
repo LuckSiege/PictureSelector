@@ -373,6 +373,10 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_9b);
         // 预览界面底部背景色
         mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_grey_3e);
+        // 外部预览界面删除按钮样式
+        mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_delete;
+        // 外部预览界面是否显示删除按钮
+        mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
 
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(
@@ -423,6 +427,10 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_9b);
         // 预览界面底部背景色
         mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_grey_3e);
+        // 外部预览界面删除按钮样式
+        mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_black_delete;
+        // 外部预览界面是否显示删除按钮
+        mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
 
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(
@@ -473,6 +481,10 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(getContext(), R.color.app_color_blue);
         // 预览界面底部背景色
         mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_fa);
+        // 外部预览界面删除按钮样式
+        mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_delete;
+        // 外部预览界面是否显示删除按钮
+        mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
 
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(
@@ -523,6 +535,10 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_9b);
         // 预览界面底部背景色
         mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_grey_3e);
+        // 外部预览界面删除按钮样式
+        mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_black_delete;
+        // 外部预览界面是否显示删除按钮
+        mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
 
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(

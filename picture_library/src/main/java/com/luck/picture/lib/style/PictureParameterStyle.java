@@ -120,6 +120,16 @@ public class PictureParameterStyle implements Parcelable {
     @DrawableRes
     public int pictureFolderCheckedDotStyle;
 
+    /**
+     * 外部预览图片删除按钮样式
+     */
+    @DrawableRes
+    public int pictureExternalPreviewDeleteStyle;
+
+    /**
+     * 外部预览图片是否显示删除按钮
+     */
+    public boolean pictureExternalPreviewGonePreviewDelete;
 
     public PictureParameterStyle() {
         super();
@@ -152,6 +162,8 @@ public class PictureParameterStyle implements Parcelable {
         dest.writeInt(this.pictureCheckedStyle);
         dest.writeInt(this.pictureCheckNumBgStyle);
         dest.writeInt(this.pictureFolderCheckedDotStyle);
+        dest.writeInt(this.pictureExternalPreviewDeleteStyle);
+        dest.writeByte(this.pictureExternalPreviewGonePreviewDelete ? (byte) 1 : (byte) 0);
     }
 
     protected PictureParameterStyle(Parcel in) {
@@ -174,6 +186,8 @@ public class PictureParameterStyle implements Parcelable {
         this.pictureCheckedStyle = in.readInt();
         this.pictureCheckNumBgStyle = in.readInt();
         this.pictureFolderCheckedDotStyle = in.readInt();
+        this.pictureExternalPreviewDeleteStyle = in.readInt();
+        this.pictureExternalPreviewGonePreviewDelete = in.readByte() != 0;
     }
 
     public static final Creator<PictureParameterStyle> CREATOR = new Creator<PictureParameterStyle>() {

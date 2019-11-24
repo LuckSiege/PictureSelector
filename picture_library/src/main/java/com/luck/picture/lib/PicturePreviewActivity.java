@@ -59,30 +59,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     private Handler mHandler;
     private RelativeLayout selectBarLayout;
 
-    private void initPictureSelectorStyle() {
-        if (config.style != null) {
-            if (config.style.pictureTitleTextColor != 0) {
-                tv_title.setTextColor(config.style.pictureTitleTextColor);
-            }
-            if (config.style.pictureLeftBackIcon != 0) {
-                picture_left_back.setImageResource(config.style.pictureLeftBackIcon);
-            }
-            if (config.style.picturePreviewBottomBgColor != 0) {
-                selectBarLayout.setBackgroundColor(config.style.picturePreviewBottomBgColor);
-            }
-            if (config.style.pictureCheckNumBgStyle != 0) {
-                tv_img_num.setBackgroundResource(config.style.pictureCheckNumBgStyle);
-            }
-            if (config.style.pictureCheckedStyle != 0) {
-                check.setBackgroundResource(config.style.pictureCheckedStyle);
-            }
-            if (config.style.pictureUnCompleteTextColor != 0) {
-                mTvPictureOk.setTextColor(config.style.pictureUnCompleteTextColor);
-            }
-        }
-        tv_title.setBackgroundColor(colorPrimary);
-    }
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -196,6 +172,33 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             public void onPageScrollStateChanged(int state) {
             }
         });
+    }
+
+    /**
+     * 动态设置相册主题
+     */
+    private void initPictureSelectorStyle() {
+        if (config.style != null) {
+            if (config.style.pictureTitleTextColor != 0) {
+                tv_title.setTextColor(config.style.pictureTitleTextColor);
+            }
+            if (config.style.pictureLeftBackIcon != 0) {
+                picture_left_back.setImageResource(config.style.pictureLeftBackIcon);
+            }
+            if (config.style.picturePreviewBottomBgColor != 0) {
+                selectBarLayout.setBackgroundColor(config.style.picturePreviewBottomBgColor);
+            }
+            if (config.style.pictureCheckNumBgStyle != 0) {
+                tv_img_num.setBackgroundResource(config.style.pictureCheckNumBgStyle);
+            }
+            if (config.style.pictureCheckedStyle != 0) {
+                check.setBackgroundResource(config.style.pictureCheckedStyle);
+            }
+            if (config.style.pictureUnCompleteTextColor != 0) {
+                mTvPictureOk.setTextColor(config.style.pictureUnCompleteTextColor);
+            }
+        }
+        tv_title.setBackgroundColor(colorPrimary);
     }
 
     /**
