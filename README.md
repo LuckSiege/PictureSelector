@@ -433,13 +433,14 @@ PictureCropParameterStyle mCropParameterStyle = new PictureCropParameterStyle(
 ```
   PictureSelector.create(MainActivity.this)
        .openCamera(PictureMimeType.ofImage())
+       .setPictureCropStyle(mCropParameterStyle) // 单独拍照如果开启了裁剪功能可以动态自定义裁剪主题，没开此方法无效
        .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
        .forResult(PictureConfig.CHOOSE_REQUEST);
 ```
 ******预览图片******       
 ```
 // 预览图片 可自定长按保存路径
-*注意 .themeStyle(themeId)；不可少，否则闪退...
+*注意 .themeStyle(R.style.theme)；里面的参数不可少，否则闪退...
 
 PictureSelector.create(MainActivity.this)
 .themeStyle(themeId)//UI界面风格
