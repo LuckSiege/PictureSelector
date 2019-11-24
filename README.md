@@ -38,10 +38,11 @@
 v2.2.3 新增动态配制主题，建议不要与.theme(R.theme.style);方法共用 两者只选其一配制 个人建议使用动态配制为好！！！
 .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
 .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
-以上两者具体使用方法请参考Demo MainActivity.java类中！
+以上两者具体使用方法请参考Demo MainActivity.java实现方式
 
 v2.2.2开始移除了glide，所以使用v2.2.2版本以后的用户一定要配制好图片加载引擎 否则列表图片加载不出来！！！
 .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
+具体请参考Demo MainActivity.java实现方式
 
 新增api 
 .isSingleDirectReturn(false)// 单选模式下是否直接返回，PictureConfig.SINGLE模式下有效
