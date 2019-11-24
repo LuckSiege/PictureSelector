@@ -105,7 +105,7 @@ v2.2.2开始移除了glide，所以使用v2.2.2版本以后的用户一定要配
 
 ```
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.3'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.4'
 }
 
 ```
@@ -138,7 +138,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.3.3</version> 
+      <version>v2.3.4</version> 
 </dependency>
 
 ```
@@ -405,6 +405,10 @@ mPictureParameterStyle.pictureCompleteTextColor = ContextCompat.getColor(this, R
 mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
 // 预览界面底部背景色
 mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_grey_3e);
+// 外部预览界面删除按钮样式
+mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_delete;
+// 外部预览界面是否显示删除按钮
+mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
 
 // 裁剪主题
 PictureCropParameterStyle mCropParameterStyle = new PictureCropParameterStyle(
@@ -429,21 +433,26 @@ PictureCropParameterStyle mCropParameterStyle = new PictureCropParameterStyle(
 ```
   PictureSelector.create(MainActivity.this)
        .openCamera(PictureMimeType.ofImage())
+       .setPictureCropStyle(mCropParameterStyle) // 单独拍照如果开启了裁剪功能可以动态自定义裁剪主题，没开此方法无效
        .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
        .forResult(PictureConfig.CHOOSE_REQUEST);
 ```
 ******预览图片******       
 ```
 // 预览图片 可自定长按保存路径
-*注意 .themeStyle(themeId)；不可少，否则闪退...
+*注意 .themeStyle(R.style.theme)；里面的参数不可少，否则闪退...
 
 PictureSelector.create(MainActivity.this)
 .themeStyle(themeId)//UI界面风格
+.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
+.isNotPreviewDownload(true)// 预览图片长按是否可以下载
 .loadImageEngine(GlideEngine.createGlideEngine())// 自定义图片加载引擎
 .openExternalPreview(position, "/custom_file", selectList);
 
 PictureSelector.create(MainActivity.this)
 .themeStyle(themeId)//UI界面风格
+.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
+.isNotPreviewDownload(true)// 预览图片长按是否可以下载
 .loadImageEngine(GlideEngine.createGlideEngine())// 自定义图片加载引擎
 .openExternalPreview(position, selectList);
 
@@ -483,22 +492,23 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 # 当前版本：
 ```
-* v2.3.3
+* v2.3.4
 * 1.新增动态设置相册和裁剪主题功能api，动态设置主题的权限最高！！！
   .setPictureStyle(mPictureParameterStyle); // 动态自定义相册主题
   .setPictureCropStyle(mCropParameterStyle); // 动态自定义裁剪主题
   ##注意：如果动态设置了主题 以上相册和裁剪两者的主题优先级都高于.theme(themeId);方式，所以个人建议动态设置主题和.theme(themeId);
   二选一最好！！！
 * 2.新增api .queryMaxFileSize(10) // 只查多少M以内的图片、视频、音频 单位:M
-* 3.修复FolderPopWindow未点在超过屏幕高度60%时关闭不了问题
-* 4.修复预览问题java.lang.IllegalStateException: The application's PagerAdapter changed the adapter's contents without calling 
+* 3.PictureParameterStyle新增外部预览页面新增删除按钮控制
+* 4.修复FolderPopWindow未点在超过屏幕高度60%时关闭不了问题
+* 5.修复预览问题java.lang.IllegalStateException: The application's PagerAdapter changed the adapter's contents without calling 
   PagerAdapter#notifyDataSetChanged! Expected adapter item count: 86, found: 0 bug
-* 5.修复.theme(themeId);方式修改裁剪主题不生效问题
-* 6.修复裁剪问题java.lang.IllegalStateException: This Activity already has an action bar supplied by the window decor.
+* 6.修复.theme(themeId);方式修改裁剪主题不生效问题
+* 7.修复裁剪问题java.lang.IllegalStateException: This Activity already has an action bar supplied by the window decor.
   Do not request Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme to use a Toolbar instead.
-* 7.修复单独拍照会出现白屏问题
-* 8.优化布局层次
-* 9.修复issues
+* 8.修复单独拍照会出现白屏问题
+* 9.优化布局层次
+* 10.修复issues
 ```
 
 # 历史版本：
