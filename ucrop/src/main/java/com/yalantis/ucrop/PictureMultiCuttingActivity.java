@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.IdRes;
@@ -21,6 +22,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -35,6 +37,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.immersion.CropImmersiveManage;
 import com.yalantis.ucrop.model.AspectRatio;
@@ -48,6 +51,7 @@ import com.yalantis.ucrop.view.TransformImageView;
 import com.yalantis.ucrop.view.UCropView;
 import com.yalantis.ucrop.view.widget.AspectRatioTextView;
 import com.yalantis.ucrop.view.widget.HorizontalProgressWheelView;
+
 import java.io.File;
 import java.io.Serializable;
 import java.lang.annotation.Retention;
@@ -283,6 +287,12 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        exitAnimation();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         if (mGestureCropImageView != null) {
@@ -415,7 +425,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         mLogoColor = intent.getIntExtra(UCropMulti.Options.EXTRA_UCROP_LOGO_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_default_logo));
         mShowBottomControls = !intent.getBooleanExtra(UCropMulti.Options.EXTRA_HIDE_BOTTOM_CONTROLS, false);
         mRootViewBackgroundColor = intent.getIntExtra(UCropMulti.Options.EXTRA_UCROP_ROOT_VIEW_BACKGROUND_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_crop_background));
-
+        setNavBarColor();
         setupAppBar();
         initiateRootViews();
 
@@ -439,6 +449,18 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
             setupStatesWrapper();
         }
         changeLayoutParams(mShowBottomControls);
+    }
+
+    /**
+     * set NavBar Color
+     */
+    private void setNavBarColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int navBarColor = getIntent().getIntExtra(UCropMulti.EXTRA_NAV_BAR_COLOR, 0);
+            if (navBarColor != 0) {
+                getWindow().setNavigationBarColor(navBarColor);
+            }
+        }
     }
 
     /**
@@ -856,9 +878,17 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         setResult(UCropMulti.RESULT_ERROR, new Intent().putExtra(UCropMulti.EXTRA_ERROR, throwable));
     }
 
+    /**
+     * exit activity
+     */
     protected void closeActivity() {
         finish();
-        overridePendingTransition(0, R.anim.ucrop_close);
+        exitAnimation();
+    }
+
+    protected void exitAnimation() {
+        int exitAnimation = getIntent().getIntExtra(UCropMulti.EXTRA_WINDOW_EXIT_ANIMATION, 0);
+        overridePendingTransition(R.anim.ucrop_anim_fade_in, exitAnimation != 0 ? exitAnimation : R.anim.ucrop_close);
     }
 
     public int dip2px(float dpValue) {

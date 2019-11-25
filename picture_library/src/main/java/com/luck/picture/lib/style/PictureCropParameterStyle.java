@@ -33,6 +33,13 @@ public class PictureCropParameterStyle implements Parcelable {
     @ColorInt
     public int cropTitleColor;
 
+    /**
+     * # SDK Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP有效
+     * 裁剪导航条颜色
+     */
+    @ColorInt
+    public int cropNavBarColor;
+
 
     public PictureCropParameterStyle() {
         super();
@@ -43,6 +50,18 @@ public class PictureCropParameterStyle implements Parcelable {
                                      int cropTitleColor,
                                      boolean isChangeStatusBarFontColor) {
         this.cropTitleBarBackgroundColor = cropTitleBarBackgroundColor;
+        this.cropStatusBarColorPrimaryDark = cropStatusBarColorPrimaryDark;
+        this.cropTitleColor = cropTitleColor;
+        this.isChangeStatusBarFontColor = isChangeStatusBarFontColor;
+    }
+
+    public PictureCropParameterStyle(int cropTitleBarBackgroundColor,
+                                     int cropStatusBarColorPrimaryDark,
+                                     int cropNavBarColor,
+                                     int cropTitleColor,
+                                     boolean isChangeStatusBarFontColor) {
+        this.cropTitleBarBackgroundColor = cropTitleBarBackgroundColor;
+        this.cropNavBarColor = cropNavBarColor;
         this.cropStatusBarColorPrimaryDark = cropStatusBarColorPrimaryDark;
         this.cropTitleColor = cropTitleColor;
         this.isChangeStatusBarFontColor = isChangeStatusBarFontColor;
@@ -60,6 +79,7 @@ public class PictureCropParameterStyle implements Parcelable {
         dest.writeInt(this.cropTitleBarBackgroundColor);
         dest.writeInt(this.cropStatusBarColorPrimaryDark);
         dest.writeInt(this.cropTitleColor);
+        dest.writeInt(this.cropNavBarColor);
     }
 
     protected PictureCropParameterStyle(Parcel in) {
@@ -67,6 +87,7 @@ public class PictureCropParameterStyle implements Parcelable {
         this.cropTitleBarBackgroundColor = in.readInt();
         this.cropStatusBarColorPrimaryDark = in.readInt();
         this.cropTitleColor = in.readInt();
+        this.cropNavBarColor = in.readInt();
     }
 
     public static final Creator<PictureCropParameterStyle> CREATOR = new Creator<PictureCropParameterStyle>() {

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -20,6 +21,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.luck.picture.lib.broadcast.BroadcastAction;
 import com.luck.picture.lib.broadcast.BroadcastManager;
@@ -32,6 +34,9 @@ import com.luck.picture.lib.dialog.PictureLoadingDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.immersive.ImmersiveManage;
+import com.luck.picture.lib.immersive.NavBarUtils;
+import com.luck.picture.lib.language.LocaleTransform;
+import com.luck.picture.lib.language.PictureLanguageUtils;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.AttrsUtils;
@@ -47,6 +52,7 @@ import com.yalantis.ucrop.model.CutInfo;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -104,6 +110,13 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
         mHandler = new Handler(Looper.getMainLooper(), this);
         if (isImmersive()) {
             immersive();
+        }
+        if (config.language >= 0) {
+            PictureLanguageUtils.applyLanguage(this, LocaleTransform.getLanguage(config.language));
+        }
+        if (config.style != null && config.style.pictureNavBarColor != 0) {
+            // 导航条色值
+            NavBarUtils.setNavBarColor(this, config.style.pictureNavBarColor);
         }
     }
 
@@ -182,7 +195,6 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
         outState.putString(PictureConfig.BUNDLE_ORIGINAL_PATH, originalPath);
         outState.putParcelable(PictureConfig.EXTRA_CONFIG, config);
     }
-
 
 
     /**
@@ -374,6 +386,10 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
         options.setCompressionQuality(config.cropCompressQuality);
         options.setHideBottomControls(config.hideBottomControls);
         options.setFreeStyleCropEnabled(config.freeStyleCropEnabled);
+        options.setCropExitAnimation(config.windowAnimationStyle != null
+                ? config.windowAnimationStyle.activityCropExitAnimation : 0);
+        options.setNavBarColor(config.cropStyle != null ? config.cropStyle.cropNavBarColor : 0);
+
         boolean isHttp = PictureMimeType.isHttp(originalPath);
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         String imgType = isAndroidQ ? PictureMimeType
@@ -386,7 +402,8 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
                 .withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y)
                 .withMaxResultSize(config.cropWidth, config.cropHeight)
                 .withOptions(options)
-                .start(this);
+                .startAnimation(this, config.windowAnimationStyle != null
+                        ? config.windowAnimationStyle.activityCropEnterAnimation : 0);
     }
 
     /**
@@ -450,6 +467,9 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
         options.setCompressionQuality(config.cropCompressQuality);
         options.setCutListData(list);
         options.setFreeStyleCropEnabled(config.freeStyleCropEnabled);
+        options.setCropExitAnimation(config.windowAnimationStyle != null
+                ? config.windowAnimationStyle.activityCropExitAnimation : 0);
+        options.setNavBarColor(config.cropStyle != null ? config.cropStyle.cropNavBarColor : 0);
         String path = list.size() > 0 ? list.get(0) : "";
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         boolean isHttp = PictureMimeType.isHttp(path);
@@ -463,7 +483,8 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
                 .withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y)
                 .withMaxResultSize(config.cropWidth, config.cropHeight)
                 .withOptions(options)
-                .start(this);
+                .startAnimation(this, config.windowAnimationStyle != null
+                        ? config.windowAnimationStyle.activityCropEnterAnimation : 0);
     }
 
 
@@ -617,7 +638,9 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
         if (config.camera) {
             overridePendingTransition(0, R.anim.picture_anim_fade_out);
         } else {
-            overridePendingTransition(0, R.anim.picture_anim_a3);
+            overridePendingTransition(0, config.windowAnimationStyle != null
+                    && config.windowAnimationStyle.activityExitAnimation != 0 ?
+                    config.windowAnimationStyle.activityExitAnimation : R.anim.picture_anim_exit);
         }
     }
 

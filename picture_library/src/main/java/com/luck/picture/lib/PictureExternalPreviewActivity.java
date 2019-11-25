@@ -132,7 +132,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         int id = v.getId();
         if (id == R.id.left_back) {
             finish();
-            overridePendingTransition(0, R.anim.picture_anim_a3);
+            exitAnimation();
         } else if (id == R.id.ib_delete) {
             if (images != null && images.size() > 0) {
                 int currentItem = viewPager.getCurrentItem();
@@ -221,11 +221,11 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 }
                 imageView.setOnViewTapListener((view, x, y) -> {
                     finish();
-                    overridePendingTransition(0, R.anim.picture_anim_a3);
+                    exitAnimation();
                 });
                 longImg.setOnClickListener(v -> {
                     finish();
-                    overridePendingTransition(0, R.anim.picture_anim_a3);
+                    exitAnimation();
                 });
                 imageView.setOnLongClickListener(v -> {
                     if (config.isNotPreviewDownload) {
@@ -382,7 +382,13 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-        overridePendingTransition(0, R.anim.picture_anim_a3);
+        exitAnimation();
+    }
+
+    private void exitAnimation() {
+        overridePendingTransition(R.anim.picture_anim_fade_in, config.windowAnimationStyle != null
+                && config.windowAnimationStyle.activityPreviewExitAnimation != 0
+                ? config.windowAnimationStyle.activityPreviewExitAnimation : R.anim.picture_anim_exit);
     }
 
     @Override

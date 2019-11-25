@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+
+import androidx.annotation.AnimRes;
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.FloatRange;
@@ -14,8 +16,10 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import com.yalantis.ucrop.model.AspectRatio;
 import com.yalantis.ucrop.model.CutInfo;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,6 +46,10 @@ public class UCropMulti {
     public static final String EXTRA_OUTPUT_OFFSET_X = EXTRA_PREFIX + ".OffsetX";
     public static final String EXTRA_OUTPUT_OFFSET_Y = EXTRA_PREFIX + ".OffsetY";
     public static final String EXTRA_ERROR = EXTRA_PREFIX + ".Error";
+
+    public static final String EXTRA_WINDOW_EXIT_ANIMATION = EXTRA_PREFIX + ".WindowAnimation";
+
+    public static final String EXTRA_NAV_BAR_COLOR = EXTRA_PREFIX + ".navBarColor";
 
     public static final String EXTRA_ASPECT_RATIO_X = EXTRA_PREFIX + ".AspectRatioX";
     public static final String EXTRA_ASPECT_RATIO_Y = EXTRA_PREFIX + ".AspectRatioY";
@@ -107,6 +115,30 @@ public class UCropMulti {
     public UCropMulti withOptions(@NonNull Options options) {
         mCropOptionsBundle.putAll(options.getOptionBundle());
         return this;
+    }
+
+    /**
+     * Send the crop Intent from animation an Activity
+     *
+     * @param activity Activity to receive result
+     */
+    public void startAnimation(@NonNull Activity activity, @AnimRes int activityCropEnterAnimation) {
+        if (activityCropEnterAnimation != 0) {
+            start(activity, REQUEST_MULTI_CROP, activityCropEnterAnimation);
+        } else {
+            start(activity, REQUEST_MULTI_CROP);
+        }
+    }
+
+    /**
+     * Send the crop Intent from an Activity with a custom request code or animation
+     *
+     * @param activity    Activity to receive result
+     * @param requestCode requestCode for result
+     */
+    public void start(@NonNull Activity activity, int requestCode, @AnimRes int activityCropEnterAnimation) {
+        activity.startActivityForResult(getIntent(activity), requestCode);
+        activity.overridePendingTransition(activityCropEnterAnimation, R.anim.ucrop_anim_fade_in);
     }
 
     /**
@@ -501,8 +533,23 @@ public class UCropMulti {
         /**
          * @param statusFont - Set status bar black
          */
+        @Deprecated
         public void setStatusFont(boolean statusFont) {
             mOptionBundle.putBoolean(EXTRA_FREE_STATUS_FONT, statusFont);
+        }
+
+        /**
+         * @param activityCropExitAnimation activity exit animation
+         */
+        public void setCropExitAnimation(@AnimRes int activityCropExitAnimation) {
+            mOptionBundle.putInt(EXTRA_WINDOW_EXIT_ANIMATION, activityCropExitAnimation);
+        }
+
+        /**
+         * @param navBarColor set NavBar Color
+         */
+        public void setNavBarColor(@ColorInt int navBarColor) {
+            mOptionBundle.putInt(EXTRA_NAV_BAR_COLOR, navBarColor);
         }
 
         /**

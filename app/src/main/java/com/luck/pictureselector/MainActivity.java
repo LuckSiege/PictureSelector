@@ -15,14 +15,17 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.luck.picture.lib.broadcast.BroadcastAction;
 import com.luck.picture.lib.broadcast.BroadcastManager;
+import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.PictureSelector;
@@ -33,6 +36,7 @@ import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.pictureselector.adapter.GridImageAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,9 +121,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     default:
                         // 预览图片 可自定长按保存路径
+//                        PictureWindowAnimationStyle animationStyle = new PictureWindowAnimationStyle();
+//                        animationStyle.activityPreviewEnterAnimation = R.anim.picture_anim_up_in;
+//                        animationStyle.activityPreviewExitAnimation = R.anim.picture_anim_down_out;
                         PictureSelector.create(MainActivity.this)
                                 //.themeStyle(themeId) // xml设置主题
                                 .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
+                                //.setPictureWindowAnimationStyle(animationStyle)// 自定义页面启动动画
                                 .isNotPreviewDownload(true)// 预览图片长按是否可以下载
                                 .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                                 .openExternalPreview(position, selectList);
@@ -151,8 +159,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
                         .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                         .theme(themeId)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style v2.3.3后 建议使用setPictureStyle()动态方式
+                        //.setLanguage(LanguageConfig.CHINESE)// 设置语言
                         .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
                         .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
+                        //.setPictureWindowAnimationStyle(new PictureWindowAnimationStyle())// 自定义相册启动退出动画
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
                         .imageSpanCount(4)// 每行显示个数
@@ -207,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                         .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
                         .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
+                        //.setPictureWindowAnimationStyle(new PictureWindowAnimationStyle())// 自定义相册启动退出动画
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
                         //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
@@ -427,11 +438,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_delete;
         // 外部预览界面是否显示删除按钮
         mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
+        // 设置NavBar Color SDK Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP有效
+        mPictureParameterStyle.pictureNavBarColor = Color.parseColor("#393a3e");
 
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(
                 ContextCompat.getColor(MainActivity.this, R.color.app_color_grey),
                 ContextCompat.getColor(MainActivity.this, R.color.app_color_grey),
+                ContextCompat.getColor(MainActivity.this, R.color.picture_color_blue),
                 ContextCompat.getColor(MainActivity.this, R.color.app_color_white),
                 mPictureParameterStyle.isChangeStatusBarFontColor);
     }

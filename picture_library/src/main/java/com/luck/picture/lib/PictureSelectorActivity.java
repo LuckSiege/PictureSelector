@@ -369,7 +369,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             bundle.putBoolean(PictureConfig.EXTRA_BOTTOM_PREVIEW, true);
             JumpUtils.startPicturePreviewActivity(mContext, bundle,
                     config.selectionMode == PictureConfig.SINGLE ? UCrop.REQUEST_CROP : UCropMulti.REQUEST_MULTI_CROP);
-            overridePendingTransition(R.anim.picture_anim_a5, 0);
+
+            overridePendingTransition(config.windowAnimationStyle != null
+                            && config.windowAnimationStyle.activityPreviewEnterAnimation != 0
+                            ? config.windowAnimationStyle.activityPreviewEnterAnimation : R.anim.picture_anim_enter,
+                    R.anim.picture_anim_fade_in);
         }
 
         if (id == R.id.picture_tv_ok || id == R.id.picture_tv_img_num) {
@@ -687,7 +691,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             bundle.putInt(PictureConfig.EXTRA_POSITION, position);
             JumpUtils.startPicturePreviewActivity(mContext, bundle,
                     config.selectionMode == PictureConfig.SINGLE ? UCrop.REQUEST_CROP : UCropMulti.REQUEST_MULTI_CROP);
-            overridePendingTransition(R.anim.picture_anim_a5, 0);
+            overridePendingTransition(config.windowAnimationStyle != null
+                    && config.windowAnimationStyle.activityPreviewEnterAnimation != 0
+                    ? config.windowAnimationStyle.activityPreviewEnterAnimation : R.anim.picture_anim_enter, R.anim.picture_anim_fade_in);
         }
     }
 

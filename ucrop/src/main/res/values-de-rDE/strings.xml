@@ -1,0 +1,6 @@
+<resources>
+    <string name="ucrop_label_original">Anteil</string>
+    <string name="ucrop_label_edit_photo">Schneiden</string>
+
+    <string name="ucrop_menu_crop">Schneiden</string>
+</resources>

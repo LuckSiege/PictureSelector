@@ -464,7 +464,15 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
 
     @Override
     public void onBackPressed() {
-        closeActivity();
+        if (config.windowAnimationStyle != null
+                && config.windowAnimationStyle.activityPreviewExitAnimation != 0) {
+            finish();
+            overridePendingTransition(0, config.windowAnimationStyle != null
+                    && config.windowAnimationStyle.activityPreviewExitAnimation != 0 ?
+                    config.windowAnimationStyle.activityPreviewExitAnimation : R.anim.picture_anim_exit);
+        } else {
+            closeActivity();
+        }
     }
 
     @Override

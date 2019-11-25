@@ -12,8 +12,8 @@
     </style>
 
     <style name="Picture.Theme.Dialog.AudioStyle">
-        <item name="android:windowEnterAnimation">@anim/picture_anim_a5</item>
-        <item name="android:windowExitAnimation">@anim/picture_anim_a3</item>
+        <item name="android:windowEnterAnimation">@anim/picture_anim_enter</item>
+        <item name="android:windowExitAnimation">@anim/picture_anim_exit</item>
     </style>
 
     <style name="Picture.Theme.AlertDialog" parent="android:Theme.Dialog">

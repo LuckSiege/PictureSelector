@@ -13,12 +13,14 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.tools.DoubleUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author：luck
@@ -49,6 +51,15 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel theme(@StyleRes int themeStyleId) {
         selectionConfig.themeStyleId = themeStyleId;
+        return this;
+    }
+
+    /**
+     * @param locale Language
+     * @return
+     */
+    public PictureSelectionModel setLanguage(int language) {
+        selectionConfig.language = language;
         return this;
     }
 
@@ -639,6 +650,17 @@ public class PictureSelectionModel {
     }
 
     /**
+     * 动态设置相册启动退出动画
+     *
+     * @param style Activity启动退出动画主题
+     * @return
+     */
+    public PictureSelectionModel setPictureWindowAnimationStyle(PictureWindowAnimationStyle windowAnimationStyle) {
+        selectionConfig.windowAnimationStyle = windowAnimationStyle;
+        return this;
+    }
+
+    /**
      * # 要使用此方法时最好先咨询作者！！！
      *
      * @param isFallbackVersion 仅供特殊情况内部使用 如果某功能出错此开关可以回退至之前版本
@@ -657,10 +679,10 @@ public class PictureSelectionModel {
     public void forResult(int requestCode) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
-            if (activity == null) {
+            if (activity == null || selectionConfig == null) {
                 return;
             }
-            Intent intent = new Intent(activity, selectionConfig != null && selectionConfig.camera
+            Intent intent = new Intent(activity, selectionConfig.camera
                     ? PictureSelectorCameraEmptyActivity.class : PictureSelectorActivity.class);
             Fragment fragment = selector.getFragment();
             if (fragment != null) {
@@ -668,15 +690,21 @@ public class PictureSelectionModel {
             } else {
                 activity.startActivityForResult(intent, requestCode);
             }
-            activity.overridePendingTransition(R.anim.picture_anim_a5, 0);
+            PictureWindowAnimationStyle windowAnimationStyle = selectionConfig.windowAnimationStyle;
+            activity.overridePendingTransition(windowAnimationStyle != null &&
+                    windowAnimationStyle.activityEnterAnimation != 0 ?
+                    windowAnimationStyle.activityEnterAnimation :
+                    R.anim.picture_anim_enter, R.anim.picture_anim_fade_in);
         }
     }
 
     /**
+     * # replace for setPictureWindowAnimationStyle();
      * Start to select media and wait for result.
      *
      * @param requestCode Identity of the request Activity or Fragment.
      */
+    @Deprecated
     public void forResult(int requestCode, int enterAnim, int exitAnim) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
@@ -703,7 +731,10 @@ public class PictureSelectionModel {
      */
     public void openExternalPreview(int position, List<LocalMedia> medias) {
         if (selector != null) {
-            selector.externalPicturePreview(position, medias);
+            selector.externalPicturePreview(position, medias,
+                    selectionConfig.windowAnimationStyle != null &&
+                            selectionConfig.windowAnimationStyle.activityPreviewEnterAnimation != 0
+                            ? selectionConfig.windowAnimationStyle.activityPreviewEnterAnimation : 0);
         } else {
             throw new NullPointerException("This PictureSelector is Null");
         }
@@ -717,7 +748,10 @@ public class PictureSelectionModel {
      */
     public void openExternalPreview(int position, String directory_path, List<LocalMedia> medias) {
         if (selector != null) {
-            selector.externalPicturePreview(position, directory_path, medias);
+            selector.externalPicturePreview(position, directory_path, medias,
+                    selectionConfig.windowAnimationStyle != null &&
+                            selectionConfig.windowAnimationStyle.activityPreviewEnterAnimation != 0
+                            ? selectionConfig.windowAnimationStyle.activityPreviewEnterAnimation : 0);
         } else {
             throw new NullPointerException("This PictureSelector is Null");
         }

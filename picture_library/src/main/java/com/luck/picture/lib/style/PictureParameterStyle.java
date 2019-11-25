@@ -86,6 +86,13 @@ public class PictureParameterStyle implements Parcelable {
     public int picturePreviewBottomBgColor;
 
     /**
+     * # SDK Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP有效
+     * 相册导航条颜色
+     */
+    @ColorInt
+    public int pictureNavBarColor;
+
+    /**
      * 相册标题右侧箭头
      */
     @DrawableRes
@@ -156,6 +163,7 @@ public class PictureParameterStyle implements Parcelable {
         dest.writeInt(this.pictureUnPreviewTextColor);
         dest.writeInt(this.picturePreviewTextColor);
         dest.writeInt(this.picturePreviewBottomBgColor);
+        dest.writeInt(this.pictureNavBarColor);
         dest.writeInt(this.pictureTitleUpResId);
         dest.writeInt(this.pictureTitleDownResId);
         dest.writeInt(this.pictureLeftBackIcon);
@@ -180,6 +188,7 @@ public class PictureParameterStyle implements Parcelable {
         this.pictureUnPreviewTextColor = in.readInt();
         this.picturePreviewTextColor = in.readInt();
         this.picturePreviewBottomBgColor = in.readInt();
+        this.pictureNavBarColor = in.readInt();
         this.pictureTitleUpResId = in.readInt();
         this.pictureTitleDownResId = in.readInt();
         this.pictureLeftBackIcon = in.readInt();

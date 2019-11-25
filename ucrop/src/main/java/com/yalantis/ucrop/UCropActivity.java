@@ -204,6 +204,12 @@ public class UCropActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        exitAnimation();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         if (mGestureCropImageView != null) {
@@ -342,7 +348,7 @@ public class UCropActivity extends AppCompatActivity {
         mLogoColor = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_LOGO_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_default_logo));
         mShowBottomControls = !intent.getBooleanExtra(UCrop.Options.EXTRA_HIDE_BOTTOM_CONTROLS, false);
         mRootViewBackgroundColor = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_ROOT_VIEW_BACKGROUND_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_crop_background));
-
+        setNavBar();
         setupAppBar();
         initiateRootViews();
 
@@ -365,6 +371,18 @@ public class UCropActivity extends AppCompatActivity {
             setupRotateWidget();
             setupScaleWidget();
             setupStatesWrapper();
+        }
+    }
+
+    /**
+     * set NavBar Color
+     */
+    private void setNavBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int navBarColor = getIntent().getIntExtra(UCrop.EXTRA_NAV_BAR_COLOR, 0);
+            if (navBarColor != 0) {
+                getWindow().setNavigationBarColor(navBarColor);
+            }
         }
     }
 
@@ -705,8 +723,16 @@ public class UCropActivity extends AppCompatActivity {
         setResult(UCrop.RESULT_ERROR, new Intent().putExtra(UCrop.EXTRA_ERROR, throwable));
     }
 
+    /**
+     * exit activity
+     */
     protected void closeActivity() {
         finish();
-        overridePendingTransition(0, R.anim.ucrop_close);
+        exitAnimation();
+    }
+
+    protected void exitAnimation() {
+        int exitAnimation = getIntent().getIntExtra(UCrop.EXTRA_WINDOW_EXIT_ANIMATION, 0);
+        overridePendingTransition(R.anim.ucrop_anim_fade_in, exitAnimation != 0 ? exitAnimation : R.anim.ucrop_close);
     }
 }
