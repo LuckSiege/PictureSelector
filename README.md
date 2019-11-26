@@ -4,7 +4,7 @@
   <br>项目一直维护(有bug修复完一般会在周末更新)，如果有bug请描述清楚并可以提Issues，个人QQ 893855882 希望用得着的朋友点个star。 <br>
  Android开发交流 群一 619458861 (已满) <br> 
  Android开发交流 群二 679824206 (已满) <br>
- Android开发交流 群三 854136996 <br>
+ Android开发交流 群三 854136996 <br> 
  
   [我的博客地址](http://blog.csdn.net/luck_mw)   
   
