@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -142,20 +143,32 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
      */
     private void requestCamera(Intent data) {
         // on take photo success
-        final File file = new File(cameraPath);
-        if (file == null) {
+        String mimeType = null;
+        long duration = 0;
+        boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
+        if (config.chooseMode == PictureMimeType.ofAudio()) {
+            // 音频处理规则
+            cameraPath = getAudioPath(data);
+            if (TextUtils.isEmpty(cameraPath)) {
+                return;
+            }
+            mimeType = PictureMimeType.MIME_TYPE_AUDIO;
+            if (isAndroidQ) {
+                duration = MediaUtils.extractDuration(mContext, true, cameraPath);
+            } else {
+                duration = MediaUtils.extractDuration(mContext, false, cameraPath);
+            }
+        }
+        if (TextUtils.isEmpty(cameraPath) || new File(cameraPath) == null) {
             return;
         }
-        String mimeType;
         long size = 0;
-        boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
+        int[] newSize = new int[2];
+        final File file = new File(cameraPath);
         Uri uri = isAndroidQ ? Uri.parse(cameraPath) : Uri.fromFile(file);
         sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
         LocalMedia media = new LocalMedia();
-        if (config.chooseMode == PictureMimeType.ofAudio()) {
-            cameraPath = getAudioPath(data);
-            mimeType = PictureMimeType.MIME_TYPE_AUDIO;
-        } else {
+        if (config.chooseMode != PictureMimeType.ofAudio()) {
             // 图片视频处理规则
             if (isAndroidQ) {
                 String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(cameraPath));
@@ -167,6 +180,10 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     String rotateImagePath = PictureFileUtils.rotateImageToAndroidQ(this,
                             degree, cameraPath);
                     media.setAndroidQToPath(rotateImagePath);
+                    newSize = MediaUtils.getLocalImageSizeToAndroidQ(this, cameraPath);
+                } else {
+                    newSize = MediaUtils.getLocalVideoSize(this, Uri.parse(cameraPath));
+                    duration = MediaUtils.extractDuration(mContext, true, cameraPath);
                 }
             } else {
                 mimeType = PictureMimeType.fileToType(file);
@@ -174,6 +191,10 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 if (PictureMimeType.eqImage(mimeType)) {
                     int degree = PictureFileUtils.readPictureDegree(this, cameraPath);
                     PictureFileUtils.rotateImage(degree, cameraPath);
+                    newSize = MediaUtils.getLocalImageWidthOrHeight(cameraPath);
+                } else {
+                    newSize = MediaUtils.getLocalVideoSize(cameraPath);
+                    duration = MediaUtils.extractDuration(mContext, false, cameraPath);
                 }
             }
             boolean isMimeType = PictureMimeType.eqImage(mimeType);
@@ -182,9 +203,10 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 removeImage(lastImageId, isMimeType);
             }
         }
+        media.setDuration(duration);
+        media.setWidth(newSize[0]);
+        media.setHeight(newSize[1]);
         media.setPath(cameraPath);
-        media.setDuration(!PictureMimeType.eqImage(mimeType)
-                ? MediaUtils.extractDuration(mContext, isAndroidQ, cameraPath) : 0);
         media.setMimeType(mimeType);
         media.setSize(size);
         media.setChooseModel(config.chooseMode);
