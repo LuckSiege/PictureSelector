@@ -411,9 +411,16 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     startCrop(originalPath);
                 } else {
                     // 是图片和选择压缩并且是多张，调用批量压缩
-                    ArrayList<String> cuts = new ArrayList<>();
-                    for (LocalMedia media : selectImages) {
-                        cuts.add(media.getPath());
+                    ArrayList<CutInfo> cuts = new ArrayList<>();
+                    int count = selectImages.size();
+                    for (int i = 0; i < count; i++) {
+                        LocalMedia media = selectImages.get(i);
+                        CutInfo cutInfo = new CutInfo();
+                        cutInfo.setPath(media.getPath());
+                        cutInfo.setImageWidth(media.getWidth());
+                        cutInfo.setImageHeight(media.getHeight());
+                        cutInfo.setAndroidQToPath(media.getAndroidQToPath());
+                        cuts.add(cutInfo);
                     }
                     startCrop(cuts);
                 }

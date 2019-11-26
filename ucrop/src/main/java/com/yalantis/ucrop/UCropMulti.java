@@ -519,8 +519,8 @@ public class UCropMulti {
         /**
          * @param -set cuts path
          */
-        public void setCutListData(ArrayList<String> list) {
-            mOptionBundle.putStringArrayList(EXTRA_CUT_CROP, list);
+        public void setCutListData(ArrayList<CutInfo> list) {
+            mOptionBundle.putSerializable(EXTRA_CUT_CROP, list);
         }
 
         /**

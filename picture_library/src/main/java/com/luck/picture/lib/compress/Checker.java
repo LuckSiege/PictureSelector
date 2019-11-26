@@ -150,6 +150,15 @@ enum Checker {
         }
     }
 
+    String extSuffix(String mimeType) {
+        try {
+            return TextUtils.isEmpty(mimeType) ? ""
+                    : mimeType.replace("image/", ".");
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
     boolean needCompress(int leastCompressSize, String path) {
         if (leastCompressSize > 0 && !TextUtils.isEmpty(path)) {
             File source = new File(path);

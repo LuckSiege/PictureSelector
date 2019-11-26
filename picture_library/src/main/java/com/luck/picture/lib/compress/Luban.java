@@ -187,20 +187,8 @@ public class Luban implements Handler.Callback {
 
     private File compressReal(Context context, InputStreamProvider path) throws IOException {
         File result;
-
-        File outFile;
-        if (SdkVersionUtils.checkedAndroid_Q()) {
-            // 如果是Android Q在压缩之前已经创建过一份图片至沙盒内，这里压缩完后就直接覆盖了，防止生成两张图片
-            LocalMedia media = path.getMedia();
-            String androidQToPath = media.getAndroidQToPath();
-            if (!TextUtils.isEmpty(androidQToPath)) {
-                outFile = new File(androidQToPath);
-            } else {
-                outFile = getImageCacheFile(context, Checker.SINGLE.extSuffix(path));
-            }
-        } else {
-            outFile = getImageCacheFile(context, Checker.SINGLE.extSuffix(path));
-        }
+        String suffix = Checker.SINGLE.extSuffix(path.getMedia() != null ? path.getMedia().getMimeType() : "");
+        File outFile = getImageCacheFile(context, TextUtils.isEmpty(suffix) ? Checker.SINGLE.extSuffix(path) : suffix);
         if (mRenameListener != null) {
             String filename = mRenameListener.rename(path.getPath());
             outFile = getImageCustomFile(context, filename);
@@ -361,10 +349,13 @@ public class Luban implements Handler.Callback {
             boolean checkedAndroidQ = SdkVersionUtils.checkedAndroid_Q();
             for (LocalMedia src : list) {
                 if (checkedAndroidQ && !src.isCut()) {
-                    Uri parse = Uri.parse(src.getPath());
-                    String newPath = AndroidQTransformUtils.parseImagePathToAndroidQ
-                            (context, src.getPath(), fileName, src.getMimeType());
-                    src.setAndroidQToPath(newPath);
+                    // Android Q path没值才进行copy，有值不做处理，可能其他地方会先进行copy操作
+                    if (TextUtils.isEmpty(src.getAndroidQToPath())) {
+                        Uri parse = Uri.parse(src.getPath());
+                        String newPath = AndroidQTransformUtils.parseImagePathToAndroidQ
+                                (context, src.getPath(), fileName, src.getMimeType());
+                        src.setAndroidQToPath(newPath);
+                    }
                 }
                 load(src);
             }
@@ -376,11 +367,13 @@ public class Luban implements Handler.Callback {
             boolean checkedAndroidQ = SdkVersionUtils.checkedAndroid_Q();
             for (LocalMedia src : list) {
                 if (checkedAndroidQ && !src.isCut()) {
-                    Uri parse = Uri.parse(src.getPath());
-                    String newPath = AndroidQTransformUtils.parseImagePathToAndroidQ
-                            (context, src.getPath(), "", src.getMimeType());
-                    src.setAndroidQToPath(newPath);
-                    src.setCompressPath(newPath);
+                    // Android Q path没值才进行copy，有值不做处理，可能其他地方会先进行copy操作
+                    if (TextUtils.isEmpty(src.getAndroidQToPath())) {
+                        Uri parse = Uri.parse(src.getPath());
+                        String newPath = AndroidQTransformUtils.parseImagePathToAndroidQ
+                                (context, src.getPath(), "", src.getMimeType());
+                        src.setAndroidQToPath(newPath);
+                    }
                 }
                 load(src);
             }

@@ -3,6 +3,7 @@ package com.luck.picture.lib.tools;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
@@ -187,5 +188,62 @@ public class MediaUtils {
             e.printStackTrace();
         }
         return wh;
+    }
+
+    /**
+     * get Local image width or height
+     *
+     * @return
+     */
+    public static int[] getLocalImageWidthOrHeight(String imagePath) {
+        int[] size = new int[2];
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(imagePath, options);
+            size[0] = options.outWidth;
+            size[1] = options.outHeight;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return size;
+    }
+
+    /**
+     * 获取DCIM文件下最新一条拍照记录
+     *
+     * @return
+     */
+    public static int getLastImageId(Context context, boolean isMimeType) {
+        try {
+            //selection: 指定查询条件
+            String absolutePath = PictureFileUtils.getDCIMCameraPath(context);
+            String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
+            String selection = isMimeType ? MediaStore.Video.Media.DATA + " like ?" :
+                    MediaStore.Images.Media.DATA + " like ?";
+            //定义selectionArgs：
+            String[] selectionArgs = {absolutePath + "%"};
+            Cursor imageCursor = context.getContentResolver().query(isMimeType ?
+                            MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                            : MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null,
+                    selection, selectionArgs, ORDER_BY);
+            if (imageCursor.moveToFirst()) {
+                int id = imageCursor.getInt(isMimeType ?
+                        imageCursor.getColumnIndex(MediaStore.Video.Media._ID)
+                        : imageCursor.getColumnIndex(MediaStore.Images.Media._ID));
+                long date = imageCursor.getLong(isMimeType ?
+                        imageCursor.getColumnIndex(MediaStore.Video.Media.DURATION)
+                        : imageCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
+                int duration = DateUtils.dateDiffer(date);
+                imageCursor.close();
+                // DCIM文件下最近时间30s以内的图片，可以判定是最新生成的重复照片
+                return duration <= 30 ? id : -1;
+            } else {
+                return -1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 }

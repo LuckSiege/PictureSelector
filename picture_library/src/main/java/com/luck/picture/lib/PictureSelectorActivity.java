@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -55,6 +56,7 @@ import com.luck.picture.lib.widget.FolderPopWindow;
 import com.luck.picture.lib.widget.PhotoPopupWindow;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropMulti;
+import com.yalantis.ucrop.model.CutInfo;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -397,11 +399,20 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     startCrop(originalPath);
                 } else {
                     // 是图片和选择压缩并且是多张，调用批量压缩
-                    ArrayList<String> medias = new ArrayList<>();
-                    for (LocalMedia media : images) {
-                        medias.add(media.getPath());
+                    ArrayList<CutInfo> cuts = new ArrayList<>();
+                    int count = images.size();
+                    for (int i = 0; i < count; i++) {
+                        LocalMedia media = images.get(i);
+                        CutInfo cutInfo = new CutInfo();
+                        cutInfo.setPath(media.getPath());
+                        cutInfo.setImageWidth(media.getWidth());
+                        cutInfo.setImageHeight(media.getHeight());
+                        if (SdkVersionUtils.checkedAndroid_Q()) {
+                            cutInfo.setAndroidQToPath(media.getAndroidQToPath());
+                        }
+                        cuts.add(cutInfo);
                     }
-                    startCrop(medias);
+                    startCrop(cuts);
                 }
             } else if (config.isCompress && eqImg) {
                 // 图片才压缩，视频不管
@@ -786,11 +797,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     /**
      * 摄像头后处理方式
      *
-     * @param medias
      * @param media
      * @param mimeType
      */
-    private void cameraHandleResult(List<LocalMedia> medias, LocalMedia media, String mimeType) {
+    private void cameraHandleResult(LocalMedia media, String mimeType) {
         // 如果是单选 拍照后直接返回
         boolean eqImg = PictureMimeType.eqImage(mimeType);
         if (config.enableCrop && eqImg) {
@@ -799,16 +809,17 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             startCrop(cameraPath);
         } else if (config.isCompress && eqImg) {
             // 去压缩
-            medias.add(media);
-            compressImage(medias);
-            if (adapter != null) {
-                images.add(0, media);
-                adapter.notifyDataSetChanged();
-            }
+            List<LocalMedia> result = new ArrayList<>();
+            result.add(media);
+            compressImage(result);
+            images.add(0, media);
+            adapter.bindSelectImages(result);
+            adapter.notifyDataSetChanged();
         } else {
             // 不裁剪 不压缩 直接返回结果
-            medias.add(media);
-            onResult(medias);
+            List<LocalMedia> result = new ArrayList<>();
+            result.add(media);
+            onResult(result);
         }
     }
 
@@ -818,66 +829,84 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * @param data
      */
     private void requestCamera(Intent data) {
-        List<LocalMedia> medias = new ArrayList<>();
-        if (config.chooseMode == PictureMimeType.ofAudio()) {
-            cameraPath = getAudioPath(data);
-        }
         // on take photo success
-        String mimeType;
         final File file = new File(cameraPath);
         if (file == null) {
             return;
         }
-        Uri uri = SdkVersionUtils.checkedAndroid_Q() ? Uri.parse(cameraPath) : Uri.fromFile(file);
-        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
-        long size;
+        String mimeType;
+        long size = 0;
+        int width = 0, height = 0;
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
-        if (isAndroidQ) {
-            String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(cameraPath));
-            File f = new File(path);
-            size = f.length();
-            mimeType = PictureMimeType.fileToType(f);
-        } else {
-            mimeType = PictureMimeType.fileToType(file);
-            size = new File(cameraPath).length();
-        }
-        if (config.chooseMode != PictureMimeType.ofAudio()) {
-            int degree = PictureFileUtils.readPictureDegree(this, cameraPath);
-            rotateImage(degree, file);
-        }
-        // 生成新拍照片或视频对象
+        Uri uri = isAndroidQ ? Uri.parse(cameraPath) : Uri.fromFile(file);
+        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
         LocalMedia media = new LocalMedia();
-        media.setPath(cameraPath);
-        boolean eqVideo = PictureMimeType.eqVideo(mimeType);
         if (config.chooseMode == PictureMimeType.ofAudio()) {
+            cameraPath = getAudioPath(data);
             mimeType = PictureMimeType.MIME_TYPE_AUDIO;
         } else {
-            if (eqVideo) {
-                mimeType = isAndroidQ ? PictureMimeType.getMimeType(mContext, Uri.parse(cameraPath))
-                        : PictureMimeType.getVideoMimeType(cameraPath);
+            // 图片视频处理规则
+            if (isAndroidQ) {
+                String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(cameraPath));
+                File f = new File(path);
+                size = f.length();
+                mimeType = PictureMimeType.fileToType(f);
+                if (PictureMimeType.eqImage(mimeType)) {
+                    int degree = PictureFileUtils.readPictureDegree(this, cameraPath);
+                    String rotateImagePath = PictureFileUtils.rotateImageToAndroidQ(this,
+                            degree, cameraPath);
+                    media.setAndroidQToPath(rotateImagePath);
+                }
             } else {
-                mimeType = isAndroidQ ? PictureMimeType.getMimeType(mContext, Uri.parse(cameraPath))
-                        : PictureMimeType.getImageMimeType(cameraPath);
+                mimeType = PictureMimeType.fileToType(file);
+                size = new File(cameraPath).length();
+                if (PictureMimeType.eqImage(mimeType)) {
+                    int degree = PictureFileUtils.readPictureDegree(this, cameraPath);
+                    PictureFileUtils.rotateImage(degree, cameraPath);
+                    int[] newSize = MediaUtils.getLocalImageWidthOrHeight(cameraPath);
+                    width = newSize[0];
+                    height = newSize[1];
+                } else {
+                    int[] newSize = MediaUtils.getLocalVideoWidthOrHeight(cameraPath);
+                    width = newSize[0];
+                    height = newSize[1];
+                }
+            }
+            boolean isMimeType = PictureMimeType.eqImage(mimeType);
+            int lastImageId = MediaUtils.getLastImageId(this, isMimeType);
+            if (lastImageId != -1) {
+                removeImage(lastImageId, isMimeType);
             }
         }
-
-        long duration = MediaUtils.extractDuration(mContext, isAndroidQ, cameraPath);
+        media.setWidth(width);
+        media.setHeight(height);
+        media.setPath(cameraPath);
+        media.setDuration(!PictureMimeType.eqImage(mimeType)
+                ? MediaUtils.extractDuration(mContext, isAndroidQ, cameraPath) : 0);
         media.setMimeType(mimeType);
-        media.setDuration(duration);
         media.setSize(size);
         media.setChooseModel(config.chooseMode);
-
-        if (config.selectionMode == PictureConfig.SINGLE && config.isSingleDirectReturn) {
-            // 单选直接返回模式
-            if (adapter != null) {
-                medias.add(media);
-                adapter.bindSelectImages(medias);
-                cameraHandleResult(medias, media, mimeType);
-            }
-        } else {
-            // 多选 返回列表并选中当前拍照的
-            images.add(0, media);
-            if (adapter != null) {
+        if (adapter != null) {
+            if (config.selectionMode == PictureConfig.SINGLE) {
+                // 单选模式
+                if (config.isSingleDirectReturn) {
+                    cameraHandleResult(media, mimeType);
+                } else {
+                    // 如果是单选，则清空已选中的并刷新列表(作单一选择)
+                    images.add(0, media);
+                    List<LocalMedia> selectedImages = adapter.getSelectedImages();
+                    mimeType = selectedImages.size() > 0 ? selectedImages.get(0).getMimeType() : "";
+                    boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
+                    // 类型相同或还没有选中才加进选中集合中
+                    if (mimeTypeSame || selectedImages.size() == 0) {
+                        singleRadioMediaImage();
+                        selectedImages.add(media);
+                        adapter.bindSelectImages(selectedImages);
+                    }
+                }
+            } else {
+                // 多选模式
+                images.add(0, media);
                 List<LocalMedia> selectedImages = adapter.getSelectedImages();
                 // 没有到最大选择量 才做默认选中刚拍好的
                 if (selectedImages.size() < config.maxSelectNum) {
@@ -886,31 +915,19 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     // 类型相同或还没有选中才加进选中集合中
                     if (mimeTypeSame || selectedImages.size() == 0) {
                         if (selectedImages.size() < config.maxSelectNum) {
-                            // 如果是单选，则清空已选中的并刷新列表(作单一选择)
-                            if (config.selectionMode == PictureConfig.SINGLE) {
-                                singleRadioMediaImage();
-                            }
                             selectedImages.add(media);
                             adapter.bindSelectImages(selectedImages);
                         }
                     }
+                } else {
+                    ToastUtils.s(this, StringUtils.getToastMsg(this, mimeType,
+                            config.maxSelectNum));
                 }
-                adapter.notifyDataSetChanged();
             }
-        }
-        if (adapter != null) {
-            // 解决部分手机拍照完Intent.ACTION_MEDIA_SCANNER_SCAN_FILE
-            // 不及时刷新问题手动添加
+            adapter.notifyDataSetChanged();
+            // 解决部分手机拍照完Intent.ACTION_MEDIA_SCANNER_SCAN_FILE，不及时刷新问题手动添加
             manualSaveFolder(media);
-            mTvEmpty.setVisibility(images.size() > 0
-                    ? View.INVISIBLE : View.VISIBLE);
-        }
-
-        if (config.chooseMode != PictureMimeType.ofAudio()) {
-            int lastImageId = getLastImageId(eqVideo);
-            if (lastImageId != -1) {
-                removeImage(lastImageId, eqVideo);
-            }
+            mTvEmpty.setVisibility(images.size() > 0 ? View.INVISIBLE : View.VISIBLE);
         }
     }
 
@@ -937,7 +954,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mimeType = PictureMimeType.getImageMimeType(cutPath);
                 media.setMimeType(mimeType);
                 if (SdkVersionUtils.checkedAndroid_Q()) {
-                    media.setAndroidQToPath(cutPath);
+                    media.setAndroidQToPath(TextUtils.isEmpty(media.getAndroidQToPath())
+                            ? cutPath : media.getAndroidQToPath());
                 }
                 medias.add(media);
                 handlerResult(medias);
@@ -945,20 +963,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
     }
 
-
     /**
      * 单选图片
      */
     private void singleRadioMediaImage() {
-        if (adapter != null) {
-            List<LocalMedia> selectImages = adapter.getSelectedImages();
-            if (selectImages != null
-                    && selectImages.size() > 0) {
-                selectImages.clear();
-            }
+        List<LocalMedia> selectImages = adapter.getSelectedImages();
+        if (selectImages != null
+                && selectImages.size() > 0) {
+            selectImages.clear();
         }
     }
-
 
     /**
      * 手动添加拍照后的相片到图片列表，并设为选中

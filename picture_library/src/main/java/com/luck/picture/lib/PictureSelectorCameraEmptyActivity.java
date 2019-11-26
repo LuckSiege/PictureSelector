@@ -141,69 +141,63 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
      * @param data
      */
     private void requestCamera(Intent data) {
-        List<LocalMedia> medias = new ArrayList<>();
-        if (config.chooseMode == PictureMimeType.ofAudio()) {
-            cameraPath = getAudioPath(data);
-        }
         // on take photo success
         final File file = new File(cameraPath);
         if (file == null) {
             return;
         }
-        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
         String mimeType;
-        long size;
+        long size = 0;
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
-        if (isAndroidQ) {
-            String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(cameraPath));
-            File f = new File(path);
-            size = f.length();
-            mimeType = PictureMimeType.fileToType(f);
-        } else {
-            mimeType = PictureMimeType.fileToType(file);
-            size = new File(cameraPath).length();
-        }
-        if (config.chooseMode != PictureMimeType.ofAudio()) {
-            int degree = PictureFileUtils.readPictureDegree(this, cameraPath);
-            rotateImage(degree, file);
-        }
-        // 生成新拍照片或视频对象
+        Uri uri = isAndroidQ ? Uri.parse(cameraPath) : Uri.fromFile(file);
+        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
         LocalMedia media = new LocalMedia();
-        media.setPath(cameraPath);
-        boolean eqVideo = PictureMimeType.eqVideo(mimeType);
         if (config.chooseMode == PictureMimeType.ofAudio()) {
+            cameraPath = getAudioPath(data);
             mimeType = PictureMimeType.MIME_TYPE_AUDIO;
         } else {
-            if (eqVideo) {
-                mimeType = isAndroidQ ? PictureMimeType.getMimeType(mContext, Uri.parse(cameraPath))
-                        : PictureMimeType.getVideoMimeType(cameraPath);
+            // 图片视频处理规则
+            if (isAndroidQ) {
+                String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(cameraPath));
+                File f = new File(path);
+                size = f.length();
+                mimeType = PictureMimeType.fileToType(f);
+                if (PictureMimeType.eqImage(mimeType)) {
+                    int degree = PictureFileUtils.readPictureDegree(this, cameraPath);
+                    String rotateImagePath = PictureFileUtils.rotateImageToAndroidQ(this,
+                            degree, cameraPath);
+                    media.setAndroidQToPath(rotateImagePath);
+                }
             } else {
-                mimeType = isAndroidQ ? PictureMimeType.getMimeType(mContext, Uri.parse(cameraPath))
-                        : PictureMimeType.getImageMimeType(cameraPath);
+                mimeType = PictureMimeType.fileToType(file);
+                size = new File(cameraPath).length();
+                if (PictureMimeType.eqImage(mimeType)) {
+                    int degree = PictureFileUtils.readPictureDegree(this, cameraPath);
+                    PictureFileUtils.rotateImage(degree, cameraPath);
+                }
+            }
+            boolean isMimeType = PictureMimeType.eqImage(mimeType);
+            int lastImageId = MediaUtils.getLastImageId(this, isMimeType);
+            if (lastImageId != -1) {
+                removeImage(lastImageId, isMimeType);
             }
         }
-        long duration = MediaUtils.extractDuration(mContext, isAndroidQ, cameraPath);
+        media.setPath(cameraPath);
+        media.setDuration(!PictureMimeType.eqImage(mimeType)
+                ? MediaUtils.extractDuration(mContext, isAndroidQ, cameraPath) : 0);
         media.setMimeType(mimeType);
-        media.setDuration(duration);
         media.setSize(size);
         media.setChooseModel(config.chooseMode);
-        cameraHandleResult(medias, media, mimeType);
-        if (config.chooseMode != PictureMimeType.ofAudio()) {
-            int lastImageId = getLastImageId(eqVideo);
-            if (lastImageId != -1) {
-                removeImage(lastImageId, eqVideo);
-            }
-        }
+        cameraHandleResult(media, mimeType);
     }
 
     /**
      * 摄像头后处理方式
      *
-     * @param medias
      * @param media
      * @param mimeType
      */
-    private void cameraHandleResult(List<LocalMedia> medias, LocalMedia media, String mimeType) {
+    private void cameraHandleResult(LocalMedia media, String mimeType) {
         // 如果是单选 拍照后直接返回
         boolean eqImg = PictureMimeType.eqImage(mimeType);
         if (config.enableCrop && eqImg) {
@@ -212,12 +206,14 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             startCrop(cameraPath);
         } else if (config.isCompress && eqImg) {
             // 去压缩
-            medias.add(media);
-            compressImage(medias);
+            List<LocalMedia> result = new ArrayList<>();
+            result.add(media);
+            compressImage(result);
         } else {
             // 不裁剪 不压缩 直接返回结果
-            medias.add(media);
-            onResult(medias);
+            List<LocalMedia> result = new ArrayList<>();
+            result.add(media);
+            onResult(result);
         }
     }
 

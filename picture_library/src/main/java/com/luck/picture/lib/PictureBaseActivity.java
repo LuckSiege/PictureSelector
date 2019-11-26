@@ -6,9 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -18,10 +15,10 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.luck.picture.lib.broadcast.BroadcastAction;
 import com.luck.picture.lib.broadcast.BroadcastManager;
@@ -40,7 +37,6 @@ import com.luck.picture.lib.language.PictureLanguageUtils;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.AttrsUtils;
-import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
@@ -52,7 +48,6 @@ import com.yalantis.ucrop.model.CutInfo;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 
 /**
@@ -309,8 +304,9 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
             closeActivity();
             return;
         }
-        if (files.size() == images.size()) {
-            for (int i = 0, j = images.size(); i < j; i++) {
+        int size = images.size();
+        if (files.size() == size) {
+            for (int i = 0, j = size; i < j; i++) {
                 // 压缩成功后的地址
                 String path = files.get(i).getPath();
                 LocalMedia image = images.get(i);
@@ -319,6 +315,9 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
                 boolean flag = !TextUtils.isEmpty(path) && http;
                 image.setCompressed(flag ? false : true);
                 image.setCompressPath(flag ? "" : path);
+                if (SdkVersionUtils.checkedAndroid_Q()) {
+                    image.setAndroidQToPath(flag ? image.getCutPath() : path);
+                }
             }
         }
         BroadcastManager.getInstance(getApplicationContext())
@@ -411,7 +410,7 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
      *
      * @param list
      */
-    protected void startCrop(ArrayList<String> list) {
+    protected void startCrop(ArrayList<CutInfo> list) {
         UCropMulti.Options options = new UCropMulti.Options();
         int toolbarColor = 0, statusColor = 0, titleColor = 0;
         boolean isChangeStatusBarFontColor;
@@ -470,13 +469,14 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
         options.setCropExitAnimation(config.windowAnimationStyle != null
                 ? config.windowAnimationStyle.activityCropExitAnimation : 0);
         options.setNavBarColor(config.cropStyle != null ? config.cropStyle.cropNavBarColor : 0);
-        String path = list.size() > 0 ? list.get(0) : "";
+        String path = list.size() > 0 ? list.get(0).getPath() : "";
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         boolean isHttp = PictureMimeType.isHttp(path);
         String imgType = isAndroidQ ? PictureMimeType
                 .getLastImgSuffix(PictureMimeType.getMimeType(mContext, Uri.parse(path)))
                 : PictureMimeType.getLastImgType(path);
         Uri uri = isHttp || isAndroidQ ? Uri.parse(path) : Uri.fromFile(new File(path));
+        Log.i("Mike", "startCrop: " + imgType);
         File file = new File(PictureFileUtils.getDiskCacheDir(this),
                 TextUtils.isEmpty(config.cameraFileName) ? System.currentTimeMillis() + imgType : config.cameraFileName + imgType);
         UCropMulti.of(uri, Uri.fromFile(file))
@@ -485,29 +485,6 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
                 .withOptions(options)
                 .startAnimation(this, config.windowAnimationStyle != null
                         ? config.windowAnimationStyle.activityCropEnterAnimation : 0);
-    }
-
-
-    /**
-     * 判断拍照 图片是否旋转
-     *
-     * @param degree
-     * @param file
-     */
-    protected void rotateImage(int degree, File file) {
-        if (degree > 0) {
-            // 针对相片有旋转问题的处理方式
-            try {
-                //获取缩略图显示到屏幕上
-                BitmapFactory.Options opts = new BitmapFactory.Options();
-                opts.inSampleSize = 2;
-                Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), opts);
-                Bitmap bmp = PictureFileUtils.rotaingImageView(degree, bitmap);
-                PictureFileUtils.saveBitmapFile(bmp, file);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 
@@ -606,23 +583,27 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
                 if (media == null || TextUtils.isEmpty(media.getPath())) {
                     continue;
                 }
-                if (media.isCompressed()) {
-                    media.setAndroidQToPath(media.getCompressPath());
-                } else if (media.isCut()) {
-                    media.setAndroidQToPath(media.getCutPath());
+                if (media.isCut()) {
+                    media.setAndroidQToPath(TextUtils.isEmpty(media.getAndroidQToPath())
+                            ? media.getCutPath() : media.getAndroidQToPath());
+                } else if (media.isCompressed()) {
+                    media.setAndroidQToPath(TextUtils.isEmpty(media.getAndroidQToPath())
+                            ? media.getCompressPath() : media.getAndroidQToPath());
                 } else {
                     String path;
-                    if (PictureMimeType.eqVideo(media.getMimeType())) {
-                        path = AndroidQTransformUtils.parseVideoPathToAndroidQ
-                                (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
-                    } else if (PictureMimeType.eqAudio(media.getMimeType())) {
-                        path = AndroidQTransformUtils.parseAudioPathToAndroidQ
-                                (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
-                    } else {
-                        path = AndroidQTransformUtils.parseImagePathToAndroidQ
-                                (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
+                    if (TextUtils.isEmpty(media.getAndroidQToPath())) {
+                        if (PictureMimeType.eqVideo(media.getMimeType())) {
+                            path = AndroidQTransformUtils.parseVideoPathToAndroidQ
+                                    (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
+                        } else if (PictureMimeType.eqAudio(media.getMimeType())) {
+                            path = AndroidQTransformUtils.parseAudioPathToAndroidQ
+                                    (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
+                        } else {
+                            path = AndroidQTransformUtils.parseImagePathToAndroidQ
+                                    (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
+                        }
+                        media.setAndroidQToPath(path);
                     }
-                    media.setAndroidQToPath(path);
                 }
             }
             // 线程切换
@@ -651,44 +632,6 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
         dismissDialog();
     }
 
-
-    /**
-     * 获取DCIM文件下最新一条拍照记录
-     *
-     * @return
-     */
-    protected int getLastImageId(boolean eqVideo) {
-        try {
-            //selection: 指定查询条件
-            String absolutePath = PictureFileUtils.getDCIMCameraPath(this);
-            String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
-            String selection = eqVideo ? MediaStore.Video.Media.DATA + " like ?" :
-                    MediaStore.Images.Media.DATA + " like ?";
-            //定义selectionArgs：
-            String[] selectionArgs = {absolutePath + "%"};
-            Cursor imageCursor = this.getContentResolver().query(eqVideo ?
-                            MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-                            : MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null,
-                    selection, selectionArgs, ORDER_BY);
-            if (imageCursor.moveToFirst()) {
-                int id = imageCursor.getInt(eqVideo ?
-                        imageCursor.getColumnIndex(MediaStore.Video.Media._ID)
-                        : imageCursor.getColumnIndex(MediaStore.Images.Media._ID));
-                long date = imageCursor.getLong(eqVideo ?
-                        imageCursor.getColumnIndex(MediaStore.Video.Media.DURATION)
-                        : imageCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
-                int duration = DateUtils.dateDiffer(date);
-                imageCursor.close();
-                // DCIM文件下最近时间30s以内的图片，可以判定是最新生成的重复照片
-                return duration <= 30 ? id : -1;
-            } else {
-                return -1;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
 
     /**
      * 删除部分手机 拍照在DCIM也生成一张的问题
@@ -829,7 +772,9 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
     protected void multiCropHandleResult(Intent data) {
         List<LocalMedia> medias = new ArrayList<>();
         List<CutInfo> mCuts = UCropMulti.getOutput(data);
-        for (CutInfo c : mCuts) {
+        int size = mCuts.size();
+        for (int i = 0; i < size; i++) {
+            CutInfo c = mCuts.get(i);
             LocalMedia media = new LocalMedia();
             String imageType = PictureMimeType.getImageMimeType(c.getCutPath());
             media.setCut(TextUtils.isEmpty(c.getCutPath()) ? false : true);
@@ -841,7 +786,8 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
             media.setSize(new File(TextUtils.isEmpty(c.getCutPath())
                     ? c.getPath() : c.getCutPath()).length());
             if (SdkVersionUtils.checkedAndroid_Q()) {
-                media.setAndroidQToPath(c.getCutPath());
+                media.setAndroidQToPath(TextUtils.isEmpty(c.getAndroidQToPath())
+                        ? c.getCutPath() : c.getAndroidQToPath());
             }
             media.setChooseModel(config.chooseMode);
             medias.add(media);

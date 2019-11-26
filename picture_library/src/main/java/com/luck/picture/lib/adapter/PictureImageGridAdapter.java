@@ -28,6 +28,7 @@ import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
+import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.VoiceUtils;
 
@@ -319,15 +320,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
         }
         if (selectImages.size() >= maxSelectNum && !isChecked) {
-            String str;
-            if (PictureMimeType.eqVideo(mimeType)) {
-                str = context.getString(R.string.picture_message_video_max_num, maxSelectNum);
-            } else if (PictureMimeType.eqAudio(mimeType)) {
-                str = context.getString(R.string.picture_message_audio_max_num, maxSelectNum);
-            } else {
-                str = context.getString(R.string.picture_message_max_num, maxSelectNum);
-            }
-            ToastUtils.s(context, str);
+            ToastUtils.s(context, StringUtils.getToastMsg(context, mimeType, config.maxSelectNum));
             return;
         }
 

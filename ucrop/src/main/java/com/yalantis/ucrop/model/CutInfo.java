@@ -3,22 +3,44 @@ package com.yalantis.ucrop.model;
 import java.io.Serializable;
 
 /**
- * author：luck
- * project：PictureSelector
- * package：com.yalantis.ucrop.model
- * email：893855882@qq.com
- * data：2017/5/30
+ * @author：luck
+ * @data：2017/05/30 晚上23:00
+ * @描述: CutInfo
  */
-
 public class CutInfo implements Serializable {
+    /**
+     * 原图
+     */
     private String path;
+    /**
+     * 裁剪路径
+     */
     private String cutPath;
+    /**
+     * Android Q特有地址
+     */
+    private String androidQToPath;
+    /**
+     * 裁剪比例
+     */
     private int offsetX;
+    /**
+     * 裁剪比例
+     */
     private int offsetY;
+    /**
+     * 图片宽
+     */
     private int imageWidth;
+    /**
+     * 图片高
+     */
     private int imageHeight;
-    private float resultAspectRatio;
+    /**
+     * 是否裁剪
+     */
     private boolean isCut;
+    private float resultAspectRatio;
 
     public CutInfo() {
     }
@@ -90,5 +112,13 @@ public class CutInfo implements Serializable {
 
     public void setCut(boolean cut) {
         isCut = cut;
+    }
+
+    public String getAndroidQToPath() {
+        return androidQToPath;
+    }
+
+    public void setAndroidQToPath(String androidQToPath) {
+        this.androidQToPath = androidQToPath;
     }
 }

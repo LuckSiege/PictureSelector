@@ -53,7 +53,6 @@ import com.yalantis.ucrop.view.widget.AspectRatioTextView;
 import com.yalantis.ucrop.view.widget.HorizontalProgressWheelView;
 
 import java.io.File;
-import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -89,7 +88,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private PicturePhotoGalleryAdapter adapter;
     private String mToolbarTitle;
-    private ArrayList<String> list;
+    private ArrayList<CutInfo> list;
     // Enables dynamic coloring
     private int mToolbarColor;
     private int mStatusBarColor;
@@ -118,7 +117,6 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     private Bitmap.CompressFormat mCompressFormat = DEFAULT_COMPRESS_FORMAT;
     private int mCompressQuality = DEFAULT_COMPRESS_QUALITY;
     private int[] mAllowedGestures = new int[]{SCALE, ROTATE, ALL};
-    private List<CutInfo> mCutImages = new ArrayList<>();
     /**
      * 是否可拖动裁剪框
      */
@@ -175,14 +173,11 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
      * 装载裁剪数据
      */
     private void initLoadCutData() {
-        list = getIntent().getStringArrayListExtra(UCropMulti.Options.EXTRA_CUT_CROP);
+        list = (ArrayList<CutInfo>) getIntent().getSerializableExtra(UCropMulti.Options.EXTRA_CUT_CROP);
         // Crop cut list
         if (list == null || list.size() == 0) {
             closeActivity();
             return;
-        }
-        for (String path : list) {
-            mCutImages.add(new CutInfo(path, false));
         }
     }
 
@@ -200,8 +195,8 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
         resetCutDataStatus();
-        mCutImages.get(cutIndex).setCut(true);
-        adapter = new PicturePhotoGalleryAdapter(this, mCutImages);
+        list.get(cutIndex).setCut(true);
+        adapter = new PicturePhotoGalleryAdapter(this, list);
         mRecyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener((position, view) -> {
             if (cutIndex == position) {
@@ -223,7 +218,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
      */
     private void refreshPhotoRecyclerData() {
         resetCutDataStatus();
-        mCutImages.get(cutIndex).setCut(true);
+        list.get(cutIndex).setCut(true);
         adapter.notifyDataSetChanged();
 
         uCropMultiplePhotoBox.addView(mRecyclerView);
@@ -237,8 +232,10 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
      * 重置数据裁剪状态
      */
     private void resetCutDataStatus() {
-        for (CutInfo info : mCutImages) {
-            info.setCut(false);
+        int size = list.size();
+        for (int i = 0; i < size; i++) {
+            CutInfo cutInfo = list.get(i);
+            cutInfo.setCut(false);
         }
     }
 
@@ -766,7 +763,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
 
     protected void setResultUri(Uri uri, float resultAspectRatio, int offsetX, int offsetY, int imageWidth, int imageHeight) {
         try {
-            CutInfo info = mCutImages.get(cutIndex);
+            CutInfo info = list.get(cutIndex);
             info.setCutPath(uri.getPath());
             info.setCut(true);
             info.setResultAspectRatio(resultAspectRatio);
@@ -775,9 +772,9 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
             info.setImageWidth(imageWidth);
             info.setImageHeight(imageHeight);
             cutIndex++;
-            if (cutIndex >= mCutImages.size()) {
+            if (cutIndex >= list.size()) {
                 setResult(RESULT_OK, new Intent()
-                        .putExtra(UCropMulti.EXTRA_OUTPUT_URI_LIST, (Serializable) mCutImages)
+                        .putExtra(UCropMulti.EXTRA_OUTPUT_URI_LIST, list)
                 );
                 closeActivity();
             } else {
@@ -799,7 +796,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         boolean isAndroidQ = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
-        String path = mCutImages.get(cutIndex).getPath();
+        String path = list.get(cutIndex).getPath();
         boolean isHttp = FileUtils.isHttp(path);
         String imgType = getLastImgType(isAndroidQ ? FileUtils.getPath(this, Uri.parse(path)) : path);
 

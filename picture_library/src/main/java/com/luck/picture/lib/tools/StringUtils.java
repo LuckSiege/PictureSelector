@@ -1,5 +1,7 @@
 package com.luck.picture.lib.tools;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -40,11 +42,33 @@ public class StringUtils {
         tv.setText(placeSpan);
     }
 
+    /**
+     * 匹配数值
+     *
+     * @param str
+     * @return
+     */
     public static int stringToInt(String str) {
         Pattern pattern = Pattern.compile("^[-\\+]?[\\d]+$");
-        if (pattern.matcher(str).matches()) {
-            return Integer.valueOf(str);
+        return pattern.matcher(str).matches() ? Integer.valueOf(str) : 0;
+    }
+
+    /**
+     * 根据类型获取相应的Toast文案
+     *
+     * @param context
+     * @param mimeType
+     * @param maxSelectNum
+     * @return
+     */
+    @SuppressLint("StringFormatMatches")
+    public static String getToastMsg(Context context, String mimeType, int maxSelectNum) {
+        if (PictureMimeType.eqVideo(mimeType)) {
+            return context.getString(R.string.picture_message_video_max_num, maxSelectNum);
+        } else if (PictureMimeType.eqAudio(mimeType)) {
+            return context.getString(R.string.picture_message_audio_max_num, maxSelectNum);
+        } else {
+            return context.getString(R.string.picture_message_max_num, maxSelectNum);
         }
-        return 0;
     }
 }

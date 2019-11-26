@@ -5,7 +5,9 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
@@ -19,6 +21,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 
+import com.luck.picture.lib.compress.InputStreamProvider;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 
@@ -27,6 +30,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.util.Locale;
 
@@ -385,7 +389,7 @@ public class PictureFileUtils {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
             bos.flush();
             bos.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -467,5 +471,77 @@ public class PictureFileUtils {
             imageUri = Uri.fromFile(cameraFile);
         }
         return imageUri;
+    }
+
+    /**
+     * 获取图片后缀
+     *
+     * @param input
+     * @return
+     */
+    public static String extSuffix(InputStream input) {
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(input, null, options);
+            return options.outMimeType.replace("image/", ".");
+        } catch (Exception e) {
+            return PictureMimeType.JPEG;
+        }
+    }
+
+    /**
+     * 判断拍照 图片是否旋转
+     *
+     * @param degree
+     * @param file
+     */
+    public static void rotateImage(int degree, String path) {
+        if (degree > 0) {
+            try {
+                // 针对相片有旋转问题的处理方式
+                BitmapFactory.Options opts = new BitmapFactory.Options();
+                opts.inSampleSize = 2;
+                File file = new File(path);
+                Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), opts);
+                Bitmap bmp = PictureFileUtils.rotaingImageView(degree, bitmap);
+                PictureFileUtils.saveBitmapFile(bmp, file);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    /**
+     * 判断拍照 图片是否旋转
+     *
+     * @param degree
+     * @param path
+     */
+    public static String rotateImageToAndroidQ(Context context, int degree, String path) {
+        if (degree > 0) {
+            try {
+                // 针对相片有旋转问题的处理方式
+                if (SdkVersionUtils.checkedAndroid_Q()) {
+                    BitmapFactory.Options opts = new BitmapFactory.Options();
+                    opts.inSampleSize = 2;
+                    ParcelFileDescriptor parcelFileDescriptor =
+                            context.getContentResolver()
+                                    .openFileDescriptor(Uri.parse(path), "r");
+                    FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
+                    Bitmap bitmap = BitmapFactory
+                            .decodeStream(inputStream, null, opts);
+                    String suffix = PictureFileUtils.extSuffix(inputStream);
+                    Bitmap bmp = PictureFileUtils.rotaingImageView(degree, bitmap);
+                    String dir = createDir(context, System.currentTimeMillis() + suffix);
+                    PictureFileUtils.saveBitmapFile(bmp, new File(dir));
+                    return dir;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return "";
     }
 }
