@@ -25,6 +25,9 @@ public class LocaleTransform {
             case LanguageConfig.FRANCE:
                 // 法语
                 return Locale.FRANCE;
+            case LanguageConfig.JAPAN:
+                // 日语
+                return Locale.JAPAN;
             default:
                 // 简体中文
                 return Locale.CHINESE;

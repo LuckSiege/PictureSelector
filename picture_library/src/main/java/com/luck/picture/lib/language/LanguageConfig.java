@@ -33,4 +33,9 @@ public class LanguageConfig {
      */
     public static final int FRANCE = 5;
 
+    /**
+     * 日语
+     */
+    public static final int JAPAN = 6;
+
 }

@@ -466,7 +466,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mCropParameterStyle = new PictureCropParameterStyle(
                 ContextCompat.getColor(MainActivity.this, R.color.app_color_grey),
                 ContextCompat.getColor(MainActivity.this, R.color.app_color_grey),
-                ContextCompat.getColor(MainActivity.this, R.color.picture_color_blue),
+                Color.parseColor("#393a3e"),
                 ContextCompat.getColor(MainActivity.this, R.color.app_color_white),
                 mPictureParameterStyle.isChangeStatusBarFontColor);
     }
