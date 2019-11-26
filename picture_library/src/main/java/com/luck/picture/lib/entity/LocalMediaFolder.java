@@ -38,6 +38,10 @@ public class LocalMediaFolder implements Parcelable {
      * type
      */
     private int ofAllType = -1;
+    /**
+     * Whether or not the camera
+     */
+    private boolean isCameraFolder;
 
     private List<LocalMedia> images = new ArrayList<LocalMedia>();
 
@@ -101,6 +105,14 @@ public class LocalMediaFolder implements Parcelable {
         this.ofAllType = ofAllType;
     }
 
+    public boolean isCameraFolder() {
+        return isCameraFolder;
+    }
+
+    public void setCameraFolder(boolean cameraFolder) {
+        isCameraFolder = cameraFolder;
+    }
+
     public LocalMediaFolder() {
     }
 
@@ -117,6 +129,7 @@ public class LocalMediaFolder implements Parcelable {
         dest.writeInt(this.checkedNum);
         dest.writeByte(this.isChecked ? (byte) 1 : (byte) 0);
         dest.writeInt(this.ofAllType);
+        dest.writeByte(this.isCameraFolder ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.images);
     }
 
@@ -127,6 +140,7 @@ public class LocalMediaFolder implements Parcelable {
         this.checkedNum = in.readInt();
         this.isChecked = in.readByte() != 0;
         this.ofAllType = in.readInt();
+        this.isCameraFolder = in.readByte() != 0;
         this.images = in.createTypedArrayList(LocalMedia.CREATOR);
     }
 

@@ -91,7 +91,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
                 }
                 folder.setChecked(true);
                 notifyDataSetChanged();
-                onItemClickListener.onItemClick(folder.getName(), folder.getImages());
+                onItemClickListener.onItemClick(folder.isCameraFolder(), folder.getName(), folder.getImages());
             }
         });
     }
@@ -123,6 +123,6 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
     }
 
     public interface OnItemClickListener {
-        void onItemClick(String folderName, List<LocalMedia> images);
+        void onItemClick(boolean isCameraFolder, String folderName, List<LocalMedia> images);
     }
 }

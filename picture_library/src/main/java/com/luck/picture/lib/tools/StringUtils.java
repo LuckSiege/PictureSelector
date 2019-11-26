@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.widget.TextView;
 
@@ -19,16 +18,6 @@ import java.util.regex.Pattern;
  * @描述: String Utils
  */
 public class StringUtils {
-    public static boolean isCamera(String title) {
-        if (!TextUtils.isEmpty(title) && title.startsWith("相机胶卷")
-                || title.startsWith("CameraRoll")
-                || title.startsWith("所有音频")
-                || title.startsWith("All audio")) {
-            return true;
-        }
-
-        return false;
-    }
 
     public static void tempTextFont(TextView tv, int mimeType) {
         String text = tv.getText().toString().trim();

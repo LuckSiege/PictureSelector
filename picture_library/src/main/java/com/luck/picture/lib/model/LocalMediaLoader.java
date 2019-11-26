@@ -147,10 +147,10 @@ public class LocalMediaLoader implements Handler.Callback {
         AsyncTask.SERIAL_EXECUTOR.execute(() -> {
             Cursor data = mContext.getContentResolver().query(QUERY_URI, PROJECTION, getSelection(), getSelectionArgs(), ORDER_BY);
             try {
-                List<LocalMediaFolder> imageFolders = new ArrayList<>();
-                LocalMediaFolder allImageFolder = new LocalMediaFolder();
-                List<LocalMedia> latelyImages = new ArrayList<>();
                 if (data != null) {
+                    List<LocalMediaFolder> imageFolders = new ArrayList<>();
+                    LocalMediaFolder allImageFolder = new LocalMediaFolder();
+                    List<LocalMedia> latelyImages = new ArrayList<>();
                     int count = data.getCount();
                     if (count > 0) {
                         data.moveToFirst();
@@ -164,10 +164,10 @@ public class LocalMediaLoader implements Handler.Callback {
                             String mimeType = data.getString
                                     (data.getColumnIndexOrThrow(PROJECTION[2]));
 
-                            int w = data.getInt
+                            int width = data.getInt
                                     (data.getColumnIndexOrThrow(PROJECTION[3]));
 
-                            int h = data.getInt
+                            int height = data.getInt
                                     (data.getColumnIndexOrThrow(PROJECTION[4]));
 
                             long duration = data.getLong
@@ -189,12 +189,12 @@ public class LocalMediaLoader implements Handler.Callback {
                                 if (duration == 0) {
                                     duration = MediaUtils.extractDuration(mContext, isAndroidQ, path);
                                 }
-                                if (w == 0 && h == 0) {
+                                if (width == 0 && height == 0) {
                                     int[] newSize = isAndroidQ ? MediaUtils
                                             .getLocalVideoSizeToAndroidQ(mContext, path)
                                             : MediaUtils.getLocalVideoSize(path);
-                                    w = newSize[0];
-                                    h = newSize[1];
+                                    width = newSize[0];
+                                    height = newSize[1];
                                 }
                                 if (config.videoMinSecond > 0 && duration < config.videoMinSecond) {
                                     // 如果设置了最小显示多少秒的视频
@@ -215,7 +215,7 @@ public class LocalMediaLoader implements Handler.Callback {
                             }
 
                             LocalMedia image = new LocalMedia
-                                    (path, duration, config.chooseMode, mimeType, w, h, size);
+                                    (path, duration, config.chooseMode, mimeType, width, height, size);
                             LocalMediaFolder folder = getImageFolder(path, folderName, imageFolders);
                             List<LocalMedia> images = folder.getImages();
                             images.add(image);
@@ -236,6 +236,7 @@ public class LocalMediaLoader implements Handler.Callback {
                                     : mContext.getString(R.string.picture_camera_roll);
                             allImageFolder.setName(title);
                             allImageFolder.setOfAllType(config.chooseMode);
+                            allImageFolder.setCameraFolder(true);
                             allImageFolder.setImages(latelyImages);
                         }
                     }

@@ -14,15 +14,22 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_centerHorizontal="true"
-        android:drawableRight="?attr/picture.arrow_down.icon"
-        android:drawablePadding="2dp"
         android:ellipsize="end"
         android:gravity="center"
         android:maxEms="11"
-        android:padding="6dp"
         android:text="@string/picture_camera_roll"
         android:textColor="?picture.title.textColor"
         android:textSize="17sp" />
+
+    <ImageView
+        android:id="@+id/ivArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/picture_title"
+        android:layout_alignBottom="@id/picture_title"
+        android:layout_toRightOf="@id/picture_title"
+        android:scaleType="centerInside"
+        android:src="?attr/picture.arrow_down.icon" />
 
     <TextView
         android:id="@+id/picture_right"

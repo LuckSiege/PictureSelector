@@ -2,8 +2,8 @@
 <resources>
 
     <style name="PictureThemeWindowStyle">
-        <item name="android:windowEnterAnimation">@anim/picture_anim_fade_in</item>
-        <item name="android:windowExitAnimation">@anim/picture_anim_fade_out</item>
+        <item name="android:windowEnterAnimation">@anim/picture_anim_album_show</item>
+        <item name="android:windowExitAnimation">@anim/picture_anim_album_dismiss</item>
     </style>
 
     <style name="PictureThemeDialogWindowStyle">

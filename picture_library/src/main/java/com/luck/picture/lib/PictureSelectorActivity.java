@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -73,6 +72,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private static final int SHOW_DIALOG = 0;
     private static final int DISMISS_DIALOG = 1;
     private ImageView mIvPictureLeftBack;
+    private ImageView mIvArrow;
     private View titleViewBg;
     private TextView mTvPictureTitle, mTvPictureRight, mTvPictureOk, mTvEmpty,
             mTvPictureImgNum, mTvPicturePreview, mTvPlayPause, mTvStop, mTvQuit,
@@ -131,6 +131,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mTvPictureTitle = findViewById(R.id.picture_title);
         mTvPictureRight = findViewById(R.id.picture_right);
         mTvPictureOk = findViewById(R.id.picture_tv_ok);
+        mIvArrow = findViewById(R.id.ivArrow);
         mTvPicturePreview = findViewById(R.id.picture_id_preview);
         mTvPictureImgNum = findViewById(R.id.picture_tv_img_num);
         mPictureRecycler = findViewById(R.id.picture_recycler);
@@ -158,11 +159,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mTvPictureImgNum.setOnClickListener(this);
         mTvPictureTitle.setOnClickListener(this);
         String title = config.chooseMode == PictureMimeType.ofAudio() ?
-                getString(R.string.picture_all_audio)
-                : getString(R.string.picture_camera_roll);
+                getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll);
         mTvPictureTitle.setText(title);
         folderWindow = new FolderPopWindow(this, config);
-        folderWindow.setTitleView(mTvPictureTitle);
+        folderWindow.setArrowImageView(mIvArrow);
         folderWindow.setOnItemClickListener(this);
         mPictureRecycler.setHasFixedSize(true);
         mPictureRecycler.addItemDecoration(new GridSpacingItemDecoration(config.imageSpanCount,
@@ -197,10 +197,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         adapter.setOnPhotoSelectChangedListener(PictureSelectorActivity.this);
         adapter.bindSelectImages(selectionMedias);
         mPictureRecycler.setAdapter(adapter);
-        String titleText = mTvPictureTitle.getText().toString().trim();
-        if (config.isCamera) {
-            config.isCamera = StringUtils.isCamera(titleText);
-        }
     }
 
     /**
@@ -208,10 +204,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     private void initPictureSelectorStyle() {
         if (config.style != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (config.style.pictureTitleDownResId != 0) {
                 Drawable drawable = ContextCompat.getDrawable(this, config.style.pictureTitleDownResId);
-                mTvPictureTitle.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
-                        null, drawable, null);
+                mIvArrow.setImageDrawable(drawable);
             }
             if (config.style.pictureTitleTextColor != 0) {
                 mTvPictureTitle.setTextColor(config.style.pictureTitleTextColor);
@@ -237,10 +232,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         } else {
             if (config.downResId != 0) {
                 Drawable drawable = ContextCompat.getDrawable(this, config.downResId);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    mTvPictureTitle.setCompoundDrawablesRelativeWithIntrinsicBounds
-                            (null, null, drawable, null);
-                }
+                mIvArrow.setImageDrawable(drawable);
             }
         }
         titleViewBg.setBackgroundColor(colorPrimary);
@@ -282,18 +274,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 // 这里解决有些机型会出现拍照完，相册列表不及时刷新问题
                 // 因为onActivityResult里手动添加拍照后的照片，
                 // 如果查询出来的图片大于或等于当前adapter集合的图片则取更新后的，否则就取本地的
-                if (localImg.size() >= images.size()) {
+                int size = images.size();
+                if (localImg.size() >= size) {
                     images = localImg;
                     folderWindow.bindFolder(folders);
                 }
             }
-            if (adapter != null) {
-                if (images == null) {
-                    images = new ArrayList<>();
-                }
+            if (adapter != null && images != null) {
                 adapter.bindImagesData(images);
-                mTvEmpty.setVisibility(images.size() > 0
-                        ? View.INVISIBLE : View.VISIBLE);
+                mTvEmpty.setVisibility(images.size() > 0 ? View.INVISIBLE : View.VISIBLE);
             }
             mHandler.sendEmptyMessage(DISMISS_DIALOG);
         });
@@ -360,9 +349,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
         if (id == R.id.picture_id_preview) {
             List<LocalMedia> selectedImages = adapter.getSelectedImages();
-
             List<LocalMedia> medias = new ArrayList<>();
-            for (LocalMedia media : selectedImages) {
+            int size = selectedImages.size();
+            for (int i = 0; i < size; i++) {
+                LocalMedia media = selectedImages.get(i);
                 medias.add(media);
             }
             Bundle bundle = new Bundle();
@@ -622,13 +612,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     @Override
-    public void onItemClick(String folderName, List<LocalMedia> images) {
-        boolean camera = StringUtils.isCamera(folderName);
-        camera = config.isCamera ? camera : false;
+    public void onItemClick(boolean isCameraFolder, String folderName, List<LocalMedia> images) {
+        boolean camera = config.isCamera ? isCameraFolder : false;
         adapter.setShowCamera(camera);
         mTvPictureTitle.setText(folderName);
-        adapter.bindImagesData(images);
         folderWindow.dismiss();
+        adapter.bindImagesData(images);
         mPictureRecycler.smoothScrollToPosition(0);
     }
 

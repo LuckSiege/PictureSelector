@@ -33,19 +33,16 @@ public class ScreenUtils {
     }
 
     public static int getStatusBarHeight(Context context) {
-        Class<?> c;
-        Object obj;
-        Field field;
-        int x, statusBarHeight = 0;
+        int statusBarHeight = 0;
         try {
-            c = Class.forName("com.android.internal.R$dimen");
-            obj = c.newInstance();
-            field = c.getField("status_bar_height");
-            x = Integer.parseInt(field.get(obj).toString());
-            statusBarHeight = context.getResources().getDimensionPixelSize(x);
-        } catch (Exception e1) {
-            e1.printStackTrace();
+            Class<?> c = Class.forName("com.android.internal.R$dimen");
+            Object o = c.newInstance();
+            Field field = c.getField("status_bar_height");
+            int x = (Integer) field.get(o);
+            statusBarHeight = context.getApplicationContext().getResources().getDimensionPixelSize(x);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return statusBarHeight;
+        return statusBarHeight == 0 ? dip2px(context, 25) : statusBarHeight;
     }
 }
