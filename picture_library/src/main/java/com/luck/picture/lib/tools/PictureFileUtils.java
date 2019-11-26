@@ -372,11 +372,13 @@ public class PictureFileUtils {
      * @param bitmap
      * @return
      */
-    public static Bitmap rotaingImageView(int angle, Bitmap bitmap) {
+    public static Bitmap rotatingImageView(int angle, Bitmap bitmap) {
+        if (bitmap == null) {
+            return null;
+        }
         //旋转图片 动作
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
-        System.out.println("angle2=" + angle);
         // 创建新的图片
         Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
                 bitmap.getWidth(), bitmap.getHeight(), matrix, true);
@@ -504,8 +506,10 @@ public class PictureFileUtils {
                 opts.inSampleSize = 2;
                 File file = new File(path);
                 Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), opts);
-                Bitmap bmp = PictureFileUtils.rotaingImageView(degree, bitmap);
-                PictureFileUtils.saveBitmapFile(bmp, file);
+                Bitmap bmp = PictureFileUtils.rotatingImageView(degree, bitmap);
+                if (bmp != null) {
+                    PictureFileUtils.saveBitmapFile(bmp, file);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -533,10 +537,12 @@ public class PictureFileUtils {
                     Bitmap bitmap = BitmapFactory
                             .decodeStream(inputStream, null, opts);
                     String suffix = PictureFileUtils.extSuffix(inputStream);
-                    Bitmap bmp = PictureFileUtils.rotaingImageView(degree, bitmap);
-                    String dir = createDir(context, System.currentTimeMillis() + suffix);
-                    PictureFileUtils.saveBitmapFile(bmp, new File(dir));
-                    return dir;
+                    Bitmap bmp = PictureFileUtils.rotatingImageView(degree, bitmap);
+                    if (bmp != null) {
+                        String dir = createDir(context, System.currentTimeMillis() + suffix);
+                        PictureFileUtils.saveBitmapFile(bmp, new File(dir));
+                        return dir;
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

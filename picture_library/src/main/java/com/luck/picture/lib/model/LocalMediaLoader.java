@@ -9,7 +9,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -192,8 +191,8 @@ public class LocalMediaLoader implements Handler.Callback {
                                 }
                                 if (w == 0 && h == 0) {
                                     int[] newSize = isAndroidQ ? MediaUtils
-                                            .getLocalVideoWidthOrHeightToAndroidQ(mContext, path)
-                                            : MediaUtils.getLocalVideoWidthOrHeight(path);
+                                            .getLocalVideoSizeToAndroidQ(mContext, path)
+                                            : MediaUtils.getLocalVideoSize(path);
                                     w = newSize[0];
                                     h = newSize[1];
                                 }
@@ -214,7 +213,7 @@ public class LocalMediaLoader implements Handler.Callback {
                                     continue;
                                 }
                             }
-                            Log.i("Mike", "loadAllMedia: "+w+"--"+h);
+
                             LocalMedia image = new LocalMedia
                                     (path, duration, config.chooseMode, mimeType, w, h, size);
                             LocalMediaFolder folder = getImageFolder(path, folderName, imageFolders);

@@ -836,7 +836,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
         String mimeType;
         long size = 0;
-        int width = 0, height = 0;
+        int[] newSize = new int[2];
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         Uri uri = isAndroidQ ? Uri.parse(cameraPath) : Uri.fromFile(file);
         sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
@@ -856,6 +856,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     String rotateImagePath = PictureFileUtils.rotateImageToAndroidQ(this,
                             degree, cameraPath);
                     media.setAndroidQToPath(rotateImagePath);
+                    newSize = MediaUtils.getLocalImageSizeToAndroidQ(this, cameraPath);
+                } else {
+                    newSize = MediaUtils.getLocalVideoSize(this, Uri.parse(cameraPath));
                 }
             } else {
                 mimeType = PictureMimeType.fileToType(file);
@@ -863,13 +866,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (PictureMimeType.eqImage(mimeType)) {
                     int degree = PictureFileUtils.readPictureDegree(this, cameraPath);
                     PictureFileUtils.rotateImage(degree, cameraPath);
-                    int[] newSize = MediaUtils.getLocalImageWidthOrHeight(cameraPath);
-                    width = newSize[0];
-                    height = newSize[1];
+                    newSize = MediaUtils.getLocalImageWidthOrHeight(cameraPath);
                 } else {
-                    int[] newSize = MediaUtils.getLocalVideoWidthOrHeight(cameraPath);
-                    width = newSize[0];
-                    height = newSize[1];
+                    newSize = MediaUtils.getLocalVideoSize(cameraPath);
                 }
             }
             boolean isMimeType = PictureMimeType.eqImage(mimeType);
@@ -878,8 +877,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 removeImage(lastImageId, isMimeType);
             }
         }
-        media.setWidth(width);
-        media.setHeight(height);
+        media.setWidth(newSize[0]);
+        media.setHeight(newSize[1]);
         media.setPath(cameraPath);
         media.setDuration(!PictureMimeType.eqImage(mimeType)
                 ? MediaUtils.extractDuration(mContext, isAndroidQ, cameraPath) : 0);

@@ -15,7 +15,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -476,7 +475,6 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
                 .getLastImgSuffix(PictureMimeType.getMimeType(mContext, Uri.parse(path)))
                 : PictureMimeType.getLastImgType(path);
         Uri uri = isHttp || isAndroidQ ? Uri.parse(path) : Uri.fromFile(new File(path));
-        Log.i("Mike", "startCrop: " + imgType);
         File file = new File(PictureFileUtils.getDiskCacheDir(this),
                 TextUtils.isEmpty(config.cameraFileName) ? System.currentTimeMillis() + imgType : config.cameraFileName + imgType);
         UCropMulti.of(uri, Uri.fromFile(file))

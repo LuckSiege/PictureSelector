@@ -149,25 +149,50 @@ public class MediaUtils {
      *
      * @return
      */
-    public static int[] getLocalVideoWidthOrHeightToAndroidQ(Context context, String videoPath) {
-        int[] wh = new int[2];
+    public static int[] getLocalVideoSizeToAndroidQ(Context context, String videoPath) {
+        int[] size = new int[2];
         try {
-            Cursor query = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                query = context.getApplicationContext().getContentResolver().query(Uri.parse(videoPath),
+                Cursor query = context.getApplicationContext().getContentResolver().query(Uri.parse(videoPath),
                         null, null, null);
-            }
-            if (query != null) {
-                query.moveToFirst();
-                wh[0] = query.getInt(query.getColumnIndexOrThrow(MediaStore.Video
-                        .Media.WIDTH));
-                wh[1] = query.getInt(query.getColumnIndexOrThrow(MediaStore.Video
-                        .Media.HEIGHT));
+                if (query != null) {
+                    query.moveToFirst();
+                    size[0] = query.getInt(query.getColumnIndexOrThrow(MediaStore.Video
+                            .Media.WIDTH));
+                    size[1] = query.getInt(query.getColumnIndexOrThrow(MediaStore.Video
+                            .Media.HEIGHT));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return wh;
+        return size;
+    }
+
+    /**
+     * get Local image width or height for api 29
+     *
+     * @return
+     */
+    public static int[] getLocalImageSizeToAndroidQ(Context context, String videoPath) {
+        int[] size = new int[2];
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                Cursor query = context.getApplicationContext().getContentResolver()
+                        .query(Uri.parse(videoPath),
+                                null, null, null);
+                if (query != null) {
+                    query.moveToFirst();
+                    size[0] = query.getInt(query.getColumnIndexOrThrow(MediaStore.Images
+                            .Media.WIDTH));
+                    size[1] = query.getInt(query.getColumnIndexOrThrow(MediaStore.Images
+                            .Media.HEIGHT));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return size;
     }
 
     /**
@@ -175,19 +200,39 @@ public class MediaUtils {
      *
      * @return
      */
-    public static int[] getLocalVideoWidthOrHeight(String videoPath) {
-        int[] wh = new int[2];
+    public static int[] getLocalVideoSize(String videoPath) {
+        int[] size = new int[2];
         try {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
             mmr.setDataSource(videoPath);
-            wh[0] = ValueOf.toInt(mmr.extractMetadata
+            size[0] = ValueOf.toInt(mmr.extractMetadata
                     (MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
-            wh[1] = ValueOf.toInt(mmr.extractMetadata
+            size[1] = ValueOf.toInt(mmr.extractMetadata
                     (MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return wh;
+        return size;
+    }
+
+    /**
+     * get Local video width or height
+     *
+     * @return
+     */
+    public static int[] getLocalVideoSize(Context context, Uri uri) {
+        int[] size = new int[2];
+        try {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            mmr.setDataSource(context, uri);
+            size[0] = ValueOf.toInt(mmr.extractMetadata
+                    (MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
+            size[1] = ValueOf.toInt(mmr.extractMetadata
+                    (MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return size;
     }
 
     /**
