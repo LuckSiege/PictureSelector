@@ -235,6 +235,7 @@ public class LocalMediaLoader implements Handler.Callback {
                                     mContext.getString(R.string.picture_all_audio)
                                     : mContext.getString(R.string.picture_camera_roll);
                             allImageFolder.setName(title);
+                            allImageFolder.setOfAllType(config.chooseMode);
                             allImageFolder.setImages(latelyImages);
                         }
                     }

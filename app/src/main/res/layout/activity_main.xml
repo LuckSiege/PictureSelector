@@ -120,6 +120,63 @@
                 android:textSize="14sp" />
 
             <RadioGroup
+                android:id="@+id/rgb_langue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rb_zh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="中文"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_tw"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="繁体"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_us"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="英语"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_ka"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="韩语"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_de"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="德语"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_fr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="法语"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
+            </RadioGroup>
+
+            <RadioGroup
                 android:id="@+id/rgb_photo_mode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

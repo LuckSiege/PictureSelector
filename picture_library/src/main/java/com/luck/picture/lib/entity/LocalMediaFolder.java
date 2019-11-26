@@ -33,8 +33,13 @@ public class LocalMediaFolder implements Parcelable {
      * If the selected
      */
     private boolean isChecked;
-    private List<LocalMedia> images = new ArrayList<LocalMedia>();
 
+    /**
+     * type
+     */
+    private int ofAllType = -1;
+
+    private List<LocalMedia> images = new ArrayList<LocalMedia>();
 
     public boolean isChecked() {
         return isChecked;
@@ -88,6 +93,17 @@ public class LocalMediaFolder implements Parcelable {
         this.checkedNum = checkedNum;
     }
 
+    public int getOfAllType() {
+        return ofAllType;
+    }
+
+    public void setOfAllType(int ofAllType) {
+        this.ofAllType = ofAllType;
+    }
+
+    public LocalMediaFolder() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -100,10 +116,8 @@ public class LocalMediaFolder implements Parcelable {
         dest.writeInt(this.imageNum);
         dest.writeInt(this.checkedNum);
         dest.writeByte(this.isChecked ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.ofAllType);
         dest.writeTypedList(this.images);
-    }
-
-    public LocalMediaFolder() {
     }
 
     protected LocalMediaFolder(Parcel in) {
@@ -112,10 +126,11 @@ public class LocalMediaFolder implements Parcelable {
         this.imageNum = in.readInt();
         this.checkedNum = in.readInt();
         this.isChecked = in.readByte() != 0;
+        this.ofAllType = in.readInt();
         this.images = in.createTypedArrayList(LocalMedia.CREATOR);
     }
 
-    public static final Parcelable.Creator<LocalMediaFolder> CREATOR = new Parcelable.Creator<LocalMediaFolder>() {
+    public static final Creator<LocalMediaFolder> CREATOR = new Creator<LocalMediaFolder>() {
         @Override
         public LocalMediaFolder createFromParcel(Parcel source) {
             return new LocalMediaFolder(source);

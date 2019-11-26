@@ -1,5 +1,6 @@
 <resources>
     <string name="picture_camera_roll">l’album</string>
+    <string name="picture_camera_roll_num">%1$s (%2$d)</string>
     <string name="picture_cancel">l’abandon</string>
     <string name="picture_take_picture">photo</string>
     <string name="picture_rule">Il n’est pas possible de sélectionner des images ou des vidéos en même temps</string>

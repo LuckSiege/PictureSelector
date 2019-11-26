@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int maxSelectNum = 9;
     private TextView tv_select_num;
     private ImageView left_back, minus, plus;
-    private RadioGroup rgb_crop, rgb_style, rgb_photo_mode;
+    private RadioGroup rgb_crop, rgb_style, rgb_photo_mode, rgb_langue;
     private int aspect_ratio_x, aspect_ratio_y;
     private CheckBox cb_voice, cb_choose_mode, cb_isCamera, cb_isGif,
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             cb_showCropFrame, cb_preview_audio;
     private int themeId;
     private int chooseMode = PictureMimeType.ofAll();
+    private int language;
     private PictureParameterStyle mPictureParameterStyle;
     private PictureCropParameterStyle mCropParameterStyle;
 
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rgb_crop = findViewById(R.id.rgb_crop);
         rgb_style = findViewById(R.id.rgb_style);
         rgb_photo_mode = findViewById(R.id.rgb_photo_mode);
+        rgb_langue = findViewById(R.id.rgb_langue);
         cb_voice = findViewById(R.id.cb_voice);
         cb_choose_mode = findViewById(R.id.cb_choose_mode);
         cb_isCamera = findViewById(R.id.cb_isCamera);
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rgb_crop.setOnCheckedChangeListener(this);
         rgb_style.setOnCheckedChangeListener(this);
         rgb_photo_mode.setOnCheckedChangeListener(this);
+        rgb_langue.setOnCheckedChangeListener(this);
         recyclerView = findViewById(R.id.recycler);
         left_back = findViewById(R.id.left_back);
         left_back.setOnClickListener(this);
@@ -159,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
                         .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                         .theme(themeId)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style v2.3.3后 建议使用setPictureStyle()动态方式
-                        //.setLanguage(LanguageConfig.CHINESE)// 设置语言
+                        .setLanguage(language)// 设置语言，默认中文
                         .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
                         .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
                         //.setPictureWindowAnimationStyle(new PictureWindowAnimationStyle())// 自定义相册启动退出动画
@@ -352,6 +355,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.rb_audio:
                 chooseMode = PictureMimeType.ofAudio();
                 cb_preview_audio.setVisibility(View.VISIBLE);
+                break;
+            case R.id.rb_zh:
+                language = LanguageConfig.CHINESE;
+                break;
+            case R.id.rb_tw:
+                language = LanguageConfig.TRADITIONAL_CHINESE;
+                break;
+            case R.id.rb_us:
+                language = LanguageConfig.ENGLISH;
+                break;
+            case R.id.rb_ka:
+                language = LanguageConfig.KOREA;
+                break;
+            case R.id.rb_de:
+                language = LanguageConfig.GERMANY;
+                break;
+            case R.id.rb_fr:
+                language = LanguageConfig.FRANCE;
                 break;
             case R.id.rb_crop_default:
                 aspect_ratio_x = 0;

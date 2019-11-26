@@ -1,5 +1,6 @@
 <resources>
     <string name="picture_camera_roll">CameraRoll</string>
+    <string name="picture_camera_roll_num">%1$s (%2$d)</string>
     <string name="picture_cancel">Cancel</string>
     <string name="picture_take_picture">Shot</string>
     <string name="picture_rule">not pictures or video</string>

@@ -1,5 +1,6 @@
 <resources>
     <string name="picture_camera_roll">카메라 필름</string>
+    <string name="picture_camera_roll_num">%1$s (%2$d)</string>
     <string name="picture_cancel">취소</string>
     <string name="picture_take_picture">촬영</string>
     <string name="picture_rule">사진이나 비디오를 동시에 선택할 수 없습니다.</string>

@@ -79,8 +79,11 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
                                 imagePath, holder.ivFirstImage, R.drawable.picture_icon_placeholder);
             }
         }
-        holder.imageNum.setText("(" + imageNum + ")");
-        holder.tvFolderName.setText(name);
+        Context context = holder.itemView.getContext();
+        String firstTitle = folder.getOfAllType() != -1 ? folder.getOfAllType() == PictureMimeType.ofAudio() ?
+                context.getString(R.string.picture_all_audio)
+                : context.getString(R.string.picture_camera_roll) : name;
+        holder.tvFolderName.setText(context.getString(R.string.picture_camera_roll_num, firstTitle, imageNum));
         holder.itemView.setOnClickListener(view -> {
             if (onItemClickListener != null) {
                 for (LocalMediaFolder mediaFolder : folders) {
@@ -100,13 +103,12 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
 
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivFirstImage;
-        TextView tvFolderName, imageNum, tvSign;
+        TextView tvFolderName, tvSign;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ivFirstImage = itemView.findViewById(R.id.first_image);
             tvFolderName = itemView.findViewById(R.id.tv_folder_name);
-            imageNum = itemView.findViewById(R.id.image_num);
             tvSign = itemView.findViewById(R.id.tv_sign);
             if (config.style != null && config.style.pictureFolderCheckedDotStyle != 0) {
                 tvSign.setBackgroundResource(config.style.pictureFolderCheckedDotStyle);

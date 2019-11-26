@@ -10,6 +10,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -330,10 +331,18 @@ public class PictureFileUtils {
      * @param path 图片绝对路径
      * @return degree旋转的角度
      */
-    public static int readPictureDegree(String path) {
+    public static int readPictureDegree(Context context, String path) {
         int degree = 0;
         try {
-            ExifInterface exifInterface = new ExifInterface(path);
+            ExifInterface exifInterface;
+            if (SdkVersionUtils.checkedAndroid_Q()) {
+                ParcelFileDescriptor parcelFileDescriptor =
+                        context.getContentResolver()
+                                .openFileDescriptor(Uri.parse(path), "r");
+                exifInterface = new ExifInterface(parcelFileDescriptor.getFileDescriptor());
+            } else {
+                exifInterface = new ExifInterface(path);
+            }
             int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
             switch (orientation) {
                 case ExifInterface.ORIENTATION_ROTATE_90:
@@ -346,7 +355,7 @@ public class PictureFileUtils {
                     degree = 270;
                     break;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return degree;

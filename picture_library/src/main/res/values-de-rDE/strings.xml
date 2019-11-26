@@ -1,5 +1,6 @@
 <resources>
     <string name="picture_camera_roll">Kamerafilm</string>
+    <string name="picture_camera_roll_num">%1$s (%2$d)</string>
     <string name="picture_cancel">Abbrechen</string>
     <string name="picture_take_picture">Schießen</string>
     <string name="picture_rule">Es kann nicht gleichzeitig ein Bild oder Video ausgewählt werden</string>
