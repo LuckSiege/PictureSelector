@@ -164,7 +164,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             size = new File(cameraPath).length();
         }
         if (config.chooseMode != PictureMimeType.ofAudio()) {
-            int degree = PictureFileUtils.readPictureDegree(this, file.getAbsolutePath());
+            int degree = PictureFileUtils.readPictureDegree(this, cameraPath);
             rotateImage(degree, file);
         }
         // 生成新拍照片或视频对象
