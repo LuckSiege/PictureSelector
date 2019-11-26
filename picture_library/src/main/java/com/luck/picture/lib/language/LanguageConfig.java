@@ -15,11 +15,11 @@ public class LanguageConfig {
      */
     public static final int TRADITIONAL_CHINESE = 1;
 
-    // 英语-美国
+    // 英语
     public static final int ENGLISH = 2;
 
     /**
-     * 韩国
+     * 韩语
      */
     public static final int KOREA = 3;
 
