@@ -178,7 +178,6 @@ public class LocalMediaLoader implements Handler.Callback {
 
                             String folderName = data.getString
                                     (data.getColumnIndexOrThrow(PROJECTION[7]));
-
                             if (config.filterFileSize > 0) {
                                 if (size > config.filterFileSize * FILE_SIZE_UNIT) {
                                     continue;

@@ -262,22 +262,6 @@ public final class PictureMimeType {
         return MIME_TYPE_IMAGE;
     }
 
-    public static String getVideoMimeType(String path) {
-        try {
-            if (!TextUtils.isEmpty(path)) {
-                File file = new File(path);
-                String fileName = file.getName();
-                int last = fileName.lastIndexOf(".") + 1;
-                String temp = fileName.substring(last);
-                return "video/" + temp;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return MIME_TYPE_VIDEO;
-        }
-        return MIME_TYPE_VIDEO;
-    }
-
     /**
      * 根据uri获取MIME_TYPE
      *
@@ -341,6 +325,8 @@ public final class PictureMimeType {
                     case ".bmp":
                     case ".BMP":
                     case ".webp":
+                    case ".gif":
+                    case ".GIF":
                         return imageType;
                     default:
                         return PNG;

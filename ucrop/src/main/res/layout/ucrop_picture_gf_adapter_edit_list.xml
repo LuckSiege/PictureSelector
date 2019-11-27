@@ -35,13 +35,16 @@
         android:padding="4dp"
         android:scaleType="centerCrop" />
 
-    <ImageView
-        android:id="@+id/iv_delete"
+    <TextView
+        android:id="@+id/tv_gif"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="4dp"
-        android:src="@drawable/ucrop_ic_delete_photo"
+        android:layout_alignRight="@id/iv_photo"
+        android:layout_alignBottom="@id/iv_photo"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/ucrop_gif_bg"
+        android:text="@string/ucrop_gif_tag"
+        android:textColor="@color/ucrop_color_toolbar_widget"
+        android:textSize="9sp"
         android:visibility="gone" />
-
 </RelativeLayout>

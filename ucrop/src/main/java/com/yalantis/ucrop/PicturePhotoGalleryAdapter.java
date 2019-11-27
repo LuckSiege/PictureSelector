@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,17 +34,17 @@ import com.yalantis.ucrop.callback.BitmapLoadCallback;
 import com.yalantis.ucrop.model.CutInfo;
 import com.yalantis.ucrop.model.ExifInfo;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
+import com.yalantis.ucrop.util.FileUtils;
 
 import java.io.File;
 import java.util.List;
 
 /**
- * author：luck
- * project：PictureSelector
- * package：com.luck.picture.adapter
- * email：893855882@qq.com
- * data：16/12/31
+ * @author：luck
+ * @date：2016-12-31 22:22
+ * @describe：图片列表
  */
+
 
 public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhotoGalleryAdapter.ViewHolder> {
     private final int maxImageWidth = 200;
@@ -51,11 +52,13 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
     private Context context;
     private List<CutInfo> list;
     private LayoutInflater mInflater;
+    private boolean isAndroidQ;
 
     public PicturePhotoGalleryAdapter(Context context, List<CutInfo> list) {
         mInflater = LayoutInflater.from(context);
         this.context = context;
         this.list = list;
+        this.isAndroidQ = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
     }
 
     public void setData(List<CutInfo> list) {
@@ -84,8 +87,8 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
             holder.iv_dot.setVisibility(View.GONE);
         }
 
-        Uri uri = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? Uri.parse(path)
-                : Uri.fromFile(new File(path));
+        Uri uri = isAndroidQ ? Uri.parse(path) : Uri.fromFile(new File(path));
+        holder.tvGif.setVisibility(FileUtils.isGif(photoInfo.getMimeType()) ? View.VISIBLE : View.GONE);
         BitmapLoadUtils.decodeBitmapInBackground(context, uri, null, maxImageWidth,
                 maxImageHeight,
                 new BitmapLoadCallback() {
@@ -93,11 +96,16 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
                     @Override
                     public void onBitmapLoaded(@NonNull Bitmap bitmap, @NonNull ExifInfo exifInfo,
                                                @NonNull Uri imageInputUri, @Nullable Uri imageOutputUri) {
-                        holder.mIvPhoto.setImageBitmap(bitmap);
+                        if (holder.mIvPhoto != null) {
+                            holder.mIvPhoto.setImageBitmap(bitmap);
+                        }
                     }
 
                     @Override
                     public void onFailure(@NonNull Exception bitmapWorkerException) {
+                        if (holder.mIvPhoto != null) {
+                            holder.mIvPhoto.setImageResource(R.color.ucrop_color_ba3);
+                        }
                     }
                 });
 
@@ -118,11 +126,13 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView mIvPhoto;
         ImageView iv_dot;
+        TextView tvGif;
 
         public ViewHolder(View view) {
             super(view);
             mIvPhoto = view.findViewById(R.id.iv_photo);
             iv_dot = view.findViewById(R.id.iv_dot);
+            tvGif = view.findViewById(R.id.tv_gif);
         }
     }
 

@@ -155,35 +155,33 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
                 mContext.get().getContentResolver().openFileDescriptor(mImageInputUri, "r");
         FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
         String suffix = FileUtils.extSuffix(inputStream);
-        if (suffix.startsWith(".gif") || suffix.startsWith(".GIF")) {
-            // gif 不裁剪
-            return true;
-        }
+        boolean isAndroidQ = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
         if (shouldCrop) {
-            ExifInterface originalExif = null;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    originalExif = new ExifInterface(parcelFileDescriptor.getFileDescriptor());
+            boolean isGif = FileUtils.isGifForSuffix(suffix);
+            if (isGif) {
+                if (!isAndroidQ) {
+                    FileUtils.copyFile(mImageInputUri.getPath(), mImageOutputPath);
                 }
-                saveImage(Bitmap.createBitmap(mViewBitmap, cropOffsetX, cropOffsetY, mCroppedImageWidth, mCroppedImageHeight));
-                if (mCompressFormat.equals(Bitmap.CompressFormat.JPEG)) {
-                    ImageHeaderParser.copyExif(originalExif, mCroppedImageWidth, mCroppedImageHeight, mImageOutputPath);
-                }
+                return true;
+            }
+            ExifInterface originalExif;
+            if (isAndroidQ && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                originalExif = new ExifInterface(inputStream);
             } else {
                 originalExif = new ExifInterface(mImageInputUri.getPath());
-                saveImage(Bitmap.createBitmap(mViewBitmap, cropOffsetX, cropOffsetY, mCroppedImageWidth, mCroppedImageHeight));
-                if (mCompressFormat.equals(Bitmap.CompressFormat.JPEG)) {
-                    ImageHeaderParser.copyExif(originalExif, mCroppedImageWidth, mCroppedImageHeight, mImageOutputPath);
-                }
+            }
+            saveImage(Bitmap.createBitmap(mViewBitmap, cropOffsetX, cropOffsetY, mCroppedImageWidth, mCroppedImageHeight));
+            if (mCompressFormat.equals(Bitmap.CompressFormat.JPEG)) {
+                ImageHeaderParser.copyExif(originalExif, mCroppedImageWidth, mCroppedImageHeight, mImageOutputPath);
             }
             return true;
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (isAndroidQ) {
                 return true;
             } else {
                 FileUtils.copyFile(mImageInputUri.getPath(), mImageOutputPath);
             }
-            return false;
+            return true;
         }
     }
 

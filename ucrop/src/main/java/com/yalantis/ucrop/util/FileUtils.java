@@ -231,14 +231,8 @@ public class FileUtils {
         }
     }
 
-    public static boolean isGif(String path) {
-        String imageType = createImageType(path);
-        switch (imageType) {
-            case "image/gif":
-            case "image/GIF":
-                return true;
-        }
-        return false;
+    public static boolean isGifForSuffix(String suffix) {
+        return suffix != null && suffix.startsWith(".gif") || suffix.startsWith(".GIF");
     }
 
     public static boolean isWebp(String path) {
@@ -276,6 +270,16 @@ public class FileUtils {
             return "image/jpeg";
         }
         return "image/jpeg";
+    }
+
+    /**
+     * 是否是gif
+     *
+     * @param mimeType
+     * @return
+     */
+    public static boolean isGif(String mimeType) {
+        return mimeType != null && (mimeType.equals("image/gif") || mimeType.equals("image/GIF"));
     }
 
     /**

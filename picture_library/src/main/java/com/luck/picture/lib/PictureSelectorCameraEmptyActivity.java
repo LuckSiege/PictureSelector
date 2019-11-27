@@ -165,8 +165,9 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         long size = 0;
         int[] newSize = new int[2];
         final File file = new File(cameraPath);
-        Uri uri = isAndroidQ ? Uri.parse(cameraPath) : Uri.fromFile(file);
-        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
+        if (!isAndroidQ) {
+            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+        }
         LocalMedia media = new LocalMedia();
         if (config.chooseMode != PictureMimeType.ofAudio()) {
             // 图片视频处理规则

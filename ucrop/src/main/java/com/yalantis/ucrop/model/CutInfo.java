@@ -40,6 +40,12 @@ public class CutInfo implements Serializable {
      * 是否裁剪
      */
     private boolean isCut;
+
+    /**
+     * 资源类型
+     */
+    private String mimeType;
+
     private float resultAspectRatio;
 
     public CutInfo() {
@@ -104,6 +110,14 @@ public class CutInfo implements Serializable {
 
     public void setResultAspectRatio(float resultAspectRatio) {
         this.resultAspectRatio = resultAspectRatio;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
 
     public boolean isCut() {

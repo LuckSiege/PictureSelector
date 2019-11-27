@@ -419,6 +419,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         cutInfo.setPath(media.getPath());
                         cutInfo.setImageWidth(media.getWidth());
                         cutInfo.setImageHeight(media.getHeight());
+                        cutInfo.setMimeType(media.getMimeType());
                         cutInfo.setAndroidQToPath(media.getAndroidQToPath());
                         cuts.add(cutInfo);
                     }

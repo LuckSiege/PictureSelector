@@ -23,6 +23,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -53,6 +54,7 @@ import com.yalantis.ucrop.view.widget.AspectRatioTextView;
 import com.yalantis.ucrop.view.widget.HorizontalProgressWheelView;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -307,8 +309,12 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
 
         if (inputUri != null && outputUri != null) {
             try {
-                mGestureCropImageView.setRotateEnabled(rotateEnabled);
-                mGestureCropImageView.setScaleEnabled(scaleEnabled);
+                ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(inputUri, "r");
+                FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
+                String suffix = FileUtils.extSuffix(inputStream);
+                boolean isGif = FileUtils.isGifForSuffix(suffix);
+                mGestureCropImageView.setRotateEnabled(isGif ? false : rotateEnabled);
+                mGestureCropImageView.setScaleEnabled(isGif ? false : scaleEnabled);
                 mGestureCropImageView.setImageUri(inputUri, outputUri);
             } catch (Exception e) {
                 setResultError(e);

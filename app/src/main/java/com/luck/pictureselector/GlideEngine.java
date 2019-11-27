@@ -28,7 +28,7 @@ public class GlideEngine implements ImageEngine {
 
     @Override
     public void loadFolderAsBitmapImage(@NonNull Context context, @NonNull String url,
-                                  @NonNull ImageView imageView, int placeholderId) {
+                                        @NonNull ImageView imageView, int placeholderId) {
         Glide.with(context)
                 .asBitmap()
                 .override(180, 180)
@@ -55,8 +55,6 @@ public class GlideEngine implements ImageEngine {
                                @NonNull ImageView imageView) {
         Glide.with(context)
                 .asGif()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .priority(Priority.HIGH)
                 .load(url)
                 .into(imageView);
     }
