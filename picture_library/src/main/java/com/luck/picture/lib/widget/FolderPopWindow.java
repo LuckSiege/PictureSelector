@@ -114,9 +114,9 @@ public class FolderPopWindow extends PopupWindow {
         try {
             if (!config.isFallbackVersion) {
                 if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N) {
-                    int[] a = new int[2];
-                    anchor.getLocationInWindow(a);
-                    showAtLocation(anchor, Gravity.NO_GRAVITY, 0, a[1] + anchor.getHeight());
+                    int[] location = new int[2];
+                    anchor.getLocationInWindow(location);
+                    showAtLocation(anchor, Gravity.NO_GRAVITY, 0, location[1] + anchor.getHeight());
                 } else {
                     super.showAsDropDown(anchor, 0, 0);
                 }
