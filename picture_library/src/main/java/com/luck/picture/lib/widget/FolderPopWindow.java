@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.PictureAlbumDirectoryAdapter;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -56,7 +57,7 @@ public class FolderPopWindow extends PopupWindow {
         this.window = LayoutInflater.from(context).inflate(R.layout.picture_window_folder, null);
         this.setContentView(window);
         this.setWidth(RelativeLayout.LayoutParams.MATCH_PARENT);
-        this.setHeight(RelativeLayout.LayoutParams.MATCH_PARENT);
+        this.setHeight(RelativeLayout.LayoutParams.WRAP_CONTENT);
         this.setAnimationStyle(R.style.PictureThemeWindowStyle);
         this.setFocusable(true);
         this.setOutsideTouchable(true);
@@ -111,14 +112,18 @@ public class FolderPopWindow extends PopupWindow {
     @Override
     public void showAsDropDown(View anchor) {
         try {
-            if (Build.VERSION.SDK_INT >= 24) {
-                Rect rect = new Rect();
-                anchor.getGlobalVisibleRect(rect);
-                int h = anchor.getResources().getDisplayMetrics().heightPixels - rect.bottom;
-                setHeight(h);
+            if (!config.isFallbackVersion) {
+                super.showAsDropDown(anchor, 0, 0);
+            } else {
+                if (Build.VERSION.SDK_INT >= 24) {
+                    Rect rect = new Rect();
+                    anchor.getGlobalVisibleRect(rect);
+                    int h = anchor.getResources().getDisplayMetrics().heightPixels - rect.bottom;
+                    setHeight(h);
+                }
+                int statusBarHeight = ScreenUtils.getStatusBarHeight(context);
+                super.showAtLocation(anchor, Gravity.NO_GRAVITY, 0, anchor.getHeight() + statusBarHeight);
             }
-            int statusBarHeight = ScreenUtils.getStatusBarHeight(context);
-            super.showAtLocation(anchor, Gravity.NO_GRAVITY, 0, anchor.getHeight() + statusBarHeight);
             isDismiss = false;
             ivArrowView.setImageDrawable(drawableUp);
             AnimUtils.rotateArrow(ivArrowView, true);
