@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
                         .selectionMode(cb_choose_mode.isChecked() ?
                                 PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
-                        .cameraFileName("test.png")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用
+                        //.cameraFileName("test.png")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用
                         //.renameCompressFile("test.png")// 重命名压缩文件名、 注意这个不要重复，只适用于单张图压缩使用
                         //.renameCropFileName("test.png")// 重命名裁剪文件名、 注意这个不要重复，只适用于单张图裁剪使用
                         .previewImage(cb_preview_img.isChecked())// 是否可预览图片
