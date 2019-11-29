@@ -692,6 +692,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/2.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/3.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/4.jpg)
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/12.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/white.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/blue.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/11.jpg)
