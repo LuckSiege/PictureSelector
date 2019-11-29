@@ -16,6 +16,11 @@ public class LocalMedia implements Parcelable {
      */
     private String path;
     /**
+     * # Check the original button to get the return value
+     * original path
+     */
+    private String originalPath;
+    /**
      * compress path
      */
     private String compressPath;
@@ -77,6 +82,11 @@ public class LocalMedia implements Parcelable {
      * file size
      */
     private long size;
+
+    /**
+     * Whether the original image is displayed
+     */
+    private boolean isOriginal;
 
     public LocalMedia() {
 
@@ -230,6 +240,22 @@ public class LocalMedia implements Parcelable {
         this.size = size;
     }
 
+    public boolean isOriginal() {
+        return isOriginal;
+    }
+
+    public void setOriginal(boolean original) {
+        isOriginal = original;
+    }
+
+    public String getOriginalPath() {
+        return originalPath;
+    }
+
+    public void setOriginalPath(String originalPath) {
+        this.originalPath = originalPath;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -238,6 +264,7 @@ public class LocalMedia implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.path);
+        dest.writeString(this.originalPath);
         dest.writeString(this.compressPath);
         dest.writeString(this.cutPath);
         dest.writeString(this.androidQToPath);
@@ -252,10 +279,12 @@ public class LocalMedia implements Parcelable {
         dest.writeInt(this.width);
         dest.writeInt(this.height);
         dest.writeLong(this.size);
+        dest.writeByte(this.isOriginal ? (byte) 1 : (byte) 0);
     }
 
     protected LocalMedia(Parcel in) {
         this.path = in.readString();
+        this.originalPath = in.readString();
         this.compressPath = in.readString();
         this.cutPath = in.readString();
         this.androidQToPath = in.readString();
@@ -270,6 +299,7 @@ public class LocalMedia implements Parcelable {
         this.width = in.readInt();
         this.height = in.readInt();
         this.size = in.readLong();
+        this.isOriginal = in.readByte() != 0;
     }
 
     public static final Creator<LocalMedia> CREATOR = new Creator<LocalMedia>() {

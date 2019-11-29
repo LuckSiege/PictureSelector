@@ -17,6 +17,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -91,6 +92,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private SeekBar musicSeekBar;
     private boolean isPlayAudio = false;
     private PictureCustomDialog audioDialog;
+    private CheckBox mCbOriginal;
     private int audioH;
 
     @SuppressLint("HandlerLeak")
@@ -131,6 +133,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mTvPictureTitle = findViewById(R.id.picture_title);
         mTvPictureRight = findViewById(R.id.picture_right);
         mTvPictureOk = findViewById(R.id.picture_tv_ok);
+        mCbOriginal = findViewById(R.id.cb_original);
         mIvArrow = findViewById(R.id.ivArrow);
         mTvPicturePreview = findViewById(R.id.picture_id_preview);
         mTvPictureImgNum = findViewById(R.id.picture_tv_img_num);
@@ -197,6 +200,19 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         adapter.setOnPhotoSelectChangedListener(PictureSelectorActivity.this);
         adapter.bindSelectImages(selectionMedias);
         mPictureRecycler.setAdapter(adapter);
+        // 原图
+        mCbOriginal.setVisibility(config.isOriginalControl ? View.VISIBLE : View.GONE);
+        mCbOriginal.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            config.isCheckOriginalImage = isChecked;
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mCbOriginal != null && config != null) {
+            mCbOriginal.setChecked(config.isCheckOriginalImage);
+        }
     }
 
     /**
@@ -229,6 +245,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (config.style.pictureBottomBgColor != 0) {
                 mBottomLayout.setBackgroundColor(config.style.pictureBottomBgColor);
             }
+
         } else {
             if (config.downResId != 0) {
                 Drawable drawable = ContextCompat.getDrawable(this, config.downResId);
@@ -236,6 +253,21 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
         }
         titleViewBg.setBackgroundColor(colorPrimary);
+
+        if (config.isOriginalControl) {
+            if (config.style != null && config.style.pictureOriginalControlStyle != 0) {
+                mCbOriginal.setButtonDrawable(config.style.pictureOriginalControlStyle);
+            } else {
+                mCbOriginal.setButtonDrawable(ContextCompat
+                        .getDrawable(this, R.drawable.picture_original_checkbox));
+            }
+            if (config.style != null && config.style.pictureOriginalFontColor != 0) {
+                mCbOriginal.setTextColor(config.style.pictureOriginalFontColor);
+            } else {
+                mCbOriginal.setTextColor(ContextCompat
+                        .getColor(this, R.color.picture_color_53575e));
+            }
+        }
     }
 
     @Override
@@ -383,29 +415,36 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     return;
                 }
             }
+            if (config.isCheckOriginalImage) {
+                onResult(images);
+                return;
+            }
             if (config.enableCrop && eqImg) {
                 if (config.selectionMode == PictureConfig.SINGLE) {
                     originalPath = image.getPath();
                     startCrop(originalPath);
                 } else {
+
                     // 是图片和选择压缩并且是多张，调用批量压缩
                     ArrayList<CutInfo> cuts = new ArrayList<>();
                     int count = images.size();
                     for (int i = 0; i < count; i++) {
                         LocalMedia media = images.get(i);
+                        if (media == null
+                                || TextUtils.isEmpty(media.getPath())) {
+                            continue;
+                        }
                         CutInfo cutInfo = new CutInfo();
                         cutInfo.setPath(media.getPath());
                         cutInfo.setImageWidth(media.getWidth());
                         cutInfo.setImageHeight(media.getHeight());
                         cutInfo.setMimeType(media.getMimeType());
-                        if (SdkVersionUtils.checkedAndroid_Q()) {
-                            cutInfo.setAndroidQToPath(media.getAndroidQToPath());
-                        }
                         cuts.add(cutInfo);
                     }
                     startCrop(cuts);
                 }
-            } else if (config.isCompress && eqImg) {
+            } else if (config.isCompress
+                    && eqImg) {
                 // 图片才压缩，视频不管
                 compressImage(images);
             } else {
@@ -644,7 +683,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (config.selectionMode == PictureConfig.SINGLE && config.isSingleDirectReturn) {
             List<LocalMedia> list = new ArrayList<>();
             list.add(media);
-            if (config.enableCrop) {
+            if (config.enableCrop && !config.isCheckOriginalImage) {
                 adapter.bindSelectImages(list);
                 startCrop(media.getPath());
             } else {
@@ -714,6 +753,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             boolean isVideo = PictureMimeType.eqVideo(mimeType);
             boolean eqVideo = config.chooseMode == PictureConfig.TYPE_VIDEO;
             mTvPicturePreview.setVisibility(isVideo || eqVideo ? View.GONE : View.VISIBLE);
+            mCbOriginal.setVisibility(isVideo || eqVideo ? View.GONE
+                    : config.isOriginalControl ? View.VISIBLE : View.GONE);
+            config.isCheckOriginalImage = isVideo || eqVideo ? false : config.isCheckOriginalImage;
+            mCbOriginal.setChecked(config.isCheckOriginalImage);
         }
         boolean enable = selectImages.size() != 0;
         if (enable) {
@@ -792,6 +835,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     private void cameraHandleResult(LocalMedia media, String mimeType) {
         // 如果是单选 拍照后直接返回
+        if (config.isCheckOriginalImage) {
+            // 不裁剪 不压缩 直接返回结果
+            List<LocalMedia> result = new ArrayList<>();
+            result.add(media);
+            onResult(result);
+            return;
+        }
         boolean eqImg = PictureMimeType.eqImage(mimeType);
         if (config.enableCrop && eqImg) {
             // 去裁剪
@@ -856,7 +906,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (PictureMimeType.eqImage(mimeType)) {
                     int degree = PictureFileUtils.readPictureDegree(this, cameraPath);
                     String rotateImagePath = PictureFileUtils.rotateImageToAndroidQ(this,
-                            degree, cameraPath);
+                            degree, cameraPath, config.cameraFileName);
                     media.setAndroidQToPath(rotateImagePath);
                     newSize = MediaUtils.getLocalImageSizeToAndroidQ(this, cameraPath);
                 } else {
@@ -942,7 +992,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         List<LocalMedia> medias = new ArrayList<>();
         Uri resultUri = UCrop.getOutput(data);
         String cutPath = resultUri.getPath();
-        String mimeType;
         if (adapter != null) {
             // 取单张裁剪已选中图片的path作为原图
             List<LocalMedia> mediaList = adapter.getSelectedImages();
@@ -953,11 +1002,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 media.setSize(new File(cutPath).length());
                 media.setChooseModel(config.chooseMode);
                 media.setCut(true);
-                mimeType = PictureMimeType.getImageMimeType(cutPath);
-                media.setMimeType(mimeType);
                 if (SdkVersionUtils.checkedAndroid_Q()) {
-                    media.setAndroidQToPath(TextUtils.isEmpty(media.getAndroidQToPath())
-                            ? cutPath : media.getAndroidQToPath());
+                    media.setAndroidQToPath(cutPath);
                 }
                 medias.add(media);
                 handlerResult(medias);
@@ -1071,7 +1117,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         if (selectImages.size() > 0) {
                             // 取出第1个判断是否是图片，视频和图片只能二选一，不必考虑图片和视频混合
                             String mimeType = selectImages.get(0).getMimeType();
-                            if (config.isCompress && PictureMimeType.eqImage(mimeType)) {
+                            if (config.isCompress && PictureMimeType.eqImage(mimeType)
+                                    && !config.isCheckOriginalImage) {
                                 compressImage(selectImages);
                             } else {
                                 onResult(selectImages);

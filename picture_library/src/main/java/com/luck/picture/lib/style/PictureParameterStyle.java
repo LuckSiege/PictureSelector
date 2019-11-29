@@ -93,6 +93,12 @@ public class PictureParameterStyle implements Parcelable {
     public int pictureNavBarColor;
 
     /**
+     * 原图字体颜色
+     */
+    @ColorInt
+    public int pictureOriginalFontColor;
+
+    /**
      * 相册标题右侧箭头
      */
     @DrawableRes
@@ -134,6 +140,12 @@ public class PictureParameterStyle implements Parcelable {
     public int pictureExternalPreviewDeleteStyle;
 
     /**
+     * 原图勾选样式
+     */
+    @DrawableRes
+    public int pictureOriginalControlStyle;
+
+    /**
      * 外部预览图片是否显示删除按钮
      */
     public boolean pictureExternalPreviewGonePreviewDelete;
@@ -164,6 +176,7 @@ public class PictureParameterStyle implements Parcelable {
         dest.writeInt(this.picturePreviewTextColor);
         dest.writeInt(this.picturePreviewBottomBgColor);
         dest.writeInt(this.pictureNavBarColor);
+        dest.writeInt(this.pictureOriginalFontColor);
         dest.writeInt(this.pictureTitleUpResId);
         dest.writeInt(this.pictureTitleDownResId);
         dest.writeInt(this.pictureLeftBackIcon);
@@ -171,6 +184,7 @@ public class PictureParameterStyle implements Parcelable {
         dest.writeInt(this.pictureCheckNumBgStyle);
         dest.writeInt(this.pictureFolderCheckedDotStyle);
         dest.writeInt(this.pictureExternalPreviewDeleteStyle);
+        dest.writeInt(this.pictureOriginalControlStyle);
         dest.writeByte(this.pictureExternalPreviewGonePreviewDelete ? (byte) 1 : (byte) 0);
     }
 
@@ -189,6 +203,7 @@ public class PictureParameterStyle implements Parcelable {
         this.picturePreviewTextColor = in.readInt();
         this.picturePreviewBottomBgColor = in.readInt();
         this.pictureNavBarColor = in.readInt();
+        this.pictureOriginalFontColor = in.readInt();
         this.pictureTitleUpResId = in.readInt();
         this.pictureTitleDownResId = in.readInt();
         this.pictureLeftBackIcon = in.readInt();
@@ -196,6 +211,7 @@ public class PictureParameterStyle implements Parcelable {
         this.pictureCheckNumBgStyle = in.readInt();
         this.pictureFolderCheckedDotStyle = in.readInt();
         this.pictureExternalPreviewDeleteStyle = in.readInt();
+        this.pictureOriginalControlStyle = in.readInt();
         this.pictureExternalPreviewGonePreviewDelete = in.readByte() != 0;
     }
 

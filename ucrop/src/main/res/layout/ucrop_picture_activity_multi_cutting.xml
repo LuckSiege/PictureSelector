@@ -2,7 +2,6 @@
     android:id="@+id/ucrop_mulit_photobox"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ucrop_color_crop_background"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 

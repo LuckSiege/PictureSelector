@@ -43,4 +43,5 @@
     <string name="picture_audio_error">Audio ist fehlerhaft</string>
     <string name="picture_confirm">Gut</string>
     <string name="picture_preview_image_num">%1$d / %2$d</string>
+    <string name="picture_not_crop_data">Keine Erntedaten verfügbar</string>
 </resources>

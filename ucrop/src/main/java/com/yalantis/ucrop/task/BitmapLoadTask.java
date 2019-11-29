@@ -27,7 +27,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -170,27 +169,16 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
                 throw e;
             }
         } else {
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                try {
-                    ParcelFileDescriptor parcelFileDescriptor =
-                            mContext.getContentResolver().openFileDescriptor(mInputUri, "r");
-                    FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                    FileInputStream inputStream = new FileInputStream(fileDescriptor);
-                    FileUtils.copyFile(inputStream, mOutputUri.getPath());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            String path = getFilePath();
+            if (!TextUtils.isEmpty(path) && new File(path).exists()) {
+                mInputUri = android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ?
+                        mInputUri : Uri.fromFile(new File(path));
             } else {
-                String path = getFilePath();
-                if (!TextUtils.isEmpty(path) && new File(path).exists()) {
-                    mInputUri = Uri.fromFile(new File(path));
-                } else {
-                    try {
-                        copyFile(mInputUri, mOutputUri);
-                    } catch (NullPointerException | IOException e) {
-                        Log.e(TAG, "Copying failed", e);
-                        throw e;
-                    }
+                try {
+                    copyFile(mInputUri, mOutputUri);
+                } catch (NullPointerException | IOException e) {
+                    Log.e(TAG, "Copying failed", e);
+                    throw e;
                 }
             }
         }

@@ -119,20 +119,31 @@
                 android:textColor="@color/app_color_53575e"
                 android:textSize="14sp" />
 
+            <CheckBox
+                android:id="@+id/cb_original"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="是否开启原图功能"
+                android:textColor="@color/app_color_53575e"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_original_tips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:visibility="gone"
+                android:text="注意:如果开启了原图功能，用户就可以自由选择是否选择原图；压缩功能将失效"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="9dp" />
+
             <RadioGroup
                 android:id="@+id/rgb_langue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <RadioButton
-                    android:id="@+id/rb_zh"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="中文"
-                    android:textColor="@color/app_color_53575e"
-                    android:textSize="14sp" />
 
                 <RadioButton
                     android:id="@+id/rb_tw"
@@ -174,6 +185,13 @@
                     android:textColor="@color/app_color_53575e"
                     android:textSize="14sp" />
 
+                <RadioButton
+                    android:id="@+id/rb_jpan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="日语"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
             </RadioGroup>
 
             <RadioGroup
@@ -196,7 +214,6 @@
                     android:id="@+id/rb_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
                     android:text="图片"
                     android:textColor="@color/app_color_53575e"
                     android:textSize="14sp" />
@@ -205,7 +222,6 @@
                     android:id="@+id/rb_video"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
                     android:text="视频"
                     android:textColor="@color/app_color_53575e"
                     android:textSize="14sp" />
@@ -214,7 +230,6 @@
                     android:id="@+id/rb_audio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
                     android:text="音频"
                     android:textColor="@color/app_color_53575e"
                     android:textSize="14sp" />

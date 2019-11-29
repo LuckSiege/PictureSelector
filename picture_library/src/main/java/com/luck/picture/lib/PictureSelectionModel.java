@@ -10,6 +10,7 @@ import androidx.annotation.StyleRes;
 import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -201,6 +202,8 @@ public class PictureSelectionModel {
     public PictureSelectionModel isSingleDirectReturn(boolean isSingleDirectReturn) {
         selectionConfig.isSingleDirectReturn = selectionConfig.selectionMode
                 == PictureConfig.SINGLE ? isSingleDirectReturn : false;
+        selectionConfig.isOriginalControl = selectionConfig.selectionMode
+                == PictureConfig.SINGLE && isSingleDirectReturn ? false : selectionConfig.isOriginalControl;
         return this;
     }
 
@@ -214,9 +217,12 @@ public class PictureSelectionModel {
     }
 
     /**
+     * # alternative api cameraFileName(xxx.PNG);
+     *
      * @param suffixType PictureSelector media format
      * @return
      */
+    @Deprecated
     public PictureSelectionModel imageFormat(String suffixType) {
         selectionConfig.suffixType = suffixType;
         return this;
@@ -352,6 +358,18 @@ public class PictureSelectionModel {
         return this;
     }
 
+
+    /**
+     * @param isOriginalControl Whether the original image is displayed
+     * @return
+     */
+    public PictureSelectionModel isOriginalImageControl(boolean isOriginalControl) {
+        selectionConfig.isOriginalControl = selectionConfig.camera
+                || selectionConfig.chooseMode == PictureMimeType.ofVideo()
+                || selectionConfig.chooseMode == PictureMimeType.ofAudio() ? false : isOriginalControl;
+        return this;
+    }
+
     /**
      * @param path save path
      * @return
@@ -363,12 +381,37 @@ public class PictureSelectionModel {
 
     /**
      * Camera custom local file name
+     * # Such as xxx.png
      *
      * @param fileName
      * @return
      */
     public PictureSelectionModel cameraFileName(String fileName) {
         selectionConfig.cameraFileName = fileName;
+        return this;
+    }
+
+    /**
+     * crop custom local file name
+     * # Such as xxx.png
+     *
+     * @param renameCropFileName
+     * @return
+     */
+    public PictureSelectionModel renameCropFileName(String renameCropFileName) {
+        selectionConfig.renameCropFileName = renameCropFileName;
+        return this;
+    }
+
+    /**
+     * custom compress local file name
+     * # Such as xxx.png
+     *
+     * @param renameFile
+     * @return
+     */
+    public PictureSelectionModel renameCompressFile(String renameFile) {
+        selectionConfig.renameCompressFileName = renameFile;
         return this;
     }
 

@@ -4,6 +4,8 @@ import android.content.Context;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +16,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DateUtils;
@@ -39,6 +40,7 @@ public class GridImageAdapter extends
     private LayoutInflater mInflater;
     private List<LocalMedia> list = new ArrayList<>();
     private int selectMax = 9;
+    private boolean isAndroidQ;
     /**
      * 点击添加图片跳转
      */
@@ -49,8 +51,9 @@ public class GridImageAdapter extends
     }
 
     public GridImageAdapter(Context context, onAddPicClickListener mOnAddPicClickListener) {
-        mInflater = LayoutInflater.from(context);
+        this.mInflater = LayoutInflater.from(context);
         this.mOnAddPicClickListener = mOnAddPicClickListener;
+        this.isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
     }
 
     public void setSelectMax(int selectMax) {
@@ -132,6 +135,10 @@ public class GridImageAdapter extends
                 }
             });
             LocalMedia media = list.get(position);
+            if (media == null
+                    || TextUtils.isEmpty(media.getPath())) {
+                return;
+            }
             int chooseModel = media.getChooseModel();
             String path;
             if (media.isCut() && !media.isCompressed()) {
@@ -142,7 +149,7 @@ public class GridImageAdapter extends
                 path = media.getCompressPath();
             } else {
                 // 原图
-                path = SdkVersionUtils.checkedAndroid_Q() ? media.getAndroidQToPath() : media.getPath();
+                path = media.getPath();
             }
             // 图片
             if (media.isCompressed()) {
@@ -170,13 +177,12 @@ public class GridImageAdapter extends
             if (chooseModel == PictureMimeType.ofAudio()) {
                 viewHolder.mImg.setImageResource(R.drawable.picture_audio_placeholder);
             } else {
-                RequestOptions options = new RequestOptions()
+                Glide.with(viewHolder.itemView.getContext())
+                        .load(isAndroidQ && !media.isCut() && !media.isCompressed() ? Uri.parse(path)
+                                : path)
                         .centerCrop()
                         .placeholder(R.color.app_color_f6)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL);
-                Glide.with(viewHolder.itemView.getContext())
-                        .load(path)
-                        .apply(options)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(viewHolder.mImg);
             }
             //itemView 的点击事件

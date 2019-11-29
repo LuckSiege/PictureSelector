@@ -23,6 +23,7 @@ import com.yalantis.ucrop.util.FileUtils;
 import com.yalantis.ucrop.util.ImageHeaderParser;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -151,21 +152,13 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
 
         boolean shouldCrop = shouldCrop(mCroppedImageWidth, mCroppedImageHeight);
         Log.i(TAG, "Should crop: " + shouldCrop);
-        ParcelFileDescriptor parcelFileDescriptor =
-                mContext.get().getContentResolver().openFileDescriptor(mImageInputUri, "r");
-        FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
-        String suffix = FileUtils.extSuffix(inputStream);
         boolean isAndroidQ = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
         if (shouldCrop) {
-            boolean isGif = FileUtils.isGifForSuffix(suffix);
-            if (isGif) {
-                if (!isAndroidQ) {
-                    FileUtils.copyFile(mImageInputUri.getPath(), mImageOutputPath);
-                }
-                return true;
-            }
             ExifInterface originalExif;
             if (isAndroidQ && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                ParcelFileDescriptor parcelFileDescriptor =
+                        mContext.get().getContentResolver().openFileDescriptor(mImageInputUri, "r");
+                FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
                 originalExif = new ExifInterface(inputStream);
             } else {
                 originalExif = new ExifInterface(mImageInputUri.getPath());
@@ -177,7 +170,11 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
             return true;
         } else {
             if (isAndroidQ) {
-                return true;
+                ParcelFileDescriptor parcelFileDescriptor =
+                        mContext.get().getContentResolver().openFileDescriptor(mImageInputUri, "r");
+                FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                FileInputStream inputStream = new FileInputStream(fileDescriptor);
+                FileUtils.copyFile(inputStream, mImageOutputPath);
             } else {
                 FileUtils.copyFile(mImageInputUri.getPath(), mImageOutputPath);
             }

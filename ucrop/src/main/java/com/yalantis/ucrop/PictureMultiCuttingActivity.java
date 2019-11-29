@@ -486,7 +486,6 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         Drawable stateButtonDrawable = ContextCompat.getDrawable(this, mToolbarCancelDrawable).mutate();
         stateButtonDrawable.setColorFilter(mToolbarWidgetColor, PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationIcon(stateButtonDrawable);
-
         setSupportActionBar(toolbar);
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -805,7 +804,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         String path = list.get(cutIndex).getPath();
         boolean isHttp = FileUtils.isHttp(path);
         String imgType = getLastImgType(isAndroidQ ? FileUtils.getPath(this, Uri.parse(path)) : path);
-
+        Log.i("Mike", "resetCutData: "+imgType);
         Uri uri = isHttp || isAndroidQ ? Uri.parse(path) : Uri.fromFile(new File(path));
         extras.putParcelable(UCropMulti.EXTRA_INPUT_URI, uri);
 
@@ -864,6 +863,8 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
                     case ".bmp":
                     case ".BMP":
                     case ".webp":
+                    case ".gif":
+                    case ".GIF":
                         return imageType;
                     default:
                         return ".png";

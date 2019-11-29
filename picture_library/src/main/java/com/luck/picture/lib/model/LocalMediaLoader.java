@@ -331,17 +331,42 @@ public class LocalMediaLoader implements Handler.Callback {
      * @return
      */
     private LocalMediaFolder getImageFolder(String path, String folderName, List<LocalMediaFolder> imageFolders) {
-        for (LocalMediaFolder folder : imageFolders) {
-            // 同一个文件夹下，返回自己，否则创建新文件夹
-            if (folder.getName().equals(folderName)) {
-                return folder;
+        if (!config.isFallbackVersion) {
+            for (LocalMediaFolder folder : imageFolders) {
+                // 同一个文件夹下，返回自己，否则创建新文件夹
+                String name = folder.getName();
+                if (TextUtils.isEmpty(name)) {
+                    continue;
+                }
+                if (name.equals(folderName)) {
+                    return folder;
+                }
             }
+            LocalMediaFolder newFolder = new LocalMediaFolder();
+            newFolder.setName(folderName);
+            newFolder.setFirstImagePath(path);
+            imageFolders.add(newFolder);
+            return newFolder;
+        } else {
+            // 容错处理
+            File imageFile = new File(path);
+            File folderFile = imageFile.getParentFile();
+            for (LocalMediaFolder folder : imageFolders) {
+                // 同一个文件夹下，返回自己，否则创建新文件夹
+                String name = folder.getName();
+                if (TextUtils.isEmpty(name)) {
+                    continue;
+                }
+                if (name.equals(folderFile.getName())) {
+                    return folder;
+                }
+            }
+            LocalMediaFolder newFolder = new LocalMediaFolder();
+            newFolder.setName(folderFile.getName());
+            newFolder.setFirstImagePath(path);
+            imageFolders.add(newFolder);
+            return newFolder;
         }
-        LocalMediaFolder newFolder = new LocalMediaFolder();
-        newFolder.setName(folderName);
-        newFolder.setFirstImagePath(path);
-        imageFolders.add(newFolder);
-        return newFolder;
     }
 
     /**

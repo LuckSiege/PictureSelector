@@ -31,7 +31,8 @@ public final class PictureSelectionConfig implements Parcelable {
     public PictureWindowAnimationStyle windowAnimationStyle;
     public String compressSavePath;
     public String suffixType;
-    public String cameraFileName;
+    public String renameCompressFileName;
+    public String renameCropFileName;
     public String specifiedFormat;
 
     @StyleRes
@@ -55,6 +56,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public int language;
     public boolean zoomAnim;
     public boolean isCompress;
+    public boolean isOriginalControl;
     public boolean isCamera;
     public boolean isGif;
     public boolean enablePreview;
@@ -77,6 +79,8 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isFallbackVersion;
     public ImageEngine imageEngine;
     public List<LocalMedia> selectionMedias;
+    public String cameraFileName;
+    public boolean isCheckOriginalImage;
     @Deprecated
     public int overrideWidth;
     @Deprecated
@@ -124,12 +128,14 @@ public final class PictureSelectionConfig implements Parcelable {
         minimumCompressSize = PictureConfig.MAX_COMPRESS_SIZE;
         imageSpanCount = 4;
         isCompress = false;
+        isOriginalControl = false;
         aspect_ratio_x = 0;
         aspect_ratio_y = 0;
         cropWidth = 0;
         cropHeight = 0;
         isCamera = true;
         isGif = false;
+        isCheckOriginalImage = false;
         isSingleDirectReturn = false;
         enablePreview = true;
         enPreviewVideo = true;
@@ -154,6 +160,8 @@ public final class PictureSelectionConfig implements Parcelable {
         suffixType = PictureFileUtils.POSTFIX;
         cameraFileName = "";
         specifiedFormat = "";
+        renameCompressFileName = "";
+        renameCropFileName = "";
         selectionMedias = new ArrayList<>();
         imageEngine = null;
         style = null;
@@ -227,6 +235,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(this.compressQuality);
         dest.writeInt(this.filterFileSize);
         dest.writeInt(this.language);
+        dest.writeByte(this.isCheckOriginalImage ? (byte) 1 : (byte) 0);
         dest.writeByte(this.zoomAnim ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isCompress ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isCamera ? (byte) 1 : (byte) 0);
@@ -299,6 +308,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.isCompress = in.readByte() != 0;
         this.isCamera = in.readByte() != 0;
         this.isGif = in.readByte() != 0;
+        this.isCheckOriginalImage = in.readByte() != 0;
         this.enablePreview = in.readByte() != 0;
         this.enPreviewVideo = in.readByte() != 0;
         this.enablePreviewAudio = in.readByte() != 0;

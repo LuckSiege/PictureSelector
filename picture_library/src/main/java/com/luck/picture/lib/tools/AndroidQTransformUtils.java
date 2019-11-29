@@ -36,8 +36,8 @@ public class AndroidQTransformUtils {
                 String newPath = new StringBuffer()
                         .append(filesDir)
                         .append(File.separator)
-                        .append(TextUtils.isEmpty(fileName) ? System.currentTimeMillis() : fileName)
-                        .append(suffix).toString();
+                        .append(TextUtils.isEmpty(fileName) ? System.currentTimeMillis() + suffix : fileName)
+                        .toString();
                 ParcelFileDescriptor parcelFileDescriptor =
                         ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
                 FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
@@ -69,10 +69,51 @@ public class AndroidQTransformUtils {
                 String newPath = new StringBuffer()
                         .append(filesDir)
                         .append(File.separator)
-                        .append(TextUtils.isEmpty(fileName) ? System.currentTimeMillis() : fileName)
-                        .append(suffix).toString();
+                        .append(TextUtils.isEmpty(fileName) ? System.currentTimeMillis() + suffix : fileName)
+                        .toString();
                 ParcelFileDescriptor parcelFileDescriptor =
                         ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
+                FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                FileInputStream inputStream = new FileInputStream(fileDescriptor);
+                boolean copyFileSuccess = FileUtils.copyFile(inputStream,newPath);
+                if (copyFileSuccess) {
+                    return newPath;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    /**
+     * 解析Android Q版本下图片
+     * #耗时操作需要放在子线程中操作
+     *
+     * @param ctx
+     * @param uri
+     * @param fileName
+     * @param mimeType
+     * @return
+     */
+    public static String copyImagePathToDirectoryPictures(Context ctx, String uri, String fileName,
+                                                          String mimeType) {
+        try {
+            String suffix = PictureMimeType.getLastImgSuffix(mimeType);
+            if (!TextUtils.isEmpty(fileName)) {
+                int lastIndexOf = fileName.lastIndexOf(".");
+                String oldSuffix = fileName.substring(lastIndexOf);
+                fileName = fileName.replace(oldSuffix, suffix);
+            }
+            String filesDir = PictureFileUtils.getDiskCacheDir(ctx.getApplicationContext());
+            if (filesDir != null) {
+                String newPath = new StringBuffer()
+                        .append(filesDir)
+                        .append(File.separator)
+                        .append(TextUtils.isEmpty(fileName) ? System.currentTimeMillis() + suffix : fileName)
+                        .toString();
+                ParcelFileDescriptor parcelFileDescriptor =
+                        ctx.getContentResolver().openFileDescriptor(Uri.parse(uri), "r");
                 FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
                 FileInputStream inputStream = new FileInputStream(fileDescriptor);
                 boolean copyFileSuccess = FileUtils.copyFile(inputStream, newPath);
@@ -102,8 +143,8 @@ public class AndroidQTransformUtils {
                 String newPath = new StringBuffer()
                         .append(filesDir)
                         .append(File.separator)
-                        .append(TextUtils.isEmpty(fileName) ? System.currentTimeMillis() : fileName)
-                        .append(suffix).toString();
+                        .append(TextUtils.isEmpty(fileName) ? System.currentTimeMillis() + suffix : fileName)
+                        .toString();
 
                 ParcelFileDescriptor parcelFileDescriptor =
                         ctx.getApplicationContext().getContentResolver().openFileDescriptor(Uri.parse(path), "r");

@@ -51,7 +51,7 @@
         <item name="picture.ac_preview.complete.textColor">@color/picture_list_sina_text_color
         </item>
         <!--预览界面底部背景色-->
-        <item name="picture.ac_preview.bottom.bg">@color/app_color_fa</item>
+        <item name="picture.ac_preview.bottom.bg">@color/picture_color_fa</item>
         <!--预览界面返回箭头-->
         <item name="picture.preview.leftBack.icon">@drawable/ic_back_arrow</item>
         <!--裁剪页面标题背景色-->

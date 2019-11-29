@@ -49,13 +49,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GridImageAdapter adapter;
     private int maxSelectNum = 9;
     private TextView tv_select_num;
+    private TextView tv_original_tips;
     private ImageView left_back, minus, plus;
     private RadioGroup rgb_crop, rgb_style, rgb_photo_mode, rgb_langue;
     private int aspect_ratio_x, aspect_ratio_y;
     private CheckBox cb_voice, cb_choose_mode, cb_isCamera, cb_isGif,
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
             cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
-            cb_showCropFrame, cb_preview_audio;
+            cb_showCropFrame, cb_preview_audio, cb_original;
     private int themeId;
     private int chooseMode = PictureMimeType.ofAll();
     private int language;
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         minus = findViewById(R.id.minus);
         plus = findViewById(R.id.plus);
         tv_select_num = findViewById(R.id.tv_select_num);
+        tv_original_tips = findViewById(R.id.tv_original_tips);
         rgb_crop = findViewById(R.id.rgb_crop);
         rgb_style = findViewById(R.id.rgb_style);
         rgb_photo_mode = findViewById(R.id.rgb_photo_mode);
@@ -88,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_showCropGrid = findViewById(R.id.cb_showCropGrid);
         cb_showCropFrame = findViewById(R.id.cb_showCropFrame);
         cb_preview_audio = findViewById(R.id.cb_preview_audio);
+        cb_original = findViewById(R.id.cb_original);
         cb_hide = findViewById(R.id.cb_hide);
         cb_crop_circular = findViewById(R.id.cb_crop_circular);
         rgb_crop.setOnCheckedChangeListener(this);
@@ -108,6 +111,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter.setList(selectList);
         adapter.setSelectMax(maxSelectNum);
         recyclerView.setAdapter(adapter);
+        cb_original.setOnCheckedChangeListener((buttonView, isChecked) ->
+                tv_original_tips.setVisibility(isChecked ? View.VISIBLE : View.GONE));
         adapter.setOnItemClickListener((position, v) -> {
             if (selectList.size() > 0) {
                 LocalMedia media = selectList.get(position);
@@ -141,7 +146,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 清空图片缓存，包括裁剪、压缩后的图片 注意:必须要在上传完成后调用 必须要获取权限
         if (PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            PictureFileUtils.deleteCacheDirFile(MainActivity.this, PictureMimeType.ofImage());
+            //PictureFileUtils.deleteCacheDirFile(this, PictureMimeType.ofImage());
+            PictureFileUtils.deleteAllCacheDirFile(this);
         } else {
             PermissionChecker.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
@@ -169,10 +175,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
                         .imageSpanCount(4)// 每行显示个数
-                        .cameraFileName("")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用，选图时不要用
+                        .isOriginalImageControl(cb_original.isChecked())// 是否显示原图控制按钮，如果设置为true则用户可以自由选择是否使用原图，压缩、裁剪功能将会失效
+                        //.cameraFileName("test.png")    // 重命名拍照文件名、注意这个只在使用相机时可以使用，如果使用相机又开启了压缩或裁剪 需要配合压缩和裁剪文件名api
+                        //.renameCompressFile("test.png")// 重命名压缩文件名、 注意这个不要重复，只适用于单张图压缩使用
+                        //.renameCropFileName("test.png")// 重命名裁剪文件名、 注意这个不要重复，只适用于单张图裁剪使用
                         .selectionMode(cb_choose_mode.isChecked() ?
                                 PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
-                        .isSingleDirectReturn(false)// 单选模式下是否直接返回，PictureConfig.SINGLE模式下有效
+                        .isSingleDirectReturn(true)// 单选模式下是否直接返回，PictureConfig.SINGLE模式下有效
                         .previewImage(cb_preview_img.isChecked())// 是否可预览图片
                         .previewVideo(cb_preview_video.isChecked())// 是否可预览视频
                         //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
@@ -226,6 +235,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
                         .selectionMode(cb_choose_mode.isChecked() ?
                                 PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
+                        .cameraFileName("test.png")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用
+                        //.renameCompressFile("test.png")// 重命名压缩文件名、 注意这个不要重复，只适用于单张图压缩使用
+                        //.renameCropFileName("test.png")// 重命名裁剪文件名、 注意这个不要重复，只适用于单张图裁剪使用
                         .previewImage(cb_preview_img.isChecked())// 是否可预览图片
                         .previewVideo(cb_preview_video.isChecked())// 是否可预览视频
                         .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
@@ -267,17 +279,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 case PictureConfig.CHOOSE_REQUEST:
                     // 图片选择结果回调
                     selectList = PictureSelector.obtainMultipleResult(data);
-                    // 例如 LocalMedia 里面返回三种path
+                    // 例如 LocalMedia 里面返回五种path
                     // 1.media.getPath(); 为原图path
                     // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
                     // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
-                    // 如果裁剪并压缩了，已取压缩路径为准，因为是先裁剪后压缩的
-                    // 4.media.getAndroidQToPath();为Android Q版本特有返回的字段，此字段有值就用来做上传使用
+                    // 4.media.getOriginalPath()); media.isOriginal());为true时此字段才有值
+                    // 5.media.getAndroidQToPath();为Android Q版本特有返回的字段，此字段有值就用来做上传使用
+                    // 如果同时开启裁剪和压缩，则取压缩路径为准因为是先裁剪后压缩
                     for (LocalMedia media : selectList) {
-                        Log.i(TAG, "压缩---->" + media.getCompressPath());
-                        Log.i(TAG, "原图---->" + media.getPath());
-                        Log.i(TAG, "裁剪---->" + media.getCutPath());
-                        Log.i(TAG, "Android Q 特有Path---->" + media.getAndroidQToPath());
+                        Log.i(TAG, "压缩::" + media.getCompressPath());
+                        Log.i(TAG, "原图::" + media.getPath());
+                        Log.i(TAG, "裁剪::" + media.getCutPath());
+                        Log.i(TAG, "是否开启原图::" + media.isOriginal());
+                        Log.i(TAG, "原图路径::" + media.getOriginalPath());
+                        Log.i(TAG, "Android Q 特有Path::" + media.getAndroidQToPath());
                     }
                     adapter.setList(selectList);
                     adapter.notifyDataSetChanged();
@@ -356,8 +371,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 chooseMode = PictureMimeType.ofAudio();
                 cb_preview_audio.setVisibility(View.VISIBLE);
                 break;
-            case R.id.rb_zh:
-                language = LanguageConfig.CHINESE;
+            case R.id.rb_jpan:
+                language = LanguageConfig.JAPAN;
                 break;
             case R.id.rb_tw:
                 language = LanguageConfig.TRADITIONAL_CHINESE;
@@ -454,9 +469,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 相册列表未完成色值(请选择 不可点击色值)
         mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
         // 预览界面底部背景色
-        mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_grey_3e);
+        mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_fa);
         // 外部预览界面删除按钮样式
         mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_delete;
+        // 原图按钮勾选样式  需设置.isOriginalImageControl(true); 才有效
+        mPictureParameterStyle.pictureOriginalControlStyle = R.drawable.picture_original_checkbox;
+        // 原图文字颜色 需设置.isOriginalImageControl(true); 才有效
+        mPictureParameterStyle.pictureOriginalFontColor = ContextCompat.getColor(this, R.color.app_color_53575e);
         // 外部预览界面是否显示删除按钮
         mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
         // 设置NavBar Color SDK Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP有效
@@ -511,7 +530,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 相册列表未完成色值(请选择 不可点击色值)
         mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
         // 预览界面底部背景色
-        mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_grey_3e);
+        mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_white);
+        // 原图按钮勾选样式  需设置.isOriginalImageControl(true); 才有效
+        mPictureParameterStyle.pictureOriginalControlStyle = R.drawable.picture_original_checkbox;
+        // 原图文字颜色 需设置.isOriginalImageControl(true); 才有效
+        mPictureParameterStyle.pictureOriginalFontColor = ContextCompat.getColor(this, R.color.app_color_53575e);
         // 外部预览界面删除按钮样式
         mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_black_delete;
         // 外部预览界面是否显示删除按钮
@@ -566,6 +589,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(this, R.color.app_color_blue);
         // 预览界面底部背景色
         mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_fa);
+        // 原图按钮勾选样式  需设置.isOriginalImageControl(true); 才有效
+        mPictureParameterStyle.pictureOriginalControlStyle = R.drawable.picture_original_blue_checkbox;
+        // 原图文字颜色 需设置.isOriginalImageControl(true); 才有效
+        mPictureParameterStyle.pictureOriginalFontColor = ContextCompat.getColor(this, R.color.app_color_blue);
         // 外部预览界面删除按钮样式
         mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_delete;
         // 外部预览界面是否显示删除按钮
@@ -619,7 +646,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 相册列表未完成色值(请选择 不可点击色值)
         mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
         // 预览界面底部背景色
-        mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_grey_3e);
+        mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_fa);
+        // 原图按钮勾选样式  需设置.isOriginalImageControl(true); 才有效
+        mPictureParameterStyle.pictureOriginalControlStyle = R.drawable.picture_original_checkbox;
+        // 原图文字颜色 需设置.isOriginalImageControl(true); 才有效
+        mPictureParameterStyle.pictureOriginalFontColor = ContextCompat.getColor(this, R.color.app_color_53575e);
         // 外部预览界面删除按钮样式
         mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_black_delete;
         // 外部预览界面是否显示删除按钮
@@ -691,10 +722,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            Bundle extras;
             switch (action) {
                 case BroadcastAction.ACTION_DELETE_PREVIEW_POSITION:
                     // 外部预览删除按钮回调
-                    Bundle extras = intent.getExtras();
+                    extras = intent.getExtras();
                     int position = extras.getInt(PictureConfig.EXTRA_PREVIEW_DELETE_POSITION);
                     ToastUtils.s(context, "delete image index:" + position);
                     if (position < adapter.getItemCount()) {

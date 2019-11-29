@@ -179,7 +179,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 if (PictureMimeType.eqImage(mimeType)) {
                     int degree = PictureFileUtils.readPictureDegree(this, cameraPath);
                     String rotateImagePath = PictureFileUtils.rotateImageToAndroidQ(this,
-                            degree, cameraPath);
+                            degree, cameraPath, config.cameraFileName);
                     media.setAndroidQToPath(rotateImagePath);
                     newSize = MediaUtils.getLocalImageSizeToAndroidQ(this, cameraPath);
                 } else {
@@ -227,7 +227,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             // 去裁剪
             originalPath = cameraPath;
             startCrop(cameraPath);
-        } else if (config.isCompress && eqImg) {
+        } else if (config.isCompress && eqImg && !config.isCheckOriginalImage) {
             // 去压缩
             List<LocalMedia> result = new ArrayList<>();
             result.add(media);

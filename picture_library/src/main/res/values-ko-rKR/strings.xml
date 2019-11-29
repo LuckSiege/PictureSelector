@@ -43,4 +43,6 @@
     <string name="picture_audio_error">오디오가 손상됨</string>
     <string name="picture_confirm">확정</string>
     <string name="picture_preview_image_num">%1$d / %2$d</string>
+    <string name="picture_not_crop_data">자른 데이터가 없습니다</string>
+
 </resources>

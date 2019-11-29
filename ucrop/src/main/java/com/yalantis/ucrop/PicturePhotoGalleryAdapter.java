@@ -27,12 +27,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.yalantis.ucrop.callback.BitmapLoadCallback;
+import com.yalantis.ucrop.callback.BitmapLoadShowCallback;
 import com.yalantis.ucrop.model.CutInfo;
-import com.yalantis.ucrop.model.ExifInfo;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
 import com.yalantis.ucrop.util.FileUtils;
 
@@ -89,13 +86,12 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
 
         Uri uri = isAndroidQ ? Uri.parse(path) : Uri.fromFile(new File(path));
         holder.tvGif.setVisibility(FileUtils.isGif(photoInfo.getMimeType()) ? View.VISIBLE : View.GONE);
-        BitmapLoadUtils.decodeBitmapInBackground(context, uri, null, maxImageWidth,
+        BitmapLoadUtils.decodeBitmapInBackground(context, uri, maxImageWidth,
                 maxImageHeight,
-                new BitmapLoadCallback() {
+                new BitmapLoadShowCallback() {
 
                     @Override
-                    public void onBitmapLoaded(@NonNull Bitmap bitmap, @NonNull ExifInfo exifInfo,
-                                               @NonNull Uri imageInputUri, @Nullable Uri imageOutputUri) {
+                    public void onBitmapLoaded(@NonNull Bitmap bitmap) {
                         if (holder.mIvPhoto != null) {
                             holder.mIvPhoto.setImageBitmap(bitmap);
                         }

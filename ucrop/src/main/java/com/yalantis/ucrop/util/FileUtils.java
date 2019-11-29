@@ -36,7 +36,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.util.Locale;
 
@@ -231,45 +230,9 @@ public class FileUtils {
         }
     }
 
+
     public static boolean isGifForSuffix(String suffix) {
         return suffix != null && suffix.startsWith(".gif") || suffix.startsWith(".GIF");
-    }
-
-    public static boolean isWebp(String path) {
-        String imageType = createImageType(path);
-        switch (imageType) {
-            case "image/webp":
-            case "image/WEBP":
-                return true;
-        }
-        return false;
-    }
-
-    public static boolean isEnable(String path) {
-        try {
-            if (isGif(path) || isWebp(path)) {
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public static String createImageType(String path) {
-        try {
-            if (!TextUtils.isEmpty(path)) {
-                File file = new File(path);
-                String fileName = file.getName();
-                int last = fileName.lastIndexOf(".") + 1;
-                String temp = fileName.substring(last);
-                return "image/" + temp;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "image/jpeg";
-        }
-        return "image/jpeg";
     }
 
     /**
@@ -298,66 +261,33 @@ public class FileUtils {
         return false;
     }
 
-    public static String getDirName(String filePath) {
-        if (TextUtils.isEmpty(filePath)) {
-            return filePath;
-        } else {
-            int lastSep = filePath.lastIndexOf(File.separator);
-            return lastSep == -1 ? "" : filePath.substring(0, lastSep + 1);
-        }
-    }
-
 
     /**
-     * 复制文件至指定目录
-     *
-     * @param fileInputStream
-     * @param outFilePath
-     * @return
+     * Copies one file into the other with the given paths.
+     * In the event that the paths are the same, trying to copy one file to the other
+     * will cause both files to become null.
+     * Simply skipping this step if the paths are identical.
      */
-    public static boolean copyFile(FileInputStream fileInputStream, String outFilePath) {
-        // 判断目录是否存在。如不存在则创建一个目录
-        File file = new File(FileUtils.getDirName(outFilePath));
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        try {
-            file = new File(outFilePath);
-            if (!file.exists()) {
-                FileUtils.mkDirs(FileUtils.getDirName(outFilePath));
-            }
-            OutputStream myOutput = new FileOutputStream(outFilePath);
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = fileInputStream.read(buffer)) > 0) {
-                myOutput.write(buffer, 0, length);
-            }
-            myOutput.flush();
-            myOutput.close();
-            fileInputStream.close();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public static boolean mkDirs(String path) {
-        if (path == null) {
+    public static boolean copyFile(FileInputStream fileInputStream, String outFilePath) throws IOException {
+        if (fileInputStream == null) {
             return false;
         }
-        File dir = new File(path);
-        if (dir.isDirectory()) {
-            if (!dir.exists()) {
-                return dir.mkdirs();
-            }
-        } else {
-            if (!dir.exists()) {
-                return dir.mkdirs();
-            }
+        FileChannel inputChannel = null;
+        FileChannel outputChannel = null;
+        try {
+            inputChannel = fileInputStream.getChannel();
+            outputChannel = new FileOutputStream(new File(outFilePath)).getChannel();
+            inputChannel.transferTo(0, inputChannel.size(), outputChannel);
+            inputChannel.close();
+            return true;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            if (inputChannel != null) inputChannel.close();
+            if (outputChannel != null) outputChannel.close();
         }
-        return true;
     }
+
 
     public static String extSuffix(InputStream input) {
         try {

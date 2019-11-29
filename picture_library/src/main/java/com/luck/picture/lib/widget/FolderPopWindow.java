@@ -1,9 +1,6 @@
 package com.luck.picture.lib.widget;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
@@ -48,7 +45,7 @@ public class FolderPopWindow extends PopupWindow {
     private int chooseMode;
     private PictureSelectionConfig config;
     private int maxHeight;
-    private View rootView;
+    private View rootViewBg;
 
     public FolderPopWindow(Context context, PictureSelectionConfig config) {
         this.context = context;
@@ -62,7 +59,6 @@ public class FolderPopWindow extends PopupWindow {
         this.setFocusable(true);
         this.setOutsideTouchable(true);
         this.update();
-        this.setBackgroundDrawable(new ColorDrawable(Color.argb(123, 0, 0, 0)));
         if (config.style != null) {
             if (config.style.pictureTitleUpResId != 0) {
                 this.drawableUp = ContextCompat.getDrawable(context, config.style.pictureTitleUpResId);
@@ -89,12 +85,12 @@ public class FolderPopWindow extends PopupWindow {
     }
 
     public void initView() {
-        rootView = window.findViewById(R.id.rootView);
+        rootViewBg = window.findViewById(R.id.rootViewBg);
         adapter = new PictureAlbumDirectoryAdapter(context, config);
         recyclerView = window.findViewById(R.id.folder_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);
-        rootView.setOnClickListener(v -> dismiss());
+        rootViewBg.setOnClickListener(v -> dismiss());
     }
 
     public void bindFolder(List<LocalMediaFolder> folders) {
@@ -112,23 +108,12 @@ public class FolderPopWindow extends PopupWindow {
     @Override
     public void showAsDropDown(View anchor) {
         try {
-            if (!config.isFallbackVersion) {
-                if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N) {
-                    int[] location = new int[2];
-                    anchor.getLocationInWindow(location);
-                    showAtLocation(anchor, Gravity.NO_GRAVITY, 0, location[1] + anchor.getHeight());
-                } else {
-                    super.showAsDropDown(anchor, 0, 0);
-                }
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N) {
+                int[] location = new int[2];
+                anchor.getLocationInWindow(location);
+                showAtLocation(anchor, Gravity.NO_GRAVITY, 0, location[1] + anchor.getHeight());
             } else {
-                if (Build.VERSION.SDK_INT >= 24) {
-                    Rect rect = new Rect();
-                    anchor.getGlobalVisibleRect(rect);
-                    int h = anchor.getResources().getDisplayMetrics().heightPixels - rect.bottom;
-                    setHeight(h);
-                }
-                int statusBarHeight = ScreenUtils.getStatusBarHeight(context);
-                super.showAtLocation(anchor, Gravity.NO_GRAVITY, 0, anchor.getHeight() + statusBarHeight);
+                super.showAsDropDown(anchor);
             }
             isDismiss = false;
             ivArrowView.setImageDrawable(drawableUp);

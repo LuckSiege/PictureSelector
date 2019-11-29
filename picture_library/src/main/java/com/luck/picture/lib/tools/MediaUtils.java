@@ -32,11 +32,11 @@ public class MediaUtils {
      * @param context
      * @return 图片的uri
      */
-    public static Uri createImagePathUri(final Context context, String fileName) {
+    public static Uri createImagePathUri(final Context context) {
         final Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();
-        String time = String.valueOf(System.currentTimeMillis());
-        String imageName = TextUtils.isEmpty(fileName) ? time : fileName;
+        String time = ValueOf.toString(System.currentTimeMillis());
+        String imageName = time;
         // ContentValues是我们希望这条记录被创建时包含的数据信息
         ContentValues values = new ContentValues(3);
         values.put(MediaStore.Images.Media.DISPLAY_NAME, imageName);
@@ -60,11 +60,11 @@ public class MediaUtils {
      * @param context
      * @return 视频的uri
      */
-    public static Uri createImageVideoUri(final Context context, String fileName) {
+    public static Uri createImageVideoUri(final Context context) {
         final Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();
-        String time = String.valueOf(System.currentTimeMillis());
-        String imageName = TextUtils.isEmpty(fileName) ? time : fileName;
+        String time = ValueOf.toString(System.currentTimeMillis());
+        String imageName = time;
         // ContentValues是我们希望这条记录被创建时包含的数据信息
         ContentValues values = new ContentValues(3);
         values.put(MediaStore.Images.Media.DISPLAY_NAME, imageName);

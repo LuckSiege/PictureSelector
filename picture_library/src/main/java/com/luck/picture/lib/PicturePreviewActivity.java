@@ -9,11 +9,13 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.luck.picture.lib.adapter.PictureSimpleFragmentAdapter;
@@ -58,6 +60,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     private int screenWidth;
     private Handler mHandler;
     private RelativeLayout selectBarLayout;
+    private CheckBox mCbOriginal;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,6 +78,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         check = findViewById(R.id.check);
         picture_left_back.setOnClickListener(this);
         mTvPictureOk = findViewById(R.id.tv_ok);
+        mCbOriginal = findViewById(R.id.cb_original);
         tv_img_num = findViewById(R.id.tv_img_num);
         selectBarLayout = findViewById(R.id.select_bar_layout);
         mTvPictureOk.setOnClickListener(this);
@@ -166,11 +170,24 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     }
                     onImageChecked(position);
                 }
+
+                if (config.isOriginalControl) {
+                    boolean eqVideo = PictureMimeType.eqVideo(media.getMimeType());
+                    config.isCheckOriginalImage = eqVideo ? false : config.isCheckOriginalImage;
+                    mCbOriginal.setVisibility(eqVideo ? View.GONE : View.VISIBLE);
+                    mCbOriginal.setChecked(config.isCheckOriginalImage);
+                }
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
             }
+        });
+        // 原图
+        mCbOriginal.setChecked(config.isCheckOriginalImage);
+        mCbOriginal.setVisibility(config.isOriginalControl ? View.VISIBLE : View.GONE);
+        mCbOriginal.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            config.isCheckOriginalImage = isChecked;
         });
     }
 
@@ -199,6 +216,21 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             }
         }
         tv_title.setBackgroundColor(colorPrimary);
+
+        if (config.isOriginalControl) {
+            if (config.style != null && config.style.pictureOriginalControlStyle != 0) {
+                mCbOriginal.setButtonDrawable(config.style.pictureOriginalControlStyle);
+            } else {
+                mCbOriginal.setButtonDrawable(ContextCompat
+                        .getDrawable(this, R.drawable.picture_original_checkbox));
+            }
+            if (config.style != null && config.style.pictureOriginalFontColor != 0) {
+                mCbOriginal.setTextColor(config.style.pictureOriginalFontColor);
+            } else {
+                mCbOriginal.setTextColor(ContextCompat
+                        .getColor(this, R.color.picture_color_53575e));
+            }
+        }
     }
 
     /**
@@ -405,6 +437,10 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     return;
                 }
             }
+            if (config.isCheckOriginalImage) {
+                onResult(selectImages);
+                return;
+            }
             if (config.enableCrop && PictureMimeType.eqImage(mimeType)) {
                 if (config.selectionMode == PictureConfig.SINGLE) {
                     originalPath = image.getPath();
@@ -415,6 +451,10 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     int count = selectImages.size();
                     for (int i = 0; i < count; i++) {
                         LocalMedia media = selectImages.get(i);
+                        if (media == null
+                                || TextUtils.isEmpty(media.getPath())) {
+                            continue;
+                        }
                         CutInfo cutInfo = new CutInfo();
                         cutInfo.setPath(media.getPath());
                         cutInfo.setImageWidth(media.getWidth());
@@ -439,7 +479,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 .action(BroadcastAction.ACTION_PREVIEW_COMPRESSION)
                 .extras(bundle)
                 .broadcast();
-        if (!config.isCompress) {
+        if (!config.isCompress
+                || config.isCheckOriginalImage) {
             onBackPressed();
         } else {
             showPleaseDialog();

@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.Rect;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
@@ -21,7 +20,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 
-import com.luck.picture.lib.compress.InputStreamProvider;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 
@@ -69,38 +67,35 @@ public class PictureFileUtils {
      * @param format
      * @return
      */
-    private static File createMediaFile(Context context, int type, String fileName, String format) {
-        File rootDir;
-        if (SdkVersionUtils.checkedAndroid_Q()) {
-            rootDir = getRootDirFile(context, type);
-        } else {
-            String state = Environment.getExternalStorageState();
-            rootDir = state.equals(Environment.MEDIA_MOUNTED) ?
-                    Environment.getExternalStorageDirectory() : context.getCacheDir();
-        }
+    private static File createMediaFile(Context context, int chooseMode, String fileName, String format) {
+        return createOutFile(context, chooseMode, fileName, format);
+    }
+
+    private static File createOutFile(Context context, int chooseMode, String fileName, String format) {
+        String state = Environment.getExternalStorageState();
+        File rootDir = SdkVersionUtils.checkedAndroid_Q() ? getRootDirFile(context, chooseMode)
+                : state.equals(Environment.MEDIA_MOUNTED) ?
+                Environment.getExternalStorageDirectory() : context.getCacheDir();
         if (rootDir != null && !rootDir.exists() && rootDir.mkdirs()) {
         }
-        String parentPath = getParentPath(type);
+        String parentPath = getParentPath(chooseMode);
         File folderDir = new File(SdkVersionUtils.checkedAndroid_Q()
                 ? rootDir.getAbsolutePath() : rootDir.getAbsolutePath() + parentPath);
         if (folderDir != null && !folderDir.exists() && folderDir.mkdirs()) {
         }
-        fileName = TextUtils.isEmpty(fileName) ? String.valueOf(System.currentTimeMillis()) : fileName;
-        File tmpFile;
-        String suffixType;
-        switch (type) {
+        boolean isOutFileNameEmpty = TextUtils.isEmpty(fileName);
+        switch (chooseMode) {
             case PictureConfig.TYPE_VIDEO:
-                tmpFile = new File(folderDir, fileName + POST_VIDEO);
-                break;
+                String newFileVideoName = isOutFileNameEmpty ? System.currentTimeMillis() + POST_VIDEO : fileName;
+                return new File(folderDir, newFileVideoName);
             case PictureConfig.TYPE_AUDIO:
-                tmpFile = new File(folderDir, fileName + POST_AUDIO);
-                break;
+                String newFileAudioName = isOutFileNameEmpty ? System.currentTimeMillis() + POST_AUDIO : fileName;
+                return new File(folderDir, newFileAudioName);
             default:
-                suffixType = TextUtils.isEmpty(format) ? POSTFIX : format;
-                tmpFile = new File(folderDir, fileName + suffixType);
-                break;
+                String suffix = TextUtils.isEmpty(format) ? POSTFIX : format;
+                String newFileImageName = isOutFileNameEmpty ? System.currentTimeMillis() + suffix : fileName;
+                return new File(folderDir, newFileImageName);
         }
-        return tmpFile;
     }
 
     /**
@@ -449,6 +444,45 @@ public class PictureFileUtils {
     }
 
     /**
+     * set empty PictureSelector Cache
+     *
+     * @param context
+     * @param type    image、video、audio ...
+     */
+    public static void deleteAllCacheDirFile(Context context) {
+
+        File dirPictures = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (dirPictures != null) {
+            File[] files = dirPictures.listFiles();
+            for (File file : files) {
+                if (file.isFile()) {
+                    file.delete();
+                }
+            }
+        }
+
+        File dirMovies = context.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
+        if (dirPictures != null) {
+            File[] files = dirMovies.listFiles();
+            for (File file : files) {
+                if (file.isFile()) {
+                    file.delete();
+                }
+            }
+        }
+
+        File dirMusic = context.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+        if (dirPictures != null) {
+            File[] files = dirMusic.listFiles();
+            for (File file : files) {
+                if (file.isFile()) {
+                    file.delete();
+                }
+            }
+        }
+    }
+
+    /**
      * @param ctx
      * @return
      */
@@ -523,7 +557,7 @@ public class PictureFileUtils {
      * @param degree
      * @param path
      */
-    public static String rotateImageToAndroidQ(Context context, int degree, String path) {
+    public static String rotateImageToAndroidQ(Context context, int degree, String path, String newFileName) {
         if (degree > 0) {
             try {
                 // 针对相片有旋转问题的处理方式
@@ -539,7 +573,7 @@ public class PictureFileUtils {
                     String suffix = PictureFileUtils.extSuffix(inputStream);
                     Bitmap bmp = PictureFileUtils.rotatingImageView(degree, bitmap);
                     if (bmp != null) {
-                        String dir = createDir(context, System.currentTimeMillis() + suffix);
+                        String dir = createDir(context, TextUtils.isEmpty(newFileName) ? System.currentTimeMillis() + suffix : newFileName);
                         PictureFileUtils.saveBitmapFile(bmp, new File(dir));
                         return dir;
                     }
