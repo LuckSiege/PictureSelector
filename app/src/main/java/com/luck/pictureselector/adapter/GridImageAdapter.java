@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -35,6 +34,7 @@ import java.util.List;
  */
 public class GridImageAdapter extends
         RecyclerView.Adapter<GridImageAdapter.ViewHolder> {
+    public static final String TAG = "PictureSelector";
     public static final int TYPE_CAMERA = 1;
     public static final int TYPE_PICTURE = 2;
     private LayoutInflater mInflater;
@@ -67,13 +67,13 @@ public class GridImageAdapter extends
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView mImg;
-        LinearLayout llDel;
+        ImageView mIvDel;
         TextView tvDuration;
 
         public ViewHolder(View view) {
             super(view);
             mImg = view.findViewById(R.id.fiv);
-            llDel = view.findViewById(R.id.ll_del);
+            mIvDel = view.findViewById(R.id.iv_del);
             tvDuration = view.findViewById(R.id.tv_duration);
         }
     }
@@ -121,10 +121,10 @@ public class GridImageAdapter extends
         if (getItemViewType(position) == TYPE_CAMERA) {
             viewHolder.mImg.setImageResource(R.drawable.ic_add_image);
             viewHolder.mImg.setOnClickListener(v -> mOnAddPicClickListener.onAddPicClick());
-            viewHolder.llDel.setVisibility(View.INVISIBLE);
+            viewHolder.mIvDel.setVisibility(View.INVISIBLE);
         } else {
-            viewHolder.llDel.setVisibility(View.VISIBLE);
-            viewHolder.llDel.setOnClickListener(view -> {
+            viewHolder.mIvDel.setVisibility(View.VISIBLE);
+            viewHolder.mIvDel.setOnClickListener(view -> {
                 int index = viewHolder.getAdapterPosition();
                 // 这里有时会返回-1造成数据下标越界,具体可参考getAdapterPosition()源码，
                 // 通过源码分析应该是bindViewHolder()暂未绘制完成导致，知道原因的也可联系我~感谢
@@ -151,16 +151,24 @@ public class GridImageAdapter extends
                 // 原图
                 path = media.getPath();
             }
-            // 图片
+
+            Log.i(TAG, "原图地址::" + media.getPath());
+
+            if (media.isCut()) {
+                Log.i(TAG, "裁剪地址::" + media.getCutPath());
+            }
             if (media.isCompressed()) {
-                Log.i("compress image result:", new File(media.getCompressPath()).length() / 1024 + "k");
-                Log.i("压缩地址::", media.getCompressPath());
+                Log.i(TAG, "压缩地址::" + media.getCompressPath());
+                Log.i(TAG, "压缩后文件大小::" + new File(media.getCompressPath()).length() / 1024 + "k");
+            }
+            if (!TextUtils.isEmpty(media.getAndroidQToPath())) {
+                Log.i(TAG, "Android Q特有地址::" + media.getAndroidQToPath());
+            }
+            if (media.isOriginal()) {
+                Log.i(TAG, "是否开启原图功能::" + true);
+                Log.i(TAG, "开启原图功能后地址::" + media.getOriginalPath());
             }
 
-            Log.i("原图地址::", media.getPath());
-            if (media.isCut()) {
-                Log.i("裁剪地址::", media.getCutPath());
-            }
             long duration = media.getDuration();
             viewHolder.tvDuration.setVisibility(PictureMimeType.eqVideo(media.getMimeType())
                     ? View.VISIBLE : View.GONE);

@@ -34,8 +34,10 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.tools.PictureFileUtils;
+import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.pictureselector.adapter.GridImageAdapter;
+import com.luck.pictureselector.widgets.GridSpacingItemNotBothDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,8 +107,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_crop.setOnCheckedChangeListener(this);
         cb_crop_circular.setOnCheckedChangeListener(this);
         cb_compress.setOnCheckedChangeListener(this);
-        FullyGridLayoutManager manager = new FullyGridLayoutManager(MainActivity.this, 4, GridLayoutManager.VERTICAL, false);
+        FullyGridLayoutManager manager = new FullyGridLayoutManager(this,
+                4, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
+        recyclerView.addItemDecoration(new GridSpacingItemNotBothDecoration(4,
+                ScreenUtils.dip2px(this, 8), true, false));
         adapter = new GridImageAdapter(MainActivity.this, onAddPicClickListener);
         adapter.setList(selectList);
         adapter.setSelectMax(maxSelectNum);
