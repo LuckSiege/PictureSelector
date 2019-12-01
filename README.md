@@ -36,9 +36,9 @@
 
 ```
 v2.3.6 
-1.优化FolderPopWindow弹出动画和切换目录卡顿问题
+1.新增全新的相册选择风格类似新版微信； api .isWeChatStyle(true); 设置为true即可开启  具体查看 "演示效果"
 2.优化Android Q 裁剪压缩耗时问题
-3.新增类似新版微信选择风格 .isWeChatStyle(true); 设置为true即可开启
+3.优化FolderPopWindow弹出动画和切换目录卡顿问题
 4.新增原图功能.isOriginalImageControl(); 注意：开启了此功能用户就自由选择是否是原图，压缩、裁剪功能将失效
 5.新增繁体、韩语、德语、法语、日语语言包并可能通过api .setLanguage(language);进行设置
 6.新增PictureWindowAnimationStyle可以对相册各页面弹出动画自定义；具体参考Demo MainActivity.java
