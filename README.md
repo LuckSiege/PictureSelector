@@ -35,7 +35,7 @@
 # 注意事项  重要！！！
 
 ```
-v2.3.5 
+v2.3.6 
 1.优化FolderPopWindow弹出动画和切换目录卡顿问题
 2.优化Android Q 裁剪压缩耗时问题
 3.新增类似新版微信选择风格 .isWeChatStyle(true); 设置为true即可开启
@@ -126,7 +126,7 @@ v2.3.2开始移除了glide，所以使用v2.3.2版本以后的用户一定要配
 
 ```
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.5'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.6'
 }
 
 ```
@@ -159,7 +159,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.3.5</version> 
+      <version>v2.3.6</version> 
 </dependency>
 
 ```
@@ -512,7 +512,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
                     // 5.media.getAndroidQToPath();为Android Q版本特有返回的字段，此字段有值就用来做上传使用
                     // 如果同时开启裁剪和压缩，则取压缩路径为准因为是先裁剪后压缩
 		    
-		    // 从2.3.5开始加入了原图功能，所以再使用的时候需要判断media.isOriginal()); 如果为true有可能是用户选择要上传原图则要取
+		    // 从2.3.6开始加入了原图功能，所以再使用的时候需要判断media.isOriginal()); 如果为true有可能是用户选择要上传原图则要取
 		    media.getOriginalPath());作为上传路径，前提是你开启了.isOriginalImageControl(true);开关
 		    
                     for (LocalMedia media : selectList) {
@@ -537,7 +537,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 # 当前版本：
 ```
-* v2.3.5
+* v2.3.6
 * 1.优化FolderPopWindow弹出动画和切换目录卡顿问题
 * 2.优化Android Q 裁剪压缩耗时问题
 * 3.新增类似新版微信选择风格 .isWeChatStyle(true); 设置为true即可开启
