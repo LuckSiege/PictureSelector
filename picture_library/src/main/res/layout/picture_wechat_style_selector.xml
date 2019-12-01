@@ -8,7 +8,7 @@
     android:fitsSystemWindows="true"
     tools:context="com.luck.picture.lib.PictureSelectorActivity">
 
-    <include layout="@layout/picture_title_bar" />
+    <include layout="@layout/picture_wechat_style_title_bar" />
 
     <RelativeLayout
         android:id="@+id/rl_bottom"

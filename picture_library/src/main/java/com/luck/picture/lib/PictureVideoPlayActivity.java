@@ -16,7 +16,9 @@ import android.widget.VideoView;
  * @data：2017/8/28 下午11:00
  * @描述: 视频播放类
  */
-public class PictureVideoPlayActivity extends PictureBaseActivity implements MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, View.OnClickListener {
+public class PictureVideoPlayActivity extends PictureBaseActivity implements
+        MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener,
+        MediaPlayer.OnCompletionListener, View.OnClickListener {
     private String video_path = "";
     private ImageView picture_left_back;
     private MediaController mMediaController;
@@ -33,7 +35,16 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.picture_activity_video_play);
+    }
+
+    @Override
+    public int getResourceId() {
+        return R.layout.picture_activity_video_play;
+    }
+
+    @Override
+    protected void initWidgets() {
+        super.initWidgets();
         video_path = getIntent().getStringExtra("video_path");
         picture_left_back = findViewById(R.id.picture_left_back);
         mVideoView = findViewById(R.id.video_view);
@@ -46,7 +57,6 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements Med
         picture_left_back.setOnClickListener(this);
         iv_play.setOnClickListener(this);
     }
-
 
     @Override
     public void onStart() {

@@ -73,7 +73,7 @@
         <!--选择图片样式0/9-->
         <item name="picture.style.numComplete">false</item>
         <!--图片列表底部背景色-->
-        <item name="picture.bottom.bg">@color/picture_color_fa</item>
+        <item name="picture.bottom.bg">@color/picture_color_grey</item>
         <!--图片列表预览文字颜色-->
         <item name="picture.preview.textColor">@color/picture_list_text_color</item>
         <!--图片列表已完成文字颜色-->
@@ -83,11 +83,11 @@
         <!--预览界面标题文字颜色-->
         <item name="picture.ac_preview.title.textColor">@color/picture_color_white</item>
         <!--预览界面已完成文字颜色-->
-        <item name="picture.ac_preview.complete.textColor">@color/picture_preview_text_color</item>
+        <item name="picture.ac_preview.complete.textColor">@color/picture_color_white</item>
         <!--预览界面标题栏背景色-->
         <item name="picture.ac_preview.title.bg">@color/picture_color_grey</item>
         <!--预览界面底部背景色-->
-        <item name="picture.ac_preview.bottom.bg">@color/picture_color_fa</item>
+        <item name="picture.ac_preview.bottom.bg">@color/picture_color_grey</item>
         <!--预览界面返回箭头-->
         <item name="picture.preview.leftBack.icon">@drawable/picture_icon_back</item>
         <!--裁剪页面标题背景色-->

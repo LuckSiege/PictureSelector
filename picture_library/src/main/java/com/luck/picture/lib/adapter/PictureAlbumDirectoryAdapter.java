@@ -26,14 +26,12 @@ import java.util.List;
  * @describe：文件夹目录
  */
 public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAlbumDirectoryAdapter.ViewHolder> {
-    private Context mContext;
     private List<LocalMediaFolder> folders = new ArrayList<>();
     private int chooseMode;
     private PictureSelectionConfig config;
 
-    public PictureAlbumDirectoryAdapter(Context mContext, PictureSelectionConfig config) {
+    public PictureAlbumDirectoryAdapter(PictureSelectionConfig config) {
         super();
-        this.mContext = mContext;
         this.config = config;
         this.chooseMode = config.chooseMode;
     }
@@ -56,7 +54,8 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.picture_album_folder_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.picture_album_folder_item, parent, false);
         return new ViewHolder(itemView);
     }
 

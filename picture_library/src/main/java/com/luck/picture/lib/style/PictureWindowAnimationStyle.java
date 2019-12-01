@@ -70,6 +70,24 @@ public class PictureWindowAnimationStyle implements Parcelable {
         this.activityPreviewExitAnimation = activityPreviewExitAnimation;
     }
 
+    /**
+     * 全局所有动画样式
+     *
+     * @param enterAnimation
+     * @param exitAnimation
+     */
+    public void ofAllAnimation(int enterAnimation, int exitAnimation) {
+        this.activityEnterAnimation = enterAnimation;
+        this.activityExitAnimation = exitAnimation;
+
+        this.activityPreviewEnterAnimation = enterAnimation;
+        this.activityPreviewExitAnimation = exitAnimation;
+
+        this.activityCropEnterAnimation = enterAnimation;
+        this.activityCropExitAnimation = exitAnimation;
+
+    }
+
     @Override
     public int describeContents() {
         return 0;

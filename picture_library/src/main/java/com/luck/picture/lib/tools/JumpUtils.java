@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.luck.picture.lib.PicturePreviewActivity;
+import com.luck.picture.lib.PictureSelectorPreviewWeChatStyleActivity;
 import com.luck.picture.lib.PictureVideoPlayActivity;
 
 /**
@@ -23,10 +24,10 @@ public class JumpUtils {
         }
     }
 
-    public static void startPicturePreviewActivity(Context context, Bundle bundle, int requestCode) {
+    public static void startPicturePreviewActivity(Context context, boolean isWeChatStyle, Bundle bundle, int requestCode) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Intent intent = new Intent();
-            intent.setClass(context, PicturePreviewActivity.class);
+            intent.setClass(context, isWeChatStyle ? PictureSelectorPreviewWeChatStyleActivity.class : PicturePreviewActivity.class);
             intent.putExtras(bundle);
             if (context instanceof Activity) {
                 ((Activity) context).startActivityForResult(intent, requestCode);

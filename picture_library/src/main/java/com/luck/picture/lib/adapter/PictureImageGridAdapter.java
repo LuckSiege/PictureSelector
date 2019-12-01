@@ -99,9 +99,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             selection.add(media);
         }
         this.selectImages = selection;
-        subSelectPosition();
-        if (imageSelectChangedListener != null) {
-            imageSelectChangedListener.onChange(selectImages);
+        if (!config.isSingleDirectReturn) {
+            subSelectPosition();
+            if (imageSelectChangedListener != null) {
+                imageSelectChangedListener.onChange(selectImages);
+            }
         }
     }
 

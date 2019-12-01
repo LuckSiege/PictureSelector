@@ -67,17 +67,22 @@ public class FolderPopWindow extends PopupWindow {
                 this.drawableDown = ContextCompat.getDrawable(context, config.style.pictureTitleDownResId);
             }
         } else {
-            if (config.upResId != 0) {
-                this.drawableUp = ContextCompat.getDrawable(context, config.upResId);
+            if (config.isWeChatStyle) {
+                this.drawableUp = ContextCompat.getDrawable(context, R.drawable.picture_icon_wechat_up);
+                this.drawableDown = ContextCompat.getDrawable(context, R.drawable.picture_icon_wechat_down);
             } else {
-                // 兼容老的Theme方式
-                this.drawableUp = AttrsUtils.getTypeValueDrawable(context, R.attr.picture_arrow_up_icon);
-            }
-            if (config.downResId != 0) {
-                this.drawableDown = ContextCompat.getDrawable(context, config.downResId);
-            } else {
-                // 兼容老的Theme方式 picture.arrow_down.icon
-                this.drawableDown = AttrsUtils.getTypeValueDrawable(context, R.attr.picture_arrow_down_icon);
+                if (config.upResId != 0) {
+                    this.drawableUp = ContextCompat.getDrawable(context, config.upResId);
+                } else {
+                    // 兼容老的Theme方式
+                    this.drawableUp = AttrsUtils.getTypeValueDrawable(context, R.attr.picture_arrow_up_icon);
+                }
+                if (config.downResId != 0) {
+                    this.drawableDown = ContextCompat.getDrawable(context, config.downResId);
+                } else {
+                    // 兼容老的Theme方式 picture.arrow_down.icon
+                    this.drawableDown = AttrsUtils.getTypeValueDrawable(context, R.attr.picture_arrow_down_icon);
+                }
             }
         }
         this.maxHeight = (int) (ScreenUtils.getScreenHeight(context) * 0.6);
@@ -86,7 +91,7 @@ public class FolderPopWindow extends PopupWindow {
 
     public void initView() {
         rootViewBg = window.findViewById(R.id.rootViewBg);
-        adapter = new PictureAlbumDirectoryAdapter(context, config);
+        adapter = new PictureAlbumDirectoryAdapter(config);
         recyclerView = window.findViewById(R.id.folder_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);

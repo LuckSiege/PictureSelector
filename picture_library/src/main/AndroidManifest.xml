@@ -17,11 +17,15 @@
             android:name=".PictureSelectorActivity"
             android:windowSoftInputMode="adjustPan" />
         <activity
+            android:name=".PictureSelectorWeChatStyleActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
             android:name=".PictureSelectorCameraEmptyActivity"
             android:theme="@style/Picture.Theme.Translucent"
             android:windowSoftInputMode="adjustPan" />
 
         <activity android:name=".PicturePreviewActivity" />
+        <activity android:name=".PictureSelectorPreviewWeChatStyleActivity" />
         <activity
             android:name=".PictureVideoPlayActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

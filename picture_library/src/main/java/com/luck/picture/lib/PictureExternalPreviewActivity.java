@@ -68,8 +68,17 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.picture_activity_external_preview);
         inflater = LayoutInflater.from(this);
+    }
+
+    @Override
+    public int getResourceId() {
+        return R.layout.picture_activity_external_preview;
+    }
+
+    @Override
+    protected void initWidgets() {
+        super.initWidgets();
         tvTitle = findViewById(R.id.picture_title);
         ibLeftBack = findViewById(R.id.left_back);
         ibDelete = findViewById(R.id.ib_delete);
@@ -81,13 +90,13 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         ibDelete.setVisibility(config.style != null ? config.style.pictureExternalPreviewGonePreviewDelete
                 ? View.VISIBLE : View.GONE : View.GONE);
         initViewPageAdapterData();
-        initPictureSelectorStyle();
     }
 
     /**
      * 设置样式
      */
-    private void initPictureSelectorStyle() {
+    @Override
+    public void initPictureSelectorStyle() {
         if (config.style != null) {
             if (config.style.pictureTitleTextColor != 0) {
                 tvTitle.setTextColor(config.style.pictureTitleTextColor);
@@ -229,7 +238,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 });
                 imageView.setOnLongClickListener(v -> {
                     if (config.isNotPreviewDownload) {
-                        if (PermissionChecker.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                             downloadPath = path;
                             showDownLoadDialog();
                         } else {
@@ -292,7 +301,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     String dirPath = PictureFileUtils.createDir(PictureExternalPreviewActivity.this,
                             System.currentTimeMillis() + suffix);
                     PictureFileUtils.copyFile(downloadPath, dirPath);
-                    ToastUtils.s(mContext, getString(R.string.picture_save_success) + "\n" + dirPath);
+                    ToastUtils.s(getContext(), getString(R.string.picture_save_success) + "\n" + dirPath);
 
                     Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
                     Uri uri = Uri.fromFile(new File(dirPath));
@@ -301,7 +310,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
                     dismissDialog();
                 } catch (IOException e) {
-                    ToastUtils.s(mContext, getString(R.string.picture_save_error) + "\n" + e.getMessage());
+                    ToastUtils.s(getContext(), getString(R.string.picture_save_error) + "\n" + e.getMessage());
                     dismissDialog();
                     e.printStackTrace();
                 }
@@ -358,7 +367,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             message.obj = path;
             handler.sendMessage(message);
         } catch (IOException e) {
-            ToastUtils.s(mContext, getString(R.string.picture_save_error) + "\n" + e.getMessage());
+            ToastUtils.s(getContext(), getString(R.string.picture_save_error) + "\n" + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -371,7 +380,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             switch (msg.what) {
                 case 200:
                     String path = (String) msg.obj;
-                    ToastUtils.s(mContext, getString(R.string.picture_save_success) + "\n" + path);
+                    ToastUtils.s(getContext(), getString(R.string.picture_save_success) + "\n" + path);
                     dismissDialog();
                     break;
             }
@@ -410,7 +419,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                         showDownLoadDialog();
                     } else {
-                        ToastUtils.s(mContext, getString(R.string.picture_jurisdiction));
+                        ToastUtils.s(getContext(), getString(R.string.picture_jurisdiction));
                     }
                 }
                 break;

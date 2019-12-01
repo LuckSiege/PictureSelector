@@ -191,7 +191,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         mRecyclerView.setId(R.id.id_recycler);
         mRecyclerView.setBackgroundColor(ContextCompat.getColor(this, R.color.ucrop_color_widget_background));
         RelativeLayout.LayoutParams lp =
-                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, dip2px(90));
+                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, dip2px(80));
         mRecyclerView.setLayoutParams(lp);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -804,7 +804,6 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         String path = list.get(cutIndex).getPath();
         boolean isHttp = FileUtils.isHttp(path);
         String imgType = getLastImgType(isAndroidQ ? FileUtils.getPath(this, Uri.parse(path)) : path);
-        Log.i("Mike", "resetCutData: "+imgType);
         Uri uri = isHttp || isAndroidQ ? Uri.parse(path) : Uri.fromFile(new File(path));
         extras.putParcelable(UCropMulti.EXTRA_INPUT_URI, uri);
 

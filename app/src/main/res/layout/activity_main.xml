@@ -79,7 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="默认样式"
+                    android:text="主题默认样式"
                     android:textColor="@color/app_color_53575e"
                     android:textSize="14sp" />
 
@@ -87,7 +87,7 @@
                     android:id="@+id/rb_white_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="样式一"
+                    android:text="主题样式一"
                     android:textColor="@color/app_color_53575e"
                     android:textSize="14sp" />
 
@@ -95,7 +95,7 @@
                     android:id="@+id/rb_num_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="样式二"
+                    android:text="主题样式二"
                     android:textColor="@color/app_color_53575e"
                     android:textSize="14sp" />
 
@@ -103,10 +103,42 @@
                     android:id="@+id/rb_sina_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="样式三"
+                    android:text="主题样式三"
                     android:textColor="@color/app_color_53575e"
                     android:textSize="14sp" />
 
+                <RadioButton
+                    android:id="@+id/rb_we_chat_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="主题样式四 (仿微信-全新风格)"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
+            </RadioGroup>
+
+            <RadioGroup
+                android:id="@+id/rgb_animation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/rb_photo_default_animation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="默认启动动画"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/rb_photo_up_animation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="相册上弹动画"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
             </RadioGroup>
 
             <CheckBox
@@ -245,15 +277,31 @@
                 android:textColor="@color/app_color_53575e"
                 android:textSize="14sp" />
 
-            <CheckBox
-                android:id="@+id/cb_choose_mode"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:gravity="center_vertical"
-                android:text="单选or多选"
-                android:textColor="@color/app_color_53575e"
-                android:textSize="14sp" />
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/cb_choose_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:gravity="center_vertical"
+                    android:text="多选or单选"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
+                <CheckBox
+                    android:id="@+id/cb_single_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="单选模式直接返回"
+                    android:textColor="@color/app_color_c51"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+            </LinearLayout>
 
             <CheckBox
                 android:id="@+id/cb_isCamera"

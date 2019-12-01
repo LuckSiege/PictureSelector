@@ -85,6 +85,15 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param isWeChatStyle Select style with or without WeChat enabled
+     * @return
+     */
+    public PictureSelectionModel isWeChatStyle(boolean isWeChatStyle) {
+        selectionConfig.isWeChatStyle = isWeChatStyle;
+        return this;
+    }
+
+    /**
      * @param enableCrop Do you want to start cutting ?
      * @return
      */
@@ -704,13 +713,24 @@ public class PictureSelectionModel {
     }
 
     /**
-     * # 要使用此方法时最好先咨询作者！！！
+     * # 内部方法-要使用此方法时最好先咨询作者！！！
      *
      * @param isFallbackVersion 仅供特殊情况内部使用 如果某功能出错此开关可以回退至之前版本
      * @return
      */
     public PictureSelectionModel isFallbackVersion(boolean isFallbackVersion) {
         selectionConfig.isFallbackVersion = isFallbackVersion;
+        return this;
+    }
+
+    /**
+     * # 内部方法-要使用此方法时最好先咨询作者！！！
+     *
+     * @param isFallbackVersion 仅供特殊情况内部使用 如果某功能出错此开关可以回退至之前版本
+     * @return
+     */
+    public PictureSelectionModel isFallbackVersion2(boolean isFallbackVersion) {
+        selectionConfig.isFallbackVersion2 = isFallbackVersion;
         return this;
     }
 
@@ -726,7 +746,9 @@ public class PictureSelectionModel {
                 return;
             }
             Intent intent = new Intent(activity, selectionConfig.camera
-                    ? PictureSelectorCameraEmptyActivity.class : PictureSelectorActivity.class);
+                    ? PictureSelectorCameraEmptyActivity.class :
+                    selectionConfig.isWeChatStyle ? PictureSelectorWeChatStyleActivity.class
+                            : PictureSelectorActivity.class);
             Fragment fragment = selector.getFragment();
             if (fragment != null) {
                 fragment.startActivityForResult(intent, requestCode);
@@ -755,7 +777,9 @@ public class PictureSelectionModel {
                 return;
             }
             Intent intent = new Intent(activity, selectionConfig != null && selectionConfig.camera
-                    ? PictureSelectorCameraEmptyActivity.class : PictureSelectorActivity.class);
+                    ? PictureSelectorCameraEmptyActivity.class :
+                    selectionConfig.isWeChatStyle ? PictureSelectorWeChatStyleActivity.class :
+                            PictureSelectorActivity.class);
             Fragment fragment = selector.getFragment();
             if (fragment != null) {
                 fragment.startActivityForResult(intent, requestCode);

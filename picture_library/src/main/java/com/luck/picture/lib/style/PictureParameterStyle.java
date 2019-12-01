@@ -38,6 +38,12 @@ public class PictureParameterStyle implements Parcelable {
     public int pictureTitleBarBackgroundColor;
 
     /**
+     * 相册父容器背景色
+     */
+    @ColorInt
+    public int pictureContainerBackgroundColor;
+
+    /**
      * 相册标题色值
      */
     @ColorInt
@@ -47,7 +53,20 @@ public class PictureParameterStyle implements Parcelable {
      * 相册取消按钮色值
      */
     @ColorInt
+    @Deprecated
     public int pictureCancelTextColor;
+
+    /**
+     * 相册右侧按钮色值
+     */
+    @ColorInt
+    public int pictureRightDefaultTextColor;
+
+    /**
+     * 相册右侧按钮色值
+     */
+    @ColorInt
+    public int pictureRightSelectedTextColor;
 
     /**
      * 相册列表底部背景色
@@ -99,6 +118,18 @@ public class PictureParameterStyle implements Parcelable {
     public int pictureOriginalFontColor;
 
     /**
+     * 相册右侧按钮不可点击背景样式
+     */
+    @DrawableRes
+    public int pictureRightDefaultBackgroundStyle;
+
+    /**
+     * 相册右侧按钮可点击背景样式
+     */
+    @DrawableRes
+    public int pictureRightBackgroundStyle;
+
+    /**
      * 相册标题右侧箭头
      */
     @DrawableRes
@@ -120,6 +151,24 @@ public class PictureParameterStyle implements Parcelable {
      */
     @DrawableRes
     public int pictureCheckedStyle;
+
+    /**
+     * WeChatStyle 预览右下角 勾选CheckBox drawable样式
+     */
+    @DrawableRes
+    public int pictureWeChatChooseStyle;
+
+    /**
+     * WeChatStyle 预览界面返回键样式
+     */
+    @DrawableRes
+    public int pictureWeChatLeftBackStyle;
+
+    /**
+     * WeChatStyle 相册界面标题背景样式
+     */
+    @DrawableRes
+    public int pictureWeChatTitleBackgroundStyle;
 
     /**
      * 图片已选数量圆点背景色
@@ -145,6 +194,7 @@ public class PictureParameterStyle implements Parcelable {
     @DrawableRes
     public int pictureOriginalControlStyle;
 
+
     /**
      * 外部预览图片是否显示删除按钮
      */
@@ -167,8 +217,11 @@ public class PictureParameterStyle implements Parcelable {
         dest.writeByte(this.isOpenCheckNumStyle ? (byte) 1 : (byte) 0);
         dest.writeInt(this.pictureStatusBarColor);
         dest.writeInt(this.pictureTitleBarBackgroundColor);
+        dest.writeInt(this.pictureContainerBackgroundColor);
         dest.writeInt(this.pictureTitleTextColor);
         dest.writeInt(this.pictureCancelTextColor);
+        dest.writeInt(this.pictureRightDefaultTextColor);
+        dest.writeInt(this.pictureRightSelectedTextColor);
         dest.writeInt(this.pictureBottomBgColor);
         dest.writeInt(this.pictureCompleteTextColor);
         dest.writeInt(this.pictureUnCompleteTextColor);
@@ -177,10 +230,15 @@ public class PictureParameterStyle implements Parcelable {
         dest.writeInt(this.picturePreviewBottomBgColor);
         dest.writeInt(this.pictureNavBarColor);
         dest.writeInt(this.pictureOriginalFontColor);
+        dest.writeInt(this.pictureRightDefaultBackgroundStyle);
+        dest.writeInt(this.pictureRightBackgroundStyle);
         dest.writeInt(this.pictureTitleUpResId);
         dest.writeInt(this.pictureTitleDownResId);
         dest.writeInt(this.pictureLeftBackIcon);
         dest.writeInt(this.pictureCheckedStyle);
+        dest.writeInt(this.pictureWeChatChooseStyle);
+        dest.writeInt(this.pictureWeChatLeftBackStyle);
+        dest.writeInt(this.pictureWeChatTitleBackgroundStyle);
         dest.writeInt(this.pictureCheckNumBgStyle);
         dest.writeInt(this.pictureFolderCheckedDotStyle);
         dest.writeInt(this.pictureExternalPreviewDeleteStyle);
@@ -194,8 +252,11 @@ public class PictureParameterStyle implements Parcelable {
         this.isOpenCheckNumStyle = in.readByte() != 0;
         this.pictureStatusBarColor = in.readInt();
         this.pictureTitleBarBackgroundColor = in.readInt();
+        this.pictureContainerBackgroundColor = in.readInt();
         this.pictureTitleTextColor = in.readInt();
         this.pictureCancelTextColor = in.readInt();
+        this.pictureRightDefaultTextColor = in.readInt();
+        this.pictureRightSelectedTextColor = in.readInt();
         this.pictureBottomBgColor = in.readInt();
         this.pictureCompleteTextColor = in.readInt();
         this.pictureUnCompleteTextColor = in.readInt();
@@ -204,10 +265,15 @@ public class PictureParameterStyle implements Parcelable {
         this.picturePreviewBottomBgColor = in.readInt();
         this.pictureNavBarColor = in.readInt();
         this.pictureOriginalFontColor = in.readInt();
+        this.pictureRightDefaultBackgroundStyle = in.readInt();
+        this.pictureRightBackgroundStyle = in.readInt();
         this.pictureTitleUpResId = in.readInt();
         this.pictureTitleDownResId = in.readInt();
         this.pictureLeftBackIcon = in.readInt();
         this.pictureCheckedStyle = in.readInt();
+        this.pictureWeChatChooseStyle = in.readInt();
+        this.pictureWeChatLeftBackStyle = in.readInt();
+        this.pictureWeChatTitleBackgroundStyle = in.readInt();
         this.pictureCheckNumBgStyle = in.readInt();
         this.pictureFolderCheckedDotStyle = in.readInt();
         this.pictureExternalPreviewDeleteStyle = in.readInt();

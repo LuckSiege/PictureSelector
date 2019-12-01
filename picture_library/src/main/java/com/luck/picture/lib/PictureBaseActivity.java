@@ -15,13 +15,13 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.luck.picture.lib.broadcast.BroadcastAction;
 import com.luck.picture.lib.broadcast.BroadcastManager;
-import com.luck.picture.lib.compress.CompressionPredicate;
 import com.luck.picture.lib.compress.Luban;
 import com.luck.picture.lib.compress.OnCompressListener;
 import com.luck.picture.lib.config.PictureConfig;
@@ -55,19 +55,19 @@ import java.util.List;
  * @data：2018/3/28 下午1:00
  * @描述: Activity基类
  */
-public class PictureBaseActivity extends AppCompatActivity implements Handler.Callback {
+public abstract class PictureBaseActivity extends AppCompatActivity implements Handler.Callback {
     private static final int MSG_CHOOSE_RESULT_SUCCESS = 200;
     private static final int MSG_ASY_COMPRESSION_RESULT_SUCCESS = 300;
-    protected Context mContext;
     protected PictureSelectionConfig config;
     protected boolean openWhiteStatusBar, numComplete;
     protected int colorPrimary, colorPrimaryDark;
-    protected String cameraPath, outputCameraPath;
+    protected String cameraPath;
     protected String originalPath;
     protected PictureLoadingDialog dialog;
     protected PictureLoadingDialog compressDialog;
     protected List<LocalMedia> selectionMedias;
     protected Handler mHandler;
+    protected View container;
 
     /**
      * 是否使用沉浸式，子类复写该方法来确定是否采用沉浸式
@@ -89,6 +89,22 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
                 , openWhiteStatusBar);
     }
 
+
+    /**
+     * 获取布局文件
+     *
+     * @return
+     */
+    public abstract int getResourceId();
+
+    protected void initWidgets() {
+
+    }
+
+    protected void initPictureSelectorStyle() {
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
@@ -100,86 +116,95 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
         }
         setTheme(config.themeStyleId);
         super.onCreate(savedInstanceState);
-        initConfig();
-        mContext = this;
         mHandler = new Handler(Looper.getMainLooper(), this);
+        initConfig();
         if (isImmersive()) {
             immersive();
         }
-        if (config.language >= 0) {
-            PictureLanguageUtils.applyLanguage(this, LocaleTransform.getLanguage(config.language));
+        int layoutResID = getResourceId();
+        if (layoutResID != 0) {
+            setContentView(layoutResID);
         }
-        if (config.style != null && config.style.pictureNavBarColor != 0) {
-            // 导航条色值
-            NavBarUtils.setNavBarColor(this, config.style.pictureNavBarColor);
-        }
+        initWidgets();
+        initPictureSelectorStyle();
+    }
+
+    /**
+     * 获取Context上下文
+     *
+     * @return
+     */
+    protected Context getContext() {
+        return this;
     }
 
     /**
      * 获取配置参数
      */
     private void initConfig() {
-        outputCameraPath = config.outputCameraPath;
-        // 是否开启白色状态栏
-        openWhiteStatusBar = config.style != null ? config.style.isChangeStatusBarFontColor : false;
-        if (!openWhiteStatusBar) {
-            // 兼容单独动态设置主题方式
+        // 设置语言
+        if (config.language >= 0) {
+            PictureLanguageUtils.applyLanguage(this, LocaleTransform.getLanguage(config.language));
+        }
+        // 已选图片列表
+        selectionMedias = config.selectionMedias == null ? new ArrayList<>() : config.selectionMedias;
+
+        if (config.style != null) {
+            // 导航条色值
+            if (config.style.pictureNavBarColor != 0) {
+                NavBarUtils.setNavBarColor(this, config.style.pictureNavBarColor);
+            }
+            // 是否开启白色状态栏
+            openWhiteStatusBar = config.style.isChangeStatusBarFontColor;
+            // 标题栏背景色
+            if (config.style.pictureTitleBarBackgroundColor != 0) {
+                colorPrimary = config.style.pictureTitleBarBackgroundColor;
+            }
+            // 状态栏色值
+            if (config.style.pictureStatusBarColor != 0) {
+                colorPrimaryDark = config.style.pictureStatusBarColor;
+            }
+            // 是否是0/9样式
+            numComplete = config.style.isOpenCompletedNumStyle;
+            // 是否开启数字勾选模式
+            config.checkNumMode = config.style.isOpenCheckNumStyle;
+        } else {
+            // 是否开启白色状态栏，兼容单独动态设置主题方式
             openWhiteStatusBar = config.isChangeStatusBarFontColor;
             if (!openWhiteStatusBar) {
                 // 兼容老的Theme方式
                 openWhiteStatusBar = AttrsUtils.getTypeValueBoolean(this, R.attr.picture_statusFontColor);
             }
-        }
 
-        // 是否是0/9样式
-        numComplete = config.style != null ? config.style.isOpenCompletedNumStyle : false;
-        if (!numComplete) {
-            // 兼容单独动态设置主题方式
+            // 是否是0/9样式，兼容单独动态设置主题方式
             numComplete = config.isOpenStyleNumComplete;
             if (!numComplete) {
                 // 兼容老的Theme方式
                 numComplete = AttrsUtils.getTypeValueBoolean(this, R.attr.picture_style_numComplete);
             }
-        }
 
-        // 是否开启数字勾选模式
-        config.checkNumMode = config.style != null ? config.style.isOpenCheckNumStyle : false;
-        if (!config.checkNumMode) {
-            // 兼容单独动态设置主题方式
+            // 是否开启数字勾选模式，兼容单独动态设置主题方式
             config.checkNumMode = config.isOpenStyleCheckNumMode;
             if (!config.checkNumMode) {
                 // 兼容老的Theme方式
                 config.checkNumMode = AttrsUtils.getTypeValueBoolean(this, R.attr.picture_style_checkNumMode);
             }
-        }
 
-        // 标题栏背景色
-        if (config.style != null && config.style.pictureTitleBarBackgroundColor != 0) {
-            colorPrimary = config.style.pictureTitleBarBackgroundColor;
-        } else {
+            // 标题栏背景色
             if (config.titleBarBackgroundColor != 0) {
                 colorPrimary = config.titleBarBackgroundColor;
             } else {
                 // 兼容老的Theme方式
                 colorPrimary = AttrsUtils.getTypeValueColor(this, R.attr.colorPrimary);
             }
-        }
-        // 状态栏色值
-        if (config.style != null && config.style.pictureStatusBarColor != 0) {
-            colorPrimaryDark = config.style.pictureStatusBarColor;
-        } else {
+
+            // 状态栏色值
             if (config.pictureStatusBarColor != 0) {
                 colorPrimaryDark = config.pictureStatusBarColor;
             } else {
                 // 兼容老的Theme方式
                 colorPrimaryDark = AttrsUtils.getTypeValueColor(this, R.attr.colorPrimaryDark);
             }
-        }
-
-        // 已选图片列表
-        selectionMedias = config.selectionMedias;
-        if (selectionMedias == null) {
-            selectionMedias = new ArrayList<>();
         }
     }
 
@@ -253,7 +278,7 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
             AsyncTask.SERIAL_EXECUTOR.execute(() -> {
                 try {
                     List<File> files =
-                            Luban.with(mContext)
+                            Luban.with(getContext())
                                     .loadMediaData(result)
                                     .setTargetDir(config.compressSavePath)
                                     .setCompressQuality(config.compressQuality)
@@ -395,7 +420,7 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
         boolean isHttp = PictureMimeType.isHttp(originalPath);
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         String imgType = isAndroidQ ? PictureMimeType
-                .getLastImgSuffix(PictureMimeType.getMimeType(mContext, Uri.parse(originalPath)))
+                .getLastImgSuffix(PictureMimeType.getMimeType(getContext(), Uri.parse(originalPath)))
                 : PictureMimeType.getLastImgType(originalPath);
         Uri uri = isHttp || isAndroidQ ? Uri.parse(originalPath) : Uri.fromFile(new File(originalPath));
         File file = new File(PictureFileUtils.getDiskCacheDir(this),
@@ -480,7 +505,7 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         boolean isHttp = PictureMimeType.isHttp(path);
         String imgType = isAndroidQ ? PictureMimeType
-                .getLastImgSuffix(PictureMimeType.getMimeType(mContext, Uri.parse(path)))
+                .getLastImgSuffix(PictureMimeType.getMimeType(getContext(), Uri.parse(path)))
                 : PictureMimeType.getLastImgType(path);
         Uri uri = isHttp || isAndroidQ ? Uri.parse(path) : Uri.fromFile(new File(path));
         File file = new File(PictureFileUtils.getDiskCacheDir(this),
@@ -873,7 +898,7 @@ public class PictureBaseActivity extends AppCompatActivity implements Handler.Ca
                         startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
                     }
                 } else {
-                    ToastUtils.s(mContext, getString(R.string.picture_audio));
+                    ToastUtils.s(getContext(), getString(R.string.picture_audio));
                 }
                 break;
         }

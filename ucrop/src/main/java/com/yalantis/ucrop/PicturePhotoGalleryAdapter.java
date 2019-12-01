@@ -81,7 +81,7 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
             holder.iv_dot.setVisibility(View.VISIBLE);
             holder.iv_dot.setImageResource(R.drawable.ucrop_oval_true);
         } else {
-            holder.iv_dot.setVisibility(View.GONE);
+            holder.iv_dot.setVisibility(View.INVISIBLE);
         }
 
         Uri uri = isAndroidQ ? Uri.parse(path) : Uri.fromFile(new File(path));

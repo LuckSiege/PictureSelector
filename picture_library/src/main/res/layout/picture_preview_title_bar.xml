@@ -3,11 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <View
+        android:id="@+id/titleViewBg"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?attr/picture.ac_preview.title.bg" />
+
     <TextView
         android:id="@+id/picture_title"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="?attr/picture.ac_preview.title.bg"
         android:ellipsize="end"
         android:gravity="center"
         android:maxEms="11"
@@ -18,8 +23,8 @@
         android:id="@+id/picture_left_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/picture_title"
-        android:layout_alignBottom="@id/picture_title"
+        android:layout_alignTop="@id/titleViewBg"
+        android:layout_alignBottom="@id/titleViewBg"
         android:padding="15dp"
         android:src="?attr/picture.preview.leftBack.icon" />
 
@@ -28,7 +33,7 @@
         android:id="@+id/check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/picture_title"
+        android:layout_alignTop="@id/titleViewBg"
         android:layout_alignParentRight="true"
         android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"

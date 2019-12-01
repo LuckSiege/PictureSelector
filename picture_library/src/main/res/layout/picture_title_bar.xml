@@ -46,16 +46,10 @@
         android:id="@+id/picture_left_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/picture_title"
-        android:layout_alignBottom="@id/picture_title"
+        android:layout_alignTop="@id/titleViewBg"
+        android:layout_alignBottom="@id/titleViewBg"
         android:padding="15dp"
         android:src="?attr/picture.leftBack.icon" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@id/picture_title"
-        android:layout_marginTop="10dp"
-        android:background="@color/picture_color_e" />
 </merge>
 

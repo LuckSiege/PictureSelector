@@ -45,12 +45,22 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                         .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             onTakePhoto();
         } else {
-            ToastUtils.s(mContext, getString(R.string.picture_camera));
+            ToastUtils.s(getContext(), getString(R.string.picture_camera));
             closeActivity();
             return;
         }
         setTheme(R.style.Picture_Theme_Translucent);
-        setContentView(R.layout.picture_empty);
+    }
+
+
+    @Override
+    public int getResourceId() {
+        return R.layout.picture_empty;
+    }
+
+    @Override
+    protected void initWidgets() {
+        super.initWidgets();
     }
 
     /**
@@ -111,7 +121,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             closeActivity();
         } else if (resultCode == UCrop.RESULT_ERROR) {
             Throwable throwable = (Throwable) data.getSerializableExtra(UCrop.EXTRA_ERROR);
-            ToastUtils.s(mContext, throwable.getMessage());
+            ToastUtils.s(getContext(), throwable.getMessage());
         }
     }
 
@@ -154,9 +164,9 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             }
             mimeType = PictureMimeType.MIME_TYPE_AUDIO;
             if (isAndroidQ) {
-                duration = MediaUtils.extractDuration(mContext, true, cameraPath);
+                duration = MediaUtils.extractDuration(getContext(), true, cameraPath);
             } else {
-                duration = MediaUtils.extractDuration(mContext, false, cameraPath);
+                duration = MediaUtils.extractDuration(getContext(), false, cameraPath);
             }
         }
         if (TextUtils.isEmpty(cameraPath) || new File(cameraPath) == null) {
@@ -184,7 +194,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     newSize = MediaUtils.getLocalImageSizeToAndroidQ(this, cameraPath);
                 } else {
                     newSize = MediaUtils.getLocalVideoSize(this, Uri.parse(cameraPath));
-                    duration = MediaUtils.extractDuration(mContext, true, cameraPath);
+                    duration = MediaUtils.extractDuration(getContext(), true, cameraPath);
                 }
             } else {
                 mimeType = PictureMimeType.fileToType(file);
@@ -195,7 +205,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     newSize = MediaUtils.getLocalImageWidthOrHeight(cameraPath);
                 } else {
                     newSize = MediaUtils.getLocalVideoSize(cameraPath);
-                    duration = MediaUtils.extractDuration(mContext, false, cameraPath);
+                    duration = MediaUtils.extractDuration(getContext(), false, cameraPath);
                 }
             }
             boolean isMimeType = PictureMimeType.eqImage(mimeType);
@@ -257,7 +267,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                         onTakePhoto();
                     } else {
                         closeActivity();
-                        ToastUtils.s(mContext, getString(R.string.picture_camera));
+                        ToastUtils.s(getContext(), getString(R.string.picture_camera));
                     }
                 }
                 break;
@@ -267,7 +277,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     onTakePhoto();
                 } else {
                     closeActivity();
-                    ToastUtils.s(mContext, getString(R.string.picture_camera));
+                    ToastUtils.s(getContext(), getString(R.string.picture_camera));
                 }
                 break;
         }

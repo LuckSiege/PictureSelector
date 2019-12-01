@@ -34,7 +34,6 @@ public final class PictureSelectionConfig implements Parcelable {
     public String renameCompressFileName;
     public String renameCropFileName;
     public String specifiedFormat;
-
     @StyleRes
     public int themeStyleId;
     public int selectionMode;
@@ -54,6 +53,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public int compressQuality;
     public int filterFileSize;
     public int language;
+    public boolean isWeChatStyle;
     public boolean zoomAnim;
     public boolean isCompress;
     public boolean isOriginalControl;
@@ -76,7 +76,6 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean synOrAsy;
     public boolean isDragFrame;
     public boolean isNotPreviewDownload;
-    public boolean isFallbackVersion;
     public ImageEngine imageEngine;
     public List<LocalMedia> selectionMedias;
     public String cameraFileName;
@@ -109,6 +108,12 @@ public final class PictureSelectionConfig implements Parcelable {
     public int downResId;
     @Deprecated
     public String outputCameraPath;
+
+    /**
+     * 内测专用###########
+     */
+    public boolean isFallbackVersion;
+    public boolean isFallbackVersion2;
 
     private void reset() {
         chooseMode = PictureMimeType.ofImage();
@@ -144,7 +149,9 @@ public final class PictureSelectionConfig implements Parcelable {
         isNotPreviewDownload = false;
         openClickSound = false;
         isFallbackVersion = false;
+        isFallbackVersion2 = false;
         enableCrop = false;
+        isWeChatStyle = false;
         freeStyleCropEnabled = false;
         circleDimmedLayer = false;
         showCropFrame = true;
