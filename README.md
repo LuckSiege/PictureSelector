@@ -15,6 +15,7 @@
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 ## 目录
+-[演示效果](#演示效果)<br>
 -[注意事项](#注意事项)<br>
 -[功能特点](#功能特点)<br>
 -[集成方式](#集成方式)<br>
@@ -29,7 +30,6 @@
 -[混淆配置](#混淆配置)<br>
 -[LICENSE](#LICENSE)<br>
 -[兼容性测试](#兼容性测试)<br>
--[演示效果](#演示效果)<br>
 -[打赏](#打赏)<br>
 
 # 注意事项  重要！！！
