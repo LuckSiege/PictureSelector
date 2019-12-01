@@ -35,6 +35,22 @@
 # 注意事项  重要！！！
 
 ```
+v2.3.5 
+1.优化FolderPopWindow弹出动画和切换目录卡顿问题
+2.优化Android Q 裁剪压缩耗时问题
+3.新增类似新版微信选择风格 .isWeChatStyle(true); 设置为true即可开启
+4.新增原图功能.isOriginalImageControl(); 注意：开启了此功能用户就自由选择是否是原图，压缩、裁剪功能将失效
+5.新增繁体、韩语、德语、法语、日语语言包并可能通过api .setLanguage(language);进行设置
+6.新增PictureWindowAnimationStyle可以对相册各页面弹出动画自定义；具体参考Demo MainActivity.java
+7.新增单独设置NavBar色值选项 mPictureParameterStyle.pictureNavBarColor = Color.parseColor("#393a3e");
+8.新增重命名api
+.cameraFileName("test.png") // 重命名拍照文件名、注意这个只在使用相机时可以使用，如果使用相机又开启了压缩或裁剪 需要配合压缩和裁剪文件名api
+.renameCompressFile("test.png") // 重命名压缩文件名、注意这个不要重复，只适用于单张图压缩使用
+.renameCropFileName("test.png")// 重命名裁剪文件名、注意这个不要重复，只适用于单张图裁剪使用
+9.修复拍照或录视频后取不到宽高问题
+10.修复裁剪+压缩后图片后缀不一致问题
+11.修复单选模式下isSingleDirectReturn(true);点击右上角还是会有勾选效果问题
+
 v2.3.3 新增动态配制主题，建议不要与.theme(R.theme.style);方法共用 两者只选其一配制 个人建议使用动态配制为好！！！
 .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
 .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
@@ -91,7 +107,7 @@ v2.3.2开始移除了glide，所以使用v2.3.2版本以后的用户一定要配
 * 33.新增原图功能
 * 34.新增全新相册主题风格，类似新版微信相册样式
 * 35.新增繁体、韩语、德语、法语、日语语言包，可通过api .setLanguage(language);进行设置
-....
+* ....
 
 
 重要的事情说三遍记得添加权限
@@ -110,7 +126,7 @@ v2.3.2开始移除了glide，所以使用v2.3.2版本以后的用户一定要配
 
 ```
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.4'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.5'
 }
 
 ```
@@ -143,7 +159,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.3.4</version> 
+      <version>v2.3.5</version> 
 </dependency>
 
 ```
@@ -248,14 +264,19 @@ Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme
  	.theme()//主题样式(不设置为默认样式) 也可参考demo values/styles下 例如：R.style.picture.white.style
 	.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题  注意：此方法最好不要与.theme();同时存在， 二选一
         .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题 注意：此方法最好不要与.theme();同时存在， 二选一
+	.setPictureWindowAnimationStyle(windowAnimationStyle)// 自定义相册启动退出动画
 	.loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项   参考Demo MainActivity中代码
+	.isOriginalImageControl(cb_original.isChecked())// 是否显示原图控制按钮，如果用户勾选了 压缩、裁剪功能将会失效
+	.isWeChatStyle(isWeChatStyle)// 是否开启微信图片选择风格，此开关开启了才可使用微信主题！！！
  	.maxSelectNum()// 最大图片选择数量 int
  	.minSelectNum()// 最小选择数量 int
 	.imageSpanCount(4)// 每行显示个数 int
 	.isNotPreviewDownload(true)// 预览图片长按是否可以下载
 	.queryMaxFileSize(10)// 只查多少M以内的图片、视频、音频  单位M
 	.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
-	.cameraFileName("")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用，选图时不要用
+	.cameraFileName("test.png") // 重命名拍照文件名、注意这个只在使用相机时可以使用
+        .renameCompressFile("test.png")// 重命名压缩文件名、 注意这个不要重复，只适用于单张图压缩使用
+        .renameCropFileName("test.png")// 重命名裁剪文件名、 注意这个不要重复，只适用于单张图裁剪使用
 	.isSingleDirectReturn(false)// 单选模式下是否直接返回，PictureConfig.SINGLE模式下有效
 	.setTitleBarBackgroundColor(titleBarBackgroundColor)//相册标题栏背景色
 	.isChangeStatusBarFontColor(isChangeStatusBarFontColor)// 是否关闭白色状态栏字体颜色
@@ -305,6 +326,8 @@ Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme
 ```
  //包括裁剪和压缩后的缓存，要在上传成功后调用，type 指的是图片or视频缓存取决于你设置的ofImage或ofVideo 注意：需要系统sd卡权限  
  PictureFileUtils.deleteCacheDirFile(MainActivity.this,type);
+ // 清除所有缓存 例如：压缩、裁剪、视频、音频所生成的临时文件
+ PictureFileUtils.deleteAllCacheDirFile(this);
  
 ```
 ## 主题配置
@@ -421,6 +444,10 @@ PictureCropParameterStyle mCropParameterStyle = new PictureCropParameterStyle(
     ContextCompat.getColor(MainActivity.this, R.color.app_color_grey),
     ContextCompat.getColor(MainActivity.this, R.color.app_color_white),
     mPictureParameterStyle.isChangeStatusBarFontColor);
+       
+ // 相册启动退出动画   
+PictureWindowAnimationStyle windowAnimationStyle = new PictureWindowAnimationStyle();
+windowAnimationStyle.ofAllAnimation(R.anim.picture_anim_up_in, R.anim.picture_anim_down_out);   
 		
 ```
 
@@ -477,12 +504,25 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
                 case PictureConfig.CHOOSE_REQUEST:
                     // 图片、视频、音频选择结果回调
                     List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
-                    // 例如 LocalMedia 里面返回四种path
-                    // 1.media.getPath(); 为原图path
-                    // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true  注意：音视频除外
-                    // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true  注意：音视频除外
-                    // 如果裁剪并压缩了，以取压缩路径为准，因为是先裁剪后压缩的
-		    // 4.media.getAndroidQToPath();为Android Q版本特有返回的字段，此字段有值就用来做上传使用
+                    // 例如 LocalMedia 里面返回五种path
+                    // 1.media.getPath(); 为原图path
+                    // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
+                    // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
+                    // 4.media.getOriginalPath()); media.isOriginal());为true时此字段才有值
+                    // 5.media.getAndroidQToPath();为Android Q版本特有返回的字段，此字段有值就用来做上传使用
+                    // 如果同时开启裁剪和压缩，则取压缩路径为准因为是先裁剪后压缩
+		    
+		    // 从2.3.5开始加入了原图功能，所以再使用的时候需要判断media.isOriginal()); 如果为true有可能是用户选择要上传原图则要取
+		    media.getOriginalPath());作为上传路径，前提是你开启了.isOriginalImageControl(true);开关
+		    
+                    for (LocalMedia media : selectList) {
+                        Log.i(TAG, "压缩::" + media.getCompressPath());
+                        Log.i(TAG, "原图::" + media.getPath());
+                        Log.i(TAG, "裁剪::" + media.getCutPath());
+                        Log.i(TAG, "是否开启原图::" + media.isOriginal());
+                        Log.i(TAG, "原图路径::" + media.getOriginalPath());
+                        Log.i(TAG, "Android Q 特有Path::" + media.getAndroidQToPath());
+                    }
                     adapter.setList(selectList);
                     adapter.notifyDataSetChanged();
                     break;
@@ -496,6 +536,26 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
+```
+* v2.3.5
+* 1.优化FolderPopWindow弹出动画和切换目录卡顿问题
+* 2.优化Android Q 裁剪压缩耗时问题
+* 3.新增类似新版微信选择风格 .isWeChatStyle(true); 设置为true即可开启
+* 4.新增原图功能.isOriginalImageControl(); 注意：开启了此功能用户就自由选择是否是原图，压缩、裁剪功能将失效
+* 5.新增繁体、韩语、德语、法语、日语语言包并可能通过api .setLanguage(language);进行设置
+* 6.新增PictureWindowAnimationStyle可以对相册各页面弹出动画自定义；具体参考Demo MainActivity.java
+* 7.新增单独设置NavBar色值选项 mPictureParameterStyle.pictureNavBarColor = Color.parseColor("#393a3e");
+* 8.新增重命名api
+* .cameraFileName("test.png") // 重命名拍照文件名、注意这个只在使用相机时可以使用，如果使用相机又开启了压缩或裁剪 需要配合压缩和裁剪文件名api
+* .renameCompressFile("test.png") // 重命名压缩文件名、注意这个不要重复，只适用于单张图压缩使用
+* .renameCropFileName("test.png")// 重命名裁剪文件名、注意这个不要重复，只适用于单张图裁剪使用
+* 9.修复拍照或录视频后取不到宽高问题
+* 10.修复裁剪+压缩后图片后缀不一致问题
+* 11.修复单选模式下isSingleDirectReturn(true);点击右上角还是会有勾选效果问题
+
+```
+
+# 历史版本：
 ```
 * v2.3.4
 * 1.新增动态设置相册和裁剪主题功能api，动态设置主题的权限最高！！！
@@ -514,10 +574,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 8.修复单独拍照会出现白屏问题
 * 9.优化布局层次
 * 10.修复issues
-```
 
-# 历史版本：
-```
 * v2.3.2
 * 移除对RxJava依赖
 * 移除对RxPermissions依赖改为原生权限申请方式
