@@ -87,6 +87,11 @@ v2.3.2开始移除了glide，所以使用v2.3.2版本以后的用户一定要配
 * 29.多图裁剪下可自由选择某图不裁剪不在强制一张张裁剪，但最后一张除外
 * 30.新增动态配制相册主题 .setPictureStyle(mPictureParameterStyle);  请参考Demo
 * 31.新增动态配制裁剪主题 .setPictureCropStyle(mCropParameterStyle); 请参考Demo
+* 32.新增自定义相册启动退出动画 .setPictureWindowAnimationStyle(windowAnimationStyle); 请参考Demo
+* 33.新增原图功能
+* 34.新增全新相册主题风格，类似新版微信相册样式
+* 35.新增繁体、韩语、德语、法语、日语语言包，可通过api .setLanguage(language);进行设置
+....
 
 
 重要的事情说三遍记得添加权限
