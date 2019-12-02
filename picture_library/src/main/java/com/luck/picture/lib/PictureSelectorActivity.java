@@ -898,6 +898,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         boolean eqImg = PictureMimeType.eqImage(mimeType);
         if (config.enableCrop && eqImg) {
             // 去裁剪
+            List<LocalMedia> selectedImages = adapter.getSelectedImages();
+            selectedImages.add(media);
+            adapter.bindSelectImages(selectedImages);
             originalPath = cameraPath;
             startCrop(cameraPath);
         } else if (config.isCompress && eqImg) {
@@ -995,9 +998,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (config.selectionMode == PictureConfig.SINGLE) {
                 // 单选模式
                 if (config.isSingleDirectReturn) {
-                    List<LocalMedia> selectedImages = adapter.getSelectedImages();
-                    selectedImages.add(media);
-                    adapter.bindSelectImages(selectedImages);
                     cameraHandleResult(media, mimeType);
                 } else {
                     // 如果是单选，则清空已选中的并刷新列表(作单一选择)
