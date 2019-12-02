@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class DateUtils {
+    private static SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd_HHmmssSS");
 
     /**
      * 判断两个时间戳相差多少秒
@@ -50,7 +51,6 @@ public class DateUtils {
      * @return
      */
     public static String getCreateFileName(String prefix) {
-        SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd_HHmmss");
         long millis = System.currentTimeMillis();
         return prefix + sf.format(millis);
     }
