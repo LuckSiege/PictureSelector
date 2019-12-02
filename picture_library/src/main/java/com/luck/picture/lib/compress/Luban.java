@@ -13,6 +13,7 @@ import android.util.Log;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
+import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 
@@ -74,7 +75,7 @@ public class Luban implements Handler.Callback {
                 mTargetDir = getImageCacheDir(context).getAbsolutePath();
             }
         }
-        String cacheBuilder = mTargetDir + "/" + System.currentTimeMillis() +
+        String cacheBuilder = mTargetDir + "/" + DateUtils.getCreateFileName("IMG_") +
                 (TextUtils.isEmpty(suffix) ? ".jpg" : suffix);
 
         return new File(cacheBuilder);
@@ -266,9 +267,11 @@ public class Luban implements Handler.Callback {
                     result = new File(newPath);
                 }
             } else {
-                result = Checker.SINGLE.needCompressToLocalMedia(mLeastCompressSize, newPath) ?
-                        new Engine(path, outFile, focusAlpha, compressQuality).compress() :
-                        new File(newPath);
+                boolean isCompress = Checker.SINGLE.needCompressToLocalMedia(mLeastCompressSize, newPath);
+                result = isCompress ? new Engine(path, outFile, focusAlpha, compressQuality).compress() :
+                        isAndroidQ ? new File(media.isCut() ? media.getCutPath() :
+                                AndroidQTransformUtils.copyImagePathToDirectoryPictures
+                                        (context, path.getPath(), filename, media.getMimeType())) : new File(newPath);
             }
         }
         return result;

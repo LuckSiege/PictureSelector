@@ -9,7 +9,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
 
 import com.luck.picture.lib.R;
@@ -183,7 +182,6 @@ public class LocalMediaLoader implements Handler.Callback {
                                     continue;
                                 }
                             }
-
                             if (PictureMimeType.eqVideo(mimeType)) {
                                 if (duration == 0) {
                                     duration = MediaUtils.extractDuration(mContext, isAndroidQ, path);

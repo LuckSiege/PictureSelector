@@ -36,7 +36,7 @@ public class AndroidQTransformUtils {
                 String newPath = new StringBuffer()
                         .append(filesDir)
                         .append(File.separator)
-                        .append(TextUtils.isEmpty(fileName) ? System.currentTimeMillis() + suffix : fileName)
+                        .append(TextUtils.isEmpty(fileName) ? DateUtils.getCreateFileName("VID_") + suffix : fileName)
                         .toString();
                 ParcelFileDescriptor parcelFileDescriptor =
                         ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
@@ -69,13 +69,13 @@ public class AndroidQTransformUtils {
                 String newPath = new StringBuffer()
                         .append(filesDir)
                         .append(File.separator)
-                        .append(TextUtils.isEmpty(fileName) ? System.currentTimeMillis() + suffix : fileName)
+                        .append(TextUtils.isEmpty(fileName) ? DateUtils.getCreateFileName("IMG_") + suffix : fileName)
                         .toString();
                 ParcelFileDescriptor parcelFileDescriptor =
                         ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
                 FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
                 FileInputStream inputStream = new FileInputStream(fileDescriptor);
-                boolean copyFileSuccess = FileUtils.copyFile(inputStream,newPath);
+                boolean copyFileSuccess = FileUtils.copyFile(inputStream, newPath);
                 if (copyFileSuccess) {
                     return newPath;
                 }
@@ -110,7 +110,7 @@ public class AndroidQTransformUtils {
                 String newPath = new StringBuffer()
                         .append(filesDir)
                         .append(File.separator)
-                        .append(TextUtils.isEmpty(fileName) ? System.currentTimeMillis() + suffix : fileName)
+                        .append(TextUtils.isEmpty(fileName) ? DateUtils.getCreateFileName("IMG_") + suffix : fileName)
                         .toString();
                 ParcelFileDescriptor parcelFileDescriptor =
                         ctx.getContentResolver().openFileDescriptor(Uri.parse(uri), "r");
@@ -143,7 +143,7 @@ public class AndroidQTransformUtils {
                 String newPath = new StringBuffer()
                         .append(filesDir)
                         .append(File.separator)
-                        .append(TextUtils.isEmpty(fileName) ? System.currentTimeMillis() + suffix : fileName)
+                        .append(TextUtils.isEmpty(fileName) ? DateUtils.getCreateFileName("AUD_") + suffix : fileName)
                         .toString();
 
                 ParcelFileDescriptor parcelFileDescriptor =

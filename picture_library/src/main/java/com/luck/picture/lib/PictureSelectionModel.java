@@ -735,6 +735,17 @@ public class PictureSelectionModel {
     }
 
     /**
+     * # 内部方法-要使用此方法时最好先咨询作者！！！
+     *
+     * @param isFallbackVersion 仅供特殊情况内部使用 如果某功能出错此开关可以回退至之前版本
+     * @return
+     */
+    public PictureSelectionModel isFallbackVersion3(boolean isFallbackVersion) {
+        selectionConfig.isFallbackVersion3 = isFallbackVersion;
+        return this;
+    }
+
+    /**
      * Start to select media and wait for result.
      *
      * @param requestCode Identity of the request Activity or Fragment.

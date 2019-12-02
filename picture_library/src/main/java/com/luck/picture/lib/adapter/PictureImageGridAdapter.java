@@ -108,17 +108,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public List<LocalMedia> getSelectedImages() {
-        if (selectImages == null) {
-            selectImages = new ArrayList<>();
-        }
-        return selectImages;
+        return selectImages == null ? new ArrayList<>() : selectImages;
     }
 
     public List<LocalMedia> getImages() {
-        if (images == null) {
-            images = new ArrayList<>();
-        }
-        return images;
+        return images == null ? new ArrayList<>() : images;
     }
 
     @Override

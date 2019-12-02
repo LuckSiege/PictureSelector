@@ -3,6 +3,7 @@ package com.luck.picture.lib;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -151,6 +152,8 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
      *
      * @param data
      */
+    private MediaScannerConnection mScannerConnection;
+
     private void requestCamera(Intent data) {
         // on take photo success
         String mimeType = null;
@@ -176,7 +179,23 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         int[] newSize = new int[2];
         final File file = new File(cameraPath);
         if (!isAndroidQ) {
-            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+            if (config.isFallbackVersion3) {
+                mScannerConnection = new MediaScannerConnection(getApplicationContext(),
+                        new MediaScannerConnection.MediaScannerConnectionClient() {
+                            @Override
+                            public void onMediaScannerConnected() {
+                                mScannerConnection.scanFile(cameraPath, null);
+                            }
+
+                            @Override
+                            public void onScanCompleted(String path, Uri uri) {
+                                mScannerConnection.disconnect();
+                            }
+                        });
+                mScannerConnection.connect();
+            } else {
+                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+            }
         }
         LocalMedia media = new LocalMedia();
         if (config.chooseMode != PictureMimeType.ofAudio()) {
@@ -209,7 +228,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 }
             }
             boolean isMimeType = PictureMimeType.eqImage(mimeType);
-            int lastImageId = MediaUtils.getLastImageId(this, isMimeType);
+            int lastImageId = MediaUtils.getLastImageId(this, mimeType);
             if (lastImageId != -1) {
                 removeImage(lastImageId, isMimeType);
             }
@@ -280,6 +299,17 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     ToastUtils.s(getContext(), getString(R.string.picture_camera));
                 }
                 break;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mScannerConnection != null) {
+            if (mScannerConnection.isConnected()) {
+                mScannerConnection.disconnect();
+            }
+            mScannerConnection = null;
         }
     }
 }

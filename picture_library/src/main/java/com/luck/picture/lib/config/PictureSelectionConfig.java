@@ -114,6 +114,7 @@ public final class PictureSelectionConfig implements Parcelable {
      */
     public boolean isFallbackVersion;
     public boolean isFallbackVersion2;
+    public boolean isFallbackVersion3;
 
     private void reset() {
         chooseMode = PictureMimeType.ofImage();
@@ -150,6 +151,7 @@ public final class PictureSelectionConfig implements Parcelable {
         openClickSound = false;
         isFallbackVersion = false;
         isFallbackVersion2 = false;
+        isFallbackVersion3 = true;
         enableCrop = false;
         isWeChatStyle = false;
         freeStyleCropEnabled = false;

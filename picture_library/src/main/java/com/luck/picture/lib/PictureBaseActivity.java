@@ -37,6 +37,7 @@ import com.luck.picture.lib.language.PictureLanguageUtils;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.AttrsUtils;
+import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
@@ -121,6 +122,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         if (isImmersive()) {
             immersive();
         }
+        // 导航条色值
+        if (config.style != null && config.style.pictureNavBarColor != 0) {
+            NavBarUtils.setNavBarColor(this, config.style.pictureNavBarColor);
+        }
         int layoutResID = getResourceId();
         if (layoutResID != 0) {
             setContentView(layoutResID);
@@ -148,12 +153,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         }
         // 已选图片列表
         selectionMedias = config.selectionMedias == null ? new ArrayList<>() : config.selectionMedias;
-
         if (config.style != null) {
-            // 导航条色值
-            if (config.style.pictureNavBarColor != 0) {
-                NavBarUtils.setNavBarColor(this, config.style.pictureNavBarColor);
-            }
             // 是否开启白色状态栏
             openWhiteStatusBar = config.style.isChangeStatusBarFontColor;
             // 标题栏背景色
@@ -424,7 +424,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                 : PictureMimeType.getLastImgType(originalPath);
         Uri uri = isHttp || isAndroidQ ? Uri.parse(originalPath) : Uri.fromFile(new File(originalPath));
         File file = new File(PictureFileUtils.getDiskCacheDir(this),
-                TextUtils.isEmpty(config.renameCropFileName) ? System.currentTimeMillis() + imgType : config.renameCropFileName);
+                TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_") + imgType : config.renameCropFileName);
         UCrop.of(uri, Uri.fromFile(file))
                 .withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y)
                 .withMaxResultSize(config.cropWidth, config.cropHeight)
@@ -509,7 +509,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                 : PictureMimeType.getLastImgType(path);
         Uri uri = isHttp || isAndroidQ ? Uri.parse(path) : Uri.fromFile(new File(path));
         File file = new File(PictureFileUtils.getDiskCacheDir(this),
-                TextUtils.isEmpty(config.renameCropFileName) ? System.currentTimeMillis() + imgType : config.renameCropFileName);
+                TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_")
+                        + imgType : config.renameCropFileName);
         UCropMulti.of(uri, Uri.fromFile(file))
                 .withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y)
                 .withMaxResultSize(config.cropWidth, config.cropHeight)

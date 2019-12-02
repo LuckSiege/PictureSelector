@@ -28,6 +28,7 @@ import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.photoview.PhotoView;
+import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
@@ -299,7 +300,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 try {
                     String suffix = PictureMimeType.getLastImgSuffix(mimeType);
                     String dirPath = PictureFileUtils.createDir(PictureExternalPreviewActivity.this,
-                            System.currentTimeMillis() + suffix);
+                            DateUtils.getCreateFileName("IMG_") + suffix);
                     PictureFileUtils.copyFile(downloadPath, dirPath);
                     ToastUtils.s(getContext(), getString(R.string.picture_save_success) + "\n" + dirPath);
 
@@ -346,7 +347,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             URL u = new URL(urlPath);
             String suffix = PictureMimeType.getLastImgSuffix(mimeType);
             String path = PictureFileUtils.createDir(PictureExternalPreviewActivity.this,
-                    System.currentTimeMillis() + suffix);
+                    DateUtils.getCreateFileName("IMG_") + suffix);
             byte[] buffer = new byte[1024 * 8];
             int read;
             int ava = 0;

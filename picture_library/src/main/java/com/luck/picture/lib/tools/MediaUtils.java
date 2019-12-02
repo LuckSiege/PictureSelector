@@ -6,18 +6,10 @@ import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.TextUtils;
-
-
-import androidx.annotation.RequiresApi;
-
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
-
-import java.io.File;
 
 /**
  * @author：luck
@@ -36,10 +28,9 @@ public class MediaUtils {
         final Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();
         String time = ValueOf.toString(System.currentTimeMillis());
-        String imageName = time;
         // ContentValues是我们希望这条记录被创建时包含的数据信息
         ContentValues values = new ContentValues(3);
-        values.put(MediaStore.Images.Media.DISPLAY_NAME, imageName);
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
         values.put(MediaStore.Images.Media.DATE_TAKEN, time);
         values.put(MediaStore.Images.Media.MIME_TYPE, PictureMimeType.MIME_TYPE_IMAGE);
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
@@ -64,10 +55,9 @@ public class MediaUtils {
         final Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();
         String time = ValueOf.toString(System.currentTimeMillis());
-        String imageName = time;
         // ContentValues是我们希望这条记录被创建时包含的数据信息
         ContentValues values = new ContentValues(3);
-        values.put(MediaStore.Images.Media.DISPLAY_NAME, imageName);
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("VID_"));
         values.put(MediaStore.Images.Media.DATE_TAKEN, time);
         values.put(MediaStore.Images.Media.MIME_TYPE, PictureMimeType.MIME_TYPE_VIDEO);
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
@@ -259,10 +249,11 @@ public class MediaUtils {
      *
      * @return
      */
-    public static int getLastImageId(Context context, boolean isMimeType) {
+    public static int getLastImageId(Context context, String mimeType) {
         try {
             //selection: 指定查询条件
-            String absolutePath = PictureFileUtils.getDCIMCameraPath(context);
+            boolean isMimeType = PictureMimeType.eqImage(mimeType);
+            String absolutePath = PictureFileUtils.getDCIMCameraPath(context, mimeType);
             String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
             String selection = isMimeType ? MediaStore.Video.Media.DATA + " like ?" :
                     MediaStore.Images.Media.DATA + " like ?";

@@ -37,6 +37,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 /**
@@ -298,5 +299,17 @@ public class FileUtils {
         } catch (Exception e) {
             return ".jpg";
         }
+    }
+
+    /**
+     * 根据时间戳创建文件名
+     *
+     * @param prefix 前缀名
+     * @return
+     */
+    public static String getCreateFileName(String prefix) {
+        SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        long millis = System.currentTimeMillis();
+        return prefix + sf.format(millis);
     }
 }

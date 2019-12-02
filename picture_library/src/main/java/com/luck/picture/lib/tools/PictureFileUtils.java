@@ -40,13 +40,9 @@ import java.util.Locale;
 
 public class PictureFileUtils {
 
-    public static final String POSTFIX = ".JPEG";
+    public static final String POSTFIX = ".jpg";
     public static final String POST_VIDEO = ".mp4";
     public static final String POST_AUDIO = ".mp3";
-    public static final String APP_NAME = "PictureSelector";
-    public static final String CAMERA_PATH_IMAGE = "/" + APP_NAME + "/CameraImage/";
-    public static final String CAMERA_PATH_VIDEO = "/" + APP_NAME + "/CameraVideo/";
-    public static final String CAMERA_PATH_AUDIO = "/" + APP_NAME + "/CameraAudio/";
 
     /**
      * @param context
@@ -55,6 +51,7 @@ public class PictureFileUtils {
      * @return
      */
     public static File createCameraFile(Context context, int type, String fileName, String format) {
+        Log.i("Mike", "createCameraFile: "+createMediaFile(context, type, fileName, format).getAbsolutePath());
         return createMediaFile(context, type, fileName, format);
     }
 
@@ -73,27 +70,25 @@ public class PictureFileUtils {
 
     private static File createOutFile(Context context, int chooseMode, String fileName, String format) {
         String state = Environment.getExternalStorageState();
-        File rootDir = SdkVersionUtils.checkedAndroid_Q() ? getRootDirFile(context, chooseMode)
-                : state.equals(Environment.MEDIA_MOUNTED) ?
-                Environment.getExternalStorageDirectory() : context.getCacheDir();
+        File rootDir = state.equals(Environment.MEDIA_MOUNTED) ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+                : getRootDirFile(context, chooseMode);
         if (rootDir != null && !rootDir.exists() && rootDir.mkdirs()) {
         }
-        String parentPath = getParentPath(chooseMode);
-        File folderDir = new File(SdkVersionUtils.checkedAndroid_Q()
-                ? rootDir.getAbsolutePath() : rootDir.getAbsolutePath() + parentPath);
+
+        File folderDir = new File(rootDir.getAbsolutePath() + "/Camera");
         if (folderDir != null && !folderDir.exists() && folderDir.mkdirs()) {
         }
         boolean isOutFileNameEmpty = TextUtils.isEmpty(fileName);
         switch (chooseMode) {
             case PictureConfig.TYPE_VIDEO:
-                String newFileVideoName = isOutFileNameEmpty ? System.currentTimeMillis() + POST_VIDEO : fileName;
+                String newFileVideoName = isOutFileNameEmpty ? DateUtils.getCreateFileName("VID_") + POST_VIDEO : fileName;
                 return new File(folderDir, newFileVideoName);
             case PictureConfig.TYPE_AUDIO:
-                String newFileAudioName = isOutFileNameEmpty ? System.currentTimeMillis() + POST_AUDIO : fileName;
+                String newFileAudioName = isOutFileNameEmpty ? DateUtils.getCreateFileName("AUD_") + POST_AUDIO : fileName;
                 return new File(folderDir, newFileAudioName);
             default:
                 String suffix = TextUtils.isEmpty(format) ? POSTFIX : format;
-                String newFileImageName = isOutFileNameEmpty ? System.currentTimeMillis() + suffix : fileName;
+                String newFileImageName = isOutFileNameEmpty ? DateUtils.getCreateFileName("IMG_") + suffix : fileName;
                 return new File(folderDir, newFileImageName);
         }
     }
@@ -113,23 +108,6 @@ public class PictureFileUtils {
                 return context.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
             default:
                 return context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        }
-    }
-
-    /**
-     * 内存卡目录下的媒体文件目录
-     *
-     * @param type
-     * @return
-     */
-    private static String getParentPath(int type) {
-        switch (type) {
-            case PictureConfig.TYPE_VIDEO:
-                return CAMERA_PATH_VIDEO;
-            case PictureConfig.TYPE_AUDIO:
-                return CAMERA_PATH_AUDIO;
-            default:
-                return CAMERA_PATH_IMAGE;
         }
     }
 
@@ -408,11 +386,17 @@ public class PictureFileUtils {
     }
 
 
-    public static String getDCIMCameraPath(Context ctx) {
+    public static String getDCIMCameraPath(Context ctx, String mimeType) {
         String absolutePath;
         try {
             if (SdkVersionUtils.checkedAndroid_Q()) {
-                absolutePath = "%" + ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/Camera";
+                if (PictureMimeType.eqVideo(mimeType)) {
+                    absolutePath = "%" + ctx.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
+                } else if (PictureMimeType.eqAudio(mimeType)) {
+                    absolutePath = "%" + ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                } else {
+                    absolutePath = "%" + ctx.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+                }
             } else {
                 absolutePath = "%" + Environment.getExternalStoragePublicDirectory
                         (Environment.DIRECTORY_DCIM).getAbsolutePath() + "/Camera";
@@ -573,7 +557,7 @@ public class PictureFileUtils {
                     String suffix = PictureFileUtils.extSuffix(inputStream);
                     Bitmap bmp = PictureFileUtils.rotatingImageView(degree, bitmap);
                     if (bmp != null) {
-                        String dir = createDir(context, TextUtils.isEmpty(newFileName) ? System.currentTimeMillis() + suffix : newFileName);
+                        String dir = createDir(context, TextUtils.isEmpty(newFileName) ? DateUtils.getCreateFileName("IMG_") + suffix : newFileName);
                         PictureFileUtils.saveBitmapFile(bmp, new File(dir));
                         return dir;
                     }

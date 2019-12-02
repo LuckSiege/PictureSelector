@@ -2,19 +2,15 @@ package com.luck.picture.lib.tools;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
- * author：luck
- * project：PictureSelector
- * package：com.luck.picture.lib.tool
- * email：893855882@qq.com
- * data：2017/5/25
+ * @author：luck
+ * @date：2017-5-25 23:30
+ * @describe：DateUtils
  */
 
 public class DateUtils {
-    private static SimpleDateFormat msFormat = new SimpleDateFormat("mm:ss");
 
     /**
      * 判断两个时间戳相差多少秒
@@ -33,11 +29,30 @@ public class DateUtils {
         }
     }
 
+    /**
+     * 时间戳转换成时间格式
+     *
+     * @param duration
+     * @return
+     */
     public static String formatDurationTime(long duration) {
         return String.format(Locale.getDefault(), "%02d:%02d",
                 TimeUnit.MILLISECONDS.toMinutes(duration),
                 TimeUnit.MILLISECONDS.toSeconds(duration)
                         - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
+    }
+
+
+    /**
+     * 根据时间戳创建文件名
+     *
+     * @param prefix 前缀名
+     * @return
+     */
+    public static String getCreateFileName(String prefix) {
+        SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        long millis = System.currentTimeMillis();
+        return prefix + sf.format(millis);
     }
 
     /**

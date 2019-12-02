@@ -810,7 +810,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         File file = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ?
                 getExternalFilesDir(Environment.DIRECTORY_PICTURES) : getCacheDir();
         extras.putParcelable(UCropMulti.EXTRA_OUTPUT_URI,
-                Uri.fromFile(new File(file, System.currentTimeMillis() + imgType)));
+                Uri.fromFile(new File(file, FileUtils.getCreateFileName("IMG_") + imgType)));
         intent.putExtras(extras);
         refreshPhotoRecyclerData();
         setupViews(intent);
