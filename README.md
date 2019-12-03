@@ -38,8 +38,7 @@
 ```
 v2.3.8
 
-1.PictureSelector加入Caash日志管理工具方便错误分析，具体使用方式请查看Demo 
-	Application类中...
+1.PictureSelector加入Caash日志管理工具方便错误分析，具体使用方式请查看Demo Application类中...
 	Application onCreate加入两行代码
 		
 	/** PictureSelector日志管理配制开始 **/
