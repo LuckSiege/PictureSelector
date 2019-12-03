@@ -15,10 +15,11 @@
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 ## 目录
+-[当前版本](#当前版本)<br>
 -[演示效果](#演示效果)<br>
+-[集成方式](#集成方式)<br>
 -[注意事项](#注意事项)<br>
 -[功能特点](#功能特点)<br>
--[集成方式](#集成方式)<br>
 -[常见错误](#常见错误)<br>
 -[功能配置](#功能配置)<br>
 -[缓存清除](#缓存清除)<br>
@@ -35,25 +36,41 @@
 # 注意事项  重要！！！
 
 ```
-v2.3.7 
-1.修复minimumCompressSize(100);小于压缩值的图片在Android Q上异常问题
-2.修复单选模式isSingleDirectReturn为true并开启了裁剪后不会直接返回结果页bug
-3.修改拍照存储目录，并统一PictureSelector创建图片、视频的所有命名规则
-4.优化FolderPopWindow弹出动画和切换目录卡顿问题
-5.优化Android Q 裁剪压缩耗时问题
-6.新增类似新版微信选择风格 .isWeChatStyle(true); 设置为true即可开启
-7.新增原图功能.isOriginalImageControl(); 注意：开启了此功能用户就自由选择是否是原图，压缩、裁剪功能将失效
-8.新增繁体、韩语、德语、法语、日语语言包并可能通过api .setLanguage(language);进行设置
-9.新增PictureWindowAnimationStyle可以对相册各页面弹出动画自定义；具体参考Demo MainActivity.java
-10.新增单独设置NavBar色值选项 mPictureParameterStyle.pictureNavBarColor = Color.parseColor("#393a3e");
-11.新增重命名api
+v2.3.8
+
+1.PictureSelector加入Caash日志管理工具方便错误分析，具体使用方式请查看Demo 
+	Application类中...
+	Application onCreate加入两行代码
+		
+	/** PictureSelector日志管理配制开始 **/
+	  
+        // PictureSelector 绑定监听用户获取全局上下文或其他...
+        PictureAppMaster.getInstance().setApp(this);
+        // PictureSelector Crash日志监听
+        PictureSelectorCrashUtils.init((t, e) -> {
+            // Crash之后的一些操作可再此处理，没有就忽略...
+        });
+       
+	/** PictureSelector日志管理配制结束 **/
+	
+2.新增api setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR) // 设置屏幕旋转方向，不设置默认使用系统
+3.修复minimumCompressSize(100);小于压缩值的图片在Android Q上异常问题
+4.修复单选模式isSingleDirectReturn为true并开启了裁剪后不会直接返回结果页bug
+5.修改拍照存储目录，并统一PictureSelector创建图片、视频的所有命名规则
+6.优化FolderPopWindow弹出动画和切换目录卡顿问题
+7.优化Android Q 裁剪压缩耗时问题
+8.新增类似新版微信选择风格 .isWeChatStyle(true); 设置为true即可开启
+9.新增原图功能.isOriginalImageControl(); 注意：开启了此功能用户就自由选择是否是原图，压缩、裁剪功能将失效
+10.新增繁体、韩语、德语、法语、日语语言包并可能通过api .setLanguage(language);进行设置
+11.新增PictureWindowAnimationStyle可以对相册各页面弹出动画自定义；具体参考Demo MainActivity.java
+12.新增单独设置NavBar色值选项 mPictureParameterStyle.pictureNavBarColor = Color.parseColor("#393a3e");
+13.新增重命名api
 .cameraFileName("test.png") // 重命名拍照文件名、注意这个只在使用相机时可以使用，如果使用相机又开启了压缩或裁剪 需要配合压缩和裁剪文件名api
 .renameCompressFile("test.png") // 重命名压缩文件名、注意这个不要重复，只适用于单张图压缩使用
 .renameCropFileName("test.png")// 重命名裁剪文件名、注意这个不要重复，只适用于单张图裁剪使用
-12.修复拍照或录视频后取不到宽高问题
-13.修复裁剪+压缩后图片后缀不一致问题
-14.修复单选模式下isSingleDirectReturn(true);点击右上角还是会有勾选效果问题
-
+14.修复拍照或录视频后取不到宽高问题
+15.修复裁剪+压缩后图片后缀不一致问题
+16.修复单选模式下isSingleDirectReturn(true);点击右上角还是会有勾选效果问题
 
 
 v2.3.3 新增动态配制主题，建议不要与.theme(R.theme.style);方法共用 两者只选其一配制 个人建议使用动态配制为好！！！
@@ -124,6 +141,14 @@ v2.3.2开始移除了glide，所以使用v2.3.2版本以后的用户一定要配
     
 ```
 
+## 当前版本
+
+```
+dependencies {
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.8'
+}
+
+```
 
 ## 集成方式
 
@@ -131,7 +156,7 @@ v2.3.2开始移除了glide，所以使用v2.3.2版本以后的用户一定要配
 
 ```
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.7'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.8'
 }
 
 ```
@@ -164,7 +189,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.3.7</version> 
+      <version>v2.3.8</version> 
 </dependency>
 
 ```
@@ -542,24 +567,41 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 # 当前版本：
 ```
-* v2.3.7
-* 1.修复minimumCompressSize(100);小于压缩值的图片在Android Q上异常问题
-* 2.修复单选模式isSingleDirectReturn为true并开启了裁剪后不会直接返回结果页bug
-* 3.修改拍照存储目录，并统一PictureSelector创建图片、视频的所有命名规则
-* 4.优化FolderPopWindow弹出动画和切换目录卡顿问题
-* 5.优化Android Q 裁剪压缩耗时问题
-* 6.新增类似新版微信选择风格 .isWeChatStyle(true); 设置为true即可开启
-* 7.新增原图功能.isOriginalImageControl(); 注意：开启了此功能用户就自由选择是否是原图，压缩、裁剪功能将失效
-* 8.新增繁体、韩语、德语、法语、日语语言包并可能通过api .setLanguage(language);进行设置
-* 9.新增PictureWindowAnimationStyle可以对相册各页面弹出动画自定义；具体参考Demo MainActivity.java
-* 10.新增单独设置NavBar色值选项 mPictureParameterStyle.pictureNavBarColor = Color.parseColor("#393a3e");
-* 11.新增重命名api
+* v2.3.8
+ ```
+    1.PictureSelector加入Caash日志管理工具方便错误分析，具体使用方式请查看Demo 
+	Application类中...
+		Application onCreate加入两行代码
+		
+	  /** PictureSelector日志管理配制开始 **/
+	  
+        // PictureSelector 绑定监听用户获取全局上下文或其他...
+        PictureAppMaster.getInstance().setApp(this);
+        // PictureSelector Crash日志监听
+        PictureSelectorCrashUtils.init((t, e) -> {
+            // Crash之后的一些操作可再此处理，没有就忽略...
+       });
+       
+     /** PictureSelector日志管理配制结束 **/
+   ```
+* 2.新增api setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR) // 设置屏幕旋转方向，不设置默认使用系统
+* 3.修复minimumCompressSize(100);小于压缩值的图片在Android Q上异常问题
+* 4.修复单选模式isSingleDirectReturn为true并开启了裁剪后不会直接返回结果页bug
+* 5.修改拍照存储目录，并统一PictureSelector创建图片、视频的所有命名规则
+* 6.优化FolderPopWindow弹出动画和切换目录卡顿问题
+* 7.优化Android Q 裁剪压缩耗时问题
+* 8.新增类似新版微信选择风格 .isWeChatStyle(true); 设置为true即可开启
+* 9.新增原图功能.isOriginalImageControl(); 注意：开启了此功能用户就自由选择是否是原图，压缩、裁剪功能将失效
+* 10.新增繁体、韩语、德语、法语、日语语言包并可能通过api .setLanguage(language);进行设置
+* 11.新增PictureWindowAnimationStyle可以对相册各页面弹出动画自定义；具体参考Demo MainActivity.java
+* 12.新增单独设置NavBar色值选项 mPictureParameterStyle.pictureNavBarColor = Color.parseColor("#393a3e");
+* 13.新增重命名api
 * .cameraFileName("test.png") // 重命名拍照文件名、注意这个只在使用相机时可以使用，如果使用相机又开启了压缩或裁剪 需要配合压缩和裁剪文件名api
 * .renameCompressFile("test.png") // 重命名压缩文件名、注意这个不要重复，只适用于单张图压缩使用
 * .renameCropFileName("test.png")// 重命名裁剪文件名、注意这个不要重复，只适用于单张图裁剪使用
-* 12.修复拍照或录视频后取不到宽高问题
-* 13.修复裁剪+压缩后图片后缀不一致问题
-* 14.修复单选模式下isSingleDirectReturn(true);点击右上角还是会有勾选效果问题
+* 14.修复拍照或录视频后取不到宽高问题
+* 15.修复裁剪+压缩后图片后缀不一致问题
+* 16.修复单选模式下isSingleDirectReturn(true);点击右上角还是会有勾选效果问题
 
 ```
 
