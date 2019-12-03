@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 
 import com.luck.picture.lib.R;
@@ -34,6 +35,7 @@ import java.util.Locale;
 
 public class LocalMediaLoader implements Handler.Callback {
     private static final int MSG_QUERY_MEDIA_SUCCESS = 0;
+    private static final int MSG_QUERY_MEDIA_ERROR = -1;
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
     private static final String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
     private static final String NOT_GIF = "!='image/gif'";
@@ -182,16 +184,17 @@ public class LocalMediaLoader implements Handler.Callback {
                                     continue;
                                 }
                             }
+                            if (width == 0 && height == 0) {
+                                int[] newSize = isAndroidQ ? MediaUtils
+                                        .getLocalSizeToAndroidQ(mContext, path)
+                                        : MediaUtils.getLocalVideoSize(path);
+                                width = newSize[0];
+                                height = newSize[1];
+                            }
+
                             if (PictureMimeType.eqVideo(mimeType)) {
                                 if (duration == 0) {
                                     duration = MediaUtils.extractDuration(mContext, isAndroidQ, path);
-                                }
-                                if (width == 0 && height == 0) {
-                                    int[] newSize = isAndroidQ ? MediaUtils
-                                            .getLocalVideoSizeToAndroidQ(mContext, path)
-                                            : MediaUtils.getLocalVideoSize(path);
-                                    width = newSize[0];
-                                    height = newSize[1];
                                 }
                                 if (config.videoMinSecond > 0 && duration < config.videoMinSecond) {
                                     // 如果设置了最小显示多少秒的视频
@@ -239,8 +242,13 @@ public class LocalMediaLoader implements Handler.Callback {
                     }
                     // 线程切换
                     mHandler.sendMessage(mHandler.obtainMessage(MSG_QUERY_MEDIA_SUCCESS, imageFolders));
+                } else {
+                    mHandler.sendMessage(mHandler.obtainMessage(MSG_QUERY_MEDIA_ERROR));
                 }
             } catch (Exception e) {
+                if (mHandler != null) {
+                    mHandler.sendMessage(mHandler.obtainMessage(MSG_QUERY_MEDIA_ERROR));
+                }
                 e.printStackTrace();
             }
         });
@@ -392,6 +400,9 @@ public class LocalMediaLoader implements Handler.Callback {
             case MSG_QUERY_MEDIA_SUCCESS:
                 mCompleteListener.loadComplete((List<LocalMediaFolder>) msg.obj);
                 break;
+            case MSG_QUERY_MEDIA_ERROR:
+                mCompleteListener.loadMediaDataError();
+                break;
         }
         return false;
     }
@@ -403,6 +414,9 @@ public class LocalMediaLoader implements Handler.Callback {
     }
 
     public interface LocalMediaLoadListener {
+
         void loadComplete(List<LocalMediaFolder> folders);
+
+        void loadMediaDataError();
     }
 }

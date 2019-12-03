@@ -1,5 +1,6 @@
 package com.luck.picture.lib.config;
 
+import android.content.pm.ActivityInfo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -34,6 +35,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public String renameCompressFileName;
     public String renameCropFileName;
     public String specifiedFormat;
+    public int requestedOrientation;
     @StyleRes
     public int themeStyleId;
     public int selectionMode;
@@ -139,6 +141,7 @@ public final class PictureSelectionConfig implements Parcelable {
         aspect_ratio_y = 0;
         cropWidth = 0;
         cropHeight = 0;
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
         isCamera = true;
         isGif = false;
         isCheckOriginalImage = false;
@@ -234,6 +237,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(this.cropCompressQuality);
         dest.writeInt(this.videoMaxSecond);
         dest.writeInt(this.videoMinSecond);
+        dest.writeInt(this.requestedOrientation);
         dest.writeInt(this.recordVideoSecond);
         dest.writeInt(this.minimumCompressSize);
         dest.writeInt(this.imageSpanCount);
@@ -300,6 +304,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.maxSelectNum = in.readInt();
         this.minSelectNum = in.readInt();
         this.videoQuality = in.readInt();
+        this.requestedOrientation = in.readInt();
         this.cropCompressQuality = in.readInt();
         this.videoMaxSecond = in.readInt();
         this.videoMinSecond = in.readInt();

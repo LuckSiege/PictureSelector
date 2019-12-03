@@ -571,6 +571,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         if (commonBroadcastReceiver != null) {
             BroadcastManager.getInstance(this).unregisterReceiver(commonBroadcastReceiver,
                     BroadcastAction.ACTION_CLOSE_PREVIEW);
+            commonBroadcastReceiver = null;
         }
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);

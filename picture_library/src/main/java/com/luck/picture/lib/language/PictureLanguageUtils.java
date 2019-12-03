@@ -73,6 +73,17 @@ public class PictureLanguageUtils {
         resources.updateConfiguration(config, dm);
     }
 
+    public static void setDefaultLanguage(Context context) {
+        Resources resources = context.getResources();
+        Configuration config = resources.getConfiguration();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            config.setLocale(config.locale);
+            context.createConfigurationContext(config);
+        }
+        resources.updateConfiguration(config, dm);
+    }
+
     private static boolean equals(final CharSequence s1, final CharSequence s2) {
         if (s1 == s2) return true;
         int length;

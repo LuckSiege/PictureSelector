@@ -13,16 +13,11 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity
-            android:name=".PictureSelectorActivity"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".PictureSelectorWeChatStyleActivity"
-            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".PictureSelectorActivity" />
+        <activity android:name=".PictureSelectorWeChatStyleActivity" />
         <activity
             android:name=".PictureSelectorCameraEmptyActivity"
-            android:theme="@style/Picture.Theme.Translucent"
-            android:windowSoftInputMode="adjustPan" />
+            android:theme="@style/Picture.Theme.Translucent" />
 
         <activity android:name=".PicturePreviewActivity" />
         <activity android:name=".PictureSelectorPreviewWeChatStyleActivity" />

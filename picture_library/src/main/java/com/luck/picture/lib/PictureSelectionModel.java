@@ -65,6 +65,21 @@ public class PictureSelectionModel {
     }
 
     /**
+     * Change the desired orientation of this activity.  If the activity
+     * is currently in the foreground or otherwise impacting the screen
+     * orientation, the screen will immediately be changed (possibly causing
+     * the activity to be restarted). Otherwise, this will be used the next
+     * time the activity is visible.
+     *
+     * @param requestedOrientation An orientation constant as used in
+     *                             {@link ActivityInfo#screenOrientation ActivityInfo.screenOrientation}.
+     */
+    public PictureSelectionModel setRequestedOrientation(int requestedOrientation) {
+        selectionConfig.requestedOrientation = requestedOrientation;
+        return this;
+    }
+
+    /**
      * @param engine Image Load the engine
      * @return
      */

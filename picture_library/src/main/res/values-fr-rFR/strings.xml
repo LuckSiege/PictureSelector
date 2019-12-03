@@ -50,4 +50,5 @@
     <string name="picture_send_num">l’envoi(%1$d/%2$d)</string>
     <string name="picture_preview_num">voir(%1$d)</string>
     <string name="picture_select">Le choix</string>
+    <string name="picture_data_exception">Anomalie des données de l’album...</string>
 </resources>

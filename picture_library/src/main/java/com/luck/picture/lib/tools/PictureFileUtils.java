@@ -51,7 +51,6 @@ public class PictureFileUtils {
      * @return
      */
     public static File createCameraFile(Context context, int type, String fileName, String format) {
-        Log.i("Mike", "createCameraFile: "+createMediaFile(context, type, fileName, format).getAbsolutePath());
         return createMediaFile(context, type, fileName, format);
     }
 
@@ -75,7 +74,7 @@ public class PictureFileUtils {
         if (rootDir != null && !rootDir.exists() && rootDir.mkdirs()) {
         }
 
-        File folderDir = new File(rootDir.getAbsolutePath() + "/Camera");
+        File folderDir = new File(rootDir.getAbsolutePath() + File.separator + "Camera" + File.separator);
         if (folderDir != null && !folderDir.exists() && folderDir.mkdirs()) {
         }
         boolean isOutFileNameEmpty = TextUtils.isEmpty(fileName);

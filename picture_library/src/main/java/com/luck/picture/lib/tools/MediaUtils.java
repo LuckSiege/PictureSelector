@@ -8,6 +8,7 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 
@@ -24,7 +25,7 @@ public class MediaUtils {
      * @param context
      * @return 图片的uri
      */
-    public static Uri createImagePathUri(final Context context) {
+    public static Uri createImageUri(final Context context) {
         final Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();
         String time = ValueOf.toString(System.currentTimeMillis());
@@ -36,10 +37,10 @@ public class MediaUtils {
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
         if (status.equals(Environment.MEDIA_MOUNTED)) {
             imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Files.getContentUri("external"), values);
+                    .insert(MediaStore.Images.Media.getContentUri("external"), values);
         } else {
             imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Files.getContentUri("internal"), values);
+                    .insert(MediaStore.Images.Media.getContentUri("internal"), values);
         }
         return imageFilePath[0];
     }
@@ -51,22 +52,22 @@ public class MediaUtils {
      * @param context
      * @return 视频的uri
      */
-    public static Uri createImageVideoUri(final Context context) {
+    public static Uri createVideoUri(final Context context) {
         final Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();
         String time = ValueOf.toString(System.currentTimeMillis());
         // ContentValues是我们希望这条记录被创建时包含的数据信息
         ContentValues values = new ContentValues(3);
-        values.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("VID_"));
-        values.put(MediaStore.Images.Media.DATE_TAKEN, time);
-        values.put(MediaStore.Images.Media.MIME_TYPE, PictureMimeType.MIME_TYPE_VIDEO);
+        values.put(MediaStore.Video.Media.DISPLAY_NAME, DateUtils.getCreateFileName("VID_"));
+        values.put(MediaStore.Video.Media.DATE_TAKEN, time);
+        values.put(MediaStore.Video.Media.MIME_TYPE, PictureMimeType.MIME_TYPE_VIDEO);
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
         if (status.equals(Environment.MEDIA_MOUNTED)) {
             imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Files.getContentUri("external"), values);
+                    .insert(MediaStore.Video.Media.getContentUri("external"), values);
         } else {
             imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Files.getContentUri("internal"), values);
+                    .insert(MediaStore.Video.Media.getContentUri("internal"), values);
         }
         return imageFilePath[0];
     }
@@ -139,7 +140,7 @@ public class MediaUtils {
      *
      * @return
      */
-    public static int[] getLocalVideoSizeToAndroidQ(Context context, String videoPath) {
+    public static int[] getLocalSizeToAndroidQ(Context context, String videoPath) {
         int[] size = new int[2];
         try {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -147,10 +148,8 @@ public class MediaUtils {
                         null, null, null);
                 if (query != null) {
                     query.moveToFirst();
-                    size[0] = query.getInt(query.getColumnIndexOrThrow(MediaStore.Video
-                            .Media.WIDTH));
-                    size[1] = query.getInt(query.getColumnIndexOrThrow(MediaStore.Video
-                            .Media.HEIGHT));
+                    size[0] = query.getInt(query.getColumnIndexOrThrow(MediaStore.Files.FileColumns.WIDTH));
+                    size[1] = query.getInt(query.getColumnIndexOrThrow(MediaStore.Files.FileColumns.HEIGHT));
                 }
             }
         } catch (Exception e) {
@@ -249,6 +248,7 @@ public class MediaUtils {
      *
      * @return
      */
+    @Deprecated
     public static int getLastImageId(Context context, String mimeType) {
         try {
             //selection: 指定查询条件

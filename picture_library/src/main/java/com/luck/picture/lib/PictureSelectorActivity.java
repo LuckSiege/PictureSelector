@@ -8,8 +8,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -183,6 +183,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mTvPictureOk.setOnClickListener(this);
         mTvPictureImgNum.setOnClickListener(this);
         mTvPictureTitle.setOnClickListener(this);
+        mIvArrow.setOnClickListener(this);
         String title = config.chooseMode == PictureMimeType.ofAudio() ?
                 getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll);
         mTvPictureTitle.setText(title);
@@ -339,26 +340,46 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             mediaLoader = new LocalMediaLoader(this, config);
         }
         mediaLoader.loadAllMedia();
-        mediaLoader.setCompleteListener(folders -> {
-            if (folders.size() > 0) {
-                foldersList = folders;
-                LocalMediaFolder folder = folders.get(0);
-                folder.setChecked(true);
-                List<LocalMedia> localImg = folder.getImages();
-                // 这里解决有些机型会出现拍照完，相册列表不及时刷新问题
-                // 因为onActivityResult里手动添加拍照后的照片，
-                // 如果查询出来的图片大于或等于当前adapter集合的图片则取更新后的，否则就取本地的
-                int size = images.size();
-                if (localImg.size() >= size) {
-                    images = localImg;
-                    folderWindow.bindFolder(folders);
+        mediaLoader.setCompleteListener(new LocalMediaLoader.LocalMediaLoadListener() {
+            @Override
+            public void loadComplete(List<LocalMediaFolder> folders) {
+                if (folders.size() > 0) {
+                    foldersList = folders;
+                    LocalMediaFolder folder = folders.get(0);
+                    folder.setChecked(true);
+                    List<LocalMedia> localImg = folder.getImages();
+                    // 这里解决有些机型会出现拍照完，相册列表不及时刷新问题
+                    // 因为onActivityResult里手动添加拍照后的照片，
+                    // 如果查询出来的图片大于或等于当前adapter集合的图片则取更新后的，否则就取本地的
+                    int size = images.size();
+                    if (localImg.size() >= size) {
+                        images = localImg;
+                        folderWindow.bindFolder(folders);
+                    }
                 }
+                if (adapter != null && images != null) {
+                    adapter.bindImagesData(images);
+                    boolean isEmpty = images.size() > 0;
+                    if (!isEmpty) {
+                        mTvEmpty.setText(getString(R.string.picture_empty));
+                        mTvEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds
+                                (0, R.drawable.picture_icon_no_data, 0, 0);
+                    }
+                    mTvEmpty.setVisibility(isEmpty ? View.INVISIBLE : View.VISIBLE);
+                }
+                mHandler.sendEmptyMessage(DISMISS_DIALOG);
             }
-            if (adapter != null && images != null) {
-                adapter.bindImagesData(images);
+
+            @Override
+            public void loadMediaDataError() {
+                mHandler.sendEmptyMessage(DISMISS_DIALOG);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    mTvEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds
+                            (0, R.drawable.picture_icon_data_error, 0, 0);
+                }
+                mTvEmpty.setText(getString(R.string.picture_data_exception));
                 mTvEmpty.setVisibility(images.size() > 0 ? View.INVISIBLE : View.VISIBLE);
             }
-            mHandler.sendEmptyMessage(DISMISS_DIALOG);
         });
     }
 
@@ -409,7 +430,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 closeActivity();
             }
         }
-        if (id == R.id.picture_title) {
+        if (id == R.id.picture_title || id == R.id.ivArrow) {
             if (folderWindow.isShowing()) {
                 folderWindow.dismiss();
             } else {
@@ -925,7 +946,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      *
      * @param data
      */
-    private MediaScannerConnection mScannerConnection;
 
     private void requestCamera(Intent data) {
         // on take photo success
@@ -953,19 +973,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         final File file = new File(cameraPath);
         if (!isAndroidQ) {
             if (config.isFallbackVersion3) {
-                mScannerConnection = new MediaScannerConnection(getApplicationContext(),
-                        new MediaScannerConnection.MediaScannerConnectionClient() {
-                            @Override
-                            public void onMediaScannerConnected() {
-                                mScannerConnection.scanFile(cameraPath, null);
-                            }
+                new PictureMediaScannerConnection(getApplicationContext(), cameraPath,
+                        () -> {
 
-                            @Override
-                            public void onScanCompleted(String path, Uri uri) {
-                                mScannerConnection.disconnect();
-                            }
                         });
-                mScannerConnection.connect();
             } else {
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
             }
@@ -999,11 +1010,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     newSize = MediaUtils.getLocalVideoSize(cameraPath);
                     duration = MediaUtils.extractDuration(getContext(), false, cameraPath);
                 }
-            }
-            int lastImageId = MediaUtils.getLastImageId(getContext(), mimeType);
-            if (lastImageId != -1) {
-                boolean isMimeType = PictureMimeType.eqImage(mimeType);
-                removeImage(lastImageId, isMimeType);
             }
         }
         media.setDuration(duration);
@@ -1139,6 +1145,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     .unregisterReceiver(commonBroadcastReceiver,
                             BroadcastAction.ACTION_SELECTED_DATA,
                             BroadcastAction.ACTION_PREVIEW_COMPRESSION);
+            commonBroadcastReceiver = null;
         }
         if (animation != null) {
             animation.cancel();
@@ -1148,13 +1155,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             handler.removeCallbacks(runnable);
             mediaPlayer.release();
             mediaPlayer = null;
-        }
-
-        if (mScannerConnection != null) {
-            if (mScannerConnection.isConnected()) {
-                mScannerConnection.disconnect();
-            }
-            mScannerConnection = null;
         }
     }
 
@@ -1183,7 +1183,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 case BroadcastAction.ACTION_SELECTED_DATA:
                     // 预览时勾选图片更新回调
                     extras = intent.getExtras();
-                    if (extras != null) {
+                    if (extras != null && adapter != null) {
                         List<LocalMedia> selectImages = extras.
                                 getParcelableArrayList("selectImages");
                         int position = extras.getInt("position");
@@ -1196,7 +1196,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     extras = intent.getExtras();
                     if (extras != null) {
                         List<LocalMedia> selectImages = extras.getParcelableArrayList("selectImages");
-                        if (selectImages.size() > 0) {
+                        if (selectImages != null && selectImages.size() > 0) {
                             // 取出第1个判断是否是图片，视频和图片只能二选一，不必考虑图片和视频混合
                             String mimeType = selectImages.get(0).getMimeType();
                             if (config.isCompress && PictureMimeType.eqImage(mimeType)

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -81,6 +82,15 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     }
 
     /**
+     * 是否改变屏幕方向
+     *
+     * @return
+     */
+    public boolean isRequestedOrientation() {
+        return true;
+    }
+
+    /**
      * 具体沉浸的样式，可以根据需要自行修改状态栏和导航栏的颜色
      */
     public void immersive() {
@@ -117,6 +127,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         }
         setTheme(config.themeStyleId);
         super.onCreate(savedInstanceState);
+        if (isRequestedOrientation()) {
+            setNewRequestedOrientation();
+        }
         mHandler = new Handler(Looper.getMainLooper(), this);
         initConfig();
         if (isImmersive()) {
@@ -135,6 +148,15 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     }
 
     /**
+     * 设置屏幕方向
+     */
+    protected void setNewRequestedOrientation() {
+        if (config != null) {
+            setRequestedOrientation(config.requestedOrientation);
+        }
+    }
+
+    /**
      * 获取Context上下文
      *
      * @return
@@ -150,6 +172,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         // 设置语言
         if (config.language >= 0) {
             PictureLanguageUtils.applyLanguage(this, LocaleTransform.getLanguage(config.language));
+        } else {
+            PictureLanguageUtils.setDefaultLanguage(this);
         }
         // 已选图片列表
         selectionMedias = config.selectionMedias == null ? new ArrayList<>() : config.selectionMedias;
@@ -223,7 +247,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     protected void showPleaseDialog() {
         if (!isFinishing()) {
             dismissDialog();
-            dialog = new PictureLoadingDialog(this);
+            dialog = new PictureLoadingDialog(getContext());
             dialog.show();
         }
     }
@@ -233,13 +257,15 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
      */
     protected void dismissDialog() {
         try {
-            if (dialog != null && dialog.isShowing()) {
+            if (dialog != null
+                    && dialog.isShowing()) {
                 dialog.dismiss();
+                dialog = null;
             }
         } catch (Exception e) {
+            dialog = null;
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -262,8 +288,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                     && compressDialog != null
                     && compressDialog.isShowing()) {
                 compressDialog.dismiss();
+                compressDialog = null;
             }
         } catch (Exception e) {
+            compressDialog = null;
             e.printStackTrace();
         }
     }
@@ -694,6 +722,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
      * @param id
      * @param eqVideo
      */
+    @Deprecated
     protected void removeImage(int id, boolean eqVideo) {
         try {
             ContentResolver cr = getContentResolver();
@@ -764,7 +793,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             Uri imageUri;
             if (SdkVersionUtils.checkedAndroid_Q()) {
-                imageUri = MediaUtils.createImagePathUri(getApplicationContext());
+                imageUri = MediaUtils.createImageUri(getApplicationContext());
                 if (imageUri != null) {
                     cameraPath = imageUri.toString();
                 }
@@ -790,7 +819,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             Uri imageUri;
             if (SdkVersionUtils.checkedAndroid_Q()) {
-                imageUri = MediaUtils.createImageVideoUri(getApplicationContext());
+                imageUri = MediaUtils.createVideoUri(getApplicationContext());
                 if (imageUri != null) {
                     cameraPath = imageUri.toString();
                 }
