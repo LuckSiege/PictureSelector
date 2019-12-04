@@ -38,7 +38,7 @@
 ```
 v2.3.8
 
-1.PictureSelector加入Caash日志管理工具方便错误分析，具体使用方式请查看Demo Application类中...
+1.PictureSelector加入Crash日志管理工具方便错误分析，具体使用方式请查看Demo Application类中...
 	Application onCreate加入两行代码
 		
 	/** PictureSelector日志管理配制开始 **/
@@ -295,6 +295,7 @@ Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme
         .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题 注意：此方法最好不要与.theme();同时存在， 二选一
 	.setPictureWindowAnimationStyle(windowAnimationStyle)// 自定义相册启动退出动画
 	.loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项   参考Demo MainActivity中代码
+	.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)// 设置相册Activity方向，不设置默认使用系统
 	.isOriginalImageControl(cb_original.isChecked())// 是否显示原图控制按钮，如果用户勾选了 压缩、裁剪功能将会失效
 	.isWeChatStyle(isWeChatStyle)// 是否开启微信图片选择风格，此开关开启了才可使用微信主题！！！
  	.maxSelectNum()// 最大图片选择数量 int
@@ -568,7 +569,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ```
 * v2.3.8
  ```
-    1.PictureSelector加入Caash日志管理工具方便错误分析，具体使用方式请查看Demo 
+    1.PictureSelector加入Crash日志管理工具方便错误分析，具体使用方式请查看Demo 
 	Application类中...
 		Application onCreate加入两行代码
 		
