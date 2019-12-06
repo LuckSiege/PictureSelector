@@ -342,7 +342,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
         } else {
             // 如果是单选，则清空已选中的并刷新列表(作单一选择)
-            if (selectMode == PictureConfig.SINGLE) {
+            if (selectMode == PictureConfig.SINGLE&&PictureMimeType.isPictureType(mimeType) == PictureConfig.TYPE_VIDEO) {
                 singleRadioMediaImage();
             }
             selectImages.add(image);

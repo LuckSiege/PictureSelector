@@ -781,13 +781,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         List<LocalMedia> result = new ArrayList<>();
         if (PictureMimeType.eqVideo(mimeType)) {
             // video
-            if (config.selectionMode == PictureConfig.SINGLE) {
-                result.add(media);
-                onResult(result);
-            } else {
-                bundle.putString("video_path", media.getPath());
-                JumpUtils.startPictureVideoPlayActivity(getContext(), bundle);
-            }
+//            if (config.selectionMode == PictureConfig.SINGLE) {
+//                result.add(media);
+//                onResult(result);
+//            } else {
+            bundle.putString("video_path", media.getPath());
+            JumpUtils.startPictureVideoPlayActivity(getContext(), bundle);
+//            }
         } else if (PictureMimeType.eqAudio(mimeType)) {
             // audio
             if (config.selectionMode == PictureConfig.SINGLE) {
