@@ -304,6 +304,7 @@ Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme
 	.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)// 设置相册Activity方向，不设置默认使用系统
 	.isOriginalImageControl(cb_original.isChecked())// 是否显示原图控制按钮，如果用户勾选了 压缩、裁剪功能将会失效
 	.isWeChatStyle(isWeChatStyle)// 是否开启微信图片选择风格，此开关开启了才可使用微信主题！！！
+	.isAndroidQTransform(false)// 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && enableCrop(false);有效
  	.maxSelectNum()// 最大图片选择数量 int
  	.minSelectNum()// 最小选择数量 int
 	.imageSpanCount(4)// 每行显示个数 int
