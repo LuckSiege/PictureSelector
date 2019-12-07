@@ -15,7 +15,7 @@
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 ## 目录
--[当前版本 v2.3.8](#当前版本)<br>
+-[当前版本 v2.3.9](#当前版本)<br>
 -[演示效果](#演示效果)<br>
 -[集成方式](#集成方式)<br>
 -[注意事项](#注意事项)<br>
@@ -36,6 +36,12 @@
 # 注意事项  重要！！！
 
 ```
+v2.3.9
+
+1.修复外部预览图片长按保存相册没有及时刷新问题
+2.修复部分手机启动相册过慢问题
+3.增加isAndroidQTransform(false) // 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && enableCrop(false);有效,默认处理
+
 v2.3.8
 
 1.PictureSelector加入Crash日志管理工具方便错误分析，具体使用方式请查看Demo Application类中...
@@ -144,7 +150,7 @@ v2.3.2开始移除了glide，所以使用v2.3.2版本以后的用户一定要配
 
 ```
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.8'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.9'
 }
 
 ```
@@ -155,7 +161,7 @@ dependencies {
 
 ```
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.8'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.9'
 }
 
 ```
@@ -188,7 +194,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.3.8</version> 
+      <version>v2.3.9</version> 
 </dependency>
 
 ```
@@ -566,10 +572,20 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 更新日志
 
 # 当前版本：
-```
-* v2.3.8
+
+* v2.3.9
+
  ```
-    1.PictureSelector加入Crash日志管理工具方便错误分析，具体使用方式请查看Demo 
+ 
+1.修复外部预览图片长按保存相册没有及时刷新问题
+2.修复部分手机启动相册过慢问题
+3.增加isAndroidQTransform(false) // 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && enableCrop(false);有效,默认处理
+
+```
+
+# 历史版本：
+```
+   1.PictureSelector加入Crash日志管理工具方便错误分析，具体使用方式请查看Demo 
 	Application类中...
 		Application onCreate加入两行代码
 		
@@ -603,10 +619,6 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 15.修复裁剪+压缩后图片后缀不一致问题
 * 16.修复单选模式下isSingleDirectReturn(true);点击右上角还是会有勾选效果问题
 
-```
-
-# 历史版本：
-```
 * v2.3.4
 * 1.新增动态设置相册和裁剪主题功能api，动态设置主题的权限最高！！！
   .setPictureStyle(mPictureParameterStyle); // 动态自定义相册主题
