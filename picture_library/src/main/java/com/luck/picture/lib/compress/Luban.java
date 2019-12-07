@@ -32,7 +32,7 @@ public class Luban implements Handler.Callback {
     private static final int MSG_COMPRESS_SUCCESS = 0;
     private static final int MSG_COMPRESS_START = 1;
     private static final int MSG_COMPRESS_ERROR = 2;
-    private int compressQuality;
+
     private String mTargetDir;
     private boolean focusAlpha;
     private int mLeastCompressSize;
@@ -43,8 +43,9 @@ public class Luban implements Handler.Callback {
     private List<String> mPaths;
     private List<LocalMedia> mediaList;
     private int index = -1;
-    private Handler mHandler;
     private boolean isAndroidQ;
+    private int compressQuality;
+    private Handler mHandler;
 
     private Luban(Builder builder) {
         this.mPaths = builder.mPaths;
@@ -56,6 +57,7 @@ public class Luban implements Handler.Callback {
         this.mLeastCompressSize = builder.mLeastCompressSize;
         this.mCompressionPredicate = builder.mCompressionPredicate;
         this.compressQuality = builder.compressQuality;
+        this.focusAlpha = builder.focusAlpha;
         this.mHandler = new Handler(Looper.getMainLooper(), this);
         this.isAndroidQ = builder.isAndroidQ;
     }
@@ -95,8 +97,7 @@ public class Luban implements Handler.Callback {
      * Returns a directory with the given name in the private cache directory of the application to
      * use to store retrieved media and thumbnails.
      *
-     * @param context   A context.
-     * @param cacheName The name of the subdirectory in which to store the cache.
+     * @param context A context.
      * @see #getImageCacheDir(Context)
      */
     private static File getImageCacheDir(Context context) {

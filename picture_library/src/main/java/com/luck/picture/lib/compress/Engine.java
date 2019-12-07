@@ -14,19 +14,18 @@ import java.io.IOException;
  */
 class Engine {
     private static final int DEFAULT_QUALITY = 60;
+    private int compressQuality;
     private InputStreamProvider srcImg;
     private File tagImg;
     private int srcWidth;
     private int srcHeight;
     private boolean focusAlpha;
-    private int compressQuality;
 
     Engine(InputStreamProvider srcImg, File tagImg, boolean focusAlpha, int compressQuality) throws IOException {
         this.tagImg = tagImg;
         this.srcImg = srcImg;
         this.focusAlpha = focusAlpha;
         this.compressQuality = compressQuality <= 0 ? DEFAULT_QUALITY : compressQuality;
-
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         options.inSampleSize = 1;

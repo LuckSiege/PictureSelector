@@ -3,7 +3,6 @@ package com.luck.picture.lib.engine;
 import android.content.Context;
 import android.widget.ImageView;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 
 /**
@@ -22,15 +21,13 @@ public interface ImageEngine {
     void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView);
 
     /**
-     * 加载图片
+     * 加载相册目录图片
      *
-     * @param context       上下文
-     * @param url           图片路径
-     * @param imageView     承载图片ImageView
-     * @param placeholderId 占位图
+     * @param context   上下文
+     * @param url       图片路径
+     * @param imageView 承载图片ImageView
      */
-    void loadFolderAsBitmapImage(@NonNull Context context, @NonNull String url,
-                                 @NonNull ImageView imageView, @DrawableRes int placeholderId);
+    void loadFolderImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView);
 
     /**
      * 加载gif图片
@@ -42,13 +39,11 @@ public interface ImageEngine {
     void loadAsGifImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView);
 
     /**
-     * 加载图片
+     * 加载图片列表图片
      *
-     * @param context       上下文
-     * @param url           图片路径
-     * @param imageView     承载图片ImageView
-     * @param placeholderId 占位图
+     * @param context   上下文
+     * @param url       图片路径
+     * @param imageView 承载图片ImageView
      */
-    void loadAsBitmapGridImage(@NonNull Context context, @NonNull String url,
-                               @NonNull ImageView imageView, @DrawableRes int placeholderId);
+    void loadGridImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView);
 }

@@ -10,9 +10,9 @@
     <string name="picture_message_audio_max_num">最大で %1$s の音声を選択することができます</string>
     <string name="picture_preview">プレビュー</string>
     <string name="picture_please">ちょっと待ってください...</string>
-    <string name="picture_done_front_num">%1$d/%2$d 完成</string>
-    <string name="picture_completed">已完成</string>
-    <string name="picture_done">完成</string>
+    <string name="picture_done_front_num">%1$d/%2$d 選べた</string>
+    <string name="picture_completed">選べた</string>
+    <string name="picture_done">選べた</string>
     <string name="picture_please_select">選んでください</string>
     <string name="picture_empty_title">ビデオや写真はない\n</string>
     <string name="picture_empty_audio_title">オーディオなし\n</string>

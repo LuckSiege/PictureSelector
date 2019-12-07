@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -310,12 +309,16 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                                     .loadMediaData(result)
                                     .setTargetDir(config.compressSavePath)
                                     .setCompressQuality(config.compressQuality)
+                                    .setFocusAlpha(config.focusAlpha)
                                     .setRenameListener(filePath -> config.renameCompressFileName)
                                     .ignoreBy(config.minimumCompressSize).get();
                     // 线程切换
                     mHandler.sendMessage(mHandler.obtainMessage(MSG_ASY_COMPRESSION_RESULT_SUCCESS,
                             new Object[]{result, files}));
                 } catch (Exception e) {
+                    BroadcastManager.getInstance(getApplicationContext())
+                            .action(BroadcastAction.ACTION_CLOSE_PREVIEW).broadcast();
+                    onResult(result);
                     e.printStackTrace();
                 }
             });
@@ -325,6 +328,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                     .ignoreBy(config.minimumCompressSize)
                     .setCompressQuality(config.compressQuality)
                     .setTargetDir(config.compressSavePath)
+                    .setFocusAlpha(config.focusAlpha)
                     .setRenameListener(filePath -> config.renameCompressFileName)
                     .setCompressListener(new OnCompressListener() {
                         @Override
@@ -615,7 +619,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         if (isAndroidQ && !isVideo) {
             showCompressDialog();
         }
-        if (isAndroidQ) {
+        if (isAndroidQ && config.isAndroidQTransform) {
             onResultToAndroidAsy(images);
         } else {
             dismissCompressDialog();

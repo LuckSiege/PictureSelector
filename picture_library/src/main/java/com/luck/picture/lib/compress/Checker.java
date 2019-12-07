@@ -4,8 +4,6 @@ import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.luck.picture.lib.tools.PictureFileUtils;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -154,15 +152,14 @@ enum Checker {
 
     String extSuffix(String mimeType) {
         try {
-            return TextUtils.isEmpty(mimeType) ? ""
-                    : mimeType.replace("image/", ".");
+            return TextUtils.isEmpty(mimeType) ? "" : mimeType.replace("image/", ".");
         } catch (Exception e) {
-            return "";
+            return JPG;
         }
     }
 
     boolean needCompress(int leastCompressSize, String path) {
-        if (leastCompressSize > 0 && !TextUtils.isEmpty(path)) {
+        if (leastCompressSize > 0) {
             File source = new File(path);
             return source.exists() && source.length() > (leastCompressSize << 10);
         }

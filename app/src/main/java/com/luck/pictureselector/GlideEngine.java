@@ -20,21 +20,34 @@ import com.luck.picture.lib.engine.ImageEngine;
  */
 public class GlideEngine implements ImageEngine {
 
+    /**
+     * 加载图片
+     *
+     * @param context
+     * @param url
+     * @param imageView
+     */
     @Override
     public void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
         Glide.with(context).load(url).into(imageView);
     }
 
+    /**
+     * 加载相册目录
+     *
+     * @param context   上下文
+     * @param url       图片路径
+     * @param imageView 承载图片ImageView
+     */
     @Override
-    public void loadFolderAsBitmapImage(@NonNull Context context, @NonNull String url,
-                                        @NonNull ImageView imageView, int placeholderId) {
+    public void loadFolderImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
         Glide.with(context)
                 .asBitmap()
                 .override(180, 180)
                 .centerCrop()
                 .sizeMultiplier(0.5f)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(placeholderId)
+                .placeholder(R.drawable.picture_icon_placeholder)
                 .load(url)
                 .into(new BitmapImageViewTarget(imageView) {
                     @Override
@@ -49,6 +62,13 @@ public class GlideEngine implements ImageEngine {
     }
 
 
+    /**
+     * 加载gif
+     *
+     * @param context   上下文
+     * @param url       图片路径
+     * @param imageView 承载图片ImageView
+     */
     @Override
     public void loadAsGifImage(@NonNull Context context, @NonNull String url,
                                @NonNull ImageView imageView) {
@@ -58,16 +78,21 @@ public class GlideEngine implements ImageEngine {
                 .into(imageView);
     }
 
+    /**
+     * 加载图片列表图片
+     *
+     * @param context   上下文
+     * @param url       图片路径
+     * @param imageView 承载图片ImageView
+     */
     @Override
-    public void loadAsBitmapGridImage(@NonNull Context context, @NonNull String url,
-                                      @NonNull ImageView imageView, int placeholderId) {
+    public void loadGridImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
         Glide.with(context)
-                .asBitmap()
+                .load(url)
                 .override(200, 200)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(placeholderId)
-                .load(url)
+                .placeholder(R.drawable.picture_image_placeholder)
                 .into(imageView);
     }
 

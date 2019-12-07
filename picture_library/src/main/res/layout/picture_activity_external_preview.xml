@@ -6,20 +6,11 @@
     android:fitsSystemWindows="true">
 
 
-    <TextView
-        android:id="@+id/picture_title"
+    <View
+        android:id="@+id/titleViewBg"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_alignTop="@id/left_back"
-        android:layout_alignBottom="@id/left_back"
-        android:layout_centerHorizontal="true"
-        android:background="?attr/picture.ac_preview.title.bg"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:maxEms="11"
-        android:textColor="?attr/picture.ac_preview.title.textColor"
-        android:textSize="18sp" />
-
+        android:background="?attr/picture.ac_preview.title.bg" />
 
     <ImageButton
         android:id="@+id/left_back"
@@ -28,6 +19,19 @@
         android:background="@color/picture_color_transparent"
         android:scaleType="centerInside"
         android:src="?attr/picture.preview.leftBack.icon" />
+
+    <TextView
+        android:id="@+id/picture_title"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_alignTop="@id/left_back"
+        android:layout_alignBottom="@id/left_back"
+        android:layout_centerHorizontal="true"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxEms="11"
+        android:textColor="?attr/picture.ac_preview.title.textColor"
+        android:textSize="18sp" />
 
     <ImageButton
         android:id="@+id/ib_delete"
@@ -42,6 +46,6 @@
         android:id="@+id/preview_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/picture_title" />
+        android:layout_below="@id/titleViewBg" />
 
 </RelativeLayout>

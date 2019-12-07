@@ -12,13 +12,13 @@ import android.provider.MediaStore;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 
+
 /**
  * @author：luck
  * @date：2019-10-21 17:10
  * @describe：资源处理工具类
  */
 public class MediaUtils {
-
     /**
      * 创建一条图片地址uri,用于保存拍照后的照片
      *
@@ -36,6 +36,7 @@ public class MediaUtils {
         values.put(MediaStore.Images.Media.MIME_TYPE, PictureMimeType.MIME_TYPE_IMAGE);
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
         if (status.equals(Environment.MEDIA_MOUNTED)) {
+            values.put(MediaStore.Images.Media.RELATIVE_PATH, PictureMimeType.DCIM);
             imageFilePath[0] = context.getContentResolver()
                     .insert(MediaStore.Images.Media.getContentUri("external"), values);
         } else {
@@ -63,6 +64,7 @@ public class MediaUtils {
         values.put(MediaStore.Video.Media.MIME_TYPE, PictureMimeType.MIME_TYPE_VIDEO);
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
         if (status.equals(Environment.MEDIA_MOUNTED)) {
+            values.put(MediaStore.Images.Media.RELATIVE_PATH, PictureMimeType.DCIM);
             imageFilePath[0] = context.getContentResolver()
                     .insert(MediaStore.Video.Media.getContentUri("external"), values);
         } else {
@@ -140,6 +142,7 @@ public class MediaUtils {
      *
      * @return
      */
+    @Deprecated
     public static int[] getLocalSizeToAndroidQ(Context context, String videoPath) {
         int[] size = new int[2];
         try {

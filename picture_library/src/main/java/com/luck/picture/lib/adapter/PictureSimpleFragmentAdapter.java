@@ -14,7 +14,6 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.luck.picture.lib.PictureVideoPlayActivity;
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;

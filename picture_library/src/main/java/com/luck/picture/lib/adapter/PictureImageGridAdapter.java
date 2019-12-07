@@ -159,20 +159,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             contentHolder.tvCheck.setVisibility(isSingleDirectReturn ? View.GONE : View.VISIBLE);
             contentHolder.btnCheck.setVisibility(isSingleDirectReturn ? View.GONE : View.VISIBLE);
             contentHolder.tvIsGif.setVisibility(gif ? View.VISIBLE : View.GONE);
-            if (chooseMode == PictureMimeType.ofAudio()) {
-                contentHolder.tvDuration.setVisibility(View.VISIBLE);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                            (R.drawable.picture_icon_audio, 0, 0, 0);
-                }
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                            (R.drawable.picture_icon_video, 0, 0, 0);
-                }
-                contentHolder.tvDuration.setVisibility(PictureMimeType.eqVideo(mimeType)
-                        ? View.VISIBLE : View.GONE);
-            }
             boolean eqImage = PictureMimeType.eqImage(image.getMimeType());
             if (eqImage) {
                 boolean eqLongImg = MediaUtils.isLongImg(image);
@@ -180,17 +166,27 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             } else {
                 contentHolder.tvLongChart.setVisibility(View.GONE);
             }
-            long duration = image.getDuration();
-            contentHolder.tvDuration.setText(DateUtils.formatDurationTime(duration));
+            contentHolder.tvDuration.setText(DateUtils.formatDurationTime(image.getDuration()));
+
             if (chooseMode == PictureMimeType.ofAudio()) {
+                contentHolder.tvDuration.setVisibility(View.VISIBLE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
+                            (R.drawable.picture_icon_audio, 0, 0, 0);
+                }
                 contentHolder.ivPicture.setImageResource(R.drawable.picture_audio_placeholder);
             } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
+                            (R.drawable.picture_icon_video, 0, 0, 0);
+                }
+                contentHolder.tvDuration.setVisibility(PictureMimeType.eqVideo(mimeType)
+                        ? View.VISIBLE : View.GONE);
                 if (config != null && config.imageEngine != null) {
-                    config.imageEngine
-                            .loadAsBitmapGridImage(context, path,
-                                    contentHolder.ivPicture, R.drawable.picture_image_placeholder);
+                    config.imageEngine.loadGridImage(context, path, contentHolder.ivPicture);
                 }
             }
+
             if (enablePreview || enablePreviewVideo || enablePreviewAudio) {
                 contentHolder.btnCheck.setOnClickListener(v -> {
                     // 如原图路径不存在或者路径存在但文件不存在
@@ -294,7 +290,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
      */
     private void notifyCheckChanged(ViewHolder viewHolder, LocalMedia imageBean) {
         viewHolder.tvCheck.setText("");
-        for (LocalMedia media : selectImages) {
+        int size = selectImages.size();
+        for (int i = 0; i < size; i++) {
+            LocalMedia media = selectImages.get(i);
             if (media.getPath().equals(imageBean.getPath())) {
                 imageBean.setNum(media.getNum());
                 media.setPosition(imageBean.getPosition());

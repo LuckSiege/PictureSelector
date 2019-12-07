@@ -21,7 +21,6 @@ import com.luck.picture.lib.tools.DoubleUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * @author：luck
@@ -382,6 +381,14 @@ public class PictureSelectionModel {
         return this;
     }
 
+    /**
+     * @param focusAlpha After compression, the transparent channel is retained
+     * @return
+     */
+    public PictureSelectionModel compressFocusAlpha(boolean focusAlpha) {
+        selectionConfig.focusAlpha = focusAlpha;
+        return this;
+    }
 
     /**
      * @param isOriginalControl Whether the original image is displayed
@@ -717,13 +724,25 @@ public class PictureSelectionModel {
     }
 
     /**
-     * 动态设置相册启动退出动画
+     * Dynamically set the album to start and exit the animation
      *
-     * @param style Activity启动退出动画主题
+     * @param style Activity Launch exit animation theme
      * @return
      */
     public PictureSelectionModel setPictureWindowAnimationStyle(PictureWindowAnimationStyle windowAnimationStyle) {
         selectionConfig.windowAnimationStyle = windowAnimationStyle;
+        return this;
+    }
+
+    /**
+     * # If you want to handle the Android Q path, if not, just return the uri，
+     * The getAndroidQToPath(); field will be empty
+     *
+     * @param isAndroidQTransform
+     * @return
+     */
+    public PictureSelectionModel isAndroidQTransform(boolean isAndroidQTransform) {
+        selectionConfig.isAndroidQTransform = isAndroidQTransform;
         return this;
     }
 

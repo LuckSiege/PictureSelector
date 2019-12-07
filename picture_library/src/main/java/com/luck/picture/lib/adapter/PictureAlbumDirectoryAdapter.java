@@ -15,7 +15,6 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
-import com.luck.picture.lib.tools.AttrsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,8 +73,8 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         } else {
             if (config != null && config.imageEngine != null) {
                 config.imageEngine
-                        .loadFolderAsBitmapImage(holder.itemView.getContext(),
-                                imagePath, holder.ivFirstImage, R.drawable.picture_icon_placeholder);
+                        .loadFolderImage(holder.itemView.getContext(),
+                                imagePath, holder.ivFirstImage);
             }
         }
         Context context = holder.itemView.getContext();

@@ -18,7 +18,6 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
-import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 
 import java.io.File;
@@ -144,6 +143,7 @@ public class LocalMediaLoader implements Handler.Callback {
         this.mHandler = new Handler(Looper.getMainLooper(), this);
     }
 
+
     public void loadAllMedia() {
         AsyncTask.SERIAL_EXECUTOR.execute(() -> {
             Cursor data = mContext.getContentResolver().query(QUERY_URI, PROJECTION, getSelection(), getSelectionArgs(), ORDER_BY);
@@ -179,23 +179,14 @@ public class LocalMediaLoader implements Handler.Callback {
 
                             String folderName = data.getString
                                     (data.getColumnIndexOrThrow(PROJECTION[7]));
+
                             if (config.filterFileSize > 0) {
                                 if (size > config.filterFileSize * FILE_SIZE_UNIT) {
                                     continue;
                                 }
                             }
-                            if (width == 0 && height == 0) {
-                                int[] newSize = isAndroidQ ? MediaUtils
-                                        .getLocalSizeToAndroidQ(mContext, path)
-                                        : MediaUtils.getLocalVideoSize(path);
-                                width = newSize[0];
-                                height = newSize[1];
-                            }
-
                             if (PictureMimeType.eqVideo(mimeType)) {
-                                if (duration == 0) {
-                                    duration = MediaUtils.extractDuration(mContext, isAndroidQ, path);
-                                }
+
                                 if (config.videoMinSecond > 0 && duration < config.videoMinSecond) {
                                     // 如果设置了最小显示多少秒的视频
                                     continue;
@@ -261,21 +252,21 @@ public class LocalMediaLoader implements Handler.Callback {
                 return getSelectionArgsForAllMediaCondition(getDurationCondition(0, 0), config.isGif);
             case PictureConfig.TYPE_IMAGE:
                 if (!TextUtils.isEmpty(config.specifiedFormat)) {
-                    // 获取指定的类型的图片
+                    // 获取指定类型的图片
                     return SELECTION_SPECIFIED_FORMAT + "='" + config.specifiedFormat + "'";
                 }
                 return config.isGif ? SELECTION : SELECTION_NOT_GIF;
             case PictureConfig.TYPE_VIDEO:
                 // 获取视频
                 if (!TextUtils.isEmpty(config.specifiedFormat)) {
-                    // 获取指定的类型的图片
+                    // 获取指定类型的图片
                     return SELECTION_SPECIFIED_FORMAT + "='" + config.specifiedFormat + "'";
                 }
                 return getSelectionArgsForSingleMediaCondition();
             case PictureConfig.TYPE_AUDIO:
                 // 获取音频
                 if (!TextUtils.isEmpty(config.specifiedFormat)) {
-                    // 获取指定的类型的图片
+                    // 获取指定类型的图片
                     return SELECTION_SPECIFIED_FORMAT + "='" + config.specifiedFormat + "'";
                 }
                 return getSelectionArgsForSingleMediaCondition(getDurationCondition(0, AUDIO_DURATION));

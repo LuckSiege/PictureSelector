@@ -32,10 +32,12 @@ public final class PictureSelectionConfig implements Parcelable {
     public PictureWindowAnimationStyle windowAnimationStyle;
     public String compressSavePath;
     public String suffixType;
+    public boolean focusAlpha;
     public String renameCompressFileName;
     public String renameCropFileName;
     public String specifiedFormat;
     public int requestedOrientation;
+    public boolean isAndroidQTransform;
     @StyleRes
     public int themeStyleId;
     public int selectionMode;
@@ -142,8 +144,10 @@ public final class PictureSelectionConfig implements Parcelable {
         cropWidth = 0;
         cropHeight = 0;
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
+        isAndroidQTransform = true;
         isCamera = true;
         isGif = false;
+        focusAlpha = false;
         isCheckOriginalImage = false;
         isSingleDirectReturn = false;
         enablePreview = true;
