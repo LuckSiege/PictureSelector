@@ -481,6 +481,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         // 如果设置了图片最小选择数量，则判断是否满足条件
         int size = images.size();
         boolean eqImg = PictureMimeType.eqImage(mimeType);
+
+        //额外增加选择后提示最大分钟数
+        boolean eqVideo = PictureMimeType.eqVideo(mimeType);
+        if (eqVideo) {
+            if (image.getDuration() > 16 * 1000) {
+                ToastUtils.s(getContext(), "很抱歉，请选择不超过15秒的视频");
+                return;
+            }
+        }
         if (config.minSelectNum > 0 && config.selectionMode == PictureConfig.MULTIPLE) {
             if (size < config.minSelectNum) {
                 String str = eqImg ? getString(R.string.picture_min_img_num, config.minSelectNum)
