@@ -575,32 +575,14 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 # 当前版本：
 
 * v2.3.9
-
- ```
  
-1.修复外部预览图片长按保存相册没有及时刷新问题
-2.修复部分手机启动相册过慢问题
-3.增加isAndroidQTransform(false) // 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && enableCrop(false);有效,默认处理
-
-```
+* 1.修复外部预览图片长按保存相册没有及时刷新问题
+* 2.修复部分手机启动相册过慢问题
+* 3.增加isAndroidQTransform(false) // 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && enableCrop(false);有效,默认 	处理
 
 # 历史版本：
-```
-   1.PictureSelector加入Crash日志管理工具方便错误分析，具体使用方式请查看Demo 
-	Application类中...
-		Application onCreate加入两行代码
-		
-	  /** PictureSelector日志管理配制开始 **/
-	  
-        // PictureSelector 绑定监听用户获取全局上下文或其他...
-        PictureAppMaster.getInstance().setApp(this);
-        // PictureSelector Crash日志监听
-        PictureSelectorCrashUtils.init((t, e) -> {
-            // Crash之后的一些操作可再此处理，没有就忽略...
-       });
-       
-     /** PictureSelector日志管理配制结束 **/
-   ```
+
+* v2.3.8
 * 2.新增api setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR) // 设置屏幕旋转方向，不设置默认使用系统
 * 3.修复minimumCompressSize(100);小于压缩值的图片在Android Q上异常问题
 * 4.修复单选模式isSingleDirectReturn为true并开启了裁剪后不会直接返回结果页bug
@@ -729,43 +711,6 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * 3.修复预览界面文字设置无效问题
 * 4.修复已知bug
 
-* v2.1.5
-* 简化压缩代码，只保留luban最新版本压缩
-* 增加压缩自定义保存路径
-* 增加过滤多少kb范围内的图片不压缩处理
-* 修复压缩透明图片出现黑色背景问题
-* 修复开启点击音效第一次不响bug
-
-* v2.1.3
-* 支持长图预览功能
-* 修复部分图片或视频查询不出来bug
-* 去除使用者主动添加适配android 6.0以上系统拍照适配配置
-* 升级PhotoView版本为最新版本
-* 解决部分图片预览时没有填充满屏幕问题
-* 优化相册启动时间，去除一些耗时操作
-* 优化代码结构
-* 修复已知问题
-
-* v2.1.1
-* 升级glide 4.0为正式版
-* 修复7.1.1系统PopupWindow弹出位置错误bug
-
-* v2.1.0
-* 修复裁剪速度慢的问题
-
-* v2.0.9
-* 修复直接播放视频闪退bug
-* 升级glide为4.0.0 rc1
-* 新增图片列表点击缩放效果api
-
-* v2.0.7
-* 修复已知bug
-
-* v2.0.6
-* 新增自定拍照保存路径
-* 修复录音不显示时长问题
-
-```
 
 # 项目使用第三方库：
 
@@ -802,7 +747,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ```
 
 ## 打赏
-```
+
 # ~如果您觉得好，对你有帮助，可以给我一点打赏当做鼓励，蚊子再小也是肉呀(*^__^*) 嘻嘻…… 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/apply.png)
 
@@ -811,9 +756,9 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/test.png)
 
-```
+
 ## 演示效果
-```
+
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/home.png)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/2.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/3.jpg)
