@@ -716,7 +716,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 * PhotoView:2.1.3
 * luban
-* 裁剪使用ucrop
+* ucrop
 
 ## 混淆配置 
 ```
