@@ -802,6 +802,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ```
 
 ## 打赏
+```
 # ~如果您觉得好，对你有帮助，可以给我一点打赏当做鼓励，蚊子再小也是肉呀(*^__^*) 嘻嘻…… 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/apply.png)
 
@@ -810,9 +811,9 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/test.png)
 
-
+```
 ## 演示效果
-
+```
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/home.png)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/2.jpg)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/3.jpg)
