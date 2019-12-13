@@ -547,6 +547,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 # 项目使用第三方库：
 
+* PhotoView
 * luban
 * ucrop
 
