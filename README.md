@@ -130,11 +130,10 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.9'
 
 方式一 compile引入
 
-```
+```sh
 dependencies {
     implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.9'
 }
-
 ```
 
 项目根目录build.gradle加入
