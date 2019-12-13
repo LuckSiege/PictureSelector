@@ -18,7 +18,7 @@
 -[当前版本 v2.3.9](#当前版本)<br>
 -[演示效果](#演示效果)<br>
 -[集成方式](#集成方式)<br>
--[注意事项](#注意事项)<br>
+-[用前需知](#用前需知)<br>
 -[功能特点](#功能特点)<br>
 -[常见错误](#常见错误)<br>
 -[功能配置](#功能配置)<br>
@@ -32,7 +32,7 @@
 -[兼容性测试](#兼容性测试)<br>
 -[打赏](#打赏)<br>
 
-# 注意事项  重要！！！
+# 用前需知  重要！！！
 
 ```
 v2.3.8 PictureSelector加入日志管理工具
@@ -68,8 +68,6 @@ windowAnimationStyle.ofAllAnimation(R.anim.picture_anim_up_in, R.anim.picture_an
 v2.3.2开始移除了glide，所以使用v2.3.2版本以后的用户一定要配制好图片加载引擎 否则列表图片加载不出来！！！
 .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
  具体请参考Demo MainActivity.java实现方式
-
-
 ```
 
 # 功能特点
@@ -114,11 +112,10 @@ v2.3.2开始移除了glide，所以使用v2.3.2版本以后的用户一定要配
 
 重要的事情说三遍记得添加权限
 
-```
+```sh
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.CAMERA" />
-    
 ```
 
 ## 当前版本
@@ -150,7 +147,7 @@ allprojects {
 方式二 maven引入
 
 step 1.
-```
+```sh
 <repositories>
        <repository>
        <id>jitpack.io</id>
@@ -159,18 +156,16 @@ step 1.
  </repositories>
 ```
 step 2.
-```
-
+```sh
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
       <version>v2.3.9</version> 
 </dependency>
-
 ```
 
 ## 常见错误
-```
+```sh
  重要：PictureSelector.create()；调用此方法时，在activity中传activity.this，在fragment中请传fragment.this,
  影响回调到哪个地方的onActivityResult()。
  
@@ -258,12 +253,10 @@ Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme
  如果出现图片全部加载不出来的情况时，包括预览、相册列表等，一定要传入
  .loadImageEngine(GlideEngine.createGlideEngine()); //图片加载引擎，必传项，
  也可以自定义成除glide外的其他第三方加载框架，具体请参考Demo
-
 ```
 
 ## 功能配置
-```
-// 进入相册 以下是例子：用不到的api可以不写
+```sh
  PictureSelector.create(MainActivity.this)
  	.openGallery()//全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
  	.theme()//主题样式(不设置为默认样式) 也可参考demo values/styles下 例如：R.style.picture.white.style
@@ -330,12 +323,11 @@ Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme
 ```
 
 ## 缓存清除
-```
+```sh
  //包括裁剪和压缩后的缓存，要在上传成功后调用，type 指的是图片or视频缓存取决于你设置的ofImage或ofVideo 注意：需要系统sd卡权限  
  PictureFileUtils.deleteCacheDirFile(MainActivity.this,type);
  // 清除所有缓存 例如：压缩、裁剪、视频、音频所生成的临时文件
  PictureFileUtils.deleteAllCacheDirFile(this);
- 
 ```
 ## 主题配置
 
@@ -454,19 +446,17 @@ PictureCropParameterStyle mCropParameterStyle = new PictureCropParameterStyle(
        
  // 相册启动退出动画   
 PictureWindowAnimationStyle windowAnimationStyle = new PictureWindowAnimationStyle();
-windowAnimationStyle.ofAllAnimation(R.anim.picture_anim_up_in, R.anim.picture_anim_down_out);   
-		
+windowAnimationStyle.ofAllAnimation(R.anim.picture_anim_up_in, R.anim.picture_anim_down_out);   		
 ```
 
 ## 常用功能
 
 ******启动相册并拍照******       
-```
+```sh
  PictureSelector.create(MainActivity.this)
        .openGallery(PictureMimeType.ofImage())
        .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
-       .forResult(PictureConfig.CHOOSE_REQUEST);
-       
+       .forResult(PictureConfig.CHOOSE_REQUEST);     
 ```
 ******单独启动拍照或视频 根据PictureMimeType自动识别******       
 ```
@@ -497,12 +487,11 @@ PictureSelector.create(MainActivity.this)
 
 ```
 ******预览视频****** 
-```
+```sh
 PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
-
 ```
 ## 结果回调
-```
+```sh
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -536,7 +525,6 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
             }
         }
     }
-    
 ```
 
 
@@ -547,17 +535,16 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 * ucrop
 
 ## 混淆配置 
-```
+```sh
 #PictureSelector 2.0
 -keep class com.luck.picture.lib.** { *; }
 
 -dontwarn com.yalantis.ucrop**
 -keep class com.yalantis.ucrop** { *; }
 -keep interface com.yalantis.ucrop** { *; }
-   
 ```
 ## LICENSE
-```
+```sh
    Copyright 2017 Luck
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -571,7 +558,6 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
 ```
 
 ## 打赏
