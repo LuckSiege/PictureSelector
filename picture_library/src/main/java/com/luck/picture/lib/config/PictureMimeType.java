@@ -32,7 +32,9 @@ public final class PictureMimeType {
     }
 
     /**
-     * Audio correlation is no longer maintained
+     * # No longer maintain audio related functions,
+     * but can continue to use but there will be phone compatibility issues
+     * <p>
      * 不再维护音频相关功能，但可以继续使用但会有机型兼容性问题
      */
     @Deprecated

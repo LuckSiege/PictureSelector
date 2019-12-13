@@ -27,6 +27,10 @@
         <item name="android:backgroundDimAmount">0.4</item>
     </style>
 
+    <style name="PictureThemeDialogFragmentAnim" mce_bogus="1" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/picture_anim_up_in</item>
+        <item name="android:windowExitAnimation">@anim/picture_anim_down_out</item>
+    </style>
 
     <style name="Picture.Theme.Dialog" parent="@android:style/Theme.Dialog">
 

@@ -37,6 +37,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public String renameCropFileName;
     public String specifiedFormat;
     public int requestedOrientation;
+    public boolean isCameraAroundState;
     public boolean isAndroidQTransform;
     @StyleRes
     public int themeStyleId;
@@ -144,6 +145,7 @@ public final class PictureSelectionConfig implements Parcelable {
         cropWidth = 0;
         cropHeight = 0;
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
+        isCameraAroundState = false;
         isAndroidQTransform = true;
         isCamera = true;
         isGif = false;
@@ -255,6 +257,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte(this.isCheckOriginalImage ? (byte) 1 : (byte) 0);
         dest.writeByte(this.zoomAnim ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isCompress ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isCameraAroundState ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isCamera ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isGif ? (byte) 1 : (byte) 0);
         dest.writeByte(this.enablePreview ? (byte) 1 : (byte) 0);
@@ -324,6 +327,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.language = in.readInt();
         this.zoomAnim = in.readByte() != 0;
         this.isCompress = in.readByte() != 0;
+        this.isCameraAroundState = in.readByte() != 0;
         this.isCamera = in.readByte() != 0;
         this.isGif = in.readByte() != 0;
         this.isCheckOriginalImage = in.readByte() != 0;

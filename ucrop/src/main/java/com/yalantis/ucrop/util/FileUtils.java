@@ -46,7 +46,7 @@ import java.util.Locale;
  * @version 2013-12-11
  */
 public class FileUtils {
-
+    private static SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd_HHmmssSS");
     /**
      * TAG for log messages.
      */
@@ -308,7 +308,6 @@ public class FileUtils {
      * @return
      */
     public static String getCreateFileName(String prefix) {
-        SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd_HHmmss");
         long millis = System.currentTimeMillis();
         return prefix + sf.format(millis);
     }

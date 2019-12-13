@@ -176,7 +176,7 @@ public final class PictureSelector {
             Intent intent = new Intent(getActivity(), PictureExternalPreviewActivity.class);
             intent.putExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
             intent.putExtra(PictureConfig.EXTRA_POSITION, position);
-            intent.putExtra(PictureConfig.DIRECTORY_PATH, directory_path);
+            intent.putExtra(PictureConfig.EXTRA_DIRECTORY_PATH, directory_path);
             getActivity().startActivity(intent);
             getActivity().overridePendingTransition(enterAnimation != 0
                     ? enterAnimation : R.anim.picture_anim_enter, R.anim.picture_anim_fade_in);
@@ -191,7 +191,8 @@ public final class PictureSelector {
     public void externalPictureVideo(String path) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Intent intent = new Intent(getActivity(), PictureVideoPlayActivity.class);
-            intent.putExtra("video_path", path);
+            intent.putExtra(PictureConfig.EXTRA_VIDEO_PATH, path);
+            intent.putExtra(PictureConfig.EXTRA_PREVIEW_VIDEO, true);
             getActivity().startActivity(intent);
         }
     }
@@ -204,7 +205,7 @@ public final class PictureSelector {
     public void externalPictureAudio(String path) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Intent intent = new Intent(getActivity(), PicturePlayAudioActivity.class);
-            intent.putExtra("audio_path", path);
+            intent.putExtra(PictureConfig.EXTRA_AUDIO_PATH, path);
             getActivity().startActivity(intent);
             getActivity().overridePendingTransition(R.anim.picture_anim_enter, 0);
         }

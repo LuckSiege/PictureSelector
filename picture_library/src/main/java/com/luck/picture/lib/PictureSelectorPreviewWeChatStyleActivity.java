@@ -23,6 +23,7 @@ import com.luck.picture.lib.tools.ScreenUtils;
 public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewActivity {
     private TextView mPictureSendView;
     private RecyclerView mRvGallery;
+    private TextView tvSelected;
     private View bottomLine;
     private PictureWeChatPreviewGalleryAdapter mGalleryAdapter;
 
@@ -47,6 +48,7 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
         goneParent();
         mRvGallery = findViewById(R.id.rv_gallery);
         bottomLine = findViewById(R.id.bottomLine);
+        tvSelected = findViewById(R.id.tv_selected);
         mPictureSendView = findViewById(R.id.picture_send);
         mPictureSendView.setOnClickListener(this);
         mPictureSendView.setText(getString(R.string.picture_send));
@@ -75,7 +77,6 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                 media.setChecked(media.position - 1 == position);
             }
         }
-        onSelectNumChange(false);
     }
 
     @Override
@@ -86,6 +87,15 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                 mPictureSendView.setBackgroundResource(config.style.pictureRightBackgroundStyle);
             } else {
                 mPictureSendView.setBackgroundResource(R.drawable.picture_send_button_bg);
+            }
+            if (config.style.pictureRightTextSize != 0) {
+                mPictureSendView.setTextSize(config.style.pictureRightTextSize);
+            }
+            if (!TextUtils.isEmpty(config.style.pictureWeChatPreviewSelectedText)) {
+                tvSelected.setText(config.style.pictureWeChatPreviewSelectedText);
+            }
+            if (config.style.pictureWeChatPreviewSelectedTextSize != 0) {
+                tvSelected.setTextSize(config.style.pictureWeChatPreviewSelectedTextSize);
             }
             if (config.style.picturePreviewBottomBgColor != 0) {
                 selectBarLayout.setBackgroundColor(config.style.picturePreviewBottomBgColor);
@@ -121,6 +131,9 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
             } else {
                 picture_left_back.setImageResource(R.drawable.picture_icon_back);
             }
+            if (!TextUtils.isEmpty(config.style.pictureRightDefaultText)) {
+                mPictureSendView.setText(config.style.pictureRightDefaultText);
+            }
         } else {
             mPictureSendView.setBackgroundResource(R.drawable.picture_send_button_bg);
             mPictureSendView.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_white));
@@ -134,6 +147,8 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                         .getDrawable(this, R.drawable.picture_original_wechat_checkbox));
             }
         }
+
+        onSelectNumChange(false);
     }
 
     @Override
@@ -208,7 +223,11 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                 mGalleryAdapter.setNewData(selectImages);
             }
         } else {
-            mPictureSendView.setText(getString(R.string.picture_send));
+            if (config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)) {
+                mPictureSendView.setText(config.style.pictureRightDefaultText);
+            } else {
+                mPictureSendView.setText(getString(R.string.picture_send));
+            }
             mRvGallery.setVisibility(View.GONE);
             bottomLine.setVisibility(View.GONE);
         }

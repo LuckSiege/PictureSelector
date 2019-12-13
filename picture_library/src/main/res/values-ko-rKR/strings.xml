@@ -42,7 +42,7 @@
     <string name="picture_video_error">비디오가 손상되었습니다</string>
     <string name="picture_audio_error">오디오가 손상됨</string>
     <string name="picture_confirm">확정</string>
-    <string name="picture_preview_image_num">%1$d / %2$d</string>
+    <string name="picture_preview_image_num">%1$d/%2$d</string>
     <string name="picture_not_crop_data">자른 데이터가 없습니다</string>
     <string name="picture_original_image">원본 이미지</string>
     <string name="picture_send">보내기</string>

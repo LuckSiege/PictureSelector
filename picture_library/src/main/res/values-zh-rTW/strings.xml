@@ -42,7 +42,7 @@
     <string name="picture_video_error">視頻已損壞</string>
     <string name="picture_audio_error">音頻已損壞</string>
     <string name="picture_confirm">確定</string>
-    <string name="picture_preview_image_num">%1$d / %2$d</string>
+    <string name="picture_preview_image_num">%1$d/%2$d</string>
     <string name="picture_not_crop_data">無可用裁剪數據</string>
     <string name="picture_original_image">原圖</string>
     <string name="picture_send">發送</string>

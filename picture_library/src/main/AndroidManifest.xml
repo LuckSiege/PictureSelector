@@ -13,27 +13,41 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".PictureSelectorActivity" />
-        <activity android:name=".PictureSelectorWeChatStyleActivity" />
+        <activity
+            android:name=".PictureSelectorActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name=".PictureSelectorWeChatStyleActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
             android:name=".PictureSelectorCameraEmptyActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/Picture.Theme.Translucent" />
 
-        <activity android:name=".PicturePreviewActivity" />
-        <activity android:name=".PictureSelectorPreviewWeChatStyleActivity" />
+        <activity
+            android:name=".PicturePreviewActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name=".PictureSelectorPreviewWeChatStyleActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
             android:name=".PictureVideoPlayActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="sensor" />
-        <activity android:name=".PictureExternalPreviewActivity" />
+        <activity
+            android:name=".PictureExternalPreviewActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+
+        <activity
+            android:name=".PicturePlayAudioActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:theme="@style/Base.Theme.NoActionBar" />
         <activity
             android:name="com.yalantis.ucrop.PictureMultiCuttingActivity"
             android:theme="@style/Base.Theme.NoActionBar" />
-
-        <activity android:name=".PicturePlayAudioActivity" />
 
     </application>
 

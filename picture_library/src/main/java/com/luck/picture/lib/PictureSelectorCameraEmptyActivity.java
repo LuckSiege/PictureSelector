@@ -45,9 +45,9 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                         .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             onTakePhoto();
         } else {
-            ToastUtils.s(getContext(), getString(R.string.picture_camera));
-            closeActivity();
-            return;
+            PermissionChecker.requestPermissions(this, new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
         }
         setTheme(R.style.Picture_Theme_Translucent);
     }
@@ -164,11 +164,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 return;
             }
             mimeType = PictureMimeType.MIME_TYPE_AUDIO;
-            if (isAndroidQ) {
-                duration = MediaUtils.extractDuration(getContext(), true, cameraPath);
-            } else {
-                duration = MediaUtils.extractDuration(getContext(), false, cameraPath);
-            }
+            duration = MediaUtils.extractDuration(getContext(), isAndroidQ, cameraPath);
         }
         if (TextUtils.isEmpty(cameraPath) || new File(cameraPath) == null) {
             return;
@@ -178,7 +174,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         final File file = new File(cameraPath);
         if (!isAndroidQ) {
             if (config.isFallbackVersion3) {
-                new PictureMediaScannerConnection(getApplicationContext(), cameraPath,
+                new PictureMediaScannerConnection(getContext(), cameraPath,
                         () -> {
 
                         });
@@ -265,13 +261,12 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         switch (requestCode) {
             case PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE:
                 // 存储权限
-                for (int i = 0; i < grantResults.length; i++) {
-                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        onTakePhoto();
-                    } else {
-                        closeActivity();
-                        ToastUtils.s(getContext(), getString(R.string.picture_camera));
-                    }
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    PermissionChecker.requestPermissions(this,
+                            new String[]{Manifest.permission.CAMERA}, PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE);
+                } else {
+                    ToastUtils.s(getContext(), getString(R.string.picture_jurisdiction));
+                    closeActivity();
                 }
                 break;
             case PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE:

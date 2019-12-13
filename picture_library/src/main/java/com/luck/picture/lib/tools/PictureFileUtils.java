@@ -18,6 +18,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
 import com.luck.picture.lib.config.PictureConfig;
@@ -50,6 +51,7 @@ public class PictureFileUtils {
      * @param format
      * @return
      */
+    @Nullable
     public static File createCameraFile(Context context, int type, String fileName, String format) {
         return createMediaFile(context, type, fileName, format);
     }
@@ -63,10 +65,12 @@ public class PictureFileUtils {
      * @param format
      * @return
      */
+    @Nullable
     private static File createMediaFile(Context context, int chooseMode, String fileName, String format) {
         return createOutFile(context, chooseMode, fileName, format);
     }
 
+    @Nullable
     private static File createOutFile(Context context, int chooseMode, String fileName, String format) {
         String state = Environment.getExternalStorageState();
         File rootDir = state.equals(Environment.MEDIA_MOUNTED) ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
@@ -99,6 +103,7 @@ public class PictureFileUtils {
      * @param type
      * @return
      */
+    @Nullable
     private static File getRootDirFile(Context context, int type) {
         switch (type) {
             case PictureConfig.TYPE_VIDEO:
@@ -374,6 +379,7 @@ public class PictureFileUtils {
      * @param filename
      * @return
      */
+    @Nullable
     public static String createDir(Context context, String filename) {
         File rootDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         if (!rootDir.exists())
@@ -384,7 +390,7 @@ public class PictureFileUtils {
         return rootDir + "/" + filename;
     }
 
-
+    @Nullable
     public static String getDCIMCameraPath(Context ctx, String mimeType) {
         String absolutePath;
         try {

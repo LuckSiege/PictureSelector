@@ -15,6 +15,7 @@ import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +39,6 @@ import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
-import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
@@ -69,20 +69,12 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     private List<LocalMedia> images = new ArrayList<>();
     private int position = 0;
     private SimpleFragmentAdapter adapter;
-    private LayoutInflater inflater;
     private loadDataThread loadDataThread;
     private String downloadPath;
     private String mimeType;
     private ImageButton ibDelete;
     private boolean isAndroidQ;
     private View titleViewBg;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        inflater = LayoutInflater.from(this);
-        isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
-    }
 
     @Override
     public int getResourceId() {
@@ -92,6 +84,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     @Override
     protected void initWidgets() {
         super.initWidgets();
+        isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         titleViewBg = findViewById(R.id.titleViewBg);
         tvTitle = findViewById(R.id.picture_title);
         ibLeftBack = findViewById(R.id.left_back);
@@ -115,6 +108,9 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             if (config.style.pictureTitleTextColor != 0) {
                 tvTitle.setTextColor(config.style.pictureTitleTextColor);
             }
+            if (config.style.pictureTitleTextSize != 0) {
+                tvTitle.setTextSize(config.style.pictureTitleTextSize);
+            }
             if (config.style.pictureLeftBackIcon != 0) {
                 ibLeftBack.setImageResource(config.style.pictureLeftBackIcon);
             }
@@ -128,7 +124,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 titleViewBg.setBackgroundColor(colorPrimary);
             }
         } else {
-            int previewBgColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_ac_preview_title_bg);
+            int previewBgColor = AttrsUtils.getTypeValueColor(getContext(), R.attr.picture_ac_preview_title_bg);
             if (previewBgColor != 0) {
                 titleViewBg.setBackgroundColor(previewBgColor);
             } else {
@@ -175,7 +171,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 // 删除通知用户更新
                 Bundle bundle = new Bundle();
                 bundle.putInt(PictureConfig.EXTRA_PREVIEW_DELETE_POSITION, currentItem);
-                BroadcastManager.getInstance(this)
+                BroadcastManager.getInstance(getContext())
                         .action(BroadcastAction.ACTION_DELETE_PREVIEW_POSITION)
                         .extras(bundle).broadcast();
                 if (images.size() == 0) {
@@ -192,6 +188,27 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
     public class SimpleFragmentAdapter extends PagerAdapter {
 
+        /**
+         * 最大缓存图片数量
+         */
+        private static final int MAX_CACHE_SIZE = 20;
+        /**
+         * 缓存view
+         */
+        private SparseArray<View> mCacheView;
+
+        public void clear() {
+            if (null != mCacheView) {
+                mCacheView.clear();
+                mCacheView = null;
+            }
+        }
+
+        public SimpleFragmentAdapter() {
+            super();
+            this.mCacheView = new SparseArray<>();
+        }
+
         @Override
         public int getCount() {
             return images != null ? images.size() : 0;
@@ -200,6 +217,9 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             (container).removeView((View) object);
+            if (mCacheView.size() > MAX_CACHE_SIZE) {
+                mCacheView.remove(position);
+            }
         }
 
         @Override
@@ -214,66 +234,70 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            View contentView = inflater.inflate(R.layout.picture_image_preview, container, false);
-            // 常规图控件
-            final PhotoView imageView = contentView.findViewById(R.id.preview_image);
-            // 长图控件
-            final SubsamplingScaleImageView longImg = contentView.findViewById(R.id.longImg);
+            View contentView = mCacheView.get(position);
+            if (contentView == null) {
+                contentView = LayoutInflater.from(container.getContext())
+                        .inflate(R.layout.picture_image_preview, container, false);
+                // 常规图控件
+                final PhotoView imageView = contentView.findViewById(R.id.preview_image);
+                // 长图控件
+                final SubsamplingScaleImageView longImg = contentView.findViewById(R.id.longImg);
 
-            LocalMedia media = images.get(position);
-            if (media != null) {
-                mimeType = media.getMimeType();
-                final String path;
-                if (media.isCut() && !media.isCompressed()) {
-                    // 裁剪过
-                    path = media.getCutPath();
-                } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
-                    // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
-                    path = media.getCompressPath();
-                } else {
-                    path = media.getPath();
-                }
-                boolean isGif = PictureMimeType.isGif(mimeType);
-                final boolean eqLongImg = MediaUtils.isLongImg(media);
-                imageView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
-                longImg.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
-                // 压缩过的gif就不是gif了
-                if (isGif && !media.isCompressed()) {
-                    if (config != null && config.imageEngine != null) {
-                        config.imageEngine.loadAsGifImage
-                                (PictureExternalPreviewActivity.this,
-                                        path, imageView);
+                LocalMedia media = images.get(position);
+                if (media != null) {
+                    mimeType = media.getMimeType();
+                    final String path;
+                    if (media.isCut() && !media.isCompressed()) {
+                        // 裁剪过
+                        path = media.getCutPath();
+                    } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
+                        // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
+                        path = media.getCompressPath();
+                    } else {
+                        path = media.getPath();
                     }
-                } else {
-                    if (config != null && config.imageEngine != null) {
-                        if (eqLongImg) {
-                            displayLongPic(isAndroidQ
-                                    ? Uri.parse(path) : Uri.fromFile(new File(path)), longImg);
-                        } else {
-                            config.imageEngine.loadImage(contentView.getContext(), path, imageView);
+                    boolean isGif = PictureMimeType.isGif(mimeType);
+                    final boolean eqLongImg = MediaUtils.isLongImg(media);
+                    imageView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
+                    longImg.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
+                    // 压缩过的gif就不是gif了
+                    if (isGif && !media.isCompressed()) {
+                        if (config != null && config.imageEngine != null) {
+                            config.imageEngine.loadAsGifImage
+                                    (getContext(), path, imageView);
+                        }
+                    } else {
+                        if (config != null && config.imageEngine != null) {
+                            if (eqLongImg) {
+                                displayLongPic(isAndroidQ
+                                        ? Uri.parse(path) : Uri.fromFile(new File(path)), longImg);
+                            } else {
+                                config.imageEngine.loadImage(contentView.getContext(), path, imageView);
+                            }
                         }
                     }
-                }
-                imageView.setOnViewTapListener((view, x, y) -> {
-                    finish();
-                    exitAnimation();
-                });
-                longImg.setOnClickListener(v -> {
-                    finish();
-                    exitAnimation();
-                });
-                imageView.setOnLongClickListener(v -> {
-                    if (config.isNotPreviewDownload) {
-                        if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                            downloadPath = path;
-                            showDownLoadDialog();
-                        } else {
-                            PermissionChecker.requestPermissions(PictureExternalPreviewActivity.this,
-                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
+                    imageView.setOnViewTapListener((view, x, y) -> {
+                        finish();
+                        exitAnimation();
+                    });
+                    longImg.setOnClickListener(v -> {
+                        finish();
+                        exitAnimation();
+                    });
+                    imageView.setOnLongClickListener(v -> {
+                        if (config.isNotPreviewDownload) {
+                            if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                                downloadPath = path;
+                                showDownLoadDialog();
+                            } else {
+                                PermissionChecker.requestPermissions(PictureExternalPreviewActivity.this,
+                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
+                            }
                         }
-                    }
-                    return true;
-                });
+                        return true;
+                    });
+                }
+                mCacheView.put(position, contentView);
             }
             (container).addView(contentView, 0);
             return contentView;
@@ -300,45 +324,48 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
      * 下载图片提示
      */
     private void showDownLoadDialog() {
-        if (TextUtils.isEmpty(downloadPath)) {
-            return;
-        }
-        final PictureCustomDialog dialog = new PictureCustomDialog(PictureExternalPreviewActivity.this,
-                ScreenUtils.getScreenWidth(PictureExternalPreviewActivity.this) * 3 / 4,
-                ScreenUtils.getScreenHeight(PictureExternalPreviewActivity.this) / 4,
-                R.layout.picture_wind_base_dialog_xml, R.style.Picture_Theme_Dialog);
-        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
-        Button btn_commit = dialog.findViewById(R.id.btn_commit);
-        TextView tv_title = dialog.findViewById(R.id.tv_title);
-        TextView tv_content = dialog.findViewById(R.id.tv_content);
-        tv_title.setText(getString(R.string.picture_prompt));
-        tv_content.setText(getString(R.string.picture_prompt_content));
-        btn_cancel.setOnClickListener(view -> dialog.dismiss());
-        btn_commit.setOnClickListener(view -> {
-            boolean isHttp = PictureMimeType.isHttp(downloadPath);
-            if (isHttp) {
-                showPleaseDialog();
-                loadDataThread = new loadDataThread(downloadPath);
-                loadDataThread.start();
-            } else {
-                // 有可能本地图片
-                try {
-                    if (isAndroidQ) {
-                        savePictureAlbumAndroidQ(Uri.parse(downloadPath));
-                    } else {
-                        // 把文件插入到系统图库
-                        savePictureAlbum();
-                    }
-                    dismissDialog();
-                } catch (Exception e) {
-                    ToastUtils.s(getContext(), getString(R.string.picture_save_error) + "\n" + e.getMessage());
-                    dismissDialog();
-                    e.printStackTrace();
+        if (!isFinishing() && !TextUtils.isEmpty(downloadPath)) {
+            final PictureCustomDialog dialog =
+                    new PictureCustomDialog(getContext(), R.layout.picture_wind_base_dialog);
+            Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+            Button btn_commit = dialog.findViewById(R.id.btn_commit);
+            TextView tv_title = dialog.findViewById(R.id.tv_title);
+            TextView tv_content = dialog.findViewById(R.id.tv_content);
+            tv_title.setText(getString(R.string.picture_prompt));
+            tv_content.setText(getString(R.string.picture_prompt_content));
+            btn_cancel.setOnClickListener(v -> {
+                if (!isFinishing()) {
+                    dialog.dismiss();
                 }
-            }
-            dialog.dismiss();
-        });
-        dialog.show();
+            });
+            btn_commit.setOnClickListener(view -> {
+                boolean isHttp = PictureMimeType.isHttp(downloadPath);
+                if (isHttp) {
+                    showPleaseDialog();
+                    loadDataThread = new loadDataThread(downloadPath);
+                    loadDataThread.start();
+                } else {
+                    // 有可能本地图片
+                    try {
+                        if (isAndroidQ) {
+                            savePictureAlbumAndroidQ(Uri.parse(downloadPath));
+                        } else {
+                            // 把文件插入到系统图库
+                            savePictureAlbum();
+                        }
+                        dismissDialog();
+                    } catch (Exception e) {
+                        ToastUtils.s(getContext(), getString(R.string.picture_save_error) + "\n" + e.getMessage());
+                        dismissDialog();
+                        e.printStackTrace();
+                    }
+                }
+                if (!isFinishing()) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+        }
     }
 
     /**
@@ -393,7 +420,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 if (bitmap != null) {
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
                     outputStream.close();
-                    String path = PictureFileUtils.getPath(this, uri);
+                    String path = PictureFileUtils.getPath(getContext(), uri);
                     Message message = mHandler.obtainMessage();
                     message.what = 200;
                     message.obj = path;
@@ -495,7 +522,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                         if (!TextUtils.isEmpty(path)) {
                             File file = new File(path);
                             MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), null);
-                            new PictureMediaScannerConnection(getContext().getApplicationContext(), file.getAbsolutePath(),
+                            new PictureMediaScannerConnection(getContext(), file.getAbsolutePath(),
                                     () -> {
                                     });
                             ToastUtils.s(getContext(), getString(R.string.picture_save_success) + "\n" + file.getAbsolutePath());
@@ -533,6 +560,9 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         if (loadDataThread != null) {
             mHandler.removeCallbacks(loadDataThread);
             loadDataThread = null;
+        }
+        if (adapter != null) {
+            adapter.clear();
         }
     }
 

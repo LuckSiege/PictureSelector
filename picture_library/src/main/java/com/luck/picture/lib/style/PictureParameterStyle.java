@@ -50,6 +50,11 @@ public class PictureParameterStyle implements Parcelable {
     public int pictureTitleTextColor;
 
     /**
+     * 相册标题字体大小
+     */
+    public int pictureTitleTextSize;
+
+    /**
      * 相册取消按钮色值
      */
     @ColorInt
@@ -61,6 +66,16 @@ public class PictureParameterStyle implements Parcelable {
      */
     @ColorInt
     public int pictureRightDefaultTextColor;
+
+    /**
+     * 相册右侧文字字体大小
+     */
+    public int pictureRightTextSize;
+
+    /**
+     * 相册右侧按钮文本
+     */
+    public String pictureRightDefaultText;
 
     /**
      * 相册右侧按钮色值
@@ -87,16 +102,46 @@ public class PictureParameterStyle implements Parcelable {
     public int pictureUnCompleteTextColor;
 
     /**
+     * 相册列表完成按钮字体大小
+     */
+    public int pictureCompleteTextSize;
+
+    /**
      * 相册列表不可预览文字颜色
      */
     @ColorInt
     public int pictureUnPreviewTextColor;
 
     /**
+     * 相册列表预览文字大小
+     */
+    public int picturePreviewTextSize;
+
+    /**
+     * 相册列表未完成按钮文本
+     */
+    public String pictureUnCompleteText;
+
+    /**
+     * 相册列表已完成按钮文本
+     */
+    public String pictureCompleteText;
+
+    /**
      * 相册列表预览文字颜色
      */
     @ColorInt
     public int picturePreviewTextColor;
+
+    /**
+     * 相册列表不可预览文字
+     */
+    public String pictureUnPreviewText;
+
+    /**
+     * 相册列表预览文字
+     */
+    public String picturePreviewText;
 
     /**
      * 相册列表预览界面底部背景色
@@ -116,6 +161,11 @@ public class PictureParameterStyle implements Parcelable {
      */
     @ColorInt
     public int pictureOriginalFontColor;
+
+    /**
+     * 原图字体大小
+     */
+    public int pictureOriginalTextSize;
 
     /**
      * 相册右侧按钮不可点击背景样式
@@ -171,6 +221,16 @@ public class PictureParameterStyle implements Parcelable {
     public int pictureWeChatTitleBackgroundStyle;
 
     /**
+     * WeChatStyle 自定义预览页右下角选择文字大小
+     */
+    public int pictureWeChatPreviewSelectedTextSize;
+
+    /**
+     * WeChatStyle 自定义预览页右下角选择文字文案
+     */
+    public String pictureWeChatPreviewSelectedText;
+
+    /**
      * 图片已选数量圆点背景色
      */
     @DrawableRes
@@ -219,17 +279,27 @@ public class PictureParameterStyle implements Parcelable {
         dest.writeInt(this.pictureTitleBarBackgroundColor);
         dest.writeInt(this.pictureContainerBackgroundColor);
         dest.writeInt(this.pictureTitleTextColor);
+        dest.writeInt(this.pictureTitleTextSize);
         dest.writeInt(this.pictureCancelTextColor);
         dest.writeInt(this.pictureRightDefaultTextColor);
+        dest.writeInt(this.pictureRightTextSize);
+        dest.writeString(this.pictureRightDefaultText);
         dest.writeInt(this.pictureRightSelectedTextColor);
         dest.writeInt(this.pictureBottomBgColor);
         dest.writeInt(this.pictureCompleteTextColor);
         dest.writeInt(this.pictureUnCompleteTextColor);
+        dest.writeInt(this.pictureCompleteTextSize);
         dest.writeInt(this.pictureUnPreviewTextColor);
+        dest.writeInt(this.picturePreviewTextSize);
+        dest.writeString(this.pictureUnCompleteText);
+        dest.writeString(this.pictureCompleteText);
         dest.writeInt(this.picturePreviewTextColor);
+        dest.writeString(this.pictureUnPreviewText);
+        dest.writeString(this.picturePreviewText);
         dest.writeInt(this.picturePreviewBottomBgColor);
         dest.writeInt(this.pictureNavBarColor);
         dest.writeInt(this.pictureOriginalFontColor);
+        dest.writeInt(this.pictureOriginalTextSize);
         dest.writeInt(this.pictureRightDefaultBackgroundStyle);
         dest.writeInt(this.pictureRightBackgroundStyle);
         dest.writeInt(this.pictureTitleUpResId);
@@ -239,6 +309,8 @@ public class PictureParameterStyle implements Parcelable {
         dest.writeInt(this.pictureWeChatChooseStyle);
         dest.writeInt(this.pictureWeChatLeftBackStyle);
         dest.writeInt(this.pictureWeChatTitleBackgroundStyle);
+        dest.writeInt(this.pictureWeChatPreviewSelectedTextSize);
+        dest.writeString(this.pictureWeChatPreviewSelectedText);
         dest.writeInt(this.pictureCheckNumBgStyle);
         dest.writeInt(this.pictureFolderCheckedDotStyle);
         dest.writeInt(this.pictureExternalPreviewDeleteStyle);
@@ -254,17 +326,27 @@ public class PictureParameterStyle implements Parcelable {
         this.pictureTitleBarBackgroundColor = in.readInt();
         this.pictureContainerBackgroundColor = in.readInt();
         this.pictureTitleTextColor = in.readInt();
+        this.pictureTitleTextSize = in.readInt();
         this.pictureCancelTextColor = in.readInt();
         this.pictureRightDefaultTextColor = in.readInt();
+        this.pictureRightTextSize = in.readInt();
+        this.pictureRightDefaultText = in.readString();
         this.pictureRightSelectedTextColor = in.readInt();
         this.pictureBottomBgColor = in.readInt();
         this.pictureCompleteTextColor = in.readInt();
         this.pictureUnCompleteTextColor = in.readInt();
+        this.pictureCompleteTextSize = in.readInt();
         this.pictureUnPreviewTextColor = in.readInt();
+        this.picturePreviewTextSize = in.readInt();
+        this.pictureUnCompleteText = in.readString();
+        this.pictureCompleteText = in.readString();
         this.picturePreviewTextColor = in.readInt();
+        this.pictureUnPreviewText = in.readString();
+        this.picturePreviewText = in.readString();
         this.picturePreviewBottomBgColor = in.readInt();
         this.pictureNavBarColor = in.readInt();
         this.pictureOriginalFontColor = in.readInt();
+        this.pictureOriginalTextSize = in.readInt();
         this.pictureRightDefaultBackgroundStyle = in.readInt();
         this.pictureRightBackgroundStyle = in.readInt();
         this.pictureTitleUpResId = in.readInt();
@@ -274,6 +356,8 @@ public class PictureParameterStyle implements Parcelable {
         this.pictureWeChatChooseStyle = in.readInt();
         this.pictureWeChatLeftBackStyle = in.readInt();
         this.pictureWeChatTitleBackgroundStyle = in.readInt();
+        this.pictureWeChatPreviewSelectedTextSize = in.readInt();
+        this.pictureWeChatPreviewSelectedText = in.readString();
         this.pictureCheckNumBgStyle = in.readInt();
         this.pictureFolderCheckedDotStyle = in.readInt();
         this.pictureExternalPreviewDeleteStyle = in.readInt();

@@ -561,6 +561,14 @@ public class PictureSelectionModel {
     }
 
     /**
+     * 设置摄像头方向(前后 默认后置)
+     */
+    public PictureSelectionModel isCameraAroundState(boolean isCameraAroundState) {
+        selectionConfig.isCameraAroundState = isCameraAroundState;
+        return this;
+    }
+
+    /**
      * @param selectionMedia Select the selected picture set
      * @return
      */

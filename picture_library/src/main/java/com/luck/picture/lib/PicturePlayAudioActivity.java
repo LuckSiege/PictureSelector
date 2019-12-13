@@ -8,8 +8,15 @@ import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.tools.DateUtils;
 
+/**
+ * # No longer maintain audio related functions,
+ * but can continue to use but there will be phone compatibility issues.
+ * <p>
+ * 不再维护音频相关功能，但可以继续使用但会有机型兼容性问题
+ */
 @Deprecated
 public class PicturePlayAudioActivity extends PictureBaseActivity implements View.OnClickListener {
     private String audio_path;
@@ -35,7 +42,7 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
     @Override
     protected void initWidgets() {
         super.initWidgets();
-        audio_path = getIntent().getStringExtra("audio_path");
+        audio_path = getIntent().getStringExtra(PictureConfig.EXTRA_AUDIO_PATH);
         tv_musicStatus = findViewById(R.id.tv_musicStatus);
         tv_musicTime = findViewById(R.id.tv_musicTime);
         musicSeekBar = findViewById(R.id.musicSeekBar);

@@ -131,8 +131,15 @@ public class Luban implements Handler.Callback {
                 try {
                     index++;
                     mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_START));
-                    File result = compress(context, path);
-
+                    File result;
+                    if (path.getMedia() != null
+                            && path.getMedia().isCompressed()
+                            && !TextUtils.isEmpty(path.getMedia().getCompressPath())) {
+                        // 已经压缩过的图片不重复压缩了
+                        result = new File(path.getMedia().getCompressPath());
+                    } else {
+                        result = compress(context, path);
+                    }
                     if (mediaList != null && mediaList.size() > 0) {
                         LocalMedia media = mediaList.get(index);
                         String newPath = result.getAbsolutePath();
@@ -172,7 +179,15 @@ public class Luban implements Handler.Callback {
 
         while (iterator.hasNext()) {
             InputStreamProvider provider = iterator.next();
-            results.add(compress(context, provider));
+            if (provider.getMedia() != null
+                    && provider.getMedia().isCompressed()
+                    && !TextUtils.isEmpty(provider.getMedia().getCompressPath())) {
+                // 压缩过的图片不重复压缩
+                File oldFile = new File(provider.getMedia().getCompressPath());
+                results.add(oldFile);
+            } else {
+                results.add(compress(context, provider));
+            }
             iterator.remove();
         }
 
@@ -354,9 +369,12 @@ public class Luban implements Handler.Callback {
             mStreamProviders.add(new InputStreamAdapter() {
                 @Override
                 public InputStream openInternal() throws IOException {
-                    return isAndroidQ ?
-                            context.getContentResolver().openInputStream(Uri.parse(media.getPath()))
-                            : new FileInputStream(media.isCut() ? media.getCutPath() : media.getPath());
+                    if (isAndroidQ && !media.isCut()) {
+                        // 如果是Android Q并且没有裁剪过走，因为是先裁剪后压缩，如果裁剪过要用裁剪后的地址去压缩
+                        return context.getContentResolver().openInputStream(Uri.parse(media.getPath()));
+                    } else {
+                        return new FileInputStream(media.isCut() ? media.getCutPath() : media.getPath());
+                    }
                 }
 
                 @Override

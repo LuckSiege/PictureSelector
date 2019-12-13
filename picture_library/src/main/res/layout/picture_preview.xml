@@ -8,13 +8,6 @@
     <include layout="@layout/picture_preview_title_bar" />
 
 
-    <com.luck.picture.lib.widget.PreviewViewPager
-        android:id="@+id/preview_pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/select_bar_layout"
-        android:layout_below="@id/titleViewBg" />
-
     <RelativeLayout
         android:id="@+id/select_bar_layout"
         android:layout_width="match_parent"
@@ -64,4 +57,12 @@
             android:textSize="14sp" />
 
     </RelativeLayout>
+
+
+    <com.luck.picture.lib.widget.PreviewViewPager
+        android:id="@+id/preview_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/select_bar_layout"
+        android:layout_below="@id/titleViewBg" />
 </RelativeLayout>

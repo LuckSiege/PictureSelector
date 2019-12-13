@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 
+import androidx.annotation.Nullable;
+
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 
@@ -25,6 +27,7 @@ public class MediaUtils {
      * @param context
      * @return 图片的uri
      */
+    @Nullable
     public static Uri createImageUri(final Context context) {
         final Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();
@@ -53,6 +56,7 @@ public class MediaUtils {
      * @param context
      * @return 视频的uri
      */
+    @Nullable
     public static Uri createVideoUri(final Context context) {
         final Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();

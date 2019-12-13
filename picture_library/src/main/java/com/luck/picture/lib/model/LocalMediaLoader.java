@@ -61,7 +61,8 @@ public class LocalMediaLoader implements Handler.Callback {
             MediaStore.MediaColumns.HEIGHT,
             MediaStore.MediaColumns.DURATION,
             MediaStore.MediaColumns.SIZE,
-            MediaStore.MediaColumns.BUCKET_DISPLAY_NAME};
+            MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
+            MediaStore.MediaColumns.DISPLAY_NAME};
 
     /**
      * 图片
@@ -180,6 +181,9 @@ public class LocalMediaLoader implements Handler.Callback {
                             String folderName = data.getString
                                     (data.getColumnIndexOrThrow(PROJECTION[7]));
 
+                            String fileName = data.getString
+                                    (data.getColumnIndexOrThrow(PROJECTION[8]));
+
                             if (config.filterFileSize > 0) {
                                 if (size > config.filterFileSize * FILE_SIZE_UNIT) {
                                     continue;
@@ -206,7 +210,7 @@ public class LocalMediaLoader implements Handler.Callback {
                             }
 
                             LocalMedia image = new LocalMedia
-                                    (path, duration, config.chooseMode, mimeType, width, height, size);
+                                    (path, fileName, duration, config.chooseMode, mimeType, width, height, size);
                             LocalMediaFolder folder = getImageFolder(path, folderName, imageFolders);
                             List<LocalMedia> images = folder.getImages();
                             images.add(image);

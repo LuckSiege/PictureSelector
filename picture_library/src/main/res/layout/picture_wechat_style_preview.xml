@@ -14,6 +14,15 @@
         android:layout_height="match_parent"
         android:layout_below="@id/titleViewBg" />
 
+
+    <View
+        android:id="@+id/bottomLine"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_above="@id/select_bar_layout"
+        android:background="@color/picture_color_ec"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_gallery"
         android:layout_width="match_parent"
@@ -24,13 +33,6 @@
         android:paddingRight="8dp"
         android:visibility="gone" />
 
-    <View
-        android:id="@+id/bottomLine"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_above="@id/select_bar_layout"
-        android:background="@color/picture_color_ec"
-        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/select_bar_layout"

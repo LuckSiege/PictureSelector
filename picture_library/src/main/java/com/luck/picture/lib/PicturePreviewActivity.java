@@ -28,6 +28,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.ToastUtils;
+import com.luck.picture.lib.tools.ValueOf;
 import com.luck.picture.lib.tools.VoiceUtils;
 import com.luck.picture.lib.widget.PreviewViewPager;
 import com.yalantis.ucrop.UCrop;
@@ -52,9 +53,9 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     protected boolean is_bottom_preview;
     protected List<LocalMedia> images = new ArrayList<>();
     protected List<LocalMedia> selectImages = new ArrayList<>();
-    protected TextView check;
     protected PictureSimpleFragmentAdapter adapter;
     protected Animation animation;
+    protected TextView check;
     protected View btnCheck;
     protected boolean refresh;
     protected int index;
@@ -119,7 +120,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             @Override
             public void onPageSelected(int i) {
                 position = i;
-                tv_title.setText(position + 1 + "/" + images.size());
+                tv_title.setText(getString(R.string.picture_preview_image_num,
+                        position + 1, images.size()));
                 LocalMedia media = images.get(position);
                 index = media.getPosition();
                 if (!config.previewEggs) {
@@ -170,6 +172,9 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             if (config.style.pictureTitleTextColor != 0) {
                 tv_title.setTextColor(config.style.pictureTitleTextColor);
             }
+            if (config.style.pictureTitleTextSize != 0) {
+                tv_title.setTextSize(config.style.pictureTitleTextSize);
+            }
             if (config.style.pictureLeftBackIcon != 0) {
                 picture_left_back.setImageResource(config.style.pictureLeftBackIcon);
             }
@@ -185,23 +190,35 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             if (config.style.pictureUnCompleteTextColor != 0) {
                 mTvPictureOk.setTextColor(config.style.pictureUnCompleteTextColor);
             }
+            if (!TextUtils.isEmpty(config.style.pictureUnCompleteText)) {
+                mTvPictureOk.setText(config.style.pictureUnCompleteText);
+            }
         }
         titleViewBg.setBackgroundColor(colorPrimary);
 
         if (config.isOriginalControl) {
-            if (config.style != null && config.style.pictureOriginalControlStyle != 0) {
-                mCbOriginal.setButtonDrawable(config.style.pictureOriginalControlStyle);
+            if (config.style != null) {
+                if (config.style.pictureOriginalControlStyle != 0) {
+                    mCbOriginal.setButtonDrawable(config.style.pictureOriginalControlStyle);
+                } else {
+                    mCbOriginal.setButtonDrawable(ContextCompat.getDrawable(this, R.drawable.picture_original_checkbox));
+                }
+                if (config.style.pictureOriginalFontColor != 0) {
+                    mCbOriginal.setTextColor(config.style.pictureOriginalFontColor);
+                } else {
+                    mCbOriginal.setTextColor(ContextCompat.getColor(this, R.color.picture_color_53575e));
+                }
+                if (config.style.pictureOriginalTextSize != 0) {
+                    mCbOriginal.setTextSize(config.style.pictureOriginalTextSize);
+                }
             } else {
-                mCbOriginal.setButtonDrawable(ContextCompat
-                        .getDrawable(this, R.drawable.picture_original_checkbox));
-            }
-            if (config.style != null && config.style.pictureOriginalFontColor != 0) {
-                mCbOriginal.setTextColor(config.style.pictureOriginalFontColor);
-            } else {
-                mCbOriginal.setTextColor(ContextCompat
-                        .getColor(this, R.color.picture_color_53575e));
+                mCbOriginal.setButtonDrawable(ContextCompat.getDrawable(this, R.drawable.picture_original_checkbox));
+
+                mCbOriginal.setTextColor(ContextCompat.getColor(this, R.color.picture_color_53575e));
             }
         }
+
+        onSelectNumChange(false);
     }
 
     /**
@@ -245,8 +262,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         LocalMedia media = selectImages != null && selectImages.size() > 0 ? selectImages.get(0) : null;
         if (media != null) {
             Bundle bundle = new Bundle();
-            bundle.putInt("position", media.getPosition());
-            bundle.putParcelableArrayList("selectImages", (ArrayList<? extends Parcelable>) selectImages);
+            bundle.putInt(PictureConfig.EXTRA_POSITION, media.getPosition());
+            bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_IMAGES_KEY, (ArrayList<? extends Parcelable>) selectImages);
             BroadcastManager.getInstance(this)
                     .action(BroadcastAction.ACTION_SELECTED_DATA)
                     .extras(bundle)
@@ -259,18 +276,18 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      * 初始化ViewPage数据
      */
     private void initViewPageAdapterData() {
-        tv_title.setText(position + 1 + "/" + images.size());
-        adapter = new PictureSimpleFragmentAdapter(config, images, this, this);
+        tv_title.setText(getString(R.string.picture_preview_image_num,
+                position + 1, images.size()));
+        adapter = new PictureSimpleFragmentAdapter(config, images, this);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(position);
-        onSelectNumChange(false);
         onImageChecked(position);
         if (images.size() > 0) {
             LocalMedia media = images.get(position);
             index = media.getPosition();
             if (config.checkNumMode) {
                 tv_img_num.setSelected(true);
-                check.setText(media.getNum() + "");
+                check.setText(ValueOf.toString(media.getNum()));
                 notifyCheckChanged(media);
             }
         }
@@ -352,7 +369,11 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 }
                 tv_img_num.setVisibility(View.VISIBLE);
                 tv_img_num.setText(String.valueOf(selectImages.size()));
-                mTvPictureOk.setText(getString(R.string.picture_completed));
+                if (config.style != null && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
+                    mTvPictureOk.setText(config.style.pictureCompleteText);
+                } else {
+                    mTvPictureOk.setText(getString(R.string.picture_completed));
+                }
             }
         } else {
             mTvPictureOk.setEnabled(false);
@@ -365,7 +386,11 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         config.selectionMode == PictureConfig.SINGLE ? 1 : config.maxSelectNum));
             } else {
                 tv_img_num.setVisibility(View.INVISIBLE);
-                mTvPictureOk.setText(getString(R.string.picture_please_select));
+                if (config.style != null && !TextUtils.isEmpty(config.style.pictureUnCompleteText)) {
+                    mTvPictureOk.setText(config.style.pictureUnCompleteText);
+                } else {
+                    mTvPictureOk.setText(getString(R.string.picture_please_select));
+                }
             }
         }
         updateSelector(refresh);
@@ -379,8 +404,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     protected void updateSelector(boolean isRefresh) {
         if (isRefresh) {
             Bundle bundle = new Bundle();
-            bundle.putInt("position", index);
-            bundle.putParcelableArrayList("selectImages", (ArrayList<? extends Parcelable>) selectImages);
+            bundle.putInt(PictureConfig.EXTRA_POSITION, index);
+            bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_IMAGES_KEY, (ArrayList<? extends Parcelable>) selectImages);
             BroadcastManager.getInstance(this)
                     .action(BroadcastAction.ACTION_SELECTED_DATA)
                     .extras(bundle)
@@ -514,7 +539,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     @Override
     public void onResult(List<LocalMedia> images) {
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("selectImages", (ArrayList<? extends Parcelable>) images);
+        bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_IMAGES_KEY,
+                (ArrayList<? extends Parcelable>) images);
         BroadcastManager.getInstance(this)
                 .action(BroadcastAction.ACTION_PREVIEW_COMPRESSION)
                 .extras(bundle)
@@ -580,6 +606,9 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         if (animation != null) {
             animation.cancel();
             animation = null;
+        }
+        if (adapter != null) {
+            adapter.clear();
         }
     }
 

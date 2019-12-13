@@ -2,6 +2,7 @@ package com.luck.picture.lib;
 
 
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,7 +36,6 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
         rlAlbum = findViewById(R.id.rlAlbum);
         mPictureSendView = findViewById(R.id.picture_send);
         mPictureSendView.setOnClickListener(this);
-        adapter.bindSelectImages(selectionMedias);
         mPictureSendView.setText(getString(R.string.picture_send));
         mTvPicturePreview.setTextSize(16);
         mCbOriginal.setTextSize(16);
@@ -55,8 +55,6 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
 
     @Override
     public void initPictureSelectorStyle() {
-        super.initPictureSelectorStyle();
-        goneParentView();
         if (config.style != null) {
             if (config.style.pictureRightDefaultBackgroundStyle != 0) {
                 mPictureSendView.setBackgroundResource(config.style.pictureRightDefaultBackgroundStyle);
@@ -76,6 +74,9 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
                 } else {
                     mPictureSendView.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_53575e));
                 }
+            }
+            if (config.style.pictureRightTextSize != 0) {
+                mPictureSendView.setTextSize(config.style.pictureRightTextSize);
             }
             if (config.style.pictureOriginalFontColor == 0) {
                 mCbOriginal.setTextColor(ContextCompat
@@ -97,6 +98,10 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
                 rlAlbum.setBackgroundResource(R.drawable.picture_album_bg);
             }
 
+            if (!TextUtils.isEmpty(config.style.pictureRightDefaultText)) {
+                mPictureSendView.setText(config.style.pictureRightDefaultText);
+            }
+
         } else {
             mPictureSendView.setBackgroundResource(R.drawable.picture_send_button_default_bg);
             rlAlbum.setBackgroundResource(R.drawable.picture_album_bg);
@@ -114,6 +119,8 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
                         .getDrawable(this, R.drawable.picture_original_wechat_checkbox));
             }
         }
+        super.initPictureSelectorStyle();
+        goneParentView();
     }
 
     /**
@@ -136,12 +143,13 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             // 可发送
             mPictureSendView.setEnabled(true);
             mPictureSendView.setSelected(true);
-            mPictureSendView.setText(config.selectionMode == PictureConfig.SINGLE ? getString(R.string.picture_send)
+            mPictureSendView.setText(config.selectionMode == PictureConfig.SINGLE ?
+                    config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                            ? config.style.pictureRightDefaultText
+                            : getString(R.string.picture_send)
                     : getString(R.string.picture_send_num, size, config.maxSelectNum));
-            // 可预览
             mTvPicturePreview.setEnabled(true);
             mTvPicturePreview.setSelected(true);
-            mTvPicturePreview.setText(getString(R.string.picture_preview_num, size));
             if (config.style != null) {
                 if (config.style.pictureRightBackgroundStyle != 0) {
                     mPictureSendView.setBackgroundResource(config.style.pictureRightBackgroundStyle);
@@ -158,10 +166,16 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
                 } else {
                     mTvPicturePreview.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_white));
                 }
+                if (!TextUtils.isEmpty(config.style.picturePreviewText)) {
+                    mTvPicturePreview.setText(config.style.picturePreviewText);
+                } else {
+                    mTvPicturePreview.setText(getString(R.string.picture_preview_num, size));
+                }
             } else {
                 mPictureSendView.setBackgroundResource(R.drawable.picture_send_button_bg);
                 mPictureSendView.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_white));
                 mTvPicturePreview.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_white));
+                mTvPicturePreview.setText(getString(R.string.picture_preview_num, size));
             }
         } else {
             // 未选择
@@ -186,13 +200,23 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
                 } else {
                     mTvPicturePreview.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_9b));
                 }
+                if (!TextUtils.isEmpty(config.style.pictureRightDefaultText)) {
+                    mPictureSendView.setText(config.style.pictureRightDefaultText);
+                } else {
+                    mPictureSendView.setText(getString(R.string.picture_send));
+                }
+                if (!TextUtils.isEmpty(config.style.pictureUnPreviewText)) {
+                    mTvPicturePreview.setText(config.style.pictureUnPreviewText);
+                } else {
+                    mTvPicturePreview.setText(getString(R.string.picture_preview));
+                }
             } else {
                 mPictureSendView.setBackgroundResource(R.drawable.picture_send_button_default_bg);
                 mPictureSendView.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_53575e));
                 mTvPicturePreview.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_9b));
+                mTvPicturePreview.setText(getString(R.string.picture_preview));
+                mPictureSendView.setText(getString(R.string.picture_send));
             }
-            mTvPicturePreview.setText(getString(R.string.picture_preview));
-            mPictureSendView.setText(getString(R.string.picture_send));
         }
     }
 

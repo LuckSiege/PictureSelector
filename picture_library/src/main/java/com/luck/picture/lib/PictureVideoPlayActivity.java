@@ -5,11 +5,22 @@ import android.content.ContextWrapper;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.VideoView;
+
+import com.luck.picture.lib.broadcast.BroadcastAction;
+import com.luck.picture.lib.broadcast.BroadcastManager;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.entity.LocalMedia;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author：luck
@@ -19,10 +30,11 @@ import android.widget.VideoView;
 public class PictureVideoPlayActivity extends PictureBaseActivity implements
         MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener, View.OnClickListener {
-    private String video_path = "";
+    private String video_path;
     private ImageView picture_left_back;
     private MediaController mMediaController;
     private VideoView mVideoView;
+    private TextView tvConfirm;
     private ImageView iv_play;
     private int mPositionWhenPaused = -1;
 
@@ -50,9 +62,20 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
     @Override
     protected void initWidgets() {
         super.initWidgets();
-        video_path = getIntent().getStringExtra("video_path");
+        video_path = getIntent().getStringExtra(PictureConfig.EXTRA_VIDEO_PATH);
+        boolean isExternalPreview = getIntent().getBooleanExtra
+                (PictureConfig.EXTRA_PREVIEW_VIDEO, false);
+        if (TextUtils.isEmpty(video_path)) {
+            LocalMedia media = getIntent().getParcelableExtra(PictureConfig.EXTRA_MEDIA_KEY);
+            if (media == null || TextUtils.isEmpty(media.getPath())) {
+                finish();
+                return;
+            }
+            video_path = media.getPath();
+        }
         picture_left_back = findViewById(R.id.picture_left_back);
         mVideoView = findViewById(R.id.video_view);
+        tvConfirm = findViewById(R.id.tv_confirm);
         mVideoView.setBackgroundColor(Color.BLACK);
         iv_play = findViewById(R.id.iv_play);
         mMediaController = new MediaController(this);
@@ -61,12 +84,16 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
         mVideoView.setMediaController(mMediaController);
         picture_left_back.setOnClickListener(this);
         iv_play.setOnClickListener(this);
+        tvConfirm.setOnClickListener(this);
+        tvConfirm.setVisibility(config.selectionMode
+                == PictureConfig.SINGLE
+                && config.enPreviewVideo && !isExternalPreview ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public void onStart() {
         // Play Video
-        mVideoView.setVideoPath(video_path);
+        mVideoView.setVideoPath(TextUtils.isEmpty(video_path) ? "" : video_path);
         mVideoView.start();
         super.onStart();
     }
@@ -116,10 +143,34 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.picture_left_back) {
-            finish();
+            onBackPressed();
         } else if (id == R.id.iv_play) {
             mVideoView.start();
             iv_play.setVisibility(View.INVISIBLE);
+        } else if (id == R.id.tv_confirm) {
+            List<LocalMedia> result = new ArrayList<>();
+            result.add(getIntent().getParcelableExtra(PictureConfig.EXTRA_MEDIA_KEY));
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_IMAGES_KEY,
+                    (ArrayList<? extends Parcelable>) result);
+            BroadcastManager.getInstance(this)
+                    .action(BroadcastAction.ACTION_PREVIEW_COMPRESSION)
+                    .extras(bundle)
+                    .broadcast();
+            onBackPressed();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (config.windowAnimationStyle != null
+                && config.windowAnimationStyle.activityPreviewExitAnimation != 0) {
+            finish();
+            overridePendingTransition(0, config.windowAnimationStyle != null
+                    && config.windowAnimationStyle.activityPreviewExitAnimation != 0 ?
+                    config.windowAnimationStyle.activityPreviewExitAnimation : R.anim.picture_anim_exit);
+        } else {
+            closeActivity();
         }
     }
 

@@ -41,4 +41,14 @@ public class PreviewViewPager extends ViewPager {
         }
         return false;
     }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        try {
+            return super.dispatchTouchEvent(ev);
+        } catch (IllegalArgumentException ignored) {
+        } catch (ArrayIndexOutOfBoundsException e) {
+        }
+        return false;
+    }
 }

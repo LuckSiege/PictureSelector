@@ -25,11 +25,11 @@ public class PhotoFragmentActivity extends AppCompatActivity {
             // 添加显示第一个fragment
             fragment = new PhotoFragment();
             getSupportFragmentManager().beginTransaction().add(R.id.tab_content, fragment,
-                    PictureConfig.FC_TAG).show(fragment)
+                    PictureConfig.EXTRA_FC_TAG).show(fragment)
                     .commit();
         } else {
             fragment = (PhotoFragment) getSupportFragmentManager()
-                    .findFragmentByTag(PictureConfig.FC_TAG);
+                    .findFragmentByTag(PictureConfig.EXTRA_FC_TAG);
         }
         // 清空图片缓存，包括裁剪、压缩后的图片 注意:必须要在上传完成后调用 必须要获取权限
 

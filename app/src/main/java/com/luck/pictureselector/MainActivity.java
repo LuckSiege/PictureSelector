@@ -515,6 +515,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
         // 设置NavBar Color SDK Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP有效
         mPictureParameterStyle.pictureNavBarColor = Color.parseColor("#393a3e");
+//        // 自定义相册右侧文本内容设置
+//        mPictureParameterStyle.pictureRightDefaultText = "";
+//        // 自定义相册未完成文本内容
+//        mPictureParameterStyle.pictureUnCompleteText = "";
+//        // 自定义相册完成文本内容
+//        mPictureParameterStyle.pictureCompleteText = "";
+//        // 自定义相册列表不可预览文字
+//        mPictureParameterStyle.pictureUnPreviewText = "";
+//        // 自定义相册列表预览文字
+//        mPictureParameterStyle.picturePreviewText = "";
+//
+//        // 自定义相册标题字体大小
+//        mPictureParameterStyle.pictureTitleTextSize = 18;
+//        // 自定义相册右侧文字大小
+//        mPictureParameterStyle.pictureRightTextSize = 14;
+//        // 自定义相册预览文字大小
+//        mPictureParameterStyle.picturePreviewTextSize = 14;
+//        // 自定义相册完成文字大小
+//        mPictureParameterStyle.pictureCompleteTextSize = 14;
+//        // 自定义原图文字大小
+//        mPictureParameterStyle.pictureOriginalTextSize = 14;
 
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(
@@ -574,6 +595,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_black_delete;
         // 外部预览界面是否显示删除按钮
         mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
+//        // 自定义相册右侧文本内容设置
+//        mPictureParameterStyle.pictureRightDefaultText = "";
+//        // 自定义相册未完成文本内容
+//        mPictureParameterStyle.pictureUnCompleteText = "";
+//        // 自定义相册完成文本内容
+//        mPictureParameterStyle.pictureCompleteText = "";
+//        // 自定义相册列表不可预览文字
+//        mPictureParameterStyle.pictureUnPreviewText = "";
+//        // 自定义相册列表预览文字
+//        mPictureParameterStyle.picturePreviewText = "";
+
+//        // 自定义相册标题字体大小
+//        mPictureParameterStyle.pictureTitleTextSize = 18;
+//        // 自定义相册右侧文字大小
+//        mPictureParameterStyle.pictureRightTextSize = 14;
+//        // 自定义相册预览文字大小
+//        mPictureParameterStyle.picturePreviewTextSize = 14;
+//        // 自定义相册完成文字大小
+//        mPictureParameterStyle.pictureCompleteTextSize = 14;
+//        // 自定义原图文字大小
+//        mPictureParameterStyle.pictureOriginalTextSize = 14;
 
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(
@@ -613,7 +655,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 相册列表底部背景色
         mPictureParameterStyle.pictureBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_fa);
         // 已选数量圆点背景样式
-        mPictureParameterStyle.pictureCheckNumBgStyle = R.drawable.picture_wechat_num_oval_selected;
+        mPictureParameterStyle.pictureCheckNumBgStyle = R.drawable.num_oval_blue;
         // 相册列表底下预览文字色值(预览按钮可点击时的色值)
         mPictureParameterStyle.picturePreviewTextColor = ContextCompat.getColor(this, R.color.picture_color_blue);
         // 相册列表底下不可预览文字色值(预览按钮不可点击时的色值)
@@ -632,6 +674,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_delete;
         // 外部预览界面是否显示删除按钮
         mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
+//        // 自定义相册右侧文本内容设置
+//        mPictureParameterStyle.pictureRightDefaultText = "";
+//        // 自定义相册未完成文本内容
+//        mPictureParameterStyle.pictureUnCompleteText = "";
+//        // 自定义相册完成文本内容
+//        mPictureParameterStyle.pictureCompleteText = "";
+//        // 自定义相册列表不可预览文字
+//        mPictureParameterStyle.pictureUnPreviewText = "";
+//        // 自定义相册列表预览文字
+//        mPictureParameterStyle.picturePreviewText = "";
+
+//        // 自定义相册标题字体大小
+//        mPictureParameterStyle.pictureTitleTextSize = 18;
+//        // 自定义相册右侧文字大小
+//        mPictureParameterStyle.pictureRightTextSize = 14;
+//        // 自定义相册预览文字大小
+//        mPictureParameterStyle.picturePreviewTextSize = 14;
+//        // 自定义相册完成文字大小
+//        mPictureParameterStyle.pictureCompleteTextSize = 14;
+//        // 自定义原图文字大小
+//        mPictureParameterStyle.pictureOriginalTextSize = 14;
 
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(
@@ -690,7 +753,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_black_delete;
         // 外部预览界面是否显示删除按钮
         mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
+//        // 自定义相册右侧文本内容设置
+//        mPictureParameterStyle.pictureRightDefaultText = "";
+//        // 自定义相册未完成文本内容
+//        mPictureParameterStyle.pictureUnCompleteText = "";
+//        // 自定义相册完成文本内容
+//        mPictureParameterStyle.pictureCompleteText = "";
+//        // 自定义相册列表不可预览文字
+//        mPictureParameterStyle.pictureUnPreviewText = "";
+//        // 自定义相册列表预览文字
+//        mPictureParameterStyle.picturePreviewText = "";
 
+//        // 自定义相册标题字体大小
+//        mPictureParameterStyle.pictureTitleTextSize = 18;
+//        // 自定义相册右侧文字大小
+//        mPictureParameterStyle.pictureRightTextSize = 14;
+//        // 自定义相册预览文字大小
+//        mPictureParameterStyle.picturePreviewTextSize = 14;
+//        // 自定义相册完成文字大小
+//        mPictureParameterStyle.pictureCompleteTextSize = 14;
+//        // 自定义原图文字大小
+//        mPictureParameterStyle.pictureOriginalTextSize = 14;
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(
                 ContextCompat.getColor(MainActivity.this, R.color.app_color_white),
@@ -767,6 +850,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
         // 设置NavBar Color SDK Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP有效
         mPictureParameterStyle.pictureNavBarColor = Color.parseColor("#393a3e");
+
+//        // 自定义相册右侧文本内容设置
+//        mPictureParameterStyle.pictureRightDefaultText = "";
+//        // 自定义相册列表不可预览文字
+//        mPictureParameterStyle.pictureUnPreviewText = "";
+//        // 自定义相册列表预览文字
+//        mPictureParameterStyle.picturePreviewText = "";
+//        // 自定义预览页右下角选择文字文案
+//        mPictureParameterStyle.pictureWeChatPreviewSelectedText = "";
+
+//        // 自定义相册标题文字大小
+//        mPictureParameterStyle.pictureTitleTextSize = 9;
+//        // 自定义相册右侧文字大小
+//        mPictureParameterStyle.pictureRightTextSize = 9;
+//        // 自定义相册预览文字大小
+//        mPictureParameterStyle.picturePreviewTextSize = 9;
+//        // 自定义相册完成文字大小
+//        mPictureParameterStyle.pictureCompleteTextSize = 9;
+//        // 自定义原图文字大小
+//        mPictureParameterStyle.pictureOriginalTextSize = 9;
+//        // 自定义预览页右下角选择文字大小
+//        mPictureParameterStyle.pictureWeChatPreviewSelectedTextSize = 9;
 
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(

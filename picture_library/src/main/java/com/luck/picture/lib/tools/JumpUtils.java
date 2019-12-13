@@ -20,6 +20,9 @@ public class JumpUtils {
             Intent intent = new Intent();
             intent.setClass(context, PictureVideoPlayActivity.class);
             intent.putExtras(bundle);
+            if (!(context instanceof Activity)) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            }
             context.startActivity(intent);
         }
     }
@@ -29,9 +32,10 @@ public class JumpUtils {
             Intent intent = new Intent();
             intent.setClass(context, isWeChatStyle ? PictureSelectorPreviewWeChatStyleActivity.class : PicturePreviewActivity.class);
             intent.putExtras(bundle);
-            if (context instanceof Activity) {
-                ((Activity) context).startActivityForResult(intent, requestCode);
+            if (!(context instanceof Activity)) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             }
+            ((Activity) context).startActivityForResult(intent, requestCode);
         }
     }
 }
