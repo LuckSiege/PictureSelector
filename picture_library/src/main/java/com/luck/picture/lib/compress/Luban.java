@@ -132,11 +132,12 @@ public class Luban implements Handler.Callback {
                     index++;
                     mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_START));
                     File result;
-                    if (path.getMedia() != null
-                            && path.getMedia().isCompressed()
+                    if (path.getMedia().isCompressed()
                             && !TextUtils.isEmpty(path.getMedia().getCompressPath())) {
                         // 已经压缩过的图片不重复压缩了
-                        result = new File(path.getMedia().getCompressPath());
+                        boolean exists = new File(path.getMedia().getCompressPath()).exists();
+                        result = exists ? new File(path.getMedia().getCompressPath())
+                                : compress(context, path);
                     } else {
                         result = compress(context, path);
                     }
@@ -179,11 +180,12 @@ public class Luban implements Handler.Callback {
 
         while (iterator.hasNext()) {
             InputStreamProvider provider = iterator.next();
-            if (provider.getMedia() != null
-                    && provider.getMedia().isCompressed()
+            if (provider.getMedia().isCompressed()
                     && !TextUtils.isEmpty(provider.getMedia().getCompressPath())) {
                 // 压缩过的图片不重复压缩
-                File oldFile = new File(provider.getMedia().getCompressPath());
+                boolean exists = new File(provider.getMedia().getCompressPath()).exists();
+                File oldFile = exists ? new File(provider.getMedia().getCompressPath())
+                        : compress(context, provider);
                 results.add(oldFile);
             } else {
                 results.add(compress(context, provider));
