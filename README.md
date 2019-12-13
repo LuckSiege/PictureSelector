@@ -35,7 +35,7 @@
 # 用前需知  重要！！！
 
 ```
-v2.3.8 PictureSelector加入日志管理工具
+v2.3.8 PictureSelector加入日志管理工具-自由选择
 1.PictureSelector加入Crash日志管理工具方便错误分析，具体使用方式请查看Demo Application类中...
 	Application onCreate加入两行代码
 		
@@ -455,34 +455,34 @@ windowAnimationStyle.ofAllAnimation(R.anim.picture_anim_up_in, R.anim.picture_an
 ```sh
  PictureSelector.create(MainActivity.this)
        .openGallery(PictureMimeType.ofImage())
-       .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
+       .loadImageEngine(GlideEngine.createGlideEngine())
        .forResult(PictureConfig.CHOOSE_REQUEST);     
 ```
 ******单独启动拍照或视频 根据PictureMimeType自动识别******       
 ```
   PictureSelector.create(MainActivity.this)
        .openCamera(PictureMimeType.ofImage())
-       .setPictureCropStyle(mCropParameterStyle) // 单独拍照如果开启了裁剪功能可以动态自定义裁剪主题，没开此方法无效
-       .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
+       .setPictureCropStyle(mCropParameterStyle) 
+       .loadImageEngine(GlideEngine.createGlideEngine())
        .forResult(PictureConfig.CHOOSE_REQUEST);
 ```
 ******预览图片******       
 ```
 // 预览图片 可自定长按保存路径
-*注意 .themeStyle(R.style.theme)；里面的参数不可少，否则闪退...
+*注意 .themeStyle(R.style.theme)；里面的参数不可删，否则闪退...
 
 PictureSelector.create(MainActivity.this)
-.themeStyle(themeId)//UI界面风格
-.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
-.isNotPreviewDownload(true)// 预览图片长按是否可以下载
-.loadImageEngine(GlideEngine.createGlideEngine())// 自定义图片加载引擎
+.themeStyle(themeId)
+.setPictureStyle(mPictureParameterStyle)
+.isNotPreviewDownload(true)
+.loadImageEngine(GlideEngine.createGlideEngine())
 .openExternalPreview(position, "/custom_file", selectList);
 
 PictureSelector.create(MainActivity.this)
-.themeStyle(themeId)//UI界面风格
-.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
-.isNotPreviewDownload(true)// 预览图片长按是否可以下载
-.loadImageEngine(GlideEngine.createGlideEngine())// 自定义图片加载引擎
+.themeStyle(themeId)
+.setPictureStyle(mPictureParameterStyle)
+.isNotPreviewDownload(true)
+.loadImageEngine(GlideEngine.createGlideEngine())
 .openExternalPreview(position, selectList);
 
 ```
