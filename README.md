@@ -213,7 +213,7 @@ if (savedInstanceState == null) {
 }
 这里就是如果是被回收时，则不重新创建 通过tag取出fragment的实例。
 
-问题四：
+问题四：  使用v2.3.2版本以后的用户忽略...
 glide冲突
 由于PictureSelector 2.0引入的是最新的glide 4.5.0,所以将项目中老版本的glide删除,并且将报错代码换成如下写法：
 RequestOptions options = new RequestOptions();
@@ -251,7 +251,7 @@ Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme
  
  问题八：
  如果出现图片全部加载不出来的情况时，包括预览、相册列表等，一定要传入
- .loadImageEngine(GlideEngine.createGlideEngine()); //图片加载引擎，必传项，
+ loadImageEngine(GlideEngine.createGlideEngine()); //图片加载引擎，必传项，
  也可以自定义成除glide外的其他第三方加载框架，具体请参考Demo
 ```
 
