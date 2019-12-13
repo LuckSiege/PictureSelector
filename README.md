@@ -35,14 +35,7 @@
 # 注意事项  重要！！！
 
 ```
-v2.3.9
-
-1.修复外部预览图片长按保存相册没有及时刷新问题
-2.修复部分手机启动相册过慢问题
-3.增加isAndroidQTransform(false) // 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && enableCrop(false);有效,默认处理
-
-v2.3.8
-
+v2.3.8 PictureSelector加入日志管理工具
 1.PictureSelector加入Crash日志管理工具方便错误分析，具体使用方式请查看Demo Application类中...
 	Application onCreate加入两行代码
 		
@@ -57,42 +50,25 @@ v2.3.8
        
 	/** PictureSelector日志管理配制结束 **/
 	
-2.新增api setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR) // 设置屏幕旋转方向，不设置默认使用系统
-3.修复minimumCompressSize(100);小于压缩值的图片在Android Q上异常问题
-4.修复单选模式isSingleDirectReturn为true并开启了裁剪后不会直接返回结果页bug
-5.修改拍照存储目录，并统一PictureSelector创建图片、视频的所有命名规则
-6.优化FolderPopWindow弹出动画和切换目录卡顿问题
-7.优化Android Q 裁剪压缩耗时问题
-8.新增类似新版微信选择风格 .isWeChatStyle(true); 设置为true即可开启
-9.新增原图功能.isOriginalImageControl(); 注意：开启了此功能用户就自由选择是否是原图，压缩、裁剪功能将失效
-10.新增繁体、韩语、德语、法语、日语语言包并可能通过api .setLanguage(language);进行设置
-11.新增PictureWindowAnimationStyle可以对相册各页面弹出动画自定义；具体参考Demo MainActivity.java
-12.新增单独设置NavBar色值选项 mPictureParameterStyle.pictureNavBarColor = Color.parseColor("#393a3e");
-13.新增重命名api
-.cameraFileName("test.png") // 重命名拍照文件名、注意这个只在使用相机时可以使用，如果使用相机又开启了压缩或裁剪 需要配合压缩和裁剪文件名api
-.renameCompressFile("test.png") // 重命名压缩文件名、注意这个不要重复，只适用于单张图压缩使用
-.renameCropFileName("test.png")// 重命名裁剪文件名、注意这个不要重复，只适用于单张图裁剪使用
-14.修复拍照或录视频后取不到宽高问题
-15.修复裁剪+压缩后图片后缀不一致问题
-16.修复单选模式下isSingleDirectReturn(true);点击右上角还是会有勾选效果问题
 
+v2.3.3 新增动态配制主题，建议不要与.theme(R.theme.style);方式共用 两者只选其一配制 个人建议使用动态配制为好！！！
 
-v2.3.3 新增动态配制主题，建议不要与.theme(R.theme.style);方法共用 两者只选其一配制 个人建议使用动态配制为好！！！
-.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
-.setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
+// 动态自定义相册主题
+PictureParameterStyle mPictureParameterStyle = new PictureParameterStyle(); 
+
+// 动态自定义裁剪主题
+PictureCropParameterStyle mCropParameterStyle = new PictureCropParameterStyle(); 
+
+// 自定义相册弹起动画配制
+PictureWindowAnimationStyle windowAnimationStyle = new PictureWindowAnimationStyle(); 
+windowAnimationStyle.ofAllAnimation(R.anim.picture_anim_up_in, R.anim.picture_anim_down_out);
+
 以上两者具体使用方法请参考Demo MainActivity.java实现方式
 
 v2.3.2开始移除了glide，所以使用v2.3.2版本以后的用户一定要配制好图片加载引擎 否则列表图片加载不出来！！！
 .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
-具体请参考Demo MainActivity.java实现方式
+ 具体请参考Demo MainActivity.java实现方式
 
-新增api 
-.isSingleDirectReturn(false)// 单选模式下是否直接返回，PictureConfig.SINGLE模式下有效
-.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
-.queryMaxFileSize(10)// 只查多少M以内的图片、视频、音频  单位M
-.cutOutQuality(90)// 裁剪输出质量 默认100
-.compressQuality(80)// 图片压缩后输出质量 0~ 100
-.isNotPreviewDownload(true)// 预览图片长按是否可以下载
 
 ```
 
