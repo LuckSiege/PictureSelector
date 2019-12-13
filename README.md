@@ -124,9 +124,7 @@ v2.3.2开始移除了glide，所以使用v2.3.2版本以后的用户一定要配
 ## 当前版本
 
 ```
-dependencies {
     implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.9'
-}
 
 ```
 
