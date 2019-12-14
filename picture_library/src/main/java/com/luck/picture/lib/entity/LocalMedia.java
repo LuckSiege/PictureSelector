@@ -12,6 +12,10 @@ import android.text.TextUtils;
 
 public class LocalMedia implements Parcelable {
     /**
+     * file to ID
+     */
+    private long id;
+    /**
      * original path
      */
     private String path;
@@ -104,7 +108,9 @@ public class LocalMedia implements Parcelable {
         this.mimeType = mimeType;
     }
 
-    public LocalMedia(String path,String fileName, long duration, int chooseModel, String mimeType, int width, int height, long size) {
+    public LocalMedia(long id, String path, String fileName, long duration, int chooseModel,
+                      String mimeType, int width, int height, long size) {
+        this.id = id;
         this.path = path;
         this.fileName = fileName;
         this.duration = duration;
@@ -270,6 +276,15 @@ public class LocalMedia implements Parcelable {
         this.fileName = fileName;
     }
 
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -277,6 +292,7 @@ public class LocalMedia implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
         dest.writeString(this.path);
         dest.writeString(this.originalPath);
         dest.writeString(this.compressPath);
@@ -298,6 +314,7 @@ public class LocalMedia implements Parcelable {
     }
 
     protected LocalMedia(Parcel in) {
+        this.id = in.readLong();
         this.path = in.readString();
         this.originalPath = in.readString();
         this.compressPath = in.readString();

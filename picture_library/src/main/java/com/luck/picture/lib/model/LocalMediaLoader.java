@@ -210,7 +210,7 @@ public class LocalMediaLoader implements Handler.Callback {
                             }
 
                             LocalMedia image = new LocalMedia
-                                    (path, fileName, duration, config.chooseMode, mimeType, width, height, size);
+                                    (id, path, fileName, duration, config.chooseMode, mimeType, width, height, size);
                             LocalMediaFolder folder = getImageFolder(path, folderName, imageFolders);
                             List<LocalMedia> images = folder.getImages();
                             images.add(image);

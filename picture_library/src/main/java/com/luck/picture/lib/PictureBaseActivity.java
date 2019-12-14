@@ -897,6 +897,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         for (int i = 0; i < size; i++) {
             CutInfo c = mCuts.get(i);
             LocalMedia media = new LocalMedia();
+            media.setId(c.getId());
             media.setCut(TextUtils.isEmpty(c.getCutPath()) ? false : true);
             media.setPath(c.getPath());
             media.setCutPath(c.getCutPath());

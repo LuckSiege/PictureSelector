@@ -18,6 +18,7 @@ import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.ToastUtils;
+import com.luck.picture.lib.tools.ValueOf;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropMulti;
 
@@ -137,6 +138,10 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         // 单独拍照
         LocalMedia media = new LocalMedia(cameraPath, 0, false,
                 config.isCamera ? 1 : 0, 0, config.chooseMode);
+        if (SdkVersionUtils.checkedAndroid_Q()) {
+            int lastIndexOf = cameraPath.lastIndexOf("/") + 1;
+            media.setId(lastIndexOf > 0 ? ValueOf.toLong(cameraPath.substring(lastIndexOf)) : -1);
+        }
         media.setCut(true);
         media.setCutPath(cutPath);
         String mimeType = PictureMimeType.getImageMimeType(cutPath);
@@ -191,15 +196,13 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 size = f.length();
                 mimeType = PictureMimeType.fileToType(f);
                 if (PictureMimeType.eqImage(mimeType)) {
-                    int degree = PictureFileUtils.readPictureDegree(this, cameraPath);
-                    String rotateImagePath = PictureFileUtils.rotateImageToAndroidQ(this,
-                            degree, cameraPath, config.cameraFileName);
-                    media.setAndroidQToPath(rotateImagePath);
                     newSize = MediaUtils.getLocalImageSizeToAndroidQ(this, cameraPath);
                 } else {
                     newSize = MediaUtils.getLocalVideoSize(this, Uri.parse(cameraPath));
                     duration = MediaUtils.extractDuration(getContext(), true, cameraPath);
                 }
+                int lastIndexOf = cameraPath.lastIndexOf("/") + 1;
+                media.setId(lastIndexOf > 0 ? ValueOf.toLong(cameraPath.substring(lastIndexOf)) : -1);
             } else {
                 mimeType = PictureMimeType.fileToType(file);
                 size = new File(cameraPath).length();

@@ -339,10 +339,10 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      * @return
      */
     public boolean isSelected(LocalMedia image) {
-        for (LocalMedia media : selectImages) {
-            if (media.getPath().equals(image.getPath())) {
-                return true;
-            }
+        int size = selectImages.size();
+        for (int i = 0; i < size; i++) {
+            LocalMedia media = selectImages.get(i);
+            return media.getPath().equals(image.getPath()) || media.getId() == image.getId();
         }
         return false;
     }
@@ -522,11 +522,13 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         continue;
                     }
                     CutInfo cutInfo = new CutInfo();
+                    cutInfo.setId(media.getId());
                     cutInfo.setPath(media.getPath());
                     cutInfo.setImageWidth(media.getWidth());
                     cutInfo.setImageHeight(media.getHeight());
                     cutInfo.setMimeType(media.getMimeType());
                     cutInfo.setAndroidQToPath(media.getAndroidQToPath());
+                    cutInfo.setId(media.getId());
                     cuts.add(cutInfo);
                 }
                 startCrop(cuts);

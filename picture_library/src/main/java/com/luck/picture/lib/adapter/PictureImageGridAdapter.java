@@ -95,7 +95,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void bindSelectImages(List<LocalMedia> images) {
         // 这里重新构构造一个新集合，不然会产生已选集合一变，结果集合也会添加的问题
         List<LocalMedia> selection = new ArrayList<>();
-        for (LocalMedia media : images) {
+        int size = images.size();
+        for (int i = 0; i < size; i++) {
+            LocalMedia media = images.get(i);
             selection.add(media);
         }
         this.selectImages = selection;
@@ -278,7 +280,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             if (media == null || TextUtils.isEmpty(media.getPath())) {
                 continue;
             }
-            if (media.getPath().equals(image.getPath())) {
+            if (media.getPath()
+                    .equals(image.getPath())
+                    || media.getId() == image.getId()) {
                 return true;
             }
         }

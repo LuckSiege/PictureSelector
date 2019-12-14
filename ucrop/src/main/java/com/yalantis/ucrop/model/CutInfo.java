@@ -9,6 +9,10 @@ import java.io.Serializable;
  */
 public class CutInfo implements Serializable {
     /**
+     * File ID
+     */
+    private long id;
+    /**
      * 原图
      */
     private String path;
@@ -134,5 +138,13 @@ public class CutInfo implements Serializable {
 
     public void setAndroidQToPath(String androidQToPath) {
         this.androidQToPath = androidQToPath;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

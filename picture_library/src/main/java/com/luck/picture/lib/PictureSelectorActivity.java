@@ -54,6 +54,7 @@ import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
+import com.luck.picture.lib.tools.ValueOf;
 import com.luck.picture.lib.widget.FolderPopWindow;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropMulti;
@@ -528,6 +529,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         continue;
                     }
                     CutInfo cutInfo = new CutInfo();
+                    cutInfo.setId(media.getId());
                     cutInfo.setPath(media.getPath());
                     cutInfo.setImageWidth(media.getWidth());
                     cutInfo.setImageHeight(media.getHeight());
@@ -1024,15 +1026,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 size = f.length();
                 mimeType = PictureMimeType.fileToType(f);
                 if (PictureMimeType.eqImage(mimeType)) {
-                    int degree = PictureFileUtils.readPictureDegree(this, cameraPath);
-                    String rotateImagePath = PictureFileUtils.rotateImageToAndroidQ(this,
-                            degree, cameraPath, config.cameraFileName);
-                    media.setAndroidQToPath(rotateImagePath);
                     newSize = MediaUtils.getLocalImageSizeToAndroidQ(this, cameraPath);
                 } else {
                     newSize = MediaUtils.getLocalVideoSize(this, Uri.parse(cameraPath));
                     duration = MediaUtils.extractDuration(getContext(), true, cameraPath);
                 }
+                int lastIndexOf = cameraPath.lastIndexOf("/") + 1;
+                media.setId(lastIndexOf > 0 ? ValueOf.toLong(cameraPath.substring(lastIndexOf)) : -1);
             } else {
                 mimeType = PictureMimeType.fileToType(file);
                 size = new File(cameraPath).length();
