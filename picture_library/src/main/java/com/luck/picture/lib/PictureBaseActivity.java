@@ -63,8 +63,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     protected int colorPrimary, colorPrimaryDark;
     protected String cameraPath;
     protected String originalPath;
-    protected PictureLoadingDialog dialog;
-    protected PictureLoadingDialog compressDialog;
+    protected PictureLoadingDialog mLoadingDialog;
     protected List<LocalMedia> selectionMedias;
     protected Handler mHandler;
     protected View container;
@@ -257,9 +256,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
      */
     protected void showPleaseDialog() {
         if (!isFinishing()) {
-            dismissDialog();
-            dialog = new PictureLoadingDialog(getContext());
-            dialog.show();
+            if (mLoadingDialog == null) {
+                mLoadingDialog = new PictureLoadingDialog(getContext());
+            }
+            mLoadingDialog.show();
         }
     }
 
@@ -267,43 +267,16 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
      * dismiss dialog
      */
     protected void dismissDialog() {
-        try {
-            if (dialog != null
-                    && dialog.isShowing()) {
-                dialog.dismiss();
-                dialog = null;
-            }
-        } catch (Exception e) {
-            dialog = null;
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * compress loading dialog
-     */
-    protected void showCompressDialog() {
         if (!isFinishing()) {
-            dismissCompressDialog();
-            compressDialog = new PictureLoadingDialog(this);
-            compressDialog.show();
-        }
-    }
-
-    /**
-     * dismiss compress dialog
-     */
-    protected void dismissCompressDialog() {
-        try {
-            if (!isFinishing()
-                    && compressDialog != null
-                    && compressDialog.isShowing()) {
-                compressDialog.dismiss();
-                compressDialog = null;
+            try {
+                if (mLoadingDialog != null
+                        && mLoadingDialog.isShowing()) {
+                    mLoadingDialog.dismiss();
+                }
+            } catch (Exception e) {
+                mLoadingDialog = null;
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            compressDialog = null;
-            e.printStackTrace();
         }
         isPreviewLoading = false;
     }
@@ -313,7 +286,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
      * compressImage
      */
     protected void compressImage(final List<LocalMedia> result) {
-        showCompressDialog();
+        showPleaseDialog();
         if (config.synOrAsy) {
             AsyncTask.SERIAL_EXECUTOR.execute(() -> {
                 try {
@@ -629,10 +602,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     protected void onResult(List<LocalMedia> images) {
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         if (isAndroidQ && config.isAndroidQTransform) {
-            mHandler.postDelayed(() -> showCompressDialog(), isPreviewLoading ? 30 : 0);
+            mHandler.postDelayed(() -> showPleaseDialog(), isPreviewLoading ? 30 : 0);
             onResultToAndroidAsy(images);
         } else {
-            dismissCompressDialog();
+            dismissDialog();
             if (config.camera
                     && config.selectionMode == PictureConfig.MULTIPLE
                     && selectionMedias != null) {
@@ -726,8 +699,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dismissCompressDialog();
         dismissDialog();
+        mLoadingDialog = null;
     }
 
 
@@ -925,7 +898,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
             case MSG_CHOOSE_RESULT_SUCCESS:
                 // 选择完成回调
                 List<LocalMedia> images = (List<LocalMedia>) msg.obj;
-                dismissCompressDialog();
+                dismissDialog();
                 if (images != null) {
                     if (config.camera
                             && config.selectionMode == PictureConfig.MULTIPLE

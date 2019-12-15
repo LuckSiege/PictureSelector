@@ -227,7 +227,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
                 PermissionChecker
                         .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            mHandler.sendEmptyMessage(SHOW_DIALOG);
             readLocalMedia();
         } else {
             PermissionChecker.requestPermissions(this, new String[]{
@@ -361,6 +360,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * get LocalMedia s
      */
     protected void readLocalMedia() {
+        mHandler.sendEmptyMessage(SHOW_DIALOG);
         if (mediaLoader == null) {
             mediaLoader = new LocalMediaLoader(this, config);
         }
@@ -1257,7 +1257,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             case PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE:
                 // 存储权限
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mHandler.sendEmptyMessage(SHOW_DIALOG);
                     readLocalMedia();
                 } else {
                     ToastUtils.s(getContext(), getString(R.string.picture_jurisdiction));
