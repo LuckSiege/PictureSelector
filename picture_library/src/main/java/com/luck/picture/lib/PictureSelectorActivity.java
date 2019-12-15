@@ -1238,7 +1238,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                 isPreviewLoading = false;
                                 compressImage(selectImages);
                             } else {
-                                isPreviewLoading = true;
+                                isPreviewLoading = SdkVersionUtils.checkedAndroid_Q();
                                 onResult(selectImages);
                             }
                         }
