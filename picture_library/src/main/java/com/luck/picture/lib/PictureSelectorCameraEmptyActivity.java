@@ -9,10 +9,12 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.immersive.ImmersiveManage;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
@@ -32,14 +34,17 @@ import java.util.List;
  * @describe：单独拍照承载空Activity
  */
 public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
+
     @Override
-    public boolean isImmersive() {
-        return false;
+    public void immersive() {
+        ImmersiveManage.immersiveAboveAPI23(this
+                , ContextCompat.getColor(this, R.color.picture_color_transparent)
+                , ContextCompat.getColor(this, R.color.picture_color_transparent)
+                , openWhiteStatusBar);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         if (PermissionChecker
                 .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
                 PermissionChecker
@@ -51,6 +56,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
         }
         setTheme(R.style.Picture_Theme_Translucent);
+        super.onCreate(savedInstanceState);
     }
 
 
@@ -59,10 +65,6 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         return R.layout.picture_empty;
     }
 
-    @Override
-    protected void initWidgets() {
-        super.initWidgets();
-    }
 
     /**
      * 启动相机

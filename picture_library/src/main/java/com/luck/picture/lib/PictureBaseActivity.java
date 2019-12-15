@@ -132,7 +132,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                 config = PictureSelectionConfig.getInstance();
             }
         }
-        setTheme(config.themeStyleId);
+        // 单独拍照不设置主题因为拍照界面已经设置了透明主题了
+        if (!config.camera) {
+            setTheme(config.themeStyleId);
+        }
         super.onCreate(savedInstanceState);
         if (isRequestedOrientation()) {
             setNewRequestedOrientation();
@@ -244,7 +247,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     @Override
     protected void attachBaseContext(Context newBase) {
         config = PictureSelectionConfig.getInstance();
-        super.attachBaseContext(PictureContextWrapper.wrap(newBase, config.language));
+        if (config != null) {
+            super.attachBaseContext(PictureContextWrapper.wrap(newBase, config.language));
+        }
     }
 
     /**
