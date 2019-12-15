@@ -15,7 +15,7 @@
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 ## 目录
--[当前版本 v2.3.9](#当前版本)<br>
+-[当前版本 v2.4.0](#当前版本)<br>
 -[演示效果](#演示效果)<br>
 -[集成方式](#集成方式)<br>
 -[用前需知](#用前需知)<br>
@@ -120,7 +120,7 @@ v2.3.2开始移除了glide，所以使用v2.3.2版本以后的用户一定要配
 
 ## 当前版本
 ```sh
-implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.9'
+implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.0'
 ```
 
 ## 集成方式
@@ -129,7 +129,7 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.9'
 
 ```sh
 dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.3.9'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.0'
 }
 ```
 
@@ -160,7 +160,7 @@ step 2.
 <dependency>
       <groupId>com.github.LuckSiege.PictureSelector</groupId>
       <artifactId>picture_library</artifactId>
-      <version>v2.3.9</version> 
+      <version>v2.4.0</version> 
 </dependency>
 ```
 
