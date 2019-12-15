@@ -15,6 +15,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -258,6 +259,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         if (!isFinishing()) {
             if (mLoadingDialog == null) {
                 mLoadingDialog = new PictureLoadingDialog(getContext());
+            }
+            if (mLoadingDialog.isShowing()) {
+                mLoadingDialog.dismiss();
             }
             mLoadingDialog.show();
         }
@@ -602,7 +606,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     protected void onResult(List<LocalMedia> images) {
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         if (isAndroidQ && config.isAndroidQTransform) {
-            mHandler.postDelayed(() -> showPleaseDialog(), isPreviewLoading ? 30 : 0);
+            if (!config.isCompress) {
+                mHandler.postDelayed(() -> showPleaseDialog(), isPreviewLoading ? 30 : 0);
+            }
             onResultToAndroidAsy(images);
         } else {
             dismissDialog();
