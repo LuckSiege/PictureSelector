@@ -297,7 +297,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         int size = selectImages.size();
         for (int i = 0; i < size; i++) {
             LocalMedia media = selectImages.get(i);
-            if (media.getPath().equals(imageBean.getPath())) {
+            if (media.getPath().equals(imageBean.getPath())
+                    || media.getId() == imageBean.getId()) {
                 imageBean.setNum(media.getNum());
                 media.setPosition(imageBean.getPosition());
                 viewHolder.tvCheck.setText(String.valueOf(imageBean.getNum()));
@@ -335,7 +336,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 if (media == null || TextUtils.isEmpty(media.getPath())) {
                     continue;
                 }
-                if (media.getPath().equals(image.getPath())) {
+                if (media.getPath().equals(image.getPath())
+                        || media.getId() == image.getId()) {
                     selectImages.remove(media);
                     subSelectPosition();
                     AnimUtils.disZoom(contentHolder.ivPicture, zoomAnim);

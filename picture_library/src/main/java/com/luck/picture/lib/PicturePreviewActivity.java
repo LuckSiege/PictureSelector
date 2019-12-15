@@ -299,8 +299,11 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     private void notifyCheckChanged(LocalMedia imageBean) {
         if (config.checkNumMode) {
             check.setText("");
-            for (LocalMedia media : selectImages) {
-                if (media.getPath().equals(imageBean.getPath())) {
+            int size = selectImages.size();
+            for (int i = 0; i < size; i++) {
+                LocalMedia media = selectImages.get(i);
+                if (media.getPath().equals(imageBean.getPath())
+                        || media.getId() == imageBean.getId()) {
                     imageBean.setNum(media.getNum());
                     check.setText(String.valueOf(imageBean.getNum()));
                 }
@@ -342,7 +345,9 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         int size = selectImages.size();
         for (int i = 0; i < size; i++) {
             LocalMedia media = selectImages.get(i);
-            return media.getPath().equals(image.getPath()) || media.getId() == image.getId();
+            if (media.getPath().equals(image.getPath()) || media.getId() == image.getId()) {
+                return true;
+            }
         }
         return false;
     }
@@ -465,8 +470,11 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     check.setText(String.valueOf(image.getNum()));
                 }
             } else {
-                for (LocalMedia media : selectImages) {
-                    if (media.getPath().equals(image.getPath())) {
+                int size = selectImages.size();
+                for (int i = 0; i < size; i++) {
+                    LocalMedia media = selectImages.get(i);
+                    if (media.getPath().equals(image.getPath())
+                            || media.getId() == image.getId()) {
                         selectImages.remove(media);
                         onSelectedChange(false, image);
                         subSelectPosition();

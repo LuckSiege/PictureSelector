@@ -199,7 +199,8 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                 if (item == null || TextUtils.isEmpty(item.getPath())) {
                     continue;
                 }
-                item.setChecked(item.getPath().equals(media.getPath()));
+                item.setChecked(item.getPath().equals(media.getPath())
+                        || item.getId() == media.getId());
             }
             mGalleryAdapter.notifyDataSetChanged();
         }
