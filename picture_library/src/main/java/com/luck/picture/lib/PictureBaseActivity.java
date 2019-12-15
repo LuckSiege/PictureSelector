@@ -33,8 +33,6 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.immersive.ImmersiveManage;
 import com.luck.picture.lib.immersive.NavBarUtils;
-import com.luck.picture.lib.language.LocaleTransform;
-import com.luck.picture.lib.language.PictureLanguageUtils;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.AttrsUtils;
@@ -130,7 +128,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
             cameraPath = savedInstanceState.getString(PictureConfig.EXTRA_BUNDLE_CAMERA_PATH);
             originalPath = savedInstanceState.getString(PictureConfig.EXTRA_BUNDLE_ORIGINAL_PATH);
         } else {
-            config = PictureSelectionConfig.getInstance();
+            if (config == null) {
+                config = PictureSelectionConfig.getInstance();
+            }
         }
         setTheme(config.themeStyleId);
         super.onCreate(savedInstanceState);
@@ -176,12 +176,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
      * init Config
      */
     private void initConfig() {
-        // 设置语言
-        if (config.language >= 0) {
-            PictureLanguageUtils.applyLanguage(this, LocaleTransform.getLanguage(config.language));
-        } else {
-            PictureLanguageUtils.setDefaultLanguage(this);
-        }
         // 已选图片列表
         selectionMedias = config.selectionMedias == null ? new ArrayList<>() : config.selectionMedias;
         if (config.style != null) {
@@ -247,6 +241,11 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         outState.putParcelable(PictureConfig.EXTRA_CONFIG, config);
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        config = PictureSelectionConfig.getInstance();
+        super.attachBaseContext(PictureContextWrapper.wrap(newBase, config.language));
+    }
 
     /**
      * loading dialog

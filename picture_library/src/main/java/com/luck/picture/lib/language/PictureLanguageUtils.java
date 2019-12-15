@@ -29,19 +29,31 @@ public class PictureLanguageUtils {
     }
 
     /**
+     * init app the language
+     *
+     * @param context
+     * @param languageId
+     */
+    public static void setAppLanguage(Context context, int languageId) {
+        WeakReference<Context> contextWeakReference = new WeakReference<>(context);
+        if (languageId >= 0) {
+            applyLanguage(contextWeakReference.get(), LocaleTransform.getLanguage(languageId));
+        } else {
+            setDefaultLanguage(contextWeakReference.get());
+        }
+    }
+
+    /**
      * Apply the language.
      *
      * @param locale The language of locale.
      */
-    public static void applyLanguage(@NonNull Activity activity, @NonNull final Locale locale) {
-        WeakReference<Activity> mActivity = new WeakReference<>(activity);
-        if (mActivity.get() != null) {
-            applyLanguage(mActivity.get(), locale, false);
-        }
+    private static void applyLanguage(@NonNull Context context, @NonNull final Locale locale) {
+        applyLanguage(context, locale, false);
     }
 
 
-    private static void applyLanguage(@NonNull Activity activity, @NonNull final Locale locale,
+    private static void applyLanguage(@NonNull Context context, @NonNull final Locale locale,
                                       final boolean isFollowSystem) {
         if (isFollowSystem) {
             SPUtils.getPictureSpUtils().put(KEY_LOCALE, VALUE_FOLLOW_SYSTEM);
@@ -51,7 +63,7 @@ public class PictureLanguageUtils {
             SPUtils.getPictureSpUtils().put(KEY_LOCALE, localLanguage + "$" + localCountry);
         }
 
-        updateLanguage(activity, locale);
+        updateLanguage(context, locale);
     }
 
 
@@ -73,7 +85,12 @@ public class PictureLanguageUtils {
         resources.updateConfiguration(config, dm);
     }
 
-    public static void setDefaultLanguage(Context context) {
+    /**
+     * set default language
+     *
+     * @param context
+     */
+    private static void setDefaultLanguage(Context context) {
         Resources resources = context.getResources();
         Configuration config = resources.getConfiguration();
         DisplayMetrics dm = resources.getDisplayMetrics();
