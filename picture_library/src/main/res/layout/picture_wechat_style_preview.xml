@@ -58,6 +58,19 @@
 
 
         <TextView
+            android:id="@+id/tv_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:enabled="false"
+            android:gravity="center|left"
+            android:paddingRight="12dp"
+            android:text="@string/picture_please_select"
+            android:textColor="?attr/picture.ac_preview.complete.textColor"
+            android:textSize="14sp" />
+
+
+        <TextView
             android:id="@+id/tv_img_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,17 +85,17 @@
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/tv_ok"
+            android:id="@+id/tv_selected"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:enabled="false"
             android:gravity="center|left"
             android:paddingRight="12dp"
-            android:text="@string/picture_please_select"
-            android:textColor="?attr/picture.ac_preview.complete.textColor"
-            android:textSize="14sp" />
-
+            android:text="@string/picture_select"
+            android:textColor="@color/picture_color_white"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/check"
@@ -101,18 +114,6 @@
             android:layout_centerVertical="true"
             android:background="@color/picture_color_transparent" />
 
-        <TextView
-            android:id="@+id/tv_selected"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:enabled="false"
-            android:gravity="center|left"
-            android:paddingRight="12dp"
-            android:text="@string/picture_select"
-            android:textColor="@color/picture_color_white"
-            android:textSize="16sp" />
 
     </RelativeLayout>
 </RelativeLayout>

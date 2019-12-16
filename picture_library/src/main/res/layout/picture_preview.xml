@@ -30,6 +30,20 @@
             android:textSize="14sp"
             android:visibility="gone" />
 
+
+        <TextView
+            android:id="@+id/tv_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:enabled="false"
+            android:gravity="center|left"
+            android:paddingRight="12dp"
+            android:text="@string/picture_please_select"
+            android:textColor="?attr/picture.ac_preview.complete.textColor"
+            android:textSize="14sp" />
+
+
         <TextView
             android:id="@+id/tv_img_num"
             android:layout_width="wrap_content"
@@ -43,18 +57,6 @@
             android:textColor="@color/picture_color_white"
             android:textSize="12sp"
             android:visibility="invisible" />
-
-        <TextView
-            android:id="@+id/tv_ok"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:enabled="false"
-            android:gravity="center|left"
-            android:paddingRight="12dp"
-            android:text="@string/picture_please_select"
-            android:textColor="?attr/picture.ac_preview.complete.textColor"
-            android:textSize="14sp" />
 
     </RelativeLayout>
 
