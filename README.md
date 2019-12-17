@@ -574,7 +574,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 ## 演示效果
 
-| 功能配制 |
+| 功能项 |
 |:-----------:|
 |![](image/home.png)| 
 
