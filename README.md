@@ -576,7 +576,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 | 演示效果图 | 演示效果图  | 演示效果图 |
 |:-----------:|:--------:|:---------:|
-|![](image/home.png) | <img src="image/2.jpg" align="top" /> | ![](image/3.jpg)|  
+|![](image/home.png) | <img src="image/2.jpg"/> | ![](image/3.jpg)|  
 
 | 演示效果图 | 演示效果图  | 演示效果图 |
 |:-----------:|:--------:|:---------:|
