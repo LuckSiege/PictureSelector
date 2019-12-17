@@ -575,8 +575,11 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ## 演示效果
 | 演示效果图一 | 演示效果图二  | 演示效果图三 |
 |:-----------:|:--------:|:---------:|
-|![](image/home.png) | ![](image/home.png) | ![](image/home.png)|  
+|![](image/home.png) | ![](image/2.jpg) | ![](image/3.jpg)|  
 
+| 演示效果图四 | 演示效果图五  | 演示效果图六 |
+|:-----------:|:--------:|:---------:|
+|![](image/4.jpg) | ![](image/12.jpg) | ![](image/13.jpg)|  
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/home.png)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/2.jpg)
