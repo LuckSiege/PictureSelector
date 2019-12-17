@@ -574,7 +574,6 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 ## 演示效果
 
-| 无选中状态（默认UI色调）   | 选中状态  | 其他功能（各功能可自选） |
 |:-----------:|:--------:|:---------:|
 |![](image/home.png) | ![](image/home.png) | ![](image/home.png)|  
 
