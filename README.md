@@ -574,24 +574,31 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 ## 演示效果
 
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/home.png)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/2.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/3.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/4.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/12.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/13.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/14.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/15.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/16.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/white.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/blue.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/11.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/5.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/crop_%20white.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/6.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/7.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/8.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/audio.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/9.jpg)
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/10.jpg)
+| 演示效果图 | 演示效果图  | 演示效果图 |
+|:-----------:|:--------:|:---------:|
+|![](image/home.png) | ![](image/2.jpg) | ![](image/3.jpg)|  
+
+| 演示效果图 | 演示效果图  | 演示效果图 |
+|:-----------:|:--------:|:---------:|
+|![](image/4.jpg) | ![](image/12.jpg) | ![](image/13.jpg)| 
+
+| 演示效果图 | 演示效果图  | 演示效果图 |
+|:-----------:|:--------:|:---------:|
+|![](image/14.jpg) | ![](image/15.jpg) | ![](image/16.jpg)| 
+
+| 演示效果图 | 演示效果图  | 演示效果图 |
+|:-----------:|:--------:|:---------:|
+|![](image/white.jpg) | ![](image/blue.jpg) | ![](image/11.jpg)| 
+
+| 演示效果图 | 演示效果图  | 演示效果图 |
+|:-----------:|:--------:|:---------:|
+|![](image/5.jpg) | ![](image/crop_%20white.jpg) | ![](image/6.jpg)| 
+
+| 演示效果图 | 演示效果图  | 演示效果图 |
+|:-----------:|:--------:|:---------:|
+|![](image/7.jpg) | ![](image/8.jpg) | ![](image/audio.jpg)| 
+
+| 演示效果图 | 演示效果图  |
+|:-----------:|:--------:|
+|![](image/9.jpg) | ![](image/10.jpg)| 
 
