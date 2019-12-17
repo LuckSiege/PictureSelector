@@ -577,9 +577,6 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 |:-----------:|:--------:|:---------:|
 |![](image/home.png) | ![](image/home.png) | ![](image/home.png)|  
 
-|:-------:|:---------:|:---------:|
-|![](image/home.png) | ![](image/home.png) | ![](image/home.png)|  
-
 
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/home.png)
 ![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/2.jpg)
