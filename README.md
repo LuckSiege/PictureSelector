@@ -574,7 +574,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 ## 演示效果
 
-| 无选中状态（默认UI色调）   | 选中状态（ [自定义UI色调](https://github.com/HuanTanSheng/EasyPhotos/wiki/10-%E8%87%AA%E5%AE%9A%E4%B9%89UI%E6%A0%B7%E5%BC%8F)）  | 其他功能（各功能可自选） |
+| 无选中状态（默认UI色调）   | 选中状态  | 其他功能（各功能可自选） |
 |:-----------:|:--------:|:---------:|
 |![](image/home.png) | ![](image/home.png) | ![](image/home.png)|  
 
