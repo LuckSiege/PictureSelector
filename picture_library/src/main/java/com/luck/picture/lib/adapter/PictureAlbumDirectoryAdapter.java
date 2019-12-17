@@ -45,10 +45,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
     }
 
     public List<LocalMediaFolder> getFolderData() {
-        if (folders == null) {
-            folders = new ArrayList<>();
-        }
-        return folders;
+        return folders == null ? new ArrayList<>() : folders;
     }
 
     @Override
@@ -71,10 +68,9 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         if (chooseMode == PictureMimeType.ofAudio()) {
             holder.ivFirstImage.setImageResource(R.drawable.picture_audio_placeholder);
         } else {
-            if (config != null && config.imageEngine != null) {
-                config.imageEngine
-                        .loadFolderImage(holder.itemView.getContext(),
-                                imagePath, holder.ivFirstImage);
+            if (config.imageEngine != null) {
+                config.imageEngine.loadFolderImage(holder.itemView.getContext(),
+                        imagePath, holder.ivFirstImage);
             }
         }
         Context context = holder.itemView.getContext();
@@ -84,7 +80,9 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         holder.tvFolderName.setText(context.getString(R.string.picture_camera_roll_num, firstTitle, imageNum));
         holder.itemView.setOnClickListener(view -> {
             if (onItemClickListener != null) {
-                for (LocalMediaFolder mediaFolder : folders) {
+                int size = folders.size();
+                for (int i = 0; i < size; i++) {
+                    LocalMediaFolder mediaFolder = folders.get(i);
                     mediaFolder.setChecked(false);
                 }
                 folder.setChecked(true);

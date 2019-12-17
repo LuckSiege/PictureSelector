@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ucrop_label_original">Quy mô ban đầu</string>
+    <string name="ucrop_label_edit_photo">Cây trồng</string>
+    <string name="ucrop_menu_crop">Cây trồng</string>
+    <string name="ucrop_gif_tag">QUÀ TẶNG</string>
+</resources>

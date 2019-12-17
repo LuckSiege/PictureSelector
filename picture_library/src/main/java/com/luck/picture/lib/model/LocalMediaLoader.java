@@ -19,6 +19,7 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.tools.SdkVersionUtils;
+import com.luck.picture.lib.tools.ValueOf;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -320,7 +321,7 @@ public class LocalMediaLoader implements Handler.Callback {
      * @return
      */
     private String getRealPathAndroid_Q(long id) {
-        return QUERY_URI.buildUpon().appendPath(String.valueOf(id)).build().toString();
+        return QUERY_URI.buildUpon().appendPath(ValueOf.toString(id)).build().toString();
     }
 
     /**

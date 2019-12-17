@@ -47,7 +47,7 @@ public class PictureSelectionModel {
 
     /**
      * @param themeStyleId PictureSelector Theme style
-     * @return 废弃 改为动态设置
+     * @return PictureSelectionModel
      */
     public PictureSelectionModel theme(@StyleRes int themeStyleId) {
         selectionConfig.themeStyleId = themeStyleId;
@@ -56,7 +56,7 @@ public class PictureSelectionModel {
 
     /**
      * @param locale Language
-     * @return
+     * @return PictureSelectionModel
      */
     public PictureSelectionModel setLanguage(int language) {
         selectionConfig.language = language;
@@ -215,6 +215,15 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel minSelectNum(int minSelectNum) {
         selectionConfig.minSelectNum = minSelectNum;
+        return this;
+    }
+
+    /**
+     * @param maxVideoSelectNum PictureSelector video max selection
+     * @return
+     */
+    public PictureSelectionModel maxVideoSelectNum(int maxVideoSelectNum) {
+        selectionConfig.maxVideoSelectNum = maxVideoSelectNum;
         return this;
     }
 
@@ -819,6 +828,8 @@ public class PictureSelectionModel {
     /**
      * # replace for setPictureWindowAnimationStyle();
      * Start to select media and wait for result.
+     * <p>
+     * # Use PictureWindowAnimationStyle to achieve animation effects
      *
      * @param requestCode Identity of the request Activity or Fragment.
      */
@@ -862,10 +873,12 @@ public class PictureSelectionModel {
 
     /**
      * 提供外部预览图片方法-带自定义下载保存路径
+     * # 废弃 由于Android Q沙盒机制 此方法不在需要了
      *
      * @param position
      * @param medias
      */
+    @Deprecated
     public void openExternalPreview(int position, String directory_path, List<LocalMedia> medias) {
         if (selector != null) {
             selector.externalPicturePreview(position, directory_path, medias,

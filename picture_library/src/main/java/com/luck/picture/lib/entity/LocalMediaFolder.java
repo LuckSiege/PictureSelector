@@ -79,10 +79,7 @@ public class LocalMediaFolder implements Parcelable {
     }
 
     public List<LocalMedia> getImages() {
-        if (images == null) {
-            images = new ArrayList<>();
-        }
-        return images;
+        return images == null ? new ArrayList<>() : images;
     }
 
     public void setImages(List<LocalMedia> images) {

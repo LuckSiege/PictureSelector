@@ -39,6 +39,7 @@ import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.ToastUtils;
+import com.luck.picture.lib.tools.ValueOf;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 
 import java.util.ArrayList;
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_crop.setOnCheckedChangeListener(this);
         cb_crop_circular.setOnCheckedChangeListener(this);
         cb_compress.setOnCheckedChangeListener(this);
+        tv_select_num.setText(ValueOf.toString(maxSelectNum));
         FullyGridLayoutManager manager = new FullyGridLayoutManager(this,
                 4, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
@@ -192,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setPictureWindowAnimationStyle(windowAnimationStyle)// 自定义相册启动退出动画
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
+                        //.maxVideoSelectNum(1) // 视频最大选择数量，如果没有单独设置的需求则可以不设置同用maxSelectNum字段
                         .imageSpanCount(4)// 每行显示个数
                         //.isAndroidQTransform(false)// 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && enableCrop(false);有效,默认处理
                         .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)// 设置相册Activity方向，不设置默认使用系统

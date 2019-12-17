@@ -3,6 +3,7 @@ package com.luck.picture.lib;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -13,7 +14,6 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.tools.DoubleUtils;
 
-import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,15 +105,11 @@ public final class PictureSelector {
      * @return Selector Multiple LocalMedia
      */
     public static List<LocalMedia> obtainMultipleResult(Intent data) {
-        List<LocalMedia> result = new ArrayList<>();
         if (data != null) {
-            result = (List<LocalMedia>) data.getSerializableExtra(PictureConfig.EXTRA_RESULT_SELECTION);
-            if (result == null) {
-                result = new ArrayList<>();
-            }
-            return result;
+            List<LocalMedia> result = data.getParcelableArrayListExtra(PictureConfig.EXTRA_RESULT_SELECTION);
+            return result == null ? new ArrayList<>() : result;
         }
-        return result;
+        return new ArrayList<>();
     }
 
     /**
@@ -121,7 +117,8 @@ public final class PictureSelector {
      * @return Put image Intent Data
      */
     public static Intent putIntentResult(List<LocalMedia> data) {
-        return new Intent().putExtra(PictureConfig.EXTRA_RESULT_SELECTION, (Serializable) data);
+        return new Intent().putParcelableArrayListExtra(PictureConfig.EXTRA_RESULT_SELECTION,
+                (ArrayList<? extends Parcelable>) data);
     }
 
     /**
@@ -129,14 +126,11 @@ public final class PictureSelector {
      * @return get Selector  LocalMedia
      */
     public static List<LocalMedia> obtainSelectorList(Bundle bundle) {
-        List<LocalMedia> selectionMedias;
         if (bundle != null) {
-            selectionMedias = (List<LocalMedia>) bundle
-                    .getSerializable(PictureConfig.EXTRA_SELECT_LIST);
-            return selectionMedias;
+            List<LocalMedia> selectionMedias = bundle.getParcelableArrayList(PictureConfig.EXTRA_SELECT_LIST);
+            return selectionMedias == null ? new ArrayList<>() : selectionMedias;
         }
-        selectionMedias = new ArrayList<>();
-        return selectionMedias;
+        return new ArrayList<>();
     }
 
     /**
@@ -144,7 +138,8 @@ public final class PictureSelector {
      * @return put Selector  LocalMedia
      */
     public static void saveSelectorList(Bundle outState, List<LocalMedia> selectedImages) {
-        outState.putSerializable(PictureConfig.EXTRA_SELECT_LIST, (Serializable) selectedImages);
+        outState.putParcelableArrayList(PictureConfig.EXTRA_SELECT_LIST,
+                (ArrayList<? extends Parcelable>) selectedImages);
     }
 
     /**
@@ -156,7 +151,8 @@ public final class PictureSelector {
     public void externalPicturePreview(int position, List<LocalMedia> medias, int enterAnimation) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Intent intent = new Intent(getActivity(), PictureExternalPreviewActivity.class);
-            intent.putExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
+            intent.putParcelableArrayListExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST,
+                    (ArrayList<? extends Parcelable>) medias);
             intent.putExtra(PictureConfig.EXTRA_POSITION, position);
             getActivity().startActivity(intent);
             getActivity().overridePendingTransition(enterAnimation != 0
@@ -174,7 +170,7 @@ public final class PictureSelector {
     public void externalPicturePreview(int position, String directory_path, List<LocalMedia> medias, int enterAnimation) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Intent intent = new Intent(getActivity(), PictureExternalPreviewActivity.class);
-            intent.putExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (Serializable) medias);
+            intent.putParcelableArrayListExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (ArrayList<? extends Parcelable>) medias);
             intent.putExtra(PictureConfig.EXTRA_POSITION, position);
             intent.putExtra(PictureConfig.EXTRA_DIRECTORY_PATH, directory_path);
             getActivity().startActivity(intent);

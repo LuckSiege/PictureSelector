@@ -101,10 +101,22 @@ public class MediaUtils {
         if (null != media) {
             int width = media.getWidth();
             int height = media.getHeight();
-            int h = width * 3;
-            return height > h;
+            int newHeight = width * 3;
+            return height > newHeight;
         }
         return false;
+    }
+
+    /**
+     * 是否是长图
+     *
+     * @param width  宽
+     * @param height 高
+     * @return true 是 or false 不是
+     */
+    public static boolean isLongImg(int width, int height) {
+        int newHeight = width * 3;
+        return height > newHeight;
     }
 
     /**

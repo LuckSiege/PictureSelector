@@ -241,7 +241,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 // 常规图控件
                 final PhotoView imageView = contentView.findViewById(R.id.preview_image);
                 // 长图控件
-                final SubsamplingScaleImageView longImg = contentView.findViewById(R.id.longImg);
+                final SubsamplingScaleImageView longImageView = contentView.findViewById(R.id.longImg);
 
                 LocalMedia media = images.get(position);
                 if (media != null) {
@@ -259,7 +259,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     boolean isGif = PictureMimeType.isGif(mimeType);
                     final boolean eqLongImg = MediaUtils.isLongImg(media);
                     imageView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
-                    longImg.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
+                    longImageView.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
                     // 压缩过的gif就不是gif了
                     if (isGif && !media.isCompressed()) {
                         if (config != null && config.imageEngine != null) {
@@ -268,11 +268,17 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                         }
                     } else {
                         if (config != null && config.imageEngine != null) {
-                            if (eqLongImg) {
-                                displayLongPic(isAndroidQ
-                                        ? Uri.parse(path) : Uri.fromFile(new File(path)), longImg);
+                            if (PictureMimeType.isHttp(path)) {
+                                // 网络图片
+                                config.imageEngine.loadImage(contentView.getContext(), path,
+                                        imageView, longImageView);
                             } else {
-                                config.imageEngine.loadImage(contentView.getContext(), path, imageView);
+                                if (eqLongImg) {
+                                    displayLongPic(isAndroidQ
+                                            ? Uri.parse(path) : Uri.fromFile(new File(path)), longImageView);
+                                } else {
+                                    config.imageEngine.loadImage(contentView.getContext(), path, imageView);
+                                }
                             }
                         }
                     }
@@ -280,9 +286,21 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                         finish();
                         exitAnimation();
                     });
-                    longImg.setOnClickListener(v -> {
+                    longImageView.setOnClickListener(v -> {
                         finish();
                         exitAnimation();
+                    });
+                    longImageView.setOnLongClickListener(v -> {
+                        if (config.isNotPreviewDownload) {
+                            if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                                downloadPath = path;
+                                showDownLoadDialog();
+                            } else {
+                                PermissionChecker.requestPermissions(PictureExternalPreviewActivity.this,
+                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
+                            }
+                        }
+                        return true;
                     });
                     imageView.setOnLongClickListener(v -> {
                         if (config.isNotPreviewDownload) {

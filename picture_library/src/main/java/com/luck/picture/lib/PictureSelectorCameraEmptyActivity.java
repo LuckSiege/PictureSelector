@@ -143,6 +143,8 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         if (SdkVersionUtils.checkedAndroid_Q()) {
             int lastIndexOf = cameraPath.lastIndexOf("/") + 1;
             media.setId(lastIndexOf > 0 ? ValueOf.toLong(cameraPath.substring(lastIndexOf)) : -1);
+        } else {
+            media.setId(System.currentTimeMillis());
         }
         media.setCut(true);
         media.setCutPath(cutPath);
@@ -216,6 +218,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     newSize = MediaUtils.getLocalVideoSize(cameraPath);
                     duration = MediaUtils.extractDuration(getContext(), false, cameraPath);
                 }
+                media.setId(System.currentTimeMillis());
             }
         }
         media.setDuration(duration);

@@ -558,7 +558,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
 
 
     /**
-     * 如果没有任何相册，先创建一个最近相册出来
+     * 如果没有任何相册，先创建一个相机胶卷文件夹出来
      *
      * @param folders
      */

@@ -5,6 +5,8 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
+import com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView;
+
 /**
  * @author：luck
  * @date：2019-11-13 16:59
@@ -19,6 +21,16 @@ public interface ImageEngine {
      * @param imageView
      */
     void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView);
+
+    /**
+     * 加载网络长图适配
+     *
+     * @param context
+     * @param url
+     * @param imageView
+     */
+    void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView, SubsamplingScaleImageView longImageView);
+
 
     /**
      * 加载相册目录图片
