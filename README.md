@@ -16,7 +16,7 @@
 
 ## 目录
 -[当前版本 v2.4.0](#当前版本)<br>
--[更新日志](#https://github.com/LuckSiege/PictureSelector/releases/tag/v2.4.0)<br>
+-[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.4.0)<br>
 -[演示效果](#演示效果)<br>
 -[集成方式](#集成方式)<br>
 -[用前需知](#用前需知)<br>
