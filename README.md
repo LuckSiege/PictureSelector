@@ -592,7 +592,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 | 演示效果图 | 演示效果图  | 演示效果图 |
 |:-----------:|:--------:|:---------:|
-|![](image/5.jpg) | ![](image/crop_%20white.jpg) | ![](image/6.jpg)| 
+|![](image/5.jpg) | ![](image/crop_white.jpg) | ![](image/6.jpg)| 
 
 | 演示效果图 | 演示效果图  | 演示效果图 |
 |:-----------:|:--------:|:---------:|
