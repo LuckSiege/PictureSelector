@@ -595,10 +595,10 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 |![](image/picture_wechat_style_1.jpg) | ![](image/picture_wechat_style_2.jpg) | ![](image/picture_wechat_style_3.jpg)| 
 
 | 仿微信风格单选模式 | 单图圆形头像裁剪|
-|:-----------:|:--------:|:---------:|
+|:-----------:|:--------:|
 |![](image/picture_wechat_single_style_3.jpg) | ![](image/picture_circular_crop_style.jpg)| 
 
-| 视频 | 音频 | 演示效果 |
-|:-----------:|:--------:|:---------:|
-|![](image/picture_video.jpg) | ![](image/picture_audio.jpg) | ![](image/audio.jpg)| 
+| 视频 | 音频 |
+|:-----------:|:--------:|
+|![](image/picture_video.jpg) | ![](image/picture_audio.jpg)| 
 
