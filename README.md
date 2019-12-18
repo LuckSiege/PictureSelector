@@ -598,7 +598,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 |:-----------:|:--------:|
 |![](image/picture_wechat_single_style_3.jpg) | ![](image/picture_circular_crop_style.jpg)| 
 
-| 视频 | 音频 | 演示效果 |
-|:-----------:|:--------:|:---------:|
-|![](image/picture_video.jpg) | ![](image/picture_audio.jpg) | ![](image/audio.jpg)| 
+| 视频 | 音频 |
+|:-----------:|:--------:|
+|![](image/picture_video.jpg) | ![](image/picture_audio.jpg)| 
 
