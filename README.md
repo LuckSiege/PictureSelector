@@ -24,10 +24,10 @@
 -[常见错误](#常见错误)<br>
 -[启动相册](#启动相册)<br>
 -[单独拍照](#单独拍照)<br>
+-[所有功能配制](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E5%8A%9F%E8%83%BD%E9%85%8D%E5%88%B6%E9%A1%B9)<br>
 -[缓存清除](#缓存清除)<br>
 -[主题配置-Xml方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98-Xml%E6%96%B9%E5%BC%8F)<br>
 -[主题配置-Code方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%A8%E6%80%81%E4%B8%BB%E9%A2%98(%E5%8C%85%E5%90%AB%E8%A3%81%E5%89%AA%E3%80%81%E7%9B%B8%E5%86%8C%E5%90%AF%E5%8A%A8%E5%8A%A8%E7%94%BB)-Code%E6%96%B9%E5%BC%8F)<br>
--[结果回调](#结果回调)<br>
 -[混淆配置](#混淆配置)<br>
 -[LICENSE](#LICENSE)<br>
 -[兼容性测试](#兼容性测试)<br>
