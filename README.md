@@ -19,7 +19,7 @@
 -[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.4.0)<br>
 -[演示效果](#演示效果)<br>
 -[集成方式](#集成方式)<br>
--[用前需知](#用前需知)<br>
+-[用前需知](https://github.com/LuckSiege/PictureSelector/wiki/%E7%94%A8%E5%89%8D%E9%9C%80%E7%9F%A5)<br>
 -[功能特点](#功能特点)<br>
 -[常见错误](https://github.com/LuckSiege/PictureSelector/wiki/%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
 -[主题配置-Xml方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98-Xml%E6%96%B9%E5%BC%8F)<br>
@@ -33,44 +33,6 @@
 -[LICENSE](#LICENSE)<br>
 -[兼容性测试](#兼容性测试)<br>
 -[打赏](#打赏)<br> 
-
-# 用前需知 
-
-```
-v2.3.8 PictureSelector加入日志管理工具-自由选择
-1.PictureSelector加入Crash日志管理工具方便错误分析，具体使用方式请查看Demo Application类中...
-	Application onCreate加入两行代码
-		
-	/** PictureSelector日志管理配制开始 **/
-	  
-        // PictureSelector 绑定监听用户获取全局上下文或其他...
-        PictureAppMaster.getInstance().setApp(this);
-        // PictureSelector Crash日志监听
-        PictureSelectorCrashUtils.init((t, e) -> {
-            // Crash之后的一些操作可再此处理，没有就忽略...
-        });
-       
-	/** PictureSelector日志管理配制结束 **/
-	
-
-v2.3.3 新增动态配制主题，建议不要与.theme(R.theme.style);方式共用 两者只选其一配制 个人建议使用动态配制为好！！！
-
-// 动态自定义相册主题
-PictureParameterStyle mPictureParameterStyle = new PictureParameterStyle(); 
-
-// 动态自定义裁剪主题
-PictureCropParameterStyle mCropParameterStyle = new PictureCropParameterStyle(); 
-
-// 自定义相册弹起动画配制
-PictureWindowAnimationStyle windowAnimationStyle = new PictureWindowAnimationStyle(); 
-windowAnimationStyle.ofAllAnimation(R.anim.picture_anim_up_in, R.anim.picture_anim_down_out);
-
-以上两者具体使用方法请参考Demo MainActivity.java实现方式
-
-v2.3.2开始移除了glide，所以使用v2.3.2版本以后的用户一定要配制好图片加载引擎 否则列表图片加载不出来！！！
-.loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
- 具体请参考Demo MainActivity.java实现方式
-```
 
 # 功能特点
 
