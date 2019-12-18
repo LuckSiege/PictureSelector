@@ -143,6 +143,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         if (SdkVersionUtils.checkedAndroid_Q()) {
             int lastIndexOf = cameraPath.lastIndexOf("/") + 1;
             media.setId(lastIndexOf > 0 ? ValueOf.toLong(cameraPath.substring(lastIndexOf)) : -1);
+            media.setAndroidQToPath(cutPath);
         } else {
             media.setId(System.currentTimeMillis());
         }
