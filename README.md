@@ -596,7 +596,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 | 仿微信风格相册目录 | 仿微信风格单选模式 | 单图圆形头像裁剪|
 |:-----------:|:--------:|:--------:|
-|![](image/picture_wechat_directory_style.jpg) |![](image/picture_wechat_single_style_3.jpg) | ![](image/picture_circular_crop_style.jpg)| 
+|![](image/picture_wechat_album_style.jpg) |![](image/picture_wechat_single_style_3.jpg) | ![](image/picture_circular_crop_style.jpg)| 
 
 | 视频 | 音频 |
 |:-----------:|:--------:|
