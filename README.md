@@ -46,7 +46,6 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.1'
 ```sh
  PictureSelector.create(this)
    .openGallery(PictureMimeType.ofImage())
-   .theme(R.style.picture_default_style)
    .loadImageEngine(GlideEngine.createGlideEngine())
    .forResult(PictureConfig.CHOOSE_REQUEST);   
 ```
@@ -56,7 +55,6 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.1'
 ```sh
  PictureSelector.create(this)
    .openCamera(PictureMimeType.ofImage())
-   .theme(R.style.picture_default_style)
    .loadImageEngine(GlideEngine.createGlideEngine())
    .forResult(PictureConfig.CHOOSE_REQUEST);   
 ```
