@@ -578,9 +578,9 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 |:-----------:|
 |![](image/home.png)| 
 
-| 演示效果 | 演示效果 | 演示效果 |
+| 默认样式 | 默认样式预览 | 默认样式多图裁剪 |
 |:-----------:|:--------:|:---------:|
-|![](image/2.jpg) | <img src="image/3.jpg"/> | ![](image/17.jpg)|  
+|![](image/picture_default_style_1.jpg) | <img src="image/picture_default_style_2.jpg"/> | ![](image/picture_default_style_3.jpg)|  
 
 | 演示效果 | 演示效果  | 演示效果 |
 |:-----------:|:--------:|:---------:|
