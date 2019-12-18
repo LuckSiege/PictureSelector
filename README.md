@@ -59,7 +59,8 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.0'
    .forResult(PictureConfig.CHOOSE_REQUEST);   
 ```
 
-## 单独拍照 单独启动拍照或视频 根据PictureMimeType自动识别
+## 单独拍照
+快捷调用，单独启动拍照或视频 根据PictureMimeType自动识别 更多功能([请查看](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E5%8A%9F%E8%83%BD%E9%85%8D%E5%88%B6%E9%A1%B9))
 ```sh
  PictureSelector.create(this)
    .openCamera(PictureMimeType.ofImage())
