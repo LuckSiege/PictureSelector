@@ -19,7 +19,7 @@
 -[最新版本 v2.4.0](#最新版本)<br>
 -[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.4.0)<br>
 -[演示效果](#演示效果)<br>
--[集成方式](#集成方式)<br>
+-[集成方式](https://github.com/LuckSiege/PictureSelector/wiki/%E9%9B%86%E6%88%90%E6%96%B9%E5%BC%8F)<br>
 -[用前需知](https://github.com/LuckSiege/PictureSelector/wiki/%E7%94%A8%E5%89%8D%E9%9C%80%E7%9F%A5)<br>
 -[功能特点](#功能特点)<br>
 -[常见错误](https://github.com/LuckSiege/PictureSelector/wiki/%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
@@ -47,47 +47,6 @@
 ## 最新版本
 ```sh
 implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.0'
-```
-
-## 集成方式
-
-方式一 compile引入
-
-```sh
-dependencies {
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.0'
-}
-```
-
-项目根目录build.gradle加入
-
-```
-allprojects {
-   repositories {
-      jcenter()
-      maven { url 'https://jitpack.io' }
-   }
-}
-```
-
-方式二 maven引入
-
-step 1.
-```sh
-<repositories>
-       <repository>
-       <id>jitpack.io</id>
-	<url>https://jitpack.io</url>
-       </repository>
- </repositories>
-```
-step 2.
-```sh
-<dependency>
-      <groupId>com.github.LuckSiege.PictureSelector</groupId>
-      <artifactId>picture_library</artifactId>
-      <version>v2.4.0</version> 
-</dependency>
 ```
 
 ## 启动相册
