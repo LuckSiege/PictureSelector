@@ -36,14 +36,6 @@
 -[打赏](#打赏)<br> 
 
 
-重要的事情说三遍记得添加权限
-
-```sh
-  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-  <uses-permission android:name="android.permission.CAMERA" />
-```
-
 ## 最新版本
 ```sh
 implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.0'
