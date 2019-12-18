@@ -77,7 +77,7 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.0'
  PictureFileUtils.deleteAllCacheDirFile(this);
 ```
  
-******预览图片******       
+## 预览图片 
 ```
 // 预览图片 可自定长按保存路径
 *注意 .themeStyle(R.style.theme)；里面的参数不可删，否则闪退...
@@ -97,7 +97,7 @@ PictureSelector.create(MainActivity.this)
 .openExternalPreview(position, selectList);
 
 ```
-******预览视频****** 
+## 预览视频
 ```sh
 PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ```
