@@ -74,7 +74,6 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.1'
 
 PictureSelector.create(this)
  .themeStyle(themeId)
- .setPictureStyle(mPictureParameterStyle)
  .isNotPreviewDownload(true)
  .loadImageEngine(GlideEngine.createGlideEngine())
  .openExternalPreview(position, selectList);
