@@ -6,7 +6,7 @@
  Android开发交流 群二 679824206 (已满) <br>
  Android开发交流 群三 854136996 <br>
  
-  [我的博客地址](http://blog.csdn.net/luck_mw)   
+   [我的博客地址](http://blog.csdn.net/luck_mw)   
   
    [Demo下载](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2019_12_18_1024_2.4.1.apk)<br>
   
