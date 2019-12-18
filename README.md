@@ -8,6 +8,8 @@
  
   [我的博客地址](http://blog.csdn.net/luck_mw)   
   
+  [下载体验demo](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app-picture_selector_2.4.1.apk)<br>
+  
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
 [![CSDN](https://img.shields.io/twitter/url/http/blog.csdn.net/luck_mw.svg?style=social)](http://blog.csdn.net/luck_mw)
@@ -15,7 +17,6 @@
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 ## 目录
--[体验demo](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app-picture_selector_2.4.1.apk)<br>
 -[功能特点](https://github.com/LuckSiege/PictureSelector/wiki/%E5%8A%9F%E8%83%BD%E7%89%B9%E7%82%B9)<br>
 -[最新版本 v2.4.0](#最新版本)<br>
 -[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.4.0)<br>
