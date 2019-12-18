@@ -19,8 +19,8 @@
 ## 目录
 -[用前需知](https://github.com/LuckSiege/PictureSelector/wiki/%E7%94%A8%E5%89%8D%E9%9C%80%E7%9F%A5)<br>
 -[功能特点](https://github.com/LuckSiege/PictureSelector/wiki/%E5%8A%9F%E8%83%BD%E7%89%B9%E7%82%B9)<br>
--[最新版本 v2.4.0](#最新版本)<br>
--[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.4.0)<br>
+-[最新版本 v2.4.1](#最新版本)<br>
+-[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.4.1)<br>
 -[演示效果](#演示效果)<br>
 -[集成方式](https://github.com/LuckSiege/PictureSelector/wiki/%E9%9B%86%E6%88%90%E6%96%B9%E5%BC%8F)<br>
 -[常见错误](https://github.com/LuckSiege/PictureSelector/wiki/%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
@@ -38,7 +38,7 @@
 
 ## 最新版本
 ```sh
-implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.0'
+implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.1'
 ```
 
 ## 启动相册
