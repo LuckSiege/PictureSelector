@@ -82,19 +82,12 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.0'
 // 预览图片 可自定长按保存路径
 *注意 .themeStyle(R.style.theme)；里面的参数不可删，否则闪退...
 
-PictureSelector.create(MainActivity.this)
-.themeStyle(themeId)
-.setPictureStyle(mPictureParameterStyle)
-.isNotPreviewDownload(true)
-.loadImageEngine(GlideEngine.createGlideEngine())
-.openExternalPreview(position, "/custom_file", selectList);
-
-PictureSelector.create(MainActivity.this)
-.themeStyle(themeId)
-.setPictureStyle(mPictureParameterStyle)
-.isNotPreviewDownload(true)
-.loadImageEngine(GlideEngine.createGlideEngine())
-.openExternalPreview(position, selectList);
+PictureSelector.create(this)
+ .themeStyle(themeId)
+ .setPictureStyle(mPictureParameterStyle)
+ .isNotPreviewDownload(true)
+ .loadImageEngine(GlideEngine.createGlideEngine())
+ .openExternalPreview(position, selectList);
 
 ```
 ## 预览视频
