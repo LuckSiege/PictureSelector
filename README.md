@@ -22,11 +22,11 @@
 -[用前需知](#用前需知)<br>
 -[功能特点](#功能特点)<br>
 -[常见错误](#常见错误)<br>
--[功能配置](#功能配置)<br>
+-[启动相册](#启动相册)<br>
+-[单独拍照](#单独拍照)<br>
 -[缓存清除](#缓存清除)<br>
--[主题配置-Xml方式](#主题配置)<br>
--[主题配置-Code方式](#动态主题配置)<br>
--[常用功能](#常用功能)<br>
+-[主题配置-Xml方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98-Xml%E6%96%B9%E5%BC%8F)<br>
+-[主题配置-Code方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%A8%E6%80%81%E4%B8%BB%E9%A2%98(%E5%8C%85%E5%90%AB%E8%A3%81%E5%89%AA%E3%80%81%E7%9B%B8%E5%86%8C%E5%90%AF%E5%8A%A8%E5%8A%A8%E7%94%BB)-Code%E6%96%B9%E5%BC%8F)<br>
 -[结果回调](#结果回调)<br>
 -[混淆配置](#混淆配置)<br>
 -[LICENSE](#LICENSE)<br>
@@ -256,71 +256,22 @@ Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme
  也可以自定义成除glide外的其他第三方加载框架，具体请参考Demo
 ```
 
-## 功能配置
+## 启动相册
 ```sh
- PictureSelector.create(MainActivity.this)
- 	.openGallery()//全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
- 	.theme()//主题样式(不设置为默认样式) 也可参考demo values/styles下 例如：R.style.picture.white.style
-	.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题  注意：此方法最好不要与.theme();同时存在， 二选一
-        .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题 注意：此方法最好不要与.theme();同时存在， 二选一
-	.setPictureWindowAnimationStyle(windowAnimationStyle)// 自定义相册启动退出动画
-	.loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项   参考Demo MainActivity中代码
-	.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)// 设置相册Activity方向，不设置默认使用系统
-	.isOriginalImageControl(cb_original.isChecked())// 是否显示原图控制按钮，如果用户勾选了 压缩、裁剪功能将会失效
-	.isWeChatStyle(isWeChatStyle)// 是否开启微信图片选择风格，此开关开启了才可使用微信主题！！！
-	.isAndroidQTransform(false)// 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && enableCrop(false);有效
- 	.maxSelectNum()// 最大图片选择数量 int
- 	.minSelectNum()// 最小选择数量 int
-	.imageSpanCount(4)// 每行显示个数 int
-	.isNotPreviewDownload(true)// 预览图片长按是否可以下载
-	.queryMaxFileSize(10)// 只查多少M以内的图片、视频、音频  单位M
-	.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
-	.cameraFileName("test.png") // 重命名拍照文件名、注意这个只在使用相机时可以使用
-        .renameCompressFile("test.png")// 重命名压缩文件名、 注意这个不要重复，只适用于单张图压缩使用
-        .renameCropFileName("test.png")// 重命名裁剪文件名、 注意这个不要重复，只适用于单张图裁剪使用
-	.isSingleDirectReturn(false)// 单选模式下是否直接返回，PictureConfig.SINGLE模式下有效
-	.setTitleBarBackgroundColor(titleBarBackgroundColor)//相册标题栏背景色
-	.isChangeStatusBarFontColor(isChangeStatusBarFontColor)// 是否关闭白色状态栏字体颜色
-        .setStatusBarColorPrimaryDark(statusBarColorPrimaryDark)// 状态栏背景色
-        .setUpArrowDrawable(upResId)// 设置标题栏右侧箭头图标
-        .setDownArrowDrawable(downResId)// 设置标题栏右侧箭头图标
-        .isOpenStyleCheckNumMode(isOpenStyleCheckNumMode)// 是否开启数字选择模式 类似QQ相册
- 	.selectionMode()// 多选 or 单选 PictureConfig.MULTIPLE or PictureConfig.SINGLE
- 	.previewImage()// 是否可预览图片 true or false
- 	.previewVideo()// 是否可预览视频 true or false
-	.enablePreviewAudio() // 是否可播放音频 true or false
- 	.isCamera()// 是否显示拍照按钮 true or false
-	.imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg
-	.isZoomAnim(true)// 图片列表点击 缩放效果 默认true
-	.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
-	.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径,可不填
- 	.enableCrop()// 是否裁剪 true or false
- 	.compress()// 是否压缩 true or false
- 	.glideOverride()// int glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
- 	.withAspectRatio()// int 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
- 	.hideBottomControls()// 是否显示uCrop工具栏，默认不显示 true or false
- 	.isGif()// 是否显示gif图片 true or false
-	.compressSavePath(getPath())//压缩图片保存地址
- 	.freeStyleCropEnabled()// 裁剪框是否可拖拽 true or false
- 	.circleDimmedLayer()// 是否圆形裁剪 true or false
- 	.showCropFrame()// 是否显示裁剪矩形边框 圆形裁剪时建议设为false   true or false
- 	.showCropGrid()// 是否显示裁剪矩形网格 圆形裁剪时建议设为false    true or false
- 	.openClickSound()// 是否开启点击声音 true or false
- 	.selectionMedia()// 是否传入已选图片 List<LocalMedia> list
- 	.previewEggs()// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中) true or false
- 	.cropCompressQuality(90)// 废弃 改用cutOutQuality()
-        .cutOutQuality(90)// 裁剪输出质量 默认100
- 	.minimumCompressSize(100)// 小于100kb的图片不压缩 
- 	.synOrAsy(true)//同步true或异步false 压缩 默认同步
- 	.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效 int 
- 	.rotateEnabled() // 裁剪是否可旋转图片 true or false
- 	.scaleEnabled()// 裁剪是否可放大缩小图片 true or false
- 	.videoQuality()// 视频录制质量 0 or 1 int
-	.videoMaxSecond(15)// 显示多少秒以内的视频or音频也可适用 int 
-        .videoMinSecond(10)// 显示多少秒以内的视频or音频也可适用 int 
-	.recordVideoSecond()//视频秒数录制 默认60s int
-	.isDragFrame(false)// 是否可拖动裁剪框(固定)
- 	.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code     
+ PictureSelector.create(this)
+   .openGallery(PictureMimeType.ofImage())
+   .theme(R.style.picture_default_style)
+   .loadImageEngine(GlideEngine.createGlideEngine())
+   .forResult(PictureConfig.CHOOSE_REQUEST);   
+```
+
+## 单独拍照 单独启动拍照或视频 根据PictureMimeType自动识别
+```sh
+ PictureSelector.create(this)
+   .openCamera(PictureMimeType.ofImage())
+   .theme(R.style.picture_default_style)
+   .loadImageEngine(GlideEngine.createGlideEngine())
+   .forResult(PictureConfig.CHOOSE_REQUEST);   
 ```
 
 ## 缓存清除
@@ -330,143 +281,7 @@ Window.FEATURE_SUPPORT_ACTION_BAR and set windowActionBar to false in your theme
  // 清除所有缓存 例如：压缩、裁剪、视频、音频所生成的临时文件
  PictureFileUtils.deleteAllCacheDirFile(this);
 ```
-## 主题配置
-
-```
-<!--默认样式 注意* 样式只可修改，不能删除任何一项 否则报错-->
-    <style name="picture.default.style" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <!--标题栏背景色-->
-        <item name="colorPrimary">@color/bar_grey</item>
-        <!--状态栏背景色-->
-        <item name="colorPrimaryDark">@color/bar_grey</item>
-        <!--是否改变图片列表界面状态栏字体颜色为黑色-->
-        <item name="picture.statusFontColor">false</item>
-        <!--返回键图标-->
-        <item name="picture.leftBack.icon">@drawable/picture_back</item>
-        <!--标题下拉箭头-->
-        <item name="picture.arrow_down.icon">@drawable/arrow_down</item>
-        <!--标题上拉箭头-->
-        <item name="picture.arrow_up.icon">@drawable/arrow_up</item>
-        <!--标题文字颜色-->
-        <item name="picture.title.textColor">@color/white</item>
-        <!--标题栏右边文字-->
-        <item name="picture.right.textColor">@color/white</item>
-        <!--图片列表勾选样式-->
-        <item name="picture.checked.style">@drawable/checkbox_selector</item>
-        <!--开启图片列表勾选数字模式-->
-        <item name="picture.style.checkNumMode">false</item>
-        <!--选择图片样式0/9-->
-        <item name="picture.style.numComplete">false</item>
-        <!--图片列表底部背景色-->
-        <item name="picture.bottom.bg">@color/color_fa</item>
-        <!--图片列表预览文字颜色-->
-        <item name="picture.preview.textColor">@color/tab_color_true</item>
-        <!--图片列表已完成文字颜色-->
-        <item name="picture.complete.textColor">@color/tab_color_true</item>
-        <!--图片已选数量圆点背景色-->
-        <item name="picture.num.style">@drawable/num_oval</item>
-        <!--预览界面标题文字颜色-->
-        <item name="picture.ac_preview.title.textColor">@color/white</item>
-        <!--预览界面已完成文字颜色-->
-        <item name="picture.ac_preview.complete.textColor">@color/tab_color_true</item>
-        <!--预览界面标题栏背景色-->
-        <item name="picture.ac_preview.title.bg">@color/bar_grey</item>
-        <!--预览界面底部背景色-->
-        <item name="picture.ac_preview.bottom.bg">@color/bar_grey_90</item>
-        <!--预览界面返回箭头-->
-        <item name="picture.preview.leftBack.icon">@drawable/picture_back</item>
-        <!--是否改变预览界面状态栏字体颜色为黑色-->
-        <item name="picture.preview.statusFontColor">false</item>
-        <!--裁剪页面标题背景色-->
-        <item name="picture.crop.toolbar.bg">@color/bar_grey</item>
-        <!--裁剪页面状态栏颜色-->
-        <item name="picture.crop.status.color">@color/bar_grey</item>
-        <!--裁剪页面标题文字颜色-->
-        <item name="picture.crop.title.color">@color/white</item>
-        <!--相册文件夹列表选中图标-->
-        <item name="picture.folder_checked_dot">@drawable/orange_oval</item>
-    </style>
-
-```
-
-## 动态主题配置
-
-```
-// 相册主题
-PictureParameterStyle mPictureParameterStyle = new PictureParameterStyle();
-// 是否改变状态栏字体颜色(黑白切换)
-mPictureParameterStyle.isChangeStatusBarFontColor = false;
-// 是否开启右下角已完成(0/9)风格
-mPictureParameterStyle.isOpenCompletedNumStyle = false;
-// 是否开启类似QQ相册带数字选择风格
-mPictureParameterStyle.isOpenCheckNumStyle = false;
-// 相册状态栏背景色
-mPictureParameterStyle.pictureStatusBarColor = Color.parseColor("#393a3e");
-// 相册列表标题栏背景色
-mPictureParameterStyle.pictureTitleBarBackgroundColor = Color.parseColor("#393a3e");
-// 相册列表标题栏右侧上拉箭头
-mPictureParameterStyle.pictureTitleUpResId = R.drawable.picture_icon_arrow_up;
-// 相册列表标题栏右侧下拉箭头
-mPictureParameterStyle.pictureTitleDownResId = R.drawable.picture_icon_arrow_down;
-// 相册文件夹列表选中圆点
-mPictureParameterStyle.pictureFolderCheckedDotStyle = R.drawable.picture_orange_oval;
-// 相册返回箭头
-mPictureParameterStyle.pictureLeftBackIcon = R.drawable.picture_icon_back;
-// 标题栏字体颜色
-mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(this, R.color.picture_color_white);
-// 相册右侧取消按钮字体颜色
-mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(this, R.color.picture_color_white);
-// 相册列表勾选图片样式
-mPictureParameterStyle.pictureCheckedStyle = R.drawable.picture_checkbox_selector;
-// 相册列表底部背景色
-mPictureParameterStyle.pictureBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_fa);
-// 已选数量圆点背景样式
-mPictureParameterStyle.pictureCheckNumBgStyle = R.drawable.picture_num_oval;
-// 相册列表底下预览文字色值(预览按钮可点击时的色值)
-mPictureParameterStyle.picturePreviewTextColor = ContextCompat.getColor(this, R.color.picture_color_fa632d);
-// 相册列表底下不可预览文字色值(预览按钮不可点击时的色值)
-mPictureParameterStyle.pictureUnPreviewTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
-// 相册列表已完成色值(已完成 可点击色值)
-mPictureParameterStyle.pictureCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_fa632d);
-// 相册列表未完成色值(请选择 不可点击色值)
-mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
-// 预览界面底部背景色
-mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_grey_3e);
-// 外部预览界面删除按钮样式
-mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_delete;
-// 外部预览界面是否显示删除按钮
-mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
-
-// 裁剪主题
-PictureCropParameterStyle mCropParameterStyle = new PictureCropParameterStyle(
-    ContextCompat.getColor(MainActivity.this, R.color.app_color_grey),
-    ContextCompat.getColor(MainActivity.this, R.color.app_color_grey),
-    ContextCompat.getColor(MainActivity.this, R.color.app_color_white),
-    mPictureParameterStyle.isChangeStatusBarFontColor);
-       
- // 相册启动退出动画   
-PictureWindowAnimationStyle windowAnimationStyle = new PictureWindowAnimationStyle();
-windowAnimationStyle.ofAllAnimation(R.anim.picture_anim_up_in, R.anim.picture_anim_down_out);   		
-```
-
-## 常用功能
-
-******启动相册并拍照******       
-```sh
- PictureSelector.create(MainActivity.this)
-       .openGallery(PictureMimeType.ofImage())
-       .loadImageEngine(GlideEngine.createGlideEngine())
-       .forResult(PictureConfig.CHOOSE_REQUEST);     
-```
-******单独启动拍照或视频 根据PictureMimeType自动识别******       
-```
-  PictureSelector.create(MainActivity.this)
-       .openCamera(PictureMimeType.ofImage())
-       .setPictureCropStyle(mCropParameterStyle) 
-       .loadImageEngine(GlideEngine.createGlideEngine())
-       .forResult(PictureConfig.CHOOSE_REQUEST);
-```
+ 
 ******预览图片******       
 ```
 // 预览图片 可自定长按保存路径
@@ -491,43 +306,6 @@ PictureSelector.create(MainActivity.this)
 ```sh
 PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 ```
-## 结果回调
-```sh
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case PictureConfig.CHOOSE_REQUEST:
-                    // 图片、视频、音频选择结果回调
-                    List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
-                    // 例如 LocalMedia 里面返回五种path
-                    // 1.media.getPath(); 为原图path
-                    // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
-                    // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
-                    // 4.media.getOriginalPath()); media.isOriginal());为true时此字段才有值
-                    // 5.media.getAndroidQToPath();为Android Q版本特有返回的字段，此字段有值就用来做上传使用
-                    // 如果同时开启裁剪和压缩，则取压缩路径为准因为是先裁剪后压缩
-		    
-		    // 从2.3.6开始加入了原图功能，所以再使用的时候需要判断media.isOriginal()); 如果为true有可能是用户选择要上传原图则要取
-		    media.getOriginalPath());作为上传路径，前提是你开启了.isOriginalImageControl(true);开关
-		    
-                    for (LocalMedia media : selectList) {
-                        Log.i(TAG, "压缩::" + media.getCompressPath());
-                        Log.i(TAG, "原图::" + media.getPath());
-                        Log.i(TAG, "裁剪::" + media.getCutPath());
-                        Log.i(TAG, "是否开启原图::" + media.isOriginal());
-                        Log.i(TAG, "原图路径::" + media.getOriginalPath());
-                        Log.i(TAG, "Android Q 特有Path::" + media.getAndroidQToPath());
-                    }
-                    adapter.setList(selectList);
-                    adapter.notifyDataSetChanged();
-                    break;
-            }
-        }
-    }
-```
-
 
 # 项目使用第三方库：
 
