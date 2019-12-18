@@ -582,27 +582,23 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 |:-----------:|:--------:|:---------:|
 |![](image/picture_default_style_1.jpg) | <img src="image/picture_default_style_2.jpg"/> | ![](image/picture_default_style_3.jpg)|  
 
-| 演示效果 | 演示效果  | 演示效果 |
+| 数字风格 | 数字风格预览  | 数字风格多图裁剪 |
 |:-----------:|:--------:|:---------:|
-|![](image/4.jpg) | ![](image/12.jpg) | ![](image/13.jpg)| 
+|![](image/picture_num_style_1.jpg) | ![](image/picture_num_style_2.jpg) | ![](image/picture_num_style_3.jpg)| 
 
-| 演示效果 | 演示效果  | 演示效果 |
+| 白色主题风格 | 白色主题风格预览  | 白色主题风格单图裁剪 |
 |:-----------:|:--------:|:---------:|
-|![](image/14.jpg) | ![](image/15.jpg) | ![](image/16.jpg)| 
+|![](image/picture_sina_style_1.jpg) | ![](image/picture_sina_style_2.jpg) | ![](image/picture_sina_style_3.jpg)| 
 
-| 演示效果 | 演示效果 | 演示效果 |
+| 仿微信风格 | 仿微信风格预览 | 仿微信风格多图裁剪 |
 |:-----------:|:--------:|:---------:|
-|![](image/white.jpg) | ![](image/blue.jpg) | ![](image/11.jpg)| 
+|![](image/picture_wechat_style_1.jpg) | ![](image/picture_wechat_style_2.jpg) | ![](image/picture_wechat_style_3.jpg)| 
 
-| 演示效果 | 演示效果 | 演示效果 |
+| 仿微信风格单选模式 | 单图圆形头像裁剪|
 |:-----------:|:--------:|:---------:|
-|![](image/5.jpg) | ![](image/crop_white.jpg) | ![](image/6.jpg)| 
+|![](image/picture_wechat_single_style_3.jpg) | ![](image/picture_circular_crop_style.jpg)| 
 
-| 演示效果 | 演示效果 | 演示效果 |
+| 视频 | 音频 | 演示效果 |
 |:-----------:|:--------:|:---------:|
-|![](image/7.jpg) | ![](image/8.jpg) | ![](image/audio.jpg)| 
-
-| 演示效果 | 演示效果 |
-|:-----------:|:--------:|
-|![](image/9.jpg) | ![](image/10.jpg)| 
+|![](image/picture_video.jpg) | ![](image/picture_audio.jpg) | ![](image/audio.jpg)| 
 
