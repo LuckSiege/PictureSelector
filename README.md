@@ -15,7 +15,8 @@
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 ## 目录
--[当前版本 v2.4.0](#当前版本)<br>
+-[功能特点](https://github.com/LuckSiege/PictureSelector/wiki/%E5%8A%9F%E8%83%BD%E7%89%B9%E7%82%B9)
+-[最新版本 v2.4.0](#最新版本)<br>
 -[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.4.0)<br>
 -[演示效果](#演示效果)<br>
 -[集成方式](#集成方式)<br>
@@ -34,45 +35,6 @@
 -[兼容性测试](#兼容性测试)<br>
 -[打赏](#打赏)<br> 
 
-# 功能特点
-
-* 1.适配Android5.0+ &Android Q系统
-* 2.解决部分机型裁剪闪退问题
-* 3.解决图片过大oom闪退问题
-* 4.动态获取系统权限，避免闪退
-* 5.支持相片or视频的单选和多选
-* 6.支持裁剪比例设置，如常用的 1:1、3：4、3:2、16:9 默认为图片大小
-* 7.支持视频预览
-* 8.支持gif图片
-* 9.支持.webp格式图片 
-* 10.支持一些常用场景设置：如:是否裁剪、是否预览图片、是否显示相机等
-* 11.新增自定义主题设置
-* 12.新增图片勾选样式设置
-* 13.新增图片裁剪宽高设置
-* 14.新增图片压缩处理
-* 15.新增录视频最大时间设置
-* 16.新增视频清晰度设置
-* 17.新增QQ选择风格，带数字效果 
-* 18.新增自定义 文字颜色 背景色让风格和项目更搭配
-* 19.新增多图裁剪功能
-* 20.新增LuBan多图压缩
-* 21.新增单独拍照功能
-* 22.新增压缩大小设置
-* 23.新增Luban压缩档次设置
-* 24.新增圆形头像裁剪
-* 25.新增音频功能查询
-* 26.新增可自定义启动相册动画 forResult(int requestCode, int enterAnim, int exitAnim); 
-* 27.新增指定精确查询 querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
-* 28.新增单选模式可设置点击选择后直接返回控制 isSingleDirectReturn(false)// 单选模式下是否直接返回
-* 29.多图裁剪下可自由选择某图不裁剪不在强制一张张裁剪，但最后一张除外
-* 30.新增动态配制相册主题 .setPictureStyle(mPictureParameterStyle);  请参考Demo
-* 31.新增动态配制裁剪主题 .setPictureCropStyle(mCropParameterStyle); 请参考Demo
-* 32.新增自定义相册启动退出动画 .setPictureWindowAnimationStyle(windowAnimationStyle); 请参考Demo
-* 33.新增原图功能
-* 34.新增全新相册主题风格，类似新版微信相册样式
-* 35.新增繁体、韩语、德语、法语、日语语言包，可通过api .setLanguage(language);进行设置
-* ....
-
 
 重要的事情说三遍记得添加权限
 
@@ -82,7 +44,7 @@
   <uses-permission android:name="android.permission.CAMERA" />
 ```
 
-## 当前版本
+## 最新版本
 ```sh
 implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.0'
 ```
