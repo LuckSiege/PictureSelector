@@ -15,6 +15,7 @@
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 ## 目录
+-[体验demo](https://github.com/LuckSiege/PictureSelector/blob/master/app/demo/app-picture_selector_2.4.1.apk)<br>
 -[功能特点](https://github.com/LuckSiege/PictureSelector/wiki/%E5%8A%9F%E8%83%BD%E7%89%B9%E7%82%B9)<br>
 -[最新版本 v2.4.0](#最新版本)<br>
 -[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.4.0)<br>
