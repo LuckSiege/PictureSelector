@@ -4,6 +4,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.StyleRes;
 
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
@@ -73,6 +74,11 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean enableCrop;
     public boolean freeStyleCropEnabled;
     public boolean circleDimmedLayer;
+    @ColorInt
+    public int circleDimmedColor;
+    @ColorInt
+    public int circleDimmedBorderColor;
+    public int circleStrokeWidth;
     public boolean showCropFrame;
     public boolean showCropGrid;
     public boolean hideBottomControls;
@@ -175,6 +181,9 @@ public final class PictureSelectionConfig implements Parcelable {
         previewEggs = false;
         synOrAsy = true;
         zoomAnim = true;
+        circleDimmedColor = 0;
+        circleDimmedBorderColor = 0;
+        circleStrokeWidth = 1;
         isDragFrame = true;
         compressSavePath = "";
         suffixType = PictureFileUtils.POSTFIX;
@@ -228,6 +237,9 @@ public final class PictureSelectionConfig implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.chooseMode);
+        dest.writeInt(this.circleDimmedColor);
+        dest.writeInt(this.circleDimmedBorderColor);
+        dest.writeInt(this.circleStrokeWidth);
         dest.writeByte(this.camera ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isSingleDirectReturn ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.style, flags);
@@ -310,6 +322,9 @@ public final class PictureSelectionConfig implements Parcelable {
         this.cameraFileName = in.readString();
         this.specifiedFormat = in.readString();
         this.themeStyleId = in.readInt();
+        this.circleDimmedBorderColor = in.readInt();
+        this.circleStrokeWidth = in.readInt();
+        this.circleDimmedColor = in.readInt();
         this.selectionMode = in.readInt();
         this.maxSelectNum = in.readInt();
         this.minSelectNum = in.readInt();

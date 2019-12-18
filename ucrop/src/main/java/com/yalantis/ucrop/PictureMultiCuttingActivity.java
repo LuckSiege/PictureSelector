@@ -1,6 +1,8 @@
 package com.yalantis.ucrop;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
@@ -22,9 +24,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,6 +48,7 @@ import com.yalantis.ucrop.immersion.CropImmersiveManage;
 import com.yalantis.ucrop.model.AspectRatio;
 import com.yalantis.ucrop.model.CutInfo;
 import com.yalantis.ucrop.util.FileUtils;
+import com.yalantis.ucrop.util.ScreenUtils;
 import com.yalantis.ucrop.util.SelectedStateListDrawable;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
@@ -88,7 +93,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     private static final int SCALE_WIDGET_SENSITIVITY_COEFFICIENT = 15000;
     private static final int ROTATE_WIDGET_SENSITIVITY_COEFFICIENT = 42;
     private RecyclerView mRecyclerView;
-    private PicturePhotoGalleryAdapter adapter;
+    private PicturePhotoGalleryAdapter mAdapter;
     private String mToolbarTitle;
     private ArrayList<CutInfo> list;
     // Enables dynamic coloring
@@ -116,6 +121,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     private TextView mTextViewRotateAngle, mTextViewScalePercent;
     private View mBlockingView;
     private RelativeLayout uCropMultiplePhotoBox;
+    private int mScreenWidth;
     private Bitmap.CompressFormat mCompressFormat = DEFAULT_COMPRESS_FORMAT;
     private int mCompressQuality = DEFAULT_COMPRESS_QUALITY;
     private int[] mAllowedGestures = new int[]{SCALE, ROTATE, ALL};
@@ -130,6 +136,8 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     private boolean scaleEnabled, rotateEnabled, openWhiteStatusBar;
 
     private int cutIndex;
+
+    private int oldCutIndex;
 
     /**
      * 是否使用沉浸式，子类复写该方法来确定是否采用沉浸式
@@ -162,13 +170,13 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         }
         setContentView(R.layout.ucrop_picture_activity_multi_cutting);
         uCropMultiplePhotoBox = findViewById(R.id.ucrop_mulit_photobox);
+        mScreenWidth = ScreenUtils.getScreenWidth(this);
         initLoadCutData();
         addPhotoRecyclerView();
         setupViews(intent);
         setInitialState();
         addBlockingView();
         setImageData(intent);
-
     }
 
     /**
@@ -191,20 +199,27 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         mRecyclerView.setId(R.id.id_recycler);
         mRecyclerView.setBackgroundColor(ContextCompat.getColor(this, R.color.ucrop_color_widget_background));
         RelativeLayout.LayoutParams lp =
-                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, dip2px(80));
+                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                        ScreenUtils.dip2px(this, 80));
         mRecyclerView.setLayoutParams(lp);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
+        // 解决调用 notifyItemChanged 闪烁问题,取消默认动画
+        ((SimpleItemAnimator) mRecyclerView.getItemAnimator())
+                .setSupportsChangeAnimations(false);
+
         resetCutDataStatus();
         list.get(cutIndex).setCut(true);
-        adapter = new PicturePhotoGalleryAdapter(this, list);
-        mRecyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener((position, view) -> {
+        mAdapter = new PicturePhotoGalleryAdapter(this, list);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setOnItemClickListener((position, view) -> {
             if (cutIndex == position) {
                 return;
             }
+            resetLastCropStatus();
             cutIndex = position;
+            oldCutIndex = cutIndex;
             resetCutData();
         });
 
@@ -221,7 +236,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     private void refreshPhotoRecyclerData() {
         resetCutDataStatus();
         list.get(cutIndex).setCut(true);
-        adapter.notifyDataSetChanged();
+        mAdapter.notifyItemChanged(cutIndex);
 
         uCropMultiplePhotoBox.addView(mRecyclerView);
         changeLayoutParams(mShowBottomControls);
@@ -357,6 +372,8 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         mOverlayView.setDragFrame(isDragFrame);
         mOverlayView.setFreestyleCropEnabled(intent.getBooleanExtra(UCropMulti.Options.EXTRA_FREE_STYLE_CROP, false));
         circleDimmedLayer = intent.getBooleanExtra(UCropMulti.Options.EXTRA_CIRCLE_DIMMED_LAYER, OverlayView.DEFAULT_CIRCLE_DIMMED_LAYER);
+        mOverlayView.setDimmedBorderColor(intent.getIntExtra(UCropMulti.Options.EXTRA_DIMMED_LAYER_BORDER_COLOR, getResources().getColor(R.color.ucrop_color_default_dimmed)));
+        mOverlayView.setDimmedStrokeWidth(intent.getIntExtra(UCropMulti.Options.EXTRA_CIRCLE_STROKE_WIDTH_LAYER, 1));
         mOverlayView.setDimmedColor(intent.getIntExtra(UCropMulti.Options.EXTRA_DIMMED_LAYER_COLOR, getResources().getColor(R.color.ucrop_color_default_dimmed)));
         mOverlayView.setCircleDimmedLayer(circleDimmedLayer);
 
@@ -776,7 +793,9 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
             info.setOffsetY(offsetY);
             info.setImageWidth(imageWidth);
             info.setImageHeight(imageHeight);
+            resetLastCropStatus();
             cutIndex++;
+            oldCutIndex = cutIndex;
             if (cutIndex >= list.size()) {
                 setResult(RESULT_OK, new Intent()
                         .putExtra(UCropMulti.EXTRA_OUTPUT_URI_LIST, list)
@@ -788,7 +807,16 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    /**
+     * 重置上一次选中状态
+     */
+    private void resetLastCropStatus() {
+        if (list.size() > oldCutIndex) {
+            list.get(oldCutIndex).setCut(false);
+            mAdapter.notifyItemChanged(cutIndex);
+        }
     }
 
     /**
@@ -815,9 +843,11 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         refreshPhotoRecyclerData();
         setupViews(intent);
         setImageData(intent);
-        // 预览图 一页5个,裁剪到第6个的时候滚动到最新位置，不然预览图片看不到
-        if (cutIndex >= 5) {
-            mRecyclerView.scrollToPosition(cutIndex);
+        int scrollWidth = cutIndex * ScreenUtils.dip2px(this, 60);
+        if (scrollWidth > mScreenWidth * 0.8) {
+            mRecyclerView.scrollBy(ScreenUtils.dip2px(this, 60), 0);
+        } else if (scrollWidth < mScreenWidth * 0.4) {
+            mRecyclerView.scrollBy(ScreenUtils.dip2px(this, -60), 0);
         }
         changeLayoutParams(mShowBottomControls);
     }
@@ -851,7 +881,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         try {
             int index = path.lastIndexOf(".");
             if (index > 0) {
-                String imageType = path.substring(index, path.length());
+                String imageType = path.substring(index);
                 switch (imageType) {
                     case ".png":
                     case ".PNG":
@@ -894,7 +924,4 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.ucrop_anim_fade_in, exitAnimation != 0 ? exitAnimation : R.anim.ucrop_close);
     }
 
-    public int dip2px(float dpValue) {
-        return (int) (0.5f + dpValue * getResources().getDisplayMetrics().density);
-    }
 }

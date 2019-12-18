@@ -44,6 +44,8 @@ public class OverlayView extends View {
     private boolean mShowCropFrame, mShowCropGrid;
     private boolean mCircleDimmedLayer;
     private int mDimmedColor;
+    private int mDimmedBorderColor;
+    private int mStrokeWidth = 1;
     private Path mCircularPath = new Path();
     private Paint mDimmedStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint mCropGridPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -165,6 +167,30 @@ public class OverlayView extends View {
      */
     public void setDimmedColor(@ColorInt int dimmedColor) {
         mDimmedColor = dimmedColor;
+    }
+
+    /**
+     * Setter for {@link #mDimmedColor} variable.
+     *
+     * @param dimmedBorderColor - desired color of dimmed area around the crop bounds
+     */
+    public void setDimmedBorderColor(@ColorInt int dimmedBorderColor) {
+        mDimmedBorderColor = dimmedBorderColor;
+        if (mDimmedStrokePaint != null) {
+            mDimmedStrokePaint.setColor(mDimmedBorderColor);
+        }
+    }
+
+    /**
+     * Setter for {@link #mDimmedColor} variable.
+     *
+     * @param strokeWidth
+     */
+    public void setDimmedStrokeWidth(int strokeWidth) {
+        mStrokeWidth = strokeWidth;
+        if (mDimmedStrokePaint != null) {
+            mDimmedStrokePaint.setStrokeWidth(mStrokeWidth);
+        }
     }
 
     /**
@@ -513,9 +539,13 @@ public class OverlayView extends View {
         mCircleDimmedLayer = a.getBoolean(R.styleable.ucrop_UCropView_ucrop_circle_dimmed_layer, DEFAULT_CIRCLE_DIMMED_LAYER);
         mDimmedColor = a.getColor(R.styleable.ucrop_UCropView_ucrop_dimmed_color,
                 getResources().getColor(R.color.ucrop_color_default_dimmed));
-        mDimmedStrokePaint.setColor(mDimmedColor);
+
+        mDimmedBorderColor = a.getColor(R.styleable.ucrop_UCropView_ucrop_dimmed_color,
+                getResources().getColor(R.color.ucrop_color_default_dimmed));
+
+        mDimmedStrokePaint.setColor(mDimmedBorderColor);
         mDimmedStrokePaint.setStyle(Paint.Style.STROKE);
-        mDimmedStrokePaint.setStrokeWidth(1);
+        mDimmedStrokePaint.setStrokeWidth(mStrokeWidth);
 
         initCropFrameStyle(a);
         mShowCropFrame = a.getBoolean(R.styleable.ucrop_UCropView_ucrop_show_frame, DEFAULT_SHOW_CROP_FRAME);

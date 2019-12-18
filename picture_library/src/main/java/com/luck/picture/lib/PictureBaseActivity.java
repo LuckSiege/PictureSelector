@@ -395,6 +395,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
             if (config.cropStyle.cropTitleColor != 0) {
                 titleColor = config.cropStyle.cropTitleColor;
             }
+
             isChangeStatusBarFontColor = config.cropStyle.isChangeStatusBarFontColor;
         } else {
             if (config.cropTitleBarBackgroundColor != 0) {
@@ -427,6 +428,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         options.setToolbarColor(toolbarColor);
         options.setStatusBarColor(statusColor);
         options.setToolbarWidgetColor(titleColor);
+        options.setDimmedLayerColor(config.circleDimmedColor);
+        options.setDimmedLayerBorderColor(config.circleDimmedBorderColor);
+        options.setCircleStrokeWidth(config.circleStrokeWidth);
         options.setCircleDimmedLayer(config.circleDimmedLayer);
         options.setShowCropFrame(config.showCropFrame);
         options.setShowCropGrid(config.showCropGrid);
@@ -511,6 +515,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         options.setStatusBarColor(statusColor);
         options.setToolbarWidgetColor(titleColor);
         options.setCircleDimmedLayer(config.circleDimmedLayer);
+        options.setDimmedLayerColor(config.circleDimmedColor);
+        options.setDimmedLayerBorderColor(config.circleDimmedBorderColor);
+        options.setCircleStrokeWidth(config.circleStrokeWidth);
         options.setShowCropFrame(config.showCropFrame);
         options.setDragFrameEnabled(config.isDragFrame);
         options.setShowCropGrid(config.showCropGrid);

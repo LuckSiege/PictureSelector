@@ -162,6 +162,33 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param circleDimmedColor setCircleDimmedColor
+     * @return
+     */
+    public PictureSelectionModel setCircleDimmedColor(int circleDimmedColor) {
+        selectionConfig.circleDimmedColor = circleDimmedColor;
+        return this;
+    }
+
+    /**
+     * @param circleDimmedBorderColor setCircleDimmedBorderColor
+     * @return
+     */
+    public PictureSelectionModel setCircleDimmedBorderColor(int circleDimmedBorderColor) {
+        selectionConfig.circleDimmedBorderColor = circleDimmedBorderColor;
+        return this;
+    }
+
+    /**
+     * @param circleStrokeWidth setCircleStrokeWidth
+     * @return
+     */
+    public PictureSelectionModel setCircleStrokeWidth(int circleStrokeWidth) {
+        selectionConfig.circleStrokeWidth = circleStrokeWidth;
+        return this;
+    }
+
+    /**
      * @param showCropFrame Whether to show crop frame
      * @return
      */

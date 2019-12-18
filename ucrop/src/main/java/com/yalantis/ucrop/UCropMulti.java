@@ -257,7 +257,9 @@ public class UCropMulti {
         public static final String EXTRA_IMAGE_TO_CROP_BOUNDS_ANIM_DURATION = EXTRA_PREFIX + ".ImageToCropBoundsAnimDuration";
 
         public static final String EXTRA_DIMMED_LAYER_COLOR = EXTRA_PREFIX + ".DimmedLayerColor";
+        public static final String EXTRA_DIMMED_LAYER_BORDER_COLOR = EXTRA_PREFIX + ".DimmedLayerBorderColor";
         public static final String EXTRA_CIRCLE_DIMMED_LAYER = EXTRA_PREFIX + ".CircleDimmedLayer";
+        public static final String EXTRA_CIRCLE_STROKE_WIDTH_LAYER = EXTRA_PREFIX + ".CircleStrokeWidth";
 
         public static final String EXTRA_SHOW_CROP_FRAME = EXTRA_PREFIX + ".ShowCropFrame";
         public static final String EXTRA_CROP_FRAME_COLOR = EXTRA_PREFIX + ".CropFrameColor";
@@ -365,7 +367,27 @@ public class UCropMulti {
          * @param color - desired color of dimmed area around the crop bounds
          */
         public void setDimmedLayerColor(@ColorInt int color) {
-            mOptionBundle.putInt(EXTRA_DIMMED_LAYER_COLOR, color);
+            if (color != 0) {
+                mOptionBundle.putInt(EXTRA_DIMMED_LAYER_COLOR, color);
+            }
+        }
+
+        /**
+         * @param color - desired border color of dimmed area around the crop bounds
+         */
+        public void setDimmedLayerBorderColor(@ColorInt int color) {
+            if (color != 0) {
+                mOptionBundle.putInt(EXTRA_DIMMED_LAYER_BORDER_COLOR, color);
+            }
+        }
+
+        /**
+         * @param width Set the circular clipping border
+         */
+        public void setCircleStrokeWidth(int width) {
+            if (width > 0) {
+                mOptionBundle.putInt(EXTRA_CIRCLE_STROKE_WIDTH_LAYER, width);
+            }
         }
 
         /**
