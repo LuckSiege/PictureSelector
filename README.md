@@ -73,7 +73,7 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.1'
 *注意 .themeStyle(R.style.theme)；里面的参数不可删，否则闪退...
 
 PictureSelector.create(this)
- .themeStyle(themeId)
+ .themeStyle(R.style.picture_default_style)
  .isNotPreviewDownload(true)
  .loadImageEngine(GlideEngine.createGlideEngine())
  .openExternalPreview(position, selectList);
