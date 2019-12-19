@@ -145,6 +145,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             media.setId(lastIndexOf > 0 ? ValueOf.toLong(cameraPath.substring(lastIndexOf)) : -1);
             media.setAndroidQToPath(cutPath);
         } else {
+            // 拍照产生一个临时id
             media.setId(System.currentTimeMillis());
         }
         media.setCut(true);
@@ -181,7 +182,6 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         }
         long size = 0;
         int[] newSize = new int[2];
-        final File file = new File(cameraPath);
         if (!isAndroidQ) {
             if (config.isFallbackVersion3) {
                 new PictureMediaScannerConnection(getContext(), cameraPath,
@@ -189,7 +189,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
 
                         });
             } else {
-                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(cameraPath))));
             }
         }
         LocalMedia media = new LocalMedia();
@@ -197,9 +197,9 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             // 图片视频处理规则
             if (isAndroidQ) {
                 String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(cameraPath));
-                File f = new File(path);
-                size = f.length();
-                mimeType = PictureMimeType.fileToType(f);
+                File file = new File(path);
+                size = file.length();
+                mimeType = PictureMimeType.getMimeType(file);
                 if (PictureMimeType.eqImage(mimeType)) {
                     newSize = MediaUtils.getLocalImageSizeToAndroidQ(this, cameraPath);
                 } else {
@@ -209,8 +209,9 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 int lastIndexOf = cameraPath.lastIndexOf("/") + 1;
                 media.setId(lastIndexOf > 0 ? ValueOf.toLong(cameraPath.substring(lastIndexOf)) : -1);
             } else {
-                mimeType = PictureMimeType.fileToType(file);
-                size = new File(cameraPath).length();
+                final File file = new File(cameraPath);
+                mimeType = PictureMimeType.getMimeType(file);
+                size = file.length();
                 if (PictureMimeType.eqImage(mimeType)) {
                     int degree = PictureFileUtils.readPictureDegree(this, cameraPath);
                     PictureFileUtils.rotateImage(degree, cameraPath);
@@ -219,6 +220,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     newSize = MediaUtils.getLocalVideoSize(cameraPath);
                     duration = MediaUtils.extractDuration(getContext(), false, cameraPath);
                 }
+                // 拍照产生一个临时id
                 media.setId(System.currentTimeMillis());
             }
         }

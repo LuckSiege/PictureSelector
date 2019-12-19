@@ -14,11 +14,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.anim.OptAnimationLoader;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -60,7 +60,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.context = context;
         this.config = config;
         this.showCamera = config.isCamera;
-        this.animation = OptAnimationLoader.loadAnimation(context, R.anim.picture_anim_modal_in);
+        this.animation = AnimationUtils.loadAnimation(context, R.anim.picture_anim_modal_in);
     }
 
     public void setShowCamera(boolean showCamera) {

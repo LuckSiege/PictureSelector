@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -19,7 +20,6 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.luck.picture.lib.adapter.PictureSimpleFragmentAdapter;
-import com.luck.picture.lib.anim.OptAnimationLoader;
 import com.luck.picture.lib.broadcast.BroadcastAction;
 import com.luck.picture.lib.broadcast.BroadcastManager;
 import com.luck.picture.lib.config.PictureConfig;
@@ -83,7 +83,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         mHandler = new Handler();
         titleViewBg = findViewById(R.id.titleViewBg);
         screenWidth = ScreenUtils.getScreenWidth(this);
-        animation = OptAnimationLoader.loadAnimation(this, R.anim.picture_anim_modal_in);
+        animation = AnimationUtils.loadAnimation(this, R.anim.picture_anim_modal_in);
         picture_left_back = findViewById(R.id.picture_left_back);
         viewPager = findViewById(R.id.preview_pager);
         btnCheck = findViewById(R.id.btnCheck);

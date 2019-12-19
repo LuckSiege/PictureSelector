@@ -844,12 +844,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (config.chooseMode == PictureMimeType.ofAudio()) {
             mTvPicturePreview.setVisibility(View.GONE);
         } else {
-            boolean isVideo = PictureMimeType.eqVideo(mimeType);
-            boolean eqVideo = config.chooseMode == PictureConfig.TYPE_VIDEO;
-            mTvPicturePreview.setVisibility(isVideo || eqVideo ? View.GONE : View.VISIBLE);
-            mCbOriginal.setVisibility(isVideo || eqVideo ? View.GONE
+            boolean eqVideo = PictureMimeType.eqVideo(mimeType);
+            boolean ofVideo = config.chooseMode == PictureConfig.TYPE_VIDEO;
+            mTvPicturePreview.setVisibility(ofVideo || eqVideo ? View.GONE : View.VISIBLE);
+            mCbOriginal.setVisibility(ofVideo || eqVideo ? View.GONE
                     : config.isOriginalControl ? View.VISIBLE : View.GONE);
-            config.isCheckOriginalImage = isVideo || eqVideo ? false : config.isCheckOriginalImage;
+            config.isCheckOriginalImage = ofVideo || eqVideo ? false : config.isCheckOriginalImage;
             mCbOriginal.setChecked(config.isCheckOriginalImage);
         }
         boolean enable = selectImages.size() != 0;
@@ -1007,15 +1007,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
         long size = 0;
         int[] newSize = new int[2];
-        final File file = new File(cameraPath);
         if (!isAndroidQ) {
             if (config.isFallbackVersion3) {
                 new PictureMediaScannerConnection(getContext(), cameraPath,
                         () -> {
-
                         });
             } else {
-                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(cameraPath))));
             }
         }
         LocalMedia media = new LocalMedia();
@@ -1023,9 +1021,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             // 图片视频处理规则
             if (isAndroidQ) {
                 String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(cameraPath));
-                File f = new File(path);
-                size = f.length();
-                mimeType = PictureMimeType.fileToType(f);
+                File file = new File(path);
+                size = file.length();
+                mimeType = PictureMimeType.getMimeType(file);
                 if (PictureMimeType.eqImage(mimeType)) {
                     newSize = MediaUtils.getLocalImageSizeToAndroidQ(this, cameraPath);
                 } else {
@@ -1035,8 +1033,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 int lastIndexOf = cameraPath.lastIndexOf("/") + 1;
                 media.setId(lastIndexOf > 0 ? ValueOf.toLong(cameraPath.substring(lastIndexOf)) : -1);
             } else {
-                mimeType = PictureMimeType.fileToType(file);
-                size = new File(cameraPath).length();
+                File file = new File(cameraPath);
+                mimeType = PictureMimeType.getMimeType(file);
+                size = file.length();
                 if (PictureMimeType.eqImage(mimeType)) {
                     int degree = PictureFileUtils.readPictureDegree(this, cameraPath);
                     PictureFileUtils.rotateImage(degree, cameraPath);
@@ -1045,6 +1044,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     newSize = MediaUtils.getLocalVideoSize(cameraPath);
                     duration = MediaUtils.extractDuration(getContext(), false, cameraPath);
                 }
+                // 拍照产生一个临时id
                 media.setId(System.currentTimeMillis());
             }
         }
