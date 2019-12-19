@@ -56,7 +56,7 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.1'
  PictureSelector.create(this)
    .openCamera(PictureMimeType.ofImage())
    .loadImageEngine(GlideEngine.createGlideEngine())
-   .forResult(PictureConfig.CHOOSE_REQUEST);   
+   .forResult(PictureConfig.REQUEST_CAMERA);   
 ```
 
 ## 缓存清除
