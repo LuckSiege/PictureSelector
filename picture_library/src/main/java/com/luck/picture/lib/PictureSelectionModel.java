@@ -117,6 +117,16 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param isMultipleSkipCrop Whether multiple images can be skipped when cropping
+     * @return
+     */
+    public PictureSelectionModel isMultipleSkipCrop(boolean isMultipleSkipCrop) {
+        selectionConfig.isMultipleSkipCrop = isMultipleSkipCrop;
+        return this;
+    }
+
+
+    /**
      * @param enablePreviewAudio Do you want to ic_play audio ?
      * @return
      */

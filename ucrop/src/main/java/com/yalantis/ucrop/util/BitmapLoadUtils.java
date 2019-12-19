@@ -42,11 +42,12 @@ public class BitmapLoadUtils {
 
     public static void decodeBitmapInBackground(@NonNull Context context,
                                                 @NonNull Uri uri,
+                                                @Nullable Uri outputUri,
                                                 int requiredWidth,
                                                 int requiredHeight,
                                                 BitmapLoadShowCallback loadCallback) {
 
-        new BitmapLoadShowTask(context, uri, requiredWidth, requiredHeight, loadCallback).execute();
+        new BitmapLoadShowTask(context, uri, outputUri, requiredWidth, requiredHeight, loadCallback).execute();
     }
 
     public static Bitmap transformBitmap(@NonNull Bitmap bitmap, @NonNull Matrix transformMatrix) {

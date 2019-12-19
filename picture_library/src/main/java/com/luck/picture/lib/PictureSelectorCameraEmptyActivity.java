@@ -22,7 +22,6 @@ import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
 import com.yalantis.ucrop.UCrop;
-import com.yalantis.ucrop.UCropMulti;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -110,9 +109,6 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             switch (requestCode) {
                 case UCrop.REQUEST_CROP:
                     singleCropHandleResult(data);
-                    break;
-                case UCropMulti.REQUEST_MULTI_CROP:
-                    multiCropHandleResult(data);
                     break;
                 case PictureConfig.REQUEST_CAMERA:
                     requestCamera(data);

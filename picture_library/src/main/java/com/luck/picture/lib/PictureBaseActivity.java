@@ -15,7 +15,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -43,7 +42,6 @@ import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.yalantis.ucrop.UCrop;
-import com.yalantis.ucrop.UCropMulti;
 import com.yalantis.ucrop.model.CutInfo;
 
 import java.io.File;
@@ -359,7 +357,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
             for (int i = 0, j = size; i < j; i++) {
                 // 压缩成功后的地址
                 File file = files.get(i);
-                String path = file.getPath();
+                String path = file.getAbsolutePath();
                 LocalMedia image = images.get(i);
                 // 如果是网络图片则不压缩
                 boolean http = PictureMimeType.isHttp(path);
@@ -455,7 +453,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                 .withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y)
                 .withMaxResultSize(config.cropWidth, config.cropHeight)
                 .withOptions(options)
-                .startAnimation(this, config.windowAnimationStyle != null
+                .startAnimationActivity(this, config.windowAnimationStyle != null
                         ? config.windowAnimationStyle.activityCropEnterAnimation : 0);
     }
 
@@ -469,7 +467,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
             ToastUtils.s(this, getString(R.string.picture_not_crop_data));
             return;
         }
-        UCropMulti.Options options = new UCropMulti.Options();
+        UCrop.Options options = new UCrop.Options();
         int toolbarColor = 0, statusColor = 0, titleColor = 0;
         boolean isChangeStatusBarFontColor;
         if (config.cropStyle != null) {
@@ -523,6 +521,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         options.setShowCropGrid(config.showCropGrid);
         options.setScaleEnabled(config.scaleEnabled);
         options.setRotateEnabled(config.rotateEnabled);
+        options.isMultipleSkipCrop(config.isMultipleSkipCrop);
         options.setHideBottomControls(config.hideBottomControls);
         options.setCompressionQuality(config.cropCompressQuality);
         options.setCutListData(list);
@@ -540,11 +539,11 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         File file = new File(PictureFileUtils.getDiskCacheDir(this),
                 TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_")
                         + imgType : config.renameCropFileName);
-        UCropMulti.of(uri, Uri.fromFile(file))
+        UCrop.of(uri, Uri.fromFile(file))
                 .withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y)
                 .withMaxResultSize(config.cropWidth, config.cropHeight)
                 .withOptions(options)
-                .startAnimation(this, config.windowAnimationStyle != null
+                .startAnimationMultipleCropActivity(this, config.windowAnimationStyle != null
                         ? config.windowAnimationStyle.activityCropEnterAnimation : 0);
     }
 
@@ -872,37 +871,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
             PermissionChecker.requestPermissions(this,
                     new String[]{Manifest.permission.RECORD_AUDIO}, PictureConfig.APPLY_AUDIO_PERMISSIONS_CODE);
         }
-    }
-
-    /**
-     * 多张图片裁剪
-     *
-     * @param data
-     */
-    protected void multiCropHandleResult(Intent data) {
-        List<LocalMedia> medias = new ArrayList<>();
-        List<CutInfo> mCuts = UCropMulti.getOutput(data);
-        int size = mCuts.size();
-        boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
-        for (int i = 0; i < size; i++) {
-            CutInfo c = mCuts.get(i);
-            LocalMedia media = new LocalMedia();
-            media.setId(c.getId());
-            media.setCut(TextUtils.isEmpty(c.getCutPath()) ? false : true);
-            media.setPath(c.getPath());
-            media.setCutPath(c.getCutPath());
-            media.setMimeType(c.getMimeType());
-            media.setWidth(c.getImageWidth());
-            media.setHeight(c.getImageHeight());
-            media.setSize(new File(TextUtils.isEmpty(c.getCutPath())
-                    ? c.getPath() : c.getCutPath()).length());
-            media.setChooseModel(config.chooseMode);
-            if (isAndroidQ) {
-                media.setAndroidQToPath(c.getCutPath());
-            }
-            medias.add(media);
-        }
-        handlerResult(medias);
     }
 
     @Override

@@ -139,7 +139,13 @@ public final class PictureMimeType {
      * @return
      */
     public static boolean isHttp(String path) {
-        return !TextUtils.isEmpty(path) && (path.startsWith("http") || path.startsWith("https"));
+        if (TextUtils.isEmpty(path)) {
+            return false;
+        }
+        return path.startsWith("http")
+                || path.startsWith("https")
+                || path.startsWith("/http")
+                || path.startsWith("/https");
     }
 
     /**
@@ -180,6 +186,12 @@ public final class PictureMimeType {
         return getMimeType(oldMimeType) == getMimeType(newMimeType);
     }
 
+    /**
+     * 获取图片mimeType
+     *
+     * @param path
+     * @return
+     */
     public static String getImageMimeType(String path) {
         try {
             if (!TextUtils.isEmpty(path)) {

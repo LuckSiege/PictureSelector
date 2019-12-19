@@ -245,7 +245,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
                 LocalMedia media = images.get(position);
                 if (media != null) {
-                    mimeType = media.getMimeType();
                     final String path;
                     if (media.isCut() && !media.isCompressed()) {
                         // 裁剪过
@@ -256,6 +255,8 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     } else {
                         path = media.getPath();
                     }
+                    mimeType = PictureMimeType.isHttp(path) ?
+                            PictureMimeType.getImageMimeType(media.getPath()) : media.getMimeType();
                     boolean isGif = PictureMimeType.isGif(mimeType);
                     final boolean eqLongImg = MediaUtils.isLongImg(media);
                     imageView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);

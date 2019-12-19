@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.yalantis.ucrop.callback.BitmapLoadShowCallback;
 import com.yalantis.ucrop.model.CutInfo;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
@@ -83,10 +84,9 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
         } else {
             holder.iv_dot.setVisibility(View.INVISIBLE);
         }
-
-        Uri uri = isAndroidQ ? Uri.parse(path) : Uri.fromFile(new File(path));
+        Uri uri = isAndroidQ || FileUtils.isHttp(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
         holder.tvGif.setVisibility(FileUtils.isGif(photoInfo.getMimeType()) ? View.VISIBLE : View.GONE);
-        BitmapLoadUtils.decodeBitmapInBackground(context, uri, maxImageWidth,
+        BitmapLoadUtils.decodeBitmapInBackground(context, uri, photoInfo.getHttpOutUri(), maxImageWidth,
                 maxImageHeight,
                 new BitmapLoadShowCallback() {
 

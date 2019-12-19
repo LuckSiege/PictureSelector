@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                        animationStyle.activityPreviewEnterAnimation = R.anim.picture_anim_up_in;
 //                        animationStyle.activityPreviewExitAnimation = R.anim.picture_anim_down_out;
                         PictureSelector.create(MainActivity.this)
-                                .themeStyle(themeId) // xml设置主题
+                                .themeStyle(R.style.picture_default_style) // xml设置主题
                                 //.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
                                 //.setPictureWindowAnimationStyle(animationStyle)// 自定义页面启动动画
                                 .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)// 设置相册Activity方向，不设置默认使用系统
@@ -210,6 +210,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.querySpecifiedFormatSuffix(PictureMimeType.ofJPEG())// 查询指定后缀格式资源
                         .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
                         .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
+                        //.isMultipleSkipCrop(false)// 多图裁剪时是否支持跳过，默认支持
                         .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
                         //.imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg
                         .enableCrop(cb_crop.isChecked())// 是否裁剪
@@ -316,12 +317,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // 5.media.getAndroidQToPath();为Android Q版本特有返回的字段，此字段有值就用来做上传使用
                     // 如果同时开启裁剪和压缩，则取压缩路径为准因为是先裁剪后压缩
                     for (LocalMedia media : selectList) {
-                        Log.i(TAG, "压缩::" + media.getCompressPath());
-                        Log.i(TAG, "原图::" + media.getPath());
-                        Log.i(TAG, "裁剪::" + media.getCutPath());
-                        Log.i(TAG, "是否开启原图::" + media.isOriginal());
-                        Log.i(TAG, "原图路径::" + media.getOriginalPath());
-                        Log.i(TAG, "Android Q 特有Path::" + media.getAndroidQToPath());
+                        Log.i(TAG, "是否压缩:" + media.isCompressed());
+                        Log.i(TAG, "压缩:" + media.getCompressPath());
+                        Log.i(TAG, "原图:" + media.getPath());
+                        Log.i(TAG, "是否裁剪:" + media.isCut());
+                        Log.i(TAG, "裁剪:" + media.getCutPath());
+                        Log.i(TAG, "是否开启原图:" + media.isOriginal());
+                        Log.i(TAG, "原图路径:" + media.getOriginalPath());
+                        Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
                     }
                     adapter.setList(selectList);
                     adapter.notifyDataSetChanged();

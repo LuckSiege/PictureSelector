@@ -57,7 +57,6 @@ import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
 import com.luck.picture.lib.widget.FolderPopWindow;
 import com.yalantis.ucrop.UCrop;
-import com.yalantis.ucrop.UCropMulti;
 import com.yalantis.ucrop.model.CutInfo;
 
 import java.io.File;
@@ -487,7 +486,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_LIST, (ArrayList<? extends Parcelable>) selectedImages);
         bundle.putBoolean(PictureConfig.EXTRA_BOTTOM_PREVIEW, true);
         JumpUtils.startPicturePreviewActivity(getContext(), config.isWeChatStyle, bundle,
-                config.selectionMode == PictureConfig.SINGLE ? UCrop.REQUEST_CROP : UCropMulti.REQUEST_MULTI_CROP);
+                config.selectionMode == PictureConfig.SINGLE ? UCrop.REQUEST_CROP : UCrop.REQUEST_MULTI_CROP);
 
         overridePendingTransition(config.windowAnimationStyle != null
                         && config.windowAnimationStyle.activityPreviewEnterAnimation != 0
@@ -824,7 +823,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_LIST, (ArrayList<? extends Parcelable>) selectedImages);
             bundle.putInt(PictureConfig.EXTRA_POSITION, position);
             JumpUtils.startPicturePreviewActivity(getContext(), config.isWeChatStyle, bundle,
-                    config.selectionMode == PictureConfig.SINGLE ? UCrop.REQUEST_CROP : UCropMulti.REQUEST_MULTI_CROP);
+                    config.selectionMode == PictureConfig.SINGLE ? UCrop.REQUEST_CROP : UCrop.REQUEST_MULTI_CROP);
             overridePendingTransition(config.windowAnimationStyle != null
                     && config.windowAnimationStyle.activityPreviewEnterAnimation != 0
                     ? config.windowAnimationStyle.activityPreviewEnterAnimation : R.anim.picture_anim_enter, R.anim.picture_anim_fade_in);
@@ -928,7 +927,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 case UCrop.REQUEST_CROP:
                     singleCropHandleResult(data);
                     break;
-                case UCropMulti.REQUEST_MULTI_CROP:
+                case UCrop.REQUEST_MULTI_CROP:
                     multiCropHandleResult(data);
                     break;
                 case PictureConfig.REQUEST_CAMERA:
@@ -1141,6 +1140,55 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 medias.add(media);
                 handlerResult(medias);
             }
+        }
+    }
+
+    /**
+     * 多张图片裁剪
+     *
+     * @param data
+     */
+    protected void multiCropHandleResult(Intent data) {
+        List<CutInfo> mCuts = UCrop.getMultipleOutput(data);
+        int size = mCuts.size();
+        boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
+        int oldSize = mAdapter != null ? mAdapter.getSelectedImages().size() : 0;
+        if (oldSize == size) {
+            List<LocalMedia> result = mAdapter.getSelectedImages();
+            for (int i = 0; i < size; i++) {
+                CutInfo c = mCuts.get(i);
+                LocalMedia media = result.get(i);
+                media.setCut(TextUtils.isEmpty(c.getCutPath()) ? false : true);
+                media.setPath(c.getPath());
+                media.setMimeType(c.getMimeType());
+                media.setCutPath(c.getCutPath());
+                media.setWidth(c.getImageWidth());
+                media.setHeight(c.getImageHeight());
+                media.setSize(new File(TextUtils.isEmpty(c.getCutPath())
+                        ? c.getPath() : c.getCutPath()).length());
+                media.setAndroidQToPath(isAndroidQ ? c.getCutPath() : media.getAndroidQToPath());
+            }
+            handlerResult(result);
+        } else {
+            // 容错处理
+            List<LocalMedia> result = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                CutInfo c = mCuts.get(i);
+                LocalMedia media = new LocalMedia();
+                media.setId(c.getId());
+                media.setCut(TextUtils.isEmpty(c.getCutPath()) ? false : true);
+                media.setPath(c.getPath());
+                media.setCutPath(c.getCutPath());
+                media.setMimeType(c.getMimeType());
+                media.setWidth(c.getImageWidth());
+                media.setHeight(c.getImageHeight());
+                media.setSize(new File(TextUtils.isEmpty(c.getCutPath())
+                        ? c.getPath() : c.getCutPath()).length());
+                media.setChooseModel(config.chooseMode);
+                media.setAndroidQToPath(isAndroidQ ? c.getCutPath() : null);
+                result.add(media);
+            }
+            handlerResult(result);
         }
     }
 

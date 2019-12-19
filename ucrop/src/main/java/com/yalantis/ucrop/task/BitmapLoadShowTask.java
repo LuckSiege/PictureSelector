@@ -8,16 +8,24 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.yalantis.ucrop.callback.BitmapLoadShowCallback;
 import com.yalantis.ucrop.model.ExifInfo;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URL;
 
 /**
  * Creates and returns a Bitmap for a given Uri(String url).
@@ -32,7 +40,7 @@ public class BitmapLoadShowTask extends AsyncTask<Void, Void, BitmapLoadShowTask
     private Uri mInputUri;
     private final int mRequiredWidth;
     private final int mRequiredHeight;
-
+    private Uri mOutputUri;
     private final BitmapLoadShowCallback mBitmapLoadShowCallback;
 
     public static class BitmapWorkerResult {
@@ -53,11 +61,12 @@ public class BitmapLoadShowTask extends AsyncTask<Void, Void, BitmapLoadShowTask
     }
 
     public BitmapLoadShowTask(@NonNull Context context,
-                              @NonNull Uri inputUri,
+                              @NonNull Uri inputUri, @Nullable Uri outputUri,
                               int requiredWidth, int requiredHeight,
                               BitmapLoadShowCallback loadCallback) {
         mContext = context;
         mInputUri = inputUri;
+        mOutputUri = outputUri;
         mRequiredWidth = requiredWidth;
         mRequiredHeight = requiredHeight;
         mBitmapLoadShowCallback = loadCallback;
@@ -68,6 +77,18 @@ public class BitmapLoadShowTask extends AsyncTask<Void, Void, BitmapLoadShowTask
     protected BitmapWorkerResult doInBackground(Void... params) {
         if (mInputUri == null) {
             return new BitmapWorkerResult(new NullPointerException("Input Uri cannot be null"));
+        }
+
+        try {
+            if (mOutputUri != null && !TextUtils.isEmpty(mOutputUri.getPath())) {
+                if (!new File(mOutputUri.getPath()).exists()) {
+                    processInputUri();
+                } else {
+                    mInputUri = mOutputUri;
+                }
+            }
+        } catch (NullPointerException | IOException e) {
+            return new BitmapLoadShowTask.BitmapWorkerResult(e);
         }
 
         final ParcelFileDescriptor parcelFileDescriptor;
@@ -135,6 +156,47 @@ public class BitmapLoadShowTask extends AsyncTask<Void, Void, BitmapLoadShowTask
         return new BitmapWorkerResult(decodeSampledBitmap, exifInfo);
     }
 
+    private void processInputUri() throws NullPointerException, IOException {
+        String inputUriScheme = mInputUri.toString();
+        Log.d(TAG, "Uri scheme: " + inputUriScheme);
+        if (inputUriScheme.startsWith("http") || inputUriScheme.startsWith("https")) {
+            try {
+                downloadFile(mInputUri, mOutputUri);
+            } catch (NullPointerException | IOException e) {
+                Log.e(TAG, "Downloading failed", e);
+                throw e;
+            }
+        }
+    }
+
+    private void downloadFile(@NonNull Uri inputUri, @Nullable Uri outputUri) throws NullPointerException, IOException {
+        Log.d(TAG, "downloadFile");
+        if (outputUri == null) {
+            throw new NullPointerException("Output Uri is null - cannot download image");
+        }
+        try {
+            URL u = new URL(inputUri.toString());
+            byte[] buffer = new byte[1024];
+            int read;
+            BufferedInputStream bin;
+            bin = new BufferedInputStream(u.openStream());
+            OutputStream outputStream = mContext.getContentResolver().openOutputStream(outputUri);
+            BufferedOutputStream bout = new BufferedOutputStream(
+                    outputStream);
+            while ((read = bin.read(buffer)) > -1) {
+                bout.write(buffer, 0, read);
+            }
+            bout.flush();
+            bout.close();
+            bin.close();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+        mInputUri = mOutputUri;
+    }
 
     @Override
     protected void onPostExecute(@NonNull BitmapWorkerResult result) {

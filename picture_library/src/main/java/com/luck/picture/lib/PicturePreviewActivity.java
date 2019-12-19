@@ -32,10 +32,7 @@ import com.luck.picture.lib.tools.ValueOf;
 import com.luck.picture.lib.tools.VoiceUtils;
 import com.luck.picture.lib.widget.PreviewViewPager;
 import com.yalantis.ucrop.UCrop;
-import com.yalantis.ucrop.UCropMulti;
 import com.yalantis.ucrop.model.CutInfo;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -567,10 +564,11 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case UCropMulti.REQUEST_MULTI_CROP:
-                    List<CutInfo> list = UCropMulti.getOutput(data);
-                    setResult(RESULT_OK, new Intent().putExtra(UCropMulti.EXTRA_OUTPUT_URI_LIST,
-                            (Serializable) list));
+                case UCrop.REQUEST_MULTI_CROP:
+                    List<CutInfo> list = UCrop.getMultipleOutput(data);
+                    setResult(RESULT_OK, new Intent()
+                            .putParcelableArrayListExtra(UCrop.EXTRA_OUTPUT_URI_LIST,
+                                    (ArrayList<? extends Parcelable>) list));
                     finish();
                     break;
                 case UCrop.REQUEST_CROP:

@@ -60,6 +60,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public int compressQuality;
     public int filterFileSize;
     public int language;
+    public boolean isMultipleSkipCrop;
     public boolean isWeChatStyle;
     public boolean zoomAnim;
     public boolean isCompress;
@@ -171,6 +172,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isFallbackVersion3 = true;
         enableCrop = false;
         isWeChatStyle = false;
+        isMultipleSkipCrop = true;
         freeStyleCropEnabled = false;
         circleDimmedLayer = false;
         showCropFrame = true;
@@ -240,6 +242,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(this.circleDimmedColor);
         dest.writeInt(this.circleDimmedBorderColor);
         dest.writeInt(this.circleStrokeWidth);
+        dest.writeByte(this.isMultipleSkipCrop ? (byte) 1 : (byte) 0);
         dest.writeByte(this.camera ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isSingleDirectReturn ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.style, flags);
@@ -314,6 +317,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.chooseMode = in.readInt();
         this.camera = in.readByte() != 0;
         this.isSingleDirectReturn = in.readByte() != 0;
+        this.isMultipleSkipCrop = in.readByte() != 0;
         this.style = in.readParcelable(PictureParameterStyle.class.getClassLoader());
         this.cropStyle = in.readParcelable(PictureCropParameterStyle.class.getClassLoader());
         this.windowAnimationStyle = in.readParcelable(PictureWindowAnimationStyle.class.getClassLoader());

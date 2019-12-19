@@ -18,9 +18,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.yalantis.ucrop.model.AspectRatio;
+import com.yalantis.ucrop.model.CutInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -29,7 +31,7 @@ import java.util.Locale;
  * Builder class to ease Intent setup.
  */
 public class UCrop {
-
+    public static final int REQUEST_MULTI_CROP = 609;
     public static final int REQUEST_CROP = 69;
     public static final int RESULT_ERROR = 96;
 
@@ -43,7 +45,7 @@ public class UCrop {
     public static final String EXTRA_OUTPUT_OFFSET_X = EXTRA_PREFIX + ".OffsetX";
     public static final String EXTRA_OUTPUT_OFFSET_Y = EXTRA_PREFIX + ".OffsetY";
     public static final String EXTRA_ERROR = EXTRA_PREFIX + ".Error";
-
+    public static final String EXTRA_OUTPUT_URI_LIST = EXTRA_PREFIX + ".OutputUriList";
     public static final String EXTRA_ASPECT_RATIO_X = EXTRA_PREFIX + ".AspectRatioX";
     public static final String EXTRA_ASPECT_RATIO_Y = EXTRA_PREFIX + ".AspectRatioY";
 
@@ -119,11 +121,26 @@ public class UCrop {
      *
      * @param activity Activity to receive result
      */
-    public void startAnimation(@NonNull Activity activity, @AnimRes int activityCropEnterAnimation) {
+    public void startAnimationActivity(@NonNull Activity activity, @AnimRes int activityCropEnterAnimation) {
         if (activityCropEnterAnimation != 0) {
             start(activity, REQUEST_CROP, activityCropEnterAnimation);
         } else {
             start(activity, REQUEST_CROP);
+        }
+    }
+
+
+    /**
+     * Send the crop Intent from animation an Multiple Activity
+     *
+     * @param activity Activity to receive result
+     */
+    public void startAnimationMultipleCropActivity(@NonNull Activity activity,
+                                                   @AnimRes int activityCropEnterAnimation) {
+        if (activityCropEnterAnimation != 0) {
+            startMultiple(activity, REQUEST_MULTI_CROP, activityCropEnterAnimation);
+        } else {
+            startMultiple(activity, REQUEST_MULTI_CROP);
         }
     }
 
@@ -136,6 +153,36 @@ public class UCrop {
     public void start(@NonNull Activity activity, int requestCode, @AnimRes int activityCropEnterAnimation) {
         activity.startActivityForResult(getIntent(activity), requestCode);
         activity.overridePendingTransition(activityCropEnterAnimation, R.anim.ucrop_anim_fade_in);
+    }
+
+    /**
+     * Send the crop Intent from an Activity with a custom request code or animation
+     *
+     * @param activity    Activity to receive result
+     * @param requestCode requestCode for result
+     */
+    public void startMultiple(@NonNull Activity activity, int requestCode, @AnimRes int activityCropEnterAnimation) {
+        activity.startActivityForResult(getMultipleIntent(activity), requestCode);
+        activity.overridePendingTransition(activityCropEnterAnimation, R.anim.ucrop_anim_fade_in);
+    }
+
+    /**
+     * Send the crop Intent from an Activity
+     *
+     * @param activity Activity to receive result
+     */
+    public void startMultiple(@NonNull Activity activity) {
+        start(activity, REQUEST_MULTI_CROP);
+    }
+
+    /**
+     * Send the crop Intent from an Activity with a custom request code
+     *
+     * @param activity    Activity to receive result
+     * @param requestCode requestCode for result
+     */
+    public void startMultiple(@NonNull Activity activity, int requestCode) {
+        activity.startActivityForResult(getMultipleIntent(activity), requestCode);
     }
 
     /**
@@ -177,12 +224,42 @@ public class UCrop {
     }
 
     /**
+     * Send the crop Intent from a Fragment
+     *
+     * @param fragment Fragment to receive result
+     */
+    public void startMultiple(@NonNull Context context, @NonNull Fragment fragment) {
+        startMultiple(context, fragment, REQUEST_MULTI_CROP);
+    }
+
+    /**
+     * Send the crop Intent with a custom request code
+     *
+     * @param fragment    Fragment to receive result
+     * @param requestCode requestCode for result
+     */
+    public void startMultiple(@NonNull Context context, @NonNull Fragment fragment, int requestCode) {
+        fragment.startActivityForResult(getMultipleIntent(context), requestCode);
+    }
+
+    /**
      * Get Intent to start {@link UCropActivity}
      *
      * @return Intent for {@link UCropActivity}
      */
     public Intent getIntent(@NonNull Context context) {
         mCropIntent.setClass(context, UCropActivity.class);
+        mCropIntent.putExtras(mCropOptionsBundle);
+        return mCropIntent;
+    }
+
+    /**
+     * Get Intent to start {@link PictureMultiCuttingActivity}
+     *
+     * @return Intent for {@link PictureMultiCuttingActivity}
+     */
+    public Intent getMultipleIntent(@NonNull Context context) {
+        mCropIntent.setClass(context, PictureMultiCuttingActivity.class);
         mCropIntent.putExtras(mCropOptionsBundle);
         return mCropIntent;
     }
@@ -195,6 +272,16 @@ public class UCrop {
     @Nullable
     public static Uri getOutput(@NonNull Intent intent) {
         return intent.getParcelableExtra(EXTRA_OUTPUT_URI);
+    }
+
+    /**
+     * Multiple Retrieve cropped image Cuts from the result Intent
+     *
+     * @param intent crop result intent
+     */
+    @Nullable
+    public static List<CutInfo> getMultipleOutput(@NonNull Intent intent) {
+        return intent.getParcelableArrayListExtra(EXTRA_OUTPUT_URI_LIST);
     }
 
     /**
@@ -294,6 +381,7 @@ public class UCrop {
 
         public static final String EXTRA_ROTATE = EXTRA_PREFIX + ".rotate";
         public static final String EXTRA_SCALE = EXTRA_PREFIX + ".scale";
+        public static final String EXTRA_SKIP_MULTIPLE_CROP = EXTRA_PREFIX + ".skip_multiple_crop";
 
         public static final String EXTRA_DRAG_CROP_FRAME = EXTRA_PREFIX + ".DragCropFrame";
 
@@ -437,6 +525,15 @@ public class UCrop {
         }
 
         /**
+         * 多图裁剪时是否可以跳过裁剪
+         *
+         * @param isMultipleSkipCrop
+         */
+        public void isMultipleSkipCrop(boolean isMultipleSkipCrop) {
+            mOptionBundle.putBoolean(EXTRA_SKIP_MULTIPLE_CROP, isMultipleSkipCrop);
+        }
+
+        /**
          * @param count - crop grid rows count.
          */
         public void setCropGridRowCount(@IntRange(from = 0) int count) {
@@ -537,8 +634,8 @@ public class UCrop {
         /**
          * @param -set cuts path
          */
-        public void setCutListData(ArrayList<String> list) {
-            mOptionBundle.putStringArrayList(EXTRA_CUT_CROP, list);
+        public void setCutListData(ArrayList<CutInfo> list) {
+            mOptionBundle.putParcelableArrayList(EXTRA_CUT_CROP, list);
         }
 
         /**

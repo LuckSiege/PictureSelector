@@ -1,13 +1,15 @@
 package com.yalantis.ucrop.model;
 
-import java.io.Serializable;
+import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * @author：luck
  * @data：2017/05/30 晚上23:00
  * @描述: CutInfo
  */
-public class CutInfo implements Serializable {
+public class CutInfo implements Parcelable {
     /**
      * File ID
      */
@@ -51,6 +53,11 @@ public class CutInfo implements Serializable {
     private String mimeType;
 
     private float resultAspectRatio;
+
+    /**
+     * 网络图片下载临时存放位置
+     */
+    private Uri httpOutUri;
 
     public CutInfo() {
     }
@@ -147,4 +154,60 @@ public class CutInfo implements Serializable {
     public void setId(long id) {
         this.id = id;
     }
+
+    public Uri getHttpOutUri() {
+        return httpOutUri;
+    }
+
+    public void setHttpOutUri(Uri httpOutUri) {
+        this.httpOutUri = httpOutUri;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeString(this.path);
+        dest.writeString(this.cutPath);
+        dest.writeString(this.androidQToPath);
+        dest.writeInt(this.offsetX);
+        dest.writeInt(this.offsetY);
+        dest.writeInt(this.imageWidth);
+        dest.writeInt(this.imageHeight);
+        dest.writeByte(this.isCut ? (byte) 1 : (byte) 0);
+        dest.writeString(this.mimeType);
+        dest.writeFloat(this.resultAspectRatio);
+        dest.writeParcelable(this.httpOutUri, flags);
+    }
+
+    protected CutInfo(Parcel in) {
+        this.id = in.readLong();
+        this.path = in.readString();
+        this.cutPath = in.readString();
+        this.androidQToPath = in.readString();
+        this.offsetX = in.readInt();
+        this.offsetY = in.readInt();
+        this.imageWidth = in.readInt();
+        this.imageHeight = in.readInt();
+        this.isCut = in.readByte() != 0;
+        this.mimeType = in.readString();
+        this.resultAspectRatio = in.readFloat();
+        this.httpOutUri = in.readParcelable(Uri.class.getClassLoader());
+    }
+
+    public static final Creator<CutInfo> CREATOR = new Creator<CutInfo>() {
+        @Override
+        public CutInfo createFromParcel(Parcel source) {
+            return new CutInfo(source);
+        }
+
+        @Override
+        public CutInfo[] newArray(int size) {
+            return new CutInfo[size];
+        }
+    };
 }

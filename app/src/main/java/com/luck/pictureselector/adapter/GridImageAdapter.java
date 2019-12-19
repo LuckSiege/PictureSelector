@@ -18,19 +18,17 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DateUtils;
-import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.pictureselector.R;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
- * author：luck
- * project：PictureSelector
- * package：com.luck.pictureselector.adapter
- * email：893855882@qq.com
- * data：16/7/27
+ * @author：luck
+ * @date：2016-7-27 23:02
+ * @describe：GridImageAdapter
  */
 public class GridImageAdapter extends
         RecyclerView.Adapter<GridImageAdapter.ViewHolder> {
@@ -40,7 +38,6 @@ public class GridImageAdapter extends
     private LayoutInflater mInflater;
     private List<LocalMedia> list = new ArrayList<>();
     private int selectMax = 9;
-    private boolean isAndroidQ;
     /**
      * 点击添加图片跳转
      */
@@ -53,7 +50,6 @@ public class GridImageAdapter extends
     public GridImageAdapter(Context context, onAddPicClickListener mOnAddPicClickListener) {
         this.mInflater = LayoutInflater.from(context);
         this.mOnAddPicClickListener = mOnAddPicClickListener;
-        this.isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
     }
 
     public void setSelectMax(int selectMax) {
@@ -185,8 +181,9 @@ public class GridImageAdapter extends
             if (chooseModel == PictureMimeType.ofAudio()) {
                 viewHolder.mImg.setImageResource(R.drawable.picture_audio_placeholder);
             } else {
+
                 Glide.with(viewHolder.itemView.getContext())
-                        .load(isAndroidQ && !media.isCut() && !media.isCompressed() ? Uri.parse(path)
+                        .load(path.startsWith("content://") && !media.isCut() && !media.isCompressed() ? Uri.parse(path)
                                 : path)
                         .centerCrop()
                         .placeholder(R.color.app_color_f6)

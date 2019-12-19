@@ -169,7 +169,7 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
             }
             return true;
         } else {
-            if (isAndroidQ) {
+            if (isAndroidQ && mImageInputUri.toString().startsWith("content://")) {
                 ParcelFileDescriptor parcelFileDescriptor =
                         mContext.get().getContentResolver().openFileDescriptor(mImageInputUri, "r");
                 FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();

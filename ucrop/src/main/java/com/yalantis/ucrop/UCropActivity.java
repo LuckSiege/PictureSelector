@@ -230,10 +230,18 @@ public class UCropActivity extends AppCompatActivity {
 
         if (inputUri != null && outputUri != null) {
             try {
-                ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(inputUri, "r");
-                FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
-                String suffix = FileUtils.extSuffix(inputStream);
-                boolean isGif = FileUtils.isGifForSuffix(suffix);
+                boolean isHttp = FileUtils.isHttp(inputUri.toString());
+                boolean isGif;
+                if (isHttp) {
+                    // 网络图片
+                    String lastImgType = FileUtils.getLastImgType(inputUri.toString());
+                    isGif = FileUtils.isGifForSuffix(lastImgType);
+                } else {
+                    ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(inputUri, "r");
+                    FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
+                    String suffix = FileUtils.extSuffix(inputStream);
+                    isGif = FileUtils.isGifForSuffix(suffix);
+                }
                 mGestureCropImageView.setRotateEnabled(isGif ? false : rotateEnabled);
                 mGestureCropImageView.setScaleEnabled(isGif ? false : scaleEnabled);
                 mGestureCropImageView.setImageUri(inputUri, outputUri);
