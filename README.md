@@ -153,7 +153,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 |:-----------:|:--------:|:--------:|
 |![](image/picture_wechat_album_style.jpg) |![](image/picture_wechat_single_style_3.jpg) | ![](image/picture_circular_crop_style.jpg)| 
 
-| 视频 | 音频 |
-|:-----------:|:--------:|
-|![](image/picture_video.jpg) | ![](image/picture_audio.jpg)| 
+| 白色主题风格 | 视频 | 音频 |
+|:-----------:|:-----------:|:--------:|
+|![](image/picture_white_style.jpg) |![](image/picture_video.jpg) | ![](image/picture_audio.jpg)| 
 
