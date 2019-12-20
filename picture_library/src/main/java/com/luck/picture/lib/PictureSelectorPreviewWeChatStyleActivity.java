@@ -232,12 +232,5 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
             mRvGallery.setVisibility(View.GONE);
             bottomLine.setVisibility(View.GONE);
         }
-        updateSelector(isRefresh);
-    }
-
-    @Override
-    protected void updateSelector(boolean isRefresh) {
-        super.updateSelector(isRefresh);
-        // 调用父类的刷新方法，不可注释掉
     }
 }

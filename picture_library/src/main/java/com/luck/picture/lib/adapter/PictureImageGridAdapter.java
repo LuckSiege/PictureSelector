@@ -135,7 +135,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             if (config.checkNumMode) {
                 notifyCheckChanged(contentHolder, image);
             }
-            selectImage(contentHolder, isSelected(image), false);
+            if (!config.isSingleDirectReturn) {
+                selectImage(contentHolder, isSelected(image), false);
+            }
             boolean gif = PictureMimeType.isGif(mimeType);
             contentHolder.tvCheck.setVisibility(config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
             contentHolder.btnCheck.setVisibility(config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
@@ -147,7 +149,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             } else {
                 contentHolder.tvLongChart.setVisibility(View.GONE);
             }
-
             boolean eqVideo = PictureMimeType.eqVideo(mimeType);
             boolean eqAudio = PictureMimeType.eqAudio(mimeType);
             if (eqVideo || eqAudio) {

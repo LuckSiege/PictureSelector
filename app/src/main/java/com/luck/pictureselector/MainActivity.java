@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -45,13 +46,18 @@ import com.luck.pictureselector.adapter.GridImageAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author：luck
+ * @data：2019/12/20 晚上 23:12
+ * @描述: Demo
+ */
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
     private final static String TAG = MainActivity.class.getSimpleName();
     private List<LocalMedia> selectList = new ArrayList<>();
     private RecyclerView recyclerView;
-    private GridImageAdapter adapter;
+    private GridImageAdapter mAdapter;
     private int maxSelectNum = 9;
     private TextView tv_select_num;
     private TextView tv_original_tips;
@@ -73,6 +79,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            selectList = savedInstanceState.getParcelableArrayList("selectorList");
+        } else {
+            clearCache();
+        }
         setContentView(R.layout.activity_main);
         themeId = R.style.picture_default_style;
         getDefaultStyle();
@@ -121,17 +132,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setLayoutManager(manager);
         recyclerView.addItemDecoration(new GridSpacingItemNotBothDecoration(4,
                 ScreenUtils.dip2px(this, 8), true, false));
-        adapter = new GridImageAdapter(MainActivity.this, onAddPicClickListener);
-        adapter.setList(selectList);
-        adapter.setSelectMax(maxSelectNum);
-        recyclerView.setAdapter(adapter);
+        mAdapter = new GridImageAdapter(MainActivity.this, onAddPicClickListener);
+        mAdapter.setList(selectList);
+        mAdapter.setSelectMax(maxSelectNum);
+        recyclerView.setAdapter(mAdapter);
         cb_original.setOnCheckedChangeListener((buttonView, isChecked) ->
                 tv_original_tips.setVisibility(isChecked ? View.VISIBLE : View.GONE));
         cb_choose_mode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             cb_single_back.setVisibility(isChecked ? View.GONE : View.VISIBLE);
             cb_single_back.setChecked(isChecked ? false : cb_single_back.isChecked());
         });
-        adapter.setOnItemClickListener((position, v) -> {
+        mAdapter.setOnItemClickListener((position, v) -> {
             if (selectList.size() > 0) {
                 LocalMedia media = selectList.get(position);
                 String mimeType = media.getMimeType();
@@ -163,6 +174,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+
+        // 注册外部预览图片删除按钮回调
+        BroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
+                BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
+    }
+
+    private void clearCache() {
         // 清空图片缓存，包括裁剪、压缩后的图片 注意:必须要在上传完成后调用 必须要获取权限
         if (PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             //PictureFileUtils.deleteCacheDirFile(this, PictureMimeType.ofImage());
@@ -171,10 +189,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             PermissionChecker.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
         }
-
-        // 注册外部预览图片删除按钮回调
-        BroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
-                BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
     }
 
     private GridImageAdapter.onAddPicClickListener onAddPicClickListener = new GridImageAdapter.onAddPicClickListener() {
@@ -326,8 +340,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Log.i(TAG, "原图路径:" + media.getOriginalPath());
                         Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
                     }
-                    adapter.setList(selectList);
-                    adapter.notifyDataSetChanged();
+                    mAdapter.setList(selectList);
+                    mAdapter.notifyDataSetChanged();
                     break;
             }
         }
@@ -344,12 +358,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     maxSelectNum--;
                 }
                 tv_select_num.setText(maxSelectNum + "");
-                adapter.setSelectMax(maxSelectNum);
+                mAdapter.setSelectMax(maxSelectNum);
                 break;
             case R.id.plus:
                 maxSelectNum++;
                 tv_select_num.setText(maxSelectNum + "");
-                adapter.setSelectMax(maxSelectNum);
+                mAdapter.setSelectMax(maxSelectNum);
                 break;
         }
     }
@@ -948,6 +962,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mAdapter != null) {
+            outState.putParcelableArrayList("selectorList",
+                    (ArrayList<? extends Parcelable>) mAdapter.getList());
+        }
+    }
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -960,9 +982,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     extras = intent.getExtras();
                     int position = extras.getInt(PictureConfig.EXTRA_PREVIEW_DELETE_POSITION);
                     ToastUtils.s(context, "delete image index:" + position);
-                    if (position < adapter.getItemCount()) {
+                    if (position < mAdapter.getItemCount()) {
                         selectList.remove(position);
-                        adapter.notifyItemRemoved(position);
+                        mAdapter.notifyItemRemoved(position);
                     }
                     break;
             }

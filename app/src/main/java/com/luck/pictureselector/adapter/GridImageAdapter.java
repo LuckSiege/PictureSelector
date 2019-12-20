@@ -60,6 +60,10 @@ public class GridImageAdapter extends
         this.list = list;
     }
 
+    public List<LocalMedia> getList() {
+        return list == null ? new ArrayList<>() : list;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView mImg;

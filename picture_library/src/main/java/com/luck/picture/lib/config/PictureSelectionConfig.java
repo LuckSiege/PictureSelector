@@ -89,7 +89,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean synOrAsy;
     public boolean isDragFrame;
     public boolean isNotPreviewDownload;
-    public ImageEngine imageEngine;
+    public static ImageEngine imageEngine;
     public List<LocalMedia> selectionMedias;
     public String cameraFileName;
     public boolean isCheckOriginalImage;
@@ -122,6 +122,8 @@ public final class PictureSelectionConfig implements Parcelable {
     @Deprecated
     public String outputCameraPath;
 
+    public String originalPath;
+    public String cameraPath;
     /**
      * 内测专用###########
      */
@@ -212,6 +214,8 @@ public final class PictureSelectionConfig implements Parcelable {
         sizeMultiplier = 0.5f;
         overrideWidth = 0;
         overrideHeight = 0;
+        originalPath = "";
+        cameraPath = "";
     }
 
     public static PictureSelectionConfig getInstance() {
@@ -231,6 +235,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public PictureSelectionConfig() {
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -239,10 +244,6 @@ public final class PictureSelectionConfig implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.chooseMode);
-        dest.writeInt(this.circleDimmedColor);
-        dest.writeInt(this.circleDimmedBorderColor);
-        dest.writeInt(this.circleStrokeWidth);
-        dest.writeByte(this.isMultipleSkipCrop ? (byte) 1 : (byte) 0);
         dest.writeByte(this.camera ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isSingleDirectReturn ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.style, flags);
@@ -250,8 +251,13 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeParcelable(this.windowAnimationStyle, flags);
         dest.writeString(this.compressSavePath);
         dest.writeString(this.suffixType);
-        dest.writeString(this.cameraFileName);
+        dest.writeByte(this.focusAlpha ? (byte) 1 : (byte) 0);
+        dest.writeString(this.renameCompressFileName);
+        dest.writeString(this.renameCropFileName);
         dest.writeString(this.specifiedFormat);
+        dest.writeInt(this.requestedOrientation);
+        dest.writeByte(this.isCameraAroundState ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isAndroidQTransform ? (byte) 1 : (byte) 0);
         dest.writeInt(this.themeStyleId);
         dest.writeInt(this.selectionMode);
         dest.writeInt(this.maxSelectNum);
@@ -261,7 +267,6 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(this.cropCompressQuality);
         dest.writeInt(this.videoMaxSecond);
         dest.writeInt(this.videoMinSecond);
-        dest.writeInt(this.requestedOrientation);
         dest.writeInt(this.recordVideoSecond);
         dest.writeInt(this.minimumCompressSize);
         dest.writeInt(this.imageSpanCount);
@@ -272,10 +277,11 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(this.compressQuality);
         dest.writeInt(this.filterFileSize);
         dest.writeInt(this.language);
-        dest.writeByte(this.isCheckOriginalImage ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isMultipleSkipCrop ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isWeChatStyle ? (byte) 1 : (byte) 0);
         dest.writeByte(this.zoomAnim ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isCompress ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isCameraAroundState ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isOriginalControl ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isCamera ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isGif ? (byte) 1 : (byte) 0);
         dest.writeByte(this.enablePreview ? (byte) 1 : (byte) 0);
@@ -286,6 +292,9 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte(this.enableCrop ? (byte) 1 : (byte) 0);
         dest.writeByte(this.freeStyleCropEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(this.circleDimmedLayer ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.circleDimmedColor);
+        dest.writeInt(this.circleDimmedBorderColor);
+        dest.writeInt(this.circleStrokeWidth);
         dest.writeByte(this.showCropFrame ? (byte) 1 : (byte) 0);
         dest.writeByte(this.showCropGrid ? (byte) 1 : (byte) 0);
         dest.writeByte(this.hideBottomControls ? (byte) 1 : (byte) 0);
@@ -295,8 +304,9 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte(this.synOrAsy ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isDragFrame ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isNotPreviewDownload ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isFallbackVersion ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.selectionMedias);
+        dest.writeString(this.cameraFileName);
+        dest.writeByte(this.isCheckOriginalImage ? (byte) 1 : (byte) 0);
         dest.writeInt(this.overrideWidth);
         dest.writeInt(this.overrideHeight);
         dest.writeFloat(this.sizeMultiplier);
@@ -311,30 +321,35 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(this.upResId);
         dest.writeInt(this.downResId);
         dest.writeString(this.outputCameraPath);
+        dest.writeString(this.originalPath);
+        dest.writeString(this.cameraPath);
+        dest.writeByte(this.isFallbackVersion ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isFallbackVersion2 ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isFallbackVersion3 ? (byte) 1 : (byte) 0);
     }
 
     protected PictureSelectionConfig(Parcel in) {
         this.chooseMode = in.readInt();
         this.camera = in.readByte() != 0;
         this.isSingleDirectReturn = in.readByte() != 0;
-        this.isMultipleSkipCrop = in.readByte() != 0;
         this.style = in.readParcelable(PictureParameterStyle.class.getClassLoader());
         this.cropStyle = in.readParcelable(PictureCropParameterStyle.class.getClassLoader());
         this.windowAnimationStyle = in.readParcelable(PictureWindowAnimationStyle.class.getClassLoader());
         this.compressSavePath = in.readString();
         this.suffixType = in.readString();
-        this.cameraFileName = in.readString();
+        this.focusAlpha = in.readByte() != 0;
+        this.renameCompressFileName = in.readString();
+        this.renameCropFileName = in.readString();
         this.specifiedFormat = in.readString();
+        this.requestedOrientation = in.readInt();
+        this.isCameraAroundState = in.readByte() != 0;
+        this.isAndroidQTransform = in.readByte() != 0;
         this.themeStyleId = in.readInt();
-        this.circleDimmedBorderColor = in.readInt();
-        this.circleStrokeWidth = in.readInt();
-        this.circleDimmedColor = in.readInt();
         this.selectionMode = in.readInt();
         this.maxSelectNum = in.readInt();
         this.minSelectNum = in.readInt();
         this.maxVideoSelectNum = in.readInt();
         this.videoQuality = in.readInt();
-        this.requestedOrientation = in.readInt();
         this.cropCompressQuality = in.readInt();
         this.videoMaxSecond = in.readInt();
         this.videoMinSecond = in.readInt();
@@ -348,12 +363,13 @@ public final class PictureSelectionConfig implements Parcelable {
         this.compressQuality = in.readInt();
         this.filterFileSize = in.readInt();
         this.language = in.readInt();
+        this.isMultipleSkipCrop = in.readByte() != 0;
+        this.isWeChatStyle = in.readByte() != 0;
         this.zoomAnim = in.readByte() != 0;
         this.isCompress = in.readByte() != 0;
-        this.isCameraAroundState = in.readByte() != 0;
+        this.isOriginalControl = in.readByte() != 0;
         this.isCamera = in.readByte() != 0;
         this.isGif = in.readByte() != 0;
-        this.isCheckOriginalImage = in.readByte() != 0;
         this.enablePreview = in.readByte() != 0;
         this.enPreviewVideo = in.readByte() != 0;
         this.enablePreviewAudio = in.readByte() != 0;
@@ -362,6 +378,9 @@ public final class PictureSelectionConfig implements Parcelable {
         this.enableCrop = in.readByte() != 0;
         this.freeStyleCropEnabled = in.readByte() != 0;
         this.circleDimmedLayer = in.readByte() != 0;
+        this.circleDimmedColor = in.readInt();
+        this.circleDimmedBorderColor = in.readInt();
+        this.circleStrokeWidth = in.readInt();
         this.showCropFrame = in.readByte() != 0;
         this.showCropGrid = in.readByte() != 0;
         this.hideBottomControls = in.readByte() != 0;
@@ -371,8 +390,9 @@ public final class PictureSelectionConfig implements Parcelable {
         this.synOrAsy = in.readByte() != 0;
         this.isDragFrame = in.readByte() != 0;
         this.isNotPreviewDownload = in.readByte() != 0;
-        this.isFallbackVersion = in.readByte() != 0;
         this.selectionMedias = in.createTypedArrayList(LocalMedia.CREATOR);
+        this.cameraFileName = in.readString();
+        this.isCheckOriginalImage = in.readByte() != 0;
         this.overrideWidth = in.readInt();
         this.overrideHeight = in.readInt();
         this.sizeMultiplier = in.readFloat();
@@ -387,9 +407,14 @@ public final class PictureSelectionConfig implements Parcelable {
         this.upResId = in.readInt();
         this.downResId = in.readInt();
         this.outputCameraPath = in.readString();
+        this.originalPath = in.readString();
+        this.cameraPath = in.readString();
+        this.isFallbackVersion = in.readByte() != 0;
+        this.isFallbackVersion2 = in.readByte() != 0;
+        this.isFallbackVersion3 = in.readByte() != 0;
     }
 
-    public static final Creator<PictureSelectionConfig> CREATOR = new Creator<PictureSelectionConfig>() {
+    public static final Parcelable.Creator<PictureSelectionConfig> CREATOR = new Parcelable.Creator<PictureSelectionConfig>() {
         @Override
         public PictureSelectionConfig createFromParcel(Parcel source) {
             return new PictureSelectionConfig(source);

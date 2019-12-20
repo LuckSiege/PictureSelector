@@ -151,7 +151,7 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
                     Bundle bundle = new Bundle();
                     bundle.putString(PictureConfig.EXTRA_VIDEO_PATH, path);
                     intent.putExtras(bundle);
-                    JumpUtils.startPictureVideoPlayActivity(container.getContext(), bundle);
+                    JumpUtils.startPictureVideoPlayActivity(container.getContext(), bundle,PictureConfig.PREVIEW_VIDEO_CODE);
                 });
             }
             mCacheView.put(position, contentView);

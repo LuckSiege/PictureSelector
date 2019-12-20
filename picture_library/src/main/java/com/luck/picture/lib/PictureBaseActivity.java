@@ -21,8 +21,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.luck.picture.lib.broadcast.BroadcastAction;
-import com.luck.picture.lib.broadcast.BroadcastManager;
 import com.luck.picture.lib.compress.Luban;
 import com.luck.picture.lib.compress.OnCompressListener;
 import com.luck.picture.lib.config.PictureConfig;
@@ -60,13 +58,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     protected PictureSelectionConfig config;
     protected boolean openWhiteStatusBar, numComplete;
     protected int colorPrimary, colorPrimaryDark;
-    protected String cameraPath;
-    protected String originalPath;
     protected PictureLoadingDialog mLoadingDialog;
     protected List<LocalMedia> selectionMedias;
     protected Handler mHandler;
     protected View container;
-    protected boolean isPreviewLoading;
 
     /**
      * 是否使用沉浸式，子类复写该方法来确定是否采用沉浸式
@@ -123,8 +118,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     protected void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             config = savedInstanceState.getParcelable(PictureConfig.EXTRA_CONFIG);
-            cameraPath = savedInstanceState.getString(PictureConfig.EXTRA_BUNDLE_CAMERA_PATH);
-            originalPath = savedInstanceState.getString(PictureConfig.EXTRA_BUNDLE_ORIGINAL_PATH);
         } else {
             if (config == null) {
                 config = PictureSelectionConfig.getInstance();
@@ -237,8 +230,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(PictureConfig.EXTRA_BUNDLE_CAMERA_PATH, cameraPath);
-        outState.putString(PictureConfig.EXTRA_BUNDLE_ORIGINAL_PATH, originalPath);
         outState.putParcelable(PictureConfig.EXTRA_CONFIG, config);
     }
 
@@ -280,7 +271,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                 e.printStackTrace();
             }
         }
-        isPreviewLoading = false;
     }
 
 
@@ -304,8 +294,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                     mHandler.sendMessage(mHandler.obtainMessage(MSG_ASY_COMPRESSION_RESULT_SUCCESS,
                             new Object[]{result, files}));
                 } catch (Exception e) {
-                    BroadcastManager.getInstance(getApplicationContext())
-                            .action(BroadcastAction.ACTION_CLOSE_PREVIEW).broadcast();
                     onResult(result);
                     e.printStackTrace();
                 }
@@ -325,15 +313,11 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
 
                         @Override
                         public void onSuccess(List<LocalMedia> list) {
-                            BroadcastManager.getInstance(getApplicationContext())
-                                    .action(BroadcastAction.ACTION_CLOSE_PREVIEW).broadcast();
                             onResult(list);
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            BroadcastManager.getInstance(getApplicationContext())
-                                    .action(BroadcastAction.ACTION_CLOSE_PREVIEW).broadcast();
                             onResult(result);
                         }
                     }).launch();
@@ -369,8 +353,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                 }
             }
         }
-        BroadcastManager.getInstance(getApplicationContext())
-                .action(BroadcastAction.ACTION_CLOSE_PREVIEW).broadcast();
         onResult(images);
     }
 
@@ -612,9 +594,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     protected void onResult(List<LocalMedia> images) {
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         if (isAndroidQ && config.isAndroidQTransform) {
-            if (!config.isCompress) {
-                mHandler.postDelayed(() -> showPleaseDialog(), isPreviewLoading ? 30 : 0);
-            }
+            showPleaseDialog();
             onResultToAndroidAsy(images);
         } else {
             dismissDialog();
@@ -797,7 +777,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
             if (SdkVersionUtils.checkedAndroid_Q()) {
                 imageUri = MediaUtils.createImageUri(getApplicationContext());
                 if (imageUri != null) {
-                    cameraPath = imageUri.toString();
+                    config.cameraPath = imageUri.toString();
                 } else {
                     ToastUtils.s(getContext(), "open is camera error，the uri is empty ");
                     if (config.camera) {
@@ -810,7 +790,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                         : config.chooseMode;
                 File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(),
                         chooseMode, config.cameraFileName, config.suffixType);
-                cameraPath = cameraFile.getAbsolutePath();
+                config.cameraPath = cameraFile.getAbsolutePath();
                 imageUri = PictureFileUtils.parUri(this, cameraFile);
             }
             if (config.isCameraAroundState) {
@@ -832,7 +812,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
             if (SdkVersionUtils.checkedAndroid_Q()) {
                 imageUri = MediaUtils.createVideoUri(getApplicationContext());
                 if (imageUri != null) {
-                    cameraPath = imageUri.toString();
+                    config.cameraPath = imageUri.toString();
                 } else {
                     ToastUtils.s(getContext(), "open is camera error，the uri is empty ");
                     if (config.camera) {
@@ -845,7 +825,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                         PictureConfig.TYPE_ALL ? PictureConfig.TYPE_VIDEO : config.chooseMode;
                 File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(), chooseMode, config.cameraFileName,
                         config.suffixType);
-                cameraPath = cameraFile.getAbsolutePath();
+                config.cameraPath = cameraFile.getAbsolutePath();
                 imageUri = PictureFileUtils.parUri(this, cameraFile);
             }
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);

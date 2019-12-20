@@ -1,7 +1,5 @@
 package com.luck.picture.lib;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,13 +13,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.luck.picture.lib.adapter.PictureSimpleFragmentAdapter;
-import com.luck.picture.lib.broadcast.BroadcastAction;
-import com.luck.picture.lib.broadcast.BroadcastManager;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -33,6 +28,7 @@ import com.luck.picture.lib.tools.VoiceUtils;
 import com.luck.picture.lib.widget.PreviewViewPager;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.model.CutInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,17 +57,37 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     protected RelativeLayout selectBarLayout;
     protected CheckBox mCbOriginal;
     protected View titleViewBg;
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        BroadcastManager.getInstance(this).registerReceiver(commonBroadcastReceiver,
-                BroadcastAction.ACTION_CLOSE_PREVIEW);
-    }
+    /**
+     * 是否已完成选择
+     */
+    protected boolean isCompleteOrSelected;
+    /**
+     * 是否改变已选的数据
+     */
+    protected boolean isChangeSelectedData;
+    /**
+     * 是否走过onSaveInstanceState方法
+     */
+    protected boolean isOnSaveInstanceState;
 
     @Override
     public int getResourceId() {
         return R.layout.picture_preview;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            // 防止内存不足时activity被回收，导致图片未选中
+            selectImages = PictureSelector.obtainSelectorList(savedInstanceState);
+            isCompleteOrSelected = savedInstanceState.getBoolean(PictureConfig.EXTRA_COMPLETE_SELECTED, false);
+            isChangeSelectedData = savedInstanceState.getBoolean(PictureConfig.EXTRA_CHANGE_SELECTED_DATA, false);
+            onImageChecked(position);
+            onSelectNumChange(false);
+        } else {
+            isOnSaveInstanceState = false;
+        }
     }
 
     @Override
@@ -253,23 +269,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     }
 
     /**
-     * 单选图片
-     */
-    private void singleRadioMediaImage() {
-        LocalMedia media = selectImages != null && selectImages.size() > 0 ? selectImages.get(0) : null;
-        if (media != null) {
-            Bundle bundle = new Bundle();
-            bundle.putInt(PictureConfig.EXTRA_POSITION, media.getPosition());
-            bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_IMAGES_KEY, (ArrayList<? extends Parcelable>) selectImages);
-            BroadcastManager.getInstance(this)
-                    .action(BroadcastAction.ACTION_SELECTED_DATA)
-                    .extras(bundle)
-                    .broadcast();
-            selectImages.clear();
-        }
-    }
-
-    /**
      * 初始化ViewPage数据
      */
     private void initViewPageAdapterData() {
@@ -395,24 +394,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 }
             }
         }
-        updateSelector(refresh);
-    }
-
-    /**
-     * 更新图片列表选中效果
-     *
-     * @param isRefresh
-     */
-    protected void updateSelector(boolean isRefresh) {
-        if (isRefresh) {
-            Bundle bundle = new Bundle();
-            bundle.putInt(PictureConfig.EXTRA_POSITION, index);
-            bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_IMAGES_KEY, (ArrayList<? extends Parcelable>) selectImages);
-            BroadcastManager.getInstance(this)
-                    .action(BroadcastAction.ACTION_SELECTED_DATA)
-                    .extras(bundle)
-                    .broadcast();
-        }
     }
 
     @Override
@@ -439,6 +420,11 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     return;
                 }
             }
+            if (selectImages.size() >= config.maxSelectNum && !check.isSelected()) {
+                ToastUtils.s(getContext(), getString(R.string.picture_message_max_num, config.maxSelectNum));
+                check.setSelected(false);
+                return;
+            }
             // 刷新图片列表中图片状态
             boolean isChecked;
             if (!check.isSelected()) {
@@ -449,16 +435,12 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 isChecked = false;
                 check.setSelected(false);
             }
-            if (selectImages.size() >= config.maxSelectNum && isChecked) {
-                ToastUtils.s(getContext(), getString(R.string.picture_message_max_num, config.maxSelectNum));
-                check.setSelected(false);
-                return;
-            }
+            isChangeSelectedData = true;
             if (isChecked) {
                 VoiceUtils.playVoice(getContext(), config.openClickSound);
                 // 如果是单选，则清空已选中的并刷新列表(作单一选择)
                 if (config.selectionMode == PictureConfig.SINGLE) {
-                    singleRadioMediaImage();
+                    selectImages.clear();
                 }
                 selectImages.add(image);
                 onSelectedChange(true, image);
@@ -508,14 +490,18 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 return;
             }
         }
+        isCompleteOrSelected = true;
+        isChangeSelectedData = true;
         if (config.isCheckOriginalImage) {
-            onResult(selectImages);
+            onBackPressed();
             return;
         }
         if (config.enableCrop && PictureMimeType.eqImage(mimeType)) {
+            isCompleteOrSelected = false;
+            isCompleteOrSelected = false;
             if (config.selectionMode == PictureConfig.SINGLE) {
-                originalPath = image.getPath();
-                startCrop(originalPath);
+                config.originalPath = image.getPath();
+                startCrop(config.originalPath);
             } else {
                 // 是图片和选择压缩并且是多张，调用批量压缩
                 ArrayList<CutInfo> cuts = new ArrayList<>();
@@ -539,24 +525,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 startCrop(cuts);
             }
         } else {
-            onResult(selectImages);
-        }
-    }
-
-    @Override
-    public void onResult(List<LocalMedia> images) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_IMAGES_KEY,
-                (ArrayList<? extends Parcelable>) images);
-        BroadcastManager.getInstance(this)
-                .action(BroadcastAction.ACTION_PREVIEW_COMPRESSION)
-                .extras(bundle)
-                .broadcast();
-        if (!config.isCompress
-                || config.isCheckOriginalImage) {
             onBackPressed();
-        } else {
-            showPleaseDialog();
         }
     }
 
@@ -573,6 +542,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     break;
                 case UCrop.REQUEST_CROP:
                     if (data != null) {
+                        data.putParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST,
+                                (ArrayList<? extends Parcelable>) selectImages);
                         setResult(RESULT_OK, data);
                     }
                     finish();
@@ -587,6 +558,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
 
     @Override
     public void onBackPressed() {
+        updateResult();
         if (config.windowAnimationStyle != null
                 && config.windowAnimationStyle.activityPreviewExitAnimation != 0) {
             finish();
@@ -598,14 +570,32 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         }
     }
 
+    /**
+     * 更新选中数据
+     */
+    private void updateResult() {
+        if (isChangeSelectedData) {
+            setResult(RESULT_CANCELED, new Intent()
+                    .putExtra(PictureConfig.EXTRA_COMPLETE_SELECTED, isCompleteOrSelected)
+                    .putParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST,
+                            (ArrayList<? extends Parcelable>) selectImages));
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        isOnSaveInstanceState = true;
+        outState.putBoolean(PictureConfig.EXTRA_COMPLETE_SELECTED, isCompleteOrSelected);
+        outState.putBoolean(PictureConfig.EXTRA_CHANGE_SELECTED_DATA, isChangeSelectedData);
+        PictureSelector.saveSelectorList(outState, selectImages);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ImagesObservable.getInstance().clearPreviewMediaData();
-        if (commonBroadcastReceiver != null) {
-            BroadcastManager.getInstance(this).unregisterReceiver(commonBroadcastReceiver,
-                    BroadcastAction.ACTION_CLOSE_PREVIEW);
-            commonBroadcastReceiver = null;
+        if (!isOnSaveInstanceState) {
+            ImagesObservable.getInstance().clearPreviewMediaData();
         }
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
@@ -624,21 +614,4 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     public void onActivityBackPressed() {
         onBackPressed();
     }
-
-    private BroadcastReceiver commonBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            switch (action) {
-                case BroadcastAction.ACTION_CLOSE_PREVIEW:
-                    // 压缩完后关闭预览界面
-                    dismissDialog();
-                    mHandler.postDelayed(() -> onBackPressed(), 150);
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
-
 }

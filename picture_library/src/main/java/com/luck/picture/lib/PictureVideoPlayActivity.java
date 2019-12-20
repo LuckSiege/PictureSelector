@@ -2,6 +2,7 @@ package com.luck.picture.lib;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -14,8 +15,6 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.luck.picture.lib.broadcast.BroadcastAction;
-import com.luck.picture.lib.broadcast.BroadcastManager;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 
@@ -150,13 +149,9 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
         } else if (id == R.id.tv_confirm) {
             List<LocalMedia> result = new ArrayList<>();
             result.add(getIntent().getParcelableExtra(PictureConfig.EXTRA_MEDIA_KEY));
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_IMAGES_KEY,
-                    (ArrayList<? extends Parcelable>) result);
-            BroadcastManager.getInstance(this)
-                    .action(BroadcastAction.ACTION_PREVIEW_COMPRESSION)
-                    .extras(bundle)
-                    .broadcast();
+            setResult(RESULT_OK, new Intent()
+                    .putParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST,
+                            (ArrayList<? extends Parcelable>) result));
             onBackPressed();
         }
     }

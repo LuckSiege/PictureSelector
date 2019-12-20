@@ -15,18 +15,34 @@ import com.luck.picture.lib.PictureVideoPlayActivity;
  * @describe：Activity跳转
  */
 public class JumpUtils {
-    public static void startPictureVideoPlayActivity(Context context, Bundle bundle) {
+    /**
+     * 启动视频播放页面
+     *
+     * @param context
+     * @param bundle
+     */
+    public static void startPictureVideoPlayActivity(Context context, Bundle bundle, int requestCode) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Intent intent = new Intent();
             intent.setClass(context, PictureVideoPlayActivity.class);
             intent.putExtras(bundle);
             if (!(context instanceof Activity)) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            } else {
+                ((Activity) context).startActivityForResult(intent, requestCode);
             }
-            context.startActivity(intent);
         }
     }
 
+    /**
+     * 启动预览界面
+     *
+     * @param context
+     * @param isWeChatStyle
+     * @param bundle
+     * @param requestCode
+     */
     public static void startPicturePreviewActivity(Context context, boolean isWeChatStyle, Bundle bundle, int requestCode) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Intent intent = new Intent();
@@ -34,8 +50,10 @@ public class JumpUtils {
             intent.putExtras(bundle);
             if (!(context instanceof Activity)) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            } else {
+                ((Activity) context).startActivityForResult(intent, requestCode);
             }
-            ((Activity) context).startActivityForResult(intent, requestCode);
         }
     }
 }
