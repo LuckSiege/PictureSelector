@@ -159,9 +159,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             mTvPicturePreview.setVisibility(View.GONE);
             audioH = ScreenUtils.getScreenHeight(getContext())
                     + ScreenUtils.getStatusBarHeight(getContext());
-        } else {
-            mTvPicturePreview.setVisibility(config.chooseMode == PictureMimeType.ofVideo()
-                    ? View.GONE : View.VISIBLE);
         }
         mBottomLayout.setVisibility(config.selectionMode == PictureConfig.SINGLE
                 && config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
@@ -518,7 +515,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private void onComplete() {
         List<LocalMedia> result = mAdapter.getSelectedImages();
         LocalMedia image = result.size() > 0 ? result.get(0) : null;
-        String mimeType = image != null ? image.getMimeType() : PictureMimeType.MIME_TYPE_JPEG;
+        String mimeType = image != null ? image.getMimeType() : "";
         // 如果设置了图片最小选择数量，则判断是否满足条件
         int size = result.size();
         boolean eqImg = PictureMimeType.eqImage(mimeType);
@@ -973,13 +970,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected void changeImageNumber(List<LocalMedia> selectImages) {
         // 如果选择的视频没有预览功能
         String mimeType = selectImages.size() > 0
-                ? selectImages.get(0).getMimeType() : PictureMimeType.MIME_TYPE_JPEG;
+                ? selectImages.get(0).getMimeType() : "";
         if (config.chooseMode == PictureMimeType.ofAudio()) {
             mTvPicturePreview.setVisibility(View.GONE);
         } else {
             boolean eqVideo = PictureMimeType.eqVideo(mimeType);
             boolean ofVideo = config.chooseMode == PictureConfig.TYPE_VIDEO;
-            mTvPicturePreview.setVisibility(ofVideo || eqVideo ? View.GONE : View.VISIBLE);
             if (config.isOriginalControl) {
                 mCbOriginal.setVisibility(ofVideo || eqVideo ? View.GONE
                         : config.isOriginalControl ? View.VISIBLE : View.GONE);
@@ -1134,7 +1130,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     }
                 } else {
                     // 取出第1个判断是否是图片，视频和图片只能二选一，不必考虑图片和视频混合
-                    String mimeType = list.size() > 0 ? list.get(0).getMimeType() : PictureMimeType.MIME_TYPE_JPEG;
+                    String mimeType = list.size() > 0 ? list.get(0).getMimeType() : "";
                     if (config.isCompress && PictureMimeType.eqImage(mimeType)
                             && !config.isCheckOriginalImage) {
                         compressImage(list);
@@ -1272,7 +1268,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     // 如果是单选，则清空已选中的并刷新列表(作单一选择)
                     images.add(0, media);
                     List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
-                    mimeType = selectedImages.size() > 0 ? selectedImages.get(0).getMimeType() : PictureMimeType.MIME_TYPE_JPEG;
+                    mimeType = selectedImages.size() > 0 ? selectedImages.get(0).getMimeType() : "";
                     boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
                     // 类型相同或还没有选中才加进选中集合中
                     if (mimeTypeSame || selectedImages.size() == 0) {
@@ -1286,7 +1282,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 images.add(0, media);
                 List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
                 int count = selectedImages.size();
-                mimeType = count > 0 ? selectedImages.get(0).getMimeType() : PictureMimeType.MIME_TYPE_JPEG;
+                mimeType = count > 0 ? selectedImages.get(0).getMimeType() : "";
                 boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
                 if (config.isWithVideoImage) {
                     // 混选模式

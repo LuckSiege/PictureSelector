@@ -413,7 +413,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         if (images != null && images.size() > 0) {
             LocalMedia image = images.get(viewPager.getCurrentItem());
             String mimeType = selectImages.size() > 0 ?
-                    selectImages.get(0).getMimeType() : PictureMimeType.MIME_TYPE_JPEG;
+                    selectImages.get(0).getMimeType() : "";
             int currentSize = selectImages.size();
             if (config.isWithVideoImage) {
                 // 混选模式
@@ -513,7 +513,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         // 如果设置了图片最小选择数量，则判断是否满足条件
         int size = selectImages.size();
         LocalMedia image = selectImages.size() > 0 ? selectImages.get(0) : null;
-        String mimeType = image != null ? image.getMimeType() : PictureMimeType.MIME_TYPE_JPEG;
+        String mimeType = image != null ? image.getMimeType() : "";
         if (config.isWithVideoImage) {
             // 混选模式
             int videoSize = 0;
