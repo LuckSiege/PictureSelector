@@ -155,11 +155,16 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             }
         });
         // 原图
-        mCbOriginal.setChecked(config.isCheckOriginalImage);
-        mCbOriginal.setVisibility(config.isOriginalControl ? View.VISIBLE : View.GONE);
-        mCbOriginal.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            config.isCheckOriginalImage = isChecked;
-        });
+        if (config.isOriginalControl) {
+            boolean isCheckOriginal = getIntent()
+                    .getBooleanExtra(PictureConfig.EXTRA_CHANGE_ORIGINAL, config.isCheckOriginalImage);
+            mCbOriginal.setVisibility(View.VISIBLE);
+            config.isCheckOriginalImage = isCheckOriginal;
+            mCbOriginal.setChecked(config.isCheckOriginalImage);
+            mCbOriginal.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                config.isCheckOriginalImage = isChecked;
+            });
+        }
     }
 
     /**
@@ -569,12 +574,17 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      * 更新选中数据
      */
     private void updateResult() {
+        Intent intent = new Intent();
         if (isChangeSelectedData) {
-            setResult(RESULT_CANCELED, new Intent()
-                    .putExtra(PictureConfig.EXTRA_COMPLETE_SELECTED, isCompleteOrSelected)
-                    .putParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST,
-                            (ArrayList<? extends Parcelable>) selectImages));
+            intent.putExtra(PictureConfig.EXTRA_COMPLETE_SELECTED, isCompleteOrSelected);
+            intent.putParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST,
+                    (ArrayList<? extends Parcelable>) selectImages);
         }
+        // 把是否原图标识返回，主要用于开启了开发者选项不保留活动或内存不足时 原图选中状态没有全局同步问题
+        if (config.isOriginalControl) {
+            intent.putExtra(PictureConfig.EXTRA_CHANGE_ORIGINAL, config.isCheckOriginalImage);
+        }
+        setResult(RESULT_CANCELED, intent);
     }
 
     @Override

@@ -195,10 +195,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mAdapter.setOnPhotoSelectChangedListener(this);
         mPictureRecycler.setAdapter(mAdapter);
         // 原图
-        mCbOriginal.setVisibility(config.isOriginalControl ? View.VISIBLE : View.GONE);
-        mCbOriginal.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            config.isCheckOriginalImage = isChecked;
-        });
+        if (config.isOriginalControl) {
+            mCbOriginal.setVisibility(View.VISIBLE);
+            mCbOriginal.setChecked(config.isCheckOriginalImage);
+            mCbOriginal.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                config.isCheckOriginalImage = isChecked;
+            });
+        }
     }
 
     @Override
@@ -478,6 +481,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         bundle.putParcelableArrayList(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (ArrayList<? extends Parcelable>) medias);
         bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_LIST, (ArrayList<? extends Parcelable>) selectedImages);
         bundle.putBoolean(PictureConfig.EXTRA_BOTTOM_PREVIEW, true);
+        bundle.putBoolean(PictureConfig.EXTRA_CHANGE_ORIGINAL, config.isCheckOriginalImage);
         JumpUtils.startPicturePreviewActivity(getContext(), config.isWeChatStyle, bundle,
                 config.selectionMode == PictureConfig.SINGLE ? UCrop.REQUEST_CROP : UCrop.REQUEST_MULTI_CROP);
 
@@ -815,6 +819,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             ImagesObservable.getInstance().savePreviewMediaData(new ArrayList<>(previewImages));
             bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_LIST, (ArrayList<? extends Parcelable>) selectedImages);
             bundle.putInt(PictureConfig.EXTRA_POSITION, position);
+            bundle.putBoolean(PictureConfig.EXTRA_CHANGE_ORIGINAL, config.isCheckOriginalImage);
             JumpUtils.startPicturePreviewActivity(getContext(), config.isWeChatStyle, bundle,
                     config.selectionMode == PictureConfig.SINGLE ? UCrop.REQUEST_CROP : UCrop.REQUEST_MULTI_CROP);
             overridePendingTransition(config.windowAnimationStyle != null
@@ -955,6 +960,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private void previewCallback(Intent data) {
         if (data == null) {
             return;
+        }
+        if (config.isOriginalControl) {
+            boolean isCheckOriginal = data.getBooleanExtra(PictureConfig.EXTRA_CHANGE_ORIGINAL, config.isCheckOriginalImage);
+            config.isCheckOriginalImage = isCheckOriginal;
+            mCbOriginal.setChecked(config.isCheckOriginalImage);
         }
         // 在预览界面按返回键或已完成的处理逻辑
         List<LocalMedia> list = data.getParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST);

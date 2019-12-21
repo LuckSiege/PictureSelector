@@ -63,7 +63,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     protected Handler mHandler;
     protected View container;
     /**
-     * 是否走过onSaveInstanceState方法
+     * 是否走过onSaveInstanceState方法，用于内存不足情况
      */
     protected boolean isOnSaveInstanceState;
 
@@ -122,12 +122,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     protected void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             config = savedInstanceState.getParcelable(PictureConfig.EXTRA_CONFIG);
-            isOnSaveInstanceState = false;
         } else {
             if (config == null) {
                 config = PictureSelectionConfig.getInstance();
             }
-            isOnSaveInstanceState = false;
         }
         // 单独拍照不设置主题因为拍照界面已经设置了透明主题了
         if (!config.camera) {
@@ -152,6 +150,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         }
         initWidgets();
         initPictureSelectorStyle();
+        // 重置回收状态
+        isOnSaveInstanceState = false;
     }
 
     /**
