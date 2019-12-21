@@ -371,6 +371,30 @@ public class FileUtils {
     }
 
     /**
+     * 是否是视频
+     *
+     * @param mimeType
+     * @return
+     */
+    public final static String MIME_TYPE_PREFIX_VIDEO = "video";
+
+    public static boolean eqVideo(String mimeType) {
+        return mimeType != null && mimeType.startsWith(MIME_TYPE_PREFIX_VIDEO);
+    }
+
+    /**
+     * 是否是图片
+     *
+     * @param mimeType
+     * @return
+     */
+    public final static String MIME_TYPE_PREFIX_IMAGE = "image";
+
+    public static boolean eqImage(String mimeType) {
+        return mimeType != null && mimeType.startsWith(MIME_TYPE_PREFIX_IMAGE);
+    }
+
+    /**
      * 清空裁剪网络图时产生的临时文件
      */
     public static void deleteHttpCropTemporaryFile(File file) {

@@ -34,6 +34,18 @@
         android:layout_margin="3dp"
         android:scaleType="centerCrop" />
 
+    <ImageView
+        android:id="@+id/iv_video"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@id/iv_dot"
+        android:layout_margin="3dp"
+        android:background="@color/ucrop_color_ec"
+        android:scaleType="centerInside"
+        android:src="@drawable/ucrop_ic_default_video"
+        android:visibility="gone" />
+
+
     <TextView
         android:id="@+id/tv_gif"
         android:layout_width="wrap_content"

@@ -51,7 +51,7 @@ public class StringUtils {
      * @return
      */
     @SuppressLint("StringFormatMatches")
-    public static String getToastMsg(Context context, String mimeType, int maxSelectNum) {
+    public static String getMsg(Context context, String mimeType, int maxSelectNum) {
         if (PictureMimeType.eqVideo(mimeType)) {
             return context.getString(R.string.picture_message_video_max_num, maxSelectNum);
         } else if (PictureMimeType.eqAudio(mimeType)) {

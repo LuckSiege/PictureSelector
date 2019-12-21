@@ -2,6 +2,7 @@ package com.luck.picture.lib;
 
 import android.Manifest;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -37,6 +39,7 @@ import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.photoview.PhotoView;
 import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.DateUtils;
+import com.luck.picture.lib.tools.JumpUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
@@ -242,7 +245,8 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 final PhotoView imageView = contentView.findViewById(R.id.preview_image);
                 // 长图控件
                 final SubsamplingScaleImageView longImageView = contentView.findViewById(R.id.longImg);
-
+                // 视频播放按钮
+                ImageView ivPlay = contentView.findViewById(R.id.iv_play);
                 LocalMedia media = images.get(position);
                 if (media != null) {
                     final String path;
@@ -257,6 +261,8 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     }
                     mimeType = PictureMimeType.isHttp(path) ?
                             PictureMimeType.getImageMimeType(media.getPath()) : media.getMimeType();
+                    boolean eqVideo = PictureMimeType.eqVideo(mimeType);
+                    ivPlay.setVisibility(eqVideo ? View.VISIBLE : View.GONE);
                     boolean isGif = PictureMimeType.isGif(mimeType);
                     final boolean eqLongImg = MediaUtils.isLongImg(media);
                     imageView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
@@ -314,6 +320,13 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                             }
                         }
                         return true;
+                    });
+                    ivPlay.setOnClickListener(v -> {
+                        Intent intent = new Intent();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(PictureConfig.EXTRA_VIDEO_PATH, path);
+                        intent.putExtras(bundle);
+                        JumpUtils.startPictureVideoPlayActivity(container.getContext(), bundle, PictureConfig.PREVIEW_VIDEO_CODE);
                     });
                 }
                 mCacheView.put(position, contentView);

@@ -516,30 +516,141 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     private void onComplete() {
-        List<LocalMedia> images = mAdapter.getSelectedImages();
-        LocalMedia image = images.size() > 0 ? images.get(0) : null;
-        String mimeType = image != null ? image.getMimeType() : "";
+        List<LocalMedia> result = mAdapter.getSelectedImages();
+        LocalMedia image = result.size() > 0 ? result.get(0) : null;
+        String mimeType = image != null ? image.getMimeType() : PictureMimeType.MIME_TYPE_JPEG;
         // 如果设置了图片最小选择数量，则判断是否满足条件
-        int size = images.size();
+        int size = result.size();
         boolean eqImg = PictureMimeType.eqImage(mimeType);
-        if (config.minSelectNum > 0 && config.selectionMode == PictureConfig.MULTIPLE) {
-            if (size < config.minSelectNum) {
-                String str = eqImg ? getString(R.string.picture_min_img_num, config.minSelectNum)
-                        : getString(R.string.picture_min_video_num, config.minSelectNum);
-                ToastUtils.s(getContext(), str);
-                return;
+        if (config.isWithVideoImage) {
+            // 混选模式
+            int videoSize = 0;
+            int imageSize = 0;
+            for (int i = 0; i < size; i++) {
+                LocalMedia media = result.get(i);
+                if (PictureMimeType.eqVideo(media.getMimeType())) {
+                    videoSize++;
+                } else {
+                    imageSize++;
+                }
+            }
+            if (config.selectionMode == PictureConfig.MULTIPLE) {
+                if (config.minSelectNum > 0) {
+                    if (imageSize < config.minSelectNum) {
+                        ToastUtils.s(getContext(), getString(R.string.picture_min_img_num, config.minSelectNum));
+                        return;
+                    }
+                }
+                if (config.minVideoSelectNum > 0) {
+                    if (videoSize < config.minVideoSelectNum) {
+                        ToastUtils.s(getContext(), getString(R.string.picture_min_video_num, config.minVideoSelectNum));
+                        return;
+                    }
+                }
+            }
+        } else {
+            if (config.minSelectNum > 0 && config.selectionMode == PictureConfig.MULTIPLE) {
+                if (size < config.minSelectNum) {
+                    String str = eqImg ? getString(R.string.picture_min_img_num, config.minSelectNum)
+                            : getString(R.string.picture_min_video_num, config.minSelectNum);
+                    ToastUtils.s(getContext(), str);
+                    return;
+                }
             }
         }
         if (config.isCheckOriginalImage) {
-            onResult(images);
+            onResult(result);
             return;
         }
+        if (config.chooseMode == PictureMimeType.ofAll() && config.isWithVideoImage) {
+            // 视频和图片可以同选
+            bothMimeTypeWith(eqImg, result);
+        } else {
+            // 单一类型
+            separateMimeTypeWith(eqImg, result);
+        }
+    }
+
+    /**
+     * 两者不同类型的处理方式
+     *
+     * @param eqImg
+     * @param images
+     */
+    private void bothMimeTypeWith(boolean eqImg, List<LocalMedia> images) {
+        LocalMedia image = images.size() > 0 ? images.get(0) : null;
+        if (config.enableCrop) {
+            if (config.selectionMode == PictureConfig.SINGLE && eqImg) {
+                config.originalPath = image.getPath();
+                startCrop(config.originalPath);
+            } else {
+                // 是图片和选择压缩并且是多张，调用批量压缩
+                ArrayList<CutInfo> cuts = new ArrayList<>();
+                int count = images.size();
+                int imageNum = 0;
+                for (int i = 0; i < count; i++) {
+                    LocalMedia media = images.get(i);
+                    if (media == null
+                            || TextUtils.isEmpty(media.getPath())) {
+                        continue;
+                    }
+                    boolean eqImage = PictureMimeType.eqImage(media.getMimeType());
+                    if (eqImage) {
+                        imageNum++;
+                    }
+                    CutInfo cutInfo = new CutInfo();
+                    cutInfo.setId(media.getId());
+                    cutInfo.setPath(media.getPath());
+                    cutInfo.setImageWidth(media.getWidth());
+                    cutInfo.setImageHeight(media.getHeight());
+                    cutInfo.setMimeType(media.getMimeType());
+                    cutInfo.setDuration(media.getDuration());
+                    cuts.add(cutInfo);
+                }
+                if (imageNum <= 0) {
+                    // 全是视频
+                    onResult(images);
+                } else {
+                    // 图片和视频共存
+                    startCrop(cuts);
+                }
+            }
+        } else if (config.isCompress) {
+            int size = images.size();
+            int imageNum = 0;
+            for (int i = 0; i < size; i++) {
+                LocalMedia media = images.get(i);
+                boolean eqImage = PictureMimeType.eqImage(media.getMimeType());
+                if (eqImage) {
+                    imageNum++;
+                    break;
+                }
+            }
+            if (imageNum <= 0) {
+                // 全是视频不压缩
+                onResult(images);
+            } else {
+                // 图片才压缩
+                compressImage(images);
+            }
+        } else {
+            onResult(images);
+        }
+    }
+
+    /**
+     * 同一类型的图片或视频处理逻辑
+     *
+     * @param eqImg
+     * @param images
+     */
+    private void separateMimeTypeWith(boolean eqImg, List<LocalMedia> images) {
+        LocalMedia image = images.size() > 0 ? images.get(0) : null;
         if (config.enableCrop && eqImg) {
             if (config.selectionMode == PictureConfig.SINGLE) {
                 config.originalPath = image.getPath();
                 startCrop(config.originalPath);
             } else {
-
                 // 是图片和选择压缩并且是多张，调用批量压缩
                 ArrayList<CutInfo> cuts = new ArrayList<>();
                 int count = images.size();
@@ -555,6 +666,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     cutInfo.setImageWidth(media.getWidth());
                     cutInfo.setImageHeight(media.getHeight());
                     cutInfo.setMimeType(media.getMimeType());
+                    cutInfo.setDuration(media.getDuration());
                     cuts.add(cutInfo);
                 }
                 startCrop(cuts);
@@ -861,7 +973,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected void changeImageNumber(List<LocalMedia> selectImages) {
         // 如果选择的视频没有预览功能
         String mimeType = selectImages.size() > 0
-                ? selectImages.get(0).getMimeType() : "";
+                ? selectImages.get(0).getMimeType() : PictureMimeType.MIME_TYPE_JPEG;
         if (config.chooseMode == PictureMimeType.ofAudio()) {
             mTvPicturePreview.setVisibility(View.GONE);
         } else {
@@ -912,7 +1024,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 isStartAnimation = false;
             }
         } else {
-            mTvPictureOk.setEnabled(false);
+            mTvPictureOk.setEnabled(config.returnEmpty);
             mTvPictureOk.setSelected(false);
             mTvPicturePreview.setEnabled(false);
             mTvPicturePreview.setSelected(false);
@@ -998,13 +1110,37 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             // 判断预览界面是点击已完成按钮还是仅仅是勾选图片
             boolean isCompleteOrSelected = data.getBooleanExtra(PictureConfig.EXTRA_COMPLETE_SELECTED, false);
             if (isCompleteOrSelected) {
-                // 取出第1个判断是否是图片，视频和图片只能二选一，不必考虑图片和视频混合
-                String mimeType = list.get(0).getMimeType();
-                if (config.isCompress && PictureMimeType.eqImage(mimeType)
-                        && !config.isCheckOriginalImage) {
-                    compressImage(list);
+                if (config.isWithVideoImage) {
+                    // 混选模式
+                    int size = list.size();
+                    int imageSize = 0;
+                    for (int i = 0; i < size; i++) {
+                        LocalMedia media = list.get(i);
+                        if (PictureMimeType.eqImage(media.getMimeType())) {
+                            imageSize++;
+                            break;
+                        }
+                    }
+                    if (imageSize <= 0) {
+                        // 全是视频
+                        onResult(list);
+                    } else {
+                        // 去压缩
+                        if (config.isCompress && !config.isCheckOriginalImage) {
+                            compressImage(list);
+                        } else {
+                            onResult(list);
+                        }
+                    }
                 } else {
-                    onResult(list);
+                    // 取出第1个判断是否是图片，视频和图片只能二选一，不必考虑图片和视频混合
+                    String mimeType = list.size() > 0 ? list.get(0).getMimeType() : PictureMimeType.MIME_TYPE_JPEG;
+                    if (config.isCompress && PictureMimeType.eqImage(mimeType)
+                            && !config.isCheckOriginalImage) {
+                        compressImage(list);
+                    } else {
+                        onResult(list);
+                    }
                 }
             } else {
                 // 预览界面只勾选了图片处理逻辑
@@ -1129,14 +1265,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         media.setChooseModel(config.chooseMode);
         if (mAdapter != null) {
             if (config.selectionMode == PictureConfig.SINGLE) {
-                // 单选模式
+                // 单选模式下直接返回模式
                 if (config.isSingleDirectReturn) {
                     cameraHandleResult(media, mimeType);
                 } else {
                     // 如果是单选，则清空已选中的并刷新列表(作单一选择)
                     images.add(0, media);
                     List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
-                    mimeType = selectedImages.size() > 0 ? selectedImages.get(0).getMimeType() : "";
+                    mimeType = selectedImages.size() > 0 ? selectedImages.get(0).getMimeType() : PictureMimeType.MIME_TYPE_JPEG;
                     boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
                     // 类型相同或还没有选中才加进选中集合中
                     if (mimeTypeSame || selectedImages.size() == 0) {
@@ -1150,34 +1286,68 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 images.add(0, media);
                 List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
                 int count = selectedImages.size();
-                mimeType = count > 0 ? selectedImages.get(0).getMimeType() : "";
+                mimeType = count > 0 ? selectedImages.get(0).getMimeType() : PictureMimeType.MIME_TYPE_JPEG;
                 boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
-                if (PictureMimeType.eqVideo(mimeType) && config.maxVideoSelectNum > 0) {
-                    // 类型相同或还没有选中才加进选中集合中
-                    if (count < config.maxVideoSelectNum) {
-                        if (mimeTypeSame || count == 0) {
-                            if (selectedImages.size() < config.maxVideoSelectNum) {
-                                selectedImages.add(media);
-                                mAdapter.bindSelectImages(selectedImages);
-                            }
+                if (config.isWithVideoImage) {
+                    // 混选模式
+                    int videoSize = 0;
+                    int imageSize = 0;
+                    for (int i = 0; i < count; i++) {
+                        LocalMedia m = selectedImages.get(i);
+                        if (PictureMimeType.eqVideo(m.getMimeType())) {
+                            videoSize++;
+                        } else {
+                            imageSize++;
                         }
-                    } else {
-                        ToastUtils.s(this, StringUtils.getToastMsg(this, mimeType,
-                                config.maxVideoSelectNum));
                     }
-                } else {
-                    // 没有到最大选择量 才做默认选中刚拍好的
-                    if (count < config.maxSelectNum) {
-                        // 类型相同或还没有选中才加进选中集合中
-                        if (mimeTypeSame || count == 0) {
-                            if (count < config.maxSelectNum) {
-                                selectedImages.add(media);
-                                mAdapter.bindSelectImages(selectedImages);
-                            }
+                    if (PictureMimeType.eqVideo(media.getMimeType()) && config.maxVideoSelectNum > 0) {
+                        // 视频还可选
+                        if (videoSize < config.maxVideoSelectNum) {
+                            selectedImages.add(media);
+                            mAdapter.bindSelectImages(selectedImages);
+                        } else {
+                            ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), media.getMimeType(),
+                                    config.maxVideoSelectNum));
                         }
                     } else {
-                        ToastUtils.s(this, StringUtils.getToastMsg(this, mimeType,
-                                config.maxSelectNum));
+                        // 图片还可选
+                        if (imageSize < config.maxSelectNum) {
+                            selectedImages.add(media);
+                            mAdapter.bindSelectImages(selectedImages);
+                        } else {
+                            ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), media.getMimeType(),
+                                    config.maxSelectNum));
+                        }
+                    }
+
+                } else {
+                    if (PictureMimeType.eqVideo(mimeType) && config.maxVideoSelectNum > 0) {
+                        // 类型相同或还没有选中才加进选中集合中
+                        if (count < config.maxVideoSelectNum) {
+                            if (mimeTypeSame || count == 0) {
+                                if (selectedImages.size() < config.maxVideoSelectNum) {
+                                    selectedImages.add(media);
+                                    mAdapter.bindSelectImages(selectedImages);
+                                }
+                            }
+                        } else {
+                            ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), mimeType,
+                                    config.maxVideoSelectNum));
+                        }
+                    } else {
+                        // 没有到最大选择量 才做默认选中刚拍好的
+                        if (count < config.maxSelectNum) {
+                            // 类型相同或还没有选中才加进选中集合中
+                            if (mimeTypeSame || count == 0) {
+                                if (count < config.maxSelectNum) {
+                                    selectedImages.add(media);
+                                    mAdapter.bindSelectImages(selectedImages);
+                                }
+                            }
+                        } else {
+                            ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), mimeType,
+                                    config.maxSelectNum));
+                        }
                     }
                 }
             }
@@ -1278,6 +1448,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 media.setMimeType(c.getMimeType());
                 media.setWidth(c.getImageWidth());
                 media.setHeight(c.getImageHeight());
+                media.setDuration(c.getDuration());
                 media.setSize(new File(TextUtils.isEmpty(c.getCutPath())
                         ? c.getPath() : c.getCutPath()).length());
                 media.setChooseModel(config.chooseMode);
@@ -1295,7 +1466,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         List<LocalMedia> selectImages = mAdapter.getSelectedImages();
         if (selectImages != null
                 && selectImages.size() > 0) {
+            LocalMedia media = selectImages.get(0);
+            int position = media.getPosition();
             selectImages.clear();
+            mAdapter.notifyItemChanged(position);
         }
     }
 

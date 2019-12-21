@@ -46,6 +46,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public int maxSelectNum;
     public int minSelectNum;
     public int maxVideoSelectNum;
+    public int minVideoSelectNum;
     public int videoQuality;
     public int cropCompressQuality;
     public int videoMaxSecond;
@@ -87,8 +88,10 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean scaleEnabled;
     public boolean previewEggs;
     public boolean synOrAsy;
+    public boolean returnEmpty;
     public boolean isDragFrame;
     public boolean isNotPreviewDownload;
+    public boolean isWithVideoImage;
     public static ImageEngine imageEngine;
     public List<LocalMedia> selectionMedias;
     public String cameraFileName;
@@ -137,7 +140,8 @@ public final class PictureSelectionConfig implements Parcelable {
         themeStyleId = R.style.picture_default_style;
         selectionMode = PictureConfig.MULTIPLE;
         maxSelectNum = 9;
-        maxVideoSelectNum = 0;
+        maxVideoSelectNum = maxSelectNum;
+        minVideoSelectNum = minSelectNum;
         minSelectNum = 0;
         videoQuality = 1;
         language = -1;
@@ -157,6 +161,7 @@ public final class PictureSelectionConfig implements Parcelable {
         cropHeight = 0;
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
         isCameraAroundState = false;
+        isWithVideoImage = false;
         isAndroidQTransform = true;
         isCamera = true;
         isGif = false;
@@ -183,6 +188,7 @@ public final class PictureSelectionConfig implements Parcelable {
         rotateEnabled = true;
         scaleEnabled = true;
         previewEggs = false;
+        returnEmpty = false;
         synOrAsy = true;
         zoomAnim = true;
         circleDimmedColor = 0;
@@ -263,6 +269,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(this.maxSelectNum);
         dest.writeInt(this.minSelectNum);
         dest.writeInt(this.maxVideoSelectNum);
+        dest.writeInt(this.minVideoSelectNum);
         dest.writeInt(this.videoQuality);
         dest.writeInt(this.cropCompressQuality);
         dest.writeInt(this.videoMaxSecond);
@@ -302,8 +309,10 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte(this.scaleEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(this.previewEggs ? (byte) 1 : (byte) 0);
         dest.writeByte(this.synOrAsy ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.returnEmpty ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isDragFrame ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isNotPreviewDownload ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isWithVideoImage ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.selectionMedias);
         dest.writeString(this.cameraFileName);
         dest.writeByte(this.isCheckOriginalImage ? (byte) 1 : (byte) 0);
@@ -349,6 +358,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.maxSelectNum = in.readInt();
         this.minSelectNum = in.readInt();
         this.maxVideoSelectNum = in.readInt();
+        this.minVideoSelectNum = in.readInt();
         this.videoQuality = in.readInt();
         this.cropCompressQuality = in.readInt();
         this.videoMaxSecond = in.readInt();
@@ -388,8 +398,10 @@ public final class PictureSelectionConfig implements Parcelable {
         this.scaleEnabled = in.readByte() != 0;
         this.previewEggs = in.readByte() != 0;
         this.synOrAsy = in.readByte() != 0;
+        this.returnEmpty = in.readByte() != 0;
         this.isDragFrame = in.readByte() != 0;
         this.isNotPreviewDownload = in.readByte() != 0;
+        this.isWithVideoImage = in.readByte() != 0;
         this.selectionMedias = in.createTypedArrayList(LocalMedia.CREATOR);
         this.cameraFileName = in.readString();
         this.isCheckOriginalImage = in.readByte() != 0;
@@ -414,7 +426,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.isFallbackVersion3 = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<PictureSelectionConfig> CREATOR = new Parcelable.Creator<PictureSelectionConfig>() {
+    public static final Creator<PictureSelectionConfig> CREATOR = new Creator<PictureSelectionConfig>() {
         @Override
         public PictureSelectionConfig createFromParcel(Parcel source) {
             return new PictureSelectionConfig(source);

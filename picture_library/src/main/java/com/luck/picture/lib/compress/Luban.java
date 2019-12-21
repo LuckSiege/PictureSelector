@@ -139,14 +139,16 @@ public class Luban implements Handler.Callback {
                         result = exists ? new File(path.getMedia().getCompressPath())
                                 : compress(context, path);
                     } else {
-                        result = compress(context, path);
+                        result = PictureMimeType.eqVideo(path.getMedia().getMimeType())
+                                ? new File(path.getPath()) : compress(context, path);
                     }
                     if (mediaList != null && mediaList.size() > 0) {
                         LocalMedia media = mediaList.get(index);
                         String newPath = result.getAbsolutePath();
                         boolean eqHttp = PictureMimeType.isHttp(newPath);
-                        media.setCompressed(eqHttp ? false : true);
-                        media.setCompressPath(eqHttp ? "" : result.getAbsolutePath());
+                        boolean eqVideo = PictureMimeType.eqVideo(media.getMimeType());
+                        media.setCompressed(eqHttp || eqVideo ? false : true);
+                        media.setCompressPath(eqHttp || eqVideo ? "" : result.getAbsolutePath());
                         boolean isLast = index == mediaList.size() - 1;
                         if (isLast) {
                             mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_SUCCESS, mediaList));
@@ -188,7 +190,8 @@ public class Luban implements Handler.Callback {
                         : compress(context, provider);
                 results.add(oldFile);
             } else {
-                results.add(compress(context, provider));
+                results.add(PictureMimeType.eqVideo(provider.getMedia().getMimeType())
+                        ? new File(provider.getMedia().getPath()) : compress(context, provider));
             }
             iterator.remove();
         }

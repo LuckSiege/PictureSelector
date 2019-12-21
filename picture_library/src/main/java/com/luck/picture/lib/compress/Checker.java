@@ -152,7 +152,11 @@ enum Checker {
 
     String extSuffix(String mimeType) {
         try {
-            return TextUtils.isEmpty(mimeType) ? "" : mimeType.replace("image/", ".");
+            if (TextUtils.isEmpty(mimeType)) {
+                return JPG;
+            }
+            return mimeType.startsWith("video") ? mimeType.replace("video/", ".")
+                    : mimeType.replace("image/", ".");
         } catch (Exception e) {
             return JPG;
         }

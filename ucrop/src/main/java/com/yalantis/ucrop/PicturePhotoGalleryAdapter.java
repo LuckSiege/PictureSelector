@@ -84,32 +84,40 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
         } else {
             holder.iv_dot.setVisibility(View.INVISIBLE);
         }
-        Uri uri = isAndroidQ || FileUtils.isHttp(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
-        holder.tvGif.setVisibility(FileUtils.isGif(photoInfo.getMimeType()) ? View.VISIBLE : View.GONE);
-        BitmapLoadUtils.decodeBitmapInBackground(context, uri, photoInfo.getHttpOutUri(), maxImageWidth,
-                maxImageHeight,
-                new BitmapLoadShowCallback() {
+        boolean eqVideo = FileUtils.eqVideo(photoInfo.getMimeType());
+        if (eqVideo) {
+            holder.mIvPhoto.setVisibility(View.GONE);
+            holder.mIvVideo.setVisibility(View.VISIBLE);
+            holder.mIvVideo.setImageResource(R.drawable.ucrop_ic_default_video);
+        } else {
+            holder.mIvPhoto.setVisibility(View.VISIBLE);
+            holder.mIvVideo.setVisibility(View.GONE);
+            Uri uri = isAndroidQ || FileUtils.isHttp(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
+            holder.tvGif.setVisibility(FileUtils.isGif(photoInfo.getMimeType()) ? View.VISIBLE : View.GONE);
+            BitmapLoadUtils.decodeBitmapInBackground(context, uri, photoInfo.getHttpOutUri(), maxImageWidth,
+                    maxImageHeight,
+                    new BitmapLoadShowCallback() {
 
-                    @Override
-                    public void onBitmapLoaded(@NonNull Bitmap bitmap) {
-                        if (holder.mIvPhoto != null) {
-                            holder.mIvPhoto.setImageBitmap(bitmap);
+                        @Override
+                        public void onBitmapLoaded(@NonNull Bitmap bitmap) {
+                            if (holder.mIvPhoto != null) {
+                                holder.mIvPhoto.setImageBitmap(bitmap);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(@NonNull Exception bitmapWorkerException) {
-                        if (holder.mIvPhoto != null) {
-                            holder.mIvPhoto.setImageResource(R.color.ucrop_color_ba3);
+                        @Override
+                        public void onFailure(@NonNull Exception bitmapWorkerException) {
+                            if (holder.mIvPhoto != null) {
+                                holder.mIvPhoto.setImageResource(R.color.ucrop_color_ba3);
+                            }
                         }
-                    }
-                });
-
-        holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onItemClick(holder.getAdapterPosition(), v);
-            }
-        });
+                    });
+            holder.itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onItemClick(holder.getAdapterPosition(), v);
+                }
+            });
+        }
     }
 
 
@@ -122,11 +130,13 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView mIvPhoto;
         ImageView iv_dot;
+        ImageView mIvVideo;
         TextView tvGif;
 
         public ViewHolder(View view) {
             super(view);
             mIvPhoto = view.findViewById(R.id.iv_photo);
+            mIvVideo = view.findViewById(R.id.iv_video);
             iv_dot = view.findViewById(R.id.iv_dot);
             tvGif = view.findViewById(R.id.tv_gif);
         }

@@ -344,6 +344,8 @@ public class UCrop {
         public static final String EXTRA_CIRCLE_DIMMED_LAYER = EXTRA_PREFIX + ".CircleDimmedLayer";
         public static final String EXTRA_CIRCLE_STROKE_WIDTH_LAYER = EXTRA_PREFIX + ".CircleStrokeWidth";
 
+        public static final String EXTRA_WITH_VIDEO_IMAGE = EXTRA_PREFIX + ".isWithVideoImage";
+
         public static final String EXTRA_SHOW_CROP_FRAME = EXTRA_PREFIX + ".ShowCropFrame";
         public static final String EXTRA_CROP_FRAME_COLOR = EXTRA_PREFIX + ".CropFrameColor";
         public static final String EXTRA_CROP_FRAME_STROKE_WIDTH = EXTRA_PREFIX + ".CropFrameStrokeWidth";
@@ -473,6 +475,14 @@ public class UCrop {
                 mOptionBundle.putInt(EXTRA_CIRCLE_STROKE_WIDTH_LAYER, width);
             }
         }
+
+        /**
+         * @param isWithVideoImage Whether pictures and videos can coexist
+         */
+        public void isWithVideoImage(boolean isWithVideoImage) {
+            mOptionBundle.putBoolean(EXTRA_WITH_VIDEO_IMAGE, isWithVideoImage);
+        }
+
 
         /**
          * @param isCircle - set it to true if you want dimmed layer to have an circle inside

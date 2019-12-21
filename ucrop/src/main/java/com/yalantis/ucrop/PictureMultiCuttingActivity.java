@@ -131,7 +131,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
      * 图片是否可拖动或旋转
      */
     private boolean scaleEnabled, rotateEnabled, openWhiteStatusBar;
-
+    private boolean isWithVideoImage;
     private int cutIndex;
 
     private int oldCutIndex;
@@ -187,6 +187,9 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
             return;
         }
         int size = list.size();
+        if (isWithVideoImage) {
+            getIndex(size);
+        }
         for (int i = 0; i < size; i++) {
             CutInfo cutInfo = list.get(i);
             boolean isHttp = FileUtils.isHttp(cutInfo.getPath());
@@ -205,6 +208,21 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
             String mimeType = FileUtils.getImageMimeType(path);
             cutInfo.setMimeType(mimeType);
             cutInfo.setHttpOutUri(Uri.fromFile(newFile));
+        }
+    }
+
+    /**
+     * 获取图片index
+     *
+     * @param size
+     */
+    private void getIndex(int size) {
+        for (int i = 0; i < size; i++) {
+            CutInfo cutInfo = list.get(i);
+            if (cutInfo != null && FileUtils.eqImage(cutInfo.getMimeType())) {
+                cutIndex = i;
+                break;
+            }
         }
     }
 
@@ -233,6 +251,10 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
         if (isMultipleSkipCrop) {
             mAdapter.setOnItemClickListener((position, view) -> {
+                CutInfo cutInfo = list.get(position);
+                if (FileUtils.eqVideo(cutInfo.getMimeType())) {
+                    return;
+                }
                 if (cutIndex == position) {
                     return;
                 }
@@ -444,6 +466,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
 
     private void getIntentData(@NonNull Intent intent) {
         openWhiteStatusBar = intent.getBooleanExtra(UCrop.Options.EXTRA_UCROP_WIDGET_CROP_OPEN_WHITE_STATUSBAR, false);
+        isWithVideoImage = intent.getBooleanExtra(UCrop.Options.EXTRA_WITH_VIDEO_IMAGE, false);
         mStatusBarColor = intent.getIntExtra(UCrop.Options.EXTRA_STATUS_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_statusbar));
         mToolbarColor = intent.getIntExtra(UCrop.Options.EXTRA_TOOL_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_toolbar));
         if (mToolbarColor == 0) {
@@ -821,6 +844,25 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
             info.setImageHeight(imageHeight);
             resetLastCropStatus();
             cutIndex++;
+            if (isWithVideoImage) {
+                if (cutIndex < list.size() && FileUtils.eqVideo(list.get(cutIndex).getMimeType())) {
+                    // 一个死循环找到了图片为终止条件，这里不需要考虑全是视频的问题，因为在启动裁剪时就已经判断好了
+                    while (true) {
+                        if (cutIndex >= list.size()) {
+                            // 最后一条了也跳出循环
+                            break;
+                        }
+                        String newMimeType = list.get(cutIndex).getMimeType();
+                        if (FileUtils.eqImage(newMimeType)) {
+                            // 命中图片跳出循环
+                            break;
+                        } else {
+                            // 如果下一个是视频则继续找图片
+                            cutIndex++;
+                        }
+                    }
+                }
+            }
             oldCutIndex = cutIndex;
             if (cutIndex >= list.size()) {
                 setResult(RESULT_OK, new Intent()

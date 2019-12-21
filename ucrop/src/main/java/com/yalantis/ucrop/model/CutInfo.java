@@ -55,6 +55,11 @@ public class CutInfo implements Parcelable {
     private float resultAspectRatio;
 
     /**
+     * 视频时长
+     */
+    private long duration;
+
+    /**
      * 网络图片下载临时存放位置
      */
     private Uri httpOutUri;
@@ -163,6 +168,15 @@ public class CutInfo implements Parcelable {
         this.httpOutUri = httpOutUri;
     }
 
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -181,6 +195,7 @@ public class CutInfo implements Parcelable {
         dest.writeByte(this.isCut ? (byte) 1 : (byte) 0);
         dest.writeString(this.mimeType);
         dest.writeFloat(this.resultAspectRatio);
+        dest.writeLong(this.duration);
         dest.writeParcelable(this.httpOutUri, flags);
     }
 
@@ -196,6 +211,7 @@ public class CutInfo implements Parcelable {
         this.isCut = in.readByte() != 0;
         this.mimeType = in.readString();
         this.resultAspectRatio = in.readFloat();
+        this.duration = in.readLong();
         this.httpOutUri = in.readParcelable(Uri.class.getClassLoader());
     }
 

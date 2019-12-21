@@ -95,6 +95,8 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel selectionMode(int selectionMode) {
         selectionConfig.selectionMode = selectionMode;
+        selectionConfig.isWithVideoImage = selectionMode == PictureConfig.SINGLE
+                ? false : selectionConfig.isWithVideoImage;
         return this;
     }
 
@@ -238,6 +240,16 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param isWithVideoImage Whether the pictures and videos can be selected together
+     * @return
+     */
+    public PictureSelectionModel isWithVideoImage(boolean isWithVideoImage) {
+        selectionConfig.isWithVideoImage =
+                selectionConfig.selectionMode == PictureConfig.SINGLE ? false : isWithVideoImage;
+        return this;
+    }
+
+    /**
      * @param maxSelectNum PictureSelector max selection
      * @return
      */
@@ -263,6 +275,16 @@ public class PictureSelectionModel {
         selectionConfig.maxVideoSelectNum = maxVideoSelectNum;
         return this;
     }
+
+    /**
+     * @param minVideoSelectNum PictureSelector video min selection
+     * @return
+     */
+    public PictureSelectionModel minVideoSelectNum(int minVideoSelectNum) {
+        selectionConfig.minVideoSelectNum = minVideoSelectNum;
+        return this;
+    }
+
 
     /**
      * @param Select whether to return directly
@@ -415,6 +437,15 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel compressQuality(int compressQuality) {
         selectionConfig.compressQuality = compressQuality;
+        return this;
+    }
+
+    /**
+     * @param returnEmpty No data can be returned
+     * @return
+     */
+    public PictureSelectionModel isReturnEmpty(boolean returnEmpty) {
+        selectionConfig.returnEmpty = returnEmpty;
         return this;
     }
 

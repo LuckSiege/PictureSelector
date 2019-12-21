@@ -206,10 +206,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
                         .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
                         .setPictureWindowAnimationStyle(windowAnimationStyle)// 自定义相册启动退出动画
+                        .isWithVideoImage(true)// 图片和视频是否可以同选
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
-                        .minSelectNum(1)// 最小选择数量
-                        //.maxVideoSelectNum(1) // 视频最大选择数量，如果没有单独设置的需求则可以不设置同用maxSelectNum字段
+                        //.minSelectNum(1)// 最小选择数量
+                        //.minVideoSelectNum(1)// 视频最小选择数量，如果没有单独设置的需求则可以不设置，同用minSelectNum字段
+                        .maxVideoSelectNum(5) // 视频最大选择数量，如果没有单独设置的需求则可以不设置，同用maxSelectNum字段
                         .imageSpanCount(4)// 每行显示个数
+                        .isReturnEmpty(false)// 未选择数据时点击按钮是否可以返回
                         //.isAndroidQTransform(false)// 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && enableCrop(false);有效,默认处理
                         .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)// 设置相册Activity方向，不设置默认使用系统
                         .isOriginalImageControl(cb_original.isChecked())// 是否显示原图控制按钮，如果设置为true则用户可以自由选择是否使用原图，压缩、裁剪功能将会失效

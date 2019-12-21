@@ -298,23 +298,48 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         boolean isChecked = contentHolder.tvCheck.isSelected();
         int size = selectImages.size();
         String mimeType = size > 0 ? selectImages.get(0).getMimeType() : "";
-        if (!TextUtils.isEmpty(mimeType)) {
-            boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, image.getMimeType());
-            if (!mimeTypeSame) {
-                ToastUtils.s(context, context.getString(R.string.picture_rule));
+
+        if (config.isWithVideoImage) {
+            // 混选模式
+            int videoSize = 0;
+            int imageSize = 0;
+            for (int i = 0; i < size; i++) {
+                LocalMedia media = selectImages.get(i);
+                if (PictureMimeType.eqVideo(media.getMimeType())) {
+                    videoSize++;
+                } else {
+                    imageSize++;
+                }
+            }
+            if (PictureMimeType.eqVideo(image.getMimeType()) && config.maxVideoSelectNum > 0
+                    && videoSize >= config.maxVideoSelectNum && !isChecked) {
+                // 如果选择的是视频
+                ToastUtils.s(context, StringUtils.getMsg(context, image.getMimeType(), config.maxVideoSelectNum));
                 return;
             }
-        }
-
-        if (PictureMimeType.eqVideo(mimeType) && config.maxVideoSelectNum > 0
-                && size >= config.maxVideoSelectNum && !isChecked) {
-            // 如果先选择的是视频
-            ToastUtils.s(context, StringUtils.getToastMsg(context, mimeType, config.maxVideoSelectNum));
-            return;
-        } else {
-            if (size >= config.maxSelectNum && !isChecked) {
-                ToastUtils.s(context, StringUtils.getToastMsg(context, mimeType, config.maxSelectNum));
+            if (PictureMimeType.eqImage(image.getMimeType()) && imageSize >= config.maxSelectNum && !isChecked) {
+                ToastUtils.s(context, StringUtils.getMsg(context, image.getMimeType(), config.maxSelectNum));
                 return;
+            }
+        } else {
+            // 非混选模式
+            if (!TextUtils.isEmpty(mimeType)) {
+                boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, image.getMimeType());
+                if (!mimeTypeSame) {
+                    ToastUtils.s(context, context.getString(R.string.picture_rule));
+                    return;
+                }
+            }
+            if (PictureMimeType.eqVideo(mimeType) && config.maxVideoSelectNum > 0
+                    && size >= config.maxVideoSelectNum && !isChecked) {
+                // 如果先选择的是视频
+                ToastUtils.s(context, StringUtils.getMsg(context, mimeType, config.maxVideoSelectNum));
+                return;
+            } else {
+                if (size >= config.maxSelectNum && !isChecked) {
+                    ToastUtils.s(context, StringUtils.getMsg(context, mimeType, config.maxSelectNum));
+                    return;
+                }
             }
         }
 

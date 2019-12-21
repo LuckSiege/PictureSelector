@@ -353,8 +353,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                 // 如果是网络图片则不压缩
                 boolean http = PictureMimeType.isHttp(path);
                 boolean flag = !TextUtils.isEmpty(path) && http;
-                image.setCompressed(flag ? false : true);
-                image.setCompressPath(flag ? "" : path);
+                boolean eqVideo = PictureMimeType.eqVideo(image.getMimeType());
+                image.setCompressed(eqVideo || flag ? false : true);
+                image.setCompressPath(eqVideo || flag ? "" : path);
                 if (isAndroidQ) {
                     image.setAndroidQToPath(path);
                 }
@@ -514,11 +515,29 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         options.setHideBottomControls(config.hideBottomControls);
         options.setCompressionQuality(config.cropCompressQuality);
         options.setCutListData(list);
+        options.isWithVideoImage(config.isWithVideoImage);
         options.setFreeStyleCropEnabled(config.freeStyleCropEnabled);
         options.setCropExitAnimation(config.windowAnimationStyle != null
                 ? config.windowAnimationStyle.activityCropExitAnimation : 0);
         options.setNavBarColor(config.cropStyle != null ? config.cropStyle.cropNavBarColor : 0);
-        String path = list.size() > 0 ? list.get(0).getPath() : "";
+        int index = 0;
+        int size = list.size();
+        if (config.chooseMode == PictureMimeType.ofAll() && config.isWithVideoImage) {
+            // 视频和图片共存
+            String mimeType = size > 0 ? list.get(index).getMimeType() : "";
+            boolean eqVideo = PictureMimeType.eqVideo(mimeType);
+            if (eqVideo) {
+                // 第一个是视频就跳过直到遍历出图片为止
+                for (int i = 0; i < size; i++) {
+                    CutInfo cutInfo = list.get(i);
+                    if (cutInfo != null && PictureMimeType.eqImage(cutInfo.getMimeType())) {
+                        index = i;
+                        break;
+                    }
+                }
+            }
+        }
+        String path = size > 0 && size > index ? list.get(index).getPath() : "";
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         boolean isHttp = PictureMimeType.isHttp(path);
         String imgType = isAndroidQ ? PictureMimeType
