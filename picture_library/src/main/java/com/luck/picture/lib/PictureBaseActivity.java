@@ -62,6 +62,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     protected List<LocalMedia> selectionMedias;
     protected Handler mHandler;
     protected View container;
+    /**
+     * 是否走过onSaveInstanceState方法
+     */
+    protected boolean isOnSaveInstanceState;
 
     /**
      * 是否使用沉浸式，子类复写该方法来确定是否采用沉浸式
@@ -118,10 +122,12 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     protected void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             config = savedInstanceState.getParcelable(PictureConfig.EXTRA_CONFIG);
+            isOnSaveInstanceState = false;
         } else {
             if (config == null) {
                 config = PictureSelectionConfig.getInstance();
             }
+            isOnSaveInstanceState = false;
         }
         // 单独拍照不设置主题因为拍照界面已经设置了透明主题了
         if (!config.camera) {
@@ -230,6 +236,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        isOnSaveInstanceState = true;
         outState.putParcelable(PictureConfig.EXTRA_CONFIG, config);
     }
 

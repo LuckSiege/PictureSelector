@@ -65,10 +65,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      * 是否改变已选的数据
      */
     protected boolean isChangeSelectedData;
-    /**
-     * 是否走过onSaveInstanceState方法
-     */
-    protected boolean isOnSaveInstanceState;
+
 
     @Override
     public int getResourceId() {
@@ -85,8 +82,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             isChangeSelectedData = savedInstanceState.getBoolean(PictureConfig.EXTRA_CHANGE_SELECTED_DATA, false);
             onImageChecked(position);
             onSelectNumChange(false);
-        } else {
-            isOnSaveInstanceState = false;
         }
     }
 
@@ -585,7 +580,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        isOnSaveInstanceState = true;
         outState.putBoolean(PictureConfig.EXTRA_COMPLETE_SELECTED, isCompleteOrSelected);
         outState.putBoolean(PictureConfig.EXTRA_CHANGE_SELECTED_DATA, isChangeSelectedData);
         PictureSelector.saveSelectorList(outState, selectImages);
