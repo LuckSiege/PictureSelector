@@ -23,6 +23,7 @@ public final class PictureConfig {
     public final static String EXTRA_CHANGE_SELECTED_DATA = "isChangeSelectedData";
     public final static String EXTRA_CHANGE_ORIGINAL = "isOriginal";
     public final static String EXTRA_POSITION = "position";
+    public final static String EXTRA_OLD_CURRENT_LIST_SIZE = "oldCurrentListSize";
     public final static String EXTRA_DIRECTORY_PATH = "directory_path";
     public final static String EXTRA_BOTTOM_PREVIEW = "bottom_preview";
     public final static String EXTRA_CONFIG = "PictureSelectorConfig";

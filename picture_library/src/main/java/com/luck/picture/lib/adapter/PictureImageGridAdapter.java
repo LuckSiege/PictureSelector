@@ -68,7 +68,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public void bindImagesData(List<LocalMedia> images) {
-        this.images = images;
+        this.images = images == null ? new ArrayList<>() : images;
         notifyDataSetChanged();
     }
 

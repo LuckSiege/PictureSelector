@@ -578,7 +578,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
      */
     @Nullable
     protected LocalMediaFolder getImageFolder(String path, List<LocalMediaFolder> imageFolders) {
-        File imageFile = new File(path);
+        File imageFile = new File(path.startsWith("content://") ? PictureFileUtils.getPath(getContext(), Uri.parse(path)) : path);
         File folderFile = imageFile.getParentFile();
 
         for (LocalMediaFolder folder : imageFolders) {

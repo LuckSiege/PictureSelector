@@ -8,7 +8,6 @@ import android.os.Handler;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -159,24 +158,26 @@ public class FolderPopWindow extends PopupWindow {
     /**
      * 设置选中状态
      */
-    public void notifyDataCheckedStatus(List<LocalMedia> medias) {
+    public void updateFolderCheckStatus(List<LocalMedia> result) {
         try {
-            // 获取选中图片
             List<LocalMediaFolder> folders = adapter.getFolderData();
-            for (LocalMediaFolder folder : folders) {
-                folder.setCheckedNum(0);
-            }
-            if (medias.size() > 0) {
-                for (LocalMediaFolder folder : folders) {
-                    int num = 0;// 记录当前相册下有多少张是选中的
-                    List<LocalMedia> images = folder.getImages();
-                    for (LocalMedia media : images) {
-                        String path = media.getPath();
-                        for (LocalMedia m : medias) {
-                            if (path.equals(m.getPath())) {
-                                num++;
-                                folder.setCheckedNum(num);
-                            }
+            int size = folders.size();
+            for (int i = 0; i < size; i++) {
+                // 先重置选中状态为未选中
+                LocalMediaFolder mediaFolder = folders.get(i);
+                mediaFolder.setCheckedNum(0);
+                // 在重新遍历一次更新选中状态
+                List<LocalMedia> images = mediaFolder.getImages();
+                int iSize = images.size();
+                int rSize = result.size();
+                for (int j = 0; j < iSize; j++) {
+                    LocalMedia oldMedia = images.get(j);
+                    String path = oldMedia.getPath();
+                    for (int k = 0; k < rSize; k++) {
+                        LocalMedia newMedia = result.get(k);
+                        if (path.equals(newMedia.getPath()) || oldMedia.getId() == newMedia.getId()) {
+                            mediaFolder.setCheckedNum(1);
+                            break;
                         }
                     }
                 }

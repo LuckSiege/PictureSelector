@@ -89,9 +89,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected boolean isPlayAudio = false;
     protected PictureCustomDialog audioDialog;
     protected CheckBox mCbOriginal;
+    protected int oldCurrentListSize;
     protected int audioH;
     protected boolean isFirstEnterActivity = false;
-
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
@@ -114,6 +114,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
+            oldCurrentListSize = savedInstanceState.getInt(PictureConfig.EXTRA_OLD_CURRENT_LIST_SIZE, 0);
             // 防止拍照内存不足时activity被回收，导致拍照后的图片未选中
             selectionMedias = PictureSelector.obtainSelectorList(savedInstanceState);
             if (mAdapter != null) {
@@ -333,6 +334,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        if (images != null) {
+            // 保存当前列表中图片或视频个数
+            outState.putInt(PictureConfig.EXTRA_OLD_CURRENT_LIST_SIZE, images.size());
+        }
         if (mAdapter != null && mAdapter.getSelectedImages() != null) {
             List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
             PictureSelector.saveSelectorList(outState, selectedImages);
@@ -368,17 +373,36 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     foldersList = folders;
                     LocalMediaFolder folder = folders.get(0);
                     folder.setChecked(true);
-                    List<LocalMedia> localImg = folder.getImages();
+                    List<LocalMedia> result = folder.getImages();
+                    if (images == null) {
+                        images = new ArrayList<>();
+                    }
                     // 这里解决有些机型会出现拍照完，相册列表不及时刷新问题
                     // 因为onActivityResult里手动添加拍照后的照片，
                     // 如果查询出来的图片大于或等于当前adapter集合的图片则取更新后的，否则就取本地的
-                    int size = images.size();
-                    if (localImg.size() >= size) {
-                        images = localImg;
+                    int currentSize = images.size();
+                    int resultSize = result.size();
+                    oldCurrentListSize = oldCurrentListSize + currentSize;
+                    if (resultSize >= currentSize) {
+                        if (currentSize > 0 && currentSize < resultSize && oldCurrentListSize != resultSize) {
+                            // 这种情况多数是由于拍照导致Activity和数据被回收数据不一致
+                            images.addAll(result);
+                            // 更新相机胶卷目录
+                            LocalMedia media = images.get(0);
+                            folder.setFirstImagePath(media.getPath());
+                            folder.getImages().add(0, media);
+                            folder.setCheckedNum(1);
+                            folder.setImageNum(folder.getImageNum() + 1);
+                            // 更新相片所属目录
+                            updateMediaFolder(foldersList, media);
+                        } else {
+                            // 正常情况下
+                            images = result;
+                        }
                         folderWindow.bindFolder(folders);
                     }
                 }
-                if (mAdapter != null && images != null) {
+                if (mAdapter != null) {
                     mAdapter.bindImagesData(images);
                     boolean isEmpty = images.size() > 0;
                     if (!isEmpty) {
@@ -454,7 +478,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     folderWindow.showAsDropDown(titleViewBg);
                     if (!config.isSingleDirectReturn) {
                         List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
-                        folderWindow.notifyDataCheckedStatus(selectedImages);
+                        folderWindow.updateFolderCheckStatus(selectedImages);
                     }
                 }
             }
@@ -844,10 +868,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             boolean eqVideo = PictureMimeType.eqVideo(mimeType);
             boolean ofVideo = config.chooseMode == PictureConfig.TYPE_VIDEO;
             mTvPicturePreview.setVisibility(ofVideo || eqVideo ? View.GONE : View.VISIBLE);
-            mCbOriginal.setVisibility(ofVideo || eqVideo ? View.GONE
-                    : config.isOriginalControl ? View.VISIBLE : View.GONE);
-            config.isCheckOriginalImage = ofVideo || eqVideo ? false : config.isCheckOriginalImage;
-            mCbOriginal.setChecked(config.isCheckOriginalImage);
+            if (config.isOriginalControl) {
+                mCbOriginal.setVisibility(ofVideo || eqVideo ? View.GONE
+                        : config.isOriginalControl ? View.VISIBLE : View.GONE);
+                config.isCheckOriginalImage = ofVideo || eqVideo ? false : config.isCheckOriginalImage;
+                mCbOriginal.setChecked(config.isCheckOriginalImage);
+            }
         }
         boolean enable = selectImages.size() != 0;
         if (enable) {
@@ -1298,7 +1324,33 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    /**
+     * 更新一下相册目录
+     *
+     * @param imageFolders
+     */
+    private void updateMediaFolder(List<LocalMediaFolder> imageFolders, LocalMedia media) {
+        File imageFile = new File(media.getPath().startsWith("content://")
+                ? PictureFileUtils.getPath(getContext(), Uri.parse(media.getPath())) : media.getPath());
+        File folderFile = imageFile.getParentFile();
+        int size = imageFolders.size();
+        for (int i = 0; i < size; i++) {
+            LocalMediaFolder folder = imageFolders.get(i);
+            // 同一个文件夹下，返回自己，否则创建新文件夹
+            String name = folder.getName();
+            if (TextUtils.isEmpty(name)) {
+                continue;
+            }
+            if (name.equals(folderFile.getName())) {
+                folder.setFirstImagePath(config.cameraPath);
+                folder.setImageNum(folder.getImageNum() + 1);
+                folder.setCheckedNum(1);
+                folder.getImages().add(0, media);
+                break;
+            }
+        }
     }
 
     @Override
