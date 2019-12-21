@@ -906,7 +906,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (config.selectionMode == PictureConfig.SINGLE && config.isSingleDirectReturn) {
             List<LocalMedia> list = new ArrayList<>();
             list.add(media);
-            if (config.enableCrop && !config.isCheckOriginalImage) {
+            if (config.enableCrop && PictureMimeType.eqImage(media.getMimeType()) && !config.isCheckOriginalImage) {
                 mAdapter.bindSelectImages(list);
                 startCrop(media.getPath());
             } else {
