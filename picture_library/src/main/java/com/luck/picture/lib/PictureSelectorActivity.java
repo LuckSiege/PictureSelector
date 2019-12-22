@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -1380,6 +1381,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         Uri resultUri = UCrop.getOutput(data);
         String cutPath = resultUri.getPath();
         if (mAdapter != null) {
+            List<LocalMedia> list = data.getParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST);
+            if (list != null) {
+                mAdapter.bindSelectImages(list);
+                mAdapter.notifyDataSetChanged();
+            }
             // 取单张裁剪已选中图片的path作为原图
             List<LocalMedia> mediaList = mAdapter.getSelectedImages();
             LocalMedia media = mediaList != null && mediaList.size() > 0 ? mediaList.get(0) : null;
@@ -1396,7 +1402,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 handlerResult(result);
             } else {
                 // 预览界面选中图片并裁剪回调的
-                List<LocalMedia> list = data.getParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST);
                 media = list != null && list.size() > 0 ? list.get(0) : null;
                 config.originalPath = media.getPath();
                 media.setCutPath(cutPath);
@@ -1427,6 +1432,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
         int size = mCuts.size();
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
+        List<LocalMedia> list = data.getParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST);
+        if (list != null) {
+            mAdapter.bindSelectImages(list);
+            mAdapter.notifyDataSetChanged();
+        }
         int oldSize = mAdapter != null ? mAdapter.getSelectedImages().size() : 0;
         if (oldSize == size) {
             List<LocalMedia> result = mAdapter.getSelectedImages();
