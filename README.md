@@ -155,5 +155,5 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 | 白色主题风格 | 视频 | 音频 |
 |:-----------:|:-----------:|:--------:|
-|![](image/picture_white_style.jpg) |![](image/picture_video.jpg) | ![](image/picture_audio.jpg)| 
+|![](image/picture_white_style.png) |![](image/picture_video.jpg) | ![](image/picture_audio.jpg)| 
 
