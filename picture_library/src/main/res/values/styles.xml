@@ -87,7 +87,7 @@
         <!--预览界面标题文字颜色-->
         <item name="picture.ac_preview.title.textColor">@color/picture_color_white</item>
         <!--预览界面已完成文字颜色-->
-        <item name="picture.ac_preview.complete.textColor">@color/picture_color_white</item>
+        <item name="picture.ac_preview.complete.textColor">@color/picture_list_text_color</item>
         <!--预览界面标题栏背景色-->
         <item name="picture.ac_preview.title.bg">@color/picture_color_grey</item>
         <!--预览界面底部背景色-->

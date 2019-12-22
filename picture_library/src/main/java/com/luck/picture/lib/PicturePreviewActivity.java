@@ -358,8 +358,12 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         if (enable) {
             mTvPictureOk.setEnabled(true);
             mTvPictureOk.setSelected(true);
-            if (config.style != null && config.style.pictureCompleteTextColor != 0) {
-                mTvPictureOk.setTextColor(config.style.pictureCompleteTextColor);
+            if (config.style != null) {
+                if (config.style.pictureCompleteTextColor != 0) {
+                    mTvPictureOk.setTextColor(config.style.pictureCompleteTextColor);
+                } else {
+                    mTvPictureOk.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_fa632d));
+                }
             }
             if (numComplete) {
                 mTvPictureOk.setText(getString(R.string.picture_done_front_num, selectImages.size(),
@@ -379,8 +383,12 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         } else {
             mTvPictureOk.setEnabled(false);
             mTvPictureOk.setSelected(false);
-            if (config.style != null && config.style.pictureUnCompleteTextColor != 0) {
-                mTvPictureOk.setTextColor(config.style.pictureUnCompleteTextColor);
+            if (config.style != null) {
+                if (config.style.pictureUnCompleteTextColor != 0) {
+                    mTvPictureOk.setTextColor(config.style.pictureUnCompleteTextColor);
+                } else {
+                    mTvPictureOk.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_9b));
+                }
             }
             if (numComplete) {
                 mTvPictureOk.setText(getString(R.string.picture_done_front_num, 0,
