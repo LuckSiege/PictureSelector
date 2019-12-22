@@ -95,8 +95,6 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel selectionMode(int selectionMode) {
         selectionConfig.selectionMode = selectionMode;
-        selectionConfig.isWithVideoImage = selectionMode == PictureConfig.SINGLE
-                ? false : selectionConfig.isWithVideoImage;
         return this;
     }
 

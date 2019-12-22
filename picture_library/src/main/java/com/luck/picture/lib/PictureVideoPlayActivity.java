@@ -84,6 +84,8 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
         picture_left_back.setOnClickListener(this);
         iv_play.setOnClickListener(this);
         tvConfirm.setOnClickListener(this);
+
+
         tvConfirm.setVisibility(config.selectionMode
                 == PictureConfig.SINGLE
                 && config.enPreviewVideo && !isExternalPreview ? View.VISIBLE : View.GONE);
