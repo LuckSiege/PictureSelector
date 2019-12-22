@@ -969,17 +969,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     protected void changeImageNumber(List<LocalMedia> selectImages) {
         // 如果选择的视频没有预览功能
-        String mimeType = selectImages.size() > 0
-                ? selectImages.get(0).getMimeType() : "";
         if (config.chooseMode == PictureMimeType.ofAudio()) {
             mTvPicturePreview.setVisibility(View.GONE);
         } else {
-            boolean eqVideo = PictureMimeType.eqVideo(mimeType);
-            boolean ofVideo = config.chooseMode == PictureConfig.TYPE_VIDEO;
             if (config.isOriginalControl) {
-                mCbOriginal.setVisibility(ofVideo || eqVideo ? View.GONE
-                        : config.isOriginalControl ? View.VISIBLE : View.GONE);
-                config.isCheckOriginalImage = ofVideo || eqVideo ? false : config.isCheckOriginalImage;
+                mCbOriginal.setVisibility(View.VISIBLE);
                 mCbOriginal.setChecked(config.isCheckOriginalImage);
             }
         }
