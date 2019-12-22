@@ -129,9 +129,9 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 ## 演示效果
 
-| 功能项 |
-|:-----------:|
-|![](image/home.png)| 
+| 功能项 | 混合选择 |
+|:-----------:|:-----------:|
+|![](image/home.jpg)|![](image/home_mixed.jpg)| 
 
 | 默认样式 | 默认样式预览 | 默认样式多图裁剪 |
 |:-----------:|:--------:|:---------:|
