@@ -140,9 +140,9 @@ public final class PictureSelectionConfig implements Parcelable {
         themeStyleId = R.style.picture_default_style;
         selectionMode = PictureConfig.MULTIPLE;
         maxSelectNum = 9;
-        maxVideoSelectNum = maxSelectNum;
-        minVideoSelectNum = minSelectNum;
         minSelectNum = 0;
+        maxVideoSelectNum = maxSelectNum;
+        minVideoSelectNum = 0;
         videoQuality = 1;
         language = -1;
         cropCompressQuality = 90;

@@ -1362,6 +1362,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
             }
             mAdapter.notifyItemInserted(config.isCamera ? 1 : 0);
+            mAdapter.notifyItemRangeChanged(config.isCamera ? 1 : 0, images.size());
             // 解决部分手机拍照完Intent.ACTION_MEDIA_SCANNER_SCAN_FILE，不及时刷新问题手动添加
             manualSaveFolder(media);
             mTvEmpty.setVisibility(images.size() > 0 || config.isSingleDirectReturn ? View.INVISIBLE : View.VISIBLE);
