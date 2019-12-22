@@ -246,4 +246,25 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             }
         }
     }
+
+    @Override
+    protected void onChangeData(List<LocalMedia> list) {
+        super.onChangeData(list);
+        if (config.isWithVideoImage) {
+            // 混选模式
+            mPictureSendView.setText(config.selectionMode == PictureConfig.SINGLE ?
+                    config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                            ? config.style.pictureRightDefaultText
+                            : getString(R.string.picture_send)
+                    : getString(R.string.picture_send_num, list.size(), config.maxVideoSelectNum + config.maxSelectNum));
+        } else {
+            String mimeType = list.size() > 0 ? list.get(0).getMimeType() : "";
+            int maxSize = PictureMimeType.eqVideo(mimeType) ? config.maxVideoSelectNum : config.maxSelectNum;
+            mPictureSendView.setText(config.selectionMode == PictureConfig.SINGLE ?
+                    config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                            ? config.style.pictureRightDefaultText
+                            : getString(R.string.picture_send)
+                    : getString(R.string.picture_send_num, list.size(), maxSize));
+        }
+    }
 }

@@ -1129,6 +1129,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             // 判断预览界面是点击已完成按钮还是仅仅是勾选图片
             boolean isCompleteOrSelected = data.getBooleanExtra(PictureConfig.EXTRA_COMPLETE_SELECTED, false);
             if (isCompleteOrSelected) {
+                onChangeData(list);
                 if (config.isWithVideoImage) {
                     // 混选模式
                     int size = list.size();
@@ -1161,6 +1162,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         onResult(list);
                     }
                 }
+                mAdapter.bindSelectImages(list);
+                mAdapter.notifyDataSetChanged();
             } else {
                 // 预览界面只勾选了图片处理逻辑
                 isStartAnimation = true;
@@ -1171,41 +1174,32 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     /**
-     * 摄像头后处理方式
+     * 预览界面返回更新回调
      *
-     * @param media
+     * @param list
+     */
+    protected void onChangeData(List<LocalMedia> list) {
+
+    }
+
+    /**
+     * singleDirectReturn模式摄像头后处理方式
+     *
      * @param mimeType
      */
-    private void cameraHandleResult(LocalMedia media, String mimeType) {
-        // 如果是单选 拍照后直接返回
-        if (config.isCheckOriginalImage) {
-            // 不裁剪 不压缩 直接返回结果
-            List<LocalMedia> result = new ArrayList<>();
-            result.add(media);
-            onResult(result);
-            return;
-        }
+    private void singleDirectReturnCameraHandleResult(String mimeType) {
         boolean eqImg = PictureMimeType.eqImage(mimeType);
         if (config.enableCrop && eqImg) {
             // 去裁剪
-            List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
-            selectedImages.add(media);
-            mAdapter.bindSelectImages(selectedImages);
             config.originalPath = config.cameraPath;
             startCrop(config.cameraPath);
         } else if (config.isCompress && eqImg) {
             // 去压缩
-            List<LocalMedia> result = new ArrayList<>();
-            result.add(media);
-            compressImage(result);
-            images.add(0, media);
-            mAdapter.bindSelectImages(result);
-            mAdapter.notifyDataSetChanged();
+            List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
+            compressImage(selectedImages);
         } else {
             // 不裁剪 不压缩 直接返回结果
-            List<LocalMedia> result = new ArrayList<>();
-            result.add(media);
-            onResult(result);
+            onResult(mAdapter.getSelectedImages());
         }
     }
 
@@ -1283,18 +1277,21 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         media.setSize(size);
         media.setChooseModel(config.chooseMode);
         if (mAdapter != null) {
+            images.add(0, media);
             if (config.selectionMode == PictureConfig.SINGLE) {
                 // 单选模式下直接返回模式
                 if (config.isSingleDirectReturn) {
-                    cameraHandleResult(media, mimeType);
+                    List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
+                    selectedImages.add(media);
+                    mAdapter.bindSelectImages(selectedImages);
+                    singleDirectReturnCameraHandleResult(mimeType);
                 } else {
-                    // 如果是单选，则清空已选中的并刷新列表(作单一选择)
-                    images.add(0, media);
                     List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
                     mimeType = selectedImages.size() > 0 ? selectedImages.get(0).getMimeType() : "";
                     boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
                     // 类型相同或还没有选中才加进选中集合中
                     if (mimeTypeSame || selectedImages.size() == 0) {
+                        // 如果是单选，则清空已选中的并刷新列表(作单一选择)
                         singleRadioMediaImage();
                         selectedImages.add(media);
                         mAdapter.bindSelectImages(selectedImages);
@@ -1302,7 +1299,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
             } else {
                 // 多选模式
-                images.add(0, media);
                 List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
                 int count = selectedImages.size();
                 mimeType = count > 0 ? selectedImages.get(0).getMimeType() : "";
