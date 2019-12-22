@@ -1141,16 +1141,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             break;
                         }
                     }
-                    if (imageSize <= 0) {
+                    if (imageSize <= 0 || !config.isCompress || config.isCheckOriginalImage) {
                         // 全是视频
                         onResult(list);
                     } else {
                         // 去压缩
-                        if (config.isCompress && !config.isCheckOriginalImage) {
-                            compressImage(list);
-                        } else {
-                            onResult(list);
-                        }
+                        compressImage(list);
                     }
                 } else {
                     // 取出第1个判断是否是图片，视频和图片只能二选一，不必考虑图片和视频混合
