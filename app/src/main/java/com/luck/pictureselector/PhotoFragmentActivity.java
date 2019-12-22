@@ -1,6 +1,5 @@
 package com.luck.pictureselector;
 
-import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -10,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.tools.PictureFileUtils;
 
 public class PhotoFragmentActivity extends AppCompatActivity {
@@ -30,14 +28,6 @@ public class PhotoFragmentActivity extends AppCompatActivity {
         } else {
             fragment = (PhotoFragment) getSupportFragmentManager()
                     .findFragmentByTag(PictureConfig.EXTRA_FC_TAG);
-        }
-        // 清空图片缓存，包括裁剪、压缩后的图片 注意:必须要在上传完成后调用 必须要获取权限
-
-        if (PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            PictureFileUtils.deleteCacheDirFile(PhotoFragmentActivity.this, PictureMimeType.ofImage());
-        } else {
-            PermissionChecker.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
         }
     }
 
