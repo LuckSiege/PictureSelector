@@ -142,7 +142,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 }
 
                 if (config.isOriginalControl) {
-                    mCbOriginal.setVisibility(View.VISIBLE);
+                    boolean eqVideo = PictureMimeType.eqVideo(media.getMimeType());
+                    mCbOriginal.setVisibility(eqVideo ? View.GONE : View.VISIBLE);
                     mCbOriginal.setChecked(config.isCheckOriginalImage);
                 }
 
