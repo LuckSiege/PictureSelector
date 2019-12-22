@@ -551,12 +551,12 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         } else {
             // 单选模式(同类型)
             if (config.selectionMode == PictureConfig.MULTIPLE) {
-                if (config.minSelectNum > 0 && size < config.minSelectNum) {
+                if (PictureMimeType.eqImage(mimeType) && config.minSelectNum > 0 && size < config.minSelectNum) {
                     String str = getString(R.string.picture_min_img_num, config.minSelectNum);
                     ToastUtils.s(getContext(), str);
                     return;
                 }
-                if (config.minVideoSelectNum > 0 && size < config.minVideoSelectNum) {
+                if (PictureMimeType.eqVideo(mimeType) && config.minVideoSelectNum > 0 && size < config.minVideoSelectNum) {
                     String str = getString(R.string.picture_min_video_num, config.minVideoSelectNum);
                     ToastUtils.s(getContext(), str);
                     return;

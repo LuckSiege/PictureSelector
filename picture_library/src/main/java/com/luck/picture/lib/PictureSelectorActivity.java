@@ -550,6 +550,22 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
         } else {
             if (config.selectionMode == PictureConfig.MULTIPLE) {
+                if (PictureMimeType.eqImage(mimeType) && config.minSelectNum > 0 && size < config.minSelectNum) {
+                    String str = getString(R.string.picture_min_img_num, config.minSelectNum);
+                    ToastUtils.s(getContext(), str);
+                    return;
+                }
+                if (PictureMimeType.eqVideo(mimeType) && config.minVideoSelectNum > 0 && size < config.minVideoSelectNum) {
+                    String str = getString(R.string.picture_min_video_num, config.minVideoSelectNum);
+                    ToastUtils.s(getContext(), str);
+                    return;
+                }
+            }
+        }
+
+        // 如果没选并且设置了可以空返回则直接回到结果页
+        if (config.returnEmpty && size == 0) {
+            if (config.selectionMode == PictureConfig.MULTIPLE) {
                 if (config.minSelectNum > 0 && size < config.minSelectNum) {
                     String str = getString(R.string.picture_min_img_num, config.minSelectNum);
                     ToastUtils.s(getContext(), str);
@@ -561,10 +577,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     return;
                 }
             }
-        }
-
-        // 如果没选并且设置了可以空返回则直接回到结果页
-        if (config.returnEmpty && size == 0) {
             Intent intent = PictureSelector.putIntentResult(result);
             setResult(RESULT_OK, intent);
             closeActivity();
@@ -583,6 +595,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             separateMimeTypeWith(eqImg, result);
         }
     }
+
 
     /**
      * 两者不同类型的处理方式
