@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 
 import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.AttrsUtils;
 
@@ -143,11 +144,22 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             // 可发送
             mPictureSendView.setEnabled(true);
             mPictureSendView.setSelected(true);
-            mPictureSendView.setText(config.selectionMode == PictureConfig.SINGLE ?
-                    config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
-                            ? config.style.pictureRightDefaultText
-                            : getString(R.string.picture_send)
-                    : getString(R.string.picture_send_num, size, config.maxSelectNum));
+            if (config.isWithVideoImage) {
+                // 混选模式
+                mPictureSendView.setText(config.selectionMode == PictureConfig.SINGLE ?
+                        config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                                ? config.style.pictureRightDefaultText
+                                : getString(R.string.picture_send)
+                        : getString(R.string.picture_send_num, size, config.maxVideoSelectNum + config.maxSelectNum));
+            } else {
+                String mimeType = selectImages.get(0).getMimeType();
+                int maxSize = PictureMimeType.eqVideo(mimeType) ? config.maxVideoSelectNum : config.maxSelectNum;
+                mPictureSendView.setText(config.selectionMode == PictureConfig.SINGLE ?
+                        config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                                ? config.style.pictureRightDefaultText
+                                : getString(R.string.picture_send)
+                        : getString(R.string.picture_send_num, size, maxSize));
+            }
             mTvPicturePreview.setEnabled(true);
             mTvPicturePreview.setSelected(true);
             if (config.style != null) {

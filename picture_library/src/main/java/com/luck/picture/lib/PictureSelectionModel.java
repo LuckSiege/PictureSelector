@@ -243,7 +243,8 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel isWithVideoImage(boolean isWithVideoImage) {
         selectionConfig.isWithVideoImage =
-                selectionConfig.selectionMode == PictureConfig.SINGLE ? false : isWithVideoImage;
+                selectionConfig.selectionMode == PictureConfig.SINGLE
+                        || selectionConfig.chooseMode != PictureMimeType.ofAll() ? false : isWithVideoImage;
         return this;
     }
 

@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.broadcast.BroadcastAction;
 import com.luck.picture.lib.broadcast.BroadcastManager;
-import com.luck.picture.lib.decoration.GridSpacingItemNotBothDecoration;
+import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
@@ -130,9 +130,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FullyGridLayoutManager manager = new FullyGridLayoutManager(this,
                 4, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
-        recyclerView.addItemDecoration(new GridSpacingItemNotBothDecoration(4,
-                ScreenUtils.dip2px(this, 8), true, false));
-        mAdapter = new GridImageAdapter(MainActivity.this, onAddPicClickListener);
+
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(4,
+                ScreenUtils.dip2px(this, 8), false));
+
+        mAdapter = new GridImageAdapter(getContext(), onAddPicClickListener);
         mAdapter.setList(selectList);
         mAdapter.setSelectMax(maxSelectNum);
         recyclerView.setAdapter(mAdapter);
@@ -176,15 +178,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         // 注册外部预览图片删除按钮回调
-        BroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
+        BroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver,
                 BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
     }
 
     private void clearCache() {
         // 清空图片缓存，包括裁剪、压缩后的图片 注意:必须要在上传完成后调用 必须要获取权限
-        if (PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             //PictureFileUtils.deleteCacheDirFile(this, PictureMimeType.ofImage());
-            PictureFileUtils.deleteAllCacheDirFile(this);
+            PictureFileUtils.deleteAllCacheDirFile(getContext());
         } else {
             PermissionChecker.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
@@ -206,11 +208,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
                         .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
                         .setPictureWindowAnimationStyle(windowAnimationStyle)// 自定义相册启动退出动画
-                        .isWithVideoImage(true)// 图片和视频是否可以同选
+                        .isWithVideoImage(true)// 图片和视频是否可以同选,只在ofAll模式下有效
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         //.minSelectNum(1)// 最小选择数量
                         //.minVideoSelectNum(1)// 视频最小选择数量，如果没有单独设置的需求则可以不设置，同用minSelectNum字段
-                        .maxVideoSelectNum(5) // 视频最大选择数量，如果没有单独设置的需求则可以不设置，同用maxSelectNum字段
+                        //.maxVideoSelectNum(1) // 视频最大选择数量，如果没有单独设置的需求则可以不设置，同用maxSelectNum字段
                         .imageSpanCount(4)// 每行显示个数
                         .isReturnEmpty(false)// 未选择数据时点击按钮是否可以返回
                         //.isAndroidQTransform(false)// 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && enableCrop(false);有效,默认处理
@@ -516,31 +518,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 相册返回箭头
         mPictureParameterStyle.pictureLeftBackIcon = R.drawable.picture_icon_back;
         // 标题栏字体颜色
-        mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(this, R.color.picture_color_white);
+        mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_white);
         // 相册右侧取消按钮字体颜色  废弃 改用.pictureRightDefaultTextColor和.pictureRightDefaultTextColor
-        mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(this, R.color.picture_color_white);
+        mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_white);
         // 相册列表勾选图片样式
         mPictureParameterStyle.pictureCheckedStyle = R.drawable.picture_checkbox_selector;
         // 相册列表底部背景色
-        mPictureParameterStyle.pictureBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_grey);
+        mPictureParameterStyle.pictureBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_grey);
         // 已选数量圆点背景样式
         mPictureParameterStyle.pictureCheckNumBgStyle = R.drawable.picture_num_oval;
         // 相册列表底下预览文字色值(预览按钮可点击时的色值)
-        mPictureParameterStyle.picturePreviewTextColor = ContextCompat.getColor(this, R.color.picture_color_fa632d);
+        mPictureParameterStyle.picturePreviewTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_fa632d);
         // 相册列表底下不可预览文字色值(预览按钮不可点击时的色值)
-        mPictureParameterStyle.pictureUnPreviewTextColor = ContextCompat.getColor(this, R.color.picture_color_white);
+        mPictureParameterStyle.pictureUnPreviewTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_white);
         // 相册列表已完成色值(已完成 可点击色值)
-        mPictureParameterStyle.pictureCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_fa632d);
+        mPictureParameterStyle.pictureCompleteTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_fa632d);
         // 相册列表未完成色值(请选择 不可点击色值)
-        mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_white);
+        mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_white);
         // 预览界面底部背景色
-        mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_grey);
+        mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_grey);
         // 外部预览界面删除按钮样式
         mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_delete;
         // 原图按钮勾选样式  需设置.isOriginalImageControl(true); 才有效
         mPictureParameterStyle.pictureOriginalControlStyle = R.drawable.picture_original_wechat_checkbox;
         // 原图文字颜色 需设置.isOriginalImageControl(true); 才有效
-        mPictureParameterStyle.pictureOriginalFontColor = ContextCompat.getColor(this, R.color.app_color_white);
+        mPictureParameterStyle.pictureOriginalFontColor = ContextCompat.getColor(getContext(), R.color.app_color_white);
         // 外部预览界面是否显示删除按钮
         mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
         // 设置NavBar Color SDK Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP有效
@@ -569,10 +571,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(
-                ContextCompat.getColor(MainActivity.this, R.color.app_color_grey),
-                ContextCompat.getColor(MainActivity.this, R.color.app_color_grey),
+                ContextCompat.getColor(getContext(), R.color.app_color_grey),
+                ContextCompat.getColor(getContext(), R.color.app_color_grey),
                 Color.parseColor("#393a3e"),
-                ContextCompat.getColor(MainActivity.this, R.color.app_color_white),
+                ContextCompat.getColor(getContext(), R.color.app_color_white),
                 mPictureParameterStyle.isChangeStatusBarFontColor);
     }
 
@@ -598,29 +600,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 相册返回箭头
         mPictureParameterStyle.pictureLeftBackIcon = R.drawable.ic_back_arrow;
         // 标题栏字体颜色
-        mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(this, R.color.app_color_black);
+        mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(getContext(), R.color.app_color_black);
         // 相册右侧取消按钮字体颜色  废弃 改用.pictureRightDefaultTextColor和.pictureRightDefaultTextColor
-        mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(this, R.color.app_color_black);
+        mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(getContext(), R.color.app_color_black);
         // 相册列表勾选图片样式
         mPictureParameterStyle.pictureCheckedStyle = R.drawable.picture_checkbox_selector;
         // 相册列表底部背景色
-        mPictureParameterStyle.pictureBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_fa);
+        mPictureParameterStyle.pictureBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_fa);
         // 已选数量圆点背景样式
         mPictureParameterStyle.pictureCheckNumBgStyle = R.drawable.picture_num_oval;
         // 相册列表底下预览文字色值(预览按钮可点击时的色值)
-        mPictureParameterStyle.picturePreviewTextColor = ContextCompat.getColor(this, R.color.picture_color_fa632d);
+        mPictureParameterStyle.picturePreviewTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_fa632d);
         // 相册列表底下不可预览文字色值(预览按钮不可点击时的色值)
-        mPictureParameterStyle.pictureUnPreviewTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
+        mPictureParameterStyle.pictureUnPreviewTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_9b);
         // 相册列表已完成色值(已完成 可点击色值)
-        mPictureParameterStyle.pictureCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_fa632d);
+        mPictureParameterStyle.pictureCompleteTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_fa632d);
         // 相册列表未完成色值(请选择 不可点击色值)
-        mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
+        mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_9b);
         // 预览界面底部背景色
-        mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_white);
+        mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_white);
         // 原图按钮勾选样式  需设置.isOriginalImageControl(true); 才有效
         mPictureParameterStyle.pictureOriginalControlStyle = R.drawable.picture_original_checkbox;
         // 原图文字颜色 需设置.isOriginalImageControl(true); 才有效
-        mPictureParameterStyle.pictureOriginalFontColor = ContextCompat.getColor(this, R.color.app_color_53575e);
+        mPictureParameterStyle.pictureOriginalFontColor = ContextCompat.getColor(getContext(), R.color.app_color_53575e);
         // 外部预览界面删除按钮样式
         mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_black_delete;
         // 外部预览界面是否显示删除按钮
@@ -649,9 +651,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(
-                ContextCompat.getColor(MainActivity.this, R.color.app_color_white),
-                ContextCompat.getColor(MainActivity.this, R.color.app_color_white),
-                ContextCompat.getColor(MainActivity.this, R.color.app_color_black),
+                ContextCompat.getColor(getContext(), R.color.app_color_white),
+                ContextCompat.getColor(getContext(), R.color.app_color_white),
+                ContextCompat.getColor(getContext(), R.color.app_color_black),
                 mPictureParameterStyle.isChangeStatusBarFontColor);
     }
 
@@ -677,29 +679,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 相册返回箭头
         mPictureParameterStyle.pictureLeftBackIcon = R.drawable.picture_icon_back;
         // 标题栏字体颜色
-        mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(this, R.color.app_color_white);
+        mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(getContext(), R.color.app_color_white);
         // 相册右侧取消按钮字体颜色  废弃 改用.pictureRightDefaultTextColor和.pictureRightDefaultTextColor
-        mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(this, R.color.app_color_white);
+        mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(getContext(), R.color.app_color_white);
         // 相册列表勾选图片样式
         mPictureParameterStyle.pictureCheckedStyle = R.drawable.checkbox_num_selector;
         // 相册列表底部背景色
-        mPictureParameterStyle.pictureBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_fa);
+        mPictureParameterStyle.pictureBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_fa);
         // 已选数量圆点背景样式
         mPictureParameterStyle.pictureCheckNumBgStyle = R.drawable.num_oval_blue;
         // 相册列表底下预览文字色值(预览按钮可点击时的色值)
-        mPictureParameterStyle.picturePreviewTextColor = ContextCompat.getColor(this, R.color.picture_color_blue);
+        mPictureParameterStyle.picturePreviewTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_blue);
         // 相册列表底下不可预览文字色值(预览按钮不可点击时的色值)
-        mPictureParameterStyle.pictureUnPreviewTextColor = ContextCompat.getColor(this, R.color.app_color_blue);
+        mPictureParameterStyle.pictureUnPreviewTextColor = ContextCompat.getColor(getContext(), R.color.app_color_blue);
         // 相册列表已完成色值(已完成 可点击色值)
-        mPictureParameterStyle.pictureCompleteTextColor = ContextCompat.getColor(this, R.color.app_color_blue);
+        mPictureParameterStyle.pictureCompleteTextColor = ContextCompat.getColor(getContext(), R.color.app_color_blue);
         // 相册列表未完成色值(请选择 不可点击色值)
-        mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(this, R.color.app_color_blue);
+        mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(getContext(), R.color.app_color_blue);
         // 预览界面底部背景色
-        mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_fa);
+        mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_fa);
         // 原图按钮勾选样式  需设置.isOriginalImageControl(true); 才有效
         mPictureParameterStyle.pictureOriginalControlStyle = R.drawable.picture_original_blue_checkbox;
         // 原图文字颜色 需设置.isOriginalImageControl(true); 才有效
-        mPictureParameterStyle.pictureOriginalFontColor = ContextCompat.getColor(this, R.color.app_color_blue);
+        mPictureParameterStyle.pictureOriginalFontColor = ContextCompat.getColor(getContext(), R.color.app_color_blue);
         // 外部预览界面删除按钮样式
         mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_delete;
         // 外部预览界面是否显示删除按钮
@@ -728,9 +730,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(
-                ContextCompat.getColor(MainActivity.this, R.color.app_color_blue),
-                ContextCompat.getColor(MainActivity.this, R.color.app_color_blue),
-                ContextCompat.getColor(MainActivity.this, R.color.app_color_white),
+                ContextCompat.getColor(getContext(), R.color.app_color_blue),
+                ContextCompat.getColor(getContext(), R.color.app_color_blue),
+                ContextCompat.getColor(getContext(), R.color.app_color_white),
                 mPictureParameterStyle.isChangeStatusBarFontColor);
     }
 
@@ -756,29 +758,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 相册返回箭头
         mPictureParameterStyle.pictureLeftBackIcon = R.drawable.ic_back_arrow;
         // 标题栏字体颜色
-        mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(this, R.color.app_color_black);
+        mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(getContext(), R.color.app_color_black);
         // 相册右侧取消按钮字体颜色  废弃 改用.pictureRightDefaultTextColor和.pictureRightDefaultTextColor
-        mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(this, R.color.app_color_black);
+        mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(getContext(), R.color.app_color_black);
         // 相册列表勾选图片样式
         mPictureParameterStyle.pictureCheckedStyle = R.drawable.picture_checkbox_selector;
         // 相册列表底部背景色
-        mPictureParameterStyle.pictureBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_fa);
+        mPictureParameterStyle.pictureBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_fa);
         // 已选数量圆点背景样式
         mPictureParameterStyle.pictureCheckNumBgStyle = R.drawable.picture_num_oval;
         // 相册列表底下预览文字色值(预览按钮可点击时的色值)
-        mPictureParameterStyle.picturePreviewTextColor = ContextCompat.getColor(this, R.color.picture_color_fa632d);
+        mPictureParameterStyle.picturePreviewTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_fa632d);
         // 相册列表底下不可预览文字色值(预览按钮不可点击时的色值)
-        mPictureParameterStyle.pictureUnPreviewTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
+        mPictureParameterStyle.pictureUnPreviewTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_9b);
         // 相册列表已完成色值(已完成 可点击色值)
-        mPictureParameterStyle.pictureCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_fa632d);
+        mPictureParameterStyle.pictureCompleteTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_fa632d);
         // 相册列表未完成色值(请选择 不可点击色值)
-        mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
+        mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_9b);
         // 预览界面底部背景色
-        mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_fa);
+        mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_fa);
         // 原图按钮勾选样式  需设置.isOriginalImageControl(true); 才有效
         mPictureParameterStyle.pictureOriginalControlStyle = R.drawable.picture_original_checkbox;
         // 原图文字颜色 需设置.isOriginalImageControl(true); 才有效
-        mPictureParameterStyle.pictureOriginalFontColor = ContextCompat.getColor(this, R.color.app_color_53575e);
+        mPictureParameterStyle.pictureOriginalFontColor = ContextCompat.getColor(getContext(), R.color.app_color_53575e);
         // 外部预览界面删除按钮样式
         mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_black_delete;
         // 外部预览界面是否显示删除按钮
@@ -806,9 +808,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        mPictureParameterStyle.pictureOriginalTextSize = 14;
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(
-                ContextCompat.getColor(MainActivity.this, R.color.app_color_white),
-                ContextCompat.getColor(MainActivity.this, R.color.app_color_white),
-                ContextCompat.getColor(MainActivity.this, R.color.app_color_black),
+                ContextCompat.getColor(getContext(), R.color.app_color_white),
+                ContextCompat.getColor(getContext(), R.color.app_color_white),
+                ContextCompat.getColor(getContext(), R.color.app_color_black),
                 mPictureParameterStyle.isChangeStatusBarFontColor);
     }
 
@@ -827,7 +829,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 相册列表标题栏背景色
         mPictureParameterStyle.pictureTitleBarBackgroundColor = Color.parseColor("#393a3e");
         // 相册父容器背景色
-        mPictureParameterStyle.pictureContainerBackgroundColor = ContextCompat.getColor(this, R.color.app_color_black);
+        mPictureParameterStyle.pictureContainerBackgroundColor = ContextCompat.getColor(getContext(), R.color.app_color_black);
         // 相册列表标题栏右侧上拉箭头
         mPictureParameterStyle.pictureTitleUpResId = R.drawable.picture_icon_wechat_up;
         // 相册列表标题栏右侧下拉箭头
@@ -837,13 +839,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 相册返回箭头
         mPictureParameterStyle.pictureLeftBackIcon = R.drawable.picture_icon_close;
         // 标题栏字体颜色
-        mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(this, R.color.picture_color_white);
+        mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_white);
         // 相册右侧按钮字体颜色  废弃 改用.pictureRightDefaultTextColor和.pictureRightDefaultTextColor
-        mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(this, R.color.picture_color_53575e);
+        mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_53575e);
         // 相册右侧按钮字体默认颜色
-        mPictureParameterStyle.pictureRightDefaultTextColor = ContextCompat.getColor(this, R.color.picture_color_53575e);
+        mPictureParameterStyle.pictureRightDefaultTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_53575e);
         // 相册右侧按可点击字体颜色,只针对isWeChatStyle 为true时有效果
-        mPictureParameterStyle.pictureRightSelectedTextColor = ContextCompat.getColor(this, R.color.picture_color_white);
+        mPictureParameterStyle.pictureRightSelectedTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_white);
         // 相册右侧按钮背景样式,只针对isWeChatStyle 为true时有效果
         mPictureParameterStyle.pictureRightDefaultBackgroundStyle = R.drawable.picture_send_button_default_bg;
         // 相册右侧按钮可点击背景样式,只针对isWeChatStyle 为true时有效果
@@ -857,25 +859,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 相册返回箭头 ,只针对isWeChatStyle 为true时有效果
         mPictureParameterStyle.pictureWeChatLeftBackStyle = R.drawable.picture_icon_back;
         // 相册列表底部背景色
-        mPictureParameterStyle.pictureBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_grey);
+        mPictureParameterStyle.pictureBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_grey);
         // 已选数量圆点背景样式
         mPictureParameterStyle.pictureCheckNumBgStyle = R.drawable.picture_num_oval;
         // 相册列表底下预览文字色值(预览按钮可点击时的色值)
-        mPictureParameterStyle.picturePreviewTextColor = ContextCompat.getColor(this, R.color.picture_color_white);
+        mPictureParameterStyle.picturePreviewTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_white);
         // 相册列表底下不可预览文字色值(预览按钮不可点击时的色值)
-        mPictureParameterStyle.pictureUnPreviewTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
+        mPictureParameterStyle.pictureUnPreviewTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_9b);
         // 相册列表已完成色值(已完成 可点击色值)
-        mPictureParameterStyle.pictureCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_fa632d);
+        mPictureParameterStyle.pictureCompleteTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_fa632d);
         // 相册列表未完成色值(请选择 不可点击色值)
-        mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(this, R.color.picture_color_9b);
+        mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_9b);
         // 预览界面底部背景色
-        mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(this, R.color.picture_color_half_grey);
+        mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_half_grey);
         // 外部预览界面删除按钮样式
         mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_delete;
         // 原图按钮勾选样式  需设置.isOriginalImageControl(true); 才有效
         mPictureParameterStyle.pictureOriginalControlStyle = R.drawable.picture_original_wechat_checkbox;
         // 原图文字颜色 需设置.isOriginalImageControl(true); 才有效
-        mPictureParameterStyle.pictureOriginalFontColor = ContextCompat.getColor(this, R.color.app_color_white);
+        mPictureParameterStyle.pictureOriginalFontColor = ContextCompat.getColor(getContext(), R.color.app_color_white);
         // 外部预览界面是否显示删除按钮
         mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
         // 设置NavBar Color SDK Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP有效
@@ -905,10 +907,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(
-                ContextCompat.getColor(MainActivity.this, R.color.app_color_grey),
-                ContextCompat.getColor(MainActivity.this, R.color.app_color_grey),
+                ContextCompat.getColor(getContext(), R.color.app_color_grey),
+                ContextCompat.getColor(getContext(), R.color.app_color_grey),
                 Color.parseColor("#393a3e"),
-                ContextCompat.getColor(MainActivity.this, R.color.app_color_white),
+                ContextCompat.getColor(getContext(), R.color.app_color_white),
                 mPictureParameterStyle.isChangeStatusBarFontColor);
     }
 
@@ -955,7 +957,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // 存储权限
                 for (int i = 0; i < grantResults.length; i++) {
                     if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        PictureFileUtils.deleteCacheDirFile(MainActivity.this, PictureMimeType.ofImage());
+                        PictureFileUtils.deleteCacheDirFile(getContext(), PictureMimeType.ofImage());
                     } else {
                         Toast.makeText(MainActivity.this,
                                 getString(R.string.picture_jurisdiction), Toast.LENGTH_SHORT).show();
@@ -984,7 +986,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // 外部预览删除按钮回调
                     extras = intent.getExtras();
                     int position = extras.getInt(PictureConfig.EXTRA_PREVIEW_DELETE_POSITION);
-                    ToastUtils.s(context, "delete image index:" + position);
+                    ToastUtils.s(getContext(), "delete image index:" + position);
                     if (position < mAdapter.getItemCount()) {
                         selectList.remove(position);
                         mAdapter.notifyItemRemoved(position);
@@ -998,8 +1000,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         if (broadcastReceiver != null) {
-            BroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver,
+            BroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastReceiver,
                     BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
         }
+    }
+
+    public Context getContext() {
+        return this;
     }
 }

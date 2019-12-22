@@ -12,7 +12,6 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -101,9 +100,6 @@ public class GlideEngine implements ImageEngine {
      */
     @Override
     public void loadFolderImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
-        // * other https://www.jianshu.com/p/28f5bcee409f
-        DrawableCrossFadeFactory drawableCrossFadeFactory =
-                new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
         Glide.with(context)
                 .asBitmap()
                 .load(url)
@@ -111,7 +107,6 @@ public class GlideEngine implements ImageEngine {
                 .centerCrop()
                 .sizeMultiplier(0.5f)
                 .apply(new RequestOptions().placeholder(R.drawable.picture_image_placeholder))
-                .transition(BitmapTransitionOptions.withCrossFade(drawableCrossFadeFactory))
                 .into(new BitmapImageViewTarget(imageView) {
                     @Override
                     protected void setResource(Bitmap resource) {

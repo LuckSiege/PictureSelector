@@ -9,7 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.adapter.PictureWeChatPreviewGalleryAdapter;
 import com.luck.picture.lib.config.PictureConfig;
-import com.luck.picture.lib.decoration.GridSpacingItemNotBothDecoration;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.decoration.WrapContentLinearLayoutManager;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.ScreenUtils;
@@ -57,8 +58,8 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
         WrapContentLinearLayoutManager layoutManager = new WrapContentLinearLayoutManager(getContext());
         layoutManager.setOrientation(WrapContentLinearLayoutManager.HORIZONTAL);
         mRvGallery.setLayoutManager(layoutManager);
-        mRvGallery.addItemDecoration(new GridSpacingItemNotBothDecoration(Integer.MAX_VALUE,
-                ScreenUtils.dip2px(this, 8), true, true));
+        mRvGallery.addItemDecoration(new GridSpacingItemDecoration(Integer.MAX_VALUE,
+                ScreenUtils.dip2px(this, 8), false));
         mRvGallery.setAdapter(mGalleryAdapter);
         mGalleryAdapter.setItemClickListener((position, media, v) -> {
             if (viewPager != null && media != null) {
@@ -214,9 +215,24 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
         goneParent();
         boolean enable = selectImages.size() != 0;
         if (enable) {
-            mPictureSendView.setText(config.selectionMode == PictureConfig.SINGLE ? getString(R.string.picture_send) :
-                    getString(R.string.picture_send_num, selectImages.size(),
-                            config.selectionMode == PictureConfig.SINGLE ? 1 : config.maxSelectNum));
+            if (config.isWithVideoImage) {
+                // 混选模式
+                mPictureSendView.setText(config.selectionMode == PictureConfig.SINGLE ?
+                        config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                                ? config.style.pictureRightDefaultText
+                                : getString(R.string.picture_send)
+                        : getString(R.string.picture_send_num, selectImages.size(),
+                        config.maxVideoSelectNum + config.maxSelectNum));
+            } else {
+                String mimeType = selectImages.get(0).getMimeType();
+                int maxSize = PictureMimeType.eqVideo(mimeType) ? config.maxVideoSelectNum : config.maxSelectNum;
+                mPictureSendView.setText(config.selectionMode == PictureConfig.SINGLE ?
+                        config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                                ? config.style.pictureRightDefaultText
+                                : getString(R.string.picture_send)
+                        : getString(R.string.picture_send_num, selectImages.size(), maxSize));
+            }
+
             if (mRvGallery.getVisibility() == View.GONE) {
                 mRvGallery.setVisibility(View.VISIBLE);
                 bottomLine.setVisibility(View.VISIBLE);
