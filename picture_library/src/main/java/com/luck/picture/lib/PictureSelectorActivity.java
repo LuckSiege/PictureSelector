@@ -1158,14 +1158,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         onResult(list);
                     }
                 }
-                mAdapter.bindSelectImages(list);
-                mAdapter.notifyDataSetChanged();
             } else {
                 // 预览界面只勾选了图片处理逻辑
                 isStartAnimation = true;
-                mAdapter.bindSelectImages(list);
-                mAdapter.notifyDataSetChanged();
             }
+            mAdapter.bindSelectImages(list);
+            mAdapter.notifyDataSetChanged();
         }
     }
 

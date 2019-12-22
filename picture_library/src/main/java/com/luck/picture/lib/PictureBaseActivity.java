@@ -357,7 +357,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                 image.setCompressed(eqVideo || flag ? false : true);
                 image.setCompressPath(eqVideo || flag ? "" : path);
                 if (isAndroidQ) {
-                    image.setAndroidQToPath(path);
+                    image.setAndroidQToPath(eqVideo ? null : path);
                 }
             }
         }
