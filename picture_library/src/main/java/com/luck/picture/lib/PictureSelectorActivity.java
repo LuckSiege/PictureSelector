@@ -512,12 +512,21 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 R.anim.picture_anim_fade_in);
     }
 
+    /**
+     * 完成选择
+     */
     private void onComplete() {
         List<LocalMedia> result = mAdapter.getSelectedImages();
+        int size = result.size();
+        if (config.returnEmpty && size == 0) {
+            Intent intent = PictureSelector.putIntentResult(result);
+            setResult(RESULT_OK, intent);
+            closeActivity();
+            return;
+        }
         LocalMedia image = result.size() > 0 ? result.get(0) : null;
         String mimeType = image != null ? image.getMimeType() : "";
         // 如果设置了图片最小选择数量，则判断是否满足条件
-        int size = result.size();
         boolean eqImg = PictureMimeType.eqImage(mimeType);
         if (config.isWithVideoImage) {
             // 混选模式
