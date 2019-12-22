@@ -129,7 +129,7 @@ PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
 
 ## 演示效果
 
-| 功能项 | 混合选择 |
+| 功能项&图片选择 | 功能项&混合选择 |
 |:-----------:|:-----------:|
 |![](image/home.jpg)|![](image/home_mixed.jpg)| 
 
