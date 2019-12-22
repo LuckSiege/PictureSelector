@@ -518,12 +518,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private void onComplete() {
         List<LocalMedia> result = mAdapter.getSelectedImages();
         int size = result.size();
-        if (config.returnEmpty && size == 0) {
-            Intent intent = PictureSelector.putIntentResult(result);
-            setResult(RESULT_OK, intent);
-            closeActivity();
-            return;
-        }
         LocalMedia image = result.size() > 0 ? result.get(0) : null;
         String mimeType = image != null ? image.getMimeType() : "";
         // 如果设置了图片最小选择数量，则判断是否满足条件
@@ -555,15 +549,28 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
             }
         } else {
-            if (config.minSelectNum > 0 && config.selectionMode == PictureConfig.MULTIPLE) {
-                if (size < config.minSelectNum) {
-                    String str = eqImg ? getString(R.string.picture_min_img_num, config.minSelectNum)
-                            : getString(R.string.picture_min_video_num, config.minSelectNum);
+            if (config.selectionMode == PictureConfig.MULTIPLE) {
+                if (config.minSelectNum > 0 && size < config.minSelectNum) {
+                    String str = getString(R.string.picture_min_img_num, config.minSelectNum);
+                    ToastUtils.s(getContext(), str);
+                    return;
+                }
+                if (config.minVideoSelectNum > 0 && size < config.minVideoSelectNum) {
+                    String str = getString(R.string.picture_min_video_num, config.minVideoSelectNum);
                     ToastUtils.s(getContext(), str);
                     return;
                 }
             }
         }
+
+        // 如果没选并且设置了可以空返回则直接回到结果页
+        if (config.returnEmpty && size == 0) {
+            Intent intent = PictureSelector.putIntentResult(result);
+            setResult(RESULT_OK, intent);
+            closeActivity();
+            return;
+        }
+
         if (config.isCheckOriginalImage) {
             onResult(result);
             return;
