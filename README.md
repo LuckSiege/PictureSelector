@@ -81,7 +81,7 @@ PictureSelector.create(this)
 ```
 ## 预览视频
 ```sh
-PictureSelector.create(MainActivity.this).externalPictureVideo(video_path);
+PictureSelector.create(this).externalPictureVideo(video_path);
 ```
 
 ## 项目使用第三方库：
