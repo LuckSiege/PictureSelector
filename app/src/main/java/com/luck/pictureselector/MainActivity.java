@@ -329,11 +329,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // 图片选择结果回调
                     selectList = PictureSelector.obtainMultipleResult(data);
                     // 例如 LocalMedia 里面返回五种path
-                    // 1.media.getPath(); 为原图path
-                    // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
-                    // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
+                    // 1.media.getPath(); 原图path
+                    // 2.media.getCutPath();裁剪后path，需判断media.isCut();切勿直接使用
+                    // 3.media.getCompressPath();压缩后path，需判断media.isCompressed();切勿直接使用
                     // 4.media.getOriginalPath()); media.isOriginal());为true时此字段才有值
-                    // 5.media.getAndroidQToPath();为Android Q版本特有返回的字段，此字段有值就用来做上传使用
+                    // 5.media.getAndroidQToPath();Android Q版本特有返回的字段，但如果开启了压缩或裁剪还是取裁剪或压缩路径；注意：.isAndroidQTransform 为false 此字段将返回空
                     // 如果同时开启裁剪和压缩，则取压缩路径为准因为是先裁剪后压缩
                     for (LocalMedia media : selectList) {
                         Log.i(TAG, "是否压缩:" + media.isCompressed());

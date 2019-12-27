@@ -393,13 +393,4 @@ public class FileUtils {
     public static boolean eqImage(String mimeType) {
         return mimeType != null && mimeType.startsWith(MIME_TYPE_PREFIX_IMAGE);
     }
-
-    /**
-     * 清空裁剪网络图时产生的临时文件
-     */
-    public static void deleteHttpCropTemporaryFile(File file) {
-        if (file != null) {
-            file.delete();
-        }
-    }
 }

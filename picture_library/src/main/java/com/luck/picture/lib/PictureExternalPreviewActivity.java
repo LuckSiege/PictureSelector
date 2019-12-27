@@ -1,6 +1,7 @@
 package com.luck.picture.lib;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -66,6 +67,9 @@ import java.util.List;
  * @描述: 预览图片
  */
 public class PictureExternalPreviewActivity extends PictureBaseActivity implements View.OnClickListener {
+    private static final int SAVE_IMAGE_ERROR = -1;
+    private static final int SAVE_IMAGE_SUCCESSFUL = 0;
+
     private ImageButton ibLeftBack;
     private TextView tvTitle;
     private PreviewViewPager viewPager;
@@ -297,30 +301,34 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                         finish();
                         exitAnimation();
                     });
-                    longImageView.setOnLongClickListener(v -> {
-                        if (config.isNotPreviewDownload) {
-                            if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                                downloadPath = path;
-                                showDownLoadDialog();
-                            } else {
-                                PermissionChecker.requestPermissions(PictureExternalPreviewActivity.this,
-                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
+                    if (!eqVideo) {
+                        longImageView.setOnLongClickListener(v -> {
+                            if (config.isNotPreviewDownload) {
+                                if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                                    downloadPath = path;
+                                    showDownLoadDialog();
+                                } else {
+                                    PermissionChecker.requestPermissions(PictureExternalPreviewActivity.this,
+                                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
+                                }
                             }
-                        }
-                        return true;
-                    });
-                    imageView.setOnLongClickListener(v -> {
-                        if (config.isNotPreviewDownload) {
-                            if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                                downloadPath = path;
-                                showDownLoadDialog();
-                            } else {
-                                PermissionChecker.requestPermissions(PictureExternalPreviewActivity.this,
-                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
+                            return true;
+                        });
+                    }
+                    if (!eqVideo) {
+                        imageView.setOnLongClickListener(v -> {
+                            if (config.isNotPreviewDownload) {
+                                if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                                    downloadPath = path;
+                                    showDownLoadDialog();
+                                } else {
+                                    PermissionChecker.requestPermissions(PictureExternalPreviewActivity.this,
+                                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
+                                }
                             }
-                        }
-                        return true;
-                    });
+                            return true;
+                        });
+                    }
                     ivPlay.setOnClickListener(v -> {
                         Intent intent = new Intent();
                         Bundle bundle = new Bundle();
@@ -408,10 +416,9 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     private void savePictureAlbum() throws Exception {
         String suffix = PictureMimeType.getLastImgSuffix(mimeType);
         String state = Environment.getExternalStorageState();
-        File rootDir = isAndroidQ ? getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) :
-                state.equals(Environment.MEDIA_MOUNTED)
-                        ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
-                        : getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File rootDir = state.equals(Environment.MEDIA_MOUNTED)
+                ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+                : getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         if (rootDir != null && !rootDir.exists() && rootDir.mkdirs()) {
         }
         File folderDir = new File(isAndroidQ || !state.equals(Environment.MEDIA_MOUNTED)
@@ -422,7 +429,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         File file = new File(folderDir, fileName);
         PictureFileUtils.copyFile(downloadPath, file.getAbsolutePath());
         Message message = mHandler.obtainMessage();
-        message.what = 200;
+        message.what = SAVE_IMAGE_SUCCESSFUL;
         message.obj = file.getAbsolutePath();
         mHandler.sendMessage(message);
     }
@@ -440,7 +447,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, PictureMimeType.DCIM);
         Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
         if (uri == null) {
-            mHandler.sendEmptyMessage(400);
+            mHandler.sendEmptyMessage(SAVE_IMAGE_ERROR);
             return;
         }
         AsyncTask.SERIAL_EXECUTOR.execute(() -> {
@@ -454,15 +461,15 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     outputStream.close();
                     String path = PictureFileUtils.getPath(getContext(), uri);
                     Message message = mHandler.obtainMessage();
-                    message.what = 200;
+                    message.what = SAVE_IMAGE_SUCCESSFUL;
                     message.obj = path;
                     mHandler.sendMessage(message);
                 } else {
-                    mHandler.sendEmptyMessage(400);
+                    mHandler.sendEmptyMessage(SAVE_IMAGE_ERROR);
                 }
 
             } catch (Exception e) {
-                mHandler.sendEmptyMessage(400);
+                mHandler.sendEmptyMessage(SAVE_IMAGE_ERROR);
                 e.printStackTrace();
             } finally {
                 try {
@@ -496,33 +503,62 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         }
     }
 
+    /**
+     * 针对Q版本创建uri
+     *
+     * @return
+     */
+    private Uri createOutImageUri() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
+        contentValues.put(MediaStore.Images.Media.DATE_TAKEN, ValueOf.toString(System.currentTimeMillis()));
+        contentValues.put(MediaStore.Images.Media.MIME_TYPE, PictureMimeType.MIME_TYPE_IMAGE);
+        contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, PictureMimeType.DCIM);
+        return getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+    }
+
     // 下载图片保存至手机
     public void showLoadingImage(String urlPath) {
         try {
             URL u = new URL(urlPath);
             String suffix = PictureMimeType.getLastImgSuffix(mimeType);
             String state = Environment.getExternalStorageState();
-            File rootDir = isAndroidQ ? getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) :
-                    state.equals(Environment.MEDIA_MOUNTED)
-                            ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
-                            : getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-            if (rootDir != null && !rootDir.exists() && rootDir.mkdirs()) {
+            BufferedOutputStream bout;
+            String path;
+            if (isAndroidQ) {
+                Uri outImageUri = createOutImageUri();
+                if (outImageUri == null) {
+                    mHandler.sendEmptyMessage(SAVE_IMAGE_ERROR);
+                    return;
+                }
+                bout = new BufferedOutputStream(getContentResolver().openOutputStream(outImageUri));
+                path = PictureFileUtils.getPath(this, outImageUri);
+            } else {
+                File rootDir =
+                        state.equals(Environment.MEDIA_MOUNTED)
+                                ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+                                : getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                if (rootDir != null && !rootDir.exists() && rootDir.mkdirs()) {
+                }
+                File folderDir = new File(!state.equals(Environment.MEDIA_MOUNTED)
+                        ? rootDir.getAbsolutePath() : rootDir.getAbsolutePath() + File.separator + "Camera" + File.separator);
+                if (folderDir != null && !folderDir.exists() && folderDir.mkdirs()) {
+                }
+                String fileName = DateUtils.getCreateFileName("IMG_") + suffix;
+                File file = new File(folderDir, fileName);
+                path = file.getAbsolutePath();
+                bout = new BufferedOutputStream(new FileOutputStream(path));
             }
-            File folderDir = new File(isAndroidQ || !state.equals(Environment.MEDIA_MOUNTED)
-                    ? rootDir.getAbsolutePath() : rootDir.getAbsolutePath() + File.separator + "Camera" + File.separator);
-            if (folderDir != null && !folderDir.exists() && folderDir.mkdirs()) {
+            if (bout == null) {
+                mHandler.sendEmptyMessage(SAVE_IMAGE_ERROR);
+                return;
             }
-            String fileName = DateUtils.getCreateFileName("IMG_") + suffix;
-            File file = new File(folderDir, fileName);
-            String path = file.getAbsolutePath();
             byte[] buffer = new byte[1024 * 8];
             int read;
             int ava = 0;
             long start = System.currentTimeMillis();
             BufferedInputStream bin;
             bin = new BufferedInputStream(u.openStream());
-            BufferedOutputStream bout = new BufferedOutputStream(
-                    new FileOutputStream(path));
             while ((read = bin.read(buffer)) > -1) {
                 bout.write(buffer, 0, read);
                 ava += read;
@@ -531,41 +567,41 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             bout.flush();
             bout.close();
             Message message = mHandler.obtainMessage();
-            message.what = 200;
+            message.what = SAVE_IMAGE_SUCCESSFUL;
             message.obj = path;
             mHandler.sendMessage(message);
         } catch (IOException e) {
-            Message message = mHandler.obtainMessage();
-            message.what = 400;
-            mHandler.sendMessage(message);
+            mHandler.sendEmptyMessage(SAVE_IMAGE_ERROR);
             e.printStackTrace();
         }
     }
 
 
+    @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case 200:
+                case SAVE_IMAGE_SUCCESSFUL:
                     try {
                         String path = (String) msg.obj;
                         if (!TextUtils.isEmpty(path)) {
-                            File file = new File(path);
-                            MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), null);
-                            new PictureMediaScannerConnection(getContext(), file.getAbsolutePath(),
-                                    () -> {
-                                    });
-                            ToastUtils.s(getContext(), getString(R.string.picture_save_success) + "\n" + file.getAbsolutePath());
+                            if (!SdkVersionUtils.checkedAndroid_Q()) {
+                                File file = new File(path);
+                                MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), null);
+                                new PictureMediaScannerConnection(getContext(), file.getAbsolutePath(), null);
+                            }
+                            ToastUtils.s(getContext(), getString(R.string.picture_save_success) + "\n" + path);
                         }
                         dismissDialog();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     break;
-                case 400:
+                case SAVE_IMAGE_ERROR:
                     ToastUtils.s(getContext(), getString(R.string.picture_save_error));
+                    dismissDialog();
                     break;
                 default:
                     break;

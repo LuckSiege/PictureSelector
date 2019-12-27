@@ -433,12 +433,11 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         options.setNavBarColor(config.cropStyle != null ? config.cropStyle.cropNavBarColor : 0);
         boolean isHttp = PictureMimeType.isHttp(originalPath);
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
-        String imgType = isAndroidQ ? PictureMimeType
-                .getLastImgSuffix(PictureMimeType.getMimeType(getContext(), Uri.parse(originalPath)))
-                : PictureMimeType.getLastImgType(originalPath);
         Uri uri = isHttp || isAndroidQ ? Uri.parse(originalPath) : Uri.fromFile(new File(originalPath));
+        String mimeType = PictureMimeType.getMimeTypeFromMediaContentUri(this, uri);
+        String suffix = mimeType.replace("image/", ".");
         File file = new File(PictureFileUtils.getDiskCacheDir(this),
-                TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_") + imgType : config.renameCropFileName);
+                TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_") + suffix : config.renameCropFileName);
         UCrop.of(uri, Uri.fromFile(file))
                 .withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y)
                 .withMaxResultSize(config.cropWidth, config.cropHeight)
@@ -540,13 +539,12 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         String path = size > 0 && size > index ? list.get(index).getPath() : "";
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         boolean isHttp = PictureMimeType.isHttp(path);
-        String imgType = isAndroidQ ? PictureMimeType
-                .getLastImgSuffix(PictureMimeType.getMimeType(getContext(), Uri.parse(path)))
-                : PictureMimeType.getLastImgType(path);
         Uri uri = isHttp || isAndroidQ ? Uri.parse(path) : Uri.fromFile(new File(path));
+        String mimeType = PictureMimeType.getMimeTypeFromMediaContentUri(this, uri);
+        String suffix = mimeType.replace("image/", ".");
         File file = new File(PictureFileUtils.getDiskCacheDir(this),
                 TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_")
-                        + imgType : config.renameCropFileName);
+                        + suffix : config.renameCropFileName);
         UCrop.of(uri, Uri.fromFile(file))
                 .withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y)
                 .withMaxResultSize(config.cropWidth, config.cropHeight)

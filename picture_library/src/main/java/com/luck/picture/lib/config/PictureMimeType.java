@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
 
 import com.luck.picture.lib.R;
 
@@ -304,6 +305,27 @@ public final class PictureMimeType {
             return defaultSuffix;
         }
         return defaultSuffix;
+    }
+
+    /**
+     * 获取mimeType
+     *
+     * @param context
+     * @param uri
+     * @return
+     */
+    public static String getMimeTypeFromMediaContentUri(Context context, Uri uri) {
+        String mimeType;
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver cr = context.getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return TextUtils.isEmpty(mimeType) ? "image/jpeg" : mimeType;
     }
 
     /**

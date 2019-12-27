@@ -20,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
-import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -41,6 +40,7 @@ import com.yalantis.ucrop.immersion.CropImmersiveManage;
 import com.yalantis.ucrop.model.AspectRatio;
 import com.yalantis.ucrop.util.FileUtils;
 import com.yalantis.ucrop.util.SelectedStateListDrawable;
+import com.yalantis.ucrop.util.UcropMimeTypeUtils;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
 import com.yalantis.ucrop.view.OverlayView;
@@ -49,7 +49,6 @@ import com.yalantis.ucrop.view.UCropView;
 import com.yalantis.ucrop.view.widget.AspectRatioTextView;
 import com.yalantis.ucrop.view.widget.HorizontalProgressWheelView;
 
-import java.io.FileInputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -237,10 +236,8 @@ public class UCropActivity extends AppCompatActivity {
                     String lastImgType = FileUtils.getLastImgType(inputUri.toString());
                     isGif = FileUtils.isGifForSuffix(lastImgType);
                 } else {
-                    ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(inputUri, "r");
-                    FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
-                    String suffix = FileUtils.extSuffix(inputStream);
-                    isGif = FileUtils.isGifForSuffix(suffix);
+                    String mimeType = UcropMimeTypeUtils.getMimeTypeFromMediaContentUri(this, inputUri);
+                    isGif = FileUtils.isGif(mimeType);
                 }
                 mGestureCropImageView.setRotateEnabled(isGif ? false : rotateEnabled);
                 mGestureCropImageView.setScaleEnabled(isGif ? false : scaleEnabled);

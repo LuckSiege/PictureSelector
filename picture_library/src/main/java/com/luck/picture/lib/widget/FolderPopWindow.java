@@ -94,6 +94,7 @@ public class FolderPopWindow extends PopupWindow {
         recyclerView = window.findViewById(R.id.folder_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);
+        window.findViewById(R.id.rootView).setOnClickListener(v -> dismiss());
         rootViewBg.setOnClickListener(v -> dismiss());
     }
 
