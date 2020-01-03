@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.security.MessageDigest;
 
 /**
@@ -33,6 +34,40 @@ public class Digest {
     }
 
     private static String computeToQ(FileInputStream fis, String type) {
+
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance(type);
+            byte[] buffer = new byte[1024 * 1024];
+            for (int bytesRead; (bytesRead = fis.read(buffer)) != -1; ) {
+                messageDigest.update(buffer, 0, bytesRead);
+            }
+
+            return bytesToHex(messageDigest.digest());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fis != null) {
+                    fis.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取文件MD5值
+     *
+     * @param inputStream
+     * @return
+     */
+    public static String computeToQMD5(InputStream inputStream) {
+        return computeToQ(inputStream, "MD5");
+    }
+
+    private static String computeToQ(InputStream fis, String type) {
 
         try {
             MessageDigest messageDigest = MessageDigest.getInstance(type);

@@ -14,6 +14,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.DateUtils;
+import com.luck.picture.lib.tools.Digest;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
@@ -74,14 +75,30 @@ public class Luban implements Handler.Callback {
      *
      * @param context A context.
      */
-    private File getImageCacheFile(Context context, String suffix) {
+    private File getImageCacheFile(Context context, InputStreamProvider provider, String suffix) {
         if (TextUtils.isEmpty(mTargetDir)) {
             if (getImageCacheDir(context) != null) {
                 mTargetDir = getImageCacheDir(context).getAbsolutePath();
             }
         }
-        String cacheBuilder = mTargetDir + "/" + DateUtils.getCreateFileName("IMG_") +
-                (TextUtils.isEmpty(suffix) ? ".jpg" : suffix);
+        String cacheBuilder = "";
+        try {
+            String md5Value = Digest.computeToQMD5(provider.open());
+            if (!TextUtils.isEmpty(md5Value)) {
+                cacheBuilder = new StringBuffer()
+                        .append(mTargetDir).append("/")
+                        .append("IMG_")
+                        .append(md5Value.toUpperCase())
+                        .append(TextUtils.isEmpty(suffix) ? ".jpg" : suffix).toString();
+            } else {
+                cacheBuilder = new StringBuffer()
+                        .append(mTargetDir).append("/")
+                        .append(DateUtils.getCreateFileName("IMG_"))
+                        .append(TextUtils.isEmpty(suffix) ? ".jpg" : suffix).toString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return new File(cacheBuilder);
     }
@@ -173,7 +190,7 @@ public class Luban implements Handler.Callback {
      */
     private File get(InputStreamProvider input, Context context) throws IOException {
         try {
-            return new Engine(input, getImageCacheFile(context, Checker.SINGLE.extSuffix(input)), focusAlpha, compressQuality).compress();
+            return new Engine(input, getImageCacheFile(context, input, Checker.SINGLE.extSuffix(input)), focusAlpha, compressQuality).compress();
         } finally {
             input.close();
         }
@@ -213,7 +230,7 @@ public class Luban implements Handler.Callback {
     private File compressReal(Context context, InputStreamProvider path) throws IOException {
         File result;
         String suffix = Checker.SINGLE.extSuffix(path.getMedia() != null ? path.getMedia().getMimeType() : "");
-        File outFile = getImageCacheFile(context, TextUtils.isEmpty(suffix) ? Checker.SINGLE.extSuffix(path) : suffix);
+        File outFile = getImageCacheFile(context, path, TextUtils.isEmpty(suffix) ? Checker.SINGLE.extSuffix(path) : suffix);
         if (mRenameListener != null) {
             String filename = mRenameListener.rename(path.getPath());
             outFile = getImageCustomFile(context, filename);
@@ -245,7 +262,7 @@ public class Luban implements Handler.Callback {
         String newPath = isAndroidQ ? PictureFileUtils
                 .getPath(context, Uri.parse(path.getPath())) : path.getPath();
         String suffix = Checker.SINGLE.extSuffix(media != null ? path.getMedia().getMimeType() : "");
-        File outFile = getImageCacheFile(context, TextUtils.isEmpty(suffix) ? Checker.SINGLE.extSuffix(path) : suffix);
+        File outFile = getImageCacheFile(context, path, TextUtils.isEmpty(suffix) ? Checker.SINGLE.extSuffix(path) : suffix);
         String filename = "";
         if (mRenameListener != null) {
             filename = mRenameListener.rename(newPath);
@@ -253,6 +270,10 @@ public class Luban implements Handler.Callback {
                 filename = isCamera ? filename : StringUtils.rename(filename);
                 outFile = getImageCustomFile(context, filename);
             }
+        }
+        // 如果文件存在直接返回不处理
+        if (outFile.exists()) {
+            return outFile;
         }
         if (mCompressionPredicate != null) {
             if (Checker.SINGLE.extSuffix(path).startsWith(".gif")) {
