@@ -135,9 +135,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ScreenUtils.dip2px(this, 8), false));
 
         mAdapter = new GridImageAdapter(getContext(), onAddPicClickListener);
-        LocalMedia m = new LocalMedia();
-        m.setPath("https://wx1.sinaimg.cn/large/006is4Fsly1gai9xvdb3xj30u08v0u15.jpg");
-        selectList.add(m);
         mAdapter.setList(selectList);
         mAdapter.setSelectMax(maxSelectNum);
         recyclerView.setAdapter(mAdapter);
