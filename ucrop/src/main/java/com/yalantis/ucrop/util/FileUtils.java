@@ -27,6 +27,7 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -313,6 +314,17 @@ public class FileUtils {
     }
 
     /**
+     * 根据时间戳创建文件名
+     *
+     * @param prefix 前缀名
+     * @return
+     */
+    public static String getCreateFileName() {
+        long millis = System.currentTimeMillis();
+        return sf.format(millis);
+    }
+
+    /**
      * 获取图片后缀
      *
      * @param path
@@ -392,5 +404,18 @@ public class FileUtils {
 
     public static boolean eqImage(String mimeType) {
         return mimeType != null && mimeType.startsWith(MIME_TYPE_PREFIX_IMAGE);
+    }
+
+
+    /**
+     * 重命名相册拍照
+     *
+     * @param fileName
+     * @return
+     */
+    public static String rename(String fileName) {
+        String temp = fileName.substring(0, fileName.lastIndexOf("."));
+        String suffix = fileName.substring(fileName.lastIndexOf("."));
+        return new StringBuffer().append(temp).append("_").append(getCreateFileName()).append(suffix).toString();
     }
 }

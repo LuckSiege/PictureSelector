@@ -5,6 +5,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
+import com.luck.picture.lib.listener.ImageCompleteCallback;
 import com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView;
 
 /**
@@ -23,12 +24,22 @@ public interface ImageEngine {
     void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView);
 
     /**
+     * 加载图片
+     *
+     * @param context
+     * @param url
+     * @param imageView
+     */
+    void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView, SubsamplingScaleImageView longImageView, ImageCompleteCallback callback);
+
+    /**
      * 加载网络长图适配
      *
      * @param context
      * @param url
      * @param imageView
      */
+    @Deprecated
     void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView, SubsamplingScaleImageView longImageView);
 
 

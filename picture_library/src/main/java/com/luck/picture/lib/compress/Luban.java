@@ -16,6 +16,7 @@ import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
+import com.luck.picture.lib.tools.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +36,7 @@ public class Luban implements Handler.Callback {
 
     private String mTargetDir;
     private boolean focusAlpha;
+    private boolean isCamera;
     private int mLeastCompressSize;
     private OnRenameListener mRenameListener;
     private OnCompressListener mCompressListener;
@@ -58,6 +60,7 @@ public class Luban implements Handler.Callback {
         this.mCompressionPredicate = builder.mCompressionPredicate;
         this.compressQuality = builder.compressQuality;
         this.focusAlpha = builder.focusAlpha;
+        this.isCamera = builder.isCamera;
         this.mHandler = new Handler(Looper.getMainLooper(), this);
         this.isAndroidQ = builder.isAndroidQ;
     }
@@ -247,6 +250,7 @@ public class Luban implements Handler.Callback {
         if (mRenameListener != null) {
             filename = mRenameListener.rename(newPath);
             if (!TextUtils.isEmpty(filename)) {
+                filename = isCamera ? filename : StringUtils.rename(filename);
                 outFile = getImageCustomFile(context, filename);
             }
         }
@@ -255,7 +259,7 @@ public class Luban implements Handler.Callback {
                 // GIF without compression
                 if (isAndroidQ) {
                     String newFilePath = media.isCut() ? media.getCutPath() :
-                            AndroidQTransformUtils.copyImagePathToDirectoryPictures
+                            AndroidQTransformUtils.parseImagePathToAndroidQ
                                     (context, path.getPath(), filename, media.getMimeType());
                     result = new File(newFilePath);
                 } else {
@@ -268,7 +272,7 @@ public class Luban implements Handler.Callback {
                 } else {
                     if (isAndroidQ) {
                         String newFilePath = media.isCut() ? media.getCutPath() :
-                                AndroidQTransformUtils.copyImagePathToDirectoryPictures
+                                AndroidQTransformUtils.parseImagePathToAndroidQ
                                         (context, path.getPath(), filename, media.getMimeType());
                         result = new File(newFilePath);
                     } else {
@@ -281,7 +285,7 @@ public class Luban implements Handler.Callback {
                 // GIF without compression
                 if (isAndroidQ) {
                     String newFilePath = media.isCut() ? media.getCutPath() :
-                            AndroidQTransformUtils.copyImagePathToDirectoryPictures
+                            AndroidQTransformUtils.parseImagePathToAndroidQ
                                     (context, path.getPath(), filename, media.getMimeType());
                     result = new File(newFilePath);
                 } else {
@@ -291,7 +295,7 @@ public class Luban implements Handler.Callback {
                 boolean isCompress = Checker.SINGLE.needCompressToLocalMedia(mLeastCompressSize, newPath);
                 result = isCompress ? new Engine(path, outFile, focusAlpha, compressQuality).compress() :
                         isAndroidQ ? new File(media.isCut() ? media.getCutPath() :
-                                AndroidQTransformUtils.copyImagePathToDirectoryPictures
+                                AndroidQTransformUtils.parseImagePathToAndroidQ
                                         (context, path.getPath(), filename, media.getMimeType())) : new File(newPath);
             }
         }
@@ -320,6 +324,7 @@ public class Luban implements Handler.Callback {
         private Context context;
         private String mTargetDir;
         private boolean focusAlpha;
+        private boolean isCamera;
         private int compressQuality;
         private int mLeastCompressSize = 100;
         private OnRenameListener mRenameListener;
@@ -488,6 +493,11 @@ public class Luban implements Handler.Callback {
 
         public Builder setTargetDir(String targetDir) {
             this.mTargetDir = targetDir;
+            return this;
+        }
+
+        public Builder isCamera(boolean isCamera) {
+            this.isCamera = isCamera;
             return this;
         }
 

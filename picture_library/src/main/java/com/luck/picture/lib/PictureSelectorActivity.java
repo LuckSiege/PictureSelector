@@ -1365,6 +1365,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             mAdapter.notifyItemRangeChanged(config.isCamera ? 1 : 0, images.size());
             // 解决部分手机拍照完Intent.ACTION_MEDIA_SCANNER_SCAN_FILE，不及时刷新问题手动添加
             manualSaveFolder(media);
+            // 这里主要解决极个别手机拍照会在DCIM目录重复生成一张照片问题
+            if (!isAndroidQ && PictureMimeType.eqImage(media.getMimeType())) {
+                int lastImageId = getLastImageId(media.getMimeType());
+                if (lastImageId != -1) {
+                    removeMedia(lastImageId);
+                }
+            }
             mTvEmpty.setVisibility(images.size() > 0 || config.isSingleDirectReturn ? View.INVISIBLE : View.VISIBLE);
         }
     }

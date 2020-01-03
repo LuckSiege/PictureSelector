@@ -23,6 +23,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -96,6 +97,8 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
     private int mStatusBarColor;
     private int mActiveWidgetColor;
     private int mToolbarWidgetColor;
+    private String renameCropFilename;
+    private boolean isCamera;
     @ColorInt
     private int mRootViewBackgroundColor;
     @DrawableRes
@@ -471,6 +474,11 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         if (mStatusBarColor == 0) {
             mStatusBarColor = ContextCompat.getColor(this, R.color.ucrop_color_statusbar);
         }
+
+        // 自定义裁剪输出名
+        renameCropFilename = intent.getStringExtra(UCrop.Options.EXTRA_RENAME_CROP_FILENAME);
+        // 是否单独拍照
+        isCamera = intent.getBooleanExtra(UCrop.Options.EXTRA_CAMERA, false);
     }
 
     private void setupViews(@NonNull Intent intent) {
@@ -894,15 +902,17 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         Bundle extras = intent.getExtras();
         String path = list.get(cutIndex).getPath();
         boolean isHttp = FileUtils.isHttp(path);
-        String imgType = FileUtils.getLastImgType(path.startsWith("content://")
+        String suffix = FileUtils.getLastImgType(path.startsWith("content://")
                 ? FileUtils.getPath(this, Uri.parse(path)) : path);
         Uri uri = isHttp || path.startsWith("content://") ? Uri.parse(path) : Uri.fromFile(new File(path));
         extras.putParcelable(UCrop.EXTRA_INPUT_URI, uri);
 
         File file = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ?
                 getExternalFilesDir(Environment.DIRECTORY_PICTURES) : getCacheDir();
+
         extras.putParcelable(UCrop.EXTRA_OUTPUT_URI,
-                Uri.fromFile(new File(file, FileUtils.getCreateFileName("IMG_") + imgType)));
+                Uri.fromFile(new File(file,
+                        TextUtils.isEmpty(renameCropFilename) ? FileUtils.getCreateFileName("IMG_") + suffix : isCamera ? renameCropFilename : FileUtils.rename(renameCropFilename))));
         intent.putExtras(extras);
         refreshPhotoRecyclerData();
         setupViews(intent);

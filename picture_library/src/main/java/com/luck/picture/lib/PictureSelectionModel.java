@@ -312,7 +312,6 @@ public class PictureSelectionModel {
      * @param suffixType PictureSelector media format
      * @return
      */
-    @Deprecated
     public PictureSelectionModel imageFormat(String suffixType) {
         selectionConfig.suffixType = suffixType;
         return this;

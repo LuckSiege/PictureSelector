@@ -15,6 +15,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -38,6 +39,7 @@ import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
+import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.model.CutInfo;
@@ -122,11 +124,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     protected void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             config = savedInstanceState.getParcelable(PictureConfig.EXTRA_CONFIG);
-        } else {
-            if (config == null) {
-                config = PictureSelectionConfig.getInstance();
-            }
         }
+        isCheckConfigNull();
         // 单独拍照不设置主题因为拍照界面已经设置了透明主题了
         if (!config.camera) {
             setTheme(config.themeStyleId);
@@ -152,6 +151,12 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         initPictureSelectorStyle();
         // 重置回收状态
         isOnSaveInstanceState = false;
+    }
+
+    private void isCheckConfigNull() {
+        if (config == null) {
+            config = PictureSelectionConfig.getInstance();
+        }
     }
 
     /**
@@ -292,6 +297,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                     List<File> files =
                             Luban.with(getContext())
                                     .loadMediaData(result)
+                                    .isCamera(config.camera)
                                     .setTargetDir(config.compressSavePath)
                                     .setCompressQuality(config.compressQuality)
                                     .setFocusAlpha(config.focusAlpha)
@@ -309,6 +315,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
             Luban.with(this)
                     .loadMediaData(result)
                     .ignoreBy(config.minimumCompressSize)
+                    .isCamera(config.camera)
                     .setCompressQuality(config.compressQuality)
                     .setTargetDir(config.compressSavePath)
                     .setFocusAlpha(config.focusAlpha)
@@ -513,6 +520,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         options.isMultipleSkipCrop(config.isMultipleSkipCrop);
         options.setHideBottomControls(config.hideBottomControls);
         options.setCompressionQuality(config.cropCompressQuality);
+        options.setRenameCropFileName(config.renameCropFileName);
+        options.isCamera(config.camera);
         options.setCutListData(list);
         options.isWithVideoImage(config.isWithVideoImage);
         options.setFreeStyleCropEnabled(config.freeStyleCropEnabled);
@@ -542,9 +551,12 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         Uri uri = isHttp || isAndroidQ ? Uri.parse(path) : Uri.fromFile(new File(path));
         String mimeType = PictureMimeType.getMimeTypeFromMediaContentUri(this, uri);
         String suffix = mimeType.replace("image/", ".");
+
         File file = new File(PictureFileUtils.getDiskCacheDir(this),
                 TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_")
-                        + suffix : config.renameCropFileName);
+                        + suffix : config.camera ? config.renameCropFileName : StringUtils.rename(config.renameCropFileName));
+
+
         UCrop.of(uri, Uri.fromFile(file))
                 .withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y)
                 .withMaxResultSize(config.cropWidth, config.cropHeight)
@@ -659,7 +671,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                         && !media.isCompressed()
                         && TextUtils.isEmpty(media.getAndroidQToPath());
                 if (isCopyAndroidQToPath) {
-                    media.setAndroidQToPath(getPathToAndroidQ(media));
+                    String pathToAndroidQ = AndroidQTransformUtils.getPathToAndroidQ(getContext(),
+                            config.cameraFileName, media);
+                    media.setAndroidQToPath(pathToAndroidQ);
                     if (config.isCheckOriginalImage) {
                         media.setOriginal(true);
                         media.setOriginalPath(media.getAndroidQToPath());
@@ -676,26 +690,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
             // 线程切换
             mHandler.sendMessage(mHandler.obtainMessage(MSG_CHOOSE_RESULT_SUCCESS, images));
         });
-    }
-
-    /**
-     * 复制一份至自己应用沙盒内
-     *
-     * @param media
-     * @return
-     */
-    @Nullable
-    private String getPathToAndroidQ(LocalMedia media) {
-        if (PictureMimeType.eqVideo(media.getMimeType())) {
-            return AndroidQTransformUtils.parseVideoPathToAndroidQ
-                    (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
-        } else if (PictureMimeType.eqAudio(media.getMimeType())) {
-            return AndroidQTransformUtils.parseAudioPathToAndroidQ
-                    (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
-        } else {
-            return AndroidQTransformUtils.parseImagePathToAndroidQ
-                    (getApplicationContext(), media.getPath(), config.cameraFileName, media.getMimeType());
-        }
     }
 
     /**
@@ -724,21 +718,47 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
      * 删除部分手机 拍照在DCIM也生成一张的问题
      *
      * @param id
-     * @param eqVideo
      */
-    @Deprecated
-    protected void removeImage(int id, boolean eqVideo) {
+    protected void removeMedia(int id) {
         try {
             ContentResolver cr = getContentResolver();
-            Uri uri = eqVideo ? MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-                    : MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            String selection = eqVideo ? MediaStore.Video.Media._ID + "=?"
-                    : MediaStore.Images.Media._ID + "=?";
-            cr.delete(uri,
-                    selection,
-                    new String[]{Long.toString(id)});
+            Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            String selection = MediaStore.Images.Media._ID + "=?";
+            cr.delete(uri, selection, new String[]{Long.toString(id)});
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取DCIM文件下最新一条拍照记录
+     *
+     * @param mimeType
+     * @return
+     */
+    protected int getLastImageId(String mimeType) {
+        try {
+            //selection: 指定查询条件
+            String absolutePath = PictureFileUtils.getDCIMCameraPath(this, mimeType);
+            String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
+            String selection = MediaStore.Images.Media.DATA + " like ?";
+            //定义selectionArgs：
+            String[] selectionArgs = {absolutePath + "%"};
+            Cursor data = this.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null,
+                    selection, selectionArgs, ORDER_BY);
+            if (data != null && data.getCount() > 0 && data.moveToFirst()) {
+                int id = data.getInt(data.getColumnIndex(MediaStore.Images.Media._ID));
+                long date = data.getLong(data.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
+                int duration = DateUtils.dateDiffer(date);
+                data.close();
+                // DCIM文件下最近时间30s以内的图片，可以判定是最新生成的重复照片
+                return duration <= 10 ? id : -1;
+            } else {
+                return -1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
         }
     }
 
@@ -812,8 +832,14 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
             } else {
                 int chooseMode = config.chooseMode == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_IMAGE
                         : config.chooseMode;
+                String cameraFileName = "";
+                if (!TextUtils.isEmpty(config.cameraFileName)) {
+                    boolean isSuffixOfImage = PictureMimeType.isSuffixOfImage(config.cameraFileName);
+                    config.cameraFileName = !isSuffixOfImage ? StringUtils.renameSuffix(config.cameraFileName, PictureMimeType.JPEG) : config.cameraFileName;
+                    cameraFileName = config.camera ? config.cameraFileName : StringUtils.rename(config.cameraFileName);
+                }
                 File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(),
-                        chooseMode, config.cameraFileName, config.suffixType);
+                        chooseMode, cameraFileName, config.suffixType);
                 config.cameraPath = cameraFile.getAbsolutePath();
                 imageUri = PictureFileUtils.parUri(this, cameraFile);
             }
@@ -847,8 +873,14 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
             } else {
                 int chooseMode = config.chooseMode ==
                         PictureConfig.TYPE_ALL ? PictureConfig.TYPE_VIDEO : config.chooseMode;
-                File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(), chooseMode, config.cameraFileName,
-                        config.suffixType);
+                String cameraFileName = "";
+                if (!TextUtils.isEmpty(config.cameraFileName)) {
+                    boolean isSuffixOfImage = PictureMimeType.isSuffixOfImage(config.cameraFileName);
+                    config.cameraFileName = isSuffixOfImage ? StringUtils.renameSuffix(config.cameraFileName, PictureMimeType.MP4) : config.cameraFileName;
+                    cameraFileName = config.camera ? config.cameraFileName : StringUtils.rename(config.cameraFileName);
+                }
+                File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(),
+                        chooseMode, cameraFileName, config.suffixType);
                 config.cameraPath = cameraFile.getAbsolutePath();
                 imageUri = PictureFileUtils.parUri(this, cameraFile);
             }

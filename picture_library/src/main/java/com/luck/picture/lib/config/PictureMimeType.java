@@ -176,6 +176,19 @@ public final class PictureMimeType {
     }
 
     /**
+     * 判断文件名是否是图片
+     *
+     * @param name
+     * @return
+     */
+    public static boolean isSuffixOfImage(String name) {
+        return !TextUtils.isEmpty(name) && name.endsWith(".PNG") || name.endsWith(".png") || name.endsWith(".jpeg")
+                || name.endsWith(".gif") || name.endsWith(".GIF") || name.endsWith(".jpg")
+                || name.endsWith(".webp") || name.endsWith(".WEBP") || name.endsWith(".JPEG")
+                || name.endsWith(".bmp");
+    }
+
+    /**
      * 是否是同一类型
      *
      * @param oldMimeType
@@ -348,6 +361,8 @@ public final class PictureMimeType {
     public final static String JPEG = ".jpg";
 
     public final static String PNG = ".png";
+
+    public final static String MP4 = ".mp4";
 
     public final static String DCIM = "DCIM/Camera";
     public final static String MIME_TYPE_IMAGE = "image/jpeg";

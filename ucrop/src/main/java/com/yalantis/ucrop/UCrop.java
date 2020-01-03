@@ -333,6 +333,10 @@ public class UCrop {
         public static final String EXTRA_COMPRESSION_FORMAT_NAME = EXTRA_PREFIX + ".CompressionFormatName";
         public static final String EXTRA_COMPRESSION_QUALITY = EXTRA_PREFIX + ".CompressionQuality";
 
+        public static final String EXTRA_RENAME_CROP_FILENAME = EXTRA_PREFIX + ".RenameCropFileName";
+
+        public static final String EXTRA_CAMERA = EXTRA_PREFIX + ".isCamera";
+
         public static final String EXTRA_ALLOWED_GESTURES = EXTRA_PREFIX + ".AllowedGestures";
 
         public static final String EXTRA_MAX_BITMAP_SIZE = EXTRA_PREFIX + ".MaxBitmapSize";
@@ -410,6 +414,24 @@ public class UCrop {
          */
         public void setCompressionQuality(@IntRange(from = 0) int compressQuality) {
             mOptionBundle.putInt(EXTRA_COMPRESSION_QUALITY, compressQuality);
+        }
+
+        /**
+         * Set the custom clipping output file name
+         *
+         * @param renameCropFileName
+         */
+        public void setRenameCropFileName(String renameCropFileName) {
+            mOptionBundle.putString(EXTRA_RENAME_CROP_FILENAME, renameCropFileName);
+        }
+
+        /**
+         * Whether taking pictures
+         *
+         * @param isCamera
+         */
+        public void isCamera(boolean isCamera) {
+            mOptionBundle.putBoolean(EXTRA_CAMERA, isCamera);
         }
 
         /**

@@ -306,31 +306,6 @@ public class PictureFileUtils {
         }
     }
 
-    /**
-     * Copies one file into the other with the given paths.
-     * In the event that the paths are the same, trying to copy one file to the other
-     * will cause both files to become null.
-     * Simply skipping this step if the paths are identical.
-     */
-    public static boolean copyFile(FileInputStream fileInputStream, String outFilePath) throws IOException {
-        if (fileInputStream == null) {
-            return false;
-        }
-        FileChannel inputChannel = null;
-        FileChannel outputChannel = null;
-        try {
-            inputChannel = fileInputStream.getChannel();
-            outputChannel = new FileOutputStream(new File(outFilePath)).getChannel();
-            inputChannel.transferTo(0, inputChannel.size(), outputChannel);
-            inputChannel.close();
-            return true;
-        } catch (Exception e) {
-            return false;
-        } finally {
-            if (inputChannel != null) inputChannel.close();
-            if (outputChannel != null) outputChannel.close();
-        }
-    }
 
     /**
      * 读取图片属性：旋转的角度
@@ -498,11 +473,53 @@ public class PictureFileUtils {
     }
 
     /**
+     * Copies one file into the other with the given paths.
+     * In the event that the paths are the same, trying to copy one file to the other
+     * will cause both files to become null.
+     * Simply skipping this step if the paths are identical.
+     */
+    public static boolean copyFile(FileInputStream fileInputStream, File outFile) throws IOException {
+        if (fileInputStream == null) {
+            return false;
+        }
+        FileChannel inputChannel = null;
+        FileChannel outputChannel = null;
+        try {
+            inputChannel = fileInputStream.getChannel();
+            outputChannel = new FileOutputStream(outFile).getChannel();
+            inputChannel.transferTo(0, inputChannel.size(), outputChannel);
+            inputChannel.close();
+            return true;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            if (inputChannel != null) inputChannel.close();
+            if (outputChannel != null) outputChannel.close();
+        }
+    }
+
+    /**
      * @param ctx
      * @return
      */
     public static String getDiskCacheDir(Context ctx) {
         return ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
+    }
+
+    /**
+     * @param ctx
+     * @return
+     */
+    public static String getVideoDiskCacheDir(Context ctx) {
+        return ctx.getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath();
+    }
+
+    /**
+     * @param ctx
+     * @return
+     */
+    public static String getAudioDiskCacheDir(Context ctx) {
+        return ctx.getExternalFilesDir(Environment.DIRECTORY_MUSIC).getPath();
     }
 
     /**

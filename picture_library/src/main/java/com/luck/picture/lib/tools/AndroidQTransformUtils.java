@@ -2,12 +2,13 @@ package com.luck.picture.lib.tools;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
+
 import com.luck.picture.lib.config.PictureMimeType;
-import com.yalantis.ucrop.util.FileUtils;
+import com.luck.picture.lib.entity.LocalMedia;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -26,23 +27,32 @@ public class AndroidQTransformUtils {
      *
      * @param ctx
      * @param path
+     * @param customFileName
+     * @param mineType
      * @return
      */
-    public static String parseVideoPathToAndroidQ(Context ctx, String path, String fileName, String mineType) {
+    public static String parseVideoPathToAndroidQ(Context ctx, String path, String customFileName, String mineType) {
         try {
             String suffix = PictureMimeType.getLastImgSuffix(mineType);
-            File filesDir = ctx.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES);
+            String filesDir = PictureFileUtils.getVideoDiskCacheDir(ctx.getApplicationContext());
+            ParcelFileDescriptor parcelFileDescriptor =
+                    ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
+            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+            FileInputStream inputStream = new FileInputStream(fileDescriptor);
+            String md5Value = Digest.computeToQMD5(inputStream);
+            String fileName;
+            if (!TextUtils.isEmpty(md5Value)) {
+                fileName = TextUtils.isEmpty(customFileName) ? new StringBuffer().append("VID_").append(md5Value.toUpperCase()).append(suffix).toString() : customFileName;
+            } else {
+                fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("VID_") + suffix : customFileName;
+            }
             if (filesDir != null) {
-                String newPath = new StringBuffer()
-                        .append(filesDir)
-                        .append(File.separator)
-                        .append(TextUtils.isEmpty(fileName) ? DateUtils.getCreateFileName("VID_") + suffix : fileName)
-                        .toString();
-                ParcelFileDescriptor parcelFileDescriptor =
-                        ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
-                FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                FileInputStream inputStream = new FileInputStream(fileDescriptor);
-                boolean copyFileSuccess = FileUtils.copyFile(inputStream, newPath);
+                String newPath = new StringBuffer().append(filesDir).append(File.separator).append(fileName).toString();
+                File outFile = new File(newPath);
+                if (outFile.exists()) {
+                    return newPath;
+                }
+                boolean copyFileSuccess = PictureFileUtils.copyFile(inputStream, outFile);
                 if (copyFileSuccess) {
                     return newPath;
                 }
@@ -59,64 +69,32 @@ public class AndroidQTransformUtils {
      *
      * @param ctx
      * @param path
+     * @param customFileName
+     * @param mineType
      * @return
      */
-    public static String parseImagePathToAndroidQ(Context ctx, String path, String fileName, String mineType) {
+    public static String parseImagePathToAndroidQ(Context ctx, String path, String customFileName, String mineType) {
         try {
             String suffix = PictureMimeType.getLastImgSuffix(mineType);
             String filesDir = PictureFileUtils.getDiskCacheDir(ctx.getApplicationContext());
+            ParcelFileDescriptor parcelFileDescriptor =
+                    ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
+            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+            FileInputStream inputStream = new FileInputStream(fileDescriptor);
+            String md5Value = Digest.computeToQMD5(inputStream);
+            String fileName;
+            if (!TextUtils.isEmpty(md5Value)) {
+                fileName = TextUtils.isEmpty(customFileName) ? new StringBuffer().append("IMG_").append(md5Value.toUpperCase()).append(suffix).toString() : customFileName;
+            } else {
+                fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("IMG_") + suffix : customFileName;
+            }
             if (filesDir != null) {
-                String newPath = new StringBuffer()
-                        .append(filesDir)
-                        .append(File.separator)
-                        .append(TextUtils.isEmpty(fileName) ? DateUtils.getCreateFileName("IMG_") + suffix : fileName)
-                        .toString();
-                ParcelFileDescriptor parcelFileDescriptor =
-                        ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
-                FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                FileInputStream inputStream = new FileInputStream(fileDescriptor);
-                boolean copyFileSuccess = FileUtils.copyFile(inputStream, newPath);
-                if (copyFileSuccess) {
+                String newPath = new StringBuffer().append(filesDir).append(File.separator).append(fileName).toString();
+                File outFile = new File(newPath);
+                if (outFile.exists()) {
                     return newPath;
                 }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    /**
-     * 解析Android Q版本下图片
-     * #耗时操作需要放在子线程中操作
-     *
-     * @param ctx
-     * @param uri
-     * @param fileName
-     * @param mimeType
-     * @return
-     */
-    public static String copyImagePathToDirectoryPictures(Context ctx, String uri, String fileName,
-                                                          String mimeType) {
-        try {
-            String suffix = PictureMimeType.getLastImgSuffix(mimeType);
-            if (!TextUtils.isEmpty(fileName)) {
-                int lastIndexOf = fileName.lastIndexOf(".");
-                String oldSuffix = fileName.substring(lastIndexOf);
-                fileName = fileName.replace(oldSuffix, suffix);
-            }
-            String filesDir = PictureFileUtils.getDiskCacheDir(ctx.getApplicationContext());
-            if (filesDir != null) {
-                String newPath = new StringBuffer()
-                        .append(filesDir)
-                        .append(File.separator)
-                        .append(TextUtils.isEmpty(fileName) ? DateUtils.getCreateFileName("IMG_") + suffix : fileName)
-                        .toString();
-                ParcelFileDescriptor parcelFileDescriptor =
-                        ctx.getContentResolver().openFileDescriptor(Uri.parse(uri), "r");
-                FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                FileInputStream inputStream = new FileInputStream(fileDescriptor);
-                boolean copyFileSuccess = FileUtils.copyFile(inputStream, newPath);
+                boolean copyFileSuccess = PictureFileUtils.copyFile(inputStream, outFile);
                 if (copyFileSuccess) {
                     return newPath;
                 }
@@ -133,24 +111,32 @@ public class AndroidQTransformUtils {
      *
      * @param ctx
      * @param path
+     * @param customFileName
+     * @param mineType
      * @return
      */
-    public static String parseAudioPathToAndroidQ(Context ctx, String path, String fileName, String mineType) {
+    public static String parseAudioPathToAndroidQ(Context ctx, String path, String customFileName, String mineType) {
         try {
             String suffix = PictureMimeType.getLastImgSuffix(mineType);
-            File filesDir = ctx.getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+            String filesDir = PictureFileUtils.getAudioDiskCacheDir(ctx.getApplicationContext());
+            ParcelFileDescriptor parcelFileDescriptor =
+                    ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
+            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+            FileInputStream inputStream = new FileInputStream(fileDescriptor);
+            String md5Value = Digest.computeToQMD5(inputStream);
+            String fileName;
+            if (!TextUtils.isEmpty(md5Value)) {
+                fileName = TextUtils.isEmpty(customFileName) ? new StringBuffer().append("AUD_").append(md5Value.toUpperCase()).append(suffix).toString() : customFileName;
+            } else {
+                fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("AUD_") + suffix : customFileName;
+            }
             if (filesDir != null) {
-                String newPath = new StringBuffer()
-                        .append(filesDir)
-                        .append(File.separator)
-                        .append(TextUtils.isEmpty(fileName) ? DateUtils.getCreateFileName("AUD_") + suffix : fileName)
-                        .toString();
-
-                ParcelFileDescriptor parcelFileDescriptor =
-                        ctx.getApplicationContext().getContentResolver().openFileDescriptor(Uri.parse(path), "r");
-                FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                FileInputStream inputStream = new FileInputStream(fileDescriptor);
-                boolean copyFileSuccess = FileUtils.copyFile(inputStream, newPath);
+                String newPath = new StringBuffer().append(filesDir).append(File.separator).append(fileName).toString();
+                File outFile = new File(newPath);
+                if (outFile.exists()) {
+                    return newPath;
+                }
+                boolean copyFileSuccess = PictureFileUtils.copyFile(inputStream, outFile);
                 if (copyFileSuccess) {
                     return newPath;
                 }
@@ -159,5 +145,28 @@ public class AndroidQTransformUtils {
             e.printStackTrace();
         }
         return "";
+    }
+
+
+    /**
+     * 复制一份至自己应用沙盒内
+     *
+     * @param context
+     * @param cameraFileName
+     * @param media
+     * @return
+     */
+    @Nullable
+    public static String getPathToAndroidQ(Context context, String cameraFileName, LocalMedia media) {
+        if (PictureMimeType.eqVideo(media.getMimeType())) {
+            return AndroidQTransformUtils.parseVideoPathToAndroidQ
+                    (context.getApplicationContext(), media.getPath(), cameraFileName, media.getMimeType());
+        } else if (PictureMimeType.eqAudio(media.getMimeType())) {
+            return AndroidQTransformUtils.parseAudioPathToAndroidQ
+                    (context.getApplicationContext(), media.getPath(), cameraFileName, media.getMimeType());
+        } else {
+            return AndroidQTransformUtils.parseImagePathToAndroidQ
+                    (context.getApplicationContext(), media.getPath(), cameraFileName, media.getMimeType());
+        }
     }
 }

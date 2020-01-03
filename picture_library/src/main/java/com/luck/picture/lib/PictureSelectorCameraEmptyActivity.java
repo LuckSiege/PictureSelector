@@ -16,6 +16,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.immersive.ImmersiveManage;
 import com.luck.picture.lib.permissions.PermissionChecker;
+import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
@@ -236,6 +237,13 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         media.setSize(size);
         media.setChooseModel(config.chooseMode);
         cameraHandleResult(media, mimeType);
+        // 这里主要解决极个别手机拍照会在DCIM目录重复生成一张照片问题
+        if (!isAndroidQ && PictureMimeType.eqImage(media.getMimeType())) {
+            int lastImageId = getLastImageId(media.getMimeType());
+            if (lastImageId != -1) {
+                removeMedia(lastImageId);
+            }
+        }
     }
 
     /**

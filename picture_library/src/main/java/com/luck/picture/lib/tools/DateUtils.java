@@ -21,7 +21,7 @@ public class DateUtils {
      */
     public static int dateDiffer(long d) {
         try {
-            long l1 = Long.parseLong(String.valueOf(System.currentTimeMillis()).substring(0, 10));
+            long l1 = ValueOf.toLong(String.valueOf(System.currentTimeMillis()).substring(0, 10));
             long interval = l1 - d;
             return (int) Math.abs(interval);
         } catch (Exception e) {
@@ -53,6 +53,16 @@ public class DateUtils {
     public static String getCreateFileName(String prefix) {
         long millis = System.currentTimeMillis();
         return prefix + sf.format(millis);
+    }
+
+    /**
+     * 根据时间戳创建文件名
+     *
+     * @return
+     */
+    public static String getCreateFileName() {
+        long millis = System.currentTimeMillis();
+        return sf.format(millis);
     }
 
     /**

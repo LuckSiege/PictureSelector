@@ -36,6 +36,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.listener.ImageCompleteCallback;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.photoview.PhotoView;
 import com.luck.picture.lib.tools.AttrsUtils;
@@ -263,8 +264,8 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     } else {
                         path = media.getPath();
                     }
-                    mimeType = PictureMimeType.isHttp(path) ?
-                            PictureMimeType.getImageMimeType(media.getPath()) : media.getMimeType();
+                    boolean isHttp = PictureMimeType.isHttp(path);
+                    mimeType = isHttp ? PictureMimeType.getImageMimeType(media.getPath()) : media.getMimeType();
                     boolean eqVideo = PictureMimeType.eqVideo(mimeType);
                     ivPlay.setVisibility(eqVideo ? View.VISIBLE : View.GONE);
                     boolean isGif = PictureMimeType.isGif(mimeType);
@@ -279,10 +280,19 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                         }
                     } else {
                         if (config != null && config.imageEngine != null) {
-                            if (PictureMimeType.isHttp(path)) {
+                            if (isHttp) {
                                 // 网络图片
                                 config.imageEngine.loadImage(contentView.getContext(), path,
-                                        imageView, longImageView);
+                                        imageView, longImageView, new ImageCompleteCallback() {
+                                            @Override
+                                            public void onShowLoading() {
+                                                showPleaseDialog();
+                                            }
+                                            @Override
+                                            public void onHideLoading() {
+                                                dismissDialog();
+                                            }
+                                        });
                             } else {
                                 if (eqLongImg) {
                                     displayLongPic(isAndroidQ

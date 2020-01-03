@@ -135,6 +135,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ScreenUtils.dip2px(this, 8), false));
 
         mAdapter = new GridImageAdapter(getContext(), onAddPicClickListener);
+        LocalMedia m = new LocalMedia();
+        m.setPath("https://wx1.sinaimg.cn/large/006is4Fsly1gai9xvdb3xj30u08v0u15.jpg");
+        selectList.add(m);
         mAdapter.setList(selectList);
         mAdapter.setSelectMax(maxSelectNum);
         recyclerView.setAdapter(mAdapter);
@@ -156,7 +159,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case PictureConfig.TYPE_AUDIO:
                         // 预览音频
-                        PictureSelector.create(MainActivity.this).externalPictureAudio(media.getPath());
+                        PictureSelector.create(MainActivity.this).externalPictureAudio(
+                                media.getPath().startsWith("content://") ? media.getAndroidQToPath() : media.getPath());
                         break;
                     default:
                         // 预览图片 可自定长按保存路径
@@ -218,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.isAndroidQTransform(false)// 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && enableCrop(false);有效,默认处理
                         .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)// 设置相册Activity方向，不设置默认使用系统
                         .isOriginalImageControl(cb_original.isChecked())// 是否显示原图控制按钮，如果设置为true则用户可以自由选择是否使用原图，压缩、裁剪功能将会失效
-                        //.cameraFileName("test.png")    // 重命名拍照文件名、注意这个只在使用相机时可以使用，如果使用相机又开启了压缩或裁剪 需要配合压缩和裁剪文件名api
+                        //.cameraFileName("test.jpg")    // 重命名拍照文件名、如果是相册拍照则内部会自动拼上当前时间戳防止重复，注意这个只在使用相机时可以使用，如果使用相机又开启了压缩或裁剪 需要配合压缩和裁剪文件名api
                         //.renameCompressFile("test.png")// 重命名压缩文件名、 注意这个不要重复，只适用于单张图压缩使用
                         //.renameCropFileName("test.png")// 重命名裁剪文件名、 注意这个不要重复，只适用于单张图裁剪使用
                         .selectionMode(cb_choose_mode.isChecked() ?
@@ -281,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
                         .selectionMode(cb_choose_mode.isChecked() ?
                                 PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
-                        //.cameraFileName("test.png")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用
+                        //.cameraFileName("test.jpg")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用
                         //.renameCompressFile("test.png")// 重命名压缩文件名、 注意这个不要重复，只适用于单张图压缩使用
                         //.renameCropFileName("test.png")// 重命名裁剪文件名、 注意这个不要重复，只适用于单张图裁剪使用
                         .previewImage(cb_preview_img.isChecked())// 是否可预览图片

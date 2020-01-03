@@ -134,7 +134,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isFallbackVersion2;
     public boolean isFallbackVersion3;
 
-    private void reset() {
+    private void initDefaultValue() {
         chooseMode = PictureMimeType.ofImage();
         camera = false;
         themeStyleId = R.style.picture_default_style;
@@ -230,7 +230,7 @@ public final class PictureSelectionConfig implements Parcelable {
 
     public static PictureSelectionConfig getCleanInstance() {
         PictureSelectionConfig selectionSpec = getInstance();
-        selectionSpec.reset();
+        selectionSpec.initDefaultValue();
         return selectionSpec;
     }
 
