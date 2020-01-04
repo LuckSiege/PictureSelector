@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -50,7 +51,7 @@ import java.io.IOException;
  * @date：2020-01-04 13:41
  * @describe：自定义相机View
  */
-public class CustomCameraView extends FrameLayout {
+public class CustomCameraView extends RelativeLayout {
     /**
      * 只能拍照
      */
@@ -132,6 +133,7 @@ public class CustomCameraView extends FrameLayout {
 
     public void initView() {
         setWillNotDraw(false);
+        setBackgroundColor(ContextCompat.getColor(getContext(), R.color.picture_color_black));
         View view = LayoutInflater.from(getContext()).inflate(R.layout.picture_camera_view, this);
         mVideoView = view.findViewById(R.id.video_preview);
         mTextureView = view.findViewById(R.id.video_play_preview);

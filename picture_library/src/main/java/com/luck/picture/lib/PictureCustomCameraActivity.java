@@ -17,6 +17,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.tools.ToastUtils;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 
 /**
  * @author：luck
@@ -57,7 +58,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
         mCameraView = findViewById(R.id.camera_view);
         mCameraView.setPictureSelectionConfig(config);
         // 绑定生命周期
-        mCameraView.setBindToLifecycle(this);
+        mCameraView.setBindToLifecycle(new WeakReference<>(this).get());
         // 视频最大拍摄时长
         if (config.recordVideoSecond > 0) {
             mCameraView.setRecordVideoMaxTime(config.recordVideoSecond);
