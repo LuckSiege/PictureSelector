@@ -9,8 +9,6 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.camera.view.CameraView;
-import androidx.lifecycle.LifecycleEventObserver;
-import androidx.lifecycle.LifecycleOwner;
 
 import com.luck.picture.lib.camera.CustomCameraView;
 import com.luck.picture.lib.camera.listener.CameraListener;
