@@ -18,18 +18,32 @@ public class PictureMediaScannerConnection implements MediaScannerConnection.Med
     private MediaScannerConnection mMs;
     private String mPath;
     private ScanListener mListener;
+    private String mimeType;
 
     public PictureMediaScannerConnection(Context context, String path, ScanListener l) {
-        mListener = l;
-        mPath = path;
-        mMs = new MediaScannerConnection(context.getApplicationContext(), this);
-        mMs.connect();
+        this.mListener = l;
+        this.mPath = path;
+        this.mMs = new MediaScannerConnection(context.getApplicationContext(), this);
+        this.mMs.connect();
+    }
+
+    public PictureMediaScannerConnection(Context context, String path) {
+        this.mPath = path;
+        this.mMs = new MediaScannerConnection(context.getApplicationContext(), this);
+        this.mMs.connect();
+    }
+
+    public PictureMediaScannerConnection(Context context, String path, String mimeType) {
+        this.mPath = path;
+        this.mimeType = mimeType;
+        this.mMs = new MediaScannerConnection(context.getApplicationContext(), this);
+        this.mMs.connect();
     }
 
     @Override
     public void onMediaScannerConnected() {
         if (!TextUtils.isEmpty(mPath)) {
-            mMs.scanFile(mPath, null);
+            mMs.scanFile(mPath, mimeType);
         }
     }
 

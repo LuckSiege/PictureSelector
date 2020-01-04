@@ -108,6 +108,25 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param isUseCustomCamera Whether to use a custom camera
+     * @return
+     */
+    public PictureSelectionModel isUseCustomCamera(boolean isUseCustomCamera) {
+        selectionConfig.isUseCustomCamera = isUseCustomCamera;
+        return this;
+    }
+
+    /**
+     * @param buttonFeatures Set the record button function
+     * # 具体参考 CustomCameraView.BUTTON_STATE_BOTH、BUTTON_STATE_ONLY_CAPTURE、BUTTON_STATE_ONLY_RECORDER
+     * @return
+     */
+    public PictureSelectionModel setButtonFeatures(int buttonFeatures) {
+        selectionConfig.buttonFeatures = buttonFeatures;
+        return this;
+    }
+
+    /**
      * @param enableCrop Do you want to start cutting ?
      * @return
      */
@@ -873,10 +892,15 @@ public class PictureSelectionModel {
             if (activity == null || selectionConfig == null) {
                 return;
             }
-            Intent intent = new Intent(activity, selectionConfig.camera
-                    ? PictureSelectorCameraEmptyActivity.class :
-                    selectionConfig.isWeChatStyle ? PictureSelectorWeChatStyleActivity.class
-                            : PictureSelectorActivity.class);
+            Intent intent;
+            if (selectionConfig.camera && selectionConfig.isUseCustomCamera) {
+                intent = new Intent(activity, PictureCustomCameraActivity.class);
+            } else {
+                intent = new Intent(activity, selectionConfig.camera
+                        ? PictureSelectorCameraEmptyActivity.class :
+                        selectionConfig.isWeChatStyle ? PictureSelectorWeChatStyleActivity.class
+                                : PictureSelectorActivity.class);
+            }
             Fragment fragment = selector.getFragment();
             if (fragment != null) {
                 fragment.startActivityForResult(intent, requestCode);

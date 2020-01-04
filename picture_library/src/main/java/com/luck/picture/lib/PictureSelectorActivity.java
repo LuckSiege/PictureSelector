@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -41,6 +40,7 @@ import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.model.LocalMediaLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.permissions.PermissionChecker;
+import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DoubleUtils;
@@ -432,6 +432,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     public void startCamera() {
         // 防止快速点击，但是单独拍照不管
         if (!DoubleUtils.isFastDoubleClick()) {
+            if (config.isUseCustomCamera) {
+                startCustomCamera();
+                return;
+            }
             switch (config.chooseMode) {
                 case PictureConfig.TYPE_ALL:
                     // 如果是全部类型下，单独拍照就默认图片 (因为单独拍照不会new此PopupWindow对象)
@@ -454,6 +458,25 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 default:
                     break;
             }
+        }
+    }
+
+    /**
+     * 启动自定义相机
+     */
+    private void startCustomCamera() {
+        if (PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)) {
+            Intent intent = new Intent(this, PictureCustomCameraActivity.class);
+            startActivityForResult(intent, PictureConfig.REQUEST_CAMERA);
+            PictureWindowAnimationStyle windowAnimationStyle = config.windowAnimationStyle;
+            overridePendingTransition(windowAnimationStyle != null &&
+                    windowAnimationStyle.activityEnterAnimation != 0 ?
+                    windowAnimationStyle.activityEnterAnimation :
+                    R.anim.picture_anim_enter, R.anim.picture_anim_fade_in);
+        } else {
+            PermissionChecker
+                    .requestPermissions(this,
+                            new String[]{Manifest.permission.RECORD_AUDIO}, PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE);
         }
     }
 
@@ -1078,6 +1101,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case PictureConfig.PREVIEW_VIDEO_CODE:
@@ -1235,7 +1259,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         LocalMedia media = new LocalMedia();
         if (config.chooseMode != PictureMimeType.ofAudio()) {
             // 图片视频处理规则
-            if (isAndroidQ) {
+            if (config.cameraPath.startsWith("content://")) {
                 String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(config.cameraPath));
                 File file = new File(path);
                 size = file.length();
@@ -1607,6 +1631,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 // 相机权限
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     onTakePhoto();
+                } else {
+                    ToastUtils.s(getContext(), getString(R.string.picture_camera));
+                }
+                break;
+            case PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE:
+                // 录音权限
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startCustomCamera();
                 } else {
                     ToastUtils.s(getContext(), getString(R.string.picture_camera));
                 }

@@ -50,4 +50,7 @@
     <string name="picture_preview_num">미리보기(%1$d)</string>
     <string name="picture_select">선택</string>
     <string name="picture_data_exception">앨범 정보 이상 가져오기...</string>
+    <string name="picture_recording_time_is_short">녹화 시간이 너무 짧다</string>
+
+    <string name="picture_photo_camera">사진 찍기</string>
 </resources>

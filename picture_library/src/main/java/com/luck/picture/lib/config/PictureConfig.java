@@ -9,8 +9,10 @@ public final class PictureConfig {
     public final static int APPLY_STORAGE_PERMISSIONS_CODE = 1;
     public final static int APPLY_CAMERA_PERMISSIONS_CODE = 2;
     public final static int APPLY_AUDIO_PERMISSIONS_CODE = 3;
+    public final static int APPLY_RECORD_AUDIO_PERMISSIONS_CODE = 4;
 
     public final static String EXTRA_MEDIA_KEY = "mediaKey";
+    public final static String EXTRA_MEDIA_PATH = "mediaPath";
     public final static String EXTRA_AUDIO_PATH = "audioPath";
     public final static String EXTRA_VIDEO_PATH = "videoPath";
     public final static String EXTRA_PREVIEW_VIDEO = "isExternalPreviewVideo";

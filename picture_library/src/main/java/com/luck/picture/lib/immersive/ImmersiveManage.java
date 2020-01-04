@@ -14,17 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
  */
 
 public class ImmersiveManage {
-    /**
-     * 判定是否使用沉浸式
-     */
-    public static boolean immersiveUseful() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return true;
-        }
-
-        return false;
-    }
-
 
     /**
      * 注意：使用最好将布局xml 跟布局加入    android:fitsSystemWindows="true" ，这样可以避免有些手机上布局顶边的问题

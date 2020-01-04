@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import androidx.annotation.ColorInt;
 import androidx.annotation.StyleRes;
 
+import com.luck.picture.lib.camera.CustomCameraView;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
@@ -38,6 +39,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public String renameCropFileName;
     public String specifiedFormat;
     public int requestedOrientation;
+    public int buttonFeatures;
     public boolean isCameraAroundState;
     public boolean isAndroidQTransform;
     @StyleRes
@@ -52,6 +54,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public int videoMaxSecond;
     public int videoMinSecond;
     public int recordVideoSecond;
+    public int recordVideoMinSecond;
     public int minimumCompressSize;
     public int imageSpanCount;
     public int aspect_ratio_x;
@@ -63,6 +66,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public int language;
     public boolean isMultipleSkipCrop;
     public boolean isWeChatStyle;
+    public boolean isUseCustomCamera;
     public boolean zoomAnim;
     public boolean isCompress;
     public boolean isOriginalControl;
@@ -150,6 +154,7 @@ public final class PictureSelectionConfig implements Parcelable {
         videoMinSecond = 0;
         filterFileSize = -1;
         recordVideoSecond = 60;
+        recordVideoMinSecond = 0;
         compressQuality = 60;
         minimumCompressSize = PictureConfig.MAX_COMPRESS_SIZE;
         imageSpanCount = 4;
@@ -160,6 +165,7 @@ public final class PictureSelectionConfig implements Parcelable {
         cropWidth = 0;
         cropHeight = 0;
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
+        buttonFeatures = CustomCameraView.BUTTON_STATE_BOTH;  //初始化按钮为可录制可拍照
         isCameraAroundState = false;
         isWithVideoImage = false;
         isAndroidQTransform = true;
@@ -179,6 +185,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isFallbackVersion3 = true;
         enableCrop = false;
         isWeChatStyle = false;
+        isUseCustomCamera = false;
         isMultipleSkipCrop = true;
         freeStyleCropEnabled = false;
         circleDimmedLayer = false;
@@ -196,7 +203,7 @@ public final class PictureSelectionConfig implements Parcelable {
         circleStrokeWidth = 1;
         isDragFrame = true;
         compressSavePath = "";
-        suffixType = PictureFileUtils.POSTFIX;
+        suffixType = "";
         cameraFileName = "";
         specifiedFormat = "";
         renameCompressFileName = "";
@@ -262,6 +269,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeString(this.renameCropFileName);
         dest.writeString(this.specifiedFormat);
         dest.writeInt(this.requestedOrientation);
+        dest.writeInt(this.buttonFeatures);
         dest.writeByte(this.isCameraAroundState ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isAndroidQTransform ? (byte) 1 : (byte) 0);
         dest.writeInt(this.themeStyleId);
@@ -275,6 +283,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(this.videoMaxSecond);
         dest.writeInt(this.videoMinSecond);
         dest.writeInt(this.recordVideoSecond);
+        dest.writeInt(this.recordVideoMinSecond);
         dest.writeInt(this.minimumCompressSize);
         dest.writeInt(this.imageSpanCount);
         dest.writeInt(this.aspect_ratio_x);
@@ -286,6 +295,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(this.language);
         dest.writeByte(this.isMultipleSkipCrop ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isWeChatStyle ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isUseCustomCamera ? (byte) 1 : (byte) 0);
         dest.writeByte(this.zoomAnim ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isCompress ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isOriginalControl ? (byte) 1 : (byte) 0);
@@ -351,6 +361,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.renameCropFileName = in.readString();
         this.specifiedFormat = in.readString();
         this.requestedOrientation = in.readInt();
+        this.buttonFeatures = in.readInt();
         this.isCameraAroundState = in.readByte() != 0;
         this.isAndroidQTransform = in.readByte() != 0;
         this.themeStyleId = in.readInt();
@@ -364,6 +375,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.videoMaxSecond = in.readInt();
         this.videoMinSecond = in.readInt();
         this.recordVideoSecond = in.readInt();
+        this.recordVideoMinSecond = in.readInt();
         this.minimumCompressSize = in.readInt();
         this.imageSpanCount = in.readInt();
         this.aspect_ratio_x = in.readInt();
@@ -375,6 +387,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.language = in.readInt();
         this.isMultipleSkipCrop = in.readByte() != 0;
         this.isWeChatStyle = in.readByte() != 0;
+        this.isUseCustomCamera = in.readByte() != 0;
         this.zoomAnim = in.readByte() != 0;
         this.isCompress = in.readByte() != 0;
         this.isOriginalControl = in.readByte() != 0;

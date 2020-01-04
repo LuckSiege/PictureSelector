@@ -13,6 +13,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
+import java.io.OutputStream;
 
 /**
  * @author：luck
@@ -167,6 +168,32 @@ public class AndroidQTransformUtils {
         } else {
             return AndroidQTransformUtils.parseImagePathToAndroidQ
                     (context.getApplicationContext(), media.getPath(), cameraFileName, media.getMimeType());
+        }
+    }
+
+    /**
+     * 复制文件至AndroidQ手机相册目录
+     *
+     * @param context
+     * @param inputUri
+     * @param outUri
+     */
+    public static void copyPathToAndroidQ(Context context, Uri inputUri, Uri outUri) {
+        try {
+            OutputStream outputStream = context.getContentResolver()
+                    .openOutputStream(outUri);
+            byte[] buffer = new byte[1024 * 8];
+            int read;
+            ParcelFileDescriptor parcelFileDescriptor = context.getContentResolver().openFileDescriptor(inputUri, "r");
+            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+            FileInputStream inputStream = new FileInputStream(fileDescriptor);
+            while ((read = inputStream.read(buffer)) > -1) {
+                outputStream.write(buffer, 0, read);
+            }
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

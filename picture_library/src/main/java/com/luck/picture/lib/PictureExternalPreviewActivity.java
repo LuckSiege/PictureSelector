@@ -288,6 +288,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                                             public void onShowLoading() {
                                                 showPleaseDialog();
                                             }
+
                                             @Override
                                             public void onHideLoading() {
                                                 dismissDialog();
@@ -567,8 +568,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             int read;
             int ava = 0;
             long start = System.currentTimeMillis();
-            BufferedInputStream bin;
-            bin = new BufferedInputStream(u.openStream());
+            BufferedInputStream bin = new BufferedInputStream(u.openStream());
             while ((read = bin.read(buffer)) > -1) {
                 bout.write(buffer, 0, read);
                 ava += read;
@@ -600,7 +600,8 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                             if (!SdkVersionUtils.checkedAndroid_Q()) {
                                 File file = new File(path);
                                 MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), null);
-                                new PictureMediaScannerConnection(getContext(), file.getAbsolutePath(), null);
+                                new PictureMediaScannerConnection(getContext(), file.getAbsolutePath(), () -> {
+                                });
                             }
                             ToastUtils.s(getContext(), getString(R.string.picture_save_success) + "\n" + path);
                         }

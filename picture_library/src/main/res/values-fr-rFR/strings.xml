@@ -51,4 +51,6 @@
     <string name="picture_preview_num">voir(%1$d)</string>
     <string name="picture_select">Le choix</string>
     <string name="picture_data_exception">Anomalie des données de l’album...</string>
+    <string name="picture_recording_time_is_short">La durée d’enregistrement est trop courte</string>
+    <string name="picture_photo_camera">Prendre des photos, filmer</string>
 </resources>

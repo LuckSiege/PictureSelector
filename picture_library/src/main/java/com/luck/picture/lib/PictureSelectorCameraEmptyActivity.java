@@ -16,7 +16,6 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.immersive.ImmersiveManage;
 import com.luck.picture.lib.permissions.PermissionChecker;
-import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
@@ -45,19 +44,21 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            if (PermissionChecker
-                    .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
-                    PermissionChecker
-                            .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                onTakePhoto();
-            } else {
-                PermissionChecker.requestPermissions(this, new String[]{
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
+        if (!config.isUseCustomCamera) {
+            if (savedInstanceState == null) {
+                if (PermissionChecker
+                        .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
+                        PermissionChecker
+                                .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    onTakePhoto();
+                } else {
+                    PermissionChecker.requestPermissions(this, new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
+                }
             }
+            setTheme(R.style.Picture_Theme_Translucent);
         }
-        setTheme(R.style.Picture_Theme_Translucent);
         super.onCreate(savedInstanceState);
     }
 
@@ -135,7 +136,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
      *
      * @param data
      */
-    private void singleCropHandleResult(Intent data) {
+    protected void singleCropHandleResult(Intent data) {
         if (data == null) {
             return;
         }
@@ -168,7 +169,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
      * @param data
      */
 
-    private void requestCamera(Intent data) {
+    protected void requestCamera(Intent data) {
         // on take photo success
         String mimeType = null;
         long duration = 0;
@@ -200,7 +201,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         LocalMedia media = new LocalMedia();
         if (config.chooseMode != PictureMimeType.ofAudio()) {
             // 图片视频处理规则
-            if (isAndroidQ) {
+            if (config.cameraPath.startsWith("content://")) {
                 String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(config.cameraPath));
                 File file = new File(path);
                 size = file.length();
@@ -213,6 +214,11 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 }
                 int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
                 media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
+                if (config.isUseCustomCamera && data != null) {
+                    // 自定义拍照时已经在应用沙盒内生成了文件
+                    String mediaPath = data.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH);
+                    media.setAndroidQToPath(mediaPath);
+                }
             } else {
                 final File file = new File(config.cameraPath);
                 mimeType = PictureMimeType.getMimeType(file);

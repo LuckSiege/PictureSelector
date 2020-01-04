@@ -50,4 +50,6 @@
     <string name="picture_preview_num">Siehe(%1$d)</string>
     <string name="picture_select">Auswahl</string>
     <string name="picture_data_exception">Ausnahme von Album-Daten...</string>
+    <string name="picture_recording_time_is_short">Die Aufnahmezeit ist zu kurz</string>
+    <string name="picture_photo_camera">Machen Sie ein Foto</string>
 </resources>

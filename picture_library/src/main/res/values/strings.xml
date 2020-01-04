@@ -50,4 +50,6 @@
     <string name="picture_preview_num">预览(%1$d)</string>
     <string name="picture_select">选择</string>
     <string name="picture_data_exception">获取相册数据异常...</string>
+    <string name="picture_recording_time_is_short">录制时间过短</string>
+    <string name="picture_photo_camera">单击拍照，长按摄像</string>
 </resources>

@@ -841,6 +841,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                 File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(),
                         chooseMode, cameraFileName, config.suffixType);
                 config.cameraPath = cameraFile.getAbsolutePath();
+
                 imageUri = PictureFileUtils.parUri(this, cameraFile);
             }
             if (config.isCameraAroundState) {

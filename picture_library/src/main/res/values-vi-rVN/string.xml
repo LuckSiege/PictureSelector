@@ -51,4 +51,6 @@
     <string name="picture_preview_num">Xem trước(%1$d)</string>
     <string name="picture_select">Chọn</string>
     <string name="picture_data_exception">Lấy ngoại lệ dữ liệu album...</string>
+    <string name="picture_recording_time_is_short">Thời gian ghi âm quá ngắn</string>
+    <string name="picture_photo_camera">Chụp ảnh đi</string>
 </resources>

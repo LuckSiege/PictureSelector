@@ -40,7 +40,7 @@ public class PhotoItemSelectedDialog extends DialogFragment implements View.OnCl
                              @Nullable Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         getDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        return inflater.inflate(R.layout.dialog_camera_selected, container);
+        return inflater.inflate(R.layout.picture_dialog_camera_selected, container);
     }
 
     @Override
