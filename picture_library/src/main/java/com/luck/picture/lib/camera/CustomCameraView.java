@@ -94,7 +94,7 @@ public class CustomCameraView extends RelativeLayout {
     private CameraListener mCameraListener;
     private ClickListener mOnClickListener;
     private ImageCallbackListener mImageCallbackListener;
-    private androidx.camera.view.CameraView mVideoView;
+    private androidx.camera.view.CameraView mCameraView;
     private ImageView mImagePreview;
     private ImageView mSwitchCamera;
     private ImageView mFlashLamp;
@@ -135,7 +135,7 @@ public class CustomCameraView extends RelativeLayout {
         setWillNotDraw(false);
         setBackgroundColor(ContextCompat.getColor(getContext(), R.color.picture_color_black));
         View view = LayoutInflater.from(getContext()).inflate(R.layout.picture_camera_view, this);
-        mVideoView = view.findViewById(R.id.video_preview);
+        mCameraView = view.findViewById(R.id.cameraView);
         mTextureView = view.findViewById(R.id.video_play_preview);
         mImagePreview = view.findViewById(R.id.image_preview);
         mSwitchCamera = view.findViewById(R.id.image_switch);
@@ -148,21 +148,21 @@ public class CustomCameraView extends RelativeLayout {
                 type_flash = TYPE_FLASH_AUTO;
             setFlashRes();
         });
-        mVideoView.enableTorch(true);
+        mCameraView.enableTorch(true);
         mCaptureLayout = view.findViewById(R.id.capture_layout);
         mCaptureLayout.setDuration(duration);
 
         mCaptureLayout.setIconSrc(iconLeft, iconRight);
         //切换摄像头
-        mSwitchCamera.setOnClickListener(v -> mVideoView.toggleCamera());
+        mSwitchCamera.setOnClickListener(v -> mCameraView.toggleCamera());
         //拍照 录像
         mCaptureLayout.setCaptureListener(new CaptureListener() {
             @Override
             public void takePictures() {
                 mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
-                mVideoView.setCaptureMode(androidx.camera.view.CameraView.CaptureMode.IMAGE);
-                mVideoView.takePicture(createImageFile(), ContextCompat.getMainExecutor(getContext()),
+                mCameraView.setCaptureMode(androidx.camera.view.CameraView.CaptureMode.IMAGE);
+                mCameraView.takePicture(createImageFile(), ContextCompat.getMainExecutor(getContext()),
                         new ImageCapture.OnImageSavedCallback() {
                             @Override
                             public void onImageSaved(@NonNull File file) {
@@ -191,8 +191,8 @@ public class CustomCameraView extends RelativeLayout {
             public void recordStart() {
                 mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
-                mVideoView.setCaptureMode(androidx.camera.view.CameraView.CaptureMode.VIDEO);
-                mVideoView.startRecording(createVideoFile(), ContextCompat.getMainExecutor(getContext()),
+                mCameraView.setCaptureMode(androidx.camera.view.CameraView.CaptureMode.VIDEO);
+                mCameraView.startRecording(createVideoFile(), ContextCompat.getMainExecutor(getContext()),
                         new VideoCapture.OnVideoSavedCallback() {
                             @Override
                             public void onVideoSaved(@NonNull File file) {
@@ -205,7 +205,7 @@ public class CustomCameraView extends RelativeLayout {
                                             Uri.fromFile(file), Uri.parse(mConfig.cameraPath)));
                                 }
                                 mTextureView.setVisibility(View.VISIBLE);
-                                mVideoView.setVisibility(View.INVISIBLE);
+                                mCameraView.setVisibility(View.INVISIBLE);
                                 if (mTextureView.isAvailable()) {
                                     startVideoPlay(mVideoFile);
                                 } else {
@@ -229,13 +229,13 @@ public class CustomCameraView extends RelativeLayout {
                 mFlashLamp.setVisibility(VISIBLE);
                 mCaptureLayout.resetCaptureLayout();
                 mCaptureLayout.setTextWithAnimation(getContext().getString(R.string.picture_recording_time_is_short));
-                mVideoView.stopRecording();
+                mCameraView.stopRecording();
             }
 
             @Override
             public void recordEnd(long time) {
                 recordTime = time;
-                mVideoView.stopRecording();
+                mCameraView.stopRecording();
             }
 
             @Override
@@ -260,7 +260,7 @@ public class CustomCameraView extends RelativeLayout {
 
             @Override
             public void confirm() {
-                if (mVideoView.getCaptureMode() == androidx.camera.view.CameraView.CaptureMode.VIDEO) {
+                if (mCameraView.getCaptureMode() == androidx.camera.view.CameraView.CaptureMode.VIDEO) {
                     stopVideoPlay();
                     if (mCameraListener != null) {
                         mCameraListener.onRecordSuccess(mVideoFile);
@@ -375,7 +375,7 @@ public class CustomCameraView extends RelativeLayout {
     }
 
     public void setBindToLifecycle(LifecycleOwner lifecycleOwner) {
-        mVideoView.bindToLifecycle(lifecycleOwner);
+        mCameraView.bindToLifecycle(lifecycleOwner);
         lifecycleOwner.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
 
         });
@@ -412,21 +412,21 @@ public class CustomCameraView extends RelativeLayout {
         switch (type_flash) {
             case TYPE_FLASH_AUTO:
                 mFlashLamp.setImageResource(R.drawable.picture_ic_flash_auto);
-                mVideoView.setFlash(ImageCapture.FLASH_MODE_AUTO);
+                mCameraView.setFlash(ImageCapture.FLASH_MODE_AUTO);
                 break;
             case TYPE_FLASH_ON:
                 mFlashLamp.setImageResource(R.drawable.picture_ic_flash_on);
-                mVideoView.setFlash(ImageCapture.FLASH_MODE_ON);
+                mCameraView.setFlash(ImageCapture.FLASH_MODE_ON);
                 break;
             case TYPE_FLASH_OFF:
                 mFlashLamp.setImageResource(R.drawable.picture_ic_flash_off);
-                mVideoView.setFlash(ImageCapture.FLASH_MODE_OFF);
+                mCameraView.setFlash(ImageCapture.FLASH_MODE_OFF);
                 break;
         }
     }
 
     public CameraView getCameraView() {
-        return mVideoView;
+        return mCameraView;
     }
 
     public CaptureLayout getCaptureLayout() {
@@ -437,9 +437,9 @@ public class CustomCameraView extends RelativeLayout {
      * 重置状态
      */
     private void resetState() {
-        if (mVideoView.getCaptureMode() == androidx.camera.view.CameraView.CaptureMode.VIDEO) {
-            if (mVideoView.isRecording()) {
-                mVideoView.stopRecording();
+        if (mCameraView.getCaptureMode() == androidx.camera.view.CameraView.CaptureMode.VIDEO) {
+            if (mCameraView.isRecording()) {
+                mCameraView.stopRecording();
             }
             if (mVideoFile != null && mVideoFile.exists()) {
                 mVideoFile.delete();
@@ -462,7 +462,7 @@ public class CustomCameraView extends RelativeLayout {
         }
         mSwitchCamera.setVisibility(VISIBLE);
         mFlashLamp.setVisibility(VISIBLE);
-        mVideoView.setVisibility(View.VISIBLE);
+        mCameraView.setVisibility(View.VISIBLE);
         mCaptureLayout.resetCaptureLayout();
     }
 

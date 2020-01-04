@@ -2,7 +2,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.camera.view.CameraView
-        android:id="@+id/video_preview"
+        android:id="@+id/cameraView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
