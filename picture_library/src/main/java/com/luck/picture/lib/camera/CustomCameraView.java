@@ -306,7 +306,7 @@ public class CustomCameraView extends RelativeLayout {
             if (rootDir != null && !rootDir.exists() && rootDir.mkdirs()) {
             }
             boolean isOutFileNameEmpty = TextUtils.isEmpty(mConfig.cameraFileName);
-            String suffix = TextUtils.isEmpty(mConfig.suffixType) ? PictureFileUtils.POST_VIDEO : mConfig.suffixType;
+            String suffix = TextUtils.isEmpty(mConfig.suffixType) ? PictureMimeType.MP4 : mConfig.suffixType;
             String newFileImageName = isOutFileNameEmpty ? DateUtils.getCreateFileName("VID_") + suffix : mConfig.cameraFileName;
             File cameraFile = new File(rootDir, newFileImageName);
             Uri outUri = getOutUri(PictureMimeType.ofVideo());
@@ -319,11 +319,11 @@ public class CustomCameraView extends RelativeLayout {
             if (!TextUtils.isEmpty(mConfig.cameraFileName)) {
                 boolean isSuffixOfImage = PictureMimeType.isSuffixOfImage(mConfig.cameraFileName);
                 mConfig.cameraFileName = !isSuffixOfImage ? StringUtils
-                        .renameSuffix(mConfig.cameraFileName, PictureMimeType.JPEG) : mConfig.cameraFileName;
+                        .renameSuffix(mConfig.cameraFileName, PictureMimeType.MP4) : mConfig.cameraFileName;
                 cameraFileName = mConfig.camera ? mConfig.cameraFileName : StringUtils.rename(mConfig.cameraFileName);
             }
             File cameraFile = PictureFileUtils.createCameraFile(getContext(),
-                    PictureMimeType.ofImage(), cameraFileName, mConfig.suffixType);
+                    PictureMimeType.ofVideo(), cameraFileName, mConfig.suffixType);
             mConfig.cameraPath = cameraFile.getAbsolutePath();
             return cameraFile;
         }
