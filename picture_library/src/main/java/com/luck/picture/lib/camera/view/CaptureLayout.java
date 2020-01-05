@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.camera.listener.CaptureListener;
 import com.luck.picture.lib.camera.listener.ClickListener;
-import com.luck.picture.lib.camera.listener.ReturnListener;
 import com.luck.picture.lib.camera.listener.TypeListener;
 
 /**
@@ -32,9 +31,8 @@ import com.luck.picture.lib.camera.listener.TypeListener;
 
 public class CaptureLayout extends FrameLayout {
 
-    private CaptureListener captureLisenter;    //拍照按钮监听
+    private CaptureListener captureListener;    //拍照按钮监听
     private TypeListener typeListener;          //拍照或录制后接结果按钮监听
-    private ReturnListener returnListener;      //退出按钮监听
     private ClickListener leftClickListener;    //左边按钮监听
     private ClickListener rightClickListener;   //右边按钮监听
 
@@ -43,11 +41,7 @@ public class CaptureLayout extends FrameLayout {
     }
 
     public void setCaptureListener(CaptureListener captureListener) {
-        this.captureLisenter = captureListener;
-    }
-
-    public void setReturnListener(ReturnListener returnListener) {
-        this.returnListener = returnListener;
+        this.captureListener = captureListener;
     }
 
     private CaptureButton btn_capture;      //拍照按钮
@@ -145,46 +139,46 @@ public class CaptureLayout extends FrameLayout {
         btn_capture.setCaptureListener(new CaptureListener() {
             @Override
             public void takePictures() {
-                if (captureLisenter != null) {
-                    captureLisenter.takePictures();
+                if (captureListener != null) {
+                    captureListener.takePictures();
                 }
                 startAlphaAnimation();
             }
 
             @Override
             public void recordShort(long time) {
-                if (captureLisenter != null) {
-                    captureLisenter.recordShort(time);
+                if (captureListener != null) {
+                    captureListener.recordShort(time);
                 }
             }
 
             @Override
             public void recordStart() {
-                if (captureLisenter != null) {
-                    captureLisenter.recordStart();
+                if (captureListener != null) {
+                    captureListener.recordStart();
                 }
                 startAlphaAnimation();
             }
 
             @Override
             public void recordEnd(long time) {
-                if (captureLisenter != null) {
-                    captureLisenter.recordEnd(time);
+                if (captureListener != null) {
+                    captureListener.recordEnd(time);
                 }
                 startTypeBtnAnimator();
             }
 
             @Override
             public void recordZoom(float zoom) {
-                if (captureLisenter != null) {
-                    captureLisenter.recordZoom(zoom);
+                if (captureListener != null) {
+                    captureListener.recordZoom(zoom);
                 }
             }
 
             @Override
             public void recordError() {
-                if (captureLisenter != null) {
-                    captureLisenter.recordError();
+                if (captureListener != null) {
+                    captureListener.recordError();
                 }
             }
         });

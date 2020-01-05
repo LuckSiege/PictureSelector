@@ -64,22 +64,6 @@ public class CustomCameraView extends RelativeLayout {
      */
     public static final int BUTTON_STATE_BOTH = 0x103;
     /**
-     * 录制视频比特率
-     */
-    public static final int MEDIA_QUALITY_HIGH = 20 * 100000;
-    public static final int MEDIA_QUALITY_MIDDLE = 16 * 100000;
-    public static final int MEDIA_QUALITY_LOW = 12 * 100000;
-    public static final int MEDIA_QUALITY_POOR = 8 * 100000;
-    public static final int MEDIA_QUALITY_FUNNY = 4 * 100000;
-    public static final int MEDIA_QUALITY_DESPAIR = 2 * 100000;
-    public static final int MEDIA_QUALITY_SORRY = 1 * 80000;
-    /**
-     * 拍照浏览时候的类型
-     */
-    public static final int TYPE_PICTURE = 0x001;
-    public static final int TYPE_VIDEO = 0x002;
-    public static final int TYPE_SHORT = 0x003;
-    /**
      * 闪关灯状态
      */
     private static final int TYPE_FLASH_AUTO = 0x021;
@@ -100,16 +84,9 @@ public class CustomCameraView extends RelativeLayout {
     private CaptureLayout mCaptureLayout;
     private MediaPlayer mMediaPlayer;
     private TextureView mTextureView;
+    private long recordTime = 0;
     private File mVideoFile;
     private File mPhotoFile;
-    /**
-     * 切换摄像头按钮的参数
-     */
-    private int iconSrc;
-    private int iconLeft;
-    private int iconRight;
-    private int duration;
-    private long recordTime = 0;
 
     public CustomCameraView(Context context) {
         this(context, null);
@@ -121,12 +98,6 @@ public class CustomCameraView extends RelativeLayout {
 
     public CustomCameraView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.CustomCameraView, defStyleAttr, 0);
-        iconSrc = a.getResourceId(R.styleable.CustomCameraView_iconSrc, R.drawable.picture_ic_camera);
-        iconLeft = a.getResourceId(R.styleable.CustomCameraView_iconLeft, 0);
-        iconRight = a.getResourceId(R.styleable.CustomCameraView_iconRight, 0);
-        duration = a.getInteger(R.styleable.CustomCameraView_duration_max, 10 * 1000);       //没设置默认为10s
-        a.recycle();
         initView();
     }
 
@@ -135,10 +106,11 @@ public class CustomCameraView extends RelativeLayout {
         setBackgroundColor(ContextCompat.getColor(getContext(), R.color.picture_color_black));
         View view = LayoutInflater.from(getContext()).inflate(R.layout.picture_camera_view, this);
         mCameraView = view.findViewById(R.id.cameraView);
+        mCameraView.enableTorch(true);
         mTextureView = view.findViewById(R.id.video_play_preview);
         mImagePreview = view.findViewById(R.id.image_preview);
         mSwitchCamera = view.findViewById(R.id.image_switch);
-        mSwitchCamera.setImageResource(iconSrc);
+        mSwitchCamera.setImageResource(R.drawable.picture_ic_camera);
         mFlashLamp = view.findViewById(R.id.image_flash);
         setFlashRes();
         mFlashLamp.setOnClickListener(v -> {
@@ -147,11 +119,8 @@ public class CustomCameraView extends RelativeLayout {
                 type_flash = TYPE_FLASH_AUTO;
             setFlashRes();
         });
-        mCameraView.enableTorch(true);
         mCaptureLayout = view.findViewById(R.id.capture_layout);
-        mCaptureLayout.setDuration(duration);
-
-        mCaptureLayout.setIconSrc(iconLeft, iconRight);
+        mCaptureLayout.setDuration(15 * 1000);
         //切换摄像头
         mSwitchCamera.setOnClickListener(v -> mCameraView.toggleCamera());
         //拍照 录像
@@ -381,14 +350,14 @@ public class CustomCameraView extends RelativeLayout {
     }
 
     /**
-     * 设置录制视频最大时长单位 s
+     * 设置录制视频最大时长 秒
      */
     public void setRecordVideoMaxTime(int maxDurationTime) {
         mCaptureLayout.setDuration(maxDurationTime * 1000);
     }
 
     /**
-     * 设置录制视频最小时长单位 s
+     * 设置录制视频最小时长 秒
      */
     public void setRecordVideoMinTime(int minDurationTime) {
         mCaptureLayout.setMinDuration(minDurationTime * 1000);
