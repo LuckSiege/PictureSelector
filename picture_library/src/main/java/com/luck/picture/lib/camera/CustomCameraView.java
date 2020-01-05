@@ -13,7 +13,6 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -339,7 +338,7 @@ public class CustomCameraView extends RelativeLayout {
             }
             boolean isOutFileNameEmpty = TextUtils.isEmpty(mConfig.cameraFileName);
             String suffix = TextUtils.isEmpty(mConfig.suffixType) ? PictureFileUtils.POST_VIDEO : mConfig.suffixType;
-            String newFileImageName = isOutFileNameEmpty ? DateUtils.getCreateFileName("IMG_") + suffix : mConfig.cameraFileName;
+            String newFileImageName = isOutFileNameEmpty ? DateUtils.getCreateFileName("VID_") + suffix : mConfig.cameraFileName;
             File cameraFile = new File(rootDir, newFileImageName);
             Uri outUri = getOutUri(PictureMimeType.ofVideo());
             if (outUri != null) {
@@ -497,7 +496,7 @@ public class CustomCameraView extends RelativeLayout {
     /**
      * 停止视频播放
      */
-    public void stopVideoPlay() {
+    private void stopVideoPlay() {
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
             mMediaPlayer.release();
