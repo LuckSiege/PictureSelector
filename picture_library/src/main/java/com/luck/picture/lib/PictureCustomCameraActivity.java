@@ -130,7 +130,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
     @SuppressLint("RestrictedApi")
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         CameraX.unbindAll();
+        super.onDestroy();
     }
 }
