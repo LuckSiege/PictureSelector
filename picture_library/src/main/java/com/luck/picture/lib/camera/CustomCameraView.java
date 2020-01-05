@@ -167,7 +167,7 @@ public class CustomCameraView extends RelativeLayout {
                             @Override
                             public void onImageSaved(@NonNull File file) {
                                 if (SdkVersionUtils.checkedAndroid_Q()) {
-                                    AsyncTask.SERIAL_EXECUTOR.execute(() -> AndroidQTransformUtils.copyPathToAndroidQ(getContext(),
+                                    AsyncTask.SERIAL_EXECUTOR.execute(() -> AndroidQTransformUtils.copyPathToDCIM(getContext(),
                                             Uri.fromFile(file), Uri.parse(mConfig.cameraPath)));
                                 }
                                 mPhotoFile = file;
@@ -201,7 +201,7 @@ public class CustomCameraView extends RelativeLayout {
                                     return;
                                 }
                                 if (SdkVersionUtils.checkedAndroid_Q()) {
-                                    AsyncTask.SERIAL_EXECUTOR.execute(() -> AndroidQTransformUtils.copyPathToAndroidQ(getContext(),
+                                    AsyncTask.SERIAL_EXECUTOR.execute(() -> AndroidQTransformUtils.copyPathToDCIM(getContext(),
                                             Uri.fromFile(file), Uri.parse(mConfig.cameraPath)));
                                 }
                                 mTextureView.setVisibility(View.VISIBLE);

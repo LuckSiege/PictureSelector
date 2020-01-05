@@ -178,7 +178,7 @@ public class AndroidQTransformUtils {
      * @param inputUri
      * @param outUri
      */
-    public static void copyPathToAndroidQ(Context context, Uri inputUri, Uri outUri) {
+    public static void copyPathToDCIM(Context context, Uri inputUri, Uri outUri) {
         try {
             OutputStream outputStream = context.getContentResolver()
                     .openOutputStream(outUri);
