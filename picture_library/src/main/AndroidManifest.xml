@@ -25,8 +25,7 @@
             android:theme="@style/Picture.Theme.Translucent" />
         <activity
             android:name=".PictureCustomCameraActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="fullUser" />
+            android:configChanges="orientation|keyboardHidden|screenSize" />
 
         <activity
             android:name=".PicturePreviewActivity"
