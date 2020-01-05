@@ -1,7 +1,6 @@
 package com.luck.picture.lib.camera;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.net.Uri;
