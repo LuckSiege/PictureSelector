@@ -73,7 +73,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
     private CheckBox cb_voice, cb_choose_mode, cb_isCamera, cb_isGif,
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
             cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
-            cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back;
+            cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back, cb_custom_camera;
     private int themeId;
     private int chooseMode = PictureMimeType.ofAll();
     private boolean isWeChatStyle;
@@ -127,6 +127,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         cb_preview_audio = view.findViewById(R.id.cb_preview_audio);
         cb_original = view.findViewById(R.id.cb_original);
         cb_single_back = view.findViewById(R.id.cb_single_back);
+        cb_custom_camera = view.findViewById(R.id.cb_custom_camera);
         cb_hide = view.findViewById(R.id.cb_hide);
         cb_crop_circular = view.findViewById(R.id.cb_crop_circular);
         rgb_crop.setOnCheckedChangeListener(this);
@@ -216,6 +217,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                         .theme(themeId)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style v2.3.3后 建议使用setPictureStyle()动态方式
                         .isWeChatStyle(isWeChatStyle)// 是否开启微信图片选择风格
+                        .isUseCustomCamera(cb_custom_camera.isChecked())// 是否使用自定义相机
                         .setLanguage(language)// 设置语言，默认中文
                         .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
                         .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
@@ -290,6 +292,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         .setPictureWindowAnimationStyle(windowAnimationStyle)// 自定义相册启动退出动画
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
+                        .isUseCustomCamera(cb_custom_camera.isChecked())// 是否使用自定义相机
                         //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
                         .selectionMode(cb_choose_mode.isChecked() ?
                                 PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选

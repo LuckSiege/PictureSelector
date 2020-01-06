@@ -171,6 +171,15 @@
                 android:textSize="10dp"
                 android:visibility="gone" />
 
+            <CheckBox
+                android:id="@+id/cb_custom_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="使用自定义相机"
+                android:textColor="@color/app_color_53575e"
+                android:textSize="14sp" />
+
             <RadioGroup
                 android:id="@+id/rgb_langue"
                 android:layout_width="match_parent"
