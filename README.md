@@ -47,7 +47,7 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.3'
 ```sh
  PictureSelector.create(this)
    .openGallery(PictureMimeType.ofImage())
-   .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java类
+   .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
    .forResult(PictureConfig.CHOOSE_REQUEST);   
 ```
 
@@ -56,7 +56,7 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.3'
 ```sh
  PictureSelector.create(this)
    .openCamera(PictureMimeType.ofImage())
-   .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java类
+   .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
    .forResult(PictureConfig.REQUEST_CAMERA);   
 ```
 
@@ -76,7 +76,7 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.3'
 PictureSelector.create(this)
  .themeStyle(R.style.picture_default_style)
  .isNotPreviewDownload(true)
- .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java类
+ .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
  .openExternalPreview(position, selectList);
 
 ```
