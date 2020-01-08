@@ -1,4 +1,4 @@
-package com.luck.picture.lib.compress;
+package top.zibin.luban;
 
 import android.content.Context;
 import android.net.Uri;
@@ -190,11 +190,7 @@ public class Luban implements Handler.Callback {
      * start compress and return the file
      */
     private File get(InputStreamProvider input, Context context) throws IOException {
-        try {
-            return new Engine(input, getImageCacheFile(context, input, Checker.SINGLE.extSuffix(input)), focusAlpha, compressQuality).compress();
-        } finally {
-            input.close();
-        }
+        return new Engine(input, getImageCacheFile(context, input, Checker.SINGLE.extSuffix(input)), focusAlpha, compressQuality).compress();
     }
 
     private List<File> get(Context context) throws IOException {
@@ -221,11 +217,7 @@ public class Luban implements Handler.Callback {
     }
 
     private File compress(Context context, InputStreamProvider path) throws IOException {
-        try {
-            return compressRealLocalMedia(context, path);
-        } finally {
-            path.close();
-        }
+        return compressRealLocalMedia(context, path);
     }
 
     private File compressReal(Context context, InputStreamProvider path) throws IOException {
@@ -398,12 +390,13 @@ public class Luban implements Handler.Callback {
          * @return
          */
         private Builder load(final LocalMedia media) {
-            mStreamProviders.add(new InputStreamAdapter() {
+            mStreamProviders.add(new InputStreamProvider() {
                 @Override
-                public InputStream openInternal() throws IOException {
+                public InputStream open() throws IOException {
                     if (isAndroidQ && !media.isCut() && media.getPath().startsWith("content://")) {
                         // 如果是Android Q并且没有裁剪过走，因为是先裁剪后压缩，如果裁剪过要用裁剪后的地址去压缩
-                        return context.getContentResolver().openInputStream(Uri.parse(media.getPath()));
+                        InputStream inputStream = context.getContentResolver().openInputStream(Uri.parse(media.getPath()));
+                        return inputStream;
                     } else {
                         return new FileInputStream(media.isCut() ? media.getCutPath() : media.getPath());
                     }
@@ -423,9 +416,9 @@ public class Luban implements Handler.Callback {
         }
 
         public Builder load(final Uri uri) {
-            mStreamProviders.add(new InputStreamAdapter() {
+            mStreamProviders.add(new InputStreamProvider() {
                 @Override
-                public InputStream openInternal() throws IOException {
+                public InputStream open() throws IOException {
                     return context.getContentResolver().openInputStream(uri);
                 }
 
@@ -443,9 +436,9 @@ public class Luban implements Handler.Callback {
         }
 
         public Builder load(final File file) {
-            mStreamProviders.add(new InputStreamAdapter() {
+            mStreamProviders.add(new InputStreamProvider() {
                 @Override
-                public InputStream openInternal() throws IOException {
+                public InputStream open() throws IOException {
                     return new FileInputStream(file);
                 }
 
@@ -464,9 +457,9 @@ public class Luban implements Handler.Callback {
         }
 
         public Builder load(final String string) {
-            mStreamProviders.add(new InputStreamAdapter() {
+            mStreamProviders.add(new InputStreamProvider() {
                 @Override
-                public InputStream openInternal() throws IOException {
+                public InputStream open() throws IOException {
                     return new FileInputStream(string);
                 }
 
@@ -574,9 +567,9 @@ public class Luban implements Handler.Callback {
         }
 
         public File get(final String path) throws IOException {
-            return build().get(new InputStreamAdapter() {
+            return build().get(new InputStreamProvider() {
                 @Override
-                public InputStream openInternal() throws IOException {
+                public InputStream open() throws IOException {
                     return new FileInputStream(path);
                 }
 

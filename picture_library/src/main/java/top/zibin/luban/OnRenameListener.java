@@ -1,4 +1,4 @@
-package com.luck.picture.lib.compress;
+package top.zibin.luban;
 
 /**
  * Author: zibin

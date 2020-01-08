@@ -14,8 +14,6 @@ import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.tools.PictureFileUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 

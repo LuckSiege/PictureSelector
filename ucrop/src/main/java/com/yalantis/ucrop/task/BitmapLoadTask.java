@@ -10,13 +10,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
+import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-
-import android.text.TextUtils;
-import android.util.Log;
 
 import com.yalantis.ucrop.callback.BitmapLoadCallback;
 import com.yalantis.ucrop.model.ExifInfo;
@@ -32,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 
 /**
@@ -43,7 +43,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
 
     private static final String TAG = "BitmapWorkerTask";
 
-    private final Context mContext;
+    private WeakReference<Context> mContextWeakReference;
     private Uri mInputUri;
     private Uri mOutputUri;
     private final int mRequiredWidth;
@@ -72,12 +72,16 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
                           @NonNull Uri inputUri, @Nullable Uri outputUri,
                           int requiredWidth, int requiredHeight,
                           BitmapLoadCallback loadCallback) {
-        mContext = context;
+        mContextWeakReference = new WeakReference<>(context);
         mInputUri = inputUri;
         mOutputUri = outputUri;
         mRequiredWidth = requiredWidth;
         mRequiredHeight = requiredHeight;
         mBitmapLoadCallback = loadCallback;
+    }
+
+    private Context getContext() {
+        return mContextWeakReference.get();
     }
 
     @Override
@@ -95,7 +99,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
 
         final ParcelFileDescriptor parcelFileDescriptor;
         try {
-            parcelFileDescriptor = mContext.getContentResolver().openFileDescriptor(mInputUri, "r");
+            parcelFileDescriptor = getContext().getContentResolver().openFileDescriptor(mInputUri, "r");
         } catch (FileNotFoundException e) {
             return new BitmapWorkerResult(e);
         }
@@ -138,7 +142,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
             BitmapLoadUtils.close(parcelFileDescriptor);
         }
 
-        int exifOrientation = BitmapLoadUtils.getExifOrientation(mContext, mInputUri);
+        int exifOrientation = BitmapLoadUtils.getExifOrientation(getContext(), mInputUri);
         int exifDegrees = BitmapLoadUtils.exifToDegrees(exifOrientation);
         int exifTranslation = BitmapLoadUtils.exifToTranslation(exifOrientation);
 
@@ -184,10 +188,11 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
         }
     }
 
+
     private String getFilePath() {
-        if (ContextCompat.checkSelfPermission(mContext, permission.READ_EXTERNAL_STORAGE)
+        if (ContextCompat.checkSelfPermission(getContext(), permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
-            return FileUtils.getPath(mContext, mInputUri);
+            return FileUtils.getPath(getContext(), mInputUri);
         } else {
             return null;
         }
@@ -203,7 +208,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
         InputStream inputStream = null;
         OutputStream outputStream = null;
         try {
-            inputStream = mContext.getContentResolver().openInputStream(inputUri);
+            inputStream = getContext().getContentResolver().openInputStream(inputUri);
             outputStream = new FileOutputStream(new File(outputUri.getPath()));
             if (inputStream == null) {
                 throw new NullPointerException("InputStream for given input Uri is null");
@@ -236,7 +241,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
             int read;
             BufferedInputStream bin;
             bin = new BufferedInputStream(u.openStream());
-            OutputStream outputStream = mContext.getContentResolver().openOutputStream(outputUri);
+            OutputStream outputStream = getContext().getContentResolver().openOutputStream(outputUri);
             BufferedOutputStream bout = new BufferedOutputStream(
                     outputStream);
             while ((read = bin.read(buffer)) > -1) {

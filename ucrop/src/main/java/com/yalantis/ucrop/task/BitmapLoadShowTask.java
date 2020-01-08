@@ -25,6 +25,7 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 
 /**
@@ -36,7 +37,7 @@ public class BitmapLoadShowTask extends AsyncTask<Void, Void, BitmapLoadShowTask
 
     private static final String TAG = "BitmapWorkerTask";
 
-    private final Context mContext;
+    private WeakReference<Context> mContextWeakReference;
     private Uri mInputUri;
     private final int mRequiredWidth;
     private final int mRequiredHeight;
@@ -64,12 +65,16 @@ public class BitmapLoadShowTask extends AsyncTask<Void, Void, BitmapLoadShowTask
                               @NonNull Uri inputUri, @Nullable Uri outputUri,
                               int requiredWidth, int requiredHeight,
                               BitmapLoadShowCallback loadCallback) {
-        mContext = context;
+        mContextWeakReference = new WeakReference<>(context);
         mInputUri = inputUri;
         mOutputUri = outputUri;
         mRequiredWidth = requiredWidth;
         mRequiredHeight = requiredHeight;
         mBitmapLoadShowCallback = loadCallback;
+    }
+
+    private Context getContext() {
+        return mContextWeakReference.get();
     }
 
     @Override
@@ -93,7 +98,7 @@ public class BitmapLoadShowTask extends AsyncTask<Void, Void, BitmapLoadShowTask
 
         final ParcelFileDescriptor parcelFileDescriptor;
         try {
-            parcelFileDescriptor = mContext.getContentResolver().openFileDescriptor(mInputUri, "r");
+            parcelFileDescriptor = getContext().getContentResolver().openFileDescriptor(mInputUri, "r");
         } catch (FileNotFoundException e) {
             return new BitmapWorkerResult(e);
         }
@@ -136,7 +141,7 @@ public class BitmapLoadShowTask extends AsyncTask<Void, Void, BitmapLoadShowTask
             BitmapLoadUtils.close(parcelFileDescriptor);
         }
 
-        int exifOrientation = BitmapLoadUtils.getExifOrientation(mContext, mInputUri);
+        int exifOrientation = BitmapLoadUtils.getExifOrientation(getContext(), mInputUri);
         int exifDegrees = BitmapLoadUtils.exifToDegrees(exifOrientation);
         int exifTranslation = BitmapLoadUtils.exifToTranslation(exifOrientation);
 
@@ -180,7 +185,7 @@ public class BitmapLoadShowTask extends AsyncTask<Void, Void, BitmapLoadShowTask
             int read;
             BufferedInputStream bin;
             bin = new BufferedInputStream(u.openStream());
-            OutputStream outputStream = mContext.getContentResolver().openOutputStream(outputUri);
+            OutputStream outputStream = getContext().getContentResolver().openOutputStream(outputUri);
             BufferedOutputStream bout = new BufferedOutputStream(
                     outputStream);
             while ((read = bin.read(buffer)) > -1) {

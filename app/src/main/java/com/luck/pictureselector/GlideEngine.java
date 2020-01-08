@@ -13,11 +13,9 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.ImageViewTarget;
-import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.listener.ImageCompleteCallback;
 import com.luck.picture.lib.tools.MediaUtils;
@@ -41,12 +39,8 @@ public class GlideEngine implements ImageEngine {
      */
     @Override
     public void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
-        // * other https://www.jianshu.com/p/28f5bcee409f
-        DrawableCrossFadeFactory drawableCrossFadeFactory =
-                new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
         Glide.with(context)
                 .load(url)
-                .transition(DrawableTransitionOptions.withCrossFade(drawableCrossFadeFactory))
                 .into(imageView);
     }
 
@@ -211,15 +205,11 @@ public class GlideEngine implements ImageEngine {
      */
     @Override
     public void loadGridImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
-        // * other https://www.jianshu.com/p/28f5bcee409f
-        DrawableCrossFadeFactory drawableCrossFadeFactory =
-                new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
         Glide.with(context)
                 .load(url)
                 .override(200, 200)
                 .centerCrop()
                 .apply(new RequestOptions().placeholder(R.drawable.picture_image_placeholder))
-                .transition(DrawableTransitionOptions.withCrossFade(drawableCrossFadeFactory))
                 .into(imageView);
     }
 

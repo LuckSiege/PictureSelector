@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .enableCrop(cb_crop.isChecked())// 是否裁剪
                         .compress(cb_compress.isChecked())// 是否压缩
                         .compressQuality(80)// 图片压缩后输出质量 0~ 100
-                        .synOrAsy(true)//同步false或异步true 压缩 默认同步
+                        .synOrAsy(true)//同步true或异步false 压缩 默认同步
                         //.queryMaxFileSize(10)// 只查多少M以内的图片、视频、音频  单位M
                         //.compressSavePath(getPath())//压缩图片保存地址
                         //.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效 注：已废弃

@@ -1,25 +1,28 @@
-package com.luck.picture.lib.compress;
+package top.zibin.luban;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.os.Build;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import top.zibin.luban.turbo.TurboCompressor;
+
 /**
  * Responsible for starting compress and managing active and cached resources.
  */
 class Engine {
-    private static final int DEFAULT_QUALITY = 60;
-    private int compressQuality;
     private InputStreamProvider srcImg;
     private File tagImg;
     private int srcWidth;
     private int srcHeight;
     private boolean focusAlpha;
+    private static final int DEFAULT_QUALITY = 60;
+    private int compressQuality;
 
     Engine(InputStreamProvider srcImg, File tagImg, boolean focusAlpha, int compressQuality) throws IOException {
         this.tagImg = tagImg;
@@ -74,6 +77,7 @@ class Engine {
 
         Bitmap tagBitmap = BitmapFactory.decodeStream(srcImg.open(), null, options);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        FileOutputStream fos = new FileOutputStream(tagImg);
 
         if (Checker.SINGLE.isJPG(srcImg.open())) {
             tagBitmap = rotatingImage(tagBitmap, Checker.SINGLE.getOrientation(srcImg.open()));
@@ -82,12 +86,17 @@ class Engine {
             if (compressQuality > 100) {
                 compressQuality = DEFAULT_QUALITY;
             }
-            tagBitmap.compress(focusAlpha ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG,
-                    compressQuality <= 0 ? DEFAULT_QUALITY : compressQuality, stream);
-            tagBitmap.recycle();
+            compressQuality = compressQuality <= 0 ? DEFAULT_QUALITY : compressQuality;
+            if (focusAlpha) {
+                tagBitmap.compress(Bitmap.CompressFormat.PNG, compressQuality, stream);
+                fos.write(stream.toByteArray());
+            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                TurboCompressor.compress(tagBitmap, compressQuality, tagImg.getAbsolutePath());
+            } else {
+                tagBitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, stream);
+                fos.write(stream.toByteArray());
+            }
         }
-        FileOutputStream fos = new FileOutputStream(tagImg);
-        fos.write(stream.toByteArray());
         fos.flush();
         fos.close();
         stream.close();

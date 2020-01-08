@@ -1,4 +1,4 @@
-package com.luck.picture.lib.compress;
+package top.zibin.luban;
 
 /**
  * Created on 2018/1/3 19:43

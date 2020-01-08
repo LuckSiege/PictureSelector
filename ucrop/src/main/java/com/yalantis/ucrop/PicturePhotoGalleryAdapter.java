@@ -35,6 +35,7 @@ import com.yalantis.ucrop.util.BitmapLoadUtils;
 import com.yalantis.ucrop.util.FileUtils;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -47,14 +48,14 @@ import java.util.List;
 public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhotoGalleryAdapter.ViewHolder> {
     private final int maxImageWidth = 200;
     private final int maxImageHeight = 220;
-    private Context context;
     private List<CutInfo> list;
     private LayoutInflater mInflater;
     private boolean isAndroidQ;
+    private WeakReference<Context> mContextWeakReference;
 
     public PicturePhotoGalleryAdapter(Context context, List<CutInfo> list) {
         mInflater = LayoutInflater.from(context);
-        this.context = context;
+        this.mContextWeakReference = new WeakReference<>(context.getApplicationContext());
         this.list = list;
         this.isAndroidQ = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
     }
@@ -62,6 +63,10 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
     public void setData(List<CutInfo> list) {
         this.list = list;
         notifyDataSetChanged();
+    }
+
+    private Context getContext() {
+        return mContextWeakReference.get();
     }
 
     @Override
@@ -94,7 +99,7 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
             holder.mIvVideo.setVisibility(View.GONE);
             Uri uri = isAndroidQ || FileUtils.isHttp(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
             holder.tvGif.setVisibility(FileUtils.isGif(photoInfo.getMimeType()) ? View.VISIBLE : View.GONE);
-            BitmapLoadUtils.decodeBitmapInBackground(context, uri, photoInfo.getHttpOutUri(), maxImageWidth,
+            BitmapLoadUtils.decodeBitmapInBackground(getContext(), uri, photoInfo.getHttpOutUri(), maxImageWidth,
                     maxImageHeight,
                     new BitmapLoadShowCallback() {
 
