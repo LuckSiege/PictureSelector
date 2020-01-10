@@ -4,10 +4,12 @@ apply from: "config.gradle"
 buildscript {
     repositories {
         jcenter()
+        maven{ url "http://maven.aliyun.com/nexus/content/groups/public/"}
         maven {
-            url 'https://maven.google.com/'
-            name 'Google'
+            url 'http://maven.aliyun.com/nexus/content/repositories/releases/'
         }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        maven { url "https://jitpack.io" }
         google()
     }
     dependencies {
@@ -23,10 +25,13 @@ allprojects {
     group = GROUP
     repositories {
         jcenter()
+        maven{ url "http://maven.aliyun.com/nexus/content/groups/public/"}
         maven {
-            url 'https://maven.google.com/'
-            name 'Google'
+            url 'http://maven.aliyun.com/nexus/content/repositories/releases/'
         }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        maven { url "https://jitpack.io" }
+        google()
     }
 }
 
