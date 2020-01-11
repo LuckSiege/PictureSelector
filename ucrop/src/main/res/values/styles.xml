@@ -13,14 +13,16 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="background">?attr/selectableItemBackground</item>
         <item name="android:clickable">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
     </style>
 
     <style name="ucrop_WrapperRotateButton">
         <item name="android:layout_width">@dimen/ucrop_size_wrapper_rotate_button</item>
         <item name="android:layout_height">@dimen/ucrop_size_wrapper_rotate_button</item>
-        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="background">?attr/selectableItemBackgroundBorderless</item>
         <item name="android:clickable">true</item>
     </style>
 
@@ -36,9 +38,20 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:layout_marginTop">@dimen/ucrop_margit_top_widget_text</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/ucrop_color_widget_text</item>
+        <item name="android:layout_marginTop">@dimen/ucrop_margin_top_widget_text</item>
         <item name="android:textSize">@dimen/ucrop_text_size_widget_text</item>
+    </style>
+
+    <style name="ucrop_TextViewWidget">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_marginTop">@dimen/ucrop_margin_top_controls_text</item>
+        <item name="android:textColor">@color/ucrop_color_widget_active</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/ucrop_text_size_controls_text</item>
     </style>
 
 </resources>

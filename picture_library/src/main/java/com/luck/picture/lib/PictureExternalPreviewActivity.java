@@ -399,7 +399,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     // 有可能本地图片
                     try {
                         if (isAndroidQ) {
-                            savePictureAlbumAndroidQ(Uri.parse(downloadPath));
+                            savePictureAlbumAndroidQ(downloadPath.startsWith("content://") ? Uri.parse(downloadPath) : Uri.fromFile(new File(downloadPath)));
                         } else {
                             // 把文件插入到系统图库
                             savePictureAlbum();

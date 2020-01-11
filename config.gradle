@@ -1,23 +1,28 @@
 ext {
     cfgs = [
-            compileSdkVersion    : 29,
-            buildToolsVersion    : "28.0.3",
-            minSdkVersion        : 21,
-            targetSdkVersion     : 29,
-            versionCode          : 15,
-            versionName          : "2.4.5",
-            ucropVersionCode     : 22,
-            ucropVersionName     : "2.2.0-native",
+            compileSdkVersion             : 29,
+            buildToolsVersion             : "28.0.3",
+            minSdkVersion                 : 21,
+            targetSdkVersion              : 29,
+            versionCode                   : 15,
+            versionName                   : "2.4.5",
+            ucropVersionCode              : 22,
+            ucropVersionName              : "2.2.0-native",
 
             //open version control
-            androidSupportVersion: "27.0.2",
-            version_recyclerview : "1.0.0",
-            version_appcompat    : "1.0.0",
+            androidSupportVersion         : "27.0.2",
+            version_recyclerview          : "1.0.0",
+            version_appcompat             : "1.0.0",
 
 
-            camerax_version      : "1.0.0-alpha08",
-            camerax_view_version : "1.0.0-alpha05",
-            futures_version      : "1.0.0-rc01",
-            lifecycle_version    : "1.0.0-alpha01"
+            camerax_version               : "1.0.0-alpha08",
+            camerax_view_version          : "1.0.0-alpha05",
+            futures_version               : "1.0.0-rc01",
+            lifecycle_version             : "1.0.0-alpha01",
+
+            // ucrop
+            androidx_appcompat_version    : "1.1.0",
+            androidx_exifinterface_version: "1.1.0-beta01",
+            androidx_transition_version   : "1.2.0-rc01"
     ]
 }

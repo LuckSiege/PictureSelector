@@ -1,9 +1,0 @@
-<resources>
-    <string name="ucrop_label_original">원시 비율</string>
-    <string name="ucrop_label_edit_photo">재단</string>
-
-    <string name="ucrop_menu_crop">재단</string>
-
-    <string name="ucrop_gif_tag"> 움직이 지도</string>
-
-</resources>

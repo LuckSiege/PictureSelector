@@ -21,6 +21,7 @@ import com.yalantis.ucrop.callback.BitmapLoadCallback;
 import com.yalantis.ucrop.model.ExifInfo;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
 import com.yalantis.ucrop.util.FileUtils;
+import com.yalantis.ucrop.util.SdkUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -163,20 +164,19 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
     }
 
     private void processInputUri() throws NullPointerException, IOException {
-        String inputUriScheme = mInputUri.toString();
+        String inputUriScheme = mInputUri.getScheme();
         Log.d(TAG, "Uri scheme: " + inputUriScheme);
-        if (inputUriScheme.startsWith("http") || inputUriScheme.startsWith("https")) {
+        if ("http".equals(inputUriScheme) || "https".equals(inputUriScheme)) {
             try {
                 downloadFile(mInputUri, mOutputUri);
             } catch (NullPointerException | IOException e) {
                 Log.e(TAG, "Downloading failed", e);
                 throw e;
             }
-        } else {
+        } else if ("content".equals(inputUriScheme)) {
             String path = getFilePath();
             if (!TextUtils.isEmpty(path) && new File(path).exists()) {
-                mInputUri = android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ?
-                        mInputUri : Uri.fromFile(new File(path));
+                mInputUri = SdkUtils.isQ() ? mInputUri : Uri.fromFile(new File(path));
             } else {
                 try {
                     copyFile(mInputUri, mOutputUri);
@@ -185,9 +185,11 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
                     throw e;
                 }
             }
+        } else if (!"file".equals(inputUriScheme)) {
+            Log.e(TAG, "Invalid Uri scheme " + inputUriScheme);
+            throw new IllegalArgumentException("Invalid Uri scheme" + inputUriScheme);
         }
     }
-
 
     private String getFilePath() {
         if (ContextCompat.checkSelfPermission(getContext(), permission.READ_EXTERNAL_STORAGE)
@@ -231,7 +233,6 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
 
     private void downloadFile(@NonNull Uri inputUri, @Nullable Uri outputUri) throws NullPointerException, IOException {
         Log.d(TAG, "downloadFile");
-
         if (outputUri == null) {
             throw new NullPointerException("Output Uri is null - cannot download image");
         }
@@ -254,55 +255,17 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-
+            // swap uris, because input image was downloaded to the output destination
+            // (cropped image will override it later)
+            mInputUri = mOutputUri;
         }
-        mInputUri = mOutputUri;
     }
-
-//    private void downloadFile(@NonNull Uri inputUri, @Nullable Uri outputUri) throws NullPointerException, IOException {
-//        Log.d(TAG, "downloadFile");
-//
-//        if (outputUri == null) {
-//            throw new NullPointerException("Output Uri is null - cannot download image");
-//        }
-//
-//        OkHttpClient client = new OkHttpClient();
-//
-//        BufferedSource source = null;
-//        Sink sink = null;
-//        Response response = null;
-//        try {
-//            Request request = new Request.Builder()
-//                    .url(inputUri.toString())
-//                    .build();
-//            response = client.newCall(request).execute();
-//            source = response.body().source();
-//
-//            OutputStream outputStream = mContext.getContentResolver().openOutputStream(outputUri);
-//            if (outputStream != null) {
-//                sink = Okio.sink(outputStream);
-//                source.readAll(sink);
-//            } else {
-//                throw new NullPointerException("OutputStream for given output Uri is null");
-//            }
-//        } finally {
-//            BitmapLoadUtils.close(source);
-//            BitmapLoadUtils.close(sink);
-//            if (response != null) {
-//                BitmapLoadUtils.close(response.body());
-//            }
-//            client.dispatcher().cancelAll();
-//
-//            // swap uris, because input image was downloaded to the output destination
-//            // (cropped image will override it later)
-//            mInputUri = mOutputUri;
-//        }
-//    }
 
     @Override
     protected void onPostExecute(@NonNull BitmapWorkerResult result) {
         if (result.mBitmapWorkerException == null) {
-            mBitmapLoadCallback.onBitmapLoaded(result.mBitmapResult, result.mExifInfo, mInputUri, (mOutputUri == null) ? null : mOutputUri);
+            String inputUriString = mInputUri.toString();
+            mBitmapLoadCallback.onBitmapLoaded(result.mBitmapResult, result.mExifInfo, inputUriString.startsWith("content://") ? inputUriString : mInputUri.getPath(), (mOutputUri == null) ? null : mOutputUri.getPath());
         } else {
             mBitmapLoadCallback.onFailure(result.mBitmapWorkerException);
         }

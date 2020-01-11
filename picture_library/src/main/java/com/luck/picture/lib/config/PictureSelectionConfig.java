@@ -94,6 +94,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isDragFrame;
     public boolean isNotPreviewDownload;
     public boolean isWithVideoImage;
+    public UCropOptions uCropOptions;
     public static ImageEngine imageEngine;
     public List<LocalMedia> selectionMedias;
     public String cameraFileName;
@@ -143,7 +144,7 @@ public final class PictureSelectionConfig implements Parcelable {
         selectionMode = PictureConfig.MULTIPLE;
         maxSelectNum = 9;
         minSelectNum = 0;
-        maxVideoSelectNum = maxSelectNum;
+        maxVideoSelectNum = 1;
         minVideoSelectNum = 0;
         videoQuality = 1;
         language = -1;
@@ -208,6 +209,7 @@ public final class PictureSelectionConfig implements Parcelable {
         renameCropFileName = "";
         selectionMedias = new ArrayList<>();
         imageEngine = null;
+        uCropOptions = null;
         style = null;
         cropStyle = null;
         windowAnimationStyle = null;
@@ -321,6 +323,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte(this.isDragFrame ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isNotPreviewDownload ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isWithVideoImage ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.uCropOptions, flags);
         dest.writeTypedList(this.selectionMedias);
         dest.writeString(this.cameraFileName);
         dest.writeByte(this.isCheckOriginalImage ? (byte) 1 : (byte) 0);
@@ -413,6 +416,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.isDragFrame = in.readByte() != 0;
         this.isNotPreviewDownload = in.readByte() != 0;
         this.isWithVideoImage = in.readByte() != 0;
+        this.uCropOptions = in.readParcelable(UCropOptions.class.getClassLoader());
         this.selectionMedias = in.createTypedArrayList(LocalMedia.CREATOR);
         this.cameraFileName = in.readString();
         this.isCheckOriginalImage = in.readByte() != 0;

@@ -19,7 +19,6 @@ package com.yalantis.ucrop;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,15 +26,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.yalantis.ucrop.callback.BitmapLoadShowCallback;
+import com.yalantis.ucrop.callback.BitmapLoadCallback;
 import com.yalantis.ucrop.model.CutInfo;
+import com.yalantis.ucrop.model.ExifInfo;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
-import com.yalantis.ucrop.util.FileUtils;
+import com.yalantis.ucrop.util.MimeType;
+import com.yalantis.ucrop.util.SdkUtils;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -48,25 +49,19 @@ import java.util.List;
 public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhotoGalleryAdapter.ViewHolder> {
     private final int maxImageWidth = 200;
     private final int maxImageHeight = 220;
+    private Context context;
     private List<CutInfo> list;
     private LayoutInflater mInflater;
-    private boolean isAndroidQ;
-    private WeakReference<Context> mContextWeakReference;
 
     public PicturePhotoGalleryAdapter(Context context, List<CutInfo> list) {
         mInflater = LayoutInflater.from(context);
-        this.mContextWeakReference = new WeakReference<>(context.getApplicationContext());
+        this.context = context;
         this.list = list;
-        this.isAndroidQ = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
     }
 
     public void setData(List<CutInfo> list) {
         this.list = list;
         notifyDataSetChanged();
-    }
-
-    private Context getContext() {
-        return mContextWeakReference.get();
     }
 
     @Override
@@ -77,7 +72,7 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         String path = "";
         CutInfo photoInfo = list.get(position);
         if (photoInfo != null) {
@@ -89,7 +84,7 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
         } else {
             holder.iv_dot.setVisibility(View.INVISIBLE);
         }
-        boolean eqVideo = FileUtils.eqVideo(photoInfo.getMimeType());
+        boolean eqVideo = MimeType.eqVideo(photoInfo.getMimeType());
         if (eqVideo) {
             holder.mIvPhoto.setVisibility(View.GONE);
             holder.mIvVideo.setVisibility(View.VISIBLE);
@@ -97,15 +92,16 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
         } else {
             holder.mIvPhoto.setVisibility(View.VISIBLE);
             holder.mIvVideo.setVisibility(View.GONE);
-            Uri uri = isAndroidQ || FileUtils.isHttp(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
-            holder.tvGif.setVisibility(FileUtils.isGif(photoInfo.getMimeType()) ? View.VISIBLE : View.GONE);
-            BitmapLoadUtils.decodeBitmapInBackground(getContext(), uri, photoInfo.getHttpOutUri(), maxImageWidth,
-                    maxImageHeight,
-                    new BitmapLoadShowCallback() {
-
+            Uri uri = SdkUtils.isQ() || MimeType.isHttp(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
+            holder.tvGif.setVisibility(MimeType.isGif(photoInfo.getMimeType()) ? View.VISIBLE : View.GONE);
+            BitmapLoadUtils.decodeBitmapInBackground(context, uri, photoInfo.getHttpOutUri(), maxImageWidth,
+                    maxImageHeight, new BitmapLoadCallback() {
                         @Override
-                        public void onBitmapLoaded(@NonNull Bitmap bitmap) {
-                            if (holder.mIvPhoto != null) {
+                        public void onBitmapLoaded(@NonNull Bitmap bitmap,
+                                                   @NonNull ExifInfo exifInfo,
+                                                   @NonNull String imageInputPath,
+                                                   @Nullable String imageOutputPath) {
+                            if (holder.mIvPhoto != null && bitmap != null) {
                                 holder.mIvPhoto.setImageBitmap(bitmap);
                             }
                         }
@@ -117,9 +113,13 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
                             }
                         }
                     });
-            holder.itemView.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onItemClick(holder.getAdapterPosition(), v);
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        listener.onItemClick(holder.getAdapterPosition(), v);
+                    }
                 }
             });
         }

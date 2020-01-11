@@ -76,13 +76,11 @@ public class AndroidQTransformUtils {
      */
     public static String parseImagePathToAndroidQ(Context ctx, String path, String customFileName, String mineType) {
         try {
+            ParcelFileDescriptor parcelFileDescriptor = ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
+            FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
+            String md5Value = Digest.computeToQMD5(inputStream);
             String suffix = PictureMimeType.getLastImgSuffix(mineType);
             String filesDir = PictureFileUtils.getDiskCacheDir(ctx.getApplicationContext());
-            ParcelFileDescriptor parcelFileDescriptor =
-                    ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
-            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-            FileInputStream inputStream = new FileInputStream(fileDescriptor);
-            String md5Value = Digest.computeToQMD5(inputStream);
             String fileName;
             if (!TextUtils.isEmpty(md5Value)) {
                 fileName = TextUtils.isEmpty(customFileName) ? new StringBuffer().append("IMG_").append(md5Value.toUpperCase()).append(suffix).toString() : customFileName;

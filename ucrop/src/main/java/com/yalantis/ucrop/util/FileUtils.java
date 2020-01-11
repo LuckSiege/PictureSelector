@@ -20,14 +20,12 @@ import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -36,7 +34,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -47,11 +44,11 @@ import java.util.Locale;
  * @version 2013-12-11
  */
 public class FileUtils {
-    private static SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd_HHmmssSS");
+
     /**
      * TAG for log messages.
      */
-    static final String TAG = "FileUtils";
+    private static final String TAG = "FileUtils";
 
     private FileUtils() {
     }
@@ -152,8 +149,7 @@ public class FileUtils {
                 final String type = split[0];
 
                 if ("primary".equalsIgnoreCase(type)) {
-                    return context
-                            .getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + split[1];
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
                 }
 
                 // TODO handle non-primary volumes
@@ -162,10 +158,17 @@ public class FileUtils {
             else if (isDownloadsDocument(uri)) {
 
                 final String id = DocumentsContract.getDocumentId(uri);
-                final Uri contentUri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+                if (!TextUtils.isEmpty(id)) {
+                    try {
+                        final Uri contentUri = ContentUris.withAppendedId(
+                                Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+                        return getDataColumn(context, contentUri, null, null);
+                    } catch (NumberFormatException e) {
+                        Log.i(TAG, e.getMessage());
+                        return null;
+                    }
+                }
 
-                return getDataColumn(context, contentUri, null, null);
             }
             // MediaProvider
             else if (isMediaDocument(uri)) {
@@ -214,62 +217,6 @@ public class FileUtils {
      * will cause both files to become null.
      * Simply skipping this step if the paths are identical.
      */
-    public static void copyFile(@NonNull String pathFrom, @NonNull String pathTo) throws IOException {
-        if (pathFrom.equalsIgnoreCase(pathTo)) {
-            return;
-        }
-
-        FileChannel outputChannel = null;
-        FileChannel inputChannel = null;
-        try {
-            inputChannel = new FileInputStream(new File(pathFrom)).getChannel();
-            outputChannel = new FileOutputStream(new File(pathTo)).getChannel();
-            inputChannel.transferTo(0, inputChannel.size(), outputChannel);
-            inputChannel.close();
-        } finally {
-            if (inputChannel != null) inputChannel.close();
-            if (outputChannel != null) outputChannel.close();
-        }
-    }
-
-
-    public static boolean isGifForSuffix(String suffix) {
-        return suffix != null && suffix.startsWith(".gif") || suffix.startsWith(".GIF");
-    }
-
-    /**
-     * 是否是gif
-     *
-     * @param mimeType
-     * @return
-     */
-    public static boolean isGif(String mimeType) {
-        return mimeType != null && (mimeType.equals("image/gif") || mimeType.equals("image/GIF"));
-    }
-
-    /**
-     * 是否是网络图片
-     *
-     * @param path
-     * @return
-     */
-    public static boolean isHttp(String path) {
-        if (!TextUtils.isEmpty(path)) {
-            if (path.startsWith("http")
-                    || path.startsWith("https")) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    /**
-     * Copies one file into the other with the given paths.
-     * In the event that the paths are the same, trying to copy one file to the other
-     * will cause both files to become null.
-     * Simply skipping this step if the paths are identical.
-     */
     public static boolean copyFile(FileInputStream fileInputStream, String outFilePath) throws IOException {
         if (fileInputStream == null) {
             return false;
@@ -290,17 +237,32 @@ public class FileUtils {
         }
     }
 
+    /**
+     * Copies one file into the other with the given paths.
+     * In the event that the paths are the same, trying to copy one file to the other
+     * will cause both files to become null.
+     * Simply skipping this step if the paths are identical.
+     */
+    public static void copyFile(@NonNull String pathFrom, @NonNull String pathTo) throws IOException {
+        if (pathFrom.equalsIgnoreCase(pathTo)) {
+            return;
+        }
 
-    public static String extSuffix(InputStream input) {
+        FileChannel outputChannel = null;
+        FileChannel inputChannel = null;
         try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(input, null, options);
-            return options.outMimeType.replace("image/", ".");
-        } catch (Exception e) {
-            return ".jpg";
+            inputChannel = new FileInputStream(new File(pathFrom)).getChannel();
+            outputChannel = new FileOutputStream(new File(pathTo)).getChannel();
+            inputChannel.transferTo(0, inputChannel.size(), outputChannel);
+            inputChannel.close();
+        } finally {
+            if (inputChannel != null) inputChannel.close();
+            if (outputChannel != null) outputChannel.close();
         }
     }
+
+
+    private static SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd_HHmmssSS");
 
     /**
      * 根据时间戳创建文件名
@@ -322,88 +284,6 @@ public class FileUtils {
     public static String getCreateFileName() {
         long millis = System.currentTimeMillis();
         return sf.format(millis);
-    }
-
-    /**
-     * 获取图片后缀
-     *
-     * @param path
-     * @return
-     */
-    public static String getLastImgType(String path) {
-        try {
-            int index = path.lastIndexOf(".");
-            if (index > 0) {
-                String imageType = path.substring(index);
-                switch (imageType) {
-                    case ".png":
-                    case ".PNG":
-                    case ".jpg":
-                    case ".jpeg":
-                    case ".JPEG":
-                    case ".WEBP":
-                    case ".bmp":
-                    case ".BMP":
-                    case ".webp":
-                    case ".gif":
-                    case ".GIF":
-                        return imageType;
-                    default:
-                        return ".png";
-                }
-            } else {
-                return ".png";
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ".png";
-        }
-    }
-
-    /**
-     * 获取图片mimeType
-     *
-     * @param path
-     * @return
-     */
-    public static String getImageMimeType(String path) {
-        try {
-            if (!TextUtils.isEmpty(path)) {
-                File file = new File(path);
-                String fileName = file.getName();
-                int last = fileName.lastIndexOf(".") + 1;
-                String temp = fileName.substring(last);
-                return "image/" + temp;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "image/jpeg";
-        }
-        return "image/jpeg";
-    }
-
-    /**
-     * 是否是视频
-     *
-     * @param mimeType
-     * @return
-     */
-    public final static String MIME_TYPE_PREFIX_VIDEO = "video";
-
-    public static boolean eqVideo(String mimeType) {
-        return mimeType != null && mimeType.startsWith(MIME_TYPE_PREFIX_VIDEO);
-    }
-
-    /**
-     * 是否是图片
-     *
-     * @param mimeType
-     * @return
-     */
-    public final static String MIME_TYPE_PREFIX_IMAGE = "image";
-
-    public static boolean eqImage(String mimeType) {
-        return mimeType != null && mimeType.startsWith(MIME_TYPE_PREFIX_IMAGE);
     }
 
 

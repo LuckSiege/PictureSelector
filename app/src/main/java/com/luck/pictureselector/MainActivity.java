@@ -25,17 +25,17 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.broadcast.BroadcastAction;
 import com.luck.picture.lib.broadcast.BroadcastManager;
-import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
-import com.luck.picture.lib.language.LanguageConfig;
-import com.luck.picture.lib.style.PictureCropParameterStyle;
-import com.luck.picture.lib.style.PictureParameterStyle;
-import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.permissions.PermissionChecker;
+import com.luck.picture.lib.style.PictureCropParameterStyle;
+import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
@@ -221,9 +221,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.isAndroidQTransform(false)// 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && enableCrop(false);有效,默认处理
                         .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)// 设置相册Activity方向，不设置默认使用系统
                         .isOriginalImageControl(cb_original.isChecked())// 是否显示原图控制按钮，如果设置为true则用户可以自由选择是否使用原图，压缩、裁剪功能将会失效
-                        //.cameraFileName("test.jpg")    // 重命名拍照文件名、如果是相册拍照则内部会自动拼上当前时间戳防止重复，注意这个只在使用相机时可以使用，如果使用相机又开启了压缩或裁剪 需要配合压缩和裁剪文件名api
-                        //.renameCompressFile("test.png")// 重命名压缩文件名、 注意这个不要重复，只适用于单张图压缩使用
-                        //.renameCropFileName("test.png")// 重命名裁剪文件名、 注意这个不要重复，只适用于单张图裁剪使用
+                        //.cameraFileName(System.currentTimeMillis() +".jpg")    // 重命名拍照文件名、如果是相册拍照则内部会自动拼上当前时间戳防止重复，注意这个只在使用相机时可以使用，如果使用相机又开启了压缩或裁剪 需要配合压缩和裁剪文件名api
+                        //.renameCompressFile(System.currentTimeMillis() +".jpg")// 重命名压缩文件名、 注意这个不要重复，只适用于单张图压缩使用
+                        //.renameCropFileName(System.currentTimeMillis() + ".jpg")// 重命名裁剪文件名、 注意这个不要重复，只适用于单张图裁剪使用
                         .selectionMode(cb_choose_mode.isChecked() ?
                                 PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
                         .isSingleDirectReturn(cb_single_back.isChecked())// 单选模式下是否直接返回，PictureConfig.SINGLE模式下有效
@@ -236,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
                         //.imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg
                         .enableCrop(cb_crop.isChecked())// 是否裁剪
+                        //.basicUCropConfig()//对外提供所有UCropOptions参数配制，但如果PictureSelector原本支持设置的还是会使用原有的设置
                         .compress(cb_compress.isChecked())// 是否压缩
                         .compressQuality(80)// 图片压缩后输出质量 0~ 100
                         .synOrAsy(true)//同步true或异步false 压缩 默认同步
@@ -248,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .isGif(cb_isGif.isChecked())// 是否显示gif图片
                         .freeStyleCropEnabled(cb_styleCrop.isChecked())// 裁剪框是否可拖拽
                         .circleDimmedLayer(cb_crop_circular.isChecked())// 是否圆形裁剪
-                        //.setCircleDimmedColor(ContextCompat.getColor(this, R.color.app_color_white))// 设置圆形裁剪背景色值
+                        //.setCircleDimmedColor(ContextCompat.getColor(getContext(), R.color.app_color_white))// 设置圆形裁剪背景色值
                         //.setCircleDimmedBorderColor(ContextCompat.getColor(getApplicationContext(), R.color.app_color_white))// 设置圆形裁剪边框色值
                         //.setCircleStrokeWidth(3)// 设置圆形裁剪边框粗细
                         .showCropFrame(cb_showCropFrame.isChecked())// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
@@ -256,8 +257,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .openClickSound(cb_voice.isChecked())// 是否开启点击声音
                         .selectionMedia(selectList)// 是否传入已选图片
                         //.isDragFrame(false)// 是否可拖动裁剪框(固定)
-//                        .videoMaxSecond(15)
-//                        .videoMinSecond(10)
+                        //.videoMaxSecond(15)
+                        //.videoMinSecond(10)
                         //.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                         //.cropCompressQuality(90)// 注：已废弃 改用cutOutQuality()
                         .cutOutQuality(90)// 裁剪输出质量 默认100
@@ -285,14 +286,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
                         .selectionMode(cb_choose_mode.isChecked() ?
                                 PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
-                        //.cameraFileName("test.jpg")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用
-                        //.renameCompressFile("test.png")// 重命名压缩文件名、 注意这个不要重复，只适用于单张图压缩使用
-                        //.renameCropFileName("test.png")// 重命名裁剪文件名、 注意这个不要重复，只适用于单张图裁剪使用
+                        //.cameraFileName(System.currentTimeMillis() + ".jpg")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用
+                        //.renameCompressFile(System.currentTimeMillis() + ".jpg")// 重命名压缩文件名、 注意这个不要重复，只适用于单张图压缩使用
+                        //.renameCropFileName(System.currentTimeMillis() + ".jpg")// 重命名裁剪文件名、 注意这个不要重复，只适用于单张图裁剪使用
                         .previewImage(cb_preview_img.isChecked())// 是否可预览图片
                         .previewVideo(cb_preview_video.isChecked())// 是否可预览视频
                         .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
                         .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
                         .enableCrop(cb_crop.isChecked())// 是否裁剪
+                        //.basicUCropConfig()//对外提供所有UCropOptions参数配制，但如果PictureSelector原本支持设置的还是会使用原有的设置
                         .compress(cb_compress.isChecked())// 是否压缩
                         .compressQuality(60)// 图片压缩后输出质量
                         .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度

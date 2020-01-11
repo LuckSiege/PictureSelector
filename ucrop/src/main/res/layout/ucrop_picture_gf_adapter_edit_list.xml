@@ -54,7 +54,7 @@
         android:layout_alignBottom="@id/iv_photo"
         android:background="@drawable/ucrop_gif_bg"
         android:text="@string/ucrop_gif_tag"
-        android:textColor="@color/ucrop_color_toolbar_widget"
+        android:textColor="@color/ucrop_color_widget_active"
         android:textSize="9sp"
         android:visibility="gone" />
 </RelativeLayout>

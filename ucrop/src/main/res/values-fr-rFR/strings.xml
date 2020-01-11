@@ -1,8 +1,0 @@
-<resources>
-    <string name="ucrop_label_original">Proportion initiale</string>
-    <string name="ucrop_label_edit_photo">La confection</string>
-
-    <string name="ucrop_menu_crop">La confection</string>
-    <string name="ucrop_gif_tag">Bouge fig</string>
-
-</resources>

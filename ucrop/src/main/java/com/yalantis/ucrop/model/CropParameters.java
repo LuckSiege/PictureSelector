@@ -1,7 +1,6 @@
 package com.yalantis.ucrop.model;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
 
 /**
  * Created by Oleksii Shliama [https://github.com/shliama] on 6/21/16.
@@ -12,19 +11,18 @@ public class CropParameters {
 
     private Bitmap.CompressFormat mCompressFormat;
     private int mCompressQuality;
-    private Uri mImageInputUri;
-    private String mImageOutputPath;
+    private String mImageInputPath, mImageOutputPath;
     private ExifInfo mExifInfo;
 
 
     public CropParameters(int maxResultImageSizeX, int maxResultImageSizeY,
                           Bitmap.CompressFormat compressFormat, int compressQuality,
-                          Uri imageInputUri, String imageOutputPath, ExifInfo exifInfo) {
+                          String imageInputPath, String imageOutputPath, ExifInfo exifInfo) {
         mMaxResultImageSizeX = maxResultImageSizeX;
         mMaxResultImageSizeY = maxResultImageSizeY;
         mCompressFormat = compressFormat;
         mCompressQuality = compressQuality;
-        mImageInputUri = imageInputUri;
+        mImageInputPath = imageInputPath;
         mImageOutputPath = imageOutputPath;
         mExifInfo = exifInfo;
     }
@@ -45,8 +43,8 @@ public class CropParameters {
         return mCompressQuality;
     }
 
-    public Uri getImageInputUri() {
-        return mImageInputUri;
+    public String getImageInputPath() {
+        return mImageInputPath;
     }
 
     public String getImageOutputPath() {
