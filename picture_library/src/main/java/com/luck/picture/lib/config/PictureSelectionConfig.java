@@ -14,6 +14,7 @@ import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -154,7 +155,7 @@ public final class PictureSelectionConfig implements Parcelable {
         filterFileSize = -1;
         recordVideoSecond = 60;
         recordVideoMinSecond = 0;
-        compressQuality = 60;
+        compressQuality = 80;
         minimumCompressSize = PictureConfig.MAX_COMPRESS_SIZE;
         imageSpanCount = 4;
         isCompress = false;
