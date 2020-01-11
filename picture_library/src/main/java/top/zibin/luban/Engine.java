@@ -21,7 +21,7 @@ class Engine {
     private int srcWidth;
     private int srcHeight;
     private boolean focusAlpha;
-    private static final int DEFAULT_QUALITY = 60;
+    private static final int DEFAULT_QUALITY = 80;
     private int compressQuality;
 
     Engine(InputStreamProvider srcImg, File tagImg, boolean focusAlpha, int compressQuality) throws IOException {
@@ -83,10 +83,7 @@ class Engine {
             tagBitmap = rotatingImage(tagBitmap, Checker.SINGLE.getOrientation(srcImg.open()));
         }
         if (tagBitmap != null) {
-            if (compressQuality > 100) {
-                compressQuality = DEFAULT_QUALITY;
-            }
-            compressQuality = compressQuality <= 0 ? DEFAULT_QUALITY : compressQuality;
+            compressQuality = compressQuality <= 0 || compressQuality > 100 ? DEFAULT_QUALITY : compressQuality;
             if (focusAlpha) {
                 tagBitmap.compress(Bitmap.CompressFormat.PNG, compressQuality, stream);
                 fos.write(stream.toByteArray());
