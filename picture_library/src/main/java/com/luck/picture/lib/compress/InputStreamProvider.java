@@ -1,4 +1,4 @@
-package top.zibin.luban;
+package com.luck.picture.lib.compress;
 
 import com.luck.picture.lib.entity.LocalMedia;
 
@@ -14,7 +14,10 @@ public interface InputStreamProvider {
 
     InputStream open() throws IOException;
 
+    void close();
+
     String getPath();
 
     LocalMedia getMedia();
+
 }
