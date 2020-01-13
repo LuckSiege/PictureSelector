@@ -484,17 +484,29 @@ public class PictureFileUtils {
         }
         FileChannel inputChannel = null;
         FileChannel outputChannel = null;
+        FileOutputStream fileOutputStream = null;
         try {
             inputChannel = fileInputStream.getChannel();
-            outputChannel = new FileOutputStream(outFile).getChannel();
+            fileOutputStream = new FileOutputStream(outFile);
+            outputChannel = fileOutputStream.getChannel();
             inputChannel.transferTo(0, inputChannel.size(), outputChannel);
             inputChannel.close();
             return true;
         } catch (Exception e) {
             return false;
         } finally {
-            if (inputChannel != null) inputChannel.close();
-            if (outputChannel != null) outputChannel.close();
+            if (fileInputStream != null) {
+                fileInputStream.close();
+            }
+            if (fileOutputStream != null) {
+                fileOutputStream.close();
+            }
+            if (inputChannel != null) {
+                inputChannel.close();
+            }
+            if (outputChannel != null) {
+                outputChannel.close();
+            }
         }
     }
 
@@ -580,40 +592,5 @@ public class PictureFileUtils {
                 e.printStackTrace();
             }
         }
-    }
-
-
-    /**
-     * 判断拍照 图片是否旋转
-     *
-     * @param degree
-     * @param path
-     */
-    public static String rotateImageToAndroidQ(Context context, int degree, String path, String newFileName) {
-        if (degree > 0) {
-            try {
-                // 针对相片有旋转问题的处理方式
-                if (SdkVersionUtils.checkedAndroid_Q()) {
-                    BitmapFactory.Options opts = new BitmapFactory.Options();
-                    opts.inSampleSize = 2;
-                    ParcelFileDescriptor parcelFileDescriptor =
-                            context.getContentResolver()
-                                    .openFileDescriptor(Uri.parse(path), "r");
-                    FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
-                    Bitmap bitmap = BitmapFactory
-                            .decodeStream(inputStream, null, opts);
-                    String suffix = PictureFileUtils.extSuffix(inputStream);
-                    Bitmap bmp = PictureFileUtils.rotatingImageView(degree, bitmap);
-                    if (bmp != null) {
-                        String dir = createDir(context, TextUtils.isEmpty(newFileName) ? DateUtils.getCreateFileName("IMG_") + suffix : newFileName);
-                        PictureFileUtils.saveBitmapFile(bmp, new File(dir));
-                        return dir;
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return "";
     }
 }

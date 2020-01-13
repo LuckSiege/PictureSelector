@@ -232,6 +232,7 @@ public class FileUtils {
         } catch (Exception e) {
             return false;
         } finally {
+            if (fileInputStream != null) fileInputStream.close();
             if (inputChannel != null) inputChannel.close();
             if (outputChannel != null) outputChannel.close();
         }

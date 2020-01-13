@@ -26,13 +26,20 @@ class Engine {
         this.srcImg = srcImg;
         this.focusAlpha = focusAlpha;
         this.compressQuality = compressQuality <= 0 ? DEFAULT_QUALITY : compressQuality;
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        options.inSampleSize = 1;
 
-        BitmapFactory.decodeStream(srcImg.open(), null, options);
-        this.srcWidth = options.outWidth;
-        this.srcHeight = options.outHeight;
+        if (srcImg.getMedia() != null
+                && srcImg.getMedia().getWidth() > 0
+                && srcImg.getMedia().getHeight() > 0) {
+            this.srcWidth = srcImg.getMedia().getWidth();
+            this.srcHeight = srcImg.getMedia().getHeight();
+        } else {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            options.inSampleSize = 1;
+            BitmapFactory.decodeStream(srcImg.open(), null, options);
+            this.srcWidth = options.outWidth;
+            this.srcHeight = options.outHeight;
+        }
     }
 
     private int computeSize() {
@@ -71,11 +78,9 @@ class Engine {
     File compress() throws IOException {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = computeSize();
-
         Bitmap tagBitmap = BitmapFactory.decodeStream(srcImg.open(), null, options);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
-        if (Checker.SINGLE.isJPG(srcImg.open())) {
+        if (srcImg.getMedia() != null && Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
             tagBitmap = rotatingImage(tagBitmap, Checker.SINGLE.getOrientation(srcImg.open()));
         }
         if (tagBitmap != null) {
