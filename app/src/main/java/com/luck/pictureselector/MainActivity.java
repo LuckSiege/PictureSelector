@@ -6,11 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -20,9 +23,11 @@ import android.widget.Toast;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.PictureSelector;
@@ -42,8 +47,10 @@ import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
 import com.luck.pictureselector.adapter.GridImageAdapter;
+import com.luck.pictureselector.listener.DragListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -56,11 +63,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
     private final static String TAG = MainActivity.class.getSimpleName();
     private List<LocalMedia> selectList = new ArrayList<>();
-    private RecyclerView recyclerView;
+    private RecyclerView mRecyclerView;
     private GridImageAdapter mAdapter;
     private int maxSelectNum = 9;
     private TextView tv_select_num;
     private TextView tv_original_tips;
+    private TextView tvDeleteText;
     private ImageView left_back, minus, plus;
     private RadioGroup rgb_crop, rgb_style, rgb_photo_mode, rgb_langue, rgb_animation;
     private int aspect_ratio_x, aspect_ratio_y;
@@ -71,10 +79,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int themeId;
     private int chooseMode = PictureMimeType.ofAll();
     private boolean isWeChatStyle;
+    private boolean isUpward;
+    private boolean needScaleBig = true;
+    private boolean needScaleSmall = true;
     private int language = -1;
     private PictureParameterStyle mPictureParameterStyle;
     private PictureCropParameterStyle mCropParameterStyle;
-    private PictureWindowAnimationStyle windowAnimationStyle;
+    private PictureWindowAnimationStyle mWindowAnimationStyle;
+    private ItemTouchHelper mItemTouchHelper;
+    private DragListener mDragListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getDefaultStyle();
         minus = findViewById(R.id.minus);
         plus = findViewById(R.id.plus);
+        tvDeleteText = findViewById(R.id.tv_delete_text);
         tv_select_num = findViewById(R.id.tv_select_num);
         tv_original_tips = findViewById(R.id.tv_original_tips);
         rgb_crop = findViewById(R.id.rgb_crop);
@@ -119,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rgb_animation.setOnCheckedChangeListener(this);
         rgb_photo_mode.setOnCheckedChangeListener(this);
         rgb_langue.setOnCheckedChangeListener(this);
-        recyclerView = findViewById(R.id.recycler);
+        mRecyclerView = findViewById(R.id.recycler);
         left_back = findViewById(R.id.left_back);
         left_back.setOnClickListener(this);
         minus.setOnClickListener(this);
@@ -130,15 +144,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tv_select_num.setText(ValueOf.toString(maxSelectNum));
         FullyGridLayoutManager manager = new FullyGridLayoutManager(this,
                 4, GridLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(manager);
+        mRecyclerView.setLayoutManager(manager);
 
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(4,
+        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(4,
                 ScreenUtils.dip2px(this, 8), false));
 
         mAdapter = new GridImageAdapter(getContext(), onAddPicClickListener);
         mAdapter.setList(selectList);
         mAdapter.setSelectMax(maxSelectNum);
-        recyclerView.setAdapter(mAdapter);
+        mRecyclerView.setAdapter(mAdapter);
         cb_original.setOnCheckedChangeListener((buttonView, isChecked) ->
                 tv_original_tips.setVisibility(isChecked ? View.VISIBLE : View.GONE));
         cb_choose_mode.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -178,10 +192,187 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+        mAdapter.setItemLongClickListener((holder, position, v) -> {
+            //如果item不是最后一个，则执行拖拽
+            needScaleBig = true;
+            needScaleSmall = true;
+            int size = mAdapter.getList().size();
+            if (size != maxSelectNum) {
+                mItemTouchHelper.startDrag(holder);
+                return;
+            }
+            if (holder.getLayoutPosition() != size - 1) {
+                mItemTouchHelper.startDrag(holder);
+            }
+        });
+
+        mDragListener = new DragListener() {
+            @Override
+            public void deleteState(boolean isDelete) {
+                if (isDelete) {
+                    tvDeleteText.setText(getString(R.string.app_let_go_drag_delete));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        tvDeleteText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_let_go_delete, 0, 0);
+                    }
+                } else {
+                    tvDeleteText.setText(getString(R.string.app_drag_delete));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        tvDeleteText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.picture_icon_delete, 0, 0);
+                    }
+                }
+            }
+
+            @Override
+            public void dragState(boolean isStart) {
+                int visibility = tvDeleteText.getVisibility();
+                if (isStart) {
+                    if (visibility == View.GONE) {
+                        tvDeleteText.animate().alpha(1).setDuration(300).setInterpolator(new AccelerateInterpolator());
+                        tvDeleteText.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    if (visibility == View.VISIBLE) {
+                        tvDeleteText.setVisibility(View.GONE);
+                    }
+                }
+            }
+        };
+
+        mItemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
+            @Override
+            public boolean isLongPressDragEnabled() {
+                return true;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            }
+
+            @Override
+            public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                int itemViewType = viewHolder.getItemViewType();
+                if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
+                    viewHolder.itemView.setAlpha(0.7f);
+                }
+                return makeMovementFlags(ItemTouchHelper.DOWN | ItemTouchHelper.UP
+                        | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, 0);
+            }
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                //得到item原来的position
+                try {
+                    int fromPosition = viewHolder.getAdapterPosition();
+                    //得到目标position
+                    int toPosition = target.getAdapterPosition();
+                    int itemViewType = target.getItemViewType();
+                    if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
+                        if (fromPosition < toPosition) {
+                            for (int i = fromPosition; i < toPosition; i++) {
+                                Collections.swap(mAdapter.getList(), i, i + 1);
+                            }
+                        } else {
+                            for (int i = fromPosition; i > toPosition; i--) {
+                                Collections.swap(mAdapter.getList(), i, i - 1);
+                            }
+                        }
+                        mAdapter.notifyItemMoved(fromPosition, toPosition);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return true;
+            }
+
+            @Override
+            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
+                                    @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                int itemViewType = viewHolder.getItemViewType();
+                if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
+                    if (null == mDragListener) {
+                        return;
+                    }
+                    if (needScaleBig) {
+                        //如果需要执行放大动画
+                        viewHolder.itemView.animate().scaleXBy(0.1f).scaleYBy(0.1f).setDuration(100);
+                        //执行完成放大动画,标记改掉
+                        needScaleBig = false;
+                        //默认不需要执行缩小动画，当执行完成放大 并且松手后才允许执行
+                        needScaleSmall = false;
+                    }
+                    int sh = recyclerView.getHeight() + tvDeleteText.getHeight();
+                    int ry = tvDeleteText.getTop() - sh;
+                    if (dY >= ry) {
+                        //拖到删除处
+                        mDragListener.deleteState(true);
+                        if (isUpward) {
+                            //在删除处放手，则删除item
+                            viewHolder.itemView.setVisibility(View.INVISIBLE);
+                            mAdapter.delete(viewHolder.getAdapterPosition());
+                            resetState();
+                            return;
+                        }
+                    } else {//没有到删除处
+                        if (View.INVISIBLE == viewHolder.itemView.getVisibility()) {
+                            //如果viewHolder不可见，则表示用户放手，重置删除区域状态
+                            mDragListener.dragState(false);
+                        }
+                        if (needScaleSmall) {//需要松手后才能执行
+                            viewHolder.itemView.animate().scaleXBy(1f).scaleYBy(1f).setDuration(100);
+                        }
+                        mDragListener.deleteState(false);
+                    }
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                }
+            }
+
+            @Override
+            public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+                int itemViewType = viewHolder != null ? viewHolder.getItemViewType() : GridImageAdapter.TYPE_CAMERA;
+                if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
+                    if (ItemTouchHelper.ACTION_STATE_DRAG == actionState && mDragListener != null) {
+                        mDragListener.dragState(true);
+                    }
+                    super.onSelectedChanged(viewHolder, actionState);
+                }
+            }
+
+            @Override
+            public long getAnimationDuration(@NonNull RecyclerView recyclerView, int animationType, float animateDx, float animateDy) {
+                needScaleSmall = true;
+                isUpward = true;
+                return super.getAnimationDuration(recyclerView, animationType, animateDx, animateDy);
+            }
+
+            @Override
+            public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                int itemViewType = viewHolder.getItemViewType();
+                if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
+                    viewHolder.itemView.setAlpha(1.0f);
+                    super.clearView(recyclerView, viewHolder);
+                    mAdapter.notifyDataSetChanged();
+                    resetState();
+                }
+            }
+        });
+
+        // 绑定拖拽事件
+        mItemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         // 注册外部预览图片删除按钮回调
         BroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver,
                 BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
+    }
+
+    /**
+     * 重置
+     */
+    private void resetState() {
+        if (mDragListener != null) {
+            mDragListener.deleteState(false);
+            mDragListener.dragState(false);
+        }
+        isUpward = false;
     }
 
     private void clearCache() {
@@ -210,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setLanguage(language)// 设置语言，默认中文
                         .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
                         .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
-                        .setPictureWindowAnimationStyle(windowAnimationStyle)// 自定义相册启动退出动画
+                        .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
                         .isWithVideoImage(true)// 图片和视频是否可以同选,只在ofAll模式下有效
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
@@ -279,7 +470,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                         .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
                         .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
-                        .setPictureWindowAnimationStyle(windowAnimationStyle)// 自定义相册启动退出动画
+                        .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .isUseCustomCamera(cb_custom_camera.isChecked())// 是否使用自定义相机
                         .minSelectNum(1)// 最小选择数量
@@ -467,11 +658,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 aspect_ratio_y = 9;
                 break;
             case R.id.rb_photo_default_animation:
-                windowAnimationStyle = new PictureWindowAnimationStyle();
+                mWindowAnimationStyle = new PictureWindowAnimationStyle();
                 break;
             case R.id.rb_photo_up_animation:
-                windowAnimationStyle = new PictureWindowAnimationStyle();
-                windowAnimationStyle.ofAllAnimation(R.anim.picture_anim_up_in, R.anim.picture_anim_down_out);
+                mWindowAnimationStyle = new PictureWindowAnimationStyle();
+                mWindowAnimationStyle.ofAllAnimation(R.anim.picture_anim_up_in, R.anim.picture_anim_down_out);
                 break;
             case R.id.rb_default_style:
                 themeId = R.style.picture_default_style;

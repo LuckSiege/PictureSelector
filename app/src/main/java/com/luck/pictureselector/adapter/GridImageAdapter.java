@@ -1,9 +1,6 @@
 package com.luck.pictureselector.adapter;
 
 import android.content.Context;
-
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,12 +10,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.pictureselector.R;
+import com.luck.pictureselector.listener.OnItemClickListener;
+import com.luck.pictureselector.listener.OnItemLongClickListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,6 +46,22 @@ public class GridImageAdapter extends
 
     public interface onAddPicClickListener {
         void onAddPicClick();
+    }
+
+    /**
+     * 删除
+     */
+    public void delete(int position) {
+        try {
+
+            if (position != RecyclerView.NO_POSITION && list.size() > position) {
+                list.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, list.size());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public GridImageAdapter(Context context, onAddPicClickListener mOnAddPicClickListener) {
@@ -201,16 +218,26 @@ public class GridImageAdapter extends
                     mItemClickListener.onItemClick(adapterPosition, v);
                 });
             }
+
+            if (mItemLongClickListener != null) {
+                viewHolder.itemView.setOnLongClickListener(v -> {
+                    int adapterPosition = viewHolder.getAdapterPosition();
+                    mItemLongClickListener.onItemLongClick(viewHolder, adapterPosition, v);
+                    return true;
+                });
+            }
         }
     }
 
-    protected OnItemClickListener mItemClickListener;
+    private OnItemClickListener mItemClickListener;
 
-    public interface OnItemClickListener {
-        void onItemClick(int position, View v);
+    public void setOnItemClickListener(OnItemClickListener l) {
+        this.mItemClickListener = l;
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.mItemClickListener = listener;
+    private OnItemLongClickListener mItemLongClickListener;
+
+    public void setItemLongClickListener(OnItemLongClickListener l) {
+        this.mItemLongClickListener = l;
     }
 }
