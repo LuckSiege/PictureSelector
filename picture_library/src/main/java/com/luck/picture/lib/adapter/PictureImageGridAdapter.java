@@ -196,6 +196,20 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                                 || PictureMimeType.eqAudio(mimeType) && (config.enablePreviewAudio
                                 || config.selectionMode == PictureConfig.SINGLE);
                 if (eqResult) {
+                    if (PictureMimeType.eqVideo(image.getMimeType())) {
+                        if (config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
+                            // 视频小于最低指定的长度
+                            ToastUtils.s(context,
+                                    contentHolder.itemView.getContext().getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
+                            return;
+                        }
+                        if (config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
+                            // 视频时长超过了指定的长度
+                            ToastUtils.s(context,
+                                    contentHolder.itemView.getContext().getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+                            return;
+                        }
+                    }
                     imageSelectChangedListener.onPictureClick(image, index);
                 } else {
                     changeCheckboxState(contentHolder, image);
@@ -315,6 +329,13 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     return;
                 }
 
+                if (!isChecked && config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
+                    // 视频小于最低指定的长度
+                    ToastUtils.s(context,
+                            contentHolder.itemView.getContext().getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
+                    return;
+                }
+
                 if (!isChecked && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
                     // 视频时长超过了指定的长度
                     ToastUtils.s(context,
@@ -344,6 +365,13 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     ToastUtils.s(context, StringUtils.getMsg(context, mimeType, config.maxVideoSelectNum));
                     return;
                 }
+                if (!isChecked && config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
+                    // 视频小于最低指定的长度
+                    ToastUtils.s(context,
+                            contentHolder.itemView.getContext().getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
+                    return;
+                }
+
                 if (!isChecked && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
                     // 视频时长超过了指定的长度
                     ToastUtils.s(context,
@@ -356,6 +384,13 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     return;
                 }
                 if (PictureMimeType.eqVideo(image.getMimeType())) {
+                    if (!isChecked && config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
+                        // 视频小于最低指定的长度
+                        ToastUtils.s(context,
+                                contentHolder.itemView.getContext().getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
+                        return;
+                    }
+
                     if (!isChecked && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
                         // 视频时长超过了指定的长度
                         ToastUtils.s(context,

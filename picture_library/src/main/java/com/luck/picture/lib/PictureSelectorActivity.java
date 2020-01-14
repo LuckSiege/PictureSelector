@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -1302,118 +1301,112 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         media.setChooseModel(config.chooseMode);
         if (mAdapter != null) {
             images.add(0, media);
-            if (config.selectionMode == PictureConfig.SINGLE) {
-                // 单选模式下直接返回模式
-                if (config.isSingleDirectReturn) {
-                    List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
-                    selectedImages.add(media);
-                    mAdapter.bindSelectImages(selectedImages);
-                    singleDirectReturnCameraHandleResult(mimeType);
-                } else {
-                    List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
-                    mimeType = selectedImages.size() > 0 ? selectedImages.get(0).getMimeType() : "";
-                    boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
-                    // 类型相同或还没有选中才加进选中集合中
-                    if (mimeTypeSame || selectedImages.size() == 0) {
-                        if (PictureMimeType.eqVideo(media.getMimeType()) && config.videoMaxSecond > 0) {
-                            if (media.getDuration() < config.videoMaxSecond) {
-                                // 如果是单选，则清空已选中的并刷新列表(作单一选择)
-                                singleRadioMediaImage();
-                                selectedImages.add(media);
-                                mAdapter.bindSelectImages(selectedImages);
-                            }
-                        } else {
+            boolean isEnterNext = true;
+            if (PictureMimeType.eqVideo(media.getMimeType())) {
+                // 判断视频是否符合条件
+                if (config.videoMinSecond > 0 && config.videoMaxSecond > 0) {
+                    // 用户设置了最小和最大视频时长，判断视频是否在区间之内
+                    if (media.getDuration() < config.videoMinSecond || media.getDuration() > config.videoMaxSecond) {
+                        isEnterNext = false;
+                    }
+                } else if (config.videoMinSecond > 0 && config.videoMaxSecond <= 0) {
+                    // 用户只设置了最小时长视频限制
+                    if (media.getDuration() < config.videoMinSecond) {
+                        isEnterNext = false;
+                    }
+                } else if (config.videoMinSecond <= 0 && config.videoMaxSecond > 0) {
+                    // 用户只设置了最大时长视频限制
+                    if (media.getDuration() > config.videoMinSecond) {
+                        isEnterNext = false;
+                    }
+                }
+            }
+            if (isEnterNext) {
+                if (config.selectionMode == PictureConfig.SINGLE) {
+                    // 单选模式下直接返回模式
+                    if (config.isSingleDirectReturn) {
+                        List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
+                        selectedImages.add(media);
+                        mAdapter.bindSelectImages(selectedImages);
+                        singleDirectReturnCameraHandleResult(mimeType);
+                    } else {
+                        List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
+                        mimeType = selectedImages.size() > 0 ? selectedImages.get(0).getMimeType() : "";
+                        boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
+                        // 类型相同或还没有选中才加进选中集合中
+                        if (mimeTypeSame || selectedImages.size() == 0) {
                             // 如果是单选，则清空已选中的并刷新列表(作单一选择)
                             singleRadioMediaImage();
                             selectedImages.add(media);
                             mAdapter.bindSelectImages(selectedImages);
                         }
                     }
-                }
-            } else {
-                // 多选模式
-                List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
-                int count = selectedImages.size();
-                mimeType = count > 0 ? selectedImages.get(0).getMimeType() : "";
-                boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
-                if (config.isWithVideoImage) {
-                    // 混选模式
-                    int videoSize = 0;
-                    int imageSize = 0;
-                    for (int i = 0; i < count; i++) {
-                        LocalMedia m = selectedImages.get(i);
-                        if (PictureMimeType.eqVideo(m.getMimeType())) {
-                            videoSize++;
-                        } else {
-                            imageSize++;
-                        }
-                    }
-                    if (PictureMimeType.eqVideo(media.getMimeType()) && config.maxVideoSelectNum > 0) {
-                        // 视频还可选
-                        if (videoSize < config.maxVideoSelectNum) {
-                            if (config.videoMaxSecond > 0) {
-                                if (media.getDuration() < config.videoMaxSecond) {
-                                    selectedImages.add(media);
-                                    mAdapter.bindSelectImages(selectedImages);
-                                }
+                } else {
+                    // 多选模式
+                    List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
+                    int count = selectedImages.size();
+                    mimeType = count > 0 ? selectedImages.get(0).getMimeType() : "";
+                    boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
+                    if (config.isWithVideoImage) {
+                        // 混选模式
+                        int videoSize = 0;
+                        int imageSize = 0;
+                        for (int i = 0; i < count; i++) {
+                            LocalMedia m = selectedImages.get(i);
+                            if (PictureMimeType.eqVideo(m.getMimeType())) {
+                                videoSize++;
                             } else {
+                                imageSize++;
+                            }
+                        }
+                        if (PictureMimeType.eqVideo(media.getMimeType()) && config.maxVideoSelectNum > 0) {
+                            // 视频还可选
+                            if (videoSize < config.maxVideoSelectNum) {
                                 selectedImages.add(media);
                                 mAdapter.bindSelectImages(selectedImages);
+                            } else {
+                                ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), media.getMimeType(),
+                                        config.maxVideoSelectNum));
                             }
                         } else {
-                            ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), media.getMimeType(),
-                                    config.maxVideoSelectNum));
+                            // 图片还可选
+                            if (imageSize < config.maxSelectNum) {
+                                selectedImages.add(media);
+                                mAdapter.bindSelectImages(selectedImages);
+                            } else {
+                                ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), media.getMimeType(),
+                                        config.maxSelectNum));
+                            }
                         }
-                    } else {
-                        // 图片还可选
-                        if (imageSize < config.maxSelectNum) {
-                            selectedImages.add(media);
-                            mAdapter.bindSelectImages(selectedImages);
-                        } else {
-                            ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), media.getMimeType(),
-                                    config.maxSelectNum));
-                        }
-                    }
 
-                } else {
-                    if (PictureMimeType.eqVideo(mimeType) && config.maxVideoSelectNum > 0) {
-                        // 类型相同或还没有选中才加进选中集合中
-                        if (count < config.maxVideoSelectNum) {
-                            if (mimeTypeSame || count == 0) {
-                                if (selectedImages.size() < config.maxVideoSelectNum) {
-                                    if (config.videoMaxSecond > 0) {
-                                        if (media.getDuration() < config.videoMaxSecond) {
-                                            selectedImages.add(media);
-                                            mAdapter.bindSelectImages(selectedImages);
-                                        }
-                                    } else {
-                                        selectedImages.add(media);
-                                        mAdapter.bindSelectImages(selectedImages);
-                                    }
-                                }
-                            }
-                        } else {
-                            ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), mimeType,
-                                    config.maxVideoSelectNum));
-                        }
                     } else {
-                        // 没有到最大选择量 才做默认选中刚拍好的
-                        if (count < config.maxSelectNum) {
+                        if (PictureMimeType.eqVideo(mimeType) && config.maxVideoSelectNum > 0) {
                             // 类型相同或还没有选中才加进选中集合中
-                            if (mimeTypeSame || count == 0) {
-                                if (count < config.maxSelectNum) {
-                                    boolean eqVideo = PictureMimeType.eqVideo(media.getMimeType());
-                                    if (eqVideo && config.videoMaxSecond > 0 && media.getDuration() > config.videoMaxSecond) {
-                                        // 是视频&录的时长超过了设置的最大视频时长不做选中处理
-                                    } else {
+                            if (count < config.maxVideoSelectNum) {
+                                if (mimeTypeSame || count == 0) {
+                                    if (selectedImages.size() < config.maxVideoSelectNum) {
                                         selectedImages.add(media);
                                         mAdapter.bindSelectImages(selectedImages);
                                     }
                                 }
+                            } else {
+                                ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), mimeType,
+                                        config.maxVideoSelectNum));
                             }
                         } else {
-                            ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), mimeType,
-                                    config.maxSelectNum));
+                            // 没有到最大选择量 才做默认选中刚拍好的
+                            if (count < config.maxSelectNum) {
+                                // 类型相同或还没有选中才加进选中集合中
+                                if (mimeTypeSame || count == 0) {
+                                    if (count < config.maxSelectNum) {
+                                        selectedImages.add(media);
+                                        mAdapter.bindSelectImages(selectedImages);
+                                    }
+                                }
+                            } else {
+                                ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), mimeType,
+                                        config.maxSelectNum));
+                            }
                         }
                     }
                 }

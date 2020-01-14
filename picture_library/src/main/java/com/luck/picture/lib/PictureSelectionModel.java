@@ -362,11 +362,10 @@ public class PictureSelectionModel {
 
     /**
      * @param videoMaxSecond selection video max second
-     *                       # +1000 Plus a second float is a little more accurate
      * @return
      */
     public PictureSelectionModel videoMaxSecond(int videoMaxSecond) {
-        selectionConfig.videoMaxSecond = (videoMaxSecond * 1000) + 1000;
+        selectionConfig.videoMaxSecond = (videoMaxSecond * 1000);
         return this;
     }
 

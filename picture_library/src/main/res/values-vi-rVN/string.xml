@@ -54,4 +54,5 @@
     <string name="picture_recording_time_is_short">Thời gian ghi âm quá ngắn</string>
     <string name="picture_photo_camera">Chụp ảnh đi</string>
     <string name="picture_choose_max_seconds">Bạn chỉ có thể chọn ảnh trong vòng %1$ds nhất</string>
+    <string name="picture_choose_min_seconds">Không thể chọn video dưới %1$ds giây</string>
 </resources>

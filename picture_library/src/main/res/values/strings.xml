@@ -53,4 +53,5 @@
     <string name="picture_recording_time_is_short">录制时间过短</string>
     <string name="picture_photo_camera">单击拍照，长按摄像</string>
     <string name="picture_choose_max_seconds">最大只能选择 %1$ds 以内的视频</string>
+    <string name="picture_choose_min_seconds">不能选择低于 %1$ds 内的视频</string>
 </resources>

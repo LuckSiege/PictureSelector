@@ -442,6 +442,12 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         return;
                     }
 
+                    if (!check.isSelected() && config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
+                        // 视频小于最低指定的长度
+                        ToastUtils.s(getContext(), getContext().getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
+                        return;
+                    }
+
                     if (!check.isSelected() && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
                         // 视频时长超过了指定的长度
                         ToastUtils.s(getContext(),
@@ -469,6 +475,13 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), mimeType, config.maxVideoSelectNum));
                         return;
                     }
+
+                    if (!check.isSelected() && config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
+                        // 视频小于最低指定的长度
+                        ToastUtils.s(getContext(), getContext().getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
+                        return;
+                    }
+
                     if (!check.isSelected() && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
                         // 视频时长超过了指定的长度
                         ToastUtils.s(getContext(),
@@ -481,6 +494,12 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         return;
                     }
                     if (PictureMimeType.eqVideo(image.getMimeType())) {
+                        if (!check.isSelected() && config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
+                            // 视频小于最低指定的长度
+                            ToastUtils.s(getContext(), getContext().getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
+                            return;
+                        }
+
                         if (!check.isSelected() && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
                             // 视频时长超过了指定的长度
                             ToastUtils.s(getContext(),
