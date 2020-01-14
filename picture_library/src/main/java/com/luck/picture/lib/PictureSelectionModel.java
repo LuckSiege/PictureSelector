@@ -12,11 +12,12 @@ import androidx.fragment.app.Fragment;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.UCropOptions;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
+import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.tools.DoubleUtils;
 
 import java.util.ArrayList;
@@ -118,7 +119,7 @@ public class PictureSelectionModel {
 
     /**
      * @param buttonFeatures Set the record button function
-     * # 具体参考 CustomCameraView.BUTTON_STATE_BOTH、BUTTON_STATE_ONLY_CAPTURE、BUTTON_STATE_ONLY_RECORDER
+     *                       # 具体参考 CustomCameraView.BUTTON_STATE_BOTH、BUTTON_STATE_ONLY_CAPTURE、BUTTON_STATE_ONLY_RECORDER
      * @return
      */
     public PictureSelectionModel setButtonFeatures(int buttonFeatures) {
@@ -132,6 +133,15 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel enableCrop(boolean enableCrop) {
         selectionConfig.enableCrop = enableCrop;
+        return this;
+    }
+
+    /**
+     * @param uCropOptions UCrop parameter configuration is provided
+     * @return
+     */
+    public PictureSelectionModel basicUCropConfig(UCropOptions uCropOptions) {
+        selectionConfig.uCropOptions = uCropOptions;
         return this;
     }
 

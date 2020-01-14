@@ -2,17 +2,20 @@ package com.yalantis.ucrop.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 
-import androidx.annotation.NonNull;
-
 import com.yalantis.ucrop.R;
+import com.yalantis.ucrop.callback.CropBoundsChangeListener;
+import com.yalantis.ucrop.callback.OverlayViewChangeListener;
+
+import androidx.annotation.NonNull;
 
 public class UCropView extends FrameLayout {
 
-    private final GestureCropImageView mGestureCropImageView;
+    private GestureCropImageView mGestureCropImageView;
     private final OverlayView mViewOverlay;
 
     public UCropView(Context context, AttributeSet attrs) {
@@ -32,8 +35,22 @@ public class UCropView extends FrameLayout {
         a.recycle();
 
 
-        mGestureCropImageView.setCropBoundsChangeListener(cropRatio -> mViewOverlay.setTargetAspectRatio(cropRatio));
-        mViewOverlay.setOverlayViewChangeListener(cropRect -> mGestureCropImageView.setCropRect(cropRect));
+        setListenersToViews();
+    }
+
+    private void setListenersToViews() {
+        mGestureCropImageView.setCropBoundsChangeListener(new CropBoundsChangeListener() {
+            @Override
+            public void onCropAspectRatioChanged(float cropRatio) {
+                mViewOverlay.setTargetAspectRatio(cropRatio);
+            }
+        });
+        mViewOverlay.setOverlayViewChangeListener(new OverlayViewChangeListener() {
+            @Override
+            public void onCropRectUpdated(RectF cropRect) {
+                mGestureCropImageView.setCropRect(cropRect);
+            }
+        });
     }
 
     @Override
@@ -51,4 +68,15 @@ public class UCropView extends FrameLayout {
         return mViewOverlay;
     }
 
+    /**
+     * Method for reset state for UCropImageView such as rotation, scale, translation.
+     * Be careful: this method recreate UCropImageView instance and reattach it to layout.
+     */
+    public void resetCropImageView() {
+        removeView(mGestureCropImageView);
+        mGestureCropImageView = new GestureCropImageView(getContext());
+        setListenersToViews();
+        mGestureCropImageView.setCropRect(getOverlayView().getCropViewRect());
+        addView(mGestureCropImageView, 0);
+    }
 }

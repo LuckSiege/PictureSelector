@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ucrop_label_edit_photo">사진 편집</string>
+    <string name="ucrop_label_original">원본</string>
+    <string name="ucrop_menu_crop">확인</string>
+    <string name="ucrop_gif_tag">움직이</string>
+</resources>

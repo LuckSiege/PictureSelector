@@ -13,26 +13,33 @@ import java.io.IOException;
  * Responsible for starting compress and managing active and cached resources.
  */
 class Engine {
-    private static final int DEFAULT_QUALITY = 60;
-    private int compressQuality;
     private InputStreamProvider srcImg;
     private File tagImg;
     private int srcWidth;
     private int srcHeight;
     private boolean focusAlpha;
+    private static final int DEFAULT_QUALITY = 80;
+    private int compressQuality;
 
     Engine(InputStreamProvider srcImg, File tagImg, boolean focusAlpha, int compressQuality) throws IOException {
         this.tagImg = tagImg;
         this.srcImg = srcImg;
         this.focusAlpha = focusAlpha;
         this.compressQuality = compressQuality <= 0 ? DEFAULT_QUALITY : compressQuality;
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        options.inSampleSize = 1;
 
-        BitmapFactory.decodeStream(srcImg.open(), null, options);
-        this.srcWidth = options.outWidth;
-        this.srcHeight = options.outHeight;
+        if (srcImg.getMedia() != null
+                && srcImg.getMedia().getWidth() > 0
+                && srcImg.getMedia().getHeight() > 0) {
+            this.srcWidth = srcImg.getMedia().getWidth();
+            this.srcHeight = srcImg.getMedia().getHeight();
+        } else {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            options.inSampleSize = 1;
+            BitmapFactory.decodeStream(srcImg.open(), null, options);
+            this.srcWidth = options.outWidth;
+            this.srcHeight = options.outHeight;
+        }
     }
 
     private int computeSize() {
@@ -71,19 +78,14 @@ class Engine {
     File compress() throws IOException {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = computeSize();
-
         Bitmap tagBitmap = BitmapFactory.decodeStream(srcImg.open(), null, options);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
-        if (Checker.SINGLE.isJPG(srcImg.open())) {
+        if (srcImg.getMedia() != null && Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
             tagBitmap = rotatingImage(tagBitmap, Checker.SINGLE.getOrientation(srcImg.open()));
         }
         if (tagBitmap != null) {
-            if (compressQuality > 100) {
-                compressQuality = DEFAULT_QUALITY;
-            }
-            tagBitmap.compress(focusAlpha ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG,
-                    compressQuality <= 0 ? DEFAULT_QUALITY : compressQuality, stream);
+            compressQuality = compressQuality <= 0 || compressQuality > 100 ? DEFAULT_QUALITY : compressQuality;
+            tagBitmap.compress(focusAlpha ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, compressQuality, stream);
             tagBitmap.recycle();
         }
         FileOutputStream fos = new FileOutputStream(tagImg);

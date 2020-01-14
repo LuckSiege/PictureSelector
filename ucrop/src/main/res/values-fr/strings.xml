@@ -1,0 +1,6 @@
+<resources>
+    <string name="ucrop_label_original">Original</string>
+    <string name="ucrop_label_edit_photo">Modifier la photo</string>
+    <string name="ucrop_menu_crop">Recadrer</string>
+    <string name="ucrop_gif_tag">Bouge fig</string>
+</resources>

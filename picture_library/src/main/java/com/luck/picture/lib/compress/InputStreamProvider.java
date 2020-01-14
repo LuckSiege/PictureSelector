@@ -19,4 +19,5 @@ public interface InputStreamProvider {
     String getPath();
 
     LocalMedia getMedia();
+
 }

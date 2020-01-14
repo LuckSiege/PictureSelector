@@ -1,8 +1,0 @@
-<resources>
-    <string name="ucrop_label_original">原始比例</string>
-    <string name="ucrop_label_edit_photo">裁断</string>
-
-    <string name="ucrop_menu_crop">裁断</string>
-
-    <string name="ucrop_gif_tag">动図</string>
-</resources>

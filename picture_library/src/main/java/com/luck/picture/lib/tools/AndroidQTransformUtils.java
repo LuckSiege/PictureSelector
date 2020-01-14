@@ -13,6 +13,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 
 /**
@@ -33,13 +34,12 @@ public class AndroidQTransformUtils {
      * @return
      */
     public static String parseVideoPathToAndroidQ(Context ctx, String path, String customFileName, String mineType) {
+        ParcelFileDescriptor parcelFileDescriptor = null;
         try {
             String suffix = PictureMimeType.getLastImgSuffix(mineType);
             String filesDir = PictureFileUtils.getVideoDiskCacheDir(ctx.getApplicationContext());
-            ParcelFileDescriptor parcelFileDescriptor =
-                    ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
-            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-            FileInputStream inputStream = new FileInputStream(fileDescriptor);
+            parcelFileDescriptor = ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
+            FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
             String md5Value = Digest.computeToQMD5(inputStream);
             String fileName;
             if (!TextUtils.isEmpty(md5Value)) {
@@ -60,6 +60,14 @@ public class AndroidQTransformUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (parcelFileDescriptor != null) {
+                    parcelFileDescriptor.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return "";
     }
@@ -75,14 +83,13 @@ public class AndroidQTransformUtils {
      * @return
      */
     public static String parseImagePathToAndroidQ(Context ctx, String path, String customFileName, String mineType) {
+        ParcelFileDescriptor parcelFileDescriptor = null;
         try {
+            parcelFileDescriptor = ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
+            FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
+            String md5Value = Digest.computeToQMD5(inputStream);
             String suffix = PictureMimeType.getLastImgSuffix(mineType);
             String filesDir = PictureFileUtils.getDiskCacheDir(ctx.getApplicationContext());
-            ParcelFileDescriptor parcelFileDescriptor =
-                    ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
-            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-            FileInputStream inputStream = new FileInputStream(fileDescriptor);
-            String md5Value = Digest.computeToQMD5(inputStream);
             String fileName;
             if (!TextUtils.isEmpty(md5Value)) {
                 fileName = TextUtils.isEmpty(customFileName) ? new StringBuffer().append("IMG_").append(md5Value.toUpperCase()).append(suffix).toString() : customFileName;
@@ -102,6 +109,14 @@ public class AndroidQTransformUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (parcelFileDescriptor != null) {
+                    parcelFileDescriptor.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return "";
     }
@@ -117,13 +132,13 @@ public class AndroidQTransformUtils {
      * @return
      */
     public static String parseAudioPathToAndroidQ(Context ctx, String path, String customFileName, String mineType) {
+        ParcelFileDescriptor parcelFileDescriptor = null;
         try {
+            parcelFileDescriptor =
+                    ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
             String suffix = PictureMimeType.getLastImgSuffix(mineType);
             String filesDir = PictureFileUtils.getAudioDiskCacheDir(ctx.getApplicationContext());
-            ParcelFileDescriptor parcelFileDescriptor =
-                    ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
-            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-            FileInputStream inputStream = new FileInputStream(fileDescriptor);
+            FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
             String md5Value = Digest.computeToQMD5(inputStream);
             String fileName;
             if (!TextUtils.isEmpty(md5Value)) {
@@ -144,6 +159,14 @@ public class AndroidQTransformUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (parcelFileDescriptor != null) {
+                    parcelFileDescriptor.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return "";
     }
@@ -179,12 +202,13 @@ public class AndroidQTransformUtils {
      * @param outUri
      */
     public static void copyPathToDCIM(Context context, Uri inputUri, Uri outUri) {
+        ParcelFileDescriptor parcelFileDescriptor = null;
         try {
             OutputStream outputStream = context.getContentResolver()
                     .openOutputStream(outUri);
             byte[] buffer = new byte[1024 * 8];
             int read;
-            ParcelFileDescriptor parcelFileDescriptor = context.getContentResolver().openFileDescriptor(inputUri, "r");
+            parcelFileDescriptor = context.getContentResolver().openFileDescriptor(inputUri, "r");
             FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
             FileInputStream inputStream = new FileInputStream(fileDescriptor);
             while ((read = inputStream.read(buffer)) > -1) {
@@ -194,6 +218,14 @@ public class AndroidQTransformUtils {
             outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (parcelFileDescriptor != null) {
+                    parcelFileDescriptor.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

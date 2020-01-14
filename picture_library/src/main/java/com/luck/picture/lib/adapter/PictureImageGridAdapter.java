@@ -4,19 +4,17 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.net.Uri;
-
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Build;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
@@ -49,7 +47,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private OnPhotoSelectChangedListener imageSelectChangedListener;
     private List<LocalMedia> images = new ArrayList<>();
     private List<LocalMedia> selectImages = new ArrayList<>();
-    private Animation animation;
     private PictureSelectionConfig config;
     /**
      * 单选图片
@@ -60,7 +57,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.context = context;
         this.config = config;
         this.showCamera = config.isCamera;
-        this.animation = AnimationUtils.loadAnimation(context, R.anim.picture_anim_modal_in);
     }
 
     public void setShowCamera(boolean showCamera) {
@@ -136,7 +132,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 notifyCheckChanged(contentHolder, image);
             }
             if (!config.isSingleDirectReturn) {
-                selectImage(contentHolder, isSelected(image), false);
+                selectImage(contentHolder, isSelected(image));
             }
             boolean gif = PictureMimeType.isGif(mimeType);
             contentHolder.tvCheck.setVisibility(config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
@@ -366,10 +362,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             image.setNum(selectImages.size());
             VoiceUtils.playVoice(context, config.openClickSound);
             AnimUtils.zoom(contentHolder.ivPicture, config.zoomAnim);
+            contentHolder.tvCheck.startAnimation(AnimationUtils.loadAnimation(context, R.anim.picture_anim_modal_in));
         }
         //通知点击项发生了改变
         notifyItemChanged(contentHolder.getAdapterPosition());
-        selectImage(contentHolder, !isChecked, true);
+        selectImage(contentHolder, !isChecked);
         if (imageSelectChangedListener != null) {
             imageSelectChangedListener.onChange(selectImages);
         }
@@ -408,16 +405,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
      *
      * @param holder
      * @param isChecked
-     * @param isAnim
      */
-    public void selectImage(ViewHolder holder, boolean isChecked, boolean isAnim) {
+    public void selectImage(ViewHolder holder, boolean isChecked) {
         holder.tvCheck.setSelected(isChecked);
         if (isChecked) {
-            if (isAnim) {
-                if (animation != null) {
-                    holder.tvCheck.startAnimation(animation);
-                }
-            }
             holder.ivPicture.setColorFilter(ContextCompat.getColor
                     (context, R.color.picture_color_80), PorterDuff.Mode.SRC_ATOP);
         } else {

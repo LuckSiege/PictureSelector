@@ -77,7 +77,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     private List<LocalMedia> images = new ArrayList<>();
     private int position = 0;
     private SimpleFragmentAdapter adapter;
-    private loadDataThread loadDataThread;
+    private LoadDataThread mLoadDataThread;
     private String downloadPath;
     private String mimeType;
     private ImageButton ibDelete;
@@ -393,13 +393,13 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 boolean isHttp = PictureMimeType.isHttp(downloadPath);
                 if (isHttp) {
                     showPleaseDialog();
-                    loadDataThread = new loadDataThread(downloadPath);
-                    loadDataThread.start();
+                    mLoadDataThread = new LoadDataThread(downloadPath);
+                    mLoadDataThread.start();
                 } else {
                     // 有可能本地图片
                     try {
                         if (isAndroidQ) {
-                            savePictureAlbumAndroidQ(Uri.parse(downloadPath));
+                            savePictureAlbumAndroidQ(downloadPath.startsWith("content://") ? Uri.parse(downloadPath) : Uri.fromFile(new File(downloadPath)));
                         } else {
                             // 把文件插入到系统图库
                             savePictureAlbum();
@@ -495,11 +495,10 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     }
 
 
-    // 进度条线程
-    public class loadDataThread extends Thread {
+    public class LoadDataThread extends Thread {
         private String path;
 
-        public loadDataThread(String path) {
+        public LoadDataThread(String path) {
             super();
             this.path = path;
         }
@@ -636,9 +635,9 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (loadDataThread != null) {
-            mHandler.removeCallbacks(loadDataThread);
-            loadDataThread = null;
+        if (mLoadDataThread != null) {
+            mHandler.removeCallbacks(mLoadDataThread);
+            mLoadDataThread = null;
         }
         if (adapter != null) {
             adapter.clear();

@@ -677,7 +677,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 case UCrop.REQUEST_MULTI_CROP:
                     // 裁剪数据
                     List<CutInfo> list = UCrop.getMultipleOutput(data);
-                    data.putParcelableArrayListExtra(UCrop.EXTRA_OUTPUT_URI_LIST,
+                    data.putParcelableArrayListExtra(UCrop.Options.EXTRA_OUTPUT_URI_LIST,
                             (ArrayList<? extends Parcelable>) list);
                     // 已选数量
                     data.putParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST,

@@ -15,7 +15,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -377,7 +376,11 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
      * @param originalPath
      */
     protected void startCrop(String originalPath) {
-        UCrop.Options options = new UCrop.Options();
+        if (TextUtils.isEmpty(originalPath)) {
+            ToastUtils.s(this, getString(R.string.picture_not_crop_data));
+            return;
+        }
+        UCrop.Options options = config.uCropOptions == null ? new UCrop.Options() : config.uCropOptions;
         int toolbarColor = 0, statusColor = 0, titleColor = 0;
         boolean isChangeStatusBarFontColor;
         if (config.cropStyle != null) {
@@ -438,6 +441,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         options.setCropExitAnimation(config.windowAnimationStyle != null
                 ? config.windowAnimationStyle.activityCropExitAnimation : 0);
         options.setNavBarColor(config.cropStyle != null ? config.cropStyle.cropNavBarColor : 0);
+        options.withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y);
+        if (config.cropWidth > 0 && config.cropHeight > 0) {
+            options.withMaxResultSize(config.cropWidth, config.cropHeight);
+        }
         boolean isHttp = PictureMimeType.isHttp(originalPath);
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         Uri uri = isHttp || isAndroidQ ? Uri.parse(originalPath) : Uri.fromFile(new File(originalPath));
@@ -446,8 +453,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         File file = new File(PictureFileUtils.getDiskCacheDir(this),
                 TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_") + suffix : config.renameCropFileName);
         UCrop.of(uri, Uri.fromFile(file))
-                .withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y)
-                .withMaxResultSize(config.cropWidth, config.cropHeight)
                 .withOptions(options)
                 .startAnimationActivity(this, config.windowAnimationStyle != null
                         ? config.windowAnimationStyle.activityCropEnterAnimation : 0);
@@ -463,7 +468,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
             ToastUtils.s(this, getString(R.string.picture_not_crop_data));
             return;
         }
-        UCrop.Options options = new UCrop.Options();
         int toolbarColor = 0, statusColor = 0, titleColor = 0;
         boolean isChangeStatusBarFontColor;
         if (config.cropStyle != null) {
@@ -504,6 +508,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                 isChangeStatusBarFontColor = AttrsUtils.getTypeValueBoolean(this, R.attr.picture_statusFontColor);
             }
         }
+        UCrop.Options options = config.uCropOptions == null ? new UCrop.Options() : config.uCropOptions;
         options.isOpenWhiteStatusBar(isChangeStatusBarFontColor);
         options.setToolbarColor(toolbarColor);
         options.setStatusBarColor(statusColor);
@@ -528,6 +533,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         options.setCropExitAnimation(config.windowAnimationStyle != null
                 ? config.windowAnimationStyle.activityCropExitAnimation : 0);
         options.setNavBarColor(config.cropStyle != null ? config.cropStyle.cropNavBarColor : 0);
+        options.withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y);
+        if (config.cropWidth > 0 && config.cropHeight > 0) {
+            options.withMaxResultSize(config.cropWidth, config.cropHeight);
+        }
         int index = 0;
         int size = list.size();
         if (config.chooseMode == PictureMimeType.ofAll() && config.isWithVideoImage) {
@@ -551,15 +560,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         Uri uri = isHttp || isAndroidQ ? Uri.parse(path) : Uri.fromFile(new File(path));
         String mimeType = PictureMimeType.getMimeTypeFromMediaContentUri(this, uri);
         String suffix = mimeType.replace("image/", ".");
-
         File file = new File(PictureFileUtils.getDiskCacheDir(this),
                 TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_")
                         + suffix : config.camera ? config.renameCropFileName : StringUtils.rename(config.renameCropFileName));
-
-
         UCrop.of(uri, Uri.fromFile(file))
-                .withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y)
-                .withMaxResultSize(config.cropWidth, config.cropHeight)
                 .withOptions(options)
                 .startAnimationMultipleCropActivity(this, config.windowAnimationStyle != null
                         ? config.windowAnimationStyle.activityCropEnterAnimation : 0);

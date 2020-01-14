@@ -2,12 +2,13 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion cfgs.compileSdkVersion
+    buildToolsVersion cfgs.buildToolsVersion
 
     defaultConfig {
         minSdkVersion cfgs.minSdkVersion
         targetSdkVersion cfgs.targetSdkVersion
-        versionCode cfgs.ucropVersionCode
-        versionName cfgs.ucropVersionName
+        versionCode 24
+        versionName "2.2.4-non-native"
 
         vectorDrawables.useSupportLibrary = true
     }
@@ -18,8 +19,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
     lintOptions {
         abortOnError false
@@ -30,8 +31,8 @@ android {
 }
 
 dependencies {
-    //noinspection GradleCompatible
-    implementation "androidx.appcompat:appcompat:${cfgs.version_appcompat}"
-    //noinspection GradleCompatible
+    implementation "androidx.appcompat:appcompat:${cfgs.androidx_appcompat_version}"
+    implementation "androidx.exifinterface:exifinterface:${cfgs.androidx_exifinterface_version}"
+    implementation "androidx.transition:transition:${cfgs.androidx_transition_version}"
     implementation "androidx.recyclerview:recyclerview:${cfgs.version_recyclerview}"
 }
