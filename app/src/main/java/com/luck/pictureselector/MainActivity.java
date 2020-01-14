@@ -167,12 +167,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 switch (mediaType) {
                     case PictureConfig.TYPE_VIDEO:
                         // 预览视频
-                        PictureSelector.create(MainActivity.this).externalPictureVideo(media.getPath());
+                        PictureSelector.create(MainActivity.this)
+                                .themeStyle(R.style.picture_default_style)
+                                .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
+                                .externalPictureVideo(media.getPath());
                         break;
                     case PictureConfig.TYPE_AUDIO:
                         // 预览音频
-                        PictureSelector.create(MainActivity.this).externalPictureAudio(
-                                media.getPath().startsWith("content://") ? media.getAndroidQToPath() : media.getPath());
+                        PictureSelector.create(MainActivity.this)
+                                .externalPictureAudio(
+                                        media.getPath().startsWith("content://") ? media.getAndroidQToPath() : media.getPath());
                         break;
                     default:
                         // 预览图片 可自定长按保存路径
@@ -181,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                        animationStyle.activityPreviewExitAnimation = R.anim.picture_anim_down_out;
                         PictureSelector.create(MainActivity.this)
                                 .themeStyle(R.style.picture_default_style) // xml设置主题
-                                //.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
+                                .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
                                 //.setPictureWindowAnimationStyle(animationStyle)// 自定义页面启动动画
                                 .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)// 设置相册Activity方向，不设置默认使用系统
                                 .isNotPreviewDownload(true)// 预览图片长按是否可以下载
@@ -405,7 +409,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .isWithVideoImage(true)// 图片和视频是否可以同选,只在ofAll模式下有效
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
-                        //.maxVideoSelectNum(1) // 视频最大选择数量，如果没有单独设置的需求则可以不设置，同用maxSelectNum字段
+                        .maxVideoSelectNum(2) // 视频最大选择数量，如果没有单独设置的需求则可以不设置，同用maxSelectNum字段
                         //.minVideoSelectNum(1)// 视频最小选择数量，如果没有单独设置的需求则可以不设置，同用minSelectNum字段
                         .imageSpanCount(4)// 每行显示个数
                         .isReturnEmpty(false)// 未选择数据时点击按钮是否可以返回
@@ -448,8 +452,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .openClickSound(cb_voice.isChecked())// 是否开启点击声音
                         .selectionMedia(selectList)// 是否传入已选图片
                         //.isDragFrame(false)// 是否可拖动裁剪框(固定)
-                        //.videoMaxSecond(15)
+                        //.videoMaxSecond(5)
                         //.videoMinSecond(10)
+                        //.recordVideoSecond(10)//录制视频秒数 默认60s
                         //.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                         //.cropCompressQuality(90)// 注：已废弃 改用cutOutQuality()
                         .cutOutQuality(90)// 裁剪输出质量 默认100

@@ -360,10 +360,11 @@ public class PictureSelectionModel {
 
     /**
      * @param videoMaxSecond selection video max second
+     *                       # +1000 Plus a second float is a little more accurate
      * @return
      */
     public PictureSelectionModel videoMaxSecond(int videoMaxSecond) {
-        selectionConfig.videoMaxSecond = videoMaxSecond * 1000;
+        selectionConfig.videoMaxSecond = (videoMaxSecond * 1000) + 1000;
         return this;
     }
 
@@ -971,6 +972,7 @@ public class PictureSelectionModel {
         }
     }
 
+
     /**
      * 提供外部预览图片方法-带自定义下载保存路径
      * # 废弃 由于Android Q沙盒机制 此方法不在需要了
@@ -990,4 +992,16 @@ public class PictureSelectionModel {
         }
     }
 
+    /**
+     * set preview video
+     *
+     * @param path
+     */
+    public void externalPictureVideo(String path) {
+        if (selector != null) {
+            selector.externalPictureVideo(path);
+        } else {
+            throw new NullPointerException("This PictureSelector is Null");
+        }
+    }
 }

@@ -125,9 +125,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             if (config.style.pictureExternalPreviewDeleteStyle != 0) {
                 ibDelete.setImageResource(config.style.pictureExternalPreviewDeleteStyle);
             }
-            if (config.style.pictureLeftBackIcon != 0) {
-                ibLeftBack.setImageResource(config.style.pictureLeftBackIcon);
-            }
             if (config.style.pictureTitleBarBackgroundColor != 0) {
                 titleViewBg.setBackgroundColor(colorPrimary);
             }
@@ -176,6 +173,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             if (images != null && images.size() > 0) {
                 int currentItem = viewPager.getCurrentItem();
                 images.remove(currentItem);
+                adapter.removeCacheView(currentItem);
                 // 删除通知用户更新
                 Bundle bundle = new Bundle();
                 bundle.putInt(PictureConfig.EXTRA_PREVIEW_DELETE_POSITION, currentItem);
@@ -205,10 +203,16 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
          */
         private SparseArray<View> mCacheView;
 
-        public void clear() {
+        private void clear() {
             if (null != mCacheView) {
                 mCacheView.clear();
                 mCacheView = null;
+            }
+        }
+
+        public void removeCacheView(int position) {
+            if (mCacheView != null && position < mCacheView.size()) {
+                mCacheView.removeAt(position);
             }
         }
 

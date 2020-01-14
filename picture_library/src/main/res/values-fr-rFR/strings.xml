@@ -53,4 +53,6 @@
     <string name="picture_data_exception">Anomalie des données de l’album...</string>
     <string name="picture_recording_time_is_short">La durée d’enregistrement est trop courte</string>
     <string name="picture_photo_camera">Prendre des photos, filmer</string>
+
+    <string name="picture_choose_max_seconds">Vous pouvez sélectionner la vidéo dans un maximum de %1$ds</string>
 </resources>

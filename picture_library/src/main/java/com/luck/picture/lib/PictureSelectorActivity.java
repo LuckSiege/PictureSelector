@@ -1310,10 +1310,19 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
                     // 类型相同或还没有选中才加进选中集合中
                     if (mimeTypeSame || selectedImages.size() == 0) {
-                        // 如果是单选，则清空已选中的并刷新列表(作单一选择)
-                        singleRadioMediaImage();
-                        selectedImages.add(media);
-                        mAdapter.bindSelectImages(selectedImages);
+                        if (PictureMimeType.eqVideo(media.getMimeType()) && config.videoMaxSecond > 0) {
+                            if (media.getDuration() < config.videoMaxSecond) {
+                                // 如果是单选，则清空已选中的并刷新列表(作单一选择)
+                                singleRadioMediaImage();
+                                selectedImages.add(media);
+                                mAdapter.bindSelectImages(selectedImages);
+                            }
+                        } else {
+                            // 如果是单选，则清空已选中的并刷新列表(作单一选择)
+                            singleRadioMediaImage();
+                            selectedImages.add(media);
+                            mAdapter.bindSelectImages(selectedImages);
+                        }
                     }
                 }
             } else {
@@ -1337,8 +1346,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     if (PictureMimeType.eqVideo(media.getMimeType()) && config.maxVideoSelectNum > 0) {
                         // 视频还可选
                         if (videoSize < config.maxVideoSelectNum) {
-                            selectedImages.add(media);
-                            mAdapter.bindSelectImages(selectedImages);
+                            if (config.videoMaxSecond > 0) {
+                                if (media.getDuration() < config.videoMaxSecond) {
+                                    selectedImages.add(media);
+                                    mAdapter.bindSelectImages(selectedImages);
+                                }
+                            } else {
+                                selectedImages.add(media);
+                                mAdapter.bindSelectImages(selectedImages);
+                            }
                         } else {
                             ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), media.getMimeType(),
                                     config.maxVideoSelectNum));
@@ -1360,8 +1376,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         if (count < config.maxVideoSelectNum) {
                             if (mimeTypeSame || count == 0) {
                                 if (selectedImages.size() < config.maxVideoSelectNum) {
-                                    selectedImages.add(media);
-                                    mAdapter.bindSelectImages(selectedImages);
+                                    if (config.videoMaxSecond > 0) {
+                                        if (media.getDuration() < config.videoMaxSecond) {
+                                            selectedImages.add(media);
+                                            mAdapter.bindSelectImages(selectedImages);
+                                        }
+                                    } else {
+                                        selectedImages.add(media);
+                                        mAdapter.bindSelectImages(selectedImages);
+                                    }
                                 }
                             }
                         } else {
@@ -1374,8 +1397,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             // 类型相同或还没有选中才加进选中集合中
                             if (mimeTypeSame || count == 0) {
                                 if (count < config.maxSelectNum) {
-                                    selectedImages.add(media);
-                                    mAdapter.bindSelectImages(selectedImages);
+                                    boolean eqVideo = PictureMimeType.eqVideo(media.getMimeType());
+                                    if (eqVideo && config.videoMaxSecond > 0 && media.getDuration() > config.videoMaxSecond) {
+                                        // 是视频&录的时长超过了设置的最大视频时长不做选中处理
+                                    } else {
+                                        selectedImages.add(media);
+                                        mAdapter.bindSelectImages(selectedImages);
+                                    }
                                 }
                             }
                         } else {

@@ -52,4 +52,5 @@
     <string name="picture_data_exception">アルバムデータ取得異常...</string>
     <string name="picture_recording_time_is_short">収録時間が短すぎる</string>
     <string name="picture_photo_camera">写真を撮る</string>
+    <string name="picture_choose_max_seconds">最大 %1$ds 以内のビデオしか選択できません</string>
 </resources>

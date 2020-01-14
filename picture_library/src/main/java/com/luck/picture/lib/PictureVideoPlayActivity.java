@@ -10,6 +10,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
@@ -30,7 +31,7 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
         MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener, View.OnClickListener {
     private String video_path;
-    private ImageView picture_left_back;
+    private ImageButton ibLeftBack;
     private MediaController mMediaController;
     private VideoView mVideoView;
     private TextView tvConfirm;
@@ -59,6 +60,15 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
     }
 
     @Override
+    protected void initPictureSelectorStyle() {
+        if (config.style != null) {
+            if (config.style.pictureLeftBackIcon != 0) {
+                ibLeftBack.setImageResource(config.style.pictureLeftBackIcon);
+            }
+        }
+    }
+
+    @Override
     protected void initWidgets() {
         super.initWidgets();
         video_path = getIntent().getStringExtra(PictureConfig.EXTRA_VIDEO_PATH);
@@ -72,7 +82,7 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
             }
             video_path = media.getPath();
         }
-        picture_left_back = findViewById(R.id.picture_left_back);
+        ibLeftBack = findViewById(R.id.picture_left_back);
         mVideoView = findViewById(R.id.video_view);
         tvConfirm = findViewById(R.id.tv_confirm);
         mVideoView.setBackgroundColor(Color.BLACK);
@@ -81,7 +91,7 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
         mVideoView.setOnCompletionListener(this);
         mVideoView.setOnPreparedListener(this);
         mVideoView.setMediaController(mMediaController);
-        picture_left_back.setOnClickListener(this);
+        ibLeftBack.setOnClickListener(this);
         iv_play.setOnClickListener(this);
         tvConfirm.setOnClickListener(this);
 

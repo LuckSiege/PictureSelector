@@ -307,16 +307,27 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     imageSize++;
                 }
             }
-            if (PictureMimeType.eqVideo(image.getMimeType()) && config.maxVideoSelectNum > 0
-                    && videoSize >= config.maxVideoSelectNum && !isChecked) {
-                // 如果选择的是视频
-                ToastUtils.s(context, StringUtils.getMsg(context, image.getMimeType(), config.maxVideoSelectNum));
-                return;
+            if (PictureMimeType.eqVideo(image.getMimeType())) {
+                if (config.maxVideoSelectNum > 0
+                        && videoSize >= config.maxVideoSelectNum && !isChecked) {
+                    // 如果选择的是视频
+                    ToastUtils.s(context, StringUtils.getMsg(context, image.getMimeType(), config.maxVideoSelectNum));
+                    return;
+                }
+
+                if (!isChecked && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
+                    // 视频时长超过了指定的长度
+                    ToastUtils.s(context,
+                            contentHolder.itemView.getContext().getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+                    return;
+                }
             }
             if (PictureMimeType.eqImage(image.getMimeType()) && imageSize >= config.maxSelectNum && !isChecked) {
                 ToastUtils.s(context, StringUtils.getMsg(context, image.getMimeType(), config.maxSelectNum));
                 return;
             }
+
+
         } else {
             // 非混选模式
             if (!TextUtils.isEmpty(mimeType)) {
@@ -326,15 +337,31 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     return;
                 }
             }
-            if (PictureMimeType.eqVideo(mimeType) && config.maxVideoSelectNum > 0
-                    && size >= config.maxVideoSelectNum && !isChecked) {
-                // 如果先选择的是视频
-                ToastUtils.s(context, StringUtils.getMsg(context, mimeType, config.maxVideoSelectNum));
-                return;
+            if (PictureMimeType.eqVideo(mimeType)) {
+                if (config.maxVideoSelectNum > 0
+                        && size >= config.maxVideoSelectNum && !isChecked) {
+                    // 如果先选择的是视频
+                    ToastUtils.s(context, StringUtils.getMsg(context, mimeType, config.maxVideoSelectNum));
+                    return;
+                }
+                if (!isChecked && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
+                    // 视频时长超过了指定的长度
+                    ToastUtils.s(context,
+                            contentHolder.itemView.getContext().getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+                    return;
+                }
             } else {
                 if (size >= config.maxSelectNum && !isChecked) {
                     ToastUtils.s(context, StringUtils.getMsg(context, mimeType, config.maxSelectNum));
                     return;
+                }
+                if (PictureMimeType.eqVideo(image.getMimeType())) {
+                    if (!isChecked && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
+                        // 视频时长超过了指定的长度
+                        ToastUtils.s(context,
+                                contentHolder.itemView.getContext().getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+                        return;
+                    }
                 }
             }
         }
