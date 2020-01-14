@@ -601,8 +601,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     return;
                 }
             }
-            Intent intent = PictureSelector.putIntentResult(result);
-            setResult(RESULT_OK, intent);
+            if (config.listener != null) {
+                config.listener.onResult(result);
+            } else {
+                Intent intent = PictureSelector.putIntentResult(result);
+                setResult(RESULT_OK, intent);
+            }
             closeActivity();
             return;
         }

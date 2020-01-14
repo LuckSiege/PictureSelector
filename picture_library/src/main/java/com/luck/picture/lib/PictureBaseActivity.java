@@ -651,8 +651,12 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                     media.setOriginalPath(media.getPath());
                 }
             }
-            Intent intent = PictureSelector.putIntentResult(images);
-            setResult(RESULT_OK, intent);
+            if (config.listener != null) {
+                config.listener.onResult(images);
+            } else {
+                Intent intent = PictureSelector.putIntentResult(images);
+                setResult(RESULT_OK, intent);
+            }
             closeActivity();
         }
     }
@@ -707,6 +711,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
             overridePendingTransition(0, config.windowAnimationStyle != null
                     && config.windowAnimationStyle.activityExitAnimation != 0 ?
                     config.windowAnimationStyle.activityExitAnimation : R.anim.picture_anim_exit);
+        }
+        // 关闭主界面后才释放回调监听
+        if (getContext() instanceof PictureSelectorActivity) {
+            releaseResultListener();
         }
     }
 
@@ -927,8 +935,12 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                             && selectionMedias != null) {
                         images.addAll(images.size() > 0 ? images.size() - 1 : 0, selectionMedias);
                     }
-                    Intent intent = PictureSelector.putIntentResult(images);
-                    setResult(RESULT_OK, intent);
+                    if (config.listener != null) {
+                        config.listener.onResult(images);
+                    } else {
+                        Intent intent = PictureSelector.putIntentResult(images);
+                        setResult(RESULT_OK, intent);
+                    }
                     closeActivity();
                 }
                 break;
@@ -945,6 +957,15 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                 break;
         }
         return false;
+    }
+
+    /**
+     * 释放回调监听
+     */
+    private void releaseResultListener() {
+        if (config != null) {
+            config.listener = null;
+        }
     }
 
     @Override

@@ -77,8 +77,14 @@ public class GridImageAdapter extends
         this.list = list;
     }
 
-    public List<LocalMedia> getList() {
+    public List<LocalMedia> getData() {
         return list == null ? new ArrayList<>() : list;
+    }
+
+    public void remove(int position) {
+        if (list != null) {
+            list.remove(position);
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
