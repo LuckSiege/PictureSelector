@@ -763,8 +763,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                 long date = data.getLong(data.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
                 int duration = DateUtils.dateDiffer(date);
                 data.close();
-                // DCIM文件下最近时间30s以内的图片，可以判定是最新生成的重复照片
-                return duration <= 10 ? id : -1;
+                // DCIM文件下最近时间1s以内的图片，可以判定是最新生成的重复照片
+                return duration <= 1 ? id : -1;
             } else {
                 return -1;
             }
