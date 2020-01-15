@@ -16,6 +16,7 @@ import com.luck.picture.lib.config.UCropOptions;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
+import com.luck.picture.lib.listener.OnVideoSelectedPlayCallback;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
@@ -116,6 +117,15 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel isUseCustomCamera(boolean isUseCustomCamera) {
         selectionConfig.isUseCustomCamera = isUseCustomCamera;
+        return this;
+    }
+
+    /**
+     * @param callback Provide video playback control，Users are free to customize the video display interface
+     * @return
+     */
+    public PictureSelectionModel bindCustomPlayVideoCallback(OnVideoSelectedPlayCallback callback) {
+        selectionConfig.customVideoPlayCallback = new WeakReference<>(callback).get();
         return this;
     }
 

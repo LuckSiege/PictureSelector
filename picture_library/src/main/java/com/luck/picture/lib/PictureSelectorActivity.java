@@ -992,8 +992,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 result.add(media);
                 onResult(result);
             } else {
-                bundle.putParcelable(PictureConfig.EXTRA_MEDIA_KEY, media);
-                JumpUtils.startPictureVideoPlayActivity(getContext(), bundle, PictureConfig.PREVIEW_VIDEO_CODE);
+                if (config.customVideoPlayCallback != null) {
+                    config.customVideoPlayCallback.startPlayVideo(media);
+                } else {
+                    bundle.putParcelable(PictureConfig.EXTRA_MEDIA_KEY, media);
+                    JumpUtils.startPictureVideoPlayActivity(getContext(), bundle, PictureConfig.PREVIEW_VIDEO_CODE);
+                }
             }
         } else if (PictureMimeType.eqAudio(mimeType)) {
             // audio
@@ -1301,27 +1305,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         media.setChooseModel(config.chooseMode);
         if (mAdapter != null) {
             images.add(0, media);
-            boolean isEnterNext = true;
-            if (PictureMimeType.eqVideo(media.getMimeType())) {
-                // 判断视频是否符合条件
-                if (config.videoMinSecond > 0 && config.videoMaxSecond > 0) {
-                    // 用户设置了最小和最大视频时长，判断视频是否在区间之内
-                    if (media.getDuration() < config.videoMinSecond || media.getDuration() > config.videoMaxSecond) {
-                        isEnterNext = false;
-                    }
-                } else if (config.videoMinSecond > 0 && config.videoMaxSecond <= 0) {
-                    // 用户只设置了最小时长视频限制
-                    if (media.getDuration() < config.videoMinSecond) {
-                        isEnterNext = false;
-                    }
-                } else if (config.videoMinSecond <= 0 && config.videoMaxSecond > 0) {
-                    // 用户只设置了最大时长视频限制
-                    if (media.getDuration() > config.videoMinSecond) {
-                        isEnterNext = false;
-                    }
-                }
-            }
-            if (isEnterNext) {
+            if (checkVideoLegitimacy(media)) {
                 if (config.selectionMode == PictureConfig.SINGLE) {
                     // 单选模式下直接返回模式
                     if (config.isSingleDirectReturn) {
@@ -1424,6 +1408,36 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
             mTvEmpty.setVisibility(images.size() > 0 || config.isSingleDirectReturn ? View.INVISIBLE : View.VISIBLE);
         }
+    }
+
+    /**
+     * 验证视频的合法性
+     *
+     * @param media
+     * @return
+     */
+    private boolean checkVideoLegitimacy(LocalMedia media) {
+        boolean isEnterNext = true;
+        if (PictureMimeType.eqVideo(media.getMimeType())) {
+            // 判断视频是否符合条件
+            if (config.videoMinSecond > 0 && config.videoMaxSecond > 0) {
+                // 用户设置了最小和最大视频时长，判断视频是否在区间之内
+                if (media.getDuration() < config.videoMinSecond || media.getDuration() > config.videoMaxSecond) {
+                    isEnterNext = false;
+                }
+            } else if (config.videoMinSecond > 0 && config.videoMaxSecond <= 0) {
+                // 用户只设置了最小时长视频限制
+                if (media.getDuration() < config.videoMinSecond) {
+                    isEnterNext = false;
+                }
+            } else if (config.videoMinSecond <= 0 && config.videoMaxSecond > 0) {
+                // 用户只设置了最大时长视频限制
+                if (media.getDuration() > config.videoMinSecond) {
+                    isEnterNext = false;
+                }
+            }
+        }
+        return isEnterNext;
     }
 
     /**

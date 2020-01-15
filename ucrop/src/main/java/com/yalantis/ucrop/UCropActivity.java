@@ -257,8 +257,8 @@ public class UCropActivity extends AppCompatActivity {
         if (inputUri != null && outputUri != null) {
             try {
                 boolean isOnTouch = isOnTouch(inputUri);
-                mGestureCropImageView.setRotateEnabled(isOnTouch && isRotateEnabled);
-                mGestureCropImageView.setScaleEnabled(isOnTouch && isScaleEnabled);
+                mGestureCropImageView.setRotateEnabled(isOnTouch ? isRotateEnabled : isOnTouch);
+                mGestureCropImageView.setScaleEnabled(isOnTouch ? isScaleEnabled : isOnTouch);
                 mGestureCropImageView.setImageUri(inputUri, outputUri);
             } catch (Exception e) {
                 setResultError(e);
@@ -740,8 +740,8 @@ public class UCropActivity extends AppCompatActivity {
 
     private void setAllowedGestures(int tab) {
         if (isOnTouch()) {
-            mGestureCropImageView.setScaleEnabled(mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == SCALE);
-            mGestureCropImageView.setRotateEnabled(mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == ROTATE);
+            mGestureCropImageView.setScaleEnabled(isScaleEnabled ? mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == SCALE : isScaleEnabled);
+            mGestureCropImageView.setRotateEnabled(isRotateEnabled ? mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == ROTATE : isRotateEnabled);
         }
     }
 

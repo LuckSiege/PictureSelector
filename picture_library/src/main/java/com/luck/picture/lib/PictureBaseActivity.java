@@ -965,6 +965,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     private void releaseResultListener() {
         if (config != null) {
             config.listener = null;
+            config.customVideoPlayCallback = null;
         }
     }
 

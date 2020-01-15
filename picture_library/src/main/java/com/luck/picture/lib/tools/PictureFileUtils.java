@@ -425,9 +425,11 @@ public class PictureFileUtils {
                 ? Environment.DIRECTORY_PICTURES : Environment.DIRECTORY_MOVIES);
         if (cutDir != null) {
             File[] files = cutDir.listFiles();
-            for (File file : files) {
-                if (file.isFile()) {
-                    file.delete();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        file.delete();
+                    }
                 }
             }
         }
@@ -444,29 +446,35 @@ public class PictureFileUtils {
         File dirPictures = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         if (dirPictures != null) {
             File[] files = dirPictures.listFiles();
-            for (File file : files) {
-                if (file.isFile()) {
-                    file.delete();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        file.delete();
+                    }
                 }
             }
         }
 
         File dirMovies = context.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
-        if (dirPictures != null) {
+        if (dirMovies != null) {
             File[] files = dirMovies.listFiles();
-            for (File file : files) {
-                if (file.isFile()) {
-                    file.delete();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        file.delete();
+                    }
                 }
             }
         }
 
         File dirMusic = context.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        if (dirPictures != null) {
+        if (dirMusic != null) {
             File[] files = dirMusic.listFiles();
-            for (File file : files) {
-                if (file.isFile()) {
-                    file.delete();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        file.delete();
+                    }
                 }
             }
         }

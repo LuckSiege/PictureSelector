@@ -7,10 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.camera.camera2.Camera2Config;
 import androidx.camera.core.CameraXConfig;
 
-import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.app.IApp;
+import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.crash.PictureSelectorCrashUtils;
-import com.squareup.leakcanary.LeakCanary;
 
 
 /**
@@ -34,12 +33,6 @@ public class App extends Application implements IApp, CameraXConfig.Provider {
         });
         /** PictureSelector日志管理配制结束 **/
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return;
-        }
-        LeakCanary.install(this);
     }
 
     @Override

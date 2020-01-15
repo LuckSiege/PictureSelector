@@ -147,12 +147,16 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
                     }
                 });
                 ivPlay.setOnClickListener(v -> {
-                    Intent intent = new Intent();
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean(PictureConfig.EXTRA_PREVIEW_VIDEO, true);
-                    bundle.putString(PictureConfig.EXTRA_VIDEO_PATH, path);
-                    intent.putExtras(bundle);
-                    JumpUtils.startPictureVideoPlayActivity(container.getContext(), bundle, PictureConfig.PREVIEW_VIDEO_CODE);
+                    if (config.customVideoPlayCallback != null) {
+                        config.customVideoPlayCallback.startPlayVideo(media);
+                    } else {
+                        Intent intent = new Intent();
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean(PictureConfig.EXTRA_PREVIEW_VIDEO, true);
+                        bundle.putString(PictureConfig.EXTRA_VIDEO_PATH, path);
+                        intent.putExtras(bundle);
+                        JumpUtils.startPictureVideoPlayActivity(container.getContext(), bundle, PictureConfig.PREVIEW_VIDEO_CODE);
+                    }
                 });
             }
             mCacheView.put(position, contentView);

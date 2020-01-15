@@ -345,11 +345,15 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                         });
                     }
                     ivPlay.setOnClickListener(v -> {
-                        Intent intent = new Intent();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(PictureConfig.EXTRA_VIDEO_PATH, path);
-                        intent.putExtras(bundle);
-                        JumpUtils.startPictureVideoPlayActivity(container.getContext(), bundle, PictureConfig.PREVIEW_VIDEO_CODE);
+                        if (config.customVideoPlayCallback != null) {
+                            config.customVideoPlayCallback.startPlayVideo(media);
+                        } else {
+                            Intent intent = new Intent();
+                            Bundle bundle = new Bundle();
+                            bundle.putString(PictureConfig.EXTRA_VIDEO_PATH, path);
+                            intent.putExtras(bundle);
+                            JumpUtils.startPictureVideoPlayActivity(container.getContext(), bundle, PictureConfig.PREVIEW_VIDEO_CODE);
+                        }
                     });
                 }
                 mCacheView.put(position, contentView);
@@ -645,6 +649,10 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         }
         if (adapter != null) {
             adapter.clear();
+        }
+
+        if (config.customVideoPlayCallback != null) {
+            config.customVideoPlayCallback = null;
         }
     }
 
