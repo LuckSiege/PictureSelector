@@ -22,15 +22,12 @@ public class SimpleActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        Intent intent;
         switch (v.getId()) {
             case R.id.btn_activity:
-                intent = new Intent(SimpleActivity.this, MainActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(SimpleActivity.this, MainActivity.class));
                 break;
             case R.id.btn_fragment:
-                intent = new Intent(SimpleActivity.this, PhotoFragmentActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(SimpleActivity.this, PhotoFragmentActivity.class));
                 break;
             default:
                 break;

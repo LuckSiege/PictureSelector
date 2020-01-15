@@ -153,8 +153,9 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
 
         if (shouldCrop) {
             ExifInterface originalExif;
+            ParcelFileDescriptor parcelFileDescriptor = null;
             if (SdkUtils.isQ() && mImageInputPath.startsWith("content://")) {
-                ParcelFileDescriptor parcelFileDescriptor =
+                parcelFileDescriptor =
                         getContext().getContentResolver().openFileDescriptor(Uri.parse(mImageInputPath), "r");
                 originalExif = new ExifInterface(new FileInputStream(parcelFileDescriptor.getFileDescriptor()));
             } else {
@@ -164,6 +165,9 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
             if (mCompressFormat.equals(Bitmap.CompressFormat.JPEG)) {
                 ImageHeaderParser.copyExif(originalExif, mCroppedImageWidth, mCroppedImageHeight, mImageOutputPath);
             }
+            if (parcelFileDescriptor != null) {
+                BitmapLoadUtils.close(parcelFileDescriptor);
+            }
             return true;
         } else {
             if (SdkUtils.isQ() && mImageInputPath.startsWith("content://")) {
@@ -171,6 +175,7 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
                         getContext().getContentResolver().openFileDescriptor(Uri.parse(mImageInputPath), "r");
                 FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
                 FileUtils.copyFile(new FileInputStream(fileDescriptor), mImageOutputPath);
+                BitmapLoadUtils.close(parcelFileDescriptor);
             } else {
                 FileUtils.copyFile(mImageInputPath, mImageOutputPath);
             }

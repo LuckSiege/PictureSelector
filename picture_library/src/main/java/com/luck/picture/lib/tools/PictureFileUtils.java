@@ -4,9 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
@@ -24,7 +22,7 @@ import androidx.core.content.FileProvider;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 
-import java.io.BufferedOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -343,54 +341,6 @@ public class PictureFileUtils {
         return degree;
     }
 
-    /**
-     * 旋转Bitmap
-     *
-     * @param angle
-     * @param bitmap
-     * @return
-     */
-    public static Bitmap rotatingImageView(int angle, Bitmap bitmap) {
-        if (bitmap == null) {
-            return null;
-        }
-        //旋转图片 动作
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        // 创建新的图片
-        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
-                bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        return resizedBitmap;
-    }
-
-    public static void saveBitmapFile(Bitmap bitmap, File file) {
-        try {
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-            bos.flush();
-            bos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 创建文件夹
-     *
-     * @param filename
-     * @return
-     */
-    @Nullable
-    public static String createDir(Context context, String filename) {
-        File rootDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        if (!rootDir.exists())
-        // 若不存在，创建目录，可以在应用启动的时候创建
-        {
-            rootDir.mkdirs();
-        }
-        return rootDir + "/" + filename;
-    }
-
     @Nullable
     public static String getDCIMCameraPath(Context ctx, String mimeType) {
         String absolutePath;
@@ -578,26 +528,16 @@ public class PictureFileUtils {
         }
     }
 
-    /**
-     * 判断拍照 图片是否旋转
-     *
-     * @param degree
-     * @param file
-     */
-    public static void rotateImage(int degree, String path) {
-        if (degree > 0) {
+
+
+    @SuppressWarnings("ConstantConditions")
+    public static void close(@Nullable Closeable c) {
+        // java.lang.IncompatibleClassChangeError: interface not implemented
+        if (c != null && c instanceof Closeable) {
             try {
-                // 针对相片有旋转问题的处理方式
-                BitmapFactory.Options opts = new BitmapFactory.Options();
-                opts.inSampleSize = 2;
-                File file = new File(path);
-                Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), opts);
-                Bitmap bmp = PictureFileUtils.rotatingImageView(degree, bitmap);
-                if (bmp != null) {
-                    PictureFileUtils.saveBitmapFile(bmp, file);
-                }
+                c.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                // silence
             }
         }
     }

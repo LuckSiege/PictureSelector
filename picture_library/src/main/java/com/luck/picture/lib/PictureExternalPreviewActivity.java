@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ import com.luck.picture.lib.listener.ImageCompleteCallback;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.photoview.PhotoView;
 import com.luck.picture.lib.tools.AttrsUtils;
+import com.luck.picture.lib.tools.BitmapUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.JumpUtils;
 import com.luck.picture.lib.tools.MediaUtils;
@@ -399,8 +401,8 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             });
             btn_commit.setOnClickListener(view -> {
                 boolean isHttp = PictureMimeType.isHttp(downloadPath);
+                showPleaseDialog();
                 if (isHttp) {
-                    showPleaseDialog();
                     mLoadDataThread = new LoadDataThread(downloadPath);
                     mLoadDataThread.start();
                 } else {
@@ -412,7 +414,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                             // 把文件插入到系统图库
                             savePictureAlbum();
                         }
-                        dismissDialog();
                     } catch (Exception e) {
                         ToastUtils.s(getContext(), getString(R.string.picture_save_error) + "\n" + e.getMessage());
                         dismissDialog();
@@ -471,26 +472,42 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         }
         AsyncTask.SERIAL_EXECUTOR.execute(() -> {
             OutputStream outputStream = null;
+            ParcelFileDescriptor parcelFileDescriptor = null;
             try {
                 outputStream = getContentResolver().openOutputStream(uri);
-                ParcelFileDescriptor inputDescriptor = getContentResolver().openFileDescriptor(inputUri, "r");
-                Bitmap bitmap = BitmapFactory.decodeFileDescriptor(inputDescriptor.getFileDescriptor());
+                parcelFileDescriptor = getContentResolver().openFileDescriptor(inputUri, "r");
+                BitmapFactory.Options opts = new BitmapFactory.Options();
+                opts.inJustDecodeBounds = true;
+                opts.inSampleSize = 2;
+                opts.inJustDecodeBounds = false;
+                Bitmap bitmap = BitmapFactory.decodeFileDescriptor(parcelFileDescriptor.getFileDescriptor(), null, opts);
                 if (bitmap != null) {
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-                    outputStream.close();
-                    String path = PictureFileUtils.getPath(getContext(), uri);
-                    Message message = mHandler.obtainMessage();
-                    message.what = SAVE_IMAGE_SUCCESSFUL;
-                    message.obj = path;
-                    mHandler.sendMessage(message);
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                        ExifInterface exifInterface = new ExifInterface(parcelFileDescriptor.getFileDescriptor());
+                        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0);
+                        if (orientation > 1) {
+                            int rotationAngle = BitmapUtils.getRotationAngle(orientation);
+                            bitmap = BitmapUtils.rotatingImage(bitmap, rotationAngle);
+                        }
+                    }
+                    if (bitmap != null) {
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                        outputStream.close();
+                        String path = PictureFileUtils.getPath(getContext(), uri);
+                        Message message = mHandler.obtainMessage();
+                        message.what = SAVE_IMAGE_SUCCESSFUL;
+                        message.obj = path;
+                        mHandler.sendMessage(message);
+                        bitmap.recycle();
+                    }
                 } else {
                     mHandler.sendEmptyMessage(SAVE_IMAGE_ERROR);
                 }
-
             } catch (Exception e) {
                 mHandler.sendEmptyMessage(SAVE_IMAGE_ERROR);
                 e.printStackTrace();
             } finally {
+                PictureFileUtils.close(parcelFileDescriptor);
                 try {
                     if (outputStream != null) {
                         outputStream.close();
@@ -519,6 +536,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 e.printStackTrace();
             }
         }
+
     }
 
     /**

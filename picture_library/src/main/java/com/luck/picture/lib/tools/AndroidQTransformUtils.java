@@ -13,7 +13,6 @@ import com.luck.picture.lib.entity.LocalMedia;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 
 /**
@@ -61,13 +60,7 @@ public class AndroidQTransformUtils {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (parcelFileDescriptor != null) {
-                    parcelFileDescriptor.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            PictureFileUtils.close(parcelFileDescriptor);
         }
         return "";
     }
@@ -110,13 +103,7 @@ public class AndroidQTransformUtils {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (parcelFileDescriptor != null) {
-                    parcelFileDescriptor.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            PictureFileUtils.close(parcelFileDescriptor);
         }
         return "";
     }
@@ -160,13 +147,7 @@ public class AndroidQTransformUtils {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (parcelFileDescriptor != null) {
-                    parcelFileDescriptor.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            PictureFileUtils.close(parcelFileDescriptor);
         }
         return "";
     }
@@ -219,13 +200,7 @@ public class AndroidQTransformUtils {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (parcelFileDescriptor != null) {
-                    parcelFileDescriptor.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            PictureFileUtils.close(parcelFileDescriptor);
         }
     }
 }
