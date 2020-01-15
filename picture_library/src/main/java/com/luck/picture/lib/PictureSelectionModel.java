@@ -677,6 +677,18 @@ public class PictureSelectionModel {
     }
 
     /**
+     * Whether the multi-graph clipping list is animated or not
+     *
+     * @param isAnimation
+     * @return
+     */
+    public PictureSelectionModel isMultipleRecyclerAnimation(boolean isAnimation) {
+        selectionConfig.isMultipleRecyclerAnimation = isAnimation;
+        return this;
+    }
+
+
+    /**
      * 设置摄像头方向(前后 默认后置)
      */
     public PictureSelectionModel isCameraAroundState(boolean isCameraAroundState) {

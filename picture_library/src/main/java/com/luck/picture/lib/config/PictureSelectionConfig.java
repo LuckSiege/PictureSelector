@@ -65,6 +65,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public int compressQuality;
     public int filterFileSize;
     public int language;
+    public boolean isMultipleRecyclerAnimation;
     public boolean isMultipleSkipCrop;
     public boolean isWeChatStyle;
     public boolean isUseCustomCamera;
@@ -191,6 +192,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isWeChatStyle = false;
         isUseCustomCamera = false;
         isMultipleSkipCrop = true;
+        isMultipleRecyclerAnimation = true;
         freeStyleCropEnabled = false;
         circleDimmedLayer = false;
         showCropFrame = true;
@@ -300,6 +302,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(this.compressQuality);
         dest.writeInt(this.filterFileSize);
         dest.writeInt(this.language);
+        dest.writeByte(this.isMultipleRecyclerAnimation ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isMultipleSkipCrop ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isWeChatStyle ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isUseCustomCamera ? (byte) 1 : (byte) 0);
@@ -393,6 +396,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.compressQuality = in.readInt();
         this.filterFileSize = in.readInt();
         this.language = in.readInt();
+        this.isMultipleRecyclerAnimation = in.readByte() != 0;
         this.isMultipleSkipCrop = in.readByte() != 0;
         this.isWeChatStyle = in.readByte() != 0;
         this.isUseCustomCamera = in.readByte() != 0;

@@ -388,6 +388,7 @@ public class UCrop {
         public static final String EXTRA_SKIP_MULTIPLE_CROP = EXTRA_PREFIX + ".skip_multiple_crop";
         public static final String EXTRA_RENAME_CROP_FILENAME = EXTRA_PREFIX + ".RenameCropFileName";
         public static final String EXTRA_CAMERA = EXTRA_PREFIX + ".isCamera";
+        public static final String EXTRA_MULTIPLE_RECYCLERANIMATION = ".isMultipleAnimation";
         public static final String EXTRA_CUT_CROP = EXTRA_PREFIX + ".cuts";
         public static final String EXTRA_WITH_VIDEO_IMAGE = EXTRA_PREFIX + ".isWithVideoImage";
         public static final String EXTRA_OUTPUT_URI_LIST = EXTRA_PREFIX + ".OutputUriList";
@@ -434,6 +435,16 @@ public class UCrop {
          */
         public void isCamera(boolean isCamera) {
             mOptionBundle.putBoolean(EXTRA_CAMERA, isCamera);
+        }
+
+
+        /**
+         * Whether the multi-graph clipping list is animated or not
+         *
+         * @param isAnimation
+         */
+        public void isMultipleRecyclerAnimation(boolean isAnimation) {
+            mOptionBundle.putBoolean(EXTRA_MULTIPLE_RECYCLERANIMATION, isAnimation);
         }
 
 

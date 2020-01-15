@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
@@ -37,7 +39,7 @@ public class PictureMultiCuttingActivity extends UCropActivity {
     private int oldCutIndex;
     private String renameCropFilename;
     private boolean isCamera;
-
+    private boolean isAnimation;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,8 @@ public class PictureMultiCuttingActivity extends UCropActivity {
         isWithVideoImage = intent.getBooleanExtra(UCrop.Options.EXTRA_WITH_VIDEO_IMAGE, false);
         // 裁剪数据
         list = getIntent().getParcelableArrayListExtra(UCrop.Options.EXTRA_CUT_CROP);
+        // 列表是否显示动画效果
+        isAnimation = getIntent().getBooleanExtra(UCrop.Options.EXTRA_MULTIPLE_RECYCLERANIMATION, true);
         // Crop cut list
         if (list == null || list.size() == 0) {
             onBackPressed();
@@ -76,6 +80,11 @@ public class PictureMultiCuttingActivity extends UCropActivity {
         mRecyclerView.setLayoutParams(lp);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        if (isAnimation) {
+            LayoutAnimationController animation = AnimationUtils
+                    .loadLayoutAnimation(getApplicationContext(), R.anim.ucrop_layout_animation_fall_down);
+            mRecyclerView.setLayoutAnimation(animation);
+        }
         mRecyclerView.setLayoutManager(mLayoutManager);
         // 解决调用 notifyItemChanged 闪烁问题,取消默认动画
         ((SimpleItemAnimator) mRecyclerView.getItemAnimator())

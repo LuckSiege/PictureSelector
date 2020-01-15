@@ -455,7 +455,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         UCrop.of(uri, Uri.fromFile(file))
                 .withOptions(options)
                 .startAnimationActivity(this, config.windowAnimationStyle != null
-                        ? config.windowAnimationStyle.activityCropEnterAnimation : 0);
+                        ? config.windowAnimationStyle.activityCropEnterAnimation : R.anim.picture_anim_enter);
     }
 
     /**
@@ -534,6 +534,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                 ? config.windowAnimationStyle.activityCropExitAnimation : 0);
         options.setNavBarColor(config.cropStyle != null ? config.cropStyle.cropNavBarColor : 0);
         options.withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y);
+        options.isMultipleRecyclerAnimation(config.isMultipleRecyclerAnimation);
         if (config.cropWidth > 0 && config.cropHeight > 0) {
             options.withMaxResultSize(config.cropWidth, config.cropHeight);
         }
@@ -566,7 +567,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         UCrop.of(uri, Uri.fromFile(file))
                 .withOptions(options)
                 .startAnimationMultipleCropActivity(this, config.windowAnimationStyle != null
-                        ? config.windowAnimationStyle.activityCropEnterAnimation : 0);
+                        ? config.windowAnimationStyle.activityCropEnterAnimation : R.anim.picture_anim_enter);
     }
 
 
