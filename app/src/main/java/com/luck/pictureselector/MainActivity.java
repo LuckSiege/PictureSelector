@@ -468,21 +468,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.videoSecond()//显示多少秒以内的视频or音频也可适用
                         //.recordVideoSecond()//录制视频秒数 默认60s
                         //.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径  注：已废弃
-                        //.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
-                        .forResult(PictureConfig.CHOOSE_REQUEST,result -> {
-                            for (LocalMedia media : result) {
-                                Log.i(TAG, "是否压缩:" + media.isCompressed());
-                                Log.i(TAG, "压缩:" + media.getCompressPath());
-                                Log.i(TAG, "原图:" + media.getPath());
-                                Log.i(TAG, "是否裁剪:" + media.isCut());
-                                Log.i(TAG, "裁剪:" + media.getCutPath());
-                                Log.i(TAG, "是否开启原图:" + media.isOriginal());
-                                Log.i(TAG, "原图路径:" + media.getOriginalPath());
-                                Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
-                            }
-                            mAdapter.setList(result);
-                            mAdapter.notifyDataSetChanged();
-                        });
+                        .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
+//                        .forResult(result -> {
+//                            for (LocalMedia media : result) {
+//                                Log.i(TAG, "是否压缩:" + media.isCompressed());
+//                                Log.i(TAG, "压缩:" + media.getCompressPath());
+//                                Log.i(TAG, "原图:" + media.getPath());
+//                                Log.i(TAG, "是否裁剪:" + media.isCut());
+//                                Log.i(TAG, "裁剪:" + media.getCutPath());
+//                                Log.i(TAG, "是否开启原图:" + media.isOriginal());
+//                                Log.i(TAG, "原图路径:" + media.getOriginalPath());
+//                                Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
+//                            }
+//                            mAdapter.setList(result);
+//                            mAdapter.notifyDataSetChanged();
+//                        });
             } else {
                 // 单独拍照
                 PictureSelector.create(MainActivity.this)
@@ -532,21 +532,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.scaleEnabled()// 裁剪是否可放大缩小图片
                         //.videoQuality()// 视频录制质量 0 or 1
                         //.videoSecond()////显示多少秒以内的视频or音频也可适用
-                        //.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
-                        .forResult(result -> {
-                            for (LocalMedia media : result) {
-                                Log.i(TAG, "是否压缩:" + media.isCompressed());
-                                Log.i(TAG, "压缩:" + media.getCompressPath());
-                                Log.i(TAG, "原图:" + media.getPath());
-                                Log.i(TAG, "是否裁剪:" + media.isCut());
-                                Log.i(TAG, "裁剪:" + media.getCutPath());
-                                Log.i(TAG, "是否开启原图:" + media.isOriginal());
-                                Log.i(TAG, "原图路径:" + media.getOriginalPath());
-                                Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
-                            }
-                            mAdapter.setList(result);
-                            mAdapter.notifyDataSetChanged();
-                        });
+                        .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
+//                        .forResult(result -> {
+//                            for (LocalMedia media : result) {
+//                                Log.i(TAG, "是否压缩:" + media.isCompressed());
+//                                Log.i(TAG, "压缩:" + media.getCompressPath());
+//                                Log.i(TAG, "原图:" + media.getPath());
+//                                Log.i(TAG, "是否裁剪:" + media.isCut());
+//                                Log.i(TAG, "裁剪:" + media.getCutPath());
+//                                Log.i(TAG, "是否开启原图:" + media.isOriginal());
+//                                Log.i(TAG, "原图路径:" + media.getOriginalPath());
+//                                Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
+//                            }
+//                            mAdapter.setList(result);
+//                            mAdapter.notifyDataSetChanged();
+//                        });
 
             }
         }
