@@ -208,7 +208,7 @@ public class AndroidQTransformUtils {
                     .openOutputStream(outUri);
             byte[] buffer = new byte[1024 * 8];
             int read;
-            parcelFileDescriptor = context.getContentResolver().openFileDescriptor(inputUri, "r");
+            parcelFileDescriptor = context.getApplicationContext().getContentResolver().openFileDescriptor(inputUri, "r");
             FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
             FileInputStream inputStream = new FileInputStream(fileDescriptor);
             while ((read = inputStream.read(buffer)) > -1) {
