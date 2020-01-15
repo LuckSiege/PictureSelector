@@ -383,6 +383,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         isUpward = false;
     }
 
+    /**
+     * 清空缓存包括裁剪、压缩、AndroidQToPath所生成的文件，注意调用时机必须是处理完本身的业务逻辑后调用；非强制性
+     */
     private void clearCache() {
         // 清空图片缓存，包括裁剪、压缩后的图片 注意:必须要在上传完成后调用 必须要获取权限
         if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
