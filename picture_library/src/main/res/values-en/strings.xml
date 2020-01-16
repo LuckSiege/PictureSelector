@@ -54,4 +54,5 @@
     <string name="picture_photo_camera">Photograph, photograph</string>
     <string name="picture_choose_max_seconds">You can only select videos within %1$ds</string>
     <string name="picture_choose_min_seconds">You cannot select a video less than %1$ds</string>
+    <string name="picture_choose_limit_seconds">Only videos from %1$ds to %2$ds can be selected</string>
 </resources>

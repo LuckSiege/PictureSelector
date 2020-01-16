@@ -54,4 +54,5 @@
     <string name="picture_photo_camera">写真を撮る</string>
     <string name="picture_choose_max_seconds">最大 %1$ds 以内のビデオしか選択できません</string>
     <string name="picture_choose_min_seconds">%1$ds 以下のビデオは選択できません</string>
+    <string name="picture_choose_limit_seconds">%1$ds sから %2$ds までのビデオしか選択できません</string>
 </resources>

@@ -1433,16 +1433,19 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 // 用户设置了最小和最大视频时长，判断视频是否在区间之内
                 if (media.getDuration() < config.videoMinSecond || media.getDuration() > config.videoMaxSecond) {
                     isEnterNext = false;
+                    ToastUtils.s(getContext(), getString(R.string.picture_choose_limit_seconds, config.videoMinSecond / 1000, config.videoMaxSecond / 1000));
                 }
             } else if (config.videoMinSecond > 0 && config.videoMaxSecond <= 0) {
                 // 用户只设置了最小时长视频限制
                 if (media.getDuration() < config.videoMinSecond) {
                     isEnterNext = false;
+                    ToastUtils.s(getContext(), getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
                 }
             } else if (config.videoMinSecond <= 0 && config.videoMaxSecond > 0) {
                 // 用户只设置了最大时长视频限制
-                if (media.getDuration() > config.videoMinSecond) {
+                if (media.getDuration() > config.videoMaxSecond) {
                     isEnterNext = false;
+                    ToastUtils.s(getContext(), getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
                 }
             }
         }
