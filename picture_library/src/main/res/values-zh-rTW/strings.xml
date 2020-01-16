@@ -45,8 +45,8 @@
     <string name="picture_preview_image_num">%1$d/%2$d</string>
     <string name="picture_not_crop_data">無可用裁剪數據</string>
     <string name="picture_original_image">原圖</string>
-    <string name="picture_send">發送</string>
-    <string name="picture_send_num">發送(%1$d/%2$d)</string>
+    <string name="picture_send">完成</string>
+    <string name="picture_send_num">完成(%1$d/%2$d)</string>
     <string name="picture_preview_num">預覽(%1$d)</string>
     <string name="picture_select">選擇</string>
     <string name="picture_data_exception">獲取相冊數據異常...</string>

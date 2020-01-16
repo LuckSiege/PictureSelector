@@ -46,8 +46,8 @@
     <string name="picture_preview_image_num">%1$d/%2$d</string>
     <string name="picture_not_crop_data">Không có dữ liệu cây trồng</string>
     <string name="picture_original_image">Ảnh gốc</string>
-    <string name="picture_send">Gửi</string>
-    <string name="picture_send_num">Gửi(%1$d/%2$d)</string>
+    <string name="picture_send">Hoàn</string>
+    <string name="picture_send_num">Hoàn(%1$d/%2$d)</string>
     <string name="picture_preview_num">Xem trước(%1$d)</string>
     <string name="picture_select">Chọn</string>
     <string name="picture_data_exception">Lấy ngoại lệ dữ liệu album...</string>
