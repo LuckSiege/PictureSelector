@@ -480,8 +480,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .minimumCompressSize(100)// 小于100kb的图片不压缩
                         //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
                         //.cropImageWideHigh()// 裁剪宽高比，设置如果大于图片本身宽高则无效
-                        //.rotateEnabled(true) // 裁剪是否可旋转图片
-                        //.scaleEnabled(true)// 裁剪是否可放大缩小图片
+                        //.rotateEnabled(false) // 裁剪是否可旋转图片
+                        //.scaleEnabled(false)// 裁剪是否可放大缩小图片
                         //.videoQuality()// 视频录制质量 0 or 1
                         //.videoSecond()//显示多少秒以内的视频or音频也可适用
                         .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code

@@ -508,6 +508,12 @@
             </LinearLayout>
         </ScrollView>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@+id/recycler"
+            android:layout_alignBottom="@+id/recycler"
+            android:background="@color/app_color_white" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"

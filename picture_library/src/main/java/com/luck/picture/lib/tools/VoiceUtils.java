@@ -3,7 +3,6 @@ package com.luck.picture.lib.tools;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.os.Handler;
 
 import com.luck.picture.lib.R;
 
@@ -13,31 +12,61 @@ import com.luck.picture.lib.R;
  * @描述: voice utils
  */
 public class VoiceUtils {
-    private static SoundPool soundPool;
-    private static int soundID;//创建某个声音对应的音频ID
 
-    /**
-     * start SoundPool
-     */
-    public static void playVoice(Context mContext, final boolean enableVoice) {
+    private static VoiceUtils instance;
 
-        if (soundPool == null) {
-            soundPool = new SoundPool(1, AudioManager.STREAM_ALARM, 0);
-            soundID = soundPool.load(mContext, R.raw.picture_music, 1);
+    public static VoiceUtils getInstance() {
+        if (instance == null) {
+            synchronized (VoiceUtils.class) {
+                if (instance == null) {
+                    instance = new VoiceUtils();
+                }
+            }
         }
-        new Handler().postDelayed(() -> play(enableVoice, soundPool), 20);
+        return instance;
     }
 
-    public static void play(boolean enableVoice, SoundPool soundPool) {
-        if (enableVoice) {
-            soundPool.play(
-                    soundID,
-                    0.1f,
-                    0.5f,
-                    0,
-                    1,
-                    1
-            );
+    public VoiceUtils() {
+    }
+
+    private SoundPool soundPool;
+    /**
+     * 创建某个声音对应的音频ID
+     */
+    private int soundID;
+
+    public void init(Context context) {
+        initPool(context);
+    }
+
+    private void initPool(Context context) {
+        if (soundPool == null) {
+            soundPool = new SoundPool(1, AudioManager.STREAM_ALARM, 0);
+            soundID = soundPool.load(context.getApplicationContext(), R.raw.picture_music, 1);
+        }
+    }
+
+    /**
+     * 播放音频
+     */
+    public void play() {
+        if (soundPool != null) {
+            soundPool.play(soundID, 0.1f, 0.5f, 0, 1, 1);
+        }
+    }
+
+    /**
+     * 释放资源
+     */
+    public void releaseSoundPool() {
+        try {
+            if (soundPool != null) {
+                soundPool.release();
+                soundPool = null;
+            }
+            instance = null;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

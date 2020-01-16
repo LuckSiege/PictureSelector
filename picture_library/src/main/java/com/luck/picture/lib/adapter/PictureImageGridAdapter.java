@@ -428,7 +428,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
             selectImages.add(image);
             image.setNum(selectImages.size());
-            VoiceUtils.playVoice(context, config.openClickSound);
+            VoiceUtils.getInstance().play();
             AnimUtils.zoom(contentHolder.ivPicture, config.zoomAnim);
             contentHolder.tvCheck.startAnimation(AnimationUtils.loadAnimation(context, R.anim.picture_anim_modal_in));
         }

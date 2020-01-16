@@ -40,6 +40,7 @@ import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
+import com.luck.picture.lib.tools.VoiceUtils;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.model.CutInfo;
 
@@ -234,6 +235,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                 // 兼容老的Theme方式
                 colorPrimaryDark = AttrsUtils.getTypeValueColor(this, R.attr.colorPrimaryDark);
             }
+        }
+
+        if (config.openClickSound) {
+            VoiceUtils.getInstance().init(getContext());
         }
     }
 
@@ -717,6 +722,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         // 关闭主界面后才释放回调监听
         if (getContext() instanceof PictureSelectorActivity) {
             releaseResultListener();
+            if (config.openClickSound) {
+                VoiceUtils.getInstance().releaseSoundPool();
+            }
         }
     }
 

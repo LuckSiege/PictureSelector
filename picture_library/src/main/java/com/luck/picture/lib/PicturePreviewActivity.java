@@ -527,7 +527,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             }
             isChangeSelectedData = true;
             if (isChecked) {
-                VoiceUtils.playVoice(getContext(), config.openClickSound);
+                VoiceUtils.getInstance().play();
                 // 如果是单选，则清空已选中的并刷新列表(作单一选择)
                 if (config.selectionMode == PictureConfig.SINGLE) {
                     selectImages.clear();
