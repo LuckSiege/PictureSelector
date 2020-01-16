@@ -82,6 +82,7 @@ public final class PictureMimeType {
 
     public final static String MIME_TYPE_PNG = "image/png";
     public final static String MIME_TYPE_JPEG = "image/jpeg";
+    public final static String MIME_TYPE_JPG = "image/jpg";
     public final static String MIME_TYPE_BMP = "image/bmp";
     public final static String MIME_TYPE_GIF = "image/gif";
     public final static String MIME_TYPE_WEBP = "image/webp";
@@ -131,6 +132,30 @@ public final class PictureMimeType {
      */
     public static boolean eqImage(String mimeType) {
         return mimeType != null && mimeType.startsWith(MIME_TYPE_PREFIX_IMAGE);
+    }
+
+    /**
+     * Determine if it is JPG.
+     *
+     * @param is image file mimeType
+     */
+    public static boolean isJPEG(String mimeType) {
+        if (TextUtils.isEmpty(mimeType)) {
+            return false;
+        }
+        return mimeType.startsWith(MIME_TYPE_JPEG) || mimeType.startsWith(MIME_TYPE_JPG);
+    }
+
+    /**
+     * Determine if it is JPG.
+     *
+     * @param is image file mimeType
+     */
+    public static boolean isJPG(String mimeType) {
+        if (TextUtils.isEmpty(mimeType)) {
+            return false;
+        }
+        return mimeType.startsWith(MIME_TYPE_JPG);
     }
 
     /**

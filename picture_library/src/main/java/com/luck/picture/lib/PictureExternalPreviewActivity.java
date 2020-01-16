@@ -81,7 +81,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     private SimpleFragmentAdapter adapter;
     private LoadDataThread mLoadDataThread;
     private String downloadPath;
-    private String mimeType;
+    private String mMimeType;
     private ImageButton ibDelete;
     private boolean isAndroidQ;
     private View titleViewBg;
@@ -271,7 +271,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                         path = media.getPath();
                     }
                     boolean isHttp = PictureMimeType.isHttp(path);
-                    mimeType = isHttp ? PictureMimeType.getImageMimeType(media.getPath()) : media.getMimeType();
+                    String mimeType = isHttp ? PictureMimeType.getImageMimeType(media.getPath()) : media.getMimeType();
                     boolean eqVideo = PictureMimeType.eqVideo(mimeType);
                     ivPlay.setVisibility(eqVideo ? View.VISIBLE : View.GONE);
                     boolean isGif = PictureMimeType.isGif(mimeType);
@@ -323,6 +323,8 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                             if (config.isNotPreviewDownload) {
                                 if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                                     downloadPath = path;
+                                    String currentMimeType = PictureMimeType.isHttp(path) ? PictureMimeType.getImageMimeType(media.getPath()) : media.getMimeType();
+                                    mMimeType = PictureMimeType.isJPG(currentMimeType) ? PictureMimeType.MIME_TYPE_JPEG : currentMimeType;
                                     showDownLoadDialog();
                                 } else {
                                     PermissionChecker.requestPermissions(PictureExternalPreviewActivity.this,
@@ -337,6 +339,8 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                             if (config.isNotPreviewDownload) {
                                 if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                                     downloadPath = path;
+                                    String currentMimeType = PictureMimeType.isHttp(path) ? PictureMimeType.getImageMimeType(media.getPath()) : media.getMimeType();
+                                    mMimeType = PictureMimeType.isJPG(currentMimeType) ? PictureMimeType.MIME_TYPE_JPEG : currentMimeType;
                                     showDownLoadDialog();
                                 } else {
                                     PermissionChecker.requestPermissions(PictureExternalPreviewActivity.this,
@@ -434,7 +438,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
      * @throws Exception
      */
     private void savePictureAlbum() throws Exception {
-        String suffix = PictureMimeType.getLastImgSuffix(mimeType);
+        String suffix = PictureMimeType.getLastImgSuffix(mMimeType);
         String state = Environment.getExternalStorageState();
         File rootDir = state.equals(Environment.MEDIA_MOUNTED)
                 ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
@@ -463,7 +467,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
         contentValues.put(MediaStore.Images.Media.DATE_TAKEN, ValueOf.toString(System.currentTimeMillis()));
-        contentValues.put(MediaStore.Images.Media.MIME_TYPE, PictureMimeType.MIME_TYPE_IMAGE);
+        contentValues.put(MediaStore.Images.Media.MIME_TYPE, mMimeType);
         contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, PictureMimeType.DCIM);
         Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
         if (uri == null) {
@@ -482,13 +486,11 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 opts.inJustDecodeBounds = false;
                 Bitmap bitmap = BitmapFactory.decodeFileDescriptor(parcelFileDescriptor.getFileDescriptor(), null, opts);
                 if (bitmap != null) {
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N && PictureMimeType.isJPEG(mMimeType)) {
                         ExifInterface exifInterface = new ExifInterface(parcelFileDescriptor.getFileDescriptor());
                         int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0);
-                        if (orientation > 1) {
-                            int rotationAngle = BitmapUtils.getRotationAngle(orientation);
-                            bitmap = BitmapUtils.rotatingImage(bitmap, rotationAngle);
-                        }
+                        int rotationAngle = BitmapUtils.getRotationAngle(orientation);
+                        bitmap = BitmapUtils.rotatingImage(bitmap, rotationAngle);
                     }
                     if (bitmap != null) {
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
@@ -548,21 +550,21 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
         contentValues.put(MediaStore.Images.Media.DATE_TAKEN, ValueOf.toString(System.currentTimeMillis()));
-        contentValues.put(MediaStore.Images.Media.MIME_TYPE, PictureMimeType.MIME_TYPE_IMAGE);
+        contentValues.put(MediaStore.Images.Media.MIME_TYPE, mMimeType);
         contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, PictureMimeType.DCIM);
+
         return getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
     }
 
     // 下载图片保存至手机
     public void showLoadingImage(String urlPath) {
+        BufferedOutputStream bout = null;
+        Uri outImageUri = null;
         try {
             URL u = new URL(urlPath);
-            String suffix = PictureMimeType.getLastImgSuffix(mimeType);
-            String state = Environment.getExternalStorageState();
-            BufferedOutputStream bout;
             String path;
             if (isAndroidQ) {
-                Uri outImageUri = createOutImageUri();
+                outImageUri = createOutImageUri();
                 if (outImageUri == null) {
                     mHandler.sendEmptyMessage(SAVE_IMAGE_ERROR);
                     return;
@@ -570,6 +572,8 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 bout = new BufferedOutputStream(getContentResolver().openOutputStream(outImageUri));
                 path = PictureFileUtils.getPath(this, outImageUri);
             } else {
+                String suffix = PictureMimeType.getLastImgSuffix(mMimeType);
+                String state = Environment.getExternalStorageState();
                 File rootDir =
                         state.equals(Environment.MEDIA_MOUNTED)
                                 ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
@@ -600,14 +604,24 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 long speed = ava / (System.currentTimeMillis() - start);
             }
             bout.flush();
-            bout.close();
             Message message = mHandler.obtainMessage();
             message.what = SAVE_IMAGE_SUCCESSFUL;
             message.obj = path;
             mHandler.sendMessage(message);
         } catch (IOException e) {
             mHandler.sendEmptyMessage(SAVE_IMAGE_ERROR);
+            if (outImageUri != null) {
+                getContentResolver().delete(outImageUri, null, null);
+            }
             e.printStackTrace();
+        } finally {
+            try {
+                if (bout != null) {
+                    bout.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
