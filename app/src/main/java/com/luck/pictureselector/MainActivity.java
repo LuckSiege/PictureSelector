@@ -152,6 +152,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (savedInstanceState != null && savedInstanceState.getParcelableArrayList("selectorList") != null) {
             mAdapter.setList(savedInstanceState.getParcelableArrayList("selectorList"));
         }
+
+//        List<LocalMedia> list = new ArrayList<>();
+//        LocalMedia m = new LocalMedia();
+//        m.setPath("https://wx1.sinaimg.cn/mw690/006e0i7xly1gaxqq5m7t8j31311g2ao6.jpg");
+//        LocalMedia m1 = new LocalMedia();
+//        m1.setPath("https://ww1.sinaimg.cn/bmiddle/bcd10523ly1g96mg4sfhag20c806wu0x.gif");
+//        list.add(m);
+//        list.add(m1);
+//        mAdapter.setList(list);
+
         mAdapter.setSelectMax(maxSelectNum);
         mRecyclerView.setAdapter(mAdapter);
         cb_original.setOnCheckedChangeListener((buttonView, isChecked) ->
@@ -416,7 +426,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .isWithVideoImage(true)// 图片和视频是否可以同选,只在ofAll模式下有效
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
-                        .maxVideoSelectNum(2) // 视频最大选择数量，如果没有单独设置的需求则可以不设置，同用maxSelectNum字段
+                        .maxVideoSelectNum(1) // 视频最大选择数量，如果没有单独设置的需求则可以不设置，同用maxSelectNum字段
                         //.minVideoSelectNum(1)// 视频最小选择数量，如果没有单独设置的需求则可以不设置，同用minSelectNum字段
                         .imageSpanCount(4)// 每行显示个数
                         .isReturnEmpty(false)// 未选择数据时点击按钮是否可以返回
