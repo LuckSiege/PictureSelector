@@ -81,7 +81,10 @@ class Engine {
         Bitmap tagBitmap = BitmapFactory.decodeStream(srcImg.open(), null, options);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (srcImg.getMedia() != null && Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
-            tagBitmap = rotatingImage(tagBitmap, Checker.SINGLE.getOrientation(srcImg.open()));
+            int orientation = Checker.SINGLE.getOrientation(srcImg.open());
+            if (orientation > 0) {
+                tagBitmap = rotatingImage(tagBitmap, orientation);
+            }
         }
         if (tagBitmap != null) {
             compressQuality = compressQuality <= 0 || compressQuality > 100 ? DEFAULT_QUALITY : compressQuality;
@@ -93,7 +96,6 @@ class Engine {
         fos.flush();
         fos.close();
         stream.close();
-
         return tagImg;
     }
 }

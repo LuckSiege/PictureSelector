@@ -215,6 +215,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 }
                 int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
                 media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
+                media.setRealPath(path);
                 if (config.isUseCustomCamera && data != null) {
                     // 自定义拍照时已经在应用沙盒内生成了文件
                     String mediaPath = data.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH);

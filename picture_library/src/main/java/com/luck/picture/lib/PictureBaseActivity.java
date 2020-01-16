@@ -300,8 +300,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                                     .setTargetDir(config.compressSavePath)
                                     .setCompressQuality(config.compressQuality)
                                     .setFocusAlpha(config.focusAlpha)
-                                    .setRenameListener(filePath -> config.renameCompressFileName)
+                                    .setNewCompressFileName(config.renameCompressFileName)
                                     .ignoreBy(config.minimumCompressSize).get();
+
                     // 线程切换
                     mHandler.sendMessage(mHandler.obtainMessage(MSG_ASY_COMPRESSION_RESULT_SUCCESS,
                             new Object[]{result, files}));
@@ -318,7 +319,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                     .setCompressQuality(config.compressQuality)
                     .setTargetDir(config.compressSavePath)
                     .setFocusAlpha(config.focusAlpha)
-                    .setRenameListener(filePath -> config.renameCompressFileName)
+                    .setNewCompressFileName(config.renameCompressFileName)
                     .setCompressListener(new OnCompressListener() {
                         @Override
                         public void onStart() {

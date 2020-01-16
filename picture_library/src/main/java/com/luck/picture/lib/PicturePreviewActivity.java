@@ -1,6 +1,7 @@
 package com.luck.picture.lib;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -21,6 +22,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.observable.ImagesObservable;
+import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
@@ -530,6 +532,9 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 if (config.selectionMode == PictureConfig.SINGLE) {
                     selectImages.clear();
                 }
+                if (!TextUtils.isEmpty(image.getRealPath()) && image.getPath().startsWith("content://")) {
+                    image.setRealPath(PictureFileUtils.getPath(getContext(), Uri.parse(image.getPath())));
+                }
                 selectImages.add(image);
                 onSelectedChange(true, image);
                 image.setNum(selectImages.size());
@@ -661,6 +666,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     cutInfo.setAndroidQToPath(media.getAndroidQToPath());
                     cutInfo.setId(media.getId());
                     cutInfo.setDuration(media.getDuration());
+                    cutInfo.setRealPath(media.getRealPath());
                     cuts.add(cutInfo);
                 }
                 if (imageNum <= 0) {
@@ -709,6 +715,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     cutInfo.setAndroidQToPath(media.getAndroidQToPath());
                     cutInfo.setId(media.getId());
                     cutInfo.setDuration(media.getDuration());
+                    cutInfo.setRealPath(media.getRealPath());
                     cuts.add(cutInfo);
                 }
                 startCrop(cuts);

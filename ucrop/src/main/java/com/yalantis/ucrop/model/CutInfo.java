@@ -64,6 +64,13 @@ public class CutInfo implements Parcelable {
      */
     private Uri httpOutUri;
 
+
+    /**
+     * The real path，But you can't get access from AndroidQ
+     */
+    private String realPath;
+
+
     public CutInfo() {
     }
 
@@ -177,6 +184,14 @@ public class CutInfo implements Parcelable {
         this.duration = duration;
     }
 
+    public String getRealPath() {
+        return realPath;
+    }
+
+    public void setRealPath(String realPath) {
+        this.realPath = realPath;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -197,6 +212,7 @@ public class CutInfo implements Parcelable {
         dest.writeFloat(this.resultAspectRatio);
         dest.writeLong(this.duration);
         dest.writeParcelable(this.httpOutUri, flags);
+        dest.writeString(this.realPath);
     }
 
     protected CutInfo(Parcel in) {
@@ -213,6 +229,7 @@ public class CutInfo implements Parcelable {
         this.resultAspectRatio = in.readFloat();
         this.duration = in.readLong();
         this.httpOutUri = in.readParcelable(Uri.class.getClassLoader());
+        this.realPath = in.readString();
     }
 
     public static final Creator<CutInfo> CREATOR = new Creator<CutInfo>() {

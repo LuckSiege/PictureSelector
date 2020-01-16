@@ -36,6 +36,7 @@ public class Luban implements Handler.Callback {
     private static final int MSG_COMPRESS_ERROR = 2;
 
     private String mTargetDir;
+    private String mNewFileName;
     private boolean focusAlpha;
     private boolean isCamera;
     private int mLeastCompressSize;
@@ -54,6 +55,7 @@ public class Luban implements Handler.Callback {
         this.mPaths = builder.mPaths;
         this.mediaList = builder.mediaList;
         this.mTargetDir = builder.mTargetDir;
+        this.mNewFileName = builder.mNewFileName;
         this.mRenameListener = builder.mRenameListener;
         this.mStreamProviders = builder.mStreamProviders;
         this.mCompressListener = builder.mCompressListener;
@@ -260,17 +262,19 @@ public class Luban implements Handler.Callback {
     private File compressRealLocalMedia(Context context, InputStreamProvider path) throws IOException {
         File result;
         LocalMedia media = path.getMedia();
-        String newPath = isAndroidQ ? PictureFileUtils
-                .getPath(context, Uri.parse(path.getPath())) : path.getPath();
+        String newPath;
+        if (isAndroidQ) {
+            newPath = !TextUtils.isEmpty(media.getRealPath()) ? media.getRealPath() :
+                    PictureFileUtils.getPath(context, Uri.parse(path.getPath()));
+        } else {
+            newPath = path.getPath();
+        }
         String suffix = Checker.SINGLE.extSuffix(media != null ? path.getMedia().getMimeType() : "");
         File outFile = getImageCacheFile(context, path, TextUtils.isEmpty(suffix) ? Checker.SINGLE.extSuffix(path) : suffix);
         String filename = "";
-        if (mRenameListener != null) {
-            filename = mRenameListener.rename(newPath);
-            if (!TextUtils.isEmpty(filename)) {
-                filename = isCamera ? filename : StringUtils.rename(filename);
-                outFile = getImageCustomFile(context, filename);
-            }
+        if (!TextUtils.isEmpty(mNewFileName)) {
+            filename = isCamera ? mNewFileName : StringUtils.rename(mNewFileName);
+            outFile = getImageCustomFile(context, filename);
         }
         // 如果文件存在直接返回不处理
         if (outFile.exists()) {
@@ -345,6 +349,7 @@ public class Luban implements Handler.Callback {
     public static class Builder {
         private Context context;
         private String mTargetDir;
+        private String mNewFileName;
         private boolean focusAlpha;
         private boolean isCamera;
         private int compressQuality;
@@ -503,6 +508,7 @@ public class Luban implements Handler.Callback {
             return this;
         }
 
+        @Deprecated
         public Builder setRenameListener(OnRenameListener listener) {
             this.mRenameListener = listener;
             return this;
@@ -515,6 +521,11 @@ public class Luban implements Handler.Callback {
 
         public Builder setTargetDir(String targetDir) {
             this.mTargetDir = targetDir;
+            return this;
+        }
+
+        public Builder setNewCompressFileName(String newFileName) {
+            this.mNewFileName = newFileName;
             return this;
         }
 

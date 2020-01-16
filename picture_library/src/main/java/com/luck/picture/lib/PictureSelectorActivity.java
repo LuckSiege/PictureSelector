@@ -660,6 +660,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     cutInfo.setImageHeight(media.getHeight());
                     cutInfo.setMimeType(media.getMimeType());
                     cutInfo.setDuration(media.getDuration());
+                    cutInfo.setRealPath(media.getRealPath());
                     cuts.add(cutInfo);
                 }
                 if (imageNum <= 0) {
@@ -722,6 +723,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     cutInfo.setImageHeight(media.getHeight());
                     cutInfo.setMimeType(media.getMimeType());
                     cutInfo.setDuration(media.getDuration());
+                    cutInfo.setRealPath(media.getRealPath());
                     cuts.add(cutInfo);
                 }
                 startCrop(cuts);
@@ -1281,6 +1283,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
                 int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
                 media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
+                media.setRealPath(path);
             } else {
                 File file = new File(config.cameraPath);
                 mimeType = PictureMimeType.getMimeType(file);

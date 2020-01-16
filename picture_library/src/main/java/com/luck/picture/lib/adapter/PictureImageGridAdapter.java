@@ -174,6 +174,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                         ToastUtils.s(context, PictureMimeType.s(context, mimeType));
                         return;
                     }
+                    if (SdkVersionUtils.checkedAndroid_Q()) {
+                        image.setRealPath(newPath);
+                    }
                     changeCheckboxState(contentHolder, image);
                 });
             }
@@ -188,6 +191,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 int index = showCamera ? position - 1 : position;
                 if (index == -1) {
                     return;
+                }
+                if (SdkVersionUtils.checkedAndroid_Q()) {
+                    image.setRealPath(newPath);
                 }
                 boolean eqResult =
                         PictureMimeType.eqImage(mimeType) && config.enablePreview

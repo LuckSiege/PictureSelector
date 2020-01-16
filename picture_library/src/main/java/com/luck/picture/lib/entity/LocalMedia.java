@@ -19,6 +19,15 @@ public class LocalMedia implements Parcelable {
      * original path
      */
     private String path;
+
+    /**
+     * The real path，But you can't get access from AndroidQ
+     * <p>
+     * It could be empty
+     * <p/>
+     */
+    private String realPath;
+
     /**
      * # Check the original button to get the return value
      * original path
@@ -171,6 +180,13 @@ public class LocalMedia implements Parcelable {
         this.duration = duration;
     }
 
+    public String getRealPath() {
+        return realPath;
+    }
+
+    public void setRealPath(String realPath) {
+        this.realPath = realPath;
+    }
 
     public boolean isChecked() {
         return isChecked;
@@ -294,6 +310,7 @@ public class LocalMedia implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
         dest.writeString(this.path);
+        dest.writeString(this.realPath);
         dest.writeString(this.originalPath);
         dest.writeString(this.compressPath);
         dest.writeString(this.cutPath);
@@ -316,6 +333,7 @@ public class LocalMedia implements Parcelable {
     protected LocalMedia(Parcel in) {
         this.id = in.readLong();
         this.path = in.readString();
+        this.realPath = in.readString();
         this.originalPath = in.readString();
         this.compressPath = in.readString();
         this.cutPath = in.readString();
