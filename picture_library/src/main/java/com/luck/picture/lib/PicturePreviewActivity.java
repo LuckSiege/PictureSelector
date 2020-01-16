@@ -123,7 +123,11 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                isPreviewEggs(config.previewEggs, position, positionOffsetPixels);
+                if (getContext() instanceof PictureSelectorPreviewWeChatStyleActivity) {
+                    //  不做处理
+                } else {
+                    isPreviewEggs(config.previewEggs, position, positionOffsetPixels);
+                }
             }
 
             @Override
@@ -337,7 +341,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      * @param image
      * @return
      */
-    public boolean isSelected(LocalMedia image) {
+    protected boolean isSelected(LocalMedia image) {
         int size = selectImages.size();
         for (int i = 0; i < size; i++) {
             LocalMedia media = selectImages.get(i);
