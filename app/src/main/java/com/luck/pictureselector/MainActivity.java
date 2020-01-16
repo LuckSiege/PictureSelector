@@ -479,11 +479,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .cutOutQuality(90)// 裁剪输出质量 默认100
                         .minimumCompressSize(100)// 小于100kb的图片不压缩
                         //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
+                        //.cropImageWideHigh()// 裁剪宽高比，设置如果大于图片本身宽高则无效
                         //.rotateEnabled(true) // 裁剪是否可旋转图片
                         //.scaleEnabled(true)// 裁剪是否可放大缩小图片
                         //.videoQuality()// 视频录制质量 0 or 1
                         //.videoSecond()//显示多少秒以内的视频or音频也可适用
-                        //.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径  注：已废弃
                         .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
 //                        .forResult(result -> {
 //                            for (LocalMedia media : result) {
@@ -538,12 +538,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .showCropGrid(cb_showCropGrid.isChecked())// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
                         .openClickSound(cb_voice.isChecked())// 是否开启点击声音
                         .selectionMedia(mAdapter.getData())// 是否传入已选图片
-                        .previewEggs(false)//预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                         //.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                         //.cropCompressQuality(90)// 废弃 改用cutOutQuality()
                         .cutOutQuality(90)// 裁剪输出质量 默认100
                         .minimumCompressSize(100)// 小于100kb的图片不压缩
                         //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
+                        //.cropImageWideHigh()// 裁剪宽高比，设置如果大于图片本身宽高则无效
                         //.rotateEnabled() // 裁剪是否可旋转图片
                         //.scaleEnabled()// 裁剪是否可放大缩小图片
                         //.videoQuality()// 视频录制质量 0 or 1

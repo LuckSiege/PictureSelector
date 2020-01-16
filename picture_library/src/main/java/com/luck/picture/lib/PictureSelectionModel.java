@@ -362,9 +362,23 @@ public class PictureSelectionModel {
     /**
      * @param cropWidth  crop width
      * @param cropHeight crop height
-     * @return
+     * @return this
+     * @deprecated Crop image output width and height
+     * {@link cropImageWideHigh()}
      */
+    @Deprecated
     public PictureSelectionModel cropWH(int cropWidth, int cropHeight) {
+        selectionConfig.cropWidth = cropWidth;
+        selectionConfig.cropHeight = cropHeight;
+        return this;
+    }
+
+    /**
+     * @param cropWidth  crop width
+     * @param cropHeight crop height
+     * @return this
+     */
+    public PictureSelectionModel cropImageWideHigh(int cropWidth, int cropHeight) {
         selectionConfig.cropWidth = cropWidth;
         selectionConfig.cropHeight = cropHeight;
         return this;
@@ -401,7 +415,7 @@ public class PictureSelectionModel {
     /**
      * @param width  glide width
      * @param height glide height
-     * @return 2.2.9开始Glide改为外部用户自己定义此方法没有意义了
+     * @return 2.2.9开始 Glide改为外部用户自己定义此方法没有意义了
      */
     @Deprecated
     public PictureSelectionModel glideOverride(@IntRange(from = 100) int width,
