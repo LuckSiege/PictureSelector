@@ -244,18 +244,19 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
      * 设置完成按钮文字
      */
     private void initCompleteText() {
+        boolean isNotEmptyStyle = config.style != null;
         if (config.isWithVideoImage) {
             // 混选模式
             if (config.selectionMode == PictureConfig.SINGLE) {
-                mPictureSendView.setText(config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
                         ? config.style.pictureRightDefaultText : getString(R.string.picture_send));
             } else {
-                boolean isCompleteReplaceNum = config.style != null && config.style.isCompleteReplaceNum;
-                if (isCompleteReplaceNum && config.style != null && !TextUtils.isEmpty(config.style.pictureWeChatRightSelectedText)) {
+                boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
+                if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureWeChatRightSelectedText)) {
                     mPictureSendView.setText(String.format(config.style.pictureWeChatRightSelectedText,
                             selectImages.size(), config.maxVideoSelectNum + config.maxSelectNum));
                 } else {
-                    mPictureSendView.setText(config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                    mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
                             ? config.style.pictureRightDefaultText : getString(R.string.picture_send_num, selectImages.size(),
                             config.maxVideoSelectNum + config.maxSelectNum));
                 }
@@ -264,14 +265,14 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
             String mimeType = selectImages.get(0).getMimeType();
             int maxSize = PictureMimeType.eqVideo(mimeType) ? config.maxVideoSelectNum : config.maxSelectNum;
             if (config.selectionMode == PictureConfig.SINGLE) {
-                mPictureSendView.setText(config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
                         ? config.style.pictureRightDefaultText : getString(R.string.picture_send));
             } else {
-                boolean isCompleteReplaceNum = config.style != null && config.style.isCompleteReplaceNum;
-                if (isCompleteReplaceNum && config.style != null && !TextUtils.isEmpty(config.style.pictureWeChatRightSelectedText)) {
+                boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
+                if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureWeChatRightSelectedText)) {
                     mPictureSendView.setText(String.format(config.style.pictureWeChatRightSelectedText, selectImages.size(), maxSize));
                 } else {
-                    mPictureSendView.setText(config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                    mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
                             ? config.style.pictureRightDefaultText
                             : getString(R.string.picture_send_num, selectImages.size(), maxSize));
                 }
