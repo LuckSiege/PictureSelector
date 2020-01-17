@@ -253,7 +253,8 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
     /**
      * 设置完成按钮文字
      */
-    private void initCompleteText() {
+    @Override
+    protected void initCompleteText() {
         boolean isNotEmptyStyle = config.style != null;
         if (config.isWithVideoImage) {
             // 混选模式

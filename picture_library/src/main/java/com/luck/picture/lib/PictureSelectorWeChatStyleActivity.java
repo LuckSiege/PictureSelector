@@ -238,12 +238,8 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
         initCompleteText(list);
     }
 
-    /**
-     * 设置完成按钮文字
-     *
-     * @param list
-     */
-    private void initCompleteText(List<LocalMedia> list) {
+    @Override
+    protected void initCompleteText(List<LocalMedia> list) {
         int size = list.size();
         boolean isNotEmptyStyle = config.style != null;
         if (config.isWithVideoImage) {
@@ -277,4 +273,5 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             }
         }
     }
+
 }

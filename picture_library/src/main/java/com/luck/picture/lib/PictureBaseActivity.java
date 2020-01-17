@@ -120,6 +120,26 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
 
     }
 
+    /**
+     * Set CompleteText
+     */
+    protected void initCompleteText(){
+
+    }
+
+    /**
+     * Set CompleteText
+     */
+    protected void initCompleteText(int startCount) {
+
+    }
+    /**
+     * Set CompleteText
+     */
+    protected void initCompleteText(List<LocalMedia> list) {
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {

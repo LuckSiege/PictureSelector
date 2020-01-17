@@ -1042,9 +1042,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
 //        // 自定义相册右侧文本内容设置
 //        mPictureParameterStyle.pictureRightDefaultText = "";
+        // 完成文案是否采用(%1$d/%2$d)的字符串，只允许俩个占位符哟
+//        mPictureParameterStyle.isCompleteReplaceNum = true;
 //        // 自定义相册未完成文本内容
 //        mPictureParameterStyle.pictureUnCompleteText = "";
-//        // 自定义相册完成文本内容
+        // 自定义相册完成文本内容，已经支持两个占位符String 但isCompleteReplaceNum必须为true
 //        mPictureParameterStyle.pictureCompleteText = "";
 //        // 自定义相册列表不可预览文字
 //        mPictureParameterStyle.pictureUnPreviewText = "";

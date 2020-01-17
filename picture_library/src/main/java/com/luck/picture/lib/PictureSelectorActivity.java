@@ -156,6 +156,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mBottomLayout = findViewById(R.id.rl_bottom);
         mTvEmpty = findViewById(R.id.tv_empty);
         isNumComplete(numComplete);
+        if (!numComplete) {
+            animation = AnimationUtils.loadAnimation(this, R.anim.picture_anim_modal_in);
+        }
         mTvPicturePreview.setOnClickListener(this);
         if (config.chooseMode == PictureMimeType.ofAudio()) {
             mTvPicturePreview.setVisibility(View.GONE);
@@ -347,14 +350,39 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * none number style
      */
     private void isNumComplete(boolean numComplete) {
-        mTvPictureOk.setText(numComplete ? getString(R.string.picture_done_front_num,
-                0, config.selectionMode == PictureConfig.SINGLE ? 1 : config.maxSelectNum)
-                : getString(R.string.picture_please_select));
-        if (!numComplete) {
-            animation = AnimationUtils.loadAnimation(this, R.anim.picture_anim_modal_in);
+        if (numComplete) {
+            initCompleteText(0);
         }
-        animation = numComplete ? null : AnimationUtils.loadAnimation(this, R.anim.picture_anim_modal_in);
     }
+
+    /**
+     * init 完成文案
+     */
+    @Override
+    protected void initCompleteText(int startCount) {
+        boolean isNotEmptyStyle = config.style != null;
+        if (config.selectionMode == PictureConfig.SINGLE) {
+            mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
+                    ? config.style.pictureUnCompleteText : getString(R.string.picture_please_select));
+        } else {
+            boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
+            if (startCount <= 0) {
+                // 未选择任何图片
+                mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
+                        ? config.style.pictureUnCompleteText : getString(R.string.picture_done_front_num,
+                        startCount, config.maxVideoSelectNum + config.maxSelectNum));
+            } else {
+                // 已选择
+                if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
+                    mTvPictureOk.setText(String.format(config.style.pictureCompleteText, startCount, config.maxVideoSelectNum + config.maxSelectNum));
+                } else {
+                    mTvPictureOk.setText(getString(R.string.picture_done_front_num,
+                            startCount, config.maxVideoSelectNum + config.maxSelectNum));
+                }
+            }
+        }
+    }
+
 
     /**
      * get LocalMedia s
@@ -1061,9 +1089,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mTvPicturePreview.setText(getString(R.string.picture_preview_num, selectImages.size()));
             }
             if (numComplete) {
-                mTvPictureOk.setText(getString
-                        (R.string.picture_done_front_num, selectImages.size(),
-                                config.selectionMode == PictureConfig.SINGLE ? 1 : config.maxSelectNum));
+                initCompleteText(selectImages.size());
             } else {
                 if (!isStartAnimation) {
                     mTvPictureImgNum.startAnimation(animation);
@@ -1096,8 +1122,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mTvPicturePreview.setText(getString(R.string.picture_preview));
             }
             if (numComplete) {
-                mTvPictureOk.setText(getString(R.string.picture_done_front_num, 0,
-                        config.selectionMode == PictureConfig.SINGLE ? 1 : config.maxSelectNum));
+                initCompleteText(selectImages.size());
             } else {
                 mTvPictureImgNum.setVisibility(View.INVISIBLE);
                 if (config.style != null && !TextUtils.isEmpty(config.style.pictureUnCompleteText)) {
