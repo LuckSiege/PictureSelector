@@ -1102,9 +1102,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 相册右侧按可点击字体颜色,只针对isWeChatStyle 为true时有效果
         mPictureParameterStyle.pictureRightSelectedTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_white);
         // 相册右侧按钮背景样式,只针对isWeChatStyle 为true时有效果
-        mPictureParameterStyle.pictureRightDefaultBackgroundStyle = R.drawable.picture_send_button_default_bg;
+        mPictureParameterStyle.pictureUnCompleteBackgroundStyle = R.drawable.picture_send_button_default_bg;
         // 相册右侧按钮可点击背景样式,只针对isWeChatStyle 为true时有效果
-        mPictureParameterStyle.pictureRightBackgroundStyle = R.drawable.picture_send_button_bg;
+        mPictureParameterStyle.pictureCompleteBackgroundStyle = R.drawable.picture_send_button_bg;
         // 相册列表勾选图片样式
         mPictureParameterStyle.pictureCheckedStyle = R.drawable.picture_wechat_num_selector;
         // 相册标题背景样式 ,只针对isWeChatStyle 为true时有效果
@@ -1122,9 +1122,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 相册列表底下不可预览文字色值(预览按钮不可点击时的色值)
         mPictureParameterStyle.pictureUnPreviewTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_9b);
         // 相册列表已完成色值(已完成 可点击色值)
-        mPictureParameterStyle.pictureCompleteTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_fa632d);
+        mPictureParameterStyle.pictureCompleteTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_white);
         // 相册列表未完成色值(请选择 不可点击色值)
-        mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_9b);
+        mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_53575e);
         // 预览界面底部背景色
         mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_half_grey);
         // 外部预览界面删除按钮样式
@@ -1141,7 +1141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 完成文案是否采用(%1$d/%2$d)的字符串，只允许俩个占位符哟
 //        mPictureParameterStyle.isCompleteReplaceNum = true;
         // 自定义相册右侧文本内容设置
-//        mPictureParameterStyle.pictureRightDefaultText = getString(R.string.app_wechat_send);
+//        mPictureParameterStyle.pictureUnCompleteText = getString(R.string.app_wechat_send);
         //自定义相册右侧已选中时文案 支持占位符String 但只支持俩个 必须isCompleteReplaceNum为true
 //        mPictureParameterStyle.pictureCompleteText = getString(R.string.app_wechat_send_num);
 //        // 自定义相册列表不可预览文字

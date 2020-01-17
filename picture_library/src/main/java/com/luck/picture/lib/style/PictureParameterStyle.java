@@ -171,13 +171,13 @@ public class PictureParameterStyle implements Parcelable {
      * 相册右侧按钮不可点击背景样式
      */
     @DrawableRes
-    public int pictureRightDefaultBackgroundStyle;
+    public int pictureUnCompleteBackgroundStyle;
 
     /**
      * 相册右侧按钮可点击背景样式
      */
     @DrawableRes
-    public int pictureRightBackgroundStyle;
+    public int pictureCompleteBackgroundStyle;
 
     /**
      * 相册标题右侧箭头
@@ -305,8 +305,8 @@ public class PictureParameterStyle implements Parcelable {
         dest.writeInt(this.pictureNavBarColor);
         dest.writeInt(this.pictureOriginalFontColor);
         dest.writeInt(this.pictureOriginalTextSize);
-        dest.writeInt(this.pictureRightDefaultBackgroundStyle);
-        dest.writeInt(this.pictureRightBackgroundStyle);
+        dest.writeInt(this.pictureUnCompleteBackgroundStyle);
+        dest.writeInt(this.pictureCompleteBackgroundStyle);
         dest.writeInt(this.pictureTitleUpResId);
         dest.writeInt(this.pictureTitleDownResId);
         dest.writeInt(this.pictureLeftBackIcon);
@@ -353,8 +353,8 @@ public class PictureParameterStyle implements Parcelable {
         this.pictureNavBarColor = in.readInt();
         this.pictureOriginalFontColor = in.readInt();
         this.pictureOriginalTextSize = in.readInt();
-        this.pictureRightDefaultBackgroundStyle = in.readInt();
-        this.pictureRightBackgroundStyle = in.readInt();
+        this.pictureUnCompleteBackgroundStyle = in.readInt();
+        this.pictureCompleteBackgroundStyle = in.readInt();
         this.pictureTitleUpResId = in.readInt();
         this.pictureTitleDownResId = in.readInt();
         this.pictureLeftBackIcon = in.readInt();

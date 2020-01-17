@@ -1101,9 +1101,9 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         // 相册右侧按可点击字体颜色,只针对isWeChatStyle 为true时有效果
         mPictureParameterStyle.pictureRightSelectedTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_white);
         // 相册右侧按钮背景样式,只针对isWeChatStyle 为true时有效果
-        mPictureParameterStyle.pictureRightDefaultBackgroundStyle = R.drawable.picture_send_button_default_bg;
+        mPictureParameterStyle.pictureUnCompleteBackgroundStyle = R.drawable.picture_send_button_default_bg;
         // 相册右侧按钮可点击背景样式,只针对isWeChatStyle 为true时有效果
-        mPictureParameterStyle.pictureRightBackgroundStyle = R.drawable.picture_send_button_bg;
+        mPictureParameterStyle.pictureUnCompleteBackgroundStyle = R.drawable.picture_send_button_bg;
         // 相册列表勾选图片样式
         mPictureParameterStyle.pictureCheckedStyle = R.drawable.picture_wechat_num_selector;
         // 相册标题背景样式 ,只针对isWeChatStyle 为true时有效果
