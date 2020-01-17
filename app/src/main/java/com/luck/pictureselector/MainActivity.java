@@ -1138,8 +1138,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 设置NavBar Color SDK Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP有效
         mPictureParameterStyle.pictureNavBarColor = Color.parseColor("#393a3e");
 
-//        // 自定义相册右侧文本内容设置
-//        mPictureParameterStyle.pictureRightDefaultText = "";
+          // 完成文案是否采用(%1$d/%2$d)的字符串，只允许俩个占位符哟
+//        mPictureParameterStyle.isCompleteReplaceNum = true;
+          // 自定义相册右侧文本内容设置
+//        mPictureParameterStyle.pictureRightDefaultText = getString(R.string.app_wechat_send);
+          //自定义相册右侧已选中时文案 支持占位符String 但只支持俩个 必须isCompleteReplaceNum为true
+//        mPictureParameterStyle.pictureWeChatRightSelectedText = getString(R.string.app_wechat_send_num);
 //        // 自定义相册列表不可预览文字
 //        mPictureParameterStyle.pictureUnPreviewText = "";
 //        // 自定义相册列表预览文字

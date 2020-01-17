@@ -203,6 +203,16 @@ public class PictureParameterStyle implements Parcelable {
     public int pictureCheckedStyle;
 
     /**
+     * 是否使用(%1$d/%2$d)字符串
+     */
+    public boolean isCompleteReplaceNum;
+
+    /**
+     * WeChatStyle 右上角已选文案
+     */
+    public String pictureWeChatRightSelectedText;
+
+    /**
      * WeChatStyle 预览右下角 勾选CheckBox drawable样式
      */
     @DrawableRes
@@ -306,6 +316,8 @@ public class PictureParameterStyle implements Parcelable {
         dest.writeInt(this.pictureTitleDownResId);
         dest.writeInt(this.pictureLeftBackIcon);
         dest.writeInt(this.pictureCheckedStyle);
+        dest.writeByte(this.isCompleteReplaceNum ? (byte) 1 : (byte) 0);
+        dest.writeString(this.pictureWeChatRightSelectedText);
         dest.writeInt(this.pictureWeChatChooseStyle);
         dest.writeInt(this.pictureWeChatLeftBackStyle);
         dest.writeInt(this.pictureWeChatTitleBackgroundStyle);
@@ -353,6 +365,8 @@ public class PictureParameterStyle implements Parcelable {
         this.pictureTitleDownResId = in.readInt();
         this.pictureLeftBackIcon = in.readInt();
         this.pictureCheckedStyle = in.readInt();
+        this.isCompleteReplaceNum = in.readByte() != 0;
+        this.pictureWeChatRightSelectedText = in.readString();
         this.pictureWeChatChooseStyle = in.readInt();
         this.pictureWeChatLeftBackStyle = in.readInt();
         this.pictureWeChatTitleBackgroundStyle = in.readInt();

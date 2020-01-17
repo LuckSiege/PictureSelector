@@ -250,11 +250,16 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                 mPictureSendView.setText(config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
                         ? config.style.pictureRightDefaultText : getString(R.string.picture_send));
             } else {
-                mPictureSendView.setText(config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
-                        ? config.style.pictureRightDefaultText : getString(R.string.picture_send_num, selectImages.size(),
-                        config.maxVideoSelectNum + config.maxSelectNum));
+                boolean isCompleteReplaceNum = config.style != null && config.style.isCompleteReplaceNum;
+                if (isCompleteReplaceNum && config.style != null && !TextUtils.isEmpty(config.style.pictureWeChatRightSelectedText)) {
+                    mPictureSendView.setText(String.format(config.style.pictureWeChatRightSelectedText,
+                            selectImages.size(), config.maxVideoSelectNum + config.maxSelectNum));
+                } else {
+                    mPictureSendView.setText(config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                            ? config.style.pictureRightDefaultText : getString(R.string.picture_send_num, selectImages.size(),
+                            config.maxVideoSelectNum + config.maxSelectNum));
+                }
             }
-
         } else {
             String mimeType = selectImages.get(0).getMimeType();
             int maxSize = PictureMimeType.eqVideo(mimeType) ? config.maxVideoSelectNum : config.maxSelectNum;
@@ -262,9 +267,14 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                 mPictureSendView.setText(config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
                         ? config.style.pictureRightDefaultText : getString(R.string.picture_send));
             } else {
-                mPictureSendView.setText(config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
-                        ? config.style.pictureRightDefaultText
-                        : getString(R.string.picture_send_num, selectImages.size(), maxSize));
+                boolean isCompleteReplaceNum = config.style != null && config.style.isCompleteReplaceNum;
+                if (isCompleteReplaceNum && config.style != null && !TextUtils.isEmpty(config.style.pictureWeChatRightSelectedText)) {
+                    mPictureSendView.setText(String.format(config.style.pictureWeChatRightSelectedText, selectImages.size(), maxSize));
+                } else {
+                    mPictureSendView.setText(config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                            ? config.style.pictureRightDefaultText
+                            : getString(R.string.picture_send_num, selectImages.size(), maxSize));
+                }
             }
         }
     }
