@@ -144,19 +144,9 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             // 可发送
             mPictureSendView.setEnabled(true);
             mPictureSendView.setSelected(true);
-            if (config.isWithVideoImage) {
-                // 混选模式
-                mPictureSendView.setText(config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
-                        ? config.style.pictureRightDefaultText : getString(R.string.picture_send_num, size, config.maxVideoSelectNum + config.maxSelectNum));
-            } else {
-                String mimeType = selectImages.get(0).getMimeType();
-                int maxSize = PictureMimeType.eqVideo(mimeType) ? config.maxVideoSelectNum : config.maxSelectNum;
-                mPictureSendView.setText(
-                        config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
-                                ? config.style.pictureRightDefaultText : getString(R.string.picture_send_num, size, maxSize));
-            }
             mTvPicturePreview.setEnabled(true);
             mTvPicturePreview.setSelected(true);
+            initCompleteText(selectImages);
             if (config.style != null) {
                 if (config.style.pictureRightBackgroundStyle != 0) {
                     mPictureSendView.setBackgroundResource(config.style.pictureRightBackgroundStyle);
@@ -245,21 +235,37 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
     @Override
     protected void onChangeData(List<LocalMedia> list) {
         super.onChangeData(list);
+        initCompleteText(list);
+    }
+
+    /**
+     * 设置完成按钮文字
+     *
+     * @param list
+     */
+    private void initCompleteText(List<LocalMedia> list) {
+        int size = list.size();
         if (config.isWithVideoImage) {
             // 混选模式
-            mPictureSendView.setText(config.selectionMode == PictureConfig.SINGLE ?
-                    config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
-                            ? config.style.pictureRightDefaultText
-                            : getString(R.string.picture_send)
-                    : getString(R.string.picture_send_num, list.size(), config.maxVideoSelectNum + config.maxSelectNum));
+            if (config.selectionMode == PictureConfig.SINGLE) {
+                mPictureSendView.setText(config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                        ? config.style.pictureRightDefaultText : getString(R.string.picture_send));
+            } else {
+                mPictureSendView.setText(config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                        ? config.style.pictureRightDefaultText : getString(R.string.picture_send_num, size, config.maxVideoSelectNum + config.maxSelectNum));
+            }
         } else {
-            String mimeType = list.size() > 0 ? list.get(0).getMimeType() : "";
+            String mimeType = list.get(0).getMimeType();
             int maxSize = PictureMimeType.eqVideo(mimeType) ? config.maxVideoSelectNum : config.maxSelectNum;
-            mPictureSendView.setText(config.selectionMode == PictureConfig.SINGLE ?
-                    config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
-                            ? config.style.pictureRightDefaultText
-                            : getString(R.string.picture_send)
-                    : getString(R.string.picture_send_num, list.size(), maxSize));
+            if (config.selectionMode == PictureConfig.SINGLE) {
+                mPictureSendView.setText(
+                        config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                                ? config.style.pictureRightDefaultText : getString(R.string.picture_send));
+            } else {
+                mPictureSendView.setText(
+                        config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                                ? config.style.pictureRightDefaultText : getString(R.string.picture_send_num, size, maxSize));
+            }
         }
     }
 }

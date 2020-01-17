@@ -215,24 +215,7 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
         goneParent();
         boolean enable = selectImages.size() != 0;
         if (enable) {
-            if (config.isWithVideoImage) {
-                // 混选模式
-                mPictureSendView.setText(config.selectionMode == PictureConfig.SINGLE ?
-                        config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
-                                ? config.style.pictureRightDefaultText
-                                : getString(R.string.picture_send)
-                        : getString(R.string.picture_send_num, selectImages.size(),
-                        config.maxVideoSelectNum + config.maxSelectNum));
-            } else {
-                String mimeType = selectImages.get(0).getMimeType();
-                int maxSize = PictureMimeType.eqVideo(mimeType) ? config.maxVideoSelectNum : config.maxSelectNum;
-                mPictureSendView.setText(config.selectionMode == PictureConfig.SINGLE ?
-                        config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
-                                ? config.style.pictureRightDefaultText
-                                : getString(R.string.picture_send)
-                        : getString(R.string.picture_send_num, selectImages.size(), maxSize));
-            }
-
+            initCompleteText();
             if (mRvGallery.getVisibility() == View.GONE) {
                 mRvGallery.setVisibility(View.VISIBLE);
                 bottomLine.setVisibility(View.VISIBLE);
@@ -247,6 +230,36 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
             }
             mRvGallery.setVisibility(View.GONE);
             bottomLine.setVisibility(View.GONE);
+        }
+    }
+
+
+    /**
+     * 设置完成按钮文字
+     */
+    private void initCompleteText() {
+        if (config.isWithVideoImage) {
+            // 混选模式
+            if (config.selectionMode == PictureConfig.SINGLE) {
+                mPictureSendView.setText(config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                        ? config.style.pictureRightDefaultText : getString(R.string.picture_send));
+            } else {
+                mPictureSendView.setText(config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                        ? config.style.pictureRightDefaultText : getString(R.string.picture_send_num, selectImages.size(),
+                        config.maxVideoSelectNum + config.maxSelectNum));
+            }
+
+        } else {
+            String mimeType = selectImages.get(0).getMimeType();
+            int maxSize = PictureMimeType.eqVideo(mimeType) ? config.maxVideoSelectNum : config.maxSelectNum;
+            if (config.selectionMode == PictureConfig.SINGLE) {
+                mPictureSendView.setText(config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                        ? config.style.pictureRightDefaultText : getString(R.string.picture_send));
+            } else {
+                mPictureSendView.setText(config.style != null && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
+                        ? config.style.pictureRightDefaultText
+                        : getString(R.string.picture_send_num, selectImages.size(), maxSize));
+            }
         }
     }
 }
