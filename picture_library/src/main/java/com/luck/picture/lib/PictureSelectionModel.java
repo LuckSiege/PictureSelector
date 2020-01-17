@@ -23,7 +23,6 @@ import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.tools.DoubleUtils;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -715,14 +714,11 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel selectionMedia(List<LocalMedia> selectionMedia) {
-        if (selectionMedia == null) {
-            selectionMedia = new ArrayList<>();
+        if (selectionConfig.selectionMode == PictureConfig.SINGLE && selectionConfig.isSingleDirectReturn) {
+            selectionConfig.selectionMedias = null;
+        } else {
+            selectionConfig.selectionMedias = selectionMedia;
         }
-        if (selectionConfig.selectionMode == PictureConfig.SINGLE
-                && selectionConfig.isSingleDirectReturn) {
-            selectionMedia.clear();
-        }
-        selectionConfig.selectionMedias = selectionMedia;
         return this;
     }
 
