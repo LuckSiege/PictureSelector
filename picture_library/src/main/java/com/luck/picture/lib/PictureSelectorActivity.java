@@ -362,8 +362,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected void initCompleteText(int startCount) {
         boolean isNotEmptyStyle = config.style != null;
         if (config.selectionMode == PictureConfig.SINGLE) {
-            mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
-                    ? config.style.pictureUnCompleteText : getString(R.string.picture_please_select));
+            if (startCount <= 0) {
+                // 未选择任何图片
+                mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
+                        ? config.style.pictureUnCompleteText : getString(R.string.picture_please_select));
+            } else {
+                // 已选择
+                mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)
+                        ? config.style.pictureCompleteText : getString(R.string.picture_done));
+            }
+
         } else {
             boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
             if (startCount <= 0) {
