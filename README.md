@@ -140,7 +140,7 @@ PictureSelector.create(this).externalPictureVideo(video_path);
 
 | 数字风格 | 数字风格预览  | 数字风格多图裁剪 |
 |:-----------:|:--------:|:---------:|
-|![](image/picture_num_style_1.jpg) | ![](image/picture_num_style_2.jpg) | ![](image/picture_num_style_new_3.jpg)| 
+|![](image/picture_num_style_new_1.jpg) | ![](image/picture_num_style_new_2.jpg) | ![](image/picture_num_style_new_3.jpg)| 
 
 | 白色主题风格 | 白色主题风格预览  | 白色主题风格单图裁剪 |
 |:-----------:|:--------:|:---------:|
@@ -148,11 +148,11 @@ PictureSelector.create(this).externalPictureVideo(video_path);
 
 | 仿微信风格 | 仿微信风格预览 | 仿微信风格多图裁剪 |
 |:-----------:|:--------:|:---------:|
-|![](image/picture_wechat_style_1.jpg) | ![](image/picture_wechat_style_2.jpg) | ![](image/picture_wechat_style_3.jpg)| 
+|![](image/picture_wechat_style_1.jpg) | ![](image/picture_wechat_style_2.jpg) | ![](image/picture_wechat_style_new_3.jpg)| 
 
 | 相册目录 | 仿微信风格单选模式 | 单图圆形头像裁剪|
 |:-----------:|:--------:|:--------:|
-|![](image/picture_wechat_album_style.jpg) |![](image/picture_wechat_single_style_new_3.jpg) | ![](image/picture_circular_crop_new_style.jpg)| 
+|![](image/picture_wechat_album_style.jpg) |![](image/picture_wechat_single_style_3.jpg) | ![](image/picture_circular_crop_new_style.jpg)| 
 
 | 白色主题风格 | 视频 | 音频 |
 |:-----------:|:-----------:|:--------:|
