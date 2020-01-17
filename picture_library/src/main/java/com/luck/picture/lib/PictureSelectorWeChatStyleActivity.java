@@ -253,8 +253,8 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
                         ? config.style.pictureRightDefaultText : getString(R.string.picture_send));
             } else {
                 boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
-                if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureWeChatRightSelectedText)) {
-                    mPictureSendView.setText(String.format(config.style.pictureWeChatRightSelectedText, size, config.maxVideoSelectNum + config.maxSelectNum));
+                if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
+                    mPictureSendView.setText(String.format(config.style.pictureCompleteText, size, config.maxVideoSelectNum + config.maxSelectNum));
                 } else {
                     mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
                             ? config.style.pictureRightDefaultText : getString(R.string.picture_send_num, size, config.maxVideoSelectNum + config.maxSelectNum));
@@ -268,8 +268,8 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
                         ? config.style.pictureRightDefaultText : getString(R.string.picture_send));
             } else {
                 boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
-                if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureWeChatRightSelectedText)) {
-                    mPictureSendView.setText(String.format(config.style.pictureWeChatRightSelectedText, size, maxSize));
+                if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
+                    mPictureSendView.setText(String.format(config.style.pictureCompleteText, size, maxSize));
                 } else {
                     mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
                             ? config.style.pictureRightDefaultText : getString(R.string.picture_send_num, size, maxSize));

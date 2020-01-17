@@ -252,8 +252,8 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                         ? config.style.pictureRightDefaultText : getString(R.string.picture_send));
             } else {
                 boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
-                if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureWeChatRightSelectedText)) {
-                    mPictureSendView.setText(String.format(config.style.pictureWeChatRightSelectedText,
+                if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
+                    mPictureSendView.setText(String.format(config.style.pictureCompleteText,
                             selectImages.size(), config.maxVideoSelectNum + config.maxSelectNum));
                 } else {
                     mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
@@ -269,8 +269,8 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                         ? config.style.pictureRightDefaultText : getString(R.string.picture_send));
             } else {
                 boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
-                if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureWeChatRightSelectedText)) {
-                    mPictureSendView.setText(String.format(config.style.pictureWeChatRightSelectedText, selectImages.size(), maxSize));
+                if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
+                    mPictureSendView.setText(String.format(config.style.pictureCompleteText, selectImages.size(), maxSize));
                 } else {
                     mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureRightDefaultText)
                             ? config.style.pictureRightDefaultText
