@@ -249,6 +249,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 } else {
                     if (visibility == View.VISIBLE) {
+                        tvDeleteText.animate().alpha(0).setDuration(300).setInterpolator(new AccelerateInterpolator());
                         tvDeleteText.setVisibility(View.GONE);
                     }
                 }

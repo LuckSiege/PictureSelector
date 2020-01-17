@@ -240,6 +240,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                     }
                 } else {
                     if (visibility == View.VISIBLE) {
+                        tvDeleteText.animate().alpha(0).setDuration(300).setInterpolator(new AccelerateInterpolator());
                         tvDeleteText.setVisibility(View.GONE);
                     }
                 }
