@@ -123,13 +123,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     /**
      * Set CompleteText
      */
-    protected void initCompleteText(){
-
-    }
-
-    /**
-     * Set CompleteText
-     */
     protected void initCompleteText(int startCount) {
 
     }

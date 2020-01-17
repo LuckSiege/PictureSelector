@@ -12,7 +12,7 @@
     <string name="picture_please">Bitte warten...</string>
     <string name="picture_done_front_num">%1$d/%2$d Vervollständigen</string>
     <string name="picture_completed">Abgeschlossen</string>
-    <string name="picture_done">Vervollständigen</string>
+    <string name="picture_done">Vollständig</string>
     <string name="picture_please_select">Bitte wählen Sie</string>
     <string name="picture_empty_title">Keine Videos oder Fotos\n</string>
     <string name="picture_empty_audio_title">Keine Audiodatei\n</string>

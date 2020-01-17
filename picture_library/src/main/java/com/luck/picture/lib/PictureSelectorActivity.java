@@ -368,8 +368,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         ? config.style.pictureUnCompleteText : getString(R.string.picture_please_select));
             } else {
                 // 已选择
-                mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)
-                        ? config.style.pictureCompleteText : getString(R.string.picture_done));
+                boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
+                if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
+                    mTvPictureOk.setText(String.format(config.style.pictureCompleteText, startCount, 1));
+                } else {
+                    mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)
+                            ? config.style.pictureCompleteText : getString(R.string.picture_done));
+                }
             }
 
         } else {

@@ -12,7 +12,7 @@
     <string name="picture_please">Please later...</string>
     <string name="picture_done_front_num">%1$d/%2$d Ok</string>
     <string name="picture_completed">Completed</string>
-    <string name="picture_done">Ok</string>
+    <string name="picture_done">Complete</string>
     <string name="picture_please_select">Please Select</string>
     <string name="picture_empty_title">No video or photos\n</string>
     <string name="picture_empty_audio_title">No audio file\n</string>

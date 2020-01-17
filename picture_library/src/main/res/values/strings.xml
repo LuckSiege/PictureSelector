@@ -12,7 +12,7 @@
     <string name="picture_please">请稍候...</string>
     <string name="picture_done_front_num">%1$d/%2$d 完成</string>
     <string name="picture_completed">已完成</string>
-    <string name="picture_done">完成</string>
+    <string name="picture_done">完 成</string>
     <string name="picture_please_select">请选择</string>
     <string name="picture_empty_title">无视频或照片\n</string>
     <string name="picture_empty_audio_title">无音频文件\n</string>

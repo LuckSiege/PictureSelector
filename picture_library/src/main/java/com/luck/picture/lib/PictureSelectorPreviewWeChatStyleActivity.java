@@ -217,7 +217,7 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
         goneParent();
         boolean enable = selectImages.size() != 0;
         if (enable) {
-            initCompleteText();
+            initCompleteText(selectImages.size());
             if (mRvGallery.getVisibility() == View.GONE) {
                 mRvGallery.animate().alpha(1).setDuration(ALPHA_DURATION).setInterpolator(new AccelerateInterpolator());
                 mRvGallery.setVisibility(View.VISIBLE);
@@ -254,13 +254,23 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
      * 设置完成按钮文字
      */
     @Override
-    protected void initCompleteText() {
+    protected void initCompleteText(int startCount) {
         boolean isNotEmptyStyle = config.style != null;
         if (config.isWithVideoImage) {
             // 混选模式
             if (config.selectionMode == PictureConfig.SINGLE) {
-                mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
-                        ? config.style.pictureUnCompleteText : getString(R.string.picture_send));
+                if (startCount <= 0) {
+                    mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
+                            ? config.style.pictureUnCompleteText : getString(R.string.picture_send));
+                } else {
+                    boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
+                    if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
+                        mPictureSendView.setText(String.format(config.style.pictureCompleteText, selectImages.size(), 1));
+                    } else {
+                        mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)
+                                ? config.style.pictureCompleteText : getString(R.string.picture_send));
+                    }
+                }
             } else {
                 boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
                 if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
@@ -276,8 +286,19 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
             String mimeType = selectImages.get(0).getMimeType();
             int maxSize = PictureMimeType.eqVideo(mimeType) ? config.maxVideoSelectNum : config.maxSelectNum;
             if (config.selectionMode == PictureConfig.SINGLE) {
-                mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
-                        ? config.style.pictureUnCompleteText : getString(R.string.picture_send));
+                if (startCount <= 0) {
+                    mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
+                            ? config.style.pictureUnCompleteText : getString(R.string.picture_send));
+                } else {
+                    boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
+                    if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
+                        mPictureSendView.setText(String.format(config.style.pictureCompleteText, selectImages.size(),
+                                1));
+                    } else {
+                        mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)
+                                ? config.style.pictureCompleteText : getString(R.string.picture_send));
+                    }
+                }
             } else {
                 boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
                 if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
