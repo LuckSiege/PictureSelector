@@ -146,11 +146,11 @@ PictureSelector.create(this).externalPictureVideo(video_path);
 |:-----------:|:--------:|:---------:|
 |![](image/picture_sina_style_1.jpg) | ![](image/picture_sina_style_new_2.jpg) | ![](image/picture_sina_style_new_3.jpg)| 
 
-| 仿微信风格 | 预览 | 多图裁剪 |
+| 全新风格 | 预览 | 多图裁剪 |
 |:-----------:|:--------:|:---------:|
 |![](image/picture_wechat_style_1.jpg) | ![](image/picture_wechat_style_2.jpg) | ![](image/picture_wechat_style_new_3.jpg)| 
 
-| 相册目录 | 仿微信风格单选模式 | 圆形头像裁剪|
+| 相册目录 | 单选模式 | 圆形头像裁剪|
 |:-----------:|:--------:|:--------:|
 |![](image/picture_wechat_album_style.jpg) |![](image/picture_wechat_single_style_3.jpg) | ![](image/picture_circular_crop_new_style.jpg)| 
 
