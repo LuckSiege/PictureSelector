@@ -130,7 +130,7 @@ PictureSelector.create(this).externalPictureVideo(video_path);
 
 ## 演示效果
 
-| 功能项&单一模式 | 功能项&混选模式 |
+| 单一模式 | 混选模式 |
 |:-----------:|:-----------:|
 |![](image/home.jpg)|![](image/home_mixed.jpg)| 
 
