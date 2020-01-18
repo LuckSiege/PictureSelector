@@ -134,27 +134,27 @@ PictureSelector.create(this).externalPictureVideo(video_path);
 |:-----------:|:-----------:|
 |![](image/home.jpg)|![](image/home_mixed.jpg)| 
 
-| 默认样式 | 默认样式预览 | 默认样式多图裁剪 |
+| 默认风格 | 预览 | 多图裁剪 |
 |:-----------:|:--------:|:---------:|
 |![](image/picture_default_style_1.jpg) | <img src="image/picture_default_style_2.jpg"/> | ![](image/picture_default_style_new_3.jpg)|  
 
-| 数字风格 | 数字风格预览  | 数字风格多图裁剪 |
+| 数字风格 | 预览 | 多图裁剪 |
 |:-----------:|:--------:|:---------:|
 |![](image/picture_num_style_new_1.jpg) | ![](image/picture_num_style_new_2.jpg) | ![](image/picture_num_style_new_3.jpg)| 
 
-| 白色主题风格 | 白色主题风格预览  | 白色主题风格单图裁剪 |
+| 白色风格 | 预览 | 单图裁剪 |
 |:-----------:|:--------:|:---------:|
 |![](image/picture_sina_style_1.jpg) | ![](image/picture_sina_style_new_2.jpg) | ![](image/picture_sina_style_new_3.jpg)| 
 
-| 仿微信风格 | 仿微信风格预览 | 仿微信风格多图裁剪 |
+| 仿微信风格 | 预览 | 多图裁剪 |
 |:-----------:|:--------:|:---------:|
 |![](image/picture_wechat_style_1.jpg) | ![](image/picture_wechat_style_2.jpg) | ![](image/picture_wechat_style_new_3.jpg)| 
 
-| 相册目录 | 仿微信风格单选模式 | 单图圆形头像裁剪|
+| 相册目录 | 仿微信风格单选模式 | 圆形头像裁剪|
 |:-----------:|:--------:|:--------:|
 |![](image/picture_wechat_album_style.jpg) |![](image/picture_wechat_single_style_3.jpg) | ![](image/picture_circular_crop_new_style.jpg)| 
 
-| 白色主题风格 | 视频 | 音频 |
+| 白色风格 | 视频 | 音频 |
 |:-----------:|:-----------:|:--------:|
 |![](image/picture_white_style.png) |![](image/picture_video.jpg) | ![](image/picture_audio.jpg)| 
 
