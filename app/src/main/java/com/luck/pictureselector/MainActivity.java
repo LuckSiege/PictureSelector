@@ -38,6 +38,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.language.LanguageConfig;
+import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.listener.OnVideoSelectedPlayCallback;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
@@ -485,21 +486,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.scaleEnabled(false)// 裁剪是否可放大缩小图片
                         //.videoQuality()// 视频录制质量 0 or 1
                         //.videoSecond()//显示多少秒以内的视频or音频也可适用
-                        .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
-//                        .forResult(result -> {
-//                            for (LocalMedia media : result) {
-//                                Log.i(TAG, "是否压缩:" + media.isCompressed());
-//                                Log.i(TAG, "压缩:" + media.getCompressPath());
-//                                Log.i(TAG, "原图:" + media.getPath());
-//                                Log.i(TAG, "是否裁剪:" + media.isCut());
-//                                Log.i(TAG, "裁剪:" + media.getCutPath());
-//                                Log.i(TAG, "是否开启原图:" + media.isOriginal());
-//                                Log.i(TAG, "原图路径:" + media.getOriginalPath());
-//                                Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
-//                            }
-//                            mAdapter.setList(result);
-//                            mAdapter.notifyDataSetChanged();
-//                        });
+                        //.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
+                        .forResult(new OnResultCallbackListener() {
+                            @Override
+                            public void onResult(List<LocalMedia> result) {
+                                for (LocalMedia media : result) {
+                                    Log.i(TAG, "是否压缩:" + media.isCompressed());
+                                    Log.i(TAG, "压缩:" + media.getCompressPath());
+                                    Log.i(TAG, "原图:" + media.getPath());
+                                    Log.i(TAG, "是否裁剪:" + media.isCut());
+                                    Log.i(TAG, "裁剪:" + media.getCutPath());
+                                    Log.i(TAG, "是否开启原图:" + media.isOriginal());
+                                    Log.i(TAG, "原图路径:" + media.getOriginalPath());
+                                    Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
+                                }
+                                mAdapter.setList(result);
+                                mAdapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onCancel() {
+                                Log.i(TAG, "PictureSelector Cancel");
+                            }
+                        });
             } else {
                 // 单独拍照
                 PictureSelector.create(MainActivity.this)
@@ -550,24 +559,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.videoQuality()// 视频录制质量 0 or 1
                         //.videoSecond()////显示多少秒以内的视频or音频也可适用
                         .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
-//                        .forResult(result -> {
-//                            for (LocalMedia media : result) {
-//                                Log.i(TAG, "是否压缩:" + media.isCompressed());
-//                                Log.i(TAG, "压缩:" + media.getCompressPath());
-//                                Log.i(TAG, "原图:" + media.getPath());
-//                                Log.i(TAG, "是否裁剪:" + media.isCut());
-//                                Log.i(TAG, "裁剪:" + media.getCutPath());
-//                                Log.i(TAG, "是否开启原图:" + media.isOriginal());
-//                                Log.i(TAG, "原图路径:" + media.getOriginalPath());
-//                                Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
+//                        .forResult(new OnResultCallbackListener() {
+//                            @Override
+//                            public void onResult(List<LocalMedia> result) {
+//                                for (LocalMedia media : result) {
+//                                    Log.i(TAG, "是否压缩:" + media.isCompressed());
+//                                    Log.i(TAG, "压缩:" + media.getCompressPath());
+//                                    Log.i(TAG, "原图:" + media.getPath());
+//                                    Log.i(TAG, "是否裁剪:" + media.isCut());
+//                                    Log.i(TAG, "裁剪:" + media.getCutPath());
+//                                    Log.i(TAG, "是否开启原图:" + media.isOriginal());
+//                                    Log.i(TAG, "原图路径:" + media.getOriginalPath());
+//                                    Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
+//                                }
+//                                mAdapter.setList(result);
+//                                mAdapter.notifyDataSetChanged();
 //                            }
-//                            mAdapter.setList(result);
-//                            mAdapter.notifyDataSetChanged();
+//
+//                            @Override
+//                            public void onCancel() {
+//                                Log.i(TAG, "PictureSelector Cancel");
+//                            }
 //                        });
-
             }
         }
-
     };
 
     /**

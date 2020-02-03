@@ -186,7 +186,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isNotPreviewDownload = false;
         openClickSound = false;
         isFallbackVersion = false;
-        isFallbackVersion2 = false;
+        isFallbackVersion2 = true;
         isFallbackVersion3 = true;
         enableCrop = false;
         isWeChatStyle = false;

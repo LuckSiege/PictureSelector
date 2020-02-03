@@ -16,4 +16,9 @@ public interface OnResultCallbackListener {
      * @param result
      */
     void onResult(List<LocalMedia> result);
+
+    /**
+     * Cancel
+     */
+    void onCancel();
 }

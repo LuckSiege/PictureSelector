@@ -126,6 +126,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     protected void initCompleteText(int startCount) {
 
     }
+
     /**
      * Set CompleteText
      */
@@ -176,7 +177,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
      * 设置屏幕方向
      */
     protected void setNewRequestedOrientation() {
-        if (config != null) {
+        if (config != null && !config.camera) {
             setRequestedOrientation(config.requestedOrientation);
         }
     }

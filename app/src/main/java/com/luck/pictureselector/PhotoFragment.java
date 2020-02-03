@@ -41,6 +41,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.language.LanguageConfig;
+import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
@@ -472,30 +473,38 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         //.videoSecond()//显示多少秒以内的视频or音频也可适用
                         //.recordVideoSecond()//录制视频秒数 默认60s
                         //.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径  注：已废弃
-                        .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
-//                        .forResult(result -> {
-//                            // 图片选择结果回调
-//                            selectList = result;
-//                            // 例如 LocalMedia 里面返回五种path
-//                            // 1.media.getPath(); 为原图path
-//                            // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
-//                            // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
-//                            // 4.media.getOriginalPath()); media.isOriginal());为true时此字段才有值
-//                            // 5.media.getAndroidQToPath();为Android Q版本特有返回的字段，此字段有值就用来做上传使用
-//                            // 如果同时开启裁剪和压缩，则取压缩路径为准因为是先裁剪后压缩
-//                            for (LocalMedia media : selectList) {
-//                                Log.i(TAG, "是否压缩:" + media.isCompressed());
-//                                Log.i(TAG, "压缩:" + media.getCompressPath());
-//                                Log.i(TAG, "原图:" + media.getPath());
-//                                Log.i(TAG, "是否裁剪:" + media.isCut());
-//                                Log.i(TAG, "裁剪:" + media.getCutPath());
-//                                Log.i(TAG, "是否开启原图:" + media.isOriginal());
-//                                Log.i(TAG, "原图路径:" + media.getOriginalPath());
-//                                Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
-//                            }
-//                            mAdapter.setList(selectList);
-//                            mAdapter.notifyDataSetChanged();
-//                        });
+                        //.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
+                        .forResult(new OnResultCallbackListener() {
+                            @Override
+                            public void onResult(List<LocalMedia> result) {
+                                // 图片选择结果回调
+                                selectList = result;
+                                // 例如 LocalMedia 里面返回五种path
+                                // 1.media.getPath(); 为原图path
+                                // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
+                                // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
+                                // 4.media.getOriginalPath()); media.isOriginal());为true时此字段才有值
+                                // 5.media.getAndroidQToPath();为Android Q版本特有返回的字段，此字段有值就用来做上传使用
+                                // 如果同时开启裁剪和压缩，则取压缩路径为准因为是先裁剪后压缩
+                                for (LocalMedia media : selectList) {
+                                    Log.i(TAG, "是否压缩:" + media.isCompressed());
+                                    Log.i(TAG, "压缩:" + media.getCompressPath());
+                                    Log.i(TAG, "原图:" + media.getPath());
+                                    Log.i(TAG, "是否裁剪:" + media.isCut());
+                                    Log.i(TAG, "裁剪:" + media.getCutPath());
+                                    Log.i(TAG, "是否开启原图:" + media.isOriginal());
+                                    Log.i(TAG, "原图路径:" + media.getOriginalPath());
+                                    Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
+                                }
+                                mAdapter.setList(selectList);
+                                mAdapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onCancel() {
+                                Log.i(TAG, "PictureSelector Cancel");
+                            }
+                        });
 
             } else {
                 // 单独拍照
@@ -545,30 +554,38 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         //.scaleEnabled()// 裁剪是否可放大缩小图片
                         //.videoQuality()// 视频录制质量 0 or 1
                         //.videoSecond()////显示多少秒以内的视频or音频也可适用
-                        .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
-//                        .forResult(result -> {
-//                            // 图片选择结果回调
-//                            selectList = result;
-//                            // 例如 LocalMedia 里面返回五种path
-//                            // 1.media.getPath(); 为原图path
-//                            // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
-//                            // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
-//                            // 4.media.getOriginalPath()); media.isOriginal());为true时此字段才有值
-//                            // 5.media.getAndroidQToPath();为Android Q版本特有返回的字段，此字段有值就用来做上传使用
-//                            // 如果同时开启裁剪和压缩，则取压缩路径为准因为是先裁剪后压缩
-//                            for (LocalMedia media : selectList) {
-//                                Log.i(TAG, "是否压缩:" + media.isCompressed());
-//                                Log.i(TAG, "压缩:" + media.getCompressPath());
-//                                Log.i(TAG, "原图:" + media.getPath());
-//                                Log.i(TAG, "是否裁剪:" + media.isCut());
-//                                Log.i(TAG, "裁剪:" + media.getCutPath());
-//                                Log.i(TAG, "是否开启原图:" + media.isOriginal());
-//                                Log.i(TAG, "原图路径:" + media.getOriginalPath());
-//                                Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
-//                            }
-//                            mAdapter.setList(selectList);
-//                            mAdapter.notifyDataSetChanged();
-//                        });
+                        //.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
+                        .forResult(new OnResultCallbackListener() {
+                            @Override
+                            public void onResult(List<LocalMedia> result) {
+                                // 图片选择结果回调
+                                selectList = result;
+                                // 例如 LocalMedia 里面返回五种path
+                                // 1.media.getPath(); 为原图path
+                                // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
+                                // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
+                                // 4.media.getOriginalPath()); media.isOriginal());为true时此字段才有值
+                                // 5.media.getAndroidQToPath();为Android Q版本特有返回的字段，此字段有值就用来做上传使用
+                                // 如果同时开启裁剪和压缩，则取压缩路径为准因为是先裁剪后压缩
+                                for (LocalMedia media : selectList) {
+                                    Log.i(TAG, "是否压缩:" + media.isCompressed());
+                                    Log.i(TAG, "压缩:" + media.getCompressPath());
+                                    Log.i(TAG, "原图:" + media.getPath());
+                                    Log.i(TAG, "是否裁剪:" + media.isCut());
+                                    Log.i(TAG, "裁剪:" + media.getCutPath());
+                                    Log.i(TAG, "是否开启原图:" + media.isOriginal());
+                                    Log.i(TAG, "原图路径:" + media.getOriginalPath());
+                                    Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
+                                }
+                                mAdapter.setList(selectList);
+                                mAdapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onCancel() {
+                                Log.i(TAG, "PictureSelector Cancel");
+                            }
+                        });
             }
         }
 

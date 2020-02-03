@@ -1,7 +1,6 @@
 package com.luck.picture.lib;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
@@ -10,7 +9,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.View;
@@ -69,8 +67,6 @@ import java.util.List;
 public class PictureSelectorActivity extends PictureBaseActivity implements View.OnClickListener,
         PictureAlbumDirectoryAdapter.OnItemClickListener,
         PictureImageGridAdapter.OnPhotoSelectChangedListener, PhotoItemSelectedDialog.OnItemClickListener {
-    protected static final int SHOW_DIALOG = 0;
-    protected static final int DISMISS_DIALOG = 1;
     protected ImageView mIvPictureLeftBack;
     protected ImageView mIvArrow;
     protected View titleViewBg;
@@ -94,23 +90,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected int oldCurrentListSize;
     protected int audioH;
     protected boolean isFirstEnterActivity = false;
-    @SuppressLint("HandlerLeak")
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case SHOW_DIALOG:
-                    showPleaseDialog();
-                    break;
-                case DISMISS_DIALOG:
-                    dismissDialog();
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -401,14 +380,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * get LocalMedia s
      */
     protected void readLocalMedia() {
-        mHandler.sendEmptyMessage(SHOW_DIALOG);
         if (mediaLoader == null) {
             mediaLoader = new LocalMediaLoader(this, config);
         }
+        showPleaseDialog();
         mediaLoader.loadAllMedia();
         mediaLoader.setCompleteListener(new LocalMediaLoader.LocalMediaLoadListener() {
             @Override
             public void loadComplete(List<LocalMediaFolder> folders) {
+                dismissDialog();
                 if (folders.size() > 0) {
                     foldersList = folders;
                     LocalMediaFolder folder = folders.get(0);
@@ -452,12 +432,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     }
                     mTvEmpty.setVisibility(isEmpty ? View.INVISIBLE : View.VISIBLE);
                 }
-                mHandler.sendEmptyMessage(DISMISS_DIALOG);
             }
 
             @Override
             public void loadMediaDataError() {
-                mHandler.sendEmptyMessage(DISMISS_DIALOG);
+                dismissDialog();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     mTvEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds
                             (0, R.drawable.picture_icon_data_error, 0, 0);
@@ -530,7 +509,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (folderWindow != null && folderWindow.isShowing()) {
                 folderWindow.dismiss();
             } else {
-                closeActivity();
+                onBackPressed();
             }
         }
         if (id == R.id.picture_title || id == R.id.ivArrow) {
@@ -1666,6 +1645,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if (config != null && config.listener != null) {
+            config.listener.onCancel();
+        }
         closeActivity();
     }
 

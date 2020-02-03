@@ -226,14 +226,15 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                 // 重置一片内存区域 不然在其他地方添加也影响这里的数量
                 mGalleryAdapter.setNewData(selectImages);
             }
-            if (config.style.pictureCompleteTextColor != 0) {
-                mPictureSendView.setTextColor(config.style.pictureCompleteTextColor);
+            if (config.style != null) {
+                if (config.style.pictureCompleteTextColor != 0) {
+                    mPictureSendView.setTextColor(config.style.pictureCompleteTextColor);
+                }
+                if (config.style.pictureCompleteBackgroundStyle != 0) {
+                    mPictureSendView.setBackgroundResource(config.style.pictureCompleteBackgroundStyle);
+                }
             } else {
                 mPictureSendView.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_white));
-            }
-            if (config.style.pictureCompleteBackgroundStyle != 0) {
-                mPictureSendView.setBackgroundResource(config.style.pictureCompleteBackgroundStyle);
-            } else {
                 mPictureSendView.setBackgroundResource(R.drawable.picture_send_button_bg);
             }
         } else {
