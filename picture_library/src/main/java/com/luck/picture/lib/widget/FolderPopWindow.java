@@ -4,10 +4,6 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
-
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.PictureAlbumDirectoryAdapter;
@@ -36,6 +36,7 @@ import java.util.List;
 public class FolderPopWindow extends PopupWindow {
     private Context context;
     private View window;
+    private View rootView;
     private RecyclerView recyclerView;
     private PictureAlbumDirectoryAdapter adapter;
     private boolean isDismiss = false;
@@ -94,8 +95,11 @@ public class FolderPopWindow extends PopupWindow {
         recyclerView = window.findViewById(R.id.folder_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);
-        window.findViewById(R.id.rootView).setOnClickListener(v -> dismiss());
+        rootView = window.findViewById(R.id.rootView);
         rootViewBg.setOnClickListener(v -> dismiss());
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            rootView.setOnClickListener(v -> dismiss());
+        }
     }
 
     public void bindFolder(List<LocalMediaFolder> folders) {
