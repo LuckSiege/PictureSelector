@@ -56,4 +56,7 @@
     <string name="picture_choose_max_seconds">Vous pouvez sélectionner la vidéo dans un maximum de %1$ds</string>
     <string name="picture_choose_min_seconds">Impossible de sélectionner une vidéo en dessous de %1$ds</string>
     <string name="picture_choose_limit_seconds">Vous ne pouvez sélectionner que les vidéos dans les %1$ds à %2$ds</string>
+
+    <string name="picture_photo_pictures">Clic photo</string>
+    <string name="picture_photo_recording">Imagerie</string>
 </resources>

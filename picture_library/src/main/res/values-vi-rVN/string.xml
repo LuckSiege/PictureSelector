@@ -56,5 +56,6 @@
     <string name="picture_choose_max_seconds">Bạn chỉ có thể chọn ảnh trong vòng %1$ds nhất</string>
     <string name="picture_choose_min_seconds">Không thể chọn video dưới %1$ds giây</string>
     <string name="picture_choose_limit_seconds"> Chỉ có thể chọn ảnh giữa %1$ds và %2$ds giây</string>
-
+    <string name="picture_photo_pictures">Ảnh</string>
+    <string name="picture_photo_recording">Máy ảnh dài</string>
 </resources>

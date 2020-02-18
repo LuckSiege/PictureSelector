@@ -182,7 +182,7 @@ public class CaptureButton extends View {
                 break;
             // ---CodeReview---当内外圆动画未结束时已经是长按状态 但还没有置为STATE_RECORDERING时 应该也要结束录制  此处是一个bug
             case STATE_LONG_PRESS:
-            //当前是长按状态
+                //当前是长按状态
             case STATE_RECORDERING:
                 timer.cancel(); //停止计时器
                 recordEnd();    //录制结束
@@ -337,7 +337,6 @@ public class CaptureButton extends View {
     }
 
 
-
     //设置最长录制时间
     public void setDuration(int duration) {
         this.duration = duration;
@@ -357,6 +356,11 @@ public class CaptureButton extends View {
     //设置按钮功能（拍照和录像）
     public void setButtonFeatures(int state) {
         this.button_state = state;
+    }
+
+    //设置按钮功能（拍照和录像）
+    public int getButtonFeatures() {
+        return button_state;
     }
 
     //是否空闲状态

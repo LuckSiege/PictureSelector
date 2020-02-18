@@ -20,6 +20,9 @@ import com.luck.picture.lib.camera.listener.CaptureListener;
 import com.luck.picture.lib.camera.listener.ClickListener;
 import com.luck.picture.lib.camera.listener.TypeListener;
 
+import static com.luck.picture.lib.camera.CustomCameraView.BUTTON_STATE_ONLY_CAPTURE;
+import static com.luck.picture.lib.camera.CustomCameraView.BUTTON_STATE_ONLY_RECORDER;
+
 /**
  * =====================================
  * 作    者: 陈嘉桐 445263848@qq.com
@@ -247,7 +250,9 @@ public class CaptureLayout extends FrameLayout {
         LayoutParams txt_param = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         txt_param.gravity = Gravity.CENTER_HORIZONTAL;
         txt_param.setMargins(0, 0, 0, 0);
-        txt_tip.setText(getContext().getString(R.string.picture_photo_camera));
+
+        txt_tip.setText(getCaptureTip());
+
         txt_tip.setTextColor(0xFFFFFFFF);
         txt_tip.setGravity(Gravity.CENTER);
         txt_tip.setLayoutParams(txt_param);
@@ -262,12 +267,24 @@ public class CaptureLayout extends FrameLayout {
 
     }
 
+    private String getCaptureTip() {
+        int buttonFeatures = btn_capture.getButtonFeatures();
+        switch (buttonFeatures) {
+            case BUTTON_STATE_ONLY_CAPTURE:
+                return getContext().getString(R.string.picture_photo_pictures);
+            case BUTTON_STATE_ONLY_RECORDER:
+                return getContext().getString(R.string.picture_photo_recording);
+            default:
+                return getContext().getString(R.string.picture_photo_camera);
+        }
+    }
+
     public void resetCaptureLayout() {
         btn_capture.resetState();
         btn_cancel.setVisibility(GONE);
         btn_confirm.setVisibility(GONE);
         btn_capture.setVisibility(VISIBLE);
-        txt_tip.setText(getContext().getString(R.string.picture_photo_camera));
+        txt_tip.setText(getCaptureTip());
         txt_tip.setVisibility(View.VISIBLE);
         if (this.iconLeft != 0)
             iv_custom_left.setVisibility(VISIBLE);
@@ -289,7 +306,7 @@ public class CaptureLayout extends FrameLayout {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                txt_tip.setText(getContext().getString(R.string.picture_photo_camera));
+                txt_tip.setText(getCaptureTip());
                 txt_tip.setAlpha(1f);
             }
         });
@@ -307,6 +324,7 @@ public class CaptureLayout extends FrameLayout {
 
     public void setButtonFeatures(int state) {
         btn_capture.setButtonFeatures(state);
+        txt_tip.setText(getCaptureTip());
     }
 
     public void setTip(String tip) {
