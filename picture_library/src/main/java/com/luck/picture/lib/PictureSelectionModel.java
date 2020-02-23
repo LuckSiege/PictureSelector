@@ -289,7 +289,7 @@ public class PictureSelectionModel {
     }
 
     /**
-     * @param maxSelectNum PictureSelector max selection
+     * @param maxSelectNum Selector max selection
      * @return
      */
     public PictureSelectionModel maxSelectNum(int maxSelectNum) {
@@ -298,11 +298,29 @@ public class PictureSelectionModel {
     }
 
     /**
-     * @param minSelectNum PictureSelector min selection
+     * @param minSelectNum Selector min selection
      * @return
      */
     public PictureSelectionModel minSelectNum(int minSelectNum) {
         selectionConfig.minSelectNum = minSelectNum;
+        return this;
+    }
+
+    /**
+     * @param maxSelectNum PictureSelector max selection
+     * @return
+     */
+    public PictureSelectionModel maxPictureSelectNum(int maxSelectNum) {
+        selectionConfig.maxPictureSelectNum = maxSelectNum;
+        return this;
+    }
+
+    /**
+     * @param minSelectNum PictureSelector min selection
+     * @return
+     */
+    public PictureSelectionModel minPictureSelectNum(int minSelectNum) {
+        selectionConfig.minPictureSelectNum = minSelectNum;
         return this;
     }
 

@@ -276,16 +276,16 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                 boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
                 if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
                     mPictureSendView.setText(String.format(config.style.pictureCompleteText,
-                            selectImages.size(), config.maxVideoSelectNum + config.maxSelectNum));
+                            selectImages.size(), config.maxVideoSelectNum + config.maxPictureSelectNum));
                 } else {
                     mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
                             ? config.style.pictureUnCompleteText : getString(R.string.picture_send_num, selectImages.size(),
-                            config.maxVideoSelectNum + config.maxSelectNum));
+                            config.maxVideoSelectNum + config.maxPictureSelectNum));
                 }
             }
         } else {
             String mimeType = selectImages.get(0).getMimeType();
-            int maxSize = PictureMimeType.eqVideo(mimeType) ? config.maxVideoSelectNum : config.maxSelectNum;
+            int maxSize = PictureMimeType.eqVideo(mimeType) ? config.maxVideoSelectNum : config.maxPictureSelectNum;
             if (config.selectionMode == PictureConfig.SINGLE) {
                 if (startCount <= 0) {
                     mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)

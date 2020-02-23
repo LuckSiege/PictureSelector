@@ -362,14 +362,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 // 未选择任何图片
                 mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
                         ? config.style.pictureUnCompleteText : getString(R.string.picture_done_front_num,
-                        startCount, config.maxVideoSelectNum + config.maxSelectNum));
+                        startCount, config.maxVideoSelectNum + config.maxPictureSelectNum));
             } else {
                 // 已选择
                 if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
-                    mTvPictureOk.setText(String.format(config.style.pictureCompleteText, startCount, config.maxVideoSelectNum + config.maxSelectNum));
+                    mTvPictureOk.setText(String.format(config.style.pictureCompleteText, startCount, config.maxVideoSelectNum + config.maxPictureSelectNum));
                 } else {
                     mTvPictureOk.setText(getString(R.string.picture_done_front_num,
-                            startCount, config.maxVideoSelectNum + config.maxSelectNum));
+                            startCount, config.maxVideoSelectNum + config.maxPictureSelectNum));
                 }
             }
         }
@@ -580,9 +580,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
             }
             if (config.selectionMode == PictureConfig.MULTIPLE) {
-                if (config.minSelectNum > 0) {
-                    if (imageSize < config.minSelectNum) {
-                        ToastUtils.s(getContext(), getString(R.string.picture_min_img_num, config.minSelectNum));
+                if (config.minPictureSelectNum > 0) {
+                    if (imageSize < config.minPictureSelectNum) {
+                        ToastUtils.s(getContext(), getString(R.string.picture_min_img_num, config.minPictureSelectNum));
                         return;
                     }
                 }
@@ -595,8 +595,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
         } else {
             if (config.selectionMode == PictureConfig.MULTIPLE) {
-                if (PictureMimeType.eqImage(mimeType) && config.minSelectNum > 0 && size < config.minSelectNum) {
-                    String str = getString(R.string.picture_min_img_num, config.minSelectNum);
+                if (PictureMimeType.eqImage(mimeType) && config.minPictureSelectNum > 0 && size < config.minPictureSelectNum) {
+                    String str = getString(R.string.picture_min_img_num, config.minPictureSelectNum);
                     ToastUtils.s(getContext(), str);
                     return;
                 }
@@ -611,8 +611,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         // 如果没选并且设置了可以空返回则直接回到结果页
         if (config.returnEmpty && size == 0) {
             if (config.selectionMode == PictureConfig.MULTIPLE) {
-                if (config.minSelectNum > 0 && size < config.minSelectNum) {
-                    String str = getString(R.string.picture_min_img_num, config.minSelectNum);
+                if (config.minPictureSelectNum > 0 && size < config.minPictureSelectNum) {
+                    String str = getString(R.string.picture_min_img_num, config.minPictureSelectNum);
                     ToastUtils.s(getContext(), str);
                     return;
                 }
@@ -1375,12 +1375,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             }
                         } else {
                             // 图片还可选
-                            if (imageSize < config.maxSelectNum) {
+                            if (imageSize < config.maxPictureSelectNum) {
                                 selectedImages.add(media);
                                 mAdapter.bindSelectImages(selectedImages);
                             } else {
                                 ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), media.getMimeType(),
-                                        config.maxSelectNum));
+                                        config.maxPictureSelectNum));
                             }
                         }
 
@@ -1400,17 +1400,17 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             }
                         } else {
                             // 没有到最大选择量 才做默认选中刚拍好的
-                            if (count < config.maxSelectNum) {
+                            if (count < config.maxPictureSelectNum) {
                                 // 类型相同或还没有选中才加进选中集合中
                                 if (mimeTypeSame || count == 0) {
-                                    if (count < config.maxSelectNum) {
+                                    if (count < config.maxPictureSelectNum) {
                                         selectedImages.add(media);
                                         mAdapter.bindSelectImages(selectedImages);
                                     }
                                 }
                             } else {
                                 ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), mimeType,
-                                        config.maxSelectNum));
+                                        config.maxPictureSelectNum));
                             }
                         }
                     }

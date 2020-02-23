@@ -8,6 +8,7 @@
     <string name="picture_min_video_num">视频最低选择不能少于%1$s个</string>
     <string name="picture_message_video_max_num">你最多可以选择%1$s个视频</string>
     <string name="picture_message_audio_max_num">你最多可以选择%1$s个音频</string>
+    <string name="picture_message_video_or_image_max_num">你最多可以选择%1$s个视频/图片</string>
     <string name="picture_preview">预览</string>
     <string name="picture_please">请稍候...</string>
     <string name="picture_done_front_num">%1$d/%2$d 完成</string>

@@ -197,14 +197,14 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 // 未选择任何图片
                 mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
                         ? config.style.pictureUnCompleteText : getString(R.string.picture_done_front_num,
-                        startCount, config.maxVideoSelectNum + config.maxSelectNum));
+                        startCount, config.maxVideoSelectNum + config.maxPictureSelectNum));
             } else {
                 // 已选择
                 if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
-                    mTvPictureOk.setText(String.format(config.style.pictureCompleteText, startCount, config.maxVideoSelectNum + config.maxSelectNum));
+                    mTvPictureOk.setText(String.format(config.style.pictureCompleteText, startCount, config.maxVideoSelectNum + config.maxPictureSelectNum));
                 } else {
                     mTvPictureOk.setText(getString(R.string.picture_done_front_num,
-                            startCount, config.maxVideoSelectNum + config.maxSelectNum));
+                            startCount, config.maxVideoSelectNum + config.maxPictureSelectNum));
                 }
             }
         }
@@ -496,8 +496,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         return;
                     }
                 }
-                if (PictureMimeType.eqImage(image.getMimeType()) && imageSize >= config.maxSelectNum && !check.isSelected()) {
-                    ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), image.getMimeType(), config.maxSelectNum));
+                if (PictureMimeType.eqImage(image.getMimeType()) && imageSize >= config.maxPictureSelectNum && !check.isSelected()) {
+                    ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), image.getMimeType(), config.maxPictureSelectNum));
                     return;
                 }
             } else {
@@ -530,8 +530,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         return;
                     }
                 } else {
-                    if (currentSize >= config.maxSelectNum && !check.isSelected()) {
-                        ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), mimeType, config.maxSelectNum));
+                    if (currentSize >= config.maxPictureSelectNum && !check.isSelected()) {
+                        ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), mimeType, config.maxPictureSelectNum));
                         return;
                     }
                     if (PictureMimeType.eqVideo(image.getMimeType())) {
@@ -623,9 +623,9 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 }
             }
             if (config.selectionMode == PictureConfig.MULTIPLE) {
-                if (config.minSelectNum > 0) {
-                    if (imageSize < config.minSelectNum) {
-                        ToastUtils.s(getContext(), getString(R.string.picture_min_img_num, config.minSelectNum));
+                if (config.minPictureSelectNum > 0) {
+                    if (imageSize < config.minPictureSelectNum) {
+                        ToastUtils.s(getContext(), getString(R.string.picture_min_img_num, config.minPictureSelectNum));
                         return;
                     }
                 }
@@ -639,8 +639,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         } else {
             // 单选模式(同类型)
             if (config.selectionMode == PictureConfig.MULTIPLE) {
-                if (PictureMimeType.eqImage(mimeType) && config.minSelectNum > 0 && size < config.minSelectNum) {
-                    String str = getString(R.string.picture_min_img_num, config.minSelectNum);
+                if (PictureMimeType.eqImage(mimeType) && config.minPictureSelectNum > 0 && size < config.minPictureSelectNum) {
+                    String str = getString(R.string.picture_min_img_num, config.minPictureSelectNum);
                     ToastUtils.s(getContext(), str);
                     return;
                 }

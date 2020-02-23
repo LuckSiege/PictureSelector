@@ -48,6 +48,8 @@ public final class PictureSelectionConfig implements Parcelable {
     public int selectionMode;
     public int maxSelectNum;
     public int minSelectNum;
+    public int maxPictureSelectNum;
+    public int minPictureSelectNum;
     public int maxVideoSelectNum;
     public int minVideoSelectNum;
     public int videoQuality;
@@ -150,6 +152,8 @@ public final class PictureSelectionConfig implements Parcelable {
         selectionMode = PictureConfig.MULTIPLE;
         maxSelectNum = 9;
         minSelectNum = 0;
+        maxPictureSelectNum = 9;
+        minPictureSelectNum = 0;
         maxVideoSelectNum = 1;
         minVideoSelectNum = 0;
         videoQuality = 1;
@@ -285,6 +289,8 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(this.selectionMode);
         dest.writeInt(this.maxSelectNum);
         dest.writeInt(this.minSelectNum);
+        dest.writeInt(this.maxPictureSelectNum);
+        dest.writeInt(this.minPictureSelectNum);
         dest.writeInt(this.maxVideoSelectNum);
         dest.writeInt(this.minVideoSelectNum);
         dest.writeInt(this.videoQuality);
@@ -379,6 +385,8 @@ public final class PictureSelectionConfig implements Parcelable {
         this.selectionMode = in.readInt();
         this.maxSelectNum = in.readInt();
         this.minSelectNum = in.readInt();
+        this.maxPictureSelectNum = in.readInt();
+        this.minPictureSelectNum = in.readInt();
         this.maxVideoSelectNum = in.readInt();
         this.minVideoSelectNum = in.readInt();
         this.videoQuality = in.readInt();
