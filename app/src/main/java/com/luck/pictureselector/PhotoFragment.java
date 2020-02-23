@@ -416,8 +416,8 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
                         .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
                         .isWithVideoImage(true)// 图片和视频是否可以同选
-                        .maxSelectNum(maxSelectNum)// 最大图片选择数量
-                        //.minSelectNum(1)// 最小选择数量
+                        .maxPictureSelectNum(maxSelectNum)// 最大图片选择数量
+                        //.minPictureSelectNum(1)// 最小选择数量
                         //.minVideoSelectNum(1)// 视频最小选择数量，如果没有单独设置的需求则可以不设置，同用minSelectNum字段
                         .maxVideoSelectNum(1) // 视频最大选择数量，如果没有单独设置的需求则可以不设置，同用maxSelectNum字段
                         .imageSpanCount(4)// 每行显示个数
@@ -515,8 +515,8 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
                         .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
                         .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
-                        .maxSelectNum(maxSelectNum)// 最大图片选择数量
-                        .minSelectNum(1)// 最小选择数量
+                        .maxPictureSelectNum(maxSelectNum)// 最大图片选择数量
+                        .minPictureSelectNum(1)// 最小选择数量
                         .isUseCustomCamera(cb_custom_camera.isChecked())// 是否使用自定义相机
                         //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
                         .selectionMode(cb_choose_mode.isChecked() ?

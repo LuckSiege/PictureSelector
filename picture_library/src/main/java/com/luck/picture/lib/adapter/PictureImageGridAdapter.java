@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +34,7 @@ import com.luck.picture.lib.tools.VoiceUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -329,9 +331,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
             if (PictureMimeType.eqVideo(image.getMimeType())) {
                 if (config.maxVideoSelectNum > 0
-                        && videoSize >= config.maxVideoSelectNum && !isChecked) {
+                        && size >= config.maxSelectNum && !isChecked) {
                     // 如果选择的是视频
-                    ToastUtils.s(context, StringUtils.getMsg(context, image.getMimeType(), config.maxVideoSelectNum));
+                    Toast.makeText(context, String.format(Locale.getDefault(), context.getString(
+                            R.string.picture_message_video_or_image_max_num), config.maxSelectNum),
+                            Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -349,8 +353,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     return;
                 }
             }
-            if (PictureMimeType.eqImage(image.getMimeType()) && imageSize >= config.maxSelectNum && !isChecked) {
-                ToastUtils.s(context, StringUtils.getMsg(context, image.getMimeType(), config.maxSelectNum));
+            if (PictureMimeType.eqImage(image.getMimeType()) && size >= config.maxSelectNum && !isChecked) {
+                Toast.makeText(context, String.format(Locale.getDefault(), context.getString(
+                        R.string.picture_message_video_or_image_max_num), config.maxSelectNum),
+                        Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -385,8 +391,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     return;
                 }
             } else {
-                if (size >= config.maxSelectNum && !isChecked) {
-                    ToastUtils.s(context, StringUtils.getMsg(context, mimeType, config.maxSelectNum));
+                if (size >= config.maxPictureSelectNum && !isChecked) {
+                    ToastUtils.s(context, StringUtils.getMsg(context, mimeType, config.maxPictureSelectNum));
                     return;
                 }
                 if (PictureMimeType.eqVideo(image.getMimeType())) {
