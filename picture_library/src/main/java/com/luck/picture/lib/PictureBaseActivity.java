@@ -144,7 +144,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         if (!config.camera) {
             setTheme(config.themeStyleId);
         }
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState == null ? new Bundle() : savedInstanceState);
         if (isRequestedOrientation()) {
             setNewRequestedOrientation();
         }
