@@ -228,11 +228,17 @@ public class CustomCameraView extends RelativeLayout {
             @Override
             public void confirm() {
                 if (mCameraView.getCaptureMode() == androidx.camera.view.CameraView.CaptureMode.VIDEO) {
+                    if (mVideoFile == null) {
+                        return;
+                    }
                     stopVideoPlay();
-                    if (mCameraListener != null) {
+                    if (mCameraListener != null || !mVideoFile.exists()) {
                         mCameraListener.onRecordSuccess(mVideoFile);
                     }
                 } else {
+                    if (mPhotoFile == null || !mPhotoFile.exists()) {
+                        return;
+                    }
                     mImagePreview.setVisibility(INVISIBLE);
                     if (mCameraListener != null) {
                         mCameraListener.onPictureSuccess(mPhotoFile);
