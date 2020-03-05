@@ -19,7 +19,7 @@
         <CheckBox
             android:id="@+id/cb_original"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:background="@color/picture_color_transparent"
             android:button="@color/picture_color_transparent"
