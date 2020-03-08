@@ -151,9 +151,13 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
             media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
             media.setAndroidQToPath(cutPath);
+            media.setSize(new File(TextUtils.isEmpty(cutPath)
+                    ? media.getAndroidQToPath() : cutPath).length());
         } else {
             // 拍照产生一个临时id
             media.setId(System.currentTimeMillis());
+            media.setSize(new File(TextUtils.isEmpty(cutPath)
+                    ? media.getPath() : cutPath).length());
         }
         media.setCut(true);
         media.setCutPath(cutPath);
