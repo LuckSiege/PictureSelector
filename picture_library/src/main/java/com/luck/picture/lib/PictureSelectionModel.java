@@ -311,7 +311,7 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel maxVideoSelectNum(int maxVideoSelectNum) {
-        selectionConfig.maxVideoSelectNum = maxVideoSelectNum;
+        selectionConfig.maxVideoSelectNum = selectionConfig.isWithVideoImage ? maxVideoSelectNum : 0;
         return this;
     }
 
