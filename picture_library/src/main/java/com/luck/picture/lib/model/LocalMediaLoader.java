@@ -18,6 +18,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
+import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.ValueOf;
 
@@ -166,7 +167,17 @@ public class LocalMediaLoader implements Handler.Callback {
 
                             String mimeType = data.getString
                                     (data.getColumnIndexOrThrow(PROJECTION[2]));
-
+                            if (mimeType.endsWith("image/*")) {
+                                if (path.startsWith("content://")) {
+                                    mimeType = PictureMimeType.getImageMimeType(PictureFileUtils.getPath(mContext, Uri.parse(path)));
+                                }
+                                if (!config.isGif) {
+                                    boolean isGif = PictureMimeType.isGif(mimeType);
+                                    if (isGif) {
+                                        continue;
+                                    }
+                                }
+                            }
                             int width = data.getInt
                                     (data.getColumnIndexOrThrow(PROJECTION[3]));
 

@@ -1552,8 +1552,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 media.setWidth(c.getImageWidth());
                 media.setHeight(c.getImageHeight());
                 media.setAndroidQToPath(isAndroidQ ? c.getCutPath() : media.getAndroidQToPath());
-                media.setSize(new File(TextUtils.isEmpty(c.getCutPath())
-                        ? isAndroidQ ? media.getAndroidQToPath() : c.getPath() : c.getCutPath()).length());
+                media.setSize(!TextUtils.isEmpty(c.getCutPath()) ? new File(c.getCutPath()).length() : media.getSize());
             }
             handlerResult(result);
         } else {
@@ -1572,8 +1571,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 media.setDuration(c.getDuration());
                 media.setChooseModel(config.chooseMode);
                 media.setAndroidQToPath(isAndroidQ ? c.getCutPath() : null);
-                media.setSize(new File(TextUtils.isEmpty(c.getCutPath())
-                        ? isAndroidQ ? media.getAndroidQToPath() : c.getPath() : c.getCutPath()).length());
+                if (!TextUtils.isEmpty(c.getCutPath())) {
+                    media.setSize(new File(c.getCutPath()).length());
+                } else {
+                    if (SdkVersionUtils.checkedAndroid_Q() && c.getPath().startsWith("content://")) {
+                        String path = PictureFileUtils.getPath(this, Uri.parse(c.getPath()));
+                        media.setSize(new File(path).length());
+                    } else {
+                        media.setSize(new File(c.getPath()).length());
+                    }
+                }
                 result.add(media);
             }
             handlerResult(result);

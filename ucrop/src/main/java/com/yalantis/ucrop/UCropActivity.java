@@ -42,6 +42,7 @@ import androidx.transition.TransitionManager;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.immersion.CropImmersiveManage;
 import com.yalantis.ucrop.model.AspectRatio;
+import com.yalantis.ucrop.util.FileUtils;
 import com.yalantis.ucrop.util.MimeType;
 import com.yalantis.ucrop.util.ScreenUtils;
 import com.yalantis.ucrop.util.SelectedStateListDrawable;
@@ -300,6 +301,10 @@ public class UCropActivity extends AppCompatActivity {
             return !MimeType.isGifForSuffix(lastImgType);
         } else {
             String mimeType = MimeType.getMimeTypeFromMediaContentUri(this, inputUri);
+            if (mimeType.endsWith("image/*")) {
+                String path = FileUtils.getPath(this, inputUri);
+                mimeType = MimeType.getImageMimeType(path);
+            }
             return !MimeType.isGif(mimeType);
         }
     }
