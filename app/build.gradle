@@ -30,6 +30,6 @@ dependencies {
     implementation "androidx.appcompat:appcompat:${cfgs.version_appcompat}"
     //noinspection GradleCompatible
     implementation "androidx.recyclerview:recyclerview:${cfgs.version_recyclerview}"
-    implementation 'com.github.bumptech.glide:glide:4.10.0'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.1'
 }
