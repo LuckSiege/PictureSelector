@@ -246,6 +246,10 @@ public class LocalMediaLoader implements Handler.Callback {
                     mHandler.sendMessage(mHandler.obtainMessage(MSG_QUERY_MEDIA_ERROR));
                 }
                 e.printStackTrace();
+            } finally {
+                if (data != null && !data.isClosed()) {
+                    data.close();
+                }
             }
         });
     }
