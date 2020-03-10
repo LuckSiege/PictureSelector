@@ -189,10 +189,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     @Override
     public void onEnterAnimationComplete() {
         super.onEnterAnimationComplete();
-        if (!config.isFallbackVersion2 || Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            if (!isFirstEnterActivity) {
-                loadAllMediaData();
-                isFirstEnterActivity = true;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            if (!config.isFallbackVersion2) {
+                if (!isFirstEnterActivity) {
+                    loadAllMediaData();
+                    isFirstEnterActivity = true;
+                }
             }
         }
     }
