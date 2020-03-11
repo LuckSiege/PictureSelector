@@ -3,9 +3,7 @@ package com.luck.picture.lib.config;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
@@ -247,28 +245,6 @@ public final class PictureMimeType {
         return MIME_TYPE_IMAGE;
     }
 
-    /**
-     * 根据uri获取MIME_TYPE
-     *
-     * @param uri
-     * @return
-     */
-    public static String getMimeType(Context context, Uri uri) {
-        if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
-            Cursor cursor = context.getApplicationContext().getContentResolver().query(uri,
-                    new String[]{MediaStore.Files.FileColumns.MIME_TYPE}, null, null, null);
-            if (cursor != null) {
-                if (cursor.moveToFirst()) {
-                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE);
-                    if (columnIndex > -1) {
-                        return cursor.getString(columnIndex);
-                    }
-                }
-                cursor.close();
-            }
-        }
-        return MIME_TYPE_IMAGE;
-    }
 
     /**
      * Picture or video
@@ -285,43 +261,6 @@ public final class PictureMimeType {
             return PictureConfig.TYPE_AUDIO;
         } else {
             return PictureConfig.TYPE_IMAGE;
-        }
-    }
-
-
-    /**
-     * 获取图片后缀
-     *
-     * @param path
-     * @return
-     */
-    public static String getLastImgType(String path) {
-        try {
-            int index = path.lastIndexOf(".");
-            if (index > 0) {
-                String imageType = path.substring(index);
-                switch (imageType) {
-                    case ".png":
-                    case ".PNG":
-                    case ".jpg":
-                    case ".jpeg":
-                    case ".JPEG":
-                    case ".WEBP":
-                    case ".bmp":
-                    case ".BMP":
-                    case ".webp":
-                    case ".gif":
-                    case ".GIF":
-                        return imageType;
-                    default:
-                        return PNG;
-                }
-            } else {
-                return PNG;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return PNG;
         }
     }
 
@@ -358,9 +297,6 @@ public final class PictureMimeType {
         if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
             ContentResolver cr = context.getContentResolver();
             mimeType = cr.getType(uri);
-            if (mimeType.startsWith("image/*")) {
-
-            }
         } else {
             String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
                     .toString());
