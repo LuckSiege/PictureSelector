@@ -352,6 +352,7 @@ public final class PictureMimeType {
      * @param uri
      * @return
      */
+    @Deprecated
     public static String getMimeTypeFromMediaContentUri(Context context, Uri uri) {
         String mimeType;
         if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {

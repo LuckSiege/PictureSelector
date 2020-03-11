@@ -575,11 +575,11 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                 }
             }
         }
-        String path = size > 0 && size > index ? list.get(index).getPath() : "";
+        String path = size > 0 ? list.get(index).getPath() : "";
+        String mimeType = size > 0 ? list.get(index).getMimeType() : "";
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         boolean isHttp = PictureMimeType.isHttp(path);
         Uri uri = isHttp || isAndroidQ ? Uri.parse(path) : Uri.fromFile(new File(path));
-        String mimeType = PictureMimeType.getMimeTypeFromMediaContentUri(this, uri);
         String suffix = mimeType.replace("image/", ".");
         File file = new File(PictureFileUtils.getDiskCacheDir(this),
                 TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_")
