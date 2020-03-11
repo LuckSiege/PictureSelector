@@ -162,14 +162,16 @@ public class LocalMediaLoader implements Handler.Callback {
                             long id = data.getLong
                                     (data.getColumnIndexOrThrow(PROJECTION[0]));
 
-                            String path = isAndroidQ ? getRealPathAndroid_Q(id) : data.getString
+                            String url = isAndroidQ ? getRealPathAndroid_Q(id) : data.getString
                                     (data.getColumnIndexOrThrow(PROJECTION[1]));
 
                             String mimeType = data.getString
                                     (data.getColumnIndexOrThrow(PROJECTION[2]));
+
+                            // 这里解决部分机型获取mimeType返回 image/* 格式导致无法判别其具体类型 例如小米8，9，10等机型
                             if (mimeType.endsWith("image/*")) {
-                                if (path.startsWith("content://")) {
-                                    mimeType = PictureMimeType.getImageMimeType(PictureFileUtils.getPath(mContext, Uri.parse(path)));
+                                if (url.startsWith("content://")) {
+                                    mimeType = PictureMimeType.getImageMimeType(PictureFileUtils.getPath(mContext, Uri.parse(url)));
                                 }
                                 if (!config.isGif) {
                                     boolean isGif = PictureMimeType.isGif(mimeType);
@@ -222,8 +224,8 @@ public class LocalMediaLoader implements Handler.Callback {
                             }
 
                             LocalMedia image = new LocalMedia
-                                    (id, path, fileName, duration, config.chooseMode, mimeType, width, height, size);
-                            LocalMediaFolder folder = getImageFolder(path, folderName, imageFolders);
+                                    (id, url, fileName, duration, config.chooseMode, mimeType, width, height, size);
+                            LocalMediaFolder folder = getImageFolder(url, folderName, imageFolders);
                             List<LocalMedia> images = folder.getImages();
                             images.add(image);
                             folder.setImageNum(folder.getImageNum() + 1);

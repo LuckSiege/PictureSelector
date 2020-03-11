@@ -1490,13 +1490,20 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (media != null) {
                 config.originalPath = media.getPath();
                 media.setCutPath(cutPath);
-                media.setSize(new File(cutPath).length());
                 media.setChooseModel(config.chooseMode);
-                media.setCut(true);
-                media.setSize(new File(TextUtils.isEmpty(cutPath)
-                        ? media.getPath() : cutPath).length());
-                if (SdkVersionUtils.checkedAndroid_Q()) {
+                if (TextUtils.isEmpty(cutPath)) {
+                    if (SdkVersionUtils.checkedAndroid_Q()
+                            && media.getPath().startsWith("content://")) {
+                        String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
+                        media.setSize(new File(path).length());
+                    } else {
+                        media.setSize(new File(media.getPath()).length());
+                    }
+                    media.setCut(false);
+                } else {
+                    media.setSize(new File(cutPath).length());
                     media.setAndroidQToPath(cutPath);
+                    media.setCut(true);
                 }
                 result.add(media);
                 handlerResult(result);
@@ -1505,13 +1512,22 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 media = list != null && list.size() > 0 ? list.get(0) : null;
                 config.originalPath = media.getPath();
                 media.setCutPath(cutPath);
-                media.setSize(new File(cutPath).length());
                 media.setChooseModel(config.chooseMode);
                 media.setSize(new File(TextUtils.isEmpty(cutPath)
                         ? media.getPath() : cutPath).length());
-                media.setCut(true);
-                if (SdkVersionUtils.checkedAndroid_Q()) {
+                if (TextUtils.isEmpty(cutPath)) {
+                    if (SdkVersionUtils.checkedAndroid_Q()
+                            && media.getPath().startsWith("content://")) {
+                        String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
+                        media.setSize(new File(path).length());
+                    } else {
+                        media.setSize(new File(media.getPath()).length());
+                    }
+                    media.setCut(false);
+                } else {
+                    media.setSize(new File(cutPath).length());
                     media.setAndroidQToPath(cutPath);
+                    media.setCut(true);
                 }
                 result.add(media);
                 handlerResult(result);

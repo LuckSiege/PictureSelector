@@ -152,6 +152,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
             media.setAndroidQToPath(cutPath);
             if (TextUtils.isEmpty(cutPath)) {
+                media.setCut(false);
                 if (SdkVersionUtils.checkedAndroid_Q() && config.cameraPath.startsWith("content://")) {
                     String path = PictureFileUtils.getPath(this, Uri.parse(config.cameraPath));
                     media.setSize(new File(path).length());
@@ -160,6 +161,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 }
             } else {
                 media.setSize(new File(cutPath).length());
+                media.setCut(true);
             }
         } else {
             // 拍照产生一个临时id
@@ -167,7 +169,6 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             media.setSize(new File(TextUtils.isEmpty(cutPath)
                     ? media.getPath() : cutPath).length());
         }
-        media.setCut(true);
         media.setCutPath(cutPath);
         String mimeType = PictureMimeType.getImageMimeType(cutPath);
         media.setMimeType(mimeType);
