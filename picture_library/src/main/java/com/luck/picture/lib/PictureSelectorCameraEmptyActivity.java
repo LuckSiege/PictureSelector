@@ -279,7 +279,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         if (config.enableCrop && eqImg) {
             // 去裁剪
             config.originalPath = config.cameraPath;
-            startCrop(config.cameraPath);
+            startCrop(config.cameraPath, mimeType);
         } else if (config.isCompress && eqImg && !config.isCheckOriginalImage) {
             // 去压缩
             List<LocalMedia> result = new ArrayList<>();

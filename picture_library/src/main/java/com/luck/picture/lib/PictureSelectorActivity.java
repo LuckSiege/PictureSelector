@@ -659,7 +659,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (config.enableCrop) {
             if (config.selectionMode == PictureConfig.SINGLE && eqImg) {
                 config.originalPath = image.getPath();
-                startCrop(config.originalPath);
+                startCrop(config.originalPath, image.getMimeType());
             } else {
                 // 是图片和选择压缩并且是多张，调用批量压缩
                 ArrayList<CutInfo> cuts = new ArrayList<>();
@@ -727,7 +727,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (config.enableCrop && eqImg) {
             if (config.selectionMode == PictureConfig.SINGLE) {
                 config.originalPath = image.getPath();
-                startCrop(config.originalPath);
+                startCrop(config.originalPath, image.getMimeType());
             } else {
                 // 是图片和选择压缩并且是多张，调用批量压缩
                 ArrayList<CutInfo> cuts = new ArrayList<>();
@@ -990,7 +990,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             list.add(media);
             if (config.enableCrop && PictureMimeType.eqImage(media.getMimeType()) && !config.isCheckOriginalImage) {
                 mAdapter.bindSelectImages(list);
-                startCrop(media.getPath());
+                startCrop(media.getPath(), media.getMimeType());
             } else {
                 handlerResult(list);
             }
@@ -1241,7 +1241,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (config.enableCrop && eqImg) {
             // 去裁剪
             config.originalPath = config.cameraPath;
-            startCrop(config.cameraPath);
+            startCrop(config.cameraPath, mimeType);
         } else if (config.isCompress && eqImg) {
             // 去压缩
             List<LocalMedia> selectedImages = mAdapter.getSelectedImages();

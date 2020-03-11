@@ -677,7 +677,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             boolean eqImage = PictureMimeType.eqImage(mimeType);
             if (config.selectionMode == PictureConfig.SINGLE && eqImage) {
                 config.originalPath = image.getPath();
-                startCrop(config.originalPath);
+                startCrop(config.originalPath, image.getMimeType());
             } else {
                 // 是图片和选择压缩并且是多张，调用批量压缩
                 ArrayList<CutInfo> cuts = new ArrayList<>();
@@ -730,7 +730,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             isCompleteOrSelected = false;
             if (config.selectionMode == PictureConfig.SINGLE) {
                 config.originalPath = image.getPath();
-                startCrop(config.originalPath);
+                startCrop(config.originalPath, image.getMimeType());
             } else {
                 // 是图片和选择压缩并且是多张，调用批量压缩
                 ArrayList<CutInfo> cuts = new ArrayList<>();

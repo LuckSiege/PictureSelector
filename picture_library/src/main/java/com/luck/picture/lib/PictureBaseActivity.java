@@ -394,8 +394,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
      * 去裁剪
      *
      * @param originalPath
+     * @param mimeType
      */
-    protected void startCrop(String originalPath) {
+    protected void startCrop(String originalPath, String mimeType) {
         if (TextUtils.isEmpty(originalPath)) {
             ToastUtils.s(this, getString(R.string.picture_not_crop_data));
             return;
@@ -468,7 +469,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
         boolean isHttp = PictureMimeType.isHttp(originalPath);
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         Uri uri = isHttp || isAndroidQ ? Uri.parse(originalPath) : Uri.fromFile(new File(originalPath));
-        String mimeType = PictureMimeType.getMimeTypeFromMediaContentUri(this, uri);
         String suffix = mimeType.replace("image/", ".");
         File file = new File(PictureFileUtils.getDiskCacheDir(this),
                 TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_") + suffix : config.renameCropFileName);
