@@ -474,7 +474,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             mHandler.sendEmptyMessage(SAVE_IMAGE_ERROR);
             return;
         }
-        AsyncTask.SERIAL_EXECUTOR.execute(() -> {
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(() -> {
             OutputStream outputStream = null;
             ParcelFileDescriptor parcelFileDescriptor = null;
             try {

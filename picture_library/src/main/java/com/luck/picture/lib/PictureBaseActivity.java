@@ -310,7 +310,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
     protected void compressImage(final List<LocalMedia> result) {
         showPleaseDialog();
         if (config.synOrAsy) {
-            AsyncTask.SERIAL_EXECUTOR.execute(() -> {
+            AsyncTask.THREAD_POOL_EXECUTOR.execute(() -> {
                 try {
                     List<File> files =
                             Luban.with(getContext())
@@ -688,7 +688,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
      * @param images
      */
     private void onResultToAndroidAsy(List<LocalMedia> images) {
-        AsyncTask.SERIAL_EXECUTOR.execute(() -> {
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(() -> {
             // Android Q 版本做拷贝应用内沙盒适配
             int size = images.size();
             for (int i = 0; i < size; i++) {

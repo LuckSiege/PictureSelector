@@ -148,7 +148,7 @@ public class LocalMediaLoader implements Handler.Callback {
 
 
     public void loadAllMedia() {
-        AsyncTask.SERIAL_EXECUTOR.execute(() -> {
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(() -> {
             Cursor data = mContext.getContentResolver().query(QUERY_URI, PROJECTION, getSelection(), getSelectionArgs(), ORDER_BY);
             try {
                 if (data != null) {
