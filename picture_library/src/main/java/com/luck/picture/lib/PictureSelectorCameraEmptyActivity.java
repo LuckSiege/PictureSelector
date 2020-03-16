@@ -204,10 +204,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         int[] newSize = new int[2];
         if (!isAndroidQ) {
             if (config.isFallbackVersion3) {
-                new PictureMediaScannerConnection(getContext(), config.cameraPath,
-                        () -> {
-
-                        });
+                new PictureMediaScannerConnection(getContext(), config.cameraPath);
             } else {
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(config.cameraPath))));
             }
