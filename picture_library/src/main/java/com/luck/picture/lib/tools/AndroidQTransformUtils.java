@@ -39,7 +39,7 @@ public class AndroidQTransformUtils {
             String filesDir = PictureFileUtils.getVideoDiskCacheDir(ctx.getApplicationContext());
             parcelFileDescriptor = ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
             FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
-            String md5Value = Digest.computeToQMD5(inputStream);
+            String md5Value = Digest.computeToQMD5(ctx.getContentResolver().openInputStream(Uri.parse(path)));
             String fileName;
             if (!TextUtils.isEmpty(md5Value)) {
                 fileName = TextUtils.isEmpty(customFileName) ? new StringBuffer().append("VID_").append(md5Value.toUpperCase()).append(suffix).toString() : customFileName;
@@ -80,7 +80,7 @@ public class AndroidQTransformUtils {
         try {
             parcelFileDescriptor = ctx.getContentResolver().openFileDescriptor(Uri.parse(path), "r");
             FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
-            String md5Value = Digest.computeToQMD5(inputStream);
+            String md5Value = Digest.computeToQMD5(ctx.getContentResolver().openInputStream(Uri.parse(path)));
             String suffix = PictureMimeType.getLastImgSuffix(mineType);
             String filesDir = PictureFileUtils.getDiskCacheDir(ctx.getApplicationContext());
             String fileName;
@@ -126,7 +126,7 @@ public class AndroidQTransformUtils {
             String suffix = PictureMimeType.getLastImgSuffix(mineType);
             String filesDir = PictureFileUtils.getAudioDiskCacheDir(ctx.getApplicationContext());
             FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
-            String md5Value = Digest.computeToQMD5(inputStream);
+            String md5Value = Digest.computeToQMD5(ctx.getContentResolver().openInputStream(Uri.parse(path)));
             String fileName;
             if (!TextUtils.isEmpty(md5Value)) {
                 fileName = TextUtils.isEmpty(customFileName) ? new StringBuffer().append("AUD_").append(md5Value.toUpperCase()).append(suffix).toString() : customFileName;

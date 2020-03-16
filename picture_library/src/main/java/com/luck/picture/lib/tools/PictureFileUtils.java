@@ -453,18 +453,10 @@ public class PictureFileUtils {
         } catch (Exception e) {
             return false;
         } finally {
-            if (fileInputStream != null) {
-                fileInputStream.close();
-            }
-            if (fileOutputStream != null) {
-                fileOutputStream.close();
-            }
-            if (inputChannel != null) {
-                inputChannel.close();
-            }
-            if (outputChannel != null) {
-                outputChannel.close();
-            }
+            close(fileInputStream);
+            close(inputChannel);
+            close(fileOutputStream);
+            close(outputChannel);
         }
     }
 
@@ -527,7 +519,6 @@ public class PictureFileUtils {
             return PictureMimeType.JPEG;
         }
     }
-
 
 
     @SuppressWarnings("ConstantConditions")

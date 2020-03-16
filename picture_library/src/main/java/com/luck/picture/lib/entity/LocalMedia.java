@@ -84,10 +84,14 @@ public class LocalMedia implements Parcelable {
     private boolean compressed;
     /**
      * image or video width
+     * <p>
+     * # If zero occurs, the developer needs to handle it extra
      */
     private int width;
     /**
      * image or video height
+     * <p>
+     * # If zero occurs, the developer needs to handle it extra
      */
     private int height;
 
