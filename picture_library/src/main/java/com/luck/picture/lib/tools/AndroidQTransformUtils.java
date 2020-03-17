@@ -46,16 +46,14 @@ public class AndroidQTransformUtils {
             } else {
                 fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("VID_") + suffix : customFileName;
             }
-            if (filesDir != null) {
-                String newPath = new StringBuffer().append(filesDir).append(File.separator).append(fileName).toString();
-                File outFile = new File(newPath);
-                if (outFile.exists()) {
-                    return newPath;
-                }
-                boolean copyFileSuccess = PictureFileUtils.copyFile(inputStream, outFile);
-                if (copyFileSuccess) {
-                    return newPath;
-                }
+            String newPath = new StringBuffer().append(filesDir).append(File.separator).append(fileName).toString();
+            File outFile = new File(newPath);
+            if (outFile.exists()) {
+                return newPath;
+            }
+            boolean copyFileSuccess = PictureFileUtils.copyFile(inputStream, outFile);
+            if (copyFileSuccess) {
+                return newPath;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -89,16 +87,14 @@ public class AndroidQTransformUtils {
             } else {
                 fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("IMG_") + suffix : customFileName;
             }
-            if (filesDir != null) {
-                String newPath = new StringBuffer().append(filesDir).append(File.separator).append(fileName).toString();
-                File outFile = new File(newPath);
-                if (outFile.exists()) {
-                    return newPath;
-                }
-                boolean copyFileSuccess = PictureFileUtils.copyFile(inputStream, outFile);
-                if (copyFileSuccess) {
-                    return newPath;
-                }
+            String newPath = new StringBuffer().append(filesDir).append(File.separator).append(fileName).toString();
+            File outFile = new File(newPath);
+            if (outFile.exists()) {
+                return newPath;
+            }
+            boolean copyFileSuccess = PictureFileUtils.copyFile(inputStream, outFile);
+            if (copyFileSuccess) {
+                return newPath;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -133,16 +129,14 @@ public class AndroidQTransformUtils {
             } else {
                 fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("AUD_") + suffix : customFileName;
             }
-            if (filesDir != null) {
-                String newPath = new StringBuffer().append(filesDir).append(File.separator).append(fileName).toString();
-                File outFile = new File(newPath);
-                if (outFile.exists()) {
-                    return newPath;
-                }
-                boolean copyFileSuccess = PictureFileUtils.copyFile(inputStream, outFile);
-                if (copyFileSuccess) {
-                    return newPath;
-                }
+            String newPath = new StringBuffer().append(filesDir).append(File.separator).append(fileName).toString();
+            File outFile = new File(newPath);
+            if (outFile.exists()) {
+                return newPath;
+            }
+            boolean copyFileSuccess = PictureFileUtils.copyFile(inputStream, outFile);
+            if (copyFileSuccess) {
+                return newPath;
             }
         } catch (Exception e) {
             e.printStackTrace();
