@@ -509,9 +509,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         return;
                     }
                 }
-                if (PictureMimeType.eqVideo(mimeType)) {
-                    if (config.maxVideoSelectNum > 0
-                            && currentSize >= config.maxVideoSelectNum && !check.isSelected()) {
+                if (PictureMimeType.eqVideo(mimeType) && config.maxVideoSelectNum > 0) {
+                    if (currentSize >= config.maxVideoSelectNum && !check.isSelected()) {
                         // 如果先选择的是视频
                         ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), mimeType, config.maxVideoSelectNum));
                         return;

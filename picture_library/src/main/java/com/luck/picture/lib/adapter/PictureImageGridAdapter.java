@@ -364,9 +364,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     return;
                 }
             }
-            if (PictureMimeType.eqVideo(mimeType)) {
-                if (config.maxVideoSelectNum > 0
-                        && size >= config.maxVideoSelectNum && !isChecked) {
+            if (PictureMimeType.eqVideo(mimeType) && config.maxVideoSelectNum > 0) {
+                if (size >= config.maxVideoSelectNum && !isChecked) {
                     // 如果先选择的是视频
                     ToastUtils.s(context, StringUtils.getMsg(context, mimeType, config.maxVideoSelectNum));
                     return;
