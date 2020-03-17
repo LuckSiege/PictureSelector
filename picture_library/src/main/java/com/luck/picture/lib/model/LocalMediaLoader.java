@@ -18,6 +18,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
+import com.luck.picture.lib.listener.OnMediaLoadListener;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.ValueOf;
@@ -420,16 +421,10 @@ public class LocalMediaLoader implements Handler.Callback {
         return false;
     }
 
-    private LocalMediaLoadListener mCompleteListener;
+    private OnMediaLoadListener mCompleteListener;
 
-    public void setCompleteListener(LocalMediaLoadListener mCompleteListener) {
+    public void setCompleteListener(OnMediaLoadListener mCompleteListener) {
         this.mCompleteListener = mCompleteListener;
     }
 
-    public interface LocalMediaLoadListener {
-
-        void loadComplete(List<LocalMediaFolder> folders);
-
-        void loadMediaDataError();
-    }
 }

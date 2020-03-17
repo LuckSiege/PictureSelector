@@ -35,6 +35,7 @@ import com.luck.picture.lib.dialog.PhotoItemSelectedDialog;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
+import com.luck.picture.lib.listener.OnMediaLoadListener;
 import com.luck.picture.lib.model.LocalMediaLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.permissions.PermissionChecker;
@@ -387,7 +388,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
         showPleaseDialog();
         mediaLoader.loadAllMedia();
-        mediaLoader.setCompleteListener(new LocalMediaLoader.LocalMediaLoadListener() {
+        mediaLoader.setCompleteListener(new OnMediaLoadListener<LocalMediaFolder>() {
             @Override
             public void loadComplete(List<LocalMediaFolder> folders) {
                 dismissDialog();
