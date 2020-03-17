@@ -133,7 +133,7 @@ public class CustomCameraView extends RelativeLayout {
                         new ImageCapture.OnImageSavedCallback() {
                             @Override
                             public void onImageSaved(@NonNull File file) {
-                                if (SdkVersionUtils.checkedAndroid_Q()) {
+                                if (SdkVersionUtils.checkedAndroid_Q() && mConfig.cameraPath.startsWith("content://")) {
                                     AsyncTask.THREAD_POOL_EXECUTOR.execute(() -> AndroidQTransformUtils.copyPathToDCIM(getContext(),
                                             Uri.fromFile(file), Uri.parse(mConfig.cameraPath)));
                                 }
@@ -167,7 +167,7 @@ public class CustomCameraView extends RelativeLayout {
                                 if (recordTime < 1500 && mVideoFile.exists() && mVideoFile.delete()) {
                                     return;
                                 }
-                                if (SdkVersionUtils.checkedAndroid_Q()) {
+                                if (SdkVersionUtils.checkedAndroid_Q() && mConfig.cameraPath.startsWith("content://")) {
                                     AsyncTask.THREAD_POOL_EXECUTOR.execute(() -> AndroidQTransformUtils.copyPathToDCIM(getContext(),
                                             Uri.fromFile(file), Uri.parse(mConfig.cameraPath)));
                                 }
