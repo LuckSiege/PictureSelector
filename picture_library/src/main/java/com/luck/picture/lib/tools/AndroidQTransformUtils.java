@@ -13,7 +13,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
-import java.io.OutputStream;
+import java.io.FileOutputStream;
 
 /**
  * @author：luck
@@ -182,35 +182,18 @@ public class AndroidQTransformUtils {
      * @param inputUri
      * @param outUri
      */
-    public static void copyPathToDCIM(Context context, Uri inputUri, Uri outUri) {
+    public static boolean copyPathToDCIM(Context context, Uri inputUri, Uri outUri) {
         ParcelFileDescriptor parcelFileDescriptor = null;
-        OutputStream outputStream = null;
-        FileInputStream inputStream = null;
         try {
-            outputStream = context.getContentResolver().openOutputStream(outUri);
-            byte[] buffer = new byte[1024 * 8];
-            int read;
             parcelFileDescriptor = context.getApplicationContext().getContentResolver().openFileDescriptor(inputUri, "r");
             FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-            inputStream = new FileInputStream(fileDescriptor);
-            while ((read = inputStream.read(buffer)) > -1) {
-                outputStream.write(buffer, 0, read);
-            }
-            outputStream.flush();
+            return PictureFileUtils.copyFile(new FileInputStream(fileDescriptor),
+                    (FileOutputStream) context.getContentResolver().openOutputStream(outUri));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             PictureFileUtils.close(parcelFileDescriptor);
         }
+        return false;
     }
 }

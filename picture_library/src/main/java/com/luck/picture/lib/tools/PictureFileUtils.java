@@ -28,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Locale;
 
@@ -436,7 +437,7 @@ public class PictureFileUtils {
      * will cause both files to become null.
      * Simply skipping this step if the paths are identical.
      */
-    public static boolean copyFile(FileInputStream fileInputStream, File outFile) throws IOException {
+    public static boolean copyFile(FileInputStream fileInputStream, File outFile) {
         if (fileInputStream == null) {
             return false;
         }
@@ -456,6 +457,59 @@ public class PictureFileUtils {
             close(inputChannel);
             close(fileOutputStream);
             close(outputChannel);
+        }
+    }
+
+    /**
+     * Copies one file into the other with the given paths.
+     * In the event that the paths are the same, trying to copy one file to the other
+     * will cause both files to become null.
+     * Simply skipping this step if the paths are identical.
+     */
+    public static boolean copyFile(FileInputStream fileInputStream, FileOutputStream outputStream) {
+        if (fileInputStream == null) {
+            return false;
+        }
+        FileChannel inputChannel = null;
+        FileChannel outputChannel = null;
+        try {
+            inputChannel = fileInputStream.getChannel();
+            outputChannel = outputStream.getChannel();
+            inputChannel.transferTo(0, inputChannel.size(), outputChannel);
+            return true;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            close(fileInputStream);
+            close(inputChannel);
+            close(outputStream);
+            close(outputChannel);
+        }
+    }
+
+    public static boolean nioBufferCopy(FileInputStream inputStream, File outFile) {
+        FileChannel in = null;
+        FileChannel out = null;
+        FileOutputStream outStream = null;
+        try {
+            outStream = new FileOutputStream(outFile);
+            in = inputStream.getChannel();
+            out = outStream.getChannel();
+            ByteBuffer buffer = ByteBuffer.allocate(4096);
+            while (in.read(buffer) != -1) {
+                buffer.flip();
+                out.write(buffer);
+                buffer.clear();
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            close(inputStream);
+            close(in);
+            close(outStream);
+            close(out);
         }
     }
 
