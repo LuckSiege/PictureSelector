@@ -699,9 +699,11 @@ public abstract class PictureBaseActivity extends AppCompatActivity implements H
                 boolean isCopyAndroidQToPath = !media.isCut()
                         && !media.isCompressed()
                         && TextUtils.isEmpty(media.getAndroidQToPath());
-                if (isCopyAndroidQToPath) {
-                    String pathToAndroidQ = AndroidQTransformUtils.getPathToAndroidQ(getContext(),
-                            config.cameraFileName, media);
+                if (isCopyAndroidQToPath && media.getPath().startsWith("content://")) {
+                    String pathToAndroidQ = AndroidQTransformUtils
+                            .getPathToAndroidQ(getContext(),
+                                    Uri.parse(media.getPath()),
+                                    media.getMimeType(), config.cameraFileName);
                     media.setAndroidQToPath(pathToAndroidQ);
                     if (config.isCheckOriginalImage) {
                         media.setOriginal(true);
