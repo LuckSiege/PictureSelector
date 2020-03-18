@@ -17,6 +17,22 @@ import java.io.FileOutputStream;
  * @describe：Android Q相关处理类
  */
 public class AndroidQTransformUtils {
+
+
+    /**
+     * 复制一份至自己应用沙盒内
+     *
+     * @param context
+     * @param cameraFileName
+     * @param uri
+     * @param mimeType
+     * @return
+     */
+    @Nullable
+    public static String getPathToAndroidQ(Context context, Uri uri, String mimeType, String cameraFileName) {
+        return AndroidQTransformUtils.copyPathToAndroidQ(context, uri, mimeType, cameraFileName);
+    }
+
     /**
      * 解析Android Q版本下图片
      * #耗时操作需要放在子线程中操作
@@ -50,21 +66,6 @@ public class AndroidQTransformUtils {
             PictureFileUtils.close(parcelFileDescriptor);
         }
         return "";
-    }
-
-
-    /**
-     * 复制一份至自己应用沙盒内
-     *
-     * @param context
-     * @param cameraFileName
-     * @param uri
-     * @param mimeType
-     * @return
-     */
-    @Nullable
-    public static String getPathToAndroidQ(Context context, Uri uri, String mimeType, String cameraFileName) {
-        return AndroidQTransformUtils.copyPathToAndroidQ(context, uri, mimeType, cameraFileName);
     }
 
     /**
