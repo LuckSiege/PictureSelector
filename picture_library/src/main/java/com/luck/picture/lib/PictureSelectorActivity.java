@@ -36,11 +36,11 @@ import com.luck.picture.lib.dialog.PhotoItemSelectedDialog;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
-import com.luck.picture.lib.listener.OnMediaLoadListener;
 import com.luck.picture.lib.model.LocalMediaLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
+import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.BitmapUtils;
 import com.luck.picture.lib.tools.DateUtils;
@@ -83,7 +83,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected FolderPopWindow folderWindow;
     protected Animation animation = null;
     protected boolean isStartAnimation = false;
-    protected LocalMediaLoader mediaLoader;
     protected MediaPlayer mediaPlayer;
     protected SeekBar musicSeekBar;
     protected boolean isPlayAudio = false;
@@ -384,69 +383,68 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * get LocalMedia s
      */
     protected void readLocalMedia() {
-        if (mediaLoader == null) {
-            mediaLoader = new LocalMediaLoader(this, config);
-        }
         showPleaseDialog();
-        mediaLoader.loadAllMedia();
-        mediaLoader.setCompleteListener(new OnMediaLoadListener<LocalMediaFolder>() {
+        PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
+
             @Override
-            public void loadComplete(List<LocalMediaFolder> folders) {
-                dismissDialog();
-                if (folders.size() > 0) {
-                    foldersList = folders;
-                    LocalMediaFolder folder = folders.get(0);
-                    folder.setChecked(true);
-                    List<LocalMedia> result = folder.getImages();
-                    if (images == null) {
-                        images = new ArrayList<>();
-                    }
-                    // 这里解决有些机型会出现拍照完，相册列表不及时刷新问题
-                    // 因为onActivityResult里手动添加拍照后的照片，
-                    // 如果查询出来的图片大于或等于当前adapter集合的图片则取更新后的，否则就取本地的
-                    int currentSize = images.size();
-                    int resultSize = result.size();
-                    oldCurrentListSize = oldCurrentListSize + currentSize;
-                    if (resultSize >= currentSize) {
-                        if (currentSize > 0 && currentSize < resultSize && oldCurrentListSize != resultSize) {
-                            // 这种情况多数是由于拍照导致Activity和数据被回收数据不一致
-                            images.addAll(result);
-                            // 更新相机胶卷目录
-                            LocalMedia media = images.get(0);
-                            folder.setFirstImagePath(media.getPath());
-                            folder.getImages().add(0, media);
-                            folder.setCheckedNum(1);
-                            folder.setImageNum(folder.getImageNum() + 1);
-                            // 更新相片所属目录
-                            updateMediaFolder(foldersList, media);
-                        } else {
-                            // 正常情况下
-                            images = result;
-                        }
-                        folderWindow.bindFolder(folders);
-                    }
-                }
-                if (mAdapter != null) {
-                    mAdapter.bindImagesData(images);
-                    boolean isEmpty = images.size() > 0;
-                    if (!isEmpty) {
-                        mTvEmpty.setText(getString(R.string.picture_empty));
-                        mTvEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds
-                                (0, R.drawable.picture_icon_no_data, 0, 0);
-                    }
-                    mTvEmpty.setVisibility(isEmpty ? View.INVISIBLE : View.VISIBLE);
-                }
+            public List<LocalMediaFolder> doInBackground() {
+                return new LocalMediaLoader(getContext(), config).loadAllMedia();
             }
 
             @Override
-            public void loadMediaDataError() {
+            public void onSuccess(List<LocalMediaFolder> folders) {
                 dismissDialog();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                PictureThreadUtils.cancel(PictureThreadUtils.getCachedPool());
+                if (folders != null) {
+                    if (folders.size() > 0) {
+                        foldersList = folders;
+                        LocalMediaFolder folder = folders.get(0);
+                        folder.setChecked(true);
+                        List<LocalMedia> result = folder.getImages();
+                        if (images == null) {
+                            images = new ArrayList<>();
+                        }
+                        // 这里解决有些机型会出现拍照完，相册列表不及时刷新问题
+                        // 因为onActivityResult里手动添加拍照后的照片，
+                        // 如果查询出来的图片大于或等于当前adapter集合的图片则取更新后的，否则就取本地的
+                        int currentSize = images.size();
+                        int resultSize = result.size();
+                        oldCurrentListSize = oldCurrentListSize + currentSize;
+                        if (resultSize >= currentSize) {
+                            if (currentSize > 0 && currentSize < resultSize && oldCurrentListSize != resultSize) {
+                                // 这种情况多数是由于拍照导致Activity和数据被回收数据不一致
+                                images.addAll(result);
+                                // 更新相机胶卷目录
+                                LocalMedia media = images.get(0);
+                                folder.setFirstImagePath(media.getPath());
+                                folder.getImages().add(0, media);
+                                folder.setCheckedNum(1);
+                                folder.setImageNum(folder.getImageNum() + 1);
+                                // 更新相片所属目录
+                                updateMediaFolder(foldersList, media);
+                            } else {
+                                // 正常情况下
+                                images = result;
+                            }
+                            folderWindow.bindFolder(folders);
+                        }
+                    }
+                    if (mAdapter != null) {
+                        mAdapter.bindImagesData(images);
+                        boolean isEmpty = images.size() > 0;
+                        if (!isEmpty) {
+                            mTvEmpty.setText(getString(R.string.picture_empty));
+                            mTvEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds
+                                    (0, R.drawable.picture_icon_no_data, 0, 0);
+                        }
+                        mTvEmpty.setVisibility(isEmpty ? View.INVISIBLE : View.VISIBLE);
+                    }
+                } else {
                     mTvEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds
                             (0, R.drawable.picture_icon_data_error, 0, 0);
+                    mTvEmpty.setText(getString(R.string.picture_data_exception));
+                    mTvEmpty.setVisibility(images.size() > 0 ? View.INVISIBLE : View.VISIBLE);
                 }
-                mTvEmpty.setText(getString(R.string.picture_data_exception));
-                mTvEmpty.setVisibility(images.size() > 0 ? View.INVISIBLE : View.VISIBLE);
             }
         });
     }
@@ -626,8 +624,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     return;
                 }
             }
-            if (config.listener != null) {
-                config.listener.onResult(result);
+            if (PictureSelectionConfig.listener != null) {
+                PictureSelectionConfig.listener.onResult(result);
             } else {
                 Intent intent = PictureSelector.putIntentResult(result);
                 setResult(RESULT_OK, intent);
@@ -786,7 +784,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             musicSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    if (fromUser == true) {
+                    if (fromUser) {
                         mediaPlayer.seekTo(progress);
                     }
                 }
@@ -1019,8 +1017,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 result.add(media);
                 onResult(result);
             } else {
-                if (config.customVideoPlayCallback != null) {
-                    config.customVideoPlayCallback.startPlayVideo(media);
+                if (PictureSelectionConfig.customVideoPlayCallback != null) {
+                    PictureSelectionConfig.customVideoPlayCallback.startPlayVideo(media);
                 } else {
                     bundle.putParcelable(PictureConfig.EXTRA_MEDIA_KEY, media);
                     JumpUtils.startPictureVideoPlayActivity(getContext(), bundle, PictureConfig.PREVIEW_VIDEO_CODE);

@@ -124,7 +124,7 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel bindCustomPlayVideoCallback(OnVideoSelectedPlayCallback callback) {
-        selectionConfig.customVideoPlayCallback = new WeakReference<>(callback).get();
+        PictureSelectionConfig.customVideoPlayCallback = new WeakReference<>(callback).get();
         return this;
     }
 
@@ -1001,7 +1001,7 @@ public class PictureSelectionModel {
                 return;
             }
             // 绑定回调监听
-            selectionConfig.listener = new WeakReference<>(listener).get();
+            PictureSelectionConfig.listener = new WeakReference<>(listener).get();
 
             Intent intent;
             if (selectionConfig.camera && selectionConfig.isUseCustomCamera) {
@@ -1039,7 +1039,7 @@ public class PictureSelectionModel {
                 return;
             }
             // 绑定回调监听
-            selectionConfig.listener = new WeakReference<>(listener).get();
+            PictureSelectionConfig.listener = new WeakReference<>(listener).get();
             Intent intent;
             if (selectionConfig.camera && selectionConfig.isUseCustomCamera) {
                 intent = new Intent(activity, PictureCustomCameraActivity.class);

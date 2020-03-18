@@ -7,6 +7,7 @@ import java.util.List;
  * @date：2020-03-17 10:07
  * @describe：Listener
  */
+@Deprecated
 public interface OnMediaLoadListener<T> {
     /**
      * 加载完成

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -34,6 +33,7 @@ import com.luck.picture.lib.camera.listener.TypeListener;
 import com.luck.picture.lib.camera.view.CaptureLayout;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.MediaUtils;
@@ -134,8 +134,19 @@ public class CustomCameraView extends RelativeLayout {
                             @Override
                             public void onImageSaved(@NonNull File file) {
                                 if (SdkVersionUtils.checkedAndroid_Q() && mConfig.cameraPath.startsWith("content://")) {
-                                    AsyncTask.THREAD_POOL_EXECUTOR.execute(() -> AndroidQTransformUtils.copyPathToDCIM(getContext(),
-                                            Uri.fromFile(file), Uri.parse(mConfig.cameraPath)));
+                                    PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Boolean>() {
+
+                                        @Override
+                                        public Boolean doInBackground() {
+                                            return AndroidQTransformUtils.copyPathToDCIM(getContext(),
+                                                    Uri.fromFile(file), Uri.parse(mConfig.cameraPath));
+                                        }
+
+                                        @Override
+                                        public void onSuccess(Boolean result) {
+                                            PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
+                                        }
+                                    });
                                 }
                                 mPhotoFile = file;
                                 if (mImageCallbackListener != null) {
@@ -168,8 +179,19 @@ public class CustomCameraView extends RelativeLayout {
                                     return;
                                 }
                                 if (SdkVersionUtils.checkedAndroid_Q() && mConfig.cameraPath.startsWith("content://")) {
-                                    AsyncTask.THREAD_POOL_EXECUTOR.execute(() -> AndroidQTransformUtils.copyPathToDCIM(getContext(),
-                                            Uri.fromFile(file), Uri.parse(mConfig.cameraPath)));
+                                    PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Boolean>() {
+
+                                        @Override
+                                        public Boolean doInBackground() {
+                                            return AndroidQTransformUtils.copyPathToDCIM(getContext(),
+                                                    Uri.fromFile(file), Uri.parse(mConfig.cameraPath));
+                                        }
+
+                                        @Override
+                                        public void onSuccess(Boolean result) {
+                                            PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
+                                        }
+                                    });
                                 }
                                 mTextureView.setVisibility(View.VISIBLE);
                                 mCameraView.setVisibility(View.INVISIBLE);
