@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.net.Uri;
-import android.os.Build;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -150,19 +149,17 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             if (eqVideo || eqAudio) {
                 contentHolder.tvDuration.setVisibility(View.VISIBLE);
                 contentHolder.tvDuration.setText(DateUtils.formatDurationTime(image.getDuration()));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                            (eqVideo ? R.drawable.picture_icon_video : R.drawable.picture_icon_audio,
-                                    0, 0, 0);
-                }
+                contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
+                        (eqVideo ? R.drawable.picture_icon_video : R.drawable.picture_icon_audio,
+                                0, 0, 0);
             } else {
                 contentHolder.tvDuration.setVisibility(View.GONE);
             }
             if (config.chooseMode == PictureMimeType.ofAudio()) {
                 contentHolder.ivPicture.setImageResource(R.drawable.picture_audio_placeholder);
             } else {
-                if (config.imageEngine != null) {
-                    config.imageEngine.loadGridImage(context, path, contentHolder.ivPicture);
+                if (PictureSelectionConfig.imageEngine != null) {
+                    PictureSelectionConfig.imageEngine.loadGridImage(context, path, contentHolder.ivPicture);
                 }
             }
             if (config.enablePreview || config.enPreviewVideo || config.enablePreviewAudio) {

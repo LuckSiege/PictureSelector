@@ -268,7 +268,7 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             }
         } else {
             String mimeType = list.get(0).getMimeType();
-            int maxSize = PictureMimeType.eqVideo(mimeType) ? config.maxVideoSelectNum : config.maxSelectNum;
+            int maxSize = PictureMimeType.eqVideo(mimeType) && config.maxVideoSelectNum > 0 ? config.maxVideoSelectNum : config.maxSelectNum;
             if (config.selectionMode == PictureConfig.SINGLE) {
                 if (size <= 0) {
                     mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)

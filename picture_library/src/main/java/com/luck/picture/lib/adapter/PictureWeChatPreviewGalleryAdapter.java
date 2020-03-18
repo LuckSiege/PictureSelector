@@ -63,8 +63,8 @@ public class PictureWeChatPreviewGalleryAdapter
         LocalMedia item = getItem(position);
         if (item != null) {
             holder.viewBorder.setVisibility(item.isChecked() ? View.VISIBLE : View.GONE);
-            if (config != null && config.imageEngine != null) {
-                config.imageEngine.loadImage(holder.itemView.getContext(), item.getPath(), holder.ivImage);
+            if (config != null && PictureSelectionConfig.imageEngine != null) {
+                PictureSelectionConfig.imageEngine.loadImage(holder.itemView.getContext(), item.getPath(), holder.ivImage);
             }
 
             holder.itemView.setOnClickListener(v -> {

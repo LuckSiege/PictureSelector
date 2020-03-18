@@ -16,6 +16,7 @@ import com.luck.picture.lib.camera.CustomCameraView;
 import com.luck.picture.lib.camera.listener.CameraListener;
 import com.luck.picture.lib.camera.view.CaptureLayout;
 import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.tools.ToastUtils;
 
 import java.io.File;
@@ -81,8 +82,8 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
         }
         // 拍照预览
         mCameraView.setImageCallbackListener((file, imageView) -> {
-            if (config != null && config.imageEngine != null && file != null) {
-                config.imageEngine.loadImage(getContext(), file.getAbsolutePath(), imageView);
+            if (config != null && PictureSelectionConfig.imageEngine != null && file != null) {
+                PictureSelectionConfig.imageEngine.loadImage(getContext(), file.getAbsolutePath(), imageView);
             }
         });
         // 设置拍照或拍视频回调监听

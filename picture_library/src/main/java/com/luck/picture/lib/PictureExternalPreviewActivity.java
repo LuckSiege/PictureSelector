@@ -35,6 +35,7 @@ import com.luck.picture.lib.broadcast.BroadcastAction;
 import com.luck.picture.lib.broadcast.BroadcastManager;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.ImageCompleteCallback;
@@ -280,15 +281,15 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     longImageView.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
                     // 压缩过的gif就不是gif了
                     if (isGif && !media.isCompressed()) {
-                        if (config != null && config.imageEngine != null) {
-                            config.imageEngine.loadAsGifImage
+                        if (config != null && PictureSelectionConfig.imageEngine != null) {
+                            PictureSelectionConfig.imageEngine.loadAsGifImage
                                     (getContext(), path, imageView);
                         }
                     } else {
-                        if (config != null && config.imageEngine != null) {
+                        if (config != null && PictureSelectionConfig.imageEngine != null) {
                             if (isHttp) {
                                 // 网络图片
-                                config.imageEngine.loadImage(contentView.getContext(), path,
+                                PictureSelectionConfig.imageEngine.loadImage(contentView.getContext(), path,
                                         imageView, longImageView, new ImageCompleteCallback() {
                                             @Override
                                             public void onShowLoading() {
@@ -305,7 +306,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                                     displayLongPic(isAndroidQ
                                             ? Uri.parse(path) : Uri.fromFile(new File(path)), longImageView);
                                 } else {
-                                    config.imageEngine.loadImage(contentView.getContext(), path, imageView);
+                                    PictureSelectionConfig.imageEngine.loadImage(contentView.getContext(), path, imageView);
                                 }
                             }
                         }

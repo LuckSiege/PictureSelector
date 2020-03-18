@@ -86,8 +86,8 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel loadImageEngine(ImageEngine engine) {
-        if (selectionConfig.imageEngine != engine) {
-            selectionConfig.imageEngine = engine;
+        if (PictureSelectionConfig.imageEngine != engine) {
+            PictureSelectionConfig.imageEngine = engine;
         }
         return this;
     }

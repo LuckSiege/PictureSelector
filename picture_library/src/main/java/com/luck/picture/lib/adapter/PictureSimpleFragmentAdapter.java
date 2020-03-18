@@ -121,17 +121,17 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
                 longImg.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
                 // 压缩过的gif就不是gif了
                 if (isGif && !media.isCompressed()) {
-                    if (config != null && config.imageEngine != null) {
-                        config.imageEngine.loadAsGifImage
+                    if (config != null && PictureSelectionConfig.imageEngine != null) {
+                        PictureSelectionConfig.imageEngine.loadAsGifImage
                                 (contentView.getContext(), path, imageView);
                     }
                 } else {
-                    if (config != null && config.imageEngine != null) {
+                    if (config != null && PictureSelectionConfig.imageEngine != null) {
                         if (eqLongImg) {
                             displayLongPic(SdkVersionUtils.checkedAndroid_Q()
                                     ? Uri.parse(path) : Uri.fromFile(new File(path)), longImg);
                         } else {
-                            config.imageEngine.loadImage
+                            PictureSelectionConfig.imageEngine.loadImage
                                     (contentView.getContext(), path, imageView);
                         }
                     }
@@ -147,8 +147,8 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
                     }
                 });
                 ivPlay.setOnClickListener(v -> {
-                    if (config.customVideoPlayCallback != null) {
-                        config.customVideoPlayCallback.startPlayVideo(media);
+                    if (PictureSelectionConfig.customVideoPlayCallback != null) {
+                        PictureSelectionConfig.customVideoPlayCallback.startPlayVideo(media);
                     } else {
                         Intent intent = new Intent();
                         Bundle bundle = new Bundle();
