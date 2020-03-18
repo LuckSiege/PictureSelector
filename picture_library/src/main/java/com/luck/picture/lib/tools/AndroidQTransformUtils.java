@@ -23,14 +23,14 @@ public class AndroidQTransformUtils {
      * 复制一份至自己应用沙盒内
      *
      * @param context
-     * @param cameraFileName
+     * @param customFileName
      * @param uri
      * @param mimeType
      * @return
      */
     @Nullable
-    public static String getPathToAndroidQ(Context context, Uri uri, String mimeType, String cameraFileName) {
-        return AndroidQTransformUtils.copyPathToAndroidQ(context, uri, mimeType, cameraFileName);
+    public static String getPathToAndroidQ(Context context, Uri uri, String mimeType, String customFileName) {
+        return AndroidQTransformUtils.copyPathToAndroidQ(context, uri, mimeType, customFileName);
     }
 
     /**
