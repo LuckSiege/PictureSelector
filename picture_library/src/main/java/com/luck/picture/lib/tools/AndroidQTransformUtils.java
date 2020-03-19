@@ -2,12 +2,13 @@ package com.luck.picture.lib.tools;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
 
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Objects;
+
+import okio.BufferedSource;
+import okio.Okio;
 
 /**
  * @author：luck
@@ -23,65 +24,47 @@ public class AndroidQTransformUtils {
      *
      * @param ctx
      * @param uri
-     * @param size
      * @param mineType
      * @param customFileName
-     * @param isOpenNioCopy
      * @return
      */
-    public static String copyPathToAndroidQ(Context ctx, Uri uri, long size, String mineType, String customFileName, boolean isOpenNioCopy) {
-        ParcelFileDescriptor parcelFileDescriptor = null;
+    public static String copyPathToAndroidQ(Context ctx, Uri uri, String mineType, String customFileName) {
+        BufferedSource inBuffer = null;
         try {
-            String newPath = PictureFileUtils.createFilePath(ctx, uri, mineType, customFileName);
+            String md5 = Digest.computeToQMD5(ctx.getContentResolver().openInputStream(uri));
+            String newPath = PictureFileUtils.createFilePath(ctx, md5, mineType, customFileName);
             File outFile = new File(newPath);
             if (outFile.exists()) {
                 return newPath;
             }
-            parcelFileDescriptor = ctx.getContentResolver().openFileDescriptor(uri, "r");
-            if (parcelFileDescriptor == null) {
-                return "";
-            }
-            FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
-            boolean copyFileSuccess = isOpenNioCopy ? PictureFileUtils.copyFile(inputStream, outFile)
-                    : PictureFileUtils.bufferCopy(inputStream, outFile, size);
+            inBuffer = Okio.buffer(Okio.source(Objects.requireNonNull(ctx.getContentResolver().openInputStream(uri))));
+            boolean copyFileSuccess = PictureFileUtils.bufferCopy(inBuffer, outFile);
             if (copyFileSuccess) {
                 return newPath;
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            PictureFileUtils.close(parcelFileDescriptor);
+            if (inBuffer != null && inBuffer.isOpen()) {
+                PictureFileUtils.close(inBuffer);
+            }
         }
-        return "";
+        return null;
     }
 
     /**
      * 复制文件至AndroidQ手机相册目录
      *
      * @param context
-     * @param inputUri
-     * @param size
+     * @param inFile
      * @param outUri
      */
-    public static boolean copyPathToDCIM(Context context, Uri inputUri, Uri outUri, long size, boolean isOpenNioCopy) {
-        ParcelFileDescriptor parcelFileDescriptor = null;
+    public static boolean copyPathToDCIM(Context context, File inFile, Uri outUri) {
         try {
-            parcelFileDescriptor = context.getApplicationContext().getContentResolver().openFileDescriptor(inputUri, "r");
-            if (parcelFileDescriptor != null) {
-                FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                if (isOpenNioCopy) {
-                    return PictureFileUtils.copyFile(new FileInputStream(fileDescriptor),
-                            (FileOutputStream) context.getContentResolver().openOutputStream(outUri));
-                } else {
-                    return PictureFileUtils.bufferCopy(new FileInputStream(fileDescriptor),
-                            (FileOutputStream) context.getContentResolver().openOutputStream(outUri), size);
-                }
-            }
-            return false;
+            OutputStream fileOutputStream = context.getContentResolver().openOutputStream(outUri);
+            return PictureFileUtils.bufferCopy(inFile, fileOutputStream);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            PictureFileUtils.close(parcelFileDescriptor);
         }
         return false;
     }

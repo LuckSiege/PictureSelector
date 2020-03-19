@@ -315,7 +315,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                             .loadMediaData(result)
                             .isCamera(config.camera)
                             .setTargetDir(config.compressSavePath)
-                            .isOpenNioCopy(config.isOpenNioCopy)
                             .setCompressQuality(config.compressQuality)
                             .setFocusAlpha(config.focusAlpha)
                             .setNewCompressFileName(config.renameCompressFileName)
@@ -338,7 +337,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                     .loadMediaData(result)
                     .ignoreBy(config.minimumCompressSize)
                     .isCamera(config.camera)
-                    .isOpenNioCopy(config.isOpenNioCopy)
                     .setCompressQuality(config.compressQuality)
                     .setTargetDir(config.compressSavePath)
                     .setFocusAlpha(config.focusAlpha)
@@ -708,8 +706,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                     if (isCopyAndroidQToPath && media.getPath().startsWith("content://")) {
                         String pathToAndroidQ = AndroidQTransformUtils
                                 .copyPathToAndroidQ(getContext(),
-                                        Uri.parse(media.getPath()), media.getSize(),
-                                        media.getMimeType(), config.cameraFileName, config.isOpenNioCopy);
+                                        Uri.parse(media.getPath()),
+                                        media.getMimeType(), config.cameraFileName);
                         media.setAndroidQToPath(pathToAndroidQ);
                     } else if (media.isCut() && media.isCompressed()) {
                         media.setAndroidQToPath(media.getCompressPath());

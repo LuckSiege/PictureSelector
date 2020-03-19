@@ -23,6 +23,10 @@ ext {
             // ucrop
             androidx_appcompat_version    : "1.1.0",
             androidx_exifinterface_version: "1.1.0-beta01",
-            androidx_transition_version   : "1.2.0-rc01"
+            androidx_transition_version   : "1.2.0-rc01",
+
+            // okio
+            okio_version                  : "2.4.3"
+
     ]
 }
