@@ -50,6 +50,7 @@ public class Luban implements Handler.Callback {
     private boolean isAndroidQ;
     private int compressQuality;
     private Handler mHandler;
+    private boolean isOpenNioCopy;
 
     private Luban(Builder builder) {
         this.mPaths = builder.mPaths;
@@ -63,6 +64,7 @@ public class Luban implements Handler.Callback {
         this.mCompressionPredicate = builder.mCompressionPredicate;
         this.compressQuality = builder.compressQuality;
         this.focusAlpha = builder.focusAlpha;
+        this.isOpenNioCopy = builder.isOpenNioCopy;
         this.isCamera = builder.isCamera;
         this.mHandler = new Handler(Looper.getMainLooper(), this);
         this.isAndroidQ = builder.isAndroidQ;
@@ -285,7 +287,8 @@ public class Luban implements Handler.Callback {
                 // GIF without compression
                 if (isAndroidQ) {
                     String newFilePath = media.isCut() ? media.getCutPath() :
-                            AndroidQTransformUtils.copyPathToAndroidQ(context, Uri.parse(path.getPath()), media.getMimeType(), filename);
+                            AndroidQTransformUtils.copyPathToAndroidQ(context, Uri.parse(path.getPath()), media.getSize(),
+                                    media.getMimeType(), filename, isOpenNioCopy);
                     result = new File(newFilePath);
                 } else {
                     result = new File(newPath);
@@ -297,7 +300,8 @@ public class Luban implements Handler.Callback {
                 } else {
                     if (isAndroidQ) {
                         String newFilePath = media.isCut() ? media.getCutPath() :
-                                AndroidQTransformUtils.copyPathToAndroidQ(context, Uri.parse(path.getPath()), media.getMimeType(), filename);
+                                AndroidQTransformUtils.copyPathToAndroidQ(context, Uri.parse(path.getPath()), media.getSize(),
+                                        media.getMimeType(), filename, isOpenNioCopy);
                         result = new File(newFilePath);
                     } else {
                         result = new File(newPath);
@@ -309,7 +313,8 @@ public class Luban implements Handler.Callback {
                 // GIF without compression
                 if (isAndroidQ) {
                     String newFilePath = media.isCut() ? media.getCutPath() :
-                            AndroidQTransformUtils.copyPathToAndroidQ(context, Uri.parse(path.getPath()), media.getMimeType(), filename);
+                            AndroidQTransformUtils.copyPathToAndroidQ(context,
+                                    Uri.parse(path.getPath()), media.getSize(), media.getMimeType(), filename, isOpenNioCopy);
                     result = new File(newFilePath);
                 } else {
                     result = new File(newPath);
@@ -319,7 +324,8 @@ public class Luban implements Handler.Callback {
                 result = isCompress ? new Engine(path, outFile, focusAlpha, compressQuality).compress() :
                         isAndroidQ ? new File(media.isCut() ? media.getCutPath() :
                                 AndroidQTransformUtils.copyPathToAndroidQ
-                                        (context, Uri.parse(path.getPath()), media.getMimeType(), filename)) : new File(newPath);
+                                        (context, Uri.parse(path.getPath()), media.getSize(),
+                                                media.getMimeType(), filename, isOpenNioCopy)) : new File(newPath);
             }
         }
         return result;
@@ -348,6 +354,7 @@ public class Luban implements Handler.Callback {
         private String mTargetDir;
         private String mNewFileName;
         private boolean focusAlpha;
+        private boolean isOpenNioCopy;
         private boolean isCamera;
         private int compressQuality;
         private int mLeastCompressSize = 100;
@@ -539,6 +546,17 @@ public class Luban implements Handler.Callback {
          */
         public Builder setFocusAlpha(boolean focusAlpha) {
             this.focusAlpha = focusAlpha;
+            return this;
+        }
+
+        /**
+         * 使用管道模式复制文件
+         *
+         * @param isOpenNioCopy
+         * @return
+         */
+        public Builder isOpenNioCopy(boolean isOpenNioCopy) {
+            this.isOpenNioCopy = isOpenNioCopy;
             return this;
         }
 

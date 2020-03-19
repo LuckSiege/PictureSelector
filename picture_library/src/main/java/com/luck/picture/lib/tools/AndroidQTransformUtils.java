@@ -4,8 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 
-import androidx.annotation.Nullable;
-
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -20,30 +18,18 @@ public class AndroidQTransformUtils {
 
 
     /**
-     * 复制一份至自己应用沙盒内
-     *
-     * @param context
-     * @param customFileName
-     * @param uri
-     * @param mimeType
-     * @return
-     */
-    @Nullable
-    public static String getPathToAndroidQ(Context context, Uri uri, String mimeType, String customFileName) {
-        return AndroidQTransformUtils.copyPathToAndroidQ(context, uri, mimeType, customFileName);
-    }
-
-    /**
      * 解析Android Q版本下图片
      * #耗时操作需要放在子线程中操作
      *
      * @param ctx
-     * @param path
+     * @param uri
+     * @param size
      * @param mineType
      * @param customFileName
+     * @param isOpenNioCopy
      * @return
      */
-    public static String copyPathToAndroidQ(Context ctx, Uri uri, String mineType, String customFileName) {
+    public static String copyPathToAndroidQ(Context ctx, Uri uri, long size, String mineType, String customFileName, boolean isOpenNioCopy) {
         ParcelFileDescriptor parcelFileDescriptor = null;
         try {
             String newPath = PictureFileUtils.createFilePath(ctx, uri, mineType, customFileName);
@@ -56,7 +42,8 @@ public class AndroidQTransformUtils {
                 return "";
             }
             FileInputStream inputStream = new FileInputStream(parcelFileDescriptor.getFileDescriptor());
-            boolean copyFileSuccess = PictureFileUtils.copyFile(inputStream, outFile);
+            boolean copyFileSuccess = isOpenNioCopy ? PictureFileUtils.copyFile(inputStream, outFile)
+                    : PictureFileUtils.bufferCopy(inputStream, outFile, size);
             if (copyFileSuccess) {
                 return newPath;
             }
@@ -73,16 +60,22 @@ public class AndroidQTransformUtils {
      *
      * @param context
      * @param inputUri
+     * @param size
      * @param outUri
      */
-    public static boolean copyPathToDCIM(Context context, Uri inputUri, Uri outUri) {
+    public static boolean copyPathToDCIM(Context context, Uri inputUri, Uri outUri, long size, boolean isOpenNioCopy) {
         ParcelFileDescriptor parcelFileDescriptor = null;
         try {
             parcelFileDescriptor = context.getApplicationContext().getContentResolver().openFileDescriptor(inputUri, "r");
             if (parcelFileDescriptor != null) {
                 FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                return PictureFileUtils.copyFile(new FileInputStream(fileDescriptor),
-                        (FileOutputStream) context.getContentResolver().openOutputStream(outUri));
+                if (isOpenNioCopy) {
+                    return PictureFileUtils.copyFile(new FileInputStream(fileDescriptor),
+                            (FileOutputStream) context.getContentResolver().openOutputStream(outUri));
+                } else {
+                    return PictureFileUtils.bufferCopy(new FileInputStream(fileDescriptor),
+                            (FileOutputStream) context.getContentResolver().openOutputStream(outUri), size);
+                }
             }
             return false;
         } catch (Exception e) {

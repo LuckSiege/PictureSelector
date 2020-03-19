@@ -139,7 +139,7 @@ public class CustomCameraView extends RelativeLayout {
                                         @Override
                                         public Boolean doInBackground() {
                                             return AndroidQTransformUtils.copyPathToDCIM(getContext(),
-                                                    Uri.fromFile(file), Uri.parse(mConfig.cameraPath));
+                                                    Uri.fromFile(file), Uri.parse(mConfig.cameraPath), file.length(), mConfig.isOpenNioCopy);
                                         }
 
                                         @Override
@@ -184,7 +184,7 @@ public class CustomCameraView extends RelativeLayout {
                                         @Override
                                         public Boolean doInBackground() {
                                             return AndroidQTransformUtils.copyPathToDCIM(getContext(),
-                                                    Uri.fromFile(file), Uri.parse(mConfig.cameraPath));
+                                                    Uri.fromFile(file), Uri.parse(mConfig.cameraPath), file.length(), mConfig.isOpenNioCopy);
                                         }
 
                                         @Override

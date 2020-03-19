@@ -98,6 +98,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isDragFrame;
     public boolean isNotPreviewDownload;
     public boolean isWithVideoImage;
+    public boolean isOpenNioCopy;
     public UCropOptions uCropOptions;
     public static ImageEngine imageEngine;
     public static OnResultCallbackListener listener;
@@ -173,6 +174,7 @@ public final class PictureSelectionConfig implements Parcelable {
         buttonFeatures = CustomCameraView.BUTTON_STATE_BOTH;  //初始化按钮为可录制可拍照
         isCameraAroundState = false;
         isWithVideoImage = false;
+        isOpenNioCopy = false;
         isAndroidQTransform = true;
         isCamera = true;
         isGif = false;
@@ -333,6 +335,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte(this.isDragFrame ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isNotPreviewDownload ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isWithVideoImage ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isOpenNioCopy ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.uCropOptions, flags);
         dest.writeTypedList(this.selectionMedias);
         dest.writeString(this.cameraFileName);
@@ -427,6 +430,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.isDragFrame = in.readByte() != 0;
         this.isNotPreviewDownload = in.readByte() != 0;
         this.isWithVideoImage = in.readByte() != 0;
+        this.isOpenNioCopy = in.readByte() != 0;
         this.uCropOptions = in.readParcelable(UCropOptions.class.getClassLoader());
         this.selectionMedias = in.createTypedArrayList(LocalMedia.CREATOR);
         this.cameraFileName = in.readString();

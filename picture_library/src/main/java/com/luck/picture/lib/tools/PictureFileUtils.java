@@ -22,6 +22,8 @@ import androidx.core.content.FileProvider;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +31,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Locale;
 
@@ -306,6 +307,74 @@ public class PictureFileUtils {
         }
     }
 
+    /**
+     * 拷贝文件
+     *
+     * @param input
+     * @param outFile
+     * @param size
+     * @return
+     */
+    public static boolean bufferCopy(FileInputStream input, File outFile, long size) {
+        BufferedInputStream inBuff = null;
+        FileOutputStream output = null;
+        BufferedOutputStream outBuff = null;
+        try {
+            inBuff = new BufferedInputStream(input);
+            output = new FileOutputStream(outFile);
+            outBuff = new BufferedOutputStream(output);
+            int bufferSize = size > 5000000 ? 32 : 128;
+            Log.i("YYY", "bufferSize:" + bufferSize);
+            byte[] b = new byte[bufferSize];
+            int len;
+            while ((len = inBuff.read(b)) != -1) {
+                outBuff.write(b, 0, len);
+            }
+            outBuff.flush();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close(inBuff);
+            close(outBuff);
+            close(output);
+            close(input);
+        }
+        return false;
+    }
+
+    /**
+     * 拷贝文件
+     *
+     * @param input
+     * @param outPutStream
+     * @param size
+     * @return
+     */
+    public static boolean bufferCopy(FileInputStream input, FileOutputStream outPutStream, long size) {
+        BufferedInputStream inBuff = null;
+        BufferedOutputStream outBuff = null;
+        try {
+            inBuff = new BufferedInputStream(input);
+            outBuff = new BufferedOutputStream(outPutStream);
+            int bufferSize = size > 5000000 ? 32 : 128;
+            byte[] b = new byte[bufferSize];
+            int len;
+            while ((len = inBuff.read(b)) != -1) {
+                outBuff.write(b, 0, len);
+            }
+            outBuff.flush();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close(inBuff);
+            close(outBuff);
+            close(outPutStream);
+            close(input);
+        }
+        return false;
+    }
 
     /**
      * 读取图片属性：旋转的角度
@@ -489,75 +558,15 @@ public class PictureFileUtils {
     }
 
     /**
-     * 复制文件
-     *
-     * @param inputStream
-     * @param outFile
-     * @return
-     */
-    public static boolean nioBufferCopy(FileInputStream inputStream, File outFile) {
-        FileChannel in = null;
-        FileChannel out = null;
-        FileOutputStream outStream = null;
-        try {
-            outStream = new FileOutputStream(outFile);
-            in = inputStream.getChannel();
-            out = outStream.getChannel();
-            ByteBuffer buffer = ByteBuffer.allocate(4096);
-            while (in.read(buffer) != -1) {
-                buffer.flip();
-                out.write(buffer);
-                buffer.clear();
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            close(inputStream);
-            close(in);
-            close(outStream);
-            close(out);
-        }
-    }
-
-    /**
-     * 复制文件
-     *
-     * @param inputStream
-     * @param outFile
-     * @return
-     */
-    public static boolean nioBufferCopy(FileInputStream inputStream, FileOutputStream outPutStream) {
-        FileChannel in = null;
-        FileChannel out = null;
-        try {
-            in = inputStream.getChannel();
-            out = outPutStream.getChannel();
-            ByteBuffer buffer = ByteBuffer.allocate(4096);
-            while (in.read(buffer) != -1) {
-                buffer.flip();
-                out.write(buffer);
-                buffer.clear();
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            close(inputStream);
-            close(in);
-            close(outPutStream);
-            close(out);
-        }
-    }
-
-    /**
      * @param ctx
      * @return
      */
     public static String getDiskCacheDir(Context ctx) {
-        return ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
+        File filesDir = ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (filesDir == null) {
+            return "";
+        }
+        return filesDir.getPath();
     }
 
     /**
@@ -565,7 +574,11 @@ public class PictureFileUtils {
      * @return
      */
     public static String getVideoDiskCacheDir(Context ctx) {
-        return ctx.getExternalFilesDir(Environment.DIRECTORY_MOVIES).getPath();
+        File filesDir = ctx.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
+        if (filesDir == null) {
+            return "";
+        }
+        return filesDir.getPath();
     }
 
     /**
@@ -573,7 +586,11 @@ public class PictureFileUtils {
      * @return
      */
     public static String getAudioDiskCacheDir(Context ctx) {
-        return ctx.getExternalFilesDir(Environment.DIRECTORY_MUSIC).getPath();
+        File filesDir = ctx.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+        if (filesDir == null) {
+            return "";
+        }
+        return filesDir.getPath();
     }
 
     /**

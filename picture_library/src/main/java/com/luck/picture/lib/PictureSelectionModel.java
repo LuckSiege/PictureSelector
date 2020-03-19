@@ -893,6 +893,18 @@ public class PictureSelectionModel {
     }
 
     /**
+     * # Whether to turn on FileChannel mode to copy files
+     * can cause IO threads to take too long on some Q phones, such as the huawei p30 pro
+     *
+     * @param isOpenNioCopy
+     * @return
+     */
+    public PictureSelectionModel isOpenNioCopy(boolean isOpenNioCopy) {
+        selectionConfig.isOpenNioCopy = isOpenNioCopy;
+        return this;
+    }
+
+    /**
      * # 内部方法-要使用此方法时最好先咨询作者！！！
      *
      * @param isFallbackVersion 仅供特殊情况内部使用 如果某功能出错此开关可以回退至之前版本
