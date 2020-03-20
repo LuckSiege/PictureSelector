@@ -92,7 +92,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected int oldCurrentListSize;
     protected int audioH;
     protected boolean isFirstEnterActivity = false;
-    protected boolean isPermissions;
+    protected boolean isEnterSetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,14 +112,18 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected void onResume() {
         super.onResume();
         // 这里只针对权限被手动拒绝后进入设置页面重新获取权限后的操作
-        if (isPermissions) {
+        if (isEnterSetting) {
             if (PermissionChecker
                     .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
                     PermissionChecker
                             .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                readLocalMedia();
+                if (mAdapter.isDataEmpty()) {
+                    readLocalMedia();
+                }
+            } else {
+                showPermissionsDialog(getString(R.string.picture_jurisdiction));
             }
-            isPermissions = false;
+            isEnterSetting = false;
         }
         if (mCbOriginal != null && config != null) {
             mCbOriginal.setChecked(config.isCheckOriginalImage);
@@ -1742,11 +1746,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             case PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE:
                 // 存储权限
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    isPermissions = false;
                     readLocalMedia();
                 } else {
                     showPermissionsDialog(getString(R.string.picture_jurisdiction));
-                    isPermissions = true;
                 }
                 break;
             case PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE:
@@ -1805,6 +1807,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 dialog.dismiss();
             }
             PermissionChecker.launchAppDetailsSettings(getContext());
+            isEnterSetting = true;
         });
         dialog.show();
     }
