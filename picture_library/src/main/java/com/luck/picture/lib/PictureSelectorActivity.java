@@ -125,8 +125,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
             isEnterSetting = false;
         }
-        if (mCbOriginal != null && config != null) {
-            mCbOriginal.setChecked(config.isCheckOriginalImage);
+
+        if (config.isOriginalControl) {
+            if (mCbOriginal != null) {
+                mCbOriginal.setChecked(config.isCheckOriginalImage);
+            }
         }
     }
 
