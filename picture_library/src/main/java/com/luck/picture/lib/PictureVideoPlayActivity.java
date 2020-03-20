@@ -5,6 +5,7 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -18,6 +19,7 @@ import android.widget.VideoView;
 
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.tools.SdkVersionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,7 @@ import java.util.List;
 public class PictureVideoPlayActivity extends PictureBaseActivity implements
         MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener, View.OnClickListener {
-    private String video_path;
+    private String videoPath;
     private ImageButton ibLeftBack;
     private MediaController mMediaController;
     private VideoView mVideoView;
@@ -71,16 +73,20 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
     @Override
     protected void initWidgets() {
         super.initWidgets();
-        video_path = getIntent().getStringExtra(PictureConfig.EXTRA_VIDEO_PATH);
+        videoPath = getIntent().getStringExtra(PictureConfig.EXTRA_VIDEO_PATH);
         boolean isExternalPreview = getIntent().getBooleanExtra
                 (PictureConfig.EXTRA_PREVIEW_VIDEO, false);
-        if (TextUtils.isEmpty(video_path)) {
+        if (TextUtils.isEmpty(videoPath)) {
             LocalMedia media = getIntent().getParcelableExtra(PictureConfig.EXTRA_MEDIA_KEY);
             if (media == null || TextUtils.isEmpty(media.getPath())) {
                 finish();
                 return;
             }
-            video_path = media.getPath();
+            videoPath = media.getPath();
+        }
+        if (TextUtils.isEmpty(videoPath)) {
+            closeActivity();
+            return;
         }
         ibLeftBack = findViewById(R.id.picture_left_back);
         mVideoView = findViewById(R.id.video_view);
@@ -95,7 +101,6 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
         iv_play.setOnClickListener(this);
         tvConfirm.setOnClickListener(this);
 
-
         tvConfirm.setVisibility(config.selectionMode
                 == PictureConfig.SINGLE
                 && config.enPreviewVideo && !isExternalPreview ? View.VISIBLE : View.GONE);
@@ -104,7 +109,11 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
     @Override
     public void onStart() {
         // Play Video
-        mVideoView.setVideoPath(TextUtils.isEmpty(video_path) ? "" : video_path);
+        if (SdkVersionUtils.checkedAndroid_Q() && videoPath.startsWith("content://")) {
+            mVideoView.setVideoURI(Uri.parse(videoPath));
+        } else {
+            mVideoView.setVideoPath(videoPath);
+        }
         mVideoView.start();
         super.onStart();
     }
