@@ -57,4 +57,5 @@
     <string name="picture_choose_max_seconds">最大只能選擇 %1$ds 以內的視頻</string>
     <string name="picture_choose_min_seconds">不能選擇低於 %1$ds 內的視頻</string>
     <string name="picture_choose_limit_seconds">只能選擇 %1$ds 至 %2$ds內的視頻</string>
+    <string name="picture_go_setting">去設置</string>
 </resources>

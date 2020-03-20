@@ -92,6 +92,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         return images == null ? new ArrayList<>() : images;
     }
 
+    public int getSize() {
+        return images == null ? 0 : images.size();
+    }
+
     @Override
     public int getItemViewType(int position) {
         if (showCamera && position == 0) {

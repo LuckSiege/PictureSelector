@@ -57,4 +57,5 @@
     <string name="picture_choose_limit_seconds">%1$ds sから %2$ds までのビデオしか選択できません</string>
     <string name="picture_photo_pictures">写真を撮る</string>
     <string name="picture_photo_recording">長押しする</string>
+    <string name="picture_go_setting">設定</string>
 </resources>

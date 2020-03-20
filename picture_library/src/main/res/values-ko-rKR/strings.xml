@@ -57,4 +57,5 @@
     <string name="picture_choose_limit_seconds">%1$ds~%2$ds 내의 영상만 선택할 수 있습니다</string>
     <string name="picture_photo_pictures">사진 찍기 클릭</string>
     <string name="picture_photo_recording">카메라</string>
+    <string name="picture_go_setting">설치</string>
 </resources>

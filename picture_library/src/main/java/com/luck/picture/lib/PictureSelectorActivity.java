@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -91,6 +92,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected int oldCurrentListSize;
     protected int audioH;
     protected boolean isFirstEnterActivity = false;
+    protected boolean isPermissions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +111,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     @Override
     protected void onResume() {
         super.onResume();
+        // 这里只针对权限被手动拒绝后进入设置页面重新获取权限后的操作
+        if (isPermissions && PermissionChecker
+                .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
+                PermissionChecker
+                        .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            readLocalMedia();
+            isPermissions = false;
+        }
         if (mCbOriginal != null && config != null) {
             mCbOriginal.setChecked(config.isCheckOriginalImage);
         }
@@ -970,7 +980,17 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     public void onTakePhoto() {
         // 启动相机拍照,先判断手机是否有拍照权限
         if (PermissionChecker.checkSelfPermission(this, Manifest.permission.CAMERA)) {
-            startCamera();
+            // 获取到相机权限再验证是否有存储权限
+            if (PermissionChecker
+                    .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
+                    PermissionChecker
+                            .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                startCamera();
+            } else {
+                PermissionChecker.requestPermissions(this, new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_CAMERA_STORAGE_PERMISSIONS_CODE);
+            }
         } else {
             PermissionChecker
                     .requestPermissions(this,
@@ -1720,9 +1740,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             case PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE:
                 // 存储权限
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    isPermissions = false;
                     readLocalMedia();
                 } else {
-                    ToastUtils.s(getContext(), getString(R.string.picture_jurisdiction));
+                    showPermissionsDialog(getString(R.string.picture_jurisdiction));
+                    isPermissions = true;
                 }
                 break;
             case PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE:
@@ -1730,7 +1752,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     onTakePhoto();
                 } else {
-                    ToastUtils.s(getContext(), getString(R.string.picture_camera));
+                    showPermissionsDialog(getString(R.string.picture_camera));
+                }
+                break;
+            case PictureConfig.APPLY_CAMERA_STORAGE_PERMISSIONS_CODE:
+                // 拍照前重新获取存储权限
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startCamera();
+                } else {
+                    showPermissionsDialog(getString(R.string.picture_jurisdiction));
                 }
                 break;
             case PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE:
@@ -1738,9 +1768,42 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startCustomCamera();
                 } else {
-                    ToastUtils.s(getContext(), getString(R.string.picture_camera));
+                    showPermissionsDialog(getString(R.string.picture_camera));
                 }
                 break;
         }
+    }
+
+    /**
+     * 权限提示
+     */
+    private void showPermissionsDialog(String errorMsg) {
+        if (isFinishing()) {
+            return;
+        }
+        final PictureCustomDialog dialog =
+                new PictureCustomDialog(getContext(), R.layout.picture_wind_base_dialog);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+        Button btn_commit = dialog.findViewById(R.id.btn_commit);
+        btn_commit.setText(getString(R.string.picture_go_setting));
+        TextView tv_title = dialog.findViewById(R.id.tv_title);
+        TextView tv_content = dialog.findViewById(R.id.tv_content);
+        tv_title.setText(getString(R.string.picture_prompt));
+        tv_content.setText(errorMsg);
+        btn_cancel.setOnClickListener(v -> {
+            if (!isFinishing()) {
+                dialog.dismiss();
+            }
+            closeActivity();
+        });
+        btn_commit.setOnClickListener(v -> {
+            if (!isFinishing()) {
+                dialog.dismiss();
+            }
+            PermissionChecker.launchAppDetailsSettings(getContext());
+        });
+        dialog.show();
     }
 }
