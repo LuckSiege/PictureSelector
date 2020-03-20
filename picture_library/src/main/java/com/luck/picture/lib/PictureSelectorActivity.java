@@ -112,11 +112,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected void onResume() {
         super.onResume();
         // 这里只针对权限被手动拒绝后进入设置页面重新获取权限后的操作
-        if (isPermissions && PermissionChecker
-                .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
-                PermissionChecker
-                        .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            readLocalMedia();
+        if (isPermissions) {
+            if (PermissionChecker
+                    .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
+                    PermissionChecker
+                            .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                readLocalMedia();
+            }
             isPermissions = false;
         }
         if (mCbOriginal != null && config != null) {
