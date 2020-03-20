@@ -188,8 +188,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     case PictureConfig.TYPE_AUDIO:
                         // 预览音频
                         PictureSelector.create(MainActivity.this)
-                                .externalPictureAudio(
-                                        media.getPath().startsWith("content://") ? media.getAndroidQToPath() : media.getPath());
+                                .externalPictureAudio(PictureMimeType.isContent(media.getPath()) ? media.getAndroidQToPath() : media.getPath());
                         break;
                     default:
                         // 预览图片 可自定长按保存路径

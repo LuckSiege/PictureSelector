@@ -407,7 +407,7 @@ public class Luban implements Handler.Callback {
             mStreamProviders.add(new InputStreamAdapter() {
                 @Override
                 public InputStream openInternal() throws IOException {
-                    if (isAndroidQ && !media.isCut() && media.getPath().startsWith("content://")) {
+                    if (isAndroidQ && !media.isCut() && PictureMimeType.isContent(media.getPath())) {
                         // 如果是Android Q并且没有裁剪过走，因为是先裁剪后压缩，如果裁剪过要用裁剪后的地址去压缩
                         return context.getContentResolver().openInputStream(Uri.parse(media.getPath()));
                     } else {

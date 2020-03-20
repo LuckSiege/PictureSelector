@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.luck.picture.lib.R;
@@ -54,6 +55,12 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
         }
     }
 
+    public void removeCacheView(int position) {
+        if (mCacheView != null && position < mCacheView.size()) {
+            mCacheView.removeAt(position);
+        }
+    }
+
     public interface OnCallBackActivity {
         /**
          * 关闭预览Activity
@@ -81,6 +88,11 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
         if (mCacheView.size() > MAX_CACHE_SIZE) {
             mCacheView.remove(position);
         }
+    }
+
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        return POSITION_NONE;
     }
 
     @Override

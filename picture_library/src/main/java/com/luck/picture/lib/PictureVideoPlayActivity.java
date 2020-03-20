@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 
@@ -109,7 +110,7 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
     @Override
     public void onStart() {
         // Play Video
-        if (SdkVersionUtils.checkedAndroid_Q() && videoPath.startsWith("content://")) {
+        if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(videoPath)) {
             mVideoView.setVideoURI(Uri.parse(videoPath));
         } else {
             mVideoView.setVideoPath(videoPath);

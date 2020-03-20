@@ -61,6 +61,7 @@ import com.yalantis.ucrop.model.CutInfo;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author：luck
@@ -1316,7 +1317,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         LocalMedia media = new LocalMedia();
         if (config.chooseMode != PictureMimeType.ofAudio()) {
             // 图片视频处理规则
-            if (config.cameraPath.startsWith("content://")) {
+            if (PictureMimeType.isContent(config.cameraPath)) {
                 String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(config.cameraPath));
                 File file = new File(path);
                 size = file.length();
@@ -1525,7 +1526,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 media.setChooseModel(config.chooseMode);
                 if (TextUtils.isEmpty(cutPath)) {
                     if (SdkVersionUtils.checkedAndroid_Q()
-                            && media.getPath().startsWith("content://")) {
+                            && PictureMimeType.isContent(media.getPath())) {
                         String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
                         media.setSize(new File(path).length());
                     } else {
@@ -1549,7 +1550,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         ? media.getPath() : cutPath).length());
                 if (TextUtils.isEmpty(cutPath)) {
                     if (SdkVersionUtils.checkedAndroid_Q()
-                            && media.getPath().startsWith("content://")) {
+                            && PictureMimeType.isContent(media.getPath())) {
                         String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
                         media.setSize(new File(path).length());
                     } else {
@@ -1622,7 +1623,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (!TextUtils.isEmpty(c.getCutPath())) {
                     media.setSize(new File(c.getCutPath()).length());
                 } else {
-                    if (SdkVersionUtils.checkedAndroid_Q() && c.getPath().startsWith("content://")) {
+                    if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(c.getPath())) {
                         String path = PictureFileUtils.getPath(this, Uri.parse(c.getPath()));
                         media.setSize(new File(path).length());
                     } else {
@@ -1682,8 +1683,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * @param imageFolders
      */
     private void updateMediaFolder(List<LocalMediaFolder> imageFolders, LocalMedia media) {
-        File imageFile = new File(media.getPath().startsWith("content://")
-                ? PictureFileUtils.getPath(getContext(), Uri.parse(media.getPath())) : media.getPath());
+        File imageFile = new File(PictureMimeType.isContent(media.getPath())
+                ? Objects.requireNonNull(PictureFileUtils.getPath(getContext(), Uri.parse(media.getPath()))) : media.getPath());
         File folderFile = imageFile.getParentFile();
         int size = imageFolders.size();
         for (int i = 0; i < size; i++) {

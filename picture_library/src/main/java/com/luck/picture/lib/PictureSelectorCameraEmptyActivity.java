@@ -153,7 +153,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             media.setAndroidQToPath(cutPath);
             if (TextUtils.isEmpty(cutPath)) {
                 media.setCut(false);
-                if (SdkVersionUtils.checkedAndroid_Q() && config.cameraPath.startsWith("content://")) {
+                if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(config.cameraPath)) {
                     String path = PictureFileUtils.getPath(this, Uri.parse(config.cameraPath));
                     media.setSize(new File(path).length());
                 } else {
@@ -212,7 +212,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         LocalMedia media = new LocalMedia();
         if (config.chooseMode != PictureMimeType.ofAudio()) {
             // 图片视频处理规则
-            if (config.cameraPath.startsWith("content://")) {
+            if (PictureMimeType.isContent(config.cameraPath)) {
                 String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(config.cameraPath));
                 File file = new File(path);
                 size = file.length();

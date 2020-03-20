@@ -307,6 +307,19 @@ public final class PictureMimeType {
     }
 
     /**
+     * 是否是content://类型
+     *
+     * @param url
+     * @return
+     */
+    public static boolean isContent(String url) {
+        if (TextUtils.isEmpty(url)) {
+            return false;
+        }
+        return url.startsWith("content://");
+    }
+
+    /**
      * 根据不同的类型，返回不同的错误提示
      *
      * @param mimeType

@@ -566,7 +566,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 if (config.selectionMode == PictureConfig.SINGLE) {
                     selectImages.clear();
                 }
-                if (!TextUtils.isEmpty(image.getRealPath()) && image.getPath().startsWith("content://")) {
+                if (!TextUtils.isEmpty(image.getRealPath()) && PictureMimeType.isContent(image.getPath())) {
                     image.setRealPath(PictureFileUtils.getPath(getContext(), Uri.parse(image.getPath())));
                 }
                 selectImages.add(image);

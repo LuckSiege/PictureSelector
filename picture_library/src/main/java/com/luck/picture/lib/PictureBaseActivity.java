@@ -634,7 +634,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      */
     @Nullable
     protected LocalMediaFolder getImageFolder(String path, List<LocalMediaFolder> imageFolders) {
-        File imageFile = new File(path.startsWith("content://") ? PictureFileUtils.getPath(getContext(), Uri.parse(path)) : path);
+        File imageFile = new File(PictureMimeType.isContent(path) ? PictureFileUtils.getPath(getContext(), Uri.parse(path)) : path);
         File folderFile = imageFile.getParentFile();
 
         for (LocalMediaFolder folder : imageFolders) {
@@ -703,7 +703,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                     boolean isCopyAndroidQToPath = !media.isCut()
                             && !media.isCompressed()
                             && TextUtils.isEmpty(media.getAndroidQToPath());
-                    if (isCopyAndroidQToPath && media.getPath().startsWith("content://")) {
+                    if (isCopyAndroidQToPath && PictureMimeType.isContent(media.getPath())) {
                         String pathToAndroidQ = AndroidQTransformUtils
                                 .copyPathToAndroidQ(getContext(),
                                         Uri.parse(media.getPath()),

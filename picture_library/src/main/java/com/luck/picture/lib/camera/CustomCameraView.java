@@ -133,7 +133,7 @@ public class CustomCameraView extends RelativeLayout {
                         new ImageCapture.OnImageSavedCallback() {
                             @Override
                             public void onImageSaved(@NonNull File file) {
-                                if (SdkVersionUtils.checkedAndroid_Q() && mConfig.cameraPath.startsWith("content://")) {
+                                if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(mConfig.cameraPath)) {
                                     PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Boolean>() {
 
                                         @Override
@@ -178,7 +178,7 @@ public class CustomCameraView extends RelativeLayout {
                                 if (recordTime < 1500 && mVideoFile.exists() && mVideoFile.delete()) {
                                     return;
                                 }
-                                if (SdkVersionUtils.checkedAndroid_Q() && mConfig.cameraPath.startsWith("content://")) {
+                                if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(mConfig.cameraPath)) {
                                     PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Boolean>() {
 
                                         @Override
@@ -438,7 +438,7 @@ public class CustomCameraView extends RelativeLayout {
             }
             if (mVideoFile != null && mVideoFile.exists()) {
                 mVideoFile.delete();
-                if (SdkVersionUtils.checkedAndroid_Q() && mConfig.cameraPath.startsWith("content://")) {
+                if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(mConfig.cameraPath)) {
                     getContext().getContentResolver().delete(Uri.parse(mConfig.cameraPath), null, null);
                 } else {
                     new PictureMediaScannerConnection(getContext(), mVideoFile.getAbsolutePath());
@@ -448,7 +448,7 @@ public class CustomCameraView extends RelativeLayout {
             mImagePreview.setVisibility(INVISIBLE);
             if (mPhotoFile != null && mPhotoFile.exists()) {
                 mPhotoFile.delete();
-                if (SdkVersionUtils.checkedAndroid_Q() && mConfig.cameraPath.startsWith("content://")) {
+                if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(mConfig.cameraPath)) {
                     getContext().getContentResolver().delete(Uri.parse(mConfig.cameraPath), null, null);
                 } else {
                     new PictureMediaScannerConnection(getContext(), mPhotoFile.getAbsolutePath());

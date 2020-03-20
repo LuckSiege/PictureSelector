@@ -163,7 +163,7 @@ public class LocalMediaLoader {
 
                         // 这里解决部分机型获取mimeType返回 image/* 格式导致无法判别其具体类型 例如小米8，9，10等机型
                         if (mimeType.endsWith("image/*")) {
-                            if (url.startsWith("content://")) {
+                            if (PictureMimeType.isContent(url)) {
                                 mimeType = PictureMimeType.getImageMimeType(PictureFileUtils.getPath(mContext, Uri.parse(url)));
                             }
                             if (!config.isGif) {

@@ -50,6 +50,10 @@ public class PictureWeChatPreviewGalleryAdapter
         }
     }
 
+    public boolean isDataEmpty() {
+        return list == null || list.size() == 0;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

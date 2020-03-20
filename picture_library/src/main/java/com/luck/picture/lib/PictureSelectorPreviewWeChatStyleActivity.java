@@ -188,6 +188,24 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
             // 移除
             media.setChecked(false);
             mGalleryAdapter.removeMediaToData(media);
+            if (is_bottom_preview) {
+                // 移除预览数据并刷新ViewPage
+                if (selectImages != null && selectImages.size() > position) {
+                    selectImages.get(position).setChecked(true);
+                }
+                if (mGalleryAdapter.isDataEmpty()) {
+                    onActivityBackPressed();
+                } else {
+                    int currentItem = viewPager.getCurrentItem();
+                    images.remove(currentItem);
+                    adapter.removeCacheView(currentItem);
+                    position = currentItem;
+                    tv_title.setText(getString(R.string.picture_preview_image_num,
+                            position + 1, images.size()));
+                    check.setSelected(true);
+                    adapter.notifyDataSetChanged();
+                }
+            }
         }
     }
 
