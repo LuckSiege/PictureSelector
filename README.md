@@ -102,7 +102,6 @@ PictureSelector.create(this).externalPictureVideo(video_path);
 -keep interface com.yalantis.ucrop** { *; }
 
 #okio
-# Animal Sniffer compileOnly dependency to ensure APIs are compatible with older versions of Java.
 -dontwarn org.codehaus.mojo.animal_sniffer.*
 ```
 ## LICENSE
