@@ -1323,9 +1323,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             // 图片视频处理规则
             if (PictureMimeType.isContent(config.cameraPath)) {
                 String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(config.cameraPath));
-                File file = new File(path);
-                size = file.length();
-                mimeType = PictureMimeType.getMimeType(file);
+                if (!TextUtils.isEmpty(path)) {
+                    File file = new File(path);
+                    size = file.length();
+                    mimeType = PictureMimeType.getMimeType(file);
+                }
                 if (PictureMimeType.eqImage(mimeType)) {
                     newSize = MediaUtils.getLocalImageSizeToAndroidQ(this, config.cameraPath);
                 } else {
