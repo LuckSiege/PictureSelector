@@ -123,12 +123,7 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
         }
         if (i == R.id.tv_Quit) {
             handler.removeCallbacks(runnable);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    stop(audio_path);
-                }
-            }, 30);
+            new Handler().postDelayed(() -> stop(audio_path), 30);
             try {
                 closeActivity();
             } catch (Exception e) {
@@ -156,7 +151,7 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
             tv_musicStatus.setText(getString(R.string.picture_pause_audio));
             playOrPause();
         }
-        if (isPlayAudio == false) {
+        if (!isPlayAudio) {
             handler.post(runnable);
             isPlayAudio = true;
         }
