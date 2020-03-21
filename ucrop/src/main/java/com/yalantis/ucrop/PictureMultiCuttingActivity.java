@@ -140,9 +140,9 @@ public class PictureMultiCuttingActivity extends UCropActivity {
         Bundle extras = intent.getExtras();
         String path = list.get(cutIndex).getPath();
         boolean isHttp = MimeType.isHttp(path);
-        String suffix = MimeType.getLastImgType(path.startsWith("content://")
+        String suffix = MimeType.getLastImgType(MimeType.isContent(path)
                 ? FileUtils.getPath(this, Uri.parse(path)) : path);
-        Uri uri = isHttp || path.startsWith("content://") ? Uri.parse(path) : Uri.fromFile(new File(path));
+        Uri uri = isHttp || MimeType.isContent(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
         extras.putParcelable(UCrop.EXTRA_INPUT_URI, uri);
         File file = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ?
                 getExternalFilesDir(Environment.DIRECTORY_PICTURES) : getCacheDir();

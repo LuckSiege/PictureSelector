@@ -123,6 +123,19 @@ public class MimeType {
     }
 
     /**
+     * 是否是content://类型
+     *
+     * @param url
+     * @return
+     */
+    public static boolean isContent(String url) {
+        if (TextUtils.isEmpty(url)) {
+            return false;
+        }
+        return url.startsWith("content://");
+    }
+
+    /**
      * 获取mimeType
      *
      * @param context

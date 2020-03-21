@@ -19,6 +19,7 @@ import com.yalantis.ucrop.model.ImageState;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
 import com.yalantis.ucrop.util.FileUtils;
 import com.yalantis.ucrop.util.ImageHeaderParser;
+import com.yalantis.ucrop.util.MimeType;
 import com.yalantis.ucrop.util.SdkUtils;
 
 import java.io.File;
@@ -154,7 +155,7 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
         if (shouldCrop) {
             ExifInterface originalExif;
             ParcelFileDescriptor parcelFileDescriptor = null;
-            if (SdkUtils.isQ() && mImageInputPath.startsWith("content://")) {
+            if (SdkUtils.isQ() && MimeType.isContent(mImageInputPath)) {
                 parcelFileDescriptor =
                         getContext().getContentResolver().openFileDescriptor(Uri.parse(mImageInputPath), "r");
                 originalExif = new ExifInterface(new FileInputStream(parcelFileDescriptor.getFileDescriptor()));
@@ -170,7 +171,7 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
             }
             return true;
         } else {
-            if (SdkUtils.isQ() && mImageInputPath.startsWith("content://")) {
+            if (SdkUtils.isQ() && MimeType.isContent(mImageInputPath)) {
                 ParcelFileDescriptor parcelFileDescriptor =
                         getContext().getContentResolver().openFileDescriptor(Uri.parse(mImageInputPath), "r");
                 FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();

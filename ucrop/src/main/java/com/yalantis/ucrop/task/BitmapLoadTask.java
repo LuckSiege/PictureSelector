@@ -21,6 +21,7 @@ import com.yalantis.ucrop.callback.BitmapLoadCallback;
 import com.yalantis.ucrop.model.ExifInfo;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
 import com.yalantis.ucrop.util.FileUtils;
+import com.yalantis.ucrop.util.MimeType;
 import com.yalantis.ucrop.util.SdkUtils;
 
 import java.io.BufferedInputStream;
@@ -265,7 +266,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
     protected void onPostExecute(@NonNull BitmapWorkerResult result) {
         if (result.mBitmapWorkerException == null) {
             String inputUriString = mInputUri.toString();
-            mBitmapLoadCallback.onBitmapLoaded(result.mBitmapResult, result.mExifInfo, inputUriString.startsWith("content://") ? inputUriString : mInputUri.getPath(), (mOutputUri == null) ? null : mOutputUri.getPath());
+            mBitmapLoadCallback.onBitmapLoaded(result.mBitmapResult, result.mExifInfo, MimeType.isContent(inputUriString) ? inputUriString : mInputUri.getPath(), (mOutputUri == null) ? null : mOutputUri.getPath());
         } else {
             mBitmapLoadCallback.onFailure(result.mBitmapWorkerException);
         }
