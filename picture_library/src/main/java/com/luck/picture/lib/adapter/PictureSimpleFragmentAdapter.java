@@ -106,73 +106,76 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
         if (contentView == null) {
             contentView = LayoutInflater.from(container.getContext())
                     .inflate(R.layout.picture_image_preview, container, false);
-            // 常规图控件
-            final PhotoView imageView = contentView.findViewById(R.id.preview_image);
-            // 长图控件
-            final SubsamplingScaleImageView longImg = contentView.findViewById(R.id.longImg);
-            // 视频播放按钮
-            ImageView ivPlay = contentView.findViewById(R.id.iv_play);
-            LocalMedia media = images.get(position);
-            if (media != null) {
-                final String mimeType = media.getMimeType();
-                boolean eqVideo = PictureMimeType.eqVideo(mimeType);
-                ivPlay.setVisibility(eqVideo ? View.VISIBLE : View.GONE);
-                final String path;
-                if (media.isCut() && !media.isCompressed()) {
-                    // 裁剪过
-                    path = media.getCutPath();
-                } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
-                    // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
-                    path = media.getCompressPath();
-                } else {
-                    path = media.getPath();
-                }
-                boolean isGif = PictureMimeType.isGif(mimeType);
-                final boolean eqLongImg = MediaUtils.isLongImg(media);
-                imageView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
-                longImg.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
-                // 压缩过的gif就不是gif了
-                if (isGif && !media.isCompressed()) {
-                    if (config != null && PictureSelectionConfig.imageEngine != null) {
-                        PictureSelectionConfig.imageEngine.loadAsGifImage
-                                (contentView.getContext(), path, imageView);
-                    }
-                } else {
-                    if (config != null && PictureSelectionConfig.imageEngine != null) {
-                        if (eqLongImg) {
-                            displayLongPic(SdkVersionUtils.checkedAndroid_Q()
-                                    ? Uri.parse(path) : Uri.fromFile(new File(path)), longImg);
-                        } else {
-                            PictureSelectionConfig.imageEngine.loadImage
-                                    (contentView.getContext(), path, imageView);
-                        }
-                    }
-                }
-                imageView.setOnViewTapListener((view, x, y) -> {
-                    if (onBackPressed != null) {
-                        onBackPressed.onActivityBackPressed();
-                    }
-                });
-                longImg.setOnClickListener(v -> {
-                    if (onBackPressed != null) {
-                        onBackPressed.onActivityBackPressed();
-                    }
-                });
-                ivPlay.setOnClickListener(v -> {
-                    if (PictureSelectionConfig.customVideoPlayCallback != null) {
-                        PictureSelectionConfig.customVideoPlayCallback.startPlayVideo(media);
-                    } else {
-                        Intent intent = new Intent();
-                        Bundle bundle = new Bundle();
-                        bundle.putBoolean(PictureConfig.EXTRA_PREVIEW_VIDEO, true);
-                        bundle.putString(PictureConfig.EXTRA_VIDEO_PATH, path);
-                        intent.putExtras(bundle);
-                        JumpUtils.startPictureVideoPlayActivity(container.getContext(), bundle, PictureConfig.PREVIEW_VIDEO_CODE);
-                    }
-                });
-            }
             mCacheView.put(position, contentView);
         }
+        // 常规图控件
+        PhotoView imageView = contentView.findViewById(R.id.preview_image);
+        // 长图控件
+        SubsamplingScaleImageView longImg = contentView.findViewById(R.id.longImg);
+        // 视频播放按钮
+        ImageView ivPlay = contentView.findViewById(R.id.iv_play);
+
+        LocalMedia media = images.get(position);
+        if (media != null) {
+            final String mimeType = media.getMimeType();
+            final String path;
+            if (media.isCut() && !media.isCompressed()) {
+                // 裁剪过
+                path = media.getCutPath();
+            } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
+                // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
+                path = media.getCompressPath();
+            } else {
+                path = media.getPath();
+            }
+            boolean isGif = PictureMimeType.isGif(mimeType);
+            final boolean eqLongImg = MediaUtils.isLongImg(media);
+            boolean eqVideo = PictureMimeType.eqVideo(mimeType);
+            ivPlay.setVisibility(eqVideo ? View.VISIBLE : View.GONE);
+            ivPlay.setOnClickListener(v -> {
+                if (PictureSelectionConfig.customVideoPlayCallback != null) {
+                    PictureSelectionConfig.customVideoPlayCallback.startPlayVideo(media);
+                } else {
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean(PictureConfig.EXTRA_PREVIEW_VIDEO, true);
+                    bundle.putString(PictureConfig.EXTRA_VIDEO_PATH, path);
+                    intent.putExtras(bundle);
+                    JumpUtils.startPictureVideoPlayActivity(container.getContext(), bundle, PictureConfig.PREVIEW_VIDEO_CODE);
+                }
+            });
+            imageView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
+            imageView.setOnViewTapListener((view, x, y) -> {
+                if (onBackPressed != null) {
+                    onBackPressed.onActivityBackPressed();
+                }
+            });
+            longImg.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
+            longImg.setOnClickListener(v -> {
+                if (onBackPressed != null) {
+                    onBackPressed.onActivityBackPressed();
+                }
+            });
+
+            // 压缩过的gif就不是gif了
+            if (isGif && !media.isCompressed()) {
+                if (config != null && PictureSelectionConfig.imageEngine != null) {
+                    PictureSelectionConfig.imageEngine.loadAsGifImage
+                            (contentView.getContext(), path, imageView);
+                }
+            } else {
+                if (config != null && PictureSelectionConfig.imageEngine != null) {
+                    if (eqLongImg) {
+                        displayLongPic(SdkVersionUtils.checkedAndroid_Q()
+                                ? Uri.parse(path) : Uri.fromFile(new File(path)), longImg);
+                    } else {
+                        PictureSelectionConfig.imageEngine.loadImage
+                                (contentView.getContext(), path, imageView);
+                    }
+                }
+            }
+        }
+
         (container).addView(contentView, 0);
         return contentView;
     }
