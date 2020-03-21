@@ -51,17 +51,21 @@ import androidx.annotation.RestrictTo.Scope;
 import androidx.annotation.UiThread;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
-import androidx.camera.core.FlashModeHelper;
 import androidx.camera.core.FocusMeteringAction;
+import androidx.camera.core.FocusMeteringResult;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCapture.OnImageCapturedCallback;
 import androidx.camera.core.ImageCapture.OnImageSavedCallback;
 import androidx.camera.core.ImageProxy;
-import androidx.camera.core.LensFacingConverter;
 import androidx.camera.core.MeteringPoint;
 import androidx.camera.core.VideoCapture.OnVideoSavedCallback;
+import androidx.camera.core.impl.LensFacingConverter;
+import androidx.camera.core.impl.utils.executor.CameraXExecutors;
+import androidx.camera.core.impl.utils.futures.FutureCallback;
+import androidx.camera.core.impl.utils.futures.Futures;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import com.luck.picture.lib.R;
 
 import java.io.File;
@@ -78,7 +82,7 @@ import java.util.concurrent.Executor;
  * LifecycleOwner}. Use {@link #bindToLifecycle(LifecycleOwner)} to start the camera.
  */
 public final class CameraView extends ViewGroup {
-    static final String TAG = CameraView.class.getSimpleName();
+    static final String TAG = androidx.camera.view.CameraView.class.getSimpleName();
     static final boolean DEBUG = false;
 
     static final int INDEFINITE_VIDEO_DURATION = -1;
@@ -106,7 +110,7 @@ public final class CameraView extends ViewGroup {
     private PinchToZoomGestureDetector mPinchToZoomGestureDetector;
     private boolean mIsPinchToZoomEnabled = true;
     CameraXModule mCameraModule;
-    private final DisplayListener mDisplayListener =
+    private final DisplayManager.DisplayListener mDisplayListener =
             new DisplayListener() {
                 @Override
                 public void onDisplayAdded(int displayId) {
@@ -149,18 +153,14 @@ public final class CameraView extends ViewGroup {
         init(context, attrs);
     }
 
-    /**
-     * Debug logging that can be enabled.
-     */
+    /** Debug logging that can be enabled. */
     private static void log(String msg) {
         if (DEBUG) {
             Log.i(TAG, msg);
         }
     }
 
-    /**
-     * Utility method for converting an displayRotation int into a human readable string.
-     */
+    /** Utility method for converting an displayRotation int into a human readable string. */
     private static String displayRotationToString(int displayRotation) {
         if (displayRotation == Surface.ROTATION_0 || displayRotation == Surface.ROTATION_180) {
             return "Portrait-" + (displayRotation * 90);
@@ -261,7 +261,7 @@ public final class CameraView extends ViewGroup {
     @NonNull
     protected LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(
-                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
     @Override
@@ -275,7 +275,7 @@ public final class CameraView extends ViewGroup {
         state.putInt(EXTRA_SCALE_TYPE, getScaleType().getId());
         state.putFloat(EXTRA_ZOOM_RATIO, getZoomRatio());
         state.putBoolean(EXTRA_PINCH_TO_ZOOM_ENABLED, isPinchToZoomEnabled());
-        state.putString(EXTRA_FLASH, FlashModeHelper.nameOf(getFlash()));
+        state.putString(EXTRA_FLASH, FlashModeConverter.nameOf(getFlash()));
         state.putLong(EXTRA_MAX_VIDEO_DURATION, getMaxVideoDuration());
         state.putLong(EXTRA_MAX_VIDEO_SIZE, getMaxVideoSize());
         if (getCameraLensFacing() != null) {
@@ -297,7 +297,7 @@ public final class CameraView extends ViewGroup {
             setScaleType(ScaleType.fromId(state.getInt(EXTRA_SCALE_TYPE)));
             setZoomRatio(state.getFloat(EXTRA_ZOOM_RATIO));
             setPinchToZoomEnabled(state.getBoolean(EXTRA_PINCH_TO_ZOOM_ENABLED));
-            setFlash(FlashModeHelper.valueOf(state.getString(EXTRA_FLASH)));
+            setFlash(FlashModeConverter.valueOf(state.getString(EXTRA_FLASH)));
             setMaxVideoDuration(state.getLong(EXTRA_MAX_VIDEO_DURATION));
             setMaxVideoSize(state.getLong(EXTRA_MAX_VIDEO_SIZE));
             String lensFacingString = state.getString(EXTRA_CAMERA_DIRECTION);
@@ -434,9 +434,7 @@ public final class CameraView extends ViewGroup {
         mCameraModule.invalidateView();
     }
 
-    /**
-     * Records the size of the preview's buffers.
-     */
+    /** Records the size of the preview's buffers. */
     @UiThread
     void onPreviewSourceDimensUpdated(int srcWidth, int srcHeight) {
         if (srcWidth != mPreviewSrcSize.getWidth()
@@ -650,7 +648,8 @@ public final class CameraView extends ViewGroup {
     }
 
     /**
-     * Takes a picture and calls {@link OnImageSavedCallback#onImageSaved(File)} when done.
+     * Takes a picture and calls
+     * {@link OnImageSavedCallback#onImageSaved(ImageCapture.OutputFileResults)} when done.
      *
      * @param file     The destination.
      * @param executor The executor in which the callback methods will be run.
@@ -675,16 +674,12 @@ public final class CameraView extends ViewGroup {
         mCameraModule.startRecording(file, executor, callback);
     }
 
-    /**
-     * Stops an in progress video.
-     */
+    /** Stops an in progress video. */
     public void stopRecording() {
         mCameraModule.stopRecording();
     }
 
-    /**
-     * @return True if currently recording.
-     */
+    /** @return True if currently recording. */
     public boolean isRecording() {
         return mCameraModule.isRecording();
     }
@@ -729,25 +724,19 @@ public final class CameraView extends ViewGroup {
         mCameraModule.setCameraLensFacing(lensFacing);
     }
 
-    /**
-     * Returns the currently selected lensFacing.
-     */
+    /** Returns the currently selected lensFacing. */
     @Nullable
     public Integer getCameraLensFacing() {
         return mCameraModule.getLensFacing();
     }
 
-    /**
-     * Gets the active flash strategy.
-     */
+    /** Gets the active flash strategy. */
     @ImageCapture.FlashMode
     public int getFlash() {
         return mCameraModule.getFlash();
     }
 
-    /**
-     * Sets the active flash strategy.
-     */
+    /** Sets the active flash strategy. */
     public void setFlash(@ImageCapture.FlashMode int flashMode) {
         mCameraModule.setFlash(flashMode);
     }
@@ -810,10 +799,23 @@ public final class CameraView extends ViewGroup {
 
         Camera camera = mCameraModule.getCamera();
         if (camera != null) {
-            camera.getCameraControl().startFocusAndMetering(
-                    FocusMeteringAction.Builder.from(afPoint, FocusMeteringAction.FLAG_AF)
-                            .addPoint(aePoint, FocusMeteringAction.FLAG_AE)
-                            .build());
+            ListenableFuture<FocusMeteringResult> future =
+                    camera.getCameraControl().startFocusAndMetering(
+                            new FocusMeteringAction.Builder(afPoint,
+                                    FocusMeteringAction.FLAG_AF).addPoint(aePoint,
+                                    FocusMeteringAction.FLAG_AE).build());
+            Futures.addCallback(future, new FutureCallback<FocusMeteringResult>() {
+                @Override
+                public void onSuccess(@Nullable FocusMeteringResult result) {
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    // Throw the unexpected error.
+                    throw new RuntimeException(t);
+                }
+            }, CameraXExecutors.directExecutor());
+
         } else {
             Log.d(TAG, "cannot access camera");
         }
@@ -917,9 +919,7 @@ public final class CameraView extends ViewGroup {
         return mCameraModule.isTorchOn();
     }
 
-    /**
-     * Options for scaling the bounds of the view finder to the bounds of this view.
-     */
+    /** Options for scaling the bounds of the view finder to the bounds of this view. */
     public enum ScaleType {
         /**
          * Scale the view finder, maintaining the source aspect ratio, so the view finder fills the
@@ -933,7 +933,7 @@ public final class CameraView extends ViewGroup {
          */
         CENTER_INSIDE(1);
 
-        private int mId;
+        private final int mId;
 
         int getId() {
             return mId;
@@ -960,13 +960,9 @@ public final class CameraView extends ViewGroup {
      * CameraView}.
      */
     public enum CaptureMode {
-        /**
-         * A mode where image capture is enabled.
-         */
+        /** A mode where image capture is enabled. */
         IMAGE(0),
-        /**
-         * A mode where video capture is enabled.
-         */
+        /** A mode where video capture is enabled. */
         VIDEO(1),
         /**
          * A mode where both image capture and video capture are simultaneously enabled. Note that
@@ -974,7 +970,7 @@ public final class CameraView extends ViewGroup {
          */
         MIXED(2);
 
-        private int mId;
+        private final int mId;
 
         int getId() {
             return mId;

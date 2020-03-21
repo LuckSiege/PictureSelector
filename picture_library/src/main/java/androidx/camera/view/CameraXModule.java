@@ -33,19 +33,19 @@ import androidx.annotation.RequiresPermission;
 import androidx.annotation.UiThread;
 import androidx.camera.core.AspectRatio;
 import androidx.camera.core.Camera;
-import androidx.camera.core.CameraOrientationUtil;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.CameraX;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCapture.OnImageCapturedCallback;
 import androidx.camera.core.ImageCapture.OnImageSavedCallback;
-import androidx.camera.core.LensFacingConverter;
 import androidx.camera.core.Preview;
 import androidx.camera.core.TorchState;
 import androidx.camera.core.UseCase;
 import androidx.camera.core.VideoCapture;
 import androidx.camera.core.VideoCapture.OnVideoSavedCallback;
-import androidx.camera.core.VideoCaptureConfig;
+import androidx.camera.core.impl.LensFacingConverter;
+import androidx.camera.core.impl.VideoCaptureConfig;
+import androidx.camera.core.impl.utils.CameraOrientationUtil;
 import androidx.camera.core.impl.utils.executor.CameraXExecutors;
 import androidx.camera.core.impl.utils.futures.FutureCallback;
 import androidx.camera.core.impl.utils.futures.Futures;
@@ -89,9 +89,9 @@ final class CameraXModule {
     private final Preview.Builder mPreviewBuilder;
     private final VideoCaptureConfig.Builder mVideoCaptureConfigBuilder;
     private final ImageCapture.Builder mImageCaptureBuilder;
-    private WeakReference<CameraView> mCameraViewWeakReference;
+    private WeakReference<CameraView> mWeakReferenceCameraView;
     final AtomicBoolean mVideoIsRecording = new AtomicBoolean(false);
-    private CaptureMode mCaptureMode = CaptureMode.IMAGE;
+    private CameraView.CaptureMode mCaptureMode = CaptureMode.IMAGE;
     private long mMaxVideoDuration = CameraView.INDEFINITE_VIDEO_DURATION;
     private long mMaxVideoSize = CameraView.INDEFINITE_VIDEO_SIZE;
     @ImageCapture.FlashMode
@@ -118,7 +118,7 @@ final class CameraXModule {
                 public void onDestroy(LifecycleOwner owner) {
                     if (owner == mCurrentLifecycle) {
                         clearCurrentLifecycle();
-                        mPreview.setPreviewSurfaceProvider(null);
+                        mPreview.setSurfaceProvider(null);
                     }
                 }
             };
@@ -132,8 +132,8 @@ final class CameraXModule {
     ProcessCameraProvider mCameraProvider;
 
     CameraXModule(CameraView view) {
-        mCameraViewWeakReference = new WeakReference<>(view);
-        Futures.addCallback(ProcessCameraProvider.getInstance(getCameraView().getContext()),
+        mWeakReferenceCameraView = new WeakReference<>(view);
+        Futures.addCallback(ProcessCameraProvider.getInstance(view.getContext()),
                 new FutureCallback<ProcessCameraProvider>() {
                     // TODO(b/124269166): Rethink how we can handle permissions here.
                     @SuppressLint("MissingPermission")
@@ -167,10 +167,6 @@ final class CameraXModule {
         if (getMeasuredWidth() > 0 && getMeasuredHeight() > 0) {
             bindToLifecycleAfterViewMeasured();
         }
-    }
-
-    private CameraView getCameraView() {
-        return mCameraViewWeakReference.get();
     }
 
     @RequiresPermission(permission.CAMERA)
@@ -249,23 +245,22 @@ final class CameraXModule {
         mPreviewBuilder.setTargetResolution(new Size(getMeasuredWidth(), height));
 
         mPreview = mPreviewBuilder.build();
-        mPreview.setPreviewSurfaceProvider((resolution, safeToCancelFuture) -> {
+        mPreview.setSurfaceProvider(surfaceRequest -> {
             // The PreviewSurfaceProvider#createSurfaceFuture() might come asynchronously.
             // It cannot guarantee the callback time, so we store the resolution result in
             // the listenableFuture.
+            Size resolution = surfaceRequest.getResolution();
             mResolutionUpdateCompleter.set(resolution);
             // Create SurfaceTexture and Surface.
             SurfaceTexture surfaceTexture = new FixedSizeSurfaceTexture(0, resolution);
-            surfaceTexture.setDefaultBufferSize(resolution.getWidth(),
-                    resolution.getHeight());
+            surfaceTexture.setDefaultBufferSize(resolution.getWidth(), resolution.getHeight());
             surfaceTexture.detachFromGLContext();
             CameraXModule.this.setSurfaceTexture(surfaceTexture);
             Surface surface = new Surface(surfaceTexture);
-            safeToCancelFuture.addListener(() -> {
+            surfaceRequest.setSurface(surface).addListener(() -> {
                 surface.release();
                 surfaceTexture.release();
             }, CameraXExecutors.directExecutor());
-            return Futures.immediateFuture(surface);
         });
 
         CameraSelector cameraSelector =
@@ -357,7 +352,11 @@ final class CameraXModule {
         ImageCapture.Metadata metadata = new ImageCapture.Metadata();
         metadata.setReversedHorizontal(
                 mCameraLensFacing != null && mCameraLensFacing == CameraSelector.LENS_FACING_FRONT);
-        mImageCapture.takePicture(saveLocation, metadata, executor, callback);
+        ImageCapture.OutputFileOptions outputFileOptions =
+                new ImageCapture.OutputFileOptions.Builder(saveLocation)
+                        .setMetadata(metadata)
+                        .build();
+        mImageCapture.takePicture(outputFileOptions, executor, callback);
     }
 
     public void startRecording(File file, Executor executor, final OnVideoSavedCallback callback) {
@@ -377,7 +376,7 @@ final class CameraXModule {
         mVideoCapture.startRecording(
                 file,
                 executor,
-                new OnVideoSavedCallback() {
+                new VideoCapture.OnVideoSavedCallback() {
                     @Override
                     public void onVideoSaved(@NonNull File savedFile) {
                         mVideoIsRecording.set(false);
@@ -470,7 +469,7 @@ final class CameraXModule {
 
     public float getZoomRatio() {
         if (mCamera != null) {
-            return mCamera.getCameraInfo().getZoomRatio().getValue();
+            return mCamera.getCameraInfo().getZoomState().getValue().getZoomRatio();
         } else {
             return UNITY_ZOOM_SCALE;
         }
@@ -478,7 +477,19 @@ final class CameraXModule {
 
     public void setZoomRatio(float zoomRatio) {
         if (mCamera != null) {
-            mCamera.getCameraControl().setZoomRatio(zoomRatio);
+            ListenableFuture<Void> future = mCamera.getCameraControl().setZoomRatio(
+                    zoomRatio);
+            Futures.addCallback(future, new FutureCallback<Void>() {
+                @Override
+                public void onSuccess(@Nullable Void result) {
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    // Throw the unexpected error.
+                    throw new RuntimeException(t);
+                }
+            }, CameraXExecutors.directExecutor());
         } else {
             Log.e(TAG, "Failed to set zoom ratio");
         }
@@ -486,7 +497,7 @@ final class CameraXModule {
 
     public float getMinZoomRatio() {
         if (mCamera != null) {
-            return mCamera.getCameraInfo().getMinZoomRatio().getValue();
+            return mCamera.getCameraInfo().getZoomState().getValue().getMinZoomRatio();
         } else {
             return UNITY_ZOOM_SCALE;
         }
@@ -494,7 +505,7 @@ final class CameraXModule {
 
     public float getMaxZoomRatio() {
         if (mCamera != null) {
-            return mCamera.getCameraInfo().getMaxZoomRatio().getValue();
+            return mCamera.getCameraInfo().getZoomState().getValue().getMaxZoomRatio();
         } else {
             return ZOOM_NOT_SUPPORTED;
         }
@@ -630,7 +641,18 @@ final class CameraXModule {
         if (mCamera == null) {
             return;
         }
-        mCamera.getCameraControl().enableTorch(torch);
+        ListenableFuture<Void> future = mCamera.getCameraControl().enableTorch(torch);
+        Futures.addCallback(future, new FutureCallback<Void>() {
+            @Override
+            public void onSuccess(@Nullable Void result) {
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                // Throw the unexpected error.
+                throw new RuntimeException(t);
+            }
+        }, CameraXExecutors.directExecutor());
     }
 
     public boolean isTorchOn() {
@@ -642,6 +664,10 @@ final class CameraXModule {
 
     public Context getContext() {
         return getCameraView().getContext();
+    }
+
+    public CameraView getCameraView() {
+        return mWeakReferenceCameraView.get();
     }
 
     public int getWidth() {
@@ -707,11 +733,11 @@ final class CameraXModule {
     }
 
     @NonNull
-    public CaptureMode getCaptureMode() {
+    public CameraView.CaptureMode getCaptureMode() {
         return mCaptureMode;
     }
 
-    public void setCaptureMode(@NonNull CaptureMode captureMode) {
+    public void setCaptureMode(@NonNull CameraView.CaptureMode captureMode) {
         this.mCaptureMode = captureMode;
         rebindToLifecycle();
     }
@@ -735,5 +761,4 @@ final class CameraXModule {
     public boolean isPaused() {
         return false;
     }
-
 }

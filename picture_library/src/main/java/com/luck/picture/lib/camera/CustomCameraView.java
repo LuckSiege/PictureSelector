@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
@@ -17,6 +18,7 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.camera.core.ImageCapture;
+import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.VideoCapture;
 import androidx.camera.view.CameraView;
 import androidx.core.content.ContextCompat;
@@ -129,40 +131,40 @@ public class CustomCameraView extends RelativeLayout {
                 mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
                 mCameraView.setCaptureMode(androidx.camera.view.CameraView.CaptureMode.IMAGE);
-                mCameraView.takePicture(createImageFile(), ContextCompat.getMainExecutor(getContext()),
-                        new ImageCapture.OnImageSavedCallback() {
-                            @Override
-                            public void onImageSaved(@NonNull File file) {
-                                if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(mConfig.cameraPath)) {
-                                    PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Boolean>() {
+                File imageOutFile = createImageFile();
+                mCameraView.takePicture(imageOutFile, ContextCompat.getMainExecutor(getContext()), new ImageCapture.OnImageSavedCallback() {
+                    @Override
+                    public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                        if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(mConfig.cameraPath)) {
+                            PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Boolean>() {
 
-                                        @Override
-                                        public Boolean doInBackground() {
-                                            return AndroidQTransformUtils.copyPathToDCIM(getContext(),
-                                                    file, Uri.parse(mConfig.cameraPath));
-                                        }
+                                @Override
+                                public Boolean doInBackground() {
+                                    return AndroidQTransformUtils.copyPathToDCIM(getContext(),
+                                            imageOutFile, Uri.parse(mConfig.cameraPath));
+                                }
 
-                                        @Override
-                                        public void onSuccess(Boolean result) {
-                                            PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
-                                        }
-                                    });
+                                @Override
+                                public void onSuccess(Boolean result) {
+                                    PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
                                 }
-                                mPhotoFile = file;
-                                if (mImageCallbackListener != null) {
-                                    mImageCallbackListener.onLoadImage(file, mImagePreview);
-                                }
-                                mImagePreview.setVisibility(View.VISIBLE);
-                                mCaptureLayout.startTypeBtnAnimator();
-                            }
+                            });
+                        }
+                        mPhotoFile = imageOutFile;
+                        if (mImageCallbackListener != null) {
+                            mImageCallbackListener.onLoadImage(imageOutFile, mImagePreview);
+                        }
+                        mImagePreview.setVisibility(View.VISIBLE);
+                        mCaptureLayout.startTypeBtnAnimator();
+                    }
 
-                            @Override
-                            public void onError(int imageCaptureError, @NonNull String message, @Nullable Throwable cause) {
-                                if (mCameraListener != null) {
-                                    mCameraListener.onError(imageCaptureError, message, cause);
-                                }
-                            }
-                        });
+                    @Override
+                    public void onError(@NonNull ImageCaptureException exception) {
+                        if (mCameraListener != null) {
+                            mCameraListener.onError(exception.getImageCaptureError(), exception.getMessage(), exception.getCause());
+                        }
+                    }
+                });
             }
 
             @Override

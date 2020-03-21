@@ -320,6 +320,7 @@ public class PictureFileUtils {
         try {
             outBuffer = Okio.buffer(Okio.sink(outFile));
             outBuffer.writeAll(inBuffer);
+            outBuffer.flush();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -344,6 +345,7 @@ public class PictureFileUtils {
             inBuffer = Okio.buffer(Okio.source(inFile));
             outBuffer = Okio.buffer(Okio.sink(outPutStream));
             outBuffer.writeAll(inBuffer);
+            outBuffer.flush();
             return true;
         } catch (Exception e) {
             e.printStackTrace();

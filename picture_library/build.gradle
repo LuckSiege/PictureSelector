@@ -31,7 +31,7 @@ dependencies {
     //noinspection GradleCompatible
     implementation "androidx.recyclerview:recyclerview:${cfgs.version_recyclerview}"
     implementation "androidx.concurrent:concurrent-futures:${cfgs.futures_version}"
-    implementation "androidx.camera:camera-lifecycle:${cfgs.lifecycle_version}"
+    implementation "androidx.camera:camera-lifecycle:${cfgs.camerax_version}"
     implementation "com.squareup.okio:okio:${cfgs.okio_version}"
     api "androidx.camera:camera-core:${cfgs.camerax_version}"
     api "androidx.camera:camera-camera2:${cfgs.camerax_version}"
