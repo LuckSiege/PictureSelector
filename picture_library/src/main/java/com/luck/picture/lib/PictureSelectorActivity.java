@@ -122,7 +122,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     readLocalMedia();
                 }
             } else {
-                showPermissionsDialog(getString(R.string.picture_jurisdiction));
+                showPermissionsDialog(false, getString(R.string.picture_jurisdiction));
             }
             isEnterSetting = false;
         }
@@ -1759,7 +1759,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     readLocalMedia();
                 } else {
-                    showPermissionsDialog(getString(R.string.picture_jurisdiction));
+                    showPermissionsDialog(false, getString(R.string.picture_jurisdiction));
                 }
                 break;
             case PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE:
@@ -1767,7 +1767,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     onTakePhoto();
                 } else {
-                    showPermissionsDialog(getString(R.string.picture_camera));
+                    showPermissionsDialog(true, getString(R.string.picture_camera));
                 }
                 break;
             case PictureConfig.APPLY_CAMERA_STORAGE_PERMISSIONS_CODE:
@@ -1775,7 +1775,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startCamera();
                 } else {
-                    showPermissionsDialog(getString(R.string.picture_jurisdiction));
+                    showPermissionsDialog(false, getString(R.string.picture_jurisdiction));
                 }
                 break;
             case PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE:
@@ -1783,7 +1783,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startCustomCamera();
                 } else {
-                    showPermissionsDialog(getString(R.string.picture_camera));
+                    showPermissionsDialog(false, getString(R.string.picture_camera));
                 }
                 break;
         }
@@ -1792,7 +1792,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     /**
      * 权限提示
      */
-    private void showPermissionsDialog(String errorMsg) {
+    private void showPermissionsDialog(boolean isCamera, String errorMsg) {
         if (isFinishing()) {
             return;
         }
@@ -1811,7 +1811,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (!isFinishing()) {
                 dialog.dismiss();
             }
-            closeActivity();
+            if (!isCamera) {
+                closeActivity();
+            }
         });
         btn_commit.setOnClickListener(v -> {
             if (!isFinishing()) {
