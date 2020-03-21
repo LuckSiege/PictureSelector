@@ -1,7 +1,6 @@
 package com.luck.picture.lib;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.TextView;
@@ -85,7 +84,6 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
             int size = selectImages != null ? selectImages.size() : 0;
             for (int i = 0; i < size; i++) {
                 LocalMedia media = selectImages.get(i);
-                Log.i("YYY", "getParentFolderName: " + media.getParentFolderName() + " currentDirectory:" + currentDirectory);
                 if (isEqualsDirectory(media.getParentFolderName(), currentDirectory)) {
                     media.setChecked(isShowCamera ? media.position - 1 == position : media.position == position);
                 }
