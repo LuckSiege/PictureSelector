@@ -215,7 +215,7 @@ public class LocalMediaLoader {
                             }
                         }
                         LocalMedia image = new LocalMedia
-                                (id, url, fileName, duration, config.chooseMode, mimeType, width, height, size);
+                                (id, url, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size);
                         LocalMediaFolder folder = getImageFolder(url, folderName, imageFolders);
                         List<LocalMedia> images = folder.getImages();
                         images.add(image);

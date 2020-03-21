@@ -570,6 +570,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_LIST, (ArrayList<? extends Parcelable>) selectedImages);
         bundle.putBoolean(PictureConfig.EXTRA_BOTTOM_PREVIEW, true);
         bundle.putBoolean(PictureConfig.EXTRA_CHANGE_ORIGINAL, config.isCheckOriginalImage);
+        bundle.putBoolean(PictureConfig.EXTRA_SHOW_CAMERA, mAdapter.isShowCamera());
+        bundle.putString(PictureConfig.EXTRA_IS_CURRENT_DIRECTORY, mTvPictureTitle.getText().toString());
         JumpUtils.startPicturePreviewActivity(getContext(), config.isWeChatStyle, bundle,
                 config.selectionMode == PictureConfig.SINGLE ? UCrop.REQUEST_CROP : UCrop.REQUEST_MULTI_CROP);
 
@@ -978,7 +980,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
     @Override
     public void onItemClick(boolean isCameraFolder, String folderName, List<LocalMedia> images) {
-        boolean camera = config.isCamera ? isCameraFolder : false;
+        boolean camera = config.isCamera && isCameraFolder;
         mAdapter.setShowCamera(camera);
         mTvPictureTitle.setText(folderName);
         folderWindow.dismiss();
@@ -1069,6 +1071,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_LIST, (ArrayList<? extends Parcelable>) selectedImages);
             bundle.putInt(PictureConfig.EXTRA_POSITION, position);
             bundle.putBoolean(PictureConfig.EXTRA_CHANGE_ORIGINAL, config.isCheckOriginalImage);
+            bundle.putBoolean(PictureConfig.EXTRA_SHOW_CAMERA, mAdapter.isShowCamera());
+            bundle.putString(PictureConfig.EXTRA_IS_CURRENT_DIRECTORY, mTvPictureTitle.getText().toString());
             JumpUtils.startPicturePreviewActivity(getContext(), config.isWeChatStyle, bundle,
                     config.selectionMode == PictureConfig.SINGLE ? UCrop.REQUEST_CROP : UCrop.REQUEST_MULTI_CROP);
             overridePendingTransition(config.windowAnimationStyle != null
@@ -1661,6 +1665,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             LocalMediaFolder folder = getImageFolder(media.getPath(), foldersList);
             LocalMediaFolder cameraFolder = foldersList.size() > 0 ? foldersList.get(0) : null;
             if (cameraFolder != null && folder != null) {
+                media.setParentFolderName(folder.getName());
                 // 相机胶卷
                 cameraFolder.setFirstImagePath(media.getPath());
                 cameraFolder.setImages(images);

@@ -143,6 +143,9 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         }
         List<LocalMedia> medias = new ArrayList<>();
         Uri resultUri = UCrop.getOutput(data);
+        if (resultUri == null) {
+            return;
+        }
         String cutPath = resultUri.getPath();
         // 单独拍照
         LocalMedia media = new LocalMedia(config.cameraPath, 0, false,
@@ -155,7 +158,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 media.setCut(false);
                 if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(config.cameraPath)) {
                     String path = PictureFileUtils.getPath(this, Uri.parse(config.cameraPath));
-                    media.setSize(new File(path).length());
+                    media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
                 } else {
                     media.setSize(new File(config.cameraPath).length());
                 }

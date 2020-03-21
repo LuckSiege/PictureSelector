@@ -23,6 +23,9 @@ import com.luck.picture.lib.tools.ScreenUtils;
  * @describe：PictureSelector 预览微信风格
  */
 public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewActivity {
+    /**
+     * alpha动画时长
+     */
     private final static int ALPHA_DURATION = 300;
     private TextView mPictureSendView;
     private RecyclerView mRvGallery;
@@ -65,8 +68,12 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
         mRvGallery.setAdapter(mGalleryAdapter);
         mGalleryAdapter.setItemClickListener((position, media, v) -> {
             if (viewPager != null && media != null) {
-                int newPosition = is_bottom_preview ? position : media.position - 1;
-                viewPager.setCurrentItem(newPosition);
+                if (isEqualsDirectory(media.getParentFolderName(), currentDirectory)) {
+                    int newPosition = is_bottom_preview ? position : isShowCamera ? media.position - 1 : media.position;
+                    viewPager.setCurrentItem(newPosition);
+                } else {
+                    // TODO The picture is not in the album directory, click invalid
+                }
             }
         });
         if (is_bottom_preview) {
@@ -77,9 +84,26 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
             int size = selectImages != null ? selectImages.size() : 0;
             for (int i = 0; i < size; i++) {
                 LocalMedia media = selectImages.get(i);
-                media.setChecked(media.position - 1 == position);
+                if (isEqualsDirectory(media.getParentFolderName(), currentDirectory)) {
+                    media.setChecked(isShowCamera ? media.position - 1 == position : media.position == position);
+                }
             }
         }
+    }
+
+    /**
+     * 是否是相同目录
+     *
+     * @param parentFolderName
+     * @param currentDirectory
+     * @return
+     */
+    private boolean isEqualsDirectory(String parentFolderName, String currentDirectory) {
+        return is_bottom_preview
+                || TextUtils.isEmpty(parentFolderName)
+                || TextUtils.isEmpty(currentDirectory)
+                || currentDirectory.equals(getString(R.string.picture_camera_roll))
+                || parentFolderName.equals(currentDirectory);
     }
 
     @Override

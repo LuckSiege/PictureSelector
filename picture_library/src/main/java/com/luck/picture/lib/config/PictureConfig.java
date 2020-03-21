@@ -30,6 +30,8 @@ public final class PictureConfig {
     public final static String EXTRA_DIRECTORY_PATH = "directory_path";
     public final static String EXTRA_BOTTOM_PREVIEW = "bottom_preview";
     public final static String EXTRA_CONFIG = "PictureSelectorConfig";
+    public final static String EXTRA_SHOW_CAMERA = "isShowCamera";
+    public final static String EXTRA_IS_CURRENT_DIRECTORY = "currentDirectory";
 
     public final static String CAMERA_FACING = "android.intent.extras.CAMERA_FACING";
 

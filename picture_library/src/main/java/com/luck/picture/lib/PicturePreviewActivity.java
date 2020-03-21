@@ -60,6 +60,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     protected RelativeLayout selectBarLayout;
     protected CheckBox mCbOriginal;
     protected View titleViewBg;
+    protected boolean isShowCamera;
+    protected String currentDirectory;
     /**
      * 是否已完成选择
      */
@@ -117,6 +119,9 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 getParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST);
         is_bottom_preview = getIntent().
                 getBooleanExtra(PictureConfig.EXTRA_BOTTOM_PREVIEW, false);
+        isShowCamera = getIntent().getBooleanExtra(PictureConfig.EXTRA_SHOW_CAMERA, config.isCamera);
+        // 当前目录
+        currentDirectory = getIntent().getStringExtra(PictureConfig.EXTRA_IS_CURRENT_DIRECTORY);
         // 底部预览按钮过来
         images = is_bottom_preview ? getIntent().
                 getParcelableArrayListExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST)
