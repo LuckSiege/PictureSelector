@@ -1,7 +1,6 @@
 package com.luck.picture.lib;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.TextView;
@@ -69,15 +68,11 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
         mRvGallery.setAdapter(mGalleryAdapter);
         mGalleryAdapter.setItemClickListener((position, media, v) -> {
             if (viewPager != null && media != null) {
-                Log.i("YYY", "ParentFolderName: " + media.getParentFolderName() + " CurrentDirectory:" + currentDirectory);
-                Log.i("YYY", "path:" + media.getPath());
                 if (isEqualsDirectory(media.getParentFolderName(), currentDirectory)) {
-                    Log.i("YYY", "isEqualsDirectory is true");
                     int newPosition = is_bottom_preview ? position : isShowCamera ? media.position - 1 : media.position;
                     viewPager.setCurrentItem(newPosition);
                 } else {
                     // TODO The picture is not in the album directory, click invalid
-                    Log.i("YYY", "isEqualsDirectory is false");
                 }
             }
         });
