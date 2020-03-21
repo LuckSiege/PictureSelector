@@ -1406,7 +1406,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         if (PictureMimeType.eqVideo(media.getMimeType()) && config.maxVideoSelectNum > 0) {
                             // 视频还可选
                             if (videoSize < config.maxVideoSelectNum) {
-                                selectedImages.add(media);
+                                selectedImages.add(0, media);
                                 mAdapter.bindSelectImages(selectedImages);
                             } else {
                                 ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), media.getMimeType(),
@@ -1415,7 +1415,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         } else {
                             // 图片还可选
                             if (imageSize < config.maxSelectNum) {
-                                selectedImages.add(media);
+                                selectedImages.add(0, media);
                                 mAdapter.bindSelectImages(selectedImages);
                             } else {
                                 ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), media.getMimeType(),
@@ -1429,7 +1429,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             if (count < config.maxVideoSelectNum) {
                                 if (mimeTypeSame || count == 0) {
                                     if (selectedImages.size() < config.maxVideoSelectNum) {
-                                        selectedImages.add(media);
+                                        selectedImages.add(0, media);
                                         mAdapter.bindSelectImages(selectedImages);
                                     }
                                 }
@@ -1442,10 +1442,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             if (count < config.maxSelectNum) {
                                 // 类型相同或还没有选中才加进选中集合中
                                 if (mimeTypeSame || count == 0) {
-                                    if (count < config.maxSelectNum) {
-                                        selectedImages.add(media);
-                                        mAdapter.bindSelectImages(selectedImages);
-                                    }
+                                    selectedImages.add(0, media);
+                                    mAdapter.bindSelectImages(selectedImages);
                                 }
                             } else {
                                 ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), mimeType,
