@@ -132,9 +132,6 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
     @Override
     protected void onDestroy() {
         CameraX.unbindAll();
-        if (mCameraView != null) {
-            mCameraView.removeAllViews();
-        }
         super.onDestroy();
     }
 }
