@@ -38,6 +38,8 @@ import androidx.core.util.Preconditions;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.lang.ref.WeakReference;
+
 import static androidx.camera.core.SurfaceRequest.Result;
 import static androidx.camera.view.ScaleTypeTransform.getFillScaleWithBufferAspectRatio;
 import static androidx.camera.view.ScaleTypeTransform.getOriginOfCenteredView;
@@ -50,7 +52,7 @@ public class TextureViewImplementation implements PreviewView.Implementation {
 
     private static final String TAG = "TextureViewImpl";
 
-    private FrameLayout mParent;
+    private WeakReference<FrameLayout> mWeakReferenceParent;
     TextureView mTextureView;
     SurfaceTexture mSurfaceTexture;
     private Size mResolution;
@@ -59,7 +61,7 @@ public class TextureViewImplementation implements PreviewView.Implementation {
 
     @Override
     public void init(@NonNull FrameLayout parent) {
-        mParent = parent;
+        mWeakReferenceParent = new WeakReference<>(parent);
     }
 
     @NonNull
@@ -87,15 +89,20 @@ public class TextureViewImplementation implements PreviewView.Implementation {
 
     @Override
     public void onDisplayChanged() {
-        if (mParent == null || mTextureView == null || mResolution == null) {
+        if (getParent() == null || mTextureView == null || mResolution == null) {
             return;
         }
 
-        correctPreviewForCenterCrop(mParent, mTextureView, mResolution);
+        correctPreviewForCenterCrop(getParent(), mTextureView, mResolution);
     }
 
+    private FrameLayout getParent() {
+        return mWeakReferenceParent.get();
+    }
+
+
     private void initInternal() {
-        mTextureView = new TextureView(mParent.getContext());
+        mTextureView = new TextureView(getParent().getContext());
         mTextureView.setLayoutParams(
                 new FrameLayout.LayoutParams(mResolution.getWidth(), mResolution.getHeight()));
         mTextureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
@@ -159,8 +166,8 @@ public class TextureViewImplementation implements PreviewView.Implementation {
         // Even though PreviewView calls `removeAllViews()` before calling init(), it should be
         // called again here in case `getPreviewSurfaceProvider()` is called more than once on
         // the same TextureViewImplementation instance.
-        mParent.removeAllViews();
-        mParent.addView(mTextureView);
+        getParent().removeAllViews();
+        getParent().addView(mTextureView);
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -197,7 +204,7 @@ public class TextureViewImplementation implements PreviewView.Implementation {
 
         mSurfaceRequest = null;
 
-        correctPreviewForCenterCrop(mParent, mTextureView, mResolution);
+        correctPreviewForCenterCrop(getParent(), mTextureView, mResolution);
     }
 
     /**
