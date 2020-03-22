@@ -321,7 +321,7 @@ public class CustomCameraView extends RelativeLayout {
                 cameraFileName = mConfig.camera ? mConfig.cameraFileName : StringUtils.rename(mConfig.cameraFileName);
             }
             File cameraFile = PictureFileUtils.createCameraFile(getContext(),
-                    PictureMimeType.ofImage(), cameraFileName, mConfig.suffixType);
+                    PictureMimeType.ofImage(), cameraFileName, mConfig.suffixType, mConfig.outPutCameraPath);
             mConfig.cameraPath = cameraFile.getAbsolutePath();
             return cameraFile;
         }
@@ -351,7 +351,7 @@ public class CustomCameraView extends RelativeLayout {
                 cameraFileName = mConfig.camera ? mConfig.cameraFileName : StringUtils.rename(mConfig.cameraFileName);
             }
             File cameraFile = PictureFileUtils.createCameraFile(getContext(),
-                    PictureMimeType.ofVideo(), cameraFileName, mConfig.suffixType);
+                    PictureMimeType.ofVideo(), cameraFileName, mConfig.suffixType, mConfig.outPutCameraPath);
             mConfig.cameraPath = cameraFile.getAbsolutePath();
             return cameraFile;
         }

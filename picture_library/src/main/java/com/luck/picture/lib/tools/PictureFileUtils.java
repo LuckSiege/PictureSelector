@@ -48,15 +48,17 @@ public class PictureFileUtils {
     public static final String POST_VIDEO = ".mp4";
     public static final String POST_AUDIO = ".mp3";
 
+
     /**
      * @param context
      * @param type
      * @param format
+     * @param outCameraDirectory
      * @return
      */
     @Nullable
-    public static File createCameraFile(Context context, int type, String fileName, String format) {
-        return createMediaFile(context, type, fileName, format);
+    public static File createCameraFile(Context context, int type, String fileName, String format, String outCameraDirectory) {
+        return createMediaFile(context, type, fileName, format, outCameraDirectory);
     }
 
     /**
@@ -66,24 +68,42 @@ public class PictureFileUtils {
      * @param type
      * @param fileName
      * @param format
+     * @param outCameraDirectory
      * @return
      */
     @Nullable
-    private static File createMediaFile(Context context, int chooseMode, String fileName, String format) {
-        return createOutFile(context, chooseMode, fileName, format);
+    private static File createMediaFile(Context context, int chooseMode, String fileName, String format, String outCameraDirectory) {
+        return createOutFile(context, chooseMode, fileName, format, outCameraDirectory);
     }
 
     @Nullable
-    private static File createOutFile(Context context, int chooseMode, String fileName, String format) {
-        String state = Environment.getExternalStorageState();
-        File rootDir = state.equals(Environment.MEDIA_MOUNTED) ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
-                : getRootDirFile(context, chooseMode);
-        if (rootDir != null && !rootDir.exists() && rootDir.mkdirs()) {
+    private static File createOutFile(Context context, int chooseMode, String fileName, String format, String outCameraDirectory) {
+        File folderDir = null;
+        if (TextUtils.isEmpty(outCameraDirectory)) {
+            // 外部没有自定义拍照存储路径使用默认
+            String state = Environment.getExternalStorageState();
+            File rootDir = state.equals(Environment.MEDIA_MOUNTED) ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+                    : getRootDirFile(context, chooseMode);
+            if (rootDir != null) {
+                if (!rootDir.exists()) {
+                    rootDir.mkdirs();
+                }
+                folderDir = new File(rootDir.getAbsolutePath() + File.separator + "Camera" + File.separator);
+                if (!folderDir.exists() && folderDir.mkdirs()) {
+                }
+            }
+        } else {
+            // 自定义存储路径
+            folderDir = new File(outCameraDirectory);
+            if (!folderDir.exists()) {
+                folderDir.mkdirs();
+            }
         }
 
-        File folderDir = new File(rootDir.getAbsolutePath() + File.separator + "Camera" + File.separator);
-        if (folderDir != null && !folderDir.exists() && folderDir.mkdirs()) {
+        if (folderDir == null) {
+            throw new NullPointerException("The media output path cannot be null");
         }
+
         boolean isOutFileNameEmpty = TextUtils.isEmpty(fileName);
         switch (chooseMode) {
             case PictureConfig.TYPE_VIDEO:

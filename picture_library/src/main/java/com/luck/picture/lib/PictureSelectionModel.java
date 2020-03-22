@@ -603,15 +603,13 @@ public class PictureSelectionModel {
     }
 
     /**
-     * # Responding to the Q version of Android, it's all in the app
-     * sandbox so customizations are no longer provided
+     * Extra used with {@link #Environment.getExternalStorageDirectory() +  File.separator + "CustomCamera" + File.separator}  to indicate that
      *
-     * @param outputCameraPath Camera save path   由于Android Q的原因 其实此方法作用的意义就没了
+     * @param outPutCameraPath Camera save path 只支持Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
      * @return
      */
-    @Deprecated
-    public PictureSelectionModel setOutputCameraPath(String outputCameraPath) {
-        selectionConfig.outputCameraPath = outputCameraPath;
+    public PictureSelectionModel setOutputCameraPath(String outPutCameraPath) {
+        selectionConfig.outPutCameraPath = outPutCameraPath;
         return this;
     }
 

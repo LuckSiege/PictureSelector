@@ -895,8 +895,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                     config.cameraFileName = !isSuffixOfImage ? StringUtils.renameSuffix(config.cameraFileName, PictureMimeType.JPEG) : config.cameraFileName;
                     cameraFileName = config.camera ? config.cameraFileName : StringUtils.rename(config.cameraFileName);
                 }
+
                 File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(),
-                        chooseMode, cameraFileName, config.suffixType);
+                        chooseMode, cameraFileName, config.suffixType, config.outPutCameraPath);
+
                 config.cameraPath = cameraFile.getAbsolutePath();
 
                 imageUri = PictureFileUtils.parUri(this, cameraFile);
@@ -938,7 +940,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                     cameraFileName = config.camera ? config.cameraFileName : StringUtils.rename(config.cameraFileName);
                 }
                 File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(),
-                        chooseMode, cameraFileName, config.suffixType);
+                        chooseMode, cameraFileName, config.suffixType, config.outPutCameraPath);
                 config.cameraPath = cameraFile.getAbsolutePath();
                 imageUri = PictureFileUtils.parUri(this, cameraFile);
             }

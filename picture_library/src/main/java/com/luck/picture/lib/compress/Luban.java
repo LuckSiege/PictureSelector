@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings("unused")
 public class Luban implements Handler.Callback {
@@ -262,6 +263,9 @@ public class Luban implements Handler.Callback {
     private File compressRealLocalMedia(Context context, InputStreamProvider path) throws IOException {
         File result;
         LocalMedia media = path.getMedia();
+        if (media == null) {
+            throw new NullPointerException("Luban Compress LocalMedia Can't be empty");
+        }
         String newPath;
         if (isAndroidQ) {
             newPath = !TextUtils.isEmpty(media.getRealPath()) ? media.getRealPath() :
@@ -269,7 +273,7 @@ public class Luban implements Handler.Callback {
         } else {
             newPath = path.getPath();
         }
-        String suffix = Checker.SINGLE.extSuffix(media != null ? path.getMedia().getMimeType() : "");
+        String suffix = Checker.SINGLE.extSuffix(media.getMimeType());
         File outFile = getImageCacheFile(context, path, TextUtils.isEmpty(suffix) ? Checker.SINGLE.extSuffix(path) : suffix);
         String filename = "";
         if (!TextUtils.isEmpty(mNewFileName)) {
@@ -321,9 +325,9 @@ public class Luban implements Handler.Callback {
                 boolean isCompress = Checker.SINGLE.needCompressToLocalMedia(mLeastCompressSize, newPath);
                 result = isCompress ? new Engine(path, outFile, focusAlpha, compressQuality).compress() :
                         isAndroidQ ? new File(media.isCut() ? media.getCutPath() :
-                                AndroidQTransformUtils.copyPathToAndroidQ
+                                Objects.requireNonNull(AndroidQTransformUtils.copyPathToAndroidQ
                                         (context, Uri.parse(path.getPath()),
-                                                media.getMimeType(), filename)) : new File(newPath);
+                                                media.getMimeType(), filename))) : new File(newPath);
             }
         }
         return result;
