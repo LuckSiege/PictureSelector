@@ -26,7 +26,7 @@ ext {
             androidx_transition_version   : "1.2.0-rc01",
 
             // okio
-            okio_version                  : "2.4.3"
+            okio_version                  : "2.5.0"
 
     ]
 }
