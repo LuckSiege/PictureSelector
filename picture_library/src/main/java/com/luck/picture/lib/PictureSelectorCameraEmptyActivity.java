@@ -77,7 +77,17 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         // 启动相机拍照,先判断手机是否有拍照权限
         if (PermissionChecker
                 .checkSelfPermission(this, Manifest.permission.CAMERA)) {
-            startCamera();
+            boolean isPermissionChecker = true;
+            if (config.isUseCustomCamera) {
+                isPermissionChecker = PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+            }
+            if (isPermissionChecker) {
+                startCamera();
+            } else {
+                PermissionChecker
+                        .requestPermissions(this,
+                                new String[]{Manifest.permission.RECORD_AUDIO}, PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE);
+            }
         } else {
             PermissionChecker.requestPermissions(this,
                     new String[]{Manifest.permission.CAMERA}, PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE);
@@ -307,7 +317,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         switch (requestCode) {
             case PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE:
                 // 存储权限
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     PermissionChecker.requestPermissions(this,
                             new String[]{Manifest.permission.CAMERA}, PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE);
                 } else {
@@ -317,11 +327,20 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 break;
             case PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE:
                 // 相机权限
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     onTakePhoto();
                 } else {
                     closeActivity();
                     ToastUtils.s(getContext(), getString(R.string.picture_camera));
+                }
+                break;
+            case PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE:
+                // 录音权限
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    onTakePhoto();
+                } else {
+                    closeActivity();
+                    ToastUtils.s(getContext(), getString(R.string.picture_audio));
                 }
                 break;
         }

@@ -1809,10 +1809,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
     }
 
-    /**
-     * 权限提示
-     */
-    private void showPermissionsDialog(boolean isCamera, String errorMsg) {
+    @Override
+    protected void showPermissionsDialog(boolean isCamera, String errorMsg) {
         if (isFinishing()) {
             return;
         }

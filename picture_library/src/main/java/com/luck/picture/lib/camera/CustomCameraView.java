@@ -302,7 +302,7 @@ public class CustomCameraView extends RelativeLayout {
         if (SdkVersionUtils.checkedAndroid_Q()) {
             String diskCacheDir = PictureFileUtils.getDiskCacheDir(getContext());
             File rootDir = new File(diskCacheDir);
-            if (rootDir != null && !rootDir.exists() && rootDir.mkdirs()) {
+            if (!rootDir.exists() && rootDir.mkdirs()) {
             }
             boolean isOutFileNameEmpty = TextUtils.isEmpty(mConfig.cameraFileName);
             String suffix = TextUtils.isEmpty(mConfig.suffixType) ? PictureFileUtils.POSTFIX : mConfig.suffixType;
@@ -331,7 +331,7 @@ public class CustomCameraView extends RelativeLayout {
         if (SdkVersionUtils.checkedAndroid_Q()) {
             String diskCacheDir = PictureFileUtils.getVideoDiskCacheDir(getContext());
             File rootDir = new File(diskCacheDir);
-            if (rootDir != null && !rootDir.exists() && rootDir.mkdirs()) {
+            if (!rootDir.exists() && rootDir.mkdirs()) {
             }
             boolean isOutFileNameEmpty = TextUtils.isEmpty(mConfig.cameraFileName);
             String suffix = TextUtils.isEmpty(mConfig.suffixType) ? PictureMimeType.MP4 : mConfig.suffixType;

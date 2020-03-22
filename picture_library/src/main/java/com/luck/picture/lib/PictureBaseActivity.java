@@ -997,4 +997,11 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    /**
+     * 权限提示
+     */
+    protected void showPermissionsDialog(boolean isCamera, String errorMsg) {
+
+    }
 }
