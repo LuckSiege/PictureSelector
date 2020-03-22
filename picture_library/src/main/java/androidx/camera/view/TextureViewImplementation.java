@@ -53,7 +53,7 @@ public class TextureViewImplementation implements PreviewView.Implementation {
     private static final String TAG = "TextureViewImpl";
 
     private WeakReference<FrameLayout> mWeakReferenceParent;
-    TextureView mTextureView;
+    private WeakReference<TextureView> mWeakReferenceTextureView;
     SurfaceTexture mSurfaceTexture;
     private Size mResolution;
     ListenableFuture<Result> mSurfaceReleaseFuture;
@@ -76,7 +76,7 @@ public class TextureViewImplementation implements PreviewView.Implementation {
 
             mSurfaceRequest = surfaceRequest;
             surfaceRequest.addRequestCancellationListener(
-                    ContextCompat.getMainExecutor(mTextureView.getContext()), () -> {
+                    ContextCompat.getMainExecutor(getTextureView().getContext().getApplicationContext()), () -> {
                         if (mSurfaceRequest != null && mSurfaceRequest == surfaceRequest) {
                             mSurfaceRequest = null;
                             mSurfaceReleaseFuture = null;
@@ -87,13 +87,17 @@ public class TextureViewImplementation implements PreviewView.Implementation {
         };
     }
 
+    private TextureView getTextureView() {
+        return mWeakReferenceTextureView.get();
+    }
+
     @Override
     public void onDisplayChanged() {
-        if (getParent() == null || mTextureView == null || mResolution == null) {
+        if (getParent() == null || getTextureView() == null || mResolution == null) {
             return;
         }
 
-        correctPreviewForCenterCrop(getParent(), mTextureView, mResolution);
+        correctPreviewForCenterCrop(getParent(), getTextureView(), mResolution);
     }
 
     private FrameLayout getParent() {
@@ -102,7 +106,8 @@ public class TextureViewImplementation implements PreviewView.Implementation {
 
 
     private void initInternal() {
-        mTextureView = new TextureView(getParent().getContext());
+        TextureView mTextureView = new TextureView(getParent().getContext());
+        mWeakReferenceTextureView = new WeakReference<>(mTextureView);
         mTextureView.setLayoutParams(
                 new FrameLayout.LayoutParams(mResolution.getWidth(), mResolution.getHeight()));
         mTextureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
@@ -151,7 +156,7 @@ public class TextureViewImplementation implements PreviewView.Implementation {
                                     throw new IllegalStateException("SurfaceReleaseFuture did not "
                                             + "complete nicely.", t);
                                 }
-                            }, ContextCompat.getMainExecutor(mTextureView.getContext()));
+                            }, ContextCompat.getMainExecutor(mTextureView.getContext().getApplicationContext()));
                     return false;
                 } else {
                     return true;
@@ -200,11 +205,11 @@ public class TextureViewImplementation implements PreviewView.Implementation {
             if (mSurfaceReleaseFuture == surfaceReleaseFuture) {
                 mSurfaceReleaseFuture = null;
             }
-        }, ContextCompat.getMainExecutor(mTextureView.getContext()));
+        }, ContextCompat.getMainExecutor(getTextureView().getContext().getApplicationContext()));
 
         mSurfaceRequest = null;
 
-        correctPreviewForCenterCrop(getParent(), mTextureView, mResolution);
+        correctPreviewForCenterCrop(getParent(), getTextureView(), mResolution);
     }
 
     /**
