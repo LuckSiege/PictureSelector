@@ -223,5 +223,51 @@ public class PreviewView extends FrameLayout {
             throw new IllegalArgumentException("Unsupported implementation mode " + id);
         }
     }
+
+    /** Options for scaling the preview vis-à-vis its container {@link PreviewView}. */
+    public enum ScaleType {
+        /**
+         * Scale the preview, maintaining the source aspect ratio, so it fills the entire
+         * {@link PreviewView}, and align it to the top left corner of the view.
+         * This may cause the preview to be cropped if the camera preview aspect ratio does not
+         * match that of its container {@link PreviewView}.
+         */
+        FILL_START,
+        /**
+         * Scale the preview, maintaining the source aspect ratio, so it fills the entire
+         * {@link PreviewView}, and center it inside the view.
+         * This may cause the preview to be cropped if the camera preview aspect ratio does not
+         * match that of its container {@link PreviewView}.
+         */
+        FILL_CENTER,
+        /**
+         * Scale the preview, maintaining the source aspect ratio, so it fills the entire
+         * {@link PreviewView}, and align it to the bottom right corner of the view.
+         * This may cause the preview to be cropped if the camera preview aspect ratio does not
+         * match that of its container {@link PreviewView}.
+         */
+        FILL_END,
+        /**
+         * Scale the preview, maintaining the source aspect ratio, so it is entirely contained
+         * within the {@link PreviewView}, and align it to the top left corner of the view.
+         * Both dimensions of the preview will be equal or less than the corresponding dimensions
+         * of its container {@link PreviewView}.
+         */
+        FIT_START,
+        /**
+         * Scale the preview, maintaining the source aspect ratio, so it is entirely contained
+         * within the {@link PreviewView}, and center it inside the view.
+         * Both dimensions of the preview will be equal or less than the corresponding dimensions
+         * of its container {@link PreviewView}.
+         */
+        FIT_CENTER,
+        /**
+         * Scale the preview, maintaining the source aspect ratio, so it is entirely contained
+         * within the {@link PreviewView}, and align it to the bottom right corner of the view.
+         * Both dimensions of the preview will be equal or less than the corresponding dimensions
+         * of its container {@link PreviewView}.
+         */
+        FIT_END
+    }
 }
 

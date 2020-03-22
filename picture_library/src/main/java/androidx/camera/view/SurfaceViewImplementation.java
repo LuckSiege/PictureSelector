@@ -16,6 +16,7 @@
 
 package androidx.camera.view;
 
+import android.os.Build;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
@@ -119,8 +120,10 @@ final class SurfaceViewImplementation implements PreviewView.Implementation {
             if (!tryToComplete()) {
                 // The current size is incorrect. Wait for it to change.
                 Log.d(TAG, "Wait for new Surface creation.");
-                mSurfaceView.getHolder().setFixedSize(targetSize.getWidth(),
-                        targetSize.getHeight());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mSurfaceView.getHolder().setFixedSize(targetSize.getWidth(),
+                            targetSize.getHeight());
+                }
             }
         }
 
@@ -135,9 +138,9 @@ final class SurfaceViewImplementation implements PreviewView.Implementation {
             if (mSurfaceRequest != null && mTargetSize != null && mTargetSize.equals(
                     mCurrentSurfaceSize)) {
                 Log.d(TAG, "Surface set on Preview.");
-                mSurfaceRequest.setSurface(surface).addListener(() -> {
-                    Log.d(TAG, "Safe to release surface.");
-                }, ContextCompat.getMainExecutor(mSurfaceView.getContext()));
+                mSurfaceRequest.provideSurface(surface,
+                        ContextCompat.getMainExecutor(mSurfaceView.getContext()),
+                        (result) -> Log.d(TAG, "Safe to release surface."));
                 mSurfaceRequest = null;
                 mTargetSize = null;
                 return true;
@@ -149,7 +152,7 @@ final class SurfaceViewImplementation implements PreviewView.Implementation {
         private void cancelPreviousRequest() {
             if (mSurfaceRequest != null) {
                 Log.d(TAG, "Request canceled: " + mSurfaceRequest);
-                mSurfaceRequest.setWillNotComplete();
+                mSurfaceRequest.willNotProvideSurface();
                 mSurfaceRequest = null;
             }
             mTargetSize = null;

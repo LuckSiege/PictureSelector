@@ -27,15 +27,18 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.camera.core.Preview;
 import androidx.camera.core.SurfaceRequest;
+import androidx.camera.core.impl.utils.executor.CameraXExecutors;
 import androidx.camera.core.impl.utils.futures.FutureCallback;
 import androidx.camera.core.impl.utils.futures.Futures;
+import androidx.concurrent.futures.CallbackToFutureAdapter;
 import androidx.core.content.ContextCompat;
+import androidx.core.util.Preconditions;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
+import static androidx.camera.core.SurfaceRequest.Result;
 import static androidx.camera.view.ScaleTypeTransform.getFillScaleWithBufferAspectRatio;
 import static androidx.camera.view.ScaleTypeTransform.getOriginOfCenteredView;
 import static androidx.camera.view.ScaleTypeTransform.getRotationDegrees;
@@ -51,7 +54,7 @@ public class TextureViewImplementation implements PreviewView.Implementation {
     TextureView mTextureView;
     SurfaceTexture mSurfaceTexture;
     private Size mResolution;
-    ListenableFuture<Void> mSurfaceReleaseFuture;
+    ListenableFuture<Result> mSurfaceReleaseFuture;
     SurfaceRequest mSurfaceRequest;
 
     @Override
@@ -66,7 +69,7 @@ public class TextureViewImplementation implements PreviewView.Implementation {
             mResolution = surfaceRequest.getResolution();
             initInternal();
             if (mSurfaceRequest != null) {
-                mSurfaceRequest.setWillNotComplete();
+                mSurfaceRequest.willNotProvideSurface();
             }
 
             mSurfaceRequest = surfaceRequest;
@@ -125,22 +128,23 @@ public class TextureViewImplementation implements PreviewView.Implementation {
             public boolean onSurfaceTextureDestroyed(final SurfaceTexture surfaceTexture) {
                 mSurfaceTexture = null;
                 if (mSurfaceRequest == null && mSurfaceReleaseFuture != null) {
-                    Futures.addCallback(mSurfaceReleaseFuture, new FutureCallback<Void>() {
-                        @Override
-                        public void onSuccess(@Nullable Void result) {
-                            surfaceTexture.release();
-                        }
+                    Futures.addCallback(mSurfaceReleaseFuture,
+                            new FutureCallback<Result>() {
+                                @Override
+                                public void onSuccess(Result result) {
+                                    Preconditions.checkState(result.getResultCode()
+                                                    != Result.RESULT_SURFACE_ALREADY_PROVIDED,
+                                            "Unexpected result from SurfaceRequest. Surface was "
+                                                    + "provided twice.");
+                                    surfaceTexture.release();
+                                }
 
-                        @Override
-                        public void onFailure(Throwable t) {
-                            if (t instanceof SurfaceRequest.RequestCancelledException) {
-                                surfaceTexture.release();
-                            } else {
-                                throw new IllegalStateException("SurfaceReleaseFuture did not "
-                                        + "complete nicely.", t);
-                            }
-                        }
-                    }, ContextCompat.getMainExecutor(mTextureView.getContext()));
+                                @Override
+                                public void onFailure(Throwable t) {
+                                    throw new IllegalStateException("SurfaceReleaseFuture did not "
+                                            + "complete nicely.", t);
+                                }
+                            }, ContextCompat.getMainExecutor(mTextureView.getContext()));
                     return false;
                 } else {
                     return true;
@@ -176,7 +180,13 @@ public class TextureViewImplementation implements PreviewView.Implementation {
         mSurfaceTexture.setDefaultBufferSize(mResolution.getWidth(), mResolution.getHeight());
 
         final Surface surface = new Surface(mSurfaceTexture);
-        final ListenableFuture<Void> surfaceReleaseFuture = mSurfaceRequest.setSurface(surface);
+        final ListenableFuture<Result> surfaceReleaseFuture =
+                CallbackToFutureAdapter.getFuture(completer -> {
+                    mSurfaceRequest.provideSurface(surface,
+                            CameraXExecutors.directExecutor(), completer::set);
+                    return "provideSurface[request=" + mSurfaceRequest + " surface=" + surface
+                            + "]";
+                });
         mSurfaceReleaseFuture = surfaceReleaseFuture;
         mSurfaceReleaseFuture.addListener(() -> {
             surface.release();
