@@ -1,7 +1,6 @@
 package com.luck.picture.lib.camera.listener;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import java.io.File;
 
@@ -30,5 +29,5 @@ public interface CameraListener {
      *
      * @param file
      */
-    void onError(int videoCaptureError, @NonNull String message, @Nullable Throwable cause);
+    void onError(int videoCaptureError, String message, Throwable cause);
 }

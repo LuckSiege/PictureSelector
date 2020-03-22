@@ -444,6 +444,7 @@ public final class CameraView extends FrameLayout {
      * @param executor The executor in which the callback methods will be run.
      * @param callback Callback which will receive success or failure.
      */
+
     public void takePicture(@NonNull File file, @NonNull Executor executor,
                             @NonNull OnImageSavedCallback callback) {
         mCameraModule.takePicture(file, executor, callback);

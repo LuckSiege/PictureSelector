@@ -1803,7 +1803,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startCustomCamera();
                 } else {
-                    showPermissionsDialog(false, getString(R.string.picture_camera));
+                    showPermissionsDialog(false, getString(R.string.picture_audio));
                 }
                 break;
         }

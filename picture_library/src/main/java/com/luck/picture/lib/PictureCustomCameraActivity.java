@@ -38,11 +38,6 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
     }
 
     @Override
-    public int getResourceId() {
-        return R.layout.picture_custom_camera;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -52,13 +47,17 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
             lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
             getWindow().setAttributes(lp);
         }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
+        mCameraView = new CustomCameraView(getContext());
+        setContentView(mCameraView);
+        initView();
     }
 
-    @Override
-    protected void initWidgets() {
-        super.initWidgets();
-        mCameraView = findViewById(R.id.camera_view);
+    /**
+     * 初始化控件
+     */
+    protected void initView() {
         mCameraView.setPictureSelectionConfig(config);
         // 绑定生命周期
         mCameraView.setBindToLifecycle(new WeakReference<>(this).get());
