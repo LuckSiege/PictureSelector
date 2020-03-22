@@ -122,7 +122,7 @@ public final class CameraView extends FrameLayout {
                     mCameraModule.invalidateView();
                 }
             };
-    private PreviewView mPreviewView;
+    private WeakReference<PreviewView> mWeakReferencePreviewView;
     private ScaleType mScaleType = ScaleType.CENTER_CROP;
     // For accessibility event
     private MotionEvent mUpEvent;
@@ -171,7 +171,8 @@ public final class CameraView extends FrameLayout {
 
     private void init(Context context, @Nullable AttributeSet attrs) {
         WeakReference<Context> contextWeakReference = new WeakReference<>(context);
-        addView(mPreviewView = new PreviewView(contextWeakReference.get()), 0 /* view position */);
+        mWeakReferencePreviewView = new WeakReference<>(new PreviewView(contextWeakReference.get()));
+        addView(mWeakReferencePreviewView.get(), 0 /* view position */);
         mCameraModule = new CameraXModule(this);
 
         if (attrs != null) {
@@ -299,7 +300,7 @@ public final class CameraView extends FrameLayout {
     }
 
     PreviewView getPreviewView() {
-        return mPreviewView;
+        return mWeakReferencePreviewView.get();
     }
 
     // TODO(b/124269166): Rethink how we can handle permissions here.
@@ -591,7 +592,7 @@ public final class CameraView extends FrameLayout {
                         mCameraModule.getLensFacing()).build();
 
         DisplayOrientedMeteringPointFactory pointFactory = new DisplayOrientedMeteringPointFactory(
-                getDisplay(), cameraSelector, mPreviewView.getWidth(), mPreviewView.getHeight());
+                getDisplay(), cameraSelector, getPreviewView().getWidth(), getPreviewView().getHeight());
         float afPointWidth = 1.0f / 6.0f;  // 1/6 total area
         float aePointWidth = afPointWidth * 1.5f;
         MeteringPoint afPoint = pointFactory.createPoint(x, y, afPointWidth);
