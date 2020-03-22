@@ -124,7 +124,7 @@ final class CameraXModule {
 
     CameraXModule(CameraView view) {
         mWeakReferenceCameraView = new WeakReference<>(view);
-        Futures.addCallback(ProcessCameraProvider.getInstance(view.getContext()),
+        Futures.addCallback(ProcessCameraProvider.getInstance(getCameraView().getContext()),
                 new FutureCallback<ProcessCameraProvider>() {
                     // TODO(b/124269166): Rethink how we can handle permissions here.
                     @SuppressLint("MissingPermission")

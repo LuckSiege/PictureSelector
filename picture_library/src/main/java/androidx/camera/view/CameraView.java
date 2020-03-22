@@ -65,6 +65,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.luck.picture.lib.R;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.concurrent.Executor;
 
 /**
@@ -127,23 +128,23 @@ public final class CameraView extends FrameLayout {
     private MotionEvent mUpEvent;
 
     public CameraView(@NonNull Context context) {
-        this(context, null);
+        this(new WeakReference<>(context).get(), null);
     }
 
     public CameraView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, 0);
+        this(new WeakReference<>(context).get(), attrs, 0);
     }
 
     public CameraView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init(context, attrs);
+        super(new WeakReference<>(context).get(), attrs, defStyle);
+        init(new WeakReference<>(context).get(), attrs);
     }
 
     @RequiresApi(21)
     public CameraView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr,
                       int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(context, attrs);
+        super(new WeakReference<>(context).get(), attrs, defStyleAttr, defStyleRes);
+        init(new WeakReference<>(context).get(), attrs);
     }
 
     /**
@@ -169,7 +170,7 @@ public final class CameraView extends FrameLayout {
     }
 
     private void init(Context context, @Nullable AttributeSet attrs) {
-        addView(mPreviewView = new PreviewView(getContext()), 0 /* view position */);
+        addView(mPreviewView = new PreviewView(getContext().getApplicationContext()), 0 /* view position */);
         mCameraModule = new CameraXModule(this);
 
         if (attrs != null) {
@@ -284,7 +285,7 @@ public final class CameraView extends FrameLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         DisplayManager dpyMgr =
-                (DisplayManager) getContext().getSystemService(Context.DISPLAY_SERVICE);
+                (DisplayManager) getContext().getApplicationContext().getSystemService(Context.DISPLAY_SERVICE);
         dpyMgr.registerDisplayListener(mDisplayListener, new Handler(Looper.getMainLooper()));
     }
 
@@ -292,7 +293,7 @@ public final class CameraView extends FrameLayout {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         DisplayManager dpyMgr =
-                (DisplayManager) getContext().getSystemService(Context.DISPLAY_SERVICE);
+                (DisplayManager) getContext().getApplicationContext().getSystemService(Context.DISPLAY_SERVICE);
         dpyMgr.unregisterDisplayListener(mDisplayListener);
     }
 
@@ -458,12 +459,16 @@ public final class CameraView extends FrameLayout {
         mCameraModule.startRecording(file, executor, callback);
     }
 
-    /** Stops an in progress video. */
+    /**
+     * Stops an in progress video.
+     */
     public void stopRecording() {
         mCameraModule.stopRecording();
     }
 
-    /** @return True if currently recording. */
+    /**
+     * @return True if currently recording.
+     */
     public boolean isRecording() {
         return mCameraModule.isRecording();
     }
@@ -508,19 +513,25 @@ public final class CameraView extends FrameLayout {
         mCameraModule.setCameraLensFacing(lensFacing);
     }
 
-    /** Returns the currently selected lensFacing. */
+    /**
+     * Returns the currently selected lensFacing.
+     */
     @Nullable
     public Integer getCameraLensFacing() {
         return mCameraModule.getLensFacing();
     }
 
-    /** Gets the active flash strategy. */
+    /**
+     * Gets the active flash strategy.
+     */
     @ImageCapture.FlashMode
     public int getFlash() {
         return mCameraModule.getFlash();
     }
 
-    /** Sets the active flash strategy. */
+    /**
+     * Sets the active flash strategy.
+     */
     public void setFlash(@ImageCapture.FlashMode int flashMode) {
         mCameraModule.setFlash(flashMode);
     }
@@ -707,7 +718,9 @@ public final class CameraView extends FrameLayout {
         return mCameraModule.isTorchOn();
     }
 
-    /** Options for scaling the bounds of the view finder to the bounds of this view. */
+    /**
+     * Options for scaling the bounds of the view finder to the bounds of this view.
+     */
     public enum ScaleType {
         /**
          * Scale the view finder, maintaining the source aspect ratio, so the view finder fills the
@@ -748,9 +761,13 @@ public final class CameraView extends FrameLayout {
      * CameraView}.
      */
     public enum CaptureMode {
-        /** A mode where image capture is enabled. */
+        /**
+         * A mode where image capture is enabled.
+         */
         IMAGE(0),
-        /** A mode where video capture is enabled. */
+        /**
+         * A mode where video capture is enabled.
+         */
         VIDEO(1),
         /**
          * A mode where both image capture and video capture are simultaneously enabled. Note that

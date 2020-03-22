@@ -475,6 +475,18 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     public void startCamera() {
         // 防止快速点击，但是单独拍照不管
         if (!DoubleUtils.isFastDoubleClick()) {
+            if (PictureSelectionConfig.onPictureSelectorInterfaceListener != null) {
+                // 用户需要自定义拍照处理
+                if (config.chooseMode == PictureConfig.TYPE_ALL) {
+                    // 如果是全部类型下，单独拍照就默认图片 (因为单独拍照不会new此PopupWindow对象)
+                    PhotoItemSelectedDialog selectedDialog = PhotoItemSelectedDialog.newInstance();
+                    selectedDialog.setOnItemClickListener(this);
+                    selectedDialog.show(getSupportFragmentManager(), "PhotoItemSelectedDialog");
+                } else {
+                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(config.chooseMode);
+                }
+                return;
+            }
             if (config.isUseCustomCamera) {
                 startCustomCamera();
                 return;
@@ -1739,11 +1751,19 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         switch (position) {
             case PhotoItemSelectedDialog.IMAGE_CAMERA:
                 // 拍照
-                startOpenCamera();
+                if (PictureSelectionConfig.onPictureSelectorInterfaceListener != null) {
+                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(PictureConfig.TYPE_IMAGE);
+                } else {
+                    startOpenCamera();
+                }
                 break;
             case PhotoItemSelectedDialog.VIDEO_CAMERA:
                 // 录视频
-                startOpenCameraVideo();
+                if (PictureSelectionConfig.onPictureSelectorInterfaceListener != null) {
+                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(PictureConfig.TYPE_VIDEO);
+                } else {
+                    startOpenCameraVideo();
+                }
                 break;
             default:
                 break;

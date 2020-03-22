@@ -650,6 +650,9 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         if (PictureSelectionConfig.customVideoPlayCallback != null) {
             PictureSelectionConfig.customVideoPlayCallback = null;
         }
+        if (PictureSelectionConfig.onPictureSelectorInterfaceListener != null) {
+            PictureSelectionConfig.onPictureSelectorInterfaceListener = null;
+        }
     }
 
     @Override

@@ -976,6 +976,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (config != null) {
             PictureSelectionConfig.listener = null;
             PictureSelectionConfig.customVideoPlayCallback = null;
+            PictureSelectionConfig.onPictureSelectorInterfaceListener = null;
         }
     }
 
