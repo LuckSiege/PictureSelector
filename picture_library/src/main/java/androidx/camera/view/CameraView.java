@@ -128,23 +128,23 @@ public final class CameraView extends FrameLayout {
     private MotionEvent mUpEvent;
 
     public CameraView(@NonNull Context context) {
-        this(new WeakReference<>(context).get(), null);
+        this(context, null);
     }
 
     public CameraView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(new WeakReference<>(context).get(), attrs, 0);
+        this(context, attrs, 0);
     }
 
     public CameraView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
-        super(new WeakReference<>(context).get(), attrs, defStyle);
-        init(new WeakReference<>(context).get(), attrs);
+        super(context, attrs, defStyle);
+        init(context, attrs);
     }
 
     @RequiresApi(21)
     public CameraView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr,
                       int defStyleRes) {
-        super(new WeakReference<>(context).get(), attrs, defStyleAttr, defStyleRes);
-        init(new WeakReference<>(context).get(), attrs);
+        super(context, attrs, defStyleAttr, defStyleRes);
+        init(context, attrs);
     }
 
     /**
@@ -170,11 +170,12 @@ public final class CameraView extends FrameLayout {
     }
 
     private void init(Context context, @Nullable AttributeSet attrs) {
-        addView(mPreviewView = new PreviewView(getContext().getApplicationContext()), 0 /* view position */);
+        WeakReference<Context> contextWeakReference = new WeakReference<>(context);
+        addView(mPreviewView = new PreviewView(contextWeakReference.get()), 0 /* view position */);
         mCameraModule = new CameraXModule(this);
 
         if (attrs != null) {
-            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CameraView);
+            TypedArray a = contextWeakReference.get().obtainStyledAttributes(attrs, R.styleable.CameraView);
             setScaleType(
                     ScaleType.fromId(
                             a.getInteger(R.styleable.CameraView_scaleType,
@@ -224,7 +225,7 @@ public final class CameraView extends FrameLayout {
             setBackgroundColor(0xFF111111);
         }
 
-        mPinchToZoomGestureDetector = new PinchToZoomGestureDetector(context);
+        mPinchToZoomGestureDetector = new PinchToZoomGestureDetector(contextWeakReference.get());
     }
 
     @Override
