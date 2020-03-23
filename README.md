@@ -4,7 +4,7 @@
   <br>项目一直维护(有bug修复完一般会在周末更新)，如果有bug请描述清楚并可以提Issues，个人QQ 893855882 希望用得着的朋友点个star。 <br>
  Android开发交流 群一 619458861 (已满) <br>
  Android开发交流 群二 679824206 (已满) <br>
- Android开发交流 群三 854136996 <br>
+ Android开发交流 群三 854136996 (已满) <br>
  
    [我的博客地址](http://blog.csdn.net/luck_mw)   
   
@@ -20,8 +20,8 @@
 -[用前需知](https://github.com/LuckSiege/PictureSelector/wiki/%E7%94%A8%E5%89%8D%E9%9C%80%E7%9F%A5)<br>
 -[如何提Issues?](https://github.com/LuckSiege/PictureSelector/wiki/%E5%A6%82%E4%BD%95%E6%8F%90Issues%3F)<br>
 -[功能特点](https://github.com/LuckSiege/PictureSelector/wiki/%E5%8A%9F%E8%83%BD%E7%89%B9%E7%82%B9)<br>
--[最新版本 v2.4.9](#最新版本)<br>
--[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.4.9)<br>
+-[最新版本 v2.5.0](#最新版本)<br>
+-[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.5.0)<br>
 -[主题配置-Xml方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98-Xml%E6%96%B9%E5%BC%8F)<br>
 -[主题配置-Code方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%A8%E6%80%81%E4%B8%BB%E9%A2%98(%E5%8C%85%E5%90%AB%E8%A3%81%E5%89%AA%E3%80%81%E7%9B%B8%E5%86%8C%E5%90%AF%E5%8A%A8%E5%8A%A8%E7%94%BB)-Code%E6%96%B9%E5%BC%8F)<br>
 -[演示效果](#演示效果)<br>
@@ -39,7 +39,7 @@
 
 ## 最新版本
 ```sh
-implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.4.9'
+implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.0'
 ```
 
 ## 启动相册
