@@ -598,7 +598,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * PictureSelector自定义的一些回调接口
      */
-    private OnPictureSelectorInterfaceListener interfaceListener = type -> {
+    private OnPictureSelectorInterfaceListener interfaceListener = (context, type) -> {
         // 必须使用.startActivityForResult(this,PictureConfig.REQUEST_CAMERA);
         switch (type) {
             case PictureConfig.TYPE_IMAGE:

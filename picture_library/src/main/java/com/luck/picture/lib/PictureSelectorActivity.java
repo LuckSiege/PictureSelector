@@ -483,7 +483,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     selectedDialog.setOnItemClickListener(this);
                     selectedDialog.show(getSupportFragmentManager(), "PhotoItemSelectedDialog");
                 } else {
-                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(config.chooseMode);
+                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), config.chooseMode);
                 }
                 return;
             }
@@ -1752,7 +1752,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             case PhotoItemSelectedDialog.IMAGE_CAMERA:
                 // 拍照
                 if (PictureSelectionConfig.onPictureSelectorInterfaceListener != null) {
-                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(PictureConfig.TYPE_IMAGE);
+                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(),PictureConfig.TYPE_IMAGE);
                 } else {
                     startOpenCamera();
                 }
@@ -1760,7 +1760,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             case PhotoItemSelectedDialog.VIDEO_CAMERA:
                 // 录视频
                 if (PictureSelectionConfig.onPictureSelectorInterfaceListener != null) {
-                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(PictureConfig.TYPE_VIDEO);
+                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(),PictureConfig.TYPE_VIDEO);
                 } else {
                     startOpenCameraVideo();
                 }
