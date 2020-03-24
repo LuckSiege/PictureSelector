@@ -101,7 +101,7 @@ public class PictureSelectionModel {
      * @param cacheResourcesEngine Image Cache
      * @return
      */
-    public PictureSelectionModel setCacheResourcesCallback(CacheResourcesEngine cacheResourcesEngine) {
+    public PictureSelectionModel loadCacheResourcesCallback(CacheResourcesEngine cacheResourcesEngine) {
         if (SdkVersionUtils.checkedAndroid_Q()) {
             if (PictureSelectionConfig.cacheResourcesEngine != cacheResourcesEngine) {
                 PictureSelectionConfig.cacheResourcesEngine = cacheResourcesEngine;
