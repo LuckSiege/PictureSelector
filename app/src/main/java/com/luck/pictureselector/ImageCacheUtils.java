@@ -3,7 +3,6 @@ package com.luck.pictureselector;
 import android.content.Context;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.Target;
 
 import java.io.File;
@@ -25,7 +24,7 @@ public class ImageCacheUtils {
      */
     public static File getCacheFileTo4x(Context context, String url) {
         try {
-            return Glide.with(context).asFile().load(url).diskCacheStrategy(DiskCacheStrategy.DATA).submit().get();
+            return Glide.with(context).downloadOnly().load(url).submit().get();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
