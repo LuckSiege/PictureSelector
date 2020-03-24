@@ -15,6 +15,7 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.UCropOptions;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.engine.CacheResourcesEngine;
 import com.luck.picture.lib.listener.OnPictureSelectorInterfaceListener;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.listener.OnVideoSelectedPlayCallback;
@@ -22,6 +23,7 @@ import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.tools.DoubleUtils;
+import com.luck.picture.lib.tools.SdkVersionUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -89,6 +91,21 @@ public class PictureSelectionModel {
     public PictureSelectionModel loadImageEngine(ImageEngine engine) {
         if (PictureSelectionConfig.imageEngine != engine) {
             PictureSelectionConfig.imageEngine = engine;
+        }
+        return this;
+    }
+
+    /**
+     * Only for Android version Q
+     *
+     * @param cacheResourcesEngine Image Cache
+     * @return
+     */
+    public PictureSelectionModel setCacheResourcesCallback(CacheResourcesEngine cacheResourcesEngine) {
+        if (SdkVersionUtils.checkedAndroid_Q()) {
+            if (PictureSelectionConfig.cacheResourcesEngine != cacheResourcesEngine) {
+                PictureSelectionConfig.cacheResourcesEngine = cacheResourcesEngine;
+            }
         }
         return this;
     }

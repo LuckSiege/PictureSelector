@@ -11,6 +11,7 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.camera.CustomCameraView;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.engine.CacheResourcesEngine;
 import com.luck.picture.lib.listener.OnPictureSelectorInterfaceListener;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.listener.OnVideoSelectedPlayCallback;
@@ -101,6 +102,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isWithVideoImage;
     public UCropOptions uCropOptions;
     public static ImageEngine imageEngine;
+    public static CacheResourcesEngine cacheResourcesEngine;
     public static OnResultCallbackListener listener;
     public static OnVideoSelectedPlayCallback customVideoPlayCallback;
     public static OnPictureSelectorInterfaceListener onPictureSelectorInterfaceListener;
@@ -218,6 +220,7 @@ public final class PictureSelectionConfig implements Parcelable {
         selectionMedias = new ArrayList<>();
         imageEngine = null;
         listener = null;
+        cacheResourcesEngine = null;
         customVideoPlayCallback = null;
         onPictureSelectorInterfaceListener = null;
         uCropOptions = null;
