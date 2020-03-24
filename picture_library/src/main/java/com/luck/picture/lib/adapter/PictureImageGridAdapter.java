@@ -20,6 +20,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.tools.AnimUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.MediaUtils;
@@ -439,6 +440,17 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             VoiceUtils.getInstance().play();
             AnimUtils.zoom(contentHolder.ivPicture, config.zoomAnim);
             contentHolder.tvCheck.startAnimation(AnimationUtils.loadAnimation(context, R.anim.picture_anim_modal_in));
+            PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<String >() {
+                @Override
+                public String doInBackground() throws Throwable {
+                    return PictureSelectionConfig.cacheResourcesEngine.onCachePath(context,image.getPath());
+                }
+
+                @Override
+                public void onSuccess(String result) {
+
+                }
+            });
         }
         //通知点击项发生了改变
         notifyItemChanged(contentHolder.getAdapterPosition());

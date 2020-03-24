@@ -354,6 +354,29 @@ public class PictureFileUtils {
     /**
      * 拷贝文件
      *
+     * @param outputStream
+     * @return
+     */
+    public static boolean bufferCopy(BufferedSource inBuffer, OutputStream outputStream) {
+        BufferedSink outBuffer = null;
+        try {
+            outBuffer = Okio.buffer(Okio.sink(outputStream));
+            outBuffer.writeAll(inBuffer);
+            outBuffer.flush();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close(inBuffer);
+            close(outBuffer);
+        }
+        return false;
+    }
+
+
+    /**
+     * 拷贝文件
+     *
      * @param inFile
      * @param outPutStream
      * @return

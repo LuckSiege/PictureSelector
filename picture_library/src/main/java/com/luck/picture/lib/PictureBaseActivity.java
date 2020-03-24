@@ -705,9 +705,11 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                             && TextUtils.isEmpty(media.getAndroidQToPath());
                     if (isCopyAndroidQToPath && PictureMimeType.isContent(media.getPath())) {
                         String pathToAndroidQ = null;
-                        if (PictureSelectionConfig.cacheResourcesEngine != null && PictureMimeType.eqImage(media.getMimeType())) {
+                        if (PictureSelectionConfig.cacheResourcesEngine != null) {
                             // 这里就是利用图片加载引擎的特性，因为图片加载器加载过了图片本地就有缓存，当然前提是用户设置了缓存策略
-                            pathToAndroidQ = PictureSelectionConfig.cacheResourcesEngine.onCachePath(getContext(), media.getPath());
+                            if (!PictureMimeType.isGif(media.getMimeType()) && PictureMimeType.eqImage(media.getMimeType())) {
+                                pathToAndroidQ = PictureSelectionConfig.cacheResourcesEngine.onCachePath(getContext(), media.getPath());
+                            }
                         }
                         // 没有取到缓存就走拷贝文件的逻辑
                         if (TextUtils.isEmpty(pathToAndroidQ)) {
