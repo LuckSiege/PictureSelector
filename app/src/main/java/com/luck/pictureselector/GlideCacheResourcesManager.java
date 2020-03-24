@@ -1,7 +1,6 @@
 package com.luck.pictureselector;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.luck.picture.lib.engine.CacheResourcesEngine;
 
@@ -28,7 +27,6 @@ public class GlideCacheResourcesManager implements CacheResourcesEngine {
             // Glide 3.x
             cacheFile = ImageCacheUtils.getCacheFileTo3x(context, url);
         }
-        Log.i("YYY", "onCachePath: " + cacheFile != null ? cacheFile.getAbsolutePath() : "");
         return cacheFile != null ? cacheFile.getAbsolutePath() : "";
     }
 }
