@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -184,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         PictureSelector.create(MainActivity.this)
                                 .themeStyle(R.style.picture_default_style)
                                 .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
-                                .externalPictureVideo(media.getPath());
+                                .externalPictureVideo(TextUtils.isEmpty(media.getAndroidQToPath()) ? media.getPath() : media.getAndroidQToPath());
                         break;
                     case PictureConfig.TYPE_AUDIO:
                         // 预览音频

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 
 import java.io.File;
@@ -34,7 +33,7 @@ public class AndroidQTransformUtils {
      */
     public static String copyPathToAndroidQ(Context ctx, String url, String mineType, String customFileName) {
         // 这里就是利用图片加载引擎的特性，因为图片加载器加载过了图片本地就有缓存，当然前提是用户设置了缓存策略
-        if (PictureSelectionConfig.cacheResourcesEngine != null && PictureMimeType.eqImage(mineType)) {
+        if (PictureSelectionConfig.cacheResourcesEngine != null) {
             String cachePath = PictureSelectionConfig.cacheResourcesEngine.onCachePath(ctx, url);
             if (!TextUtils.isEmpty(cachePath)) {
                 return cachePath;
