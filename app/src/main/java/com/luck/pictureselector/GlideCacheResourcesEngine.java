@@ -11,7 +11,7 @@ import java.io.File;
  * @date：2020-03-24 09:48
  * @describe：GlideCacheResources管理类
  */
-public class GlideCacheResourcesManager implements CacheResourcesEngine {
+public class GlideCacheResourcesEngine implements CacheResourcesEngine {
     /**
      * glide版本号,请根据用户集成为准 这里只是模拟
      */
@@ -31,16 +31,16 @@ public class GlideCacheResourcesManager implements CacheResourcesEngine {
     }
 
 
-    private GlideCacheResourcesManager() {
+    private GlideCacheResourcesEngine() {
     }
 
-    private static GlideCacheResourcesManager instance;
+    private static GlideCacheResourcesEngine instance;
 
-    public static GlideCacheResourcesManager createCacheEngine() {
+    public static GlideCacheResourcesEngine createCacheEngine() {
         if (null == instance) {
-            synchronized (GlideCacheResourcesManager.class) {
+            synchronized (GlideCacheResourcesEngine.class) {
                 if (null == instance) {
-                    instance = new GlideCacheResourcesManager();
+                    instance = new GlideCacheResourcesEngine();
                 }
             }
         }
