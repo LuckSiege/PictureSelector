@@ -1405,14 +1405,19 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                 imageSize++;
                             }
                         }
-                        if (PictureMimeType.eqVideo(media.getMimeType()) && config.maxVideoSelectNum > 0) {
+                        if (PictureMimeType.eqVideo(media.getMimeType())) {
                             // 视频还可选
-                            if (videoSize < config.maxVideoSelectNum) {
-                                selectedImages.add(0, media);
-                                mAdapter.bindSelectImages(selectedImages);
+                            if (config.maxVideoSelectNum <= 0) {
+                                // 如果视频可选数量是0
+                                ToastUtils.s(getContext(), getString(R.string.picture_rule));
                             } else {
-                                ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), media.getMimeType(),
-                                        config.maxVideoSelectNum));
+                                if (videoSize < config.maxVideoSelectNum) {
+                                    selectedImages.add(0, media);
+                                    mAdapter.bindSelectImages(selectedImages);
+                                } else {
+                                    ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), media.getMimeType(),
+                                            config.maxVideoSelectNum));
+                                }
                             }
                         } else {
                             // 图片还可选
