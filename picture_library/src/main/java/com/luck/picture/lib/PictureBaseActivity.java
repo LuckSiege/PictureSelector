@@ -828,14 +828,15 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (data != null && config.chooseMode == PictureMimeType.ofAudio()) {
             try {
                 Uri uri = data.getData();
-                final String audioPath;
-                if (compare_SDK_19) {
-                    audioPath = uri.getPath();
-                } else {
-                    audioPath = getAudioFilePathFromUri(uri);
+                if (uri != null) {
+                    final String audioPath;
+                    if (compare_SDK_19) {
+                        audioPath = uri.getPath();
+                    } else {
+                        audioPath = getAudioFilePathFromUri(uri);
+                    }
+                    return audioPath;
                 }
-                return audioPath;
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -852,15 +853,21 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     @Nullable
     protected String getAudioFilePathFromUri(Uri uri) {
         String path = "";
+        Cursor cursor = null;
         try {
-            Cursor cursor = getContentResolver()
+            cursor = getContentResolver()
                     .query(uri, null, null, null, null);
-            cursor.moveToFirst();
-            int index = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
-            path = cursor.getString(index);
-            cursor.close();
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int index = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
+                path = cursor.getString(index);
+            }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
         return path;
     }
@@ -896,10 +903,16 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
 
                 File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(),
                         chooseMode, cameraFileName, config.suffixType, config.outPutCameraPath);
-
-                config.cameraPath = cameraFile.getAbsolutePath();
-
-                imageUri = PictureFileUtils.parUri(this, cameraFile);
+                if (cameraFile != null) {
+                    config.cameraPath = cameraFile.getAbsolutePath();
+                    imageUri = PictureFileUtils.parUri(this, cameraFile);
+                } else {
+                    ToastUtils.s(getContext(), "open is camera error，the uri is empty ");
+                    if (config.camera) {
+                        closeActivity();
+                    }
+                    return;
+                }
             }
             if (config.isCameraAroundState) {
                 cameraIntent.putExtra(PictureConfig.CAMERA_FACING, PictureConfig.CAMERA_BEFORE);
@@ -939,8 +952,16 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                 }
                 File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(),
                         chooseMode, cameraFileName, config.suffixType, config.outPutCameraPath);
-                config.cameraPath = cameraFile.getAbsolutePath();
-                imageUri = PictureFileUtils.parUri(this, cameraFile);
+                if (cameraFile != null) {
+                    config.cameraPath = cameraFile.getAbsolutePath();
+                    imageUri = PictureFileUtils.parUri(this, cameraFile);
+                } else {
+                    ToastUtils.s(getContext(), "open is camera error，the uri is empty ");
+                    if (config.camera) {
+                        closeActivity();
+                    }
+                    return;
+                }
             }
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             if (config.isCameraAroundState) {

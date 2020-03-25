@@ -113,7 +113,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         if (numComplete) {
             initCompleteText(0);
         }
-        tv_img_num.setSelected(config.checkNumMode ? true : false);
+        tv_img_num.setSelected(config.checkNumMode);
         btnCheck.setOnClickListener(this);
         selectImages = getIntent().
                 getParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST);
@@ -189,7 +189,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             } else {
                 // 已选择
                 boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
-                if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
+                if (isCompleteReplaceNum && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
                     mTvPictureOk.setText(String.format(config.style.pictureCompleteText, startCount, 1));
                 } else {
                     mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)
@@ -205,7 +205,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         startCount, config.maxVideoSelectNum + config.maxSelectNum));
             } else {
                 // 已选择
-                if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
+                if (isCompleteReplaceNum && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
                     mTvPictureOk.setText(String.format(config.style.pictureCompleteText, startCount, config.maxVideoSelectNum + config.maxSelectNum));
                 } else {
                     mTvPictureOk.setText(getString(R.string.picture_done_front_num,
