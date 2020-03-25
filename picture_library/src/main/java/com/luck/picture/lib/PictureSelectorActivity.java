@@ -91,7 +91,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected PictureCustomDialog audioDialog;
     protected CheckBox mCbOriginal;
     protected int oldCurrentListSize;
-    protected int audioH;
     protected boolean isFirstEnterActivity = false;
     protected boolean isEnterSetting;
 
@@ -160,11 +159,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             animation = AnimationUtils.loadAnimation(this, R.anim.picture_anim_modal_in);
         }
         mTvPicturePreview.setOnClickListener(this);
-        if (config.chooseMode == PictureMimeType.ofAudio()) {
-            mTvPicturePreview.setVisibility(View.GONE);
-            audioH = ScreenUtils.getScreenHeight(getContext())
-                    + ScreenUtils.getStatusBarHeight(getContext());
-        }
+        mTvPicturePreview.setVisibility(config.chooseMode != PictureMimeType.ofAudio() && config.enablePreview ? View.VISIBLE : View.GONE);
         mBottomLayout.setVisibility(config.selectionMode == PictureConfig.SINGLE
                 && config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
         mIvPictureLeftBack.setOnClickListener(this);
@@ -1100,15 +1095,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * @param selectImages
      */
     protected void changeImageNumber(List<LocalMedia> selectImages) {
-        // 如果选择的视频没有预览功能
-        if (config.chooseMode == PictureMimeType.ofAudio()) {
-            mTvPicturePreview.setVisibility(View.GONE);
-        } else {
-            if (config.isOriginalControl) {
-                mCbOriginal.setVisibility(View.VISIBLE);
-                mCbOriginal.setChecked(config.isCheckOriginalImage);
-            }
-        }
         boolean enable = selectImages.size() != 0;
         if (enable) {
             mTvPictureOk.setEnabled(true);
@@ -1752,7 +1738,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             case PhotoItemSelectedDialog.IMAGE_CAMERA:
                 // 拍照
                 if (PictureSelectionConfig.onPictureSelectorInterfaceListener != null) {
-                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(),PictureConfig.TYPE_IMAGE);
+                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), PictureConfig.TYPE_IMAGE);
                 } else {
                     startOpenCamera();
                 }
@@ -1760,7 +1746,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             case PhotoItemSelectedDialog.VIDEO_CAMERA:
                 // 录视频
                 if (PictureSelectionConfig.onPictureSelectorInterfaceListener != null) {
-                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(),PictureConfig.TYPE_VIDEO);
+                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), PictureConfig.TYPE_VIDEO);
                 } else {
                     startOpenCameraVideo();
                 }

@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
@@ -29,6 +30,7 @@ import java.util.Locale;
  */
 
 public class LocalMediaLoader {
+    private static final String TAG = LocalMediaLoader.class.getSimpleName();
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
     private static final String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
     private static final String NOT_GIF = "!='image/gif'";
@@ -244,6 +246,7 @@ public class LocalMediaLoader {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Log.i(TAG, "loadAllMedia Data Error: " + e.getMessage());
             return null;
         } finally {
             if (data != null && !data.isClosed()) {
