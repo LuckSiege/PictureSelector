@@ -941,7 +941,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             mTvMusicStatus.setText(getString(R.string.picture_pause_audio));
             playOrPause();
         }
-        if (isPlayAudio == false) {
+        if (!isPlayAudio) {
             if (mHandler != null) {
                 mHandler.post(mRunnable);
             }
