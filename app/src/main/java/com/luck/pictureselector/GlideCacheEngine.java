@@ -9,9 +9,9 @@ import java.io.File;
 /**
  * @author：luck
  * @date：2020-03-24 09:48
- * @describe：GlideCacheResources管理类
+ * @describe：GlideCacheEngine
  */
-public class GlideCacheResourcesEngine implements CacheResourcesEngine {
+public class GlideCacheEngine implements CacheResourcesEngine {
     /**
      * glide版本号,请根据用户集成为准 这里只是模拟
      */
@@ -31,16 +31,16 @@ public class GlideCacheResourcesEngine implements CacheResourcesEngine {
     }
 
 
-    private GlideCacheResourcesEngine() {
+    private GlideCacheEngine() {
     }
 
-    private static GlideCacheResourcesEngine instance;
+    private static GlideCacheEngine instance;
 
-    public static GlideCacheResourcesEngine createCacheEngine() {
+    public static GlideCacheEngine createCacheEngine() {
         if (null == instance) {
-            synchronized (GlideCacheResourcesEngine.class) {
+            synchronized (GlideCacheEngine.class) {
                 if (null == instance) {
-                    instance = new GlideCacheResourcesEngine();
+                    instance = new GlideCacheEngine();
                 }
             }
         }
