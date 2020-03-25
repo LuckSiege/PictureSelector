@@ -104,7 +104,7 @@ public class PictureSelectionModel {
     public PictureSelectionModel loadCacheResourcesCallback(CacheResourcesEngine cacheResourcesEngine) {
         if (SdkVersionUtils.checkedAndroid_Q()) {
             if (PictureSelectionConfig.cacheResourcesEngine != cacheResourcesEngine) {
-                PictureSelectionConfig.cacheResourcesEngine = cacheResourcesEngine;
+                PictureSelectionConfig.cacheResourcesEngine = new WeakReference<>(cacheResourcesEngine).get();
             }
         }
         return this;
@@ -154,7 +154,7 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel bindPictureSelectorInterfaceListener(OnPictureSelectorInterfaceListener listener) {
-        PictureSelectionConfig.onPictureSelectorInterfaceListener = listener;
+        PictureSelectionConfig.onPictureSelectorInterfaceListener = new WeakReference<>(listener).get();
         return this;
     }
 
@@ -313,8 +313,8 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel isWithVideoImage(boolean isWithVideoImage) {
         selectionConfig.isWithVideoImage =
-                selectionConfig.selectionMode == PictureConfig.SINGLE
-                        || selectionConfig.chooseMode != PictureMimeType.ofAll() ? false : isWithVideoImage;
+                selectionConfig.selectionMode != PictureConfig.SINGLE
+                        && selectionConfig.chooseMode == PictureMimeType.ofAll() && isWithVideoImage;
         return this;
     }
 
@@ -361,9 +361,8 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel isSingleDirectReturn(boolean isSingleDirectReturn) {
         selectionConfig.isSingleDirectReturn = selectionConfig.selectionMode
-                == PictureConfig.SINGLE ? isSingleDirectReturn : false;
-        selectionConfig.isOriginalControl = selectionConfig.selectionMode
-                == PictureConfig.SINGLE && isSingleDirectReturn ? false : selectionConfig.isOriginalControl;
+                == PictureConfig.SINGLE && isSingleDirectReturn;
+        selectionConfig.isOriginalControl = (selectionConfig.selectionMode != PictureConfig.SINGLE || !isSingleDirectReturn) && selectionConfig.isOriginalControl;
         return this;
     }
 
