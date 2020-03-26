@@ -153,7 +153,7 @@ public final class PictureSelectionConfig implements Parcelable {
         selectionMode = PictureConfig.MULTIPLE;
         maxSelectNum = 9;
         minSelectNum = 0;
-        maxVideoSelectNum = 1;
+        maxVideoSelectNum = 0;
         minVideoSelectNum = 0;
         videoQuality = 1;
         language = -1;
