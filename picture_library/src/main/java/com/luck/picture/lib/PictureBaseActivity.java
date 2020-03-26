@@ -706,7 +706,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                             && TextUtils.isEmpty(media.getAndroidQToPath());
                     if (isCopyAndroidQToPath && PictureMimeType.isContent(media.getPath())) {
                         String AndroidQToPath = AndroidQTransformUtils.copyPathToAndroidQ(getContext(),
-                                media.getPath(), media.getMimeType(), config.cameraFileName);
+                                media.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), config.cameraFileName);
                         media.setAndroidQToPath(AndroidQToPath);
                     } else if (media.isCut() && media.isCompressed()) {
                         media.setAndroidQToPath(media.getCompressPath());

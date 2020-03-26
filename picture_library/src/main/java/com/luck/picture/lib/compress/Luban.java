@@ -13,8 +13,8 @@ import android.util.Log;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
+import com.luck.picture.lib.tools.DESUtils;
 import com.luck.picture.lib.tools.DateUtils;
-import com.luck.picture.lib.tools.Digest;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
@@ -80,24 +80,24 @@ public class Luban implements Handler.Callback {
      */
     private File getImageCacheFile(Context context, InputStreamProvider provider, String suffix) {
         if (TextUtils.isEmpty(mTargetDir)) {
-            if (getImageCacheDir(context) != null) {
-                mTargetDir = getImageCacheDir(context).getAbsolutePath();
+            File imageCacheDir = getImageCacheDir(context);
+            if (imageCacheDir != null) {
+                mTargetDir = imageCacheDir.getAbsolutePath();
             }
         }
         String cacheBuilder = "";
         try {
-            String md5Value = Digest.computeToQMD5(provider.open());
+            LocalMedia media = provider.getMedia();
+            String md5Value = DESUtils.encode(DESUtils.DES_KEY_STRING, media.getPath(), media.getWidth(), media.getHeight());
             if (!TextUtils.isEmpty(md5Value)) {
-                cacheBuilder = new StringBuffer()
-                        .append(mTargetDir).append("/")
-                        .append("IMG_")
-                        .append(md5Value.toUpperCase())
-                        .append(TextUtils.isEmpty(suffix) ? ".jpg" : suffix).toString();
+                cacheBuilder = mTargetDir + "/" +
+                        "IMG_" +
+                        md5Value.toUpperCase() +
+                        (TextUtils.isEmpty(suffix) ? ".jpg" : suffix);
             } else {
-                cacheBuilder = new StringBuffer()
-                        .append(mTargetDir).append("/")
-                        .append(DateUtils.getCreateFileName("IMG_"))
-                        .append(TextUtils.isEmpty(suffix) ? ".jpg" : suffix).toString();
+                cacheBuilder = mTargetDir + "/" +
+                        DateUtils.getCreateFileName("IMG_") +
+                        (TextUtils.isEmpty(suffix) ? ".jpg" : suffix);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -290,7 +290,7 @@ public class Luban implements Handler.Callback {
                 if (isAndroidQ) {
                     String newFilePath = media.isCut() ? media.getCutPath() :
                             AndroidQTransformUtils.copyPathToAndroidQ(context, path.getPath(),
-                                    media.getMimeType(), filename);
+                                    media.getWidth(), media.getHeight(), media.getMimeType(), filename);
                     result = new File(newFilePath);
                 } else {
                     result = new File(newPath);
@@ -303,7 +303,7 @@ public class Luban implements Handler.Callback {
                     if (isAndroidQ) {
                         String newFilePath = media.isCut() ? media.getCutPath() :
                                 AndroidQTransformUtils.copyPathToAndroidQ(context, path.getPath(),
-                                        media.getMimeType(), filename);
+                                        media.getWidth(), media.getHeight(), media.getMimeType(), filename);
                         result = new File(newFilePath);
                     } else {
                         result = new File(newPath);
@@ -316,7 +316,7 @@ public class Luban implements Handler.Callback {
                 if (isAndroidQ) {
                     String newFilePath = media.isCut() ? media.getCutPath() :
                             AndroidQTransformUtils.copyPathToAndroidQ(context,
-                                    path.getPath(), media.getMimeType(), filename);
+                                    path.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), filename);
                     result = new File(newFilePath);
                 } else {
                     result = new File(newPath);
@@ -327,7 +327,7 @@ public class Luban implements Handler.Callback {
                         isAndroidQ ? new File(media.isCut() ? media.getCutPath() :
                                 Objects.requireNonNull(AndroidQTransformUtils.copyPathToAndroidQ
                                         (context, path.getPath(),
-                                                media.getMimeType(), filename))) : new File(newPath);
+                                                media.getWidth(), media.getHeight(), media.getMimeType(), filename))) : new File(newPath);
             }
         }
         return result;

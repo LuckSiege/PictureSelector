@@ -31,7 +31,7 @@ public class AndroidQTransformUtils {
      * @param customFileName
      * @return
      */
-    public static String copyPathToAndroidQ(Context ctx, String url, String mineType, String customFileName) {
+    public static String copyPathToAndroidQ(Context ctx, String url, int width, int height, String mineType, String customFileName) {
         // 这里就是利用图片加载引擎的特性，因为图片加载器加载过了图片本地就有缓存，当然前提是用户设置了缓存策略
         if (PictureSelectionConfig.cacheResourcesEngine != null) {
             String cachePath = PictureSelectionConfig.cacheResourcesEngine.onCachePath(ctx, url);
@@ -44,8 +44,8 @@ public class AndroidQTransformUtils {
         BufferedSource inBuffer = null;
         try {
             Uri uri = Uri.parse(url);
-            String md5 = Digest.computeToQMD5(ctx.getContentResolver().openInputStream(uri));
-            String newPath = PictureFileUtils.createFilePath(ctx, md5, mineType, customFileName);
+            String encode = DESUtils.encode(DESUtils.DES_KEY_STRING, url, width, height);
+            String newPath = PictureFileUtils.createFilePath(ctx, encode, mineType, customFileName);
             File outFile = new File(newPath);
             if (outFile.exists()) {
                 return newPath;
