@@ -217,7 +217,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
                 throw new NullPointerException("InputStream for given input Uri is null");
             }
 
-            byte buffer[] = new byte[1024];
+            byte[] buffer = new byte[1024];
             int length;
             while ((length = inputStream.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, length);
@@ -237,28 +237,31 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
         if (outputUri == null) {
             throw new NullPointerException("Output Uri is null - cannot download image");
         }
+        OutputStream outputStream = null;
+        BufferedInputStream bin = null;
+        BufferedOutputStream bout = null;
         try {
             URL u = new URL(inputUri.toString());
             byte[] buffer = new byte[1024];
             int read;
-            BufferedInputStream bin;
             bin = new BufferedInputStream(u.openStream());
-            OutputStream outputStream = getContext().getContentResolver().openOutputStream(outputUri);
-            BufferedOutputStream bout = new BufferedOutputStream(
-                    outputStream);
-            while ((read = bin.read(buffer)) > -1) {
-                bout.write(buffer, 0, read);
+            outputStream = getContext().getContentResolver().openOutputStream(outputUri);
+            if (outputStream != null) {
+                bout = new BufferedOutputStream(outputStream);
+                while ((read = bin.read(buffer)) > -1) {
+                    bout.write(buffer, 0, read);
+                }
+                bout.flush();
             }
-            bout.flush();
-            bout.close();
-            bin.close();
-            outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             // swap uris, because input image was downloaded to the output destination
             // (cropped image will override it later)
             mInputUri = mOutputUri;
+            BitmapLoadUtils.close(bout);
+            BitmapLoadUtils.close(bin);
+            BitmapLoadUtils.close(outputStream);
         }
     }
 
