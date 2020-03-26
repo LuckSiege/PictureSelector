@@ -21,6 +21,7 @@ import com.luck.picture.lib.adapter.PictureAlbumDirectoryAdapter;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
+import com.luck.picture.lib.listener.OnAlbumItemClickListener;
 import com.luck.picture.lib.tools.AnimUtils;
 import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
@@ -132,8 +133,8 @@ public class FolderPopWindow extends PopupWindow {
         }
     }
 
-    public void setOnItemClickListener(PictureAlbumDirectoryAdapter.OnItemClickListener onItemClickListener) {
-        adapter.setOnItemClickListener(onItemClickListener);
+    public void setOnAlbumItemClickListener(OnAlbumItemClickListener listener) {
+        adapter.setOnAlbumItemClickListener(listener);
     }
 
     @Override

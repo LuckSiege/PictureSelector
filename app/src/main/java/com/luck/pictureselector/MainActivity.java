@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             cb_single_back.setVisibility(isChecked ? View.GONE : View.VISIBLE);
             cb_single_back.setChecked(!isChecked && cb_single_back.isChecked());
         });
-        mAdapter.setOnItemClickListener((position, v) -> {
+        mAdapter.setOnItemClickListener((v, position) -> {
             List<LocalMedia> selectList = mAdapter.getData();
             if (selectList.size() > 0) {
                 LocalMedia media = selectList.get(position);

@@ -20,6 +20,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.listener.OnPhotoSelectChangedListener;
 import com.luck.picture.lib.tools.AnimUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.MediaUtils;
@@ -476,7 +477,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private void subSelectPosition() {
         if (config.checkNumMode) {
             int size = selectImages.size();
-            for (int index = 0, length = size; index < length; index++) {
+            for (int index = 0; index < size; index++) {
                 LocalMedia media = selectImages.get(index);
                 media.setNum(index + 1);
                 notifyItemChanged(media.position);
@@ -501,32 +502,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-    public interface OnPhotoSelectChangedListener {
-        /**
-         * 拍照回调
-         */
-        void onTakePhoto();
-
-        /**
-         * 已选Media回调
-         *
-         * @param selectImages
-         */
-        void onChange(List<LocalMedia> selectImages);
-
-        /**
-         * 图片预览回调
-         *
-         * @param media
-         * @param position
-         */
-        void onPictureClick(LocalMedia media, int position);
-    }
 
     public void setOnPhotoSelectChangedListener(OnPhotoSelectChangedListener
                                                         imageSelectChangedListener) {
         this.imageSelectChangedListener = imageSelectChangedListener;
     }
-
 
 }

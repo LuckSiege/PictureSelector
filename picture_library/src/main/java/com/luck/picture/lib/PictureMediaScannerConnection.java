@@ -33,13 +33,6 @@ public class PictureMediaScannerConnection implements MediaScannerConnection.Med
         this.mMs.connect();
     }
 
-    public PictureMediaScannerConnection(Context context, String path, String mimeType) {
-        this.mPath = path;
-        this.mimeType = mimeType;
-        this.mMs = new MediaScannerConnection(context.getApplicationContext(), this);
-        this.mMs.connect();
-    }
-
     @Override
     public void onMediaScannerConnected() {
         if (!TextUtils.isEmpty(mPath)) {

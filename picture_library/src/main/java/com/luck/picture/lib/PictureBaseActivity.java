@@ -1,11 +1,9 @@
 package com.luck.picture.lib;
 
 import android.Manifest;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,9 +41,12 @@ import com.luck.picture.lib.tools.VoiceUtils;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.model.CutInfo;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -254,7 +255,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
         isOnSaveInstanceState = true;
         outState.putParcelable(PictureConfig.EXTRA_CONFIG, config);
@@ -382,7 +383,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                 boolean http = PictureMimeType.isHttp(path);
                 boolean flag = !TextUtils.isEmpty(path) && http;
                 boolean eqVideo = PictureMimeType.eqVideo(image.getMimeType());
-                image.setCompressed(eqVideo || flag ? false : true);
+                image.setCompressed(!eqVideo && !flag);
                 image.setCompressPath(eqVideo || flag ? "" : path);
                 if (isAndroidQ) {
                     image.setAndroidQToPath(eqVideo ? null : path);
@@ -634,16 +635,16 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      */
     @Nullable
     protected LocalMediaFolder getImageFolder(String path, List<LocalMediaFolder> imageFolders) {
-        File imageFile = new File(PictureMimeType.isContent(path) ? PictureFileUtils.getPath(getContext(), Uri.parse(path)) : path);
+        File imageFile = new File(PictureMimeType.isContent(path) ? Objects.requireNonNull(PictureFileUtils.getPath(getContext(), Uri.parse(path))) : path);
         File folderFile = imageFile.getParentFile();
 
         for (LocalMediaFolder folder : imageFolders) {
-            if (folder.getName().equals(folderFile.getName())) {
+            if (folderFile != null && folder.getName().equals(folderFile.getName())) {
                 return folder;
             }
         }
         LocalMediaFolder newFolder = new LocalMediaFolder();
-        newFolder.setName(folderFile.getName());
+        newFolder.setName(folderFile != null ? folderFile.getName() : "");
         newFolder.setFirstImagePath(path);
         imageFolders.add(newFolder);
         return newFolder;
@@ -770,106 +771,23 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
 
 
     /**
-     * 删除部分手机 拍照在DCIM也生成一张的问题
-     *
-     * @param id
-     */
-    protected void removeMedia(int id) {
-        try {
-            ContentResolver cr = getContentResolver();
-            Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            String selection = MediaStore.Images.Media._ID + "=?";
-            cr.delete(uri, selection, new String[]{Long.toString(id)});
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 获取DCIM文件下最新一条拍照记录
-     *
-     * @param mimeType
-     * @return
-     */
-    protected int getLastImageId(String mimeType) {
-        try {
-            //selection: 指定查询条件
-            String absolutePath = PictureFileUtils.getDCIMCameraPath(this, mimeType);
-            String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
-            String selection = MediaStore.Images.Media.DATA + " like ?";
-            //定义selectionArgs：
-            String[] selectionArgs = {absolutePath + "%"};
-            Cursor data = this.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null,
-                    selection, selectionArgs, ORDER_BY);
-            if (data != null && data.getCount() > 0 && data.moveToFirst()) {
-                int id = data.getInt(data.getColumnIndex(MediaStore.Images.Media._ID));
-                long date = data.getLong(data.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
-                int duration = DateUtils.dateDiffer(date);
-                data.close();
-                // DCIM文件下最近时间1s以内的图片，可以判定是最新生成的重复照片
-                return duration <= 1 ? id : -1;
-            } else {
-                return -1;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    /**
      * 录音
      *
      * @param data
      */
-    @Nullable
     protected String getAudioPath(Intent data) {
         boolean compare_SDK_19 = Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT;
         if (data != null && config.chooseMode == PictureMimeType.ofAudio()) {
             try {
                 Uri uri = data.getData();
                 if (uri != null) {
-                    final String audioPath;
-                    if (compare_SDK_19) {
-                        audioPath = uri.getPath();
-                    } else {
-                        audioPath = getAudioFilePathFromUri(uri);
-                    }
-                    return audioPath;
+                    return compare_SDK_19 ? uri.getPath() : MediaUtils.getAudioFilePathFromUri(getContext(), uri);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return "";
-    }
-
-    /**
-     * 获取刚录取的音频文件
-     *
-     * @param uri
-     * @return
-     */
-    @Nullable
-    protected String getAudioFilePathFromUri(Uri uri) {
-        String path = "";
-        Cursor cursor = null;
-        try {
-            cursor = getContentResolver()
-                    .query(uri, null, null, null, null);
-            if (cursor != null) {
-                cursor.moveToFirst();
-                int index = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
-                path = cursor.getString(index);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-        return path;
     }
 
 
