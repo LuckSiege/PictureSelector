@@ -5,7 +5,7 @@ package com.luck.picture.lib.listener;
  * @date：2020-01-03 16:43
  * @describe：图片加载完成回调
  */
-public interface ImageCompleteCallback {
+public interface OnImageCompleteCallback {
     /**
      * 开始加载
      */
