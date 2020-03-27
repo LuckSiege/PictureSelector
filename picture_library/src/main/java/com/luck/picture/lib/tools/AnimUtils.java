@@ -49,7 +49,7 @@ public class AnimUtils {
         float pivotY = arrow.getHeight() / 2f;
         // flag为true则向上
         float fromDegrees = flag ? 180f : 180f;
-        float toDegrees = flag ? 360f : 0f;
+        float toDegrees = flag ? 360f : 360f;
         //旋转动画效果   参数值 旋转的开始角度  旋转的结束角度  pivotX x轴伸缩值
         RotateAnimation animation = new RotateAnimation(fromDegrees, toDegrees,
                 pivotX, pivotY);

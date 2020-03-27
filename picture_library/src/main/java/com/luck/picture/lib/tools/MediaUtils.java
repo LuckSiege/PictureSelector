@@ -162,9 +162,10 @@ public class MediaUtils {
     @Deprecated
     public static int[] getLocalSizeToAndroidQ(Context context, String videoPath) {
         int[] size = new int[2];
+        Cursor query = null;
         try {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                Cursor query = context.getApplicationContext().getContentResolver().query(Uri.parse(videoPath),
+                query = context.getApplicationContext().getContentResolver().query(Uri.parse(videoPath),
                         null, null, null);
                 if (query != null) {
                     query.moveToFirst();
@@ -174,6 +175,10 @@ public class MediaUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (query != null) {
+                query.close();
+            }
         }
         return size;
     }
@@ -185,9 +190,10 @@ public class MediaUtils {
      */
     public static int[] getLocalImageSizeToAndroidQ(Context context, String videoPath) {
         int[] size = new int[2];
+        Cursor query = null;
         try {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                Cursor query = context.getApplicationContext().getContentResolver()
+                query = context.getApplicationContext().getContentResolver()
                         .query(Uri.parse(videoPath),
                                 null, null, null);
                 if (query != null) {
@@ -200,6 +206,10 @@ public class MediaUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (query != null) {
+                query.close();
+            }
         }
         return size;
     }
