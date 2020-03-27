@@ -78,7 +78,13 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
         });
         if (is_bottom_preview) {
             if (selectImages != null && selectImages.size() > position) {
-                selectImages.get(position).setChecked(true);
+                int size = selectImages.size();
+                for (int i = 0; i < size; i++) {
+                    LocalMedia media = selectImages.get(i);
+                    media.setChecked(false);
+                }
+                LocalMedia media = selectImages.get(position);
+                media.setChecked(true);
             }
         } else {
             int size = selectImages != null ? selectImages.size() : 0;

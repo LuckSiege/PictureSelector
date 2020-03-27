@@ -307,6 +307,41 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      */
     protected void compressImage(final List<LocalMedia> result) {
         showPleaseDialog();
+        if (PictureSelectionConfig.cacheResourcesEngine != null) {
+            // 在Android 10上通过图片加载引擎的缓存来获得沙盒内的图片
+            PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<List<LocalMedia>>() {
+
+                @Override
+                public List<LocalMedia> doInBackground() {
+                    int size = result.size();
+                    for (int i = 0; i < size; i++) {
+                        LocalMedia media = result.get(i);
+                        if (media == null) {
+                            continue;
+                        }
+                        String cachePath = PictureSelectionConfig.cacheResourcesEngine.onCachePath(getContext(), media.getPath());
+                        media.setAndroidQToPath(cachePath);
+                    }
+                    return result;
+                }
+
+                @Override
+                public void onSuccess(List<LocalMedia> result) {
+                    PictureThreadUtils.cancel(PictureThreadUtils.getCachedPool());
+                    compressToLuban(result);
+                }
+            });
+        } else {
+            compressToLuban(result);
+        }
+    }
+
+    /**
+     * 调用Luban压缩
+     *
+     * @param result
+     */
+    private void compressToLuban(List<LocalMedia> result) {
         if (config.synOrAsy) {
             PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<List<File>>() {
 
@@ -404,77 +439,45 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             ToastUtils.s(this, getString(R.string.picture_not_crop_data));
             return;
         }
-        UCrop.Options options = config.uCropOptions == null ? new UCrop.Options() : config.uCropOptions;
-        int toolbarColor = 0, statusColor = 0, titleColor = 0;
-        boolean isChangeStatusBarFontColor;
-        if (config.cropStyle != null) {
-            if (config.cropStyle.cropTitleBarBackgroundColor != 0) {
-                toolbarColor = config.cropStyle.cropTitleBarBackgroundColor;
-            }
-            if (config.cropStyle.cropStatusBarColorPrimaryDark != 0) {
-                statusColor = config.cropStyle.cropStatusBarColorPrimaryDark;
-            }
-            if (config.cropStyle.cropTitleColor != 0) {
-                titleColor = config.cropStyle.cropTitleColor;
-            }
+        // 载入裁剪样式参数配制
+        UCrop.Options options = basicOptions();
+        if (PictureSelectionConfig.cacheResourcesEngine != null) {
+            PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<String>() {
+                @Override
+                public String doInBackground() {
+                    return PictureSelectionConfig.cacheResourcesEngine.onCachePath(getContext(), originalPath);
+                }
 
-            isChangeStatusBarFontColor = config.cropStyle.isChangeStatusBarFontColor;
+                @Override
+                public void onSuccess(String result) {
+                    PictureThreadUtils.cancel(PictureThreadUtils.getCachedPool());
+                    startSingleCropActivity(originalPath, result, mimeType, options);
+                }
+            });
         } else {
-            if (config.cropTitleBarBackgroundColor != 0) {
-                toolbarColor = config.cropTitleBarBackgroundColor;
-            } else {
-                // 兼容老的Theme方式
-                toolbarColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_toolbar_bg);
-            }
-            if (config.cropStatusBarColorPrimaryDark != 0) {
-                statusColor = config.cropStatusBarColorPrimaryDark;
-            } else {
-                // 兼容老的Theme方式
-                statusColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_status_color);
-            }
-            if (config.cropTitleColor != 0) {
-                titleColor = config.cropTitleColor;
-            } else {
-                // 兼容老的Theme方式
-                titleColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_title_color);
-            }
+            startSingleCropActivity(originalPath, null, mimeType, options);
+        }
+    }
 
-            // 兼容单独动态设置主题方式
-            isChangeStatusBarFontColor = config.isChangeStatusBarFontColor;
-            if (!isChangeStatusBarFontColor) {
-                // 是否改变裁剪页状态栏字体颜色 黑白切换
-                isChangeStatusBarFontColor = AttrsUtils.getTypeValueBoolean(this, R.attr.picture_statusFontColor);
-            }
-        }
-        options.isOpenWhiteStatusBar(isChangeStatusBarFontColor);
-        options.setToolbarColor(toolbarColor);
-        options.setStatusBarColor(statusColor);
-        options.setToolbarWidgetColor(titleColor);
-        options.setDimmedLayerColor(config.circleDimmedColor);
-        options.setDimmedLayerBorderColor(config.circleDimmedBorderColor);
-        options.setCircleStrokeWidth(config.circleStrokeWidth);
-        options.setCircleDimmedLayer(config.circleDimmedLayer);
-        options.setShowCropFrame(config.showCropFrame);
-        options.setShowCropGrid(config.showCropGrid);
-        options.setDragFrameEnabled(config.isDragFrame);
-        options.setScaleEnabled(config.scaleEnabled);
-        options.setRotateEnabled(config.rotateEnabled);
-        options.setCompressionQuality(config.cropCompressQuality);
-        options.setHideBottomControls(config.hideBottomControls);
-        options.setFreeStyleCropEnabled(config.freeStyleCropEnabled);
-        options.setCropExitAnimation(config.windowAnimationStyle != null
-                ? config.windowAnimationStyle.activityCropExitAnimation : 0);
-        options.setNavBarColor(config.cropStyle != null ? config.cropStyle.cropNavBarColor : 0);
-        options.withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y);
-        if (config.cropWidth > 0 && config.cropHeight > 0) {
-            options.withMaxResultSize(config.cropWidth, config.cropHeight);
-        }
+    /**
+     * 单张裁剪
+     *
+     * @param originalPath
+     * @param cachePath
+     * @param mimeType
+     * @param options
+     */
+    private void startSingleCropActivity(String originalPath, String cachePath, String mimeType, UCrop.Options options) {
         boolean isHttp = PictureMimeType.isHttp(originalPath);
-        boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
-        Uri uri = isHttp || isAndroidQ ? Uri.parse(originalPath) : Uri.fromFile(new File(originalPath));
         String suffix = mimeType.replace("image/", ".");
-        File file = new File(PictureFileUtils.getDiskCacheDir(this),
+        File file = new File(PictureFileUtils.getDiskCacheDir(getContext()),
                 TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_") + suffix : config.renameCropFileName);
+        Uri uri;
+        if (!TextUtils.isEmpty(cachePath)) {
+            uri = Uri.fromFile(new File(cachePath));
+        } else {
+            uri = isHttp || SdkVersionUtils.checkedAndroid_Q() ? Uri.parse(originalPath) : Uri.fromFile(new File(originalPath));
+        }
         UCrop.of(uri, Uri.fromFile(file))
                 .withOptions(options)
                 .startAnimationActivity(this, config.windowAnimationStyle != null
@@ -486,11 +489,110 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      *
      * @param list
      */
+    private int index = 0;
+
     protected void startCrop(ArrayList<CutInfo> list) {
         if (list == null || list.size() == 0) {
             ToastUtils.s(this, getString(R.string.picture_not_crop_data));
             return;
         }
+        if (list.size() == 1) {
+            // 单张图调用单张裁剪
+            startCrop(list.get(0).getPath(), list.get(0).getMimeType());
+            return;
+        }
+        // 载入裁剪样式参数配制
+        UCrop.Options options = basicOptions(list);
+        int size = list.size();
+        index = 0;
+        if (config.chooseMode == PictureMimeType.ofAll() && config.isWithVideoImage) {
+            // 视频和图片共存
+            String mimeType = size > 0 ? list.get(index).getMimeType() : "";
+            boolean eqVideo = PictureMimeType.eqVideo(mimeType);
+            if (eqVideo) {
+                // 第一个是视频就跳过直到遍历出图片为止
+                for (int i = 0; i < size; i++) {
+                    CutInfo cutInfo = list.get(i);
+                    if (cutInfo != null && PictureMimeType.eqImage(cutInfo.getMimeType())) {
+                        index = i;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (PictureSelectionConfig.cacheResourcesEngine != null) {
+            PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<List<CutInfo>>() {
+
+                @Override
+                public List<CutInfo> doInBackground() {
+                    for (int i = 0; i < size; i++) {
+                        CutInfo cutInfo = list.get(i);
+                        String cachePath = PictureSelectionConfig.cacheResourcesEngine.onCachePath(getContext(), cutInfo.getPath());
+                        if (!TextUtils.isEmpty(cachePath)) {
+                            cutInfo.setAndroidQToPath(cachePath);
+                        }
+                    }
+                    return list;
+                }
+
+                @Override
+                public void onSuccess(List<CutInfo> list) {
+                    PictureThreadUtils.cancel(PictureThreadUtils.getCachedPool());
+                    if (index < size) {
+                        startMultipleCropActivity(list.get(index), options);
+                    }
+                }
+            });
+
+        } else {
+            if (index < size) {
+                startMultipleCropActivity(list.get(index), options);
+            }
+        }
+    }
+
+    /**
+     * 启动多图裁剪
+     *
+     * @param cutInfo
+     * @param options
+     */
+    private void startMultipleCropActivity(CutInfo cutInfo, UCrop.Options options) {
+        String path = cutInfo.getPath();
+        String mimeType = cutInfo.getMimeType();
+        boolean isHttp = PictureMimeType.isHttp(path);
+        Uri uri;
+        if (!TextUtils.isEmpty(cutInfo.getAndroidQToPath())) {
+            uri = Uri.fromFile(new File(cutInfo.getAndroidQToPath()));
+        } else {
+            uri = isHttp || SdkVersionUtils.checkedAndroid_Q() ? Uri.parse(path) : Uri.fromFile(new File(path));
+        }
+        String suffix = mimeType.replace("image/", ".");
+        File file = new File(PictureFileUtils.getDiskCacheDir(this),
+                TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_")
+                        + suffix : config.camera ? config.renameCropFileName : StringUtils.rename(config.renameCropFileName));
+        UCrop.of(uri, Uri.fromFile(file))
+                .withOptions(options)
+                .startAnimationMultipleCropActivity(this, config.windowAnimationStyle != null
+                        ? config.windowAnimationStyle.activityCropEnterAnimation : R.anim.picture_anim_enter);
+    }
+
+    /**
+     * 设置裁剪样式参数
+     *
+     * @return
+     */
+    private UCrop.Options basicOptions() {
+        return basicOptions(null);
+    }
+
+    /**
+     * 设置裁剪样式参数
+     *
+     * @return
+     */
+    private UCrop.Options basicOptions(ArrayList<CutInfo> list) {
         int toolbarColor = 0, statusColor = 0, titleColor = 0;
         boolean isChangeStatusBarFontColor;
         if (config.cropStyle != null) {
@@ -561,38 +663,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (config.cropWidth > 0 && config.cropHeight > 0) {
             options.withMaxResultSize(config.cropWidth, config.cropHeight);
         }
-        int index = 0;
-        int size = list.size();
-        if (config.chooseMode == PictureMimeType.ofAll() && config.isWithVideoImage) {
-            // 视频和图片共存
-            String mimeType = size > 0 ? list.get(index).getMimeType() : "";
-            boolean eqVideo = PictureMimeType.eqVideo(mimeType);
-            if (eqVideo) {
-                // 第一个是视频就跳过直到遍历出图片为止
-                for (int i = 0; i < size; i++) {
-                    CutInfo cutInfo = list.get(i);
-                    if (cutInfo != null && PictureMimeType.eqImage(cutInfo.getMimeType())) {
-                        index = i;
-                        break;
-                    }
-                }
-            }
-        }
-        String path = size > 0 ? list.get(index).getPath() : "";
-        String mimeType = size > 0 ? list.get(index).getMimeType() : "";
-        boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
-        boolean isHttp = PictureMimeType.isHttp(path);
-        Uri uri = isHttp || isAndroidQ ? Uri.parse(path) : Uri.fromFile(new File(path));
-        String suffix = mimeType.replace("image/", ".");
-        File file = new File(PictureFileUtils.getDiskCacheDir(this),
-                TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_")
-                        + suffix : config.camera ? config.renameCropFileName : StringUtils.rename(config.renameCropFileName));
-        UCrop.of(uri, Uri.fromFile(file))
-                .withOptions(options)
-                .startAnimationMultipleCropActivity(this, config.windowAnimationStyle != null
-                        ? config.windowAnimationStyle.activityCropEnterAnimation : R.anim.picture_anim_enter);
+        return options;
     }
-
 
     /**
      * compress or callback

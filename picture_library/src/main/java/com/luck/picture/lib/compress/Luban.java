@@ -411,8 +411,10 @@ public class Luban implements Handler.Callback {
             mStreamProviders.add(new InputStreamAdapter() {
                 @Override
                 public InputStream openInternal() throws IOException {
-                    if (isAndroidQ && !media.isCut() && PictureMimeType.isContent(media.getPath())) {
-                        // 如果是Android Q并且没有裁剪过走，因为是先裁剪后压缩，如果裁剪过要用裁剪后的地址去压缩
+                    if (PictureMimeType.isContent(media.getPath()) && !media.isCut()) {
+                        if (!TextUtils.isEmpty(media.getAndroidQToPath())) {
+                            return new FileInputStream(media.getAndroidQToPath());
+                        }
                         return context.getContentResolver().openInputStream(Uri.parse(media.getPath()));
                     } else {
                         return new FileInputStream(media.isCut() ? media.getCutPath() : media.getPath());
@@ -421,7 +423,7 @@ public class Luban implements Handler.Callback {
 
                 @Override
                 public String getPath() {
-                    return media.isCut() ? media.getCutPath() : media.getPath();
+                    return media.isCut() ? media.getCutPath() : TextUtils.isEmpty(media.getAndroidQToPath()) ? media.getPath() : media.getAndroidQToPath();
                 }
 
                 @Override

@@ -27,7 +27,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
-import com.luck.picture.lib.adapter.PictureAlbumDirectoryAdapter;
 import com.luck.picture.lib.adapter.PictureImageGridAdapter;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -1648,7 +1647,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 media.setHeight(c.getImageHeight());
                 media.setDuration(c.getDuration());
                 media.setChooseModel(config.chooseMode);
-                media.setAndroidQToPath(isAndroidQ ? c.getCutPath() : null);
+                media.setAndroidQToPath(isAndroidQ ? c.getCutPath() : c.getAndroidQToPath());
                 if (!TextUtils.isEmpty(c.getCutPath())) {
                     media.setSize(new File(c.getCutPath()).length());
                 } else {
