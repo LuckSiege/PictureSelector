@@ -52,7 +52,7 @@ public class GlideEngine implements ImageEngine {
      * @param url
      * @param imageView
      * @param longImageView
-     * @param callback      网络图片加载回调监听
+     * @param callback      网络图片加载回调监听 {link version 2.5.1 after Please use the #OnImageCompleteCallback#}
      */
     @Override
     public void loadImage(@NonNull Context context, @NonNull String url,
