@@ -317,9 +317,9 @@ public class LocalMediaLoader {
             if (lhs.getImages() == null || rhs.getImages() == null) {
                 return 0;
             }
-            int lsize = lhs.getImageNum();
-            int rsize = rhs.getImageNum();
-            return lsize == rsize ? 0 : (lsize < rsize ? 1 : -1);
+            int lSize = lhs.getImageNum();
+            int rSize = rhs.getImageNum();
+            return Integer.compare(rSize, lSize);
         });
     }
 
