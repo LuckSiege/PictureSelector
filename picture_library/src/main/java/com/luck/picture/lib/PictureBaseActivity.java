@@ -832,6 +832,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                     return;
                 }
             }
+            config.cameraMimeType = PictureMimeType.ofImage();
             if (config.isCameraAroundState) {
                 cameraIntent.putExtra(PictureConfig.CAMERA_FACING, PictureConfig.CAMERA_BEFORE);
             }
@@ -881,6 +882,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                     return;
                 }
             }
+            config.cameraMimeType = PictureMimeType.ofVideo();
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             if (config.isCameraAroundState) {
                 cameraIntent.putExtra(PictureConfig.CAMERA_FACING, PictureConfig.CAMERA_BEFORE);
@@ -898,6 +900,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)) {
             Intent cameraIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
             if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+                config.cameraMimeType = PictureMimeType.ofAudio();
                 startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
             }
         } else {

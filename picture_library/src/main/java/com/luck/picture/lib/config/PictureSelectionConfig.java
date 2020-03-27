@@ -139,6 +139,7 @@ public final class PictureSelectionConfig implements Parcelable {
 
     public String originalPath;
     public String cameraPath;
+    public int cameraMimeType;
     /**
      * 内测专用###########
      */
@@ -243,6 +244,7 @@ public final class PictureSelectionConfig implements Parcelable {
         overrideHeight = 0;
         originalPath = "";
         cameraPath = "";
+        cameraMimeType = -1;
     }
 
     public static PictureSelectionConfig getInstance() {
@@ -358,6 +360,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeString(this.outPutCameraPath);
         dest.writeString(this.originalPath);
         dest.writeString(this.cameraPath);
+        dest.writeInt(this.cameraMimeType);
         dest.writeByte(this.isFallbackVersion ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFallbackVersion2 ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFallbackVersion3 ? (byte) 1 : (byte) 0);
@@ -387,6 +390,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.maxVideoSelectNum = in.readInt();
         this.minVideoSelectNum = in.readInt();
         this.videoQuality = in.readInt();
+        this.cameraMimeType = in.readInt();
         this.cropCompressQuality = in.readInt();
         this.videoMaxSecond = in.readInt();
         this.videoMinSecond = in.readInt();

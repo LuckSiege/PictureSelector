@@ -229,7 +229,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(config.cameraPath));
                 File file = new File(path);
                 size = file.length();
-                mimeType = PictureMimeType.getMimeType(file);
+                mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                 if (PictureMimeType.eqImage(mimeType)) {
                     newSize = MediaUtils.getLocalImageSizeToAndroidQ(this, config.cameraPath);
                 } else {
@@ -248,7 +248,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 }
             } else {
                 final File file = new File(config.cameraPath);
-                mimeType = PictureMimeType.getMimeType(file);
+                mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                 size = file.length();
                 if (PictureMimeType.eqImage(mimeType)) {
                     int degree = PictureFileUtils.readPictureDegree(this, config.cameraPath);

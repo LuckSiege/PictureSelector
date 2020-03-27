@@ -1,11 +1,8 @@
 package com.luck.picture.lib.config;
 
 
-import android.content.ContentResolver;
 import android.content.Context;
-import android.net.Uri;
 import android.text.TextUtils;
-import android.webkit.MimeTypeMap;
 
 import com.luck.picture.lib.R;
 
@@ -175,27 +172,18 @@ public final class PictureMimeType {
     /**
      * 判断文件类型是图片还是视频
      *
-     * @param file
+     * @param cameraMimeType
      * @return
      */
-    public static String getMimeType(File file) {
-        if (file != null) {
-            String name = file.getName();
-            if (name.endsWith(".mp4") || name.endsWith(".avi")
-                    || name.endsWith(".3gpp") || name.endsWith(".3gp") || name.endsWith(".mov")) {
+    public static String getMimeType(int cameraMimeType) {
+        switch (cameraMimeType) {
+            case PictureConfig.TYPE_VIDEO:
                 return MIME_TYPE_VIDEO;
-            } else if (name.endsWith(".PNG") || name.endsWith(".png") || name.endsWith(".jpeg")
-                    || name.endsWith(".gif") || name.endsWith(".GIF") || name.endsWith(".jpg")
-                    || name.endsWith(".webp") || name.endsWith(".WEBP") || name.endsWith(".JPEG")
-                    || name.endsWith(".bmp")) {
-                return MIME_TYPE_IMAGE;
-            } else if (name.endsWith(".mp3") || name.endsWith(".amr")
-                    || name.endsWith(".aac") || name.endsWith(".war")
-                    || name.endsWith(".flac") || name.endsWith(".lamr")) {
+            case PictureConfig.TYPE_AUDIO:
                 return MIME_TYPE_AUDIO;
-            }
+            default:
+                return MIME_TYPE_IMAGE;
         }
-        return MIME_TYPE_IMAGE;
     }
 
     /**
@@ -284,27 +272,6 @@ public final class PictureMimeType {
         return defaultSuffix;
     }
 
-    /**
-     * 获取mimeType
-     *
-     * @param context
-     * @param uri
-     * @return
-     */
-    @Deprecated
-    public static String getMimeTypeFromMediaContentUri(Context context, Uri uri) {
-        String mimeType;
-        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
-            ContentResolver cr = context.getContentResolver();
-            mimeType = cr.getType(uri);
-        } else {
-            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
-                    .toString());
-            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                    fileExtension.toLowerCase());
-        }
-        return TextUtils.isEmpty(mimeType) ? "image/jpeg" : mimeType;
-    }
 
     /**
      * 是否是content://类型

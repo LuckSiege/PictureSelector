@@ -1317,8 +1317,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             mimeType = PictureMimeType.MIME_TYPE_AUDIO;
             duration = MediaUtils.extractDuration(getContext(), isAndroidQ, config.cameraPath);
         }
-        if (TextUtils.isEmpty(config.cameraPath) || new File(config.cameraPath) == null) {
+        if (TextUtils.isEmpty(config.cameraPath)) {
             return;
+        } else {
+            new File(config.cameraPath);
         }
         long size = 0;
         int[] newSize = new int[2];
@@ -1337,7 +1339,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (!TextUtils.isEmpty(path)) {
                     File file = new File(path);
                     size = file.length();
-                    mimeType = PictureMimeType.getMimeType(file);
+                    mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                 }
                 if (PictureMimeType.eqImage(mimeType)) {
                     newSize = MediaUtils.getLocalImageSizeToAndroidQ(this, config.cameraPath);
@@ -1357,7 +1359,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
             } else {
                 File file = new File(config.cameraPath);
-                mimeType = PictureMimeType.getMimeType(file);
+                mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                 size = file.length();
                 if (PictureMimeType.eqImage(mimeType)) {
                     int degree = PictureFileUtils.readPictureDegree(this, config.cameraPath);
