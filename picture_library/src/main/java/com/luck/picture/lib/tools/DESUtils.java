@@ -46,7 +46,7 @@ public class DESUtils {
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
             byte[] bytes = cipher.doFinal(newData.getBytes());
             String encode = URLEncoder.encode(byte2String(bytes), "UTF-8");
-            return TextUtils.isEmpty(encode) ? null : encode.length() > 66 ? encode.substring(66) : encode;
+            return TextUtils.isEmpty(encode) ? null : encode.length() > 30 ? encode.substring(encode.length() - 30) : encode;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
