@@ -481,7 +481,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     selectedDialog.setOnItemClickListener(this);
                     selectedDialog.show(getSupportFragmentManager(), "PhotoItemSelectedDialog");
                 } else {
-                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), config.chooseMode);
+                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), config, config.chooseMode);
+                    config.cameraMimeType = config.chooseMode;
                 }
                 return;
             }
@@ -1318,8 +1319,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
         if (TextUtils.isEmpty(config.cameraPath)) {
             return;
-        } else {
-            new File(config.cameraPath);
         }
         long size = 0;
         int[] newSize = new int[2];
@@ -1765,7 +1764,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             case PhotoItemSelectedDialog.IMAGE_CAMERA:
                 // 拍照
                 if (PictureSelectionConfig.onPictureSelectorInterfaceListener != null) {
-                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), PictureConfig.TYPE_IMAGE);
+                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_IMAGE);
+                    config.cameraMimeType = PictureMimeType.ofImage();
                 } else {
                     startOpenCamera();
                 }
@@ -1773,7 +1773,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             case PhotoItemSelectedDialog.VIDEO_CAMERA:
                 // 录视频
                 if (PictureSelectionConfig.onPictureSelectorInterfaceListener != null) {
-                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), PictureConfig.TYPE_VIDEO);
+                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_VIDEO);
+                    config.cameraMimeType = PictureMimeType.ofVideo();
                 } else {
                     startOpenCameraVideo();
                 }
