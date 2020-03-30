@@ -496,11 +496,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             ToastUtils.s(this, getString(R.string.picture_not_crop_data));
             return;
         }
-        if (list.size() == 1) {
-            // 单张图调用单张裁剪
-            startCrop(list.get(0).getPath(), list.get(0).getMimeType());
-            return;
-        }
         // 载入裁剪样式参数配制
         UCrop.Options options = basicOptions(list);
         int size = list.size();
