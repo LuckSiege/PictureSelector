@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.yalantis.ucrop"/>
+<manifest xmlns:tools="http://schemas.android.com/tools"
+    package="com.yalantis.ucrop">
+
+  <uses-sdk tools:overrideLibrary="androidx.camera.view" />
+</manifest>

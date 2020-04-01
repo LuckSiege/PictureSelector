@@ -34,5 +34,6 @@ dependencies {
     implementation "androidx.camera:camera-lifecycle:${cfgs.camerax_version}"
     api "androidx.camera:camera-core:${cfgs.camera_core_version}"
     api "androidx.camera:camera-camera2:${cfgs.camerax_version}"
+    api "androidx.camera:camera-view:${cfgs.camerax_view_version}"
     api project(':ucrop')
 }
