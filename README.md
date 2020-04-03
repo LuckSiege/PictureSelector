@@ -34,7 +34,6 @@
 -[混淆配置](#混淆配置)<br>
 -[LICENSE](#LICENSE)<br>
 -[兼容性测试](#兼容性测试)<br>
--[打赏](#打赏)<br> 
 
 
 ## 最新版本
@@ -120,11 +119,6 @@ PictureSelector.create(this).externalPictureVideo(video_path);
    See the License for the specific language governing permissions and
    limitations under the License.
 ```
-
-## 打赏
-
-# ~如果您觉得好，对你有帮助，可以给我一点打赏当做鼓励，蚊子再小也是肉呀(*^__^*) 嘻嘻…… 
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/apply.png)
 
 ## 兼容性测试
 ******腾讯优测-深度测试-通过率达到100%******
