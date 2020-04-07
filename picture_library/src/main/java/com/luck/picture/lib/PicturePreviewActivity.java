@@ -28,7 +28,7 @@ import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
 import com.luck.picture.lib.tools.VoiceUtils;
-import com.luck.picture.lib.widget.PreviewViewPager;
+import com.luck.picture.lib.widget.viewpager.PreviewViewPager;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.model.CutInfo;
 

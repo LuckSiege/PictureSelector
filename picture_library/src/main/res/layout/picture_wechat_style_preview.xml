@@ -8,7 +8,7 @@
     <include layout="@layout/picture_wechat_style_preview_title_bar" />
 
 
-    <com.luck.picture.lib.widget.PreviewViewPager
+    <com.luck.picture.lib.widget.viewpager.PreviewViewPager
         android:id="@+id/preview_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,4 +1,4 @@
-package com.luck.picture.lib.widget;
+package com.luck.picture.lib.widget.viewpager;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -7,19 +7,20 @@ import android.view.MotionEvent;
 import androidx.viewpager.widget.ViewPager;
 
 /**
- * @author：luck
- * @date：2016-12-31 22:12
- * @describe：PreviewViewPager
+ *
  */
 
 public class PreviewViewPager extends ViewPager {
 
+    private MyViewPageHelper helper;
+
     public PreviewViewPager(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public PreviewViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
+        helper = new MyViewPageHelper(this);
     }
 
     @Override
@@ -50,5 +51,23 @@ public class PreviewViewPager extends ViewPager {
         } catch (ArrayIndexOutOfBoundsException e) {
         }
         return false;
+    }
+
+    @Override
+    public void setCurrentItem(int item) {
+        setCurrentItem(item, true);
+    }
+
+    @Override
+    public void setCurrentItem(int item, boolean smoothScroll) {
+        MScroller scroller = helper.getScroller();
+        if (Math.abs(getCurrentItem() - item) > 1) {
+            scroller.setNoDuration(true);
+            super.setCurrentItem(item, smoothScroll);
+            scroller.setNoDuration(false);
+        } else {
+            scroller.setNoDuration(false);
+            super.setCurrentItem(item, smoothScroll);
+        }
     }
 }
