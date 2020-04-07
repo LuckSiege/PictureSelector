@@ -203,3 +203,4 @@ class CustomGestureDetector {
         return true;
     }
 }
+

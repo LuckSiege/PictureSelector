@@ -131,6 +131,9 @@ public class CustomCameraView extends RelativeLayout {
                 mFlashLamp.setVisibility(INVISIBLE);
                 mCameraView.setCaptureMode(androidx.camera.view.CameraView.CaptureMode.IMAGE);
                 File imageOutFile = createImageFile();
+                if (imageOutFile == null) {
+                    return;
+                }
                 mCameraView.takePicture(imageOutFile, ContextCompat.getMainExecutor(getContext().getApplicationContext()), new ImageCapture.OnImageSavedCallback() {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
@@ -322,7 +325,9 @@ public class CustomCameraView extends RelativeLayout {
             }
             File cameraFile = PictureFileUtils.createCameraFile(getContext(),
                     PictureMimeType.ofImage(), cameraFileName, mConfig.suffixType, mConfig.outPutCameraPath);
-            mConfig.cameraPath = cameraFile.getAbsolutePath();
+            if (cameraFile != null) {
+                mConfig.cameraPath = cameraFile.getAbsolutePath();
+            }
             return cameraFile;
         }
     }

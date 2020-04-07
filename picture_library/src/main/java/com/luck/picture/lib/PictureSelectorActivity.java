@@ -27,7 +27,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
-import com.luck.picture.lib.adapter.PictureAlbumDirectoryAdapter;
 import com.luck.picture.lib.adapter.PictureImageGridAdapter;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -37,6 +36,9 @@ import com.luck.picture.lib.dialog.PhotoItemSelectedDialog;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
+import com.luck.picture.lib.listener.OnAlbumItemClickListener;
+import com.luck.picture.lib.listener.OnItemClickListener;
+import com.luck.picture.lib.listener.OnPhotoSelectChangedListener;
 import com.luck.picture.lib.model.LocalMediaLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.permissions.PermissionChecker;
@@ -69,8 +71,7 @@ import java.util.Objects;
  * @描述: Media 选择页面
  */
 public class PictureSelectorActivity extends PictureBaseActivity implements View.OnClickListener,
-        PictureAlbumDirectoryAdapter.OnItemClickListener,
-        PictureImageGridAdapter.OnPhotoSelectChangedListener, PhotoItemSelectedDialog.OnItemClickListener {
+        OnAlbumItemClickListener, OnPhotoSelectChangedListener<LocalMedia>, OnItemClickListener {
     protected ImageView mIvPictureLeftBack;
     protected ImageView mIvArrow;
     protected View titleViewBg;
@@ -173,14 +174,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mTvPictureTitle.setText(title);
         folderWindow = new FolderPopWindow(this, config);
         folderWindow.setArrowImageView(mIvArrow);
-        folderWindow.setOnItemClickListener(this);
+        folderWindow.setOnAlbumItemClickListener(this);
         mPictureRecycler.setHasFixedSize(true);
         mPictureRecycler.addItemDecoration(new GridSpacingItemDecoration(config.imageSpanCount,
                 ScreenUtils.dip2px(this, 2), false));
         mPictureRecycler.setLayoutManager(new GridLayoutManager(getContext(), config.imageSpanCount));
         // 解决调用 notifyItemChanged 闪烁问题,取消默认动画
-        ((SimpleItemAnimator) mPictureRecycler.getItemAnimator())
-                .setSupportsChangeAnimations(false);
+        RecyclerView.ItemAnimator itemAnimator = mPictureRecycler.getItemAnimator();
+        if (itemAnimator != null) {
+            ((SimpleItemAnimator) itemAnimator).setSupportsChangeAnimations(false);
+        }
         if (config.isFallbackVersion2
                 || Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
             loadAllMediaData();
@@ -366,7 +369,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             } else {
                 // 已选择
                 boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
-                if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
+                if (isCompleteReplaceNum && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
                     mTvPictureOk.setText(String.format(config.style.pictureCompleteText, startCount, 1));
                 } else {
                     mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)
@@ -383,7 +386,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         startCount, config.maxVideoSelectNum + config.maxSelectNum));
             } else {
                 // 已选择
-                if (isCompleteReplaceNum && isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
+                if (isCompleteReplaceNum && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
                     mTvPictureOk.setText(String.format(config.style.pictureCompleteText, startCount, config.maxVideoSelectNum + config.maxSelectNum));
                 } else {
                     mTvPictureOk.setText(getString(R.string.picture_done_front_num,
@@ -478,7 +481,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     selectedDialog.setOnItemClickListener(this);
                     selectedDialog.show(getSupportFragmentManager(), "PhotoItemSelectedDialog");
                 } else {
-                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), config.chooseMode);
+                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), config, config.chooseMode);
+                    config.cameraMimeType = config.chooseMode;
                 }
                 return;
             }
@@ -685,6 +689,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     private void bothMimeTypeWith(boolean eqImg, List<LocalMedia> images) {
         LocalMedia image = images.size() > 0 ? images.get(0) : null;
+        if (image == null) {
+            return;
+        }
         if (config.enableCrop) {
             if (config.selectionMode == PictureConfig.SINGLE && eqImg) {
                 config.originalPath = image.getPath();
@@ -753,6 +760,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     private void separateMimeTypeWith(boolean eqImg, List<LocalMedia> images) {
         LocalMedia image = images.size() > 0 ? images.get(0) : null;
+        if (image == null) {
+            return;
+        }
         if (config.enableCrop && eqImg) {
             if (config.selectionMode == PictureConfig.SINGLE) {
                 config.originalPath = image.getPath();
@@ -796,7 +806,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private void audioDialog(final String path) {
         if (!isFinishing()) {
             audioDialog = new PictureCustomDialog(getContext(), R.layout.picture_audio_dialog);
-            audioDialog.getWindow().setWindowAnimations(R.style.Picture_Theme_Dialog_AudioStyle);
+            if (audioDialog.getWindow() != null) {
+                audioDialog.getWindow().setWindowAnimations(R.style.Picture_Theme_Dialog_AudioStyle);
+            }
             mTvMusicStatus = audioDialog.findViewById(R.id.tv_musicStatus);
             mTvMusicTime = audioDialog.findViewById(R.id.tv_musicTime);
             musicSeekBar = audioDialog.findViewById(R.id.musicSeekBar);
@@ -1191,7 +1203,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         } else if (resultCode == UCrop.RESULT_ERROR) {
             if (data != null) {
                 Throwable throwable = (Throwable) data.getSerializableExtra(UCrop.EXTRA_ERROR);
-                ToastUtils.s(getContext(), throwable.getMessage());
+                if (throwable != null) {
+                    ToastUtils.s(getContext(), throwable.getMessage());
+                }
             }
         }
     }
@@ -1206,8 +1220,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             return;
         }
         if (config.isOriginalControl) {
-            boolean isCheckOriginal = data.getBooleanExtra(PictureConfig.EXTRA_CHANGE_ORIGINAL, config.isCheckOriginalImage);
-            config.isCheckOriginalImage = isCheckOriginal;
+            config.isCheckOriginalImage = data.getBooleanExtra(PictureConfig.EXTRA_CHANGE_ORIGINAL, config.isCheckOriginalImage);
             mCbOriginal.setChecked(config.isCheckOriginalImage);
         }
         // 在预览界面按返回键或已完成的处理逻辑
@@ -1304,7 +1317,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             mimeType = PictureMimeType.MIME_TYPE_AUDIO;
             duration = MediaUtils.extractDuration(getContext(), isAndroidQ, config.cameraPath);
         }
-        if (TextUtils.isEmpty(config.cameraPath) || new File(config.cameraPath) == null) {
+        if (TextUtils.isEmpty(config.cameraPath)) {
             return;
         }
         long size = 0;
@@ -1324,7 +1337,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (!TextUtils.isEmpty(path)) {
                     File file = new File(path);
                     size = file.length();
-                    mimeType = PictureMimeType.getMimeType(file);
+                    mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                 }
                 if (PictureMimeType.eqImage(mimeType)) {
                     newSize = MediaUtils.getLocalImageSizeToAndroidQ(this, config.cameraPath);
@@ -1344,7 +1357,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
             } else {
                 File file = new File(config.cameraPath);
-                mimeType = PictureMimeType.getMimeType(file);
+                mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                 size = file.length();
                 if (PictureMimeType.eqImage(mimeType)) {
                     int degree = PictureFileUtils.readPictureDegree(this, config.cameraPath);
@@ -1466,9 +1479,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             manualSaveFolder(media);
             // 这里主要解决极个别手机拍照会在DCIM目录重复生成一张照片问题
             if (!isAndroidQ && PictureMimeType.eqImage(media.getMimeType())) {
-                int lastImageId = getLastImageId(media.getMimeType());
+                int lastImageId = MediaUtils.getLastImageId(getContext(), media.getMimeType());
                 if (lastImageId != -1) {
-                    removeMedia(lastImageId);
+                    MediaUtils.removeMedia(getContext(), lastImageId);
                 }
             }
             mTvEmpty.setVisibility(images.size() > 0 || config.isSingleDirectReturn ? View.INVISIBLE : View.VISIBLE);
@@ -1491,13 +1504,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     isEnterNext = false;
                     ToastUtils.s(getContext(), getString(R.string.picture_choose_limit_seconds, config.videoMinSecond / 1000, config.videoMaxSecond / 1000));
                 }
-            } else if (config.videoMinSecond > 0 && config.videoMaxSecond <= 0) {
+            } else if (config.videoMinSecond > 0) {
                 // 用户只设置了最小时长视频限制
                 if (media.getDuration() < config.videoMinSecond) {
                     isEnterNext = false;
                     ToastUtils.s(getContext(), getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
                 }
-            } else if (config.videoMinSecond <= 0 && config.videoMaxSecond > 0) {
+            } else if (config.videoMaxSecond > 0) {
                 // 用户只设置了最大时长视频限制
                 if (media.getDuration() > config.videoMaxSecond) {
                     isEnterNext = false;
@@ -1517,8 +1530,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (data == null) {
             return;
         }
-        List<LocalMedia> result = new ArrayList<>();
         Uri resultUri = UCrop.getOutput(data);
+        if (resultUri == null) {
+            return;
+        }
+        List<LocalMedia> result = new ArrayList<>();
         String cutPath = resultUri.getPath();
         if (mAdapter != null) {
             List<LocalMedia> list = data.getParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST);
@@ -1537,7 +1553,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     if (SdkVersionUtils.checkedAndroid_Q()
                             && PictureMimeType.isContent(media.getPath())) {
                         String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
-                        media.setSize(new File(path).length());
+                        media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
                     } else {
                         media.setSize(new File(media.getPath()).length());
                     }
@@ -1552,27 +1568,29 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             } else {
                 // 预览界面选中图片并裁剪回调的
                 media = list != null && list.size() > 0 ? list.get(0) : null;
-                config.originalPath = media.getPath();
-                media.setCutPath(cutPath);
-                media.setChooseModel(config.chooseMode);
-                media.setSize(new File(TextUtils.isEmpty(cutPath)
-                        ? media.getPath() : cutPath).length());
-                if (TextUtils.isEmpty(cutPath)) {
-                    if (SdkVersionUtils.checkedAndroid_Q()
-                            && PictureMimeType.isContent(media.getPath())) {
-                        String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
-                        media.setSize(new File(path).length());
+                if (media != null) {
+                    config.originalPath = media.getPath();
+                    media.setCutPath(cutPath);
+                    media.setChooseModel(config.chooseMode);
+                    media.setSize(new File(TextUtils.isEmpty(cutPath)
+                            ? media.getPath() : cutPath).length());
+                    if (TextUtils.isEmpty(cutPath)) {
+                        if (SdkVersionUtils.checkedAndroid_Q()
+                                && PictureMimeType.isContent(media.getPath())) {
+                            String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
+                            media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
+                        } else {
+                            media.setSize(new File(media.getPath()).length());
+                        }
+                        media.setCut(false);
                     } else {
-                        media.setSize(new File(media.getPath()).length());
+                        media.setSize(new File(cutPath).length());
+                        media.setAndroidQToPath(cutPath);
+                        media.setCut(true);
                     }
-                    media.setCut(false);
-                } else {
-                    media.setSize(new File(cutPath).length());
-                    media.setAndroidQToPath(cutPath);
-                    media.setCut(true);
+                    result.add(media);
+                    handlerResult(result);
                 }
-                result.add(media);
-                handlerResult(result);
             }
         }
     }
@@ -1628,13 +1646,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 media.setHeight(c.getImageHeight());
                 media.setDuration(c.getDuration());
                 media.setChooseModel(config.chooseMode);
-                media.setAndroidQToPath(isAndroidQ ? c.getCutPath() : null);
+                media.setAndroidQToPath(isAndroidQ ? c.getCutPath() : c.getAndroidQToPath());
                 if (!TextUtils.isEmpty(c.getCutPath())) {
                     media.setSize(new File(c.getCutPath()).length());
                 } else {
                     if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(c.getPath())) {
                         String path = PictureFileUtils.getPath(this, Uri.parse(c.getPath()));
-                        media.setSize(new File(path).length());
+                        media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
                     } else {
                         media.setSize(new File(c.getPath()).length());
                     }
@@ -1696,6 +1714,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         File imageFile = new File(PictureMimeType.isContent(media.getPath())
                 ? Objects.requireNonNull(PictureFileUtils.getPath(getContext(), Uri.parse(media.getPath()))) : media.getPath());
         File folderFile = imageFile.getParentFile();
+        if (folderFile == null) {
+            return;
+        }
         int size = imageFolders.size();
         for (int i = 0; i < size; i++) {
             LocalMediaFolder folder = imageFolders.get(i);
@@ -1738,12 +1759,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(View view, int position) {
         switch (position) {
             case PhotoItemSelectedDialog.IMAGE_CAMERA:
                 // 拍照
                 if (PictureSelectionConfig.onPictureSelectorInterfaceListener != null) {
-                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), PictureConfig.TYPE_IMAGE);
+                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_IMAGE);
+                    config.cameraMimeType = PictureMimeType.ofImage();
                 } else {
                     startOpenCamera();
                 }
@@ -1751,7 +1773,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             case PhotoItemSelectedDialog.VIDEO_CAMERA:
                 // 录视频
                 if (PictureSelectionConfig.onPictureSelectorInterfaceListener != null) {
-                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), PictureConfig.TYPE_VIDEO);
+                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_VIDEO);
+                    config.cameraMimeType = PictureMimeType.ofVideo();
                 } else {
                     startOpenCameraVideo();
                 }

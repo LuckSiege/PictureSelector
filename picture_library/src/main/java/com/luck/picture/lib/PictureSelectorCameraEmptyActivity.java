@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat;
 
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.immersive.ImmersiveManage;
 import com.luck.picture.lib.permissions.PermissionChecker;
@@ -45,7 +46,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (!config.isUseCustomCamera) {
+        if (!config.isUseCustomCamera && PictureSelectionConfig.onPictureSelectorInterfaceListener == null) {
             if (savedInstanceState == null) {
                 if (PermissionChecker
                         .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
@@ -229,7 +230,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(config.cameraPath));
                 File file = new File(path);
                 size = file.length();
-                mimeType = PictureMimeType.getMimeType(file);
+                mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                 if (PictureMimeType.eqImage(mimeType)) {
                     newSize = MediaUtils.getLocalImageSizeToAndroidQ(this, config.cameraPath);
                 } else {
@@ -248,7 +249,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 }
             } else {
                 final File file = new File(config.cameraPath);
-                mimeType = PictureMimeType.getMimeType(file);
+                mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                 size = file.length();
                 if (PictureMimeType.eqImage(mimeType)) {
                     int degree = PictureFileUtils.readPictureDegree(this, config.cameraPath);
@@ -272,9 +273,9 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         cameraHandleResult(media, mimeType);
         // 这里主要解决极个别手机拍照会在DCIM目录重复生成一张照片问题
         if (!isAndroidQ && PictureMimeType.eqImage(media.getMimeType())) {
-            int lastImageId = getLastImageId(media.getMimeType());
+            int lastImageId = MediaUtils.getLastImageId(getContext(), media.getMimeType());
             if (lastImageId != -1) {
-                removeMedia(lastImageId);
+                MediaUtils.removeMedia(getContext(), lastImageId);
             }
         }
     }

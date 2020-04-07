@@ -30,7 +30,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.listener.ImageCompleteCallback;
+import com.luck.picture.lib.listener.OnImageCompleteCallback;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.photoview.PhotoView;
 import com.luck.picture.lib.thread.PictureThreadUtils;
@@ -286,7 +286,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                         if (isHttp) {
                             // 网络图片
                             PictureSelectionConfig.imageEngine.loadImage(contentView.getContext(), path,
-                                    imageView, longImageView, new ImageCompleteCallback() {
+                                    imageView, longImageView, new OnImageCompleteCallback() {
                                         @Override
                                         public void onShowLoading() {
                                             showPleaseDialog();

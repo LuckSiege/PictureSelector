@@ -138,11 +138,20 @@ public class PictureMultiCuttingActivity extends UCropActivity {
         addBlockingView();
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        String path = list.get(cutIndex).getPath();
+        if (extras == null) {
+            extras = new Bundle();
+        }
+        CutInfo cutInfo = list.get(cutIndex);
+        String path = cutInfo.getPath();
         boolean isHttp = MimeType.isHttp(path);
         String suffix = MimeType.getLastImgType(MimeType.isContent(path)
                 ? FileUtils.getPath(this, Uri.parse(path)) : path);
-        Uri uri = isHttp || MimeType.isContent(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
+        Uri uri;
+        if (!TextUtils.isEmpty(cutInfo.getAndroidQToPath())) {
+            uri = Uri.fromFile(new File(cutInfo.getAndroidQToPath()));
+        } else {
+            uri = isHttp || MimeType.isContent(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
+        }
         extras.putParcelable(UCrop.EXTRA_INPUT_URI, uri);
         File file = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ?
                 getExternalFilesDir(Environment.DIRECTORY_PICTURES) : getCacheDir();
@@ -232,8 +241,7 @@ public class PictureMultiCuttingActivity extends UCropActivity {
             }
             File file = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ?
                     getExternalFilesDir(Environment.DIRECTORY_PICTURES) : getCacheDir();
-            File newFile = new File(file, new StringBuffer()
-                    .append("temporary_thumbnail_").append(i).append(imgType).toString());
+            File newFile = new File(file, "temporary_thumbnail_" + i + imgType);
             String mimeType = MimeType.getImageMimeType(path);
             cutInfo.setMimeType(mimeType);
             cutInfo.setHttpOutUri(Uri.fromFile(newFile));

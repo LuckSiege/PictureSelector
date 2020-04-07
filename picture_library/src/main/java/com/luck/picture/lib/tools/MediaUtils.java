@@ -1,5 +1,6 @@
 package com.luck.picture.lib.tools;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -161,9 +162,10 @@ public class MediaUtils {
     @Deprecated
     public static int[] getLocalSizeToAndroidQ(Context context, String videoPath) {
         int[] size = new int[2];
+        Cursor query = null;
         try {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                Cursor query = context.getApplicationContext().getContentResolver().query(Uri.parse(videoPath),
+                query = context.getApplicationContext().getContentResolver().query(Uri.parse(videoPath),
                         null, null, null);
                 if (query != null) {
                     query.moveToFirst();
@@ -173,6 +175,10 @@ public class MediaUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (query != null) {
+                query.close();
+            }
         }
         return size;
     }
@@ -184,9 +190,10 @@ public class MediaUtils {
      */
     public static int[] getLocalImageSizeToAndroidQ(Context context, String videoPath) {
         int[] size = new int[2];
+        Cursor query = null;
         try {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                Cursor query = context.getApplicationContext().getContentResolver()
+                query = context.getApplicationContext().getContentResolver()
                         .query(Uri.parse(videoPath),
                                 null, null, null);
                 if (query != null) {
@@ -199,6 +206,10 @@ public class MediaUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (query != null) {
+                query.close();
+            }
         }
         return size;
     }
@@ -262,43 +273,86 @@ public class MediaUtils {
         return size;
     }
 
+
+    /**
+     * 删除部分手机 拍照在DCIM也生成一张的问题
+     *
+     * @param id
+     */
+    public static void removeMedia(Context context, int id) {
+        try {
+            ContentResolver cr = context.getApplicationContext().getContentResolver();
+            Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            String selection = MediaStore.Images.Media._ID + "=?";
+            cr.delete(uri, selection, new String[]{Long.toString(id)});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     /**
      * 获取DCIM文件下最新一条拍照记录
      *
+     * @param mimeType
      * @return
      */
-    @Deprecated
     public static int getLastImageId(Context context, String mimeType) {
+        Cursor data = null;
         try {
             //selection: 指定查询条件
-            boolean isMimeType = PictureMimeType.eqImage(mimeType);
             String absolutePath = PictureFileUtils.getDCIMCameraPath(context, mimeType);
             String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
-            String selection = isMimeType ? MediaStore.Video.Media.DATA + " like ?" :
-                    MediaStore.Images.Media.DATA + " like ?";
+            String selection = MediaStore.Images.Media.DATA + " like ?";
             //定义selectionArgs：
             String[] selectionArgs = {absolutePath + "%"};
-            Cursor imageCursor = context.getContentResolver().query(isMimeType ?
-                            MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-                            : MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null,
+            data = context.getApplicationContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null,
                     selection, selectionArgs, ORDER_BY);
-            if (imageCursor.moveToFirst()) {
-                int id = imageCursor.getInt(isMimeType ?
-                        imageCursor.getColumnIndex(MediaStore.Video.Media._ID)
-                        : imageCursor.getColumnIndex(MediaStore.Images.Media._ID));
-                long date = imageCursor.getLong(isMimeType ?
-                        imageCursor.getColumnIndex(MediaStore.Video.Media.DURATION)
-                        : imageCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
+            if (data != null && data.getCount() > 0 && data.moveToFirst()) {
+                int id = data.getInt(data.getColumnIndex(MediaStore.Images.Media._ID));
+                long date = data.getLong(data.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
                 int duration = DateUtils.dateDiffer(date);
-                imageCursor.close();
-                // DCIM文件下最近时间30s以内的图片，可以判定是最新生成的重复照片
-                return duration <= 30 ? id : -1;
+                // DCIM文件下最近时间1s以内的图片，可以判定是最新生成的重复照片
+                return duration <= 1 ? id : -1;
             } else {
                 return -1;
             }
         } catch (Exception e) {
             e.printStackTrace();
             return -1;
+        } finally {
+            if (data != null) {
+                data.close();
+            }
         }
+    }
+
+
+    /**
+     * 获取刚录取的音频文件
+     *
+     * @param uri
+     * @return
+     */
+    @Nullable
+    public static String getAudioFilePathFromUri(Context context, Uri uri) {
+        String path = "";
+        Cursor cursor = null;
+        try {
+            cursor = context.getApplicationContext().getContentResolver()
+                    .query(uri, null, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int index = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
+                path = cursor.getString(index);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return path;
     }
 }

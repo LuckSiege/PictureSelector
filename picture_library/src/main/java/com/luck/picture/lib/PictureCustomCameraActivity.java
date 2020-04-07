@@ -20,6 +20,7 @@ import com.luck.picture.lib.camera.CustomCameraView;
 import com.luck.picture.lib.camera.listener.CameraListener;
 import com.luck.picture.lib.camera.view.CaptureLayout;
 import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.permissions.PermissionChecker;
@@ -161,6 +162,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
         mCameraView.setCameraListener(new CameraListener() {
             @Override
             public void onPictureSuccess(@NonNull File file) {
+                config.cameraMimeType = PictureMimeType.ofImage();
                 Intent intent = new Intent();
                 intent.putExtra(PictureConfig.EXTRA_MEDIA_PATH, file.getAbsolutePath());
                 if (config.camera) {
@@ -173,6 +175,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
 
             @Override
             public void onRecordSuccess(@NonNull File file) {
+                config.cameraMimeType = PictureMimeType.ofVideo();
                 Intent intent = new Intent();
                 intent.putExtra(PictureConfig.EXTRA_MEDIA_PATH, file.getAbsolutePath());
                 if (config.camera) {

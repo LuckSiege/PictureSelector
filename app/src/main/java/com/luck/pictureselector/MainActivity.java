@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             cb_single_back.setVisibility(isChecked ? View.GONE : View.VISIBLE);
             cb_single_back.setChecked(!isChecked && cb_single_back.isChecked());
         });
-        mAdapter.setOnItemClickListener((position, v) -> {
+        mAdapter.setOnItemClickListener((v, position) -> {
             List<LocalMedia> selectList = mAdapter.getData();
             if (selectList.size() > 0) {
                 LocalMedia media = selectList.get(position);
@@ -601,11 +601,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * PictureSelector自定义的一些回调接口
      */
-    private OnPictureSelectorInterfaceListener interfaceListener = (context, type) -> {
-        // 必须使用context.startActivityForResult(activity.class,PictureConfig.REQUEST_CAMERA);
+    private OnPictureSelectorInterfaceListener interfaceListener = (context, config, type) -> {
+        // TODO  必须使用context.startActivityForResult(activity.class,PictureConfig.REQUEST_CAMERA);
+
+        // TODO 注意:使用自定义相机时，需要设置PictureSelectionConfig两个值
+        //  1、config.cameraPath (文件输出路径)
+        //  2、 config.cameraMimeType (相机类型 图片or视频)
         switch (type) {
             case PictureConfig.TYPE_IMAGE:
                 // 拍照
+//                    if (context instanceof Activity) {
+//                        Intent intent = new Intent(context, PictureCustomCameraActivity.class);
+//                        ((Activity) context).startActivityForResult(intent, PictureConfig.REQUEST_CAMERA);
+//                        PictureWindowAnimationStyle windowAnimationStyle = mWindowAnimationStyle;
+//                        ((Activity) context).overridePendingTransition(windowAnimationStyle != null &&
+//                                windowAnimationStyle.activityEnterAnimation != 0 ?
+//                                windowAnimationStyle.activityEnterAnimation : R.anim.picture_anim_enter, R.anim.picture_anim_fade_in);
+//                    }
                 ToastUtils.s(getContext(), "Click Camera Image");
                 break;
             case PictureConfig.TYPE_VIDEO:

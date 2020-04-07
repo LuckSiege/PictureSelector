@@ -16,9 +16,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.listener.OnItemClickListener;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.pictureselector.R;
-import com.luck.pictureselector.listener.OnItemClickListener;
 import com.luck.pictureselector.listener.OnItemLongClickListener;
 
 import java.io.File;
@@ -220,7 +220,7 @@ public class GridImageAdapter extends
             if (mItemClickListener != null) {
                 viewHolder.itemView.setOnClickListener(v -> {
                     int adapterPosition = viewHolder.getAdapterPosition();
-                    mItemClickListener.onItemClick(adapterPosition, v);
+                    mItemClickListener.onItemClick(v, adapterPosition);
                 });
             }
 

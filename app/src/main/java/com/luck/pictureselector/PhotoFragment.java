@@ -167,10 +167,10 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                 tv_original_tips.setVisibility(isChecked ? View.VISIBLE : View.GONE));
         cb_choose_mode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             cb_single_back.setVisibility(isChecked ? View.GONE : View.VISIBLE);
-            cb_single_back.setChecked(isChecked ? false : cb_single_back.isChecked());
+            cb_single_back.setChecked(!isChecked && cb_single_back.isChecked());
         });
 
-        mAdapter.setOnItemClickListener((position, v) -> {
+        mAdapter.setOnItemClickListener((v, position) -> {
             if (selectList.size() > 0) {
                 LocalMedia media = selectList.get(position);
                 String mimeType = media.getMimeType();

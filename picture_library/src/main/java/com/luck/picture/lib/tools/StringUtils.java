@@ -70,7 +70,7 @@ public class StringUtils {
     public static String rename(String fileName) {
         String temp = fileName.substring(0, fileName.lastIndexOf("."));
         String suffix = fileName.substring(fileName.lastIndexOf("."));
-        return new StringBuffer().append(temp).append("_").append(DateUtils.getCreateFileName()).append(suffix).toString();
+        return temp + "_" + DateUtils.getCreateFileName() + suffix;
     }
 
     /**
@@ -81,6 +81,6 @@ public class StringUtils {
      */
     public static String renameSuffix(String fileName, String suffix) {
         String temp = fileName.substring(0, fileName.lastIndexOf("."));
-        return new StringBuffer().append(temp).append(suffix).toString();
+        return temp + suffix;
     }
 }

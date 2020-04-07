@@ -1,4 +1,4 @@
-# PictureSelector 2.0
+# PictureSelector 2.0 
    一款针对Android平台下的图片选择器，支持从相册获取图片、视频、音频&拍照，支持裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能，支持动态获取权限&适配Android 5.0+系统的开源图片选择框架。<br>
   
   <br>项目一直维护(有bug修复完一般会在周末更新)，如果有bug请描述清楚并可以提Issues，个人QQ 893855882 希望用得着的朋友点个star。 <br>
@@ -8,7 +8,7 @@
  
    [我的博客地址](http://blog.csdn.net/luck_mw)   
   
-   [体验Demo](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2020_03_25_1735_2.5.1.apk)<br>
+   [体验Demo](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2020_03_29_2048_2.5.1.apk)<br>
   
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
@@ -20,8 +20,8 @@
 -[用前需知](https://github.com/LuckSiege/PictureSelector/wiki/%E7%94%A8%E5%89%8D%E9%9C%80%E7%9F%A5)<br>
 -[如何提Issues?](https://github.com/LuckSiege/PictureSelector/wiki/%E5%A6%82%E4%BD%95%E6%8F%90Issues%3F)<br>
 -[功能特点](https://github.com/LuckSiege/PictureSelector/wiki/%E5%8A%9F%E8%83%BD%E7%89%B9%E7%82%B9)<br>
--[最新版本 v2.5.0](#最新版本)<br>
--[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.5.0)<br>
+-[最新版本 v2.5.1](#最新版本)<br>
+-[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.5.1)<br>
 -[主题配置-Xml方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98-Xml%E6%96%B9%E5%BC%8F)<br>
 -[主题配置-Code方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%A8%E6%80%81%E4%B8%BB%E9%A2%98(%E5%8C%85%E5%90%AB%E8%A3%81%E5%89%AA%E3%80%81%E7%9B%B8%E5%86%8C%E5%90%AF%E5%8A%A8%E5%8A%A8%E7%94%BB)-Code%E6%96%B9%E5%BC%8F)<br>
 -[演示效果](#演示效果)<br>
@@ -34,12 +34,11 @@
 -[混淆配置](#混淆配置)<br>
 -[LICENSE](#LICENSE)<br>
 -[兼容性测试](#兼容性测试)<br>
--[打赏](#打赏)<br> 
 
 
 ## 最新版本
 ```sh
-implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.0'
+implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.1'
 ```
 
 ## 启动相册
@@ -121,11 +120,6 @@ PictureSelector.create(this).externalPictureVideo(video_path);
    limitations under the License.
 ```
 
-## 打赏
-
-# ~如果您觉得好，对你有帮助，可以给我一点打赏当做鼓励，蚊子再小也是肉呀(*^__^*) 嘻嘻…… 
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/apply.png)
-
 ## 兼容性测试
 ******腾讯优测-深度测试-通过率达到100%******
 
@@ -160,5 +154,5 @@ PictureSelector.create(this).externalPictureVideo(video_path);
 
 | 白色风格 | 视频 | 音频 |
 |:-----------:|:-----------:|:--------:|
-|![](image/picture_white_style.png) |![](image/picture_video.jpg) | ![](image/picture_audio.jpg)| 
+|![](image/picture_white_style.jpeg) |![](image/picture_video.jpg) | ![](image/picture_audio.jpg)| 
 
