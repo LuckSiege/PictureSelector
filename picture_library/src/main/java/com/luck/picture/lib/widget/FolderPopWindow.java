@@ -12,10 +12,6 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.PictureAlbumDirectoryAdapter;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -27,6 +23,10 @@ import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 
 import java.util.List;
+
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * @author：luck
@@ -56,7 +56,7 @@ public class FolderPopWindow extends PopupWindow {
         this.setContentView(window);
         this.setWidth(RelativeLayout.LayoutParams.MATCH_PARENT);
         this.setHeight(RelativeLayout.LayoutParams.WRAP_CONTENT);
-        this.setAnimationStyle(R.style.PictureThemeWindowStyle);
+        this.setAnimationStyle(R.style.PictureGradientAnimation);
         this.setFocusable(true);
         this.setOutsideTouchable(true);
         this.update();

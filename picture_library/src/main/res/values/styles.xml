@@ -6,6 +6,12 @@
         <item name="android:windowExitAnimation">@anim/picture_anim_album_dismiss</item>
     </style>
 
+    <!--渐变动画-->
+    <style name="PictureGradientAnimation">
+        <item name="android:windowEnterAnimation">@anim/picture_anim_gradient_in</item>
+        <item name="android:windowExitAnimation">@anim/picture_anim_gradient_out</item>
+    </style>
+
     <style name="PictureThemeDialogWindowStyle">
         <item name="android:windowEnterAnimation">@anim/picture_anim_modal_in</item>
         <item name="android:windowExitAnimation">@anim/picture_anim_modal_out</item>
