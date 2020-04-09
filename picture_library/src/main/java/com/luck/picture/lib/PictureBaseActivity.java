@@ -981,10 +981,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      */
     private void releaseResultListener() {
         if (config != null) {
-            PictureSelectionConfig.listener = null;
-            PictureSelectionConfig.customVideoPlayCallback = null;
-            PictureSelectionConfig.onPictureSelectorInterfaceListener = null;
-            PictureSelectionConfig.cacheResourcesEngine = null;
+            PictureSelectionConfig.destroy();
             PictureThreadUtils.cancel(PictureThreadUtils.getCachedPool());
             PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
         }

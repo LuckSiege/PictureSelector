@@ -150,106 +150,6 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isFallbackVersion2 = true;
     public boolean isFallbackVersion3 = true;
 
-    @Deprecated
-    protected void initDefaultValue() {
-        chooseMode = PictureMimeType.ofImage();
-        camera = false;
-        themeStyleId = R.style.picture_default_style;
-        selectionMode = PictureConfig.MULTIPLE;
-        maxSelectNum = 9;
-        minSelectNum = 0;
-        maxVideoSelectNum = 0;
-        minVideoSelectNum = 0;
-        videoQuality = 1;
-        language = -1;
-        cropCompressQuality = 90;
-        videoMaxSecond = 0;
-        videoMinSecond = 0;
-        filterFileSize = -1;
-        recordVideoSecond = 60;
-        recordVideoMinSecond = 0;
-        compressQuality = 80;
-        minimumCompressSize = PictureConfig.MAX_COMPRESS_SIZE;
-        imageSpanCount = 4;
-        isCompress = false;
-        isOriginalControl = false;
-        aspect_ratio_x = 0;
-        aspect_ratio_y = 0;
-        cropWidth = 0;
-        cropHeight = 0;
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
-        buttonFeatures = CustomCameraView.BUTTON_STATE_BOTH;  //初始化按钮为可录制可拍照
-        isCameraAroundState = false;
-        isWithVideoImage = false;
-        isAndroidQTransform = true;
-        isCamera = true;
-        isGif = false;
-        focusAlpha = false;
-        isCheckOriginalImage = false;
-        isSingleDirectReturn = false;
-        enablePreview = true;
-        enPreviewVideo = true;
-        enablePreviewAudio = true;
-        checkNumMode = false;
-        isNotPreviewDownload = false;
-        openClickSound = false;
-        isFallbackVersion = false;
-        isFallbackVersion2 = true;
-        isFallbackVersion3 = true;
-        enableCrop = false;
-        isWeChatStyle = false;
-        isUseCustomCamera = false;
-        isMultipleSkipCrop = true;
-        isMultipleRecyclerAnimation = true;
-        freeStyleCropEnabled = false;
-        circleDimmedLayer = false;
-        showCropFrame = true;
-        showCropGrid = true;
-        hideBottomControls = true;
-        rotateEnabled = true;
-        scaleEnabled = true;
-        previewEggs = false;
-        returnEmpty = false;
-        synOrAsy = true;
-        zoomAnim = true;
-        circleDimmedColor = 0;
-        circleDimmedBorderColor = 0;
-        circleStrokeWidth = 1;
-        isDragFrame = true;
-        compressSavePath = "";
-        suffixType = "";
-        cameraFileName = "";
-        specifiedFormat = "";
-        renameCompressFileName = "";
-        renameCropFileName = "";
-        selectionMedias = new ArrayList<>();
-        imageEngine = null;
-        listener = null;
-        cacheResourcesEngine = null;
-        customVideoPlayCallback = null;
-        onPictureSelectorInterfaceListener = null;
-        uCropOptions = null;
-        style = null;
-        cropStyle = null;
-        windowAnimationStyle = null;
-        titleBarBackgroundColor = 0;
-        pictureStatusBarColor = 0;
-        cropTitleBarBackgroundColor = 0;
-        cropStatusBarColorPrimaryDark = 0;
-        cropTitleColor = 0;
-        upResId = 0;
-        downResId = 0;
-        isChangeStatusBarFontColor = false;
-        isOpenStyleNumComplete = false;
-        isOpenStyleCheckNumMode = false;
-        outPutCameraPath = "";
-        sizeMultiplier = 0.5f;
-        overrideWidth = 0;
-        overrideHeight = 0;
-        originalPath = "";
-        cameraPath = "";
-        cameraMimeType = 0;
-    }
 
     public static PictureSelectionConfig getInstance() {
         return InstanceHolder.INSTANCE;
@@ -262,6 +162,16 @@ public final class PictureSelectionConfig implements Parcelable {
 
     private static final class InstanceHolder {
         private static final PictureSelectionConfig INSTANCE = new PictureSelectionConfig();
+    }
+
+    /**
+     * 释放监听器
+     */
+    public static void destroy() {
+        PictureSelectionConfig.listener = null;
+        PictureSelectionConfig.customVideoPlayCallback = null;
+        PictureSelectionConfig.onPictureSelectorInterfaceListener = null;
+        PictureSelectionConfig.cacheResourcesEngine = null;
     }
 
     public PictureSelectionConfig() {
