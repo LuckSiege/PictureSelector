@@ -81,6 +81,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             mTvMusicStatus, mTvMusicTotal, mTvMusicTime;
     protected RecyclerView mPictureRecycler;
     protected RelativeLayout mBottomLayout;
+    protected RelativeLayout mRlAlbum;
     protected PictureImageGridAdapter mAdapter;
     protected List<LocalMedia> images = new ArrayList<>();
     protected List<LocalMediaFolder> foldersList = new ArrayList<>();
@@ -155,6 +156,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mTvPictureImgNum = findViewById(R.id.picture_tv_img_num);
         mPictureRecycler = findViewById(R.id.picture_recycler);
         mBottomLayout = findViewById(R.id.rl_bottom);
+        mRlAlbum = findViewById(R.id.rlAlbum);
         mTvEmpty = findViewById(R.id.tv_empty);
         isNumComplete(numComplete);
         if (!numComplete) {
@@ -168,8 +170,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mTvPictureRight.setOnClickListener(this);
         mTvPictureOk.setOnClickListener(this);
         mTvPictureImgNum.setOnClickListener(this);
-        mTvPictureTitle.setOnClickListener(this);
-        mIvArrow.setOnClickListener(this);
+        mRlAlbum.setOnClickListener(this);
         String title = config.chooseMode == PictureMimeType.ofAudio() ?
                 getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll);
         mTvPictureTitle.setText(title);
@@ -545,7 +546,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 onBackPressed();
             }
         }
-        if (id == R.id.picture_title || id == R.id.ivArrow) {
+        if (id == R.id.rlAlbum) {
             if (folderWindow.isShowing()) {
                 folderWindow.dismiss();
             } else {
