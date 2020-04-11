@@ -1343,7 +1343,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (PictureMimeType.eqImage(mimeType)) {
                     newSize = MediaUtils.getLocalImageSizeToAndroidQ(this, config.cameraPath);
                 } else {
-                    newSize = MediaUtils.getLocalVideoSize(this, Uri.parse(config.cameraPath));
+                    newSize = MediaUtils.getVideoSizeForUri(this, Uri.parse(config.cameraPath));
                     duration = MediaUtils.extractDuration(getContext(), true, config.cameraPath);
                 }
                 int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
@@ -1363,9 +1363,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (PictureMimeType.eqImage(mimeType)) {
                     int degree = PictureFileUtils.readPictureDegree(this, config.cameraPath);
                     BitmapUtils.rotateImage(degree, config.cameraPath);
-                    newSize = MediaUtils.getLocalImageWidthOrHeight(config.cameraPath);
+                    newSize = MediaUtils.getImageSizeForUrl(config.cameraPath);
                 } else {
-                    newSize = MediaUtils.getLocalVideoSize(config.cameraPath);
+                    newSize = MediaUtils.getVideoSizeForUrl(config.cameraPath);
                     duration = MediaUtils.extractDuration(getContext(), false, config.cameraPath);
                 }
 

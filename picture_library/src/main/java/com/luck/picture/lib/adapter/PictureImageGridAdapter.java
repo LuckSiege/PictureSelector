@@ -454,16 +454,24 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 image.setHeight(width);
             }
 
+            // 如果宽高为0，重新获取宽高
             if (image.getWidth() == 0 || image.getHeight() == 0) {
+                int width = 0, height = 0;
                 if (PictureMimeType.isContent(image.getPath())) {
-
+                    if (PictureMimeType.eqImage(image.getMimeType())) {
+                        int[] size = MediaUtils.getImageSizeForUri(context, Uri.parse(image.getPath()));
+                        width = size[0];
+                        height = size[1];
+                    }
                 } else {
                     if (PictureMimeType.eqVideo(image.getMimeType())) {
-                        int[] size = MediaUtils.getLocalVideoSize(image.getPath());
-                        image.setWidth(size[0]);
-                        image.setHeight(size[1]);
+                        int[] size = MediaUtils.getVideoSizeForUrl(image.getPath());
+                        width = size[0];
+                        height = size[1];
                     }
                 }
+                image.setWidth(width);
+                image.setHeight(height);
             }
 
             selectImages.add(image);

@@ -9,6 +9,7 @@ import android.media.ExifInterface;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 
 import androidx.annotation.Nullable;
@@ -191,13 +192,13 @@ public class MediaUtils {
      *
      * @return
      */
-    public static int[] getLocalImageSizeToAndroidQ(Context context, String videoPath) {
+    public static int[] getLocalImageSizeToAndroidQ(Context context, String url) {
         int[] size = new int[2];
         Cursor query = null;
         try {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 query = context.getApplicationContext().getContentResolver()
-                        .query(Uri.parse(videoPath),
+                        .query(Uri.parse(url),
                                 null, null, null);
                 if (query != null) {
                     query.moveToFirst();
@@ -222,11 +223,11 @@ public class MediaUtils {
      *
      * @return
      */
-    public static int[] getLocalVideoSize(String videoPath) {
+    public static int[] getVideoSizeForUrl(String url) {
         int[] size = new int[2];
         try {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(videoPath);
+            mmr.setDataSource(url);
             size[0] = ValueOf.toInt(mmr.extractMetadata
                     (MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
             size[1] = ValueOf.toInt(mmr.extractMetadata
@@ -242,7 +243,7 @@ public class MediaUtils {
      *
      * @return
      */
-    public static int[] getLocalVideoSize(Context context, Uri uri) {
+    public static int[] getVideoSizeForUri(Context context, Uri uri) {
         int[] size = new int[2];
         try {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
@@ -262,12 +263,12 @@ public class MediaUtils {
      *
      * @return
      */
-    public static int[] getLocalImageWidthOrHeight(String imagePath) {
+    public static int[] getImageSizeForUrl(String url) {
         int[] size = new int[2];
         try {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(imagePath, options);
+            BitmapFactory.decodeFile(url, options);
             size[0] = options.outWidth;
             size[1] = options.outHeight;
         } catch (Exception e) {
@@ -276,6 +277,31 @@ public class MediaUtils {
         return size;
     }
 
+
+    /**
+     * get Local image width or height
+     *
+     * @return
+     */
+    public static int[] getImageSizeForUri(Context context, Uri uri) {
+        int[] size = new int[2];
+        ParcelFileDescriptor fileDescriptor = null;
+        try {
+            fileDescriptor = context.getContentResolver().openFileDescriptor(uri, "r");
+            if (fileDescriptor != null) {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                BitmapFactory.decodeFileDescriptor(fileDescriptor.getFileDescriptor(), null, options);
+                size[0] = options.outWidth;
+                size[1] = options.outHeight;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            PictureFileUtils.close(fileDescriptor);
+        }
+        return size;
+    }
 
     /**
      * 删除部分手机 拍照在DCIM也生成一张的问题
