@@ -276,7 +276,6 @@ public class MediaUtils {
     }
 
 
-
     /**
      * 删除部分手机 拍照在DCIM也生成一张的问题
      *
@@ -359,6 +358,59 @@ public class MediaUtils {
         return path;
     }
 
+
+    /**
+     * 获取旋转角度
+     *
+     * @param path
+     * @return
+     */
+    public static int getVideoOrientationForUrl(String path) {
+        try {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            mmr.setDataSource(path);
+            int rotation = ValueOf.toInt(mmr.extractMetadata
+                    (MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION));
+            switch (rotation) {
+                case 90:
+                    return ExifInterface.ORIENTATION_ROTATE_90;
+                case 270:
+                    return ExifInterface.ORIENTATION_ROTATE_270;
+                default:
+                    return 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * 获取旋转角度
+     *
+     * @param uri
+     * @return
+     */
+    public static int getVideoOrientationForUri(Context context, Uri uri) {
+        try {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            mmr.setDataSource(context, uri);
+            int rotation = ValueOf.toInt(mmr.extractMetadata
+                    (MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION));
+            switch (rotation) {
+                case 90:
+                    return ExifInterface.ORIENTATION_ROTATE_90;
+                case 270:
+                    return ExifInterface.ORIENTATION_ROTATE_270;
+                default:
+                    return 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
     /**
      * 获取旋转角度
      *
@@ -366,7 +418,7 @@ public class MediaUtils {
      * @param url
      * @return
      */
-    public static int getOrientation(Context context, String url) {
+    public static int getImageOrientationForUrl(Context context, String url) {
         ExifInterface exifInterface = null;
         InputStream inputStream = null;
         try {
@@ -384,6 +436,37 @@ public class MediaUtils {
             return 0;
         } finally {
             PictureFileUtils.close(inputStream);
+        }
+    }
+
+    /**
+     * 设置LocalMedia旋转信息
+     *
+     * @param context
+     * @param media
+     * @return
+     */
+    public static void setOrientation(Context context, LocalMedia media) {
+        // 如果有旋转信息图片宽高则是相反
+        if (media.getOrientation() == -1) {
+            int orientation = 0;
+            if (PictureMimeType.eqImage(media.getMimeType())) {
+                orientation = MediaUtils.getImageOrientationForUrl(context, media.getPath());
+            } else if (PictureMimeType.eqVideo(media.getMimeType())) {
+                if (PictureMimeType.isContent(media.getPath())) {
+                    orientation = MediaUtils.getVideoOrientationForUri(context, Uri.parse(media.getPath()));
+                } else {
+                    orientation = MediaUtils.getVideoOrientationForUrl(media.getPath());
+                }
+            }
+            if (orientation == ExifInterface.ORIENTATION_ROTATE_90
+                    || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+                int width = media.getWidth();
+                int height = media.getHeight();
+                media.setWidth(height);
+                media.setHeight(width);
+            }
+            media.setOrientation(orientation);
         }
     }
 }

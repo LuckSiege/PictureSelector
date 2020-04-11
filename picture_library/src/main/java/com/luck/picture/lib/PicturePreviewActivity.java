@@ -611,19 +611,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 }
 
                 // 如果有旋转信息图片宽高则是相反
-                int orientation;
-                if (image.getOrientation() == -1) {
-                    orientation = MediaUtils.getOrientation(getContext(), image.getPath());
-                    image.setOrientation(orientation);
-                    if (orientation == ExifInterface.ORIENTATION_ROTATE_90
-                            || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
-                        int width = image.getWidth();
-                        int height = image.getHeight();
-                        image.setWidth(height);
-                        image.setHeight(width);
-                    }
-                }
-
+                MediaUtils.setOrientation(getContext(), image);
                 selectImages.add(image);
                 onSelectedChange(true, image);
                 image.setNum(selectImages.size());

@@ -196,7 +196,6 @@ public class LocalMediaLoader {
                         String fileName = data.getString
                                 (data.getColumnIndexOrThrow(PROJECTION[8]));
 
-                        Log.i("YYY", "loadAllMedia: " + width + "x" + height);
                         if (config.filterFileSize > 0) {
                             if (size > config.filterFileSize * FILE_SIZE_UNIT) {
                                 continue;

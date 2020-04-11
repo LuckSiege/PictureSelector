@@ -1331,6 +1331,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
         }
         LocalMedia media = new LocalMedia();
+        media.setPath(config.cameraPath);
         if (config.chooseMode != PictureMimeType.ofAudio()) {
             // 图片视频处理规则
             if (PictureMimeType.isContent(config.cameraPath)) {
@@ -1368,28 +1369,18 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     newSize = MediaUtils.getVideoSizeForUrl(config.cameraPath);
                     duration = MediaUtils.extractDuration(getContext(), false, config.cameraPath);
                 }
-
-                // 如果有旋转信息图片宽高则是相反
-                int orientation = MediaUtils.getOrientation(getContext(),config.cameraPath);
-                if (orientation == ExifInterface.ORIENTATION_ROTATE_90
-                        || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
-                    int width = newSize[0];
-                    int height = newSize[1];
-                    newSize[0] = height;
-                    newSize[1] = width;
-                }
-
                 // 拍照产生一个临时id
                 media.setId(System.currentTimeMillis());
             }
         }
         media.setDuration(duration);
+        media.setMimeType(mimeType);
         media.setWidth(newSize[0]);
         media.setHeight(newSize[1]);
-        media.setPath(config.cameraPath);
-        media.setMimeType(mimeType);
         media.setSize(size);
         media.setChooseModel(config.chooseMode);
+        // 如果有旋转信息图片宽高则是相反
+        MediaUtils.setOrientation(getContext(), media);
         if (mAdapter != null) {
             images.add(0, media);
             if (checkVideoLegitimacy(media)) {

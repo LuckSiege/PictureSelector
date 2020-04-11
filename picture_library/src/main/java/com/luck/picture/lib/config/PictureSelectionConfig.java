@@ -29,7 +29,7 @@ import java.util.List;
  */
 
 public final class PictureSelectionConfig implements Parcelable {
-    public int chooseMode = PictureMimeType.ofImage();
+    public int chooseMode;
     public boolean camera;
     public boolean isSingleDirectReturn;
     public PictureParameterStyle style;
@@ -41,47 +41,44 @@ public final class PictureSelectionConfig implements Parcelable {
     public String renameCompressFileName;
     public String renameCropFileName;
     public String specifiedFormat;
-    public int requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
-    /**
-     * 初始化按钮为可录制可拍照
-     */
-    public int buttonFeatures = CustomCameraView.BUTTON_STATE_BOTH;
+    public int requestedOrientation;
+    public int buttonFeatures;
     public boolean isCameraAroundState;
-    public boolean isAndroidQTransform = true;
+    public boolean isAndroidQTransform;
     @StyleRes
-    public int themeStyleId = R.style.picture_default_style;
-    public int selectionMode = PictureConfig.MULTIPLE;
-    public int maxSelectNum = 9;
+    public int themeStyleId;
+    public int selectionMode;
+    public int maxSelectNum;
     public int minSelectNum;
     public int maxVideoSelectNum;
     public int minVideoSelectNum;
-    public int videoQuality = 1;
-    public int cropCompressQuality = 90;
+    public int videoQuality;
+    public int cropCompressQuality;
     public int videoMaxSecond;
     public int videoMinSecond;
-    public int recordVideoSecond = 60;
+    public int recordVideoSecond;
     public int recordVideoMinSecond;
-    public int minimumCompressSize = PictureConfig.MAX_COMPRESS_SIZE;
-    public int imageSpanCount = 4;
+    public int minimumCompressSize;
+    public int imageSpanCount;
     public int aspect_ratio_x;
     public int aspect_ratio_y;
     public int cropWidth;
     public int cropHeight;
-    public int compressQuality = 80;
-    public int filterFileSize = -1;
-    public int language = -1;
-    public boolean isMultipleRecyclerAnimation = true;
-    public boolean isMultipleSkipCrop = true;
+    public int compressQuality;
+    public int filterFileSize;
+    public int language;
+    public boolean isMultipleRecyclerAnimation;
+    public boolean isMultipleSkipCrop;
     public boolean isWeChatStyle;
     public boolean isUseCustomCamera;
-    public boolean zoomAnim = true;
+    public boolean zoomAnim;
     public boolean isCompress;
     public boolean isOriginalControl;
-    public boolean isCamera = true;
+    public boolean isCamera;
     public boolean isGif;
-    public boolean enablePreview = true;
-    public boolean enPreviewVideo = true;
-    public boolean enablePreviewAudio = true;
+    public boolean enablePreview;
+    public boolean enPreviewVideo;
+    public boolean enablePreviewAudio;
     public boolean checkNumMode;
     public boolean openClickSound;
     public boolean enableCrop;
@@ -91,16 +88,16 @@ public final class PictureSelectionConfig implements Parcelable {
     public int circleDimmedColor;
     @ColorInt
     public int circleDimmedBorderColor;
-    public int circleStrokeWidth = 1;
-    public boolean showCropFrame = true;
-    public boolean showCropGrid = true;
-    public boolean hideBottomControls = true;
-    public boolean rotateEnabled = true;
-    public boolean scaleEnabled = true;
+    public int circleStrokeWidth;
+    public boolean showCropFrame;
+    public boolean showCropGrid;
+    public boolean hideBottomControls;
+    public boolean rotateEnabled;
+    public boolean scaleEnabled;
     public boolean previewEggs;
-    public boolean synOrAsy = true;
+    public boolean synOrAsy;
     public boolean returnEmpty;
-    public boolean isDragFrame = true;
+    public boolean isDragFrame;
     public boolean isNotPreviewDownload;
     public boolean isWithVideoImage;
     public UCropOptions uCropOptions;
@@ -109,7 +106,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static OnResultCallbackListener listener;
     public static OnVideoSelectedPlayCallback customVideoPlayCallback;
     public static OnPictureSelectorInterfaceListener onPictureSelectorInterfaceListener;
-    public List<LocalMedia> selectionMedias = new ArrayList<>();
+    public List<LocalMedia> selectionMedias;
     public String cameraFileName;
     public boolean isCheckOriginalImage;
     @Deprecated
@@ -117,7 +114,7 @@ public final class PictureSelectionConfig implements Parcelable {
     @Deprecated
     public int overrideHeight;
     @Deprecated
-    public float sizeMultiplier = 0.5f;
+    public float sizeMultiplier;
     @Deprecated
     public boolean isChangeStatusBarFontColor;
     @Deprecated
@@ -147,9 +144,103 @@ public final class PictureSelectionConfig implements Parcelable {
      * 内测专用###########
      */
     public boolean isFallbackVersion;
-    public boolean isFallbackVersion2 = true;
-    public boolean isFallbackVersion3 = true;
+    public boolean isFallbackVersion2;
+    public boolean isFallbackVersion3;
 
+    protected void initDefaultValue() {
+        chooseMode = PictureMimeType.ofImage();
+        camera = false;
+        themeStyleId = R.style.picture_default_style;
+        selectionMode = PictureConfig.MULTIPLE;
+        maxSelectNum = 9;
+        minSelectNum = 0;
+        maxVideoSelectNum = 0;
+        minVideoSelectNum = 0;
+        videoQuality = 1;
+        language = -1;
+        cropCompressQuality = 90;
+        videoMaxSecond = 0;
+        videoMinSecond = 0;
+        filterFileSize = -1;
+        recordVideoSecond = 60;
+        recordVideoMinSecond = 0;
+        compressQuality = 80;
+        minimumCompressSize = PictureConfig.MAX_COMPRESS_SIZE;
+        imageSpanCount = 4;
+        isCompress = false;
+        isOriginalControl = false;
+        aspect_ratio_x = 0;
+        aspect_ratio_y = 0;
+        cropWidth = 0;
+        cropHeight = 0;
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
+        buttonFeatures = CustomCameraView.BUTTON_STATE_BOTH;  //初始化按钮为可录制可拍照
+        isCameraAroundState = false;
+        isWithVideoImage = false;
+        isAndroidQTransform = true;
+        isCamera = true;
+        isGif = false;
+        focusAlpha = false;
+        isCheckOriginalImage = false;
+        isSingleDirectReturn = false;
+        enablePreview = true;
+        enPreviewVideo = true;
+        enablePreviewAudio = true;
+        checkNumMode = false;
+        isNotPreviewDownload = false;
+        openClickSound = false;
+        isFallbackVersion = false;
+        isFallbackVersion2 = true;
+        isFallbackVersion3 = true;
+        enableCrop = false;
+        isWeChatStyle = false;
+        isUseCustomCamera = false;
+        isMultipleSkipCrop = true;
+        isMultipleRecyclerAnimation = true;
+        freeStyleCropEnabled = false;
+        circleDimmedLayer = false;
+        showCropFrame = true;
+        showCropGrid = true;
+        hideBottomControls = true;
+        rotateEnabled = true;
+        scaleEnabled = true;
+        previewEggs = false;
+        returnEmpty = false;
+        synOrAsy = true;
+        zoomAnim = true;
+        circleDimmedColor = 0;
+        circleDimmedBorderColor = 0;
+        circleStrokeWidth = 1;
+        isDragFrame = true;
+        compressSavePath = "";
+        suffixType = "";
+        cameraFileName = "";
+        specifiedFormat = "";
+        renameCompressFileName = "";
+        renameCropFileName = "";
+        selectionMedias = new ArrayList<>();
+        uCropOptions = null;
+        style = null;
+        cropStyle = null;
+        windowAnimationStyle = null;
+        titleBarBackgroundColor = 0;
+        pictureStatusBarColor = 0;
+        cropTitleBarBackgroundColor = 0;
+        cropStatusBarColorPrimaryDark = 0;
+        cropTitleColor = 0;
+        upResId = 0;
+        downResId = 0;
+        isChangeStatusBarFontColor = false;
+        isOpenStyleNumComplete = false;
+        isOpenStyleCheckNumMode = false;
+        outPutCameraPath = "";
+        sizeMultiplier = 0.5f;
+        overrideWidth = 0;
+        overrideHeight = 0;
+        originalPath = "";
+        cameraPath = "";
+        cameraMimeType = -1;
+    }
 
     public static PictureSelectionConfig getInstance() {
         return InstanceHolder.INSTANCE;
@@ -157,11 +248,15 @@ public final class PictureSelectionConfig implements Parcelable {
 
     public static PictureSelectionConfig getCleanInstance() {
         PictureSelectionConfig selectionSpec = getInstance();
+        selectionSpec.initDefaultValue();
         return selectionSpec;
     }
 
     private static final class InstanceHolder {
         private static final PictureSelectionConfig INSTANCE = new PictureSelectionConfig();
+    }
+
+    public PictureSelectionConfig() {
     }
 
     /**
@@ -172,9 +267,6 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.customVideoPlayCallback = null;
         PictureSelectionConfig.onPictureSelectorInterfaceListener = null;
         PictureSelectionConfig.cacheResourcesEngine = null;
-    }
-
-    public PictureSelectionConfig() {
     }
 
 

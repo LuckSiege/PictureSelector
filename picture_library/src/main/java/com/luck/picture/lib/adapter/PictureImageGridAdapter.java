@@ -3,7 +3,6 @@ package com.luck.picture.lib.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -474,18 +473,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
 
             // 如果有旋转信息图片宽高则是相反
-            int orientation;
-            if (image.getOrientation() == -1) {
-                orientation = MediaUtils.getOrientation(context, image.getPath());
-                image.setOrientation(orientation);
-                if (orientation == ExifInterface.ORIENTATION_ROTATE_90
-                        || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
-                    int width = image.getWidth();
-                    int height = image.getHeight();
-                    image.setWidth(height);
-                    image.setHeight(width);
-                }
-            }
+            MediaUtils.setOrientation(context, image);
             selectImages.add(image);
             image.setNum(selectImages.size());
             VoiceUtils.getInstance().play();
