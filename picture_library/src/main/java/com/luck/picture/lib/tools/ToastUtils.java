@@ -21,7 +21,7 @@ public final class ToastUtils {
      * Prevent continuous click, jump two pages
      */
     private static long lastToastTime;
-    private final static long TIME = 1800;
+    private final static long TIME = 1500;
 
     public static boolean isShowToast() {
         long time = System.currentTimeMillis();
