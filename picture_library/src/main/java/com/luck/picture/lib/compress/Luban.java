@@ -170,7 +170,7 @@ public class Luban implements Handler.Callback {
                         String newPath = result.getAbsolutePath();
                         boolean eqHttp = PictureMimeType.isHttp(newPath);
                         boolean eqVideo = PictureMimeType.eqVideo(media.getMimeType());
-                        media.setCompressed(eqHttp || eqVideo ? false : true);
+                        media.setCompressed(!eqHttp && !eqVideo);
                         media.setCompressPath(eqHttp || eqVideo ? "" : result.getAbsolutePath());
                         media.setAndroidQToPath(isAndroidQ ? media.getCompressPath() : null);
                         boolean isLast = index == mediaList.size() - 1;

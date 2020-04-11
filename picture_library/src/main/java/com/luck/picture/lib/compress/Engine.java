@@ -58,7 +58,7 @@ class Engine {
             } else if (longSide > 4990 && longSide < 10240) {
                 return 4;
             } else {
-                return longSide / 1280 == 0 ? 1 : longSide / 1280;
+                return longSide / 1280;
             }
         } else if (scale <= 0.5625 && scale > 0.5) {
             return longSide / 1280 == 0 ? 1 : longSide / 1280;
