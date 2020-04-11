@@ -1341,7 +1341,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                 }
                 if (PictureMimeType.eqImage(mimeType)) {
-                    newSize = MediaUtils.getLocalImageSizeToAndroidQ(this, config.cameraPath);
+                    newSize = MediaUtils.getImageSizeForUrlToAndroidQ(this, config.cameraPath);
                 } else {
                     newSize = MediaUtils.getVideoSizeForUri(this, Uri.parse(config.cameraPath));
                     duration = MediaUtils.extractDuration(getContext(), true, config.cameraPath);

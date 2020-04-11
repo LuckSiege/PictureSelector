@@ -444,21 +444,16 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             if (config.selectionMode == PictureConfig.SINGLE) {
                 singleRadioMediaImage();
             }
-            // 如果有旋转信息图片宽高则是相反
-            int orientation = MediaUtils.getOrientation(context, image.getPath());
-            if (orientation == ExifInterface.ORIENTATION_ROTATE_90
-                    || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
-                int width = image.getWidth();
-                int height = image.getHeight();
-                image.setWidth(height);
-                image.setHeight(width);
-            }
 
             // 如果宽高为0，重新获取宽高
             if (image.getWidth() == 0 || image.getHeight() == 0) {
                 int width = 0, height = 0;
                 if (PictureMimeType.isContent(image.getPath())) {
-                    if (PictureMimeType.eqImage(image.getMimeType())) {
+                    if (PictureMimeType.eqVideo(image.getMimeType())) {
+                        int[] size = MediaUtils.getVideoSizeForUri(context, Uri.parse(image.getPath()));
+                        width = size[0];
+                        height = size[1];
+                    } else if (PictureMimeType.eqImage(image.getMimeType())) {
                         int[] size = MediaUtils.getImageSizeForUri(context, Uri.parse(image.getPath()));
                         width = size[0];
                         height = size[1];
@@ -468,12 +463,29 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                         int[] size = MediaUtils.getVideoSizeForUrl(image.getPath());
                         width = size[0];
                         height = size[1];
+                    } else if (PictureMimeType.eqImage(image.getMimeType())) {
+                        int[] size = MediaUtils.getImageSizeForUrl(image.getPath());
+                        width = size[0];
+                        height = size[1];
                     }
                 }
                 image.setWidth(width);
                 image.setHeight(height);
             }
 
+            // 如果有旋转信息图片宽高则是相反
+            int orientation;
+            if (image.getOrientation() == -1) {
+                orientation = MediaUtils.getOrientation(context, image.getPath());
+                image.setOrientation(orientation);
+                if (orientation == ExifInterface.ORIENTATION_ROTATE_90
+                        || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+                    int width = image.getWidth();
+                    int height = image.getHeight();
+                    image.setWidth(height);
+                    image.setHeight(width);
+                }
+            }
             selectImages.add(image);
             image.setNum(selectImages.size());
             VoiceUtils.getInstance().play();

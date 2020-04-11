@@ -115,6 +115,12 @@ public class LocalMedia implements Parcelable {
      */
     private String parentFolderName;
 
+    /**
+     * orientation info
+     * # For internal use only
+     */
+    private int orientation = -1;
+
     public LocalMedia() {
 
     }
@@ -319,6 +325,15 @@ public class LocalMedia implements Parcelable {
         this.parentFolderName = parentFolderName;
     }
 
+    public int getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -347,6 +362,7 @@ public class LocalMedia implements Parcelable {
         dest.writeByte(this.isOriginal ? (byte) 1 : (byte) 0);
         dest.writeString(this.fileName);
         dest.writeString(this.parentFolderName);
+        dest.writeInt(this.orientation);
     }
 
     protected LocalMedia(Parcel in) {
@@ -371,6 +387,7 @@ public class LocalMedia implements Parcelable {
         this.isOriginal = in.readByte() != 0;
         this.fileName = in.readString();
         this.parentFolderName = in.readString();
+        this.orientation = in.readInt();
     }
 
     public static final Creator<LocalMedia> CREATOR = new Creator<LocalMedia>() {

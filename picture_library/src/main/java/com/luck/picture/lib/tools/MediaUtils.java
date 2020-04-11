@@ -158,41 +158,13 @@ public class MediaUtils {
         }
     }
 
-    /**
-     * get Local video width or height for api 29
-     *
-     * @return
-     */
-    @Deprecated
-    public static int[] getLocalSizeToAndroidQ(Context context, String videoPath) {
-        int[] size = new int[2];
-        Cursor query = null;
-        try {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                query = context.getApplicationContext().getContentResolver().query(Uri.parse(videoPath),
-                        null, null, null);
-                if (query != null) {
-                    query.moveToFirst();
-                    size[0] = query.getInt(query.getColumnIndexOrThrow(MediaStore.Files.FileColumns.WIDTH));
-                    size[1] = query.getInt(query.getColumnIndexOrThrow(MediaStore.Files.FileColumns.HEIGHT));
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (query != null) {
-                query.close();
-            }
-        }
-        return size;
-    }
 
     /**
      * get Local image width or height for api 29
      *
      * @return
      */
-    public static int[] getLocalImageSizeToAndroidQ(Context context, String url) {
+    public static int[] getImageSizeForUrlToAndroidQ(Context context, String url) {
         int[] size = new int[2];
         Cursor query = null;
         try {
@@ -302,6 +274,8 @@ public class MediaUtils {
         }
         return size;
     }
+
+
 
     /**
      * 删除部分手机 拍照在DCIM也生成一张的问题
