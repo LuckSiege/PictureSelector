@@ -159,15 +159,15 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         }
         String cutPath = resultUri.getPath();
         // 单独拍照
+        boolean isCutEmpty = TextUtils.isEmpty(cutPath);
         LocalMedia media = new LocalMedia(config.cameraPath, 0, false,
                 config.isCamera ? 1 : 0, 0, config.chooseMode);
         if (SdkVersionUtils.checkedAndroid_Q()) {
             int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
             media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
             media.setAndroidQToPath(cutPath);
-            if (TextUtils.isEmpty(cutPath)) {
-                media.setCut(false);
-                if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(config.cameraPath)) {
+            if (isCutEmpty) {
+                if (PictureMimeType.isContent(config.cameraPath)) {
                     String path = PictureFileUtils.getPath(this, Uri.parse(config.cameraPath));
                     media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
                 } else {
@@ -175,14 +175,13 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 }
             } else {
                 media.setSize(new File(cutPath).length());
-                media.setCut(true);
             }
         } else {
             // 拍照产生一个临时id
             media.setId(System.currentTimeMillis());
-            media.setSize(new File(TextUtils.isEmpty(cutPath)
-                    ? media.getPath() : cutPath).length());
+            media.setSize(new File(isCutEmpty ? media.getPath() : cutPath).length());
         }
+        media.setCut(!isCutEmpty);
         media.setCutPath(cutPath);
         String mimeType = PictureMimeType.getImageMimeType(cutPath);
         media.setMimeType(mimeType);
