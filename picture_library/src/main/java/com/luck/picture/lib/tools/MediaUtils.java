@@ -238,11 +238,13 @@ public class MediaUtils {
     public static int[] getImageSizeForUrl(String url) {
         int[] size = new int[2];
         try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(url, options);
-            size[0] = options.outWidth;
-            size[1] = options.outHeight;
+            ExifInterface exifInterface = new ExifInterface(url);
+            // 获取图片的宽度
+            int width = exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, ExifInterface.ORIENTATION_NORMAL);
+            // 获取图片的高度
+            int height = exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, ExifInterface.ORIENTATION_NORMAL);
+            size[0] = width;
+            size[1] = height;
         } catch (Exception e) {
             e.printStackTrace();
         }
