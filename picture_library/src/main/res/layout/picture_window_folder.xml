@@ -8,6 +8,7 @@
         android:id="@+id/folder_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:overScrollMode="never"
         android:scrollbars="none" />
 
     <View
@@ -15,5 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="1000dp"
         android:layout_below="@id/folder_list"
+        android:alpha="0"
         android:background="@color/picture_color_80" />
 </RelativeLayout>

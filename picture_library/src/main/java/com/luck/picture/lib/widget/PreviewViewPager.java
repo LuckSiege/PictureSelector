@@ -13,6 +13,7 @@ import androidx.viewpager.widget.ViewPager;
  */
 
 public class PreviewViewPager extends ViewPager {
+    private MyViewPageHelper helper;
 
     public PreviewViewPager(Context context) {
         super(context);
@@ -20,6 +21,25 @@ public class PreviewViewPager extends ViewPager {
 
     public PreviewViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
+        helper = new MyViewPageHelper(this);
+    }
+
+    @Override
+    public void setCurrentItem(int item) {
+        setCurrentItem(item, true);
+    }
+
+    @Override
+    public void setCurrentItem(int item, boolean smoothScroll) {
+        MScroller scroller = helper.getScroller();
+        if (Math.abs(getCurrentItem() - item) > 1) {
+            scroller.setNoDuration(true);
+            super.setCurrentItem(item, smoothScroll);
+            scroller.setNoDuration(false);
+        } else {
+            scroller.setNoDuration(false);
+            super.setCurrentItem(item, smoothScroll);
+        }
     }
 
     @Override

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <set xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="350"
+    android:duration="250"
     android:interpolator="@anim/picture_anim_anticipate_interpolator">
-    <scale
-        android:fromXScale="1.0"
-        android:fromYScale="1.0"
-        android:interpolator="@android:anim/accelerate_interpolator"
-        android:toXScale="1.0"
-        android:toYScale="0.0" />
+    <alpha
+        android:fillAfter="true"
+        android:fillBefore="false"
+        android:fromAlpha="1.0"
+        android:toAlpha="0" />
 </set>
 

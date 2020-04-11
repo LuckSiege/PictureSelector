@@ -3,7 +3,6 @@ package com.luck.picture.lib.widget;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -128,6 +127,10 @@ public class FolderPopWindow extends PopupWindow {
             isDismiss = false;
             ivArrowView.setImageDrawable(drawableUp);
             AnimUtils.rotateArrow(ivArrowView, true);
+            rootViewBg.animate()
+                    .alpha(1)
+                    .setDuration(250)
+                    .setStartDelay(250).start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -142,23 +145,15 @@ public class FolderPopWindow extends PopupWindow {
         if (isDismiss) {
             return;
         }
+        rootViewBg.animate()
+                .alpha(0)
+                .setDuration(150)
+                .start();
         ivArrowView.setImageDrawable(drawableDown);
         AnimUtils.rotateArrow(ivArrowView, false);
         isDismiss = true;
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
-            dismiss4Pop();
-            isDismiss = false;
-        } else {
-            FolderPopWindow.super.dismiss();
-            isDismiss = false;
-        }
-    }
-
-    /**
-     * 在android4.1.1和4.1.2版本关闭PopWindow
-     */
-    private void dismiss4Pop() {
-        new Handler().post(() -> FolderPopWindow.super.dismiss());
+        FolderPopWindow.super.dismiss();
+        isDismiss = false;
     }
 
     /**
