@@ -3,6 +3,7 @@ package com.luck.picture.lib;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -258,6 +259,17 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     newSize = MediaUtils.getLocalVideoSize(config.cameraPath);
                     duration = MediaUtils.extractDuration(getContext(), false, config.cameraPath);
                 }
+
+                // 如果有旋转信息图片宽高则是相反
+                int orientation = MediaUtils.getOrientation(getContext(),config.cameraPath);
+                if (orientation == ExifInterface.ORIENTATION_ROTATE_90
+                        || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+                    int width = newSize[0];
+                    int height = newSize[1];
+                    newSize[0] = height;
+                    newSize[1] = width;
+                }
+
                 // 拍照产生一个临时id
                 media.setId(System.currentTimeMillis());
             }

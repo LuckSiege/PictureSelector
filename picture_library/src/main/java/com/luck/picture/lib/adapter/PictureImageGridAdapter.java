@@ -3,6 +3,7 @@ package com.luck.picture.lib.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -322,13 +323,13 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     @SuppressLint("StringFormatMatches")
     private void changeCheckboxState(ViewHolder contentHolder, LocalMedia image) {
         boolean isChecked = contentHolder.tvCheck.isSelected();
-        int size = selectImages.size();
-        String mimeType = size > 0 ? selectImages.get(0).getMimeType() : "";
+        int count = selectImages.size();
+        String mimeType = count > 0 ? selectImages.get(0).getMimeType() : "";
         if (config.isWithVideoImage) {
             // 混选模式
             int videoSize = 0;
             int imageSize = 0;
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < count; i++) {
                 LocalMedia media = selectImages.get(i);
                 if (PictureMimeType.eqVideo(media.getMimeType())) {
                     videoSize++;
@@ -383,7 +384,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 }
             }
             if (PictureMimeType.eqVideo(mimeType) && config.maxVideoSelectNum > 0) {
-                if (size >= config.maxVideoSelectNum && !isChecked) {
+                if (count >= config.maxVideoSelectNum && !isChecked) {
                     // 如果先选择的是视频
                     ToastUtils.s(context, StringUtils.getMsg(context, mimeType, config.maxVideoSelectNum));
                     return;
@@ -402,7 +403,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     return;
                 }
             } else {
-                if (size >= config.maxSelectNum && !isChecked) {
+                if (count >= config.maxSelectNum && !isChecked) {
                     ToastUtils.s(context, StringUtils.getMsg(context, mimeType, config.maxSelectNum));
                     return;
                 }
@@ -425,7 +426,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
 
         if (isChecked) {
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < count; i++) {
                 LocalMedia media = selectImages.get(i);
                 if (media == null || TextUtils.isEmpty(media.getPath())) {
                     continue;
@@ -443,6 +444,28 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             if (config.selectionMode == PictureConfig.SINGLE) {
                 singleRadioMediaImage();
             }
+            // 如果有旋转信息图片宽高则是相反
+            int orientation = MediaUtils.getOrientation(context, image.getPath());
+            if (orientation == ExifInterface.ORIENTATION_ROTATE_90
+                    || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+                int width = image.getWidth();
+                int height = image.getHeight();
+                image.setWidth(height);
+                image.setHeight(width);
+            }
+
+            if (image.getWidth() == 0 || image.getHeight() == 0) {
+                if (PictureMimeType.isContent(image.getPath())) {
+
+                } else {
+                    if (PictureMimeType.eqVideo(image.getMimeType())) {
+                        int[] size = MediaUtils.getLocalVideoSize(image.getPath());
+                        image.setWidth(size[0]);
+                        image.setHeight(size[1]);
+                    }
+                }
+            }
+
             selectImages.add(image);
             image.setNum(selectImages.size());
             VoiceUtils.getInstance().play();

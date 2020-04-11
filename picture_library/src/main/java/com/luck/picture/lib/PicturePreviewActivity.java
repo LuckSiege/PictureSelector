@@ -1,6 +1,7 @@
 package com.luck.picture.lib;
 
 import android.content.Intent;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,6 +23,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.observable.ImagesObservable;
+import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.StringUtils;
@@ -579,6 +581,29 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 if (!TextUtils.isEmpty(image.getRealPath()) && PictureMimeType.isContent(image.getPath())) {
                     image.setRealPath(PictureFileUtils.getPath(getContext(), Uri.parse(image.getPath())));
                 }
+
+                // 如果有旋转信息图片宽高则是相反
+                int orientation = MediaUtils.getOrientation(getContext(), image.getPath());
+                if (orientation == ExifInterface.ORIENTATION_ROTATE_90
+                        || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+                    int width = image.getWidth();
+                    int height = image.getHeight();
+                    image.setWidth(height);
+                    image.setHeight(width);
+                }
+
+                if (image.getWidth() == 0 || image.getHeight() == 0) {
+                    if (PictureMimeType.isContent(image.getPath())) {
+
+                    } else {
+                        if (PictureMimeType.eqVideo(image.getMimeType())) {
+                            int[] size = MediaUtils.getLocalVideoSize(image.getPath());
+                            image.setWidth(size[0]);
+                            image.setHeight(size[1]);
+                        }
+                    }
+                }
+
                 selectImages.add(image);
                 onSelectedChange(true, image);
                 image.setNum(selectImages.size());

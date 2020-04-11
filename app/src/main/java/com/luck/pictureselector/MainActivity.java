@@ -504,6 +504,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     Log.i(TAG, "是否开启原图:" + media.isOriginal());
                                     Log.i(TAG, "原图路径:" + media.getOriginalPath());
                                     Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
+                                    Log.i(TAG, "宽高: " + media.getWidth() + "x" + media.getHeight());
                                     Log.i(TAG, "Size: " + media.getSize());
                                 }
                                 mAdapter.setList(result);
@@ -579,6 +580,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                                    Log.i(TAG, "是否开启原图:" + media.isOriginal());
 //                                    Log.i(TAG, "原图路径:" + media.getOriginalPath());
 //                                    Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
+//                                    Log.i(TAG, "宽高: " + media.getWidth() + "x" + media.getHeight());
+//                                    Log.i(TAG, "Size: " + media.getSize());
 //                                }
 //                                mAdapter.setList(result);
 //                                mAdapter.notifyDataSetChanged();
@@ -657,6 +660,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Log.i(TAG, "是否开启原图:" + media.isOriginal());
                         Log.i(TAG, "原图路径:" + media.getOriginalPath());
                         Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
+                        Log.i(TAG, "宽高: " + media.getWidth() + "x" + media.getHeight());
                         Log.i(TAG, "Size: " + media.getSize());
                     }
                     mAdapter.setList(selectList);

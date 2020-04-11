@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Environment;
@@ -14,6 +15,8 @@ import androidx.annotation.Nullable;
 
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+
+import java.io.InputStream;
 
 
 /**
@@ -354,5 +357,33 @@ public class MediaUtils {
             }
         }
         return path;
+    }
+
+    /**
+     * 获取旋转角度
+     *
+     * @param context
+     * @param url
+     * @return
+     */
+    public static int getOrientation(Context context, String url) {
+        ExifInterface exifInterface = null;
+        InputStream inputStream = null;
+        try {
+            if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(url)) {
+                inputStream = context.getContentResolver().openInputStream(Uri.parse(url));
+                if (inputStream != null) {
+                    exifInterface = new ExifInterface(inputStream);
+                }
+            } else {
+                exifInterface = new ExifInterface(url);
+            }
+            return exifInterface != null ? exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL) : 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        } finally {
+            PictureFileUtils.close(inputStream);
+        }
     }
 }
