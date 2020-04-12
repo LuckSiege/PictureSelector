@@ -185,6 +185,33 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         media.setCutPath(cutPath);
         String mimeType = PictureMimeType.getImageMimeType(cutPath);
         media.setMimeType(mimeType);
+        int width = 0, height = 0;
+        media.setOrientation(-1);
+        if (PictureMimeType.isContent(media.getPath())) {
+            if (PictureMimeType.eqVideo(media.getMimeType())) {
+                int[] size = MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(media.getPath()));
+                width = size[0];
+                height = size[1];
+            } else if (PictureMimeType.eqImage(media.getMimeType())) {
+                int[] size = MediaUtils.getImageSizeForUri(getContext(), Uri.parse(media.getPath()));
+                width = size[0];
+                height = size[1];
+            }
+        } else {
+            if (PictureMimeType.eqVideo(media.getMimeType())) {
+                int[] size = MediaUtils.getVideoSizeForUrl(media.getPath());
+                width = size[0];
+                height = size[1];
+            } else if (PictureMimeType.eqImage(media.getMimeType())) {
+                int[] size = MediaUtils.getImageSizeForUrl(media.getPath());
+                width = size[0];
+                height = size[1];
+            }
+        }
+        media.setWidth(width);
+        media.setHeight(height);
+        // 如果有旋转信息图片宽高则是相反
+        MediaUtils.setOrientation(getContext(), media);
         medias.add(media);
         handlerResult(medias);
     }
