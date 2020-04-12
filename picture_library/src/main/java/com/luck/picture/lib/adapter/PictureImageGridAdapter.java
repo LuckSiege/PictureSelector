@@ -457,6 +457,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             // 如果宽高为0，重新获取宽高
             if (image.getWidth() == 0 || image.getHeight() == 0) {
                 int width = 0, height = 0;
+                image.setOrientation(-1);
                 if (PictureMimeType.isContent(image.getPath())) {
                     if (PictureMimeType.eqVideo(image.getMimeType())) {
                         int[] size = MediaUtils.getVideoSizeForUri(context, Uri.parse(image.getPath()));
