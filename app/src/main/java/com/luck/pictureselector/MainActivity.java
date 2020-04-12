@@ -506,6 +506,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
                                     Log.i(TAG, "宽高: " + media.getWidth() + "x" + media.getHeight());
                                     Log.i(TAG, "Size: " + media.getSize());
+
+                                    // TODO 可能通过PictureSelectorExternalUtils.getExifInterface();方法获取一些额外的资源信息，如旋转角度、经纬度等信息
+
                                 }
                                 mAdapter.setList(result);
                                 mAdapter.notifyDataSetChanged();
