@@ -1,8 +1,11 @@
 package com.luck.picture.lib.entity;
 
+
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+
+import com.luck.picture.lib.config.PictureConfig;
 
 /**
  * @author：luck
@@ -120,6 +123,18 @@ public class LocalMedia implements Parcelable {
      * # For internal use only
      */
     private int orientation = -1;
+
+    /**
+     * loadLongImageStatus
+     * # For internal use only
+     */
+    public int loadLongImageStatus = PictureConfig.NORMAL;
+
+    /**
+     * isLongImage
+     * # For internal use only
+     */
+    public boolean isLongImage;
 
     public LocalMedia() {
 
@@ -363,6 +378,8 @@ public class LocalMedia implements Parcelable {
         dest.writeString(this.fileName);
         dest.writeString(this.parentFolderName);
         dest.writeInt(this.orientation);
+        dest.writeInt(this.loadLongImageStatus);
+        dest.writeByte(this.isLongImage ? (byte) 1 : (byte) 0);
     }
 
     protected LocalMedia(Parcel in) {
@@ -388,9 +405,11 @@ public class LocalMedia implements Parcelable {
         this.fileName = in.readString();
         this.parentFolderName = in.readString();
         this.orientation = in.readInt();
+        this.loadLongImageStatus = in.readInt();
+        this.isLongImage = in.readByte() != 0;
     }
 
-    public static final Creator<LocalMedia> CREATOR = new Creator<LocalMedia>() {
+    public static final Parcelable.Creator<LocalMedia> CREATOR = new Parcelable.Creator<LocalMedia>() {
         @Override
         public LocalMedia createFromParcel(Parcel source) {
             return new LocalMedia(source);

@@ -26,6 +26,8 @@ import com.luck.picture.lib.widget.longimage.ImageSource;
 import com.luck.picture.lib.widget.longimage.ImageViewState;
 import com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.util.List;
 
@@ -96,12 +98,13 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
     }
 
     @Override
-    public boolean isViewFromObject(View view, Object object) {
+    public boolean isViewFromObject(@NotNull View view, @NotNull Object object) {
         return view == object;
     }
 
+    @NotNull
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(@NotNull ViewGroup container, int position) {
         View contentView = mCacheView.get(position);
         if (contentView == null) {
             contentView = LayoutInflater.from(container.getContext())
@@ -129,7 +132,6 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
                 path = media.getPath();
             }
             boolean isGif = PictureMimeType.isGif(mimeType);
-            final boolean eqLongImg = MediaUtils.isLongImg(media);
             boolean eqVideo = PictureMimeType.eqVideo(mimeType);
             ivPlay.setVisibility(eqVideo ? View.VISIBLE : View.GONE);
             ivPlay.setOnClickListener(v -> {
@@ -144,6 +146,7 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
                     JumpUtils.startPictureVideoPlayActivity(container.getContext(), bundle, PictureConfig.PREVIEW_VIDEO_CODE);
                 }
             });
+            boolean eqLongImg = MediaUtils.isLongImg(media);
             imageView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
             imageView.setOnViewTapListener((view, x, y) -> {
                 if (onBackPressed != null) {

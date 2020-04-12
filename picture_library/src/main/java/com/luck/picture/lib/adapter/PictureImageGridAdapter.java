@@ -154,9 +154,13 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             contentHolder.tvIsGif.setVisibility(gif ? View.VISIBLE : View.GONE);
             boolean eqImage = PictureMimeType.eqImage(image.getMimeType());
             if (eqImage) {
-                boolean eqLongImg = MediaUtils.isLongImg(image);
-                contentHolder.tvLongChart.setVisibility(eqLongImg ? View.VISIBLE : View.GONE);
+                if (image.loadLongImageStatus == PictureConfig.NORMAL) {
+                    image.isLongImage = MediaUtils.isLongImg(image);
+                    image.loadLongImageStatus = PictureConfig.LOADED;
+                }
+                contentHolder.tvLongChart.setVisibility(image.isLongImage ? View.VISIBLE : View.GONE);
             } else {
+                image.loadLongImageStatus = PictureConfig.NORMAL;
                 contentHolder.tvLongChart.setVisibility(View.GONE);
             }
             boolean eqVideo = PictureMimeType.eqVideo(mimeType);

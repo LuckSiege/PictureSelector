@@ -35,6 +35,10 @@ public final class PictureConfig {
 
     public final static String CAMERA_FACING = "android.intent.extras.CAMERA_FACING";
 
+    public final static int LOADED = 0;
+
+    public final static int NORMAL = -1;
+
     public final static int CAMERA_BEFORE = 1;
 
     public final static int TYPE_ALL = 0;

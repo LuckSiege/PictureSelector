@@ -448,7 +448,7 @@ public class MediaUtils {
      * @param media
      * @return
      */
-    public static void setOrientation(Context context, LocalMedia media) {
+    public static int setOrientation(Context context, LocalMedia media) {
         // 如果有旋转信息图片宽高则是相反
         if (media.getOrientation() == -1) {
             int orientation = 0;
@@ -469,6 +469,9 @@ public class MediaUtils {
                 media.setHeight(width);
             }
             media.setOrientation(orientation);
+
+            return orientation;
         }
+        return 0;
     }
 }

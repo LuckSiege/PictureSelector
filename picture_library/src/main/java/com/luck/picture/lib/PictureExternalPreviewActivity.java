@@ -272,7 +272,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 boolean eqVideo = PictureMimeType.eqVideo(mimeType);
                 ivPlay.setVisibility(eqVideo ? View.VISIBLE : View.GONE);
                 boolean isGif = PictureMimeType.isGif(mimeType);
-                final boolean eqLongImg = MediaUtils.isLongImg(media);
+                boolean eqLongImg = MediaUtils.isLongImg(media);
                 imageView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
                 longImageView.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
                 // 压缩过的gif就不是gif了
