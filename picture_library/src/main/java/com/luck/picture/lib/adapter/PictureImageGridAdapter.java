@@ -30,6 +30,8 @@ import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.VoiceUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +128,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NotNull final RecyclerView.ViewHolder holder, final int position) {
         if (getItemViewType(position) == PictureConfig.TYPE_CAMERA) {
             HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
             headerHolder.headerView.setOnClickListener(v -> {
@@ -153,7 +155,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             boolean eqImage = PictureMimeType.eqImage(image.getMimeType());
             if (eqImage) {
                 boolean eqLongImg = MediaUtils.isLongImg(image);
-                contentHolder.tvLongChart.setVisibility(eqLongImg ? View.VISIBLE : View.GONE);
+                if (contentHolder.tvLongChart.getVisibility() == View.VISIBLE) {
+                    contentHolder.tvLongChart.setVisibility(contentHolder.tvLongChart.getVisibility());
+                } else {
+                    contentHolder.tvLongChart.setVisibility(eqLongImg ? View.VISIBLE : View.GONE);
+                }
             } else {
                 contentHolder.tvLongChart.setVisibility(View.GONE);
             }
@@ -187,6 +193,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     if (SdkVersionUtils.checkedAndroid_Q()) {
                         image.setRealPath(newPath);
                     }
+                    // 如果有旋转信息图片宽高则是相反
+                    MediaUtils.setOrientation(context, image);
                     changeCheckboxState(contentHolder, image);
                 });
             }
@@ -205,6 +213,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 if (SdkVersionUtils.checkedAndroid_Q()) {
                     image.setRealPath(newPath);
                 }
+                // 如果有旋转信息图片宽高则是相反
+                MediaUtils.setOrientation(context, image);
                 boolean eqResult =
                         PictureMimeType.eqImage(mimeType) && config.enablePreview
                                 || PictureMimeType.eqVideo(mimeType) && (config.enPreviewVideo
