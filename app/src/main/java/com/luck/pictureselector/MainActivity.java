@@ -612,7 +612,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // TODO 注意:使用自定义相机时，需要设置PictureSelectionConfig两个值
         //  1、config.cameraPath (文件输出路径)
-        //  2、 config.cameraMimeType (相机类型 图片or视频)
+        //  2、config.cameraMimeType (相机类型 图片or视频)
         switch (type) {
             case PictureConfig.TYPE_IMAGE:
                 // 拍照
