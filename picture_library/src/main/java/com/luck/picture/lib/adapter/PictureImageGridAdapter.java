@@ -120,7 +120,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == PictureConfig.TYPE_CAMERA) {
             View view = LayoutInflater.from(context).inflate(R.layout.picture_item_camera, parent, false);
-            return new HeaderViewHolder(view);
+            return new CameraViewHolder(view);
         } else {
             View view = LayoutInflater.from(context).inflate(R.layout.picture_image_grid_item, parent, false);
             return new ViewHolder(view);
@@ -130,7 +130,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(@NotNull final RecyclerView.ViewHolder holder, final int position) {
         if (getItemViewType(position) == PictureConfig.TYPE_CAMERA) {
-            HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
+            CameraViewHolder headerHolder = (CameraViewHolder) holder;
             headerHolder.headerView.setOnClickListener(v -> {
                 if (imageSelectChangedListener != null) {
                     imageSelectChangedListener.onTakePhoto();
@@ -250,11 +250,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         return showCamera ? images.size() + 1 : images.size();
     }
 
-    public class HeaderViewHolder extends RecyclerView.ViewHolder {
+    public class CameraViewHolder extends RecyclerView.ViewHolder {
         View headerView;
         TextView tvCamera;
 
-        public HeaderViewHolder(View itemView) {
+        public CameraViewHolder(View itemView) {
             super(itemView);
             headerView = itemView;
             tvCamera = itemView.findViewById(R.id.tvCamera);
