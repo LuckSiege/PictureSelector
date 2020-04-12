@@ -472,6 +472,6 @@ public class MediaUtils {
 
             return orientation;
         }
-        return 0;
+        return media.getOrientation();
     }
 }
