@@ -107,6 +107,7 @@ public final class CameraView extends FrameLayout {
     private PinchToZoomGestureDetector mPinchToZoomGestureDetector;
     private boolean mIsPinchToZoomEnabled = true;
     CameraXModule mCameraModule;
+    private WeakReference<OnImageSavedCallback> mReferenceImageSavedCallback;
     private final DisplayManager.DisplayListener mDisplayListener =
             new DisplayListener() {
                 @Override
@@ -447,7 +448,7 @@ public final class CameraView extends FrameLayout {
 
     public void takePicture(@NonNull File file, @NonNull Executor executor,
                             @NonNull OnImageSavedCallback callback) {
-        mCameraModule.takePicture(file, executor, callback);
+        mCameraModule.takePicture(file, executor, new WeakReference<>(callback).get());
     }
 
     /**
