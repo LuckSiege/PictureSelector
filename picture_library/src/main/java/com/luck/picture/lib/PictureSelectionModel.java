@@ -704,7 +704,7 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel openClickSound(boolean openClickSound) {
-        selectionConfig.openClickSound = openClickSound;
+        selectionConfig.openClickSound = !selectionConfig.camera && openClickSound;
         return this;
     }
 
