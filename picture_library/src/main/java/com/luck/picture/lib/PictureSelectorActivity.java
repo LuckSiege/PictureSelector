@@ -999,7 +999,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     @Override
-    public void onItemClick(boolean isCameraFolder, String folderName, List<LocalMedia> images) {
+    public void onItemClick(boolean isCameraFolder, long bucketId, String folderName, List<LocalMedia> images) {
         boolean camera = config.isCamera && isCameraFolder;
         mAdapter.setShowCamera(camera);
         mTvPictureTitle.setText(folderName);

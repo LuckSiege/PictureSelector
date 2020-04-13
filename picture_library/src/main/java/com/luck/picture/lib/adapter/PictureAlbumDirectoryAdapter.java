@@ -86,7 +86,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
                 }
                 folder.setChecked(true);
                 notifyDataSetChanged();
-                onAlbumItemClickListener.onItemClick(folder.isCameraFolder(), folder.getName(), folder.getImages());
+                onAlbumItemClickListener.onItemClick(folder.isCameraFolder(), folder.getBucketId(), folder.getName(), folder.getImages());
             }
         });
     }
