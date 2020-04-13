@@ -81,7 +81,7 @@ class Engine {
         Bitmap tagBitmap = BitmapFactory.decodeStream(srcImg.open(), null, options);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (srcImg.getMedia() != null && Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
-            int orientation = Checker.SINGLE.getOrientation(srcImg.open());
+            int orientation = srcImg.getMedia().getOrientation();
             if (orientation > 0) {
                 tagBitmap = rotatingImage(tagBitmap, orientation);
             }
