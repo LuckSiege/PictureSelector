@@ -133,6 +133,9 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     break;
             }
         } else if (resultCode == RESULT_CANCELED) {
+            if (config != null && PictureSelectionConfig.listener != null) {
+                PictureSelectionConfig.listener.onCancel();
+            }
             closeActivity();
         } else if (resultCode == UCrop.RESULT_ERROR) {
             if (data == null) {

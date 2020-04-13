@@ -199,6 +199,9 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
 
     @Override
     public void onBackPressed() {
+        if (config != null && config.camera && PictureSelectionConfig.listener != null) {
+            PictureSelectionConfig.listener.onCancel();
+        }
         closeActivity();
     }
 
