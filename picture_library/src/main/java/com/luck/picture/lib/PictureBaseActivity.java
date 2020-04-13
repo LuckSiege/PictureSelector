@@ -821,12 +821,17 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                     config.windowAnimationStyle.activityExitAnimation : R.anim.picture_anim_exit);
         }
         // 关闭主界面后才释放回调监听
-        if (getContext() instanceof PictureSelectorActivity
-                || getContext() instanceof PictureSelectorCameraEmptyActivity
-                || getContext() instanceof PictureCustomCameraActivity) {
-            releaseResultListener();
-            if (config.openClickSound) {
-                VoiceUtils.getInstance().releaseSoundPool();
+        if (config.camera) {
+            if (getContext() instanceof PictureSelectorCameraEmptyActivity
+                    || getContext() instanceof PictureCustomCameraActivity) {
+                releaseResultListener();
+            }
+        } else {
+            if (getContext() instanceof PictureSelectorActivity) {
+                releaseResultListener();
+                if (config.openClickSound) {
+                    VoiceUtils.getInstance().releaseSoundPool();
+                }
             }
         }
     }
