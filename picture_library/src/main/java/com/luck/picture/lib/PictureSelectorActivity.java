@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -185,6 +186,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), config.imageSpanCount));
         if (!config.isPageStrategy) {
             mRecyclerView.setHasFixedSize(true);
+        } else {
+            mRecyclerView.setReachBottomRow(RecyclerPreloadView.BOTTOM_PRELOAD);
+            mRecyclerView.setOnRecyclerViewPreloadListener(PictureSelectorActivity.this);
         }
         // 解决调用 notifyItemChanged 闪烁问题,取消默认动画
         RecyclerView.ItemAnimator itemAnimator = mRecyclerView.getItemAnimator();
@@ -236,9 +240,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (isHasMore) {
                 long bucketId = ValueOf.toLong(mTvPictureTitle.getTag(R.id.view_tag));
                 mPage++;
+                Log.i("YYY", "开始请求第" + mPage + "页数据");
                 LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage,
                         (OnQueryDataResultListener<LocalMedia>) (result, isHasMore) -> {
                             if (!isFinishing()) {
+                                Log.i("YYY", "第" + mPage + "页请求完成->" + result.size() + ":" + isHasMore);
                                 this.isHasMore = isHasMore;
                                 if (isHasMore) {
                                     int size = result.size();
@@ -249,11 +255,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                         mAdapter.notifyItemRangeChanged(positionStart, itemCount);
                                     } else {
                                         // 这种情况就是开启过滤损坏文件刚好导致某一页全是损坏的虽然result为0，但还要请求下一页数据
-                                        if (config.isFilterInvalidFile) {
-                                            onRecyclerViewPreloadMore();
-                                            mRecyclerView.onScrolled(mRecyclerView.getScrollX(), mRecyclerView.getScrollY());
-                                        }
+                                        onRecyclerViewPreloadMore();
                                     }
+                                    if (size < PictureConfig.MIN_PAGE_SIZE) {
+                                        // 内容过少时手动触发一下RecyclerView的onScrolled事件
+                                        mRecyclerView.onScrolled(mRecyclerView.getScrollX(), mRecyclerView.getScrollY());
+                                    }
+                                } else {
+                                    PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
                                 }
                             }
                         });
@@ -483,7 +492,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage,
                     (OnQueryDataResultListener<LocalMedia>) (data, isHasMore) -> {
                         if (!isFinishing()) {
+                            dismissDialog();
                             if (mAdapter != null) {
+                                // isHasMore为true说明还有数据,但data为0可能是开启了过滤条件碰巧整页都不符合
+                                if (isHasMore && data.size() == 0) {
+                                    onRecyclerViewPreloadMore();
+                                    return;
+                                }
                                 // 这里解决有些机型会出现拍照完，相册列表不及时刷新问题
                                 // 因为onActivityResult里手动添加拍照后的照片，
                                 // 如果查询出来的图片大于或等于当前adapter集合的图片则取更新后的，否则就取本地的
@@ -518,12 +533,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                             (0, R.drawable.picture_icon_no_data, 0, 0);
                                 } else {
                                     mTvEmpty.setVisibility(View.GONE);
-                                    mRecyclerView.setReachBottomRow(RecyclerPreloadView.BOTTOM_PRELOAD);
-                                    mRecyclerView.setOnRecyclerViewPreloadListener(PictureSelectorActivity.this);
-
                                 }
                             }
-                            dismissDialog();
                         }
                     });
         } else {

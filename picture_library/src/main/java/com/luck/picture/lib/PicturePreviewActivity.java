@@ -25,6 +25,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnQueryDataResultListener;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
+import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
@@ -187,7 +188,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         // 滑到adapter.getSize() - PictureConfig.MIN_PAGE_SIZE时或最后一条时预加载
                         if (position == (adapter.getSize() - 1) - PictureConfig.MIN_PAGE_SIZE || position == adapter.getSize() - 1) {
                             loadMoreData();
-                            Log.i("YYY", "预加载");
                         }
                     }
                 }
@@ -228,10 +228,10 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                                 adapter.notifyDataSetChanged();
                             } else {
                                 // 这种情况就是开启过滤损坏文件刚好导致某一页全是损坏的虽然result为0，但还要请求下一页数据
-                                if (config.isFilterInvalidFile) {
-                                    loadMoreData();
-                                }
+                                loadMoreData();
                             }
+                        } else {
+                            PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
                         }
                     }
                 });
@@ -254,10 +254,10 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                                 adapter.notifyDataSetChanged();
                             } else {
                                 // 这种情况就是开启过滤损坏文件刚好导致某一页全是损坏的虽然result为0，但还要请求下一页数据
-                                if (config.isFilterInvalidFile) {
-                                    loadMoreData();
-                                }
+                                loadMoreData();
                             }
+                        } else {
+                            PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
                         }
                     }
                 });

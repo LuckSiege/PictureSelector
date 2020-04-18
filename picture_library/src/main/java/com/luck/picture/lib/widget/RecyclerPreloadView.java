@@ -50,23 +50,6 @@ public class RecyclerPreloadView extends RecyclerView {
     }
 
 
-//    @Override
-//    public void onScrollStateChanged(int newState) {
-//        super.onScrollStateChanged(newState);
-//        if (newState == SCROLL_STATE_IDLE || newState == SCROLL_STATE_DRAGGING) {
-//            LayoutManager layoutManager = getLayoutManager();
-//            if (layoutManager instanceof GridLayoutManager) {
-//                LinearLayoutManager linearManager = (LinearLayoutManager) layoutManager;
-//                int firstVisiblePosition = linearManager.findFirstVisibleItemPosition();
-//                int lastVisiblePosition = linearManager.findLastVisibleItemPosition();
-//                Adapter adapter = getAdapter();
-//                if (adapter instanceof PictureImageGridAdapter) {
-//                    ((PictureImageGridAdapter) adapter).setFirstLastVisiblePosition(firstVisiblePosition, lastVisiblePosition);
-//                }
-//            }
-//        }
-//    }
-
     @Override
     public void onScrolled(int dx, int dy) {
         super.onScrolled(dx, dy);
@@ -105,13 +88,6 @@ public class RecyclerPreloadView extends RecyclerView {
         }
     }
 
-//    /**
-//     * 获取RecyclerView可见区域的起始位置
-//     */
-//    public void updateChangeFirstLastVisiblePosition() {
-//        scrollBy(0, 0);
-//        onScrollStateChanged(getScrollState());
-//    }
 
     private OnRecyclerViewPreloadMoreListener onRecyclerViewPreloadListener;
 
