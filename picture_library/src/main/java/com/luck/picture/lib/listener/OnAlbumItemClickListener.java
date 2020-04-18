@@ -13,10 +13,11 @@ public interface OnAlbumItemClickListener {
     /**
      * 相册目录item点击事件
      *
+     * @param position
      * @param isCameraFolder
      * @param bucketId
      * @param folderName
      * @param images
      */
-    void onItemClick(boolean isCameraFolder, long bucketId, String folderName, List<LocalMedia> images);
+    void onItemClick(int position, boolean isCameraFolder, long bucketId, String folderName, List<LocalMedia> images);
 }

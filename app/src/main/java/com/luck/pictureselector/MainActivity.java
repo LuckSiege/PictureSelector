@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.broadcast.BroadcastAction;
 import com.luck.picture.lib.broadcast.BroadcastManager;
 import com.luck.picture.lib.config.PictureConfig;
@@ -73,12 +74,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tv_original_tips;
     private TextView tvDeleteText;
     private ImageView left_back, minus, plus;
-    private RadioGroup rgb_crop, rgb_style, rgb_photo_mode, rgb_langue, rgb_animation;
+    private RadioGroup rgb_crop, rgb_style, rgb_photo_mode, rgb_langue, rgb_animation, rgb_list_anim;
     private int aspect_ratio_x, aspect_ratio_y;
     private CheckBox cb_voice, cb_choose_mode, cb_isCamera, cb_isGif,
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
             cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
-            cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back, cb_custom_camera;
+            cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
+            cb_custom_camera, cbPage, cbEnabledMask;
     private int themeId;
     private int chooseMode = PictureMimeType.ofAll();
     private boolean isWeChatStyle;
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private PictureWindowAnimationStyle mWindowAnimationStyle;
     private ItemTouchHelper mItemTouchHelper;
     private DragListener mDragListener;
+    private int animationMode = AnimationType.DEFAULT_ANIMATION;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rgb_crop = findViewById(R.id.rgb_crop);
         rgb_style = findViewById(R.id.rgb_style);
         rgb_animation = findViewById(R.id.rgb_animation);
+        rgb_list_anim = findViewById(R.id.rgb_list_anim);
         rgb_photo_mode = findViewById(R.id.rgb_photo_mode);
         rgb_langue = findViewById(R.id.rgb_langue);
         cb_voice = findViewById(R.id.cb_voice);
@@ -120,6 +124,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_preview_img = findViewById(R.id.cb_preview_img);
         cb_preview_video = findViewById(R.id.cb_preview_video);
         cb_crop = findViewById(R.id.cb_crop);
+        cbPage = findViewById(R.id.cbPage);
+        cbEnabledMask = findViewById(R.id.cbEnabledMask);
         cb_styleCrop = findViewById(R.id.cb_styleCrop);
         cb_compress = findViewById(R.id.cb_compress);
         cb_mode = findViewById(R.id.cb_mode);
@@ -134,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rgb_crop.setOnCheckedChangeListener(this);
         rgb_style.setOnCheckedChangeListener(this);
         rgb_animation.setOnCheckedChangeListener(this);
+        rgb_list_anim.setOnCheckedChangeListener(this);
         rgb_photo_mode.setOnCheckedChangeListener(this);
         rgb_langue.setOnCheckedChangeListener(this);
         mRecyclerView = findViewById(R.id.recycler);
@@ -423,17 +430,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .isWeChatStyle(isWeChatStyle)// 是否开启微信图片选择风格
                         .isUseCustomCamera(cb_custom_camera.isChecked())// 是否使用自定义相机
                         .setLanguage(language)// 设置语言，默认中文
+                        .isPageStrategy(cbPage.isChecked(), 20, false)// 是否开启分页策略 & 每页多少条；默认开启
                         .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
                         .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
                         .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
+                        .setRecyclerAnimationMode(animationMode)// 列表动画效果
                         .isWithVideoImage(true)// 图片和视频是否可以同选,只在ofAll模式下有效
+                        .isMaxSelectEnabledMask(cbEnabledMask.isChecked())// 选择数到了最大阀值列表是否启用蒙层效果
                         .loadCacheResourcesCallback(GlideCacheEngine.createCacheEngine())// 获取图片资源缓存，主要是解决华为10部分机型在拷贝文件过多时会出现卡的问题，这里可以判断只在会出现一直转圈问题机型上使用
                         //.setOutputCameraPath()// 自定义相机输出目录，只针对Android Q以下，例如 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) +  File.separator + "Camera" + File.separator;
                         //.setButtonFeatures(CustomCameraView.BUTTON_STATE_BOTH)// 设置自定义相机按钮状态
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
                         .maxVideoSelectNum(1) // 视频最大选择数量，如果没有单独设置的需求则可以不设置，同用maxSelectNum字段
-                        //.minVideoSelectNum(1)// 视频最小选择数量，如果没有单独设置的需求则可以不设置，同用minSelectNum字段
+                        .minVideoSelectNum(1)// 视频最小选择数量，如果没有单独设置的需求则可以不设置，同用minSelectNum字段
                         .imageSpanCount(4)// 每行显示个数
                         .isReturnEmpty(false)// 未选择数据时点击按钮是否可以返回
                         //.isAndroidQTransform(false)// 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && enableCrop(false);有效,默认处理
@@ -815,6 +825,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 isWeChatStyle = true;
                 getWeChatStyle();
                 break;
+            case R.id.rb_default:
+                animationMode = AnimationType.DEFAULT_ANIMATION;
+                break;
+            case R.id.rb_alpha:
+                animationMode = AnimationType.ALPHA_IN_ANIMATION;
+                break;
+            case R.id.rb_slide_in:
+                animationMode = AnimationType.SLIDE_IN_BOTTOM_ANIMATION;
+                break;
         }
     }
 
@@ -844,6 +863,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_white);
         // 相册右侧取消按钮字体颜色  废弃 改用.pictureRightDefaultTextColor和.pictureRightDefaultTextColor
         mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_white);
+        // 选择相册目录背景样式
+        mPictureParameterStyle.pictureAlbumStyle = R.drawable.picture_new_item_select_bg;
         // 相册列表勾选图片样式
         mPictureParameterStyle.pictureCheckedStyle = R.drawable.picture_checkbox_selector;
         // 相册列表底部背景色
@@ -926,6 +947,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(getContext(), R.color.app_color_black);
         // 相册右侧取消按钮字体颜色  废弃 改用.pictureRightDefaultTextColor和.pictureRightDefaultTextColor
         mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(getContext(), R.color.app_color_black);
+        // 选择相册目录背景样式
+        mPictureParameterStyle.pictureAlbumStyle = R.drawable.picture_new_item_select_bg;
         // 相册列表勾选图片样式
         mPictureParameterStyle.pictureCheckedStyle = R.drawable.picture_checkbox_selector;
         // 相册列表底部背景色
@@ -1005,6 +1028,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(getContext(), R.color.app_color_white);
         // 相册右侧取消按钮字体颜色  废弃 改用.pictureRightDefaultTextColor和.pictureRightDefaultTextColor
         mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(getContext(), R.color.app_color_white);
+        // 选择相册目录背景样式
+        mPictureParameterStyle.pictureAlbumStyle = R.drawable.picture_new_item_select_bg;
         // 相册列表勾选图片样式
         mPictureParameterStyle.pictureCheckedStyle = R.drawable.checkbox_num_selector;
         // 相册列表底部背景色
@@ -1084,6 +1109,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(getContext(), R.color.app_color_black);
         // 相册右侧取消按钮字体颜色  废弃 改用.pictureRightDefaultTextColor和.pictureRightDefaultTextColor
         mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(getContext(), R.color.app_color_black);
+        // 选择相册目录背景样式
+        mPictureParameterStyle.pictureAlbumStyle = R.drawable.picture_new_item_select_bg;
         // 相册列表勾选图片样式
         mPictureParameterStyle.pictureCheckedStyle = R.drawable.picture_checkbox_selector;
         // 相册列表底部背景色
@@ -1175,6 +1202,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureUnCompleteBackgroundStyle = R.drawable.picture_send_button_default_bg;
         // 相册右侧按钮可点击背景样式,只针对isWeChatStyle 为true时有效果
         mPictureParameterStyle.pictureCompleteBackgroundStyle = R.drawable.picture_send_button_bg;
+        // 选择相册目录背景样式
+        mPictureParameterStyle.pictureAlbumStyle = R.drawable.picture_new_item_select_bg;
         // 相册列表勾选图片样式
         mPictureParameterStyle.pictureCheckedStyle = R.drawable.picture_wechat_num_selector;
         // 相册标题背景样式 ,只针对isWeChatStyle 为true时有效果

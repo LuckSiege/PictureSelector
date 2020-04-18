@@ -71,7 +71,7 @@ public class PictureWeChatPreviewGalleryAdapter
             if (config != null && PictureSelectionConfig.imageEngine != null) {
                 PictureSelectionConfig.imageEngine.loadImage(holder.itemView.getContext(), item.getPath(), holder.ivImage);
             }
-            holder.ivPlay.setVisibility(PictureMimeType.eqVideo(item.getMimeType()) ? View.VISIBLE : View.GONE);
+            holder.ivPlay.setVisibility(PictureMimeType.isHasVideo(item.getMimeType()) ? View.VISIBLE : View.GONE);
             holder.itemView.setOnClickListener(v -> {
                 if (listener != null && holder.getAdapterPosition() >= 0) {
                     listener.onItemClick(holder.getAdapterPosition(), getItem(position), v);

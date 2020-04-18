@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.thread.PictureThreadUtils;
 
 import java.io.InputStream;
 
@@ -397,9 +398,9 @@ public class MediaUtils {
         try {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
             mmr.setDataSource(context, uri);
-            int rotation = ValueOf.toInt(mmr.extractMetadata
+            int orientation = ValueOf.toInt(mmr.extractMetadata
                     (MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION));
-            switch (rotation) {
+            switch (orientation) {
                 case 90:
                     return ExifInterface.ORIENTATION_ROTATE_90;
                 case 270:
@@ -448,30 +449,39 @@ public class MediaUtils {
      * @param media
      * @return
      */
-    public static int setOrientation(Context context, LocalMedia media) {
+    public static void setOrientation(Context context, LocalMedia media) {
         // 如果有旋转信息图片宽高则是相反
-        if (media.getOrientation() == -1) {
-            int orientation = 0;
-            if (PictureMimeType.eqImage(media.getMimeType())) {
-                orientation = MediaUtils.getImageOrientationForUrl(context, media.getPath());
-            } else if (PictureMimeType.eqVideo(media.getMimeType())) {
-                if (PictureMimeType.isContent(media.getPath())) {
-                    orientation = MediaUtils.getVideoOrientationForUri(context, Uri.parse(media.getPath()));
-                } else {
-                    orientation = MediaUtils.getVideoOrientationForUrl(media.getPath());
-                }
-            }
-            if (orientation == ExifInterface.ORIENTATION_ROTATE_90
-                    || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
-                int width = media.getWidth();
-                int height = media.getHeight();
-                media.setWidth(height);
-                media.setHeight(width);
-            }
-            media.setOrientation(orientation);
-
-            return orientation;
+        if (media.getOrientation() != -1) {
+            return;
         }
-        return media.getOrientation();
+        PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<Integer>() {
+
+            @Override
+            public Integer doInBackground() {
+                int orientation = 0;
+                if (PictureMimeType.isHasImage(media.getMimeType())) {
+                    orientation = MediaUtils.getImageOrientationForUrl(context, media.getPath());
+                } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                    if (PictureMimeType.isContent(media.getPath())) {
+                        orientation = MediaUtils.getVideoOrientationForUri(context, Uri.parse(media.getPath()));
+                    } else {
+                        orientation = MediaUtils.getVideoOrientationForUrl(media.getPath());
+                    }
+                }
+                return orientation;
+            }
+
+            @Override
+            public void onSuccess(Integer orientation) {
+                if (orientation == ExifInterface.ORIENTATION_ROTATE_90
+                        || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+                    int width = media.getWidth();
+                    int height = media.getHeight();
+                    media.setWidth(height);
+                    media.setHeight(width);
+                }
+                media.setOrientation(orientation);
+            }
+        });
     }
 }

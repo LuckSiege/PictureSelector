@@ -32,8 +32,16 @@ public final class PictureConfig {
     public final static String EXTRA_CONFIG = "PictureSelectorConfig";
     public final static String EXTRA_SHOW_CAMERA = "isShowCamera";
     public final static String EXTRA_IS_CURRENT_DIRECTORY = "currentDirectory";
-
+    public final static String EXTRA_BUCKET_ID = "bucket_id";
+    public final static String EXTRA_PAGE = "page";
+    public final static String EXTRA_DATA_COUNT = "count";
     public final static String CAMERA_FACING = "android.intent.extras.CAMERA_FACING";
+
+    public final static int MAX_PAGE_SIZE = 20;
+
+    public final static int MIN_PAGE_SIZE = 10;
+
+    public final static int MAX_TOTAL_SIZE = 50;
 
     public final static int LOADED = 0;
 

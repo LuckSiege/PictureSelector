@@ -16,7 +16,7 @@ public class LocalMediaFolder implements Parcelable {
     /**
      * bucketId
      */
-    private long bucketId;
+    private long bucketId = -1;
     /**
      * Folder name
      */
@@ -48,9 +48,9 @@ public class LocalMediaFolder implements Parcelable {
     private boolean isCameraFolder;
 
     /**
-     * images
+     * data
      */
-    private List<LocalMedia> images = new ArrayList<LocalMedia>();
+    private List<LocalMedia> data = new ArrayList<>();
 
     public long getBucketId() {
         return bucketId;
@@ -116,12 +116,12 @@ public class LocalMediaFolder implements Parcelable {
         isCameraFolder = cameraFolder;
     }
 
-    public List<LocalMedia> getImages() {
-        return images;
+    public List<LocalMedia> getData() {
+        return data;
     }
 
-    public void setImages(List<LocalMedia> images) {
-        this.images = images;
+    public void setData(List<LocalMedia> data) {
+        this.data = data;
     }
 
     @Override
@@ -139,7 +139,7 @@ public class LocalMediaFolder implements Parcelable {
         dest.writeByte(this.isChecked ? (byte) 1 : (byte) 0);
         dest.writeInt(this.ofAllType);
         dest.writeByte(this.isCameraFolder ? (byte) 1 : (byte) 0);
-        dest.writeTypedList(this.images);
+        dest.writeTypedList(this.data);
     }
 
     public LocalMediaFolder() {
@@ -154,7 +154,7 @@ public class LocalMediaFolder implements Parcelable {
         this.isChecked = in.readByte() != 0;
         this.ofAllType = in.readInt();
         this.isCameraFolder = in.readByte() != 0;
-        this.images = in.createTypedArrayList(LocalMedia.CREATOR);
+        this.data = in.createTypedArrayList(LocalMedia.CREATOR);
     }
 
     public static final Creator<LocalMediaFolder> CREATOR = new Creator<LocalMediaFolder>() {

@@ -49,7 +49,7 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             if (isChooseMode) {
                 lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
             } else {
-                lp.addRule(RelativeLayout.RIGHT_OF, R.id.picture_left_back);
+                lp.addRule(RelativeLayout.RIGHT_OF, R.id.pictureLeftBack);
             }
         }
     }
@@ -134,11 +134,11 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
     }
 
     @Override
-    protected void changeImageNumber(List<LocalMedia> selectImages) {
+    protected void changeImageNumber(List<LocalMedia> selectData) {
         if (mPictureSendView == null) {
             return;
         }
-        int size = selectImages.size();
+        int size = selectData.size();
         boolean enable = size != 0;
         if (enable) {
             // 可发送
@@ -146,7 +146,7 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             mPictureSendView.setSelected(true);
             mTvPicturePreview.setEnabled(true);
             mTvPicturePreview.setSelected(true);
-            initCompleteText(selectImages);
+            initCompleteText(selectData);
             if (config.style != null) {
                 if (config.style.pictureCompleteBackgroundStyle != 0) {
                     mPictureSendView.setBackgroundResource(config.style.pictureCompleteBackgroundStyle);
@@ -260,15 +260,15 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             } else {
                 boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
                 if (isCompleteReplaceNum && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
-                    mPictureSendView.setText(String.format(config.style.pictureCompleteText, size, config.maxVideoSelectNum + config.maxSelectNum));
+                    mPictureSendView.setText(String.format(config.style.pictureCompleteText, size, config.maxSelectNum));
                 } else {
                     mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
-                            ? config.style.pictureUnCompleteText : getString(R.string.picture_send_num, size, config.maxVideoSelectNum + config.maxSelectNum));
+                            ? config.style.pictureUnCompleteText : getString(R.string.picture_send_num, size, config.maxSelectNum));
                 }
             }
         } else {
             String mimeType = list.get(0).getMimeType();
-            int maxSize = PictureMimeType.eqVideo(mimeType) && config.maxVideoSelectNum > 0 ? config.maxVideoSelectNum : config.maxSelectNum;
+            int maxSize = PictureMimeType.isHasVideo(mimeType) && config.maxVideoSelectNum > 0 ? config.maxVideoSelectNum : config.maxSelectNum;
             if (config.selectionMode == PictureConfig.SINGLE) {
                 boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
                 if (isCompleteReplaceNum && !TextUtils.isEmpty(config.style.pictureCompleteText)) {

@@ -105,7 +105,7 @@ public final class PictureMimeType {
      * @param mimeType
      * @return
      */
-    public static boolean eqVideo(String mimeType) {
+    public static boolean isHasVideo(String mimeType) {
         return mimeType != null && mimeType.startsWith(MIME_TYPE_PREFIX_VIDEO);
     }
 
@@ -115,7 +115,7 @@ public final class PictureMimeType {
      * @param mimeType
      * @return
      */
-    public static boolean eqAudio(String mimeType) {
+    public static boolean isHasAudio(String mimeType) {
         return mimeType != null && mimeType.startsWith(MIME_TYPE_PREFIX_AUDIO);
     }
 
@@ -125,7 +125,7 @@ public final class PictureMimeType {
      * @param mimeType
      * @return
      */
-    public static boolean eqImage(String mimeType) {
+    public static boolean isHasImage(String mimeType) {
         return mimeType != null && mimeType.startsWith(MIME_TYPE_PREFIX_IMAGE);
     }
 
@@ -294,9 +294,9 @@ public final class PictureMimeType {
      */
     public static String s(Context context, String mimeType) {
         Context ctx = context.getApplicationContext();
-        if (eqVideo(mimeType)) {
+        if (isHasVideo(mimeType)) {
             return ctx.getString(R.string.picture_video_error);
-        } else if (eqAudio(mimeType)) {
+        } else if (isHasAudio(mimeType)) {
             return ctx.getString(R.string.picture_audio_error);
         } else {
             return ctx.getString(R.string.picture_error);

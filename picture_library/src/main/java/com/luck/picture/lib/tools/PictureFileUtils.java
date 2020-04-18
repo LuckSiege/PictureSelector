@@ -441,9 +441,9 @@ public class PictureFileUtils {
         String absolutePath;
         try {
             if (SdkVersionUtils.checkedAndroid_Q()) {
-                if (PictureMimeType.eqVideo(mimeType)) {
+                if (PictureMimeType.isHasVideo(mimeType)) {
                     absolutePath = "%" + ctx.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
-                } else if (PictureMimeType.eqAudio(mimeType)) {
+                } else if (PictureMimeType.isHasAudio(mimeType)) {
                     absolutePath = "%" + ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
                 } else {
                     absolutePath = "%" + ctx.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
@@ -608,7 +608,7 @@ public class PictureFileUtils {
      */
     public static String createFilePath(Context context, String md5, String mineType, String customFileName) {
         String suffix = PictureMimeType.getLastImgSuffix(mineType);
-        if (PictureMimeType.eqVideo(mineType)) {
+        if (PictureMimeType.isHasVideo(mineType)) {
             // 视频
             String filesDir = PictureFileUtils.getVideoDiskCacheDir(context) + File.separator;
             if (!TextUtils.isEmpty(md5)) {
@@ -618,7 +618,7 @@ public class PictureFileUtils {
                 String fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("VID_") + suffix : customFileName;
                 return filesDir + fileName;
             }
-        } else if (PictureMimeType.eqAudio(mineType)) {
+        } else if (PictureMimeType.isHasAudio(mineType)) {
             // 音频
             String filesDir = PictureFileUtils.getAudioDiskCacheDir(context) + File.separator;
             if (!TextUtils.isEmpty(md5)) {
@@ -641,6 +641,22 @@ public class PictureFileUtils {
         }
     }
 
+    /**
+     * 判断文件是否存在
+     *
+     * @param context
+     * @param path
+     * @return
+     */
+    public static boolean isFileExists(Context context, String path) {
+        if (PictureMimeType.isContent(path)) {
+            path = PictureFileUtils.getPath(context, Uri.parse(path));
+        }
+        if (!TextUtils.isEmpty(path) && !new File(path).exists()) {
+            return false;
+        }
+        return true;
+    }
 
     @SuppressWarnings("ConstantConditions")
     public static void close(@Nullable Closeable c) {

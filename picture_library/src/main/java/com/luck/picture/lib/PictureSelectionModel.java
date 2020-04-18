@@ -9,13 +9,14 @@ import androidx.annotation.IntRange;
 import androidx.annotation.StyleRes;
 import androidx.fragment.app.Fragment;
 
+import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.UCropOptions;
+import com.luck.picture.lib.engine.CacheResourcesEngine;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.engine.CacheResourcesEngine;
 import com.luck.picture.lib.listener.OnPictureSelectorInterfaceListener;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.listener.OnVideoSelectedPlayCallback;
@@ -319,6 +320,17 @@ public class PictureSelectionModel {
     }
 
     /**
+     * When the maximum number of choices is reached, does the list enable the mask effect
+     *
+     * @param isMaxSelectEnabledMask
+     * @return
+     */
+    public PictureSelectionModel isMaxSelectEnabledMask(boolean isMaxSelectEnabledMask) {
+        selectionConfig.isMaxSelectEnabledMask = isMaxSelectEnabledMask;
+        return this;
+    }
+
+    /**
      * @param maxSelectNum PictureSelector max selection
      * @return
      */
@@ -363,6 +375,58 @@ public class PictureSelectionModel {
         selectionConfig.isSingleDirectReturn = selectionConfig.selectionMode
                 == PictureConfig.SINGLE && isSingleDirectReturn;
         selectionConfig.isOriginalControl = (selectionConfig.selectionMode != PictureConfig.SINGLE || !isSingleDirectReturn) && selectionConfig.isOriginalControl;
+        return this;
+    }
+
+    /**
+     * Whether to turn on paging mode
+     *
+     * @param isPageStrategy
+     * @param pageSize       Maximum number of pages {@link PageSize is preferably no less than 20}
+     * @return
+     */
+    public PictureSelectionModel isPageStrategy(boolean isPageStrategy, int pageSize) {
+        selectionConfig.isPageStrategy = isPageStrategy;
+        selectionConfig.pageSize = pageSize < PictureConfig.MIN_PAGE_SIZE ? PictureConfig.MAX_PAGE_SIZE : pageSize;
+        return this;
+    }
+
+    /**
+     * Whether to turn on paging mode
+     *
+     * @param isPageStrategy
+     * @param pageSize            Maximum number of pages {@link  PageSize is preferably no less than 20}
+     * @param isFilterInvalidFile Whether to filter invalid files {@link Some of the query performance is consumed,Especially on the Q version}
+     * @return
+     */
+    public PictureSelectionModel isPageStrategy(boolean isPageStrategy, int pageSize, boolean isFilterInvalidFile) {
+        selectionConfig.isPageStrategy = isPageStrategy;
+        selectionConfig.pageSize = pageSize < PictureConfig.MIN_PAGE_SIZE ? PictureConfig.MAX_PAGE_SIZE : pageSize;
+        selectionConfig.isFilterInvalidFile = isFilterInvalidFile;
+        return this;
+    }
+
+    /**
+     * Whether to turn on paging mode
+     *
+     * @param isPageStrategy
+     * @return
+     */
+    public PictureSelectionModel isPageStrategy(boolean isPageStrategy) {
+        selectionConfig.isPageStrategy = isPageStrategy;
+        return this;
+    }
+
+    /**
+     * Whether to turn on paging mode
+     *
+     * @param isPageStrategy
+     * @param isFilterInvalidFile Whether to filter invalid files {@link Some of the query performance is consumed,Especially on the Q version}
+     * @return
+     */
+    public PictureSelectionModel isPageStrategy(boolean isPageStrategy, boolean isFilterInvalidFile) {
+        selectionConfig.isPageStrategy = isPageStrategy;
+        selectionConfig.isFilterInvalidFile = isFilterInvalidFile;
         return this;
     }
 
@@ -904,6 +968,18 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel setPictureWindowAnimationStyle(PictureWindowAnimationStyle windowAnimationStyle) {
         selectionConfig.windowAnimationStyle = windowAnimationStyle;
+        return this;
+    }
+
+    /**
+     * Photo album list animation {}
+     * Use {@link AnimationType#ALPHA_IN_ANIMATION or SLIDE_IN_BOTTOM_ANIMATION} directly.
+     *
+     * @param animationMode
+     * @return
+     */
+    public PictureSelectionModel setRecyclerAnimationMode(int animationMode) {
+        selectionConfig.animationMode = animationMode;
         return this;
     }
 

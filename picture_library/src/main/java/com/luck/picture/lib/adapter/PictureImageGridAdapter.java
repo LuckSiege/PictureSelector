@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnPhotoSelectChangedListener;
 import com.luck.picture.lib.tools.AnimUtils;
@@ -47,13 +49,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private Context context;
     private boolean showCamera;
     private OnPhotoSelectChangedListener imageSelectChangedListener;
-    private List<LocalMedia> images = new ArrayList<>();
-    private List<LocalMedia> selectImages = new ArrayList<>();
+    private List<LocalMedia> data = new ArrayList<>();
+    private List<LocalMedia> selectData = new ArrayList<>();
     private PictureSelectionConfig config;
-    /**
-     * 单选图片
-     */
-    private boolean isGo;
 
     public PictureImageGridAdapter(Context context, PictureSelectionConfig config) {
         this.context = context;
@@ -69,12 +67,18 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         return showCamera;
     }
 
-    public void bindImagesData(List<LocalMedia> images) {
-        this.images = images == null ? new ArrayList<>() : images;
-        notifyDataSetChanged();
+    /**
+     * 全量刷新
+     *
+     * @param data
+     */
+    public void bindData(List<LocalMedia> data) {
+        this.data = data == null ? new ArrayList<>() : data;
+        this.notifyDataSetChanged();
     }
 
-    public void bindSelectImages(List<LocalMedia> images) {
+
+    public void bindSelectData(List<LocalMedia> images) {
         // 这里重新构构造一个新集合，不然会产生已选集合一变，结果集合也会添加的问题
         List<LocalMedia> selection = new ArrayList<>();
         int size = images.size();
@@ -82,29 +86,37 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             LocalMedia media = images.get(i);
             selection.add(media);
         }
-        this.selectImages = selection;
+        this.selectData = selection;
         if (!config.isSingleDirectReturn) {
             subSelectPosition();
             if (imageSelectChangedListener != null) {
-                imageSelectChangedListener.onChange(selectImages);
+                imageSelectChangedListener.onChange(selectData);
             }
         }
     }
 
-    public List<LocalMedia> getSelectedImages() {
-        return selectImages == null ? new ArrayList<>() : selectImages;
+    public List<LocalMedia> getSelectedData() {
+        return selectData == null ? new ArrayList<>() : selectData;
     }
 
-    public List<LocalMedia> getImages() {
-        return images == null ? new ArrayList<>() : images;
+    public int getSelectedSize() {
+        return selectData == null ? 0 : selectData.size();
+    }
+
+    public List<LocalMedia> getData() {
+        return data == null ? new ArrayList<>() : data;
     }
 
     public boolean isDataEmpty() {
-        return images == null || images.size() == 0;
+        return data == null || data.size() == 0;
     }
 
     public int getSize() {
-        return images == null ? 0 : images.size();
+        return data == null ? 0 : data.size();
+    }
+
+    public LocalMedia getItem(int position) {
+        return getSize() > 0 ? data.get(position) : null;
     }
 
     @Override
@@ -138,22 +150,71 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             });
         } else {
             final ViewHolder contentHolder = (ViewHolder) holder;
-            final LocalMedia image = images.get(showCamera ? position - 1 : position);
+            final LocalMedia image = data.get(showCamera ? position - 1 : position);
             image.position = contentHolder.getAdapterPosition();
             final String path = image.getPath();
             final String mimeType = image.getMimeType();
             if (config.checkNumMode) {
                 notifyCheckChanged(contentHolder, image);
             }
-            if (!config.isSingleDirectReturn) {
+            if (config.isSingleDirectReturn) {
+                contentHolder.tvCheck.setVisibility(View.GONE);
+                contentHolder.btnCheck.setVisibility(View.GONE);
+            } else {
                 selectImage(contentHolder, isSelected(image));
+                contentHolder.tvCheck.setVisibility(View.VISIBLE);
+                contentHolder.btnCheck.setVisibility(View.VISIBLE);
+                if (config.isMaxSelectEnabledMask) {
+                    // 启用蒙层效果
+                    if (config.isWithVideoImage && config.maxVideoSelectNum > 0) {
+                        if (getSelectedSize() >= config.maxSelectNum) {
+                            boolean isSelected = contentHolder.tvCheck.isSelected();
+                            contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
+                                    (context, isSelected ? R.color.picture_color_80 : R.color.picture_color_half_white), PorterDuff.Mode.SRC_ATOP);
+                            image.setMaxSelectEnabledMask(!isSelected);
+                        }
+                    } else {
+                        LocalMedia media = selectData.size() > 0 ? selectData.get(0) : null;
+                        if (media != null) {
+                            boolean isSelected = contentHolder.tvCheck.isSelected();
+                            if (config.chooseMode == PictureMimeType.ofAll()) {
+                                if (PictureMimeType.isHasImage(media.getMimeType())) {
+                                    // 所有视频不可选
+                                    if (!isSelected && !PictureMimeType.isHasImage(image.getMimeType())) {
+                                        contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
+                                                (context, PictureMimeType.isHasVideo(image.getMimeType()) ? R.color.picture_color_half_white : R.color.picture_color_20), PorterDuff.Mode.SRC_ATOP);
+                                    }
+                                    image.setMaxSelectEnabledMask(PictureMimeType.isHasVideo(image.getMimeType()));
+                                } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                                    // 所有图片不可选
+                                    if (!isSelected && !PictureMimeType.isHasVideo(image.getMimeType())) {
+                                        contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
+                                                (context, PictureMimeType.isHasImage(image.getMimeType()) ? R.color.picture_color_half_white : R.color.picture_color_20), PorterDuff.Mode.SRC_ATOP);
+                                    }
+                                    image.setMaxSelectEnabledMask(PictureMimeType.isHasImage(image.getMimeType()));
+                                }
+                            } else {
+                                if (config.chooseMode == PictureMimeType.ofVideo() && config.maxVideoSelectNum > 0) {
+                                    if (!isSelected && getSelectedSize() == config.maxVideoSelectNum) {
+                                        contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
+                                                (context, R.color.picture_color_half_white), PorterDuff.Mode.SRC_ATOP);
+                                    }
+                                    image.setMaxSelectEnabledMask(!isSelected && getSelectedSize() == config.maxVideoSelectNum);
+                                } else {
+                                    if (!isSelected && getSelectedSize() == config.maxSelectNum) {
+                                        contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
+                                                (context, R.color.picture_color_half_white), PorterDuff.Mode.SRC_ATOP);
+                                    }
+                                    image.setMaxSelectEnabledMask(!isSelected && getSelectedSize() == config.maxSelectNum);
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            boolean gif = PictureMimeType.isGif(mimeType);
-            contentHolder.tvCheck.setVisibility(config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
-            contentHolder.btnCheck.setVisibility(config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
-            contentHolder.tvIsGif.setVisibility(gif ? View.VISIBLE : View.GONE);
-            boolean eqImage = PictureMimeType.eqImage(image.getMimeType());
-            if (eqImage) {
+
+            contentHolder.tvIsGif.setVisibility(PictureMimeType.isGif(mimeType) ? View.VISIBLE : View.GONE);
+            if (PictureMimeType.isHasImage(image.getMimeType())) {
                 if (image.loadLongImageStatus == PictureConfig.NORMAL) {
                     image.isLongImage = MediaUtils.isLongImg(image);
                     image.loadLongImageStatus = PictureConfig.LOADED;
@@ -163,13 +224,12 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 image.loadLongImageStatus = PictureConfig.NORMAL;
                 contentHolder.tvLongChart.setVisibility(View.GONE);
             }
-            boolean eqVideo = PictureMimeType.eqVideo(mimeType);
-            boolean eqAudio = PictureMimeType.eqAudio(mimeType);
-            if (eqVideo || eqAudio) {
+            boolean isHasVideo = PictureMimeType.isHasVideo(mimeType);
+            if (isHasVideo || PictureMimeType.isHasAudio(mimeType)) {
                 contentHolder.tvDuration.setVisibility(View.VISIBLE);
                 contentHolder.tvDuration.setText(DateUtils.formatDurationTime(image.getDuration()));
                 contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                        (eqVideo ? R.drawable.picture_icon_video : R.drawable.picture_icon_audio,
+                        (isHasVideo ? R.drawable.picture_icon_video : R.drawable.picture_icon_audio,
                                 0, 0, 0);
             } else {
                 contentHolder.tvDuration.setVisibility(View.GONE);
@@ -181,8 +241,15 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     PictureSelectionConfig.imageEngine.loadGridImage(context, path, contentHolder.ivPicture);
                 }
             }
+
             if (config.enablePreview || config.enPreviewVideo || config.enablePreviewAudio) {
                 contentHolder.btnCheck.setOnClickListener(v -> {
+                    if (config.isMaxSelectEnabledMask) {
+                        if (!contentHolder.tvCheck.isSelected() && getSelectedSize() >= config.maxSelectNum) {
+                            showPromptDialog(context.getString(R.string.picture_message_max_num, config.maxSelectNum));
+                            return;
+                        }
+                    }
                     // 如原图路径不存在或者路径存在但文件不存在
                     String newPath = SdkVersionUtils.checkedAndroid_Q()
                             ? PictureFileUtils.getPath(context, Uri.parse(path)) : path;
@@ -199,6 +266,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 });
             }
             contentHolder.contentView.setOnClickListener(v -> {
+                if (config.isMaxSelectEnabledMask) {
+                    if (image.isMaxSelectEnabledMask()) {
+                        return;
+                    }
+                }
                 // 如原图路径不存在或者路径存在但文件不存在
                 String newPath = SdkVersionUtils.checkedAndroid_Q()
                         ? PictureFileUtils.getPath(context, Uri.parse(path)) : path;
@@ -216,23 +288,21 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 // 如果有旋转信息图片宽高则是相反
                 MediaUtils.setOrientation(context, image);
                 boolean eqResult =
-                        PictureMimeType.eqImage(mimeType) && config.enablePreview
-                                || PictureMimeType.eqVideo(mimeType) && (config.enPreviewVideo
+                        PictureMimeType.isHasImage(mimeType) && config.enablePreview
+                                || PictureMimeType.isHasVideo(mimeType) && (config.enPreviewVideo
                                 || config.selectionMode == PictureConfig.SINGLE)
-                                || PictureMimeType.eqAudio(mimeType) && (config.enablePreviewAudio
+                                || PictureMimeType.isHasAudio(mimeType) && (config.enablePreviewAudio
                                 || config.selectionMode == PictureConfig.SINGLE);
                 if (eqResult) {
-                    if (PictureMimeType.eqVideo(image.getMimeType())) {
+                    if (PictureMimeType.isHasVideo(image.getMimeType())) {
                         if (config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
                             // 视频小于最低指定的长度
-                            ToastUtils.s(context,
-                                    contentHolder.itemView.getContext().getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
+                            showPromptDialog(context.getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
                             return;
                         }
                         if (config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
                             // 视频时长超过了指定的长度
-                            ToastUtils.s(context,
-                                    contentHolder.itemView.getContext().getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+                            showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
                             return;
                         }
                     }
@@ -247,7 +317,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemCount() {
-        return showCamera ? images.size() + 1 : images.size();
+        return showCamera ? data.size() + 1 : data.size();
     }
 
     public class CameraViewHolder extends RecyclerView.ViewHolder {
@@ -290,9 +360,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public boolean isSelected(LocalMedia image) {
-        int size = selectImages.size();
+        int size = selectData.size();
         for (int i = 0; i < size; i++) {
-            LocalMedia media = selectImages.get(i);
+            LocalMedia media = selectData.get(i);
             if (media == null || TextUtils.isEmpty(media.getPath())) {
                 continue;
             }
@@ -310,9 +380,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
      */
     private void notifyCheckChanged(ViewHolder viewHolder, LocalMedia imageBean) {
         viewHolder.tvCheck.setText("");
-        int size = selectImages.size();
+        int size = selectData.size();
         for (int i = 0; i < size; i++) {
-            LocalMedia media = selectImages.get(i);
+            LocalMedia media = selectData.get(i);
             if (media.getPath().equals(imageBean.getPath())
                     || media.getId() == imageBean.getId()) {
                 imageBean.setNum(media.getNum());
@@ -332,53 +402,52 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     @SuppressLint("StringFormatMatches")
     private void changeCheckboxState(ViewHolder contentHolder, LocalMedia image) {
         boolean isChecked = contentHolder.tvCheck.isSelected();
-        int count = selectImages.size();
-        String mimeType = count > 0 ? selectImages.get(0).getMimeType() : "";
+        int count = selectData.size();
+        String mimeType = count > 0 ? selectData.get(0).getMimeType() : "";
         if (config.isWithVideoImage) {
             // 混选模式
             int videoSize = 0;
-            int imageSize = 0;
             for (int i = 0; i < count; i++) {
-                LocalMedia media = selectImages.get(i);
-                if (PictureMimeType.eqVideo(media.getMimeType())) {
+                LocalMedia media = selectData.get(i);
+                if (PictureMimeType.isHasVideo(media.getMimeType())) {
                     videoSize++;
-                } else {
-                    imageSize++;
                 }
             }
 
-            if (PictureMimeType.eqVideo(image.getMimeType())) {
-
+            if (PictureMimeType.isHasVideo(image.getMimeType())) {
                 if (config.maxVideoSelectNum <= 0) {
                     // 如果视频可选数量是0
-                    ToastUtils.s(context, context.getString(R.string.picture_rule));
+                    showPromptDialog(context.getString(R.string.picture_rule));
+                    return;
+                }
+
+                if (getSelectedSize() >= config.maxSelectNum && !isChecked) {
+                    showPromptDialog(context.getString(R.string.picture_message_max_num, config.maxSelectNum));
                     return;
                 }
 
                 if (videoSize >= config.maxVideoSelectNum && !isChecked) {
                     // 如果选择的是视频
-                    ToastUtils.s(context, StringUtils.getMsg(context, image.getMimeType(), config.maxVideoSelectNum));
+                    showPromptDialog(StringUtils.getMsg(context, image.getMimeType(), config.maxVideoSelectNum));
                     return;
                 }
 
                 if (!isChecked && config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
                     // 视频小于最低指定的长度
-                    ToastUtils.s(context,
-                            contentHolder.itemView.getContext().getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
+                    showPromptDialog(context.getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
                     return;
                 }
 
                 if (!isChecked && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
                     // 视频时长超过了指定的长度
-                    ToastUtils.s(context,
-                            contentHolder.itemView.getContext().getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+                    showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
                     return;
                 }
             }
 
-            if (PictureMimeType.eqImage(image.getMimeType())) {
-                if (imageSize >= config.maxSelectNum && !isChecked) {
-                    ToastUtils.s(context, StringUtils.getMsg(context, image.getMimeType(), config.maxSelectNum));
+            if (PictureMimeType.isHasImage(image.getMimeType())) {
+                if (getSelectedSize() >= config.maxSelectNum && !isChecked) {
+                    showPromptDialog(context.getString(R.string.picture_message_max_num, config.maxSelectNum));
                     return;
                 }
             }
@@ -388,46 +457,42 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             if (!TextUtils.isEmpty(mimeType)) {
                 boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, image.getMimeType());
                 if (!mimeTypeSame) {
-                    ToastUtils.s(context, context.getString(R.string.picture_rule));
+                    showPromptDialog(context.getString(R.string.picture_rule));
                     return;
                 }
             }
-            if (PictureMimeType.eqVideo(mimeType) && config.maxVideoSelectNum > 0) {
+            if (PictureMimeType.isHasVideo(mimeType) && config.maxVideoSelectNum > 0) {
                 if (count >= config.maxVideoSelectNum && !isChecked) {
                     // 如果先选择的是视频
-                    ToastUtils.s(context, StringUtils.getMsg(context, mimeType, config.maxVideoSelectNum));
+                    showPromptDialog(StringUtils.getMsg(context, mimeType, config.maxVideoSelectNum));
                     return;
                 }
                 if (!isChecked && config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
                     // 视频小于最低指定的长度
-                    ToastUtils.s(context,
-                            contentHolder.itemView.getContext().getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
+                    showPromptDialog(context.getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
                     return;
                 }
 
                 if (!isChecked && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
                     // 视频时长超过了指定的长度
-                    ToastUtils.s(context,
-                            contentHolder.itemView.getContext().getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+                    showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
                     return;
                 }
             } else {
                 if (count >= config.maxSelectNum && !isChecked) {
-                    ToastUtils.s(context, StringUtils.getMsg(context, mimeType, config.maxSelectNum));
+                    showPromptDialog(StringUtils.getMsg(context, mimeType, config.maxSelectNum));
                     return;
                 }
-                if (PictureMimeType.eqVideo(image.getMimeType())) {
+                if (PictureMimeType.isHasVideo(image.getMimeType())) {
                     if (!isChecked && config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
                         // 视频小于最低指定的长度
-                        ToastUtils.s(context,
-                                contentHolder.itemView.getContext().getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
+                        showPromptDialog(context.getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
                         return;
                     }
 
                     if (!isChecked && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
                         // 视频时长超过了指定的长度
-                        ToastUtils.s(context,
-                                contentHolder.itemView.getContext().getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+                        showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
                         return;
                     }
                 }
@@ -436,13 +501,13 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         if (isChecked) {
             for (int i = 0; i < count; i++) {
-                LocalMedia media = selectImages.get(i);
+                LocalMedia media = selectData.get(i);
                 if (media == null || TextUtils.isEmpty(media.getPath())) {
                     continue;
                 }
                 if (media.getPath().equals(image.getPath())
                         || media.getId() == image.getId()) {
-                    selectImages.remove(media);
+                    selectData.remove(media);
                     subSelectPosition();
                     AnimUtils.disZoom(contentHolder.ivPicture, config.zoomAnim);
                     break;
@@ -459,21 +524,21 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 int width = 0, height = 0;
                 image.setOrientation(-1);
                 if (PictureMimeType.isContent(image.getPath())) {
-                    if (PictureMimeType.eqVideo(image.getMimeType())) {
+                    if (PictureMimeType.isHasVideo(image.getMimeType())) {
                         int[] size = MediaUtils.getVideoSizeForUri(context, Uri.parse(image.getPath()));
                         width = size[0];
                         height = size[1];
-                    } else if (PictureMimeType.eqImage(image.getMimeType())) {
+                    } else if (PictureMimeType.isHasImage(image.getMimeType())) {
                         int[] size = MediaUtils.getImageSizeForUri(context, Uri.parse(image.getPath()));
                         width = size[0];
                         height = size[1];
                     }
                 } else {
-                    if (PictureMimeType.eqVideo(image.getMimeType())) {
+                    if (PictureMimeType.isHasVideo(image.getMimeType())) {
                         int[] size = MediaUtils.getVideoSizeForUrl(image.getPath());
                         width = size[0];
                         height = size[1];
-                    } else if (PictureMimeType.eqImage(image.getMimeType())) {
+                    } else if (PictureMimeType.isHasImage(image.getMimeType())) {
                         int[] size = MediaUtils.getImageSizeForUrl(image.getPath());
                         width = size[0];
                         height = size[1];
@@ -485,17 +550,71 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
 
             // 如果有旋转信息图片宽高则是相反
             MediaUtils.setOrientation(context, image);
-            selectImages.add(image);
-            image.setNum(selectImages.size());
+            selectData.add(image);
+            image.setNum(selectData.size());
             VoiceUtils.getInstance().play();
             AnimUtils.zoom(contentHolder.ivPicture, config.zoomAnim);
             contentHolder.tvCheck.startAnimation(AnimationUtils.loadAnimation(context, R.anim.picture_anim_modal_in));
         }
+
         //通知点击项发生了改变
-        notifyItemChanged(contentHolder.getAdapterPosition());
+        boolean isRefreshAll = false;
+        if (config.isMaxSelectEnabledMask) {
+            if (config.chooseMode == PictureMimeType.ofAll()) {
+                // ofAll模式
+                if (config.isWithVideoImage && config.maxVideoSelectNum > 0) {
+                    if (getSelectedSize() >= config.maxSelectNum) {
+                        isRefreshAll = true;
+                    }
+                    if (isChecked) {
+                        // 删除
+                        if (getSelectedSize() == config.maxSelectNum - 1) {
+                            isRefreshAll = true;
+                        }
+                    }
+                } else {
+                    if (!isChecked && getSelectedSize() == 1) {
+                        // 添加
+                        isRefreshAll = true;
+                    }
+                    if (isChecked && getSelectedSize() == 0) {
+                        // 删除
+                        isRefreshAll = true;
+                    }
+                }
+            } else {
+                // ofImage or ofVideo or ofAudio
+                if (config.chooseMode == PictureMimeType.ofVideo() && config.maxVideoSelectNum > 0) {
+                    if (!isChecked && getSelectedSize() == config.maxVideoSelectNum) {
+                        // 添加
+                        isRefreshAll = true;
+                    }
+                    if (isChecked && getSelectedSize() == config.maxVideoSelectNum - 1) {
+                        // 删除
+                        isRefreshAll = true;
+                    }
+                } else {
+                    if (!isChecked && getSelectedSize() == config.maxSelectNum) {
+                        // 添加
+                        isRefreshAll = true;
+                    }
+                    if (isChecked && getSelectedSize() == config.maxSelectNum - 1) {
+                        // 删除
+                        isRefreshAll = true;
+                    }
+                }
+            }
+        }
+
+        if (isRefreshAll) {
+            notifyDataSetChanged();
+        } else {
+            notifyItemChanged(contentHolder.getAdapterPosition());
+        }
+
         selectImage(contentHolder, !isChecked);
         if (imageSelectChangedListener != null) {
-            imageSelectChangedListener.onChange(selectImages);
+            imageSelectChangedListener.onChange(selectData);
         }
     }
 
@@ -503,13 +622,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
      * 单选模式
      */
     private void singleRadioMediaImage() {
-        if (selectImages != null
-                && selectImages.size() > 0) {
-            isGo = true;
-            LocalMedia media = selectImages.get(0);
-            notifyItemChanged(config.isCamera ? media.position :
-                    isGo ? media.position : media.position > 0 ? media.position - 1 : 0);
-            selectImages.clear();
+        if (selectData != null
+                && selectData.size() > 0) {
+            LocalMedia media = selectData.get(0);
+            notifyItemChanged(media.position);
+            selectData.clear();
         }
     }
 
@@ -518,9 +635,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
      */
     private void subSelectPosition() {
         if (config.checkNumMode) {
-            int size = selectImages.size();
+            int size = selectData.size();
             for (int index = 0; index < size; index++) {
-                LocalMedia media = selectImages.get(index);
+                LocalMedia media = selectData.get(index);
                 media.setNum(index + 1);
                 notifyItemChanged(media.position);
             }
@@ -550,4 +667,15 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.imageSelectChangedListener = imageSelectChangedListener;
     }
 
+    /**
+     * 提示
+     */
+    private void showPromptDialog(String content) {
+        PictureCustomDialog dialog = new PictureCustomDialog(context, R.layout.picture_prompt_dialog);
+        TextView btnOk = dialog.findViewById(R.id.btnOk);
+        TextView tvContent = dialog.findViewById(R.id.tv_content);
+        tvContent.setText(content);
+        btnOk.setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
+    }
 }

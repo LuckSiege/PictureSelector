@@ -21,7 +21,7 @@
         android:visibility="invisible" />
 
     <ImageButton
-        android:id="@+id/picture_left_back"
+        android:id="@+id/pictureLeftBack"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:background="@color/picture_color_transparent"

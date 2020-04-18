@@ -28,7 +28,7 @@ import java.util.Locale;
  * @data：2016/12/31 19:12
  * @描述: Local media database query class
  */
-
+@Deprecated
 public class LocalMediaLoader {
     private static final String TAG = LocalMediaLoader.class.getSimpleName();
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
@@ -57,7 +57,8 @@ public class LocalMediaLoader {
             MediaStore.MediaColumns.DURATION,
             MediaStore.MediaColumns.SIZE,
             MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
-            MediaStore.MediaColumns.DISPLAY_NAME};
+            MediaStore.MediaColumns.DISPLAY_NAME,
+            MediaStore.MediaColumns.BUCKET_ID};
 
     /**
      * 图片
@@ -196,12 +197,14 @@ public class LocalMediaLoader {
                         String fileName = data.getString
                                 (data.getColumnIndexOrThrow(PROJECTION[8]));
 
+                        long bucketId = data.getLong(data.getColumnIndexOrThrow(PROJECTION[9]));
+
                         if (config.filterFileSize > 0) {
                             if (size > config.filterFileSize * FILE_SIZE_UNIT) {
                                 continue;
                             }
                         }
-                        if (PictureMimeType.eqVideo(mimeType)) {
+                        if (PictureMimeType.isHasVideo(mimeType)) {
                             if (config.videoMinSecond > 0 && duration < config.videoMinSecond) {
                                 // 如果设置了最小显示多少秒的视频
                                 continue;
@@ -220,9 +223,10 @@ public class LocalMediaLoader {
                             }
                         }
                         LocalMedia image = new LocalMedia
-                                (id, url, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size);
+                                (id, url, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size, bucketId);
                         LocalMediaFolder folder = getImageFolder(url, folderName, imageFolders);
-                        List<LocalMedia> images = folder.getImages();
+                        folder.setBucketId(image.getBucketId());
+                        List<LocalMedia> images = folder.getData();
                         images.add(image);
                         folder.setImageNum(folder.getImageNum() + 1);
                         latelyImages.add(image);
@@ -242,7 +246,7 @@ public class LocalMediaLoader {
                         allImageFolder.setName(title);
                         allImageFolder.setOfAllType(config.chooseMode);
                         allImageFolder.setCameraFolder(true);
-                        allImageFolder.setImages(latelyImages);
+                        allImageFolder.setData(latelyImages);
                     }
                 }
                 return imageFolders;
@@ -314,7 +318,7 @@ public class LocalMediaLoader {
     private void sortFolder(List<LocalMediaFolder> imageFolders) {
         // 文件夹按图片数量排序
         Collections.sort(imageFolders, (lhs, rhs) -> {
-            if (lhs.getImages() == null || rhs.getImages() == null) {
+            if (lhs.getData() == null || rhs.getData() == null) {
                 return 0;
             }
             int lSize = lhs.getImageNum();

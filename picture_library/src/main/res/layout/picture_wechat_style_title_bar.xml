@@ -23,7 +23,8 @@
             android:layout_centerVertical="true"
             android:ellipsize="end"
             android:gravity="center"
-            android:maxEms="11"
+            android:maxEms="8"
+            android:maxLines="1"
             android:text="@string/picture_camera_roll"
             android:textColor="?picture.title.textColor"
             android:textSize="16sp" />
@@ -65,7 +66,7 @@
         android:textSize="16sp" />
 
     <ImageView
-        android:id="@+id/picture_left_back"
+        android:id="@+id/pictureLeftBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/titleViewBg"

@@ -45,7 +45,7 @@
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/picture_tv_img_num"
+            android:id="@+id/picture_tvMediaNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -73,8 +73,7 @@
 
     </RelativeLayout>
 
-
-    <androidx.recyclerview.widget.RecyclerView
+    <com.luck.picture.lib.widget.RecyclerPreloadView
         android:id="@+id/picture_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

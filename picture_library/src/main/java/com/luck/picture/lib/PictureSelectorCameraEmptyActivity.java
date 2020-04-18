@@ -191,21 +191,21 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         int width = 0, height = 0;
         media.setOrientation(-1);
         if (PictureMimeType.isContent(media.getPath())) {
-            if (PictureMimeType.eqVideo(media.getMimeType())) {
+            if (PictureMimeType.isHasVideo(media.getMimeType())) {
                 int[] size = MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(media.getPath()));
                 width = size[0];
                 height = size[1];
-            } else if (PictureMimeType.eqImage(media.getMimeType())) {
+            } else if (PictureMimeType.isHasImage(media.getMimeType())) {
                 int[] size = MediaUtils.getImageSizeForUri(getContext(), Uri.parse(media.getPath()));
                 width = size[0];
                 height = size[1];
             }
         } else {
-            if (PictureMimeType.eqVideo(media.getMimeType())) {
+            if (PictureMimeType.isHasVideo(media.getMimeType())) {
                 int[] size = MediaUtils.getVideoSizeForUrl(media.getPath());
                 width = size[0];
                 height = size[1];
-            } else if (PictureMimeType.eqImage(media.getMimeType())) {
+            } else if (PictureMimeType.isHasImage(media.getMimeType())) {
                 int[] size = MediaUtils.getImageSizeForUrl(media.getPath());
                 width = size[0];
                 height = size[1];
@@ -260,7 +260,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 File file = new File(path);
                 size = file.length();
                 mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
-                if (PictureMimeType.eqImage(mimeType)) {
+                if (PictureMimeType.isHasImage(mimeType)) {
                     newSize = MediaUtils.getImageSizeForUrlToAndroidQ(this, config.cameraPath);
                 } else {
                     newSize = MediaUtils.getVideoSizeForUri(this, Uri.parse(config.cameraPath));
@@ -280,7 +280,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 final File file = new File(config.cameraPath);
                 mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                 size = file.length();
-                if (PictureMimeType.eqImage(mimeType)) {
+                if (PictureMimeType.isHasImage(mimeType)) {
                     int degree = PictureFileUtils.readPictureDegree(this, config.cameraPath);
                     BitmapUtils.rotateImage(degree, config.cameraPath);
                     newSize = MediaUtils.getImageSizeForUrl(config.cameraPath);
@@ -298,13 +298,14 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         media.setHeight(newSize[1]);
         media.setPath(config.cameraPath);
         media.setMimeType(mimeType);
+        media.setParentFolderName("Camera");
         media.setSize(size);
         media.setChooseModel(config.chooseMode);
         // 如果有旋转信息图片宽高则是相反
         MediaUtils.setOrientation(getContext(), media);
         cameraHandleResult(media, mimeType);
         // 这里主要解决极个别手机拍照会在DCIM目录重复生成一张照片问题
-        if (!isAndroidQ && PictureMimeType.eqImage(media.getMimeType())) {
+        if (!isAndroidQ && PictureMimeType.isHasImage(media.getMimeType())) {
             int lastImageId = MediaUtils.getLastImageId(getContext(), media.getMimeType());
             if (lastImageId != -1) {
                 MediaUtils.removeMedia(getContext(), lastImageId);
@@ -320,12 +321,12 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
      */
     private void cameraHandleResult(LocalMedia media, String mimeType) {
         // 如果是单选 拍照后直接返回
-        boolean eqImg = PictureMimeType.eqImage(mimeType);
-        if (config.enableCrop && eqImg) {
+        boolean isHasImage = PictureMimeType.isHasImage(mimeType);
+        if (config.enableCrop && isHasImage) {
             // 去裁剪
             config.originalPath = config.cameraPath;
             startCrop(config.cameraPath, mimeType);
-        } else if (config.isCompress && eqImg && !config.isCheckOriginalImage) {
+        } else if (config.isCompress && isHasImage && !config.isCheckOriginalImage) {
             // 去压缩
             List<LocalMedia> result = new ArrayList<>();
             result.add(media);

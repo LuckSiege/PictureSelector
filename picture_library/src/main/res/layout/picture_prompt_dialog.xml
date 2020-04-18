@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/picture_dialog_shadow"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingLeft="15dp"
+        android:paddingTop="35dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="35dp"
+        android:textColor="@color/picture_color_4d"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <View
+        android:id="@+id/bottom_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/picture_color_e" />
+
+    <TextView
+        android:id="@+id/btnOk"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/picture_btn_bottom_selector"
+        android:gravity="center"
+        android:text="@string/picture_know"
+        android:textColor="@color/picture_color_9b"
+        android:textStyle="bold" />
+</LinearLayout>

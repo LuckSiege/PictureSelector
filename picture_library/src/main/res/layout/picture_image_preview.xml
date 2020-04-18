@@ -10,7 +10,7 @@
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp" />
 
-    <com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView
+    <com.luck.picture.lib.widget.longimage.PictureLongScaleImageView
         android:id="@+id/longImg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

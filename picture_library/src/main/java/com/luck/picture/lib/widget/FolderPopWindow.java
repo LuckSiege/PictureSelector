@@ -37,7 +37,7 @@ public class FolderPopWindow extends PopupWindow {
     private Context context;
     private View window;
     private View rootView;
-    private RecyclerView recyclerView;
+    private RecyclerView mRecyclerView;
     private PictureAlbumDirectoryAdapter adapter;
     private boolean isDismiss = false;
     private ImageView ivArrowView;
@@ -92,9 +92,9 @@ public class FolderPopWindow extends PopupWindow {
     public void initView() {
         rootViewBg = window.findViewById(R.id.rootViewBg);
         adapter = new PictureAlbumDirectoryAdapter(config);
-        recyclerView = window.findViewById(R.id.folder_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setAdapter(adapter);
+        mRecyclerView = window.findViewById(R.id.folder_list);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        mRecyclerView.setAdapter(adapter);
         rootView = window.findViewById(R.id.rootView);
         rootViewBg.setOnClickListener(v -> dismiss());
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -105,9 +105,17 @@ public class FolderPopWindow extends PopupWindow {
     public void bindFolder(List<LocalMediaFolder> folders) {
         adapter.setChooseMode(chooseMode);
         adapter.bindFolderData(folders);
-        ViewGroup.LayoutParams lp = recyclerView.getLayoutParams();
+        ViewGroup.LayoutParams lp = mRecyclerView.getLayoutParams();
         lp.height = folders != null && folders.size() > 8 ? maxHeight
                 : ViewGroup.LayoutParams.WRAP_CONTENT;
+    }
+
+    public List<LocalMediaFolder> getFolderData() {
+        return adapter.getFolderData();
+    }
+
+    public LocalMediaFolder getFolder(int position) {
+        return adapter.getFolderData().size() > 0 ? adapter.getFolderData().get(position) : null;
     }
 
     public void setArrowImageView(ImageView ivArrowView) {
@@ -163,23 +171,16 @@ public class FolderPopWindow extends PopupWindow {
         try {
             List<LocalMediaFolder> folders = adapter.getFolderData();
             int size = folders.size();
+            int resultSize = result.size();
             for (int i = 0; i < size; i++) {
-                // 先重置选中状态为未选中
-                LocalMediaFolder mediaFolder = folders.get(i);
-                mediaFolder.setCheckedNum(0);
-                // 在重新遍历一次更新选中状态
-                List<LocalMedia> images = mediaFolder.getImages();
-                int iSize = images.size();
-                int rSize = result.size();
-                for (int j = 0; j < iSize; j++) {
-                    LocalMedia oldMedia = images.get(j);
-                    String path = oldMedia.getPath();
-                    for (int k = 0; k < rSize; k++) {
-                        LocalMedia newMedia = result.get(k);
-                        if (path.equals(newMedia.getPath()) || oldMedia.getId() == newMedia.getId()) {
-                            mediaFolder.setCheckedNum(1);
-                            break;
-                        }
+                LocalMediaFolder folder = folders.get(i);
+                folder.setCheckedNum(0);
+                for (int j = 0; j < resultSize; j++) {
+                    LocalMedia media = result.get(j);
+                    if (folder.getName().equals(media.getParentFolderName())
+                            || folder.getBucketId() == -1) {
+                        folder.setCheckedNum(1);
+                        break;
                     }
                 }
             }

@@ -5,20 +5,20 @@
     android:background="@drawable/picture_dialog_shadow">
 
     <TextView
-        android:id="@+id/tv_title"
+        android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="15dp"
         android:text="@string/picture_prompt"
-        android:textColor="#ff572e"
+        android:textColor="@color/picture_color_ff572e"
         android:textSize="16sp" />
 
     <View
         android:id="@+id/top_line"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_below="@id/tv_title"
+        android:layout_below="@id/tvTitle"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:background="@color/picture_color_e" />
@@ -58,7 +58,7 @@
             android:layout_weight="1"
             android:background="@drawable/picture_btn_left_bottom_selector"
             android:text="@string/picture_cancel"
-            android:textColor="#529BeA" />
+            android:textColor="@color/picture_color_529BeA" />
 
         <View
             android:layout_width="0.5dp"
@@ -72,6 +72,6 @@
             android:layout_weight="1"
             android:background="@drawable/picture_btn_right_bottom_selector"
             android:text="@string/picture_confirm"
-            android:textColor="#529BeA" />
+            android:textColor="@color/picture_color_529BeA" />
     </LinearLayout>
 </RelativeLayout>

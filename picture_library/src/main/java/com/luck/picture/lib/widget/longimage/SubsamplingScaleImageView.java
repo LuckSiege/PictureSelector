@@ -297,30 +297,30 @@ public class SubsamplingScaleImageView extends View {
         });
         // Handle XML attributes
         if (attr != null) {
-            TypedArray typedAttr = getContext().obtainStyledAttributes(attr, R.styleable.SubsamplingScaleImageView);
-            if (typedAttr.hasValue(R.styleable.SubsamplingScaleImageView_assetName)) {
-                String assetName = typedAttr.getString(R.styleable.SubsamplingScaleImageView_assetName);
+            TypedArray typedAttr = getContext().obtainStyledAttributes(attr, R.styleable.PictureLongScaleImageView);
+            if (typedAttr.hasValue(R.styleable.PictureLongScaleImageView_assetName)) {
+                String assetName = typedAttr.getString(R.styleable.PictureLongScaleImageView_assetName);
                 if (assetName != null && assetName.length() > 0) {
                     setImage(ImageSource.asset(assetName).tilingEnabled());
                 }
             }
-            if (typedAttr.hasValue(R.styleable.SubsamplingScaleImageView_src)) {
-                int resId = typedAttr.getResourceId(R.styleable.SubsamplingScaleImageView_src, 0);
+            if (typedAttr.hasValue(R.styleable.PictureLongScaleImageView_src)) {
+                int resId = typedAttr.getResourceId(R.styleable.PictureLongScaleImageView_src, 0);
                 if (resId > 0) {
                     setImage(ImageSource.resource(resId).tilingEnabled());
                 }
             }
-            if (typedAttr.hasValue(R.styleable.SubsamplingScaleImageView_panEnabled)) {
-                setPanEnabled(typedAttr.getBoolean(R.styleable.SubsamplingScaleImageView_panEnabled, true));
+            if (typedAttr.hasValue(R.styleable.PictureLongScaleImageView_panEnabled)) {
+                setPanEnabled(typedAttr.getBoolean(R.styleable.PictureLongScaleImageView_panEnabled, true));
             }
-            if (typedAttr.hasValue(R.styleable.SubsamplingScaleImageView_zoomEnabled)) {
-                setZoomEnabled(typedAttr.getBoolean(R.styleable.SubsamplingScaleImageView_zoomEnabled, true));
+            if (typedAttr.hasValue(R.styleable.PictureLongScaleImageView_zoomEnabled)) {
+                setZoomEnabled(typedAttr.getBoolean(R.styleable.PictureLongScaleImageView_zoomEnabled, true));
             }
-            if (typedAttr.hasValue(R.styleable.SubsamplingScaleImageView_quickScaleEnabled)) {
-                setQuickScaleEnabled(typedAttr.getBoolean(R.styleable.SubsamplingScaleImageView_quickScaleEnabled, true));
+            if (typedAttr.hasValue(R.styleable.PictureLongScaleImageView_quickScaleEnabled)) {
+                setQuickScaleEnabled(typedAttr.getBoolean(R.styleable.PictureLongScaleImageView_quickScaleEnabled, true));
             }
-            if (typedAttr.hasValue(R.styleable.SubsamplingScaleImageView_tileBackgroundColor)) {
-                setTileBackgroundColor(typedAttr.getColor(R.styleable.SubsamplingScaleImageView_tileBackgroundColor, Color.argb(0, 0, 0, 0)));
+            if (typedAttr.hasValue(R.styleable.PictureLongScaleImageView_tileBackgroundColor)) {
+                setTileBackgroundColor(typedAttr.getColor(R.styleable.PictureLongScaleImageView_tileBackgroundColor, Color.argb(0, 0, 0, 0)));
             }
             typedAttr.recycle();
         }

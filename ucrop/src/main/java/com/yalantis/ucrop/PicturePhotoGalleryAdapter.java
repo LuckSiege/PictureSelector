@@ -84,8 +84,8 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
         } else {
             holder.iv_dot.setVisibility(View.INVISIBLE);
         }
-        boolean eqVideo = MimeType.eqVideo(photoInfo.getMimeType());
-        if (eqVideo) {
+        boolean isHasVideo = MimeType.isHasVideo(photoInfo.getMimeType());
+        if (isHasVideo) {
             holder.mIvPhoto.setVisibility(View.GONE);
             holder.mIvVideo.setVisibility(View.VISIBLE);
             holder.mIvVideo.setImageResource(R.drawable.ucrop_ic_default_video);

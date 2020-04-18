@@ -140,6 +140,11 @@ public final class PictureSelectionConfig implements Parcelable {
     public String originalPath;
     public String cameraPath;
     public int cameraMimeType;
+    public int pageSize;
+    public boolean isPageStrategy;
+    public boolean isFilterInvalidFile;
+    public boolean isMaxSelectEnabledMask;
+    public int animationMode;
     /**
      * 内测专用###########
      */
@@ -240,6 +245,11 @@ public final class PictureSelectionConfig implements Parcelable {
         originalPath = "";
         cameraPath = "";
         cameraMimeType = -1;
+        pageSize = PictureConfig.MAX_PAGE_SIZE;
+        isPageStrategy = true;
+        isFilterInvalidFile = false;
+        isMaxSelectEnabledMask = false;
+        animationMode = -1;
     }
 
     public static PictureSelectionConfig getInstance() {
@@ -366,6 +376,11 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeString(this.originalPath);
         dest.writeString(this.cameraPath);
         dest.writeInt(this.cameraMimeType);
+        dest.writeInt(this.pageSize);
+        dest.writeByte(this.isPageStrategy ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isFilterInvalidFile ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isMaxSelectEnabledMask ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.animationMode);
         dest.writeByte(this.isFallbackVersion ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFallbackVersion2 ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFallbackVersion3 ? (byte) 1 : (byte) 0);
@@ -461,12 +476,17 @@ public final class PictureSelectionConfig implements Parcelable {
         this.originalPath = in.readString();
         this.cameraPath = in.readString();
         this.cameraMimeType = in.readInt();
+        this.pageSize = in.readInt();
+        this.isPageStrategy = in.readByte() != 0;
+        this.isFilterInvalidFile = in.readByte() != 0;
+        this.isMaxSelectEnabledMask = in.readByte() != 0;
+        this.animationMode = in.readInt();
         this.isFallbackVersion = in.readByte() != 0;
         this.isFallbackVersion2 = in.readByte() != 0;
         this.isFallbackVersion3 = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<PictureSelectionConfig> CREATOR = new Parcelable.Creator<PictureSelectionConfig>() {
+    public static final Creator<PictureSelectionConfig> CREATOR = new Creator<PictureSelectionConfig>() {
         @Override
         public PictureSelectionConfig createFromParcel(Parcel source) {
             return new PictureSelectionConfig(source);
