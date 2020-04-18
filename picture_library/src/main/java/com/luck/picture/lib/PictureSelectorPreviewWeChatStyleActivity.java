@@ -237,6 +237,10 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                 }
             }
         }
+        int itemCount = mGalleryAdapter.getItemCount();
+        if (itemCount > 5) {
+            mRvGallery.smoothScrollToPosition(itemCount - 1);
+        }
     }
 
     @Override
@@ -324,7 +328,7 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                 boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
                 if (isCompleteReplaceNum && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
                     mPictureSendView.setText(String.format(config.style.pictureCompleteText,
-                            selectData.size(),  config.maxSelectNum));
+                            selectData.size(), config.maxSelectNum));
                 } else {
                     mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
                             ? config.style.pictureUnCompleteText : getString(R.string.picture_send_num, selectData.size(),
