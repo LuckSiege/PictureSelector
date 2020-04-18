@@ -60,4 +60,5 @@
     <string name="picture_photo_pictures">Clic photo</string>
     <string name="picture_photo_recording">Imagerie</string>
     <string name="picture_know">Je sais</string>
+    <string name="picture_data_null">Pas de données…</string>
 </resources>

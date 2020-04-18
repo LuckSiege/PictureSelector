@@ -713,7 +713,7 @@ public class PictureSelectionModel {
      * @param fileSize Filter file size
      * @return
      */
-    public PictureSelectionModel queryMaxFileSize(int fileSize) {
+    public PictureSelectionModel queryMaxFileSize(float fileSize) {
         selectionConfig.filterFileSize = fileSize;
         return this;
     }

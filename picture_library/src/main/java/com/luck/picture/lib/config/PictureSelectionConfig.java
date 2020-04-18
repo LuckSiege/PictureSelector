@@ -65,7 +65,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public int cropWidth;
     public int cropHeight;
     public int compressQuality;
-    public int filterFileSize;
+    public float filterFileSize;
     public int language;
     public boolean isMultipleRecyclerAnimation;
     public boolean isMultipleSkipCrop;
@@ -322,7 +322,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(this.cropWidth);
         dest.writeInt(this.cropHeight);
         dest.writeInt(this.compressQuality);
-        dest.writeInt(this.filterFileSize);
+        dest.writeFloat(this.filterFileSize);
         dest.writeInt(this.language);
         dest.writeByte(this.isMultipleRecyclerAnimation ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isMultipleSkipCrop ? (byte) 1 : (byte) 0);
@@ -422,7 +422,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.cropWidth = in.readInt();
         this.cropHeight = in.readInt();
         this.compressQuality = in.readInt();
-        this.filterFileSize = in.readInt();
+        this.filterFileSize = in.readFloat();
         this.language = in.readInt();
         this.isMultipleRecyclerAnimation = in.readByte() != 0;
         this.isMultipleSkipCrop = in.readByte() != 0;

@@ -59,4 +59,5 @@
     <string name="picture_choose_limit_seconds">只能选择 %1$ds 至 %2$ds内的视频</string>
     <string name="picture_go_setting">去设置</string>
     <string name="picture_know">我知道了</string>
+    <string name="picture_data_null">这里空空如也…</string>
 </resources>

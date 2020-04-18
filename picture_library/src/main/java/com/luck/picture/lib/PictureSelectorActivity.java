@@ -247,6 +247,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                 Log.i("YYY", "第" + mPage + "页请求完成->" + result.size() + ":" + isHasMore);
                                 this.isHasMore = isHasMore;
                                 if (isHasMore) {
+                                    if (mTvEmpty.getVisibility() == View.VISIBLE) {
+                                        mTvEmpty.setVisibility(View.GONE);
+                                    }
                                     int size = result.size();
                                     if (size > 0) {
                                         int positionStart = mAdapter.getSize();
@@ -263,6 +266,17 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                     }
                                 } else {
                                     PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
+                                    boolean isEmpty = mAdapter.isDataEmpty();
+                                    if (isEmpty) {
+                                        mTvEmpty.setVisibility(View.VISIBLE);
+                                        if (bucketId == -1) {
+                                            mTvEmpty.setText(getString(R.string.picture_empty));
+                                        } else {
+                                            mTvEmpty.setText(getString(R.string.picture_data_null));
+                                        }
+                                        mTvEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds
+                                                (0, R.drawable.picture_icon_no_data, 0, 0);
+                                    }
                                 }
                             }
                         });
