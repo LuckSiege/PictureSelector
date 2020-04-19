@@ -1573,6 +1573,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     media.setBucketId(bucketId);
                     // 如果有旋转信息图片宽高则是相反
                     MediaUtils.setOrientationSynchronous(getContext(), media);
+
+                    // 这里主要解决极个别手机拍照会在DCIM目录重复生成一张照片问题
+                    if (!SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasImage(media.getMimeType())) {
+                        int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
+                        if (lastImageId != -1) {
+                            MediaUtils.removeMedia(getContext(), lastImageId);
+                        }
+                    }
                 }
                 return media;
             }
@@ -1621,13 +1629,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 manualSaveFolderForPageModel(media);
             } else {
                 manualSaveFolder(media);
-            }
-            // 这里主要解决极个别手机拍照会在DCIM目录重复生成一张照片问题
-            if (!SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasImage(media.getMimeType())) {
-                int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
-                if (lastImageId != -1) {
-                    MediaUtils.removeMedia(getContext(), lastImageId);
-                }
             }
             mTvEmpty.setVisibility(mAdapter.getSize() > 0 || config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
         }
