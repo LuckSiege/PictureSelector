@@ -745,10 +745,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (folderWindow.isShowing()) {
                 folderWindow.dismiss();
             } else {
-                folderWindow.showAsDropDown(titleViewBg);
-                if (!config.isSingleDirectReturn) {
-                    List<LocalMedia> selectedImages = mAdapter.getSelectedData();
-                    folderWindow.updateFolderCheckStatus(selectedImages);
+                if (!folderWindow.isEmpty()) {
+                    folderWindow.showAsDropDown(titleViewBg);
+                    if (!config.isSingleDirectReturn) {
+                        List<LocalMedia> selectedImages = mAdapter.getSelectedData();
+                        folderWindow.updateFolderCheckStatus(selectedImages);
+                    }
                 }
             }
         }
@@ -1913,19 +1915,35 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             return;
         }
         int count = folderWindow.getFolderData().size();
-        LocalMediaFolder allFolder = count > 0 ? folderWindow.getFolderData().get(0) : null;
+        LocalMediaFolder allFolder = count > 0 ? folderWindow.getFolderData().get(0) : new LocalMediaFolder();
         if (allFolder != null) {
             // 相机胶卷
             allFolder.setFirstImagePath(media.getPath());
             allFolder.setImageNum(allFolder.getImageNum() + 1);
-            // Camera文件夹
-            for (int i = 0; i < count; i++) {
-                LocalMediaFolder cameraFolder = folderWindow.getFolderData().get(i);
-                if (cameraFolder.getName().startsWith("Camera")) {
-                    media.setBucketId(cameraFolder.getBucketId());
-                    cameraFolder.setFirstImagePath(config.cameraPath);
-                    cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
-                    break;
+            // 如果没有相册先创建一个相机胶卷
+            if (count == 0) {
+                allFolder.setName(config.chooseMode == PictureMimeType.ofAudio() ?
+                        getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll));
+                allFolder.setOfAllType(config.chooseMode);
+                allFolder.setCameraFolder(true);
+                folderWindow.getFolderData().add(0, allFolder);
+                // 创建一个Camera相册
+                LocalMediaFolder cameraFolder = new LocalMediaFolder();
+                cameraFolder.setName("Camera");
+                cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
+                cameraFolder.setFirstImagePath(media.getPath());
+                cameraFolder.setBucketId(media.getBucketId());
+                folderWindow.getFolderData().add(folderWindow.getFolderData().size(), cameraFolder);
+            } else {
+                // Camera文件夹
+                for (int i = 0; i < count; i++) {
+                    LocalMediaFolder cameraFolder = folderWindow.getFolderData().get(i);
+                    if (cameraFolder.getName().startsWith("Camera")) {
+                        media.setBucketId(cameraFolder.getBucketId());
+                        cameraFolder.setFirstImagePath(config.cameraPath);
+                        cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
+                        break;
+                    }
                 }
             }
             folderWindow.bindFolder(folderWindow.getFolderData());

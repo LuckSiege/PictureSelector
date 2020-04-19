@@ -114,6 +114,10 @@ public class FolderPopWindow extends PopupWindow {
         return adapter.getFolderData();
     }
 
+    public boolean isEmpty() {
+        return adapter.getFolderData().size() == 0;
+    }
+
     public LocalMediaFolder getFolder(int position) {
         return adapter.getFolderData().size() > 0 ? adapter.getFolderData().get(position) : null;
     }
