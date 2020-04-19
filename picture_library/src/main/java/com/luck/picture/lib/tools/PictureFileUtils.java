@@ -231,7 +231,8 @@ public class PictureFileUtils {
      * @author paulburke
      */
     @SuppressLint("NewApi")
-    public static String getPath(final Context context, final Uri uri) {
+    public static String getPath(final Context ctx, final Uri uri) {
+        Context context = ctx.getApplicationContext();
         final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
 
         // DocumentProvider

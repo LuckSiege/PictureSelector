@@ -166,7 +166,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
                 Intent intent = new Intent();
                 intent.putExtra(PictureConfig.EXTRA_MEDIA_PATH, file.getAbsolutePath());
                 if (config.camera) {
-                    requestCamera(intent);
+                    dispatchHandleCamera(intent);
                 } else {
                     setResult(RESULT_OK, intent);
                     onBackPressed();
@@ -179,7 +179,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
                 Intent intent = new Intent();
                 intent.putExtra(PictureConfig.EXTRA_MEDIA_PATH, file.getAbsolutePath());
                 if (config.camera) {
-                    requestCamera(intent);
+                    dispatchHandleCamera(intent);
                 } else {
                     setResult(RESULT_OK, intent);
                     onBackPressed();

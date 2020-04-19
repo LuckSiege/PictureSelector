@@ -127,7 +127,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     singleCropHandleResult(data);
                     break;
                 case PictureConfig.REQUEST_CAMERA:
-                    requestCamera(data);
+                    dispatchHandleCamera(data);
                     break;
                 default:
                     break;
@@ -219,98 +219,92 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         handlerResult(medias);
     }
 
-
     /**
      * 拍照后处理结果
      *
-     * @param data
+     * @param intent
      */
-
-    protected void requestCamera(Intent data) {
-        // on take photo success
-        String mimeType = null;
-        long duration = 0;
-        boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
-        if (config.chooseMode == PictureMimeType.ofAudio()) {
-            // 音频处理规则
-            config.cameraPath = getAudioPath(data);
-            if (TextUtils.isEmpty(config.cameraPath)) {
-                return;
-            }
-            mimeType = PictureMimeType.MIME_TYPE_AUDIO;
-            duration = MediaUtils.extractDuration(getContext(), isAndroidQ, config.cameraPath);
-        }
-        if (TextUtils.isEmpty(config.cameraPath) || new File(config.cameraPath) == null) {
+    protected void dispatchHandleCamera(Intent intent) {
+        boolean isAudio = config.chooseMode == PictureMimeType.ofAudio();
+        config.cameraPath = isAudio ? getAudioPath(intent) : config.cameraPath;
+        if (TextUtils.isEmpty(config.cameraPath)) {
             return;
         }
-        long size = 0;
-        int[] newSize = new int[2];
-        if (!isAndroidQ) {
+        // 刷新系统相册
+        if (!SdkVersionUtils.checkedAndroid_Q()) {
             if (config.isFallbackVersion3) {
                 new PictureMediaScannerConnection(getContext(), config.cameraPath);
             } else {
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(config.cameraPath))));
             }
         }
+
+        // 创建一个LocalMedia对象
         LocalMedia media = new LocalMedia();
-        if (config.chooseMode != PictureMimeType.ofAudio()) {
-            // 图片视频处理规则
+        String mimeType = isAudio ? PictureMimeType.MIME_TYPE_AUDIO : "";
+        int[] newSize = new int[2];
+        long duration = MediaUtils.extractDuration(getContext(), SdkVersionUtils.checkedAndroid_Q(), config.cameraPath);
+        if (!isAudio) {
+            // 图片和视频的处理逻辑
             if (PictureMimeType.isContent(config.cameraPath)) {
-                String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(config.cameraPath));
-                File file = new File(path);
-                size = file.length();
-                mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
+                // content://类型处理规则
+                String path = PictureFileUtils.getPath(getContext(), Uri.parse(config.cameraPath));
+                if (!TextUtils.isEmpty(path)) {
+                    File cameraFile = new File(path);
+                    mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
+                    media.setSize(cameraFile.length());
+                }
                 if (PictureMimeType.isHasImage(mimeType)) {
-                    newSize = MediaUtils.getImageSizeForUrlToAndroidQ(this, config.cameraPath);
-                } else {
-                    newSize = MediaUtils.getVideoSizeForUri(this, Uri.parse(config.cameraPath));
-                    duration = MediaUtils.extractDuration(getContext(), true, config.cameraPath);
+                    // 图片
+                    newSize = MediaUtils.getImageSizeForUrlToAndroidQ(getContext(), config.cameraPath);
+                } else if (PictureMimeType.isHasVideo(mimeType)) {
+                    // 视频
+                    newSize = MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(config.cameraPath));
                 }
                 int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
                 media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
                 media.setRealPath(path);
                 if (config.isUseCustomCamera) {
                     // 自定义拍照时已经在应用沙盒内生成了文件
-                    if (data != null) {
-                        String mediaPath = data.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH);
-                        media.setAndroidQToPath(mediaPath);
-                    }
+                    String mediaPath = intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH);
+                    media.setAndroidQToPath(mediaPath);
                 }
             } else {
-                final File file = new File(config.cameraPath);
+                // 普通类型处理规则
+                File cameraFile = new File(config.cameraPath);
                 mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
-                size = file.length();
+                media.setSize(cameraFile.length());
                 if (PictureMimeType.isHasImage(mimeType)) {
+                    // 图片
                     int degree = PictureFileUtils.readPictureDegree(this, config.cameraPath);
                     BitmapUtils.rotateImage(degree, config.cameraPath);
                     newSize = MediaUtils.getImageSizeForUrl(config.cameraPath);
-                } else {
+                } else if (PictureMimeType.isHasVideo(mimeType)) {
+                    // 视频
                     newSize = MediaUtils.getVideoSizeForUrl(config.cameraPath);
-                    duration = MediaUtils.extractDuration(getContext(), false, config.cameraPath);
                 }
-
                 // 拍照产生一个临时id
                 media.setId(System.currentTimeMillis());
             }
-        }
-        media.setDuration(duration);
-        media.setWidth(newSize[0]);
-        media.setHeight(newSize[1]);
-        media.setPath(config.cameraPath);
-        media.setMimeType(mimeType);
-        media.setParentFolderName(PictureMimeType.CAMERA);
-        media.setSize(size);
-        media.setChooseModel(config.chooseMode);
-        long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
-        media.setBucketId(bucketId);
-        // 如果有旋转信息图片宽高则是相反
-        MediaUtils.setOrientation(getContext(), media);
-        cameraHandleResult(media, mimeType);
-        // 这里主要解决极个别手机拍照会在DCIM目录重复生成一张照片问题
-        if (!isAndroidQ && PictureMimeType.isHasImage(media.getMimeType())) {
-            int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
-            if (lastImageId != -1) {
-                MediaUtils.removeMedia(getContext(), lastImageId);
+            // 给LocalMedia对象赋值
+            media.setPath(config.cameraPath);
+            media.setDuration(duration);
+            media.setMimeType(mimeType);
+            media.setWidth(newSize[0]);
+            media.setHeight(newSize[1]);
+            media.setParentFolderName(PictureMimeType.CAMERA);
+            media.setChooseModel(config.chooseMode);
+            long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
+            media.setBucketId(bucketId);
+            // 如果有旋转信息图片宽高则是相反
+            MediaUtils.setOrientation(getContext(), media);
+            cameraHandleResult(media, mimeType);
+            // 这里主要解决极个别手机拍照会在DCIM目录重复生成一张照片问题
+            if (!SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasImage(media.getMimeType())) {
+                int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
+                if (lastImageId != -1) {
+                    MediaUtils.removeMedia(getContext(), lastImageId);
+                }
             }
         }
     }
@@ -348,7 +342,8 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE:

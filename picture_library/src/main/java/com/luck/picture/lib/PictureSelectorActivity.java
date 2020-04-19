@@ -1394,7 +1394,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     multiCropHandleResult(data);
                     break;
                 case PictureConfig.REQUEST_CAMERA:
-                    requestCamera(data);
+                    dispatchHandleCamera(data);
                     break;
                 default:
                     break;
@@ -1501,201 +1501,215 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     /**
      * 拍照后处理结果
      *
-     * @param data
+     * @param intent
      */
-
-    private void requestCamera(Intent data) {
-        // on take photo success
-        String mimeType = null;
-        long duration = 0;
-        boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
-        if (config.chooseMode == PictureMimeType.ofAudio()) {
-            // 音频处理规则
-            config.cameraPath = getAudioPath(data);
-            if (TextUtils.isEmpty(config.cameraPath)) {
-                return;
-            }
-            mimeType = PictureMimeType.MIME_TYPE_AUDIO;
-            duration = MediaUtils.extractDuration(getContext(), isAndroidQ, config.cameraPath);
-        }
+    private void dispatchHandleCamera(Intent intent) {
+        boolean isAudio = config.chooseMode == PictureMimeType.ofAudio();
+        config.cameraPath = isAudio ? getAudioPath(intent) : config.cameraPath;
         if (TextUtils.isEmpty(config.cameraPath)) {
             return;
         }
-        long size = 0;
-        int[] newSize = new int[2];
-        if (!isAndroidQ) {
+        // 刷新系统相册
+        if (!SdkVersionUtils.checkedAndroid_Q()) {
             if (config.isFallbackVersion3) {
                 new PictureMediaScannerConnection(getContext(), config.cameraPath);
             } else {
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(config.cameraPath))));
             }
         }
+        // 创建一个LocalMedia对象
         LocalMedia media = new LocalMedia();
-        if (config.chooseMode != PictureMimeType.ofAudio()) {
-            // 图片视频处理规则
+        String mimeType = isAudio ? PictureMimeType.MIME_TYPE_AUDIO : "";
+        int[] newSize = new int[2];
+        long duration = MediaUtils.extractDuration(getContext(), SdkVersionUtils.checkedAndroid_Q(), config.cameraPath);
+        if (!isAudio) {
+            // 图片和视频的处理逻辑
             if (PictureMimeType.isContent(config.cameraPath)) {
-                String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(config.cameraPath));
+                // content://类型处理规则
+                String path = PictureFileUtils.getPath(getContext(), Uri.parse(config.cameraPath));
                 if (!TextUtils.isEmpty(path)) {
-                    File file = new File(path);
-                    size = file.length();
+                    File cameraFile = new File(path);
                     mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
+                    media.setSize(cameraFile.length());
                 }
                 if (PictureMimeType.isHasImage(mimeType)) {
-                    newSize = MediaUtils.getImageSizeForUrlToAndroidQ(this, config.cameraPath);
-                } else {
-                    newSize = MediaUtils.getVideoSizeForUri(this, Uri.parse(config.cameraPath));
-                    duration = MediaUtils.extractDuration(getContext(), true, config.cameraPath);
+                    // 图片
+                    newSize = MediaUtils.getImageSizeForUrlToAndroidQ(getContext(), config.cameraPath);
+                } else if (PictureMimeType.isHasVideo(mimeType)) {
+                    // 视频
+                    newSize = MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(config.cameraPath));
                 }
                 int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
                 media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
                 media.setRealPath(path);
                 if (config.isUseCustomCamera) {
                     // 自定义拍照时已经在应用沙盒内生成了文件
-                    if (data != null) {
-                        String mediaPath = data.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH);
-                        media.setAndroidQToPath(mediaPath);
-                    }
+                    String mediaPath = intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH);
+                    media.setAndroidQToPath(mediaPath);
                 }
             } else {
-                File file = new File(config.cameraPath);
+                // 普通类型处理规则
+                File cameraFile = new File(config.cameraPath);
                 mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
-                size = file.length();
+                media.setSize(cameraFile.length());
                 if (PictureMimeType.isHasImage(mimeType)) {
+                    // 图片
                     int degree = PictureFileUtils.readPictureDegree(this, config.cameraPath);
                     BitmapUtils.rotateImage(degree, config.cameraPath);
                     newSize = MediaUtils.getImageSizeForUrl(config.cameraPath);
-                } else {
+                } else if (PictureMimeType.isHasVideo(mimeType)) {
+                    // 视频
                     newSize = MediaUtils.getVideoSizeForUrl(config.cameraPath);
-                    duration = MediaUtils.extractDuration(getContext(), false, config.cameraPath);
                 }
                 // 拍照产生一个临时id
                 media.setId(System.currentTimeMillis());
             }
-        }
-        media.setPath(config.cameraPath);
-        media.setDuration(duration);
-        media.setMimeType(mimeType);
-        media.setWidth(newSize[0]);
-        media.setHeight(newSize[1]);
-        media.setSize(size);
-        media.setParentFolderName(PictureMimeType.CAMERA);
-        media.setChooseModel(config.chooseMode);
-        long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
-        media.setBucketId(bucketId);
-        // 如果有旋转信息图片宽高则是相反
-        MediaUtils.setOrientation(getContext(), media);
-        if (mAdapter != null) {
-            mAdapter.getData().add(0, media);
-            if (checkVideoLegitimacy(media)) {
-                if (config.selectionMode == PictureConfig.SINGLE) {
-                    // 单选模式下直接返回模式
-                    if (config.isSingleDirectReturn) {
-                        List<LocalMedia> selectedImages = mAdapter.getSelectedData();
-                        selectedImages.add(media);
-                        mAdapter.bindSelectData(selectedImages);
-                        singleDirectReturnCameraHandleResult(mimeType);
+            // 给LocalMedia对象赋值
+            media.setPath(config.cameraPath);
+            media.setDuration(duration);
+            media.setMimeType(mimeType);
+            media.setWidth(newSize[0]);
+            media.setHeight(newSize[1]);
+            media.setParentFolderName(PictureMimeType.CAMERA);
+            media.setChooseModel(config.chooseMode);
+            long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
+            media.setBucketId(bucketId);
+            // 如果有旋转信息图片宽高则是相反
+            MediaUtils.setOrientation(getContext(), media);
+            // 给Adapter填充数据
+            if (mAdapter != null) {
+                mAdapter.getData().add(0, media);
+                if (checkVideoLegitimacy(media)) {
+                    if (config.selectionMode == PictureConfig.SINGLE) {
+                        // 单选
+                        dispatchHandleSingle(media);
                     } else {
-                        List<LocalMedia> selectedData = mAdapter.getSelectedData();
-                        mimeType = selectedData.size() > 0 ? selectedData.get(0).getMimeType() : "";
-                        boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
-                        // 类型相同或还没有选中才加进选中集合中
-                        if (mimeTypeSame || selectedData.size() == 0) {
-                            // 如果是单选，则清空已选中的并刷新列表(作单一选择)
-                            singleRadioMediaImage();
-                            selectedData.add(media);
+                        // 多选模式
+                        dispatchHandleMultiple(media);
+                    }
+                }
+                // 刷新Adapter
+                mAdapter.notifyItemInserted(config.isCamera ? 1 : 0);
+                mAdapter.notifyItemRangeChanged(config.isCamera ? 1 : 0, mAdapter.getSize());
+                // 解决部分手机拍照完Intent.ACTION_MEDIA_SCANNER_SCAN_FILE，不及时刷新问题手动添加
+                if (config.isPageStrategy) {
+                    manualSaveFolderForPageModel(media);
+                } else {
+                    manualSaveFolder(media);
+                }
+                // 这里主要解决极个别手机拍照会在DCIM目录重复生成一张照片问题
+                if (!SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasImage(media.getMimeType())) {
+                    int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
+                    if (lastImageId != -1) {
+                        MediaUtils.removeMedia(getContext(), lastImageId);
+                    }
+                }
+                mTvEmpty.setVisibility(mAdapter.getSize() > 0 || config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
+            }
+        }
+    }
+
+    /**
+     * 拍照多选处理规则
+     *
+     * @param media
+     */
+    private void dispatchHandleMultiple(LocalMedia media) {
+        List<LocalMedia> selectedData = mAdapter.getSelectedData();
+        int count = selectedData.size();
+        String oldMimeType = count > 0 ? selectedData.get(0).getMimeType() : "";
+        boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(oldMimeType, media.getMimeType());
+        if (config.isWithVideoImage) {
+            // 混选模式
+            int videoSize = 0;
+            for (int i = 0; i < count; i++) {
+                LocalMedia item = selectedData.get(i);
+                if (PictureMimeType.isHasVideo(item.getMimeType())) {
+                    videoSize++;
+                }
+            }
+            if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                // 视频还可选
+                if (config.maxVideoSelectNum <= 0) {
+                    // 如果视频可选数量是0
+                    showPromptDialog(getString(R.string.picture_rule));
+                } else {
+                    if (selectedData.size() >= config.maxSelectNum) {
+                        showPromptDialog(getString(R.string.picture_message_max_num, config.maxSelectNum));
+                    } else {
+                        if (videoSize < config.maxVideoSelectNum) {
+                            selectedData.add(0, media);
+                            mAdapter.bindSelectData(selectedData);
+                        } else {
+                            showPromptDialog(StringUtils.getMsg(getContext(), media.getMimeType(),
+                                    config.maxVideoSelectNum));
+                        }
+                    }
+                }
+            } else {
+                // 图片还可选
+                if (selectedData.size() < config.maxSelectNum) {
+                    selectedData.add(0, media);
+                    mAdapter.bindSelectData(selectedData);
+                } else {
+                    showPromptDialog(StringUtils.getMsg(getContext(), media.getMimeType(),
+                            config.maxSelectNum));
+                }
+            }
+
+        } else {
+            if (PictureMimeType.isHasVideo(oldMimeType) && config.maxVideoSelectNum > 0) {
+                // 类型相同或还没有选中才加进选中集合中
+                if (count < config.maxVideoSelectNum) {
+                    if (mimeTypeSame || count == 0) {
+                        if (selectedData.size() < config.maxVideoSelectNum) {
+                            selectedData.add(0, media);
                             mAdapter.bindSelectData(selectedData);
                         }
                     }
                 } else {
-                    // 多选模式
-                    List<LocalMedia> selectedData = mAdapter.getSelectedData();
-                    int count = selectedData.size();
-                    mimeType = count > 0 ? selectedData.get(0).getMimeType() : "";
-                    boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
-                    if (config.isWithVideoImage) {
-                        // 混选模式
-                        int videoSize = 0;
-                        for (int i = 0; i < count; i++) {
-                            LocalMedia m = selectedData.get(i);
-                            if (PictureMimeType.isHasVideo(m.getMimeType())) {
-                                videoSize++;
-                            }
-                        }
-                        if (PictureMimeType.isHasVideo(media.getMimeType())) {
-                            // 视频还可选
-                            if (config.maxVideoSelectNum <= 0) {
-                                // 如果视频可选数量是0
-                                showPromptDialog(getString(R.string.picture_rule));
-                            } else {
-                                if (selectedData.size() >= config.maxSelectNum) {
-                                    showPromptDialog(getString(R.string.picture_message_max_num, config.maxSelectNum));
-                                } else {
-                                    if (videoSize < config.maxVideoSelectNum) {
-                                        selectedData.add(0, media);
-                                        mAdapter.bindSelectData(selectedData);
-                                    } else {
-                                        showPromptDialog(StringUtils.getMsg(getContext(), media.getMimeType(),
-                                                config.maxVideoSelectNum));
-                                    }
-                                }
-                            }
-                        } else {
-                            // 图片还可选
-                            if (selectedData.size() < config.maxSelectNum) {
-                                selectedData.add(0, media);
-                                mAdapter.bindSelectData(selectedData);
-                            } else {
-                                showPromptDialog(StringUtils.getMsg(getContext(), media.getMimeType(),
-                                        config.maxSelectNum));
-                            }
-                        }
-
-                    } else {
-                        if (PictureMimeType.isHasVideo(mimeType) && config.maxVideoSelectNum > 0) {
-                            // 类型相同或还没有选中才加进选中集合中
-                            if (count < config.maxVideoSelectNum) {
-                                if (mimeTypeSame || count == 0) {
-                                    if (selectedData.size() < config.maxVideoSelectNum) {
-                                        selectedData.add(0, media);
-                                        mAdapter.bindSelectData(selectedData);
-                                    }
-                                }
-                            } else {
-                                showPromptDialog(StringUtils.getMsg(getContext(), mimeType,
-                                        config.maxVideoSelectNum));
-                            }
-                        } else {
-                            // 没有到最大选择量 才做默认选中刚拍好的
-                            if (count < config.maxSelectNum) {
-                                // 类型相同或还没有选中才加进选中集合中
-                                if (mimeTypeSame || count == 0) {
-                                    selectedData.add(0, media);
-                                    mAdapter.bindSelectData(selectedData);
-                                }
-                            } else {
-                                showPromptDialog(StringUtils.getMsg(getContext(), mimeType,
-                                        config.maxSelectNum));
-                            }
-                        }
-                    }
+                    showPromptDialog(StringUtils.getMsg(getContext(), oldMimeType,
+                            config.maxVideoSelectNum));
                 }
-            }
-            mAdapter.notifyItemInserted(config.isCamera ? 1 : 0);
-            mAdapter.notifyItemRangeChanged(config.isCamera ? 1 : 0, mAdapter.getSize());
-            // 解决部分手机拍照完Intent.ACTION_MEDIA_SCANNER_SCAN_FILE，不及时刷新问题手动添加
-            if (config.isPageStrategy) {
-                manualSaveFolderForPageModel(media);
             } else {
-                manualSaveFolder(media);
-            }
-            // 这里主要解决极个别手机拍照会在DCIM目录重复生成一张照片问题
-            if (!isAndroidQ && PictureMimeType.isHasImage(media.getMimeType())) {
-                int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
-                if (lastImageId != -1) {
-                    MediaUtils.removeMedia(getContext(), lastImageId);
+                // 没有到最大选择量 才做默认选中刚拍好的
+                if (count < config.maxSelectNum) {
+                    // 类型相同或还没有选中才加进选中集合中
+                    if (mimeTypeSame || count == 0) {
+                        selectedData.add(0, media);
+                        mAdapter.bindSelectData(selectedData);
+                    }
+                } else {
+                    showPromptDialog(StringUtils.getMsg(getContext(), oldMimeType,
+                            config.maxSelectNum));
                 }
             }
-            mTvEmpty.setVisibility(mAdapter.getSize() > 0 || config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    /**
+     * 拍照单选处理规则
+     *
+     * @param media
+     */
+    private void dispatchHandleSingle(LocalMedia media) {
+        // 单选模式下直接返回模式
+        if (config.isSingleDirectReturn) {
+            List<LocalMedia> selectedData = mAdapter.getSelectedData();
+            selectedData.add(media);
+            mAdapter.bindSelectData(selectedData);
+            singleDirectReturnCameraHandleResult(media.getMimeType());
+        } else {
+            List<LocalMedia> selectedData = mAdapter.getSelectedData();
+            String mimeType = selectedData.size() > 0 ? selectedData.get(0).getMimeType() : "";
+            boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
+            // 类型相同或还没有选中才加进选中集合中
+            if (mimeTypeSame || selectedData.size() == 0) {
+                // 如果是单选，则清空已选中的并刷新列表(作单一选择)
+                singleRadioMediaImage();
+                selectedData.add(media);
+                mAdapter.bindSelectData(selectedData);
+            }
         }
     }
 
