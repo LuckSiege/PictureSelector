@@ -1531,7 +1531,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
         }
         LocalMedia media = new LocalMedia();
-        media.setPath(config.cameraPath);
         if (config.chooseMode != PictureMimeType.ofAudio()) {
             // 图片视频处理规则
             if (PictureMimeType.isContent(config.cameraPath)) {
@@ -1573,6 +1572,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 media.setId(System.currentTimeMillis());
             }
         }
+        media.setPath(config.cameraPath);
         media.setDuration(duration);
         media.setMimeType(mimeType);
         media.setWidth(newSize[0]);
@@ -1909,6 +1909,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll));
                 allFolder.setOfAllType(config.chooseMode);
                 allFolder.setCameraFolder(true);
+                allFolder.setChecked(true);
+                allFolder.setBucketId(-1);
                 folderWindow.getFolderData().add(0, allFolder);
                 // 创建一个Camera相册
                 LocalMediaFolder cameraFolder = new LocalMediaFolder();
@@ -1940,23 +1942,34 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     private void manualSaveFolder(LocalMedia media) {
         try {
-            createNewFolder(folderWindow.getFolderData());
-            LocalMediaFolder folder = getImageFolder(media.getPath(), folderWindow.getFolderData());
-            LocalMediaFolder cameraFolder = folderWindow.getFolderData().size() > 0 ? folderWindow.getFolderData().get(0) : null;
-            if (cameraFolder != null && folder != null) {
+            boolean isEmpty = folderWindow.isEmpty();
+            LocalMediaFolder allFolder;
+            if (isEmpty) {
                 // 相机胶卷
-                media.setParentFolderName(folder.getName());
-                cameraFolder.setFirstImagePath(media.getPath());
-                cameraFolder.setData(mAdapter.getData());
-                cameraFolder.setBucketId(media.getBucketId());
-                cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
-                // 拍照相册
-                int num = folder.getImageNum() + 1;
-                folder.setImageNum(num);
-                folder.getData().add(0, media);
-                folder.setFirstImagePath(config.cameraPath);
-                folderWindow.bindFolder(folderWindow.getFolderData());
+                createNewFolder(folderWindow.getFolderData());
+                allFolder = folderWindow.getFolderData().size() > 0 ? folderWindow.getFolderData().get(0) : null;
+                if (allFolder == null) {
+                    allFolder = new LocalMediaFolder();
+                    folderWindow.getFolderData().add(0, allFolder);
+                }
+            } else {
+                // 相机胶卷
+                allFolder = folderWindow.getFolderData().get(0);
             }
+            allFolder.setFirstImagePath(media.getPath());
+            allFolder.setData(mAdapter.getData());
+            allFolder.setBucketId(-1);
+            allFolder.setImageNum(allFolder.getImageNum() + 1);
+
+            // Camera
+            LocalMediaFolder cameraFolder = getImageFolder(media.getPath(), folderWindow.getFolderData());
+            if (cameraFolder != null) {
+                cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
+                cameraFolder.getData().add(0, media);
+                cameraFolder.setBucketId(media.getBucketId());
+                cameraFolder.setFirstImagePath(config.cameraPath);
+            }
+            folderWindow.bindFolder(folderWindow.getFolderData());
         } catch (Exception e) {
             e.printStackTrace();
         }

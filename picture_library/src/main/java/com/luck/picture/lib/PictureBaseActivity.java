@@ -696,6 +696,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                     getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll);
             newFolder.setName(folderName);
             newFolder.setFirstImagePath("");
+            newFolder.setCameraFolder(true);
+            newFolder.setBucketId(-1);
+            newFolder.setChecked(true);
             folders.add(newFolder);
         }
     }
