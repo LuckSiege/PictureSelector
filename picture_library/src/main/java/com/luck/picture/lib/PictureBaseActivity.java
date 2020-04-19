@@ -48,6 +48,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -1046,5 +1047,23 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             });
             dialog.show();
         }
+    }
+
+
+    /**
+     * 文件夹数量进行排序
+     *
+     * @param imageFolders
+     */
+    protected void sortFolder(List<LocalMediaFolder> imageFolders) {
+        // 文件夹按图片数量排序
+        Collections.sort(imageFolders, (lhs, rhs) -> {
+            if (lhs.getData() == null || rhs.getData() == null) {
+                return 0;
+            }
+            int lSize = lhs.getImageNum();
+            int rSize = rhs.getImageNum();
+            return Integer.compare(rSize, lSize);
+        });
     }
 }

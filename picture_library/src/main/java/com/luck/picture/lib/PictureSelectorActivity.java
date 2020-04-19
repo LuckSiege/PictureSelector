@@ -1921,14 +1921,26 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 folderWindow.getFolderData().add(folderWindow.getFolderData().size(), cameraFolder);
             } else {
                 // Camera文件夹
+                boolean isCamera = false;
                 for (int i = 0; i < count; i++) {
                     LocalMediaFolder cameraFolder = folderWindow.getFolderData().get(i);
                     if (cameraFolder.getName().startsWith(PictureMimeType.CAMERA)) {
                         media.setBucketId(cameraFolder.getBucketId());
                         cameraFolder.setFirstImagePath(config.cameraPath);
                         cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
+                        isCamera = true;
                         break;
                     }
+                }
+                if (!isCamera) {
+                    // 本地没有Camera文件件手动创一个
+                    LocalMediaFolder cameraFolder = new LocalMediaFolder();
+                    cameraFolder.setName(media.getParentFolderName());
+                    cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
+                    cameraFolder.setFirstImagePath(media.getPath());
+                    cameraFolder.setBucketId(media.getBucketId());
+                    folderWindow.getFolderData().add(cameraFolder);
+                    sortFolder(folderWindow.getFolderData());
                 }
             }
             folderWindow.bindFolder(folderWindow.getFolderData());

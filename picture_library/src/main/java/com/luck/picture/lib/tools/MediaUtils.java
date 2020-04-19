@@ -350,7 +350,7 @@ public class MediaUtils {
             data = context.getApplicationContext().getContentResolver().query(MediaStore.Files.getContentUri("external"), null,
                     selection, selectionArgs, ORDER_BY);
             if (data != null && data.getCount() > 0 && data.moveToFirst()) {
-                return data.getLong(data.getColumnIndex(MediaStore.Files.FileColumns.BUCKET_ID));
+                return data.getLong(data.getColumnIndex("bucket_id"));
             }
         } catch (Exception e) {
             e.printStackTrace();
