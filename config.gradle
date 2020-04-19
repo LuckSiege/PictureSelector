@@ -16,7 +16,6 @@ ext {
 
 
             camerax_version               : "1.0.0-alpha10",
-            camerax_view_version          : "1.0.0-alpha05",
             camera_core_version           : "1.0.0-beta01",
             futures_version               : "1.0.0",
 
