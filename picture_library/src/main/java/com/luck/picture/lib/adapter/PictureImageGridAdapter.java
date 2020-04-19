@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -548,8 +547,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 image.setHeight(height);
             }
 
-            // 如果有旋转信息图片宽高则是相反
-            MediaUtils.setOrientationAsynchronous(context, image);
             selectData.add(image);
             image.setNum(selectData.size());
             VoiceUtils.getInstance().play();
