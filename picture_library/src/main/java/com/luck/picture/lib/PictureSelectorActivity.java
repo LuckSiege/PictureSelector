@@ -247,9 +247,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                 Log.i("YYY", "第" + mPage + "页请求完成->" + result.size() + ":" + isHasMore);
                                 this.isHasMore = isHasMore;
                                 if (isHasMore) {
-                                    if (mTvEmpty.getVisibility() == View.VISIBLE) {
-                                        mTvEmpty.setVisibility(View.GONE);
-                                    }
+                                    hideDataNull();
                                     int size = result.size();
                                     if (size > 0) {
                                         int positionStart = mAdapter.getSize();
@@ -267,14 +265,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                 } else {
                                     boolean isEmpty = mAdapter.isDataEmpty();
                                     if (isEmpty) {
-                                        mTvEmpty.setVisibility(View.VISIBLE);
-                                        if (bucketId == -1) {
-                                            mTvEmpty.setText(getString(R.string.picture_empty));
-                                        } else {
-                                            mTvEmpty.setText(getString(R.string.picture_data_null));
-                                        }
-                                        mTvEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds
-                                                (0, R.drawable.picture_icon_no_data, 0, 0);
+                                        showDataNull(bucketId == -1 ? getString(R.string.picture_empty) : getString(R.string.picture_data_null), R.drawable.picture_icon_no_data);
                                     }
                                 }
                             }
@@ -540,22 +531,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                 }
                                 boolean isEmpty = mAdapter.isDataEmpty();
                                 if (isEmpty) {
-                                    mTvEmpty.setVisibility(View.VISIBLE);
-                                    mTvEmpty.setText(getString(R.string.picture_empty));
-                                    mTvEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds
-                                            (0, R.drawable.picture_icon_no_data, 0, 0);
+                                    showDataNull(getString(R.string.picture_empty), R.drawable.picture_icon_no_data);
                                 } else {
-                                    mTvEmpty.setVisibility(View.GONE);
+                                    hideDataNull();
                                 }
 
                             }
                         }
                     });
         } else {
-            mTvEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds
-                    (0, R.drawable.picture_icon_data_error, 0, 0);
-            mTvEmpty.setText(getString(R.string.picture_data_exception));
-            mTvEmpty.setVisibility(View.VISIBLE);
+            showDataNull(getString(R.string.picture_data_exception), R.drawable.picture_icon_data_error);
             dismissDialog();
         }
     }
@@ -645,20 +630,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     }
                     boolean isEmpty = mAdapter.isDataEmpty();
                     if (isEmpty) {
-                        mTvEmpty.setVisibility(View.VISIBLE);
-                        mTvEmpty.setText(getString(R.string.picture_empty));
-                        mTvEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds
-                                (0, R.drawable.picture_icon_no_data, 0, 0);
+                        showDataNull(getString(R.string.picture_empty), R.drawable.picture_icon_no_data);
                     } else {
-                        mTvEmpty.setVisibility(View.GONE);
+                        hideDataNull();
                     }
                 }
+            } else {
+                showDataNull(getString(R.string.picture_empty), R.drawable.picture_icon_no_data);
             }
         } else {
-            mTvEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds
-                    (0, R.drawable.picture_icon_data_error, 0, 0);
-            mTvEmpty.setText(getString(R.string.picture_data_exception));
-            mTvEmpty.setVisibility(View.VISIBLE);
+            showDataNull(getString(R.string.picture_data_exception), R.drawable.picture_icon_data_error);
         }
         dismissDialog();
     }
@@ -1599,6 +1580,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         media.setSize(size);
         media.setParentFolderName(PictureMimeType.CAMERA);
         media.setChooseModel(config.chooseMode);
+        long bucketId = MediaUtils.getCameraFirstBucketId(getContext(), media.getMimeType());
+        media.setBucketId(bucketId);
         // 如果有旋转信息图片宽高则是相反
         MediaUtils.setOrientation(getContext(), media);
         if (mAdapter != null) {
@@ -1707,7 +1690,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
             // 这里主要解决极个别手机拍照会在DCIM目录重复生成一张照片问题
             if (!isAndroidQ && PictureMimeType.isHasImage(media.getMimeType())) {
-                int lastImageId = MediaUtils.getLastImageId(getContext(), media.getMimeType());
+                int lastImageId = MediaUtils.getDCIMLastImageId(getContext(), media.getMimeType());
                 if (lastImageId != -1) {
                     MediaUtils.removeMedia(getContext(), lastImageId);
                 }
@@ -1929,7 +1912,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 folderWindow.getFolderData().add(0, allFolder);
                 // 创建一个Camera相册
                 LocalMediaFolder cameraFolder = new LocalMediaFolder();
-                cameraFolder.setName(PictureMimeType.CAMERA);
+                cameraFolder.setName(media.getParentFolderName());
                 cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
                 cameraFolder.setFirstImagePath(media.getPath());
                 cameraFolder.setBucketId(media.getBucketId());
@@ -1965,6 +1948,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 media.setParentFolderName(folder.getName());
                 cameraFolder.setFirstImagePath(media.getPath());
                 cameraFolder.setData(mAdapter.getData());
+                cameraFolder.setBucketId(media.getBucketId());
                 cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
                 // 拍照相册
                 int num = folder.getImageNum() + 1;
@@ -2129,5 +2113,28 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             isEnterSetting = true;
         });
         dialog.show();
+    }
+
+
+    /**
+     * 显示空态
+     *
+     * @param msg
+     */
+    private void showDataNull(String msg, int topErrorResId) {
+        if (mTvEmpty.getVisibility() == View.GONE || mTvEmpty.getVisibility() == View.INVISIBLE) {
+            mTvEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds(0, topErrorResId, 0, 0);
+            mTvEmpty.setText(msg);
+            mTvEmpty.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * 隐藏空态
+     */
+    private void hideDataNull() {
+        if (mTvEmpty.getVisibility() == View.VISIBLE) {
+            mTvEmpty.setVisibility(View.GONE);
+        }
     }
 }

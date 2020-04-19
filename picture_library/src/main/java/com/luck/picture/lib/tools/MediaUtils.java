@@ -302,7 +302,7 @@ public class MediaUtils {
      * @param mimeType
      * @return
      */
-    public static int getLastImageId(Context context, String mimeType) {
+    public static int getDCIMLastImageId(Context context, String mimeType) {
         Cursor data = null;
         try {
             //selection: 指定查询条件
@@ -330,6 +330,36 @@ public class MediaUtils {
                 data.close();
             }
         }
+    }
+
+    /**
+     * 获取Camera文件下最新一条拍照记录
+     *
+     * @param mimeType
+     * @return
+     */
+    public static long getCameraFirstBucketId(Context context, String mimeType) {
+        Cursor data = null;
+        try {
+            String absolutePath = PictureFileUtils.getDCIMCameraPath(context, mimeType);
+            //selection: 指定查询条件
+            String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
+            String selection = MediaStore.Files.FileColumns.DATA + " like ?";
+            //定义selectionArgs：
+            String[] selectionArgs = {absolutePath + "%"};
+            data = context.getApplicationContext().getContentResolver().query(MediaStore.Files.getContentUri("external"), null,
+                    selection, selectionArgs, ORDER_BY);
+            if (data != null && data.getCount() > 0 && data.moveToFirst()) {
+                return data.getLong(data.getColumnIndex(MediaStore.Files.FileColumns.BUCKET_ID));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (data != null) {
+                data.close();
+            }
+        }
+        return -1;
     }
 
 
