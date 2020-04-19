@@ -306,7 +306,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         cameraHandleResult(media, mimeType);
         // 这里主要解决极个别手机拍照会在DCIM目录重复生成一张照片问题
         if (!isAndroidQ && PictureMimeType.isHasImage(media.getMimeType())) {
-            int lastImageId = MediaUtils.getDCIMLastImageId(getContext(), media.getMimeType());
+            int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
             if (lastImageId != -1) {
                 MediaUtils.removeMedia(getContext(), lastImageId);
             }

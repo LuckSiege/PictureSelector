@@ -299,14 +299,13 @@ public class MediaUtils {
     /**
      * 获取DCIM文件下最新一条拍照记录
      *
-     * @param mimeType
      * @return
      */
-    public static int getDCIMLastImageId(Context context, String mimeType) {
+    public static int getDCIMLastImageId(Context context) {
         Cursor data = null;
         try {
             //selection: 指定查询条件
-            String absolutePath = PictureFileUtils.getDCIMCameraPath(context, mimeType);
+            String absolutePath = PictureFileUtils.getDCIMCameraPath();
             String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
             String selection = MediaStore.Images.Media.DATA + " like ?";
             //定义selectionArgs：
@@ -335,13 +334,12 @@ public class MediaUtils {
     /**
      * 获取Camera文件下最新一条拍照记录
      *
-     * @param mimeType
      * @return
      */
-    public static long getCameraFirstBucketId(Context context, String mimeType) {
+    public static long getCameraFirstBucketId(Context context) {
         Cursor data = null;
         try {
-            String absolutePath = PictureFileUtils.getDCIMCameraPath(context, mimeType);
+            String absolutePath = PictureFileUtils.getDCIMCameraPath();
             //selection: 指定查询条件
             String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
             String selection = MediaStore.Files.FileColumns.DATA + " like ?";

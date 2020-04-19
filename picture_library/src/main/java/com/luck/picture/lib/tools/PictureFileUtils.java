@@ -436,22 +436,16 @@ public class PictureFileUtils {
         return degree;
     }
 
-    @Nullable
-    public static String getDCIMCameraPath(Context ctx, String mimeType) {
+    /**
+     * getDCIMCameraPath
+     *
+     * @return
+     */
+    public static String getDCIMCameraPath() {
         String absolutePath;
         try {
-            if (SdkVersionUtils.checkedAndroid_Q()) {
-                if (PictureMimeType.isHasVideo(mimeType)) {
-                    absolutePath = "%" + ctx.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
-                } else if (PictureMimeType.isHasAudio(mimeType)) {
-                    absolutePath = "%" + ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-                } else {
-                    absolutePath = "%" + ctx.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-                }
-            } else {
-                absolutePath = "%" + Environment.getExternalStoragePublicDirectory
-                        (Environment.DIRECTORY_DCIM).getAbsolutePath() + "/Camera";
-            }
+            absolutePath = "%" + Environment.getExternalStoragePublicDirectory
+                    (Environment.DIRECTORY_DCIM).getAbsolutePath() + "/Camera";
         } catch (Exception e) {
             e.printStackTrace();
             return "";

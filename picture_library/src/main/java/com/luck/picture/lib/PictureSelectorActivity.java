@@ -1580,7 +1580,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         media.setSize(size);
         media.setParentFolderName(PictureMimeType.CAMERA);
         media.setChooseModel(config.chooseMode);
-        long bucketId = MediaUtils.getCameraFirstBucketId(getContext(), media.getMimeType());
+        long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
         media.setBucketId(bucketId);
         // 如果有旋转信息图片宽高则是相反
         MediaUtils.setOrientation(getContext(), media);
@@ -1690,7 +1690,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
             // 这里主要解决极个别手机拍照会在DCIM目录重复生成一张照片问题
             if (!isAndroidQ && PictureMimeType.isHasImage(media.getMimeType())) {
-                int lastImageId = MediaUtils.getDCIMLastImageId(getContext(), media.getMimeType());
+                int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
                 if (lastImageId != -1) {
                     MediaUtils.removeMedia(getContext(), lastImageId);
                 }
