@@ -88,7 +88,7 @@ public class PictureFileUtils {
                 if (!rootDir.exists()) {
                     rootDir.mkdirs();
                 }
-                folderDir = new File(rootDir.getAbsolutePath() + File.separator + "Camera" + File.separator);
+                folderDir = new File(rootDir.getAbsolutePath() + File.separator + PictureMimeType.CAMERA + File.separator);
                 if (!folderDir.exists() && folderDir.mkdirs()) {
                 }
             }

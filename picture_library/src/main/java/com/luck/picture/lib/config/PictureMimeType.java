@@ -310,6 +310,9 @@ public final class PictureMimeType {
     public final static String MP4 = ".mp4";
 
     public final static String DCIM = "DCIM/Camera";
+
+    public final static String CAMERA = "Camera";
+
     public final static String MIME_TYPE_IMAGE = "image/jpeg";
     public final static String MIME_TYPE_VIDEO = "video/mp4";
     public final static String MIME_TYPE_AUDIO = "audio/mpeg";

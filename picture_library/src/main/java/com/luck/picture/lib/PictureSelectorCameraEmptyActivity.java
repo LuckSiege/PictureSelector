@@ -298,7 +298,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         media.setHeight(newSize[1]);
         media.setPath(config.cameraPath);
         media.setMimeType(mimeType);
-        media.setParentFolderName("Camera");
+        media.setParentFolderName(PictureMimeType.CAMERA);
         media.setSize(size);
         media.setChooseModel(config.chooseMode);
         // 如果有旋转信息图片宽高则是相反

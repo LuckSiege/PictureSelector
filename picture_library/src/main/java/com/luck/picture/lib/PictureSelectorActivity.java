@@ -1597,7 +1597,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         media.setWidth(newSize[0]);
         media.setHeight(newSize[1]);
         media.setSize(size);
-        media.setParentFolderName("Camera");
+        media.setParentFolderName(PictureMimeType.CAMERA);
         media.setChooseModel(config.chooseMode);
         // 如果有旋转信息图片宽高则是相反
         MediaUtils.setOrientation(getContext(), media);
@@ -1929,7 +1929,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 folderWindow.getFolderData().add(0, allFolder);
                 // 创建一个Camera相册
                 LocalMediaFolder cameraFolder = new LocalMediaFolder();
-                cameraFolder.setName("Camera");
+                cameraFolder.setName(PictureMimeType.CAMERA);
                 cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
                 cameraFolder.setFirstImagePath(media.getPath());
                 cameraFolder.setBucketId(media.getBucketId());
@@ -1938,7 +1938,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 // Camera文件夹
                 for (int i = 0; i < count; i++) {
                     LocalMediaFolder cameraFolder = folderWindow.getFolderData().get(i);
-                    if (cameraFolder.getName().startsWith("Camera")) {
+                    if (cameraFolder.getName().startsWith(PictureMimeType.CAMERA)) {
                         media.setBucketId(cameraFolder.getBucketId());
                         cameraFolder.setFirstImagePath(config.cameraPath);
                         cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);

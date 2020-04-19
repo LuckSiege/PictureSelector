@@ -451,7 +451,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         if (rootDir != null && !rootDir.exists() && rootDir.mkdirs()) {
         }
         File folderDir = new File(isAndroidQ || !state.equals(Environment.MEDIA_MOUNTED)
-                ? rootDir.getAbsolutePath() : rootDir.getAbsolutePath() + File.separator + "Camera" + File.separator);
+                ? rootDir.getAbsolutePath() : rootDir.getAbsolutePath() + File.separator + PictureMimeType.CAMERA + File.separator);
         if (folderDir != null && !folderDir.exists() && folderDir.mkdirs()) {
         }
         String fileName = DateUtils.getCreateFileName("IMG_") + suffix;
@@ -567,7 +567,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                         rootDir.mkdirs();
                     }
                     File folderDir = new File(!state.equals(Environment.MEDIA_MOUNTED)
-                            ? rootDir.getAbsolutePath() : rootDir.getAbsolutePath() + File.separator + "Camera" + File.separator);
+                            ? rootDir.getAbsolutePath() : rootDir.getAbsolutePath() + File.separator + PictureMimeType.CAMERA + File.separator);
                     if (!folderDir.exists() && folderDir.mkdirs()) {
                     }
                     String fileName = DateUtils.getCreateFileName("IMG_") + suffix;
