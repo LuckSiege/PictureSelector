@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -25,7 +24,6 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnQueryDataResultListener;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
-import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
@@ -707,7 +705,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 }
 
                 // 如果有旋转信息图片宽高则是相反
-                MediaUtils.setOrientation(getContext(), image);
+                MediaUtils.setOrientationAsynchronous(getContext(), image);
                 selectData.add(image);
                 onSelectedChange(true, image);
                 image.setNum(selectData.size());

@@ -261,7 +261,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                         image.setRealPath(newPath);
                     }
                     // 如果有旋转信息图片宽高则是相反
-                    MediaUtils.setOrientation(context, image);
+                    MediaUtils.setOrientationAsynchronous(context, image);
                     changeCheckboxState(contentHolder, image);
                 });
             }
@@ -286,7 +286,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     image.setRealPath(newPath);
                 }
                 // 如果有旋转信息图片宽高则是相反
-                MediaUtils.setOrientation(context, image);
+                MediaUtils.setOrientationAsynchronous(context, image);
                 boolean eqResult =
                         PictureMimeType.isHasImage(mimeType) && config.enablePreview
                                 || PictureMimeType.isHasVideo(mimeType) && (config.enPreviewVideo
@@ -549,7 +549,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
 
             // 如果有旋转信息图片宽高则是相反
-            MediaUtils.setOrientation(context, image);
+            MediaUtils.setOrientationAsynchronous(context, image);
             selectData.add(image);
             image.setNum(selectData.size());
             VoiceUtils.getInstance().play();

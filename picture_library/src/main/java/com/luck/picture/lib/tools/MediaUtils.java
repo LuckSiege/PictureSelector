@@ -477,7 +477,7 @@ public class MediaUtils {
      * @param media
      * @return
      */
-    public static void setOrientation(Context context, LocalMedia media) {
+    public static void setOrientationAsynchronous(Context context, LocalMedia media) {
         // 如果有旋转信息图片宽高则是相反
         if (media.getOrientation() != -1) {
             return;
@@ -511,5 +511,34 @@ public class MediaUtils {
                 media.setOrientation(orientation);
             }
         });
+    }
+
+    /**
+     * 设置LocalMedia旋转信息
+     *
+     * @param context
+     * @param media
+     * @return
+     */
+    public static void setOrientationSynchronous(Context context, LocalMedia media) {
+        // 如果有旋转信息图片宽高则是相反
+        int orientation = 0;
+        if (PictureMimeType.isHasImage(media.getMimeType())) {
+            orientation = MediaUtils.getImageOrientationForUrl(context, media.getPath());
+        } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
+            if (PictureMimeType.isContent(media.getPath())) {
+                orientation = MediaUtils.getVideoOrientationForUri(context, Uri.parse(media.getPath()));
+            } else {
+                orientation = MediaUtils.getVideoOrientationForUrl(media.getPath());
+            }
+        }
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_90
+                || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            int width = media.getWidth();
+            int height = media.getHeight();
+            media.setWidth(height);
+            media.setHeight(width);
+        }
+        media.setOrientation(orientation);
     }
 }

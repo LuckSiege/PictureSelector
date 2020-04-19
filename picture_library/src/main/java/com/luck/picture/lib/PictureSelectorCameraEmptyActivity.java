@@ -17,6 +17,7 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.immersive.ImmersiveManage;
 import com.luck.picture.lib.permissions.PermissionChecker;
+import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.tools.BitmapUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
@@ -214,7 +215,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         media.setWidth(width);
         media.setHeight(height);
         // 如果有旋转信息图片宽高则是相反
-        MediaUtils.setOrientation(getContext(), media);
+        MediaUtils.setOrientationAsynchronous(getContext(), media);
         medias.add(media);
         handlerResult(medias);
     }
@@ -230,98 +231,108 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         if (TextUtils.isEmpty(config.cameraPath)) {
             return;
         }
-        // 刷新系统相册
-        if (!SdkVersionUtils.checkedAndroid_Q()) {
-            if (config.isFallbackVersion3) {
-                new PictureMediaScannerConnection(getContext(), config.cameraPath);
-            } else {
-                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(config.cameraPath))));
-            }
-        }
+        // 开启异步线程进行处理
+        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<LocalMedia>() {
 
-        // 创建一个LocalMedia对象
-        LocalMedia media = new LocalMedia();
-        String mimeType = isAudio ? PictureMimeType.MIME_TYPE_AUDIO : "";
-        int[] newSize = new int[2];
-        long duration = MediaUtils.extractDuration(getContext(), SdkVersionUtils.checkedAndroid_Q(), config.cameraPath);
-        if (!isAudio) {
-            // 图片和视频的处理逻辑
-            if (PictureMimeType.isContent(config.cameraPath)) {
-                // content://类型处理规则
-                String path = PictureFileUtils.getPath(getContext(), Uri.parse(config.cameraPath));
-                if (!TextUtils.isEmpty(path)) {
-                    File cameraFile = new File(path);
-                    mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
-                    media.setSize(cameraFile.length());
+            @Override
+            public LocalMedia doInBackground() {
+                // 创建一个LocalMedia对象
+                LocalMedia media = new LocalMedia();
+                String mimeType = isAudio ? PictureMimeType.MIME_TYPE_AUDIO : "";
+                int[] newSize = new int[2];
+                long duration = MediaUtils.extractDuration(getContext(), SdkVersionUtils.checkedAndroid_Q(), config.cameraPath);
+                if (!isAudio) {
+                    // 图片和视频的处理逻辑
+                    if (PictureMimeType.isContent(config.cameraPath)) {
+                        // content://类型处理规则
+                        String path = PictureFileUtils.getPath(getContext(), Uri.parse(config.cameraPath));
+                        if (!TextUtils.isEmpty(path)) {
+                            File cameraFile = new File(path);
+                            mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
+                            media.setSize(cameraFile.length());
+                        }
+                        if (PictureMimeType.isHasImage(mimeType)) {
+                            // 图片
+                            newSize = MediaUtils.getImageSizeForUrlToAndroidQ(getContext(), config.cameraPath);
+                        } else if (PictureMimeType.isHasVideo(mimeType)) {
+                            // 视频
+                            newSize = MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(config.cameraPath));
+                        }
+                        int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
+                        media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
+                        media.setRealPath(path);
+                        if (config.isUseCustomCamera) {
+                            // 自定义拍照时已经在应用沙盒内生成了文件
+                            String mediaPath = intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH);
+                            media.setAndroidQToPath(mediaPath);
+                        }
+                    } else {
+                        // 普通类型处理规则
+                        File cameraFile = new File(config.cameraPath);
+                        mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
+                        media.setSize(cameraFile.length());
+                        if (PictureMimeType.isHasImage(mimeType)) {
+                            // 图片
+                            int degree = PictureFileUtils.readPictureDegree(getContext(), config.cameraPath);
+                            BitmapUtils.rotateImage(degree, config.cameraPath);
+                            newSize = MediaUtils.getImageSizeForUrl(config.cameraPath);
+                        } else if (PictureMimeType.isHasVideo(mimeType)) {
+                            // 视频
+                            newSize = MediaUtils.getVideoSizeForUrl(config.cameraPath);
+                        }
+                        // 拍照产生一个临时id
+                        media.setId(System.currentTimeMillis());
+                    }
+                    // 给LocalMedia对象赋值
+                    media.setPath(config.cameraPath);
+                    media.setDuration(duration);
+                    media.setMimeType(mimeType);
+                    media.setWidth(newSize[0]);
+                    media.setHeight(newSize[1]);
+                    media.setParentFolderName(PictureMimeType.CAMERA);
+                    media.setChooseModel(config.chooseMode);
+                    long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
+                    media.setBucketId(bucketId);
+                    // 如果有旋转信息图片宽高则是相反
+                    MediaUtils.setOrientationSynchronous(getContext(), media);
                 }
-                if (PictureMimeType.isHasImage(mimeType)) {
-                    // 图片
-                    newSize = MediaUtils.getImageSizeForUrlToAndroidQ(getContext(), config.cameraPath);
-                } else if (PictureMimeType.isHasVideo(mimeType)) {
-                    // 视频
-                    newSize = MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(config.cameraPath));
+                // 这里主要解决极个别手机拍照会在DCIM目录重复生成一张照片问题
+                if (!SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasImage(media.getMimeType())) {
+                    int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
+                    if (lastImageId != -1) {
+                        MediaUtils.removeMedia(getContext(), lastImageId);
+                    }
                 }
-                int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
-                media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
-                media.setRealPath(path);
-                if (config.isUseCustomCamera) {
-                    // 自定义拍照时已经在应用沙盒内生成了文件
-                    String mediaPath = intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH);
-                    media.setAndroidQToPath(mediaPath);
-                }
-            } else {
-                // 普通类型处理规则
-                File cameraFile = new File(config.cameraPath);
-                mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
-                media.setSize(cameraFile.length());
-                if (PictureMimeType.isHasImage(mimeType)) {
-                    // 图片
-                    int degree = PictureFileUtils.readPictureDegree(this, config.cameraPath);
-                    BitmapUtils.rotateImage(degree, config.cameraPath);
-                    newSize = MediaUtils.getImageSizeForUrl(config.cameraPath);
-                } else if (PictureMimeType.isHasVideo(mimeType)) {
-                    // 视频
-                    newSize = MediaUtils.getVideoSizeForUrl(config.cameraPath);
-                }
-                // 拍照产生一个临时id
-                media.setId(System.currentTimeMillis());
+                return media;
             }
-            // 给LocalMedia对象赋值
-            media.setPath(config.cameraPath);
-            media.setDuration(duration);
-            media.setMimeType(mimeType);
-            media.setWidth(newSize[0]);
-            media.setHeight(newSize[1]);
-            media.setParentFolderName(PictureMimeType.CAMERA);
-            media.setChooseModel(config.chooseMode);
-            long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
-            media.setBucketId(bucketId);
-            // 如果有旋转信息图片宽高则是相反
-            MediaUtils.setOrientation(getContext(), media);
-            cameraHandleResult(media, mimeType);
-            // 这里主要解决极个别手机拍照会在DCIM目录重复生成一张照片问题
-            if (!SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasImage(media.getMimeType())) {
-                int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
-                if (lastImageId != -1) {
-                    MediaUtils.removeMedia(getContext(), lastImageId);
+
+            @Override
+            public void onSuccess(LocalMedia result) {
+                dispatchCameraHandleResult(result);
+                // 刷新系统相册
+                if (!SdkVersionUtils.checkedAndroid_Q()) {
+                    if (config.isFallbackVersion3) {
+                        new PictureMediaScannerConnection(getContext(), config.cameraPath);
+                    } else {
+                        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(config.cameraPath))));
+                    }
                 }
             }
-        }
+        });
     }
 
     /**
      * 摄像头后处理方式
      *
      * @param media
-     * @param mimeType
      */
-    private void cameraHandleResult(LocalMedia media, String mimeType) {
+    private void dispatchCameraHandleResult(LocalMedia media) {
         // 如果是单选 拍照后直接返回
-        boolean isHasImage = PictureMimeType.isHasImage(mimeType);
+        boolean isHasImage = PictureMimeType.isHasImage(media.getMimeType());
         if (config.enableCrop && isHasImage) {
             // 去裁剪
             config.originalPath = config.cameraPath;
-            startCrop(config.cameraPath, mimeType);
+            startCrop(config.cameraPath, media.getMimeType());
         } else if (config.isCompress && isHasImage && !config.isCheckOriginalImage) {
             // 去压缩
             List<LocalMedia> result = new ArrayList<>();
