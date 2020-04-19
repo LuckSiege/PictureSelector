@@ -488,8 +488,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .openClickSound(cb_voice.isChecked())// 是否开启点击声音
                         .selectionMedia(mAdapter.getData())// 是否传入已选图片
                         //.isDragFrame(false)// 是否可拖动裁剪框(固定)
-                        //.videoMinSecond(10)
-                        //.videoMaxSecond(15)
+                        //.videoMinSecond(10)// 查询多少秒以内的视频
+                        //.videoMaxSecond(15)// 查询多少秒以内的视频
                         //.recordVideoSecond(10)//录制视频秒数 默认60s
                         //.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                         //.cropCompressQuality(90)// 注：已废弃 改用cutOutQuality()
