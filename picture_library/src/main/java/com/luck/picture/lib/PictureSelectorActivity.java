@@ -1581,7 +1581,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             public void onSuccess(LocalMedia result) {
                 // 给Adapter填充数据
                 if (result != null) {
-                    notifyAdapter(result);
+                    notifyAdapterData(result);
                 }
                 // 刷新系统相册
                 if (!SdkVersionUtils.checkedAndroid_Q()) {
@@ -1601,7 +1601,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      *
      * @param media
      */
-    private void notifyAdapter(LocalMedia media) {
+    private void notifyAdapterData(LocalMedia media) {
         if (mAdapter != null) {
             mAdapter.getData().add(0, media);
             if (checkVideoLegitimacy(media)) {
