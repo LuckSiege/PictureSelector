@@ -301,6 +301,8 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         media.setParentFolderName(PictureMimeType.CAMERA);
         media.setSize(size);
         media.setChooseModel(config.chooseMode);
+        long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
+        media.setBucketId(bucketId);
         // 如果有旋转信息图片宽高则是相反
         MediaUtils.setOrientation(getContext(), media);
         cameraHandleResult(media, mimeType);
