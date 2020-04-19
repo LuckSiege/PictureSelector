@@ -230,8 +230,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                                 // 这种情况就是开启过滤损坏文件刚好导致某一页全是损坏的虽然result为0，但还要请求下一页数据
                                 loadMoreData();
                             }
-                        } else {
-                            PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
                         }
                     }
                 });
@@ -256,8 +254,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                                 // 这种情况就是开启过滤损坏文件刚好导致某一页全是损坏的虽然result为0，但还要请求下一页数据
                                 loadMoreData();
                             }
-                        } else {
-                            PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
                         }
                     }
                 });

@@ -107,17 +107,14 @@ public class LocalMediaPageLoader {
      */
     private static String getSelectionArgsForAllMediaCondition(String timeCondition, boolean isGif) {
         if (SdkVersionUtils.checkedAndroid_Q()) {
-            return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
+            return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
                     + (isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF)
-                    + " OR "
-                    + (MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + timeCondition)
-                    + " AND " + MediaStore.MediaColumns.SIZE + ">0";
+                    + " OR " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + timeCondition + ") AND " + MediaStore.MediaColumns.SIZE + ">0";
         }
+
         return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
                 + (isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF)
-                + " OR "
-                + (MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + timeCondition) + ")"
-                + " AND " + MediaStore.MediaColumns.SIZE + ">0)" + GROUP_BY_BUCKET_Id;
+                + " OR " + (MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + timeCondition) + ")" + " AND " + MediaStore.MediaColumns.SIZE + ">0)" + GROUP_BY_BUCKET_Id;
     }
 
     /**
@@ -302,7 +299,6 @@ public class LocalMediaPageLoader {
                                     }
                                 }
 
-
                                 if (PictureMimeType.isHasVideo(mimeType)) {
                                     if (config.videoMinSecond > 0 && duration < config.videoMinSecond) {
                                         // 如果设置了最小显示多少秒的视频
@@ -328,10 +324,8 @@ public class LocalMediaPageLoader {
                                 result.add(image);
 
                             } while (data.moveToNext());
-
-                            return new MediaData(data.getCount() > 0, result);
                         }
-                        return new MediaData(false, result);
+                        return new MediaData(data.getCount() > 0, result);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -347,7 +341,7 @@ public class LocalMediaPageLoader {
 
             @Override
             public void onSuccess(MediaData result) {
-                if (listener != null && result != null) {
+                if (listener != null) {
                     listener.onComplete(result.data, result.isHasNextMore);
                 }
             }
@@ -490,18 +484,19 @@ public class LocalMediaPageLoader {
 
 
     private String getPageSelection(long bucketId) {
+        String durationCondition = getDurationCondition(0, 0);
         switch (config.chooseMode) {
             case PictureConfig.TYPE_ALL:
                 if (bucketId == -1) {
                     // 获取全部
                     return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
                             + (config.isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF)
-                            + " OR " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?) AND " + MediaStore.MediaColumns.SIZE + ">0";
+                            + " OR " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + durationCondition + ") AND " + MediaStore.MediaColumns.SIZE + ">0";
                 }
                 // 获取指定相册目录
                 return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
                         + (config.isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF)
-                        + " OR " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?) AND " + COLUMN_BUCKET_ID + "=? AND " + MediaStore.MediaColumns.SIZE + ">0";
+                        + " OR " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + durationCondition + ") AND " + COLUMN_BUCKET_ID + "=? AND " + MediaStore.MediaColumns.SIZE + ">0";
 
             case PictureConfig.TYPE_IMAGE:
                 if (bucketId == -1) {
@@ -519,12 +514,10 @@ public class LocalMediaPageLoader {
             case PictureConfig.TYPE_AUDIO:
                 if (bucketId == -1) {
                     // 获取全部
-                    return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                            + ") AND " + MediaStore.MediaColumns.SIZE + ">0";
+                    return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + durationCondition + ") AND " + MediaStore.MediaColumns.SIZE + ">0";
                 }
                 // 获取指定相册目录
-                return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                        + ") AND " + COLUMN_BUCKET_ID + "=? AND " + MediaStore.MediaColumns.SIZE + ">0";
+                return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + durationCondition + ") AND " + COLUMN_BUCKET_ID + "=? AND " + MediaStore.MediaColumns.SIZE + ">0";
         }
         return null;
     }

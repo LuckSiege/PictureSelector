@@ -265,7 +265,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                         mRecyclerView.onScrolled(mRecyclerView.getScrollX(), mRecyclerView.getScrollY());
                                     }
                                 } else {
-                                    PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
                                     boolean isEmpty = mAdapter.isDataEmpty();
                                     if (isEmpty) {
                                         mTvEmpty.setVisibility(View.VISIBLE);
@@ -531,12 +530,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                             // 异常情况合并
                                             mAdapter.getData().addAll(data);
                                         }
-                                        manualSaveFolderForPageModel(mAdapter.getItem(0));
                                     } else {
                                         // 正常情况
                                         mAdapter.bindData(data);
                                         updateFolderFirst(0);
                                         synchronousCover();
+
                                     }
                                 }
                                 boolean isEmpty = mAdapter.isDataEmpty();
@@ -548,6 +547,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                 } else {
                                     mTvEmpty.setVisibility(View.GONE);
                                 }
+
                             }
                         }
                     });
