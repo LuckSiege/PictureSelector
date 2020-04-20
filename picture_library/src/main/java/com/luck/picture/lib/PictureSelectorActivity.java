@@ -516,8 +516,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                     if (currentSize > 0 && currentSize < resultSize && oldCurrentListSize != resultSize) {
                                         // 这种情况多数是由于拍照导致Activity和数据被回收数据不一致
                                         if (mAdapter.getItem(0) != null
-                                                && data.get(0) != null
-                                                && mAdapter.getItem(0).getPath().equals(data.get(0).getPath())) {
+                                                && data.get(0) != null && mAdapter.getItem(0).getPath().equals(data.get(0).getPath())) {
                                             // 异常下的正常情况，本地查询出的数据是最新的
                                             mAdapter.bindData(data);
                                         } else {
@@ -527,7 +526,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                     } else {
                                         // 正常情况
                                         mAdapter.bindData(data);
-                                        updateFolderFirst(0);
                                     }
                                 }
                                 boolean isEmpty = mAdapter.isDataEmpty();
@@ -558,9 +556,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     int size = folderWindow.getFolderData().size();
                     for (int i = 0; i < size; i++) {
                         LocalMediaFolder mediaFolder = folderWindow.getFolder(i);
-                        if (mediaFolder.getBucketId() == -1) {
-                            continue;
-                        }
                         String firstCover = LocalMediaPageLoader
                                 .getInstance(getContext(), config).getFirstCover(mediaFolder.getBucketId());
                         mediaFolder.setFirstImagePath(firstCover);
@@ -573,23 +568,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     // TODO Synchronous Success
                 }
             });
-        }
-    }
-
-    /**
-     * 临时解决全部模式下目录封面不是该目录第一张的问题
-     *
-     * @param position
-     */
-    private void updateFolderFirst(int position) {
-        if (config.chooseMode == PictureMimeType.ofAll()) {
-            if (position != -1) {
-                LocalMedia item = mAdapter.getItem(0);
-                if (item != null && folderWindow.getFolder(position) != null) {
-                    LocalMediaFolder folder = folderWindow.getFolder(position);
-                    folder.setFirstImagePath(item.getPath());
-                }
-            }
         }
     }
 
