@@ -20,7 +20,7 @@ public class RecyclerPreloadView extends RecyclerView {
     private static final int BOTTOM_DEFAULT = 1;
     public static final int BOTTOM_PRELOAD = 2;
     public boolean isInTheBottom = false;
-    public boolean isScroll = true;
+    public boolean isEnabledLoadMore = false;
     /**
      * reachBottomRow = 1;(default)
      * mean : when the lastVisibleRow is lastRow , call the onReachBottom();
@@ -49,20 +49,35 @@ public class RecyclerPreloadView extends RecyclerView {
         this.reachBottomRow = reachBottomRow;
     }
 
+    /**
+     * Whether to load more
+     *
+     * @param isEnabledLoadMore
+     */
+    public void setEnabledLoadMore(boolean isEnabledLoadMore) {
+        this.isEnabledLoadMore = isEnabledLoadMore;
+    }
+
+    /**
+     * Whether to load more
+     */
+    public boolean isEnabledLoadMore() {
+        return isEnabledLoadMore;
+    }
 
     @Override
     public void onScrolled(int dx, int dy) {
         super.onScrolled(dx, dy);
         if (onRecyclerViewPreloadListener != null) {
-            LayoutManager layoutManager = getLayoutManager();
-            if (layoutManager == null) {
-                throw new RuntimeException("LayoutManager is null,Please check it!");
-            }
-            Adapter adapter = getAdapter();
-            if (adapter == null) {
-                throw new RuntimeException("Adapter is null,Please check it!");
-            }
-            if (isScroll) {
+            if (isEnabledLoadMore) {
+                LayoutManager layoutManager = getLayoutManager();
+                if (layoutManager == null) {
+                    throw new RuntimeException("LayoutManager is null,Please check it!");
+                }
+                Adapter adapter = getAdapter();
+                if (adapter == null) {
+                    throw new RuntimeException("Adapter is null,Please check it!");
+                }
                 boolean isReachBottom = false;
                 if (layoutManager instanceof GridLayoutManager) {
                     GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
@@ -93,10 +108,5 @@ public class RecyclerPreloadView extends RecyclerView {
 
     public void setOnRecyclerViewPreloadListener(OnRecyclerViewPreloadMoreListener onRecyclerViewPreloadListener) {
         this.onRecyclerViewPreloadListener = onRecyclerViewPreloadListener;
-    }
-
-    public void setOnRecyclerViewPreloadListener(OnRecyclerViewPreloadMoreListener onRecyclerViewPreloadListener, boolean isScroll) {
-        this.onRecyclerViewPreloadListener = onRecyclerViewPreloadListener;
-        this.isScroll = isScroll;
     }
 }

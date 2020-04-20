@@ -493,6 +493,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             LocalMediaFolder folder = folderWindow.getFolder(0);
             mTvPictureTitle.setTag(R.id.view_count_tag, folder != null ? folder.getImageNum() : 0);
             long bucketId = folder != null ? folder.getBucketId() : -1;
+            mRecyclerView.setEnabledLoadMore(true);
             LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage,
                     (OnQueryDataResultListener<LocalMedia>) (data, isHasMore) -> {
                         if (!isFinishing()) {
