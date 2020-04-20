@@ -931,11 +931,11 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     protected void startOpenCameraVideo() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            Uri imageUri;
+            Uri videoUri;
             if (SdkVersionUtils.checkedAndroid_Q()) {
-                imageUri = MediaUtils.createVideoUri(getApplicationContext());
-                if (imageUri != null) {
-                    config.cameraPath = imageUri.toString();
+                videoUri = MediaUtils.createVideoUri(getApplicationContext());
+                if (videoUri != null) {
+                    config.cameraPath = videoUri.toString();
                 } else {
                     ToastUtils.s(getContext(), "open is camera error，the uri is empty ");
                     if (config.camera) {
@@ -956,7 +956,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                         chooseMode, cameraFileName, config.suffixType, config.outPutCameraPath);
                 if (cameraFile != null) {
                     config.cameraPath = cameraFile.getAbsolutePath();
-                    imageUri = PictureFileUtils.parUri(this, cameraFile);
+                    videoUri = PictureFileUtils.parUri(this, cameraFile);
                 } else {
                     ToastUtils.s(getContext(), "open is camera error，the uri is empty ");
                     if (config.camera) {
@@ -966,7 +966,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                 }
             }
             config.cameraMimeType = PictureMimeType.ofVideo();
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoUri);
             if (config.isCameraAroundState) {
                 cameraIntent.putExtra(PictureConfig.CAMERA_FACING, PictureConfig.CAMERA_BEFORE);
             }
