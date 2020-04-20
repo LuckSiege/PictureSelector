@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/JsProject-PictureSelector.iml" filepath="$PROJECT_DIR$/JsProject-PictureSelector.iml" group="PictureSelector" />
       <module fileurl="file://$PROJECT_DIR$/PictureSelector.iml" filepath="$PROJECT_DIR$/PictureSelector.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/PictureSelector-app.iml" filepath="$PROJECT_DIR$/app/PictureSelector-app.iml" group="PictureSelector/app" />
+      <module fileurl="file://$PROJECT_DIR$/picture_library/PictureSelector-picture_library.iml" filepath="$PROJECT_DIR$/picture_library/PictureSelector-picture_library.iml" group="PictureSelector/picture_library" />
+      <module fileurl="file://$PROJECT_DIR$/ucrop/PictureSelector-ucrop.iml" filepath="$PROJECT_DIR$/ucrop/PictureSelector-ucrop.iml" group="PictureSelector/ucrop" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/picture_library/picture_library.iml" filepath="$PROJECT_DIR$/picture_library/picture_library.iml" />
       <module fileurl="file://$PROJECT_DIR$/ucrop/ucrop.iml" filepath="$PROJECT_DIR$/ucrop/ucrop.iml" />

@@ -1144,33 +1144,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 相册主题
         mPictureParameterStyle = new PictureParameterStyle();
         // 是否改变状态栏字体颜色(黑白切换)
-        mPictureParameterStyle.isChangeStatusBarFontColor = false;
+        mPictureParameterStyle.isChangeStatusBarFontColor = true;
         // 是否开启右下角已完成(0/9)风格
         mPictureParameterStyle.isOpenCompletedNumStyle = false;
         // 是否开启类似QQ相册带数字选择风格
         mPictureParameterStyle.isOpenCheckNumStyle = true;
         // 状态栏背景色
-        mPictureParameterStyle.pictureStatusBarColor = Color.parseColor("#393a3e");
+        mPictureParameterStyle.pictureStatusBarColor = Color.parseColor("#ffffff");
         // 相册列表标题栏背景色
-        mPictureParameterStyle.pictureTitleBarBackgroundColor = Color.parseColor("#393a3e");
+        mPictureParameterStyle.pictureTitleBarBackgroundColor = Color.parseColor("#ffffff");
         // 相册父容器背景色
-        mPictureParameterStyle.pictureContainerBackgroundColor = ContextCompat.getColor(getContext(), R.color.app_color_black);
+        mPictureParameterStyle.pictureContainerBackgroundColor = Color.parseColor("#F2F2F2");
         // 相册列表标题栏右侧上拉箭头
         mPictureParameterStyle.pictureTitleUpResId = R.drawable.picture_icon_wechat_up;
         // 相册列表标题栏右侧下拉箭头
         mPictureParameterStyle.pictureTitleDownResId = R.drawable.picture_icon_wechat_down;
         // 相册文件夹列表选中圆点
-        mPictureParameterStyle.pictureFolderCheckedDotStyle = R.drawable.picture_orange_oval;
+//        mPictureParameterStyle.pictureFolderCheckedDotStyle = R.drawable.picture_orange_oval;
         // 相册返回箭头
-        mPictureParameterStyle.pictureLeftBackIcon = R.drawable.picture_icon_close;
+        mPictureParameterStyle.pictureLeftBackIcon = R.drawable.picture_icon_close1;
         // 标题栏字体颜色
-        mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_white);
+        mPictureParameterStyle.pictureTitleTextColor =  Color.parseColor("#333333");
         // 相册右侧按钮字体颜色  废弃 改用.pictureRightDefaultTextColor和.pictureRightDefaultTextColor
-        mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_53575e);
+        mPictureParameterStyle.pictureCancelTextColor = Color.parseColor("#999999");
         // 相册右侧按钮字体默认颜色
-        mPictureParameterStyle.pictureRightDefaultTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_53575e);
+        mPictureParameterStyle.pictureRightDefaultTextColor = Color.parseColor("#999999");
         // 相册右侧按可点击字体颜色,只针对isWeChatStyle 为true时有效果
-        mPictureParameterStyle.pictureRightSelectedTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_white);
+        mPictureParameterStyle.pictureRightSelectedTextColor = Color.parseColor("#333333");
         // 相册右侧按钮背景样式,只针对isWeChatStyle 为true时有效果
         mPictureParameterStyle.pictureUnCompleteBackgroundStyle = R.drawable.picture_send_button_default_bg;
         // 相册右侧按钮可点击背景样式,只针对isWeChatStyle 为true时有效果
@@ -1182,31 +1182,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 微信样式 预览右下角样式 ,只针对isWeChatStyle 为true时有效果
         mPictureParameterStyle.pictureWeChatChooseStyle = R.drawable.picture_wechat_select_cb;
         // 相册返回箭头 ,只针对isWeChatStyle 为true时有效果
-        mPictureParameterStyle.pictureWeChatLeftBackStyle = R.drawable.picture_icon_back;
+        mPictureParameterStyle.pictureWeChatLeftBackStyle = R.drawable.picture_icon_back1;
         // 相册列表底部背景色
-        mPictureParameterStyle.pictureBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_grey);
+        mPictureParameterStyle.pictureBottomBgColor = Color.parseColor("#ffffff");
         // 已选数量圆点背景样式
         mPictureParameterStyle.pictureCheckNumBgStyle = R.drawable.picture_num_oval;
         // 相册列表底下预览文字色值(预览按钮可点击时的色值)
-        mPictureParameterStyle.picturePreviewTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_white);
+        mPictureParameterStyle.picturePreviewTextColor =  Color.parseColor("#333333");
         // 相册列表底下不可预览文字色值(预览按钮不可点击时的色值)
         mPictureParameterStyle.pictureUnPreviewTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_9b);
         // 相册列表已完成色值(已完成 可点击色值)
-        mPictureParameterStyle.pictureCompleteTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_white);
+        mPictureParameterStyle.pictureCompleteTextColor = Color.parseColor("#333333");
         // 相册列表未完成色值(请选择 不可点击色值)
-        mPictureParameterStyle.pictureUnCompleteTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_53575e);
+        mPictureParameterStyle.pictureUnCompleteTextColor =  Color.parseColor("#999999");
         // 预览界面底部背景色
-        mPictureParameterStyle.picturePreviewBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_half_grey);
+        mPictureParameterStyle.picturePreviewBottomBgColor =  Color.parseColor("#ffffff");
         // 外部预览界面删除按钮样式
-        mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_delete;
+        mPictureParameterStyle.pictureExternalPreviewDeleteStyle = R.drawable.picture_icon_delete1;
         // 原图按钮勾选样式  需设置.isOriginalImageControl(true); 才有效
         mPictureParameterStyle.pictureOriginalControlStyle = R.drawable.picture_original_wechat_checkbox;
         // 原图文字颜色 需设置.isOriginalImageControl(true); 才有效
-        mPictureParameterStyle.pictureOriginalFontColor = ContextCompat.getColor(getContext(), R.color.app_color_white);
+        mPictureParameterStyle.pictureOriginalFontColor =  Color.parseColor("#333333");
         // 外部预览界面是否显示删除按钮
         mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
         // 设置NavBar Color SDK Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP有效
-        mPictureParameterStyle.pictureNavBarColor = Color.parseColor("#393a3e");
+        mPictureParameterStyle.pictureNavBarColor = Color.parseColor("#ffffff");
 
         // 完成文案是否采用(%1$d/%2$d)的字符串，只允许两个占位符哟
 //        mPictureParameterStyle.isCompleteReplaceNum = true;
@@ -1221,18 +1221,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        // 自定义预览页右下角选择文字文案
 //        mPictureParameterStyle.pictureWeChatPreviewSelectedText = "";
 
-//        // 自定义相册标题文字大小
-//        mPictureParameterStyle.pictureTitleTextSize = 9;
-//        // 自定义相册右侧文字大小
-//        mPictureParameterStyle.pictureRightTextSize = 9;
-//        // 自定义相册预览文字大小
-//        mPictureParameterStyle.picturePreviewTextSize = 9;
-//        // 自定义相册完成文字大小
-//        mPictureParameterStyle.pictureCompleteTextSize = 9;
-//        // 自定义原图文字大小
-//        mPictureParameterStyle.pictureOriginalTextSize = 9;
-//        // 自定义预览页右下角选择文字大小
-//        mPictureParameterStyle.pictureWeChatPreviewSelectedTextSize = 9;
+        // 自定义相册标题文字大小
+        mPictureParameterStyle.pictureTitleTextSize = 16;
+        // 自定义相册右侧文字大小
+        mPictureParameterStyle.pictureRightTextSize = 15;
+        // 自定义相册预览文字大小
+        mPictureParameterStyle.picturePreviewTextSize = 15;
+        // 自定义相册完成文字大小
+        mPictureParameterStyle.pictureCompleteTextSize = 15;
+        // 自定义原图文字大小
+        mPictureParameterStyle.pictureOriginalTextSize = 15;
+        // 自定义预览页右下角选择文字大小
+        mPictureParameterStyle.pictureWeChatPreviewSelectedTextSize = 15;
 
         // 裁剪主题
         mCropParameterStyle = new PictureCropParameterStyle(

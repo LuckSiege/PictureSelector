@@ -7,6 +7,6 @@
         android:width="1dp"
         android:color="@color/picture_color_transparent_e0db" />
     <size
-        android:width="15dp"
-        android:height="15dp" />
+        android:width="16dp"
+        android:height="16dp" />
 </shape>
