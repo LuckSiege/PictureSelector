@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -289,7 +290,11 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     media.setMimeType(mimeType);
                     media.setWidth(newSize[0]);
                     media.setHeight(newSize[1]);
-                    media.setParentFolderName(PictureMimeType.CAMERA);
+                    if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasVideo(media.getMimeType())) {
+                        media.setParentFolderName(Environment.DIRECTORY_MOVIES);
+                    } else {
+                        media.setParentFolderName(PictureMimeType.CAMERA);
+                    }
                     media.setChooseModel(config.chooseMode);
                     long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
                     media.setBucketId(bucketId);

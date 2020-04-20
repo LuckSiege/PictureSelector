@@ -74,7 +74,7 @@ public class MediaUtils {
         values.put(MediaStore.Video.Media.MIME_TYPE, PictureMimeType.MIME_TYPE_VIDEO);
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
         if (status.equals(Environment.MEDIA_MOUNTED)) {
-            values.put(MediaStore.Video.Media.RELATIVE_PATH, PictureMimeType.DCIM);
+            values.put(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES);
             imageFilePath[0] = context.getContentResolver()
                     .insert(MediaStore.Video.Media.getContentUri("external"), values);
         } else {

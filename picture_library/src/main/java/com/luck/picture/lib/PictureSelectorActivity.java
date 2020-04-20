@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -1178,14 +1179,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         boolean camera = config.isCamera && isCameraFolder;
         mAdapter.setShowCamera(camera);
         mTvPictureTitle.setText(folderName);
-        long currentBucketId = ValueOf.toLong(mTvPictureTitle.getTag(R.id.view_tag));
-        if (currentBucketId != bucketId) {
-            if (config.isPageStrategy) {
+        if (config.isPageStrategy) {
+            long currentBucketId = ValueOf.toLong(mTvPictureTitle.getTag(R.id.view_tag));
+            if (currentBucketId != bucketId) {
                 mTvPictureTitle.setTag(R.id.view_tag, bucketId);
                 mTvPictureTitle.setTag(R.id.view_count_tag, folderWindow.getFolder(position) != null
                         ? folderWindow.getFolder(position).getImageNum() : 0);
-                showPleaseDialog();
                 mPage = 1;
+                showPleaseDialog();
                 LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage,
                         (OnQueryDataResultListener<LocalMedia>) (result, isHasMore) -> {
                             this.isHasMore = isHasMore;
@@ -1196,11 +1197,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                 dismissDialog();
                             }
                         });
-            } else {
-                mAdapter.bindData(data);
-                mTvPictureTitle.setTag(R.id.view_tag, bucketId);
-                mRecyclerView.smoothScrollToPosition(0);
             }
+        } else {
+            mAdapter.bindData(data);
+            mTvPictureTitle.setTag(R.id.view_tag, bucketId);
+            mRecyclerView.smoothScrollToPosition(0);
         }
         folderWindow.dismiss();
     }
@@ -1567,7 +1568,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     media.setMimeType(mimeType);
                     media.setWidth(newSize[0]);
                     media.setHeight(newSize[1]);
-                    media.setParentFolderName(PictureMimeType.CAMERA);
+                    if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasVideo(media.getMimeType())) {
+                        media.setParentFolderName(Environment.DIRECTORY_MOVIES);
+                    } else {
+                        media.setParentFolderName(PictureMimeType.CAMERA);
+                    }
                     media.setChooseModel(config.chooseMode);
                     long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
                     media.setBucketId(bucketId);
@@ -1958,9 +1963,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             } else {
                 // Camera文件夹
                 boolean isCamera = false;
+                String newFolder = SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasVideo(media.getMimeType())
+                        ? Environment.DIRECTORY_MOVIES : PictureMimeType.CAMERA;
                 for (int i = 0; i < count; i++) {
                     LocalMediaFolder cameraFolder = folderWindow.getFolderData().get(i);
-                    if (cameraFolder.getName().startsWith(PictureMimeType.CAMERA)) {
+                    if (cameraFolder.getName().startsWith(newFolder)) {
                         media.setBucketId(cameraFolder.getBucketId());
                         cameraFolder.setFirstImagePath(config.cameraPath);
                         cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
