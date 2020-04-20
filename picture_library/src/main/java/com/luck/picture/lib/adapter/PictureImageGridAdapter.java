@@ -163,55 +163,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 selectImage(contentHolder, isSelected(image));
                 contentHolder.tvCheck.setVisibility(View.VISIBLE);
                 contentHolder.btnCheck.setVisibility(View.VISIBLE);
+                // 启用了蒙层效果
                 if (config.isMaxSelectEnabledMask) {
-                    // 启用蒙层效果
-                    if (config.isWithVideoImage && config.maxVideoSelectNum > 0) {
-                        if (getSelectedSize() >= config.maxSelectNum) {
-                            boolean isSelected = contentHolder.tvCheck.isSelected();
-                            contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
-                                    (context, isSelected ? R.color.picture_color_80 : R.color.picture_color_half_white), PorterDuff.Mode.SRC_ATOP);
-                            image.setMaxSelectEnabledMask(!isSelected);
-                        }
-                    } else {
-                        LocalMedia media = selectData.size() > 0 ? selectData.get(0) : null;
-                        if (media != null) {
-                            boolean isSelected = contentHolder.tvCheck.isSelected();
-                            if (config.chooseMode == PictureMimeType.ofAll()) {
-                                if (PictureMimeType.isHasImage(media.getMimeType())) {
-                                    // 所有视频不可选
-                                    if (!isSelected && !PictureMimeType.isHasImage(image.getMimeType())) {
-                                        contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
-                                                (context, PictureMimeType.isHasVideo(image.getMimeType()) ? R.color.picture_color_half_white : R.color.picture_color_20), PorterDuff.Mode.SRC_ATOP);
-                                    }
-                                    image.setMaxSelectEnabledMask(PictureMimeType.isHasVideo(image.getMimeType()));
-                                } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
-                                    // 所有图片不可选
-                                    if (!isSelected && !PictureMimeType.isHasVideo(image.getMimeType())) {
-                                        contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
-                                                (context, PictureMimeType.isHasImage(image.getMimeType()) ? R.color.picture_color_half_white : R.color.picture_color_20), PorterDuff.Mode.SRC_ATOP);
-                                    }
-                                    image.setMaxSelectEnabledMask(PictureMimeType.isHasImage(image.getMimeType()));
-                                }
-                            } else {
-                                if (config.chooseMode == PictureMimeType.ofVideo() && config.maxVideoSelectNum > 0) {
-                                    if (!isSelected && getSelectedSize() == config.maxVideoSelectNum) {
-                                        contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
-                                                (context, R.color.picture_color_half_white), PorterDuff.Mode.SRC_ATOP);
-                                    }
-                                    image.setMaxSelectEnabledMask(!isSelected && getSelectedSize() == config.maxVideoSelectNum);
-                                } else {
-                                    if (!isSelected && getSelectedSize() == config.maxSelectNum) {
-                                        contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
-                                                (context, R.color.picture_color_half_white), PorterDuff.Mode.SRC_ATOP);
-                                    }
-                                    image.setMaxSelectEnabledMask(!isSelected && getSelectedSize() == config.maxSelectNum);
-                                }
-                            }
-                        }
-                    }
+                    dispatchHandleMask(contentHolder, image);
                 }
             }
-
             contentHolder.tvIsGif.setVisibility(PictureMimeType.isGif(mimeType) ? View.VISIBLE : View.GONE);
             if (PictureMimeType.isHasImage(image.getMimeType())) {
                 if (image.loadLongImageStatus == PictureConfig.NORMAL) {
@@ -310,6 +266,59 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     changeCheckboxState(contentHolder, image);
                 }
             });
+        }
+    }
+
+    /**
+     * 处理蒙版效果
+     *
+     * @param contentHolder
+     * @param item
+     */
+    private void dispatchHandleMask(ViewHolder contentHolder, LocalMedia item) {
+        if (config.isWithVideoImage && config.maxVideoSelectNum > 0) {
+            if (getSelectedSize() >= config.maxSelectNum) {
+                boolean isSelected = contentHolder.tvCheck.isSelected();
+                contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
+                        (context, isSelected ? R.color.picture_color_80 : R.color.picture_color_half_white), PorterDuff.Mode.SRC_ATOP);
+                item.setMaxSelectEnabledMask(!isSelected);
+            }
+        } else {
+            LocalMedia media = selectData.size() > 0 ? selectData.get(0) : null;
+            if (media != null) {
+                boolean isSelected = contentHolder.tvCheck.isSelected();
+                if (config.chooseMode == PictureMimeType.ofAll()) {
+                    if (PictureMimeType.isHasImage(media.getMimeType())) {
+                        // 所有视频不可选
+                        if (!isSelected && !PictureMimeType.isHasImage(item.getMimeType())) {
+                            contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
+                                    (context, PictureMimeType.isHasVideo(item.getMimeType()) ? R.color.picture_color_half_white : R.color.picture_color_20), PorterDuff.Mode.SRC_ATOP);
+                        }
+                        item.setMaxSelectEnabledMask(PictureMimeType.isHasVideo(item.getMimeType()));
+                    } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                        // 所有图片不可选
+                        if (!isSelected && !PictureMimeType.isHasVideo(item.getMimeType())) {
+                            contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
+                                    (context, PictureMimeType.isHasImage(item.getMimeType()) ? R.color.picture_color_half_white : R.color.picture_color_20), PorterDuff.Mode.SRC_ATOP);
+                        }
+                        item.setMaxSelectEnabledMask(PictureMimeType.isHasImage(item.getMimeType()));
+                    }
+                } else {
+                    if (config.chooseMode == PictureMimeType.ofVideo() && config.maxVideoSelectNum > 0) {
+                        if (!isSelected && getSelectedSize() == config.maxVideoSelectNum) {
+                            contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
+                                    (context, R.color.picture_color_half_white), PorterDuff.Mode.SRC_ATOP);
+                        }
+                        item.setMaxSelectEnabledMask(!isSelected && getSelectedSize() == config.maxVideoSelectNum);
+                    } else {
+                        if (!isSelected && getSelectedSize() == config.maxSelectNum) {
+                            contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
+                                    (context, R.color.picture_color_half_white), PorterDuff.Mode.SRC_ATOP);
+                        }
+                        item.setMaxSelectEnabledMask(!isSelected && getSelectedSize() == config.maxSelectNum);
+                    }
+                }
+            }
         }
     }
 
