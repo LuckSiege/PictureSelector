@@ -463,6 +463,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     (OnQueryDataResultListener<LocalMediaFolder>) (data, isHasMore) -> {
                         if (!isFinishing()) {
                             initPageModel(data);
+                            synchronousCover();
                         }
                     });
         } else {
@@ -526,8 +527,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                         // 正常情况
                                         mAdapter.bindData(data);
                                         updateFolderFirst(0);
-                                        synchronousCover();
-
                                     }
                                 }
                                 boolean isEmpty = mAdapter.isDataEmpty();
@@ -551,7 +550,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     private void synchronousCover() {
         if (config.chooseMode == PictureMimeType.ofAll()) {
-            PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<Boolean>() {
+            PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Boolean>() {
 
                 @Override
                 public Boolean doInBackground() {
