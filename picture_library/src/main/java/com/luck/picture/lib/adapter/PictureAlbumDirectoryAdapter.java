@@ -64,7 +64,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         int checkedNum = folder.getCheckedNum();
         holder.tvSign.setVisibility(checkedNum > 0 ? View.VISIBLE : View.INVISIBLE);
         holder.itemView.setSelected(isChecked);
-        if (config.style.pictureAlbumStyle != 0) {
+        if (config.style != null && config.style.pictureAlbumStyle != 0) {
             holder.itemView.setBackgroundResource(config.style.pictureAlbumStyle);
         }
         if (chooseMode == PictureMimeType.ofAudio()) {
