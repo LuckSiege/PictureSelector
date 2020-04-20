@@ -1787,13 +1787,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             && PictureMimeType.isContent(media.getPath())) {
                         String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
                         media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
+                        media.setAndroidQToPath(cutPath);
                     } else {
                         media.setSize(new File(media.getPath()).length());
                     }
                     media.setCut(false);
                 } else {
                     media.setSize(new File(cutPath).length());
-                    media.setAndroidQToPath(cutPath);
                     media.setCut(true);
                 }
                 result.add(media);
@@ -1812,13 +1812,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                 && PictureMimeType.isContent(media.getPath())) {
                             String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
                             media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
+                            media.setAndroidQToPath(cutPath);
                         } else {
                             media.setSize(new File(media.getPath()).length());
                         }
                         media.setCut(false);
                     } else {
                         media.setSize(new File(cutPath).length());
-                        media.setAndroidQToPath(cutPath);
                         media.setCut(true);
                     }
                     result.add(media);
