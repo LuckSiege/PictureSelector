@@ -110,6 +110,12 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         return data == null || data.size() == 0;
     }
 
+    public void clear() {
+        if (getSize() > 0) {
+            data.clear();
+        }
+    }
+
     public int getSize() {
         return data == null ? 0 : data.size();
     }

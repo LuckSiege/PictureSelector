@@ -1186,6 +1186,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mTvPictureTitle.setTag(R.id.view_count_tag, folderWindow.getFolder(position) != null
                         ? folderWindow.getFolder(position).getImageNum() : 0);
                 mPage = 1;
+                mAdapter.clear();
                 showPleaseDialog();
                 LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage,
                         (OnQueryDataResultListener<LocalMedia>) (result, isHasMore) -> {
