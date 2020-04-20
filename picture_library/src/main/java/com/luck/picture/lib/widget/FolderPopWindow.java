@@ -159,7 +159,7 @@ public class FolderPopWindow extends PopupWindow {
         }
         rootViewBg.animate()
                 .alpha(0)
-                .setDuration(150)
+                .setDuration(50)
                 .start();
         ivArrowView.setImageDrawable(drawableDown);
         AnimUtils.rotateArrow(ivArrowView, false);
