@@ -94,7 +94,7 @@
             android:gravity="center|left"
             android:paddingRight="12dp"
             android:text="@string/picture_select"
-            android:textColor="@color/picture_color_white"
+            android:textColor="#333333"
             android:textSize="16sp" />
 
         <TextView
