@@ -1486,13 +1486,20 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * @param intent
      */
     private void dispatchHandleCamera(Intent intent) {
+        if (config.isUseCustomCamera) {
+            // 如果在PictureCustomCameraActivity页面回来,同步一下PictureSelectionConfig,防止内存回收导致config不同步
+            PictureSelectionConfig selectionConfig = intent.getParcelableExtra(PictureConfig.EXTRA_CONFIG);
+            if (selectionConfig != null) {
+                config = selectionConfig;
+            }
+        }
         boolean isAudio = config.chooseMode == PictureMimeType.ofAudio();
         config.cameraPath = isAudio ? getAudioPath(intent) : config.cameraPath;
         if (TextUtils.isEmpty(config.cameraPath)) {
             return;
         }
         // 开启异步线程进行处理
-        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<LocalMedia>() {
+        PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<LocalMedia>() {
 
             @Override
             public LocalMedia doInBackground() {

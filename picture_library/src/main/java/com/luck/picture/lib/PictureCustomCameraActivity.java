@@ -165,6 +165,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
                 config.cameraMimeType = PictureMimeType.ofImage();
                 Intent intent = new Intent();
                 intent.putExtra(PictureConfig.EXTRA_MEDIA_PATH, file.getAbsolutePath());
+                intent.putExtra(PictureConfig.EXTRA_CONFIG, config);
                 if (config.camera) {
                     dispatchHandleCamera(intent);
                 } else {
