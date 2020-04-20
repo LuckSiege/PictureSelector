@@ -1499,7 +1499,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             return;
         }
         // 开启异步线程进行处理
-        PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<LocalMedia>() {
+        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<LocalMedia>() {
 
             @Override
             public LocalMedia doInBackground() {
