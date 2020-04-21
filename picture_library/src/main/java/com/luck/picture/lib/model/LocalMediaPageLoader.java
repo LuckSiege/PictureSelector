@@ -254,9 +254,10 @@ public class LocalMediaPageLoader {
                                         continue;
                                     }
                                 }
-
                                 String mimeType = data.getString
                                         (data.getColumnIndexOrThrow(PROJECTION_PAGE[2]));
+
+                                mimeType = TextUtils.isEmpty(mimeType) ? PictureMimeType.ofJPEG() : mimeType;
                                 // Here, it is solved that some models obtain mimeType and return the format of image / *,
                                 // which makes it impossible to distinguish the specific type, such as mi 8,9,10 and other models
                                 if (mimeType.endsWith("image/*")) {
