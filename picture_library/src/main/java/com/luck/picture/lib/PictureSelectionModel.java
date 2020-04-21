@@ -2,6 +2,7 @@ package com.luck.picture.lib;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.FloatRange;
@@ -28,6 +29,8 @@ import com.luck.picture.lib.tools.SdkVersionUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+
+import static android.os.Build.VERSION_CODES.KITKAT;
 
 /**
  * @author：luck
@@ -135,7 +138,7 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel isUseCustomCamera(boolean isUseCustomCamera) {
-        selectionConfig.isUseCustomCamera = isUseCustomCamera;
+        selectionConfig.isUseCustomCamera = Build.VERSION.SDK_INT > KITKAT && isUseCustomCamera;
         return this;
     }
 
