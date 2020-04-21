@@ -82,7 +82,7 @@ public class GridImageAdapter extends
     }
 
     public void remove(int position) {
-        if (list != null) {
+        if (list != null && position < list.size()) {
             list.remove(position);
         }
     }

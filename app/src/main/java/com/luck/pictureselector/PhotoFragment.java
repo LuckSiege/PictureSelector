@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,9 +50,11 @@ import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.ToastUtils;
+import com.luck.picture.lib.tools.ValueOf;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.listener.DragListener;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -65,15 +68,12 @@ import java.util.List;
 public class PhotoFragment extends Fragment implements View.OnClickListener,
         RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
     private final static String TAG = PhotoFragment.class.getSimpleName();
-    private List<LocalMedia> selectList = new ArrayList<>();
-    private RecyclerView mRecyclerView;
     private GridImageAdapter mAdapter;
     private int maxSelectNum = 9;
     private TextView tv_select_num;
     private TextView tv_original_tips;
     private TextView tvDeleteText;
-    private ImageView left_back, minus, plus;
-    private RadioGroup rgb_crop, rgb_style, rgb_photo_mode, rgb_langue, rgb_animation;
+    private RadioGroup rgb_crop;
     private int aspect_ratio_x, aspect_ratio_y;
     private CheckBox cb_voice, cb_choose_mode, cb_isCamera, cb_isGif,
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
@@ -102,7 +102,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            selectList = savedInstanceState.getParcelableArrayList("selectorList");
+            // 被回收
         } else {
             clearCache();
         }
@@ -113,16 +113,16 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         super.onViewCreated(view, savedInstanceState);
         themeId = R.style.picture_default_style;
         getDefaultStyle();
-        minus = view.findViewById(R.id.minus);
-        plus = view.findViewById(R.id.plus);
+        ImageView minus = view.findViewById(R.id.minus);
+        ImageView plus = view.findViewById(R.id.plus);
         tvDeleteText = view.findViewById(R.id.tv_delete_text);
         tv_select_num = view.findViewById(R.id.tv_select_num);
         tv_original_tips = view.findViewById(R.id.tv_original_tips);
         rgb_crop = view.findViewById(R.id.rgb_crop);
-        rgb_style = view.findViewById(R.id.rgb_style);
-        rgb_animation = view.findViewById(R.id.rgb_animation);
-        rgb_photo_mode = view.findViewById(R.id.rgb_photo_mode);
-        rgb_langue = view.findViewById(R.id.rgb_langue);
+        RadioGroup rgb_style = view.findViewById(R.id.rgb_style);
+        RadioGroup rgb_animation = view.findViewById(R.id.rgb_animation);
+        RadioGroup rgb_photo_mode = view.findViewById(R.id.rgb_photo_mode);
+        RadioGroup rgb_language = view.findViewById(R.id.rgb_language);
         cb_voice = view.findViewById(R.id.cb_voice);
         cb_choose_mode = view.findViewById(R.id.cb_choose_mode);
         cb_isCamera = view.findViewById(R.id.cb_isCamera);
@@ -144,10 +144,10 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         rgb_crop.setOnCheckedChangeListener(this);
         rgb_style.setOnCheckedChangeListener(this);
         rgb_photo_mode.setOnCheckedChangeListener(this);
-        rgb_langue.setOnCheckedChangeListener(this);
+        rgb_language.setOnCheckedChangeListener(this);
         rgb_animation.setOnCheckedChangeListener(this);
-        mRecyclerView = view.findViewById(R.id.recycler);
-        left_back = view.findViewById(R.id.left_back);
+        RecyclerView mRecyclerView = view.findViewById(R.id.recycler);
+        ImageView left_back = view.findViewById(R.id.left_back);
         left_back.setOnClickListener(this);
         minus.setOnClickListener(this);
         plus.setOnClickListener(this);
@@ -160,7 +160,9 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(4,
                 ScreenUtils.dip2px(getContext(), 8), false));
         mAdapter = new GridImageAdapter(getContext(), onAddPicClickListener);
-        mAdapter.setList(selectList);
+        if (savedInstanceState != null && savedInstanceState.getParcelableArrayList("selectorList") != null) {
+            mAdapter.setList(savedInstanceState.getParcelableArrayList("selectorList"));
+        }
         mAdapter.setSelectMax(maxSelectNum);
         mRecyclerView.setAdapter(mAdapter);
         cb_original.setOnCheckedChangeListener((buttonView, isChecked) ->
@@ -171,6 +173,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         });
 
         mAdapter.setOnItemClickListener((v, position) -> {
+            List<LocalMedia> selectList = mAdapter.getData();
             if (selectList.size() > 0) {
                 LocalMedia media = selectList.get(position);
                 String mimeType = media.getMimeType();
@@ -370,8 +373,10 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
 
         // 注册外部预览图片删除按钮回调
-        BroadcastManager.getInstance(getActivity()).registerReceiver(broadcastReceiver,
-                BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
+        if (getActivity() != null) {
+            BroadcastManager.getInstance(getActivity()).registerReceiver(broadcastReceiver,
+                    BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
+        }
     }
 
     /**
@@ -390,12 +395,14 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
      */
     private void clearCache() {
         // 清空图片缓存，包括裁剪、压缩后的图片 注意:必须要在上传完成后调用 必须要获取权限
-        if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            //PictureFileUtils.deleteCacheDirFile(this, PictureMimeType.ofImage());
-            PictureFileUtils.deleteAllCacheDirFile(getContext());
-        } else {
-            PermissionChecker.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
+        if (getContext() != null) {
+            if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                //PictureFileUtils.deleteCacheDirFile(this, PictureMimeType.ofImage());
+                PictureFileUtils.deleteAllCacheDirFile(getContext());
+            } else {
+                PermissionChecker.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
+            }
         }
     }
 
@@ -449,7 +456,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         //.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效 注：已废弃
                         //.glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度 注：已废弃
                         .withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
-                        .hideBottomControls(cb_hide.isChecked() ? false : true)// 是否显示uCrop工具栏，默认不显示
+                        .hideBottomControls(!cb_hide.isChecked())// 是否显示uCrop工具栏，默认不显示
                         .isGif(cb_isGif.isChecked())// 是否显示gif图片
                         .freeStyleCropEnabled(cb_styleCrop.isChecked())// 裁剪框是否可拖拽
                         .circleDimmedLayer(cb_crop_circular.isChecked())// 是否圆形裁剪
@@ -459,7 +466,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         .showCropFrame(cb_showCropFrame.isChecked())// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
                         .showCropGrid(cb_showCropGrid.isChecked())// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
                         .openClickSound(cb_voice.isChecked())// 是否开启点击声音
-                        .selectionMedia(selectList)// 是否传入已选图片
+                        .selectionMedia(mAdapter.getData())// 是否传入已选图片
                         //.isDragFrame(false)// 是否可拖动裁剪框(固定)
 //                        .videoMaxSecond(15)
 //                        .videoMinSecond(10)
@@ -475,37 +482,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         //.recordVideoSecond()//录制视频秒数 默认60s
                         //.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径  注：已废弃
                         //.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
-                        .forResult(new OnResultCallbackListener<LocalMedia>() {
-                            @Override
-                            public void onResult(List<LocalMedia> result) {
-                                // 图片选择结果回调
-                                selectList = result;
-                                // 例如 LocalMedia 里面返回五种path
-                                // 1.media.getPath(); 为原图path
-                                // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
-                                // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
-                                // 4.media.getOriginalPath()); media.isOriginal());为true时此字段才有值
-                                // 5.media.getAndroidQToPath();为Android Q版本特有返回的字段，此字段有值就用来做上传使用
-                                // 如果同时开启裁剪和压缩，则取压缩路径为准因为是先裁剪后压缩
-                                for (LocalMedia media : selectList) {
-                                    Log.i(TAG, "是否压缩:" + media.isCompressed());
-                                    Log.i(TAG, "压缩:" + media.getCompressPath());
-                                    Log.i(TAG, "原图:" + media.getPath());
-                                    Log.i(TAG, "是否裁剪:" + media.isCut());
-                                    Log.i(TAG, "裁剪:" + media.getCutPath());
-                                    Log.i(TAG, "是否开启原图:" + media.isOriginal());
-                                    Log.i(TAG, "原图路径:" + media.getOriginalPath());
-                                    Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
-                                }
-                                mAdapter.setList(selectList);
-                                mAdapter.notifyDataSetChanged();
-                            }
-
-                            @Override
-                            public void onCancel() {
-                                Log.i(TAG, "PictureSelector Cancel");
-                            }
-                        });
+                        .forResult(new MyResultCallback(mAdapter));
 
             } else {
                 // 单独拍照
@@ -535,7 +512,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         .compressQuality(60)// 图片压缩后输出质量
                         .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
                         .withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
-                        .hideBottomControls(cb_hide.isChecked() ? false : true)// 是否显示uCrop工具栏，默认不显示
+                        .hideBottomControls(!cb_hide.isChecked())// 是否显示uCrop工具栏，默认不显示
                         .isGif(cb_isGif.isChecked())// 是否显示gif图片
                         .freeStyleCropEnabled(cb_styleCrop.isChecked())// 裁剪框是否可拖拽
                         .circleDimmedLayer(cb_crop_circular.isChecked())// 是否圆形裁剪
@@ -545,7 +522,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         .showCropFrame(cb_showCropFrame.isChecked())// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
                         .showCropGrid(cb_showCropGrid.isChecked())// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
                         .openClickSound(cb_voice.isChecked())// 是否开启点击声音
-                        .selectionMedia(selectList)// 是否传入已选图片
+                        .selectionMedia(mAdapter.getData())// 是否传入已选图片
                         .previewEggs(false)//预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                         //.previewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                         //.cropCompressQuality(90)// 废弃 改用cutOutQuality()
@@ -557,41 +534,50 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         //.videoQuality()// 视频录制质量 0 or 1
                         //.videoSecond()////显示多少秒以内的视频or音频也可适用
                         //.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
-                        .forResult(new OnResultCallbackListener<LocalMedia>() {
-                            @Override
-                            public void onResult(List<LocalMedia> result) {
-                                // 图片选择结果回调
-                                selectList = result;
-                                // 例如 LocalMedia 里面返回五种path
-                                // 1.media.getPath(); 为原图path
-                                // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
-                                // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
-                                // 4.media.getOriginalPath()); media.isOriginal());为true时此字段才有值
-                                // 5.media.getAndroidQToPath();为Android Q版本特有返回的字段，此字段有值就用来做上传使用
-                                // 如果同时开启裁剪和压缩，则取压缩路径为准因为是先裁剪后压缩
-                                for (LocalMedia media : selectList) {
-                                    Log.i(TAG, "是否压缩:" + media.isCompressed());
-                                    Log.i(TAG, "压缩:" + media.getCompressPath());
-                                    Log.i(TAG, "原图:" + media.getPath());
-                                    Log.i(TAG, "是否裁剪:" + media.isCut());
-                                    Log.i(TAG, "裁剪:" + media.getCutPath());
-                                    Log.i(TAG, "是否开启原图:" + media.isOriginal());
-                                    Log.i(TAG, "原图路径:" + media.getOriginalPath());
-                                    Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
-                                }
-                                mAdapter.setList(selectList);
-                                mAdapter.notifyDataSetChanged();
-                            }
-
-                            @Override
-                            public void onCancel() {
-                                Log.i(TAG, "PictureSelector Cancel");
-                            }
-                        });
+                        .forResult(new MyResultCallback(mAdapter));
             }
         }
 
     };
+
+
+    /**
+     * 返回结果回调
+     */
+    private static class MyResultCallback implements OnResultCallbackListener<LocalMedia> {
+        private WeakReference<GridImageAdapter> mAdapterWeakReference;
+
+        public MyResultCallback(GridImageAdapter adapter) {
+            super();
+            this.mAdapterWeakReference = new WeakReference<>(adapter);
+        }
+
+        @Override
+        public void onResult(List<LocalMedia> result) {
+            for (LocalMedia media : result) {
+                Log.i(TAG, "是否压缩:" + media.isCompressed());
+                Log.i(TAG, "压缩:" + media.getCompressPath());
+                Log.i(TAG, "原图:" + media.getPath());
+                Log.i(TAG, "是否裁剪:" + media.isCut());
+                Log.i(TAG, "裁剪:" + media.getCutPath());
+                Log.i(TAG, "是否开启原图:" + media.isOriginal());
+                Log.i(TAG, "原图路径:" + media.getOriginalPath());
+                Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
+                Log.i(TAG, "宽高: " + media.getWidth() + "x" + media.getHeight());
+                Log.i(TAG, "Size: " + media.getSize());
+                // TODO 可以通过PictureSelectorExternalUtils.getExifInterface();方法获取一些额外的资源信息，如旋转角度、经纬度等信息
+            }
+            if (mAdapterWeakReference.get() != null) {
+                mAdapterWeakReference.get().setList(result);
+                mAdapterWeakReference.get().notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        public void onCancel() {
+            Log.i(TAG, "PictureSelector Cancel");
+        }
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -600,7 +586,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
             switch (requestCode) {
                 case PictureConfig.CHOOSE_REQUEST:
                     // 图片选择结果回调
-                    selectList = PictureSelector.obtainMultipleResult(data);
+                    List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
                     // 例如 LocalMedia 里面返回五种path
                     // 1.media.getPath(); 为原图path
                     // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
@@ -629,18 +615,20 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.left_back:
-                getActivity().finish();
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
                 break;
             case R.id.minus:
                 if (maxSelectNum > 1) {
                     maxSelectNum--;
                 }
-                tv_select_num.setText(maxSelectNum + "");
+                tv_select_num.setText(ValueOf.toString(maxSelectNum));
                 mAdapter.setSelectMax(maxSelectNum);
                 break;
             case R.id.plus:
                 maxSelectNum++;
-                tv_select_num.setText(maxSelectNum + "");
+                tv_select_num.setText(ValueOf.toString(maxSelectNum));
                 mAdapter.setSelectMax(maxSelectNum);
                 break;
         }
@@ -1253,18 +1241,17 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Bundle extras;
-            switch (action) {
-                case BroadcastAction.ACTION_DELETE_PREVIEW_POSITION:
-                    // 外部预览删除按钮回调
-                    extras = intent.getExtras();
+            if (TextUtils.isEmpty(action)) {
+                return;
+            }
+            if (BroadcastAction.ACTION_DELETE_PREVIEW_POSITION.equals(action)) {// 外部预览删除按钮回调
+                Bundle extras = intent.getExtras();
+                if (extras != null) {
                     int position = extras.getInt(PictureConfig.EXTRA_PREVIEW_DELETE_POSITION);
                     ToastUtils.s(context, "delete image index:" + position);
-                    if (position < mAdapter.getItemCount()) {
-                        selectList.remove(position);
-                        mAdapter.notifyItemRemoved(position);
-                    }
-                    break;
+                    mAdapter.remove(position);
+                    mAdapter.notifyItemRemoved(position);
+                }
             }
         }
     };
@@ -1274,8 +1261,10 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
     public void onDestroy() {
         super.onDestroy();
         if (broadcastReceiver != null) {
-            BroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastReceiver,
-                    BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
+            if (getContext() != null) {
+                BroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastReceiver,
+                        BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
+            }
         }
     }
 }

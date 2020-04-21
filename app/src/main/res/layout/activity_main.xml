@@ -228,7 +228,7 @@
                 </RadioGroup>
 
                 <RadioGroup
-                    android:id="@+id/rgb_langue"
+                    android:id="@+id/rgb_language"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">

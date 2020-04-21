@@ -1486,12 +1486,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * @param intent
      */
     private void dispatchHandleCamera(Intent intent) {
-        if (config.isUseCustomCamera) {
-            // 如果在PictureCustomCameraActivity页面回来,同步一下PictureSelectionConfig,防止内存回收导致config不同步
-            PictureSelectionConfig selectionConfig = intent.getParcelableExtra(PictureConfig.EXTRA_CONFIG);
-            if (selectionConfig != null) {
-                config = selectionConfig;
-            }
+        // 如果在PictureCustomCameraActivity页面回来,同步一下PictureSelectionConfig,防止内存回收导致config不同步
+        PictureSelectionConfig selectionConfig = intent != null ? intent.getParcelableExtra(PictureConfig.EXTRA_CONFIG) : null;
+        if (selectionConfig != null) {
+            config = selectionConfig;
         }
         boolean isAudio = config.chooseMode == PictureMimeType.ofAudio();
         config.cameraPath = isAudio ? getAudioPath(intent) : config.cameraPath;
@@ -1528,11 +1526,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
                         media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
                         media.setRealPath(path);
-                        if (config.isUseCustomCamera) {
-                            // 自定义拍照时已经在应用沙盒内生成了文件
-                            String mediaPath = intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH);
-                            media.setAndroidQToPath(mediaPath);
-                        }
+                        // 自定义拍照时已经在应用沙盒内生成了文件
+                        String mediaPath = intent != null ? intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH) : null;
+                        media.setAndroidQToPath(mediaPath);
                     } else {
                         // 普通类型处理规则
                         File cameraFile = new File(config.cameraPath);

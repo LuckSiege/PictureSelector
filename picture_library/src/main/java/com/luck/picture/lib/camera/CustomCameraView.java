@@ -44,6 +44,7 @@ import com.luck.picture.lib.tools.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 /**
  * @author：luck
@@ -134,39 +135,10 @@ public class CustomCameraView extends RelativeLayout {
                 if (imageOutFile == null) {
                     return;
                 }
-                mCameraView.takePicture(imageOutFile, ContextCompat.getMainExecutor(getContext().getApplicationContext()), new ImageCapture.OnImageSavedCallback() {
-                    @Override
-                    public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                        if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(mConfig.cameraPath)) {
-                            PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Boolean>() {
-
-                                @Override
-                                public Boolean doInBackground() {
-                                    return AndroidQTransformUtils.copyPathToDCIM(getContext(),
-                                            imageOutFile, Uri.parse(mConfig.cameraPath));
-                                }
-
-                                @Override
-                                public void onSuccess(Boolean result) {
-                                    PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
-                                }
-                            });
-                        }
-                        mPhotoFile = imageOutFile;
-                        if (mImageCallbackListener != null) {
-                            mImageCallbackListener.onLoadImage(imageOutFile, mImagePreview);
-                        }
-                        mImagePreview.setVisibility(View.VISIBLE);
-                        mCaptureLayout.startTypeBtnAnimator();
-                    }
-
-                    @Override
-                    public void onError(@NonNull ImageCaptureException exception) {
-                        if (mCameraListener != null) {
-                            mCameraListener.onError(exception.getImageCaptureError(), exception.getMessage(), exception.getCause());
-                        }
-                    }
-                });
+                mPhotoFile = imageOutFile;
+                mCameraView.takePicture(imageOutFile, ContextCompat.getMainExecutor(getContext()),
+                        new MyImageResultCallback(getContext(), mConfig, imageOutFile,
+                                mImagePreview, mCaptureLayout, mImageCallbackListener, mCameraListener));
             }
 
             @Override
@@ -174,7 +146,7 @@ public class CustomCameraView extends RelativeLayout {
                 mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
                 mCameraView.setCaptureMode(androidx.camera.view.CameraView.CaptureMode.VIDEO);
-                mCameraView.startRecording(createVideoFile(), ContextCompat.getMainExecutor(getContext().getApplicationContext()),
+                mCameraView.startRecording(createVideoFile(), ContextCompat.getMainExecutor(getContext()),
                         new VideoCapture.OnVideoSavedCallback() {
                             @Override
                             public void onVideoSaved(@NonNull File file) {
@@ -277,6 +249,72 @@ public class CustomCameraView extends RelativeLayout {
                 mOnClickListener.onClick();
             }
         });
+    }
+
+    /**
+     * 拍照回调
+     */
+    private static class MyImageResultCallback implements ImageCapture.OnImageSavedCallback {
+        private WeakReference<Context> mContextReference;
+        private WeakReference<PictureSelectionConfig> mConfigReference;
+        private WeakReference<File> mFileReference;
+        private WeakReference<ImageView> mImagePreviewReference;
+        private WeakReference<CaptureLayout> mCaptureLayoutReference;
+        private WeakReference<ImageCallbackListener> mImageCallbackListenerReference;
+        private WeakReference<CameraListener> mCameraListenerReference;
+
+        public MyImageResultCallback(Context context, PictureSelectionConfig config,
+                                     File imageOutFile, ImageView imagePreview,
+                                     CaptureLayout captureLayout, ImageCallbackListener imageCallbackListener,
+                                     CameraListener cameraListener) {
+            super();
+            this.mContextReference = new WeakReference<>(context);
+            this.mConfigReference = new WeakReference<>(config);
+            this.mFileReference = new WeakReference<>(imageOutFile);
+            this.mImagePreviewReference = new WeakReference<>(imagePreview);
+            this.mCaptureLayoutReference = new WeakReference<>(captureLayout);
+            this.mImageCallbackListenerReference = new WeakReference<>(imageCallbackListener);
+            this.mCameraListenerReference = new WeakReference<>(cameraListener);
+        }
+
+        @Override
+        public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+            if (mConfigReference.get() != null) {
+                if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(mConfigReference.get().cameraPath)) {
+                    PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Boolean>() {
+
+                        @Override
+                        public Boolean doInBackground() {
+                            return AndroidQTransformUtils.copyPathToDCIM(mContextReference.get(),
+                                    mFileReference.get(), Uri.parse(mConfigReference.get().cameraPath));
+                        }
+
+                        @Override
+                        public void onSuccess(Boolean result) {
+                            PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
+                        }
+                    });
+                }
+            }
+            if (mImageCallbackListenerReference.get() != null
+                    && mFileReference.get() != null
+                    && mImagePreviewReference.get() != null) {
+                mImageCallbackListenerReference.get().onLoadImage(mFileReference.get(), mImagePreviewReference.get());
+            }
+            if (mImagePreviewReference.get() != null) {
+                mImagePreviewReference.get().setVisibility(View.VISIBLE);
+            }
+            if (mCaptureLayoutReference.get() != null) {
+                mCaptureLayoutReference.get().startTypeBtnAnimator();
+            }
+        }
+
+        @Override
+        public void onError(@NonNull ImageCaptureException exception) {
+            if (mCameraListenerReference.get() != null) {
+                mCameraListenerReference.get().onError(exception.getImageCaptureError(), exception.getMessage(), exception.getCause());
+            }
+        }
     }
 
     private TextureView.SurfaceTextureListener surfaceTextureListener = new TextureView.SurfaceTextureListener() {
