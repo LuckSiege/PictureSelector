@@ -55,6 +55,7 @@ public class PictureSelectionModel {
     /**
      * @param themeStyleId PictureSelector Theme style
      * @return PictureSelectionModel
+     * Use {@link R.style#picture_default_style#picture_Sina_style#picture_white_style#picture_QQ_style#picture_WeChat_style}
      */
     public PictureSelectionModel theme(@StyleRes int themeStyleId) {
         selectionConfig.themeStyleId = themeStyleId;
