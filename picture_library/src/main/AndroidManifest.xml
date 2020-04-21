@@ -4,7 +4,7 @@
     package="com.luck.picture.lib">
 
     <uses-sdk tools:overrideLibrary="androidx.camera.view,
-    androidx.camera:camera-camera2:1.0.0-alpha08,
+    androidx.camera:camera-camera2,
     androidx.camera.camera2,androidx.camera.lifecycle,
     androidx.camera.core" />
 
