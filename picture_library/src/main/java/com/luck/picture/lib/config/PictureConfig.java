@@ -41,8 +41,6 @@ public final class PictureConfig {
 
     public final static int MIN_PAGE_SIZE = 10;
 
-    public final static int MAX_TOTAL_SIZE = 50;
-
     public final static int LOADED = 0;
 
     public final static int NORMAL = -1;
@@ -52,6 +50,8 @@ public final class PictureConfig {
     public final static int TYPE_ALL = 0;
     public final static int TYPE_IMAGE = 1;
     public final static int TYPE_VIDEO = 2;
+
+    @Deprecated
     public final static int TYPE_AUDIO = 3;
 
     public final static int MAX_COMPRESS_SIZE = 100;
