@@ -11,12 +11,13 @@ ext {
 
             //open version control
             androidSupportVersion         : "27.0.2",
-            version_recyclerview          : "1.0.0",
-            version_appcompat             : "1.0.0",
+            version_recyclerview          : "1.1.0",
+            version_appcompat             : "1.1.0",
+            localbroadcastmanager         : "1.0.0",
 
 
-            camerax_version               : "1.0.0-alpha10",
-            camera_core_version           : "1.0.0-beta01",
+            camerax_version               : "1.0.0-beta03",
+            camera_core_version           : "1.0.0-beta03",
             futures_version               : "1.0.0",
 
             // ucrop
