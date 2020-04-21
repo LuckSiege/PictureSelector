@@ -21,7 +21,7 @@ import java.util.Locale;
 /**
  * @author：luck
  * @date：2019-12-03 14:53
- * @describe：PictureSelector Crash日志收集工具类
+ * @describe：PictureSelector Crash Log collection class
  */
 public class PictureSelectorCrashUtils {
     private static boolean mInitialized;

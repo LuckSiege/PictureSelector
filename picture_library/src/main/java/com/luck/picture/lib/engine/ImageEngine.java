@@ -11,11 +11,11 @@ import com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView;
 /**
  * @author：luck
  * @date：2019-11-13 16:59
- * @describe：图片加载引擎接口
+ * @describe：ImageEngine
  */
 public interface ImageEngine {
     /**
-     * 加载图片
+     * Loading image
      *
      * @param context
      * @param url
@@ -24,7 +24,7 @@ public interface ImageEngine {
     void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView);
 
     /**
-     * 加载图片
+     * Loading image
      *
      * @param context
      * @param url
@@ -33,7 +33,7 @@ public interface ImageEngine {
     void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView, SubsamplingScaleImageView longImageView, OnImageCompleteCallback callback);
 
     /**
-     * 加载网络长图适配
+     * Load network long graph adaption
      *
      * @param context
      * @param url
@@ -44,29 +44,29 @@ public interface ImageEngine {
 
 
     /**
-     * 加载相册目录图片
+     * Load album catalog pictures
      *
-     * @param context   上下文
-     * @param url       图片路径
-     * @param imageView 承载图片ImageView
+     * @param context
+     * @param url
+     * @param imageView
      */
     void loadFolderImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView);
 
     /**
-     * 加载gif图片
+     * Load GIF image
      *
-     * @param context   上下文
-     * @param url       图片路径
-     * @param imageView 承载图片ImageView
+     * @param context
+     * @param url
+     * @param imageView
      */
     void loadAsGifImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView);
 
     /**
-     * 加载图片列表图片
+     * Load picture list picture
      *
-     * @param context   上下文
-     * @param url       图片路径
-     * @param imageView 承载图片ImageView
+     * @param context
+     * @param url
+     * @param imageView
      */
     void loadGridImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView);
 }

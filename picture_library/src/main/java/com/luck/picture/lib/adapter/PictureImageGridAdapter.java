@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * @author：luck
  * @date：2016-12-30 12:02
- * @describe：图片列表
+ * @describe：PictureImageGridAdapter
  */
 public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -211,7 +211,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                             return;
                         }
                     }
-                    // 如原图路径不存在或者路径存在但文件不存在
+                    // If the original path does not exist or the path does exist but the file does not exist
                     String newPath = SdkVersionUtils.checkedAndroid_Q()
                             ? PictureFileUtils.getPath(context, Uri.parse(path)) : path;
                     if (!TextUtils.isEmpty(newPath) && !new File(newPath).exists()) {
@@ -221,7 +221,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     if (SdkVersionUtils.checkedAndroid_Q()) {
                         image.setRealPath(newPath);
                     }
-                    // 如果有旋转信息图片宽高则是相反
+                    // The width and height of the image are reversed if there is rotation information
                     MediaUtils.setOrientationAsynchronous(context, image);
                     changeCheckboxState(contentHolder, image);
                 });
@@ -232,7 +232,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                         return;
                     }
                 }
-                // 如原图路径不存在或者路径存在但文件不存在
+                // If the original path does not exist or the path does exist but the file does not exist
                 String newPath = SdkVersionUtils.checkedAndroid_Q()
                         ? PictureFileUtils.getPath(context, Uri.parse(path)) : path;
                 if (!TextUtils.isEmpty(newPath) && !new File(newPath).exists()) {
@@ -246,7 +246,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 if (SdkVersionUtils.checkedAndroid_Q()) {
                     image.setRealPath(newPath);
                 }
-                // 如果有旋转信息图片宽高则是相反
+                // The width and height of the image are reversed if there is rotation information
                 MediaUtils.setOrientationAsynchronous(context, image);
                 boolean eqResult =
                         PictureMimeType.isHasImage(mimeType) && config.enablePreview
@@ -257,12 +257,12 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 if (eqResult) {
                     if (PictureMimeType.isHasVideo(image.getMimeType())) {
                         if (config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
-                            // 视频小于最低指定的长度
+                            // The video is less than the minimum specified length
                             showPromptDialog(context.getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
                             return;
                         }
                         if (config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
-                            // 视频时长超过了指定的长度
+                            // The length of the video exceeds the specified length
                             showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
                             return;
                         }
@@ -276,7 +276,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     /**
-     * 处理蒙版效果
+     * Handle mask effects
      *
      * @param contentHolder
      * @param item
@@ -295,14 +295,14 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 boolean isSelected = contentHolder.tvCheck.isSelected();
                 if (config.chooseMode == PictureMimeType.ofAll()) {
                     if (PictureMimeType.isHasImage(media.getMimeType())) {
-                        // 所有视频不可选
+                        // All videos are not optional
                         if (!isSelected && !PictureMimeType.isHasImage(item.getMimeType())) {
                             contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
                                     (context, PictureMimeType.isHasVideo(item.getMimeType()) ? R.color.picture_color_half_white : R.color.picture_color_20), PorterDuff.Mode.SRC_ATOP);
                         }
                         item.setMaxSelectEnabledMask(PictureMimeType.isHasVideo(item.getMimeType()));
                     } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
-                        // 所有图片不可选
+                        // All images are not optional
                         if (!isSelected && !PictureMimeType.isHasVideo(item.getMimeType())) {
                             contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
                                     (context, PictureMimeType.isHasImage(item.getMimeType()) ? R.color.picture_color_half_white : R.color.picture_color_20), PorterDuff.Mode.SRC_ATOP);
@@ -390,7 +390,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     /**
-     * 选择按钮更新
+     * Update button status
      */
     private void notifyCheckChanged(ViewHolder viewHolder, LocalMedia imageBean) {
         viewHolder.tvCheck.setText("");
@@ -407,7 +407,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     /**
-     * 改变图片选中状态
+     * Update the selected status of the image
      *
      * @param contentHolder
      * @param image
@@ -419,7 +419,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         int count = selectData.size();
         String mimeType = count > 0 ? selectData.get(0).getMimeType() : "";
         if (config.isWithVideoImage) {
-            // 混选模式
+            // isWithVideoImage mode
             int videoSize = 0;
             for (int i = 0; i < count; i++) {
                 LocalMedia media = selectData.get(i);
@@ -430,7 +430,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
 
             if (PictureMimeType.isHasVideo(image.getMimeType())) {
                 if (config.maxVideoSelectNum <= 0) {
-                    // 如果视频可选数量是0
                     showPromptDialog(context.getString(R.string.picture_rule));
                     return;
                 }
@@ -441,19 +440,16 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 }
 
                 if (videoSize >= config.maxVideoSelectNum && !isChecked) {
-                    // 如果选择的是视频
                     showPromptDialog(StringUtils.getMsg(context, image.getMimeType(), config.maxVideoSelectNum));
                     return;
                 }
 
                 if (!isChecked && config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
-                    // 视频小于最低指定的长度
                     showPromptDialog(context.getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
                     return;
                 }
 
                 if (!isChecked && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
-                    // 视频时长超过了指定的长度
                     showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
                     return;
                 }
@@ -467,7 +463,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
 
         } else {
-            // 非混选模式
             if (!TextUtils.isEmpty(mimeType)) {
                 boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, image.getMimeType());
                 if (!mimeTypeSame) {
@@ -477,18 +472,15 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
             if (PictureMimeType.isHasVideo(mimeType) && config.maxVideoSelectNum > 0) {
                 if (count >= config.maxVideoSelectNum && !isChecked) {
-                    // 如果先选择的是视频
                     showPromptDialog(StringUtils.getMsg(context, mimeType, config.maxVideoSelectNum));
                     return;
                 }
                 if (!isChecked && config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
-                    // 视频小于最低指定的长度
                     showPromptDialog(context.getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
                     return;
                 }
 
                 if (!isChecked && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
-                    // 视频时长超过了指定的长度
                     showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
                     return;
                 }
@@ -499,13 +491,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 }
                 if (PictureMimeType.isHasVideo(image.getMimeType())) {
                     if (!isChecked && config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
-                        // 视频小于最低指定的长度
                         showPromptDialog(context.getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
                         return;
                     }
 
                     if (!isChecked && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
-                        // 视频时长超过了指定的长度
                         showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
                         return;
                     }
@@ -528,12 +518,12 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 }
             }
         } else {
-            // 如果是单选，则清空已选中的并刷新列表(作单一选择)
+            // The radio
             if (config.selectionMode == PictureConfig.SINGLE) {
                 singleRadioMediaImage();
             }
 
-            // 如果宽高为0，重新获取宽高
+            // If the width and height are 0, regain the width and height
             if (image.getWidth() == 0 || image.getHeight() == 0) {
                 int width = 0, height = 0;
                 image.setOrientation(-1);
@@ -569,28 +559,27 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             contentHolder.tvCheck.startAnimation(AnimationUtils.loadAnimation(context, R.anim.picture_anim_modal_in));
         }
 
-        //通知点击项发生了改变
         boolean isRefreshAll = false;
         if (config.isMaxSelectEnabledMask) {
             if (config.chooseMode == PictureMimeType.ofAll()) {
-                // ofAll模式
+                // ofAll
                 if (config.isWithVideoImage && config.maxVideoSelectNum > 0) {
                     if (getSelectedSize() >= config.maxSelectNum) {
                         isRefreshAll = true;
                     }
                     if (isChecked) {
-                        // 删除
+                        // delete
                         if (getSelectedSize() == config.maxSelectNum - 1) {
                             isRefreshAll = true;
                         }
                     }
                 } else {
                     if (!isChecked && getSelectedSize() == 1) {
-                        // 添加
+                        // add
                         isRefreshAll = true;
                     }
                     if (isChecked && getSelectedSize() == 0) {
-                        // 删除
+                        // delete
                         isRefreshAll = true;
                     }
                 }
@@ -598,20 +587,20 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 // ofImage or ofVideo or ofAudio
                 if (config.chooseMode == PictureMimeType.ofVideo() && config.maxVideoSelectNum > 0) {
                     if (!isChecked && getSelectedSize() == config.maxVideoSelectNum) {
-                        // 添加
+                        // add
                         isRefreshAll = true;
                     }
                     if (isChecked && getSelectedSize() == config.maxVideoSelectNum - 1) {
-                        // 删除
+                        // delete
                         isRefreshAll = true;
                     }
                 } else {
                     if (!isChecked && getSelectedSize() == config.maxSelectNum) {
-                        // 添加
+                        // add
                         isRefreshAll = true;
                     }
                     if (isChecked && getSelectedSize() == config.maxSelectNum - 1) {
-                        // 删除
+                        // delete
                         isRefreshAll = true;
                     }
                 }
@@ -631,7 +620,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     /**
-     * 单选模式
+     * Radio mode
      */
     private void singleRadioMediaImage() {
         if (selectData != null
@@ -643,7 +632,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     /**
-     * 更新选择的顺序
+     * Update the selection order
      */
     private void subSelectPosition() {
         if (config.checkNumMode) {
@@ -657,7 +646,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     /**
-     * 选中的图片并执行动画
+     * Select the image and animate it
      *
      * @param holder
      * @param isChecked
@@ -673,14 +662,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-
-    public void setOnPhotoSelectChangedListener(OnPhotoSelectChangedListener
-                                                        imageSelectChangedListener) {
-        this.imageSelectChangedListener = imageSelectChangedListener;
-    }
-
     /**
-     * 提示
+     * Tips
      */
     private void showPromptDialog(String content) {
         PictureCustomDialog dialog = new PictureCustomDialog(context, R.layout.picture_prompt_dialog);
@@ -689,5 +672,16 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         tvContent.setText(content);
         btnOk.setOnClickListener(v -> dialog.dismiss());
         dialog.show();
+    }
+
+
+    /**
+     * Binding listener
+     *
+     * @param imageSelectChangedListener
+     */
+    public void setOnPhotoSelectChangedListener(OnPhotoSelectChangedListener
+                                                        imageSelectChangedListener) {
+        this.imageSelectChangedListener = imageSelectChangedListener;
     }
 }

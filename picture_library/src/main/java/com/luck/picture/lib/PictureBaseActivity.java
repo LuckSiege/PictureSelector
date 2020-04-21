@@ -56,7 +56,7 @@ import java.util.Objects;
 /**
  * @author：luck
  * @data：2018/3/28 下午1:00
- * @描述: Activity基类
+ * @describe: BaseActivity
  */
 public abstract class PictureBaseActivity extends AppCompatActivity {
     protected PictureSelectionConfig config;

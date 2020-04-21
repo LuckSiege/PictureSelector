@@ -66,7 +66,7 @@ public class PhotoItemSelectedDialog extends DialogFragment implements View.OnCl
     }
 
     /**
-     * 设置DialogFragment样式
+     * DialogFragment Style
      */
     private void initDialogStyle() {
         Dialog dialog = getDialog();

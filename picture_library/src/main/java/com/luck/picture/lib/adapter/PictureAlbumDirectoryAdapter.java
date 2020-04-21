@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * @author：luck
  * @date：2016-12-11 17:02
- * @describe：文件夹目录
+ * @describe：PictureAlbumDirectoryAdapter
  */
 public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAlbumDirectoryAdapter.ViewHolder> {
     private List<LocalMediaFolder> folders = new ArrayList<>();

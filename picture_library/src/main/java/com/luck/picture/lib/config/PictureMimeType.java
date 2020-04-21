@@ -11,7 +11,7 @@ import java.io.File;
 /**
  * @author：luck
  * @date：2017-5-24 17:02
- * @describe：图片列表
+ * @describe：PictureMimeType
  */
 
 public final class PictureMimeType {
@@ -89,7 +89,7 @@ public final class PictureMimeType {
 
 
     /**
-     * 是否是gif
+     * isGif
      *
      * @param mimeType
      * @return
@@ -100,7 +100,7 @@ public final class PictureMimeType {
 
 
     /**
-     * 是否是视频
+     * isVideo
      *
      * @param mimeType
      * @return
@@ -110,7 +110,7 @@ public final class PictureMimeType {
     }
 
     /**
-     * 是否是音频
+     * isAudio
      *
      * @param mimeType
      * @return
@@ -120,7 +120,7 @@ public final class PictureMimeType {
     }
 
     /**
-     * 是否是图片
+     * isImage
      *
      * @param mimeType
      * @return
@@ -154,7 +154,7 @@ public final class PictureMimeType {
     }
 
     /**
-     * 是否是网络图片
+     * is Network image
      *
      * @param path
      * @return
@@ -170,7 +170,7 @@ public final class PictureMimeType {
     }
 
     /**
-     * 判断文件类型是图片还是视频
+     * Determine whether the file type is an image or a video
      *
      * @param cameraMimeType
      * @return
@@ -187,7 +187,7 @@ public final class PictureMimeType {
     }
 
     /**
-     * 判断文件名是否是图片
+     * Determines if the file name is a picture
      *
      * @param name
      * @return
@@ -200,7 +200,7 @@ public final class PictureMimeType {
     }
 
     /**
-     * 是否是同一类型
+     * Is it the same type
      *
      * @param oldMimeType
      * @param newMimeType
@@ -212,7 +212,7 @@ public final class PictureMimeType {
     }
 
     /**
-     * 获取图片mimeType
+     * Get Image mimeType
      *
      * @param path
      * @return
@@ -253,7 +253,7 @@ public final class PictureMimeType {
     }
 
     /**
-     * 获取图片后缀
+     * Get image suffix
      *
      * @param mineType
      * @return
@@ -274,7 +274,7 @@ public final class PictureMimeType {
 
 
     /**
-     * 是否是content://类型
+     * is content://
      *
      * @param url
      * @return
@@ -287,8 +287,9 @@ public final class PictureMimeType {
     }
 
     /**
-     * 根据不同的类型，返回不同的错误提示
+     * Returns an error message by type
      *
+     * @param context
      * @param mimeType
      * @return
      */

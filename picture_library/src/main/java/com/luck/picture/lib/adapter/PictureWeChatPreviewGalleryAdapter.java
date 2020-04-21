@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author：luck
  * @date：2019-11-30 20:50
- * @describe：微信风格选择后图片预览
+ * @describe：WeChat style selected after image preview
  */
 public class PictureWeChatPreviewGalleryAdapter
         extends RecyclerView.Adapter<PictureWeChatPreviewGalleryAdapter.ViewHolder> {

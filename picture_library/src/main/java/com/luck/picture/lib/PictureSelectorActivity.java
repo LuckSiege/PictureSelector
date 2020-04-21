@@ -76,7 +76,7 @@ import java.util.Objects;
 /**
  * @author：luck
  * @data：2018/1/27 19:12
- * @描述: Media 选择页面
+ * @describe: PictureSelectorActivity
  */
 public class PictureSelectorActivity extends PictureBaseActivity implements View.OnClickListener,
         OnAlbumItemClickListener, OnPhotoSelectChangedListener<LocalMedia>, OnItemClickListener,

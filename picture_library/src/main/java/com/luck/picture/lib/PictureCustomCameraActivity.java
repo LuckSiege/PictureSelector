@@ -32,7 +32,7 @@ import java.lang.ref.WeakReference;
 /**
  * @author：luck
  * @date：2020-01-04 14:05
- * @describe：自定义拍照和录音
+ * @describe：Custom photos and videos
  */
 public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActivity {
 
@@ -69,10 +69,9 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
             return;
         }
 
-        // 验证相机权限
+        // 验证相机权限和麦克风权限
         if (PermissionChecker
                 .checkSelfPermission(this, Manifest.permission.CAMERA)) {
-            // 验证麦克风权限
             boolean isRecordAudio = PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
             if (isRecordAudio) {
                 createCameraView();

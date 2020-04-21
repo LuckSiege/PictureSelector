@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
  * Created by luck on 2017/12/4.
  * <p>
  * RecyclerView Bug：IndexOutOfBoundsException: Inconsistency detected. Invalid view holder adapter的解决方案
- * 只是把这个异常捕获了，不让他奔溃了，这个问题的终极解决方案还是得让google去修复。
  */
 
 public class WrapContentLinearLayoutManager extends LinearLayoutManager {
