@@ -15,7 +15,7 @@ ext {
             version_appcompat             : "1.1.0",
             localbroadcastmanager         : "1.0.0",
 
-
+            camerax_view                  : "1.0.0-alpha10",
             camerax_version               : "1.0.0-beta03",
             camera_core_version           : "1.0.0-beta03",
             futures_version               : "1.0.0",
@@ -26,7 +26,10 @@ ext {
             androidx_transition_version   : "1.2.0-rc01",
 
             // okio
-            okio_version                  : "2.5.0"
+            okio_version                  : "2.5.0",
+
+            // glide
+            glide_version                 : "4.11.0"
 
     ]
 }

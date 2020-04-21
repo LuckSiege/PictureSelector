@@ -33,7 +33,7 @@ dependencies {
     implementation "com.squareup.okio:okio:${cfgs.okio_version}"
     implementation "androidx.camera:camera-lifecycle:${cfgs.camerax_version}"
     implementation "androidx.localbroadcastmanager:localbroadcastmanager:${cfgs.localbroadcastmanager}"
-    api "androidx.camera:camera-core:${cfgs.camera_core_version}"
-    api "androidx.camera:camera-camera2:${cfgs.camerax_version}"
+    implementation "androidx.camera:camera-view:${cfgs.camerax_view}"
+
     api project(':ucrop')
 }
