@@ -341,8 +341,8 @@ public class LocalMediaPageLoader {
 
             @Override
             public void onSuccess(MediaData result) {
-                if (listener != null) {
-                    listener.onComplete(result.data, result.isHasNextMore);
+                if (listener != null && result != null) {
+                    listener.onComplete(result.data, page, result.isHasNextMore);
                 }
             }
         });
@@ -454,8 +454,8 @@ public class LocalMediaPageLoader {
 
             @Override
             public void onSuccess(List<LocalMediaFolder> result) {
-                if (listener != null) {
-                    listener.onComplete(result, false);
+                if (listener != null && result != null) {
+                    listener.onComplete(result, 1, false);
                 }
             }
         });

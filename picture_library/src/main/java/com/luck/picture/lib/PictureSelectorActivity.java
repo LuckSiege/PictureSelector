@@ -81,6 +81,7 @@ import java.util.Objects;
 public class PictureSelectorActivity extends PictureBaseActivity implements View.OnClickListener,
         OnAlbumItemClickListener, OnPhotoSelectChangedListener<LocalMedia>, OnItemClickListener,
         OnRecyclerViewPreloadMoreListener {
+    private static final String TAG = PictureSelectorActivity.class.getSimpleName();
     protected ImageView mIvPictureLeftBack;
     protected ImageView mIvArrow;
     protected View titleViewBg;
@@ -241,11 +242,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (isHasMore) {
                 long bucketId = ValueOf.toLong(mTvPictureTitle.getTag(R.id.view_tag));
                 mPage++;
-                Log.i("YYY", "开始请求第" + mPage + "页数据");
                 LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage,
-                        (OnQueryDataResultListener<LocalMedia>) (result, isHasMore) -> {
+                        (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
                             if (!isFinishing()) {
-                                Log.i("YYY", "第" + mPage + "页请求完成->" + result.size() + ":" + isHasMore);
+                                Log.i(TAG, "Page " + currentPage + " data load complete, whether there is more " + isHasMore);
                                 this.isHasMore = isHasMore;
                                 if (isHasMore) {
                                     hideDataNull();
@@ -461,7 +461,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         showPleaseDialog();
         if (config.isPageStrategy) {
             LocalMediaPageLoader.getInstance(getContext(), config).loadAllMedia(
-                    (OnQueryDataResultListener<LocalMediaFolder>) (data, isHasMore) -> {
+                    (OnQueryDataResultListener<LocalMediaFolder>) (data, currentPage, isHasMore) -> {
                         if (!isFinishing()) {
                             initPageModel(data);
                             synchronousCover();
@@ -497,9 +497,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             long bucketId = folder != null ? folder.getBucketId() : -1;
             mRecyclerView.setEnabledLoadMore(true);
             LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage,
-                    (OnQueryDataResultListener<LocalMedia>) (data, isHasMore) -> {
+                    (OnQueryDataResultListener<LocalMedia>) (data, currentPage, isHasMore) -> {
                         if (!isFinishing()) {
                             dismissDialog();
+                            Log.i(TAG, "Page " + currentPage + " data load complete, whether there is more " + isHasMore);
                             if (mAdapter != null) {
                                 // isHasMore为true说明还有数据,但data为0可能是开启了过滤条件碰巧整页都不符合
                                 if (isHasMore && data.size() == 0) {
@@ -1166,9 +1167,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mPage = 1;
                 showPleaseDialog();
                 LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage,
-                        (OnQueryDataResultListener<LocalMedia>) (result, isHasMore) -> {
+                        (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
                             this.isHasMore = isHasMore;
                             if (!isFinishing()) {
+                                Log.i(TAG, "Page " + currentPage + " data load complete, whether there is more " + isHasMore);
                                 if (result.size() == 0) {
                                     mAdapter.clear();
                                 }

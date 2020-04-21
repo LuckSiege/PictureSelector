@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -45,6 +46,7 @@ import java.util.List;
  */
 public class PicturePreviewActivity extends PictureBaseActivity implements
         View.OnClickListener, PictureSimpleFragmentAdapter.OnCallBackActivity {
+    private static final String TAG = PicturePreviewActivity.class.getSimpleName();
     protected ImageView pictureLeftBack;
     protected TextView tvMediaNum, tvTitle, mTvPictureOk;
     protected PreviewViewPager viewPager;
@@ -216,8 +218,9 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         mPage = getIntent().getIntExtra(PictureConfig.EXTRA_PAGE, 0);
         mPage++;
         LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage, config.pageSize,
-                (OnQueryDataResultListener<LocalMedia>) (result, isHasMore) -> {
+                (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
                     if (!isFinishing()) {
+                        Log.i(TAG, "Page " + currentPage + " data load complete, whether there is more " + isHasMore);
                         this.isHasMore = isHasMore;
                         if (isHasMore) {
                             int size = result.size();
@@ -240,9 +243,10 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         long bucketId = getIntent().getLongExtra(PictureConfig.EXTRA_BUCKET_ID, -1);
         mPage++;
         LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage, config.pageSize,
-                (OnQueryDataResultListener<LocalMedia>) (result, isHasMore) -> {
+                (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
                     if (!isFinishing()) {
                         this.isHasMore = isHasMore;
+                        Log.i(TAG, "Page " + currentPage + " data load complete, whether there is more " + isHasMore);
                         if (isHasMore) {
                             int size = result.size();
                             if (size > 0 && adapter != null) {

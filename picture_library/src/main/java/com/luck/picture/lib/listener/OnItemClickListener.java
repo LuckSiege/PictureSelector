@@ -9,7 +9,7 @@ import android.view.View;
  */
 public interface OnItemClickListener {
     /**
-     * item点击事件
+     * Item click event
      *
      * @param v
      * @param position

@@ -9,10 +9,11 @@ import java.util.List;
  */
 public interface OnQueryDataResultListener<T> {
     /**
-     * 查询完成
+     * Query to complete The callback listener
      *
-     * @param data
-     * @param isHasMore
+     * @param data        The data source
+     * @param currentPage The page number
+     * @param isHasMore   Is there more
      */
-    void onComplete(List<T> data, boolean isHasMore);
+    void onComplete(List<T> data, int currentPage, boolean isHasMore);
 }

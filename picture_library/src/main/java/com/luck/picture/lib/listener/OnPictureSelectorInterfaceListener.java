@@ -7,7 +7,7 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 /**
  * @author：luck
  * @date：2020-03-22 15:15
- * @describe：PictureSelector额外提供给开发者的接口回调
+ * @describe：PictureSelector Additional interface callbacks for developers
  */
 public interface OnPictureSelectorInterfaceListener {
     /**

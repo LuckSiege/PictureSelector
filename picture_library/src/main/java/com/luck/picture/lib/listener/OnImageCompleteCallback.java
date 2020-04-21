@@ -3,16 +3,16 @@ package com.luck.picture.lib.listener;
 /**
  * @author：luck
  * @date：2020-01-03 16:43
- * @describe：图片加载完成回调
+ * @describe：Image load complete callback
  */
 public interface OnImageCompleteCallback {
     /**
-     * 开始加载
+     * Start loading
      */
     void onShowLoading();
 
     /**
-     * 隐藏加载
+     * Stop loading
      */
     void onHideLoading();
 }

@@ -7,7 +7,7 @@ package com.luck.picture.lib.listener;
  */
 public interface OnRecyclerViewPreloadMoreListener {
     /**
-     * 加载更多
+     * load more
      */
     void onRecyclerViewPreloadMore();
 }

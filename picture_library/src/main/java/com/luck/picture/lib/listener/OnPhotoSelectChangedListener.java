@@ -11,19 +11,19 @@ import java.util.List;
  */
 public interface OnPhotoSelectChangedListener<T extends LocalMedia> {
     /**
-     * 拍照回调
+     * Photo callback
      */
     void onTakePhoto();
 
     /**
-     * 已选Media回调
+     * Selected LocalMedia callback
      *
      * @param data
      */
     void onChange(List<T> data);
 
     /**
-     * 图片预览回调
+     * Image preview callback
      *
      * @param data
      * @param position
