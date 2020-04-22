@@ -152,7 +152,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         isCheckConfigNull();
         // 单独拍照不设置主题因为拍照界面已经设置了透明主题了
         if (!config.camera) {
-            setTheme(config.themeStyleId);
+            setTheme(config.themeStyleId == 0 ? R.style.picture_default_style : config.themeStyleId);
         }
         super.onCreate(savedInstanceState == null ? new Bundle() : savedInstanceState);
         if (isRequestedOrientation()) {
