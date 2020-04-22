@@ -233,6 +233,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             return;
         }
         // 开启异步线程进行处理
+        showPleaseDialog();
         PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<LocalMedia>() {
 
             @Override
@@ -305,6 +306,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             @Override
             public void onSuccess(LocalMedia result) {
                 // 刷新系统相册
+                dismissDialog();
                 if (!SdkVersionUtils.checkedAndroid_Q()) {
                     if (config.isFallbackVersion3) {
                         new PictureMediaScannerConnection(getContext(), config.cameraPath);
