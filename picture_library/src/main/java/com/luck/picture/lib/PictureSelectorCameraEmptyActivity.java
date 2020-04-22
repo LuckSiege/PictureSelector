@@ -81,7 +81,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         if (PermissionChecker
                 .checkSelfPermission(this, Manifest.permission.CAMERA)) {
             boolean isPermissionChecker = true;
-            if (config.isUseCustomCamera) {
+            if (config != null && config.isUseCustomCamera) {
                 isPermissionChecker = PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
             }
             if (isPermissionChecker) {
