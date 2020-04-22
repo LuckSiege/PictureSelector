@@ -589,6 +589,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 folderWindow.bindFolder(folders);
                 LocalMediaFolder folder = folders.get(0);
                 folder.setChecked(true);
+                mTvPictureTitle.setTag(R.id.view_count_tag, folder.getImageNum());
                 List<LocalMedia> result = folder.getData();
                 // 这里解决有些机型会出现拍照完，相册列表不及时刷新问题
                 // 因为onActivityResult里手动添加拍照后的照片，
@@ -1180,12 +1181,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         boolean camera = config.isCamera && isCameraFolder;
         mAdapter.setShowCamera(camera);
         mTvPictureTitle.setText(folderName);
+        mTvPictureTitle.setTag(R.id.view_tag, bucketId);
+        mTvPictureTitle.setTag(R.id.view_count_tag, folderWindow.getFolder(position) != null
+                ? folderWindow.getFolder(position).getImageNum() : 0);
         if (config.isPageStrategy) {
             long currentBucketId = ValueOf.toLong(mTvPictureTitle.getTag(R.id.view_tag));
             if (currentBucketId != bucketId) {
-                mTvPictureTitle.setTag(R.id.view_tag, bucketId);
-                mTvPictureTitle.setTag(R.id.view_count_tag, folderWindow.getFolder(position) != null
-                        ? folderWindow.getFolder(position).getImageNum() : 0);
                 mPage = 1;
                 showPleaseDialog();
                 LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage,

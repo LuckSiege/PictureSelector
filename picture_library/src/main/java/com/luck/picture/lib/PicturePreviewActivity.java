@@ -79,7 +79,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     /**
      * 分页码
      */
-    private int mPage = 1;
+    private int mPage = 0;
 
 
     @Override
@@ -140,15 +140,28 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             initViewPageAdapterData(data);
         } else {
             data = ImagesObservable.getInstance().readPreviewMediaData();
+            boolean isEmpty = data.size() == 0;
+            totalNumber = getIntent().getIntExtra(PictureConfig.EXTRA_DATA_COUNT, 0);
             if (config.isPageStrategy) {
                 // 分页模式
-                totalNumber = getIntent().getIntExtra(PictureConfig.EXTRA_DATA_COUNT, 0);
+                if (isEmpty) {
+                    // 这种情况有可能是单例被回收了导致readPreviewMediaData();返回的数据为0，那就从第一页开始加载吧
+                    setNewTitle();
+                } else {
+                    mPage = getIntent().getIntExtra(PictureConfig.EXTRA_PAGE, 0);
+                }
                 initViewPageAdapterData(data);
                 loadData();
                 setTitle();
             } else {
                 // 普通模式
                 initViewPageAdapterData(data);
+                if (isEmpty) {
+                    // 这种情况有可能是单例被回收了导致readPreviewMediaData();返回的数据为0，暂时自动切换成分页模式去获取数据
+                    config.isPageStrategy = true;
+                    setNewTitle();
+                    loadData();
+                }
             }
         }
 
@@ -167,6 +180,9 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 position = i;
                 setTitle();
                 LocalMedia media = adapter.getItem(position);
+                if (media == null) {
+                    return;
+                }
                 index = media.getPosition();
                 if (!config.previewEggs) {
                     if (config.checkNumMode) {
@@ -215,7 +231,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      */
     private void loadData() {
         long bucketId = getIntent().getLongExtra(PictureConfig.EXTRA_BUCKET_ID, -1);
-        mPage = getIntent().getIntExtra(PictureConfig.EXTRA_PAGE, 0);
         mPage++;
         LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage, config.pageSize,
                 (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
@@ -378,21 +393,25 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 int num;
                 if (positionOffsetPixels < screenWidth / 2) {
                     media = adapter.getItem(position);
-                    check.setSelected(isSelected(media));
-                    if (config.checkNumMode) {
-                        num = media.getNum();
-                        check.setText(ValueOf.toString(num));
-                        notifyCheckChanged(media);
-                        onImageChecked(position);
+                    if (media != null) {
+                        check.setSelected(isSelected(media));
+                        if (config.checkNumMode) {
+                            num = media.getNum();
+                            check.setText(ValueOf.toString(num));
+                            notifyCheckChanged(media);
+                            onImageChecked(position);
+                        }
                     }
                 } else {
                     media = adapter.getItem(position + 1);
-                    check.setSelected(isSelected(media));
-                    if (config.checkNumMode) {
-                        num = media.getNum();
-                        check.setText(ValueOf.toString(num));
-                        notifyCheckChanged(media);
-                        onImageChecked(position + 1);
+                    if (media != null) {
+                        check.setSelected(isSelected(media));
+                        if (config.checkNumMode) {
+                            num = media.getNum();
+                            check.setText(ValueOf.toString(num));
+                            notifyCheckChanged(media);
+                            onImageChecked(position + 1);
+                        }
                     }
                 }
             }
@@ -414,12 +433,21 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         LocalMedia media = adapter.getItem(position);
         if (media != null) {
             index = media.getPosition();
+            if (config.checkNumMode) {
+                tvMediaNum.setSelected(true);
+                check.setText(ValueOf.toString(media.getNum()));
+                notifyCheckChanged(media);
+            }
         }
-        if (config.checkNumMode) {
-            tvMediaNum.setSelected(true);
-            check.setText(ValueOf.toString(media.getNum()));
-            notifyCheckChanged(media);
-        }
+    }
+
+    /**
+     * 重置标题栏和分页码
+     */
+    private void setNewTitle() {
+        mPage = 0;
+        position = 0;
+        setTitle();
     }
 
     /**
@@ -471,7 +499,9 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     public void onImageChecked(int position) {
         if (adapter.getSize() > 0) {
             LocalMedia media = adapter.getItem(position);
-            check.setSelected(isSelected(media));
+            if (media != null) {
+                check.setSelected(isSelected(media));
+            }
         } else {
             check.setSelected(false);
         }
@@ -575,7 +605,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         videoSize++;
                     }
                 }
-                if (PictureMimeType.isHasVideo(image.getMimeType())) {
+                if (image != null && PictureMimeType.isHasVideo(image.getMimeType())) {
                     if (config.maxVideoSelectNum <= 0) {
                         // 如果视频可选数量是0
                         showPromptDialog(getString(R.string.picture_rule));
@@ -605,7 +635,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         return;
                     }
                 }
-                if (PictureMimeType.isHasImage(image.getMimeType())) {
+                if (image != null && PictureMimeType.isHasImage(image.getMimeType())) {
                     if (selectData.size() >= config.maxSelectNum && !check.isSelected()) {
                         showPromptDialog(getString(R.string.picture_message_max_num, config.maxSelectNum));
                         return;

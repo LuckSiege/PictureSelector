@@ -230,6 +230,7 @@ public class LocalMediaLoader {
                         List<LocalMedia> images = folder.getData();
                         images.add(image);
                         folder.setImageNum(folder.getImageNum() + 1);
+                        folder.setBucketId(image.getBucketId());
                         latelyImages.add(image);
                         int imageNum = allImageFolder.getImageNum();
                         allImageFolder.setImageNum(imageNum + 1);
@@ -245,6 +246,7 @@ public class LocalMediaLoader {
                                 mContext.getString(R.string.picture_all_audio)
                                 : mContext.getString(R.string.picture_camera_roll);
                         allImageFolder.setName(title);
+                        allImageFolder.setBucketId(-1);
                         allImageFolder.setOfAllType(config.chooseMode);
                         allImageFolder.setCameraFolder(true);
                         allImageFolder.setData(latelyImages);
