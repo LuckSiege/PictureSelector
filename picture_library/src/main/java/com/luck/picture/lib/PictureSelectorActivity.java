@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -101,6 +102,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected CheckBox mCbOriginal;
     protected int oldCurrentListSize;
     protected boolean isEnterSetting;
+    private long intervalClickTime = 0;
+    private int intervalTime = 500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,6 +170,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             animation = AnimationUtils.loadAnimation(this, R.anim.picture_anim_modal_in);
         }
         mTvPicturePreview.setOnClickListener(this);
+        if (config.isAutomaticTitleRecyclerTop) {
+            titleViewBg.setOnClickListener(this);
+        }
         mTvPicturePreview.setVisibility(config.chooseMode != PictureMimeType.ofAudio() && config.enablePreview ? View.VISIBLE : View.GONE);
         mBottomLayout.setVisibility(config.selectionMode == PictureConfig.SINGLE
                 && config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
@@ -701,6 +707,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             } else {
                 onBackPressed();
             }
+            return;
         }
         if (id == R.id.picture_title || id == R.id.ivArrow) {
             if (folderWindow.isShowing()) {
@@ -714,14 +721,29 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     }
                 }
             }
+            return;
         }
 
         if (id == R.id.picture_id_preview) {
             onPreview();
+            return;
         }
 
         if (id == R.id.picture_tv_ok || id == R.id.picture_tvMediaNum) {
             onComplete();
+            return;
+        }
+
+        if (id == R.id.titleViewBg) {
+            if (config.isAutomaticTitleRecyclerTop) {
+                if (SystemClock.uptimeMillis() - intervalClickTime < intervalTime) {
+                    if (mAdapter.getItemCount() > 0) {
+                        mRecyclerView.scrollToPosition(0);
+                    }
+                } else {
+                    intervalClickTime = SystemClock.uptimeMillis();
+                }
+            }
         }
     }
 

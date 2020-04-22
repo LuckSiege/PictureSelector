@@ -21,6 +21,7 @@ public class RecyclerPreloadView extends RecyclerView {
     public static final int BOTTOM_PRELOAD = 2;
     public boolean isInTheBottom = false;
     public boolean isEnabledLoadMore = false;
+    private int mFirstVisiblePosition, mLastVisiblePosition;
     /**
      * reachBottomRow = 1;(default)
      * mean : when the lastVisibleRow is lastRow , call the onReachBottom();
@@ -63,6 +64,37 @@ public class RecyclerPreloadView extends RecyclerView {
      */
     public boolean isEnabledLoadMore() {
         return isEnabledLoadMore;
+    }
+
+    @Override
+    public void onScrollStateChanged(int newState) {
+        super.onScrollStateChanged(newState);
+        if (newState == SCROLL_STATE_IDLE || newState == SCROLL_STATE_DRAGGING) {
+            LayoutManager layoutManager = getLayoutManager();
+            if (layoutManager instanceof GridLayoutManager) {
+                GridLayoutManager linearManager = (GridLayoutManager) layoutManager;
+                mFirstVisiblePosition = linearManager.findFirstVisibleItemPosition();
+                mLastVisiblePosition = linearManager.findLastVisibleItemPosition();
+            }
+        }
+    }
+
+    /**
+     * Gets the first visible position index
+     *
+     * @return
+     */
+    public int getFirstVisiblePosition() {
+        return mFirstVisiblePosition;
+    }
+
+    /**
+     * Gets the last visible position index
+     *
+     * @return
+     */
+    public int getLastVisiblePosition() {
+        return mLastVisiblePosition;
     }
 
     @Override

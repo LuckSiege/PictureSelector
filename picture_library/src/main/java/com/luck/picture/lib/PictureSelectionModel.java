@@ -370,6 +370,17 @@ public class PictureSelectionModel {
         return this;
     }
 
+    /**
+     * By clicking the title bar consecutively, RecyclerView automatically rolls back to the top
+     *
+     * @param isAutomaticTitleRecyclerTop
+     * @return
+     */
+    public PictureSelectionModel isAutomaticTitleRecyclerTop(boolean isAutomaticTitleRecyclerTop) {
+        selectionConfig.isAutomaticTitleRecyclerTop = isAutomaticTitleRecyclerTop;
+        return this;
+    }
+
 
     /**
      * @param Select whether to return directly

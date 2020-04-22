@@ -9,7 +9,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -239,14 +238,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void deleteState(boolean isDelete) {
                 if (isDelete) {
                     tvDeleteText.setText(getString(R.string.app_let_go_drag_delete));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                        tvDeleteText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_let_go_delete, 0, 0);
-                    }
+                    tvDeleteText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_let_go_delete, 0, 0);
                 } else {
                     tvDeleteText.setText(getString(R.string.app_drag_delete));
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                        tvDeleteText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.picture_icon_delete, 0, 0);
-                    }
+                    tvDeleteText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.picture_icon_delete, 0, 0);
                 }
             }
 
@@ -439,6 +434,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setRecyclerAnimationMode(animationMode)// 列表动画效果
                         .isWithVideoImage(true)// 图片和视频是否可以同选,只在ofAll模式下有效
                         .isMaxSelectEnabledMask(cbEnabledMask.isChecked())// 选择数到了最大阀值列表是否启用蒙层效果
+                        //.isAutomaticTitleRecyclerTop(false)// 连续点击标题栏RecyclerView是否自动回到顶部,默认true
                         .loadCacheResourcesCallback(GlideCacheEngine.createCacheEngine())// 获取图片资源缓存，主要是解决华为10部分机型在拷贝文件过多时会出现卡的问题，这里可以判断只在会出现一直转圈问题机型上使用
                         //.setOutputCameraPath()// 自定义相机输出目录，只针对Android Q以下，例如 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) +  File.separator + "Camera" + File.separator;
                         //.setButtonFeatures(CustomCameraView.BUTTON_STATE_BOTH)// 设置自定义相机按钮状态
@@ -630,8 +626,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onCameraClick(Context context, PictureSelectionConfig config, int type) {
             // TODO  必须使用context.startActivityForResult(activity.class,PictureConfig.REQUEST_CAMERA);
 
-            // TODO 注意:使用自定义相机时，需要设置PictureSelectionConfig ${config.cameraPath}
+            // TODO 注意:使用自定义相机时，需要设置PictureSelectionConfig ${config.cameraPath#config.cameraMimeType}
             //  1、config.cameraPath (文件输出路径)
+            //  2、config.cameraMimeType (PictureMimeType.ofImage() or ofVideo)
             switch (type) {
                 case PictureConfig.TYPE_IMAGE:
                     // 拍照
