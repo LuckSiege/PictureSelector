@@ -1592,8 +1592,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
             @Override
             public void onSuccess(LocalMedia result) {
-                // 给Adapter填充数据
-                notifyAdapterData(result);
                 // 刷新系统相册
                 if (!SdkVersionUtils.checkedAndroid_Q()) {
                     if (config.isFallbackVersion3) {
@@ -1602,6 +1600,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(config.cameraPath))));
                     }
                 }
+                // 给Adapter填充数据
+                notifyAdapterData(result);
                 // 这里主要解决极个别手机拍照会在DCIM目录重复生成一张照片问题
                 if (!SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasImage(result.getMimeType())) {
                     int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
