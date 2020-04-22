@@ -3,6 +3,7 @@ package com.luck.picture.lib;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -153,6 +154,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         // 单独拍照不设置主题因为拍照界面已经设置了透明主题了
         if (!config.camera) {
             setTheme(config.themeStyleId == 0 ? R.style.picture_default_style : config.themeStyleId);
+            config.requestedOrientation = config.themeStyleId == 0 ? ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED : config.requestedOrientation;
         }
         super.onCreate(savedInstanceState == null ? new Bundle() : savedInstanceState);
         if (isRequestedOrientation()) {
