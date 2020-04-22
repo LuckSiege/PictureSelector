@@ -103,7 +103,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected int oldCurrentListSize;
     protected boolean isEnterSetting;
     private long intervalClickTime = 0;
-    private int intervalTime = 500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -737,6 +736,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
         if (id == R.id.titleViewBg) {
             if (config.isAutomaticTitleRecyclerTop) {
+                int intervalTime = 500;
                 if (SystemClock.uptimeMillis() - intervalClickTime < intervalTime) {
                     if (mAdapter.getItemCount() > 0) {
                         mRecyclerView.scrollToPosition(0);
