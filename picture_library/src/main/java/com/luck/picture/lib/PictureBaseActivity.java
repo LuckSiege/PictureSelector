@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.compress.Luban;
 import com.luck.picture.lib.compress.OnCompressListener;
 import com.luck.picture.lib.config.PictureConfig;
@@ -25,10 +26,13 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.dialog.PictureLoadingDialog;
+import com.luck.picture.lib.engine.ImageEngine;
+import com.luck.picture.lib.engine.PictureSelectorEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.immersive.ImmersiveManage;
 import com.luck.picture.lib.immersive.NavBarUtils;
+import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.thread.PictureThreadUtils;
@@ -155,6 +159,11 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             setTheme(config.themeStyleId == 0 ? R.style.picture_default_style : config.themeStyleId);
         }
         super.onCreate(savedInstanceState == null ? new Bundle() : savedInstanceState);
+
+        // 当内存极度不足，比如开启了开发者选项不保留活动导致单例Config被重新创建图片引擎为空时的补救措施
+        newCreateEngine();
+        newCreateResultCallbackListener();
+
         if (isRequestedOrientation()) {
             setNewRequestedOrientation();
         }
@@ -175,6 +184,32 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         initPictureSelectorStyle();
         // 重置回收状态
         isOnSaveInstanceState = false;
+    }
+
+    /**
+     * 重新获取一下图片加载引擎，前提是用户在Application中实现了IApp接口
+     */
+    private void newCreateEngine() {
+        if (PictureSelectionConfig.imageEngine == null) {
+            PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
+            if (baseEngine != null) {
+                ImageEngine engine = baseEngine.createEngine();
+                PictureSelectionConfig.imageEngine = engine;
+            }
+        }
+    }
+
+    /**
+     * 重新获取一下结果回调监听，前提是用户在Application中实现了IApp接口
+     */
+    private void newCreateResultCallbackListener() {
+        if (PictureSelectionConfig.listener == null) {
+            PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
+            if (baseEngine != null) {
+                OnResultCallbackListener<LocalMedia> listener = baseEngine.getResultCallbackListener();
+                PictureSelectionConfig.listener = listener;
+            }
+        }
     }
 
     private void isCheckConfigNull() {

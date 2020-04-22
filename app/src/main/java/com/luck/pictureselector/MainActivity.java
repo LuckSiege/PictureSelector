@@ -383,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 绑定拖拽事件
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
 
-        // 注册外部预览图片删除按钮回调
+        // 注册广播
         BroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver,
                 BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
 
@@ -1348,7 +1348,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (TextUtils.isEmpty(action)) {
                 return;
             }
-            if (BroadcastAction.ACTION_DELETE_PREVIEW_POSITION.equals(action)) {// 外部预览删除按钮回调
+            if (BroadcastAction.ACTION_DELETE_PREVIEW_POSITION.equals(action)) {
+                // 外部预览删除按钮回调
                 Bundle extras = intent.getExtras();
                 if (extras != null) {
                     int position = extras.getInt(PictureConfig.EXTRA_PREVIEW_DELETE_POSITION);
