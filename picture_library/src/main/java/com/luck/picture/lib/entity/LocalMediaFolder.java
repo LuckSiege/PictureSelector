@@ -2,6 +2,7 @@ package com.luck.picture.lib.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +83,9 @@ public class LocalMediaFolder implements Parcelable {
 
     public void setImageNum(int imageNum) {
         this.imageNum = imageNum;
+        if (imageNum == 73){
+            Log.i("MMM", "setImageNum: ");
+        }
     }
 
     public int getCheckedNum() {

@@ -103,11 +103,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected int oldCurrentListSize;
     protected boolean isEnterSetting;
     private long intervalClickTime = 0;
+    private int allFolderSize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
+            // 相机胶卷的总数
+            allFolderSize = savedInstanceState.getInt(PictureConfig.EXTRA_ALL_FOLDER_SIZE);
             oldCurrentListSize = savedInstanceState.getInt(PictureConfig.EXTRA_OLD_CURRENT_LIST_SIZE, 0);
             // 防止拍照内存不足时activity被回收，导致拍照后的图片未选中
             selectionMedias = PictureSelector.obtainSelectorList(savedInstanceState);
@@ -401,6 +404,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (mAdapter != null) {
             // 保存当前列表中图片或视频个数
             outState.putInt(PictureConfig.EXTRA_OLD_CURRENT_LIST_SIZE, mAdapter.getSize());
+            // 保存相机胶卷和Camera文件夹文件的数量
+            int size = folderWindow.getFolderData().size();
+            if (size > 0) {
+                outState.putInt(PictureConfig.EXTRA_ALL_FOLDER_SIZE, folderWindow.getFolder(0).getImageNum());
+            }
             if (mAdapter.getSelectedData() != null) {
                 List<LocalMedia> selectedImages = mAdapter.getSelectedData();
                 PictureSelector.saveSelectorList(outState, selectedImages);
@@ -521,8 +529,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                 if (resultSize >= currentSize) {
                                     if (currentSize > 0 && currentSize < resultSize && oldCurrentListSize != resultSize) {
                                         // 这种情况多数是由于拍照导致Activity和数据被回收数据不一致
-                                        if (mAdapter.getItem(0) != null
-                                                && data.get(0) != null && mAdapter.getItem(0).getPath().equals(data.get(0).getPath())) {
+                                        if (isLocalMediaSame(data.get(0))) {
                                             // 异常下的正常情况，本地查询出的数据是最新的
                                             mAdapter.bindData(data);
                                         } else {
@@ -600,6 +607,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     if (resultSize >= currentSize) {
                         if (currentSize > 0 && currentSize < resultSize && oldCurrentListSize != resultSize) {
                             // 这种情况多数是由于拍照导致Activity和数据被回收数据不一致
+                            int size = mAdapter.getData().size();
                             mAdapter.getData().addAll(result);
                             // 更新相机胶卷目录
                             LocalMedia media = mAdapter.getData().get(0);
@@ -628,6 +636,36 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             showDataNull(getString(R.string.picture_data_exception), R.drawable.picture_icon_data_error);
         }
         dismissDialog();
+    }
+
+    /**
+     * 是否相同
+     *
+     * @param newMedia
+     * @return
+     */
+    private boolean isLocalMediaSame(LocalMedia newMedia) {
+        LocalMedia oldMedia = mAdapter.getItem(0);
+        if (oldMedia == null || newMedia == null) {
+            return false;
+        }
+        if (oldMedia.getPath().equals(newMedia.getPath())) {
+            return true;
+        }
+        // 如果是Content://类型判断后缀id是否一致,主要是解决以下两种类型的问题
+        // content://media/external/images/media/5844
+        // content://media/external/file/5844
+        if (PictureMimeType.isContent(newMedia.getPath())
+                && PictureMimeType.isContent(oldMedia.getPath())) {
+            if (!TextUtils.isEmpty(newMedia.getPath()) && !TextUtils.isEmpty(oldMedia.getPath())) {
+                String newId = newMedia.getPath().substring(newMedia.getPath().lastIndexOf("/") + 1);
+                String oldId = oldMedia.getPath().substring(oldMedia.getPath().lastIndexOf("/") + 1);
+                if (newId.equals(oldId)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -1623,7 +1661,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     private void notifyAdapterData(LocalMedia media) {
         if (mAdapter != null) {
-            mAdapter.getData().add(0, media);
+            if (!isAddSameImp(folderWindow.getFolder(0) != null ? folderWindow.getFolder(0).getImageNum() : 0)) {
+                mAdapter.getData().add(0, media);
+            }
             if (checkVideoLegitimacy(media)) {
                 if (config.selectionMode == PictureConfig.SINGLE) {
                     // 单选
@@ -1643,6 +1683,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 manualSaveFolder(media);
             }
             mTvEmpty.setVisibility(mAdapter.getSize() > 0 || config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
+
+            allFolderSize = 0;
         }
     }
 
@@ -1951,9 +1993,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         int count = folderWindow.getFolderData().size();
         LocalMediaFolder allFolder = count > 0 ? folderWindow.getFolderData().get(0) : new LocalMediaFolder();
         if (allFolder != null) {
+            int totalNum = allFolder.getImageNum();
             // 相机胶卷
             allFolder.setFirstImagePath(media.getPath());
-            allFolder.setImageNum(allFolder.getImageNum() + 1);
+            allFolder.setImageNum(isAddSameImp(totalNum) ? allFolder.getImageNum() : allFolder.getImageNum() + 1);
             // 如果没有相册先创建一个相机胶卷
             if (count == 0) {
                 allFolder.setName(config.chooseMode == PictureMimeType.ofAudio() ?
@@ -1966,7 +2009,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 // 创建一个Camera相册
                 LocalMediaFolder cameraFolder = new LocalMediaFolder();
                 cameraFolder.setName(media.getParentFolderName());
-                cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
+                cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
                 cameraFolder.setFirstImagePath(media.getPath());
                 cameraFolder.setBucketId(media.getBucketId());
                 folderWindow.getFolderData().add(folderWindow.getFolderData().size(), cameraFolder);
@@ -1980,7 +2023,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     if (cameraFolder.getName().startsWith(newFolder)) {
                         media.setBucketId(cameraFolder.getBucketId());
                         cameraFolder.setFirstImagePath(config.cameraPath);
-                        cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
+                        cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
                         isCamera = true;
                         break;
                     }
@@ -1989,7 +2032,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     // 本地没有Camera文件件手动创一个
                     LocalMediaFolder cameraFolder = new LocalMediaFolder();
                     cameraFolder.setName(media.getParentFolderName());
-                    cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
+                    cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
                     cameraFolder.setFirstImagePath(media.getPath());
                     cameraFolder.setBucketId(media.getBucketId());
                     folderWindow.getFolderData().add(cameraFolder);
@@ -2008,6 +2051,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private void manualSaveFolder(LocalMedia media) {
         try {
             boolean isEmpty = folderWindow.isEmpty();
+            int totalNum = folderWindow.getFolder(0) != null ? folderWindow.getFolder(0).getImageNum() : 0;
             LocalMediaFolder allFolder;
             if (isEmpty) {
                 // 相机胶卷
@@ -2024,13 +2068,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             allFolder.setFirstImagePath(media.getPath());
             allFolder.setData(mAdapter.getData());
             allFolder.setBucketId(-1);
-            allFolder.setImageNum(allFolder.getImageNum() + 1);
+            allFolder.setImageNum(isAddSameImp(totalNum) ? allFolder.getImageNum() : allFolder.getImageNum() + 1);
 
             // Camera
             LocalMediaFolder cameraFolder = getImageFolder(media.getPath(), folderWindow.getFolderData());
             if (cameraFolder != null) {
-                cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
-                cameraFolder.getData().add(0, media);
+                cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
+                if (!isAddSameImp(totalNum)) {
+                    cameraFolder.getData().add(0, media);
+                }
                 cameraFolder.setBucketId(media.getBucketId());
                 cameraFolder.setFirstImagePath(config.cameraPath);
             }
@@ -2038,6 +2084,18 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 数量是否相同
+     *
+     * @return
+     */
+    private boolean isAddSameImp(int totalNum) {
+        if (totalNum == 0) {
+            return false;
+        }
+        return allFolderSize > 0 && allFolderSize < totalNum;
     }
 
     /**

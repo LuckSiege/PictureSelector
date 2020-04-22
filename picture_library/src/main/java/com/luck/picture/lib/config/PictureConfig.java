@@ -37,6 +37,8 @@ public final class PictureConfig {
     public final static String EXTRA_DATA_COUNT = "count";
     public final static String CAMERA_FACING = "android.intent.extras.CAMERA_FACING";
 
+    public final static String EXTRA_ALL_FOLDER_SIZE = "all_folder_size";
+
     public final static int MAX_PAGE_SIZE = 20;
 
     public final static int MIN_PAGE_SIZE = 10;
