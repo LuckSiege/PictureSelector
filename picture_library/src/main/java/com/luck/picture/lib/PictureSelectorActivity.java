@@ -1569,7 +1569,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 LocalMedia media = new LocalMedia();
                 String mimeType = isAudio ? PictureMimeType.MIME_TYPE_AUDIO : "";
                 int[] newSize = new int[2];
-                long duration = MediaUtils.extractDuration(getContext(), SdkVersionUtils.checkedAndroid_Q(), config.cameraPath);
+                long duration = 0;
                 if (!isAudio) {
                     // 图片和视频的处理逻辑
                     if (PictureMimeType.isContent(config.cameraPath)) {
@@ -1586,6 +1586,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         } else if (PictureMimeType.isHasVideo(mimeType)) {
                             // 视频
                             newSize = MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(config.cameraPath));
+                            duration = MediaUtils.extractDuration(getContext(), SdkVersionUtils.checkedAndroid_Q(), config.cameraPath);
                         }
                         int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
                         media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
@@ -1606,6 +1607,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         } else if (PictureMimeType.isHasVideo(mimeType)) {
                             // 视频
                             newSize = MediaUtils.getVideoSizeForUrl(config.cameraPath);
+                            duration = MediaUtils.extractDuration(getContext(), SdkVersionUtils.checkedAndroid_Q(), config.cameraPath);
                         }
                         // 拍照产生一个临时id
                         media.setId(System.currentTimeMillis());
