@@ -1185,7 +1185,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mTvPictureTitle.setTag(R.id.view_count_tag, folderWindow.getFolder(position) != null
                 ? folderWindow.getFolder(position).getImageNum() : 0);
         if (config.isPageStrategy) {
-
             if (currentBucketId != bucketId) {
                 mPage = 1;
                 showPleaseDialog();
