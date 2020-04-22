@@ -275,7 +275,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        config = PictureSelectionConfig.getCleanInstance();
+        isCheckConfigNull();
         super.attachBaseContext(PictureContextWrapper.wrap(newBase, config.language));
     }
 
