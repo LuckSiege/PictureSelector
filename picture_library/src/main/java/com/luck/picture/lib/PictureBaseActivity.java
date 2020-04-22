@@ -32,6 +32,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.immersive.ImmersiveManage;
 import com.luck.picture.lib.immersive.NavBarUtils;
+import com.luck.picture.lib.language.PictureLanguageUtils;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
 import com.luck.picture.lib.permissions.PermissionChecker;
@@ -153,13 +154,18 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             config = savedInstanceState.getParcelable(PictureConfig.EXTRA_CONFIG);
         }
-        isCheckConfigNull();
+        // 如果Intent有值同步一下PictureSelectionConfig,确保页面跳转config保持一致
+        if (config == null) {
+            config = getIntent() != null ? getIntent().getParcelableExtra(PictureConfig.EXTRA_CONFIG) : config;
+        }
+        checkConfigNull();
+        // 设置语言
+        PictureLanguageUtils.setAppLanguage(getContext(), config.language);
         // 单独拍照不设置主题因为拍照界面已经设置了透明主题了
         if (!config.camera) {
             setTheme(config.themeStyleId == 0 ? R.style.picture_default_style : config.themeStyleId);
         }
         super.onCreate(savedInstanceState == null ? new Bundle() : savedInstanceState);
-
         // 当内存极度不足，比如开启了开发者选项不保留活动导致单例Config被重新创建图片引擎为空时的补救措施
         newCreateEngine();
         newCreateResultCallbackListener();
@@ -212,7 +218,19 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         }
     }
 
-    private void isCheckConfigNull() {
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        if (config == null) {
+            super.attachBaseContext(newBase);
+        } else {
+            super.attachBaseContext(PictureContextWrapper.wrap(newBase, config.language));
+        }
+    }
+
+    /**
+     * CheckConfigNull
+     */
+    private void checkConfigNull() {
         if (config == null) {
             config = PictureSelectionConfig.getInstance();
         }
@@ -306,12 +324,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         isOnSaveInstanceState = true;
         outState.putParcelable(PictureConfig.EXTRA_CONFIG, config);
-    }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        isCheckConfigNull();
-        super.attachBaseContext(PictureContextWrapper.wrap(newBase, config.language));
     }
 
     /**
