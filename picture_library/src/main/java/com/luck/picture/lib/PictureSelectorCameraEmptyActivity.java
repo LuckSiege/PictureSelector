@@ -48,7 +48,8 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (!config.isUseCustomCamera && PictureSelectionConfig.onPictureSelectorInterfaceListener == null) {
+        super.onCreate(savedInstanceState);
+        if (config != null && !config.isUseCustomCamera && PictureSelectionConfig.onPictureSelectorInterfaceListener == null) {
             if (savedInstanceState == null) {
                 if (PermissionChecker
                         .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
@@ -63,7 +64,6 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             }
             setTheme(R.style.Picture_Theme_Translucent);
         }
-        super.onCreate(savedInstanceState);
     }
 
 

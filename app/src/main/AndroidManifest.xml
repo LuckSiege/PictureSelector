@@ -35,10 +35,10 @@
         <activity
             android:name=".PhotoFragmentActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SimpleActivity"
-            android:screenOrientation="fullSensor">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
