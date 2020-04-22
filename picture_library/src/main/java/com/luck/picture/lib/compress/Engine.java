@@ -3,6 +3,7 @@ package com.luck.picture.lib.compress;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.ExifInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -83,6 +84,19 @@ class Engine {
         if (srcImg.getMedia() != null && Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
             int orientation = srcImg.getMedia().getOrientation();
             if (orientation > 0) {
+                switch (orientation) {
+                    case ExifInterface.ORIENTATION_ROTATE_90:
+                        orientation = 90;
+                        break;
+                    case ExifInterface.ORIENTATION_ROTATE_180:
+                        orientation = 180;
+                        break;
+                    case ExifInterface.ORIENTATION_ROTATE_270:
+                        orientation = 270;
+                        break;
+                    default:
+                        break;
+                }
                 tagBitmap = rotatingImage(tagBitmap, orientation);
             }
         }
