@@ -214,7 +214,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
 
     private void isCheckConfigNull() {
         if (config == null) {
-            config = PictureSelectionConfig.getCleanInstance();
+            config = PictureSelectionConfig.getInstance();
         }
     }
 
