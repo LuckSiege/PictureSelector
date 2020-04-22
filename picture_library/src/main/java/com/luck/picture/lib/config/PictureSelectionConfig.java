@@ -179,7 +179,7 @@ public final class PictureSelectionConfig implements Parcelable {
         aspect_ratio_y = 0;
         cropWidth = 0;
         cropHeight = 0;
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
         buttonFeatures = CustomCameraView.BUTTON_STATE_BOTH;  //初始化按钮为可录制可拍照
         isCameraAroundState = false;
         isWithVideoImage = false;
