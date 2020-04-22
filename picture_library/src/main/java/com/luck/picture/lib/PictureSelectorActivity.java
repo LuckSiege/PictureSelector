@@ -1181,11 +1181,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         boolean camera = config.isCamera && isCameraFolder;
         mAdapter.setShowCamera(camera);
         mTvPictureTitle.setText(folderName);
-        mTvPictureTitle.setTag(R.id.view_tag, bucketId);
+        long currentBucketId = ValueOf.toLong(mTvPictureTitle.getTag(R.id.view_tag));
         mTvPictureTitle.setTag(R.id.view_count_tag, folderWindow.getFolder(position) != null
                 ? folderWindow.getFolder(position).getImageNum() : 0);
         if (config.isPageStrategy) {
-            long currentBucketId = ValueOf.toLong(mTvPictureTitle.getTag(R.id.view_tag));
+
             if (currentBucketId != bucketId) {
                 mPage = 1;
                 showPleaseDialog();
@@ -1209,6 +1209,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             mTvPictureTitle.setTag(R.id.view_tag, bucketId);
             mRecyclerView.smoothScrollToPosition(0);
         }
+        mTvPictureTitle.setTag(R.id.view_tag, bucketId);
         folderWindow.dismiss();
     }
 
