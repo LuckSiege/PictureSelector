@@ -54,7 +54,7 @@ public class AnimUtils {
         RotateAnimation animation = new RotateAnimation(fromDegrees, toDegrees,
                 pivotX, pivotY);
         //该方法用于设置动画的持续时间，以毫秒为单位
-        animation.setDuration(350);
+        animation.setDuration(flag ? 350 : 150);
         //启动动画
         arrow.startAnimation(animation);
     }
