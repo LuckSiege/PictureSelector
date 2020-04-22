@@ -39,7 +39,8 @@ public class LocalMediaPageLoader {
 
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
     private static final String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
-    private static final String NOT_GIF = "!='image/gif'";
+    private static final String NOT_GIF_UNKNOWN = "!='image/*'";
+    private static final String NOT_GIF = "!='image/gif' AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF_UNKNOWN;
     private static final String GROUP_BY_BUCKET_Id = " GROUP BY (bucket_id";
     private static final String COLUMN_COUNT = "count";
     private static final String COLUMN_BUCKET_ID = "bucket_id";
