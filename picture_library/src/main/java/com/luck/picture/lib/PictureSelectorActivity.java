@@ -1996,6 +1996,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         media.setBucketId(cameraFolder.getBucketId());
                         cameraFolder.setFirstImagePath(config.cameraPath);
                         cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
+                        if (cameraFolder.getData() != null && cameraFolder.getData().size() > 0) {
+                            cameraFolder.getData().add(0, media);
+                        }
                         isCamera = true;
                         break;
                     }
