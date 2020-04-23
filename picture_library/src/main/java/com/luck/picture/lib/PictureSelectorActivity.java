@@ -503,6 +503,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             dismissDialog();
                             Log.i(TAG, "第" + currentPage + "页加载完成，是否还有更多:" + isHasMore);
                             if (mAdapter != null) {
+                                this.isHasMore = true;
                                 // IsHasMore being true means that there's still data, but data being 0 might be a filter that's turned on and that doesn't happen to fit on the whole page
                                 if (isHasMore && data.size() == 0) {
                                     onRecyclerViewPreloadMore();
@@ -551,6 +552,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     int size = folderWindow.getFolderData().size();
                     for (int i = 0; i < size; i++) {
                         LocalMediaFolder mediaFolder = folderWindow.getFolder(i);
+                        if (mediaFolder == null) {
+                            continue;
+                        }
                         String firstCover = LocalMediaPageLoader
                                 .getInstance(getContext(), config).getFirstCover(mediaFolder.getBucketId());
                         mediaFolder.setFirstImagePath(firstCover);
@@ -1639,9 +1643,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     private void notifyAdapterData(LocalMedia media) {
         if (mAdapter != null) {
-            isHasMore = !config.isPageStrategy && isHasMore;
-            if (!isAddSameImp(folderWindow.getFolder(0) != null ? folderWindow.getFolder(0).getImageNum() : 0)) {
+            boolean isAddSameImp = isAddSameImp(folderWindow.getFolder(0) != null ? folderWindow.getFolder(0).getImageNum() : 0);
+            if (!isAddSameImp) {
                 mAdapter.getData().add(0, media);
+                isHasMore = false;
             }
             if (checkVideoLegitimacy(media)) {
                 if (config.selectionMode == PictureConfig.SINGLE) {
@@ -1665,9 +1670,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
             allFolderSize = 0;
             // Page mode after manually add photos in the database query, or the page will repeat a data
-            if (config.isPageStrategy) {
-                mAdapter.clear();
-                loadAllMediaData();
+            if (config.isPageStrategy && !isAddSameImp) {
+                if (PictureMimeType.isHasImage(media.getMimeType())) {
+                    mAdapter.clear();
+                    loadAllMediaData();
+                }
             }
         }
     }
