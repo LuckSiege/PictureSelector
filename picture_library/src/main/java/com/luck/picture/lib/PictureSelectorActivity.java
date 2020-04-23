@@ -501,7 +501,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     (OnQueryDataResultListener<LocalMedia>) (data, currentPage, isHasMore) -> {
                         if (!isFinishing()) {
                             dismissDialog();
-                            Log.i(TAG, "第" + currentPage + "页加载完成，是否还有更多:" + isHasMore);
                             if (mAdapter != null) {
                                 this.isHasMore = true;
                                 // IsHasMore being true means that there's still data, but data being 0 might be a filter that's turned on and that doesn't happen to fit on the whole page
@@ -1195,7 +1194,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
                                 this.isHasMore = isHasMore;
                                 if (!isFinishing()) {
-                                    Log.i(TAG, "第" + currentPage + "页加载完成，是否还有更多:" + isHasMore);
                                     if (result.size() == 0) {
                                         mAdapter.clear();
                                     }
