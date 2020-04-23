@@ -52,6 +52,12 @@ public class LocalMediaFolder implements Parcelable {
      */
     private List<LocalMedia> data = new ArrayList<>();
 
+    /**
+     * # Internal use
+     * setCurrentDataPage
+     */
+    private int currentDataPage;
+
     public long getBucketId() {
         return bucketId;
     }
@@ -124,6 +130,15 @@ public class LocalMediaFolder implements Parcelable {
         this.data = data;
     }
 
+    public int getCurrentDataPage() {
+        return currentDataPage;
+    }
+
+    public void setCurrentDataPage(int currentDataPage) {
+        this.currentDataPage = currentDataPage;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -140,6 +155,7 @@ public class LocalMediaFolder implements Parcelable {
         dest.writeInt(this.ofAllType);
         dest.writeByte(this.isCameraFolder ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.data);
+        dest.writeInt(this.currentDataPage);
     }
 
     public LocalMediaFolder() {
@@ -155,6 +171,7 @@ public class LocalMediaFolder implements Parcelable {
         this.ofAllType = in.readInt();
         this.isCameraFolder = in.readByte() != 0;
         this.data = in.createTypedArrayList(LocalMedia.CREATOR);
+        this.currentDataPage = in.readInt();
     }
 
     public static final Creator<LocalMediaFolder> CREATOR = new Creator<LocalMediaFolder>() {

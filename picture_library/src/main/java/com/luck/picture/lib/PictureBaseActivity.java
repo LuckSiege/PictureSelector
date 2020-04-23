@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.luck.picture.lib.app.PictureAppMaster;
@@ -72,22 +71,22 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     protected Handler mHandler;
     protected View container;
     /**
-     * 是否还有更多
+     * if there more
      */
     protected boolean isHasMore = true;
     /**
-     * 分页码
+     * page
      */
     protected int mPage = 1;
     /**
-     * 是否走过onSaveInstanceState方法，用于内存不足情况
+     * is onSaveInstanceState
      */
     protected boolean isOnSaveInstanceState;
 
     /**
-     * 是否使用沉浸式，子类复写该方法来确定是否采用沉浸式
+     * Whether to use immersion, subclasses copy the method to determine whether to use immersion
      *
-     * @return 是否沉浸式，默认true
+     * @return
      */
     @Override
     public boolean isImmersive() {
@@ -95,7 +94,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 是否改变屏幕方向
+     * Whether to change the screen direction
      *
      * @return
      */
@@ -103,9 +102,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         return true;
     }
 
-    /**
-     * 具体沉浸的样式，可以根据需要自行修改状态栏和导航栏的颜色
-     */
+
     public void immersive() {
         ImmersiveManage.immersiveAboveAPI23(this
                 , colorPrimaryDark
@@ -154,22 +151,17 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             config = savedInstanceState.getParcelable(PictureConfig.EXTRA_CONFIG);
         }
-        // 如果Intent有值同步一下PictureSelectionConfig,确保页面跳转config保持一致
         if (config == null) {
             config = getIntent() != null ? getIntent().getParcelableExtra(PictureConfig.EXTRA_CONFIG) : config;
         }
         checkConfigNull();
-        // 设置语言
         PictureLanguageUtils.setAppLanguage(getContext(), config.language);
-        // 单独拍照不设置主题因为拍照界面已经设置了透明主题了
         if (!config.camera) {
             setTheme(config.themeStyleId == 0 ? R.style.picture_default_style : config.themeStyleId);
         }
         super.onCreate(savedInstanceState == null ? new Bundle() : savedInstanceState);
-        // 当内存极度不足，比如开启了开发者选项不保留活动导致单例Config被重新创建图片引擎为空时的补救措施
         newCreateEngine();
         newCreateResultCallbackListener();
-
         if (isRequestedOrientation()) {
             setNewRequestedOrientation();
         }
@@ -178,7 +170,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (isImmersive()) {
             immersive();
         }
-        // 导航条色值
         if (config.style != null && config.style.pictureNavBarColor != 0) {
             NavBarUtils.setNavBarColor(this, config.style.pictureNavBarColor);
         }
@@ -188,12 +179,11 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         }
         initWidgets();
         initPictureSelectorStyle();
-        // 重置回收状态
         isOnSaveInstanceState = false;
     }
 
     /**
-     * 重新获取一下图片加载引擎，前提是用户在Application中实现了IApp接口
+     * Get the image loading engine again, provided that the user implements the IApp interface in the Application
      */
     private void newCreateEngine() {
         if (PictureSelectionConfig.imageEngine == null) {
@@ -206,7 +196,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 重新获取一下结果回调监听，前提是用户在Application中实现了IApp接口
+     * Retrieve the result callback listener, provided that the user implements the IApp interface in the Application
      */
     private void newCreateResultCallbackListener() {
         if (PictureSelectionConfig.listener == null) {
@@ -237,7 +227,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 设置屏幕方向
+     * setNewRequestedOrientation
      */
     protected void setNewRequestedOrientation() {
         if (config != null && !config.camera) {
@@ -258,58 +248,42 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      * init Config
      */
     private void initConfig() {
-        // 已选图片列表
         selectionMedias = config.selectionMedias == null ? new ArrayList<>() : config.selectionMedias;
         if (config.style != null) {
-            // 是否开启白色状态栏
             openWhiteStatusBar = config.style.isChangeStatusBarFontColor;
-            // 标题栏背景色
             if (config.style.pictureTitleBarBackgroundColor != 0) {
                 colorPrimary = config.style.pictureTitleBarBackgroundColor;
             }
-            // 状态栏色值
             if (config.style.pictureStatusBarColor != 0) {
                 colorPrimaryDark = config.style.pictureStatusBarColor;
             }
-            // 是否是0/9样式
             numComplete = config.style.isOpenCompletedNumStyle;
-            // 是否开启数字勾选模式
             config.checkNumMode = config.style.isOpenCheckNumStyle;
         } else {
-            // 是否开启白色状态栏，兼容单独动态设置主题方式
             openWhiteStatusBar = config.isChangeStatusBarFontColor;
             if (!openWhiteStatusBar) {
-                // 兼容老的Theme方式
                 openWhiteStatusBar = AttrsUtils.getTypeValueBoolean(this, R.attr.picture_statusFontColor);
             }
 
-            // 是否是0/9样式，兼容单独动态设置主题方式
             numComplete = config.isOpenStyleNumComplete;
             if (!numComplete) {
-                // 兼容老的Theme方式
                 numComplete = AttrsUtils.getTypeValueBoolean(this, R.attr.picture_style_numComplete);
             }
 
-            // 是否开启数字勾选模式，兼容单独动态设置主题方式
             config.checkNumMode = config.isOpenStyleCheckNumMode;
             if (!config.checkNumMode) {
-                // 兼容老的Theme方式
                 config.checkNumMode = AttrsUtils.getTypeValueBoolean(this, R.attr.picture_style_checkNumMode);
             }
 
-            // 标题栏背景色
             if (config.titleBarBackgroundColor != 0) {
                 colorPrimary = config.titleBarBackgroundColor;
             } else {
-                // 兼容老的Theme方式
                 colorPrimary = AttrsUtils.getTypeValueColor(this, R.attr.colorPrimary);
             }
 
-            // 状态栏色值
             if (config.pictureStatusBarColor != 0) {
                 colorPrimaryDark = config.pictureStatusBarColor;
             } else {
-                // 兼容老的Theme方式
                 colorPrimaryDark = AttrsUtils.getTypeValueColor(this, R.attr.colorPrimaryDark);
             }
         }
@@ -393,7 +367,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 调用Luban压缩
+     * compress
      *
      * @param result
      */
@@ -415,7 +389,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
 
                 @Override
                 public void onSuccess(List<File> files) {
-                    // 异步压缩回调
                     if (files != null && files.size() > 0 && files.size() == result.size()) {
                         handleCompressCallBack(result, files);
                     } else {
@@ -451,7 +424,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 重新构造已压缩的图片返回集合
+     * handleCompressCallBack
      *
      * @param images
      * @param files
@@ -465,11 +438,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         int size = images.size();
         if (files.size() == size) {
             for (int i = 0, j = size; i < j; i++) {
-                // 压缩成功后的地址
                 File file = files.get(i);
                 String path = file.getAbsolutePath();
                 LocalMedia image = images.get(i);
-                // 如果是网络图片则不压缩
                 boolean http = PictureMimeType.isHttp(path);
                 boolean flag = !TextUtils.isEmpty(path) && http;
                 boolean isHasVideo = PictureMimeType.isHasVideo(image.getMimeType());
@@ -484,7 +455,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 去裁剪
+     * crop
      *
      * @param originalPath
      * @param mimeType
@@ -494,7 +465,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             ToastUtils.s(this, getString(R.string.picture_not_crop_data));
             return;
         }
-        // 载入裁剪样式参数配制
         UCrop.Options options = basicOptions();
         if (PictureSelectionConfig.cacheResourcesEngine != null) {
             PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<String>() {
@@ -514,7 +484,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 单张裁剪
+     * single crop
      *
      * @param originalPath
      * @param cachePath
@@ -539,7 +509,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 多图去裁剪
+     * multiple crop
      *
      * @param list
      */
@@ -550,16 +520,13 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             ToastUtils.s(this, getString(R.string.picture_not_crop_data));
             return;
         }
-        // 载入裁剪样式参数配制
         UCrop.Options options = basicOptions(list);
         int size = list.size();
         index = 0;
         if (config.chooseMode == PictureMimeType.ofAll() && config.isWithVideoImage) {
-            // 视频和图片共存
             String mimeType = size > 0 ? list.get(index).getMimeType() : "";
             boolean isHasVideo = PictureMimeType.isHasVideo(mimeType);
             if (isHasVideo) {
-                // 第一个是视频就跳过直到遍历出图片为止
                 for (int i = 0; i < size; i++) {
                     CutInfo cutInfo = list.get(i);
                     if (cutInfo != null && PictureMimeType.isHasImage(cutInfo.getMimeType())) {
@@ -601,7 +568,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 启动多图裁剪
+     * startMultipleCropActivity
      *
      * @param cutInfo
      * @param options
@@ -627,7 +594,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 设置裁剪样式参数
+     * Set the crop style parameter
      *
      * @return
      */
@@ -636,7 +603,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 设置裁剪样式参数
+     * Set the crop style parameter
      *
      * @return
      */
@@ -658,26 +625,21 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             if (config.cropTitleBarBackgroundColor != 0) {
                 toolbarColor = config.cropTitleBarBackgroundColor;
             } else {
-                // 兼容老的Theme方式
                 toolbarColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_toolbar_bg);
             }
             if (config.cropStatusBarColorPrimaryDark != 0) {
                 statusColor = config.cropStatusBarColorPrimaryDark;
             } else {
-                // 兼容老的Theme方式
                 statusColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_status_color);
             }
             if (config.cropTitleColor != 0) {
                 titleColor = config.cropTitleColor;
             } else {
-                // 兼容老的Theme方式
                 titleColor = AttrsUtils.getTypeValueColor(this, R.attr.picture_crop_title_color);
             }
 
-            // 兼容单独动态设置主题方式
             isChangeStatusBarFontColor = config.isChangeStatusBarFontColor;
             if (!isChangeStatusBarFontColor) {
-                // 是否改变裁剪页状态栏字体颜色 黑白切换
                 isChangeStatusBarFontColor = AttrsUtils.getTypeValueBoolean(this, R.attr.picture_statusFontColor);
             }
         }
@@ -730,7 +692,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
 
 
     /**
-     * 如果没有任何相册，先创建一个相机胶卷文件夹出来
+     * If you don't have any albums, first create a camera film folder to come out
      *
      * @param folders
      */
@@ -750,17 +712,15 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 将图片插入到相机文件夹中
+     * Insert the image into the camera folder
      *
      * @param path
      * @param imageFolders
      * @return
      */
-    @Nullable
     protected LocalMediaFolder getImageFolder(String path, List<LocalMediaFolder> imageFolders) {
         File imageFile = new File(PictureMimeType.isContent(path) ? Objects.requireNonNull(PictureFileUtils.getPath(getContext(), Uri.parse(path))) : path);
         File folderFile = imageFile.getParentFile();
-
         for (LocalMediaFolder folder : imageFolders) {
             if (folderFile != null && folder.getName().equals(folderFile.getName())) {
                 return folder;
@@ -809,7 +769,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 针对Android 异步处理
+     * Android Q
      *
      * @param images
      */
@@ -817,7 +777,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<List<LocalMedia>>() {
             @Override
             public List<LocalMedia> doInBackground() {
-                // Android Q 版本做拷贝应用内沙盒适配
                 int size = images.size();
                 for (int i = 0; i < size; i++) {
                     LocalMedia media = images.get(i);
@@ -875,7 +834,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                     && config.windowAnimationStyle.activityExitAnimation != 0 ?
                     config.windowAnimationStyle.activityExitAnimation : R.anim.picture_anim_exit);
         }
-        // 关闭主界面后才释放回调监听
         if (config.camera) {
             if (getContext() instanceof PictureSelectorCameraEmptyActivity
                     || getContext() instanceof PictureCustomCameraActivity) {
@@ -900,7 +858,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
 
 
     /**
-     * 录音
+     * get audio path
      *
      * @param data
      */
@@ -1038,7 +996,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 释放回调监听
+     * Release listener
      */
     private void releaseResultListener() {
         if (config != null) {
@@ -1052,30 +1010,30 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case PictureConfig.APPLY_AUDIO_PERMISSIONS_CODE:
-                // 录音权限
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Intent cameraIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-                    if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-                        startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
-                    }
-                } else {
-                    ToastUtils.s(getContext(), getString(R.string.picture_audio));
+        if (requestCode == PictureConfig.APPLY_AUDIO_PERMISSIONS_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent cameraIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+                if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
                 }
-                break;
+            } else {
+                ToastUtils.s(getContext(), getString(R.string.picture_audio));
+            }
         }
     }
 
     /**
-     * 权限提示
+     * showPermissionsDialog
+     *
+     * @param isCamera
+     * @param errorMsg
      */
     protected void showPermissionsDialog(boolean isCamera, String errorMsg) {
 
     }
 
     /**
-     * 提示类
+     * Dialog
      *
      * @param content
      */
@@ -1096,12 +1054,11 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
 
 
     /**
-     * 文件夹数量进行排序
+     * sort
      *
      * @param imageFolders
      */
     protected void sortFolder(List<LocalMediaFolder> imageFolders) {
-        // 文件夹按图片数量排序
         Collections.sort(imageFolders, (lhs, rhs) -> {
             if (lhs.getData() == null || rhs.getData() == null) {
                 return 0;

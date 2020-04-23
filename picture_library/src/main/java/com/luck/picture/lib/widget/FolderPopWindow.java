@@ -119,7 +119,8 @@ public class FolderPopWindow extends PopupWindow {
     }
 
     public LocalMediaFolder getFolder(int position) {
-        return adapter.getFolderData().size() > 0 ? adapter.getFolderData().get(position) : null;
+        return adapter.getFolderData().size() > 0
+                && position < adapter.getFolderData().size() ? adapter.getFolderData().get(position) : null;
     }
 
     public void setArrowImageView(ImageView ivArrowView) {
