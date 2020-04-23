@@ -1641,10 +1641,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     private void notifyAdapterData(LocalMedia media) {
         if (mAdapter != null) {
+            boolean isHasImage = PictureMimeType.isHasImage(media.getMimeType());
             boolean isAddSameImp = isAddSameImp(folderWindow.getFolder(0) != null ? folderWindow.getFolder(0).getImageNum() : 0);
             if (!isAddSameImp) {
                 mAdapter.getData().add(0, media);
-                isHasMore = false;
+                isHasMore = !isHasImage;
             }
             if (checkVideoLegitimacy(media)) {
                 if (config.selectionMode == PictureConfig.SINGLE) {
@@ -1669,7 +1670,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             allFolderSize = 0;
             // Page mode after manually add photos in the database query, or the page will repeat a data
             if (config.isPageStrategy && !isAddSameImp) {
-                if (PictureMimeType.isHasImage(media.getMimeType())) {
+                if (isHasImage) {
                     mAdapter.clear();
                     loadAllMediaData();
                 }
