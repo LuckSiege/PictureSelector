@@ -1218,6 +1218,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         LocalMediaFolder lastFolder = folderWindow.getFolder(oldPosition);
         lastFolder.setData(mAdapter.getData());
         lastFolder.setCurrentDataPage(mPage);
+        lastFolder.setHasMore(isHasMore);
     }
 
     /**
@@ -1233,8 +1234,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 && currentFolder.getData().size() > 0) {
             mAdapter.bindData(currentFolder.getData());
             mPage = currentFolder.getCurrentDataPage();
+            isHasMore = currentFolder.isHasMore();
             mRecyclerView.smoothScrollToPosition(0);
-            isHasMore = true;
+
             return true;
         }
         return false;

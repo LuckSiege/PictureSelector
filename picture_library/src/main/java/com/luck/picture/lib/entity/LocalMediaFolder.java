@@ -58,6 +58,12 @@ public class LocalMediaFolder implements Parcelable {
      */
     private int currentDataPage;
 
+    /**
+     * # Internal use
+     * is load more
+     */
+    private boolean isHasMore;
+
     public long getBucketId() {
         return bucketId;
     }
@@ -138,6 +144,14 @@ public class LocalMediaFolder implements Parcelable {
         this.currentDataPage = currentDataPage;
     }
 
+    public boolean isHasMore() {
+        return isHasMore;
+    }
+
+    public void setHasMore(boolean hasMore) {
+        isHasMore = hasMore;
+    }
+
 
     @Override
     public int describeContents() {
@@ -156,6 +170,7 @@ public class LocalMediaFolder implements Parcelable {
         dest.writeByte(this.isCameraFolder ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.data);
         dest.writeInt(this.currentDataPage);
+        dest.writeByte(this.isHasMore ? (byte) 1 : (byte) 0);
     }
 
     public LocalMediaFolder() {
@@ -172,6 +187,7 @@ public class LocalMediaFolder implements Parcelable {
         this.isCameraFolder = in.readByte() != 0;
         this.data = in.createTypedArrayList(LocalMedia.CREATOR);
         this.currentDataPage = in.readInt();
+        this.isHasMore = in.readByte() != 0;
     }
 
     public static final Creator<LocalMediaFolder> CREATOR = new Creator<LocalMediaFolder>() {
