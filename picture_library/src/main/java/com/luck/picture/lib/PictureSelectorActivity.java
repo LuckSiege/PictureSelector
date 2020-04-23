@@ -248,7 +248,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage,
                         (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
                             if (!isFinishing()) {
-                                Log.i(TAG, "Page " + currentPage + " data load complete, whether there is more " + isHasMore);
+                                Log.i(TAG, "第" + currentPage + "页加载完成，是否还有更多:" + isHasMore);
                                 this.isHasMore = isHasMore;
                                 if (isHasMore) {
                                     hideDataNull();
@@ -462,6 +462,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             LocalMediaPageLoader.getInstance(getContext(), config).loadAllMedia(
                     (OnQueryDataResultListener<LocalMediaFolder>) (data, currentPage, isHasMore) -> {
                         if (!isFinishing()) {
+                            this.isHasMore = true;
                             initPageModel(data);
                             synchronousCover();
                         }
@@ -500,7 +501,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     (OnQueryDataResultListener<LocalMedia>) (data, currentPage, isHasMore) -> {
                         if (!isFinishing()) {
                             dismissDialog();
-                            Log.i(TAG, "Page " + currentPage + " data load complete, whether there is more " + isHasMore);
+                            Log.i(TAG, "第" + currentPage + "页加载完成，是否还有更多:" + isHasMore);
                             if (mAdapter != null) {
                                 // IsHasMore being true means that there's still data, but data being 0 might be a filter that's turned on and that doesn't happen to fit on the whole page
                                 if (isHasMore && data.size() == 0) {
@@ -1190,7 +1191,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
                                 this.isHasMore = isHasMore;
                                 if (!isFinishing()) {
-                                    Log.i(TAG, "Page " + currentPage + " data load complete, whether there is more " + isHasMore);
+                                    Log.i(TAG, "第" + currentPage + "页加载完成，是否还有更多:" + isHasMore);
                                     if (result.size() == 0) {
                                         mAdapter.clear();
                                     }
@@ -1638,6 +1639,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     private void notifyAdapterData(LocalMedia media) {
         if (mAdapter != null) {
+            isHasMore = !config.isPageStrategy && isHasMore;
             if (!isAddSameImp(folderWindow.getFolder(0) != null ? folderWindow.getFolder(0).getImageNum() : 0)) {
                 mAdapter.getData().add(0, media);
             }
@@ -1662,6 +1664,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mTvPictureTitle.setTag(R.id.view_count_tag, folderWindow.getFolder(0).getImageNum());
             }
             allFolderSize = 0;
+            // Page mode after manually add photos in the database query, or the page will repeat a data
+            if (config.isPageStrategy) {
+                mAdapter.clear();
+                loadAllMediaData();
+            }
         }
     }
 
