@@ -243,8 +243,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private void loadMoreData() {
         if (mAdapter != null) {
             if (isHasMore) {
-                long bucketId = ValueOf.toLong(mTvPictureTitle.getTag(R.id.view_tag));
                 mPage++;
+                long bucketId = ValueOf.toLong(mTvPictureTitle.getTag(R.id.view_tag));
                 LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage,
                         (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
                             if (!isFinishing()) {
@@ -1233,6 +1233,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 && currentFolder.getData().size() > 0) {
             mAdapter.bindData(currentFolder.getData());
             mPage = currentFolder.getCurrentDataPage();
+            mRecyclerView.smoothScrollToPosition(0);
+            isHasMore = true;
             return true;
         }
         return false;
@@ -1653,6 +1655,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 manualSaveFolder(media);
             }
             mTvEmpty.setVisibility(mAdapter.getSize() > 0 || config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
+            // update all count
+            if (folderWindow.getFolder(0) != null) {
+                mTvPictureTitle.setTag(R.id.view_count_tag, folderWindow.getFolder(0).getImageNum());
+            }
             allFolderSize = 0;
         }
     }
