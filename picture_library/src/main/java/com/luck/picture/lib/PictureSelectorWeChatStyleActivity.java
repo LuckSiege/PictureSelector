@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author：luck
  * @date：2019-11-30 13:27
- * @describe：PictureSelector 微信风格
+ * @describe：PictureSelector WeChatStyle
  */
 public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity {
     private TextView mPictureSendView;
@@ -125,7 +125,7 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
     }
 
     /**
-     * 隐藏父容器不需要的View
+     * Hide views that are not needed by the parent container
      */
     private void goneParentView() {
         mTvPictureRight.setVisibility(View.GONE);
@@ -141,7 +141,6 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
         int size = selectData.size();
         boolean enable = size != 0;
         if (enable) {
-            // 可发送
             mPictureSendView.setEnabled(true);
             mPictureSendView.setSelected(true);
             mTvPicturePreview.setEnabled(true);
@@ -175,10 +174,8 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
                 mTvPicturePreview.setText(getString(R.string.picture_preview_num, size));
             }
         } else {
-            // 未选择
             mPictureSendView.setEnabled(false);
             mPictureSendView.setSelected(false);
-            // 不可预览
             mTvPicturePreview.setEnabled(false);
             mTvPicturePreview.setSelected(false);
             if (config.style != null) {
@@ -226,7 +223,6 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
                     && folderWindow.isShowing()) {
                 folderWindow.dismiss();
             } else {
-                // 发送 走父类的已完成流程
                 mTvPictureOk.performClick();
             }
         }
@@ -243,7 +239,6 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
         int size = list.size();
         boolean isNotEmptyStyle = config.style != null;
         if (config.isWithVideoImage) {
-            // 混选模式
             if (config.selectionMode == PictureConfig.SINGLE) {
                 if (size <= 0) {
                     mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
@@ -288,5 +283,4 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             }
         }
     }
-
 }

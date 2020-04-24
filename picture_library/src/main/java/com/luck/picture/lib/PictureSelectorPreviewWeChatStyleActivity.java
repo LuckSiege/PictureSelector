@@ -20,11 +20,11 @@ import com.luck.picture.lib.tools.ScreenUtils;
 /**
  * @author：luck
  * @date：2019-11-30 17:16
- * @describe：PictureSelector 预览微信风格
+ * @describe：PictureSelector WeChatStyle
  */
 public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewActivity {
     /**
-     * alpha动画时长
+     * alpha duration
      */
     private final static int ALPHA_DURATION = 300;
     private TextView mPictureSendView;
@@ -98,7 +98,7 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
     }
 
     /**
-     * 是否是相同目录
+     * Is it the same directory
      *
      * @param parentFolderName
      * @param currentDirectory
@@ -191,14 +191,11 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
         if (id == R.id.picture_send) {
             boolean enable = selectData.size() != 0;
             if (enable) {
-                // 如果已有勾选则走完成逻辑
                 mTvPictureOk.performClick();
             } else {
-                // 没有勾选走选中逻辑并完成
                 btnCheck.performClick();
-                boolean newEnableStatus = selectData.size() != 0;
-                if (newEnableStatus) {
-                    // 如果已有勾选则走完成逻辑
+                boolean isNewEnableStatus = selectData.size() != 0;
+                if (isNewEnableStatus) {
                     mTvPictureOk.performClick();
                 }
             }
@@ -209,17 +206,14 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
     protected void onSelectedChange(boolean isAddRemove, LocalMedia media) {
         super.onSelectedChange(isAddRemove, media);
         if (isAddRemove) {
-            // 添加
             media.setChecked(true);
             if (config.selectionMode == PictureConfig.SINGLE) {
                 mGalleryAdapter.addSingleMediaToData(media);
             }
         } else {
-            // 移除
             media.setChecked(false);
             mGalleryAdapter.removeMediaToData(media);
             if (isBottomPreview) {
-                // 移除预览数据并刷新ViewPage
                 if (selectData != null && selectData.size() > position) {
                     selectData.get(position).setChecked(true);
                 }
@@ -304,7 +298,7 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
 
 
     /**
-     * 设置完成按钮文字
+     * initCompleteText
      */
     @Override
     protected void initCompleteText(int startCount) {

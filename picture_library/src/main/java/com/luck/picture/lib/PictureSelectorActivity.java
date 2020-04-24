@@ -1546,7 +1546,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (TextUtils.isEmpty(config.cameraPath)) {
             return;
         }
-        // 开启异步线程进行处理
         PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<LocalMedia>() {
 
             @Override

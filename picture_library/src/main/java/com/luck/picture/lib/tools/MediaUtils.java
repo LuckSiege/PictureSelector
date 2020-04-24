@@ -478,7 +478,6 @@ public class MediaUtils {
      * @return
      */
     public static void setOrientationAsynchronous(Context context, LocalMedia media) {
-        // 如果有旋转信息图片宽高则是相反
         if (media.getOrientation() != -1) {
             return;
         }
