@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 
@@ -32,10 +33,11 @@ public class MediaUtils {
      * 创建一条图片地址uri,用于保存拍照后的照片
      *
      * @param context
+     * @param suffixType
      * @return 图片的uri
      */
     @Nullable
-    public static Uri createImageUri(final Context context) {
+    public static Uri createImageUri(final Context context, String suffixType) {
         final Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();
         String time = ValueOf.toString(System.currentTimeMillis());
@@ -43,7 +45,7 @@ public class MediaUtils {
         ContentValues values = new ContentValues(3);
         values.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
         values.put(MediaStore.Images.Media.DATE_TAKEN, time);
-        values.put(MediaStore.Images.Media.MIME_TYPE, PictureMimeType.MIME_TYPE_IMAGE);
+        values.put(MediaStore.Images.Media.MIME_TYPE, TextUtils.isEmpty(suffixType) ? PictureMimeType.MIME_TYPE_IMAGE : suffixType);
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
         if (status.equals(Environment.MEDIA_MOUNTED)) {
             values.put(MediaStore.Images.Media.RELATIVE_PATH, PictureMimeType.DCIM);
@@ -61,10 +63,11 @@ public class MediaUtils {
      * 创建一条视频地址uri,用于保存录制的视频
      *
      * @param context
+     * @param suffixType
      * @return 视频的uri
      */
     @Nullable
-    public static Uri createVideoUri(final Context context) {
+    public static Uri createVideoUri(final Context context, String suffixType) {
         final Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();
         String time = ValueOf.toString(System.currentTimeMillis());
@@ -72,7 +75,7 @@ public class MediaUtils {
         ContentValues values = new ContentValues(3);
         values.put(MediaStore.Video.Media.DISPLAY_NAME, DateUtils.getCreateFileName("VID_"));
         values.put(MediaStore.Video.Media.DATE_TAKEN, time);
-        values.put(MediaStore.Video.Media.MIME_TYPE, PictureMimeType.MIME_TYPE_VIDEO);
+        values.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(suffixType) ? PictureMimeType.MIME_TYPE_VIDEO : suffixType);
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
         if (status.equals(Environment.MEDIA_MOUNTED)) {
             values.put(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES);

@@ -402,7 +402,7 @@ public class CustomCameraView extends RelativeLayout {
 
     private Uri getOutUri(int type) {
         return type == PictureMimeType.ofVideo()
-                ? MediaUtils.createVideoUri(getContext()) : MediaUtils.createImageUri(getContext());
+                ? MediaUtils.createVideoUri(getContext(), mConfig.suffixType) : MediaUtils.createImageUri(getContext(), mConfig.suffixType);
     }
 
     public void setCameraListener(CameraListener cameraListener) {

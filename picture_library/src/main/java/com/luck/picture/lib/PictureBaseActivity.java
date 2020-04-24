@@ -889,7 +889,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             Uri imageUri;
             if (SdkVersionUtils.checkedAndroid_Q()) {
-                imageUri = MediaUtils.createImageUri(getApplicationContext());
+                imageUri = MediaUtils.createImageUri(getApplicationContext(), config.suffixType);
                 if (imageUri != null) {
                     config.cameraPath = imageUri.toString();
                 } else {
@@ -940,7 +940,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             Uri videoUri;
             if (SdkVersionUtils.checkedAndroid_Q()) {
-                videoUri = MediaUtils.createVideoUri(getApplicationContext());
+                videoUri = MediaUtils.createVideoUri(getApplicationContext(), config.suffixType);
                 if (videoUri != null) {
                     config.cameraPath = videoUri.toString();
                 } else {
