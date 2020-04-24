@@ -83,7 +83,7 @@ class Engine {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (srcImg.getMedia() != null && Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
             int orientation = srcImg.getMedia().getOrientation();
-            if (orientation > 0) {
+            if (orientation > 0 && !srcImg.getMedia().isCut()) {
                 switch (orientation) {
                     case ExifInterface.ORIENTATION_ROTATE_90:
                         orientation = 90;
