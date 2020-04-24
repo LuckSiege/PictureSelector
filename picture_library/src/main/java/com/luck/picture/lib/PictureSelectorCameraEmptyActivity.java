@@ -211,9 +211,11 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         media.setWidth(width);
         media.setHeight(height);
         // The width and height of the image are reversed if there is rotation information
-        MediaUtils.setOrientationAsynchronous(getContext(), media);
-        medias.add(media);
-        handlerResult(medias);
+        MediaUtils.setOrientationAsynchronous(getContext(), media,
+                item -> {
+                    medias.add(item);
+                    handlerResult(medias);
+                });
     }
 
     /**

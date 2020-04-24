@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.listener.OnCallbackListener;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 
 import java.io.InputStream;
@@ -475,10 +476,15 @@ public class MediaUtils {
      *
      * @param context
      * @param media
+     * @param listener
      * @return
      */
-    public static void setOrientationAsynchronous(Context context, LocalMedia media) {
+    public static void setOrientationAsynchronous(Context context, LocalMedia media,
+                                                  OnCallbackListener<LocalMedia> listener) {
         if (media.getOrientation() != -1) {
+            if (listener != null) {
+                listener.onCall(media);
+            }
             return;
         }
         PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<Integer>() {
@@ -508,6 +514,9 @@ public class MediaUtils {
                     media.setHeight(width);
                 }
                 media.setOrientation(orientation);
+                if (listener != null) {
+                    listener.onCall(media);
+                }
             }
         });
     }
