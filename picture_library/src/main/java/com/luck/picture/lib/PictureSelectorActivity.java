@@ -245,9 +245,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * @return
      */
     private int getPageLimit() {
-        int limit = mOpenCameraCount > 0 ? config.pageSize - mOpenCameraCount : config.pageSize;
-        mOpenCameraCount = 0;
-        return limit;
+        int bucketId = ValueOf.toInt(mTvPictureTitle.getTag(R.id.view_tag));
+        if (bucketId == -1) {
+            int limit = mOpenCameraCount > 0 ? config.pageSize - mOpenCameraCount : config.pageSize;
+            mOpenCameraCount = 0;
+            return limit;
+        }
+        return config.pageSize;
     }
 
     /**
