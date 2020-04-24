@@ -81,8 +81,8 @@ class Engine {
         options.inSampleSize = computeSize();
         Bitmap tagBitmap = BitmapFactory.decodeStream(srcImg.open(), null, options);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        if (!srcImg.getMedia().isCut()) {
-            if (srcImg.getMedia() != null && Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
+        if (srcImg.getMedia() != null && !srcImg.getMedia().isCut()) {
+            if (Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
                 int orientation = srcImg.getMedia().getOrientation();
                 if (orientation > 0) {
                     switch (orientation) {
