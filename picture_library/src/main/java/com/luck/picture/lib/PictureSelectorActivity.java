@@ -214,7 +214,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         switch (config.animationMode) {
             case AnimationType
                     .ALPHA_IN_ANIMATION:
-                mRecyclerView.setAdapter(new AlphaInAnimationAdapter(mAdapter));
+                mRecyclerView.setAdapter(new AlphaInAnimationAdapter(mAdapter, config.pageSize));
                 break;
             case AnimationType
                     .SLIDE_IN_BOTTOM_ANIMATION:
@@ -1563,6 +1563,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (TextUtils.isEmpty(config.cameraPath)) {
             return;
         }
+        showPleaseDialog();
         PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<LocalMedia>() {
 
             @Override
@@ -1628,6 +1629,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
             @Override
             public void onSuccess(LocalMedia result) {
+                dismissDialog();
                 // Refresh the system library
                 if (!SdkVersionUtils.checkedAndroid_Q()) {
                     if (config.isFallbackVersion3) {

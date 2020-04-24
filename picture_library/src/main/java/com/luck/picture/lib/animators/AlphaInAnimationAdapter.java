@@ -14,9 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 public class AlphaInAnimationAdapter extends BaseAnimationAdapter {
     private static final float DEFAULT_ALPHA_FROM = 0f;
     private final float mFrom;
+    private int mPageSize;
 
-    public AlphaInAnimationAdapter(RecyclerView.Adapter adapter) {
+    public AlphaInAnimationAdapter(RecyclerView.Adapter adapter, int pageSize) {
         this(adapter, DEFAULT_ALPHA_FROM);
+        mPageSize = pageSize;
     }
 
     public AlphaInAnimationAdapter(RecyclerView.Adapter adapter, float from) {
@@ -26,6 +28,10 @@ public class AlphaInAnimationAdapter extends BaseAnimationAdapter {
 
     @Override
     protected Animator[] getAnimators(View view) {
-        return new Animator[]{ObjectAnimator.ofFloat(view, "alpha", mFrom, 1f)};
+        int itemCount = getItemCount();
+        if (itemCount > mPageSize * 2) {
+            return new Animator[]{ObjectAnimator.ofFloat(view, "alpha", mFrom, 1f)};
+        }
+        return new Animator[]{};
     }
 }
