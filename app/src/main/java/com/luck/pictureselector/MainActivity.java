@@ -498,7 +498,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.rotateEnabled(false) // 裁剪是否可旋转图片
                         //.scaleEnabled(false)// 裁剪是否可放大缩小图片
                         //.videoQuality()// 视频录制质量 0 or 1
-                        //.videoSecond()//显示多少秒以内的视频or音频也可适用
                         //.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
                         .forResult(new MyResultCallback(mAdapter));
             } else {
@@ -551,7 +550,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.rotateEnabled() // 裁剪是否可旋转图片
                         //.scaleEnabled()// 裁剪是否可放大缩小图片
                         //.videoQuality()// 视频录制质量 0 or 1
-                        //.videoSecond()////显示多少秒以内的视频or音频也可适用
                         //.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
                         .forResult(new MyResultCallback(mAdapter));
             }
