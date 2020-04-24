@@ -81,23 +81,25 @@ class Engine {
         options.inSampleSize = computeSize();
         Bitmap tagBitmap = BitmapFactory.decodeStream(srcImg.open(), null, options);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        if (srcImg.getMedia() != null && Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
-            int orientation = srcImg.getMedia().getOrientation();
-            if (orientation > 0 && !srcImg.getMedia().isCut()) {
-                switch (orientation) {
-                    case ExifInterface.ORIENTATION_ROTATE_90:
-                        orientation = 90;
-                        break;
-                    case ExifInterface.ORIENTATION_ROTATE_180:
-                        orientation = 180;
-                        break;
-                    case ExifInterface.ORIENTATION_ROTATE_270:
-                        orientation = 270;
-                        break;
-                    default:
-                        break;
+        if (!srcImg.getMedia().isCut()) {
+            if (srcImg.getMedia() != null && Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
+                int orientation = srcImg.getMedia().getOrientation();
+                if (orientation > 0) {
+                    switch (orientation) {
+                        case ExifInterface.ORIENTATION_ROTATE_90:
+                            orientation = 90;
+                            break;
+                        case ExifInterface.ORIENTATION_ROTATE_180:
+                            orientation = 180;
+                            break;
+                        case ExifInterface.ORIENTATION_ROTATE_270:
+                            orientation = 270;
+                            break;
+                        default:
+                            break;
+                    }
+                    tagBitmap = rotatingImage(tagBitmap, orientation);
                 }
-                tagBitmap = rotatingImage(tagBitmap, orientation);
             }
         }
         if (tagBitmap != null) {
