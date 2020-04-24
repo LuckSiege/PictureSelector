@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private PictureWindowAnimationStyle mWindowAnimationStyle;
     private ItemTouchHelper mItemTouchHelper;
     private DragListener mDragListener;
-    private int animationMode = AnimationType.DEFAULT_ANIMATION;
+    private int animationMode = AnimationType.ALPHA_IN_ANIMATION;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
