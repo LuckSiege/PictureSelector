@@ -127,7 +127,7 @@ PictureSelector.create(this).externalPictureVideo(video_path);
 Android开发交流 群一 [619458861]() (已满) <br>
 Android开发交流 群二 [679824206]() (已满) <br>
 Android开发交流 群三 [854136996]() (已满) <br>
-QQ [893855882] <br>
+QQ [893855882]() <br>
 
 ## 演示效果
 
