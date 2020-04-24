@@ -350,8 +350,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                         if (media == null) {
                             continue;
                         }
-                        String cachePath = PictureSelectionConfig.cacheResourcesEngine.onCachePath(getContext(), media.getPath());
-                        media.setAndroidQToPath(cachePath);
+                        if (!PictureMimeType.isHttp(media.getPath())) {
+                            String cachePath = PictureSelectionConfig.cacheResourcesEngine.onCachePath(getContext(), media.getPath());
+                            media.setAndroidQToPath(cachePath);
+                        }
                     }
                     return result;
                 }
@@ -447,7 +449,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                 image.setCompressed(!isHasVideo && !flag);
                 image.setCompressPath(isHasVideo || flag ? "" : path);
                 if (isAndroidQ) {
-                    image.setAndroidQToPath(isHasVideo ? null : path);
+                    image.setAndroidQToPath(image.getCompressPath());
                 }
             }
         }
@@ -787,9 +789,11 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                             && !media.isCompressed()
                             && TextUtils.isEmpty(media.getAndroidQToPath());
                     if (isCopyAndroidQToPath && PictureMimeType.isContent(media.getPath())) {
-                        String AndroidQToPath = AndroidQTransformUtils.copyPathToAndroidQ(getContext(),
-                                media.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), config.cameraFileName);
-                        media.setAndroidQToPath(AndroidQToPath);
+                        if (!PictureMimeType.isHttp(media.getPath())) {
+                            String AndroidQToPath = AndroidQTransformUtils.copyPathToAndroidQ(getContext(),
+                                    media.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), config.cameraFileName);
+                            media.setAndroidQToPath(AndroidQToPath);
+                        }
                     } else if (media.isCut() && media.isCompressed()) {
                         media.setAndroidQToPath(media.getCompressPath());
                     }
