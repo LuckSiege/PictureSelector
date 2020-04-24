@@ -439,10 +439,8 @@ public class Luban implements Handler.Callback {
                 public String getPath() {
                     if (media.isCut()) {
                         return media.getCutPath();
-                    } else if (TextUtils.isEmpty(media.getAndroidQToPath())) {
-                        return media.getPath();
                     } else {
-                        return media.getAndroidQToPath();
+                        return TextUtils.isEmpty(media.getAndroidQToPath()) ? media.getPath() : media.getAndroidQToPath();
                     }
                 }
 
