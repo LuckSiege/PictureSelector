@@ -205,6 +205,7 @@
                         android:id="@+id/rb_default"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:checked="true"
                         android:text="默认动画"
                         android:textColor="@color/app_color_53575e"
                         android:textSize="14sp" />
@@ -213,7 +214,6 @@
                         android:id="@+id/rb_alpha"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checked="true"
                         android:text="列表渐变动画"
                         android:textColor="@color/app_color_53575e"
                         android:textSize="14sp" />
