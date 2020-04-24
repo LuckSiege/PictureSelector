@@ -118,16 +118,18 @@ PictureSelector.create(this).externalPictureVideo(video_path);
    limitations under the License.
 ```
 
-## 兼容性测试
-******腾讯优测-深度测试-通过率达到100%******
-
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/test.png)
-
 ## 联系方式
 Android开发交流 群一 [619458861]() (已满) <br>
 Android开发交流 群二 [679824206]() (已满) <br>
 Android开发交流 群三 [854136996]() (已满) <br>
 QQ [893855882]() <br>
+
+
+## 兼容性测试
+******腾讯优测-深度测试-通过率达到100%******
+
+![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/test.png)
+
 
 ## 演示效果
 
