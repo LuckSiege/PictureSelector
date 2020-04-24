@@ -214,7 +214,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         switch (config.animationMode) {
             case AnimationType
                     .ALPHA_IN_ANIMATION:
-                mRecyclerView.setAdapter(new AlphaInAnimationAdapter(mAdapter, config.pageSize));
+                mRecyclerView.setAdapter(new AlphaInAnimationAdapter(mAdapter));
                 break;
             case AnimationType
                     .SLIDE_IN_BOTTOM_ANIMATION:
