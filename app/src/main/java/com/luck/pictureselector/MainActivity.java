@@ -325,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         needScaleSmall = false;
                     }
                     int sh = recyclerView.getHeight() + tvDeleteText.getHeight();
-                    int ry = tvDeleteText.getTop() - sh;
+                    int ry = tvDeleteText.getBottom() - sh;
                     if (dY >= ry) {
                         //拖到删除处
                         mDragListener.deleteState(true);
