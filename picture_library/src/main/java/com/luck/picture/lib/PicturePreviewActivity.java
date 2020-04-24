@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -235,7 +234,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage, config.pageSize,
                 (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
                     if (!isFinishing()) {
-                        Log.i(TAG, "Page " + currentPage + " data load complete, whether there is more " + isHasMore);
                         this.isHasMore = isHasMore;
                         if (isHasMore) {
                             int size = result.size();
@@ -261,7 +259,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
                     if (!isFinishing()) {
                         this.isHasMore = isHasMore;
-                        Log.i(TAG, "Page " + currentPage + " data load complete, whether there is more " + isHasMore);
                         if (isHasMore) {
                             int size = result.size();
                             if (size > 0 && adapter != null) {

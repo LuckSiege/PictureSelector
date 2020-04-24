@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -265,7 +264,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage, getPageLimit(),
                         (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
                             if (!isFinishing()) {
-                                Log.i(TAG, "第" + currentPage + "页加载完成，是否还有更多:" + isHasMore);
                                 this.isHasMore = isHasMore;
                                 if (isHasMore) {
                                     hideDataNull();
