@@ -104,6 +104,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected boolean isEnterSetting;
     private long intervalClickTime = 0;
     private int allFolderSize;
+    private int mOpenCameraCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,6 +239,18 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     /**
+     * getPageLimit
+     * # If the user clicks to take a photo and returns, the Limit should be adjusted dynamically
+     *
+     * @return
+     */
+    private int getPageLimit() {
+        int limit = mOpenCameraCount > 0 ? config.pageSize - mOpenCameraCount : config.pageSize;
+        mOpenCameraCount = 0;
+        return limit;
+    }
+
+    /**
      * load more data
      */
     private void loadMoreData() {
@@ -245,7 +258,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (isHasMore) {
                 mPage++;
                 long bucketId = ValueOf.toLong(mTvPictureTitle.getTag(R.id.view_tag));
-                LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage,
+                LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage, getPageLimit(),
                         (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
                             if (!isFinishing()) {
                                 Log.i(TAG, "第" + currentPage + "页加载完成，是否还有更多:" + isHasMore);
@@ -1640,11 +1653,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     private void notifyAdapterData(LocalMedia media) {
         if (mAdapter != null) {
-            boolean isHasImage = PictureMimeType.isHasImage(media.getMimeType());
             boolean isAddSameImp = isAddSameImp(folderWindow.getFolder(0) != null ? folderWindow.getFolder(0).getImageNum() : 0);
             if (!isAddSameImp) {
                 mAdapter.getData().add(0, media);
-                isHasMore = !isHasImage;
+                mOpenCameraCount++;
             }
             if (checkVideoLegitimacy(media)) {
                 if (config.selectionMode == PictureConfig.SINGLE) {
@@ -1667,13 +1679,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mTvPictureTitle.setTag(R.id.view_count_tag, folderWindow.getFolder(0).getImageNum());
             }
             allFolderSize = 0;
-            // Page mode after manually add photos in the database query, or the page will repeat a data
-            if (config.isPageStrategy && !isAddSameImp) {
-                if (isHasImage) {
-                    mAdapter.clear();
-                    loadAllMediaData();
-                }
-            }
         }
     }
 

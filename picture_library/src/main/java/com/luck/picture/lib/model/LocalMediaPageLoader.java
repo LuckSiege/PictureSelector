@@ -216,27 +216,43 @@ public class LocalMediaPageLoader {
      * Queries for data in the specified directory
      *
      * @param bucketId
+     * @param page
+     * @param limit
+     * @param listener
+     * @return
+     */
+    public void loadPageMediaData(long bucketId, int page, int limit, OnQueryDataResultListener listener) {
+        loadPageMediaData(bucketId, page, limit, config.pageSize, listener);
+    }
+
+    /**
+     * Queries for data in the specified directory
+     *
+     * @param bucketId
      * @param listener
      * @return
      */
     public void loadPageMediaData(long bucketId, int page, OnQueryDataResultListener listener) {
-        loadPageMediaData(bucketId, page, config.pageSize, listener);
+        loadPageMediaData(bucketId, page, config.pageSize, config.pageSize, listener);
     }
 
     /**
      * Queries for data in the specified directory (page)
      *
      * @param bucketId
+     * @param page
+     * @param limit
+     * @param pageSize
      * @return
      */
-    public void loadPageMediaData(long bucketId, int page, int pageSize, OnQueryDataResultListener listener) {
+    public void loadPageMediaData(long bucketId, int page, int limit, int pageSize, OnQueryDataResultListener listener) {
         PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<MediaData>() {
 
             @Override
             public MediaData doInBackground() {
                 Cursor data = null;
                 try {
-                    String orderBy = page == -1 ? MediaStore.Files.FileColumns._ID + " DESC" : MediaStore.Files.FileColumns._ID + " DESC limit " + pageSize + " offset " + (page - 1) * pageSize;
+                    String orderBy = page == -1 ? MediaStore.Files.FileColumns._ID + " DESC" : MediaStore.Files.FileColumns._ID + " DESC limit " + limit + " offset " + (page - 1) * pageSize;
                     data = mContext.getContentResolver().query(QUERY_URI, PROJECTION_PAGE, getPageSelection(bucketId), getPageSelectionArgs(bucketId), orderBy);
                     if (data != null) {
                         List<LocalMedia> result = new ArrayList<>();
