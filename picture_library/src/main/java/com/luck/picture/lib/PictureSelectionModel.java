@@ -205,6 +205,7 @@ public class PictureSelectionModel {
      * @param enablePreviewAudio Do you want to ic_play audio ?
      * @return
      */
+    @Deprecated
     public PictureSelectionModel enablePreviewAudio(boolean enablePreviewAudio) {
         selectionConfig.enablePreviewAudio = enablePreviewAudio;
         return this;
