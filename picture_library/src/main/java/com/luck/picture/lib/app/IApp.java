@@ -11,11 +11,16 @@ import com.luck.picture.lib.engine.PictureSelectorEngine;
  */
 public interface IApp {
     /**
-     * 获取全局应用Application
+     * Application
      *
      * @return
      */
     Context getAppContext();
 
+    /**
+     * PictureSelectorEngine
+     *
+     * @return
+     */
     PictureSelectorEngine getPictureSelectorEngine();
 }
