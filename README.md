@@ -45,7 +45,24 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.3'
  PictureSelector.create(this)
    .openGallery(PictureMimeType.ofImage())
    .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
-   .forResult(PictureConfig.CHOOSE_REQUEST);   
+   .forResult(PictureConfig.CHOOSE_REQUEST);  
+   
+   or
+   
+ PictureSelector.create(MainActivity.this)
+   .openGallery(PictureMimeType.ofAll())
+   .loadImageEngine(GlideEngine.createGlideEngine())
+   .forResult(new OnResultCallbackListener<LocalMedia>() {
+          @Override
+          public void onResult(List<LocalMedia> result) {
+
+             }
+
+          @Override
+          public void onCancel() {
+
+             }
+        });  
 ```
 
 ## 单独拍照
