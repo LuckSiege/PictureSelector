@@ -43,7 +43,7 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.3'
 ## 启动相册
 快捷调用，更多功能 [请查看](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)
 
-onActivityResult
+1、onActivityResult
 ```sh 
  PictureSelector.create(this)
    .openGallery(PictureMimeType.ofImage())
@@ -65,7 +65,7 @@ onActivityResult
         }
 ```
 
-Callback
+2、Callback
 ```sh
  PictureSelector.create(this)
    .openGallery(PictureMimeType.ofAll())
