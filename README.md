@@ -1,4 +1,4 @@
-# PictureSelector 2.0
+# PictureSelector 2.0 
    A Picture Picker For Android Platform, Support From the album to obtain pictures, video, audio & photo, support clipping (single picture or multi-picture clipping), compression, theme custom configuration and other functions, support dynamic access & adapt to Android 5.0+ system of open source picture selection framework。<br>
 
 [中文版🇨🇳](README_CN.md)
