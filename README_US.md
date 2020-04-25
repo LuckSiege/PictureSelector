@@ -19,11 +19,11 @@
 -[Effect](#Effect)<br>
 -[Method Of Use](https://github.com/LuckSiege/PictureSelector/wiki/%E9%9B%86%E6%88%90%E6%96%B9%E5%BC%8F)<br>
 -[Api Explain](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)<br>
--[Open Photo Album](#Open Photo Album)<br>
--[Open Camera](#Open Camera)<br>
+-[Open Photo Album](#Album)<br>
+-[Open Camera](#Camera)<br>
 -[Results Callback](https://github.com/LuckSiege/PictureSelector/wiki/%E7%BB%93%E6%9E%9C%E5%9B%9E%E8%B0%83)<br>
 -[Common Mistakes](https://github.com/LuckSiege/PictureSelector/wiki/%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
--[Cache Clear](#Cache Clear)<br>
+-[Cache Clear](#CacheClear)<br>
 -[Confusion](#Confusion)<br>
 -[LICENSE](#LICENSE)<br>
 -[Contact](#Contact)<br>
@@ -34,7 +34,7 @@
 implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.3'
 ```
 
-## Open Photo Album
+## Album
 Quick call, more functions [More](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E5%8A%9F%E8%83%BD%E9%85%8D%E5%88%B6%E9%A1%B9)
 
 onActivityResult
@@ -77,7 +77,7 @@ Callback
       });  
 ```
 
-## Open Camera
+## Camera
 Quick Use, separately start the photo or video according to PictureMimeType automatic recognition [More](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E5%8A%9F%E8%83%BD%E9%85%8D%E5%88%B6%E9%A1%B9)
 
 onActivityResult
@@ -120,7 +120,7 @@ PictureSelector.create(this)
       });
 ```
 
-## Cache Clear
+## CacheClear
 ```sh
  // Include clipped and compressed cache, to be called upon successful upload, type refers to the image or video cache depending on which ofImage or ofVideo you set up note: system sd card permissions are required
  PictureFileUtils.deleteCacheDirFile(this,type);
