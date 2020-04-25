@@ -32,7 +32,7 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.3'
 ## Photo
 Quick call, more functions [More](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api)
 
-onActivityResult
+1、onActivityResult
 ```sh 
  PictureSelector.create(this)
    .openGallery(PictureMimeType.ofImage())
@@ -54,7 +54,7 @@ onActivityResult
         }
 ```
 
-Callback
+2、Callback
 ```sh
  PictureSelector.create(this)
    .openGallery(PictureMimeType.ofAll())
