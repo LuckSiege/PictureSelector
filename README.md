@@ -42,7 +42,7 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.3'
 ## 启动相册
 快捷调用，更多功能 [请查看](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E5%8A%9F%E8%83%BD%E9%85%8D%E5%88%B6%E9%A1%B9)
 
-onActivityResult方式
+onActivityResult
 ```sh 
  PictureSelector.create(this)
    .openGallery(PictureMimeType.ofImage())
@@ -50,7 +50,7 @@ onActivityResult方式
    .forResult(PictureConfig.CHOOSE_REQUEST);  
 ```
 
-Callback方式
+Callback
 ```sh
  PictureSelector.create(this)
    .openGallery(PictureMimeType.ofAll())
@@ -70,11 +70,29 @@ Callback方式
 
 ## 单独拍照
 快捷调用，单独启动拍照或视频 根据PictureMimeType自动识别 更多功能 [请查看](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E5%8A%9F%E8%83%BD%E9%85%8D%E5%88%B6%E9%A1%B9)
+onActivityResult
 ```sh
  PictureSelector.create(this)
    .openCamera(PictureMimeType.ofImage())
    .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
    .forResult(PictureConfig.REQUEST_CAMERA);   
+```
+Callback
+```sh
+PictureSelector.create(this)
+   .openGallery(PictureMimeType.ofAll())
+   .loadImageEngine(GlideEngine.createGlideEngine())
+   .forResult(new OnResultCallbackListener<LocalMedia>() {
+       @Override
+       public void onResult(List<LocalMedia> result) {
+
+         }
+
+       @Override
+       public void onCancel() {
+
+         }
+      });
 ```
 
 ## 缓存清除
