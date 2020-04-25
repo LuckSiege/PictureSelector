@@ -661,6 +661,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             switch (requestCode) {
                 case PictureConfig.CHOOSE_REQUEST:
                     // 图片选择结果回调
+
                     List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
                     // 例如 LocalMedia 里面返回五种path
                     // 1.media.getPath(); 原图path
