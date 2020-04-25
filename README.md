@@ -57,7 +57,6 @@ onActivityResult
                 case PictureConfig.CHOOSE_REQUEST:
                     // onResult Callback
                     List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
-                    
                     break;
                 default:
                     break;
@@ -101,7 +100,6 @@ onActivityResult
                 case PictureConfig.CHOOSE_REQUEST:
                     // onResult Callback
                     List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
-                    
                     break;
                 default:
                     break;
