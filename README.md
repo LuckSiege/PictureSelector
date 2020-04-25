@@ -1,52 +1,47 @@
 # PictureSelector 2.0
-   一款针对Android平台下的图片选择器，支持从相册获取图片、视频、音频&拍照，支持裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能，支持动态获取权限&适配Android 5.0+系统的开源图片选择框架。<br>
-   
- 
-   [我的博客地址](http://blog.csdn.net/luck_mw)   
-  
-   [体验Demo](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2020_04_24_1730_2.5.3.apk)<br>
-  
+   A Picture Picker For Android Platform, Support From the album to obtain pictures, video, audio & photo, support clipping (single picture or multi-picture clipping), compression, theme custom configuration and other functions, support dynamic access & adapt to Android 5.0+ system of open source picture selection framework。<br>
+
+
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
 [![CSDN](https://img.shields.io/twitter/url/http/blog.csdn.net/luck_mw.svg?style=social)](http://blog.csdn.net/luck_mw)
 [![I](https://img.shields.io/github/issues/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector/issues)
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
-## 目录
--[用前需知](https://github.com/LuckSiege/PictureSelector/wiki/%E7%94%A8%E5%89%8D%E9%9C%80%E7%9F%A5)<br>
--[如何提Issues?](https://github.com/LuckSiege/PictureSelector/wiki/%E5%A6%82%E4%BD%95%E6%8F%90Issues%3F)<br>
--[功能特点](https://github.com/LuckSiege/PictureSelector/wiki/%E5%8A%9F%E8%83%BD%E7%89%B9%E7%82%B9)<br>
--[最新版本 v2.5.3](#最新版本)<br>
--[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.5.3)<br>
--[主题配置-Xml方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98-Xml%E6%96%B9%E5%BC%8F)<br>
--[主题配置-Code方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%A8%E6%80%81%E4%B8%BB%E9%A2%98(%E5%8C%85%E5%90%AB%E8%A3%81%E5%89%AA%E3%80%81%E7%9B%B8%E5%86%8C%E5%90%AF%E5%8A%A8%E5%8A%A8%E7%94%BB)-Code%E6%96%B9%E5%BC%8F)<br>
--[演示效果](#演示效果)<br>
--[集成方式](https://github.com/LuckSiege/PictureSelector/wiki/%E9%9B%86%E6%88%90%E6%96%B9%E5%BC%8F)<br>
--[Api说明](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)<br>
--[启动相册](#启动相册)<br>
--[单独拍照](#单独拍照)<br>
--[结果回调](https://github.com/LuckSiege/PictureSelector/wiki/%E7%BB%93%E6%9E%9C%E5%9B%9E%E8%B0%83)<br>
--[常见错误](https://github.com/LuckSiege/PictureSelector/wiki/%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
--[缓存清除](#缓存清除)<br>
--[混淆配置](#混淆配置)<br>
+## Directory
+-[Need to know before use](https://github.com/LuckSiege/PictureSelector/wiki/%E7%94%A8%E5%89%8D%E9%9C%80%E7%9F%A5)<br>
+-[How to ask Issues?](https://github.com/LuckSiege/PictureSelector/wiki/%E5%A6%82%E4%BD%95%E6%8F%90Issues%3F)<br>
+-[Functional features](https://github.com/LuckSiege/PictureSelector/wiki/%E5%8A%9F%E8%83%BD%E7%89%B9%E7%82%B9)<br>
+-[The latest version v2.5.3](#The latest version)<br>
+-[Update log](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.5.3)<br>
+-[The topic configuration-Xml](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98-Xml%E6%96%B9%E5%BC%8F)<br>
+-[The topic configuration-Code](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%A8%E6%80%81%E4%B8%BB%E9%A2%98(%E5%8C%85%E5%90%AB%E8%A3%81%E5%89%AA%E3%80%81%E7%9B%B8%E5%86%8C%E5%90%AF%E5%8A%A8%E5%8A%A8%E7%94%BB)-Code%E6%96%B9%E5%BC%8F)<br>
+-[Effect](#Effect)<br>
+-[Method of use](https://github.com/LuckSiege/PictureSelector/wiki/%E9%9B%86%E6%88%90%E6%96%B9%E5%BC%8F)<br>
+-[Api explain](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)<br>
+-[Open the photo album](#Open the photo album)<br>
+-[Open the camera](#Open the camera)<br>
+-[Results the callback](https://github.com/LuckSiege/PictureSelector/wiki/%E7%BB%93%E6%9E%9C%E5%9B%9E%E8%B0%83)<br>
+-[Common mistakes](https://github.com/LuckSiege/PictureSelector/wiki/%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
+-[Cache to clear](#Cache to clear)<br>
+-[Confusion](#Confusion)<br>
 -[LICENSE](#LICENSE)<br>
--[兼容性测试](#兼容性测试)<br>
--[联系方式](#联系方式)<br>
+-[Contact](#Contact)<br>
 
 
-## 最新版本
+## The latest version
 ```sh
 implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.3'
 ```
 
-## 启动相册
-快捷调用，更多功能 [请查看](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E5%8A%9F%E8%83%BD%E9%85%8D%E5%88%B6%E9%A1%B9)
+## Open the photo album
+Quick call, more functions [More](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E5%8A%9F%E8%83%BD%E9%85%8D%E5%88%B6%E9%A1%B9)
 
 onActivityResult
 ```sh 
  PictureSelector.create(this)
    .openGallery(PictureMimeType.ofImage())
-   .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
+   .loadImageEngine(GlideEngine.createGlideEngine()) // Please refer to the Demo GlideEngine.java
    .forResult(PictureConfig.CHOOSE_REQUEST);
    
     @Override
@@ -82,14 +77,14 @@ Callback
       });  
 ```
 
-## 单独拍照
-快捷调用，单独启动拍照或视频 根据PictureMimeType自动识别 更多功能 [请查看](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E5%8A%9F%E8%83%BD%E9%85%8D%E5%88%B6%E9%A1%B9)
+## Open the camera
+Quick Use, separately start the photo or video according to PictureMimeType automatic recognition [More](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E5%8A%9F%E8%83%BD%E9%85%8D%E5%88%B6%E9%A1%B9)
 
 onActivityResult
 ```sh
  PictureSelector.create(this)
    .openCamera(PictureMimeType.ofImage())
-   .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
+   .loadImageEngine(GlideEngine.createGlideEngine()) // Please refer to the Demo GlideEngine.java
    .forResult(PictureConfig.REQUEST_CAMERA);  
    
     @Override
@@ -125,38 +120,38 @@ PictureSelector.create(this)
       });
 ```
 
-## 缓存清除
+## Cache to clear
 ```sh
- //包括裁剪和压缩后的缓存，要在上传成功后调用，type 指的是图片or视频缓存取决于你设置的ofImage或ofVideo 注意：需要系统sd卡权限  
+ // Include clipped and compressed cache, to be called upon successful upload, type refers to the image or video cache depending on which ofImage or ofVideo you set up note: system sd card permissions are required
  PictureFileUtils.deleteCacheDirFile(this,type);
- // 清除所有缓存 例如：压缩、裁剪、视频、音频所生成的临时文件
+ // Clear all temporary files generated by caching such as compression, clipping, video, and audio
  PictureFileUtils.deleteAllCacheDirFile(this);
 ```
  
-## 预览图片 
+## Preview Image
 ```
-// 预览图片 可自定长按保存路径
-*注意 .themeStyle(R.style.theme)；里面的参数不可删，否则闪退...
+// Preview picture can be customized length press save path
+*Prompt .themeStyle(R.style.theme)；Inside the parameters can not be deleted, otherwise crash...
 
 PictureSelector.create(this)
  .themeStyle(R.style.picture_default_style)
  .isNotPreviewDownload(true)
- .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
+ .loadImageEngine(GlideEngine.createGlideEngine())
  .openExternalPreview(position, selectList);
 
 ```
-## 预览视频
+## Preview Video
 ```sh
 PictureSelector.create(this).externalPictureVideo(video_path);
 ```
 
-## 项目使用第三方库：
+## Project USES third-party libraries：
 
 * PhotoView
 * luban
 * ucrop
 
-## 混淆配置 
+## Confusion
 ```sh
 #PictureSelector 2.0
 -keep class com.luck.picture.lib.** { *; }
@@ -186,46 +181,40 @@ PictureSelector.create(this).externalPictureVideo(video_path);
    limitations under the License.
 ```
 
-## 联系方式
-Android开发交流 群一 [619458861]() (已满) <br>
-Android开发交流 群二 [679824206]() (已满) <br>
-Android开发交流 群三 [854136996]() (已满) <br>
+## Contact
+Android Group 1 [619458861]() (biggest) <br>
+Android Group 2 [679824206]() (biggest) <br>
+Android Group 3 [854136996]() (biggest) <br>
 QQ [893855882]() <br>
 
 
-## 兼容性测试
-******腾讯优测-深度测试-通过率达到100%******
+## Effect
 
-![image](https://github.com/LuckSiege/PictureSelector/blob/master/image/test.png)
-
-
-## 演示效果
-
-| 单一模式 | 混选模式 |
+| Single Mode | Mixed Mode |
 |:-----------:|:-----------:|
 |![](image/home.jpg)|![](image/home_mixed.jpg)| 
 
-| 默认风格 | 预览 | 多图裁剪 |
+| Default Style | Preview | Multiple Crop |
 |:-----------:|:--------:|:---------:|
 |![](image/picture_default_style_1.jpg) | <img src="image/picture_default_style_2.jpg"/> | ![](image/picture_default_style_new_3.jpg)|  
 
-| 数字风格 | 预览 | 多图裁剪 |
+| Digital Style | Preview | Multiple Crop |
 |:-----------:|:--------:|:---------:|
 |![](image/picture_num_style_new_1.jpg) | ![](image/picture_num_style_new_2.jpg) | ![](image/picture_num_style_new_3.jpg)| 
 
-| 白色风格 | 预览 | 单图裁剪 |
+| White Style | Preview | Single Crop |
 |:-----------:|:--------:|:---------:|
 |![](image/picture_sina_style_1.jpg) | ![](image/picture_sina_style_new_2.jpg) | ![](image/picture_sina_style_new_3.jpg)| 
 
-| 全新风格 | 预览 | 多图裁剪 |
+| New Style | Preview | Multiple Crop |
 |:-----------:|:--------:|:---------:|
 |![](image/picture_wechat_style_1.jpg) | ![](image/picture_wechat_style_2.jpg) | ![](image/picture_wechat_style_new_3.jpg)| 
 
-| 相册目录 | 单选模式 | 头像裁剪|
+| Photo Album Directory | Single Mode | Circular Crop|
 |:-----------:|:--------:|:--------:|
 |![](image/picture_wechat_album_style.jpg) |![](image/picture_wechat_single_style_3.jpg) | ![](image/picture_circular_crop_new_style.jpg)| 
 
-| 白色风格 | 视频 | 音频 |
+| White Style | Video | Audio |
 |:-----------:|:-----------:|:--------:|
 |![](image/picture_white_style.jpeg) |![](image/picture_video.jpg) | ![](image/picture_audio.jpg)| 
 
