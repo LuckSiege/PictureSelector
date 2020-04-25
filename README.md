@@ -47,7 +47,22 @@ onActivityResult
  PictureSelector.create(this)
    .openGallery(PictureMimeType.ofImage())
    .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
-   .forResult(PictureConfig.CHOOSE_REQUEST);  
+   .forResult(PictureConfig.CHOOSE_REQUEST);
+   
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PictureConfig.CHOOSE_REQUEST:
+                    // onResult Callback
+                    List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
+                    
+                    break;
+                default:
+                    break;
+            }            
+        }
 ```
 
 Callback
@@ -76,7 +91,22 @@ onActivityResult
  PictureSelector.create(this)
    .openCamera(PictureMimeType.ofImage())
    .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
-   .forResult(PictureConfig.REQUEST_CAMERA);   
+   .forResult(PictureConfig.REQUEST_CAMERA);  
+   
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PictureConfig.CHOOSE_REQUEST:
+                    // onResult Callback
+                    List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
+                    
+                    break;
+                default:
+                    break;
+            }            
+        }
 ```
 
 Callback
