@@ -10,7 +10,6 @@
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 ## Directory
--[Functional Features](https://github.com/LuckSiege/PictureSelector/wiki/%E5%8A%9F%E8%83%BD%E7%89%B9%E7%82%B9)<br>
 -[Latest Version v2.5.3](#LatestVersion)<br>
 -[Update Log](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.5.3)<br>
 -[The Topic Configuration-Xml](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98-Xml%E6%96%B9%E5%BC%8F)<br>
