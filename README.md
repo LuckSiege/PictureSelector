@@ -63,13 +63,13 @@ Quick call, more functions [More](https://github.com/LuckSiege/PictureSelector/w
        @Override
        public void onResult(List<LocalMedia> result) {
 
-         }
+       }
 
        @Override
        public void onCancel() {
 
-         }
-      });  
+       }
+     });  
 ```
 
 ## Camera
