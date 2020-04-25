@@ -97,7 +97,7 @@ onActivityResult
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case PictureConfig.CHOOSE_REQUEST:
+                case PictureConfig.REQUEST_CAMERA:
                     // onResult Callback
                     List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
                     break;
