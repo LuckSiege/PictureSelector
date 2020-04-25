@@ -1,10 +1,6 @@
 # PictureSelector 2.0 
    一款针对Android平台下的图片选择器，支持从相册获取图片、视频、音频&拍照，支持裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能，支持动态获取权限&适配Android 5.0+系统的开源图片选择框架。<br>
-  
-  <br>项目一直维护(有bug修复完一般会在周末更新)，如果有bug请描述清楚并可以提Issues，个人QQ 893855882 希望用得着的朋友点个star。 <br>
- Android开发交流 群一 619458861 (已满) <br>
- Android开发交流 群二 679824206 (已满) <br>
- Android开发交流 群三 854136996 (已满) <br>
+   
  
    [我的博客地址](http://blog.csdn.net/luck_mw)   
   
@@ -26,6 +22,7 @@
 -[主题配置-Code方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%A8%E6%80%81%E4%B8%BB%E9%A2%98(%E5%8C%85%E5%90%AB%E8%A3%81%E5%89%AA%E3%80%81%E7%9B%B8%E5%86%8C%E5%90%AF%E5%8A%A8%E5%8A%A8%E7%94%BB)-Code%E6%96%B9%E5%BC%8F)<br>
 -[演示效果](#演示效果)<br>
 -[集成方式](https://github.com/LuckSiege/PictureSelector/wiki/%E9%9B%86%E6%88%90%E6%96%B9%E5%BC%8F)<br>
+-[Api说明](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)<br>
 -[启动相册](#启动相册)<br>
 -[单独拍照](#单独拍照)<br>
 -[结果回调](https://github.com/LuckSiege/PictureSelector/wiki/%E7%BB%93%E6%9E%9C%E5%9B%9E%E8%B0%83)<br>
@@ -34,6 +31,7 @@
 -[混淆配置](#混淆配置)<br>
 -[LICENSE](#LICENSE)<br>
 -[兼容性测试](#兼容性测试)<br>
+-[联系方式](#联系方式)<br>
 
 
 ## 最新版本
@@ -43,20 +41,88 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.3'
 
 ## 启动相册
 快捷调用，更多功能 [请查看](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E5%8A%9F%E8%83%BD%E9%85%8D%E5%88%B6%E9%A1%B9)
-```sh
+
+onActivityResult
+```sh 
  PictureSelector.create(this)
    .openGallery(PictureMimeType.ofImage())
    .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
-   .forResult(PictureConfig.CHOOSE_REQUEST);   
+   .forResult(PictureConfig.CHOOSE_REQUEST);
+   
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PictureConfig.CHOOSE_REQUEST:
+                    // onResult Callback
+                    List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
+                    break;
+                default:
+                    break;
+            }            
+        }
+```
+
+Callback
+```sh
+ PictureSelector.create(this)
+   .openGallery(PictureMimeType.ofAll())
+   .loadImageEngine(GlideEngine.createGlideEngine())
+   .forResult(new OnResultCallbackListener<LocalMedia>() {
+       @Override
+       public void onResult(List<LocalMedia> result) {
+
+         }
+
+       @Override
+       public void onCancel() {
+
+         }
+      });  
 ```
 
 ## 单独拍照
 快捷调用，单独启动拍照或视频 根据PictureMimeType自动识别 更多功能 [请查看](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E5%8A%9F%E8%83%BD%E9%85%8D%E5%88%B6%E9%A1%B9)
+
+onActivityResult
 ```sh
  PictureSelector.create(this)
    .openCamera(PictureMimeType.ofImage())
    .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
-   .forResult(PictureConfig.REQUEST_CAMERA);   
+   .forResult(PictureConfig.REQUEST_CAMERA);  
+   
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PictureConfig.CHOOSE_REQUEST:
+                    // onResult Callback
+                    List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
+                    break;
+                default:
+                    break;
+            }            
+        }
+```
+
+Callback
+```sh
+PictureSelector.create(this)
+   .openGallery(PictureMimeType.ofAll())
+   .loadImageEngine(GlideEngine.createGlideEngine())
+   .forResult(new OnResultCallbackListener<LocalMedia>() {
+       @Override
+       public void onResult(List<LocalMedia> result) {
+
+         }
+
+       @Override
+       public void onCancel() {
+
+         }
+      });
 ```
 
 ## 缓存清除
@@ -119,6 +185,13 @@ PictureSelector.create(this).externalPictureVideo(video_path);
    See the License for the specific language governing permissions and
    limitations under the License.
 ```
+
+## 联系方式
+Android开发交流 群一 [619458861]() (已满) <br>
+Android开发交流 群二 [679824206]() (已满) <br>
+Android开发交流 群三 [854136996]() (已满) <br>
+QQ [893855882]() <br>
+
 
 ## 兼容性测试
 ******腾讯优测-深度测试-通过率达到100%******
