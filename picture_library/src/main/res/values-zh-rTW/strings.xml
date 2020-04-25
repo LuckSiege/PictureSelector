@@ -9,7 +9,7 @@
     <string name="picture_message_video_max_num">妳最多只能選擇%1$s個視頻</string>
     <string name="picture_message_audio_max_num">妳最多只能選擇%1$s個音頻</string>
     <string name="picture_preview">預覽</string>
-    <string name="picture_please">請稍候...</string>
+    <string name="picture_please">請稍候…</string>
     <string name="picture_done_front_num">%1$d/%2$d 完成</string>
     <string name="picture_completed">已完成</string>
     <string name="picture_done">完 成</string>
