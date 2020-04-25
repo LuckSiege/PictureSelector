@@ -19,7 +19,7 @@
 -[Api Explain](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)<br>
 -[Open Photo Album](#Album)<br>
 -[Open Camera](#Camera)<br>
--[Results Callback](https://github.com/LuckSiege/PictureSelector/wiki/%E7%BB%93%E6%9E%9C%E5%9B%9E%E8%B0%83)<br>
+-[Results Callback](https://github.com/LuckSiege/PictureSelector/wiki/Result-Callback)<br>
 -[Cache Clear](#CacheClear)<br>
 -[Confusion](#Confusion)<br>
 -[LICENSE](#LICENSE)<br>
