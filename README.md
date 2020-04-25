@@ -106,13 +106,13 @@ PictureSelector.create(this)
        @Override
        public void onResult(List<LocalMedia> result) {
 
-         }
+       }
 
        @Override
        public void onCancel() {
 
-         }
-      });
+       }
+     });
 ```
 
 ## CacheClear
