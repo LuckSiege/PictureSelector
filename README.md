@@ -52,20 +52,20 @@ onActivityResult方式
 
 Callback方式
 ```sh
- PictureSelector.create(MainActivity.this)
+ PictureSelector.create(this)
    .openGallery(PictureMimeType.ofAll())
    .loadImageEngine(GlideEngine.createGlideEngine())
    .forResult(new OnResultCallbackListener<LocalMedia>() {
-          @Override
-          public void onResult(List<LocalMedia> result) {
+       @Override
+       public void onResult(List<LocalMedia> result) {
 
-             }
+         }
 
-          @Override
-          public void onCancel() {
+       @Override
+       public void onCancel() {
 
-             }
-        });  
+         }
+      });  
 ```
 
 ## 单独拍照
