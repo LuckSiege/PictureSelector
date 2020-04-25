@@ -30,7 +30,7 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.3'
 ```
 
 ## Photo
-Quick call, more functions [More](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E5%8A%9F%E8%83%BD%E9%85%8D%E5%88%B6%E9%A1%B9)
+Quick call, more functions [More](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api)
 
 onActivityResult
 ```sh 
@@ -73,7 +73,7 @@ Callback
 ```
 
 ## Camera
-Quick Use, separately start the photo or video according to PictureMimeType automatic recognition [More](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E5%8A%9F%E8%83%BD%E9%85%8D%E5%88%B6%E9%A1%B9)
+Quick Use, separately start the photo or video according to PictureMimeType automatic recognition [More](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api)
 
 onActivityResult
 ```sh
