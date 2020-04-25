@@ -17,7 +17,7 @@
 -[Effect](#Effect)<br>
 -[Method Of Use](https://github.com/LuckSiege/PictureSelector/wiki/%E9%9B%86%E6%88%90%E6%96%B9%E5%BC%8F)<br>
 -[Api Explain](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api)<br>
--[Open Photo Album](#Album)<br>
+-[Open Photo Album](#Photo)<br>
 -[Open Camera](#Camera)<br>
 -[Results Callback](https://github.com/LuckSiege/PictureSelector/wiki/Result-Callback)<br>
 -[Cache Clear](#CacheClear)<br>
@@ -29,7 +29,7 @@
 implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.3'
 ```
 
-## Album
+## Photo
 Quick call, more functions [More](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E5%8A%9F%E8%83%BD%E9%85%8D%E5%88%B6%E9%A1%B9)
 
 onActivityResult
