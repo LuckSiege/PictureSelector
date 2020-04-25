@@ -74,13 +74,13 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.3'
        @Override
        public void onResult(List<LocalMedia> result) {
 
-         }
+       }
 
        @Override
        public void onCancel() {
 
-         }
-      });  
+       }
+     });  
 ```
 
 ## 单独拍照
