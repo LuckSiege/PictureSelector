@@ -20,12 +20,9 @@
 -[Open Photo Album](#Album)<br>
 -[Open Camera](#Camera)<br>
 -[Results Callback](https://github.com/LuckSiege/PictureSelector/wiki/%E7%BB%93%E6%9E%9C%E5%9B%9E%E8%B0%83)<br>
--[Common Mistakes](https://github.com/LuckSiege/PictureSelector/wiki/%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
 -[Cache Clear](#CacheClear)<br>
 -[Confusion](#Confusion)<br>
 -[LICENSE](#LICENSE)<br>
--[Contact](#Contact)<br>
-
 
 ## LatestVersion
 ```sh
