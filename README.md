@@ -1,6 +1,7 @@
 # PictureSelector 2.0
    A Picture Picker For Android Platform, Support From the album to obtain pictures, video, audio & photo, support clipping (single picture or multi-picture clipping), compression, theme custom configuration and other functions, support dynamic access & adapt to Android 5.0+ system of open source picture selection framework。<br>
 
+[中文版🇨🇳](README_CN.md)
 
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
