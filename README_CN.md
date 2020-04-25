@@ -117,13 +117,13 @@ PictureSelector.create(this)
        @Override
        public void onResult(List<LocalMedia> result) {
 
-         }
+       }
 
        @Override
        public void onCancel() {
 
-         }
-      });
+       }
+     });
 ```
 
 ## 缓存清除
