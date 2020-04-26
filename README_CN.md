@@ -30,7 +30,7 @@
 -[常见错误](https://github.com/LuckSiege/PictureSelector/wiki/%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
 -[缓存清除](#缓存清除)<br>
 -[混淆配置](#混淆配置)<br>
--[LICENSE](#LICENSE)<br>
+-[License](#License)<br>
 -[兼容性测试](#兼容性测试)<br>
 -[联系方式](#联系方式)<br>
 
@@ -170,7 +170,7 @@ PictureSelector.create(this).externalPictureVideo(video_path);
 #Okio
 -dontwarn org.codehaus.mojo.animal_sniffer.*
 ```
-## LICENSE
+## License
 ```sh
    Copyright 2017 Luck
 
