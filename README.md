@@ -62,12 +62,12 @@ Quick call, more functions [More](https://github.com/LuckSiege/PictureSelector/w
    .forResult(new OnResultCallbackListener<LocalMedia>() {
        @Override
        public void onResult(List<LocalMedia> result) {
-
+            // onResult Callback
        }
 
        @Override
        public void onCancel() {
-
+            // onCancel Callback
        }
      });  
 ```
@@ -105,12 +105,12 @@ PictureSelector.create(this)
    .forResult(new OnResultCallbackListener<LocalMedia>() {
        @Override
        public void onResult(List<LocalMedia> result) {
-
+            // onResult Callback
        }
 
        @Override
        public void onCancel() {
-
+            // onCancel Callback
        }
      });
 ```
