@@ -140,7 +140,7 @@ PictureSelector.create(this)
 PictureSelector.create(this).externalPictureVideo(video_path);
 ```
 
-## Project USES third-party libraries：
+## Project USES third-party libraries
 
 * PhotoView
 * luban
