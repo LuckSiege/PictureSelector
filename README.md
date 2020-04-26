@@ -100,7 +100,7 @@ onActivityResult
 Callback
 ```sh
 PictureSelector.create(this)
-   .openGallery(PictureMimeType.ofAll())
+   .openCamera(PictureMimeType.ofImage())
    .loadImageEngine(GlideEngine.createGlideEngine())
    .forResult(new OnResultCallbackListener<LocalMedia>() {
        @Override
