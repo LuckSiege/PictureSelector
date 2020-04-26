@@ -73,12 +73,12 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.3'
    .forResult(new OnResultCallbackListener<LocalMedia>() {
        @Override
        public void onResult(List<LocalMedia> result) {
-
+            // onResult Callback
        }
 
        @Override
        public void onCancel() {
-
+            // onCancel Callback
        }
      });  
 ```
@@ -116,12 +116,12 @@ PictureSelector.create(this)
    .forResult(new OnResultCallbackListener<LocalMedia>() {
        @Override
        public void onResult(List<LocalMedia> result) {
-
+            // onResult Callback
        }
 
        @Override
        public void onCancel() {
-
+            // onCancel Callback
        }
      });
 ```
