@@ -22,7 +22,7 @@
 -[Results Callback](https://github.com/LuckSiege/PictureSelector/wiki/Result-Callback)<br>
 -[Cache Clear](#CacheClear)<br>
 -[Confusion](#Confusion)<br>
--[LICENSE](#LICENSE)<br>
+-[License](#License)<br>
 
 ## Version
 ```sh
@@ -159,7 +159,7 @@ PictureSelector.create(this).externalPictureVideo(video_path);
 #Okio
 -dontwarn org.codehaus.mojo.animal_sniffer.*
 ```
-## LICENSE
+## License
 ```sh
    Copyright 2017 Luck
 
