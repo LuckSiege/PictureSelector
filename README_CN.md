@@ -56,7 +56,7 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.3'
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case PictureConfig.CHOOSE_REQUEST:
-                    // onResult Callback
+                    // 结果回调
                     List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
                     break;
                 default:
@@ -73,12 +73,12 @@ implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.3'
    .forResult(new OnResultCallbackListener<LocalMedia>() {
        @Override
        public void onResult(List<LocalMedia> result) {
-            // onResult Callback
+            // 结果回调
        }
 
        @Override
        public void onCancel() {
-            // onCancel Callback
+            // 取消
        }
      });  
 ```
@@ -99,7 +99,7 @@ onActivityResult
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case PictureConfig.REQUEST_CAMERA:
-                    // onResult Callback
+                    // 结果回调
                     List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
                     break;
                 default:
@@ -116,12 +116,12 @@ PictureSelector.create(this)
    .forResult(new OnResultCallbackListener<LocalMedia>() {
        @Override
        public void onResult(List<LocalMedia> result) {
-            // onResult Callback
+            // 结果回调
        }
 
        @Override
        public void onCancel() {
-            // onCancel Callback
+            // 取消
        }
      });
 ```
