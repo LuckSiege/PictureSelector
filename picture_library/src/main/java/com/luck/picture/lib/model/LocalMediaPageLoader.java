@@ -34,7 +34,7 @@ import java.util.Set;
  * @date：2020-04-13 15:06
  * @describe：Local media database query class，Support paging
  */
-public class LocalMediaPageLoader {
+public final class LocalMediaPageLoader {
     private static final String TAG = LocalMediaPageLoader.class.getSimpleName();
 
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");

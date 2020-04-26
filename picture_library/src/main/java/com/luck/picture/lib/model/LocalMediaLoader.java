@@ -29,7 +29,7 @@ import java.util.Locale;
  * @describe: Local media database query class
  */
 @Deprecated
-public class LocalMediaLoader {
+public final class LocalMediaLoader {
     private static final String TAG = LocalMediaLoader.class.getSimpleName();
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
     private static final String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
