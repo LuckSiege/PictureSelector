@@ -21,6 +21,7 @@ buildscript {
 allprojects {
     version = VERSION_NAME
     group = GROUP
+    group = 'com.github.LuckSiege.PictureSelector'
     repositories {
         jcenter()
         maven {
