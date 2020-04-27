@@ -241,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     tvDeleteText.setText(getString(R.string.app_drag_delete));
                     tvDeleteText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.picture_icon_delete, 0, 0);
                 }
+
             }
 
             @Override
