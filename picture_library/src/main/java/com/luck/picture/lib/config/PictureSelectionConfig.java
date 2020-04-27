@@ -12,7 +12,7 @@ import com.luck.picture.lib.camera.CustomCameraView;
 import com.luck.picture.lib.engine.CacheResourcesEngine;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.listener.OnPictureSelectorInterfaceListener;
+import com.luck.picture.lib.listener.OnCustomCameraInterfaceListener;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.listener.OnVideoSelectedPlayCallback;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
@@ -105,7 +105,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static CacheResourcesEngine cacheResourcesEngine;
     public static OnResultCallbackListener listener;
     public static OnVideoSelectedPlayCallback customVideoPlayCallback;
-    public static OnPictureSelectorInterfaceListener onPictureSelectorInterfaceListener;
+    public static OnCustomCameraInterfaceListener onCustomCameraInterfaceListener;
     public List<LocalMedia> selectionMedias;
     public String cameraFileName;
     public boolean isCheckOriginalImage;
@@ -277,7 +277,8 @@ public final class PictureSelectionConfig implements Parcelable {
     public static void destroy() {
         PictureSelectionConfig.listener = null;
         PictureSelectionConfig.customVideoPlayCallback = null;
-        PictureSelectionConfig.onPictureSelectorInterfaceListener = null;
+        PictureSelectionConfig.onCustomCameraInterfaceListener = null;
+        PictureSelectionConfig.onCustomCameraInterfaceListener = null;
         PictureSelectionConfig.cacheResourcesEngine = null;
     }
 

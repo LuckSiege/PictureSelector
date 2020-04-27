@@ -666,13 +666,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     public void startCamera() {
         if (!DoubleUtils.isFastDoubleClick()) {
-            if (PictureSelectionConfig.onPictureSelectorInterfaceListener != null) {
+            if (PictureSelectionConfig.onCustomCameraInterfaceListener != null) {
                 if (config.chooseMode == PictureConfig.TYPE_ALL) {
                     PhotoItemSelectedDialog selectedDialog = PhotoItemSelectedDialog.newInstance();
                     selectedDialog.setOnItemClickListener(this);
                     selectedDialog.show(getSupportFragmentManager(), "PhotoItemSelectedDialog");
                 } else {
-                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), config, config.chooseMode);
+                    PictureSelectionConfig.onCustomCameraInterfaceListener.onCameraClick(getContext(), config, config.chooseMode);
                     config.cameraMimeType = config.chooseMode;
                 }
                 return;
@@ -2137,16 +2137,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     public void onItemClick(View view, int position) {
         switch (position) {
             case PhotoItemSelectedDialog.IMAGE_CAMERA:
-                if (PictureSelectionConfig.onPictureSelectorInterfaceListener != null) {
-                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_IMAGE);
+                if (PictureSelectionConfig.onCustomCameraInterfaceListener != null) {
+                    PictureSelectionConfig.onCustomCameraInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_IMAGE);
                     config.cameraMimeType = PictureMimeType.ofImage();
                 } else {
                     startOpenCamera();
                 }
                 break;
             case PhotoItemSelectedDialog.VIDEO_CAMERA:
-                if (PictureSelectionConfig.onPictureSelectorInterfaceListener != null) {
-                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_VIDEO);
+                if (PictureSelectionConfig.onCustomCameraInterfaceListener != null) {
+                    PictureSelectionConfig.onCustomCameraInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_IMAGE);
                     config.cameraMimeType = PictureMimeType.ofVideo();
                 } else {
                     startOpenCameraVideo();

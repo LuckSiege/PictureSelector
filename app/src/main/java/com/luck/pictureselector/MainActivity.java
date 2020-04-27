@@ -1,7 +1,6 @@
 package com.luck.pictureselector;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,7 +30,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.luck.picture.lib.PictureCustomCameraActivity;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.broadcast.BroadcastAction;
@@ -42,7 +40,7 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.language.LanguageConfig;
-import com.luck.picture.lib.listener.OnPictureSelectorInterfaceListener;
+import com.luck.picture.lib.listener.OnCustomCameraInterfaceListener;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.listener.OnVideoSelectedPlayCallback;
 import com.luck.picture.lib.permissions.PermissionChecker;
@@ -448,7 +446,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)// 设置相册Activity方向，不设置默认使用系统
                         .isOriginalImageControl(cb_original.isChecked())// 是否显示原图控制按钮，如果设置为true则用户可以自由选择是否使用原图，压缩、裁剪功能将会失效
                         //.bindCustomPlayVideoCallback(new MyVideoSelectedPlayCallback(getContext()))// 自定义视频播放回调控制，用户可以使用自己的视频播放界面
-                        //.bindPictureSelectorInterfaceListener(new MyPictureSelectorInterfaceListener())// 提供给用户的一些额外的自定义操作回调
+                        //.bindCustomCameraInterfaceListener(new MyPictureSelectorInterfaceListener())// 提供给用户的一些额外的自定义操作回调
                         //.cameraFileName(System.currentTimeMillis() +".jpg")    // 重命名拍照文件名、如果是相册拍照则内部会自动拼上当前时间戳防止重复，注意这个只在使用相机时可以使用，如果使用相机又开启了压缩或裁剪 需要配合压缩和裁剪文件名api
                         //.renameCompressFile(System.currentTimeMillis() +".jpg")// 重命名压缩文件名、 如果是多张压缩则内部会自动拼上当前时间戳防止重复
                         //.renameCropFileName(System.currentTimeMillis() + ".jpg")// 重命名裁剪文件名、 如果是多张裁剪则内部会自动拼上当前时间戳防止重复
@@ -618,7 +616,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * PictureSelector自定义的一些回调接口
      */
-    private static class MyPictureSelectorInterfaceListener implements OnPictureSelectorInterfaceListener {
+    private static class MyPictureSelectorInterfaceListener implements OnCustomCameraInterfaceListener {
 
         @Override
         public void onCameraClick(Context context, PictureSelectionConfig config, int type) {
@@ -630,14 +628,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             switch (type) {
                 case PictureConfig.TYPE_IMAGE:
                     // 拍照
-                    if (context instanceof Activity) {
-                        Intent intent = new Intent(context, PictureCustomCameraActivity.class);
-                        ((Activity) context).startActivityForResult(intent, PictureConfig.REQUEST_CAMERA);
-                        PictureWindowAnimationStyle windowAnimationStyle = config.windowAnimationStyle;
-                        ((Activity) context).overridePendingTransition(windowAnimationStyle != null &&
-                                windowAnimationStyle.activityEnterAnimation != 0 ?
-                                windowAnimationStyle.activityEnterAnimation : R.anim.picture_anim_enter, R.anim.picture_anim_fade_in);
-                    }
+//                    if (context instanceof Activity) {
+//                        Intent intent = new Intent(context, PictureCustomCameraActivity.class);
+//                        ((Activity) context).startActivityForResult(intent, PictureConfig.REQUEST_CAMERA);
+//                        PictureWindowAnimationStyle windowAnimationStyle = config.windowAnimationStyle;
+//                        ((Activity) context).overridePendingTransition(windowAnimationStyle != null &&
+//                                windowAnimationStyle.activityEnterAnimation != 0 ?
+//                                windowAnimationStyle.activityEnterAnimation : R.anim.picture_anim_enter, R.anim.picture_anim_fade_in);
+//                    }
                     ToastUtils.s(context, "Click Camera Image");
                     break;
                 case PictureConfig.TYPE_VIDEO:

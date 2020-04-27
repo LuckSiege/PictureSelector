@@ -6,10 +6,10 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 
 /**
  * @author：luck
- * @date：2020-03-22 15:15
- * @describe：PictureSelector Additional interface callbacks for developers
+ * @date：2020/4/27 3:24 PM
+ * @describe：OnCustomCameraInterfaceListener
  */
-public interface OnPictureSelectorInterfaceListener {
+public interface OnCustomCameraInterfaceListener {
     /**
      * Camera Menu
      *

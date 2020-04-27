@@ -49,13 +49,29 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (config != null && !config.isUseCustomCamera && PictureSelectionConfig.onPictureSelectorInterfaceListener == null) {
+        if (config == null) {
+            closeActivity();
+            return;
+        }
+        if (!config.isUseCustomCamera) {
             if (savedInstanceState == null) {
                 if (PermissionChecker
                         .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
                         PermissionChecker
                                 .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    onTakePhoto();
+
+                    if (PictureSelectionConfig.onCustomCameraInterfaceListener != null) {
+                        switch (config.chooseMode) {
+                            case PictureConfig.TYPE_VIDEO:
+                                PictureSelectionConfig.onCustomCameraInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_VIDEO);
+                                break;
+                            default:
+                                PictureSelectionConfig.onCustomCameraInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_IMAGE);
+                                break;
+                        }
+                    } else {
+                        onTakePhoto();
+                    }
                 } else {
                     PermissionChecker.requestPermissions(this, new String[]{
                             Manifest.permission.READ_EXTERNAL_STORAGE,

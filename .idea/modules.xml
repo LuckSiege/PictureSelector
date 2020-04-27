@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AndroidStudioWorkspan-PictureSelector2.0-PictureSelector.iml" filepath="$PROJECT_DIR$/AndroidStudioWorkspan-PictureSelector2.0-PictureSelector.iml" group="PictureSelector" />
+      <module fileurl="file://$PROJECT_DIR$/Documents-AndroidStudioWorkspan-PictureSelector2.0-PictureSelector.iml" filepath="$PROJECT_DIR$/Documents-AndroidStudioWorkspan-PictureSelector2.0-PictureSelector.iml" group="PictureSelector" />
       <module fileurl="file://$PROJECT_DIR$/PictureSelector.iml" filepath="$PROJECT_DIR$/PictureSelector.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/PictureSelector-app.iml" filepath="$PROJECT_DIR$/app/PictureSelector-app.iml" group="PictureSelector/app" />
       <module fileurl="file://$PROJECT_DIR$/picture_library/PictureSelector-picture_library.iml" filepath="$PROJECT_DIR$/picture_library/PictureSelector-picture_library.iml" group="PictureSelector/picture_library" />
