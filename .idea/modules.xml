@@ -6,12 +6,11 @@
       <module fileurl="file://$PROJECT_DIR$/Documents-AndroidStudioWorkspan-PictureSelector2.0-PictureSelector.iml" filepath="$PROJECT_DIR$/Documents-AndroidStudioWorkspan-PictureSelector2.0-PictureSelector.iml" group="PictureSelector" />
       <module fileurl="file://$PROJECT_DIR$/Documents-AndroidStudioWorkspan-PictureSelector2.0-PictureSelector~1.iml" filepath="$PROJECT_DIR$/Documents-AndroidStudioWorkspan-PictureSelector2.0-PictureSelector~1.iml" group="PictureSelector" />
       <module fileurl="file://$PROJECT_DIR$/Documents-AndroidStudioWorkspan-PictureSelector2.0-PictureSelector~2.iml" filepath="$PROJECT_DIR$/Documents-AndroidStudioWorkspan-PictureSelector2.0-PictureSelector~2.iml" group="PictureSelector" />
-      <module fileurl="file://$PROJECT_DIR$/PictureSelector.iml" filepath="$PROJECT_DIR$/PictureSelector.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PictureSelector.iml" filepath="$PROJECT_DIR$/PictureSelector.iml" group="PictureSelector" />
       <module fileurl="file://$PROJECT_DIR$/app/PictureSelector-app.iml" filepath="$PROJECT_DIR$/app/PictureSelector-app.iml" group="PictureSelector/app" />
       <module fileurl="file://$PROJECT_DIR$/picture_library/PictureSelector-picture_library.iml" filepath="$PROJECT_DIR$/picture_library/PictureSelector-picture_library.iml" group="PictureSelector/picture_library" />
       <module fileurl="file://$PROJECT_DIR$/PictureSelector2.0-PictureSelector.iml" filepath="$PROJECT_DIR$/PictureSelector2.0-PictureSelector.iml" group="PictureSelector" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="PictureSelector/app" />
-      <module fileurl="file://$PROJECT_DIR$/null.iml" filepath="$PROJECT_DIR$/null.iml" group="PictureSelector" />
       <module fileurl="file://$PROJECT_DIR$/picture_library/picture_library.iml" filepath="$PROJECT_DIR$/picture_library/picture_library.iml" group="PictureSelector/picture_library" />
       <module fileurl="file://$PROJECT_DIR$/ucrop/ucrop.iml" filepath="$PROJECT_DIR$/ucrop/ucrop.iml" group="PictureSelector/ucrop" />
     </modules>
