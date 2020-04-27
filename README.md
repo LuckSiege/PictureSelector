@@ -26,7 +26,7 @@
 
 ## Version
 ```sh
-implementation 'com.github.LuckSiege.PictureSelector:v2.5.4'
+implementation 'com.github.LuckSiege:PictureSelector:v2.5.4'
 ```
 
 ## Photo
