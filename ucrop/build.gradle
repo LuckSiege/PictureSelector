@@ -1,6 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-group = 'com.yalantis.ucrop'
 
 android {
     compileSdkVersion cfgs.compileSdkVersion
