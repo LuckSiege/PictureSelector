@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+group = 'ucrop'
 
 android {
     compileSdkVersion cfgs.compileSdkVersion
