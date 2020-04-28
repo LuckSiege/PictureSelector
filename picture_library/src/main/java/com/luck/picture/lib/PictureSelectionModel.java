@@ -1077,6 +1077,7 @@ public class PictureSelectionModel {
                         selectionConfig.isWeChatStyle ? PictureSelectorWeChatStyleActivity.class
                                 : PictureSelectorActivity.class);
             }
+            selectionConfig.isCallbackMode = false;
             Fragment fragment = selector.getFragment();
             if (fragment != null) {
                 fragment.startActivityForResult(intent, requestCode);
@@ -1110,6 +1111,7 @@ public class PictureSelectionModel {
                     ? PictureSelectorCameraEmptyActivity.class :
                     selectionConfig.isWeChatStyle ? PictureSelectorWeChatStyleActivity.class :
                             PictureSelectorActivity.class);
+            selectionConfig.isCallbackMode = false;
             Fragment fragment = selector.getFragment();
             if (fragment != null) {
                 fragment.startActivityForResult(intent, requestCode);
@@ -1134,7 +1136,7 @@ public class PictureSelectionModel {
             }
             // 绑定回调监听
             PictureSelectionConfig.listener = new WeakReference<>(listener).get();
-
+            selectionConfig.isCallbackMode = true;
             Intent intent;
             if (selectionConfig.camera && selectionConfig.isUseCustomCamera) {
                 intent = new Intent(activity, PictureCustomCameraActivity.class);
@@ -1172,6 +1174,7 @@ public class PictureSelectionModel {
             }
             // 绑定回调监听
             PictureSelectionConfig.listener = new WeakReference<>(listener).get();
+            selectionConfig.isCallbackMode = true;
             Intent intent;
             if (selectionConfig.camera && selectionConfig.isUseCustomCamera) {
                 intent = new Intent(activity, PictureCustomCameraActivity.class);

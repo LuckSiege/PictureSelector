@@ -199,11 +199,13 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      * Retrieve the result callback listener, provided that the user implements the IApp interface in the Application
      */
     private void newCreateResultCallbackListener() {
-        if (PictureSelectionConfig.listener == null) {
-            PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
-            if (baseEngine != null) {
-                OnResultCallbackListener<LocalMedia> listener = baseEngine.getResultCallbackListener();
-                PictureSelectionConfig.listener = listener;
+        if (config.isCallbackMode) {
+            if (PictureSelectionConfig.listener == null) {
+                PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
+                if (baseEngine != null) {
+                    OnResultCallbackListener<LocalMedia> listener = baseEngine.getResultCallbackListener();
+                    PictureSelectionConfig.listener = listener;
+                }
             }
         }
     }

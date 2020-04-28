@@ -146,6 +146,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isMaxSelectEnabledMask;
     public int animationMode;
     public boolean isAutomaticTitleRecyclerTop;
+    public boolean isCallbackMode;
     /**
      * 内测专用###########
      */
@@ -252,6 +253,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isMaxSelectEnabledMask = false;
         animationMode = -1;
         isAutomaticTitleRecyclerTop = true;
+        isCallbackMode = false;
     }
 
     public static PictureSelectionConfig getInstance() {
@@ -385,6 +387,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte(this.isMaxSelectEnabledMask ? (byte) 1 : (byte) 0);
         dest.writeInt(this.animationMode);
         dest.writeByte(this.isAutomaticTitleRecyclerTop ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isCallbackMode ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFallbackVersion ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFallbackVersion2 ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFallbackVersion3 ? (byte) 1 : (byte) 0);
@@ -486,6 +489,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.isMaxSelectEnabledMask = in.readByte() != 0;
         this.animationMode = in.readInt();
         this.isAutomaticTitleRecyclerTop = in.readByte() != 0;
+        this.isCallbackMode = in.readByte() != 0;
         this.isFallbackVersion = in.readByte() != 0;
         this.isFallbackVersion2 = in.readByte() != 0;
         this.isFallbackVersion3 = in.readByte() != 0;
