@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
-group = 'com.github.LuckSiege'
+group = 'com.github.LuckSiege.ucrop'
 
 android {
     compileSdkVersion cfgs.compileSdkVersion
