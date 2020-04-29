@@ -865,9 +865,19 @@ public class PictureSelectionModel {
 
     /**
      * @param openClickSound Whether to open click voice
+     * @return Use {link .isOpenClickSound()}
+     */
+    @Deprecated
+    public PictureSelectionModel openClickSound(boolean openClickSound) {
+        selectionConfig.openClickSound = !selectionConfig.camera && openClickSound;
+        return this;
+    }
+
+    /**
+     * @param isOpenClickSound Whether to open click voice
      * @return
      */
-    public PictureSelectionModel openClickSound(boolean openClickSound) {
+    public PictureSelectionModel isOpenClickSound(boolean openClickSound) {
         selectionConfig.openClickSound = !selectionConfig.camera && openClickSound;
         return this;
     }
@@ -902,13 +912,27 @@ public class PictureSelectionModel {
 
     /**
      * @param selectionMedia Select the selected picture set
-     * @return
+     * @return Use {link .selectionData()}
      */
+    @Deprecated
     public PictureSelectionModel selectionMedia(List<LocalMedia> selectionMedia) {
         if (selectionConfig.selectionMode == PictureConfig.SINGLE && selectionConfig.isSingleDirectReturn) {
             selectionConfig.selectionMedias = null;
         } else {
             selectionConfig.selectionMedias = selectionMedia;
+        }
+        return this;
+    }
+
+    /**
+     * @param selectionData Select the selected picture set
+     * @return
+     */
+    public PictureSelectionModel selectionData(List<LocalMedia> selectionData) {
+        if (selectionConfig.selectionMode == PictureConfig.SINGLE && selectionConfig.isSingleDirectReturn) {
+            selectionConfig.selectionMedias = null;
+        } else {
+            selectionConfig.selectionMedias = selectionData;
         }
         return this;
     }

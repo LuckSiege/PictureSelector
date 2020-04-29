@@ -483,8 +483,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.setCircleStrokeWidth(3)// 设置圆形裁剪边框粗细
                         .showCropFrame(cb_showCropFrame.isChecked())// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
                         .showCropGrid(cb_showCropGrid.isChecked())// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
-                        .openClickSound(cb_voice.isChecked())// 是否开启点击声音
-                        .selectionMedia(mAdapter.getData())// 是否传入已选图片
+                        .isOpenClickSound(cb_voice.isChecked())// 是否开启点击声音
+                        .selectionData(mAdapter.getData())// 是否传入已选图片
                         //.isDragFrame(false)// 是否可拖动裁剪框(固定)
                         //.videoMinSecond(10)// 查询多少秒以内的视频
                         //.videoMaxSecond(15)// 查询多少秒以内的视频
@@ -539,8 +539,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.setCircleStrokeWidth(3)// 设置圆形裁剪边框粗细
                         .showCropFrame(cb_showCropFrame.isChecked())// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
                         .showCropGrid(cb_showCropGrid.isChecked())// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
-                        .openClickSound(cb_voice.isChecked())// 是否开启点击声音
-                        .selectionMedia(mAdapter.getData())// 是否传入已选图片
+                        .isOpenClickSound(cb_voice.isChecked())// 是否开启点击声音
+                        .selectionData(mAdapter.getData())// 是否传入已选图片
                         .isPreviewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                         //.cropCompressQuality(90)// 废弃 改用cutOutQuality()
                         .cutOutQuality(90)// 裁剪输出质量 默认100

@@ -465,8 +465,8 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         //.setCircleStrokeWidth(3)// 设置圆形裁剪边框粗细
                         .showCropFrame(cb_showCropFrame.isChecked())// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
                         .showCropGrid(cb_showCropGrid.isChecked())// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
-                        .openClickSound(cb_voice.isChecked())// 是否开启点击声音
-                        .selectionMedia(mAdapter.getData())// 是否传入已选图片
+                        .isOpenClickSound(cb_voice.isChecked())// 是否开启点击声音
+                        .selectionData(mAdapter.getData())// 是否传入已选图片
                         //.isDragFrame(false)// 是否可拖动裁剪框(固定)
                         //.videoMaxSecond(15)
                         //.videoMinSecond(10)
@@ -520,8 +520,8 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         //.setCircleStrokeWidth(3)// 设置圆形裁剪边框粗细
                         .showCropFrame(cb_showCropFrame.isChecked())// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
                         .showCropGrid(cb_showCropGrid.isChecked())// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
-                        .openClickSound(cb_voice.isChecked())// 是否开启点击声音
-                        .selectionMedia(mAdapter.getData())// 是否传入已选图片
+                        .isOpenClickSound(cb_voice.isChecked())// 是否开启点击声音
+                        .selectionData(mAdapter.getData())// 是否传入已选图片
                         .isPreviewEggs(false)//预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                         //.cropCompressQuality(90)// 废弃 改用cutOutQuality()
                         .cutOutQuality(90)// 裁剪输出质量 默认100
