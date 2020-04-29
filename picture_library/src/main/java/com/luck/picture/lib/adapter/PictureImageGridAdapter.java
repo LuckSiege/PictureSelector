@@ -288,6 +288,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
                         (context, isSelected ? R.color.picture_color_80 : R.color.picture_color_half_white), PorterDuff.Mode.SRC_ATOP);
                 item.setMaxSelectEnabledMask(!isSelected);
+            } else {
+                item.setMaxSelectEnabledMask(false);
             }
         } else {
             LocalMedia media = selectData.size() > 0 ? selectData.get(0) : null;
