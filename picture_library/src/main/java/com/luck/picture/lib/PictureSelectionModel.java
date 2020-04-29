@@ -749,9 +749,19 @@ public class PictureSelectionModel {
 
     /**
      * @param previewEggs preview eggs  It doesn't make much sense
+     * @return Use {link .isPreviewEggs()}
+     */
+    @Deprecated
+    public PictureSelectionModel previewEggs(boolean previewEggs) {
+        selectionConfig.previewEggs = previewEggs;
+        return this;
+    }
+
+    /**
+     * @param previewEggs preview eggs  It doesn't make much sense
      * @return
      */
-    public PictureSelectionModel previewEggs(boolean previewEggs) {
+    public PictureSelectionModel isPreviewEggs(boolean previewEggs) {
         selectionConfig.previewEggs = previewEggs;
         return this;
     }
