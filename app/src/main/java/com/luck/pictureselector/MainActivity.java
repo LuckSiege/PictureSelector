@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)// 设置相册Activity方向，不设置默认使用系统
                                 .isNotPreviewDownload(true)// 预览图片长按是否可以下载
                                 //.bindCustomPlayVideoCallback(new MyVideoSelectedPlayCallback(getContext()))// 自定义播放回调控制，用户可以使用自己的视频播放界面
-                                .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
+                                .imageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                                 .openExternalPreview(position, selectList);
                         break;
                 }
@@ -422,7 +422,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // 进入相册 以下是例子：不需要的api可以不写
                 PictureSelector.create(MainActivity.this)
                         .openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
-                        .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
+                        .imageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                         .theme(themeId)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style v2.3.3后 建议使用setPictureStyle()动态方式
                         .isWeChatStyle(isWeChatStyle)// 是否开启微信图片选择风格
                         .isUseCustomCamera(cb_custom_camera.isChecked())// 是否使用自定义相机
@@ -444,7 +444,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.minVideoSelectNum(1)// 视频最小选择数量
                         .imageSpanCount(4)// 每行显示个数
                         .isReturnEmpty(false)// 未选择数据时点击按钮是否可以返回
-                        //.isAndroidQTransform(false)// 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && enableCrop(false);有效,默认处理
+                        //.isAndroidQTransform(false)// 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && .isEnableCrop(false);有效,默认处理
                         .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)// 设置相册Activity方向，不设置默认使用系统
                         .isOriginalImageControl(cb_original.isChecked())// 是否显示原图控制按钮，如果设置为true则用户可以自由选择是否使用原图，压缩、裁剪功能将会失效
                         //.bindCustomPlayVideoCallback(new MyVideoSelectedPlayCallback(getContext()))// 自定义视频播放回调控制，用户可以使用自己的视频播放界面
@@ -455,18 +455,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .selectionMode(cb_choose_mode.isChecked() ?
                                 PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
                         .isSingleDirectReturn(cb_single_back.isChecked())// 单选模式下是否直接返回，PictureConfig.SINGLE模式下有效
-                        .previewImage(cb_preview_img.isChecked())// 是否可预览图片
-                        .previewVideo(cb_preview_video.isChecked())// 是否可预览视频
+                        .isPreviewImage(cb_preview_img.isChecked())// 是否可预览图片
+                        .isPreviewVideo(cb_preview_video.isChecked())// 是否可预览视频
                         //.querySpecifiedFormatSuffix(PictureMimeType.ofJPEG())// 查询指定后缀格式资源
-                        .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
+                        .isEnablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
                         .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
                         //.isMultipleSkipCrop(false)// 多图裁剪时是否支持跳过，默认支持
                         //.isMultipleRecyclerAnimation(false)// 多图裁剪底部列表显示动画效果
                         .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
                         //.imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg,Android Q使用PictureMimeType.PNG_Q
-                        .enableCrop(cb_crop.isChecked())// 是否裁剪
+                        .isEnableCrop(cb_crop.isChecked())// 是否裁剪
                         //.basicUCropConfig()//对外提供所有UCropOptions参数配制，但如果PictureSelector原本支持设置的还是会使用原有的设置
-                        .compress(cb_compress.isChecked())// 是否压缩
+                        .isCompress(cb_compress.isChecked())// 是否压缩
                         //.compressQuality(80)// 图片压缩后输出质量 0~ 100
                         .synOrAsy(true)//同步true或异步false 压缩 默认同步
                         //.queryMaxFileSize(10)// 只查多少M以内的图片、视频、音频  单位M
@@ -505,7 +505,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 PictureSelector.create(MainActivity.this)
                         .openCamera(chooseMode)// 单独拍照，也可录像或也可音频 看你传入的类型是图片or视频
                         .theme(themeId)// 主题样式设置 具体参考 values/styles
-                        .loadImageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
+                        .imageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                         .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
                         .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
                         .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
@@ -520,13 +520,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.renameCompressFile(System.currentTimeMillis() + ".jpg")// 重命名压缩文件名、 注意这个不要重复，只适用于单张图压缩使用
                         //.renameCropFileName(System.currentTimeMillis() + ".jpg")// 重命名裁剪文件名、 注意这个不要重复，只适用于单张图裁剪使用
                         .loadCacheResourcesCallback(GlideCacheEngine.createCacheEngine())// 获取图片资源缓存，主要是解决华为10部分机型在拷贝文件过多时会出现卡的问题，这里可以判断只在会出现一直转圈问题机型上使用
-                        .previewImage(cb_preview_img.isChecked())// 是否可预览图片
-                        .previewVideo(cb_preview_video.isChecked())// 是否可预览视频
-                        .enablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
+                        .isPreviewImage(cb_preview_img.isChecked())// 是否可预览图片
+                        .isPreviewVideo(cb_preview_video.isChecked())// 是否可预览视频
+                        .isEnablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
                         .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
-                        .enableCrop(cb_crop.isChecked())// 是否裁剪
+                        .isEnableCrop(cb_crop.isChecked())// 是否裁剪
                         //.basicUCropConfig()//对外提供所有UCropOptions参数配制，但如果PictureSelector原本支持设置的还是会使用原有的设置
-                        .compress(cb_compress.isChecked())// 是否压缩
+                        .isCompress(cb_compress.isChecked())// 是否压缩
                         .compressQuality(60)// 图片压缩后输出质量
                         .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
                         .withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义

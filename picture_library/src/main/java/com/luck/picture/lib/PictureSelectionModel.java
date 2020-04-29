@@ -91,9 +91,21 @@ public class PictureSelectionModel {
 
     /**
      * @param engine Image Load the engine
+     * @return Use {@link .imageEngine()}.
+     */
+    @Deprecated
+    public PictureSelectionModel loadImageEngine(ImageEngine engine) {
+        if (PictureSelectionConfig.imageEngine != engine) {
+            PictureSelectionConfig.imageEngine = engine;
+        }
+        return this;
+    }
+
+    /**
+     * @param engine Image Load the engine
      * @return
      */
-    public PictureSelectionModel loadImageEngine(ImageEngine engine) {
+    public PictureSelectionModel imageEngine(ImageEngine engine) {
         if (PictureSelectionConfig.imageEngine != engine) {
             PictureSelectionConfig.imageEngine = engine;
         }
@@ -188,9 +200,19 @@ public class PictureSelectionModel {
 
     /**
      * @param enableCrop Do you want to start cutting ?
+     * @return Use {link .isEnableCrop()}
+     */
+    @Deprecated
+    public PictureSelectionModel enableCrop(boolean enableCrop) {
+        selectionConfig.enableCrop = enableCrop;
+        return this;
+    }
+
+    /**
+     * @param enableCrop Do you want to start cutting ?
      * @return
      */
-    public PictureSelectionModel enableCrop(boolean enableCrop) {
+    public PictureSelectionModel isEnableCrop(boolean enableCrop) {
         selectionConfig.enableCrop = enableCrop;
         return this;
     }
@@ -220,6 +242,16 @@ public class PictureSelectionModel {
      */
     @Deprecated
     public PictureSelectionModel enablePreviewAudio(boolean enablePreviewAudio) {
+        selectionConfig.enablePreviewAudio = enablePreviewAudio;
+        return this;
+    }
+
+    /**
+     * @param enablePreviewAudio Do you want to ic_play audio ?
+     * @return
+     */
+    @Deprecated
+    public PictureSelectionModel isEnablePreviewAudio(boolean enablePreviewAudio) {
         selectionConfig.enablePreviewAudio = enablePreviewAudio;
         return this;
     }
@@ -597,13 +629,22 @@ public class PictureSelectionModel {
 
     /**
      * @param isCompress Whether to open compress
-     * @return
+     * @return Use {link .isCompress()}
      */
+    @Deprecated
     public PictureSelectionModel compress(boolean isCompress) {
         selectionConfig.isCompress = isCompress;
         return this;
     }
 
+    /**
+     * @param isCompress Whether to open compress
+     * @return
+     */
+    public PictureSelectionModel isCompress(boolean isCompress) {
+        selectionConfig.isCompress = isCompress;
+        return this;
+    }
 
     /**
      * @param compressQuality Image compressed output quality
@@ -758,10 +799,30 @@ public class PictureSelectionModel {
 
     /**
      * @param enablePreview Do you want to preview the picture?
-     * @return
+     * @return Use {link .isPreviewImage()}
      */
+    @Deprecated
     public PictureSelectionModel previewImage(boolean enablePreview) {
         selectionConfig.enablePreview = enablePreview;
+        return this;
+    }
+
+    /**
+     * @param enablePreview Do you want to preview the picture?
+     * @return
+     */
+    public PictureSelectionModel isPreviewImage(boolean enablePreview) {
+        selectionConfig.enablePreview = enablePreview;
+        return this;
+    }
+
+    /**
+     * @param enPreviewVideo Do you want to preview the video?
+     * @return Use {link .isPreviewVideo()}
+     */
+    @Deprecated
+    public PictureSelectionModel previewVideo(boolean enPreviewVideo) {
+        selectionConfig.enPreviewVideo = enPreviewVideo;
         return this;
     }
 
@@ -769,7 +830,7 @@ public class PictureSelectionModel {
      * @param enPreviewVideo Do you want to preview the video?
      * @return
      */
-    public PictureSelectionModel previewVideo(boolean enPreviewVideo) {
+    public PictureSelectionModel isPreviewVideo(boolean enPreviewVideo) {
         selectionConfig.enPreviewVideo = enPreviewVideo;
         return this;
     }
