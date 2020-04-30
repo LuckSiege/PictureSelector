@@ -110,6 +110,16 @@ public final class PictureMimeType {
     }
 
     /**
+     * isVideo
+     *
+     * @param url
+     * @return
+     */
+    public static boolean isUrlHasVideo(String url) {
+        return url.endsWith(".mp4");
+    }
+
+    /**
      * isAudio
      *
      * @param mimeType

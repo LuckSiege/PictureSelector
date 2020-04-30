@@ -29,7 +29,10 @@ ext {
             okio_version                  : "2.6.0",
 
             // glide
-            glide_version                 : "4.11.0"
+            glide_version                 : "4.11.0",
+
+            // picasso
+            picasso_version               : "2.71828"
 
     ]
 }
