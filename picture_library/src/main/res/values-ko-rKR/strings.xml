@@ -49,7 +49,7 @@
     <string name="picture_send_num">완성(%1$d/%2$d)</string>
     <string name="picture_preview_num">미리보기(%1$d)</string>
     <string name="picture_select">선택</string>
-    <string name="picture_data_exception">앨범 정보 이상 가져오기...</string>
+    <string name="picture_data_exception">앨범 정보 이상 가져오기…</string>
     <string name="picture_recording_time_is_short">녹화 시간이 너무 짧다</string>
     <string name="picture_photo_camera">사진 찍기</string>
     <string name="picture_choose_max_seconds">최대 %1$ds 초 이내의 영상을 선택할 수 있습니다</string>
@@ -58,4 +58,6 @@
     <string name="picture_photo_pictures">사진 찍기 클릭</string>
     <string name="picture_photo_recording">카메라</string>
     <string name="picture_go_setting">설치</string>
+    <string name="picture_know">알 겠 습 니 다</string>
+    <string name="picture_data_null">데이터 없 음…</string>
 </resources>

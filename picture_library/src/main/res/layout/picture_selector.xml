@@ -59,7 +59,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/picture_tv_img_num"
+            android:id="@+id/picture_tvMediaNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -75,14 +75,15 @@
     </RelativeLayout>
 
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.luck.picture.lib.widget.RecyclerPreloadView
         android:id="@+id/picture_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/rl_bottom"
         android:layout_below="@id/titleViewBg"
         android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp" />
+        android:layout_marginRight="2dp"
+        android:overScrollMode="never" />
 
     <TextView
         android:id="@+id/tv_empty"
@@ -95,7 +96,7 @@
         android:lineSpacingExtra="3dp"
         android:text="@string/picture_empty"
         android:textColor="@color/picture_color_aab2bd"
-        android:textSize="16sp"
-        android:visibility="invisible" />
+        android:textSize="14sp"
+        android:visibility="gone" />
 
 </RelativeLayout>

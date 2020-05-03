@@ -33,4 +33,7 @@
     <color name="picture_color_ec">#ececec</color>
     <color name="picture_color_4e4d4e">#4e4d4e</color>
     <color name="picture_color_aab2bd">#AAB2BD</color>
+    <color name="picture_color_half_white">#99FFFFFF</color>
+    <color name="picture_color_ff572e">#ff572e</color>
+    <color name="picture_color_529BeA">#529BeA</color>
 </resources>

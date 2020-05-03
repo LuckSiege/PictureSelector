@@ -65,6 +65,7 @@ public final class PictureSelector {
     /**
      * @param chooseMode Select the type of picture you want，all or Picture or Video .
      * @return LocalMedia PictureSelectionModel
+     * Use {@link PictureMimeType.ofAll(),ofImage(),ofVideo(),ofAudio()}.
      */
     public PictureSelectionModel openGallery(int chooseMode) {
         return new PictureSelectionModel(this, chooseMode);
@@ -73,6 +74,7 @@ public final class PictureSelector {
     /**
      * @param chooseMode Select the type of picture you want，Picture or Video.
      * @return LocalMedia PictureSelectionModel
+     * Use {@link PictureMimeType.ofImage(),ofVideo()}.
      */
     public PictureSelectionModel openCamera(int chooseMode) {
         return new PictureSelectionModel(this, chooseMode, true);

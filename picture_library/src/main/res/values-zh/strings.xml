@@ -4,12 +4,12 @@
     <string name="picture_cancel">取消</string>
     <string name="picture_take_picture">拍摄</string>
     <string name="picture_rule">不能同时选择图片或视频</string>
-    <string name="picture_message_max_num">你最多可以选择%1$s张图片</string>
+    <string name="picture_message_max_num">你最多只能选择%1$s张照片</string>
     <string name="picture_min_video_num">视频最低选择不能少于%1$s个</string>
-    <string name="picture_message_video_max_num">你最多可以选择%1$s个视频</string>
-    <string name="picture_message_audio_max_num">你最多可以选择%1$s个音频</string>
+    <string name="picture_message_video_max_num">你最多只能选择%1$s个视频</string>
+    <string name="picture_message_audio_max_num">你最多只能选择%1$s个音频</string>
     <string name="picture_preview">预览</string>
-    <string name="picture_please">请稍候...</string>
+    <string name="picture_please">请稍候…</string>
     <string name="picture_done_front_num">%1$d/%2$d 完成</string>
     <string name="picture_completed">已完成</string>
     <string name="picture_done">完 成</string>
@@ -58,4 +58,6 @@
     <string name="picture_choose_min_seconds">不能选择低于 %1$ds 内的视频</string>
     <string name="picture_choose_limit_seconds">只能选择 %1$ds 至 %2$ds内的视频</string>
     <string name="picture_go_setting">去设置</string>
+    <string name="picture_know">我知道了</string>
+    <string name="picture_data_null">这里空空如也…</string>
 </resources>

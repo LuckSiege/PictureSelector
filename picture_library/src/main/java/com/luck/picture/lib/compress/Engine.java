@@ -3,6 +3,7 @@ package com.luck.picture.lib.compress;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.ExifInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -58,7 +59,7 @@ class Engine {
             } else if (longSide > 4990 && longSide < 10240) {
                 return 4;
             } else {
-                return longSide / 1280 == 0 ? 1 : longSide / 1280;
+                return longSide / 1280;
             }
         } else if (scale <= 0.5625 && scale > 0.5) {
             return longSide / 1280 == 0 ? 1 : longSide / 1280;
@@ -80,10 +81,25 @@ class Engine {
         options.inSampleSize = computeSize();
         Bitmap tagBitmap = BitmapFactory.decodeStream(srcImg.open(), null, options);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        if (srcImg.getMedia() != null && Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
-            int orientation = Checker.SINGLE.getOrientation(srcImg.open());
-            if (orientation > 0) {
-                tagBitmap = rotatingImage(tagBitmap, orientation);
+        if (srcImg.getMedia() != null && !srcImg.getMedia().isCut()) {
+            if (Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
+                int orientation = srcImg.getMedia().getOrientation();
+                if (orientation > 0) {
+                    switch (orientation) {
+                        case ExifInterface.ORIENTATION_ROTATE_90:
+                            orientation = 90;
+                            break;
+                        case ExifInterface.ORIENTATION_ROTATE_180:
+                            orientation = 180;
+                            break;
+                        case ExifInterface.ORIENTATION_ROTATE_270:
+                            orientation = 270;
+                            break;
+                        default:
+                            break;
+                    }
+                    tagBitmap = rotatingImage(tagBitmap, orientation);
+                }
             }
         }
         if (tagBitmap != null) {

@@ -8,7 +8,7 @@ import com.yalantis.ucrop.UCrop;
 /**
  * @author：luck
  * @date：2020-01-09 13:33
- * @describe：对外提供配制UCrop类
+ * @describe： UCrop Configuration items
  */
 public class UCropOptions extends UCrop.Options implements Parcelable {
 

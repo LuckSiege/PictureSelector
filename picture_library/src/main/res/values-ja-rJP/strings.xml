@@ -9,7 +9,7 @@
     <string name="picture_message_video_max_num">最大で %1$s のビデオを選択できます</string>
     <string name="picture_message_audio_max_num">最大で %1$s の音声を選択することができます</string>
     <string name="picture_preview">プレビュー</string>
-    <string name="picture_please">ちょっと待ってください...</string>
+    <string name="picture_please">ちょっと待ってください…</string>
     <string name="picture_done_front_num">%1$d/%2$d 選べた</string>
     <string name="picture_completed">選べた</string>
     <string name="picture_done">選べた</string>
@@ -58,4 +58,6 @@
     <string name="picture_photo_pictures">写真を撮る</string>
     <string name="picture_photo_recording">長押しする</string>
     <string name="picture_go_setting">設定</string>
+    <string name="picture_know">はい</string>
+    <string name="picture_data_null">データがありません…</string>
 </resources>

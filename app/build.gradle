@@ -17,6 +17,14 @@ android {
         }
     }
 
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -26,10 +34,11 @@ android {
 
 dependencies {
     implementation project(':picture_library')
-    //noinspection GradleCompatible
     implementation "androidx.appcompat:appcompat:${cfgs.version_appcompat}"
-    //noinspection GradleCompatible
     implementation "androidx.recyclerview:recyclerview:${cfgs.version_recyclerview}"
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation "androidx.camera:camera-core:${cfgs.camera_core_version}"
+    implementation "androidx.camera:camera-camera2:${cfgs.camerax_version}"
+    implementation "com.github.bumptech.glide:glide:${cfgs.glide_version}"
+    implementation "com.squareup.picasso:picasso:${cfgs.picasso_version}"
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.1'
 }

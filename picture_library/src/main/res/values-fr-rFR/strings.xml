@@ -9,7 +9,7 @@
     <string name="picture_message_video_max_num">Vous pouvez choisir au maximum %1$s de vidéos</string>
     <string name="picture_message_audio_max_num">Vous pouvez choisir au maximum %1$s audio</string>
     <string name="picture_preview">avant-première</string>
-    <string name="picture_please">attendez...</string>
+    <string name="picture_please">attendez…</string>
     <string name="picture_done_front_num">%1$d/%2$d L’achèvement</string>
     <string name="picture_completed">achevés</string>
     <string name="picture_done">L’achèvement du</string>
@@ -50,7 +50,7 @@
     <string name="picture_send_num">Finir(%1$d/%2$d)</string>
     <string name="picture_preview_num">voir(%1$d)</string>
     <string name="picture_select">Le choix</string>
-    <string name="picture_data_exception">Anomalie des données de l’album...</string>
+    <string name="picture_data_exception">Anomalie des données de l’album…</string>
     <string name="picture_recording_time_is_short">La durée d’enregistrement est trop courte</string>
     <string name="picture_photo_camera">Prendre des photos, filmer</string>
     <string name="picture_choose_max_seconds">Vous pouvez sélectionner la vidéo dans un maximum de %1$ds</string>
@@ -59,4 +59,6 @@
 
     <string name="picture_photo_pictures">Clic photo</string>
     <string name="picture_photo_recording">Imagerie</string>
+    <string name="picture_know">Je sais</string>
+    <string name="picture_data_null">Pas de données…</string>
 </resources>

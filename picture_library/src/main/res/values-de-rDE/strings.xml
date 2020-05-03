@@ -9,7 +9,7 @@
     <string name="picture_message_video_max_num">Sie können bis zu %1$s Videos auswählen</string>
     <string name="picture_message_audio_max_num">Sie können bis zu %1$s Audio auswählen</string>
     <string name="picture_preview">Vorschau</string>
-    <string name="picture_please">Bitte warten...</string>
+    <string name="picture_please">Bitte warten…</string>
     <string name="picture_done_front_num">%1$d/%2$d Vervollständigen</string>
     <string name="picture_completed">Abgeschlossen</string>
     <string name="picture_done">Vollständig</string>
@@ -49,7 +49,7 @@
     <string name="picture_send_num">Vollständig(%1$d/%2$d)</string>
     <string name="picture_preview_num">Siehe(%1$d)</string>
     <string name="picture_select">Auswahl</string>
-    <string name="picture_data_exception">Ausnahme von Album-Daten...</string>
+    <string name="picture_data_exception">Ausnahme von Album-Daten…</string>
     <string name="picture_recording_time_is_short">Die Aufnahmezeit ist zu kurz</string>
     <string name="picture_photo_camera">Machen Sie ein Foto</string>
     <string name="picture_choose_max_seconds">Nur Videos innerhalb von %1$ds können ausgewählt werden</string>
@@ -59,4 +59,6 @@
     <string name="picture_photo_pictures">Fotografie</string>
     <string name="picture_photo_recording">Lange Presse Videoband</string>
     <string name="picture_go_setting">Set up</string>
+    <string name="picture_know">Das stimmt</string>
+    <string name="picture_data_null">Hier ist es leer…</string>
 </resources>

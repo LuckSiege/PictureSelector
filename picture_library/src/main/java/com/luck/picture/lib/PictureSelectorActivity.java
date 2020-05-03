@@ -6,10 +6,11 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
@@ -28,6 +29,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.luck.picture.lib.adapter.PictureImageGridAdapter;
+import com.luck.picture.lib.animators.AlphaInAnimationAdapter;
+import com.luck.picture.lib.animators.AnimationType;
+import com.luck.picture.lib.animators.SlideInBottomAnimationAdapter;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -39,7 +43,10 @@ import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.listener.OnAlbumItemClickListener;
 import com.luck.picture.lib.listener.OnItemClickListener;
 import com.luck.picture.lib.listener.OnPhotoSelectChangedListener;
+import com.luck.picture.lib.listener.OnQueryDataResultListener;
+import com.luck.picture.lib.listener.OnRecyclerViewPreloadMoreListener;
 import com.luck.picture.lib.model.LocalMediaLoader;
+import com.luck.picture.lib.model.LocalMediaPageLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
@@ -57,6 +64,7 @@ import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
 import com.luck.picture.lib.widget.FolderPopWindow;
+import com.luck.picture.lib.widget.RecyclerPreloadView;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.model.CutInfo;
 
@@ -68,21 +76,21 @@ import java.util.Objects;
 /**
  * @author：luck
  * @data：2018/1/27 19:12
- * @描述: Media 选择页面
+ * @describe: PictureSelectorActivity
  */
 public class PictureSelectorActivity extends PictureBaseActivity implements View.OnClickListener,
-        OnAlbumItemClickListener, OnPhotoSelectChangedListener<LocalMedia>, OnItemClickListener {
+        OnAlbumItemClickListener, OnPhotoSelectChangedListener<LocalMedia>, OnItemClickListener,
+        OnRecyclerViewPreloadMoreListener {
+    private static final String TAG = PictureSelectorActivity.class.getSimpleName();
     protected ImageView mIvPictureLeftBack;
     protected ImageView mIvArrow;
     protected View titleViewBg;
     protected TextView mTvPictureTitle, mTvPictureRight, mTvPictureOk, mTvEmpty,
             mTvPictureImgNum, mTvPicturePreview, mTvPlayPause, mTvStop, mTvQuit,
             mTvMusicStatus, mTvMusicTotal, mTvMusicTime;
-    protected RecyclerView mPictureRecycler;
+    protected RecyclerPreloadView mRecyclerView;
     protected RelativeLayout mBottomLayout;
     protected PictureImageGridAdapter mAdapter;
-    protected List<LocalMedia> images = new ArrayList<>();
-    protected List<LocalMediaFolder> foldersList = new ArrayList<>();
     protected FolderPopWindow folderWindow;
     protected Animation animation = null;
     protected boolean isStartAnimation = false;
@@ -92,19 +100,21 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected PictureCustomDialog audioDialog;
     protected CheckBox mCbOriginal;
     protected int oldCurrentListSize;
-    protected boolean isFirstEnterActivity = false;
     protected boolean isEnterSetting;
+    private long intervalClickTime = 0;
+    private int allFolderSize;
+    private int mOpenCameraCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
+            allFolderSize = savedInstanceState.getInt(PictureConfig.EXTRA_ALL_FOLDER_SIZE);
             oldCurrentListSize = savedInstanceState.getInt(PictureConfig.EXTRA_OLD_CURRENT_LIST_SIZE, 0);
-            // 防止拍照内存不足时activity被回收，导致拍照后的图片未选中
             selectionMedias = PictureSelector.obtainSelectorList(savedInstanceState);
             if (mAdapter != null) {
                 isStartAnimation = true;
-                mAdapter.bindSelectImages(selectionMedias);
+                mAdapter.bindSelectData(selectionMedias);
             }
         }
     }
@@ -112,7 +122,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     @Override
     protected void onResume() {
         super.onResume();
-        // 这里只针对权限被手动拒绝后进入设置页面重新获取权限后的操作
         if (isEnterSetting) {
             if (PermissionChecker
                     .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
@@ -144,15 +153,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         super.initWidgets();
         container = findViewById(R.id.container);
         titleViewBg = findViewById(R.id.titleViewBg);
-        mIvPictureLeftBack = findViewById(R.id.picture_left_back);
+        mIvPictureLeftBack = findViewById(R.id.pictureLeftBack);
         mTvPictureTitle = findViewById(R.id.picture_title);
         mTvPictureRight = findViewById(R.id.picture_right);
         mTvPictureOk = findViewById(R.id.picture_tv_ok);
         mCbOriginal = findViewById(R.id.cb_original);
         mIvArrow = findViewById(R.id.ivArrow);
         mTvPicturePreview = findViewById(R.id.picture_id_preview);
-        mTvPictureImgNum = findViewById(R.id.picture_tv_img_num);
-        mPictureRecycler = findViewById(R.id.picture_recycler);
+        mTvPictureImgNum = findViewById(R.id.picture_tvMediaNum);
+        mRecyclerView = findViewById(R.id.picture_recycler);
         mBottomLayout = findViewById(R.id.rl_bottom);
         mTvEmpty = findViewById(R.id.tv_empty);
         isNumComplete(numComplete);
@@ -160,6 +169,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             animation = AnimationUtils.loadAnimation(this, R.anim.picture_anim_modal_in);
         }
         mTvPicturePreview.setOnClickListener(this);
+        if (config.isAutomaticTitleRecyclerTop) {
+            titleViewBg.setOnClickListener(this);
+        }
         mTvPicturePreview.setVisibility(config.chooseMode != PictureMimeType.ofAudio() && config.enablePreview ? View.VISIBLE : View.GONE);
         mBottomLayout.setVisibility(config.selectionMode == PictureConfig.SINGLE
                 && config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
@@ -172,30 +184,45 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         String title = config.chooseMode == PictureMimeType.ofAudio() ?
                 getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll);
         mTvPictureTitle.setText(title);
+        mTvPictureTitle.setTag(R.id.view_tag, -1);
         folderWindow = new FolderPopWindow(this, config);
         folderWindow.setArrowImageView(mIvArrow);
         folderWindow.setOnAlbumItemClickListener(this);
-        mPictureRecycler.setHasFixedSize(true);
-        mPictureRecycler.addItemDecoration(new GridSpacingItemDecoration(config.imageSpanCount,
+        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(config.imageSpanCount,
                 ScreenUtils.dip2px(this, 2), false));
-        mPictureRecycler.setLayoutManager(new GridLayoutManager(getContext(), config.imageSpanCount));
-        // 解决调用 notifyItemChanged 闪烁问题,取消默认动画
-        RecyclerView.ItemAnimator itemAnimator = mPictureRecycler.getItemAnimator();
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), config.imageSpanCount));
+        if (!config.isPageStrategy) {
+            mRecyclerView.setHasFixedSize(true);
+        } else {
+            mRecyclerView.setReachBottomRow(RecyclerPreloadView.BOTTOM_PRELOAD);
+            mRecyclerView.setOnRecyclerViewPreloadListener(PictureSelectorActivity.this);
+        }
+        RecyclerView.ItemAnimator itemAnimator = mRecyclerView.getItemAnimator();
         if (itemAnimator != null) {
             ((SimpleItemAnimator) itemAnimator).setSupportsChangeAnimations(false);
+            mRecyclerView.setItemAnimator(null);
         }
-        if (config.isFallbackVersion2
-                || Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-            loadAllMediaData();
-        }
+        loadAllMediaData();
         mTvEmpty.setText(config.chooseMode == PictureMimeType.ofAudio() ?
                 getString(R.string.picture_audio_empty)
                 : getString(R.string.picture_empty));
         StringUtils.tempTextFont(mTvEmpty, config.chooseMode);
         mAdapter = new PictureImageGridAdapter(getContext(), config);
         mAdapter.setOnPhotoSelectChangedListener(this);
-        mPictureRecycler.setAdapter(mAdapter);
-        // 原图
+
+        switch (config.animationMode) {
+            case AnimationType
+                    .ALPHA_IN_ANIMATION:
+                mRecyclerView.setAdapter(new AlphaInAnimationAdapter(mAdapter));
+                break;
+            case AnimationType
+                    .SLIDE_IN_BOTTOM_ANIMATION:
+                mRecyclerView.setAdapter(new SlideInBottomAnimationAdapter(mAdapter));
+                break;
+            default:
+                mRecyclerView.setAdapter(mAdapter);
+                break;
+        }
         if (config.isOriginalControl) {
             mCbOriginal.setVisibility(View.VISIBLE);
             mCbOriginal.setChecked(config.isCheckOriginalImage);
@@ -206,20 +233,66 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     @Override
-    public void onEnterAnimationComplete() {
-        super.onEnterAnimationComplete();
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            if (!config.isFallbackVersion2) {
-                if (!isFirstEnterActivity) {
-                    loadAllMediaData();
-                    isFirstEnterActivity = true;
-                }
+    public void onRecyclerViewPreloadMore() {
+        loadMoreData();
+    }
+
+    /**
+     * getPageLimit
+     * # If the user clicks to take a photo and returns, the Limit should be adjusted dynamically
+     *
+     * @return
+     */
+    private int getPageLimit() {
+        int bucketId = ValueOf.toInt(mTvPictureTitle.getTag(R.id.view_tag));
+        if (bucketId == -1) {
+            int limit = mOpenCameraCount > 0 ? config.pageSize - mOpenCameraCount : config.pageSize;
+            mOpenCameraCount = 0;
+            return limit;
+        }
+        return config.pageSize;
+    }
+
+    /**
+     * load more data
+     */
+    private void loadMoreData() {
+        if (mAdapter != null) {
+            if (isHasMore) {
+                mPage++;
+                long bucketId = ValueOf.toLong(mTvPictureTitle.getTag(R.id.view_tag));
+                LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage, getPageLimit(),
+                        (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
+                            if (!isFinishing()) {
+                                this.isHasMore = isHasMore;
+                                if (isHasMore) {
+                                    hideDataNull();
+                                    int size = result.size();
+                                    if (size > 0) {
+                                        int positionStart = mAdapter.getSize();
+                                        mAdapter.getData().addAll(result);
+                                        int itemCount = mAdapter.getItemCount();
+                                        mAdapter.notifyItemRangeChanged(positionStart, itemCount);
+                                    } else {
+                                        onRecyclerViewPreloadMore();
+                                    }
+                                    if (size < PictureConfig.MIN_PAGE_SIZE) {
+                                        mRecyclerView.onScrolled(mRecyclerView.getScrollX(), mRecyclerView.getScrollY());
+                                    }
+                                } else {
+                                    boolean isEmpty = mAdapter.isDataEmpty();
+                                    if (isEmpty) {
+                                        showDataNull(bucketId == -1 ? getString(R.string.picture_empty) : getString(R.string.picture_data_null), R.drawable.picture_icon_no_data);
+                                    }
+                                }
+                            }
+                        });
             }
         }
     }
 
     /**
-     * 加载数据
+     * load All Data
      */
     private void loadAllMediaData() {
         if (PermissionChecker
@@ -234,9 +307,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
     }
 
-    /**
-     * 动态设置相册主题
-     */
     @Override
     public void initPictureSelectorStyle() {
         if (config.style != null) {
@@ -330,19 +400,24 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
         }
 
-        mAdapter.bindSelectImages(selectionMedias);
+        mAdapter.bindSelectData(selectionMedias);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (images != null) {
-            // 保存当前列表中图片或视频个数
-            outState.putInt(PictureConfig.EXTRA_OLD_CURRENT_LIST_SIZE, images.size());
-        }
-        if (mAdapter != null && mAdapter.getSelectedImages() != null) {
-            List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
-            PictureSelector.saveSelectorList(outState, selectedImages);
+        if (mAdapter != null) {
+            // Save the number of pictures or videos in the current list
+            outState.putInt(PictureConfig.EXTRA_OLD_CURRENT_LIST_SIZE, mAdapter.getSize());
+            // Save the number of Camera film and Camera folder files
+            int size = folderWindow.getFolderData().size();
+            if (size > 0) {
+                outState.putInt(PictureConfig.EXTRA_ALL_FOLDER_SIZE, folderWindow.getFolder(0).getImageNum());
+            }
+            if (mAdapter.getSelectedData() != null) {
+                List<LocalMedia> selectedImages = mAdapter.getSelectedData();
+                PictureSelector.saveSelectorList(outState, selectedImages);
+            }
         }
     }
 
@@ -356,18 +431,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     /**
-     * init 完成文案
+     * init Text
      */
     @Override
     protected void initCompleteText(int startCount) {
         boolean isNotEmptyStyle = config.style != null;
         if (config.selectionMode == PictureConfig.SINGLE) {
             if (startCount <= 0) {
-                // 未选择任何图片
                 mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
                         ? config.style.pictureUnCompleteText : getString(R.string.picture_please_select));
             } else {
-                // 已选择
                 boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
                 if (isCompleteReplaceNum && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
                     mTvPictureOk.setText(String.format(config.style.pictureCompleteText, startCount, 1));
@@ -380,17 +453,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         } else {
             boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
             if (startCount <= 0) {
-                // 未选择任何图片
                 mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
                         ? config.style.pictureUnCompleteText : getString(R.string.picture_done_front_num,
-                        startCount, config.maxVideoSelectNum + config.maxSelectNum));
+                        startCount, config.maxSelectNum));
             } else {
-                // 已选择
                 if (isCompleteReplaceNum && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
-                    mTvPictureOk.setText(String.format(config.style.pictureCompleteText, startCount, config.maxVideoSelectNum + config.maxSelectNum));
+                    mTvPictureOk.setText(String.format(config.style.pictureCompleteText, startCount, config.maxSelectNum));
                 } else {
                     mTvPictureOk.setText(getString(R.string.picture_done_front_num,
-                            startCount, config.maxVideoSelectNum + config.maxSelectNum));
+                            startCount, config.maxSelectNum));
                 }
             }
         }
@@ -402,86 +473,206 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     protected void readLocalMedia() {
         showPleaseDialog();
-        PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
+        if (config.isPageStrategy) {
+            LocalMediaPageLoader.getInstance(getContext(), config).loadAllMedia(
+                    (OnQueryDataResultListener<LocalMediaFolder>) (data, currentPage, isHasMore) -> {
+                        if (!isFinishing()) {
+                            this.isHasMore = true;
+                            initPageModel(data);
+                            synchronousCover();
+                        }
+                    });
+        } else {
+            PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
 
-            @Override
-            public List<LocalMediaFolder> doInBackground() {
-                return new LocalMediaLoader(getContext(), config).loadAllMedia();
-            }
-
-            @Override
-            public void onSuccess(List<LocalMediaFolder> folders) {
-                dismissDialog();
-                PictureThreadUtils.cancel(PictureThreadUtils.getCachedPool());
-                if (folders != null) {
-                    if (folders.size() > 0) {
-                        foldersList = folders;
-                        LocalMediaFolder folder = folders.get(0);
-                        folder.setChecked(true);
-                        List<LocalMedia> result = folder.getImages();
-                        if (images == null) {
-                            images = new ArrayList<>();
-                        }
-                        // 这里解决有些机型会出现拍照完，相册列表不及时刷新问题
-                        // 因为onActivityResult里手动添加拍照后的照片，
-                        // 如果查询出来的图片大于或等于当前adapter集合的图片则取更新后的，否则就取本地的
-                        int currentSize = images.size();
-                        int resultSize = result.size();
-                        oldCurrentListSize = oldCurrentListSize + currentSize;
-                        if (resultSize >= currentSize) {
-                            if (currentSize > 0 && currentSize < resultSize && oldCurrentListSize != resultSize) {
-                                // 这种情况多数是由于拍照导致Activity和数据被回收数据不一致
-                                images.addAll(result);
-                                // 更新相机胶卷目录
-                                LocalMedia media = images.get(0);
-                                folder.setFirstImagePath(media.getPath());
-                                folder.getImages().add(0, media);
-                                folder.setCheckedNum(1);
-                                folder.setImageNum(folder.getImageNum() + 1);
-                                // 更新相片所属目录
-                                updateMediaFolder(foldersList, media);
-                            } else {
-                                // 正常情况下
-                                images = result;
-                            }
-                            folderWindow.bindFolder(folders);
-                        }
-                    }
-                    if (mAdapter != null) {
-                        mAdapter.bindImagesData(images);
-                        boolean isEmpty = images.size() > 0;
-                        if (!isEmpty) {
-                            mTvEmpty.setText(getString(R.string.picture_empty));
-                            mTvEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds
-                                    (0, R.drawable.picture_icon_no_data, 0, 0);
-                        }
-                        mTvEmpty.setVisibility(isEmpty ? View.INVISIBLE : View.VISIBLE);
-                    }
-                } else {
-                    mTvEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds
-                            (0, R.drawable.picture_icon_data_error, 0, 0);
-                    mTvEmpty.setText(getString(R.string.picture_data_exception));
-                    mTvEmpty.setVisibility(images.size() > 0 ? View.INVISIBLE : View.VISIBLE);
+                @Override
+                public List<LocalMediaFolder> doInBackground() {
+                    return new LocalMediaLoader(getContext(), config).loadAllMedia();
                 }
-            }
-        });
+
+                @Override
+                public void onSuccess(List<LocalMediaFolder> folders) {
+                    initStandardModel(folders);
+                }
+            });
+        }
     }
 
     /**
-     * open camera
+     * Page Model
+     *
+     * @param folders
+     */
+    private void initPageModel(List<LocalMediaFolder> folders) {
+        if (folders != null) {
+            folderWindow.bindFolder(folders);
+            mPage = 1;
+            LocalMediaFolder folder = folderWindow.getFolder(0);
+            mTvPictureTitle.setTag(R.id.view_count_tag, folder != null ? folder.getImageNum() : 0);
+            mTvPictureTitle.setTag(R.id.view_index_tag, 0);
+            long bucketId = folder != null ? folder.getBucketId() : -1;
+            mRecyclerView.setEnabledLoadMore(true);
+            LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage,
+                    (OnQueryDataResultListener<LocalMedia>) (data, currentPage, isHasMore) -> {
+                        if (!isFinishing()) {
+                            dismissDialog();
+                            if (mAdapter != null) {
+                                this.isHasMore = true;
+                                // IsHasMore being true means that there's still data, but data being 0 might be a filter that's turned on and that doesn't happen to fit on the whole page
+                                if (isHasMore && data.size() == 0) {
+                                    onRecyclerViewPreloadMore();
+                                    return;
+                                }
+                                int currentSize = mAdapter.getSize();
+                                int resultSize = data.size();
+                                oldCurrentListSize = oldCurrentListSize + currentSize;
+                                if (resultSize >= currentSize) {
+                                    // This situation is mainly caused by the use of camera memory, the Activity is recycled
+                                    if (currentSize > 0 && currentSize < resultSize && oldCurrentListSize != resultSize) {
+                                        if (isLocalMediaSame(data.get(0))) {
+                                            mAdapter.bindData(data);
+                                        } else {
+                                            mAdapter.getData().addAll(data);
+                                        }
+                                    } else {
+                                        mAdapter.bindData(data);
+                                    }
+                                }
+                                boolean isEmpty = mAdapter.isDataEmpty();
+                                if (isEmpty) {
+                                    showDataNull(getString(R.string.picture_empty), R.drawable.picture_icon_no_data);
+                                } else {
+                                    hideDataNull();
+                                }
+
+                            }
+                        }
+                    });
+        } else {
+            showDataNull(getString(R.string.picture_data_exception), R.drawable.picture_icon_data_error);
+            dismissDialog();
+        }
+    }
+
+    /**
+     * ofAll Page Model Synchronous cover
+     */
+    private void synchronousCover() {
+        if (config.chooseMode == PictureMimeType.ofAll()) {
+            PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Boolean>() {
+
+                @Override
+                public Boolean doInBackground() {
+                    int size = folderWindow.getFolderData().size();
+                    for (int i = 0; i < size; i++) {
+                        LocalMediaFolder mediaFolder = folderWindow.getFolder(i);
+                        if (mediaFolder == null) {
+                            continue;
+                        }
+                        String firstCover = LocalMediaPageLoader
+                                .getInstance(getContext(), config).getFirstCover(mediaFolder.getBucketId());
+                        mediaFolder.setFirstImagePath(firstCover);
+                    }
+                    return true;
+                }
+
+                @Override
+                public void onSuccess(Boolean result) {
+                    // TODO Synchronous Success
+                }
+            });
+        }
+    }
+
+    /**
+     * Standard Model
+     *
+     * @param folders
+     */
+    private void initStandardModel(List<LocalMediaFolder> folders) {
+        if (folders != null) {
+            if (folders.size() > 0) {
+                folderWindow.bindFolder(folders);
+                LocalMediaFolder folder = folders.get(0);
+                folder.setChecked(true);
+                mTvPictureTitle.setTag(R.id.view_count_tag, folder.getImageNum());
+                List<LocalMedia> result = folder.getData();
+                if (mAdapter != null) {
+                    int currentSize = mAdapter.getSize();
+                    int resultSize = result.size();
+                    oldCurrentListSize = oldCurrentListSize + currentSize;
+                    if (resultSize >= currentSize) {
+                        // This situation is mainly caused by the use of camera memory, the Activity is recycled
+                        if (currentSize > 0 && currentSize < resultSize && oldCurrentListSize != resultSize) {
+                            mAdapter.getData().addAll(result);
+                            LocalMedia media = mAdapter.getData().get(0);
+                            folder.setFirstImagePath(media.getPath());
+                            folder.getData().add(0, media);
+                            folder.setCheckedNum(1);
+                            folder.setImageNum(folder.getImageNum() + 1);
+                            updateMediaFolder(folderWindow.getFolderData(), media);
+                        } else {
+                            mAdapter.bindData(result);
+                        }
+                    }
+                    boolean isEmpty = mAdapter.isDataEmpty();
+                    if (isEmpty) {
+                        showDataNull(getString(R.string.picture_empty), R.drawable.picture_icon_no_data);
+                    } else {
+                        hideDataNull();
+                    }
+                }
+            } else {
+                showDataNull(getString(R.string.picture_empty), R.drawable.picture_icon_no_data);
+            }
+        } else {
+            showDataNull(getString(R.string.picture_data_exception), R.drawable.picture_icon_data_error);
+        }
+        dismissDialog();
+    }
+
+    /**
+     * isSame
+     *
+     * @param newMedia
+     * @return
+     */
+    private boolean isLocalMediaSame(LocalMedia newMedia) {
+        LocalMedia oldMedia = mAdapter.getItem(0);
+        if (oldMedia == null || newMedia == null) {
+            return false;
+        }
+        if (oldMedia.getPath().equals(newMedia.getPath())) {
+            return true;
+        }
+        // if Content:// type,determines whether the suffix id is consistent, mainly to solve the following two types of problems
+        // content://media/external/images/media/5844
+        // content://media/external/file/5844
+        if (PictureMimeType.isContent(newMedia.getPath())
+                && PictureMimeType.isContent(oldMedia.getPath())) {
+            if (!TextUtils.isEmpty(newMedia.getPath()) && !TextUtils.isEmpty(oldMedia.getPath())) {
+                String newId = newMedia.getPath().substring(newMedia.getPath().lastIndexOf("/") + 1);
+                String oldId = oldMedia.getPath().substring(oldMedia.getPath().lastIndexOf("/") + 1);
+                if (newId.equals(oldId)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Open Camera
      */
     public void startCamera() {
-        // 防止快速点击，但是单独拍照不管
         if (!DoubleUtils.isFastDoubleClick()) {
-            if (PictureSelectionConfig.onPictureSelectorInterfaceListener != null) {
-                // 用户需要自定义拍照处理
+            if (PictureSelectionConfig.onCustomCameraInterfaceListener != null) {
                 if (config.chooseMode == PictureConfig.TYPE_ALL) {
-                    // 如果是全部类型下，单独拍照就默认图片 (因为单独拍照不会new此PopupWindow对象)
                     PhotoItemSelectedDialog selectedDialog = PhotoItemSelectedDialog.newInstance();
                     selectedDialog.setOnItemClickListener(this);
                     selectedDialog.show(getSupportFragmentManager(), "PhotoItemSelectedDialog");
                 } else {
-                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), config, config.chooseMode);
+                    PictureSelectionConfig.onCustomCameraInterfaceListener.onCameraClick(getContext(), config, config.chooseMode);
                     config.cameraMimeType = config.chooseMode;
                 }
                 return;
@@ -492,21 +683,17 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
             switch (config.chooseMode) {
                 case PictureConfig.TYPE_ALL:
-                    // 如果是全部类型下，单独拍照就默认图片 (因为单独拍照不会new此PopupWindow对象)
                     PhotoItemSelectedDialog selectedDialog = PhotoItemSelectedDialog.newInstance();
                     selectedDialog.setOnItemClickListener(this);
                     selectedDialog.show(getSupportFragmentManager(), "PhotoItemSelectedDialog");
                     break;
                 case PictureConfig.TYPE_IMAGE:
-                    // 拍照
                     startOpenCamera();
                     break;
                 case PictureConfig.TYPE_VIDEO:
-                    // 录视频
                     startOpenCameraVideo();
                     break;
                 case PictureConfig.TYPE_AUDIO:
-                    // 录音
                     startOpenCameraAudio();
                     break;
                 default:
@@ -516,7 +703,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     /**
-     * 启动自定义相机
+     * Open Custom Camera
      */
     private void startCustomCamera() {
         if (PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)) {
@@ -538,38 +725,58 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.picture_left_back || id == R.id.picture_right) {
+        if (id == R.id.pictureLeftBack || id == R.id.picture_right) {
             if (folderWindow != null && folderWindow.isShowing()) {
                 folderWindow.dismiss();
             } else {
                 onBackPressed();
             }
+            return;
         }
         if (id == R.id.picture_title || id == R.id.ivArrow) {
             if (folderWindow.isShowing()) {
                 folderWindow.dismiss();
             } else {
-                if (images != null && images.size() > 0) {
+                if (!folderWindow.isEmpty()) {
                     folderWindow.showAsDropDown(titleViewBg);
                     if (!config.isSingleDirectReturn) {
-                        List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
+                        List<LocalMedia> selectedImages = mAdapter.getSelectedData();
                         folderWindow.updateFolderCheckStatus(selectedImages);
                     }
                 }
             }
+            return;
         }
 
         if (id == R.id.picture_id_preview) {
             onPreview();
+            return;
         }
 
-        if (id == R.id.picture_tv_ok || id == R.id.picture_tv_img_num) {
+        if (id == R.id.picture_tv_ok || id == R.id.picture_tvMediaNum) {
             onComplete();
+            return;
+        }
+
+        if (id == R.id.titleViewBg) {
+            if (config.isAutomaticTitleRecyclerTop) {
+                int intervalTime = 500;
+                if (SystemClock.uptimeMillis() - intervalClickTime < intervalTime) {
+                    if (mAdapter.getItemCount() > 0) {
+                        mRecyclerView.scrollToPosition(0);
+                    }
+                } else {
+                    intervalClickTime = SystemClock.uptimeMillis();
+                }
+            }
         }
     }
 
+    /**
+     * Preview
+     */
     private void onPreview() {
-        List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
+        List<LocalMedia> selectedImages = mAdapter.getSelectedData();
         List<LocalMedia> medias = new ArrayList<>();
         int size = selectedImages.size();
         for (int i = 0; i < size; i++) {
@@ -593,22 +800,20 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     /**
-     * 完成选择
+     * Complete
      */
     private void onComplete() {
-        List<LocalMedia> result = mAdapter.getSelectedImages();
+        List<LocalMedia> result = mAdapter.getSelectedData();
         int size = result.size();
         LocalMedia image = result.size() > 0 ? result.get(0) : null;
         String mimeType = image != null ? image.getMimeType() : "";
-        // 如果设置了图片最小选择数量，则判断是否满足条件
-        boolean eqImg = PictureMimeType.eqImage(mimeType);
+        boolean isHasImage = PictureMimeType.isHasImage(mimeType);
         if (config.isWithVideoImage) {
-            // 混选模式
             int videoSize = 0;
             int imageSize = 0;
             for (int i = 0; i < size; i++) {
                 LocalMedia media = result.get(i);
-                if (PictureMimeType.eqVideo(media.getMimeType())) {
+                if (PictureMimeType.isHasVideo(media.getMimeType())) {
                     videoSize++;
                 } else {
                     imageSize++;
@@ -617,43 +822,42 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (config.selectionMode == PictureConfig.MULTIPLE) {
                 if (config.minSelectNum > 0) {
                     if (imageSize < config.minSelectNum) {
-                        ToastUtils.s(getContext(), getString(R.string.picture_min_img_num, config.minSelectNum));
+                        showPromptDialog(getString(R.string.picture_min_img_num, config.minSelectNum));
                         return;
                     }
                 }
                 if (config.minVideoSelectNum > 0) {
                     if (videoSize < config.minVideoSelectNum) {
-                        ToastUtils.s(getContext(), getString(R.string.picture_min_video_num, config.minVideoSelectNum));
+                        showPromptDialog(getString(R.string.picture_min_video_num, config.minVideoSelectNum));
                         return;
                     }
                 }
             }
         } else {
             if (config.selectionMode == PictureConfig.MULTIPLE) {
-                if (PictureMimeType.eqImage(mimeType) && config.minSelectNum > 0 && size < config.minSelectNum) {
+                if (PictureMimeType.isHasImage(mimeType) && config.minSelectNum > 0 && size < config.minSelectNum) {
                     String str = getString(R.string.picture_min_img_num, config.minSelectNum);
-                    ToastUtils.s(getContext(), str);
+                    showPromptDialog(str);
                     return;
                 }
-                if (PictureMimeType.eqVideo(mimeType) && config.minVideoSelectNum > 0 && size < config.minVideoSelectNum) {
+                if (PictureMimeType.isHasVideo(mimeType) && config.minVideoSelectNum > 0 && size < config.minVideoSelectNum) {
                     String str = getString(R.string.picture_min_video_num, config.minVideoSelectNum);
-                    ToastUtils.s(getContext(), str);
+                    showPromptDialog(str);
                     return;
                 }
             }
         }
 
-        // 如果没选并且设置了可以空返回则直接回到结果页
         if (config.returnEmpty && size == 0) {
             if (config.selectionMode == PictureConfig.MULTIPLE) {
                 if (config.minSelectNum > 0 && size < config.minSelectNum) {
                     String str = getString(R.string.picture_min_img_num, config.minSelectNum);
-                    ToastUtils.s(getContext(), str);
+                    showPromptDialog(str);
                     return;
                 }
                 if (config.minVideoSelectNum > 0 && size < config.minVideoSelectNum) {
                     String str = getString(R.string.picture_min_video_num, config.minVideoSelectNum);
-                    ToastUtils.s(getContext(), str);
+                    showPromptDialog(str);
                     return;
                 }
             }
@@ -666,38 +870,34 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             closeActivity();
             return;
         }
-
         if (config.isCheckOriginalImage) {
             onResult(result);
             return;
         }
         if (config.chooseMode == PictureMimeType.ofAll() && config.isWithVideoImage) {
-            // 视频和图片可以同选
-            bothMimeTypeWith(eqImg, result);
+            bothMimeTypeWith(isHasImage, result);
         } else {
-            // 单一类型
-            separateMimeTypeWith(eqImg, result);
+            separateMimeTypeWith(isHasImage, result);
         }
     }
 
 
     /**
-     * 两者不同类型的处理方式
+     * They are different types of processing
      *
-     * @param eqImg
+     * @param isHasImage
      * @param images
      */
-    private void bothMimeTypeWith(boolean eqImg, List<LocalMedia> images) {
+    private void bothMimeTypeWith(boolean isHasImage, List<LocalMedia> images) {
         LocalMedia image = images.size() > 0 ? images.get(0) : null;
         if (image == null) {
             return;
         }
         if (config.enableCrop) {
-            if (config.selectionMode == PictureConfig.SINGLE && eqImg) {
+            if (config.selectionMode == PictureConfig.SINGLE && isHasImage) {
                 config.originalPath = image.getPath();
                 startCrop(config.originalPath, image.getMimeType());
             } else {
-                // 是图片和选择压缩并且是多张，调用批量压缩
                 ArrayList<CutInfo> cuts = new ArrayList<>();
                 int count = images.size();
                 int imageNum = 0;
@@ -707,8 +907,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             || TextUtils.isEmpty(media.getPath())) {
                         continue;
                     }
-                    boolean eqImage = PictureMimeType.eqImage(media.getMimeType());
-                    if (eqImage) {
+                    if (PictureMimeType.isHasImage(media.getMimeType())) {
                         imageNum++;
                     }
                     CutInfo cutInfo = new CutInfo();
@@ -722,10 +921,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     cuts.add(cutInfo);
                 }
                 if (imageNum <= 0) {
-                    // 全是视频
                     onResult(images);
                 } else {
-                    // 图片和视频共存
                     startCrop(cuts);
                 }
             }
@@ -734,17 +931,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             int imageNum = 0;
             for (int i = 0; i < size; i++) {
                 LocalMedia media = images.get(i);
-                boolean eqImage = PictureMimeType.eqImage(media.getMimeType());
-                if (eqImage) {
+                if (PictureMimeType.isHasImage(media.getMimeType())) {
                     imageNum++;
                     break;
                 }
             }
             if (imageNum <= 0) {
-                // 全是视频不压缩
                 onResult(images);
             } else {
-                // 图片才压缩
                 compressImage(images);
             }
         } else {
@@ -753,22 +947,21 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     /**
-     * 同一类型的图片或视频处理逻辑
+     * Same type of image or video processing logic
      *
-     * @param eqImg
+     * @param isHasImage
      * @param images
      */
-    private void separateMimeTypeWith(boolean eqImg, List<LocalMedia> images) {
+    private void separateMimeTypeWith(boolean isHasImage, List<LocalMedia> images) {
         LocalMedia image = images.size() > 0 ? images.get(0) : null;
         if (image == null) {
             return;
         }
-        if (config.enableCrop && eqImg) {
+        if (config.enableCrop && isHasImage) {
             if (config.selectionMode == PictureConfig.SINGLE) {
                 config.originalPath = image.getPath();
                 startCrop(config.originalPath, image.getMimeType());
             } else {
-                // 是图片和选择压缩并且是多张，调用批量压缩
                 ArrayList<CutInfo> cuts = new ArrayList<>();
                 int count = images.size();
                 for (int i = 0; i < count; i++) {
@@ -790,8 +983,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 startCrop(cuts);
             }
         } else if (config.isCompress
-                && eqImg) {
-            // 图片才压缩，视频不管
+                && isHasImage) {
             compressImage(images);
         } else {
             onResult(images);
@@ -799,11 +991,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     /**
-     * 播放音频
+     * Play Audio
      *
      * @param path
      */
-    private void audioDialog(final String path) {
+    private void AudioDialog(final String path) {
         if (!isFinishing()) {
             audioDialog = new PictureCustomDialog(getContext(), R.layout.picture_audio_dialog);
             if (audioDialog.getWindow() != null) {
@@ -819,9 +1011,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (mHandler != null) {
                 mHandler.postDelayed(() -> initPlayer(path), 30);
             }
-            mTvPlayPause.setOnClickListener(new audioOnClick(path));
-            mTvStop.setOnClickListener(new audioOnClick(path));
-            mTvQuit.setOnClickListener(new audioOnClick(path));
+            mTvPlayPause.setOnClickListener(new AudioOnClick(path));
+            mTvStop.setOnClickListener(new AudioOnClick(path));
+            mTvQuit.setOnClickListener(new AudioOnClick(path));
             musicSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -859,7 +1051,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
     }
 
-    //  通过 Handler 更新 UI 上的组件状态
     public Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
@@ -880,7 +1071,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     };
 
     /**
-     * 初始化音频播放组件
+     * init Player
      *
      * @param path
      */
@@ -897,12 +1088,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     /**
-     * 播放音频点击事件
+     * Audio Click
      */
-    public class audioOnClick implements View.OnClickListener {
+    public class AudioOnClick implements View.OnClickListener {
         private String path;
 
-        public audioOnClick(String path) {
+        public AudioOnClick(String path) {
             super();
             this.path = path;
         }
@@ -936,7 +1127,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     /**
-     * 播放音频
+     * Play Audio
      */
     private void playAudio() {
         if (mediaPlayer != null) {
@@ -962,7 +1153,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     /**
-     * 停止播放
+     * Audio Stop
      *
      * @param path
      */
@@ -981,7 +1172,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     /**
-     * 暂停播放
+     * Audio Pause
      */
     public void playOrPause() {
         try {
@@ -997,21 +1188,82 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
     }
 
+
     @Override
-    public void onItemClick(boolean isCameraFolder, String folderName, List<LocalMedia> images) {
+    public void onItemClick(int position, boolean isCameraFolder, long bucketId, String
+            folderName, List<LocalMedia> data) {
         boolean camera = config.isCamera && isCameraFolder;
         mAdapter.setShowCamera(camera);
         mTvPictureTitle.setText(folderName);
+        long currentBucketId = ValueOf.toLong(mTvPictureTitle.getTag(R.id.view_tag));
+        mTvPictureTitle.setTag(R.id.view_count_tag, folderWindow.getFolder(position) != null
+                ? folderWindow.getFolder(position).getImageNum() : 0);
+        if (config.isPageStrategy) {
+            if (currentBucketId != bucketId) {
+                setLastCacheFolderData();
+                boolean isCurrentCacheFolderData = isCurrentCacheFolderData(position);
+                if (!isCurrentCacheFolderData) {
+                    mPage = 1;
+                    showPleaseDialog();
+                    LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage,
+                            (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
+                                this.isHasMore = isHasMore;
+                                if (!isFinishing()) {
+                                    if (result.size() == 0) {
+                                        mAdapter.clear();
+                                    }
+                                    mAdapter.bindData(result);
+                                    mRecyclerView.onScrolled(0, 0);
+                                    mRecyclerView.smoothScrollToPosition(0);
+                                    dismissDialog();
+                                }
+                            });
+                }
+            }
+        } else {
+            mAdapter.bindData(data);
+            mRecyclerView.smoothScrollToPosition(0);
+        }
+        mTvPictureTitle.setTag(R.id.view_tag, bucketId);
         folderWindow.dismiss();
-        mAdapter.bindImagesData(images);
-        mPictureRecycler.smoothScrollToPosition(0);
+    }
+
+    /**
+     * Before switching directories, set the current directory cache
+     */
+    private void setLastCacheFolderData() {
+        int oldPosition = ValueOf.toInt(mTvPictureTitle.getTag(R.id.view_index_tag));
+        LocalMediaFolder lastFolder = folderWindow.getFolder(oldPosition);
+        lastFolder.setData(mAdapter.getData());
+        lastFolder.setCurrentDataPage(mPage);
+        lastFolder.setHasMore(isHasMore);
+    }
+
+    /**
+     * Does the current album have a cache
+     *
+     * @param position
+     */
+    private boolean isCurrentCacheFolderData(int position) {
+        mTvPictureTitle.setTag(R.id.view_index_tag, position);
+        LocalMediaFolder currentFolder = folderWindow.getFolder(position);
+        if (currentFolder != null
+                && currentFolder.getData() != null
+                && currentFolder.getData().size() > 0) {
+            mAdapter.bindData(currentFolder.getData());
+            mPage = currentFolder.getCurrentDataPage();
+            isHasMore = currentFolder.isHasMore();
+            mRecyclerView.smoothScrollToPosition(0);
+
+            return true;
+        }
+        return false;
     }
 
     @Override
     public void onTakePhoto() {
-        // 启动相机拍照,先判断手机是否有拍照权限
+        // Check the permissions
         if (PermissionChecker.checkSelfPermission(this, Manifest.permission.CAMERA)) {
-            // 获取到相机权限再验证是否有存储权限
             if (PermissionChecker
                     .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
                     PermissionChecker
@@ -1030,8 +1282,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     @Override
-    public void onChange(List<LocalMedia> selectImages) {
-        changeImageNumber(selectImages);
+    public void onChange(List<LocalMedia> selectData) {
+        changeImageNumber(selectData);
     }
 
     @Override
@@ -1039,15 +1291,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (config.selectionMode == PictureConfig.SINGLE && config.isSingleDirectReturn) {
             List<LocalMedia> list = new ArrayList<>();
             list.add(media);
-            if (config.enableCrop && PictureMimeType.eqImage(media.getMimeType()) && !config.isCheckOriginalImage) {
-                mAdapter.bindSelectImages(list);
+            if (config.enableCrop && PictureMimeType.isHasImage(media.getMimeType()) && !config.isCheckOriginalImage) {
+                mAdapter.bindSelectData(list);
                 startCrop(media.getPath(), media.getMimeType());
             } else {
                 handlerResult(list);
             }
         } else {
-            List<LocalMedia> images = mAdapter.getImages();
-            startPreview(images, position);
+            List<LocalMedia> data = mAdapter.getData();
+            startPreview(data, position);
         }
     }
 
@@ -1062,7 +1314,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         String mimeType = media.getMimeType();
         Bundle bundle = new Bundle();
         List<LocalMedia> result = new ArrayList<>();
-        if (PictureMimeType.eqVideo(mimeType)) {
+        if (PictureMimeType.isHasVideo(mimeType)) {
             // video
             if (config.selectionMode == PictureConfig.SINGLE && !config.enPreviewVideo) {
                 result.add(media);
@@ -1075,22 +1327,26 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     JumpUtils.startPictureVideoPlayActivity(getContext(), bundle, PictureConfig.PREVIEW_VIDEO_CODE);
                 }
             }
-        } else if (PictureMimeType.eqAudio(mimeType)) {
+        } else if (PictureMimeType.isHasAudio(mimeType)) {
             // audio
             if (config.selectionMode == PictureConfig.SINGLE) {
                 result.add(media);
                 onResult(result);
             } else {
-                audioDialog(media.getPath());
+                AudioDialog(media.getPath());
             }
         } else {
             // image
-            List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
+            List<LocalMedia> selectedData = mAdapter.getSelectedData();
             ImagesObservable.getInstance().savePreviewMediaData(new ArrayList<>(previewImages));
-            bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_LIST, (ArrayList<? extends Parcelable>) selectedImages);
+            bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_LIST, (ArrayList<? extends Parcelable>) selectedData);
             bundle.putInt(PictureConfig.EXTRA_POSITION, position);
             bundle.putBoolean(PictureConfig.EXTRA_CHANGE_ORIGINAL, config.isCheckOriginalImage);
             bundle.putBoolean(PictureConfig.EXTRA_SHOW_CAMERA, mAdapter.isShowCamera());
+            bundle.putLong(PictureConfig.EXTRA_BUCKET_ID, ValueOf.toLong(mTvPictureTitle.getTag(R.id.view_tag)));
+            bundle.putInt(PictureConfig.EXTRA_PAGE, mPage);
+            bundle.putParcelable(PictureConfig.EXTRA_CONFIG, config);
+            bundle.putInt(PictureConfig.EXTRA_DATA_COUNT, ValueOf.toInt(mTvPictureTitle.getTag(R.id.view_count_tag)));
             bundle.putString(PictureConfig.EXTRA_IS_CURRENT_DIRECTORY, mTvPictureTitle.getText().toString());
             JumpUtils.startPicturePreviewActivity(getContext(), config.isWeChatStyle, bundle,
                     config.selectionMode == PictureConfig.SINGLE ? UCrop.REQUEST_CROP : UCrop.REQUEST_MULTI_CROP);
@@ -1104,10 +1360,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     /**
      * change image selector state
      *
-     * @param selectImages
+     * @param selectData
      */
-    protected void changeImageNumber(List<LocalMedia> selectImages) {
-        boolean enable = selectImages.size() != 0;
+    protected void changeImageNumber(List<LocalMedia> selectData) {
+        boolean enable = selectData.size() != 0;
         if (enable) {
             mTvPictureOk.setEnabled(true);
             mTvPictureOk.setSelected(true);
@@ -1124,16 +1380,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (config.style != null && !TextUtils.isEmpty(config.style.picturePreviewText)) {
                 mTvPicturePreview.setText(config.style.picturePreviewText);
             } else {
-                mTvPicturePreview.setText(getString(R.string.picture_preview_num, selectImages.size()));
+                mTvPicturePreview.setText(getString(R.string.picture_preview_num, selectData.size()));
             }
             if (numComplete) {
-                initCompleteText(selectImages.size());
+                initCompleteText(selectData.size());
             } else {
                 if (!isStartAnimation) {
                     mTvPictureImgNum.startAnimation(animation);
                 }
                 mTvPictureImgNum.setVisibility(View.VISIBLE);
-                mTvPictureImgNum.setText(String.valueOf(selectImages.size()));
+                mTvPictureImgNum.setText(String.valueOf(selectData.size()));
                 if (config.style != null && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
                     mTvPictureOk.setText(config.style.pictureCompleteText);
                 } else {
@@ -1160,7 +1416,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mTvPicturePreview.setText(getString(R.string.picture_preview));
             }
             if (numComplete) {
-                initCompleteText(selectImages.size());
+                initCompleteText(selectData.size());
             } else {
                 mTvPictureImgNum.setVisibility(View.INVISIBLE);
                 if (config.style != null && !TextUtils.isEmpty(config.style.pictureUnCompleteText)) {
@@ -1193,7 +1449,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     multiCropHandleResult(data);
                     break;
                 case PictureConfig.REQUEST_CAMERA:
-                    requestCamera(data);
+                    dispatchHandleCamera(data);
                     break;
                 default:
                     break;
@@ -1211,7 +1467,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     /**
-     * 预览界面回调处理
+     * Preview interface callback processing
      *
      * @param data
      */
@@ -1223,35 +1479,30 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             config.isCheckOriginalImage = data.getBooleanExtra(PictureConfig.EXTRA_CHANGE_ORIGINAL, config.isCheckOriginalImage);
             mCbOriginal.setChecked(config.isCheckOriginalImage);
         }
-        // 在预览界面按返回键或已完成的处理逻辑
         List<LocalMedia> list = data.getParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST);
         if (mAdapter != null && list != null) {
-            // 判断预览界面是点击已完成按钮还是仅仅是勾选图片
             boolean isCompleteOrSelected = data.getBooleanExtra(PictureConfig.EXTRA_COMPLETE_SELECTED, false);
             if (isCompleteOrSelected) {
                 onChangeData(list);
                 if (config.isWithVideoImage) {
-                    // 混选模式
                     int size = list.size();
                     int imageSize = 0;
                     for (int i = 0; i < size; i++) {
                         LocalMedia media = list.get(i);
-                        if (PictureMimeType.eqImage(media.getMimeType())) {
+                        if (PictureMimeType.isHasImage(media.getMimeType())) {
                             imageSize++;
                             break;
                         }
                     }
                     if (imageSize <= 0 || !config.isCompress || config.isCheckOriginalImage) {
-                        // 全是视频
                         onResult(list);
                     } else {
-                        // 去压缩
                         compressImage(list);
                     }
                 } else {
-                    // 取出第1个判断是否是图片，视频和图片只能二选一，不必考虑图片和视频混合
+                    // Determine if the resource is of the same type
                     String mimeType = list.size() > 0 ? list.get(0).getMimeType() : "";
-                    if (config.isCompress && PictureMimeType.eqImage(mimeType)
+                    if (config.isCompress && PictureMimeType.isHasImage(mimeType)
                             && !config.isCheckOriginalImage) {
                         compressImage(list);
                     } else {
@@ -1259,16 +1510,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     }
                 }
             } else {
-                // 预览界面只勾选了图片处理逻辑
+                // Resources are selected on the preview page
                 isStartAnimation = true;
             }
-            mAdapter.bindSelectImages(list);
+            mAdapter.bindSelectData(list);
             mAdapter.notifyDataSetChanged();
         }
     }
 
     /**
-     * 预览界面返回更新回调
+     * Preview the callback
      *
      * @param list
      */
@@ -1277,244 +1528,284 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     /**
-     * singleDirectReturn模式摄像头后处理方式
+     * singleDirectReturn
      *
      * @param mimeType
      */
     private void singleDirectReturnCameraHandleResult(String mimeType) {
-        boolean eqImg = PictureMimeType.eqImage(mimeType);
-        if (config.enableCrop && eqImg) {
-            // 去裁剪
+        boolean isHasImage = PictureMimeType.isHasImage(mimeType);
+        if (config.enableCrop && isHasImage) {
             config.originalPath = config.cameraPath;
             startCrop(config.cameraPath, mimeType);
-        } else if (config.isCompress && eqImg) {
-            // 去压缩
-            List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
+        } else if (config.isCompress && isHasImage) {
+            List<LocalMedia> selectedImages = mAdapter.getSelectedData();
             compressImage(selectedImages);
         } else {
-            // 不裁剪 不压缩 直接返回结果
-            onResult(mAdapter.getSelectedImages());
+            onResult(mAdapter.getSelectedData());
         }
     }
 
     /**
-     * 拍照后处理结果
+     * Camera Handle
      *
-     * @param data
+     * @param intent
      */
-
-    private void requestCamera(Intent data) {
-        // on take photo success
-        String mimeType = null;
-        long duration = 0;
-        boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
-        if (config.chooseMode == PictureMimeType.ofAudio()) {
-            // 音频处理规则
-            config.cameraPath = getAudioPath(data);
-            if (TextUtils.isEmpty(config.cameraPath)) {
-                return;
-            }
-            mimeType = PictureMimeType.MIME_TYPE_AUDIO;
-            duration = MediaUtils.extractDuration(getContext(), isAndroidQ, config.cameraPath);
+    private void dispatchHandleCamera(Intent intent) {
+        // If PictureSelectionConfig is not empty, synchronize it
+        PictureSelectionConfig selectionConfig = intent != null ? intent.getParcelableExtra(PictureConfig.EXTRA_CONFIG) : null;
+        if (selectionConfig != null) {
+            config = selectionConfig;
         }
+        boolean isAudio = config.chooseMode == PictureMimeType.ofAudio();
+        config.cameraPath = isAudio ? getAudioPath(intent) : config.cameraPath;
         if (TextUtils.isEmpty(config.cameraPath)) {
             return;
         }
-        long size = 0;
-        int[] newSize = new int[2];
-        if (!isAndroidQ) {
-            if (config.isFallbackVersion3) {
-                new PictureMediaScannerConnection(getContext(), config.cameraPath);
-            } else {
-                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(config.cameraPath))));
-            }
-        }
-        LocalMedia media = new LocalMedia();
-        if (config.chooseMode != PictureMimeType.ofAudio()) {
-            // 图片视频处理规则
-            if (PictureMimeType.isContent(config.cameraPath)) {
-                String path = PictureFileUtils.getPath(getApplicationContext(), Uri.parse(config.cameraPath));
-                if (!TextUtils.isEmpty(path)) {
-                    File file = new File(path);
-                    size = file.length();
-                    mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
-                }
-                if (PictureMimeType.eqImage(mimeType)) {
-                    newSize = MediaUtils.getLocalImageSizeToAndroidQ(this, config.cameraPath);
-                } else {
-                    newSize = MediaUtils.getLocalVideoSize(this, Uri.parse(config.cameraPath));
-                    duration = MediaUtils.extractDuration(getContext(), true, config.cameraPath);
-                }
-                int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
-                media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
-                media.setRealPath(path);
-                if (config.isUseCustomCamera) {
-                    // 自定义拍照时已经在应用沙盒内生成了文件
-                    if (data != null) {
-                        String mediaPath = data.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH);
+        showPleaseDialog();
+        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<LocalMedia>() {
+
+            @Override
+            public LocalMedia doInBackground() {
+                LocalMedia media = new LocalMedia();
+                String mimeType = isAudio ? PictureMimeType.MIME_TYPE_AUDIO : "";
+                int[] newSize = new int[2];
+                long duration = 0;
+                if (!isAudio) {
+                    if (PictureMimeType.isContent(config.cameraPath)) {
+                        // content: Processing rules
+                        String path = PictureFileUtils.getPath(getContext(), Uri.parse(config.cameraPath));
+                        if (!TextUtils.isEmpty(path)) {
+                            File cameraFile = new File(path);
+                            mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
+                            media.setSize(cameraFile.length());
+                        }
+                        if (PictureMimeType.isHasImage(mimeType)) {
+                            newSize = MediaUtils.getImageSizeForUrlToAndroidQ(getContext(), config.cameraPath);
+                        } else if (PictureMimeType.isHasVideo(mimeType)) {
+                            newSize = MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(config.cameraPath));
+                            duration = MediaUtils.extractDuration(getContext(), SdkVersionUtils.checkedAndroid_Q(), config.cameraPath);
+                        }
+                        int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
+                        media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
+                        media.setRealPath(path);
+                        // Custom photo has been in the application sandbox into the file
+                        String mediaPath = intent != null ? intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH) : null;
                         media.setAndroidQToPath(mediaPath);
+                    } else {
+                        File cameraFile = new File(config.cameraPath);
+                        mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
+                        media.setSize(cameraFile.length());
+                        if (PictureMimeType.isHasImage(mimeType)) {
+                            int degree = PictureFileUtils.readPictureDegree(getContext(), config.cameraPath);
+                            BitmapUtils.rotateImage(degree, config.cameraPath);
+                            newSize = MediaUtils.getImageSizeForUrl(config.cameraPath);
+                        } else if (PictureMimeType.isHasVideo(mimeType)) {
+                            newSize = MediaUtils.getVideoSizeForUrl(config.cameraPath);
+                            duration = MediaUtils.extractDuration(getContext(), SdkVersionUtils.checkedAndroid_Q(), config.cameraPath);
+                        }
+                        // Taking a photo generates a temporary id
+                        media.setId(System.currentTimeMillis());
+                    }
+                    media.setPath(config.cameraPath);
+                    media.setDuration(duration);
+                    media.setMimeType(mimeType);
+                    media.setWidth(newSize[0]);
+                    media.setHeight(newSize[1]);
+                    if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasVideo(media.getMimeType())) {
+                        media.setParentFolderName(Environment.DIRECTORY_MOVIES);
+                    } else {
+                        media.setParentFolderName(PictureMimeType.CAMERA);
+                    }
+                    media.setChooseModel(config.chooseMode);
+                    long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
+                    media.setBucketId(bucketId);
+                    // The width and height of the image are reversed if there is rotation information
+                    MediaUtils.setOrientationSynchronous(getContext(), media);
+                }
+                return media;
+            }
+
+            @Override
+            public void onSuccess(LocalMedia result) {
+                dismissDialog();
+                // Refresh the system library
+                if (!SdkVersionUtils.checkedAndroid_Q()) {
+                    if (config.isFallbackVersion3) {
+                        new PictureMediaScannerConnection(getContext(), config.cameraPath);
+                    } else {
+                        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(config.cameraPath))));
                     }
                 }
-            } else {
-                File file = new File(config.cameraPath);
-                mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
-                size = file.length();
-                if (PictureMimeType.eqImage(mimeType)) {
-                    int degree = PictureFileUtils.readPictureDegree(this, config.cameraPath);
-                    BitmapUtils.rotateImage(degree, config.cameraPath);
-                    newSize = MediaUtils.getLocalImageWidthOrHeight(config.cameraPath);
-                } else {
-                    newSize = MediaUtils.getLocalVideoSize(config.cameraPath);
-                    duration = MediaUtils.extractDuration(getContext(), false, config.cameraPath);
+                // add data Adapter
+                notifyAdapterData(result);
+                // Solve some phone using Camera, DCIM will produce repetitive problems
+                if (!SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasImage(result.getMimeType())) {
+                    int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
+                    if (lastImageId != -1) {
+                        MediaUtils.removeMedia(getContext(), lastImageId);
+                    }
                 }
-                // 拍照产生一个临时id
-                media.setId(System.currentTimeMillis());
             }
-        }
-        media.setDuration(duration);
-        media.setWidth(newSize[0]);
-        media.setHeight(newSize[1]);
-        media.setPath(config.cameraPath);
-        media.setMimeType(mimeType);
-        media.setSize(size);
-        media.setChooseModel(config.chooseMode);
+        });
+
+    }
+
+    /**
+     * Update Adapter Data
+     *
+     * @param media
+     */
+    private void notifyAdapterData(LocalMedia media) {
         if (mAdapter != null) {
-            images.add(0, media);
+            boolean isAddSameImp = isAddSameImp(folderWindow.getFolder(0) != null ? folderWindow.getFolder(0).getImageNum() : 0);
+            if (!isAddSameImp) {
+                mAdapter.getData().add(0, media);
+                mOpenCameraCount++;
+            }
             if (checkVideoLegitimacy(media)) {
                 if (config.selectionMode == PictureConfig.SINGLE) {
-                    // 单选模式下直接返回模式
-                    if (config.isSingleDirectReturn) {
-                        List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
-                        selectedImages.add(media);
-                        mAdapter.bindSelectImages(selectedImages);
-                        singleDirectReturnCameraHandleResult(mimeType);
-                    } else {
-                        List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
-                        mimeType = selectedImages.size() > 0 ? selectedImages.get(0).getMimeType() : "";
-                        boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
-                        // 类型相同或还没有选中才加进选中集合中
-                        if (mimeTypeSame || selectedImages.size() == 0) {
-                            // 如果是单选，则清空已选中的并刷新列表(作单一选择)
-                            singleRadioMediaImage();
-                            selectedImages.add(media);
-                            mAdapter.bindSelectImages(selectedImages);
-                        }
-                    }
+                    dispatchHandleSingle(media);
                 } else {
-                    // 多选模式
-                    List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
-                    int count = selectedImages.size();
-                    mimeType = count > 0 ? selectedImages.get(0).getMimeType() : "";
-                    boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
-                    if (config.isWithVideoImage) {
-                        // 混选模式
-                        int videoSize = 0;
-                        int imageSize = 0;
-                        for (int i = 0; i < count; i++) {
-                            LocalMedia m = selectedImages.get(i);
-                            if (PictureMimeType.eqVideo(m.getMimeType())) {
-                                videoSize++;
-                            } else {
-                                imageSize++;
-                            }
-                        }
-                        if (PictureMimeType.eqVideo(media.getMimeType())) {
-                            // 视频还可选
-                            if (config.maxVideoSelectNum <= 0) {
-                                // 如果视频可选数量是0
-                                ToastUtils.s(getContext(), getString(R.string.picture_rule));
-                            } else {
-                                if (videoSize < config.maxVideoSelectNum) {
-                                    selectedImages.add(0, media);
-                                    mAdapter.bindSelectImages(selectedImages);
-                                } else {
-                                    ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), media.getMimeType(),
-                                            config.maxVideoSelectNum));
-                                }
-                            }
-                        } else {
-                            // 图片还可选
-                            if (imageSize < config.maxSelectNum) {
-                                selectedImages.add(0, media);
-                                mAdapter.bindSelectImages(selectedImages);
-                            } else {
-                                ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), media.getMimeType(),
-                                        config.maxSelectNum));
-                            }
-                        }
-
-                    } else {
-                        if (PictureMimeType.eqVideo(mimeType) && config.maxVideoSelectNum > 0) {
-                            // 类型相同或还没有选中才加进选中集合中
-                            if (count < config.maxVideoSelectNum) {
-                                if (mimeTypeSame || count == 0) {
-                                    if (selectedImages.size() < config.maxVideoSelectNum) {
-                                        selectedImages.add(0, media);
-                                        mAdapter.bindSelectImages(selectedImages);
-                                    }
-                                }
-                            } else {
-                                ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), mimeType,
-                                        config.maxVideoSelectNum));
-                            }
-                        } else {
-                            // 没有到最大选择量 才做默认选中刚拍好的
-                            if (count < config.maxSelectNum) {
-                                // 类型相同或还没有选中才加进选中集合中
-                                if (mimeTypeSame || count == 0) {
-                                    selectedImages.add(0, media);
-                                    mAdapter.bindSelectImages(selectedImages);
-                                }
-                            } else {
-                                ToastUtils.s(getContext(), StringUtils.getMsg(getContext(), mimeType,
-                                        config.maxSelectNum));
-                            }
-                        }
-                    }
+                    dispatchHandleMultiple(media);
                 }
             }
             mAdapter.notifyItemInserted(config.isCamera ? 1 : 0);
-            mAdapter.notifyItemRangeChanged(config.isCamera ? 1 : 0, images.size());
-            // 解决部分手机拍照完Intent.ACTION_MEDIA_SCANNER_SCAN_FILE，不及时刷新问题手动添加
-            manualSaveFolder(media);
-            // 这里主要解决极个别手机拍照会在DCIM目录重复生成一张照片问题
-            if (!isAndroidQ && PictureMimeType.eqImage(media.getMimeType())) {
-                int lastImageId = MediaUtils.getLastImageId(getContext(), media.getMimeType());
-                if (lastImageId != -1) {
-                    MediaUtils.removeMedia(getContext(), lastImageId);
-                }
+            mAdapter.notifyItemRangeChanged(config.isCamera ? 1 : 0, mAdapter.getSize());
+            // Solve the problem that some mobile phones do not refresh the system library timely after using Camera
+            if (config.isPageStrategy) {
+                manualSaveFolderForPageModel(media);
+            } else {
+                manualSaveFolder(media);
             }
-            mTvEmpty.setVisibility(images.size() > 0 || config.isSingleDirectReturn ? View.INVISIBLE : View.VISIBLE);
+            mTvEmpty.setVisibility(mAdapter.getSize() > 0 || config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
+            // update all count
+            if (folderWindow.getFolder(0) != null) {
+                mTvPictureTitle.setTag(R.id.view_count_tag, folderWindow.getFolder(0).getImageNum());
+            }
+            allFolderSize = 0;
         }
     }
 
     /**
-     * 验证视频的合法性
+     * After using Camera, MultiSelect mode handles the logic
+     *
+     * @param media
+     */
+    private void dispatchHandleMultiple(LocalMedia media) {
+        List<LocalMedia> selectedData = mAdapter.getSelectedData();
+        int count = selectedData.size();
+        String oldMimeType = count > 0 ? selectedData.get(0).getMimeType() : "";
+        boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(oldMimeType, media.getMimeType());
+        if (config.isWithVideoImage) {
+            int videoSize = 0;
+            for (int i = 0; i < count; i++) {
+                LocalMedia item = selectedData.get(i);
+                if (PictureMimeType.isHasVideo(item.getMimeType())) {
+                    videoSize++;
+                }
+            }
+            if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                if (config.maxVideoSelectNum <= 0) {
+                    showPromptDialog(getString(R.string.picture_rule));
+                } else {
+                    if (selectedData.size() >= config.maxSelectNum) {
+                        showPromptDialog(getString(R.string.picture_message_max_num, config.maxSelectNum));
+                    } else {
+                        if (videoSize < config.maxVideoSelectNum) {
+                            selectedData.add(0, media);
+                            mAdapter.bindSelectData(selectedData);
+                        } else {
+                            showPromptDialog(StringUtils.getMsg(getContext(), media.getMimeType(),
+                                    config.maxVideoSelectNum));
+                        }
+                    }
+                }
+            } else {
+                if (selectedData.size() < config.maxSelectNum) {
+                    selectedData.add(0, media);
+                    mAdapter.bindSelectData(selectedData);
+                } else {
+                    showPromptDialog(StringUtils.getMsg(getContext(), media.getMimeType(),
+                            config.maxSelectNum));
+                }
+            }
+
+        } else {
+            if (PictureMimeType.isHasVideo(oldMimeType) && config.maxVideoSelectNum > 0) {
+                if (count < config.maxVideoSelectNum) {
+                    if (mimeTypeSame || count == 0) {
+                        if (selectedData.size() < config.maxVideoSelectNum) {
+                            selectedData.add(0, media);
+                            mAdapter.bindSelectData(selectedData);
+                        }
+                    }
+                } else {
+                    showPromptDialog(StringUtils.getMsg(getContext(), oldMimeType,
+                            config.maxVideoSelectNum));
+                }
+            } else {
+                if (count < config.maxSelectNum) {
+                    if (mimeTypeSame || count == 0) {
+                        selectedData.add(0, media);
+                        mAdapter.bindSelectData(selectedData);
+                    }
+                } else {
+                    showPromptDialog(StringUtils.getMsg(getContext(), oldMimeType,
+                            config.maxSelectNum));
+                }
+            }
+        }
+    }
+
+    /**
+     * After using the camera, the radio mode handles the logic
+     *
+     * @param media
+     */
+    private void dispatchHandleSingle(LocalMedia media) {
+        if (config.isSingleDirectReturn) {
+            List<LocalMedia> selectedData = mAdapter.getSelectedData();
+            selectedData.add(media);
+            mAdapter.bindSelectData(selectedData);
+            singleDirectReturnCameraHandleResult(media.getMimeType());
+        } else {
+            List<LocalMedia> selectedData = mAdapter.getSelectedData();
+            String mimeType = selectedData.size() > 0 ? selectedData.get(0).getMimeType() : "";
+            boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
+            if (mimeTypeSame || selectedData.size() == 0) {
+                singleRadioMediaImage();
+                selectedData.add(media);
+                mAdapter.bindSelectData(selectedData);
+            }
+        }
+    }
+
+    /**
+     * Verify the validity of the video
      *
      * @param media
      * @return
      */
     private boolean checkVideoLegitimacy(LocalMedia media) {
         boolean isEnterNext = true;
-        if (PictureMimeType.eqVideo(media.getMimeType())) {
-            // 判断视频是否符合条件
+        if (PictureMimeType.isHasVideo(media.getMimeType())) {
             if (config.videoMinSecond > 0 && config.videoMaxSecond > 0) {
-                // 用户设置了最小和最大视频时长，判断视频是否在区间之内
+                // The user sets the minimum and maximum video length to determine whether the video is within the interval
                 if (media.getDuration() < config.videoMinSecond || media.getDuration() > config.videoMaxSecond) {
                     isEnterNext = false;
-                    ToastUtils.s(getContext(), getString(R.string.picture_choose_limit_seconds, config.videoMinSecond / 1000, config.videoMaxSecond / 1000));
+                    showPromptDialog(getString(R.string.picture_choose_limit_seconds, config.videoMinSecond / 1000, config.videoMaxSecond / 1000));
                 }
             } else if (config.videoMinSecond > 0) {
-                // 用户只设置了最小时长视频限制
+                // The user has only set a minimum video length limit
                 if (media.getDuration() < config.videoMinSecond) {
                     isEnterNext = false;
-                    ToastUtils.s(getContext(), getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
+                    showPromptDialog(getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
                 }
             } else if (config.videoMaxSecond > 0) {
-                // 用户只设置了最大时长视频限制
+                // Only the maximum length of video is set
                 if (media.getDuration() > config.videoMaxSecond) {
                     isEnterNext = false;
-                    ToastUtils.s(getContext(), getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+                    showPromptDialog(getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
                 }
             }
         }
@@ -1522,7 +1813,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     /**
-     * 单张图片裁剪
+     * Single picture clipping callback
      *
      * @param data
      */
@@ -1539,11 +1830,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (mAdapter != null) {
             List<LocalMedia> list = data.getParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST);
             if (list != null) {
-                mAdapter.bindSelectImages(list);
+                mAdapter.bindSelectData(list);
                 mAdapter.notifyDataSetChanged();
             }
-            // 取单张裁剪已选中图片的path作为原图
-            List<LocalMedia> mediaList = mAdapter.getSelectedImages();
+            List<LocalMedia> mediaList = mAdapter.getSelectedData();
             LocalMedia media = mediaList != null && mediaList.size() > 0 ? mediaList.get(0) : null;
             if (media != null) {
                 config.originalPath = media.getPath();
@@ -1554,40 +1844,36 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             && PictureMimeType.isContent(media.getPath())) {
                         String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
                         media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
+                        media.setAndroidQToPath(cutPath);
                     } else {
                         media.setSize(new File(media.getPath()).length());
                     }
                     media.setCut(false);
                 } else {
                     media.setSize(new File(cutPath).length());
-                    media.setAndroidQToPath(cutPath);
                     media.setCut(true);
                 }
                 result.add(media);
                 handlerResult(result);
             } else {
-                // 预览界面选中图片并裁剪回调的
+                // Preview screen selects the image and crop the callback
                 media = list != null && list.size() > 0 ? list.get(0) : null;
                 if (media != null) {
                     config.originalPath = media.getPath();
                     media.setCutPath(cutPath);
                     media.setChooseModel(config.chooseMode);
-                    media.setSize(new File(TextUtils.isEmpty(cutPath)
-                            ? media.getPath() : cutPath).length());
                     if (TextUtils.isEmpty(cutPath)) {
-                        if (SdkVersionUtils.checkedAndroid_Q()
-                                && PictureMimeType.isContent(media.getPath())) {
+                        if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(media.getPath())) {
                             String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
                             media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
+                            media.setAndroidQToPath(cutPath);
                         } else {
                             media.setSize(new File(media.getPath()).length());
                         }
-                        media.setCut(false);
                     } else {
                         media.setSize(new File(cutPath).length());
-                        media.setAndroidQToPath(cutPath);
-                        media.setCut(true);
                     }
+                    media.setCut(!TextUtils.isEmpty(cutPath));
                     result.add(media);
                     handlerResult(result);
                 }
@@ -1596,7 +1882,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     /**
-     * 多张图片裁剪
+     * Multiple picture crop
      *
      * @param data
      */
@@ -1612,12 +1898,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         List<LocalMedia> list = data.getParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST);
         if (list != null) {
-            mAdapter.bindSelectImages(list);
+            mAdapter.bindSelectData(list);
             mAdapter.notifyDataSetChanged();
         }
-        int oldSize = mAdapter != null ? mAdapter.getSelectedImages().size() : 0;
+        int oldSize = mAdapter != null ? mAdapter.getSelectedData().size() : 0;
         if (oldSize == size) {
-            List<LocalMedia> result = mAdapter.getSelectedImages();
+            List<LocalMedia> result = mAdapter.getSelectedData();
             for (int i = 0; i < size; i++) {
                 CutInfo c = mCuts.get(i);
                 LocalMedia media = result.get(i);
@@ -1632,7 +1918,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
             handlerResult(result);
         } else {
-            // 容错处理
+            // Fault-tolerant processing
             List<LocalMedia> result = new ArrayList<>();
             for (int i = 0; i < size; i++) {
                 CutInfo c = mCuts.get(i);
@@ -1664,49 +1950,139 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     /**
-     * 单选图片
+     * Just make sure you pick one
      */
     private void singleRadioMediaImage() {
-        List<LocalMedia> selectImages = mAdapter.getSelectedImages();
-        if (selectImages != null
-                && selectImages.size() > 0) {
-            LocalMedia media = selectImages.get(0);
+        List<LocalMedia> selectData = mAdapter.getSelectedData();
+        if (selectData != null
+                && selectData.size() > 0) {
+            LocalMedia media = selectData.get(0);
             int position = media.getPosition();
-            selectImages.clear();
+            selectData.clear();
             mAdapter.notifyItemChanged(position);
         }
     }
 
     /**
-     * 手动添加拍照后的相片到图片列表，并设为选中
+     * Manually add the photo to the list of photos and set it to select-paging mode
+     *
+     * @param media
+     */
+    private void manualSaveFolderForPageModel(LocalMedia media) {
+        if (media == null) {
+            return;
+        }
+        int count = folderWindow.getFolderData().size();
+        LocalMediaFolder allFolder = count > 0 ? folderWindow.getFolderData().get(0) : new LocalMediaFolder();
+        if (allFolder != null) {
+            int totalNum = allFolder.getImageNum();
+            allFolder.setFirstImagePath(media.getPath());
+            allFolder.setImageNum(isAddSameImp(totalNum) ? allFolder.getImageNum() : allFolder.getImageNum() + 1);
+            // Create All folder
+            if (count == 0) {
+                allFolder.setName(config.chooseMode == PictureMimeType.ofAudio() ?
+                        getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll));
+                allFolder.setOfAllType(config.chooseMode);
+                allFolder.setCameraFolder(true);
+                allFolder.setChecked(true);
+                allFolder.setBucketId(-1);
+                folderWindow.getFolderData().add(0, allFolder);
+                // Create Camera
+                LocalMediaFolder cameraFolder = new LocalMediaFolder();
+                cameraFolder.setName(media.getParentFolderName());
+                cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
+                cameraFolder.setFirstImagePath(media.getPath());
+                cameraFolder.setBucketId(media.getBucketId());
+                folderWindow.getFolderData().add(folderWindow.getFolderData().size(), cameraFolder);
+            } else {
+                boolean isCamera = false;
+                String newFolder = SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasVideo(media.getMimeType())
+                        ? Environment.DIRECTORY_MOVIES : PictureMimeType.CAMERA;
+                for (int i = 0; i < count; i++) {
+                    LocalMediaFolder cameraFolder = folderWindow.getFolderData().get(i);
+                    if (cameraFolder.getName().startsWith(newFolder)) {
+                        media.setBucketId(cameraFolder.getBucketId());
+                        cameraFolder.setFirstImagePath(config.cameraPath);
+                        cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
+                        if (cameraFolder.getData() != null && cameraFolder.getData().size() > 0) {
+                            cameraFolder.getData().add(0, media);
+                        }
+                        isCamera = true;
+                        break;
+                    }
+                }
+                if (!isCamera) {
+                    // There is no Camera folder locally. Create one
+                    LocalMediaFolder cameraFolder = new LocalMediaFolder();
+                    cameraFolder.setName(media.getParentFolderName());
+                    cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
+                    cameraFolder.setFirstImagePath(media.getPath());
+                    cameraFolder.setBucketId(media.getBucketId());
+                    folderWindow.getFolderData().add(cameraFolder);
+                    sortFolder(folderWindow.getFolderData());
+                }
+            }
+            folderWindow.bindFolder(folderWindow.getFolderData());
+        }
+    }
+
+    /**
+     * Manually add the photo to the list of photos and set it to select
      *
      * @param media
      */
     private void manualSaveFolder(LocalMedia media) {
         try {
-            createNewFolder(foldersList);
-            LocalMediaFolder folder = getImageFolder(media.getPath(), foldersList);
-            LocalMediaFolder cameraFolder = foldersList.size() > 0 ? foldersList.get(0) : null;
-            if (cameraFolder != null && folder != null) {
-                media.setParentFolderName(folder.getName());
-                // 相机胶卷
-                cameraFolder.setFirstImagePath(media.getPath());
-                cameraFolder.setImages(images);
-                cameraFolder.setImageNum(cameraFolder.getImageNum() + 1);
-                // 拍照相册
-                int num = folder.getImageNum() + 1;
-                folder.setImageNum(num);
-                folder.getImages().add(0, media);
-                folder.setFirstImagePath(config.cameraPath);
-                folderWindow.bindFolder(foldersList);
+            boolean isEmpty = folderWindow.isEmpty();
+            int totalNum = folderWindow.getFolder(0) != null ? folderWindow.getFolder(0).getImageNum() : 0;
+            LocalMediaFolder allFolder;
+            if (isEmpty) {
+                // All Folder
+                createNewFolder(folderWindow.getFolderData());
+                allFolder = folderWindow.getFolderData().size() > 0 ? folderWindow.getFolderData().get(0) : null;
+                if (allFolder == null) {
+                    allFolder = new LocalMediaFolder();
+                    folderWindow.getFolderData().add(0, allFolder);
+                }
+            } else {
+                // All Folder
+                allFolder = folderWindow.getFolderData().get(0);
             }
+            allFolder.setFirstImagePath(media.getPath());
+            allFolder.setData(mAdapter.getData());
+            allFolder.setBucketId(-1);
+            allFolder.setImageNum(isAddSameImp(totalNum) ? allFolder.getImageNum() : allFolder.getImageNum() + 1);
+
+            // Camera
+            LocalMediaFolder cameraFolder = getImageFolder(media.getPath(), folderWindow.getFolderData());
+            if (cameraFolder != null) {
+                cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
+                if (!isAddSameImp(totalNum)) {
+                    cameraFolder.getData().add(0, media);
+                }
+                cameraFolder.setBucketId(media.getBucketId());
+                cameraFolder.setFirstImagePath(config.cameraPath);
+            }
+            folderWindow.bindFolder(folderWindow.getFolderData());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * 更新一下相册目录
+     * Is the quantity consistent
+     *
+     * @return
+     */
+    private boolean isAddSameImp(int totalNum) {
+        if (totalNum == 0) {
+            return false;
+        }
+        return allFolderSize > 0 && allFolderSize < totalNum;
+    }
+
+    /**
+     * Update Folder
      *
      * @param imageFolders
      */
@@ -1720,7 +2096,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         int size = imageFolders.size();
         for (int i = 0; i < size; i++) {
             LocalMediaFolder folder = imageFolders.get(i);
-            // 同一个文件夹下，返回自己，否则创建新文件夹
             String name = folder.getName();
             if (TextUtils.isEmpty(name)) {
                 continue;
@@ -1729,7 +2104,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 folder.setFirstImagePath(config.cameraPath);
                 folder.setImageNum(folder.getImageNum() + 1);
                 folder.setCheckedNum(1);
-                folder.getImages().add(0, media);
+                folder.getData().add(0, media);
                 break;
             }
         }
@@ -1762,18 +2137,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     public void onItemClick(View view, int position) {
         switch (position) {
             case PhotoItemSelectedDialog.IMAGE_CAMERA:
-                // 拍照
-                if (PictureSelectionConfig.onPictureSelectorInterfaceListener != null) {
-                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_IMAGE);
+                if (PictureSelectionConfig.onCustomCameraInterfaceListener != null) {
+                    PictureSelectionConfig.onCustomCameraInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_IMAGE);
                     config.cameraMimeType = PictureMimeType.ofImage();
                 } else {
                     startOpenCamera();
                 }
                 break;
             case PhotoItemSelectedDialog.VIDEO_CAMERA:
-                // 录视频
-                if (PictureSelectionConfig.onPictureSelectorInterfaceListener != null) {
-                    PictureSelectionConfig.onPictureSelectorInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_VIDEO);
+                if (PictureSelectionConfig.onCustomCameraInterfaceListener != null) {
+                    PictureSelectionConfig.onCustomCameraInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_IMAGE);
                     config.cameraMimeType = PictureMimeType.ofVideo();
                 } else {
                     startOpenCameraVideo();
@@ -1785,11 +2158,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE:
-                // 存储权限
+                // Store Permissions
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     readLocalMedia();
                 } else {
@@ -1797,7 +2171,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
                 break;
             case PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE:
-                // 相机权限
+                // Camera Permissions
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     onTakePhoto();
                 } else {
@@ -1805,7 +2179,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
                 break;
             case PictureConfig.APPLY_CAMERA_STORAGE_PERMISSIONS_CODE:
-                // 拍照前重新获取存储权限
+                // Using the camera, retrieve the storage permission
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startCamera();
                 } else {
@@ -1813,7 +2187,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
                 break;
             case PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE:
-                // 录音权限
+                // Recording Permissions
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startCustomCamera();
                 } else {
@@ -1835,9 +2209,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
         Button btn_commit = dialog.findViewById(R.id.btn_commit);
         btn_commit.setText(getString(R.string.picture_go_setting));
-        TextView tv_title = dialog.findViewById(R.id.tv_title);
+        TextView tvTitle = dialog.findViewById(R.id.tvTitle);
         TextView tv_content = dialog.findViewById(R.id.tv_content);
-        tv_title.setText(getString(R.string.picture_prompt));
+        tvTitle.setText(getString(R.string.picture_prompt));
         tv_content.setText(errorMsg);
         btn_cancel.setOnClickListener(v -> {
             if (!isFinishing()) {
@@ -1855,5 +2229,28 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             isEnterSetting = true;
         });
         dialog.show();
+    }
+
+
+    /**
+     * set Data Null
+     *
+     * @param msg
+     */
+    private void showDataNull(String msg, int topErrorResId) {
+        if (mTvEmpty.getVisibility() == View.GONE || mTvEmpty.getVisibility() == View.INVISIBLE) {
+            mTvEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds(0, topErrorResId, 0, 0);
+            mTvEmpty.setText(msg);
+            mTvEmpty.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * hidden
+     */
+    private void hideDataNull() {
+        if (mTvEmpty.getVisibility() == View.VISIBLE) {
+            mTvEmpty.setVisibility(View.GONE);
+        }
     }
 }

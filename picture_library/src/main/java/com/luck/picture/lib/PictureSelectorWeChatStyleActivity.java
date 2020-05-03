@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author：luck
  * @date：2019-11-30 13:27
- * @describe：PictureSelector 微信风格
+ * @describe：PictureSelector WeChatStyle
  */
 public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity {
     private TextView mPictureSendView;
@@ -49,7 +49,7 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             if (isChooseMode) {
                 lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
             } else {
-                lp.addRule(RelativeLayout.RIGHT_OF, R.id.picture_left_back);
+                lp.addRule(RelativeLayout.RIGHT_OF, R.id.pictureLeftBack);
             }
         }
     }
@@ -125,7 +125,7 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
     }
 
     /**
-     * 隐藏父容器不需要的View
+     * Hide views that are not needed by the parent container
      */
     private void goneParentView() {
         mTvPictureRight.setVisibility(View.GONE);
@@ -134,19 +134,18 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
     }
 
     @Override
-    protected void changeImageNumber(List<LocalMedia> selectImages) {
+    protected void changeImageNumber(List<LocalMedia> selectData) {
         if (mPictureSendView == null) {
             return;
         }
-        int size = selectImages.size();
+        int size = selectData.size();
         boolean enable = size != 0;
         if (enable) {
-            // 可发送
             mPictureSendView.setEnabled(true);
             mPictureSendView.setSelected(true);
             mTvPicturePreview.setEnabled(true);
             mTvPicturePreview.setSelected(true);
-            initCompleteText(selectImages);
+            initCompleteText(selectData);
             if (config.style != null) {
                 if (config.style.pictureCompleteBackgroundStyle != 0) {
                     mPictureSendView.setBackgroundResource(config.style.pictureCompleteBackgroundStyle);
@@ -175,10 +174,8 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
                 mTvPicturePreview.setText(getString(R.string.picture_preview_num, size));
             }
         } else {
-            // 未选择
             mPictureSendView.setEnabled(false);
             mPictureSendView.setSelected(false);
-            // 不可预览
             mTvPicturePreview.setEnabled(false);
             mTvPicturePreview.setSelected(false);
             if (config.style != null) {
@@ -226,7 +223,6 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
                     && folderWindow.isShowing()) {
                 folderWindow.dismiss();
             } else {
-                // 发送 走父类的已完成流程
                 mTvPictureOk.performClick();
             }
         }
@@ -243,7 +239,6 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
         int size = list.size();
         boolean isNotEmptyStyle = config.style != null;
         if (config.isWithVideoImage) {
-            // 混选模式
             if (config.selectionMode == PictureConfig.SINGLE) {
                 if (size <= 0) {
                     mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
@@ -260,15 +255,15 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             } else {
                 boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
                 if (isCompleteReplaceNum && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
-                    mPictureSendView.setText(String.format(config.style.pictureCompleteText, size, config.maxVideoSelectNum + config.maxSelectNum));
+                    mPictureSendView.setText(String.format(config.style.pictureCompleteText, size, config.maxSelectNum));
                 } else {
                     mPictureSendView.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
-                            ? config.style.pictureUnCompleteText : getString(R.string.picture_send_num, size, config.maxVideoSelectNum + config.maxSelectNum));
+                            ? config.style.pictureUnCompleteText : getString(R.string.picture_send_num, size, config.maxSelectNum));
                 }
             }
         } else {
             String mimeType = list.get(0).getMimeType();
-            int maxSize = PictureMimeType.eqVideo(mimeType) && config.maxVideoSelectNum > 0 ? config.maxVideoSelectNum : config.maxSelectNum;
+            int maxSize = PictureMimeType.isHasVideo(mimeType) && config.maxVideoSelectNum > 0 ? config.maxVideoSelectNum : config.maxSelectNum;
             if (config.selectionMode == PictureConfig.SINGLE) {
                 boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
                 if (isCompleteReplaceNum && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
@@ -288,5 +283,4 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             }
         }
     }
-
 }

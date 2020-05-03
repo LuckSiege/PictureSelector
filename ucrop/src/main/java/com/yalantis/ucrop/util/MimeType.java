@@ -23,7 +23,7 @@ public class MimeType {
      */
     public final static String MIME_TYPE_PREFIX_IMAGE = "image";
 
-    public static boolean eqImage(String mimeType) {
+    public static boolean isHasImage(String mimeType) {
         return mimeType != null && mimeType.startsWith(MIME_TYPE_PREFIX_IMAGE);
     }
 
@@ -40,7 +40,7 @@ public class MimeType {
      */
     public final static String MIME_TYPE_PREFIX_VIDEO = "video";
 
-    public static boolean eqVideo(String mimeType) {
+    public static boolean isHasVideo(String mimeType) {
         return mimeType != null && mimeType.startsWith(MIME_TYPE_PREFIX_VIDEO);
     }
 

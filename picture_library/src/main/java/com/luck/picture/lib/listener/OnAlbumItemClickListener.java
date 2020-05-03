@@ -11,11 +11,14 @@ import java.util.List;
  */
 public interface OnAlbumItemClickListener {
     /**
-     * 相册目录item点击事件
+     * Album catalog item click event
      *
+     * @param position
      * @param isCameraFolder
+     * @param bucketId
      * @param folderName
-     * @param images
+     * @param data
      */
-    void onItemClick(boolean isCameraFolder, String folderName, List<LocalMedia> images);
+    void onItemClick(int position, boolean isCameraFolder,
+                     long bucketId, String folderName, List<LocalMedia> data);
 }

@@ -11,7 +11,7 @@ import java.io.File;
 /**
  * @author：luck
  * @date：2017-5-24 17:02
- * @describe：图片列表
+ * @describe：PictureMimeType
  */
 
 public final class PictureMimeType {
@@ -89,7 +89,7 @@ public final class PictureMimeType {
 
 
     /**
-     * 是否是gif
+     * isGif
      *
      * @param mimeType
      * @return
@@ -100,32 +100,42 @@ public final class PictureMimeType {
 
 
     /**
-     * 是否是视频
+     * isVideo
      *
      * @param mimeType
      * @return
      */
-    public static boolean eqVideo(String mimeType) {
+    public static boolean isHasVideo(String mimeType) {
         return mimeType != null && mimeType.startsWith(MIME_TYPE_PREFIX_VIDEO);
     }
 
     /**
-     * 是否是音频
+     * isVideo
+     *
+     * @param url
+     * @return
+     */
+    public static boolean isUrlHasVideo(String url) {
+        return url.endsWith(".mp4");
+    }
+
+    /**
+     * isAudio
      *
      * @param mimeType
      * @return
      */
-    public static boolean eqAudio(String mimeType) {
+    public static boolean isHasAudio(String mimeType) {
         return mimeType != null && mimeType.startsWith(MIME_TYPE_PREFIX_AUDIO);
     }
 
     /**
-     * 是否是图片
+     * isImage
      *
      * @param mimeType
      * @return
      */
-    public static boolean eqImage(String mimeType) {
+    public static boolean isHasImage(String mimeType) {
         return mimeType != null && mimeType.startsWith(MIME_TYPE_PREFIX_IMAGE);
     }
 
@@ -154,7 +164,7 @@ public final class PictureMimeType {
     }
 
     /**
-     * 是否是网络图片
+     * is Network image
      *
      * @param path
      * @return
@@ -170,7 +180,7 @@ public final class PictureMimeType {
     }
 
     /**
-     * 判断文件类型是图片还是视频
+     * Determine whether the file type is an image or a video
      *
      * @param cameraMimeType
      * @return
@@ -187,7 +197,7 @@ public final class PictureMimeType {
     }
 
     /**
-     * 判断文件名是否是图片
+     * Determines if the file name is a picture
      *
      * @param name
      * @return
@@ -200,7 +210,7 @@ public final class PictureMimeType {
     }
 
     /**
-     * 是否是同一类型
+     * Is it the same type
      *
      * @param oldMimeType
      * @param newMimeType
@@ -212,7 +222,7 @@ public final class PictureMimeType {
     }
 
     /**
-     * 获取图片mimeType
+     * Get Image mimeType
      *
      * @param path
      * @return
@@ -253,7 +263,7 @@ public final class PictureMimeType {
     }
 
     /**
-     * 获取图片后缀
+     * Get image suffix
      *
      * @param mineType
      * @return
@@ -274,7 +284,7 @@ public final class PictureMimeType {
 
 
     /**
-     * 是否是content://类型
+     * is content://
      *
      * @param url
      * @return
@@ -287,16 +297,17 @@ public final class PictureMimeType {
     }
 
     /**
-     * 根据不同的类型，返回不同的错误提示
+     * Returns an error message by type
      *
+     * @param context
      * @param mimeType
      * @return
      */
     public static String s(Context context, String mimeType) {
         Context ctx = context.getApplicationContext();
-        if (eqVideo(mimeType)) {
+        if (isHasVideo(mimeType)) {
             return ctx.getString(R.string.picture_video_error);
-        } else if (eqAudio(mimeType)) {
+        } else if (isHasAudio(mimeType)) {
             return ctx.getString(R.string.picture_audio_error);
         } else {
             return ctx.getString(R.string.picture_error);
@@ -309,7 +320,18 @@ public final class PictureMimeType {
 
     public final static String MP4 = ".mp4";
 
+    public final static String JPEG_Q = "image/jpeg";
+
+    public final static String PNG_Q = "image/png";
+
+    public final static String MP4_Q = "video/mp4";
+
+    public final static String AVI_Q = "video/avi";
+
     public final static String DCIM = "DCIM/Camera";
+
+    public final static String CAMERA = "Camera";
+
     public final static String MIME_TYPE_IMAGE = "image/jpeg";
     public final static String MIME_TYPE_VIDEO = "video/mp4";
     public final static String MIME_TYPE_AUDIO = "audio/mpeg";

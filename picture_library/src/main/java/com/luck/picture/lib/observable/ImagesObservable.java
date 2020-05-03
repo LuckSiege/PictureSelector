@@ -11,8 +11,7 @@ import java.util.List;
  * @describe：解决预览时传值过大问题
  */
 public class ImagesObservable {
-    //观察者接口集合
-    private List<LocalMedia> previewList;
+    private List<LocalMedia> data;
     private static ImagesObservable sObserver;
 
     public static ImagesObservable getInstance() {
@@ -29,28 +28,25 @@ public class ImagesObservable {
     /**
      * 存储图片用于预览时用
      *
-     * @param previewList
+     * @param data
      */
-    public void savePreviewMediaData(List<LocalMedia> previewList) {
-        this.previewList = previewList;
+    public void savePreviewMediaData(List<LocalMedia> data) {
+        this.data = data;
     }
 
     /**
      * 读取预览的图片
      */
     public List<LocalMedia> readPreviewMediaData() {
-        if (previewList == null) {
-            previewList = new ArrayList<>();
-        }
-        return previewList;
+        return data == null ? new ArrayList<>() : data;
     }
 
     /**
      * 清空预览的图片
      */
     public void clearPreviewMediaData() {
-        if (previewList != null) {
-            previewList.clear();
+        if (data != null) {
+            data.clear();
         }
     }
 }

@@ -32,7 +32,7 @@ import java.lang.ref.WeakReference;
 /**
  * @author：luck
  * @date：2020-01-04 14:05
- * @describe：自定义拍照和录音
+ * @describe：Custom photos and videos
  */
 public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActivity {
 
@@ -69,10 +69,9 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
             return;
         }
 
-        // 验证相机权限
+        // 验证相机权限和麦克风权限
         if (PermissionChecker
                 .checkSelfPermission(this, Manifest.permission.CAMERA)) {
-            // 验证麦克风权限
             boolean isRecordAudio = PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
             if (isRecordAudio) {
                 createCameraView();
@@ -165,8 +164,9 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
                 config.cameraMimeType = PictureMimeType.ofImage();
                 Intent intent = new Intent();
                 intent.putExtra(PictureConfig.EXTRA_MEDIA_PATH, file.getAbsolutePath());
+                intent.putExtra(PictureConfig.EXTRA_CONFIG, config);
                 if (config.camera) {
-                    requestCamera(intent);
+                    dispatchHandleCamera(intent);
                 } else {
                     setResult(RESULT_OK, intent);
                     onBackPressed();
@@ -178,8 +178,9 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
                 config.cameraMimeType = PictureMimeType.ofVideo();
                 Intent intent = new Intent();
                 intent.putExtra(PictureConfig.EXTRA_MEDIA_PATH, file.getAbsolutePath());
+                intent.putExtra(PictureConfig.EXTRA_CONFIG, config);
                 if (config.camera) {
-                    requestCamera(intent);
+                    dispatchHandleCamera(intent);
                 } else {
                     setResult(RESULT_OK, intent);
                     onBackPressed();
@@ -199,6 +200,9 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
 
     @Override
     public void onBackPressed() {
+        if (config != null && config.camera && PictureSelectionConfig.listener != null) {
+            PictureSelectionConfig.listener.onCancel();
+        }
         closeActivity();
     }
 
@@ -261,9 +265,9 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
         Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
         Button btn_commit = dialog.findViewById(R.id.btn_commit);
         btn_commit.setText(getString(R.string.picture_go_setting));
-        TextView tv_title = dialog.findViewById(R.id.tv_title);
+        TextView tvTitle = dialog.findViewById(R.id.tvTitle);
         TextView tv_content = dialog.findViewById(R.id.tv_content);
-        tv_title.setText(getString(R.string.picture_prompt));
+        tvTitle.setText(getString(R.string.picture_prompt));
         tv_content.setText(errorMsg);
         btn_cancel.setOnClickListener(v -> {
             if (!isFinishing()) {

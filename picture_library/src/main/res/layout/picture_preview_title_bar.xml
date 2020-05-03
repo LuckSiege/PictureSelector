@@ -20,7 +20,7 @@
         android:textSize="18sp" />
 
     <ImageView
-        android:id="@+id/picture_left_back"
+        android:id="@+id/pictureLeftBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/titleViewBg"

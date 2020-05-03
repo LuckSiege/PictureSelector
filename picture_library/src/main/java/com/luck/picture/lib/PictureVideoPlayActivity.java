@@ -89,7 +89,7 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
             closeActivity();
             return;
         }
-        ibLeftBack = findViewById(R.id.picture_left_back);
+        ibLeftBack = findViewById(R.id.pictureLeftBack);
         mVideoView = findViewById(R.id.video_view);
         tvConfirm = findViewById(R.id.tv_confirm);
         mVideoView.setBackgroundColor(Color.BLACK);
@@ -163,7 +163,7 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.picture_left_back) {
+        if (id == R.id.pictureLeftBack) {
             onBackPressed();
         } else if (id == R.id.iv_play) {
             mVideoView.start();

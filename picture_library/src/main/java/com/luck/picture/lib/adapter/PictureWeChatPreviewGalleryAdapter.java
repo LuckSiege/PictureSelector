@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author：luck
  * @date：2019-11-30 20:50
- * @describe：微信风格选择后图片预览
+ * @describe：WeChat style selected after image preview
  */
 public class PictureWeChatPreviewGalleryAdapter
         extends RecyclerView.Adapter<PictureWeChatPreviewGalleryAdapter.ViewHolder> {
@@ -71,7 +71,7 @@ public class PictureWeChatPreviewGalleryAdapter
             if (config != null && PictureSelectionConfig.imageEngine != null) {
                 PictureSelectionConfig.imageEngine.loadImage(holder.itemView.getContext(), item.getPath(), holder.ivImage);
             }
-            holder.ivPlay.setVisibility(PictureMimeType.eqVideo(item.getMimeType()) ? View.VISIBLE : View.GONE);
+            holder.ivPlay.setVisibility(PictureMimeType.isHasVideo(item.getMimeType()) ? View.VISIBLE : View.GONE);
             holder.itemView.setOnClickListener(v -> {
                 if (listener != null && holder.getAdapterPosition() >= 0) {
                     listener.onItemClick(holder.getAdapterPosition(), getItem(position), v);

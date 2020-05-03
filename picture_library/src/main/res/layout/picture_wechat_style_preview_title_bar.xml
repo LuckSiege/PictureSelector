@@ -11,7 +11,7 @@
 
 
     <ImageView
-        android:id="@+id/picture_left_back"
+        android:id="@+id/pictureLeftBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/titleViewBg"
@@ -23,9 +23,9 @@
         android:id="@+id/picture_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/picture_left_back"
-        android:layout_alignBottom="@id/picture_left_back"
-        android:layout_toRightOf="@id/picture_left_back"
+        android:layout_alignTop="@id/pictureLeftBack"
+        android:layout_alignBottom="@id/pictureLeftBack"
+        android:layout_toRightOf="@id/pictureLeftBack"
         android:ellipsize="end"
         android:gravity="center"
         android:maxEms="11"

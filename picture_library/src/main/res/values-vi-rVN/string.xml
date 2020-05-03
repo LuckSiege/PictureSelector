@@ -10,7 +10,7 @@
     <string name="picture_message_video_max_num">Bạn có thể chọn tối đa%1$s video</string>
     <string name="picture_message_audio_max_num">Bạn có thể chọn tối đa%1$sâm thanh</string>
     <string name="picture_preview">Xem trước</string>
-    <string name="picture_please">Xin vui lòng chờ...</string>
+    <string name="picture_please">Xin vui lòng chờ…</string>
     <string name="picture_done_front_num">%1$d/%2$d Hoàn thành</string>
     <string name="picture_completed">Đã hoàn thành</string>
     <string name="picture_done">Hoàn thành</string>
@@ -50,7 +50,7 @@
     <string name="picture_send_num">Hoàn(%1$d/%2$d)</string>
     <string name="picture_preview_num">Xem trước(%1$d)</string>
     <string name="picture_select">Chọn</string>
-    <string name="picture_data_exception">Lấy ngoại lệ dữ liệu album...</string>
+    <string name="picture_data_exception">Lấy ngoại lệ dữ liệu album…</string>
     <string name="picture_recording_time_is_short">Thời gian ghi âm quá ngắn</string>
     <string name="picture_photo_camera">Chụp ảnh đi</string>
     <string name="picture_choose_max_seconds">Bạn chỉ có thể chọn ảnh trong vòng %1$ds nhất</string>
@@ -59,4 +59,6 @@
     <string name="picture_photo_pictures">Ảnh</string>
     <string name="picture_photo_recording">Máy ảnh dài</string>
     <string name="picture_go_setting">Chuẩn bị</string>
+    <string name="picture_know">Được rồi</string>
+    <string name="picture_data_null">không có dữ liệu…</string>
 </resources>

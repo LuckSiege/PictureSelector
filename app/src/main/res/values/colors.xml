@@ -10,6 +10,7 @@
     <color name="app_color_53575e">#53575e</color>
     <color name="app_color_transparent">#00000000</color>
     <color name="app_color_white">#FFFFFF</color>
+    <color name="app_color_white_transparent">#E0DBDBDB</color>
     <color name="app_color_blue">#7D7DFF</color>
     <color name="app_color_9b">#9b9b9b</color>
     <color name="app_color_e0ff6100">#E0FF6100</color>

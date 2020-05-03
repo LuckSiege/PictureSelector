@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * @author：luck
  * @date：2016-12-11 17:02
- * @describe：文件夹目录
+ * @describe：PictureAlbumDirectoryAdapter
  */
 public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAlbumDirectoryAdapter.ViewHolder> {
     private List<LocalMediaFolder> folders = new ArrayList<>();
@@ -35,7 +35,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
     }
 
     public void bindFolderData(List<LocalMediaFolder> folders) {
-        this.folders = folders;
+        this.folders = folders == null ? new ArrayList<>() : folders;
         notifyDataSetChanged();
     }
 
@@ -64,6 +64,9 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         int checkedNum = folder.getCheckedNum();
         holder.tvSign.setVisibility(checkedNum > 0 ? View.VISIBLE : View.INVISIBLE);
         holder.itemView.setSelected(isChecked);
+        if (config.style != null && config.style.pictureAlbumStyle != 0) {
+            holder.itemView.setBackgroundResource(config.style.pictureAlbumStyle);
+        }
         if (chooseMode == PictureMimeType.ofAudio()) {
             holder.ivFirstImage.setImageResource(R.drawable.picture_audio_placeholder);
         } else {
@@ -86,7 +89,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
                 }
                 folder.setChecked(true);
                 notifyDataSetChanged();
-                onAlbumItemClickListener.onItemClick(folder.isCameraFolder(), folder.getName(), folder.getImages());
+                onAlbumItemClickListener.onItemClick(position, folder.isCameraFolder(), folder.getBucketId(), folder.getName(), folder.getData());
             }
         });
     }

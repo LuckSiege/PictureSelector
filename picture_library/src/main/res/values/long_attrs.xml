@@ -16,7 +16,7 @@ limitations under the License.
 -->
 <resources>
 
-    <declare-styleable name="SubsamplingScaleImageView">
+    <declare-styleable name="PictureLongScaleImageView">
         <attr name="src" format="reference"/>
         <attr name="assetName" format="string"/>
         <attr name="panEnabled" format="boolean"/>
