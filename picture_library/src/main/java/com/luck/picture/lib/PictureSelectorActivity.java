@@ -1844,17 +1844,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         && PictureMimeType.isContent(media.getPath())) {
                     if (isCutPathEmpty) {
                         media.setSize(new File(cutPath).length());
-                        media.setCut(true);
                     } else {
                         String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
                         media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
-                        media.setCut(false);
                     }
                     media.setAndroidQToPath(cutPath);
                 } else {
                     media.setSize(isCutPathEmpty ? new File(cutPath).length() : 0);
-                    media.setCut(true);
                 }
+                media.setCut(isCutPathEmpty);
                 result.add(media);
                 handlerResult(result);
             } else {
@@ -1869,17 +1867,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             && PictureMimeType.isContent(media.getPath())) {
                         if (isCutPathEmpty) {
                             media.setSize(new File(cutPath).length());
-                            media.setCut(true);
                         } else {
                             String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
                             media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
-                            media.setCut(false);
                         }
                         media.setAndroidQToPath(cutPath);
                     } else {
                         media.setSize(isCutPathEmpty ? new File(cutPath).length() : 0);
-                        media.setCut(true);
                     }
+                    media.setCut(isCutPathEmpty);
                     result.add(media);
                     handlerResult(result);
                 }
