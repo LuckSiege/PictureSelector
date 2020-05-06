@@ -1840,18 +1840,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 media.setCutPath(cutPath);
                 media.setChooseModel(config.chooseMode);
                 if (TextUtils.isEmpty(cutPath)) {
-                    if (SdkVersionUtils.checkedAndroid_Q()
-                            && PictureMimeType.isContent(media.getPath())) {
-                        String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
-                        media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
-                        media.setAndroidQToPath(cutPath);
-                    } else {
-                        media.setSize(new File(media.getPath()).length());
-                    }
                     media.setCut(false);
                 } else {
                     media.setSize(new File(cutPath).length());
                     media.setCut(true);
+                }
+                if (SdkVersionUtils.checkedAndroid_Q()
+                        && PictureMimeType.isContent(media.getPath())) {
+                    String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
+                    media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
+                    media.setAndroidQToPath(cutPath);
                 }
                 result.add(media);
                 handlerResult(result);
@@ -1862,18 +1860,19 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     config.originalPath = media.getPath();
                     media.setCutPath(cutPath);
                     media.setChooseModel(config.chooseMode);
-                    if (TextUtils.isEmpty(cutPath)) {
-                        if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(media.getPath())) {
-                            String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
-                            media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
-                            media.setAndroidQToPath(cutPath);
-                        } else {
-                            media.setSize(new File(media.getPath()).length());
-                        }
-                    } else {
+                    if (!TextUtils.isEmpty(cutPath)) {
                         media.setSize(new File(cutPath).length());
+                        media.setCut(true);
+                    } else {
+                        media.setCut(false);
                     }
-                    media.setCut(!TextUtils.isEmpty(cutPath));
+                    if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(media.getPath())) {
+                        String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
+                        media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
+                        media.setAndroidQToPath(cutPath);
+                    } else {
+                        media.setSize(new File(media.getPath()).length());
+                    }
                     result.add(media);
                     handlerResult(result);
                 }
