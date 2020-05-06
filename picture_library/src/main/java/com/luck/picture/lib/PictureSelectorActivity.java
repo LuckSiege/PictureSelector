@@ -1839,17 +1839,21 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 config.originalPath = media.getPath();
                 media.setCutPath(cutPath);
                 media.setChooseModel(config.chooseMode);
-                if (TextUtils.isEmpty(cutPath)) {
-                    media.setCut(false);
-                } else {
-                    media.setSize(new File(cutPath).length());
-                    media.setCut(true);
-                }
+                boolean isCutPathEmpty = !TextUtils.isEmpty(cutPath);
                 if (SdkVersionUtils.checkedAndroid_Q()
                         && PictureMimeType.isContent(media.getPath())) {
-                    String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
-                    media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
+                    if (isCutPathEmpty) {
+                        media.setSize(new File(cutPath).length());
+                        media.setCut(true);
+                    } else {
+                        String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
+                        media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
+                        media.setCut(false);
+                    }
                     media.setAndroidQToPath(cutPath);
+                } else {
+                    media.setSize(isCutPathEmpty ? new File(cutPath).length() : 0);
+                    media.setCut(true);
                 }
                 result.add(media);
                 handlerResult(result);
@@ -1860,18 +1864,21 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     config.originalPath = media.getPath();
                     media.setCutPath(cutPath);
                     media.setChooseModel(config.chooseMode);
-                    if (!TextUtils.isEmpty(cutPath)) {
-                        media.setSize(new File(cutPath).length());
-                        media.setCut(true);
-                    } else {
-                        media.setCut(false);
-                    }
-                    if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(media.getPath())) {
-                        String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
-                        media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
+                    boolean isCutPathEmpty = !TextUtils.isEmpty(cutPath);
+                    if (SdkVersionUtils.checkedAndroid_Q()
+                            && PictureMimeType.isContent(media.getPath())) {
+                        if (isCutPathEmpty) {
+                            media.setSize(new File(cutPath).length());
+                            media.setCut(true);
+                        } else {
+                            String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
+                            media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
+                            media.setCut(false);
+                        }
                         media.setAndroidQToPath(cutPath);
                     } else {
-                        media.setSize(new File(media.getPath()).length());
+                        media.setSize(isCutPathEmpty ? new File(cutPath).length() : 0);
+                        media.setCut(true);
                     }
                     result.add(media);
                     handlerResult(result);
