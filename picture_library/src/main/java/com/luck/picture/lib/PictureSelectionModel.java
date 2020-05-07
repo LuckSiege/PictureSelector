@@ -762,7 +762,7 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel isPreviewEggs(boolean previewEggs) {
-        selectionConfig.previewEggs = previewEggs;
+        selectionConfig.previewEggs = !selectionConfig.isWeChatStyle && previewEggs;
         return this;
     }
 
