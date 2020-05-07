@@ -39,6 +39,7 @@ import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.DateUtils;
+import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
@@ -465,6 +466,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      * @param mimeType
      */
     protected void startCrop(String originalPath, String mimeType) {
+        if (DoubleUtils.isFastDoubleClick()) {
+            return;
+        }
         if (TextUtils.isEmpty(originalPath)) {
             ToastUtils.s(this, getString(R.string.picture_not_crop_data));
             return;
@@ -520,6 +524,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     private int index = 0;
 
     protected void startCrop(ArrayList<CutInfo> list) {
+        if (DoubleUtils.isFastDoubleClick()) {
+            return;
+        }
         if (list == null || list.size() == 0) {
             ToastUtils.s(this, getString(R.string.picture_not_crop_data));
             return;
