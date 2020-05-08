@@ -639,14 +639,10 @@ public class PictureFileUtils {
     /**
      * 判断文件是否存在
      *
-     * @param context
      * @param path
      * @return
      */
-    public static boolean isFileExists(Context context, String path) {
-        if (PictureMimeType.isContent(path)) {
-            path = PictureFileUtils.getPath(context, Uri.parse(path));
-        }
+    public static boolean isFileExists(String path) {
         if (!TextUtils.isEmpty(path) && !new File(path).exists()) {
             return false;
         }

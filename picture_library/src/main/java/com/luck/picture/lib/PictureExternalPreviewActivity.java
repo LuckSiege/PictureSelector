@@ -74,7 +74,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     private String downloadPath;
     private String mMimeType;
     private ImageButton ibDelete;
-    private boolean isAndroidQ;
     private View titleViewBg;
 
     @Override
@@ -85,7 +84,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     @Override
     protected void initWidgets() {
         super.initWidgets();
-        isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         titleViewBg = findViewById(R.id.titleViewBg);
         tvTitle = findViewById(R.id.picture_title);
         ibLeftBack = findViewById(R.id.left_back);
@@ -299,7 +297,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                                     });
                         } else {
                             if (eqLongImg) {
-                                displayLongPic(isAndroidQ
+                                displayLongPic(PictureMimeType.isContent(path)
                                         ? Uri.parse(path) : Uri.fromFile(new File(path)), longImageView);
                             } else {
                                 PictureSelectionConfig.imageEngine.loadImage(contentView.getContext(), path, imageView);
@@ -417,7 +415,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 } else {
                     // 有可能本地图片
                     try {
-                        if (isAndroidQ) {
+                        if (PictureMimeType.isContent(downloadPath)) {
                             savePictureAlbumAndroidQ(PictureMimeType.isContent(downloadPath) ? Uri.parse(downloadPath) : Uri.fromFile(new File(downloadPath)));
                         } else {
                             // 把文件插入到系统图库
@@ -450,7 +448,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 : getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         if (rootDir != null && !rootDir.exists() && rootDir.mkdirs()) {
         }
-        File folderDir = new File(isAndroidQ || !state.equals(Environment.MEDIA_MOUNTED)
+        File folderDir = new File(SdkVersionUtils.checkedAndroid_Q() || !state.equals(Environment.MEDIA_MOUNTED)
                 ? rootDir.getAbsolutePath() : rootDir.getAbsolutePath() + File.separator + PictureMimeType.CAMERA + File.separator);
         if (folderDir != null && !folderDir.exists() && folderDir.mkdirs()) {
         }
@@ -553,7 +551,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         InputStream inputStream = null;
         BufferedSource inBuffer = null;
         try {
-            if (isAndroidQ) {
+            if (SdkVersionUtils.checkedAndroid_Q()) {
                 outImageUri = createOutImageUri();
             } else {
                 String suffix = PictureMimeType.getLastImgSuffix(mMimeType);
@@ -586,7 +584,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 }
             }
         } catch (Exception e) {
-            if (outImageUri != null && isAndroidQ) {
+            if (outImageUri != null && SdkVersionUtils.checkedAndroid_Q()) {
                 getContentResolver().delete(outImageUri, null, null);
             }
         } finally {

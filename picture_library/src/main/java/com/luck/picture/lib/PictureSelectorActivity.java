@@ -1845,8 +1845,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     if (isCutPathEmpty) {
                         media.setSize(new File(cutPath).length());
                     } else {
-                        String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
-                        media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
+                        media.setSize(!TextUtils.isEmpty(media.getRealPath()) ? new File(media.getRealPath()).length() : 0);
                     }
                     media.setAndroidQToPath(cutPath);
                 } else {
@@ -1868,8 +1867,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         if (isCutPathEmpty) {
                             media.setSize(new File(cutPath).length());
                         } else {
-                            String path = PictureFileUtils.getPath(this, Uri.parse(media.getPath()));
-                            media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
+                            media.setSize(!TextUtils.isEmpty(media.getRealPath()) ? new File(media.getRealPath()).length() : 0);
                         }
                         media.setAndroidQToPath(cutPath);
                     } else {
@@ -1939,8 +1937,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     media.setSize(new File(c.getCutPath()).length());
                 } else {
                     if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(c.getPath())) {
-                        String path = PictureFileUtils.getPath(this, Uri.parse(c.getPath()));
-                        media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
+                        media.setSize(!TextUtils.isEmpty(c.getRealPath()) ? new File(c.getRealPath()).length() : 0);
                     } else {
                         media.setSize(new File(c.getPath()).length());
                     }
@@ -2056,7 +2053,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             allFolder.setImageNum(isAddSameImp(totalNum) ? allFolder.getImageNum() : allFolder.getImageNum() + 1);
 
             // Camera
-            LocalMediaFolder cameraFolder = getImageFolder(media.getPath(), folderWindow.getFolderData());
+            LocalMediaFolder cameraFolder = getImageFolder(media.getPath(),media.getRealPath(), folderWindow.getFolderData());
             if (cameraFolder != null) {
                 cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
                 if (!isAddSameImp(totalNum)) {
@@ -2089,8 +2086,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * @param imageFolders
      */
     private void updateMediaFolder(List<LocalMediaFolder> imageFolders, LocalMedia media) {
-        File imageFile = new File(PictureMimeType.isContent(media.getPath())
-                ? Objects.requireNonNull(PictureFileUtils.getPath(getContext(), Uri.parse(media.getPath()))) : media.getPath());
+        File imageFile = new File(media.getRealPath());
         File folderFile = imageFile.getParentFile();
         if (folderFile == null) {
             return;

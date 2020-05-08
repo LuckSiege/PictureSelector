@@ -702,9 +702,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 if (config.selectionMode == PictureConfig.SINGLE) {
                     selectData.clear();
                 }
-                if (!TextUtils.isEmpty(image.getRealPath()) && PictureMimeType.isContent(image.getPath())) {
-                    image.setRealPath(PictureFileUtils.getPath(getContext(), Uri.parse(image.getPath())));
-                }
 
                 // 如果宽高为0，重新获取宽高
                 if (image.getWidth() == 0 || image.getHeight() == 0) {

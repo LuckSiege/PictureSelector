@@ -173,10 +173,11 @@ public class LocalMedia implements Parcelable {
         this.size = size;
     }
 
-    public LocalMedia(long id, String path, String fileName, String parentFolderName, long duration, int chooseModel,
+    public LocalMedia(long id, String path, String absolutePath, String fileName, String parentFolderName, long duration, int chooseModel,
                       String mimeType, int width, int height, long size, long bucketId) {
         this.id = id;
         this.path = path;
+        this.realPath = absolutePath;
         this.fileName = fileName;
         this.parentFolderName = parentFolderName;
         this.duration = duration;

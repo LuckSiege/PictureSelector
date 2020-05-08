@@ -212,14 +212,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                         }
                     }
                     // If the original path does not exist or the path does exist but the file does not exist
-                    String newPath = SdkVersionUtils.checkedAndroid_Q()
-                            ? PictureFileUtils.getPath(context, Uri.parse(path)) : path;
+                    String newPath = image.getRealPath();
                     if (!TextUtils.isEmpty(newPath) && !new File(newPath).exists()) {
                         ToastUtils.s(context, PictureMimeType.s(context, mimeType));
                         return;
-                    }
-                    if (SdkVersionUtils.checkedAndroid_Q()) {
-                        image.setRealPath(newPath);
                     }
                     // The width and height of the image are reversed if there is rotation information
                     MediaUtils.setOrientationAsynchronous(context, image, null);
@@ -233,8 +229,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     }
                 }
                 // If the original path does not exist or the path does exist but the file does not exist
-                String newPath = SdkVersionUtils.checkedAndroid_Q()
-                        ? PictureFileUtils.getPath(context, Uri.parse(path)) : path;
+                String newPath = image.getRealPath();
                 if (!TextUtils.isEmpty(newPath) && !new File(newPath).exists()) {
                     ToastUtils.s(context, PictureMimeType.s(context, mimeType));
                     return;
@@ -242,9 +237,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 int index = showCamera ? position - 1 : position;
                 if (index == -1) {
                     return;
-                }
-                if (SdkVersionUtils.checkedAndroid_Q()) {
-                    image.setRealPath(newPath);
                 }
                 // The width and height of the image are reversed if there is rotation information
                 MediaUtils.setOrientationAsynchronous(context, image, null);

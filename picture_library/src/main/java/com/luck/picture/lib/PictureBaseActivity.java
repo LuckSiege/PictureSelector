@@ -729,8 +729,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      * @param imageFolders
      * @return
      */
-    protected LocalMediaFolder getImageFolder(String path, List<LocalMediaFolder> imageFolders) {
-        File imageFile = new File(PictureMimeType.isContent(path) ? Objects.requireNonNull(PictureFileUtils.getPath(getContext(), Uri.parse(path))) : path);
+    protected LocalMediaFolder getImageFolder(String path, String realPath, List<LocalMediaFolder> imageFolders) {
+        File imageFile = new File(PictureMimeType.isContent(path) ? realPath : path);
         File folderFile = imageFile.getParentFile();
         for (LocalMediaFolder folder : imageFolders) {
             if (folderFile != null && folder.getName().equals(folderFile.getName())) {

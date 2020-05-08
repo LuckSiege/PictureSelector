@@ -262,12 +262,13 @@ public final class LocalMediaPageLoader {
                                 long id = data.getLong
                                         (data.getColumnIndexOrThrow(PROJECTION_PAGE[0]));
 
-                                String url = SdkVersionUtils.checkedAndroid_Q() ? getRealPathAndroid_Q(id) : data.getString
+                                String absolutePath = data.getString
                                         (data.getColumnIndexOrThrow(PROJECTION_PAGE[1]));
 
+                                String url = SdkVersionUtils.checkedAndroid_Q() ? getRealPathAndroid_Q(id) : absolutePath;
+
                                 if (config.isFilterInvalidFile) {
-                                    boolean isFileExists = PictureFileUtils.isFileExists(mContext, url);
-                                    if (!isFileExists) {
+                                    if (!PictureFileUtils.isFileExists(absolutePath)) {
                                         continue;
                                     }
                                 }
@@ -279,7 +280,6 @@ public final class LocalMediaPageLoader {
                                 // which makes it impossible to distinguish the specific type, such as mi 8,9,10 and other models
                                 if (mimeType.endsWith("image/*")) {
                                     if (PictureMimeType.isContent(url)) {
-                                        String absolutePath = PictureFileUtils.getPath(mContext, Uri.parse(url));
                                         mimeType = PictureMimeType.getImageMimeType(absolutePath);
                                     } else {
                                         mimeType = PictureMimeType.getImageMimeType(url);
@@ -338,7 +338,7 @@ public final class LocalMediaPageLoader {
                                 }
 
                                 LocalMedia image = new LocalMedia
-                                        (id, url, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size, bucket_id);
+                                        (id, url, absolutePath, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size, bucket_id);
 
                                 result.add(image);
 
