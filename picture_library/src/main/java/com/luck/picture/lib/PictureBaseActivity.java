@@ -864,9 +864,11 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if (mLoadingDialog != null) {
+            mLoadingDialog.dismiss();
+            mLoadingDialog = null;
+        }
         super.onDestroy();
-        dismissDialog();
-        mLoadingDialog = null;
     }
 
 
