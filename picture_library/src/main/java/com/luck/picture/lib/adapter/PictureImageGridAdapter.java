@@ -207,7 +207,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 contentHolder.btnCheck.setOnClickListener(v -> {
                     if (config.isMaxSelectEnabledMask) {
                         if (!contentHolder.tvCheck.isSelected() && getSelectedSize() >= config.maxSelectNum) {
-                            showPromptDialog(context.getString(R.string.picture_message_max_num, config.maxSelectNum));
+                            String msg = StringUtils.getMsg(context, config.chooseMode == PictureMimeType.ofAll() ? null : image.getMimeType(), config.maxSelectNum);
+                            showPromptDialog(msg);
                             return;
                         }
                     }
