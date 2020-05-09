@@ -388,7 +388,9 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     media = adapter.getItem(position);
                     if (media != null) {
                         check.setSelected(isSelected(media));
-                        if (!config.isWeChatStyle) {
+                        if (config.isWeChatStyle) {
+                            onUpdateSelectedChange(media);
+                        } else {
                             if (config.checkNumMode) {
                                 num = media.getNum();
                                 check.setText(ValueOf.toString(num));
@@ -401,7 +403,9 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     media = adapter.getItem(position + 1);
                     if (media != null) {
                         check.setSelected(isSelected(media));
-                        if (!config.isWeChatStyle) {
+                        if (config.isWeChatStyle) {
+                            onUpdateSelectedChange(media);
+                        } else {
                             if (config.checkNumMode) {
                                 num = media.getNum();
                                 check.setText(ValueOf.toString(num));
@@ -765,6 +769,15 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      * @param media
      */
     protected void onSelectedChange(boolean isAddRemove, LocalMedia media) {
+
+    }
+
+    /**
+     * 更新选中或是移除状态
+     *
+     * @param media
+     */
+    protected void onUpdateSelectedChange(LocalMedia media) {
 
     }
 

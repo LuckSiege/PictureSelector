@@ -489,7 +489,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.videoMinSecond(10)// 查询多少秒以内的视频
                         //.videoMaxSecond(15)// 查询多少秒以内的视频
                         //.recordVideoSecond(10)//录制视频秒数 默认60s
-                        .isPreviewEggs(true)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+                        .isPreviewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                         //.cropCompressQuality(90)// 注：已废弃 改用cutOutQuality()
                         .cutOutQuality(90)// 裁剪输出质量 默认100
                         .minimumCompressSize(100)// 小于100kb的图片不压缩

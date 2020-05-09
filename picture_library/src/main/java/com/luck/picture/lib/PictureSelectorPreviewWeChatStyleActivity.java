@@ -45,7 +45,9 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
         if (mTvPictureOk.getVisibility() == View.VISIBLE) {
             mTvPictureOk.setVisibility(View.GONE);
         }
-        check.setText("");
+        if (!TextUtils.isEmpty(check.getText())) {
+            check.setText("");
+        }
     }
 
     @Override
@@ -203,8 +205,12 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
     }
 
     @Override
+    protected void onUpdateSelectedChange(LocalMedia media) {
+        onChangeMediaStatus(media);
+    }
+
+    @Override
     protected void onSelectedChange(boolean isAddRemove, LocalMedia media) {
-        super.onSelectedChange(isAddRemove, media);
         if (isAddRemove) {
             media.setChecked(true);
             if (config.selectionMode == PictureConfig.SINGLE) {
@@ -241,17 +247,29 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
     protected void onPageSelectedChange(LocalMedia media) {
         super.onPageSelectedChange(media);
         goneParent();
+        if (!config.previewEggs) {
+            onChangeMediaStatus(media);
+        }
+    }
+
+    /**
+     * onChangeMediaStatus
+     *
+     * @param media
+     */
+    private void onChangeMediaStatus(LocalMedia media) {
         if (mGalleryAdapter != null) {
             int itemCount = mGalleryAdapter.getItemCount();
-            for (int i = 0; i < itemCount; i++) {
-                LocalMedia item = mGalleryAdapter.getItem(i);
-                if (item == null || TextUtils.isEmpty(item.getPath())) {
-                    continue;
+            if (itemCount > 0) {
+                for (int i = 0; i < itemCount; i++) {
+                    LocalMedia item = mGalleryAdapter.getItem(i);
+                    if (item == null || TextUtils.isEmpty(item.getPath())) {
+                        continue;
+                    }
+                    item.setChecked(item.getPath().equals(media.getPath()) || item.getId() == media.getId());
                 }
-                item.setChecked(item.getPath().equals(media.getPath())
-                        || item.getId() == media.getId());
+                mGalleryAdapter.notifyDataSetChanged();
             }
-            mGalleryAdapter.notifyDataSetChanged();
         }
     }
 
