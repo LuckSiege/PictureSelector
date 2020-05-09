@@ -479,11 +479,15 @@ public class MediaUtils {
      *
      * @param context
      * @param media
+     * @param isAndroidQChangeWH
      * @param listener
      * @return
      */
-    public static void setOrientationAsynchronous(Context context, LocalMedia media,
+    public static void setOrientationAsynchronous(Context context, LocalMedia media, boolean isAndroidQChangeWH,
                                                   OnCallbackListener<LocalMedia> listener) {
+        if (!isAndroidQChangeWH) {
+            return;
+        }
         if (media.getOrientation() != -1) {
             if (listener != null) {
                 listener.onCall(media);
