@@ -61,13 +61,10 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                                 .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
                     if (PictureSelectionConfig.onCustomCameraInterfaceListener != null) {
-                        switch (config.chooseMode) {
-                            case PictureConfig.TYPE_VIDEO:
-                                PictureSelectionConfig.onCustomCameraInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_VIDEO);
-                                break;
-                            default:
-                                PictureSelectionConfig.onCustomCameraInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_IMAGE);
-                                break;
+                        if (config.chooseMode == PictureConfig.TYPE_VIDEO) {
+                            PictureSelectionConfig.onCustomCameraInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_VIDEO);
+                        } else {
+                            PictureSelectionConfig.onCustomCameraInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_IMAGE);
                         }
                     } else {
                         onTakePhoto();
