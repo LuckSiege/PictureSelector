@@ -15,7 +15,6 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.DESUtils;
 import com.luck.picture.lib.tools.DateUtils;
-import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
 
@@ -51,10 +50,12 @@ public class Luban implements Handler.Callback {
     private boolean isAndroidQ;
     private int compressQuality;
     private Handler mHandler;
+    private int dataCount;
 
     private Luban(Builder builder) {
         this.mPaths = builder.mPaths;
         this.mediaList = builder.mediaList;
+        this.dataCount = builder.dataCount;
         this.mTargetDir = builder.mTargetDir;
         this.mNewFileName = builder.mNewFileName;
         this.mRenameListener = builder.mRenameListener;
@@ -284,7 +285,7 @@ public class Luban implements Handler.Callback {
         File outFile = getImageCacheFile(context, path, TextUtils.isEmpty(suffix) ? Checker.SINGLE.extSuffix(path) : suffix);
         String filename = "";
         if (!TextUtils.isEmpty(mNewFileName)) {
-            filename = isCamera ? mNewFileName : StringUtils.rename(mNewFileName);
+            filename = isCamera || dataCount == 1 ? mNewFileName : StringUtils.rename(mNewFileName);
             outFile = getImageCustomFile(context, filename);
         }
         // 如果文件存在直接返回不处理
@@ -373,6 +374,7 @@ public class Luban implements Handler.Callback {
         private List<InputStreamProvider> mStreamProviders;
         private List<String> mPaths;
         private List<LocalMedia> mediaList;
+        private int dataCount;
         private boolean isAndroidQ;
 
         Builder(Context context) {
@@ -401,6 +403,7 @@ public class Luban implements Handler.Callback {
          */
         public <T> Builder loadMediaData(List<LocalMedia> list) {
             this.mediaList = list;
+            this.dataCount = list.size();
             for (LocalMedia src : list) {
                 load(src);
             }
