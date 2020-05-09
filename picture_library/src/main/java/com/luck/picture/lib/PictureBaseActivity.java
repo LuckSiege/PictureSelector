@@ -307,14 +307,18 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      * loading dialog
      */
     protected void showPleaseDialog() {
-        if (!isFinishing()) {
-            if (mLoadingDialog == null) {
-                mLoadingDialog = new PictureLoadingDialog(getContext());
+        try {
+            if (!isFinishing()) {
+                if (mLoadingDialog == null) {
+                    mLoadingDialog = new PictureLoadingDialog(getContext());
+                }
+                if (mLoadingDialog.isShowing()) {
+                    mLoadingDialog.dismiss();
+                }
+                mLoadingDialog.show();
             }
-            if (mLoadingDialog.isShowing()) {
-                mLoadingDialog.dismiss();
-            }
-            mLoadingDialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
