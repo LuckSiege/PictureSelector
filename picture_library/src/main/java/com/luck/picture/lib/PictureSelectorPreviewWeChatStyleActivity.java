@@ -269,7 +269,9 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                     }
                     boolean isOldChecked = item.isChecked();
                     boolean isNewChecked = item.getPath().equals(media.getPath()) || item.getId() == media.getId();
-                    isChangeData = (isOldChecked && !isNewChecked) || (!isOldChecked && isNewChecked);
+                    if (!isChangeData) {
+                        isChangeData = (isOldChecked && !isNewChecked) || (!isOldChecked && isNewChecked);
+                    }
                     item.setChecked(isNewChecked);
                 }
                 if (isChangeData) {
