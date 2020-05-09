@@ -261,14 +261,20 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
         if (mGalleryAdapter != null) {
             int itemCount = mGalleryAdapter.getItemCount();
             if (itemCount > 0) {
+                boolean isChangeData = false;
                 for (int i = 0; i < itemCount; i++) {
                     LocalMedia item = mGalleryAdapter.getItem(i);
                     if (item == null || TextUtils.isEmpty(item.getPath())) {
                         continue;
                     }
-                    item.setChecked(item.getPath().equals(media.getPath()) || item.getId() == media.getId());
+                    boolean isOldChecked = item.isChecked();
+                    boolean isNewChecked = item.getPath().equals(media.getPath()) || item.getId() == media.getId();
+                    isChangeData = (isOldChecked && !isNewChecked) || (!isOldChecked && isNewChecked);
+                    item.setChecked(isNewChecked);
                 }
-                mGalleryAdapter.notifyDataSetChanged();
+                if (isChangeData) {
+                    mGalleryAdapter.notifyDataSetChanged();
+                }
             }
         }
     }
