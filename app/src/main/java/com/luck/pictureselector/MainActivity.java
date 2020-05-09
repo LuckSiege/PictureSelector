@@ -489,7 +489,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.videoMinSecond(10)// 查询多少秒以内的视频
                         //.videoMaxSecond(15)// 查询多少秒以内的视频
                         //.recordVideoSecond(10)//录制视频秒数 默认60s
-                        .isPreviewEggs(false)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+                        .isPreviewEggs(true)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
                         //.cropCompressQuality(90)// 注：已废弃 改用cutOutQuality()
                         .cutOutQuality(90)// 裁剪输出质量 默认100
                         .minimumCompressSize(100)// 小于100kb的图片不压缩
@@ -623,10 +623,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onCameraClick(Context context, PictureSelectionConfig config, int type) {
             // TODO  必须使用context.startActivityForResult(activity.class,PictureConfig.REQUEST_CAMERA);
-
+            // TODO  为防止拍照内存不足导致Activity被回收的情况，最好把config类通过bundle.putParcelable(PictureConfig.EXTRA_CONFIG,config);传入到用户自定义相机页面,拍照成功后在.setResult()带回来
             // TODO 注意:使用自定义相机时，需要设置PictureSelectionConfig ${config.cameraPath#config.cameraMimeType}
             //  1、config.cameraPath (文件输出路径)
             //  2、config.cameraMimeType (PictureMimeType.ofImage() or ofVideo)
+
             switch (type) {
                 case PictureConfig.TYPE_IMAGE:
                     // 拍照

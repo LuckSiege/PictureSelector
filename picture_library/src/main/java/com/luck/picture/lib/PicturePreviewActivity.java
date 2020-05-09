@@ -167,11 +167,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (getContext() instanceof PictureSelectorPreviewWeChatStyleActivity) {
-                    //  不做处理
-                } else {
-                    isPreviewEggs(config.previewEggs, position, positionOffsetPixels);
-                }
+                isPreviewEggs(config.previewEggs, position, positionOffsetPixels);
             }
 
             @Override
@@ -392,22 +388,26 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     media = adapter.getItem(position);
                     if (media != null) {
                         check.setSelected(isSelected(media));
-                        if (config.checkNumMode) {
-                            num = media.getNum();
-                            check.setText(ValueOf.toString(num));
-                            notifyCheckChanged(media);
-                            onImageChecked(position);
+                        if (!config.isWeChatStyle) {
+                            if (config.checkNumMode) {
+                                num = media.getNum();
+                                check.setText(ValueOf.toString(num));
+                                notifyCheckChanged(media);
+                                onImageChecked(position);
+                            }
                         }
                     }
                 } else {
                     media = adapter.getItem(position + 1);
                     if (media != null) {
                         check.setSelected(isSelected(media));
-                        if (config.checkNumMode) {
-                            num = media.getNum();
-                            check.setText(ValueOf.toString(num));
-                            notifyCheckChanged(media);
-                            onImageChecked(position + 1);
+                        if (!config.isWeChatStyle) {
+                            if (config.checkNumMode) {
+                                num = media.getNum();
+                                check.setText(ValueOf.toString(num));
+                                notifyCheckChanged(media);
+                                onImageChecked(position + 1);
+                            }
                         }
                     }
                 }
