@@ -21,7 +21,6 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.photoview.PhotoView;
 import com.luck.picture.lib.tools.JumpUtils;
 import com.luck.picture.lib.tools.MediaUtils;
-import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.widget.longimage.ImageSource;
 import com.luck.picture.lib.widget.longimage.ImageViewState;
 import com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView;
@@ -194,7 +193,7 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
             } else {
                 if (config != null && PictureSelectionConfig.imageEngine != null) {
                     if (eqLongImg) {
-                        displayLongPic(SdkVersionUtils.checkedAndroid_Q()
+                        displayLongPic(PictureMimeType.isContent(path)
                                 ? Uri.parse(path) : Uri.fromFile(new File(path)), longImg);
                     } else {
                         PictureSelectionConfig.imageEngine.loadImage
