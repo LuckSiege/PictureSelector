@@ -5,7 +5,7 @@
  
    [我的博客地址](http://blog.csdn.net/luck_mw)   
   
-   [体验Demo](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2020_04_24_1730_2.5.3.apk)<br>
+   [体验Demo](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2020_05_10_2330_2.5.4.apk)<br>
   
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
