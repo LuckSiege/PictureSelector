@@ -533,9 +533,13 @@ public class MediaUtils {
      *
      * @param context
      * @param media
+     * @param isAndroidQChangeWH
      * @return
      */
-    public static void setOrientationSynchronous(Context context, LocalMedia media) {
+    public static void setOrientationSynchronous(Context context, LocalMedia media, boolean isAndroidQChangeWH) {
+        if (!isAndroidQChangeWH) {
+            return;
+        }
         // 如果有旋转信息图片宽高则是相反
         int orientation = 0;
         if (PictureMimeType.isHasImage(media.getMimeType())) {

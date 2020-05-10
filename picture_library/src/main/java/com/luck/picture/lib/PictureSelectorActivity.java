@@ -1619,7 +1619,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
                     media.setBucketId(bucketId);
                     // The width and height of the image are reversed if there is rotation information
-                    MediaUtils.setOrientationSynchronous(getContext(), media);
+                    MediaUtils.setOrientationSynchronous(getContext(), media, config.isAndroidQChangeWH);
                 }
                 return media;
             }
@@ -2052,7 +2052,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             allFolder.setImageNum(isAddSameImp(totalNum) ? allFolder.getImageNum() : allFolder.getImageNum() + 1);
 
             // Camera
-            LocalMediaFolder cameraFolder = getImageFolder(media.getPath(),media.getRealPath(), folderWindow.getFolderData());
+            LocalMediaFolder cameraFolder = getImageFolder(media.getPath(), media.getRealPath(), folderWindow.getFolderData());
             if (cameraFolder != null) {
                 cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
                 if (!isAddSameImp(totalNum)) {
