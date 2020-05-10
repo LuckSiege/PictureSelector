@@ -1619,7 +1619,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
                     media.setBucketId(bucketId);
                     // The width and height of the image are reversed if there is rotation information
-                    MediaUtils.setOrientationSynchronous(getContext(), media, config.isAndroidQChangeWH);
+                    MediaUtils.setOrientationSynchronous(getContext(), media, config.isAndroidQChangeWH,config.isAndroidQChangeVideoWH);
                 }
                 return media;
             }

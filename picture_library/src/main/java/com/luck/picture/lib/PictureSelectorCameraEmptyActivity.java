@@ -224,7 +224,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         media.setWidth(width);
         media.setHeight(height);
         // The width and height of the image are reversed if there is rotation information
-        MediaUtils.setOrientationAsynchronous(getContext(), media, config.isAndroidQChangeWH,
+        MediaUtils.setOrientationAsynchronous(getContext(), media, config.isAndroidQChangeWH, config.isAndroidQChangeVideoWH,
                 item -> {
                     medias.add(item);
                     handlerResult(medias);
@@ -301,7 +301,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
                     media.setBucketId(bucketId);
                     // The width and height of the image are reversed if there is rotation information
-                    MediaUtils.setOrientationSynchronous(getContext(), media, config.isAndroidQChangeWH);
+                    MediaUtils.setOrientationSynchronous(getContext(), media, config.isAndroidQChangeWH, config.isAndroidQChangeVideoWH);
                 }
                 return media;
             }

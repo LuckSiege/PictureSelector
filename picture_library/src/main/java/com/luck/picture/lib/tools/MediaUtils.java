@@ -483,11 +483,22 @@ public class MediaUtils {
      * @param listener
      * @return
      */
-    public static void setOrientationAsynchronous(Context context, LocalMedia media, boolean isAndroidQChangeWH,
+    public static void setOrientationAsynchronous(Context context, LocalMedia media,
+                                                  boolean isAndroidQChangeWH,
+                                                  boolean isAndroidQChangeVideoWH,
                                                   OnCallbackListener<LocalMedia> listener) {
-        if (!isAndroidQChangeWH) {
-            return;
+        if (PictureMimeType.isHasImage(media.getMimeType())) {
+            if (!isAndroidQChangeWH) {
+                return;
+            }
         }
+
+        if (PictureMimeType.isHasVideo(media.getMimeType())) {
+            if (!isAndroidQChangeVideoWH) {
+                return;
+            }
+        }
+
         if (media.getOrientation() != -1) {
             if (listener != null) {
                 listener.onCall(media);
@@ -536,9 +547,18 @@ public class MediaUtils {
      * @param isAndroidQChangeWH
      * @return
      */
-    public static void setOrientationSynchronous(Context context, LocalMedia media, boolean isAndroidQChangeWH) {
-        if (!isAndroidQChangeWH) {
-            return;
+    public static void setOrientationSynchronous(Context context, LocalMedia media,
+                                                 boolean isAndroidQChangeWH,
+                                                 boolean isAndroidQChangeVideoWH) {
+        if (PictureMimeType.isHasImage(media.getMimeType())) {
+            if (!isAndroidQChangeWH) {
+                return;
+            }
+        }
+        if (PictureMimeType.isHasVideo(media.getMimeType())) {
+            if (!isAndroidQChangeVideoWH) {
+                return;
+            }
         }
         // 如果有旋转信息图片宽高则是相反
         int orientation = 0;
