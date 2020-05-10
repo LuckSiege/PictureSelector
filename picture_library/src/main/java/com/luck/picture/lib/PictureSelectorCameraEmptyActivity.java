@@ -224,7 +224,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         media.setWidth(width);
         media.setHeight(height);
         // The width and height of the image are reversed if there is rotation information
-        MediaUtils.setOrientationAsynchronous(getContext(), media,config.isAndroidQChangeWH,
+        MediaUtils.setOrientationAsynchronous(getContext(), media, config.isAndroidQChangeWH,
                 item -> {
                     medias.add(item);
                     handlerResult(medias);
@@ -243,7 +243,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             return;
         }
         showPleaseDialog();
-        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<LocalMedia>() {
+        PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<LocalMedia>() {
 
             @Override
             public LocalMedia doInBackground() {

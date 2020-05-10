@@ -1561,7 +1561,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             return;
         }
         showPleaseDialog();
-        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<LocalMedia>() {
+        PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<LocalMedia>() {
 
             @Override
             public LocalMedia doInBackground() {
