@@ -243,7 +243,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             return;
         }
         showPleaseDialog();
-        PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<LocalMedia>() {
+        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<LocalMedia>() {
 
             @Override
             public LocalMedia doInBackground() {
@@ -301,7 +301,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
                     media.setBucketId(bucketId);
                     // The width and height of the image are reversed if there is rotation information
-                    MediaUtils.setOrientationSynchronous(getContext(), media,config.isAndroidQChangeWH);
+                    MediaUtils.setOrientationSynchronous(getContext(), media, config.isAndroidQChangeWH);
                 }
                 return media;
             }

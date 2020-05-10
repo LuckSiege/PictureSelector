@@ -310,12 +310,12 @@ public class MediaUtils {
         try {
             //selection: 指定查询条件
             String absolutePath = PictureFileUtils.getDCIMCameraPath();
-            String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
+            String orderBy = MediaStore.Files.FileColumns._ID + " DESC limit 1 offset 0";
             String selection = MediaStore.Images.Media.DATA + " like ?";
             //定义selectionArgs：
             String[] selectionArgs = {absolutePath + "%"};
             data = context.getApplicationContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null,
-                    selection, selectionArgs, ORDER_BY);
+                    selection, selectionArgs, orderBy);
             if (data != null && data.getCount() > 0 && data.moveToFirst()) {
                 int id = data.getInt(data.getColumnIndex(MediaStore.Images.Media._ID));
                 long date = data.getLong(data.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
@@ -345,12 +345,12 @@ public class MediaUtils {
         try {
             String absolutePath = PictureFileUtils.getDCIMCameraPath();
             //selection: 指定查询条件
-            String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
             String selection = MediaStore.Files.FileColumns.DATA + " like ?";
             //定义selectionArgs：
             String[] selectionArgs = {absolutePath + "%"};
+            String orderBy = MediaStore.Files.FileColumns._ID + " DESC limit 1 offset 0";
             data = context.getApplicationContext().getContentResolver().query(MediaStore.Files.getContentUri("external"), null,
-                    selection, selectionArgs, ORDER_BY);
+                    selection, selectionArgs, orderBy);
             if (data != null && data.getCount() > 0 && data.moveToFirst()) {
                 return data.getLong(data.getColumnIndex("bucket_id"));
             }
