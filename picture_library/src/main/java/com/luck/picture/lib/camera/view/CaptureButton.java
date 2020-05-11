@@ -15,6 +15,7 @@ import android.view.View;
 import com.luck.picture.lib.camera.CustomCameraView;
 import com.luck.picture.lib.camera.CheckPermission;
 import com.luck.picture.lib.camera.listener.CaptureListener;
+import com.luck.picture.lib.tools.DoubleUtils;
 
 
 /**
@@ -270,6 +271,9 @@ public class CaptureButton extends View {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
+                if (DoubleUtils.isFastDoubleClick()) {
+                    return;
+                }
                 //设置为录制状态
                 if (state == STATE_LONG_PRESS) {
                     if (captureLisenter != null)

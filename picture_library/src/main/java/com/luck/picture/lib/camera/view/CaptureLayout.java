@@ -19,6 +19,7 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.camera.listener.CaptureListener;
 import com.luck.picture.lib.camera.listener.ClickListener;
 import com.luck.picture.lib.camera.listener.TypeListener;
+import com.luck.picture.lib.tools.DoubleUtils;
 
 import static com.luck.picture.lib.camera.CustomCameraView.BUTTON_STATE_ONLY_CAPTURE;
 import static com.luck.picture.lib.camera.CustomCameraView.BUTTON_STATE_ONLY_RECORDER;

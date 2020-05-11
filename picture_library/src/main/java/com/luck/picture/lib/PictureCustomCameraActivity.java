@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
@@ -24,7 +25,6 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.permissions.PermissionChecker;
-import com.luck.picture.lib.tools.ToastUtils;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -35,7 +35,7 @@ import java.lang.ref.WeakReference;
  * @describe：Custom photos and videos
  */
 public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActivity {
-
+    private final static String TAG = PictureCustomCameraActivity.class.getSimpleName();
 
     private CustomCameraView mCameraView;
     protected boolean isEnterSetting;
@@ -189,8 +189,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
 
             @Override
             public void onError(int videoCaptureError, @NonNull String message, @Nullable Throwable cause) {
-                ToastUtils.s(getContext(), message);
-                onBackPressed();
+                Log.i(TAG, "onError: " + message);
             }
         });
 
