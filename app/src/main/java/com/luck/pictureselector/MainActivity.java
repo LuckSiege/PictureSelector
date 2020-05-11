@@ -49,6 +49,7 @@ import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
+import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
 import com.luck.pictureselector.adapter.GridImageAdapter;
@@ -445,6 +446,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 关闭在AndroidQ下获取图片或视频宽高相反自动转换
                         .imageSpanCount(4)// 每行显示个数
                         .isReturnEmpty(false)// 未选择数据时点击按钮是否可以返回
+                        .closeAndroidQChangeWH(true)//如果图片有旋转角度则对换宽高,默认为true
+                        .closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 如果视频有旋转角度则对换宽高,默认为false
                         //.isAndroidQTransform(false)// 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && .isEnableCrop(false);有效,默认处理
                         .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)// 设置相册Activity方向，不设置默认使用系统
                         .isOriginalImageControl(cb_original.isChecked())// 是否显示原图控制按钮，如果设置为true则用户可以自由选择是否使用原图，压缩、裁剪功能将会失效
@@ -515,6 +518,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.setOutputCameraPath()// 自定义相机输出目录，只针对Android Q以下，例如 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) +  File.separator + "Camera" + File.separator;
                         .minSelectNum(1)// 最小选择数量
                         //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
+                        .closeAndroidQChangeWH(true)//如果图片有旋转角度则对换宽高，默认为true
+                        .closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 如果视频有旋转角度则对换宽高，默认false
                         .selectionMode(cb_choose_mode.isChecked() ?
                                 PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
                         //.cameraFileName(System.currentTimeMillis() + ".jpg")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用
