@@ -276,6 +276,7 @@ public final class LocalMediaPageLoader {
                                         (data.getColumnIndexOrThrow(PROJECTION_PAGE[2]));
 
                                 mimeType = TextUtils.isEmpty(mimeType) ? PictureMimeType.ofJPEG() : mimeType;
+                                Log.i("MMM", "mimeType: " + mimeType);
                                 // Here, it is solved that some models obtain mimeType and return the format of image / *,
                                 // which makes it impossible to distinguish the specific type, such as mi 8,9,10 and other models
                                 if (mimeType.endsWith("image/*")) {
@@ -504,6 +505,7 @@ public final class LocalMediaPageLoader {
 
     private String getPageSelection(long bucketId) {
         String durationCondition = getDurationCondition(0, 0);
+        boolean isSpecifiedFormat = !TextUtils.isEmpty(config.specifiedFormat);
         switch (config.chooseMode) {
             case PictureConfig.TYPE_ALL:
                 if (bucketId == -1) {
@@ -518,14 +520,24 @@ public final class LocalMediaPageLoader {
                         + " OR " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + durationCondition + ") AND " + COLUMN_BUCKET_ID + "=? AND " + MediaStore.MediaColumns.SIZE + ">0";
 
             case PictureConfig.TYPE_IMAGE:
+                // Gets the image of the specified type
                 if (bucketId == -1) {
                     // ofAll
+                    if (isSpecifiedFormat) {
+                        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
+                                + (config.isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF + " AND " + MediaStore.MediaColumns.MIME_TYPE + "='" + config.specifiedFormat + "'")
+                                + ") AND " + MediaStore.MediaColumns.SIZE + ">0";
+                    }
                     return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
                             + (config.isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF)
                             + ") AND " + MediaStore.MediaColumns.SIZE + ">0";
-
                 }
                 // Gets the specified album directory
+                if (isSpecifiedFormat) {
+                    return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
+                            + (config.isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF + " AND " + MediaStore.MediaColumns.MIME_TYPE + "='" + config.specifiedFormat + "'")
+                            + ") AND " + COLUMN_BUCKET_ID + "=? AND " + MediaStore.MediaColumns.SIZE + ">0";
+                }
                 return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
                         + (config.isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF)
                         + ") AND " + COLUMN_BUCKET_ID + "=? AND " + MediaStore.MediaColumns.SIZE + ">0";
@@ -533,9 +545,15 @@ public final class LocalMediaPageLoader {
             case PictureConfig.TYPE_AUDIO:
                 if (bucketId == -1) {
                     // ofAll
+                    if (isSpecifiedFormat) {
+                        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + MediaStore.MediaColumns.MIME_TYPE + "='" + config.specifiedFormat + "'" + " AND " + durationCondition + ") AND " + MediaStore.MediaColumns.SIZE + ">0";
+                    }
                     return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + durationCondition + ") AND " + MediaStore.MediaColumns.SIZE + ">0";
                 }
                 // Gets the specified album directory
+                if (isSpecifiedFormat) {
+                    return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + MediaStore.MediaColumns.MIME_TYPE + "='" + config.specifiedFormat + "'" + " AND " + durationCondition + ") AND " + COLUMN_BUCKET_ID + "=? AND " + MediaStore.MediaColumns.SIZE + ">0";
+                }
                 return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + durationCondition + ") AND " + COLUMN_BUCKET_ID + "=? AND " + MediaStore.MediaColumns.SIZE + ">0";
         }
         return null;
