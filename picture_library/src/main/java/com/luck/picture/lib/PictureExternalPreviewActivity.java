@@ -400,7 +400,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 boolean isHttp = PictureMimeType.isHttp(downloadPath);
                 showPleaseDialog();
                 if (isHttp) {
-                    PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<String>() {
+                    PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<String>() {
                         @Override
                         public String doInBackground() {
                             return showLoadingImage(downloadPath);
@@ -408,7 +408,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
                         @Override
                         public void onSuccess(String result) {
-                            PictureThreadUtils.cancel(PictureThreadUtils.getCachedPool());
                             onSuccessful(result);
                         }
                     });
@@ -498,7 +497,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             ToastUtils.s(getContext(), getString(R.string.picture_save_error));
             return;
         }
-        PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<String>() {
+        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<String>() {
 
             @Override
             public String doInBackground() {
@@ -522,7 +521,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
             @Override
             public void onSuccess(String result) {
-                PictureThreadUtils.cancel(PictureThreadUtils.getCachedPool());
+                PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
                 onSuccessful(result);
             }
         });

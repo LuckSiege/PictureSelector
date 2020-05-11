@@ -155,7 +155,7 @@ public class CustomCameraView extends RelativeLayout {
                                     return;
                                 }
                                 if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(mConfig.cameraPath)) {
-                                    PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Boolean>() {
+                                    PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<Boolean>() {
 
                                         @Override
                                         public Boolean doInBackground() {
@@ -165,7 +165,7 @@ public class CustomCameraView extends RelativeLayout {
 
                                         @Override
                                         public void onSuccess(Boolean result) {
-                                            PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
+                                            PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
                                         }
                                     });
                                 }
@@ -281,7 +281,7 @@ public class CustomCameraView extends RelativeLayout {
         public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
             if (mConfigReference.get() != null) {
                 if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(mConfigReference.get().cameraPath)) {
-                    PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Boolean>() {
+                    PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<Boolean>() {
 
                         @Override
                         public Boolean doInBackground() {
@@ -291,7 +291,7 @@ public class CustomCameraView extends RelativeLayout {
 
                         @Override
                         public void onSuccess(Boolean result) {
-                            PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
+                            PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
                         }
                     });
                 }

@@ -482,7 +482,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         }
                     });
         } else {
-            PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
+            PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
 
                 @Override
                 public List<LocalMediaFolder> doInBackground() {
@@ -558,7 +558,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     private void synchronousCover() {
         if (config.chooseMode == PictureMimeType.ofAll()) {
-            PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Boolean>() {
+            PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<Boolean>() {
 
                 @Override
                 public Boolean doInBackground() {
@@ -1561,7 +1561,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             return;
         }
         showPleaseDialog();
-        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<LocalMedia>() {
+        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<LocalMedia>() {
 
             @Override
             public LocalMedia doInBackground() {

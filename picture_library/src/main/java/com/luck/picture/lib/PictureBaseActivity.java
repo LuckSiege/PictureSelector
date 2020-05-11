@@ -347,7 +347,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         showPleaseDialog();
         if (PictureSelectionConfig.cacheResourcesEngine != null) {
             // 在Android 10上通过图片加载引擎的缓存来获得沙盒内的图片
-            PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<List<LocalMedia>>() {
+            PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<LocalMedia>>() {
 
                 @Override
                 public List<LocalMedia> doInBackground() {
@@ -382,7 +382,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      */
     private void compressToLuban(List<LocalMedia> result) {
         if (config.synOrAsy) {
-            PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<List<File>>() {
+            PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<File>>() {
 
                 @Override
                 public List<File> doInBackground() throws Exception {
@@ -479,7 +479,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         }
         UCrop.Options options = basicOptions();
         if (PictureSelectionConfig.cacheResourcesEngine != null) {
-            PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<String>() {
+            PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<String>() {
                 @Override
                 public String doInBackground() {
                     return PictureSelectionConfig.cacheResourcesEngine.onCachePath(getContext(), originalPath);
@@ -553,7 +553,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         }
 
         if (PictureSelectionConfig.cacheResourcesEngine != null) {
-            PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<List<CutInfo>>() {
+            PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<CutInfo>>() {
 
                 @Override
                 public List<CutInfo> doInBackground() {
@@ -789,7 +789,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      * @param images
      */
     private void onResultToAndroidAsy(List<LocalMedia> images) {
-        PictureThreadUtils.executeByCached(new PictureThreadUtils.SimpleTask<List<LocalMedia>>() {
+        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<LocalMedia>>() {
             @Override
             public List<LocalMedia> doInBackground() {
                 int size = images.size();
@@ -1021,8 +1021,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (config != null) {
             PictureSelectionConfig.destroy();
             LocalMediaPageLoader.setInstanceNull();
-            PictureThreadUtils.cancel(PictureThreadUtils.getCachedPool());
-            PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
+            PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         }
     }
 
