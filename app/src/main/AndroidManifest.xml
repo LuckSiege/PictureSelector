@@ -31,7 +31,7 @@
 
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".PhotoFragmentActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
