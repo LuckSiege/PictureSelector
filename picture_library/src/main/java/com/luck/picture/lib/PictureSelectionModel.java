@@ -297,8 +297,18 @@ public class PictureSelectionModel {
      * @param circleDimmedColor setCircleDimmedColor
      * @return
      */
+    @Deprecated
     public PictureSelectionModel setCircleDimmedColor(int circleDimmedColor) {
         selectionConfig.circleDimmedColor = circleDimmedColor;
+        return this;
+    }
+
+    /**
+     * @param dimmedColor
+     * @return
+     */
+    public PictureSelectionModel setCropDimmedColor(int dimmedColor) {
+        selectionConfig.circleDimmedColor = dimmedColor;
         return this;
     }
 

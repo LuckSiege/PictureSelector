@@ -502,7 +502,9 @@ public class UCrop {
          * @param color - desired color of dimmed area around the crop bounds
          */
         public void setDimmedLayerColor(@ColorInt int color) {
-            mOptionBundle.putInt(EXTRA_DIMMED_LAYER_COLOR, color);
+            if (color != 0) {
+                mOptionBundle.putInt(EXTRA_DIMMED_LAYER_COLOR, color);
+            }
         }
 
 
@@ -542,7 +544,9 @@ public class UCrop {
          * @param color - desired color of crop frame
          */
         public void setCropFrameColor(@ColorInt int color) {
-            mOptionBundle.putInt(EXTRA_CROP_FRAME_COLOR, color);
+            if (color != 0) {
+                mOptionBundle.putInt(EXTRA_CROP_FRAME_COLOR, color);
+            }
         }
 
         /**
@@ -594,7 +598,9 @@ public class UCrop {
          * @param color - desired color of crop grid/guidelines
          */
         public void setCropGridColor(@ColorInt int color) {
-            mOptionBundle.putInt(EXTRA_CROP_GRID_COLOR, color);
+            if (color != 0) {
+                mOptionBundle.putInt(EXTRA_CROP_GRID_COLOR, color);
+            }
         }
 
         /**
@@ -608,7 +614,9 @@ public class UCrop {
          * @param color - desired resolved color of the toolbar
          */
         public void setToolbarColor(@ColorInt int color) {
-            mOptionBundle.putInt(EXTRA_TOOL_BAR_COLOR, color);
+            if (color != 0) {
+                mOptionBundle.putInt(EXTRA_TOOL_BAR_COLOR, color);
+            }
         }
 
 
@@ -623,28 +631,36 @@ public class UCrop {
          * @param color - desired resolved color of the statusbar
          */
         public void setStatusBarColor(@ColorInt int color) {
-            mOptionBundle.putInt(EXTRA_STATUS_BAR_COLOR, color);
+            if (color != 0) {
+                mOptionBundle.putInt(EXTRA_STATUS_BAR_COLOR, color);
+            }
         }
 
         /**
          * @param color - desired resolved color of the progress wheel middle line (default is violet)
          */
         public void setActiveWidgetColor(@ColorInt int color) {
-            mOptionBundle.putInt(EXTRA_UCROP_COLOR_WIDGET_ACTIVE, color);
+            if (color != 0) {
+                mOptionBundle.putInt(EXTRA_UCROP_COLOR_WIDGET_ACTIVE, color);
+            }
         }
 
         /**
          * @param color - desired resolved color of the active and selected widget (default is white)
          */
         public void setActiveControlsWidgetColor(@ColorInt int color) {
-            mOptionBundle.putInt(EXTRA_UCROP_COLOR_CONTROLS_WIDGET_ACTIVE, color);
+            if (color != 0) {
+                mOptionBundle.putInt(EXTRA_UCROP_COLOR_CONTROLS_WIDGET_ACTIVE, color);
+            }
         }
 
         /**
          * @param color - desired resolved color of Toolbar text and buttons (default is darker orange)
          */
         public void setToolbarWidgetColor(@ColorInt int color) {
-            mOptionBundle.putInt(EXTRA_UCROP_WIDGET_COLOR_TOOLBAR, color);
+            if (color != 0) {
+                mOptionBundle.putInt(EXTRA_UCROP_WIDGET_COLOR_TOOLBAR, color);
+            }
         }
 
         /**
@@ -672,7 +688,9 @@ public class UCrop {
          * @param color - desired resolved color of logo fill (default is darker grey)
          */
         public void setLogoColor(@ColorInt int color) {
-            mOptionBundle.putInt(EXTRA_UCROP_LOGO_COLOR, color);
+            if (color != 0) {
+                mOptionBundle.putInt(EXTRA_UCROP_LOGO_COLOR, color);
+            }
         }
 
         /**
