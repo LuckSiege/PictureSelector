@@ -119,7 +119,9 @@ PictureSelector.create(this)
 ```
 
 ## CustomCamera
-If you need to use a custom camera you need to set up```.isUseCustomCamera(true);``` Application implementing interface
+If you need to use a custom camera you need to set up
+```.isUseCustomCamera(true);``` 
+Application implementing interface
 ```sh
  public class App extends Application implements CameraXConfig.Provider {
     private static final String TAG = App.class.getSimpleName();
