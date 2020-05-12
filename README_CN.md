@@ -128,7 +128,11 @@ PictureSelector.create(this)
 ```
 
 ## 自定义相机
-如果需要使用自定义相机需要设置```.isUseCustomCamera(true);```并在项目Application下实现如下接口
+如果需要使用自定义相机需要设置
+```
+.isUseCustomCamera(true);
+```
+并在项目Application下实现如下接口
 ```sh
  public class App extends Application implements CameraXConfig.Provider {
     private static final String TAG = App.class.getSimpleName();
