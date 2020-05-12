@@ -26,9 +26,9 @@
 -[Api说明](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)<br>
 -[启动相册](#启动相册)<br>
 -[单独拍照](#单独拍照)<br>
+-[自定义相机](#自定义相机)<br>
 -[结果回调](https://github.com/LuckSiege/PictureSelector/wiki/%E7%BB%93%E6%9E%9C%E5%9B%9E%E8%B0%83)<br>
 -[常见错误](https://github.com/LuckSiege/PictureSelector/wiki/%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
--[自定义相机](#自定义相机)<br>
 -[缓存清除](#缓存清除)<br>
 -[混淆配置](#混淆配置)<br>
 -[License](#License)<br>
