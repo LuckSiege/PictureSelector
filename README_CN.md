@@ -28,6 +28,7 @@
 -[单独拍照](#单独拍照)<br>
 -[结果回调](https://github.com/LuckSiege/PictureSelector/wiki/%E7%BB%93%E6%9E%9C%E5%9B%9E%E8%B0%83)<br>
 -[常见错误](https://github.com/LuckSiege/PictureSelector/wiki/%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
+-[自定义相机](#自定义相机)<br>
 -[缓存清除](#缓存清除)<br>
 -[混淆配置](#混淆配置)<br>
 -[License](#License)<br>
@@ -127,7 +128,7 @@ PictureSelector.create(this)
 ```
 
 ## 自定义相机
-如果需要使用自定义相机需要开启```sh.isUseCustomCamera(true);```并在项目Application下实现如下接口
+如果需要使用自定义相机需要设置```.isUseCustomCamera(true);```并在项目Application下实现如下接口
 ```sh
  public class App extends Application implements CameraXConfig.Provider {
     private static final String TAG = App.class.getSimpleName();
