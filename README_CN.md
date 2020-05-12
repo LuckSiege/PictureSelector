@@ -132,7 +132,7 @@ PictureSelector.create(this)
 ```
 .isUseCustomCamera(true);
 ```
-并在项目Application下实现如下接口
+Application下实现如下接口
 ```sh
  public class App extends Application implements CameraXConfig.Provider {
     private static final String TAG = App.class.getSimpleName();
