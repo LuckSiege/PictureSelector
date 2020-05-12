@@ -21,6 +21,7 @@
 -[Api Explain](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api)<br>
 -[Open Photo Album](#Photo)<br>
 -[Open Camera](#Camera)<br>
+-[Custom Camera](#CustomCamera)<br>
 -[Results Callback](https://github.com/LuckSiege/PictureSelector/wiki/Result-Callback)<br>
 -[Cache Clear](#CacheClear)<br>
 -[Confusion](#Confusion)<br>
@@ -115,6 +116,25 @@ PictureSelector.create(this)
             // onCancel Callback
        }
      });
+```
+
+## CustomCamera
+如果需要使用自定义相机需要设置```.isUseCustomCamera(true);```并在项目Application下实现如下接口
+```sh
+ public class App extends Application implements CameraXConfig.Provider {
+    private static final String TAG = App.class.getSimpleName();
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    @NonNull
+    @Override
+    public CameraXConfig getCameraXConfig() {
+        return Camera2Config.defaultConfig();
+    }
+ }
 ```
 
 ## CacheClear
