@@ -15,15 +15,15 @@ import java.io.File;
  */
 
 public final class PictureMimeType {
-    public static final int ofAll() {
+    public static int ofAll() {
         return PictureConfig.TYPE_ALL;
     }
 
-    public static final int ofImage() {
+    public static int ofImage() {
         return PictureConfig.TYPE_IMAGE;
     }
 
-    public static final int ofVideo() {
+    public static int ofVideo() {
         return PictureConfig.TYPE_VIDEO;
     }
 
@@ -34,58 +34,58 @@ public final class PictureMimeType {
      * 不再维护音频相关功能，但可以继续使用但会有机型兼容性问题
      */
     @Deprecated
-    public static final int ofAudio() {
+    public static int ofAudio() {
         return PictureConfig.TYPE_AUDIO;
     }
 
 
-    public static final String ofPNG() {
+    public static String ofPNG() {
         return MIME_TYPE_PNG;
     }
 
-    public static final String ofJPEG() {
+    public static String ofJPEG() {
         return MIME_TYPE_JPEG;
     }
 
-    public static final String ofBMP() {
+    public static String ofBMP() {
         return MIME_TYPE_BMP;
     }
 
-    public static final String ofGIF() {
+    public static String ofGIF() {
         return MIME_TYPE_GIF;
     }
 
-    public static final String ofWEBP() {
+    public static String ofWEBP() {
         return MIME_TYPE_WEBP;
     }
 
-    public static final String of3GP() {
+    public static String of3GP() {
         return MIME_TYPE_3GP;
     }
 
-    public static final String ofMP4() {
+    public static String ofMP4() {
         return MIME_TYPE_MP4;
     }
 
-    public static final String ofMPEG() {
+    public static String ofMPEG() {
         return MIME_TYPE_MPEG;
     }
 
-    public static final String ofAVI() {
+    public static String ofAVI() {
         return MIME_TYPE_AVI;
     }
 
-    public final static String MIME_TYPE_PNG = "image/png";
+    private final static String MIME_TYPE_PNG = "image/png";
     public final static String MIME_TYPE_JPEG = "image/jpeg";
-    public final static String MIME_TYPE_JPG = "image/jpg";
-    public final static String MIME_TYPE_BMP = "image/bmp";
-    public final static String MIME_TYPE_GIF = "image/gif";
-    public final static String MIME_TYPE_WEBP = "image/webp";
+    private final static String MIME_TYPE_JPG = "image/jpg";
+    private final static String MIME_TYPE_BMP = "image/bmp";
+    private final static String MIME_TYPE_GIF = "image/gif";
+    private final static String MIME_TYPE_WEBP = "image/webp";
 
-    public final static String MIME_TYPE_3GP = "video/3gp";
-    public final static String MIME_TYPE_MP4 = "video/mp4";
-    public final static String MIME_TYPE_MPEG = "video/mpeg";
-    public final static String MIME_TYPE_AVI = "video/avi";
+    private final static String MIME_TYPE_3GP = "video/3gp";
+    private final static String MIME_TYPE_MP4 = "video/mp4";
+    private final static String MIME_TYPE_MPEG = "video/mpeg";
+    private final static String MIME_TYPE_AVI = "video/avi";
 
 
     /**
@@ -316,7 +316,7 @@ public final class PictureMimeType {
 
     public final static String JPEG = ".jpg";
 
-    public final static String PNG = ".png";
+    private final static String PNG = ".png";
 
     public final static String MP4 = ".mp4";
 
@@ -337,8 +337,8 @@ public final class PictureMimeType {
     public final static String MIME_TYPE_AUDIO = "audio/mpeg";
 
 
-    public final static String MIME_TYPE_PREFIX_IMAGE = "image";
-    public final static String MIME_TYPE_PREFIX_VIDEO = "video";
-    public final static String MIME_TYPE_PREFIX_AUDIO = "audio";
+    private final static String MIME_TYPE_PREFIX_IMAGE = "image";
+    private final static String MIME_TYPE_PREFIX_VIDEO = "video";
+    private final static String MIME_TYPE_PREFIX_AUDIO = "audio";
 
 }
