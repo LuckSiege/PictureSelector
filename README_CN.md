@@ -126,6 +126,25 @@ PictureSelector.create(this)
      });
 ```
 
+## 自定义相机
+如果需要使用自定义相机需要开启```sh.isUseCustomCamera(true);```并在项目Application下实现如下接口
+```sh
+ public class App extends Application implements CameraXConfig.Provider {
+    private static final String TAG = App.class.getSimpleName();
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    @NonNull
+    @Override
+    public CameraXConfig getCameraXConfig() {
+        return Camera2Config.defaultConfig();
+    }
+ }
+```
+
 ## 缓存清除
 ```sh
  //包括裁剪和压缩后的缓存，要在上传成功后调用，type 指的是图片or视频缓存取决于你设置的ofImage或ofVideo 注意：需要系统sd卡权限  
