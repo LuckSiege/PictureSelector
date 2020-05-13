@@ -1,7 +1,5 @@
 package com.luck.picture.lib.listener;
 
-import com.luck.picture.lib.entity.LocalMedia;
-
 import java.util.List;
 
 /**
@@ -9,7 +7,7 @@ import java.util.List;
  * @date：2020-01-14 17:08
  * @describe：onResult Callback Listener
  */
-public interface OnResultCallbackListener<T extends LocalMedia> {
+public interface OnResultCallbackListener<T> {
     /**
      * return LocalMedia result
      *

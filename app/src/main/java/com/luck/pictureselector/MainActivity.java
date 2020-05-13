@@ -603,7 +603,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 自定义播放逻辑处理，用户可以自己实现播放界面
      */
-    private static class MyVideoSelectedPlayCallback implements OnVideoSelectedPlayCallback {
+    private static class MyVideoSelectedPlayCallback implements OnVideoSelectedPlayCallback<LocalMedia> {
         private WeakReference<Context> mContextWeakReference;
         private Context context;
 

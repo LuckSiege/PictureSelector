@@ -1,7 +1,5 @@
 package com.luck.picture.lib.listener;
 
-import com.luck.picture.lib.entity.LocalMedia;
-
 import java.util.List;
 
 /**
@@ -9,7 +7,7 @@ import java.util.List;
  * @date：2020-03-26 10:34
  * @describe：OnPhotoSelectChangedListener
  */
-public interface OnPhotoSelectChangedListener<T extends LocalMedia> {
+public interface OnPhotoSelectChangedListener<T> {
     /**
      * Photo callback
      */
