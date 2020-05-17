@@ -163,13 +163,14 @@ public final class PictureMimeType {
         return mimeType.startsWith(MIME_TYPE_JPG);
     }
 
+
     /**
      * is Network image
      *
      * @param path
      * @return
      */
-    public static boolean isHttp(String path) {
+    public static boolean isHasHttp(String path) {
         if (TextUtils.isEmpty(path)) {
             return false;
         }

@@ -47,7 +47,6 @@ public class Luban implements Handler.Callback {
     private List<String> mPaths;
     private List<LocalMedia> mediaList;
     private int index = -1;
-    private boolean isAndroidQ;
     private int compressQuality;
     private Handler mHandler;
     private int dataCount;
@@ -67,7 +66,6 @@ public class Luban implements Handler.Callback {
         this.focusAlpha = builder.focusAlpha;
         this.isCamera = builder.isCamera;
         this.mHandler = new Handler(Looper.getMainLooper(), this);
-        this.isAndroidQ = builder.isAndroidQ;
     }
 
     public static Builder with(Context context) {
@@ -96,7 +94,8 @@ public class Luban implements Handler.Callback {
                         md5Value.toUpperCase() +
                         (TextUtils.isEmpty(suffix) ? ".jpg" : suffix);
             } else {
-                cacheBuilder = mTargetDir + "/" +
+                cacheBuilder = mTargetDir +
+                        "/" +
                         DateUtils.getCreateFileName("IMG_CMP_") +
                         (TextUtils.isEmpty(suffix) ? ".jpg" : suffix);
             }
@@ -176,11 +175,11 @@ public class Luban implements Handler.Callback {
                     }
                     if (mediaList != null && mediaList.size() > 0) {
                         LocalMedia media = mediaList.get(index);
-                        boolean eqHttp = PictureMimeType.isHttp(newPath);
+                        boolean isHasHttp = PictureMimeType.isHasHttp(newPath);
                         boolean isHasVideo = PictureMimeType.isHasVideo(media.getMimeType());
-                        media.setCompressed(!eqHttp && !isHasVideo);
-                        media.setCompressPath(eqHttp || isHasVideo ? "" : newPath);
-                        media.setAndroidQToPath(isAndroidQ ? media.getCompressPath() : null);
+                        media.setCompressed(!isHasHttp && !isHasVideo);
+                        media.setCompressPath(isHasHttp || isHasVideo ? null : newPath);
+                        media.setAndroidQToPath(SdkVersionUtils.checkedAndroid_Q() ? media.getCompressPath() : null);
                         boolean isLast = index == mediaList.size() - 1;
                         if (isLast) {
                             mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_SUCCESS, mediaList));
@@ -275,12 +274,12 @@ public class Luban implements Handler.Callback {
     }
 
     private File compressRealLocalMedia(Context context, InputStreamProvider path) throws IOException {
-        File result;
+        File result = null;
         LocalMedia media = path.getMedia();
         if (media == null) {
             throw new NullPointerException("Luban Compress LocalMedia Can't be empty");
         }
-        String newPath = media.getRealPath();
+        String newPath = media.isCut() && !TextUtils.isEmpty(media.getCutPath()) ? media.getCutPath() : media.getRealPath();
         String suffix = Checker.SINGLE.extSuffix(media.getMimeType());
         File outFile = getImageCacheFile(context, path, TextUtils.isEmpty(suffix) ? Checker.SINGLE.extSuffix(path) : suffix);
         String filename = "";
@@ -296,47 +295,50 @@ public class Luban implements Handler.Callback {
         if (mCompressionPredicate != null) {
             if (Checker.SINGLE.extSuffix(path).startsWith(".gif")) {
                 // GIF without compression
-                if (isAndroidQ) {
-                    String newFilePath = media.isCut() ? media.getCutPath() :
-                            AndroidQTransformUtils.copyPathToAndroidQ(context, path.getPath(),
-                                    media.getWidth(), media.getHeight(), media.getMimeType(), filename);
-                    result = new File(newFilePath);
+                if (SdkVersionUtils.checkedAndroid_Q()) {
+                    if (media.isCut() && !TextUtils.isEmpty(media.getCutPath())) {
+                        result = new File(media.getCutPath());
+                    } else {
+                        String androidQToPath = AndroidQTransformUtils.copyPathToAndroidQ(context, path.getPath(),
+                                media.getWidth(), media.getHeight(), media.getMimeType(), filename);
+                        if (!TextUtils.isEmpty(androidQToPath)) {
+                            result = new File(androidQToPath);
+                        }
+                    }
                 } else {
                     result = new File(newPath);
                 }
             } else {
-                if (mCompressionPredicate.apply(newPath)
-                        && Checker.SINGLE.needCompressToLocalMedia(mLeastCompressSize, newPath)) {
+                boolean isCompress = Checker.SINGLE.needCompressToLocalMedia(mLeastCompressSize, newPath);
+                if (mCompressionPredicate.apply(newPath) && isCompress) {
+                    // 压缩
                     result = new Engine(path, outFile, focusAlpha, compressQuality).compress();
                 } else {
-                    if (isAndroidQ) {
-                        String newFilePath = media.isCut() ? media.getCutPath() :
-                                AndroidQTransformUtils.copyPathToAndroidQ(context, path.getPath(),
-                                        media.getWidth(), media.getHeight(), media.getMimeType(), filename);
-                        result = new File(newFilePath);
-                    } else {
-                        result = new File(newPath);
+                    if (isCompress) {
+                        // 压缩
+                        result = new Engine(path, outFile, focusAlpha, compressQuality).compress();
                     }
                 }
             }
         } else {
             if (Checker.SINGLE.extSuffix(path).startsWith(".gif")) {
                 // GIF without compression
-                if (isAndroidQ) {
+                if (SdkVersionUtils.checkedAndroid_Q()) {
                     String newFilePath = media.isCut() ? media.getCutPath() :
                             AndroidQTransformUtils.copyPathToAndroidQ(context,
                                     path.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), filename);
-                    result = new File(newFilePath);
+                    if (!TextUtils.isEmpty(newFilePath)) {
+                        result = new File(newFilePath);
+                    }
                 } else {
                     result = new File(newPath);
                 }
             } else {
                 boolean isCompress = Checker.SINGLE.needCompressToLocalMedia(mLeastCompressSize, newPath);
-                result = isCompress ? new Engine(path, outFile, focusAlpha, compressQuality).compress() :
-                        isAndroidQ ? new File(media.isCut() ? media.getCutPath() :
-                                Objects.requireNonNull(AndroidQTransformUtils.copyPathToAndroidQ
-                                        (context, path.getPath(),
-                                                media.getWidth(), media.getHeight(), media.getMimeType(), filename))) : new File(newPath);
+                if (isCompress) {
+                    // 压缩
+                    result = new Engine(path, outFile, focusAlpha, compressQuality).compress();
+                }
             }
         }
         return result;
@@ -428,7 +430,7 @@ public class Luban implements Handler.Callback {
                         }
                         return context.getContentResolver().openInputStream(Uri.parse(media.getPath()));
                     } else {
-                        return PictureMimeType.isHttp(media.getPath()) ? null : new FileInputStream(media.isCut() ? media.getCutPath() : media.getPath());
+                        return PictureMimeType.isHasHttp(media.getPath()) ? null : new FileInputStream(media.isCut() ? media.getCutPath() : media.getPath());
                     }
                 }
 

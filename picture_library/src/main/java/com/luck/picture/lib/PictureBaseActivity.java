@@ -357,7 +357,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                         if (media == null) {
                             continue;
                         }
-                        if (!PictureMimeType.isHttp(media.getPath())) {
+                        if (!PictureMimeType.isHasHttp(media.getPath())) {
                             String cachePath = PictureSelectionConfig.cacheResourcesEngine.onCachePath(getContext(), media.getPath());
                             media.setAndroidQToPath(cachePath);
                         }
@@ -448,13 +448,16 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (files.size() == size) {
             for (int i = 0, j = size; i < j; i++) {
                 File file = files.get(i);
+                if (file == null) {
+                    continue;
+                }
                 String path = file.getAbsolutePath();
                 LocalMedia image = images.get(i);
-                boolean http = PictureMimeType.isHttp(path);
+                boolean http = PictureMimeType.isHasHttp(path);
                 boolean flag = !TextUtils.isEmpty(path) && http;
                 boolean isHasVideo = PictureMimeType.isHasVideo(image.getMimeType());
                 image.setCompressed(!isHasVideo && !flag);
-                image.setCompressPath(isHasVideo || flag ? "" : path);
+                image.setCompressPath(isHasVideo || flag ? null : path);
                 if (isAndroidQ) {
                     image.setAndroidQToPath(image.getCompressPath());
                 }
@@ -504,7 +507,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      * @param options
      */
     private void startSingleCropActivity(String originalPath, String cachePath, String mimeType, UCrop.Options options) {
-        boolean isHttp = PictureMimeType.isHttp(originalPath);
+        boolean isHttp = PictureMimeType.isHasHttp(originalPath);
         String suffix = mimeType.replace("image/", ".");
         File file = new File(PictureFileUtils.getDiskCacheDir(getContext()),
                 TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_CROP_") + suffix : config.renameCropFileName);
@@ -591,7 +594,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     private void startMultipleCropActivity(CutInfo cutInfo, int count, UCrop.Options options) {
         String path = cutInfo.getPath();
         String mimeType = cutInfo.getMimeType();
-        boolean isHttp = PictureMimeType.isHttp(path);
+        boolean isHttp = PictureMimeType.isHasHttp(path);
         Uri uri;
         if (!TextUtils.isEmpty(cutInfo.getAndroidQToPath())) {
             uri = Uri.fromFile(new File(cutInfo.getAndroidQToPath()));
@@ -802,7 +805,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                             && !media.isCompressed()
                             && TextUtils.isEmpty(media.getAndroidQToPath());
                     if (isCopyAndroidQToPath && PictureMimeType.isContent(media.getPath())) {
-                        if (!PictureMimeType.isHttp(media.getPath())) {
+                        if (!PictureMimeType.isHasHttp(media.getPath())) {
                             String AndroidQToPath = AndroidQTransformUtils.copyPathToAndroidQ(getContext(),
                                     media.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), config.cameraFileName);
                             media.setAndroidQToPath(AndroidQToPath);
