@@ -13,7 +13,6 @@ import android.util.Log;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
-import com.luck.picture.lib.tools.DESUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
@@ -25,7 +24,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 @SuppressWarnings("unused")
 public class Luban implements Handler.Callback {
@@ -87,11 +85,11 @@ public class Luban implements Handler.Callback {
         String cacheBuilder = "";
         try {
             LocalMedia media = provider.getMedia();
-            String md5Value = DESUtils.encode(DESUtils.DES_KEY_STRING, media.getPath(), media.getWidth(), media.getHeight());
-            if (!TextUtils.isEmpty(md5Value) && !media.isCut()) {
+            String encryptionValue = StringUtils.getEncryptionValue(media.getPath(), media.getWidth(), media.getHeight());
+            if (!TextUtils.isEmpty(encryptionValue) && !media.isCut()) {
                 cacheBuilder = mTargetDir + "/" +
                         "IMG_CMP_" +
-                        md5Value.toUpperCase() +
+                        encryptionValue +
                         (TextUtils.isEmpty(suffix) ? ".jpg" : suffix);
             } else {
                 cacheBuilder = mTargetDir +

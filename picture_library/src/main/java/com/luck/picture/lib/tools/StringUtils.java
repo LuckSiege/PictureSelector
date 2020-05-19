@@ -83,4 +83,29 @@ public class StringUtils {
         String temp = fileName.substring(0, fileName.lastIndexOf("."));
         return temp + suffix;
     }
+
+    /**
+     * getEncryptionValue
+     *
+     * @param url
+     * @param width
+     * @param height
+     * @return
+     */
+    public static String getEncryptionValue(String url, int width, int height) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(url).append("_").append(width).append("x").append(height);
+        return ValueOf.toString(Math.abs(hash(stringBuilder.hashCode())));
+    }
+
+    /**
+     * hash
+     *
+     * @param key
+     * @return
+     */
+    public static final int hash(Object key) {
+        int h;
+        return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
+    }
 }

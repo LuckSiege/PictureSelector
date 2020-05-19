@@ -44,8 +44,8 @@ public class AndroidQTransformUtils {
         BufferedSource inBuffer = null;
         try {
             Uri uri = Uri.parse(url);
-            String encode = DESUtils.encode(DESUtils.DES_KEY_STRING, url, width, height);
-            String newPath = PictureFileUtils.createFilePath(ctx, encode, mineType, customFileName);
+            String encryptionValue = StringUtils.getEncryptionValue(url, width, height);
+            String newPath = PictureFileUtils.createFilePath(ctx, encryptionValue, mineType, customFileName);
             File outFile = new File(newPath);
             if (outFile.exists()) {
                 return newPath;
