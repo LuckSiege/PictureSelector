@@ -1,16 +1,20 @@
 package com.yalantis.ucrop.view;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.IntDef;
@@ -71,6 +75,7 @@ public class OverlayView extends View {
     private int mCropRectCornerTouchAreaLineLength;
     private int mStrokeWidth = 1;
     private boolean mIsDragFrame = DEFAULT_DRAG_FRAME;
+    private ValueAnimator smoothAnimator;
 
     private OverlayViewChangeListener mCallback;
 
@@ -341,8 +346,11 @@ public class OverlayView extends View {
         float y = event.getY();
 
         if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN) {
+            if (smoothAnimator != null) {
+                smoothAnimator.cancel();
+            }
             mCurrentTouchCornerIndex = getCurrentTouchIndex(x, y);
-            boolean shouldHandle = mCurrentTouchCornerIndex != -1;
+            boolean shouldHandle = mCurrentTouchCornerIndex != -1 && mCurrentTouchCornerIndex != 4;
             if (!shouldHandle) {
                 mPreviousTouchX = -1;
                 mPreviousTouchY = -1;
@@ -376,6 +384,7 @@ public class OverlayView extends View {
             if (mCallback != null) {
                 mCallback.onCropRectUpdated(mCropViewRect);
             }
+            smoothToCenter();
         }
 
         return false;
@@ -623,4 +632,69 @@ public class OverlayView extends View {
     public @interface FreestyleMode {
     }
 
+    /**
+     * 平滑移动至中心
+     */
+    private void smoothToCenter() {
+        Point centerPoint = new Point((getRight() + getLeft()) / 2, (getTop() + getBottom()) / 2);
+        final int offsetY = (int) (centerPoint.y - mCropViewRect.centerY());
+        final int offsetX = (int) (centerPoint.x - mCropViewRect.centerX());
+        final RectF before = new RectF(mCropViewRect);
+        RectF after = new RectF(mCropViewRect);
+        after.offset(offsetX, offsetY);
+        if (smoothAnimator != null) {
+            smoothAnimator.cancel();
+        }
+        smoothAnimator = ValueAnimator.ofFloat(0, 1);
+        smoothAnimator.setDuration(1000);
+        smoothAnimator.setInterpolator(new OvershootInterpolator());
+        smoothAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            float lastAnimationValue = 0f;
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float x = offsetX * (float) animation.getAnimatedValue();
+                float y = offsetY * (float) animation.getAnimatedValue();
+                mCropViewRect.set(new RectF(
+                        before.left + x,
+                        before.top + y,
+                        before.right + x,
+                        before.bottom + y
+                ));
+                updateGridPoints();
+                postInvalidate();
+                if (mCallback != null) {
+                    mCallback.postTranslate(
+                            offsetX * ((float) animation.getAnimatedValue() - lastAnimationValue),
+                            offsetY * ((float) animation.getAnimatedValue() - lastAnimationValue)
+                    );
+                }
+                lastAnimationValue = (float) animation.getAnimatedValue();
+            }
+        });
+        smoothAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (mCallback != null) {
+                    mCallback.onCropRectUpdated(mCropViewRect);
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        smoothAnimator.start();
+    }
 }

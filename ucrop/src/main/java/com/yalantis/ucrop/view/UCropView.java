@@ -50,6 +50,11 @@ public class UCropView extends FrameLayout {
             public void onCropRectUpdated(RectF cropRect) {
                 mGestureCropImageView.setCropRect(cropRect);
             }
+
+            @Override
+            public void postTranslate(float deltaX, float deltaY) {
+                mGestureCropImageView.postTranslate(deltaX, deltaY);
+            }
         });
     }
 
