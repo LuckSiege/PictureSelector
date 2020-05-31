@@ -34,6 +34,7 @@ import com.luck.picture.lib.widget.PreviewViewPager;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.model.CutInfo;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -593,6 +594,12 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     protected void onCheckedComplete() {
         if (adapter.getSize() > 0) {
             LocalMedia image = adapter.getItem(viewPager.getCurrentItem());
+            // If the original path does not exist or the path does exist but the file does not exist
+            String newPath = image.getRealPath();
+            if (!TextUtils.isEmpty(newPath) && !new File(newPath).exists()) {
+                ToastUtils.s(getContext(), PictureMimeType.s(getContext(), image.getMimeType()));
+                return;
+            }
             String mimeType = selectData.size() > 0 ?
                     selectData.get(0).getMimeType() : "";
             int currentSize = selectData.size();
