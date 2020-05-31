@@ -629,10 +629,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static class MyCustomPreviewInterfaceListener implements OnCustomImagePreviewCallback<LocalMedia> {
 
         @Override
-        public void onCustomPreviewCallback(Context context, List<LocalMedia> previewData, LocalMedia currentData) {
+        public void onCustomPreviewCallback(Context context, List<LocalMedia> previewData, int currentPosition) {
             // TODO context特指PictureSelectorActivity
+            if (previewData != null && previewData.size() > 0) {
+                LocalMedia currentLocalMedia = previewData.get(currentPosition);
+                if (currentLocalMedia != null) {
 
-
+                }
+            }
         }
     }
 

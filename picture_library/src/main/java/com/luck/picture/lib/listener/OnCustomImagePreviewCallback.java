@@ -15,7 +15,7 @@ public interface OnCustomImagePreviewCallback<T> {
      *
      * @param context
      * @param previewData
-     * @param currentData
+     * @param currentPosition
      */
-    void onCustomPreviewCallback(Context context, List<T> previewData, T currentData);
+    void onCustomPreviewCallback(Context context, List<T> previewData, int currentPosition);
 }

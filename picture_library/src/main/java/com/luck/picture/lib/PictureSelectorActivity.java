@@ -783,7 +783,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             medias.add(media);
         }
         if (PictureSelectionConfig.onCustomImagePreviewCallback != null) {
-            PictureSelectionConfig.onCustomImagePreviewCallback.onCustomPreviewCallback(getContext(), selectedData, size > 0 ? selectedData.get(0) : null);
+            PictureSelectionConfig.onCustomImagePreviewCallback.onCustomPreviewCallback(getContext(), selectedData, 0);
             return;
         }
         Bundle bundle = new Bundle();
@@ -1341,7 +1341,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         } else {
             // image
             if (PictureSelectionConfig.onCustomImagePreviewCallback != null) {
-                PictureSelectionConfig.onCustomImagePreviewCallback.onCustomPreviewCallback(getContext(), previewData, media);
+                PictureSelectionConfig.onCustomImagePreviewCallback.onCustomPreviewCallback(getContext(), previewData, position);
                 return;
             }
             List<LocalMedia> selectedData = mAdapter.getSelectedData();
