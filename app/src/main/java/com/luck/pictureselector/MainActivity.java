@@ -41,6 +41,7 @@ import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.listener.OnCustomCameraInterfaceListener;
+import com.luck.picture.lib.listener.OnCustomImagePreviewCallback;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.listener.OnVideoSelectedPlayCallback;
 import com.luck.picture.lib.permissions.PermissionChecker;
@@ -452,6 +453,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)// 设置相册Activity方向，不设置默认使用系统
                         .isOriginalImageControl(cb_original.isChecked())// 是否显示原图控制按钮，如果设置为true则用户可以自由选择是否使用原图，压缩、裁剪功能将会失效
                         //.bindCustomPlayVideoCallback(new MyVideoSelectedPlayCallback(getContext()))// 自定义视频播放回调控制，用户可以使用自己的视频播放界面
+                        //.bindCustomPreviewCallback(new MyCustomPreviewInterfaceListener())// 自定义图片预览回调接口
                         //.bindCustomCameraInterfaceListener(new MyCustomCameraInterfaceListener())// 提供给用户的一些额外的自定义操作回调
                         //.cameraFileName(System.currentTimeMillis() +".jpg")    // 重命名拍照文件名、如果是相册拍照则内部会自动拼上当前时间戳防止重复，注意这个只在使用相机时可以使用，如果使用相机又开启了压缩或裁剪 需要配合压缩和裁剪文件名api
                         //.renameCompressFile(System.currentTimeMillis() +".jpg")// 重命名压缩文件名、 如果是多张压缩则内部会自动拼上当前时间戳防止重复
@@ -618,6 +620,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (context != null) {
                 ToastUtils.s(context, media.getPath());
             }
+        }
+    }
+
+    /**
+     * 自定义预览图片接口
+     */
+    private static class MyCustomPreviewInterfaceListener implements OnCustomImagePreviewCallback<LocalMedia> {
+
+        @Override
+        public void onCustomPreviewCallback(Context context, List<LocalMedia> previewData, LocalMedia currentData) {
+            // TODO context特指PictureSelectorActivity
+
+
         }
     }
 

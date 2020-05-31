@@ -775,16 +775,20 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * Preview
      */
     private void onPreview() {
-        List<LocalMedia> selectedImages = mAdapter.getSelectedData();
+        List<LocalMedia> selectedData = mAdapter.getSelectedData();
         List<LocalMedia> medias = new ArrayList<>();
-        int size = selectedImages.size();
+        int size = selectedData.size();
         for (int i = 0; i < size; i++) {
-            LocalMedia media = selectedImages.get(i);
+            LocalMedia media = selectedData.get(i);
             medias.add(media);
+        }
+        if (PictureSelectionConfig.onCustomImagePreviewCallback != null) {
+            PictureSelectionConfig.onCustomImagePreviewCallback.onCustomPreviewCallback(getContext(), selectedData, size > 0 ? selectedData.get(0) : null);
+            return;
         }
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(PictureConfig.EXTRA_PREVIEW_SELECT_LIST, (ArrayList<? extends Parcelable>) medias);
-        bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_LIST, (ArrayList<? extends Parcelable>) selectedImages);
+        bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_LIST, (ArrayList<? extends Parcelable>) selectedData);
         bundle.putBoolean(PictureConfig.EXTRA_BOTTOM_PREVIEW, true);
         bundle.putBoolean(PictureConfig.EXTRA_CHANGE_ORIGINAL, config.isCheckOriginalImage);
         bundle.putBoolean(PictureConfig.EXTRA_SHOW_CAMERA, mAdapter.isShowCamera());
@@ -1305,11 +1309,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     /**
      * preview image and video
      *
-     * @param previewImages
+     * @param previewData
      * @param position
      */
-    public void startPreview(List<LocalMedia> previewImages, int position) {
-        LocalMedia media = previewImages.get(position);
+    public void startPreview(List<LocalMedia> previewData, int position) {
+        LocalMedia media = previewData.get(position);
         String mimeType = media.getMimeType();
         Bundle bundle = new Bundle();
         List<LocalMedia> result = new ArrayList<>();
@@ -1336,8 +1340,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
         } else {
             // image
+            if (PictureSelectionConfig.onCustomImagePreviewCallback != null) {
+                PictureSelectionConfig.onCustomImagePreviewCallback.onCustomPreviewCallback(getContext(), previewData, media);
+                return;
+            }
             List<LocalMedia> selectedData = mAdapter.getSelectedData();
-            ImagesObservable.getInstance().savePreviewMediaData(new ArrayList<>(previewImages));
+            ImagesObservable.getInstance().savePreviewMediaData(new ArrayList<>(previewData));
             bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_LIST, (ArrayList<? extends Parcelable>) selectedData);
             bundle.putInt(PictureConfig.EXTRA_POSITION, position);
             bundle.putBoolean(PictureConfig.EXTRA_CHANGE_ORIGINAL, config.isCheckOriginalImage);
@@ -1619,7 +1627,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
                     media.setBucketId(bucketId);
                     // The width and height of the image are reversed if there is rotation information
-                    MediaUtils.setOrientationSynchronous(getContext(), media, config.isAndroidQChangeWH,config.isAndroidQChangeVideoWH);
+                    MediaUtils.setOrientationSynchronous(getContext(), media, config.isAndroidQChangeWH, config.isAndroidQChangeVideoWH);
                 }
                 return media;
             }
