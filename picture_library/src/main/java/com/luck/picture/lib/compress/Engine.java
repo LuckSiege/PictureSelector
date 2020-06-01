@@ -85,6 +85,7 @@ class Engine {
             if (Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
                 int orientation = srcImg.getMedia().getOrientation();
                 if (orientation > 0) {
+                    boolean isOrientation = true;
                     switch (orientation) {
                         case ExifInterface.ORIENTATION_ROTATE_90:
                             orientation = 90;
@@ -96,9 +97,12 @@ class Engine {
                             orientation = 270;
                             break;
                         default:
+                            isOrientation = false;
                             break;
                     }
-                    tagBitmap = rotatingImage(tagBitmap, orientation);
+                    if (isOrientation) {
+                        tagBitmap = rotatingImage(tagBitmap, orientation);
+                    }
                 }
             }
         }
