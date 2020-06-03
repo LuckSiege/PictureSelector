@@ -411,7 +411,7 @@ public class PictureFileUtils {
         int degree = 0;
         try {
             ExifInterface exifInterface;
-            if (SdkVersionUtils.checkedAndroid_Q()) {
+            if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(path)) {
                 ParcelFileDescriptor parcelFileDescriptor =
                         context.getContentResolver()
                                 .openFileDescriptor(Uri.parse(path), "r");
