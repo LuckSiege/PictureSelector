@@ -12,6 +12,7 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
@@ -380,7 +381,6 @@ public class OverlayView extends View {
             mPreviousTouchX = -1;
             mPreviousTouchY = -1;
             mCurrentTouchCornerIndex = -1;
-
             if (mCallback != null) {
                 mCallback.onCropRectUpdated(mCropViewRect);
             }
@@ -640,8 +640,10 @@ public class OverlayView extends View {
         final int offsetY = (int) (centerPoint.y - mCropViewRect.centerY());
         final int offsetX = (int) (centerPoint.x - mCropViewRect.centerX());
         final RectF before = new RectF(mCropViewRect);
+        Log.d("pisa", "pre" + mCropViewRect);
         RectF after = new RectF(mCropViewRect);
         after.offset(offsetX, offsetY);
+        Log.d("pisa", "after" + after);
         if (smoothAnimator != null) {
             smoothAnimator.cancel();
         }

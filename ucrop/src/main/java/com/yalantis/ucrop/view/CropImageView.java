@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.util.AttributeSet;
 
 import androidx.annotation.IntRange;
@@ -24,6 +23,7 @@ import com.yalantis.ucrop.util.RectUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Oleksii Shliama (https://github.com/shliama).
@@ -85,7 +85,7 @@ public class CropImageView extends TransformImageView {
                 getImageInputPath(), getImageOutputPath(), getExifInfo());
 
         new BitmapCropTask(getContext(), getViewBitmap(), imageState, cropParameters, cropCallback)
-                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                .executeOnExecutor(Executors.newCachedThreadPool());
     }
 
     /**
@@ -349,7 +349,7 @@ public class CropImageView extends TransformImageView {
         float deltaRight = unrotatedImageRect.right - unrotatedCropRect.right;
         float deltaBottom = unrotatedImageRect.bottom - unrotatedCropRect.bottom;
 
-        float indents[] = new float[4];
+        float[] indents = new float[4];
         indents[0] = (deltaLeft > 0) ? deltaLeft : 0;
         indents[1] = (deltaTop > 0) ? deltaTop : 0;
         indents[2] = (deltaRight < 0) ? deltaRight : 0;
