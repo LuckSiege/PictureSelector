@@ -1,5 +1,16 @@
 apply plugin: 'com.android.library'
+apply plugin: "com.novoda.bintray-release"//添加
 
+publish {
+    userOrg = "arakawa19960107" //注册时候的用户名
+    groupId = "com.citrussss"// //compile引用时的第1部分
+    artifactId = "ucrop"////发布到JCenter上的项目名字，compile引用时的第2部分项目名
+    uploadName = "ucrop"//为上传后，在bintray显示的名字。
+    publishVersion = "1.0.0"//版本号 ，compile引用时的最后部分，下次更新是只需要更改版本号即可
+    desc = "ucrop"//描述，不重要
+    website = "https://github.com/Citrussss/PictureSelector" //项目的GitHub网站
+    licences = ["Apache-2.0"]
+}
 android {
     compileSdkVersion cfgs.compileSdkVersion
     buildToolsVersion cfgs.buildToolsVersion
