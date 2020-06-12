@@ -21,11 +21,11 @@
     <color name="picture_color_f0">#F0F0F0</color>
     <color name="picture_color_grey_3e">#dd393a3e</color>
     <color name="picture_color_4d">#4d4d4d</color>
-    <color name="picture_color_e0ff6100">#E0FF6100</color>
+    <color name="picture_color_e0ff6100">#E0ffe002</color>
     <color name="picture_color_eb">#ebebeb</color>
     <color name="picture_color_ba3">#b0567ba3</color>
     <color name="picture_color_bfe85d">#BF96E85D</color>
-    <color name="picture_color_ffe85d">#FF96E85D</color>
+    <color name="picture_color_ffe85d">#ffe002</color>
     <color name="picture_color_ffd042">#FFFFD042</color>
     <color name="picture_color_20c064">#20c064</color>
     <color name="picture_color_394a3e">#394a3e</color>
