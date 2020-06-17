@@ -416,10 +416,14 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         if (config.isWithVideoImage) {
             // isWithVideoImage mode
             int videoSize = 0;
+            int imageSize = 0;
             for (int i = 0; i < count; i++) {
                 LocalMedia media = selectData.get(i);
                 if (PictureMimeType.isHasVideo(media.getMimeType())) {
                     videoSize++;
+                }
+                if (PictureMimeType.isHasImage(media.getMimeType())) {
+                    imageSize++;
                 }
             }
 
@@ -429,7 +433,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     return;
                 }
 
-                if (getSelectedSize() >= config.maxSelectNum && !isChecked) {
+                if (imageSize >= config.maxSelectNum && !isChecked) {
                     showPromptDialog(context.getString(R.string.picture_message_max_num, config.maxSelectNum));
                     return;
                 }
