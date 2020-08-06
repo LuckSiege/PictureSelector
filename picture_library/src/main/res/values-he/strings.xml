@@ -4,10 +4,10 @@
     <string name="picture_cancel">ביטול</string>
     <string name="picture_take_picture">צלם</string>
     <string name="picture_rule">לא תמונה או סרטון</string>
-    <string name="picture_min_video_num">סרטונים %1$s לפחות </string>
-    <string name="picture_message_max_num">תמונות %1$s לכל היותר</string>
-    <string name="picture_message_audio_max_num">קבצי שמע %1$s לכל היותר</string>
-    <string name="picture_message_video_max_num">סרטונים %1$s לכל היותר</string>
+    <string name="picture_min_video_num">לפחות %1$s סרטונים</string>
+    <string name="picture_message_max_num">לכל היותר %1$s תמונות</string>
+    <string name="picture_message_audio_max_num">לכל היותר %1$s קבצי שמע</string>
+    <string name="picture_message_video_max_num">לכל היותר %1$s סרטונים</string>
     <string name="picture_preview">תצוגה מקדימה</string>
     <string name="picture_please">המתן בבקשה</string>
     <string name="picture_done_front_num">%1$d/%2$d Ok</string>
@@ -18,7 +18,7 @@
     <string name="picture_empty_audio_title">אין הקלטות\n</string>
     <string name="picture_audio_empty">השתמש בהקלטת מערכת להקלטת שמע</string>
     <string name="picture_empty">השתמש במצלמה לצילום תמונות או סרטונים</string>
-    <string name="picture_min_img_num"> תמונות%1$sנא בחר לפחות </string>
+    <string name="picture_min_img_num">בחר לפחות %1$s תמונות</string>
     <string name="picture_gif_tag">GIF</string>
     <string name="picture_audio">גישה להקלטות מערכת נדחתה</string>
     <string name="picture_jurisdiction">גישה לכרטיס זיכרון נדחתה</string>
@@ -46,19 +46,19 @@
     <string name="picture_not_crop_data">ללא נתוני חיתוך</string>
     <string name="picture_original_image">מקור</string>
     <string name="picture_send">הושלם</string>
-    <string name="picture_send_num">(%1$d/%2$d)הושלם</string>
-    <string name="picture_preview_num">(%1$d)תצוגה מקדימה</string>
+    <string name="picture_send_num">(%1$d/%2$d) הושלם</string>
+    <string name="picture_preview_num">(%1$d) תצוגה מקדימה</string>
     <string name="picture_select">בחר</string>
     <string name="picture_data_exception">אלבומים לא תקינים</string>
     <string name="picture_recording_time_is_short">זמן הצילום קצר מידי</string>
     <string name="picture_photo_camera">לחיצה קצרה לצילום, ארוכה לסרטון</string>
-    <string name="picture_choose_max_seconds">שניות %1$dאינך יכול לבחור וידאו ארוך מ-</string>
-    <string name="picture_choose_min_seconds">שניות %1$dאינך יכול לבחור וידאו קצר מ-</string>
+    <string name="picture_choose_max_seconds">אין לבחור סרטון ארוך מ-%1$d שניות</string>
+    <string name="picture_choose_min_seconds">אין לבחור סרטון קצר מ-%1$d שניות</string>
     <string name="picture_choose_limit_seconds">בחר סרטון בין %1$d שניות לבין %2$d שניות</string>
 
     <string name="picture_photo_pictures">צלם תמונה</string>
     <string name="picture_photo_recording">לחץ לחיצה ארוכה</string>
     <string name="picture_go_setting">הגדרות</string>
-    <string name="picture_know">אני יודע</string>
+    <string name="picture_know">תודה</string>
     <string name="picture_data_null">אין מידע נוסף</string>
 </resources>
