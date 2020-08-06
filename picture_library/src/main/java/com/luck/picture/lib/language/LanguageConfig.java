@@ -43,4 +43,8 @@ public class LanguageConfig {
      */
     public static final int VIETNAM = 7;
 
+    /**
+     * 希伯来语
+     */
+    public static final int HEBREW = 8;
 }

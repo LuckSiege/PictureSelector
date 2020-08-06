@@ -798,6 +798,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.rb_ka:
                 language = LanguageConfig.KOREA;
                 break;
+            case R.id.rb_iw:
+                language = LanguageConfig.HEBREW;
+                break;
             case R.id.rb_de:
                 language = LanguageConfig.GERMANY;
                 break;
