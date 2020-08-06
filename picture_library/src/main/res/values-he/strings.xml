@@ -11,7 +11,7 @@
     <string name="picture_preview">תצוגה מקדימה</string>
     <string name="picture_please">המתן בבקשה</string>
     <string name="picture_done_front_num">%1$d/%2$d Ok</string>
-    <string name="picture_completed">הושלם</string>
+    <string name="picture_completed">סיום</string>
     <string name="picture_done">השלם</string>
     <string name="picture_please_select">נא בחר</string>
     <string name="picture_empty_title">אין סרטונים או תמונות\n</string>
@@ -45,8 +45,8 @@
     <string name="picture_preview_image_num">%1$d/%2$d</string>
     <string name="picture_not_crop_data">ללא נתוני חיתוך</string>
     <string name="picture_original_image">מקור</string>
-    <string name="picture_send">הושלם</string>
-    <string name="picture_send_num">(%1$d/%2$d) הושלם</string>
+    <string name="picture_send">סיום</string>
+    <string name="picture_send_num">(%1$d/%2$d) נבחרו</string>
     <string name="picture_preview_num">(%1$d) תצוגה מקדימה</string>
     <string name="picture_select">בחר</string>
     <string name="picture_data_exception">אלבומים לא תקינים</string>
