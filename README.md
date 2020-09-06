@@ -3,7 +3,7 @@
 
 [中文版🇨🇳](README_CN.md)
 
-[Download APK](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2020_06_01_2030_2.5.8.apk)<br>
+[Download APK](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2020_09_06_2210_2.5.9.apk)<br>
 
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
@@ -12,8 +12,8 @@
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 ## Directory
--[Latest Version v2.5.8](#Version)<br>
--[Update Log](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.5.8)<br>
+-[Latest Version v2.5.9](#Version)<br>
+-[Update Log](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.5.9)<br>
 -[Style Configuration-Xml](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98-Xml%E6%96%B9%E5%BC%8F)<br>
 -[Style Configuration-Code](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%A8%E6%80%81%E4%B8%BB%E9%A2%98(%E5%8C%85%E5%90%AB%E8%A3%81%E5%89%AA%E3%80%81%E7%9B%B8%E5%86%8C%E5%90%AF%E5%8A%A8%E5%8A%A8%E7%94%BB)-Code%E6%96%B9%E5%BC%8F)<br>
 -[Demo Effect](#Effect)<br>
@@ -29,7 +29,7 @@
 
 ## Version
 ```sh
-implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.8'
+implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.9'
 ```
 
 ## Photo
