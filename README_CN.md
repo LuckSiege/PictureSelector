@@ -37,9 +37,22 @@
 
 
 ## 最新版本
+step 1
+
 ```sh
 implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.9'
 ```
+
+step 2
+```sh
+allprojects {
+   repositories {
+      jcenter()
+      maven { url 'https://jitpack.io' }
+   }
+}
+```
+
 
 ## 启动相册
 快捷调用，更多功能 [请查看](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)
