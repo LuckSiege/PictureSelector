@@ -32,6 +32,15 @@
 implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.9'
 ```
 
+```sh
+allprojects {
+   repositories {
+      jcenter()
+      maven { url 'https://jitpack.io' }
+   }
+}
+```
+
 ## Photo
 Quick call, more functions [More](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api)
 
