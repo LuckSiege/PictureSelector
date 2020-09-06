@@ -609,6 +609,15 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param recordVideoMinSecond video record second
+     * @return
+     */
+    public PictureSelectionModel recordVideoMinSecond(int recordVideoMinSecond) {
+        selectionConfig.recordVideoMinSecond = recordVideoMinSecond;
+        return this;
+    }
+
+    /**
      * @param width  glide width
      * @param height glide height
      * @return 2.2.9开始 Glide改为外部用户自己定义此方法没有意义了

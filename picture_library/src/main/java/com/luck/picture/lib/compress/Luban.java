@@ -315,6 +315,8 @@ public class Luban implements Handler.Callback {
                     if (isCompress) {
                         // 压缩
                         result = new Engine(path, outFile, focusAlpha, compressQuality).compress();
+                    } else {
+                        result = new File(newPath);
                     }
                 }
             }
@@ -336,6 +338,8 @@ public class Luban implements Handler.Callback {
                 if (isCompress) {
                     // 压缩
                     result = new Engine(path, outFile, focusAlpha, compressQuality).compress();
+                } else {
+                    result = new File(newPath);
                 }
             }
         }

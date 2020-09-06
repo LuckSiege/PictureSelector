@@ -2006,7 +2006,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         ? Environment.DIRECTORY_MOVIES : PictureMimeType.CAMERA;
                 for (int i = 0; i < count; i++) {
                     LocalMediaFolder cameraFolder = folderWindow.getFolderData().get(i);
-                    if (cameraFolder.getName().startsWith(newFolder)) {
+                    if (!TextUtils.isEmpty(cameraFolder.getName()) && cameraFolder.getName().startsWith(newFolder)) {
                         media.setBucketId(cameraFolder.getBucketId());
                         cameraFolder.setFirstImagePath(config.cameraPath);
                         cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
