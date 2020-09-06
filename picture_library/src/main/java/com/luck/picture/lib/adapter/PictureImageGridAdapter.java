@@ -243,6 +243,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 MediaUtils.setOrientationAsynchronous(context, image, config.isAndroidQChangeWH, config.isAndroidQChangeVideoWH, null);
                 boolean eqResult =
                         PictureMimeType.isHasImage(mimeType) && config.enablePreview
+                                || config.isSingleDirectReturn
                                 || PictureMimeType.isHasVideo(mimeType) && (config.enPreviewVideo
                                 || config.selectionMode == PictureConfig.SINGLE)
                                 || PictureMimeType.isHasAudio(mimeType) && (config.enablePreviewAudio
