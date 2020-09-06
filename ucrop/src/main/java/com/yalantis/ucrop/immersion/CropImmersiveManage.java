@@ -18,11 +18,7 @@ public class CropImmersiveManage {
      * 判定是否使用沉浸式
      */
     public static boolean immersiveUseful() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return true;
-        }
-
-        return false;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 
 

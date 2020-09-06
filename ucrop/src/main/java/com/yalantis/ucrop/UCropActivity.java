@@ -312,7 +312,7 @@ public class UCropActivity extends AppCompatActivity {
     }
 
     /**
-     * This method extracts {@link com.yalantis.ucrop.UCrop.Options #optionsBundle} from incoming intent
+     * This method extracts {@link UCrop.Options #optionsBundle} from incoming intent
      * and setups Activity, {@link OverlayView} and {@link CropImageView} properly.
      */
     @SuppressWarnings("deprecation")

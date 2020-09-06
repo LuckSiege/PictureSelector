@@ -108,10 +108,7 @@ public class CropRomUtils {
 
     //Android Api 23以上
     private static boolean isAndroid5OrAbove() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return true;
-        }
-        return false;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
 

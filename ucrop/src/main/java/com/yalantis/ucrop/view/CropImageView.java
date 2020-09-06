@@ -349,7 +349,7 @@ public class CropImageView extends TransformImageView {
         float deltaRight = unrotatedImageRect.right - unrotatedCropRect.right;
         float deltaBottom = unrotatedImageRect.bottom - unrotatedCropRect.bottom;
 
-        float indents[] = new float[4];
+        float[] indents = new float[4];
         indents[0] = (deltaLeft > 0) ? deltaLeft : 0;
         indents[1] = (deltaTop > 0) ? deltaTop : 0;
         indents[2] = (deltaRight < 0) ? deltaRight : 0;

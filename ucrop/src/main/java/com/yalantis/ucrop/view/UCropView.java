@@ -7,11 +7,11 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+
 import com.yalantis.ucrop.R;
 import com.yalantis.ucrop.callback.CropBoundsChangeListener;
 import com.yalantis.ucrop.callback.OverlayViewChangeListener;
-
-import androidx.annotation.NonNull;
 
 public class UCropView extends FrameLayout {
 
@@ -49,6 +49,11 @@ public class UCropView extends FrameLayout {
             @Override
             public void onCropRectUpdated(RectF cropRect) {
                 mGestureCropImageView.setCropRect(cropRect);
+            }
+
+            @Override
+            public void postTranslate(float deltaX, float deltaY) {
+                mGestureCropImageView.postTranslate(deltaX, deltaY);
             }
         });
     }

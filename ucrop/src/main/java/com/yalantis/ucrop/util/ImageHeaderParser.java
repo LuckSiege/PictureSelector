@@ -39,7 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * A class for parsing the exif orientation from an image header.
@@ -60,7 +60,7 @@ public class ImageHeaderParser {
     private static final int INTEL_TIFF_MAGIC_NUMBER = 0x4949;
     private static final String JPEG_EXIF_SEGMENT_PREAMBLE = "Exif\0\0";
     private static final byte[] JPEG_EXIF_SEGMENT_PREAMBLE_BYTES =
-            JPEG_EXIF_SEGMENT_PREAMBLE.getBytes(Charset.forName("UTF-8"));
+            JPEG_EXIF_SEGMENT_PREAMBLE.getBytes(StandardCharsets.UTF_8);
     private static final int SEGMENT_SOS = 0xDA;
     private static final int MARKER_EOI = 0xD9;
     private static final int SEGMENT_START_ID = 0xFF;
