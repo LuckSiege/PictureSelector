@@ -692,6 +692,9 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
             case R.id.rb_ka:
                 language = LanguageConfig.KOREA;
                 break;
+            case R.id.rb_iw:
+                language = LanguageConfig.HEBREW;
+                break;
             case R.id.rb_de:
                 language = LanguageConfig.GERMANY;
                 break;

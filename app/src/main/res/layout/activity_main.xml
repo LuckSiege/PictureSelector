@@ -259,6 +259,14 @@
                         android:textSize="14sp" />
 
                     <RadioButton
+                      android:id="@+id/rb_iw"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="希伯来语"
+                      android:textColor="@color/app_color_53575e"
+                      android:textSize="14sp" />
+
+                    <RadioButton
                         android:id="@+id/rb_de"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

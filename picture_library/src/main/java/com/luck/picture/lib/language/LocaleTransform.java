@@ -19,6 +19,9 @@ public class LocaleTransform {
             case LanguageConfig.KOREA:
                 // 韩语
                 return Locale.KOREA;
+            case LanguageConfig.HEBREW:
+                // 希伯来语
+                return new Locale("he");
             case LanguageConfig.GERMANY:
                 // 德语
                 return Locale.GERMANY;
