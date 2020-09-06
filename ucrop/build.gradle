@@ -1,16 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin:"com.novoda.bintray-release"//添加
-
-publish{
-    userOrg="arakawa19960107"//注册时候的用户名
-    groupId="com.citrussss"////compile引用时的第1部分
-    artifactId="ucrop"////发布到JCenter上的项目名字，compile引用时的第2部分项目名
-    uploadName="ucrop"//为上传后，在bintray显示的名字。
-    publishVersion="1.0.0"//版本号，compile引用时的最后部分，下次更新是只需要更改版本号即可
-    desc="ucrop"//描述，不重要
-    website="https://github.com/Citrussss/PictureSelector"//项目的GitHub网站
-    licences=["Apache-2.0"]
-}
 
 android {
     compileSdkVersion cfgs.compileSdkVersion
@@ -43,9 +31,8 @@ android {
 }
 
 dependencies {
-
-    implementation "androidx.appcompat:appcompat:1.0.0"
-    implementation "androidx.exifinterface:exifinterface:1.3.0-alpha01"
-    implementation "androidx.transition:transition:1.3.1"
-    implementation "androidx.recyclerview:recyclerview:1.1.0"
+    implementation "androidx.appcompat:appcompat:${cfgs.androidx_appcompat_version}"
+    implementation "androidx.exifinterface:exifinterface:${cfgs.androidx_exifinterface_version}"
+    implementation "androidx.transition:transition:${cfgs.androidx_transition_version}"
+    implementation "androidx.recyclerview:recyclerview:${cfgs.version_recyclerview}"
 }

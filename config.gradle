@@ -22,8 +22,8 @@ ext {
             futures_version               : "1.1.0",
 
             // ucrop
-            androidx_appcompat_version    : "1.1.0",
-            androidx_exifinterface_version: "1.3.0-alpha01",
+            androidx_appcompat_version    : "1.2.0",
+            androidx_exifinterface_version: "1.3.0-rc01",
             androidx_transition_version   : "1.3.1",
 
             // okio

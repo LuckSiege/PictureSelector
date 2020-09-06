@@ -1,6 +1,7 @@
 package com.yalantis.ucrop;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,7 +17,6 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 import com.yalantis.ucrop.model.AspectRatio;
 import com.yalantis.ucrop.model.CutInfo;
@@ -326,7 +326,7 @@ public class UCrop {
      */
     @Nullable
     public static List<CutInfo> getMultipleOutput(@NonNull Intent intent) {
-        return intent.getParcelableArrayListExtra(Options.EXTRA_OUTPUT_URI_LIST);
+        return intent.getParcelableArrayListExtra(UCrop.Options.EXTRA_OUTPUT_URI_LIST);
     }
 
     /**
@@ -406,7 +406,7 @@ public class UCrop {
         }
 
         /**
-         * Set one of {@link Bitmap.CompressFormat} that will be used to save resulting Bitmap.
+         * Set one of {@link android.graphics.Bitmap.CompressFormat} that will be used to save resulting Bitmap.
          */
         public void setCompressionFormat(@NonNull Bitmap.CompressFormat format) {
             mOptionBundle.putString(EXTRA_COMPRESSION_FORMAT_NAME, format.name());
@@ -502,9 +502,7 @@ public class UCrop {
          * @param color - desired color of dimmed area around the crop bounds
          */
         public void setDimmedLayerColor(@ColorInt int color) {
-            if (color != 0) {
-                mOptionBundle.putInt(EXTRA_DIMMED_LAYER_COLOR, color);
-            }
+            mOptionBundle.putInt(EXTRA_DIMMED_LAYER_COLOR, color);
         }
 
 
@@ -544,9 +542,7 @@ public class UCrop {
          * @param color - desired color of crop frame
          */
         public void setCropFrameColor(@ColorInt int color) {
-            if (color != 0) {
-                mOptionBundle.putInt(EXTRA_CROP_FRAME_COLOR, color);
-            }
+            mOptionBundle.putInt(EXTRA_CROP_FRAME_COLOR, color);
         }
 
         /**
@@ -598,9 +594,7 @@ public class UCrop {
          * @param color - desired color of crop grid/guidelines
          */
         public void setCropGridColor(@ColorInt int color) {
-            if (color != 0) {
-                mOptionBundle.putInt(EXTRA_CROP_GRID_COLOR, color);
-            }
+            mOptionBundle.putInt(EXTRA_CROP_GRID_COLOR, color);
         }
 
         /**
@@ -614,9 +608,7 @@ public class UCrop {
          * @param color - desired resolved color of the toolbar
          */
         public void setToolbarColor(@ColorInt int color) {
-            if (color != 0) {
-                mOptionBundle.putInt(EXTRA_TOOL_BAR_COLOR, color);
-            }
+            mOptionBundle.putInt(EXTRA_TOOL_BAR_COLOR, color);
         }
 
 
@@ -631,36 +623,28 @@ public class UCrop {
          * @param color - desired resolved color of the statusbar
          */
         public void setStatusBarColor(@ColorInt int color) {
-            if (color != 0) {
-                mOptionBundle.putInt(EXTRA_STATUS_BAR_COLOR, color);
-            }
+            mOptionBundle.putInt(EXTRA_STATUS_BAR_COLOR, color);
         }
 
         /**
          * @param color - desired resolved color of the progress wheel middle line (default is violet)
          */
         public void setActiveWidgetColor(@ColorInt int color) {
-            if (color != 0) {
-                mOptionBundle.putInt(EXTRA_UCROP_COLOR_WIDGET_ACTIVE, color);
-            }
+            mOptionBundle.putInt(EXTRA_UCROP_COLOR_WIDGET_ACTIVE, color);
         }
 
         /**
          * @param color - desired resolved color of the active and selected widget (default is white)
          */
         public void setActiveControlsWidgetColor(@ColorInt int color) {
-            if (color != 0) {
-                mOptionBundle.putInt(EXTRA_UCROP_COLOR_CONTROLS_WIDGET_ACTIVE, color);
-            }
+            mOptionBundle.putInt(EXTRA_UCROP_COLOR_CONTROLS_WIDGET_ACTIVE, color);
         }
 
         /**
          * @param color - desired resolved color of Toolbar text and buttons (default is darker orange)
          */
         public void setToolbarWidgetColor(@ColorInt int color) {
-            if (color != 0) {
-                mOptionBundle.putInt(EXTRA_UCROP_WIDGET_COLOR_TOOLBAR, color);
-            }
+            mOptionBundle.putInt(EXTRA_UCROP_WIDGET_COLOR_TOOLBAR, color);
         }
 
         /**
@@ -688,9 +672,7 @@ public class UCrop {
          * @param color - desired resolved color of logo fill (default is darker grey)
          */
         public void setLogoColor(@ColorInt int color) {
-            if (color != 0) {
-                mOptionBundle.putInt(EXTRA_UCROP_LOGO_COLOR, color);
-            }
+            mOptionBundle.putInt(EXTRA_UCROP_LOGO_COLOR, color);
         }
 
         /**
