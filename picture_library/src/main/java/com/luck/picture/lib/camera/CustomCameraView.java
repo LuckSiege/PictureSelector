@@ -136,7 +136,10 @@ public class CustomCameraView extends RelativeLayout {
                     return;
                 }
                 mPhotoFile = imageOutFile;
-                mCameraView.takePicture(imageOutFile, ContextCompat.getMainExecutor(getContext()),
+                ImageCapture.OutputFileOptions fileOptions =
+                        new ImageCapture.OutputFileOptions.Builder(mPhotoFile)
+                                .build();
+                mCameraView.takePicture(fileOptions, ContextCompat.getMainExecutor(getContext()),
                         new MyImageResultCallback(getContext(), mConfig, imageOutFile,
                                 mImagePreview, mCaptureLayout, mImageCallbackListener, mCameraListener));
             }
@@ -146,11 +149,11 @@ public class CustomCameraView extends RelativeLayout {
                 mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
                 mCameraView.setCaptureMode(androidx.camera.view.CameraView.CaptureMode.VIDEO);
-                mCameraView.startRecording(createVideoFile(), ContextCompat.getMainExecutor(getContext()),
+                mVideoFile = createVideoFile();
+                mCameraView.startRecording(mVideoFile, ContextCompat.getMainExecutor(getContext()),
                         new VideoCapture.OnVideoSavedCallback() {
                             @Override
-                            public void onVideoSaved(@NonNull File file) {
-                                mVideoFile = file;
+                            public void onVideoSaved(@NonNull VideoCapture.OutputFileResults outputFileResults) {
                                 if (recordTime < 1500 && mVideoFile.exists() && mVideoFile.delete()) {
                                     return;
                                 }
@@ -160,7 +163,7 @@ public class CustomCameraView extends RelativeLayout {
                                         @Override
                                         public Boolean doInBackground() {
                                             return AndroidQTransformUtils.copyPathToDCIM(getContext(),
-                                                    file, Uri.parse(mConfig.cameraPath));
+                                                    mVideoFile, Uri.parse(mConfig.cameraPath));
                                         }
 
                                         @Override

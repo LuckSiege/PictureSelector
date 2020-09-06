@@ -17,6 +17,8 @@ enum Checker {
 
     public final static String MIME_TYPE_JPG = "image/jpg";
 
+    public final static String MIME_TYPE_HEIF = "image/heif";
+
     private static final String TAG = "Luban";
 
     private static final String JPG = ".jpg";
@@ -41,7 +43,7 @@ enum Checker {
         if (TextUtils.isEmpty(mimeType)) {
             return false;
         }
-        return mimeType.startsWith(MIME_TYPE_JPEG) || mimeType.startsWith(MIME_TYPE_JPG);
+        return mimeType.startsWith(MIME_TYPE_HEIF) || mimeType.startsWith(MIME_TYPE_JPEG) || mimeType.startsWith(MIME_TYPE_JPG);
     }
 
     /**

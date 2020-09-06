@@ -77,6 +77,8 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isOriginalControl;
     public boolean isCamera;
     public boolean isGif;
+    public boolean isWebp;
+    public boolean isBmp;
     public boolean enablePreview;
     public boolean enPreviewVideo;
     public boolean enablePreviewAudio;
@@ -189,9 +191,11 @@ public final class PictureSelectionConfig implements Parcelable {
         buttonFeatures = CustomCameraView.BUTTON_STATE_BOTH;  //初始化按钮为可录制可拍照
         isCameraAroundState = false;
         isWithVideoImage = false;
-        isAndroidQTransform = true;
+        isAndroidQTransform = false;
         isCamera = true;
         isGif = false;
+        isWebp = true;
+        isBmp = true;
         focusAlpha = false;
         isCheckOriginalImage = false;
         isSingleDirectReturn = false;
@@ -289,7 +293,6 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.customVideoPlayCallback = null;
         PictureSelectionConfig.onCustomImagePreviewCallback = null;
         PictureSelectionConfig.onCustomCameraInterfaceListener = null;
-        PictureSelectionConfig.onCustomCameraInterfaceListener = null;
         PictureSelectionConfig.cacheResourcesEngine = null;
     }
 
@@ -347,6 +350,8 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte(this.isOriginalControl ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isCamera ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isGif ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isWebp ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isBmp ? (byte) 1 : (byte) 0);
         dest.writeByte(this.enablePreview ? (byte) 1 : (byte) 0);
         dest.writeByte(this.enPreviewVideo ? (byte) 1 : (byte) 0);
         dest.writeByte(this.enablePreviewAudio ? (byte) 1 : (byte) 0);
@@ -452,6 +457,8 @@ public final class PictureSelectionConfig implements Parcelable {
         this.isOriginalControl = in.readByte() != 0;
         this.isCamera = in.readByte() != 0;
         this.isGif = in.readByte() != 0;
+        this.isWebp = in.readByte() != 0;
+        this.isBmp = in.readByte() != 0;
         this.enablePreview = in.readByte() != 0;
         this.enPreviewVideo = in.readByte() != 0;
         this.enablePreviewAudio = in.readByte() != 0;

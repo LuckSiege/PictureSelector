@@ -613,12 +613,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         if (adapter != null) {
             adapter.clear();
         }
-        if (PictureSelectionConfig.customVideoPlayCallback != null) {
-            PictureSelectionConfig.customVideoPlayCallback = null;
-        }
-        if (PictureSelectionConfig.onCustomCameraInterfaceListener != null) {
-            PictureSelectionConfig.onCustomCameraInterfaceListener = null;
-        }
+        PictureSelectionConfig.destroy();
     }
 
     @Override

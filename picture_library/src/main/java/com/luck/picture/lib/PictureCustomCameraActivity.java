@@ -2,7 +2,6 @@ package com.luck.picture.lib;
 
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -14,7 +13,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.camera.core.CameraX;
 import androidx.camera.view.CameraView;
 
 import com.luck.picture.lib.camera.CustomCameraView;
@@ -203,16 +201,6 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
             PictureSelectionConfig.listener.onCancel();
         }
         closeActivity();
-    }
-
-    @SuppressLint("RestrictedApi")
-    @Override
-    protected void onDestroy() {
-        if (mCameraView != null) {
-            CameraX.unbindAll();
-            mCameraView = null;
-        }
-        super.onDestroy();
     }
 
     @Override

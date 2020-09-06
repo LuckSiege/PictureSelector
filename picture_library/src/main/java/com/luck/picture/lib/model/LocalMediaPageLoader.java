@@ -232,7 +232,7 @@ public final class LocalMediaPageLoader {
      * @param listener
      * @return
      */
-    public void loadPageMediaData(long bucketId, int page, OnQueryDataResultListener listener) {
+    public void loadPageMediaData(long bucketId, int page, OnQueryDataResultListener<LocalMedia> listener) {
         loadPageMediaData(bucketId, page, config.pageSize, config.pageSize, listener);
     }
 
@@ -245,7 +245,8 @@ public final class LocalMediaPageLoader {
      * @param pageSize
      * @return
      */
-    public void loadPageMediaData(long bucketId, int page, int limit, int pageSize, OnQueryDataResultListener listener) {
+    public void loadPageMediaData(long bucketId, int page, int limit, int pageSize,
+                                  OnQueryDataResultListener<LocalMedia> listener) {
         PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<MediaData>() {
 
             @Override
@@ -285,12 +286,24 @@ public final class LocalMediaPageLoader {
                                         mimeType = PictureMimeType.getImageMimeType(url);
                                     }
                                     if (!config.isGif) {
-                                        boolean isGif = PictureMimeType.isGif(mimeType);
-                                        if (isGif) {
+                                        if (PictureMimeType.isGif(mimeType)) {
                                             continue;
                                         }
                                     }
                                 }
+
+                                if (!config.isWebp) {
+                                    if (mimeType.startsWith(PictureMimeType.ofWEBP())) {
+                                        continue;
+                                    }
+                                }
+
+                                if (!config.isBmp) {
+                                    if (mimeType.startsWith(PictureMimeType.ofBMP())) {
+                                        continue;
+                                    }
+                                }
+
                                 int width = data.getInt
                                         (data.getColumnIndexOrThrow(PROJECTION_PAGE[3]));
 
@@ -372,7 +385,7 @@ public final class LocalMediaPageLoader {
      *
      * @param listener
      */
-    public void loadAllMedia(OnQueryDataResultListener listener) {
+    public void loadAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
         PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
             @Override
             public List<LocalMediaFolder> doInBackground() {

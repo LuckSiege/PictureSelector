@@ -8,7 +8,7 @@
     androidx.camera.camera2,androidx.camera.lifecycle,
     androidx.camera.core" />
 
-    <application>
+    <application android:requestLegacyExternalStorage="true">
         <provider
             android:name="com.luck.picture.lib.PictureFileProvider"
             android:authorities="${applicationId}.provider"

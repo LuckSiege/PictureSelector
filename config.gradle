@@ -4,21 +4,22 @@ ext {
             buildToolsVersion             : "28.0.3",
             minSdkVersion                 : 19,
             targetSdkVersion              : 29,
-            versionCode                   : 28,
-            versionName                   : "2.5.8",
+            versionCode                   : 29,
+            versionName                   : "2.5.9",
             ucropVersionCode              : 24,
             ucropVersionName              : "2.2.4-non-native",
 
             //open version control
             androidSupportVersion         : "27.0.2",
             version_recyclerview          : "1.1.0",
-            version_appcompat             : "1.1.0",
+            version_appcompat             : "1.2.0",
             localbroadcastmanager         : "1.0.0",
 
-            camerax_view                  : "1.0.0-alpha10",
-            camerax_version               : "1.0.0-beta03",
+            camerax_view                  : "1.0.0-alpha15",
+            camerax_version               : "1.0.0-beta08",
             camera_core_version           : "1.0.0-beta03",
-            futures_version               : "1.0.0",
+            experimental_version          : "1.1.0-alpha01",
+            futures_version               : "1.1.0",
 
             // ucrop
             androidx_appcompat_version    : "1.1.0",

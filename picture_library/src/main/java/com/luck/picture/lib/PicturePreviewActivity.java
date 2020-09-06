@@ -612,7 +612,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         videoSize++;
                     }
                 }
-                if (image != null && PictureMimeType.isHasVideo(image.getMimeType())) {
+                if (PictureMimeType.isHasVideo(image.getMimeType())) {
                     if (config.maxVideoSelectNum <= 0) {
                         // 如果视频可选数量是0
                         showPromptDialog(getString(R.string.picture_rule));
@@ -642,7 +642,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         return;
                     }
                 }
-                if (image != null && PictureMimeType.isHasImage(image.getMimeType())) {
+                if (PictureMimeType.isHasImage(image.getMimeType())) {
                     if (selectData.size() >= config.maxSelectNum && !check.isSelected()) {
                         showPromptDialog(getString(R.string.picture_message_max_num, config.maxSelectNum));
                         return;

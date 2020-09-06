@@ -182,6 +182,16 @@ public final class LocalMediaLoader {
                                 }
                             }
                         }
+                        if (!config.isWebp) {
+                            if (mimeType.startsWith(PictureMimeType.ofWEBP())) {
+                                continue;
+                            }
+                        }
+                        if (!config.isBmp) {
+                            if (mimeType.startsWith(PictureMimeType.ofBMP())) {
+                                continue;
+                            }
+                        }
                         int width = data.getInt
                                 (data.getColumnIndexOrThrow(PROJECTION[3]));
 
