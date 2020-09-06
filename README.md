@@ -28,10 +28,12 @@
 -[License](#License)<br>
 
 ## Version
+step 1
 ```sh
 implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.9'
 ```
 
+step 2
 ```sh
 allprojects {
    repositories {
