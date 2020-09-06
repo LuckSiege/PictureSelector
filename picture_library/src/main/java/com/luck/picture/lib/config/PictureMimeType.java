@@ -317,7 +317,7 @@ public final class PictureMimeType {
 
     public final static String JPEG = ".jpg";
 
-    private final static String PNG = ".png";
+    public final static String PNG = ".png";
 
     public final static String MP4 = ".mp4";
 
