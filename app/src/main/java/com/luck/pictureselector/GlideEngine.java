@@ -13,6 +13,8 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.Transformation;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.ImageViewTarget;
@@ -211,6 +213,31 @@ public class GlideEngine implements ImageEngine {
                 .centerCrop()
                 .apply(new RequestOptions().placeholder(R.drawable.picture_image_placeholder))
                 .into(imageView);
+    }
+
+    /**
+     * 加载图片列表图片
+     *
+     * @param context   上下文
+     * @param url       图片路径
+     * @param imageView 承载图片ImageView
+     */
+    @Override
+    public void loadGridImageRound(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
+
+        //设置图片圆角角度
+        RoundedCorners roundedCorners= new RoundedCorners(8);
+        //通过RequestOptions扩展功能
+        RequestOptions options=RequestOptions.bitmapTransform(roundedCorners);
+
+        Glide.with(context)
+                .load(url)
+                .fitCenter()
+                .apply(options)
+                .into(imageView);
+
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+
     }
 
 

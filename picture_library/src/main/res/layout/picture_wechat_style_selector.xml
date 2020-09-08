@@ -14,6 +14,7 @@
         android:id="@+id/rl_bottom"
         android:layout_width="match_parent"
         android:layout_height="45dp"
+        android:visibility="gone"
         android:layout_alignParentBottom="true"
         android:background="?attr/picture.bottom.bg"
         android:gravity="center_vertical">
@@ -73,14 +74,80 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/select_buttom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:background="@color/picture_color_white"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_selected"
+            android:layout_marginTop="14dp"
+            android:background="#fff"
+            android:layout_width="match_parent"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_height="50dp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e8e8e8"
+            />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="80dp"
+            android:gravity="center_vertical"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:layout_centerVertical="true"
+                android:text="You can Upload up to 35 videos"
+                />
+
+            <TextView
+                android:id="@+id/tv_count"
+                android:layout_width="84dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="16dp"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:background="@drawable/radius_bg_shape"
+                android:textColor="@color/picture_color_white"
+                android:text="Next (0)"
+                />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e8e8e8"
+            android:layout_marginTop="80dp"
+            />
+
+    </RelativeLayout>
+
+
+
     <com.luck.picture.lib.widget.RecyclerPreloadView
         android:id="@+id/picture_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/rl_bottom"
+        android:layout_above="@id/select_buttom_layout"
         android:layout_below="@id/titleViewBg"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp" />
+        android:background="@color/picture_color_white"
+        />
 
     <TextView
         android:id="@+id/tv_empty"

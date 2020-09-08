@@ -269,6 +269,11 @@ public class PicassoEngine implements ImageEngine {
         }
     }
 
+    @Override
+    public void loadGridImageRound(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
+
+    }
+
     private PicassoEngine() {
     }
 

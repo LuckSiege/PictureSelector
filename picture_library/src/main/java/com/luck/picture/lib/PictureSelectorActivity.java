@@ -3,6 +3,7 @@ package com.luck.picture.lib;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -25,10 +26,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.luck.picture.lib.adapter.PictureImageGridAdapter;
+import com.luck.picture.lib.adapter.SelectedLocalDataMedia;
 import com.luck.picture.lib.animators.AlphaInAnimationAdapter;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.animators.SlideInBottomAnimationAdapter;
@@ -103,6 +106,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private long intervalClickTime = 0;
     private int allFolderSize;
     private int mOpenCameraCount;
+    private RecyclerView mSelectedLocalMedia;
+    private SelectedLocalDataMedia mSelectedLocalAdapter;
+    private TextView mtTvCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +169,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mRecyclerView = findViewById(R.id.picture_recycler);
         mBottomLayout = findViewById(R.id.rl_bottom);
         mTvEmpty = findViewById(R.id.tv_empty);
+        mSelectedLocalMedia = findViewById(R.id.rv_selected);
+        mtTvCount = findViewById(R.id.tv_count);
         isNumComplete(numComplete);
         if (!numComplete) {
             animation = AnimationUtils.loadAnimation(this, R.anim.picture_anim_modal_in);
@@ -227,6 +235,21 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             mCbOriginal.setChecked(config.isCheckOriginalImage);
             mCbOriginal.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 config.isCheckOriginalImage = isChecked;
+            });
+        }
+
+        if (config.isWeChatStyle) {
+            mSelectedLocalMedia.setLayoutManager(new LinearLayoutManager(this,
+                    LinearLayoutManager.HORIZONTAL,false));
+            mSelectedLocalAdapter = new SelectedLocalDataMedia();
+            mSelectedLocalMedia.setAdapter(mSelectedLocalAdapter);
+            mSelectedLocalMedia.addItemDecoration(new RecyclerView.ItemDecoration() {
+                @Override
+                public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                    super.getItemOffsets(outRect, view, parent, state);
+                    outRect.right = ScreenUtils.dip2px(PictureSelectorActivity.this, 4);
+                    outRect.left = ScreenUtils.dip2px(PictureSelectorActivity.this, 4);
+                }
             });
         }
     }
@@ -1287,6 +1310,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     @Override
     public void onChange(List<LocalMedia> selectData) {
         changeImageNumber(selectData);
+        if (mSelectedLocalAdapter != null) {
+            mSelectedLocalAdapter.setList(selectData);
+            mtTvCount.setText("Next (" +selectData.size()+")");
+        }
     }
 
     @Override
