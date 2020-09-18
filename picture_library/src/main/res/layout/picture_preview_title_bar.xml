@@ -6,7 +6,7 @@
     <View
         android:id="@+id/titleViewBg"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="44dp"
         android:background="?attr/picture.ac_preview.title.bg" />
 
     <TextView

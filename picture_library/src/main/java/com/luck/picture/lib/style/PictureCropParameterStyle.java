@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
 
 /**
  * @author：luck
@@ -66,7 +67,6 @@ public class PictureCropParameterStyle implements Parcelable {
         this.cropTitleColor = cropTitleColor;
         this.isChangeStatusBarFontColor = isChangeStatusBarFontColor;
     }
-
 
     @Override
     public int describeContents() {

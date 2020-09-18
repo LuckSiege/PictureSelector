@@ -9,7 +9,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="44dp"
         android:background="@color/ucrop_color_toolbar"
         android:minHeight="?attr/actionBarSize">
 
@@ -19,9 +19,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/ucrop_label_edit_photo"
             android:textColor="@color/ucrop_color_toolbar_widget"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
     </androidx.appcompat.widget.Toolbar>
 
