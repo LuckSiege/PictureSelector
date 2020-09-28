@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -56,6 +57,7 @@ import com.luck.picture.lib.tools.ValueOf;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.listener.DragListener;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -390,7 +392,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 注册广播
         BroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver,
                 BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
-
     }
 
     /**
@@ -440,7 +441,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .isMaxSelectEnabledMask(cbEnabledMask.isChecked())// 选择数到了最大阀值列表是否启用蒙层效果
                         //.isAutomaticTitleRecyclerTop(false)// 连续点击标题栏RecyclerView是否自动回到顶部,默认true
                         //.loadCacheResourcesCallback(GlideCacheEngine.createCacheEngine())// 获取图片资源缓存，主要是解决华为10部分机型在拷贝文件过多时会出现卡的问题，这里可以判断只在会出现一直转圈问题机型上使用
-                        //.setOutputCameraPath()// 自定义相机输出目录，只针对Android Q以下，例如 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) +  File.separator + "Camera" + File.separator;
+                        //.setOutputCameraPath(createCustomCameraOutPath())// 自定义相机输出目录
                         //.setButtonFeatures(CustomCameraView.BUTTON_STATE_BOTH)// 设置自定义相机按钮状态
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
@@ -567,6 +568,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     };
+
+    /**
+     * 创建自定义拍照输出目录
+     *
+     * @return
+     */
+    private String createCustomCameraOutPath() {
+        File customFile = null;
+        if (SdkVersionUtils.checkedAndroid_Q()) {
+            customFile = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        }
+        if (customFile == null) {
+            // Android Q版本(沙盒机制)以后，此方式不推荐使用了
+            File directory = Environment.getExternalStorageDirectory();
+            String path = directory.getAbsolutePath() + File.separator + "CustomPictureCamera";
+            customFile = new File(path);
+            if (!customFile.exists()) {
+                customFile.mkdirs();
+            }
+        }
+        return customFile.getAbsolutePath() + File.separator;
+    }
 
     /**
      * 返回结果回调

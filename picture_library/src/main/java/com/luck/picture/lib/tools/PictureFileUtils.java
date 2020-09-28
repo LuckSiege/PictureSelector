@@ -5,7 +5,6 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -18,6 +17,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.exifinterface.media.ExifInterface;
 
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -56,7 +56,6 @@ public class PictureFileUtils {
      * @param outCameraDirectory
      * @return
      */
-    @Nullable
     public static File createCameraFile(Context context, int type, String fileName, String format, String outCameraDirectory) {
         return createMediaFile(context, type, fileName, format, outCameraDirectory);
     }
@@ -71,37 +70,31 @@ public class PictureFileUtils {
      * @param outCameraDirectory
      * @return
      */
-    @Nullable
     private static File createMediaFile(Context context, int chooseMode, String fileName, String format, String outCameraDirectory) {
         return createOutFile(context, chooseMode, fileName, format, outCameraDirectory);
     }
 
-    @Nullable
     private static File createOutFile(Context context, int chooseMode, String fileName, String format, String outCameraDirectory) {
-        File folderDir = null;
+        File folderDir;
         if (TextUtils.isEmpty(outCameraDirectory)) {
             // 外部没有自定义拍照存储路径使用默认
-            String state = Environment.getExternalStorageState();
-            File rootDir = state.equals(Environment.MEDIA_MOUNTED) ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
-                    : getRootDirFile(context, chooseMode);
-            if (rootDir != null) {
-                if (!rootDir.exists()) {
-                    rootDir.mkdirs();
-                }
+            File rootDir;
+            if (TextUtils.equals(Environment.MEDIA_MOUNTED, Environment.getExternalStorageState())) {
+                rootDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
                 folderDir = new File(rootDir.getAbsolutePath() + File.separator + PictureMimeType.CAMERA + File.separator);
-                if (!folderDir.exists() && folderDir.mkdirs()) {
-                }
+            } else {
+                rootDir = getRootDirFile(context, chooseMode);
+                folderDir = new File(rootDir.getAbsolutePath() + File.separator);
+            }
+            if (!rootDir.exists()) {
+                rootDir.mkdirs();
             }
         } else {
             // 自定义存储路径
             folderDir = new File(outCameraDirectory);
-            if (!folderDir.exists()) {
-                folderDir.mkdirs();
-            }
         }
-
-        if (folderDir == null) {
-            throw new NullPointerException("The media output path cannot be null");
+        if (!folderDir.exists()) {
+            folderDir.mkdirs();
         }
 
         boolean isOutFileNameEmpty = TextUtils.isEmpty(fileName);
@@ -126,7 +119,6 @@ public class PictureFileUtils {
      * @param type
      * @return
      */
-    @Nullable
     private static File getRootDirFile(Context context, int type) {
         switch (type) {
             case PictureConfig.TYPE_VIDEO:
