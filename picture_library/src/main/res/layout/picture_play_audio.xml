@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/picture_color_transparent_white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/picture_dialog_shadow"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
+        <!--显示歌曲状态-->
+        <TextView
+            android:id="@+id/tv_musicStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="播放"
+            android:textColor="@color/picture_color_9b"
+            android:textSize="14sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:gravity="center_horizontal|center_vertical">
+
+            <!--显示当前进度-->
+            <TextView
+                android:id="@+id/tv_musicTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="00:00"
+                android:textColor="@color/picture_color_9b"
+                android:textSize="13sp" />
+
+
+            <SeekBar
+                android:id="@+id/musicSeekBar"
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_toRightOf="@+id/tv_musicTime"
+                android:layout_weight="1"
+                android:max="100"
+                android:maxHeight="4.0dp"
+                android:minHeight="4.0dp"
+                android:progressDrawable="@drawable/picture_layer_progress"
+                android:thumb="@drawable/picture_sb_thumb"
+                android:thumbOffset="0dp" />
+
+            <!--显示总进度-->
+            <TextView
+                android:id="@+id/tv_musicTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/musicSeekBar"
+                android:text="00:00"
+                android:textColor="@color/picture_color_9b"
+                android:textSize="13sp" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_PlayPause"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_weight="1"
+                android:background="@drawable/picture_btn_music_shape"
+                android:gravity="center"
+                android:text="@string/picture_play_audio"
+                android:textColor="@color/picture_color_white"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_Stop"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="1"
+                android:background="@drawable/picture_btn_music_shape"
+                android:gravity="center"
+                android:text="@string/picture_stop_audio"
+                android:textColor="@color/picture_color_white"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_Quit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="25dp"
+                android:layout_weight="1"
+                android:background="@drawable/picture_btn_music_shape"
+                android:gravity="center"
+                android:text="@string/picture_quit_audio"
+                android:textColor="@color/picture_color_white"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>
+

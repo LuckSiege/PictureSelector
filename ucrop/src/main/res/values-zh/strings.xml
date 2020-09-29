@@ -4,5 +4,5 @@
     <string name="ucrop_label_edit_photo">裁剪</string>
 
     <string name="ucrop_menu_crop">裁剪</string>
-
+    <string name="ucrop_gif_tag">动图</string>
 </resources>

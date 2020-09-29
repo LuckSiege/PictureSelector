@@ -1,16 +1,15 @@
 package com.luck.pictureselector;
 
-import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.luck.picture.lib.config.PictureConfig;
-import com.luck.picture.lib.permissions.RxPermissions;
-import com.luck.picture.lib.tools.PictureFileUtils;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.tools.PictureFileUtils;
 
 public class PhotoFragmentActivity extends AppCompatActivity {
     private PhotoFragment fragment;
@@ -24,37 +23,29 @@ public class PhotoFragmentActivity extends AppCompatActivity {
             // 添加显示第一个fragment
             fragment = new PhotoFragment();
             getSupportFragmentManager().beginTransaction().add(R.id.tab_content, fragment,
-                    PictureConfig.FC_TAG).show(fragment)
+                    PictureConfig.EXTRA_FC_TAG).show(fragment)
                     .commit();
         } else {
             fragment = (PhotoFragment) getSupportFragmentManager()
-                    .findFragmentByTag(PictureConfig.FC_TAG);
+                    .findFragmentByTag(PictureConfig.EXTRA_FC_TAG);
         }
-        // 清空图片缓存，包括裁剪、压缩后的图片 注意:必须要在上传完成后调用 必须要获取权限
-        RxPermissions permissions = new RxPermissions(this);
-        permissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                if (aBoolean) {
-                    PictureFileUtils.deleteCacheDirFile(PhotoFragmentActivity.this);
-                } else {
-                    Toast.makeText(PhotoFragmentActivity.this,
-                            getString(R.string.picture_jurisdiction), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-            }
-
-            @Override
-            public void onComplete() {
-            }
-        });
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE:
+                // 存储权限
+                for (int i = 0; i < grantResults.length; i++) {
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        PictureFileUtils.deleteCacheDirFile(PhotoFragmentActivity.this, PictureMimeType.ofImage());
+                    } else {
+                        Toast.makeText(PhotoFragmentActivity.this,
+                                getString(R.string.picture_jurisdiction), Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+        }
+    }
 }

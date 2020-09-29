@@ -13,14 +13,13 @@
     <com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView
         android:id="@+id/longImg"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true" />
+        android:layout_height="match_parent" />
 
     <ImageView
         android:id="@+id/iv_play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/ic_video_play"
+        android:src="@drawable/picture_icon_video_play"
         android:visibility="invisible" />
 </FrameLayout>

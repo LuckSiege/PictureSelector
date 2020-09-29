@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/picture_color_white"
+    android:fitsSystemWindows="true"
+    tools:context="com.luck.picture.lib.PictureSelectorActivity">
+
+    <include layout="@layout/picture_wechat_style_title_bar" />
+
+    <RelativeLayout
+        android:id="@+id/rl_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:background="?attr/picture.bottom.bg"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/picture_id_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:enabled="false"
+            android:gravity="left|center"
+            android:padding="12dp"
+            android:text="@string/picture_preview"
+            android:textColor="?attr/picture.preview.textColor"
+            android:textSize="14sp" />
+
+        <CheckBox
+            android:id="@+id/cb_original"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@color/picture_color_transparent"
+            android:button="@color/picture_color_transparent"
+            android:gravity="center"
+            android:paddingLeft="5dp"
+            android:text="@string/picture_original_image"
+            android:textColor="@color/picture_color_53575e"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/picture_tvMediaNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@id/picture_tv_ok"
+            android:background="?attr/picture.num.style"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="@color/picture_color_white"
+            android:textSize="12sp"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/picture_tv_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:enabled="false"
+            android:gravity="center|left"
+            android:paddingRight="12dp"
+            android:text="@string/picture_please_select"
+            android:textColor="?attr/picture.complete.textColor"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+    <com.luck.picture.lib.widget.RecyclerPreloadView
+        android:id="@+id/picture_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/rl_bottom"
+        android:layout_below="@id/titleViewBg"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp" />
+
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:gravity="center"
+        android:lineSpacingExtra="3dp"
+        android:text="@string/picture_empty"
+        android:textColor="@color/picture_color_9b"
+        android:textSize="18sp"
+        android:visibility="invisible" />
+
+</RelativeLayout>

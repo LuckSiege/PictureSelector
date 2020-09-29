@@ -4,40 +4,38 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/iv_picture"
+        android:id="@+id/ivPicture"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/image_placeholder" />
+        android:scaleType="centerCrop" />
 
-    <LinearLayout
-        android:id="@+id/ll_check"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+    <TextView
+        android:id="@+id/tvCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:gravity="right"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:layout_margin="8dp"
+        android:background="?attr/picture.checked.style"
+        android:gravity="center"
+        android:textColor="@color/picture_color_white"
+        android:textSize="12sp" />
 
-        <TextView
-            android:id="@+id/check"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/picture.checked.style"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="12sp" />
-    </LinearLayout>
+    <View
+        android:id="@+id/btnCheck"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:background="@color/picture_color_transparent" />
 
     <TextView
         android:id="@+id/tv_isGif"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:background="@drawable/gif_tag"
-        android:text="@string/gif_tag"
-        android:textColor="@color/white"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/picture_gif_tag"
+        android:text="@string/picture_gif_tag"
+        android:textColor="@color/picture_color_white"
         android:textSize="11sp"
         android:visibility="gone" />
 
@@ -45,11 +43,11 @@
         android:id="@+id/tv_long_chart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:background="@drawable/gif_tag"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/picture_gif_tag"
         android:text="@string/picture_long_chart"
-        android:textColor="@color/white"
+        android:textColor="@color/picture_color_white"
         android:textSize="11sp"
         android:visibility="gone" />
 
@@ -58,14 +56,14 @@
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/buybuybuy"
-        android:drawableLeft="@drawable/video_icon"
+        android:background="@drawable/picture_icon_shadow_bg"
+        android:drawableLeft="@drawable/picture_icon_video"
         android:drawablePadding="5dp"
         android:gravity="center_vertical"
         android:paddingLeft="5dp"
         android:paddingTop="8dp"
         android:text="00:00"
-        android:textColor="@color/white"
+        android:textColor="@color/picture_color_white"
         android:textSize="11sp"
         android:visibility="gone" />
 </com.luck.picture.lib.widget.SquareRelativeLayout>

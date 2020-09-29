@@ -7,56 +7,72 @@ import android.util.TypedValue;
 
 /**
  * @author：luck
- * @data：2018/3/28 下午1:26
- * @描述:style动态获取
+ * @data：2018/3/28 下午1:00
+ * @描述: 动态获取attrs
  */
 
 public class AttrsUtils {
+
     /**
      * get attrs color
      *
-     * @param mContext
+     * @param context
      * @param attr
      * @return
      */
-    public static int getTypeValueColor(Context mContext, int attr) {
-        TypedValue typedValue = new TypedValue();
-        int[] attribute = new int[]{attr};
-        TypedArray array = mContext.obtainStyledAttributes(typedValue.resourceId, attribute);
-        int color = array.getColor(0, -1);
-        array.recycle();
-        return color;
+    public static int getTypeValueColor(Context context, int attr) {
+        try {
+            TypedValue typedValue = new TypedValue();
+            int[] attribute = new int[]{attr};
+            TypedArray array = context.obtainStyledAttributes(typedValue.resourceId, attribute);
+            int color = array.getColor(0, 0);
+            array.recycle();
+            return color;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     /**
      * attrs status color or black
      *
-     * @param mContext
+     * @param context
      * @param attr
      * @return
      */
-    public static boolean getTypeValueBoolean(Context mContext, int attr) {
-        TypedValue typedValue = new TypedValue();
-        int[] attribute = new int[]{attr};
-        TypedArray array = mContext.obtainStyledAttributes(typedValue.resourceId, attribute);
-        boolean statusFont = array.getBoolean(0, false);
-        array.recycle();
-        return statusFont;
+    public static boolean getTypeValueBoolean(Context context, int attr) {
+        try {
+            TypedValue typedValue = new TypedValue();
+            int[] attribute = new int[]{attr};
+            TypedArray array = context.obtainStyledAttributes(typedValue.resourceId, attribute);
+            boolean statusFont = array.getBoolean(0, false);
+            array.recycle();
+            return statusFont;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     /**
-     * attrs PopupWindow down or up icon
+     * attrs drawable
      *
-     * @param mContext
+     * @param context
      * @param attr
      * @return
      */
-    public static Drawable getTypeValuePopWindowImg(Context mContext, int attr) {
-        TypedValue typedValue = new TypedValue();
-        int[] attribute = new int[]{attr};
-        TypedArray array = mContext.obtainStyledAttributes(typedValue.resourceId, attribute);
-        Drawable drawable = array.getDrawable(0);
-        array.recycle();
-        return drawable;
+    public static Drawable getTypeValueDrawable(Context context, int attr) {
+        try {
+            TypedValue typedValue = new TypedValue();
+            int[] attribute = new int[]{attr};
+            TypedArray array = context.obtainStyledAttributes(typedValue.resourceId, attribute);
+            Drawable drawable = array.getDrawable(0);
+            array.recycle();
+            return drawable;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

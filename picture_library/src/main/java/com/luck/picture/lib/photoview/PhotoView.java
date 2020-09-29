@@ -15,7 +15,6 @@
  *******************************************************************************/
 package com.luck.picture.lib.photoview;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.RectF;
@@ -25,11 +24,13 @@ import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.widget.ImageView;
 
+import androidx.appcompat.widget.AppCompatImageView;
+
 /**
  * A zoomable {@link ImageView}. See {@link PhotoViewAttacher} for most of the details on how the zooming
  * is accomplished
  */
-public class PhotoView extends ImageView {
+public class PhotoView extends AppCompatImageView {
 
     private PhotoViewAttacher attacher;
     private ScaleType pendingScaleType;
@@ -44,12 +45,6 @@ public class PhotoView extends ImageView {
 
     public PhotoView(Context context, AttributeSet attr, int defStyle) {
         super(context, attr, defStyle);
-        init();
-    }
-
-    @TargetApi(21)
-    public PhotoView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
 
@@ -147,11 +142,6 @@ public class PhotoView extends ImageView {
         attacher.setRotationBy(rotationDegree);
     }
 
-    @Deprecated
-    public boolean isZoomEnabled() {
-        return attacher.isZoomEnabled();
-    }
-
     public boolean isZoomable() {
         return attacher.isZoomable();
     }
@@ -168,6 +158,7 @@ public class PhotoView extends ImageView {
         attacher.getDisplayMatrix(matrix);
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public boolean setDisplayMatrix(Matrix finalRectangle) {
         return attacher.setDisplayMatrix(finalRectangle);
     }

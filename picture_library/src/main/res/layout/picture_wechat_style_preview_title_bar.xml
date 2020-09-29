@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/titleViewBg"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?attr/picture.ac_preview.title.bg" />
+
+
+    <ImageView
+        android:id="@+id/pictureLeftBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/titleViewBg"
+        android:layout_alignBottom="@id/titleViewBg"
+        android:padding="15dp" />
+
+
+    <TextView
+        android:id="@+id/picture_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/pictureLeftBack"
+        android:layout_alignBottom="@id/pictureLeftBack"
+        android:layout_toRightOf="@id/pictureLeftBack"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxEms="11"
+        android:textColor="?attr/picture.ac_preview.title.textColor"
+        android:textSize="18sp" />
+
+
+    <TextView
+        android:id="@+id/picture_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/picture_send_button_default_bg"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp"
+        android:textColor="?picture.right.textColor"
+        android:textSize="16sp" />
+
+
+</merge>

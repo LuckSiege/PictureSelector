@@ -30,15 +30,16 @@
 
 package com.yalantis.ucrop.util;
 
-import android.media.ExifInterface;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.exifinterface.media.ExifInterface;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * A class for parsing the exif orientation from an image header.
@@ -59,7 +60,7 @@ public class ImageHeaderParser {
     private static final int INTEL_TIFF_MAGIC_NUMBER = 0x4949;
     private static final String JPEG_EXIF_SEGMENT_PREAMBLE = "Exif\0\0";
     private static final byte[] JPEG_EXIF_SEGMENT_PREAMBLE_BYTES =
-            JPEG_EXIF_SEGMENT_PREAMBLE.getBytes(Charset.forName("UTF-8"));
+            JPEG_EXIF_SEGMENT_PREAMBLE.getBytes(StandardCharsets.UTF_8);
     private static final int SEGMENT_SOS = 0xDA;
     private static final int MARKER_EOI = 0xD9;
     private static final int SEGMENT_START_ID = 0xFF;
@@ -377,7 +378,7 @@ public class ImageHeaderParser {
 
     public static void copyExif(ExifInterface originalExif, int width, int height, String imageOutputPath) {
         String[] attributes = new String[]{
-                ExifInterface.TAG_APERTURE,
+                ExifInterface.TAG_F_NUMBER,
                 ExifInterface.TAG_DATETIME,
                 ExifInterface.TAG_DATETIME_DIGITIZED,
                 ExifInterface.TAG_EXPOSURE_TIME,
@@ -392,12 +393,12 @@ public class ImageHeaderParser {
                 ExifInterface.TAG_GPS_LONGITUDE_REF,
                 ExifInterface.TAG_GPS_PROCESSING_METHOD,
                 ExifInterface.TAG_GPS_TIMESTAMP,
-                ExifInterface.TAG_ISO,
+                ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY,
                 ExifInterface.TAG_MAKE,
                 ExifInterface.TAG_MODEL,
                 ExifInterface.TAG_SUBSEC_TIME,
-                ExifInterface.TAG_SUBSEC_TIME_DIG,
-                ExifInterface.TAG_SUBSEC_TIME_ORIG,
+                ExifInterface.TAG_SUBSEC_TIME_DIGITIZED,
+                ExifInterface.TAG_SUBSEC_TIME_ORIGINAL,
                 ExifInterface.TAG_WHITE_BALANCE
         };
 

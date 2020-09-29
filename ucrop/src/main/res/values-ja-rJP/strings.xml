@@ -1,0 +1,8 @@
+<resources>
+
+    <string name="ucrop_label_original">元の比率</string>
+    <string name="ucrop_label_edit_photo">切り取り</string>
+
+    <string name="ucrop_menu_crop">切り取り</string>
+    <string name="ucrop_gif_tag">gif図</string>
+</resources>

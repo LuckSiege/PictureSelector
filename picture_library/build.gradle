@@ -10,22 +10,31 @@ android {
         versionName cfgs.versionName
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':ucrop')
-    //noinspection GradleCompatible
-    compile "com.android.support:appcompat-v7:${cfgs.androidSupportVersion}"
-    //noinspection GradleCompatible
-    compile "com.android.support:recyclerview-v7:${cfgs.androidSupportVersion}"
-    compile "com.github.bumptech.glide:glide:${cfgs.glide}"
-    compile "io.reactivex.rxjava2:rxjava:${cfgs.rxjava}"
-    compile "io.reactivex.rxjava2:rxandroid:${cfgs.rxandroid}"
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:${cfgs.version_appcompat}"
+    implementation "androidx.recyclerview:recyclerview:${cfgs.version_recyclerview}"
+    implementation "androidx.concurrent:concurrent-futures:${cfgs.futures_version}"
+    implementation "androidx.annotation:annotation-experimental:${cfgs.experimental_version}"
+    implementation "com.squareup.okio:okio:${cfgs.okio_version}"
+    implementation "androidx.camera:camera-lifecycle:${cfgs.camerax_version}"
+    implementation "androidx.localbroadcastmanager:localbroadcastmanager:${cfgs.localbroadcastmanager}"
+    implementation "androidx.camera:camera-view:${cfgs.camerax_view}"
+    api project(':ucrop')
 }

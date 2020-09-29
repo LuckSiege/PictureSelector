@@ -12,6 +12,10 @@
     <uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <application
         android:name=".App"
@@ -30,7 +34,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".PhotoFragmentActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|keyboard|"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
             android:screenOrientation="portrait" />
         <activity
             android:name=".SimpleActivity"

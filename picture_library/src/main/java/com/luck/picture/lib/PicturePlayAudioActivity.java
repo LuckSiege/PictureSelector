@@ -8,9 +8,16 @@ import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.tools.DateUtils;
 
-
+/**
+ * # No longer maintain audio related functions,
+ * but can continue to use but there will be phone compatibility issues.
+ * <p>
+ * 不再维护音频相关功能，但可以继续使用但会有机型兼容性问题
+ */
+@Deprecated
 public class PicturePlayAudioActivity extends PictureBaseActivity implements View.OnClickListener {
     private String audio_path;
     private MediaPlayer mediaPlayer;
@@ -19,33 +26,38 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
     private TextView tv_PlayPause, tv_Stop, tv_Quit,
             tv_musicStatus, tv_musicTotal, tv_musicTime;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
                 , WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_picture_play_audio);
-        audio_path = getIntent().getStringExtra("audio_path");
-        tv_musicStatus = (TextView) findViewById(R.id.tv_musicStatus);
-        tv_musicTime = (TextView) findViewById(R.id.tv_musicTime);
-        musicSeekBar = (SeekBar) findViewById(R.id.musicSeekBar);
-        tv_musicTotal = (TextView) findViewById(R.id.tv_musicTotal);
-        tv_PlayPause = (TextView) findViewById(R.id.tv_PlayPause);
-        tv_Stop = (TextView) findViewById(R.id.tv_Stop);
-        tv_Quit = (TextView) findViewById(R.id.tv_Quit);
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                initPlayer(audio_path);
-            }
-        }, 30);
+    }
+
+    @Override
+    public int getResourceId() {
+        return R.layout.picture_play_audio;
+    }
+
+    @Override
+    protected void initWidgets() {
+        super.initWidgets();
+        audio_path = getIntent().getStringExtra(PictureConfig.EXTRA_AUDIO_PATH);
+        tv_musicStatus = findViewById(R.id.tv_musicStatus);
+        tv_musicTime = findViewById(R.id.tv_musicTime);
+        musicSeekBar = findViewById(R.id.musicSeekBar);
+        tv_musicTotal = findViewById(R.id.tv_musicTotal);
+        tv_PlayPause = findViewById(R.id.tv_PlayPause);
+        tv_Stop = findViewById(R.id.tv_Stop);
+        tv_Quit = findViewById(R.id.tv_Quit);
+        handler.postDelayed(() -> initPlayer(audio_path), 30);
         tv_PlayPause.setOnClickListener(this);
         tv_Stop.setOnClickListener(this);
         tv_Quit.setOnClickListener(this);
         musicSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser == true) {
+                if (fromUser) {
                     mediaPlayer.seekTo(progress);
                 }
             }
@@ -67,10 +79,10 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
         public void run() {
             try {
                 if (mediaPlayer != null) {
-                    tv_musicTime.setText(DateUtils.timeParse(mediaPlayer.getCurrentPosition()));
+                    tv_musicTime.setText(DateUtils.formatDurationTime(mediaPlayer.getCurrentPosition()));
                     musicSeekBar.setProgress(mediaPlayer.getCurrentPosition());
                     musicSeekBar.setMax(mediaPlayer.getDuration());
-                    tv_musicTotal.setText(DateUtils.timeParse(mediaPlayer.getDuration()));
+                    tv_musicTotal.setText(DateUtils.formatDurationTime(mediaPlayer.getDuration()));
                     handler.postDelayed(runnable, 200);
                 }
             } catch (Exception e) {
@@ -111,12 +123,7 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
         }
         if (i == R.id.tv_Quit) {
             handler.removeCallbacks(runnable);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    stop(audio_path);
-                }
-            }, 30);
+            new Handler().postDelayed(() -> stop(audio_path), 30);
             try {
                 closeActivity();
             } catch (Exception e) {
@@ -144,7 +151,7 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
             tv_musicStatus.setText(getString(R.string.picture_pause_audio));
             playOrPause();
         }
-        if (isPlayAudio == false) {
+        if (!isPlayAudio) {
             handler.post(runnable);
             isPlayAudio = true;
         }

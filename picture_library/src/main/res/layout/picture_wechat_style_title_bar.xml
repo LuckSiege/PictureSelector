@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/titleViewBg"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?colorPrimary" />
+
+    <RelativeLayout
+        android:id="@+id/rlAlbum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/picture_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxEms="8"
+            android:maxLines="1"
+            android:text="@string/picture_camera_roll"
+            android:textColor="?picture.title.textColor"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/ivArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/picture_title"
+            android:scaleType="centerInside"
+            android:src="?attr/picture.arrow_down.icon" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/picture_right"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/picture_cancel"
+        android:textColor="?picture.right.textColor"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/picture_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/picture_send_button_default_bg"
+        android:gravity="center"
+        android:textColor="?picture.right.textColor"
+        android:textSize="16sp" />
+
+    <ImageView
+        android:id="@+id/pictureLeftBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/titleViewBg"
+        android:layout_alignBottom="@id/titleViewBg"
+        android:padding="15dp"
+        android:src="?attr/picture.leftBack.icon" />
+</merge>
+

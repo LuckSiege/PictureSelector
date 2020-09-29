@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/picture_color_black"
+    android:fitsSystemWindows="true">
+
+    <include layout="@layout/picture_wechat_style_preview_title_bar" />
+
+
+    <com.luck.picture.lib.widget.PreviewViewPager
+        android:id="@+id/preview_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/titleViewBg" />
+
+
+    <View
+        android:id="@+id/bottomLine"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_above="@id/select_bar_layout"
+        android:background="@color/picture_color_ec"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_gallery"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_above="@id/bottomLine"
+        android:background="@color/picture_color_half_grey"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:visibility="gone" />
+
+
+    <RelativeLayout
+        android:id="@+id/select_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:background="?attr/picture.ac_preview.bottom.bg"
+        android:gravity="center_vertical">
+
+        <CheckBox
+            android:id="@+id/cb_original"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@color/picture_color_transparent"
+            android:button="@color/picture_color_transparent"
+            android:gravity="center_vertical"
+            android:paddingLeft="5dp"
+            android:text="@string/picture_original_image"
+            android:textColor="@color/picture_color_53575e"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+
+        <TextView
+            android:id="@+id/tv_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:enabled="false"
+            android:gravity="center|left"
+            android:paddingRight="12dp"
+            android:text="@string/picture_please_select"
+            android:textColor="?attr/picture.ac_preview.complete.textColor"
+            android:textSize="14sp" />
+
+
+        <TextView
+            android:id="@+id/tvMediaNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@id/tv_ok"
+            android:background="?attr/picture.num.style"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="@color/picture_color_white"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:enabled="false"
+            android:gravity="center|left"
+            android:paddingRight="12dp"
+            android:text="@string/picture_select"
+            android:textColor="@color/picture_color_white"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/check"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@id/tv_selected"
+            android:gravity="center" />
+
+        <View
+            android:id="@+id/btnCheck"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@color/picture_color_transparent" />
+
+
+    </RelativeLayout>
+</RelativeLayout>

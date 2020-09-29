@@ -4,5 +4,8 @@
         <external-path
             name="camera_photos"
             path="" />
+        <root-path
+            name="camera_photos"
+            path="" />
     </paths>
 </resources>

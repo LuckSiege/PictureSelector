@@ -4,22 +4,27 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.RectF;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.exifinterface.media.ExifInterface;
 
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.model.CropParameters;
-import com.yalantis.ucrop.model.ExifInfo;
 import com.yalantis.ucrop.model.ImageState;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
 import com.yalantis.ucrop.util.FileUtils;
 import com.yalantis.ucrop.util.ImageHeaderParser;
+import com.yalantis.ucrop.util.MimeType;
+import com.yalantis.ucrop.util.SdkUtils;
 
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -36,7 +41,7 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
 
     private static final String TAG = "BitmapCropTask";
 
-    private final WeakReference<Context> mContext;
+    private final WeakReference<Context> mContextWeakReference;
 
     private Bitmap mViewBitmap;
 
@@ -49,7 +54,6 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
     private final Bitmap.CompressFormat mCompressFormat;
     private final int mCompressQuality;
     private final String mImageInputPath, mImageOutputPath;
-    private final ExifInfo mExifInfo;
     private final BitmapCropCallback mCropCallback;
 
     private int mCroppedImageWidth, mCroppedImageHeight;
@@ -58,7 +62,7 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
     public BitmapCropTask(@NonNull Context context, @Nullable Bitmap viewBitmap, @NonNull ImageState imageState, @NonNull CropParameters cropParameters,
                           @Nullable BitmapCropCallback cropCallback) {
 
-        mContext = new WeakReference<>(context);
+        mContextWeakReference = new WeakReference<>(context);
 
         mViewBitmap = viewBitmap;
         mCropRect = imageState.getCropRect();
@@ -74,9 +78,12 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
 
         mImageInputPath = cropParameters.getImageInputPath();
         mImageOutputPath = cropParameters.getImageOutputPath();
-        mExifInfo = cropParameters.getExifInfo();
 
         mCropCallback = cropCallback;
+    }
+
+    private Context getContext() {
+        return mContextWeakReference.get();
     }
 
     @Override
@@ -90,7 +97,6 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
             return new NullPointerException("CurrentImageRect is empty");
         }
 
-
         try {
             crop();
             mViewBitmap = null;
@@ -100,7 +106,6 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
 
         return null;
     }
-
 
     private boolean crop() throws IOException {
         // Downsize if needed
@@ -148,20 +153,39 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
         Log.i(TAG, "Should crop: " + shouldCrop);
 
         if (shouldCrop) {
-            ExifInterface originalExif = new ExifInterface(mImageInputPath);
+            ExifInterface originalExif;
+            ParcelFileDescriptor parcelFileDescriptor = null;
+            if (SdkUtils.isQ() && MimeType.isContent(mImageInputPath)) {
+                parcelFileDescriptor =
+                        getContext().getContentResolver().openFileDescriptor(Uri.parse(mImageInputPath), "r");
+                originalExif = new ExifInterface(new FileInputStream(parcelFileDescriptor.getFileDescriptor()));
+            } else {
+                originalExif = new ExifInterface(mImageInputPath);
+            }
             saveImage(Bitmap.createBitmap(mViewBitmap, cropOffsetX, cropOffsetY, mCroppedImageWidth, mCroppedImageHeight));
             if (mCompressFormat.equals(Bitmap.CompressFormat.JPEG)) {
                 ImageHeaderParser.copyExif(originalExif, mCroppedImageWidth, mCroppedImageHeight, mImageOutputPath);
             }
+            if (parcelFileDescriptor != null) {
+                BitmapLoadUtils.close(parcelFileDescriptor);
+            }
             return true;
         } else {
-            FileUtils.copyFile(mImageInputPath, mImageOutputPath);
+            if (SdkUtils.isQ() && MimeType.isContent(mImageInputPath)) {
+                ParcelFileDescriptor parcelFileDescriptor =
+                        getContext().getContentResolver().openFileDescriptor(Uri.parse(mImageInputPath), "r");
+                FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                FileUtils.copyFile(new FileInputStream(fileDescriptor), mImageOutputPath);
+                BitmapLoadUtils.close(parcelFileDescriptor);
+            } else {
+                FileUtils.copyFile(mImageInputPath, mImageOutputPath);
+            }
             return false;
         }
     }
 
     private void saveImage(@NonNull Bitmap croppedBitmap) throws FileNotFoundException {
-        Context context = mContext.get();
+        Context context = getContext();
         if (context == null) {
             return;
         }
@@ -191,7 +215,8 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
                 || Math.abs(mCropRect.left - mCurrentImageRect.left) > pixelError
                 || Math.abs(mCropRect.top - mCurrentImageRect.top) > pixelError
                 || Math.abs(mCropRect.bottom - mCurrentImageRect.bottom) > pixelError
-                || Math.abs(mCropRect.right - mCurrentImageRect.right) > pixelError;
+                || Math.abs(mCropRect.right - mCurrentImageRect.right) > pixelError
+                || mCurrentAngle != 0;
     }
 
     @Override

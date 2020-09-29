@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.camera.view.CameraView
+        android:id="@+id/cameraView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.luck.picture.lib.photoview.PhotoView
+        android:id="@+id/image_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:scaleType="centerCrop"
+        android:visibility="invisible" />
+
+    <TextureView
+        android:id="@+id/video_play_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+
+    <ImageView
+        android:id="@+id/image_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="right"
+        android:layout_marginTop="10dp"
+        android:padding="15dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/picture_ic_camera" />
+
+    <ImageView
+        android:id="@+id/image_flash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@id/image_switch"
+        android:padding="15dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/picture_ic_flash_on" />
+
+
+    <com.luck.picture.lib.camera.view.CaptureLayout
+        android:id="@+id/capture_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+
+</merge>

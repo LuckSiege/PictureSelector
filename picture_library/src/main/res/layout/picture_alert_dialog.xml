@@ -3,14 +3,15 @@
     android:id="@+id/loading"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:background="@drawable/dialog_custom_bg"
-    android:gravity="center"
+    android:background="@drawable/picture_dialog_custom_bg"
     android:orientation="vertical"
-    android:padding="15dp">
+    android:padding="10dp">
 
-    <com.luck.picture.lib.dialog.PictureSpinView
-        android:layout_width="30dp"
-        android:layout_height="30dp" />
+    <ProgressBar
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="center_horizontal"
+        android:indeterminateBehavior="repeat"
+        android:indeterminateDrawable="@drawable/picture_anim_progress" />
 
 </LinearLayout>
