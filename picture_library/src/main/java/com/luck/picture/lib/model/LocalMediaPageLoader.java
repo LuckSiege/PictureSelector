@@ -147,9 +147,9 @@ public final class LocalMediaPageLoader {
     }
 
 
-    public LocalMediaPageLoader(Context context, PictureSelectionConfig config) {
+    public LocalMediaPageLoader(Context context) {
         this.mContext = context;
-        this.config = config;
+        this.config = PictureSelectionConfig.getInstance();
     }
 
     private static final String[] PROJECTION_29 = {
@@ -709,12 +709,11 @@ public final class LocalMediaPageLoader {
 
     private static LocalMediaPageLoader instance;
 
-    public static LocalMediaPageLoader getInstance(Context context, PictureSelectionConfig
-            config) {
+    public static LocalMediaPageLoader getInstance(Context context) {
         if (instance == null) {
             synchronized (LocalMediaPageLoader.class) {
                 if (LocalMediaPageLoader.instance == null) {
-                    LocalMediaPageLoader.instance = new LocalMediaPageLoader(context.getApplicationContext(), config);
+                    LocalMediaPageLoader.instance = new LocalMediaPageLoader(context.getApplicationContext());
                 }
             }
         }

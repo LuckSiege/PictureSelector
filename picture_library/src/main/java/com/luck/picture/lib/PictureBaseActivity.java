@@ -55,7 +55,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 
 /**
@@ -149,13 +148,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            config = savedInstanceState.getParcelable(PictureConfig.EXTRA_CONFIG);
-        }
-        if (config == null) {
-            config = getIntent() != null ? getIntent().getParcelableExtra(PictureConfig.EXTRA_CONFIG) : config;
-        }
-        checkConfigNull();
+        config = PictureSelectionConfig.getInstance();
         PictureLanguageUtils.setAppLanguage(getContext(), config.language);
         if (!config.camera) {
             setTheme(config.themeStyleId == 0 ? R.style.picture_default_style : config.themeStyleId);
@@ -220,14 +213,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * CheckConfigNull
-     */
-    private void checkConfigNull() {
-        if (config == null) {
-            config = PictureSelectionConfig.getInstance();
-        }
-    }
 
     /**
      * setNewRequestedOrientation

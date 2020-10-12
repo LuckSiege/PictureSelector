@@ -227,7 +227,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     private void loadData() {
         long bucketId = getIntent().getLongExtra(PictureConfig.EXTRA_BUCKET_ID, -1);
         mPage++;
-        LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage, config.pageSize,
+        LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage, config.pageSize,
                 (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
                     if (!isFinishing()) {
                         this.isHasMore = isHasMore;
@@ -251,7 +251,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     private void loadMoreData() {
         long bucketId = getIntent().getLongExtra(PictureConfig.EXTRA_BUCKET_ID, -1);
         mPage++;
-        LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage, config.pageSize,
+        LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage, config.pageSize,
                 (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
                     if (!isFinishing()) {
                         this.isHasMore = isHasMore;
