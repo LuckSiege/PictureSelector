@@ -144,7 +144,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public String originalPath;
     public String cameraPath;
     public int cameraMimeType;
-    public int pageSize;
+    public int pageSize = PictureConfig.MAX_PAGE_SIZE;
     public boolean isPageStrategy;
     public boolean isFilterInvalidFile;
     public boolean isMaxSelectEnabledMask;
