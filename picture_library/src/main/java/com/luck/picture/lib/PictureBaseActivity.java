@@ -153,7 +153,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (!config.camera) {
             setTheme(config.themeStyleId == 0 ? R.style.picture_default_style : config.themeStyleId);
         }
-        super.onCreate(savedInstanceState == null ? new Bundle() : savedInstanceState);
+        super.onCreate(savedInstanceState);
         newCreateEngine();
         newCreateResultCallbackListener();
         if (isRequestedOrientation()) {

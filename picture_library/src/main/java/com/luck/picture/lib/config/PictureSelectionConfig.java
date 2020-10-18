@@ -60,7 +60,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public int recordVideoSecond;
     public int recordVideoMinSecond;
     public int minimumCompressSize;
-    public int imageSpanCount;
+    public int imageSpanCount = 4;
     public int aspect_ratio_x;
     public int aspect_ratio_y;
     public int cropWidth;
