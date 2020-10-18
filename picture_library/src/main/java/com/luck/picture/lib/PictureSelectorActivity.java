@@ -388,14 +388,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (config.style.pictureOriginalFontColor != 0) {
                     mCbOriginal.setTextColor(config.style.pictureOriginalFontColor);
                 } else {
-                    mCbOriginal.setTextColor(ContextCompat.getColor(this, R.color.picture_color_53575e));
+                    mCbOriginal.setTextColor(ContextCompat.getColor(this, R.color.picture_color_white));
                 }
                 if (config.style.pictureOriginalTextSize != 0) {
                     mCbOriginal.setTextSize(config.style.pictureOriginalTextSize);
                 }
             } else {
                 mCbOriginal.setButtonDrawable(ContextCompat.getDrawable(this, R.drawable.picture_original_checkbox));
-                mCbOriginal.setTextColor(ContextCompat.getColor(this, R.color.picture_color_53575e));
+                mCbOriginal.setTextColor(ContextCompat.getColor(this, R.color.picture_color_white));
             }
         }
 
