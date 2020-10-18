@@ -92,7 +92,6 @@ public class GlideEngine implements ImageEngine {
                                 // 加载长图
                                 longImageView.setQuickScaleEnabled(true);
                                 longImageView.setZoomEnabled(true);
-                                longImageView.setPanEnabled(true);
                                 longImageView.setDoubleTapZoomDuration(100);
                                 longImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
                                 longImageView.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
@@ -136,7 +135,6 @@ public class GlideEngine implements ImageEngine {
                                 // 加载长图
                                 longImageView.setQuickScaleEnabled(true);
                                 longImageView.setZoomEnabled(true);
-                                longImageView.setPanEnabled(true);
                                 longImageView.setDoubleTapZoomDuration(100);
                                 longImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
                                 longImageView.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);

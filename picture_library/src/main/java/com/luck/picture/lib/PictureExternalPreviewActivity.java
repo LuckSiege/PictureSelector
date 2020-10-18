@@ -371,7 +371,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     private void displayLongPic(Uri uri, SubsamplingScaleImageView longImg) {
         longImg.setQuickScaleEnabled(true);
         longImg.setZoomEnabled(true);
-        longImg.setPanEnabled(true);
         longImg.setDoubleTapZoomDuration(100);
         longImg.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
         longImg.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
