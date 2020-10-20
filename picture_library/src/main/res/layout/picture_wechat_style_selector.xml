@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/picture_color_white"
+    android:background="@color/ucrop_color_black"
     android:fitsSystemWindows="true"
     tools:context="com.luck.picture.lib.PictureSelectorActivity">
 
 
     <RelativeLayout
+        android:id="@+id/rl_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rl_title"
-        android:visibility="visible"
-        >
+        android:visibility="visible">
+
         <View
             android:id="@+id/titleViewBg"
             android:layout_width="match_parent"
@@ -94,40 +94,37 @@
         android:id="@+id/rl_custom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/picture_color_white"
-        >
+        android:background="@drawable/radius_shape">
 
         <ImageView
             android:id="@+id/iv_close"
             android:layout_width="40dp"
             android:layout_height="24dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/ic_video_close"
-            android:layout_marginStart="30dp"
-            />
+            android:src="@drawable/ic_video_close" />
 
         <com.google.android.material.tabs.TabLayout
-            android:layout_below="@id/iv_close"
             android:id="@+id/tl_tabs"
             android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@id/iv_close"
             android:layout_marginTop="10dp"
-            app:tabIndicatorColor="@color/ucrop_color_black"
-            android:layout_height="40dp">
+            app:tabIndicatorColor="@color/ucrop_color_black">
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Videos"
                 android:tag="Videos"
-                />
+                android:text="Videos" />
+
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Images"
                 android:tag="Images"
-                />
+                android:text="Images" />
 
 
         </com.google.android.material.tabs.TabLayout>
@@ -137,10 +134,10 @@
         android:id="@+id/rl_bottom"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:visibility="gone"
         android:layout_alignParentBottom="true"
         android:background="?attr/picture.bottom.bg"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/picture_id_preview"
@@ -201,67 +198,62 @@
         android:id="@+id/select_buttom_layout"
         android:layout_width="match_parent"
         android:layout_height="128dp"
-        android:background="@color/picture_color_white"
         android:layout_alignParentBottom="true"
+        android:background="@color/picture_color_white"
         android:gravity="center_vertical">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_selected"
-            android:layout_marginTop="14dp"
-            android:background="#fff"
             android:layout_width="match_parent"
-            android:layout_marginEnd="8dp"
+            android:layout_height="50dp"
             android:layout_marginStart="8dp"
-            android:layout_height="50dp"/>
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="8dp"
+            android:background="#fff" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#e8e8e8"
-            />
+            android:background="#e8e8e8" />
 
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="80dp"
-            android:gravity="center_vertical"
-            >
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/tv_select_max"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="16dp"
                 android:layout_centerVertical="true"
-                android:text="You can Upload up to 1 videos"
-                />
+                android:layout_marginStart="16dp"
+                android:text="You can Upload up to 1 videos" />
 
             <TextView
                 android:id="@+id/tv_count"
                 android:layout_width="84dp"
                 android:layout_height="32dp"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="16dp"
                 android:layout_centerVertical="true"
-                android:gravity="center"
-                android:textSize="14sp"
+                android:layout_marginEnd="16dp"
                 android:background="@drawable/radius_bg_shape"
-                android:textColor="@color/picture_color_white"
+                android:gravity="center"
                 android:text="Next (0)"
-                />
+                android:textColor="@color/picture_color_white"
+                android:textSize="14sp" />
 
         </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#e8e8e8"
             android:layout_marginTop="80dp"
-            />
+            android:background="#e8e8e8" />
 
     </RelativeLayout>
-
 
 
     <com.luck.picture.lib.widget.RecyclerPreloadView
@@ -270,8 +262,7 @@
         android:layout_height="match_parent"
         android:layout_above="@id/select_buttom_layout"
         android:layout_below="@id/rl_custom"
-        android:background="@color/picture_color_white"
-        />
+        android:background="@color/picture_color_white" />
 
     <TextView
         android:id="@+id/tv_empty"

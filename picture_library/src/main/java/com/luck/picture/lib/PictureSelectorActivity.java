@@ -197,6 +197,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mIvPictureLeftBack.setOnClickListener(this);
         mTvPictureRight.setOnClickListener(this);
         mTvPictureOk.setOnClickListener(this);
+        mtTvCount.setOnClickListener(this);
         mTvPictureImgNum.setOnClickListener(this);
         mTvPictureTitle.setOnClickListener(this);
         mIvArrow.setOnClickListener(this);
@@ -851,7 +852,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             return;
         }
 
-        if (id == R.id.picture_tv_ok || id == R.id.picture_tvMediaNum) {
+        if (id == R.id.picture_tv_ok || id == R.id.picture_tvMediaNum || id == R.id.tv_count) {
             onComplete();
             return;
         }
