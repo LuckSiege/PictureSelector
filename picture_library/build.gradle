@@ -37,4 +37,5 @@ dependencies {
     implementation "androidx.localbroadcastmanager:localbroadcastmanager:${cfgs.localbroadcastmanager}"
     implementation "androidx.camera:camera-view:${cfgs.camerax_view}"
     api project(':ucrop')
+    implementation 'com.google.android.material:material:1.2.1'
 }

@@ -1214,9 +1214,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 是否开启类似QQ相册带数字选择风格
         mPictureParameterStyle.isOpenCheckNumStyle = true;
         // 状态栏背景色
-        mPictureParameterStyle.pictureStatusBarColor = Color.parseColor("#393a3e");
+        mPictureParameterStyle.pictureStatusBarColor = Color.parseColor("#ffffff");
         // 相册列表标题栏背景色
-        mPictureParameterStyle.pictureTitleBarBackgroundColor = Color.parseColor("#393a3e");
+        mPictureParameterStyle.pictureTitleBarBackgroundColor = Color.parseColor("#ffffff");
         // 相册父容器背景色
         mPictureParameterStyle.pictureContainerBackgroundColor = ContextCompat.getColor(getContext(), R.color.app_color_black);
         // 相册列表标题栏右侧上拉箭头

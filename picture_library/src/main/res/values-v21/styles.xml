@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TranslucentTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        //设置为false，意味着布局不会延伸到状态栏
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <!--Android 5.x开始需要把颜色设置为程序的主题色白色，否则导航栏会呈现系统默认的浅灰色-->
+        <item name="android:statusBarColor">@android:color/white</item>
+    </style>
+</resources>

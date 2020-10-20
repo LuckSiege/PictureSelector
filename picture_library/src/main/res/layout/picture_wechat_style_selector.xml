@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,7 +9,129 @@
     android:fitsSystemWindows="true"
     tools:context="com.luck.picture.lib.PictureSelectorActivity">
 
-    <include layout="@layout/picture_wechat_style_title_bar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rl_title"
+        android:visibility="visible"
+        >
+        <View
+            android:id="@+id/titleViewBg"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="?colorPrimary" />
+
+        <RelativeLayout
+            android:id="@+id/rlAlbum"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/picture_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxEms="8"
+                android:maxLines="1"
+                android:text="@string/picture_camera_roll"
+                android:textColor="?picture.title.textColor"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/ivArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/picture_title"
+                android:scaleType="centerInside"
+                android:src="?attr/picture.arrow_down.icon" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/picture_right"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/picture_cancel"
+            android:textColor="?picture.right.textColor"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/picture_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/picture_send_button_default_bg"
+            android:gravity="center"
+            android:textColor="?picture.right.textColor"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/pictureLeftBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/titleViewBg"
+            android:layout_alignBottom="@id/titleViewBg"
+            android:padding="15dp"
+            android:src="?attr/picture.leftBack.icon" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_custom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/picture_color_white"
+        >
+
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="40dp"
+            android:layout_height="24dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_video_close"
+            android:layout_marginStart="30dp"
+            />
+
+        <com.google.android.material.tabs.TabLayout
+            android:layout_below="@id/iv_close"
+            android:id="@+id/tl_tabs"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            app:tabIndicatorColor="@color/ucrop_color_black"
+            android:layout_height="40dp">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Videos"
+                android:tag="Videos"
+                />
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Images"
+                android:tag="Images"
+                />
+
+
+        </com.google.android.material.tabs.TabLayout>
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/rl_bottom"
@@ -105,12 +228,13 @@
             >
 
             <TextView
+                android:id="@+id/tv_select_max"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
                 android:layout_centerVertical="true"
-                android:text="You can Upload up to 35 videos"
+                android:text="You can Upload up to 1 videos"
                 />
 
             <TextView
@@ -145,7 +269,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/select_buttom_layout"
-        android:layout_below="@id/titleViewBg"
+        android:layout_below="@id/rl_custom"
         android:background="@color/picture_color_white"
         />
 

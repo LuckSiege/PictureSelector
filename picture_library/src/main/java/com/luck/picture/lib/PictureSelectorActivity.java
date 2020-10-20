@@ -1,18 +1,21 @@
 package com.luck.picture.lib;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -30,6 +33,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
 import com.luck.picture.lib.adapter.PictureImageGridAdapter;
 import com.luck.picture.lib.adapter.SelectedLocalDataMedia;
 import com.luck.picture.lib.animators.AlphaInAnimationAdapter;
@@ -74,6 +79,7 @@ import com.yalantis.ucrop.model.CutInfo;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author：luck
@@ -86,6 +92,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private static final String TAG = PictureSelectorActivity.class.getSimpleName();
     protected ImageView mIvPictureLeftBack;
     protected ImageView mIvArrow;
+    protected TabLayout mTabLayout;
     protected View titleViewBg;
     protected TextView mTvPictureTitle, mTvPictureRight, mTvPictureOk, mTvEmpty,
             mTvPictureImgNum, mTvPicturePreview, mTvPlayPause, mTvStop, mTvQuit,
@@ -109,6 +116,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private RecyclerView mSelectedLocalMedia;
     private SelectedLocalDataMedia mSelectedLocalAdapter;
     private TextView mtTvCount;
+    private ImageView mIvClose;
+    private TextView mTvSelectMax;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +173,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mTvPictureOk = findViewById(R.id.picture_tv_ok);
         mCbOriginal = findViewById(R.id.cb_original);
         mIvArrow = findViewById(R.id.ivArrow);
+        mTabLayout = findViewById(R.id.tl_tabs);
+        mIvClose = findViewById(R.id.iv_close);
         mTvPicturePreview = findViewById(R.id.picture_id_preview);
         mTvPictureImgNum = findViewById(R.id.picture_tvMediaNum);
         mRecyclerView = findViewById(R.id.picture_recycler);
@@ -171,6 +182,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mTvEmpty = findViewById(R.id.tv_empty);
         mSelectedLocalMedia = findViewById(R.id.rv_selected);
         mtTvCount = findViewById(R.id.tv_count);
+        mTvSelectMax = findViewById(R.id.tv_select_max);
         isNumComplete(numComplete);
         if (!numComplete) {
             animation = AnimationUtils.loadAnimation(this, R.anim.picture_anim_modal_in);
@@ -251,7 +263,71 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     outRect.left = ScreenUtils.dip2px(PictureSelectorActivity.this, 4);
                 }
             });
+
+            //todo 删除
+            mSelectedLocalAdapter.setOnItemClickListener(media -> {
+                mAdapter.changeCheckboxState(media);
+            });
+
         }
+
+        if (mTabLayout != null) {
+            mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    if (tab.getText().equals("Images")) {
+                        config.chooseMode = 1;
+                        mPage = 1;
+                        LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(-1, mPage,
+                                (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
+                                    if (!isFinishing()) {
+                                        if (result.size() == 0) {
+                                            mAdapter.clear();
+                                        }
+                                        mAdapter.bindData(result);
+                                        mRecyclerView.onScrolled(0, 0);
+                                        mRecyclerView.smoothScrollToPosition(0);
+                                        dismissDialog();
+                                    }
+                                });
+                    } else {
+                        config.chooseMode = 2;
+                        mPage = 1;
+                        LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(-1, mPage,
+                                (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
+                                    if (!isFinishing()) {
+                                        if (result.size() == 0) {
+                                            mAdapter.clear();
+                                        }
+                                        mAdapter.bindData(result);
+                                        mRecyclerView.onScrolled(0, 0);
+                                        mRecyclerView.smoothScrollToPosition(0);
+                                        dismissDialog();
+                                    }
+                                });
+                    }
+                }
+
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {
+
+                }
+
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {
+
+                }
+            });
+        }
+
+        if (mIvClose != null) {
+            mIvClose.setOnClickListener(v -> finish());
+        }
+
+        if (mTvSelectMax != null && config.selectMaxPrompt != null) {
+            mTvSelectMax.setText(config.selectMaxPrompt);
+        }
+
     }
 
     @Override
@@ -1307,12 +1383,22 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onChange(List<LocalMedia> selectData) {
         changeImageNumber(selectData);
         if (mSelectedLocalAdapter != null) {
             mSelectedLocalAdapter.setList(selectData);
-            mtTvCount.setText("Next (" +selectData.size()+")");
+
+            if (selectData.size() > 0) {
+                mtTvCount.setText("Next (" +selectData.size()+")");
+                mtTvCount.setTextColor(getResources().getColor(R.color.ucrop_color_white));
+                mtTvCount.setBackground(getResources().getDrawable(R.drawable.radius_bg_shape));
+            } else {
+                mtTvCount.setText("Next (0)");
+                mtTvCount.setTextColor(getResources().getColor(R.color.picture_color_light_grey));
+                mtTvCount.setBackground(getResources().getDrawable(R.drawable.radius_bg_shape_gray));
+            }
         }
     }
 

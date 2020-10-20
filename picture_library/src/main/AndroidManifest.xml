@@ -21,9 +21,11 @@
 
         <activity
             android:name=".PictureSelectorActivity"
+            android:theme="@style/TranslucentTheme"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
             android:name=".PictureSelectorWeChatStyleActivity"
+            android:theme="@style/TranslucentTheme"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
             android:name=".PictureSelectorCameraEmptyActivity"

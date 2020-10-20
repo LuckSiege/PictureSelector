@@ -219,7 +219,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                         return;
                     }
                     // The width and height of the image are reversed if there is rotation information
-                    MediaUtils.setOrientationAsynchronous(context, image, config.isAndroidQChangeWH, config.isAndroidQChangeVideoWH, null);
+               //     MediaUtils.setOrientationAsynchronous(context, image, config.isAndroidQChangeWH, config.isAndroidQChangeVideoWH, null);
                     changeCheckboxState(contentHolder, image);
                 });
             }
@@ -416,47 +416,47 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         String mimeType = count > 0 ? selectData.get(0).getMimeType() : "";
         if (config.isWithVideoImage) {
             // isWithVideoImage mode
-            int videoSize = 0;
-            for (int i = 0; i < count; i++) {
-                LocalMedia media = selectData.get(i);
-                if (PictureMimeType.isHasVideo(media.getMimeType())) {
-                    videoSize++;
-                }
-            }
-
-            if (PictureMimeType.isHasVideo(image.getMimeType())) {
-                if (config.maxVideoSelectNum <= 0) {
-                    showPromptDialog(context.getString(R.string.picture_rule));
-                    return;
-                }
-
-                if (getSelectedSize() >= config.maxSelectNum && !isChecked) {
-                    showPromptDialog(context.getString(R.string.picture_message_max_num, config.maxSelectNum));
-                    return;
-                }
-
-                if (videoSize >= config.maxVideoSelectNum && !isChecked) {
-                    showPromptDialog(StringUtils.getMsg(context, image.getMimeType(), config.maxVideoSelectNum));
-                    return;
-                }
-
-                if (!isChecked && config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
-                    showPromptDialog(context.getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
-                    return;
-                }
-
-                if (!isChecked && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
-                    showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
-                    return;
-                }
-            }
-
-            if (PictureMimeType.isHasImage(image.getMimeType())) {
-                if (getSelectedSize() >= config.maxSelectNum && !isChecked) {
-                    showPromptDialog(context.getString(R.string.picture_message_max_num, config.maxSelectNum));
-                    return;
-                }
-            }
+//            int videoSize = 0;
+//            for (int i = 0; i < count; i++) {
+//                LocalMedia media = selectData.get(i);
+//                if (PictureMimeType.isHasVideo(media.getMimeType())) {
+//                    videoSize++;
+//                }
+//            }
+//
+//            if (PictureMimeType.isHasVideo(image.getMimeType())) {
+//                if (config.maxVideoSelectNum <= 0) {
+//                    showPromptDialog(context.getString(R.string.picture_rule));
+//                    return;
+//                }
+//
+//                if (getSelectedSize() >= config.maxSelectNum && !isChecked) {
+//                    showPromptDialog(context.getString(R.string.picture_message_max_num, config.maxSelectNum));
+//                    return;
+//                }
+//
+//                if (videoSize >= config.maxVideoSelectNum && !isChecked) {
+//                    showPromptDialog(StringUtils.getMsg(context, image.getMimeType(), config.maxVideoSelectNum));
+//                    return;
+//                }
+//
+//                if (!isChecked && config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
+//                    showPromptDialog(context.getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
+//                    return;
+//                }
+//
+//                if (!isChecked && config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
+//                    showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+//                    return;
+//                }
+//            }
+//
+//            if (PictureMimeType.isHasImage(image.getMimeType())) {
+//                if (getSelectedSize() >= config.maxSelectNum && !isChecked) {
+//                    showPromptDialog(context.getString(R.string.picture_message_max_num, config.maxSelectNum));
+//                    return;
+//                }
+//            }
 
         } else {
             if (!TextUtils.isEmpty(mimeType)) {
@@ -555,53 +555,53 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             contentHolder.tvCheck.startAnimation(AnimationUtils.loadAnimation(context, R.anim.picture_anim_modal_in));
         }
 
-        boolean isRefreshAll = false;
-        if (config.isMaxSelectEnabledMask) {
-            if (config.chooseMode == PictureMimeType.ofAll()) {
-                // ofAll
-                if (config.isWithVideoImage && config.maxVideoSelectNum > 0) {
-                    if (getSelectedSize() >= config.maxSelectNum) {
-                        isRefreshAll = true;
-                    }
-                    if (isChecked) {
-                        // delete
-                        if (getSelectedSize() == config.maxSelectNum - 1) {
-                            isRefreshAll = true;
-                        }
-                    }
-                } else {
-                    if (!isChecked && getSelectedSize() == 1) {
-                        // add
-                        isRefreshAll = true;
-                    }
-                    if (isChecked && getSelectedSize() == 0) {
-                        // delete
-                        isRefreshAll = true;
-                    }
-                }
-            } else {
-                // ofImage or ofVideo or ofAudio
-                if (config.chooseMode == PictureMimeType.ofVideo() && config.maxVideoSelectNum > 0) {
-                    if (!isChecked && getSelectedSize() == config.maxVideoSelectNum) {
-                        // add
-                        isRefreshAll = true;
-                    }
-                    if (isChecked && getSelectedSize() == config.maxVideoSelectNum - 1) {
-                        // delete
-                        isRefreshAll = true;
-                    }
-                } else {
-                    if (!isChecked && getSelectedSize() == config.maxSelectNum) {
-                        // add
-                        isRefreshAll = true;
-                    }
-                    if (isChecked && getSelectedSize() == config.maxSelectNum - 1) {
-                        // delete
-                        isRefreshAll = true;
-                    }
-                }
-            }
-        }
+        boolean isRefreshAll = true;
+//        if (config.isMaxSelectEnabledMask) {
+//            if (config.chooseMode == PictureMimeType.ofAll()) {
+//                // ofAll
+//                if (config.isWithVideoImage && config.maxVideoSelectNum > 0) {
+//                    if (getSelectedSize() >= config.maxSelectNum) {
+//                        isRefreshAll = true;
+//                    }
+//                    if (isChecked) {
+//                        // delete
+//                        if (getSelectedSize() == config.maxSelectNum - 1) {
+//                            isRefreshAll = true;
+//                        }
+//                    }
+//                } else {
+//                    if (!isChecked && getSelectedSize() == 1) {
+//                        // add
+//                        isRefreshAll = true;
+//                    }
+//                    if (isChecked && getSelectedSize() == 0) {
+//                        // delete
+//                        isRefreshAll = true;
+//                    }
+//                }
+//            } else {
+//                // ofImage or ofVideo or ofAudio
+//                if (config.chooseMode == PictureMimeType.ofVideo() && config.maxVideoSelectNum > 0) {
+//                    if (!isChecked && getSelectedSize() == config.maxVideoSelectNum) {
+//                        // add
+//                        isRefreshAll = true;
+//                    }
+//                    if (isChecked && getSelectedSize() == config.maxVideoSelectNum - 1) {
+//                        // delete
+//                        isRefreshAll = true;
+//                    }
+//                } else {
+//                    if (!isChecked && getSelectedSize() == config.maxSelectNum) {
+//                        // add
+//                        isRefreshAll = true;
+//                    }
+//                    if (isChecked && getSelectedSize() == config.maxSelectNum - 1) {
+//                        // delete
+//                        isRefreshAll = true;
+//                    }
+//                }
+//            }
+//        }
 
         if (isRefreshAll) {
             notifyDataSetChanged();
@@ -609,7 +609,29 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             notifyItemChanged(contentHolder.getAdapterPosition());
         }
 
-        selectImage(contentHolder, !isChecked);
+     //   selectImage(contentHolder, !isChecked);
+        if (imageSelectChangedListener != null) {
+            imageSelectChangedListener.onChange(selectData);
+        }
+    }
+
+
+    public void changeCheckboxState(LocalMedia image) {
+        int count = selectData.size();
+
+        for (int i = 0; i < count; i++) {
+            LocalMedia media = selectData.get(i);
+            if (media == null || TextUtils.isEmpty(media.getPath())) {
+                continue;
+            }
+            if (media.getPath().equals(image.getPath())
+                    || media.getId() == image.getId()) {
+                selectData.remove(media);
+                subSelectPosition();
+                break;
+            }
+        }
+        notifyDataSetChanged();
         if (imageSelectChangedListener != null) {
             imageSelectChangedListener.onChange(selectData);
         }

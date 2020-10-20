@@ -18,7 +18,7 @@
         android:layout_margin="8dp"
         android:background="?attr/picture.checked.style"
         android:gravity="center"
-        android:textColor="@color/picture_color_white"
+        android:textColor="@color/picture_color_3"
         android:textSize="12sp" />
 
     <View

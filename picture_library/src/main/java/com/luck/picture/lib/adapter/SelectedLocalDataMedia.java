@@ -18,6 +18,11 @@ public class SelectedLocalDataMedia extends RecyclerView
         .Adapter<SelectedLocalDataMedia.SelectedLocalDataMediaViewHolder> {
 
     private List<LocalMedia> list = new ArrayList<>();
+    private OnItemClickListener mListener;
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.mListener = listener;
+    }
 
     @NonNull
     @Override
@@ -39,6 +44,15 @@ public class SelectedLocalDataMedia extends RecyclerView
                     list.get(position).getPath(), holder.ivCover);
         }
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mListener != null) {
+                    mListener.setOnItemClickListener(list.get(position));
+                }
+            }
+        });
     }
 
     @Override
@@ -61,5 +75,11 @@ public class SelectedLocalDataMedia extends RecyclerView
             ivClose = itemView.findViewById(R.id.iv_close);
             ivCover = itemView.findViewById(R.id.iv_cover);
         }
+    }
+
+   public interface OnItemClickListener{
+
+        void setOnItemClickListener(LocalMedia media);
+
     }
 }
