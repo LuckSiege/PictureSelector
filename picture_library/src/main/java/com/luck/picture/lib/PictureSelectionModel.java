@@ -598,6 +598,16 @@ public class PictureSelectionModel {
         return this;
     }
 
+    public PictureSelectionModel selectMaxPrompt(String prompt) {
+        selectionConfig.selectMaxPrompt = prompt;
+        return this;
+    }
+
+    public PictureSelectionModel isOnlyVideo(boolean isOnlyVideo) {
+        selectionConfig.isOnlyVideo = isOnlyVideo;
+        return this;
+    }
+
 
     /**
      * @param recordVideoSecond video record second

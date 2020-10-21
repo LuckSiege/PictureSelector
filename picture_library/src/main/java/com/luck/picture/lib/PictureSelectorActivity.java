@@ -93,6 +93,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected ImageView mIvPictureLeftBack;
     protected ImageView mIvArrow;
     protected TabLayout mTabLayout;
+    protected TextView mTvVideoTitle;
     protected View titleViewBg;
     protected TextView mTvPictureTitle, mTvPictureRight, mTvPictureOk, mTvEmpty,
             mTvPictureImgNum, mTvPicturePreview, mTvPlayPause, mTvStop, mTvQuit,
@@ -174,6 +175,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mCbOriginal = findViewById(R.id.cb_original);
         mIvArrow = findViewById(R.id.ivArrow);
         mTabLayout = findViewById(R.id.tl_tabs);
+        mTvVideoTitle = findViewById(R.id.tv_video_title);
         mIvClose = findViewById(R.id.iv_close);
         mTvPicturePreview = findViewById(R.id.picture_id_preview);
         mTvPictureImgNum = findViewById(R.id.picture_tvMediaNum);
@@ -197,7 +199,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mIvPictureLeftBack.setOnClickListener(this);
         mTvPictureRight.setOnClickListener(this);
         mTvPictureOk.setOnClickListener(this);
-        mtTvCount.setOnClickListener(this);
+        if (mtTvCount != null) {
+            mtTvCount.setOnClickListener(this);
+        }
         mTvPictureImgNum.setOnClickListener(this);
         mTvPictureTitle.setOnClickListener(this);
         mIvArrow.setOnClickListener(this);
@@ -270,6 +274,18 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mAdapter.changeCheckboxState(media);
             });
 
+        }
+
+        if (!config.isOnlyVideo) {
+            if (mTabLayout != null && mTvVideoTitle != null) {
+                mTabLayout.setVisibility(View.VISIBLE);
+                mTvVideoTitle.setVisibility(View.GONE);
+            }
+        } else {
+            if (mTabLayout != null && mTvVideoTitle != null) {
+                mTabLayout.setVisibility(View.GONE);
+                mTvVideoTitle.setVisibility(View.VISIBLE);
+            }
         }
 
         if (mTabLayout != null) {

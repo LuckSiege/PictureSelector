@@ -167,4 +167,9 @@
 
     <style name="Base.Theme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar" />
 
+    <style name="TabLayoutTextSize">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

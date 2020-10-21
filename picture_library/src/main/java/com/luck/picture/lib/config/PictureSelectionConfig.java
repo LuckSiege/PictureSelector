@@ -162,6 +162,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isFallbackVersion3;
 
     public String selectMaxPrompt;
+    public boolean isOnlyVideo;
 
     protected void initDefaultValue() {
         chooseMode = PictureMimeType.ofImage();

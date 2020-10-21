@@ -96,22 +96,17 @@
         android:layout_height="wrap_content"
         android:background="@drawable/radius_shape">
 
-        <ImageView
-            android:id="@+id/iv_close"
-            android:layout_width="40dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:src="@drawable/ic_video_close" />
+
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tl_tabs"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_below="@id/iv_close"
+            android:layout_below="@+id/iv_close"
             android:layout_marginTop="10dp"
+            android:visibility="gone"
+            app:tabTextColor="@drawable/select_text_color_selecter"
+            app:tabTextAppearance="@style/TabLayoutTextSize"
             app:tabIndicatorColor="@color/ucrop_color_black">
 
             <com.google.android.material.tabs.TabItem
@@ -128,6 +123,29 @@
 
 
         </com.google.android.material.tabs.TabLayout>
+
+
+        <TextView
+            android:id="@+id/tv_video_title"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="Videos"
+            android:textColor="#333"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            />
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="40dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:src="@drawable/ic_video_close" />
+
+
     </RelativeLayout>
 
     <RelativeLayout
