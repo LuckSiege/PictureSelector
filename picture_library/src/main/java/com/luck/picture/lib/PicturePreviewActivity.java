@@ -606,11 +606,15 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             if (config.isWithVideoImage) {
                 // 混选模式
                 int videoSize = 0;
+                int imageSize = 0;
                 for (int i = 0; i < currentSize; i++) {
                     LocalMedia media = selectData.get(i);
                     if (PictureMimeType.isHasVideo(media.getMimeType())) {
                         videoSize++;
                     }
+                    if (PictureMimeType.isHasImage(media.getMimeType())) {
+                         imageSize++;
+                    }    
                 }
                 if (PictureMimeType.isHasVideo(image.getMimeType())) {
                     if (config.maxVideoSelectNum <= 0) {
@@ -619,7 +623,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         return;
                     }
 
-                    if (selectData.size() >= config.maxSelectNum && !check.isSelected()) {
+                    if (imageSize >= config.maxSelectNum && !check.isSelected()) {
                         showPromptDialog(getString(R.string.picture_message_max_num, config.maxSelectNum));
                         return;
                     }
