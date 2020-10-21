@@ -279,6 +279,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     if (tab.getText().equals("Images")) {
                         config.chooseMode = 1;
                         mPage = 1;
+                        showPleaseDialog();
                         LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(-1, mPage,
                                 (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
                                     if (!isFinishing()) {
@@ -853,7 +854,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
 
         if (id == R.id.picture_tv_ok || id == R.id.picture_tvMediaNum || id == R.id.tv_count) {
+            showPleaseDialog();
             onComplete();
+            dismissDialog();
             return;
         }
 
