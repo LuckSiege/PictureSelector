@@ -75,6 +75,7 @@ import com.luck.picture.lib.widget.FolderPopWindow;
 import com.luck.picture.lib.widget.RecyclerPreloadView;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.model.CutInfo;
+import com.yalantis.ucrop.view.widget.CustomLoadingDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -870,9 +871,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
 
         if (id == R.id.picture_tv_ok || id == R.id.picture_tvMediaNum || id == R.id.tv_count) {
-            showPleaseDialog();
+
+            View view = getLayoutInflater().inflate(R.layout.ucrop_dialog_loading, null);
+            CustomLoadingDialog mMyDialog = new CustomLoadingDialog(this,
+                    com.yalantis.ucrop.util.ScreenUtils.dip2px(this,228),
+                    com.yalantis.ucrop.util.ScreenUtils.dip2px(this,108),
+                    view,
+                    R.style.ucrop_DialogStyle);
+            mMyDialog.setCancelable(true);
+            mMyDialog.show();
             onComplete();
-            dismissDialog();
             return;
         }
 
