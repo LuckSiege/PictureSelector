@@ -608,6 +608,11 @@ public class PictureSelectionModel {
         return this;
     }
 
+    public PictureSelectionModel isCanPreView(boolean isCanPreView) {
+        selectionConfig.isCanPreView = isCanPreView;
+        return this;
+    }
+
 
     /**
      * @param recordVideoSecond video record second

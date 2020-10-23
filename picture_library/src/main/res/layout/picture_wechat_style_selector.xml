@@ -248,6 +248,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="16dp"
+                android:textSize="12sp"
                 android:text="You can Upload up to 1 videos" />
 
             <TextView
@@ -256,7 +257,7 @@
                 android:layout_height="32dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="14dp"
                 android:background="@drawable/radius_bg_shape"
                 android:gravity="center"
                 android:text="Next (0)"

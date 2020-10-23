@@ -57,14 +57,14 @@
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_alignParentBottom="true"
+        android:gravity="end"
         android:background="@drawable/picture_icon_shadow_bg"
-        android:drawableLeft="@drawable/picture_icon_video"
         android:drawablePadding="5dp"
-        android:gravity="center_vertical"
-        android:paddingLeft="5dp"
+        android:paddingRight="8dp"
         android:paddingTop="8dp"
         android:text="00:00"
+        android:layout_alignParentEnd="true"
         android:textColor="@color/picture_color_white"
-        android:textSize="11sp"
-        android:visibility="gone" />
+        android:textSize="12sp"
+         />
 </com.luck.picture.lib.widget.SquareRelativeLayout>

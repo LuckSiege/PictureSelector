@@ -429,11 +429,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .isWeChatStyle(true)
                         .imageEngine(GlideEngine.createGlideEngine())
                         .isPreviewVideo(false)
-                        .selectionMode(PictureConfig.MULTIPLE)
+                        .selectionMode(PictureConfig.SINGLE)
                         .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
                         .isCamera(false)
                         .videoMinSecond(3)
                         .isOnlyVideo(false)
+                        .isMaxSelectEnabledMask(true)
 //                        .openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
 //                        .imageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                         .theme(themeId)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style v2.3.3后 建议使用setPictureStyle()动态方式
@@ -446,14 +447,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                        .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
 //                        .setRecyclerAnimationMode(animationMode)// 列表动画效果
                         .isWithVideoImage(true)// 图片和视频是否可以同选,只在ofAll模式下有效
+                        .isCanPreView(false)
 //                        .isMaxSelectEnabledMask(cbEnabledMask.isChecked())// 选择数到了最大阀值列表是否启用蒙层效果
 //                        //.isAutomaticTitleRecyclerTop(false)// 连续点击标题栏RecyclerView是否自动回到顶部,默认true
 //                        //.loadCacheResourcesCallback(GlideCacheEngine.createCacheEngine())// 获取图片资源缓存，主要是解决华为10部分机型在拷贝文件过多时会出现卡的问题，这里可以判断只在会出现一直转圈问题机型上使用
 //                        //.setOutputCameraPath()// 自定义相机输出目录，只针对Android Q以下，例如 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) +  File.separator + "Camera" + File.separator;
 //                        //.setButtonFeatures(CustomCameraView.BUTTON_STATE_BOTH)// 设置自定义相机按钮状态
-//                        .maxSelectNum(maxSelectNum)// 最大图片选择数量
+                        .maxSelectNum(1)// 最大图片选择数量
 //                        .minSelectNum(1)// 最小选择数量
-//                        .maxVideoSelectNum(1) // 视频最大选择数量
+                        .maxVideoSelectNum(1) // 视频最大选择数量
 //                        //.minVideoSelectNum(1)// 视频最小选择数量
 //                        //.closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 关闭在AndroidQ下获取图片或视频宽高相反自动转换
 //                        .imageSpanCount(4)// 每行显示个数

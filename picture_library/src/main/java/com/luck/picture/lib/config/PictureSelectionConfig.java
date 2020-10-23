@@ -161,8 +161,12 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isFallbackVersion2;
     public boolean isFallbackVersion3;
 
+    //点击下一步的文案提示 例如 最多可选35个视频等等
     public String selectMaxPrompt;
+    //是否仅仅展示Video
     public boolean isOnlyVideo;
+    //是否可以预览图片或者视频
+    public boolean isCanPreView;
 
     protected void initDefaultValue() {
         chooseMode = PictureMimeType.ofImage();

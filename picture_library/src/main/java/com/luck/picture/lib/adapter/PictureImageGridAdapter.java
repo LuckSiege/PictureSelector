@@ -21,6 +21,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.listener.OnPhotoSelectChangedListener;
 import com.luck.picture.lib.tools.AnimUtils;
 import com.luck.picture.lib.tools.DateUtils;
@@ -189,9 +190,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             if (isHasVideo || PictureMimeType.isHasAudio(mimeType)) {
                 contentHolder.tvDuration.setVisibility(View.VISIBLE);
                 contentHolder.tvDuration.setText(DateUtils.formatDurationTime(image.getDuration()));
-                contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                        (isHasVideo ? R.drawable.picture_icon_video : R.drawable.picture_icon_audio,
-                                0, 0, 0);
+//                contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
+//                        (isHasVideo ? R.drawable.picture_icon_video : R.drawable.picture_icon_audio,
+//                                0, 0, 0);
             } else {
                 contentHolder.tvDuration.setVisibility(View.GONE);
             }
@@ -207,8 +208,14 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 contentHolder.btnCheck.setOnClickListener(v -> {
                     if (config.isMaxSelectEnabledMask) {
                         if (!contentHolder.tvCheck.isSelected() && getSelectedSize() >= config.maxSelectNum) {
-                            String msg = StringUtils.getMsg(context, config.chooseMode == PictureMimeType.ofAll() ? null : image.getMimeType(), config.maxSelectNum);
-                            showPromptDialog(msg);
+                            if (config.language == LanguageConfig.ENGLISH) {
+                                String msg = StringUtils.getMsg(context, config.chooseMode == PictureMimeType.ofAll() ? null : image.getMimeType(), config.maxSelectNum == 1? "one":"thirty-five");
+                                showPromptDialog(msg);
+                            } else {
+                                String msg = StringUtils.getMsg(context, config.chooseMode == PictureMimeType.ofAll() ? null : image.getMimeType(), config.maxSelectNum);
+                                showPromptDialog(msg);
+                            }
+
                             return;
                         }
                     }
