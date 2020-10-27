@@ -120,6 +120,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private TextView mtTvCount;
     private ImageView mIvClose;
     private TextView mTvSelectMax;
+    private List<LocalMedia> mSelectData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -872,6 +873,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
         if (id == R.id.picture_tv_ok || id == R.id.picture_tvMediaNum || id == R.id.tv_count) {
 
+            if (mSelectData == null || mSelectData.size() == 0) {
+                return;
+            }
+
             View view = getLayoutInflater().inflate(R.layout.ucrop_dialog_loading, null);
             CustomLoadingDialog mMyDialog = new CustomLoadingDialog(this,
                     com.yalantis.ucrop.util.ScreenUtils.dip2px(this,228),
@@ -1417,12 +1422,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         changeImageNumber(selectData);
         if (mSelectedLocalAdapter != null) {
             mSelectedLocalAdapter.setList(selectData);
-
+            mSelectData = selectData;
             if (selectData.size() > 0) {
+                mtTvCount.setClickable(true);
                 mtTvCount.setText("Next (" +selectData.size()+")");
                 mtTvCount.setTextColor(getResources().getColor(R.color.ucrop_color_white));
                 mtTvCount.setBackground(getResources().getDrawable(R.drawable.radius_bg_shape));
             } else {
+                mtTvCount.setClickable(true);
                 mtTvCount.setText("Next (0)");
                 mtTvCount.setTextColor(getResources().getColor(R.color.picture_color_light_grey));
                 mtTvCount.setBackground(getResources().getDrawable(R.drawable.radius_bg_shape_gray));
