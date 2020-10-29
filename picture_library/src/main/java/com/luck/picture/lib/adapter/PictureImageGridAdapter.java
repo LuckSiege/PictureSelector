@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -206,6 +207,14 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
 
             if (config.enablePreview || config.enPreviewVideo || config.enablePreviewAudio) {
                 contentHolder.btnCheck.setOnClickListener(v -> {
+
+                    if (config.filterMimeType != null &&  !config.filterMimeType.contains(mimeType)) {
+                        if (mimeType.contains("video")) {
+                            Toast.makeText(context, "暂不支持该视频上传，请转成mp4", Toast.LENGTH_SHORT).show();
+                        }
+                        return;
+                    }
+
                     if (config.isMaxSelectEnabledMask) {
                         if (!contentHolder.tvCheck.isSelected() && getSelectedSize() >= config.maxSelectNum) {
                             if (config.language == LanguageConfig.ENGLISH) {

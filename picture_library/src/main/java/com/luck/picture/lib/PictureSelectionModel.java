@@ -76,6 +76,16 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param
+     * @return PictureSelectionModel
+     *
+     */
+    public PictureSelectionModel setFilterMimeType(List filterMimeType) {
+        selectionConfig.filterMimeType = filterMimeType;
+        return this;
+    }
+
+    /**
      * Change the desired orientation of this activity.  If the activity
      * is currently in the foreground or otherwise impacting the screen
      * orientation, the screen will immediately be changed (possibly causing

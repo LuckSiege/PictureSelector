@@ -111,6 +111,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static OnCustomImagePreviewCallback onCustomImagePreviewCallback;
     public static OnCustomCameraInterfaceListener onCustomCameraInterfaceListener;
     public List<LocalMedia> selectionMedias;
+    public List<String> filterMimeType;
     public String cameraFileName;
     public boolean isCheckOriginalImage;
     @Deprecated
@@ -170,6 +171,7 @@ public final class PictureSelectionConfig implements Parcelable {
 
     protected void initDefaultValue() {
         chooseMode = PictureMimeType.ofImage();
+        filterMimeType = new ArrayList<>();
         camera = false;
         themeStyleId = R.style.picture_default_style;
         selectionMode = PictureConfig.MULTIPLE;
