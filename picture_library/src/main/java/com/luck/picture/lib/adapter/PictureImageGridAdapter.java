@@ -208,7 +208,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             if (config.enablePreview || config.enPreviewVideo || config.enablePreviewAudio) {
                 contentHolder.btnCheck.setOnClickListener(v -> {
 
-                    if (config.filterMimeType != null &&  !config.filterMimeType.contains(mimeType)) {
+                    if (config.filterMimeType != null && config.filterMimeType.size() > 0
+                            &&  !config.filterMimeType.contains(mimeType)) {
                         if (mimeType.contains("video")) {
                             //TODO 提示语音
                             Toast.makeText(context, context.getResources().
@@ -244,7 +245,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
             contentHolder.contentView.setOnClickListener(v -> {
                 if (!config.isShowPreView) {
-                    if (config.filterMimeType != null &&  !config.filterMimeType.contains(mimeType)) {
+                    if (config.filterMimeType != null && config.filterMimeType.size() > 0
+                            && !config.filterMimeType.contains(mimeType)) {
                         if (mimeType.contains("video")) {
                             //TODO 提示语音
                             Toast.makeText(context, context.getResources()
