@@ -239,6 +239,15 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param showPreView Language
+     * @return PictureSelectionModel
+     */
+    public PictureSelectionModel isShowPreView(boolean showPreView) {
+        selectionConfig.isShowPreView = showPreView;
+        return this;
+    }
+
+    /**
      * @param uCropOptions UCrop parameter configuration is provided
      * @return
      */

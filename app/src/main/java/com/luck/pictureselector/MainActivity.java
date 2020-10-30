@@ -442,6 +442,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .isOnlyVideo(false)
                         .isMaxSelectEnabledMask(true)
                         .setFilterMimeType(filterMimeType)
+                        .isShowPreView(true)
 //                        .openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
 //                        .imageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                         .theme(themeId)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style v2.3.3后 建议使用setPictureStyle()动态方式

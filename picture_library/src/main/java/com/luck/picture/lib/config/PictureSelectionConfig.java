@@ -168,6 +168,8 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isOnlyVideo;
     //是否可以预览图片或者视频
     public boolean isCanPreView;
+    //点击item 是否可以展开item 默认是true
+    public boolean isShowPreView;
 
     protected void initDefaultValue() {
         chooseMode = PictureMimeType.ofImage();
@@ -275,6 +277,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isAndroidQChangeWH = true;
         isAndroidQChangeVideoWH = false;
         isQuickCapture = true;
+        isShowPreView = true;
     }
 
     public static PictureSelectionConfig getInstance() {

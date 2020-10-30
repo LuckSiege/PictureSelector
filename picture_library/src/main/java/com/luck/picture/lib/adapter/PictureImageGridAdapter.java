@@ -210,7 +210,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
 
                     if (config.filterMimeType != null &&  !config.filterMimeType.contains(mimeType)) {
                         if (mimeType.contains("video")) {
-                            Toast.makeText(context, "暂不支持该视频上传，请转成mp4", Toast.LENGTH_SHORT).show();
+                            //TODO 提示语音
+                            Toast.makeText(context, context.getResources().
+                                    getString(R.string.uploading_this_video_is_not_supported_please_convert_to_MP4_file),
+                                    Toast.LENGTH_SHORT).show();
                         }
                         return;
                     }
@@ -240,47 +243,84 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 });
             }
             contentHolder.contentView.setOnClickListener(v -> {
-                if (config.isMaxSelectEnabledMask) {
-                    if (image.isMaxSelectEnabledMask()) {
+                if (!config.isShowPreView) {
+                    if (config.filterMimeType != null &&  !config.filterMimeType.contains(mimeType)) {
+                        if (mimeType.contains("video")) {
+                            //TODO 提示语音
+                            Toast.makeText(context, context.getResources()
+                                    .getString(R.string.uploading_this_video_is_not_supported_please_convert_to_MP4_file),
+                                    Toast.LENGTH_SHORT).show();
+                        }
                         return;
                     }
-                }
-                // If the original path does not exist or the path does exist but the file does not exist
-                String newPath = image.getRealPath();
-                if (!TextUtils.isEmpty(newPath) && !new File(newPath).exists()) {
-                    ToastUtils.s(context, PictureMimeType.s(context, mimeType));
-                    return;
-                }
-                int index = showCamera ? position - 1 : position;
-                if (index == -1) {
-                    return;
-                }
-                // The width and height of the image are reversed if there is rotation information
-                MediaUtils.setOrientationAsynchronous(context, image, config.isAndroidQChangeWH, config.isAndroidQChangeVideoWH, null);
-                boolean eqResult =
-                        PictureMimeType.isHasImage(mimeType) && config.enablePreview
-                                || config.isSingleDirectReturn
-                                || PictureMimeType.isHasVideo(mimeType) && (config.enPreviewVideo
-                                || config.selectionMode == PictureConfig.SINGLE)
-                                || PictureMimeType.isHasAudio(mimeType) && (config.enablePreviewAudio
-                                || config.selectionMode == PictureConfig.SINGLE);
-                if (eqResult) {
-                    if (PictureMimeType.isHasVideo(image.getMimeType())) {
-                        if (config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
-                            // The video is less than the minimum specified length
-                            showPromptDialog(context.getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
-                            return;
-                        }
-                        if (config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
-                            // The length of the video exceeds the specified length
-                            showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+
+                    if (config.isMaxSelectEnabledMask) {
+                        if (!contentHolder.tvCheck.isSelected() && getSelectedSize() >= config.maxSelectNum) {
+                            if (config.language == LanguageConfig.ENGLISH) {
+                                String msg = StringUtils.getMsg(context, config.chooseMode == PictureMimeType.ofAll() ? null : image.getMimeType(), config.maxSelectNum == 1? "one":"thirty-five");
+                                showPromptDialog(msg);
+                            } else {
+                                String msg = StringUtils.getMsg(context, config.chooseMode == PictureMimeType.ofAll() ? null : image.getMimeType(), config.maxSelectNum);
+                                showPromptDialog(msg);
+                            }
                             return;
                         }
                     }
-                    imageSelectChangedListener.onPictureClick(image, index);
-                } else {
+                    // If the original path does not exist or the path does exist but the file does not exist
+                    String newPath = image.getRealPath();
+                    if (!TextUtils.isEmpty(newPath) && !new File(newPath).exists()) {
+                        ToastUtils.s(context, PictureMimeType.s(context, mimeType));
+                        return;
+                    }
+                    // The width and height of the image are reversed if there is rotation information
+                    //     MediaUtils.setOrientationAsynchronous(context, image, config.isAndroidQChangeWH, config.isAndroidQChangeVideoWH, null);
                     changeCheckboxState(contentHolder, image);
+                } else {
+                    if (config.isMaxSelectEnabledMask) {
+                        if (image.isMaxSelectEnabledMask()) {
+                            return;
+                        }
+                    }
+                    // If the original path does not exist or the path does exist but the file does not exist
+                    String newPath = image.getRealPath();
+                    if (!TextUtils.isEmpty(newPath) && !new File(newPath).exists()) {
+                        ToastUtils.s(context, PictureMimeType.s(context, mimeType));
+                        return;
+                    }
+                    int index = showCamera ? position - 1 : position;
+                    if (index == -1) {
+                        return;
+                    }
+                    // The width and height of the image are reversed if there is rotation information
+                    MediaUtils.setOrientationAsynchronous(context, image, config.isAndroidQChangeWH, config.isAndroidQChangeVideoWH, null);
+                    boolean eqResult =
+                            PictureMimeType.isHasImage(mimeType) && config.enablePreview
+                                    || config.isSingleDirectReturn
+                                    || PictureMimeType.isHasVideo(mimeType) && (config.enPreviewVideo
+                                    || config.selectionMode == PictureConfig.SINGLE)
+                                    || PictureMimeType.isHasAudio(mimeType) && (config.enablePreviewAudio
+                                    || config.selectionMode == PictureConfig.SINGLE);
+                    if (eqResult) {
+                        if (PictureMimeType.isHasVideo(image.getMimeType())) {
+                            if (config.videoMinSecond > 0 && image.getDuration() < config.videoMinSecond) {
+                                // The video is less than the minimum specified length
+                                showPromptDialog(context.getString(R.string.picture_choose_min_seconds, config.videoMinSecond / 1000));
+                                return;
+                            }
+                            if (config.videoMaxSecond > 0 && image.getDuration() > config.videoMaxSecond) {
+                                // The length of the video exceeds the specified length
+                                showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
+                                return;
+                            }
+                        }
+                        imageSelectChangedListener.onPictureClick(image, index);
+                    } else {
+                        changeCheckboxState(contentHolder, image);
+                    }
+
                 }
+
+
             });
         }
     }

@@ -61,4 +61,5 @@
     <string name="picture_go_setting">Go Setting</string>
     <string name="picture_know">Get it</string>
     <string name="picture_data_null">There no data here…</string>
+    <string name="uploading_this_video_is_not_supported_please_convert_to_MP4_file">uploading this video is not supported, please convert to MP4 file</string>
 </resources>
