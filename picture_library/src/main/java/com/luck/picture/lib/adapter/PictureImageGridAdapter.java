@@ -209,11 +209,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 contentHolder.btnCheck.setOnClickListener(v -> {
 
                     if (config.filterMimeType != null && config.filterMimeType.size() > 0
-                            &&  !config.filterMimeType.contains(mimeType)) {
-                        if (mimeType.contains("video")) {
+                            && mimeType != null &&  !config.filterMimeType.contains(mimeType.toLowerCase())) {
+                        if (mimeType.toLowerCase().contains("video")) {
                             //TODO 提示语音
                             Toast.makeText(context, context.getResources().
-                                    getString(R.string.uploading_this_video_is_not_supported_please_convert_to_MP4_file),
+                                    getString(R.string.sorry_please_convert_your_video_to_MP4_or_MOV_format),
                                     Toast.LENGTH_SHORT).show();
                         }
                         return;
@@ -246,11 +246,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             contentHolder.contentView.setOnClickListener(v -> {
                 if (!config.isShowPreView) {
                     if (config.filterMimeType != null && config.filterMimeType.size() > 0
-                            && !config.filterMimeType.contains(mimeType)) {
-                        if (mimeType.contains("video")) {
+                            && mimeType != null && !config.filterMimeType.contains(mimeType.toLowerCase())) {
+                        if (mimeType!= null && mimeType.toLowerCase().contains("video")) {
                             //TODO 提示语音
-                            Toast.makeText(context, context.getResources()
-                                    .getString(R.string.uploading_this_video_is_not_supported_please_convert_to_MP4_file),
+                            Toast.makeText(context, context.getResources().
+                                            getString(R.string.sorry_please_convert_your_video_to_MP4_or_MOV_format),
                                     Toast.LENGTH_SHORT).show();
                         }
                         return;

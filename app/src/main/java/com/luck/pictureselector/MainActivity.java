@@ -424,10 +424,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             boolean mode = cb_mode.isChecked();
             if (mode) {
 
-//                List<String> filterMimeType = new ArrayList<>();
-//                filterMimeType.add("video/mp4");
-//                filterMimeType.add("image/jpeg");
-//                filterMimeType.add("image/png");
+                List<String> filterMimeType = new ArrayList<>();
+                filterMimeType.add("video/mp4");
+                filterMimeType.add("video/mov");
+                filterMimeType.add("image/jpeg");
+                filterMimeType.add("image/png");
 
                 // 进入相册 以下是例子：不需要的api可以不写
                 PictureSelector.create(MainActivity.this)
@@ -441,8 +442,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .videoMinSecond(3)
                         .isOnlyVideo(false)
                         .isMaxSelectEnabledMask(true)
-             //           .setFilterMimeType(filterMimeType)
-                        .isShowPreView(true)
+                        .setFilterMimeType(filterMimeType)
+                        .isShowPreView(false)
 //                        .openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
 //                        .imageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                         .theme(themeId)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style v2.3.3后 建议使用setPictureStyle()动态方式
