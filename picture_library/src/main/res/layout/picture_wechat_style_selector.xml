@@ -109,17 +109,18 @@
             app:tabTextAppearance="@style/TabLayoutTextSize"
             app:tabIndicatorColor="@color/ucrop_color_black">
 
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:tag="Videos"
-                android:text="Videos" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:tag="Images"
                 android:text="Images" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:tag="Videos"
+                android:text="Videos" />
 
 
         </com.google.android.material.tabs.TabLayout>

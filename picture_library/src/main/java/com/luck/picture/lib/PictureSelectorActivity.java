@@ -278,6 +278,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
         }
 
+//        TabLayout.Tab tabImages = new TabLayout.Tab();
+//        tabImages.setTag("Images");
+//        tabImages.setText("Images");
+//
+//        TabLayout.Tab tabVideos = new TabLayout.Tab();
+//        tabVideos.setTag("Videos");
+//        tabVideos.setText("Videos");
+
         if (!config.isOnlyVideo) {
             if (mTabLayout != null && mTvVideoTitle != null) {
                 mTabLayout.setVisibility(View.VISIBLE);
@@ -295,7 +303,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
                     if (tab.getText().equals("Images")) {
-                        config.chooseMode = 1;
+                        config.chooseMode = PictureMimeType.ofImage();
                         mPage = 1;
                         showPleaseDialog();
                         LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(-1, mPage,
@@ -311,7 +319,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                     }
                                 });
                     } else {
-                        config.chooseMode = 2;
+                        config.chooseMode = PictureMimeType.ofVideo();
                         mPage = 1;
                         LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(-1, mPage,
                                 (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
@@ -630,6 +638,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             mTvPictureTitle.setTag(R.id.view_index_tag, 0);
             long bucketId = folder != null ? folder.getBucketId() : -1;
             mRecyclerView.setEnabledLoadMore(true);
+
+            if (mTvVideoTitle != null && mTvVideoTitle.getVisibility() == View.VISIBLE) {
+                config.chooseMode = PictureMimeType.ofVideo();
+            } else {
+                config.chooseMode = PictureMimeType.ofImage();
+            }
             LocalMediaPageLoader.getInstance(getContext(), config).loadPageMediaData(bucketId, mPage,
                     (OnQueryDataResultListener<LocalMedia>) (data, currentPage, isHasMore) -> {
                         if (!isFinishing()) {
