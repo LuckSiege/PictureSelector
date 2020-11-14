@@ -38,9 +38,9 @@
     <string name="picture_stop_audio">Stop</string>
     <string name="picture_quit_audio">Quit</string>
     <string name="picture_pause_audio">Pause</string>
-    <string name="picture_error">The picture is corrupted</string>
-    <string name="picture_video_error">The video is corrupted</string>
-    <string name="picture_audio_error">The audio is corrupted</string>
+    <string name="picture_error">Oops, this image is corrupted.</string>
+    <string name="picture_video_error">Oops, this video is corrupted.</string>
+    <string name="picture_audio_error">Oops, this audio is corrupted.</string>
     <string name="picture_confirm">Confirm</string>
     <string name="picture_preview_image_num">%1$d/%2$d</string>
     <string name="picture_not_crop_data">No cropped data</string>
