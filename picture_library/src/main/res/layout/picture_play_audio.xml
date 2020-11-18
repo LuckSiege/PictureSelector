@@ -21,7 +21,7 @@
             android:id="@+id/tv_musicStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="播放"
+            android:text="@string/picture_play_audio"
             android:textColor="@color/picture_color_9b"
             android:textSize="14sp" />
 
@@ -51,7 +51,6 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_toRightOf="@+id/tv_musicTime"
-                android:layout_weight="1"
                 android:max="100"
                 android:maxHeight="4.0dp"
                 android:minHeight="4.0dp"

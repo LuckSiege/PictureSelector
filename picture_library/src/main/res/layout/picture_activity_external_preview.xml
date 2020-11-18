@@ -10,7 +10,7 @@
         android:id="@+id/titleViewBg"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="?attr/picture.ac_preview.title.bg" />
+        android:background="@color/picture_color_grey" />
 
     <ImageButton
         android:id="@+id/left_back"
@@ -18,7 +18,7 @@
         android:layout_height="48dp"
         android:background="@color/picture_color_transparent"
         android:scaleType="centerInside"
-        android:src="?attr/picture.preview.leftBack.icon" />
+        android:src="@drawable/picture_icon_back" />
 
     <TextView
         android:id="@+id/picture_title"
@@ -30,14 +30,15 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxEms="11"
-        android:textColor="?attr/picture.ac_preview.title.textColor"
+        android:text="@string/picture_camera_roll"
+        android:textColor="@color/picture_color_white"
         android:textSize="18sp" />
 
     <ImageButton
         android:id="@+id/ib_delete"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:background="@color/picture_color_transparent"
         android:scaleType="centerInside"
         android:src="@drawable/picture_icon_delete" />

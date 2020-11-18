@@ -13,7 +13,6 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
-import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.ValueOf;
 
@@ -133,10 +132,10 @@ public final class LocalMediaLoader {
     }
 
 
-    public LocalMediaLoader(Context context, PictureSelectionConfig config) {
+    public LocalMediaLoader(Context context) {
         this.mContext = context.getApplicationContext();
         this.isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
-        this.config = config;
+        this.config = PictureSelectionConfig.getInstance();
     }
 
     /**

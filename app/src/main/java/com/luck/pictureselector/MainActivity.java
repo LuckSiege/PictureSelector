@@ -91,9 +91,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean needScaleBig = true;
     private boolean needScaleSmall = true;
     private int language = -1;
-    private PictureParameterStyle mPictureParameterStyle;
-    private PictureCropParameterStyle mCropParameterStyle;
-    private PictureWindowAnimationStyle mWindowAnimationStyle;
+    private PictureParameterStyle mPictureParameterStyle = PictureParameterStyle.ofDefaultStyle();
+    private PictureCropParameterStyle mCropParameterStyle = PictureCropParameterStyle.ofDefaultCropStyle();
+    private PictureWindowAnimationStyle mWindowAnimationStyle = PictureWindowAnimationStyle.ofDefaultWindowAnimationStyle();
     private ItemTouchHelper mItemTouchHelper;
     private DragListener mDragListener;
     private int animationMode = AnimationType.DEFAULT_ANIMATION;
@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         setContentView(R.layout.activity_main);
         themeId = R.style.picture_default_style;
-        getDefaultStyle();
         ImageView minus = findViewById(R.id.minus);
         ImageView plus = findViewById(R.id.plus);
         tvDeleteText = findViewById(R.id.tv_delete_text);
@@ -433,9 +432,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .isUseCustomCamera(cb_custom_camera.isChecked())// 是否使用自定义相机
                         .setLanguage(language)// 设置语言，默认中文
                         .isPageStrategy(cbPage.isChecked())// 是否开启分页策略 & 每页多少条；默认开启
-                        .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
-                        .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
-                        .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
+                        //.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
+                        //.setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
+                        //.setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
                         .setRecyclerAnimationMode(animationMode)// 列表动画效果
                         .isWithVideoImage(true)// 图片和视频是否可以同选,只在ofAll模式下有效
                         .isMaxSelectEnabledMask(cbEnabledMask.isChecked())// 选择数到了最大阀值列表是否启用蒙层效果
@@ -472,7 +471,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.isMultipleSkipCrop(false)// 多图裁剪时是否支持跳过，默认支持
                         //.isMultipleRecyclerAnimation(false)// 多图裁剪底部列表显示动画效果
                         .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
-                        .imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg,Android Q使用PictureMimeType.PNG_Q
+                        //.imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg,Android Q使用PictureMimeType.PNG_Q
                         .isEnableCrop(cb_crop.isChecked())// 是否裁剪
                         //.basicUCropConfig()//对外提供所有UCropOptions参数配制，但如果PictureSelector原本支持设置的还是会使用原有的设置
                         .isCompress(cb_compress.isChecked())// 是否压缩
@@ -608,6 +607,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.i(TAG, "是否压缩:" + media.isCompressed());
                 Log.i(TAG, "压缩:" + media.getCompressPath());
                 Log.i(TAG, "原图:" + media.getPath());
+                Log.i(TAG, "绝对路径:" + media.getRealPath());
                 Log.i(TAG, "是否裁剪:" + media.isCut());
                 Log.i(TAG, "裁剪:" + media.getCutPath());
                 Log.i(TAG, "是否开启原图:" + media.isOriginal());
@@ -711,34 +711,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case PictureConfig.CHOOSE_REQUEST:
-                    // 图片选择结果回调
-                    List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
-                    // 例如 LocalMedia 里面返回五种path
-                    // 1.media.getPath(); 原图path
-                    // 2.media.getCutPath();裁剪后path，需判断media.isCut();切勿直接使用
-                    // 3.media.getCompressPath();压缩后path，需判断media.isCompressed();切勿直接使用
-                    // 4.media.getOriginalPath()); media.isOriginal());为true时此字段才有值
-                    // 5.media.getAndroidQToPath();Android Q版本特有返回的字段，但如果开启了压缩或裁剪还是取裁剪或压缩路径；注意：.isAndroidQTransform 为false 此字段将返回空
-                    // 如果同时开启裁剪和压缩，则取压缩路径为准因为是先裁剪后压缩
-                    for (LocalMedia media : selectList) {
-                        Log.i(TAG, "是否压缩:" + media.isCompressed());
-                        Log.i(TAG, "压缩:" + media.getCompressPath());
-                        Log.i(TAG, "原图:" + media.getPath());
-                        Log.i(TAG, "是否裁剪:" + media.isCut());
-                        Log.i(TAG, "裁剪:" + media.getCutPath());
-                        Log.i(TAG, "是否开启原图:" + media.isOriginal());
-                        Log.i(TAG, "原图路径:" + media.getOriginalPath());
-                        Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
-                        Log.i(TAG, "宽高: " + media.getWidth() + "x" + media.getHeight());
-                        Log.i(TAG, "Size: " + media.getSize());
+            if (requestCode == PictureConfig.CHOOSE_REQUEST) {// 图片选择结果回调
+                List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
+                // 例如 LocalMedia 里面返回五种path
+                // 1.media.getPath(); 原图path
+                // 2.media.getCutPath();裁剪后path，需判断media.isCut();切勿直接使用
+                // 3.media.getCompressPath();压缩后path，需判断media.isCompressed();切勿直接使用
+                // 4.media.getOriginalPath()); media.isOriginal());为true时此字段才有值
+                // 5.media.getAndroidQToPath();Android Q版本特有返回的字段，但如果开启了压缩或裁剪还是取裁剪或压缩路径；注意：.isAndroidQTransform 为false 此字段将返回空
+                // 如果同时开启裁剪和压缩，则取压缩路径为准因为是先裁剪后压缩
+                for (LocalMedia media : selectList) {
+                    Log.i(TAG, "是否压缩:" + media.isCompressed());
+                    Log.i(TAG, "压缩:" + media.getCompressPath());
+                    Log.i(TAG, "原图:" + media.getPath());
+                    Log.i(TAG, "绝对路径:" + media.getRealPath());
+                    Log.i(TAG, "是否裁剪:" + media.isCut());
+                    Log.i(TAG, "裁剪:" + media.getCutPath());
+                    Log.i(TAG, "是否开启原图:" + media.isOriginal());
+                    Log.i(TAG, "原图路径:" + media.getOriginalPath());
+                    Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
+                    Log.i(TAG, "宽高: " + media.getWidth() + "x" + media.getHeight());
+                    Log.i(TAG, "Size: " + media.getSize());
 
-                        // TODO 可以通过PictureSelectorExternalUtils.getExifInterface();方法获取一些额外的资源信息，如旋转角度、经纬度等信息
-                    }
-                    mAdapter.setList(selectList);
-                    mAdapter.notifyDataSetChanged();
-                    break;
+                    // TODO 可以通过PictureSelectorExternalUtils.getExifInterface();方法获取一些额外的资源信息，如旋转角度、经纬度等信息
+                }
+                mAdapter.setList(selectList);
+                mAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -852,16 +850,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 aspect_ratio_y = 9;
                 break;
             case R.id.rb_photo_default_animation:
-                mWindowAnimationStyle = new PictureWindowAnimationStyle();
+                mWindowAnimationStyle = PictureWindowAnimationStyle.ofDefaultWindowAnimationStyle();
                 break;
             case R.id.rb_photo_up_animation:
-                mWindowAnimationStyle = new PictureWindowAnimationStyle();
-                mWindowAnimationStyle.ofAllAnimation(R.anim.picture_anim_up_in, R.anim.picture_anim_down_out);
+                mWindowAnimationStyle = PictureWindowAnimationStyle.ofCustomWindowAnimationStyle(R.anim.picture_anim_up_in, R.anim.picture_anim_down_out);
                 break;
             case R.id.rb_default_style:
                 themeId = R.style.picture_default_style;
                 isWeChatStyle = false;
-                getDefaultStyle();
+                mPictureParameterStyle = PictureParameterStyle.ofDefaultStyle();
+                mCropParameterStyle = PictureCropParameterStyle.ofDefaultCropStyle();
+                // getDefaultStyle();
                 break;
             case R.id.rb_white_style:
                 themeId = R.style.picture_white_style;
@@ -871,17 +870,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.rb_num_style:
                 themeId = R.style.picture_QQ_style;
                 isWeChatStyle = false;
-                getNumStyle();
+                mPictureParameterStyle = PictureParameterStyle.ofSelectNumberStyle();
+                mCropParameterStyle = PictureCropParameterStyle.ofSelectNumberStyle();
+                //getNumStyle();
                 break;
             case R.id.rb_sina_style:
                 themeId = R.style.picture_Sina_style;
                 isWeChatStyle = false;
-                getSinaStyle();
+                mPictureParameterStyle = PictureParameterStyle.ofSelectTotalStyle();
+                mCropParameterStyle = PictureCropParameterStyle.ofSelectTotalStyle();
+                //getSinaStyle();
                 break;
             case R.id.rb_we_chat_style:
                 themeId = R.style.picture_WeChat_style;
                 isWeChatStyle = true;
-                getWeChatStyle();
+                mPictureParameterStyle = PictureParameterStyle.ofNewStyle();
+                mCropParameterStyle = PictureCropParameterStyle.ofNewStyle();
+                //getWeChatStyle();
                 break;
             case R.id.rb_default:
                 animationMode = AnimationType.DEFAULT_ANIMATION;
@@ -996,13 +1001,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 相册列表标题栏背景色
         mPictureParameterStyle.pictureTitleBarBackgroundColor = Color.parseColor("#FFFFFF");
         // 相册列表标题栏右侧上拉箭头
-        mPictureParameterStyle.pictureTitleUpResId = R.drawable.ic_orange_arrow_up;
+        mPictureParameterStyle.pictureTitleUpResId = R.drawable.picture_icon_orange_arrow_up;
         // 相册列表标题栏右侧下拉箭头
-        mPictureParameterStyle.pictureTitleDownResId = R.drawable.ic_orange_arrow_down;
+        mPictureParameterStyle.pictureTitleDownResId = R.drawable.picture_icon_orange_arrow_down;
         // 相册文件夹列表选中圆点
         mPictureParameterStyle.pictureFolderCheckedDotStyle = R.drawable.picture_orange_oval;
         // 相册返回箭头
-        mPictureParameterStyle.pictureLeftBackIcon = R.drawable.ic_back_arrow;
+        mPictureParameterStyle.pictureLeftBackIcon = R.drawable.picture_icon_back_arrow;
         // 标题栏字体颜色
         mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(getContext(), R.color.app_color_black);
         // 相册右侧取消按钮字体颜色  废弃 改用.pictureRightDefaultTextColor和.pictureRightDefaultTextColor
@@ -1091,11 +1096,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 选择相册目录背景样式
         mPictureParameterStyle.pictureAlbumStyle = R.drawable.picture_new_item_select_bg;
         // 相册列表勾选图片样式
-        mPictureParameterStyle.pictureCheckedStyle = R.drawable.checkbox_num_selector;
+        mPictureParameterStyle.pictureCheckedStyle = R.drawable.picture_checkbox_num_selector;
         // 相册列表底部背景色
         mPictureParameterStyle.pictureBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_fa);
         // 已选数量圆点背景样式
-        mPictureParameterStyle.pictureCheckNumBgStyle = R.drawable.num_oval_blue;
+        mPictureParameterStyle.pictureCheckNumBgStyle = R.drawable.picture_num_oval_blue;
         // 相册列表底下预览文字色值(预览按钮可点击时的色值)
         mPictureParameterStyle.picturePreviewTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_blue);
         // 相册列表底下不可预览文字色值(预览按钮不可点击时的色值)
@@ -1158,13 +1163,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 相册列表标题栏背景色
         mPictureParameterStyle.pictureTitleBarBackgroundColor = Color.parseColor("#FFFFFF");
         // 相册列表标题栏右侧上拉箭头
-        mPictureParameterStyle.pictureTitleUpResId = R.drawable.ic_orange_arrow_up;
+        mPictureParameterStyle.pictureTitleUpResId = R.drawable.picture_icon_orange_arrow_up;
         // 相册列表标题栏右侧下拉箭头
-        mPictureParameterStyle.pictureTitleDownResId = R.drawable.ic_orange_arrow_down;
+        mPictureParameterStyle.pictureTitleDownResId = R.drawable.picture_icon_orange_arrow_down;
         // 相册文件夹列表选中圆点
         mPictureParameterStyle.pictureFolderCheckedDotStyle = R.drawable.picture_orange_oval;
         // 相册返回箭头
-        mPictureParameterStyle.pictureLeftBackIcon = R.drawable.ic_back_arrow;
+        mPictureParameterStyle.pictureLeftBackIcon = R.drawable.picture_icon_back_arrow;
         // 标题栏字体颜色
         mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(getContext(), R.color.app_color_black);
         // 相册右侧取消按钮字体颜色  废弃 改用.pictureRightDefaultTextColor和.pictureRightDefaultTextColor

@@ -1,8 +1,11 @@
 package com.luck.picture.lib.model;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -190,10 +193,17 @@ public final class LocalMediaPageLoader {
     public String getFirstCover(long bucketId) {
         Cursor data = null;
         try {
-            String orderBy = MediaStore.Files.FileColumns._ID + " DESC limit 1 offset 0";
-            data = mContext.getContentResolver().query(QUERY_URI, new String[]{
-                    MediaStore.Files.FileColumns._ID,
-                    MediaStore.MediaColumns.DATA}, getPageSelection(bucketId), getPageSelectionArgs(bucketId), orderBy);
+            if (SdkVersionUtils.checkedAndroid_R()) {
+                Bundle queryArgs = createQueryArgsBundle(getPageSelection(bucketId), getPageSelectionArgs(bucketId), 1, 0);
+                data = mContext.getContentResolver().query(QUERY_URI, new String[]{
+                        MediaStore.Files.FileColumns._ID,
+                        MediaStore.MediaColumns.DATA}, queryArgs, null);
+            } else {
+                String orderBy = MediaStore.Files.FileColumns._ID + " DESC limit 1 offset 0";
+                data = mContext.getContentResolver().query(QUERY_URI, new String[]{
+                        MediaStore.Files.FileColumns._ID,
+                        MediaStore.MediaColumns.DATA}, getPageSelection(bucketId), getPageSelectionArgs(bucketId), orderBy);
+            }
             if (data != null && data.getCount() > 0) {
                 if (data.moveToFirst()) {
                     long id = data.getLong(data.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID));
@@ -253,8 +263,13 @@ public final class LocalMediaPageLoader {
             public MediaData doInBackground() {
                 Cursor data = null;
                 try {
-                    String orderBy = page == -1 ? MediaStore.Files.FileColumns._ID + " DESC" : MediaStore.Files.FileColumns._ID + " DESC limit " + limit + " offset " + (page - 1) * pageSize;
-                    data = mContext.getContentResolver().query(QUERY_URI, PROJECTION_PAGE, getPageSelection(bucketId), getPageSelectionArgs(bucketId), orderBy);
+                    if (SdkVersionUtils.checkedAndroid_R()) {
+                        Bundle queryArgs = createQueryArgsBundle(getPageSelection(bucketId), getPageSelectionArgs(bucketId), limit, (page - 1) * pageSize);
+                        data = mContext.getContentResolver().query(QUERY_URI, PROJECTION_PAGE, queryArgs, null);
+                    } else {
+                        String orderBy = page == -1 ? MediaStore.Files.FileColumns._ID + " DESC" : MediaStore.Files.FileColumns._ID + " DESC limit " + limit + " offset " + (page - 1) * pageSize;
+                        data = mContext.getContentResolver().query(QUERY_URI, PROJECTION_PAGE, getPageSelection(bucketId), getPageSelectionArgs(bucketId), orderBy);
+                    }
                     if (data != null) {
                         List<LocalMedia> result = new ArrayList<>();
                         if (data.getCount() > 0) {
@@ -494,6 +509,28 @@ public final class LocalMediaPageLoader {
     }
 
     /**
+     * R  createQueryArgsBundle
+     *
+     * @param selection
+     * @param selectionArgs
+     * @param limitCount
+     * @param offset
+     * @return
+     */
+    private Bundle createQueryArgsBundle(String selection, String[] selectionArgs, int limitCount, int offset) {
+        Bundle queryArgs = new Bundle();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            queryArgs.putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection);
+            queryArgs.putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArgs);
+            queryArgs.putString(ContentResolver.QUERY_ARG_SQL_SORT_ORDER, MediaStore.Files.FileColumns._ID + " DESC");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                queryArgs.putString(ContentResolver.QUERY_ARG_SQL_LIMIT, limitCount + " offset " + offset);
+            }
+        }
+        return queryArgs;
+    }
+
+    /**
      * Get cover uri
      *
      * @param cursor
@@ -712,8 +749,8 @@ public final class LocalMediaPageLoader {
     public static LocalMediaPageLoader getInstance(Context context) {
         if (instance == null) {
             synchronized (LocalMediaPageLoader.class) {
-                if (LocalMediaPageLoader.instance == null) {
-                    LocalMediaPageLoader.instance = new LocalMediaPageLoader(context.getApplicationContext());
+                if (instance == null) {
+                    instance = new LocalMediaPageLoader(context.getApplicationContext());
                 }
             }
         }

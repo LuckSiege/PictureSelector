@@ -37,4 +37,6 @@
     <attr name="picture.crop.status.color" format="reference|color" />
     <attr name="picture.crop.title.color" format="reference|color" />
     <attr name="picture.folder_checked_dot" format="reference" />
+    <attr name="picture.original.check.style" format="reference" />
+    <attr name="picture.original.text.color" format="reference|color" />
 </resources>

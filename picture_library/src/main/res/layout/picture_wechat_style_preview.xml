@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_alignParentBottom="true"
-        android:background="?attr/picture.ac_preview.bottom.bg"
+        android:background="@color/picture_color_grey"
         android:gravity="center_vertical">
 
         <CheckBox
@@ -61,12 +61,12 @@
             android:id="@+id/tv_ok"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:enabled="false"
             android:gravity="center|left"
             android:paddingRight="12dp"
             android:text="@string/picture_please_select"
-            android:textColor="?attr/picture.ac_preview.complete.textColor"
+            android:textColor="@color/picture_color_white"
             android:textSize="14sp" />
 
 
@@ -77,7 +77,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="5dp"
             android:layout_toLeftOf="@id/tv_ok"
-            android:background="?attr/picture.num.style"
+            android:background="@drawable/picture_num_oval"
             android:gravity="center"
             android:text="0"
             android:textColor="@color/picture_color_white"

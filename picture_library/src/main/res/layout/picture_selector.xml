@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_alignParentBottom="true"
-        android:background="?attr/picture.bottom.bg"
+        android:background="@color/picture_color_grey"
         android:gravity="center_vertical">
 
         <TextView
@@ -27,7 +27,7 @@
             android:gravity="left|center"
             android:padding="12dp"
             android:text="@string/picture_preview"
-            android:textColor="?attr/picture.preview.textColor"
+            android:textColor="@color/picture_list_text_color"
             android:textSize="14sp" />
 
         <CheckBox
@@ -55,7 +55,7 @@
             android:gravity="center|left"
             android:paddingRight="12dp"
             android:text="@string/picture_please_select"
-            android:textColor="?attr/picture.complete.textColor"
+            android:textColor="@color/picture_list_text_color"
             android:textSize="14sp" />
 
         <TextView
@@ -65,7 +65,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="5dp"
             android:layout_toLeftOf="@id/picture_tv_ok"
-            android:background="?attr/picture.num.style"
+            android:background="@drawable/picture_num_oval"
             android:gravity="center"
             android:text="0"
             android:textColor="@color/picture_color_white"

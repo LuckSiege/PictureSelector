@@ -33,17 +33,17 @@ public final class PictureSelectionConfig implements Parcelable {
     public int chooseMode;
     public boolean camera;
     public boolean isSingleDirectReturn;
-    public PictureParameterStyle style;
-    public PictureCropParameterStyle cropStyle;
-    public PictureWindowAnimationStyle windowAnimationStyle;
+    public static PictureParameterStyle style;
+    public static PictureCropParameterStyle cropStyle;
+    public static PictureWindowAnimationStyle windowAnimationStyle = PictureWindowAnimationStyle.ofDefaultWindowAnimationStyle();
     public String compressSavePath;
     public String suffixType;
     public boolean focusAlpha;
     public String renameCompressFileName;
     public String renameCropFileName;
     public String specifiedFormat;
-    public int requestedOrientation;
-    public int buttonFeatures;
+    public int requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+    public int buttonFeatures = CustomCameraView.BUTTON_STATE_BOTH;
     public boolean isCameraAroundState;
     public boolean isAndroidQTransform;
     @StyleRes
@@ -59,8 +59,8 @@ public final class PictureSelectionConfig implements Parcelable {
     public int videoMinSecond;
     public int recordVideoSecond;
     public int recordVideoMinSecond;
-    public int minimumCompressSize;
-    public int imageSpanCount = 4;
+    public int minimumCompressSize = PictureConfig.MAX_COMPRESS_SIZE;
+    public int imageSpanCount = PictureConfig.DEFAULT_SPAN_COUNT;
     public int aspect_ratio_x;
     public int aspect_ratio_y;
     public int cropWidth;
@@ -166,6 +166,8 @@ public final class PictureSelectionConfig implements Parcelable {
         camera = false;
         themeStyleId = R.style.picture_default_style;
         selectionMode = PictureConfig.MULTIPLE;
+        style = null;
+        cropStyle = null;
         maxSelectNum = 9;
         minSelectNum = 0;
         maxVideoSelectNum = 0;
@@ -179,16 +181,13 @@ public final class PictureSelectionConfig implements Parcelable {
         recordVideoSecond = 60;
         recordVideoMinSecond = 0;
         compressQuality = 80;
-        minimumCompressSize = PictureConfig.MAX_COMPRESS_SIZE;
-        imageSpanCount = 4;
+        imageSpanCount = PictureConfig.DEFAULT_SPAN_COUNT;
         isCompress = false;
         isOriginalControl = false;
         aspect_ratio_x = 0;
         aspect_ratio_y = 0;
         cropWidth = 0;
         cropHeight = 0;
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
-        buttonFeatures = CustomCameraView.BUTTON_STATE_BOTH;  //初始化按钮为可录制可拍照
         isCameraAroundState = false;
         isWithVideoImage = false;
         isAndroidQTransform = false;
@@ -236,9 +235,6 @@ public final class PictureSelectionConfig implements Parcelable {
         renameCropFileName = "";
         selectionMedias = new ArrayList<>();
         uCropOptions = null;
-        style = null;
-        cropStyle = null;
-        windowAnimationStyle = null;
         titleBarBackgroundColor = 0;
         pictureStatusBarColor = 0;
         cropTitleBarBackgroundColor = 0;
@@ -307,9 +303,6 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(this.chooseMode);
         dest.writeByte(this.camera ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isSingleDirectReturn ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(this.style, flags);
-        dest.writeParcelable(this.cropStyle, flags);
-        dest.writeParcelable(this.windowAnimationStyle, flags);
         dest.writeString(this.compressSavePath);
         dest.writeString(this.suffixType);
         dest.writeByte(this.focusAlpha ? (byte) 1 : (byte) 0);
@@ -414,9 +407,6 @@ public final class PictureSelectionConfig implements Parcelable {
         this.chooseMode = in.readInt();
         this.camera = in.readByte() != 0;
         this.isSingleDirectReturn = in.readByte() != 0;
-        this.style = in.readParcelable(PictureParameterStyle.class.getClassLoader());
-        this.cropStyle = in.readParcelable(PictureCropParameterStyle.class.getClassLoader());
-        this.windowAnimationStyle = in.readParcelable(PictureWindowAnimationStyle.class.getClassLoader());
         this.compressSavePath = in.readString();
         this.suffixType = in.readString();
         this.focusAlpha = in.readByte() != 0;

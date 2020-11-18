@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_alignParentBottom="true"
-        android:background="?attr/picture.ac_preview.bottom.bg"
+        android:background="@color/picture_color_grey"
         android:gravity="center_vertical">
 
         <CheckBox
@@ -22,11 +22,11 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:background="@color/picture_color_transparent"
-            android:button="@color/picture_color_transparent"
+            android:button="@drawable/picture_original_wechat_checkbox"
             android:gravity="center_vertical"
             android:paddingLeft="5dp"
             android:text="@string/picture_original_image"
-            android:textColor="@color/picture_color_53575e"
+            android:textColor="@color/picture_color_white"
             android:textSize="14sp"
             android:visibility="gone" />
 
@@ -40,7 +40,7 @@
             android:gravity="center|left"
             android:paddingRight="12dp"
             android:text="@string/picture_please_select"
-            android:textColor="?attr/picture.ac_preview.complete.textColor"
+            android:textColor="@color/picture_list_text_color"
             android:textSize="14sp" />
 
 
@@ -51,7 +51,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="5dp"
             android:layout_toLeftOf="@id/tv_ok"
-            android:background="?attr/picture.num.style"
+            android:background="@drawable/picture_num_oval"
             android:gravity="center"
             android:text="0"
             android:textColor="@color/picture_color_white"

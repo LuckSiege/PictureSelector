@@ -7,7 +7,7 @@
         android:id="@+id/titleViewBg"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="?colorPrimary" />
+        android:background="@color/picture_color_grey" />
 
     <RelativeLayout
         android:id="@+id/rlAlbum"
@@ -26,7 +26,7 @@
             android:maxEms="8"
             android:maxLines="1"
             android:text="@string/picture_camera_roll"
-            android:textColor="?picture.title.textColor"
+            android:textColor="@color/picture_color_white"
             android:textSize="16sp" />
 
         <ImageView
@@ -37,7 +37,7 @@
             android:layout_marginLeft="5dp"
             android:layout_toRightOf="@id/picture_title"
             android:scaleType="centerInside"
-            android:src="?attr/picture.arrow_down.icon" />
+            android:src="@drawable/picture_icon_wechat_down" />
 
     </RelativeLayout>
 
@@ -49,7 +49,7 @@
         android:gravity="center"
         android:padding="10dp"
         android:text="@string/picture_cancel"
-        android:textColor="?picture.right.textColor"
+        android:textColor="@color/picture_color_white"
         android:textSize="14sp"
         android:visibility="gone" />
 
@@ -62,7 +62,8 @@
         android:layout_marginRight="15dp"
         android:background="@drawable/picture_send_button_default_bg"
         android:gravity="center"
-        android:textColor="?picture.right.textColor"
+        android:text="@string/picture_send"
+        android:textColor="@color/picture_color_53575e"
         android:textSize="16sp" />
 
     <ImageView
@@ -72,6 +73,6 @@
         android:layout_alignTop="@id/titleViewBg"
         android:layout_alignBottom="@id/titleViewBg"
         android:padding="15dp"
-        android:src="?attr/picture.leftBack.icon" />
+        android:src="@drawable/picture_icon_close" />
 </merge>
 

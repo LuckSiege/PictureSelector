@@ -102,6 +102,10 @@
         <item name="picture.crop.title.color">@color/picture_color_white</item>
         <!--相册文件夹列表选中图标-->
         <item name="picture.folder_checked_dot">@drawable/picture_orange_oval</item>
+        <!--原图勾选样式-->
+        <item name="picture.original.check.style">@drawable/picture_original_wechat_checkbox</item>
+        <!--原图字体颜色-->
+        <item name="picture.original.text.color">@color/picture_color_white</item>
     </style>
 
 
@@ -156,6 +160,10 @@
         <item name="picture.crop.title.color">@color/picture_color_white</item>
         <!--相册文件夹列表选中图标-->
         <item name="picture.folder_checked_dot">@drawable/picture_orange_oval</item>
+        <!--原图勾选样式-->
+        <item name="picture.original.check.style">@drawable/picture_original_wechat_checkbox</item>
+        <!--原图字体颜色-->
+        <item name="picture.original.text.color">@color/picture_color_white</item>
     </style>
 
     <style name="Picture.Theme.Translucent" parent="Base.Theme.NoActionBar">

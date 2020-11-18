@@ -93,7 +93,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         images = (List<LocalMedia>) getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
         ibLeftBack.setOnClickListener(this);
         ibDelete.setOnClickListener(this);
-        ibDelete.setVisibility(config.style != null ? config.style.pictureExternalPreviewGonePreviewDelete
+        ibDelete.setVisibility(PictureSelectionConfig.style != null ? PictureSelectionConfig.style.pictureExternalPreviewGonePreviewDelete
                 ? View.VISIBLE : View.GONE : View.GONE);
         initViewPageAdapterData();
     }
@@ -103,20 +103,20 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
      */
     @Override
     public void initPictureSelectorStyle() {
-        if (config.style != null) {
-            if (config.style.pictureTitleTextColor != 0) {
-                tvTitle.setTextColor(config.style.pictureTitleTextColor);
+        if (PictureSelectionConfig.style != null) {
+            if (PictureSelectionConfig.style.pictureTitleTextColor != 0) {
+                tvTitle.setTextColor(PictureSelectionConfig.style.pictureTitleTextColor);
             }
-            if (config.style.pictureTitleTextSize != 0) {
-                tvTitle.setTextSize(config.style.pictureTitleTextSize);
+            if (PictureSelectionConfig.style.pictureTitleTextSize != 0) {
+                tvTitle.setTextSize(PictureSelectionConfig.style.pictureTitleTextSize);
             }
-            if (config.style.pictureLeftBackIcon != 0) {
-                ibLeftBack.setImageResource(config.style.pictureLeftBackIcon);
+            if (PictureSelectionConfig.style.pictureLeftBackIcon != 0) {
+                ibLeftBack.setImageResource(PictureSelectionConfig.style.pictureLeftBackIcon);
             }
-            if (config.style.pictureExternalPreviewDeleteStyle != 0) {
-                ibDelete.setImageResource(config.style.pictureExternalPreviewDeleteStyle);
+            if (PictureSelectionConfig.style.pictureExternalPreviewDeleteStyle != 0) {
+                ibDelete.setImageResource(PictureSelectionConfig.style.pictureExternalPreviewDeleteStyle);
             }
-            if (config.style.pictureTitleBarBackgroundColor != 0) {
+            if (PictureSelectionConfig.style.pictureTitleBarBackgroundColor != 0) {
                 titleViewBg.setBackgroundColor(colorPrimary);
             }
         } else {
@@ -601,9 +601,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     }
 
     private void exitAnimation() {
-        overridePendingTransition(R.anim.picture_anim_fade_in, config.windowAnimationStyle != null
-                && config.windowAnimationStyle.activityPreviewExitAnimation != 0
-                ? config.windowAnimationStyle.activityPreviewExitAnimation : R.anim.picture_anim_exit);
+        overridePendingTransition(R.anim.picture_anim_fade_in, PictureSelectionConfig.windowAnimationStyle.activityPreviewExitAnimation);
     }
 
     @Override
@@ -618,17 +616,14 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE:
-                // 存储权限
-                for (int i = 0; i < grantResults.length; i++) {
-                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        showDownLoadDialog();
-                    } else {
-                        ToastUtils.s(getContext(), getString(R.string.picture_jurisdiction));
-                    }
+        if (requestCode == PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE) {// 存储权限
+            for (int grantResult : grantResults) {
+                if (grantResult == PackageManager.PERMISSION_GRANTED) {
+                    showDownLoadDialog();
+                } else {
+                    ToastUtils.s(getContext(), getString(R.string.picture_jurisdiction));
                 }
-                break;
+            }
         }
     }
 }

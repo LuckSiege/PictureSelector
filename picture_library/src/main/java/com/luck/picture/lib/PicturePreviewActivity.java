@@ -1,6 +1,8 @@
 package com.luck.picture.lib;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,10 +22,12 @@ import androidx.viewpager.widget.ViewPager;
 import com.luck.picture.lib.adapter.PictureSimpleFragmentAdapter;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnQueryDataResultListener;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
+import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.StringUtils;
@@ -33,6 +37,8 @@ import com.luck.picture.lib.tools.VoiceUtils;
 import com.luck.picture.lib.widget.PreviewViewPager;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.model.CutInfo;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -91,7 +97,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             // 防止内存不足时activity被回收，导致图片未选中
-            selectData = PictureSelector.obtainSelectorList(savedInstanceState);
+            List<LocalMedia> cacheData = PictureSelector.obtainSelectorList(savedInstanceState);
+            selectData = cacheData != null ? cacheData : selectData;
             isCompleteOrSelected = savedInstanceState.getBoolean(PictureConfig.EXTRA_COMPLETE_SELECTED, false);
             isChangeSelectedData = savedInstanceState.getBoolean(PictureConfig.EXTRA_CHANGE_SELECTED_DATA, false);
             onImageChecked(position);
@@ -124,25 +131,22 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         }
         tvMediaNum.setSelected(config.checkNumMode);
         btnCheck.setOnClickListener(this);
-        selectData = getIntent().
-                getParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST);
-        isBottomPreview = getIntent().
-                getBooleanExtra(PictureConfig.EXTRA_BOTTOM_PREVIEW, false);
+        if (getIntent().getParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST) != null) {
+            selectData = getIntent().getParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST);
+        }
+        isBottomPreview = getIntent().getBooleanExtra(PictureConfig.EXTRA_BOTTOM_PREVIEW, false);
         isShowCamera = getIntent().getBooleanExtra(PictureConfig.EXTRA_SHOW_CAMERA, config.isCamera);
         // 当前目录
         currentDirectory = getIntent().getStringExtra(PictureConfig.EXTRA_IS_CURRENT_DIRECTORY);
-        List<LocalMedia> data;
         if (isBottomPreview) {
             // 底部预览模式
-            data = getIntent().
-                    getParcelableArrayListExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
+            List<LocalMedia> data = getIntent().getParcelableArrayListExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
             initViewPageAdapterData(data);
         } else {
-            data = ImagesObservable.getInstance().readPreviewMediaData();
+            List<LocalMedia> data = new ArrayList<>(ImagesObservable.getInstance().readPreviewMediaData());
             boolean isEmpty = data.size() == 0;
             totalNumber = getIntent().getIntExtra(PictureConfig.EXTRA_DATA_COUNT, 0);
             if (config.isPageStrategy) {
-                // 分页模式
                 if (isEmpty) {
                     // 这种情况有可能是单例被回收了导致readPreviewMediaData();返回的数据为0，那就从第一页开始加载吧
                     setNewTitle();
@@ -153,7 +157,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 loadData();
                 setTitle();
             } else {
-                // 普通模式
                 initViewPageAdapterData(data);
                 if (isEmpty) {
                     // 这种情况有可能是单例被回收了导致readPreviewMediaData();返回的数据为0，暂时自动切换成分页模式去获取数据
@@ -271,33 +274,33 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
 
     @Override
     protected void initCompleteText(int startCount) {
-        boolean isNotEmptyStyle = config.style != null;
+        boolean isNotEmptyStyle = PictureSelectionConfig.style != null;
         if (config.selectionMode == PictureConfig.SINGLE) {
             if (startCount <= 0) {
                 // 未选择任何图片
-                mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
-                        ? config.style.pictureUnCompleteText : getString(R.string.picture_please_select));
+                mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(PictureSelectionConfig.style.pictureUnCompleteText)
+                        ? PictureSelectionConfig.style.pictureUnCompleteText : getString(R.string.picture_please_select));
             } else {
                 // 已选择
-                boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
-                if (isCompleteReplaceNum && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
-                    mTvPictureOk.setText(String.format(config.style.pictureCompleteText, startCount, 1));
+                boolean isCompleteReplaceNum = isNotEmptyStyle && PictureSelectionConfig.style.isCompleteReplaceNum;
+                if (isCompleteReplaceNum && !TextUtils.isEmpty(PictureSelectionConfig.style.pictureCompleteText)) {
+                    mTvPictureOk.setText(String.format(PictureSelectionConfig.style.pictureCompleteText, startCount, 1));
                 } else {
-                    mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureCompleteText)
-                            ? config.style.pictureCompleteText : getString(R.string.picture_done));
+                    mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(PictureSelectionConfig.style.pictureCompleteText)
+                            ? PictureSelectionConfig.style.pictureCompleteText : getString(R.string.picture_done));
                 }
             }
         } else {
-            boolean isCompleteReplaceNum = isNotEmptyStyle && config.style.isCompleteReplaceNum;
+            boolean isCompleteReplaceNum = isNotEmptyStyle && PictureSelectionConfig.style.isCompleteReplaceNum;
             if (startCount <= 0) {
                 // 未选择任何图片
-                mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(config.style.pictureUnCompleteText)
-                        ? config.style.pictureUnCompleteText : getString(R.string.picture_done_front_num,
+                mTvPictureOk.setText(isNotEmptyStyle && !TextUtils.isEmpty(PictureSelectionConfig.style.pictureUnCompleteText)
+                        ? PictureSelectionConfig.style.pictureUnCompleteText : getString(R.string.picture_done_front_num,
                         startCount, config.maxSelectNum));
             } else {
                 // 已选择
-                if (isCompleteReplaceNum && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
-                    mTvPictureOk.setText(String.format(config.style.pictureCompleteText, startCount, config.maxSelectNum));
+                if (isCompleteReplaceNum && !TextUtils.isEmpty(PictureSelectionConfig.style.pictureCompleteText)) {
+                    mTvPictureOk.setText(String.format(PictureSelectionConfig.style.pictureCompleteText, startCount, config.maxSelectNum));
                 } else {
                     mTvPictureOk.setText(getString(R.string.picture_done_front_num,
                             startCount, config.maxSelectNum));
@@ -320,56 +323,76 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      */
     @Override
     public void initPictureSelectorStyle() {
-        if (config.style != null) {
-            if (config.style.pictureTitleTextColor != 0) {
-                tvTitle.setTextColor(config.style.pictureTitleTextColor);
+        if (PictureSelectionConfig.style != null) {
+            if (PictureSelectionConfig.style.pictureTitleTextColor != 0) {
+                tvTitle.setTextColor(PictureSelectionConfig.style.pictureTitleTextColor);
             }
-            if (config.style.pictureTitleTextSize != 0) {
-                tvTitle.setTextSize(config.style.pictureTitleTextSize);
+            if (PictureSelectionConfig.style.pictureTitleTextSize != 0) {
+                tvTitle.setTextSize(PictureSelectionConfig.style.pictureTitleTextSize);
             }
-            if (config.style.pictureLeftBackIcon != 0) {
-                pictureLeftBack.setImageResource(config.style.pictureLeftBackIcon);
+            if (PictureSelectionConfig.style.pictureLeftBackIcon != 0) {
+                pictureLeftBack.setImageResource(PictureSelectionConfig.style.pictureLeftBackIcon);
             }
-            if (config.style.picturePreviewBottomBgColor != 0) {
-                selectBarLayout.setBackgroundColor(config.style.picturePreviewBottomBgColor);
+            if (PictureSelectionConfig.style.picturePreviewBottomBgColor != 0) {
+                selectBarLayout.setBackgroundColor(PictureSelectionConfig.style.picturePreviewBottomBgColor);
             }
-            if (config.style.pictureCheckNumBgStyle != 0) {
-                tvMediaNum.setBackgroundResource(config.style.pictureCheckNumBgStyle);
+            if (PictureSelectionConfig.style.pictureCheckNumBgStyle != 0) {
+                tvMediaNum.setBackgroundResource(PictureSelectionConfig.style.pictureCheckNumBgStyle);
             }
-            if (config.style.pictureCheckedStyle != 0) {
-                check.setBackgroundResource(config.style.pictureCheckedStyle);
+            if (PictureSelectionConfig.style.pictureCheckedStyle != 0) {
+                check.setBackgroundResource(PictureSelectionConfig.style.pictureCheckedStyle);
             }
-            if (config.style.pictureUnCompleteTextColor != 0) {
-                mTvPictureOk.setTextColor(config.style.pictureUnCompleteTextColor);
+            if (PictureSelectionConfig.style.pictureUnCompleteTextColor != 0) {
+                mTvPictureOk.setTextColor(PictureSelectionConfig.style.pictureUnCompleteTextColor);
             }
-            if (!TextUtils.isEmpty(config.style.pictureUnCompleteText)) {
-                mTvPictureOk.setText(config.style.pictureUnCompleteText);
+            if (!TextUtils.isEmpty(PictureSelectionConfig.style.pictureUnCompleteText)) {
+                mTvPictureOk.setText(PictureSelectionConfig.style.pictureUnCompleteText);
             }
-        }
-        titleViewBg.setBackgroundColor(colorPrimary);
-
-        if (config.isOriginalControl) {
-            if (config.style != null) {
-                if (config.style.pictureOriginalControlStyle != 0) {
-                    mCbOriginal.setButtonDrawable(config.style.pictureOriginalControlStyle);
+            if (config.isOriginalControl) {
+                if (PictureSelectionConfig.style.pictureOriginalControlStyle != 0) {
+                    mCbOriginal.setButtonDrawable(PictureSelectionConfig.style.pictureOriginalControlStyle);
                 } else {
                     mCbOriginal.setButtonDrawable(ContextCompat.getDrawable(this, R.drawable.picture_original_checkbox));
                 }
-                if (config.style.pictureOriginalFontColor != 0) {
-                    mCbOriginal.setTextColor(config.style.pictureOriginalFontColor);
+                if (PictureSelectionConfig.style.pictureOriginalFontColor != 0) {
+                    mCbOriginal.setTextColor(PictureSelectionConfig.style.pictureOriginalFontColor);
                 } else {
                     mCbOriginal.setTextColor(ContextCompat.getColor(this, R.color.picture_color_53575e));
                 }
-                if (config.style.pictureOriginalTextSize != 0) {
-                    mCbOriginal.setTextSize(config.style.pictureOriginalTextSize);
+                if (PictureSelectionConfig.style.pictureOriginalTextSize != 0) {
+                    mCbOriginal.setTextSize(PictureSelectionConfig.style.pictureOriginalTextSize);
                 }
             } else {
                 mCbOriginal.setButtonDrawable(ContextCompat.getDrawable(this, R.drawable.picture_original_checkbox));
-
                 mCbOriginal.setTextColor(ContextCompat.getColor(this, R.color.picture_color_53575e));
             }
-        }
+        } else {
+            Drawable pictureCheckedStyle = AttrsUtils.getTypeValueDrawable(getContext(), R.attr.picture_checked_style, R.drawable.picture_checkbox_selector);
+            check.setBackground(pictureCheckedStyle);
+            ColorStateList completeColorStateList = AttrsUtils.getTypeValueColorStateList(getContext(), R.attr.picture_ac_preview_complete_textColor);
+            if (completeColorStateList != null) {
+                mTvPictureOk.setTextColor(completeColorStateList);
+            }
+            Drawable leftDrawable = AttrsUtils.getTypeValueDrawable(getContext(), R.attr.picture_preview_leftBack_icon, R.drawable.picture_icon_back);
+            pictureLeftBack.setImageDrawable(leftDrawable);
 
+            Drawable ovalBgDrawable = AttrsUtils.getTypeValueDrawable(getContext(), R.attr.picture_num_style, R.drawable.picture_num_oval);
+            tvMediaNum.setBackground(ovalBgDrawable);
+
+            int previewBottomBgColor = AttrsUtils.getTypeValueColor(getContext(), R.attr.picture_ac_preview_bottom_bg);
+            if (previewBottomBgColor != 0) {
+                selectBarLayout.setBackgroundColor(previewBottomBgColor);
+            }
+            if (config.isOriginalControl) {
+                Drawable originalDrawable = AttrsUtils.getTypeValueDrawable(getContext(), R.attr.picture_original_check_style, R.drawable.picture_original_wechat_checkbox);
+                mCbOriginal.setButtonDrawable(originalDrawable);
+                int originalTextColor = AttrsUtils.getTypeValueColor(getContext(), R.attr.picture_original_text_color);
+                if (originalTextColor != 0) {
+                    mCbOriginal.setTextColor(originalTextColor);
+                }
+            }
+        }
+        titleViewBg.setBackgroundColor(colorPrimary);
         onSelectNumChange(false);
     }
 
@@ -531,13 +554,13 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
 
     protected void onSelectNumChange(boolean isRefresh) {
         this.refresh = isRefresh;
-        boolean enable = selectData.size() != 0;
+        boolean enable = selectData != null && selectData.size() != 0;
         if (enable) {
             mTvPictureOk.setEnabled(true);
             mTvPictureOk.setSelected(true);
-            if (config.style != null) {
-                if (config.style.pictureCompleteTextColor != 0) {
-                    mTvPictureOk.setTextColor(config.style.pictureCompleteTextColor);
+            if (PictureSelectionConfig.style != null) {
+                if (PictureSelectionConfig.style.pictureCompleteTextColor != 0) {
+                    mTvPictureOk.setTextColor(PictureSelectionConfig.style.pictureCompleteTextColor);
                 } else {
                     mTvPictureOk.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_fa632d));
                 }
@@ -550,8 +573,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 }
                 tvMediaNum.setVisibility(View.VISIBLE);
                 tvMediaNum.setText(String.valueOf(selectData.size()));
-                if (config.style != null && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
-                    mTvPictureOk.setText(config.style.pictureCompleteText);
+                if (PictureSelectionConfig.style != null && !TextUtils.isEmpty(PictureSelectionConfig.style.pictureCompleteText)) {
+                    mTvPictureOk.setText(PictureSelectionConfig.style.pictureCompleteText);
                 } else {
                     mTvPictureOk.setText(getString(R.string.picture_completed));
                 }
@@ -559,9 +582,9 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         } else {
             mTvPictureOk.setEnabled(false);
             mTvPictureOk.setSelected(false);
-            if (config.style != null) {
-                if (config.style.pictureUnCompleteTextColor != 0) {
-                    mTvPictureOk.setTextColor(config.style.pictureUnCompleteTextColor);
+            if (PictureSelectionConfig.style != null) {
+                if (PictureSelectionConfig.style.pictureUnCompleteTextColor != 0) {
+                    mTvPictureOk.setTextColor(PictureSelectionConfig.style.pictureUnCompleteTextColor);
                 } else {
                     mTvPictureOk.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_9b));
                 }
@@ -570,8 +593,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 initCompleteText(0);
             } else {
                 tvMediaNum.setVisibility(View.INVISIBLE);
-                if (config.style != null && !TextUtils.isEmpty(config.style.pictureUnCompleteText)) {
-                    mTvPictureOk.setText(config.style.pictureUnCompleteText);
+                if (PictureSelectionConfig.style != null && !TextUtils.isEmpty(PictureSelectionConfig.style.pictureUnCompleteText)) {
+                    mTvPictureOk.setText(PictureSelectionConfig.style.pictureUnCompleteText);
                 } else {
                     mTvPictureOk.setText(getString(R.string.picture_please_select));
                 }
@@ -968,7 +991,9 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             }
         } else if (resultCode == UCrop.RESULT_ERROR) {
             Throwable throwable = (Throwable) data.getSerializableExtra(UCrop.EXTRA_ERROR);
-            ToastUtils.s(getContext(), throwable.getMessage());
+            if (throwable != null) {
+                ToastUtils.s(getContext(), throwable.getMessage());
+            }
         }
     }
 
@@ -976,15 +1001,9 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     @Override
     public void onBackPressed() {
         updateResult();
-        if (config.windowAnimationStyle != null
-                && config.windowAnimationStyle.activityPreviewExitAnimation != 0) {
-            finish();
-            overridePendingTransition(0, config.windowAnimationStyle != null
-                    && config.windowAnimationStyle.activityPreviewExitAnimation != 0 ?
-                    config.windowAnimationStyle.activityPreviewExitAnimation : R.anim.picture_anim_exit);
-        } else {
-            closeActivity();
-        }
+        finish();
+        overridePendingTransition(0, PictureSelectionConfig.windowAnimationStyle.activityPreviewExitAnimation);
+
     }
 
     /**
@@ -1005,7 +1024,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(PictureConfig.EXTRA_COMPLETE_SELECTED, isCompleteOrSelected);
         outState.putBoolean(PictureConfig.EXTRA_CHANGE_SELECTED_DATA, isChangeSelectedData);
@@ -1035,5 +1054,4 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     public void onActivityBackPressed() {
         onBackPressed();
     }
-
 }

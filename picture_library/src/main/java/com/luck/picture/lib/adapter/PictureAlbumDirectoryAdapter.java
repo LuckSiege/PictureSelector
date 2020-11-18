@@ -1,6 +1,7 @@
 package com.luck.picture.lib.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.listener.OnAlbumItemClickListener;
+import com.luck.picture.lib.tools.AttrsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +28,9 @@ import java.util.List;
 public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAlbumDirectoryAdapter.ViewHolder> {
     private List<LocalMediaFolder> folders = new ArrayList<>();
     private int chooseMode;
-    private PictureSelectionConfig config;
 
     public PictureAlbumDirectoryAdapter(PictureSelectionConfig config) {
         super();
-        this.config = config;
         this.chooseMode = config.chooseMode;
     }
 
@@ -64,8 +64,8 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         int checkedNum = folder.getCheckedNum();
         holder.tvSign.setVisibility(checkedNum > 0 ? View.VISIBLE : View.INVISIBLE);
         holder.itemView.setSelected(isChecked);
-        if (config.style != null && config.style.pictureAlbumStyle != 0) {
-            holder.itemView.setBackgroundResource(config.style.pictureAlbumStyle);
+        if (PictureSelectionConfig.style != null && PictureSelectionConfig.style.pictureAlbumStyle != 0) {
+            holder.itemView.setBackgroundResource(PictureSelectionConfig.style.pictureAlbumStyle);
         }
         if (chooseMode == PictureMimeType.ofAudio()) {
             holder.ivFirstImage.setImageResource(R.drawable.picture_audio_placeholder);
@@ -99,7 +99,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         return folders.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivFirstImage;
         TextView tvFolderName, tvSign;
 
@@ -108,8 +108,11 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
             ivFirstImage = itemView.findViewById(R.id.first_image);
             tvFolderName = itemView.findViewById(R.id.tv_folder_name);
             tvSign = itemView.findViewById(R.id.tv_sign);
-            if (config.style != null && config.style.pictureFolderCheckedDotStyle != 0) {
-                tvSign.setBackgroundResource(config.style.pictureFolderCheckedDotStyle);
+            if (PictureSelectionConfig.style != null && PictureSelectionConfig.style.pictureFolderCheckedDotStyle != 0) {
+                tvSign.setBackgroundResource(PictureSelectionConfig.style.pictureFolderCheckedDotStyle);
+            } else {
+                Drawable folderCheckedDotDrawable = AttrsUtils.getTypeValueDrawable(itemView.getContext(), R.attr.picture_folder_checked_dot, R.drawable.picture_orange_oval);
+                tvSign.setBackground(folderCheckedDotDrawable);
             }
         }
     }

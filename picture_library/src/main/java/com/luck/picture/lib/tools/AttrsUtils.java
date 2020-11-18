@@ -1,9 +1,12 @@
 package com.luck.picture.lib.tools;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
+
+import androidx.core.content.ContextCompat;
 
 /**
  * @author：luck
@@ -35,6 +38,27 @@ public class AttrsUtils {
     }
 
     /**
+     * get attrs color
+     *
+     * @param context
+     * @param attr
+     * @return
+     */
+    public static ColorStateList getTypeValueColorStateList(Context context, int attr) {
+        ColorStateList colorStateList = null;
+        try {
+            TypedValue typedValue = new TypedValue();
+            int[] attribute = new int[]{attr};
+            TypedArray array = context.obtainStyledAttributes(typedValue.resourceId, attribute);
+            colorStateList = array.getColorStateList(0);
+            array.recycle();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return colorStateList;
+    }
+
+    /**
      * attrs status color or black
      *
      * @param context
@@ -60,19 +84,20 @@ public class AttrsUtils {
      *
      * @param context
      * @param attr
+     * @param defaultResId
      * @return
      */
-    public static Drawable getTypeValueDrawable(Context context, int attr) {
+    public static Drawable getTypeValueDrawable(Context context, int attr, int defaultResId) {
+        Drawable drawable = null;
         try {
             TypedValue typedValue = new TypedValue();
             int[] attribute = new int[]{attr};
             TypedArray array = context.obtainStyledAttributes(typedValue.resourceId, attribute);
-            Drawable drawable = array.getDrawable(0);
+            drawable = array.getDrawable(0);
             array.recycle();
-            return drawable;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return drawable == null ? ContextCompat.getDrawable(context, defaultResId) : drawable;
     }
 }

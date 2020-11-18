@@ -299,7 +299,7 @@ public class Luban implements Handler.Callback {
                     } else {
                         String androidQToPath = AndroidQTransformUtils.copyPathToAndroidQ(context, path.getPath(),
                                 media.getWidth(), media.getHeight(), media.getMimeType(), filename);
-                        if (!TextUtils.isEmpty(androidQToPath)) {
+                        if (androidQToPath !=null) {
                             result = new File(androidQToPath);
                         }
                     }
@@ -327,7 +327,7 @@ public class Luban implements Handler.Callback {
                     String newFilePath = media.isCut() ? media.getCutPath() :
                             AndroidQTransformUtils.copyPathToAndroidQ(context,
                                     path.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), filename);
-                    if (!TextUtils.isEmpty(newFilePath)) {
+                    if (newFilePath !=null) {
                         result = new File(newFilePath);
                     }
                 } else {

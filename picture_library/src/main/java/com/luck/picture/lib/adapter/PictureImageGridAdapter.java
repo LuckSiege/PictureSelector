@@ -345,7 +345,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivPicture;
         TextView tvCheck;
         TextView tvDuration, tvIsGif, tvLongChart;
@@ -361,9 +361,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             tvDuration = itemView.findViewById(R.id.tv_duration);
             tvIsGif = itemView.findViewById(R.id.tv_isGif);
             tvLongChart = itemView.findViewById(R.id.tv_long_chart);
-            if (config.style != null) {
-                if (config.style.pictureCheckedStyle != 0) {
-                    tvCheck.setBackgroundResource(config.style.pictureCheckedStyle);
+            if (PictureSelectionConfig.style != null) {
+                if (PictureSelectionConfig.style.pictureCheckedStyle != 0) {
+                    tvCheck.setBackgroundResource(PictureSelectionConfig.style.pictureCheckedStyle);
                 }
             }
         }

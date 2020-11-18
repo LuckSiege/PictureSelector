@@ -129,10 +129,9 @@ public final class PictureSelector {
      */
     public static List<LocalMedia> obtainSelectorList(Bundle bundle) {
         if (bundle != null) {
-            List<LocalMedia> selectionMedias = bundle.getParcelableArrayList(PictureConfig.EXTRA_SELECT_LIST);
-            return selectionMedias == null ? new ArrayList<>() : selectionMedias;
+           return bundle.getParcelableArrayList(PictureConfig.EXTRA_SELECT_LIST);
         }
-        return new ArrayList<>();
+        return null;
     }
 
     /**

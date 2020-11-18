@@ -1,10 +1,10 @@
 ext {
     cfgs = [
-            compileSdkVersion             : 29,
+            compileSdkVersion             : 30,
             buildToolsVersion             : "28.0.3",
             minSdkVersion                 : 19,
-            targetSdkVersion              : 29,
-            versionCode                   : 29,
+            targetSdkVersion              : 30,
+            versionCode                   : 30,
             versionName                   : "2.5.9",
             ucropVersionCode              : 24,
             ucropVersionName              : "2.2.4-non-native",
@@ -15,8 +15,8 @@ ext {
             version_appcompat             : "1.2.0",
             localbroadcastmanager         : "1.0.0",
 
-            camerax_view                  : "1.0.0-alpha17",
-            camerax_version               : "1.0.0-beta08",
+            camerax_view                  : "1.0.0-alpha19",
+            camerax_version               : "1.0.0-beta12",
             camera_core_version           : "1.0.0-beta03",
             experimental_version          : "1.1.0-alpha01",
             futures_version               : "1.1.0",

@@ -7,7 +7,7 @@
         android:id="@+id/titleViewBg"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="?colorPrimary" />
+        android:background="@color/picture_color_grey" />
 
     <TextView
         android:id="@+id/picture_title"
@@ -19,7 +19,7 @@
         android:maxEms="8"
         android:maxLines="1"
         android:text="@string/picture_camera_roll"
-        android:textColor="?picture.title.textColor"
+        android:textColor="@color/picture_color_white"
         android:textSize="17sp" />
 
     <ImageView
@@ -30,7 +30,7 @@
         android:layout_alignBottom="@id/picture_title"
         android:layout_toRightOf="@id/picture_title"
         android:scaleType="centerInside"
-        android:src="?attr/picture.arrow_down.icon" />
+        android:src="@drawable/picture_icon_arrow_down" />
 
     <TextView
         android:id="@+id/picture_right"
@@ -40,7 +40,7 @@
         android:gravity="center"
         android:padding="10dp"
         android:text="@string/picture_cancel"
-        android:textColor="?picture.right.textColor"
+        android:textColor="@color/picture_color_white"
         android:textSize="14sp" />
 
     <ImageView
@@ -50,7 +50,7 @@
         android:layout_alignTop="@id/titleViewBg"
         android:layout_alignBottom="@id/titleViewBg"
         android:padding="15dp"
-        android:src="?attr/picture.leftBack.icon" />
+        android:src="@drawable/picture_icon_back" />
 
 </merge>
 

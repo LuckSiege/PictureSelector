@@ -26,7 +26,7 @@
         android:layout_height="48dp"
         android:background="@color/picture_color_transparent"
         android:scaleType="centerInside"
-        android:src="?attr/picture.preview.leftBack.icon" />
+        android:src="@drawable/picture_icon_back" />
 
     <TextView
         android:id="@+id/tv_confirm"

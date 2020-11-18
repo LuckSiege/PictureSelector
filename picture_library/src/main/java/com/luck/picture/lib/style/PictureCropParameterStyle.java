@@ -1,6 +1,7 @@
 package com.luck.picture.lib.style;
 
 
+import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -67,6 +68,60 @@ public class PictureCropParameterStyle implements Parcelable {
         this.isChangeStatusBarFontColor = isChangeStatusBarFontColor;
     }
 
+    /**
+     * default crop style
+     *
+     * @return
+     */
+    public static PictureCropParameterStyle ofDefaultCropStyle() {
+        return new PictureCropParameterStyle(
+                Color.parseColor("#393a3e"),
+                Color.parseColor("#393a3e"),
+                Color.parseColor("#393a3e"),
+                Color.parseColor("#FFFFFF"),
+                false);
+    }
+
+    /**
+     * 0/N style
+     *
+     * @return
+     */
+    public static PictureCropParameterStyle ofSelectTotalStyle() {
+        return new PictureCropParameterStyle(
+                Color.parseColor("#FFFFFF"),
+                Color.parseColor("#FFFFFF"),
+                Color.parseColor("#000000"),
+                true);
+    }
+
+    /**
+     * number style
+     *
+     * @return
+     */
+    public static PictureCropParameterStyle ofSelectNumberStyle() {
+        return new PictureCropParameterStyle(
+                Color.parseColor("#7D7DFF"),
+                Color.parseColor("#7D7DFF"),
+                Color.parseColor("#FFFFFF"),
+                false);
+    }
+
+    /**
+     * new style WeChat
+     *
+     * @return
+     */
+    public static PictureCropParameterStyle ofNewStyle() {
+        return new PictureCropParameterStyle(
+                Color.parseColor("#393a3e"),
+                Color.parseColor("#393a3e"),
+                Color.parseColor("#393a3e"),
+                Color.parseColor("#FFFFFF"),
+                false);
+    }
+
 
     @Override
     public int describeContents() {
@@ -90,7 +145,7 @@ public class PictureCropParameterStyle implements Parcelable {
         this.cropNavBarColor = in.readInt();
     }
 
-    public static final Creator<PictureCropParameterStyle> CREATOR = new Creator<PictureCropParameterStyle>() {
+    public static final Parcelable.Creator<PictureCropParameterStyle> CREATOR = new Parcelable.Creator<PictureCropParameterStyle>() {
         @Override
         public PictureCropParameterStyle createFromParcel(Parcel source) {
             return new PictureCropParameterStyle(source);

@@ -25,14 +25,12 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.dialog.PictureLoadingDialog;
-import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.engine.PictureSelectorEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.immersive.ImmersiveManage;
 import com.luck.picture.lib.immersive.NavBarUtils;
 import com.luck.picture.lib.language.PictureLanguageUtils;
-import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.thread.PictureThreadUtils;
@@ -164,8 +162,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (isImmersive()) {
             immersive();
         }
-        if (config.style != null && config.style.pictureNavBarColor != 0) {
-            NavBarUtils.setNavBarColor(this, config.style.pictureNavBarColor);
+        if (PictureSelectionConfig.style != null && PictureSelectionConfig.style.pictureNavBarColor != 0) {
+            NavBarUtils.setNavBarColor(this, PictureSelectionConfig.style.pictureNavBarColor);
         }
         int layoutResID = getResourceId();
         if (layoutResID != 0) {
@@ -182,10 +180,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     private void newCreateEngine() {
         if (PictureSelectionConfig.imageEngine == null) {
             PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
-            if (baseEngine != null) {
-                ImageEngine engine = baseEngine.createEngine();
-                PictureSelectionConfig.imageEngine = engine;
-            }
+            if (baseEngine != null) PictureSelectionConfig.imageEngine = baseEngine.createEngine();
         }
     }
 
@@ -197,8 +192,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             if (PictureSelectionConfig.listener == null) {
                 PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
                 if (baseEngine != null) {
-                    OnResultCallbackListener<LocalMedia> listener = baseEngine.getResultCallbackListener();
-                    PictureSelectionConfig.listener = listener;
+                    PictureSelectionConfig.listener = baseEngine.getResultCallbackListener();
                 }
             }
         }
@@ -237,16 +231,16 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      */
     private void initConfig() {
         selectionMedias = config.selectionMedias == null ? new ArrayList<>() : config.selectionMedias;
-        if (config.style != null) {
-            openWhiteStatusBar = config.style.isChangeStatusBarFontColor;
-            if (config.style.pictureTitleBarBackgroundColor != 0) {
-                colorPrimary = config.style.pictureTitleBarBackgroundColor;
+        if (PictureSelectionConfig.style != null) {
+            openWhiteStatusBar = PictureSelectionConfig.style.isChangeStatusBarFontColor;
+            if (PictureSelectionConfig.style.pictureTitleBarBackgroundColor != 0) {
+                colorPrimary = PictureSelectionConfig.style.pictureTitleBarBackgroundColor;
             }
-            if (config.style.pictureStatusBarColor != 0) {
-                colorPrimaryDark = config.style.pictureStatusBarColor;
+            if (PictureSelectionConfig.style.pictureStatusBarColor != 0) {
+                colorPrimaryDark = PictureSelectionConfig.style.pictureStatusBarColor;
             }
-            numComplete = config.style.isOpenCompletedNumStyle;
-            config.checkNumMode = config.style.isOpenCheckNumStyle;
+            numComplete = PictureSelectionConfig.style.isOpenCompletedNumStyle;
+            config.checkNumMode = PictureSelectionConfig.style.isOpenCheckNumStyle;
         } else {
             openWhiteStatusBar = config.isChangeStatusBarFontColor;
             if (!openWhiteStatusBar) {
@@ -504,8 +498,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         }
         UCrop.of(uri, Uri.fromFile(file))
                 .withOptions(options)
-                .startAnimationActivity(this, config.windowAnimationStyle != null
-                        ? config.windowAnimationStyle.activityCropEnterAnimation : R.anim.picture_anim_enter);
+                .startAnimationActivity(this, PictureSelectionConfig.windowAnimationStyle.activityCropEnterAnimation);
     }
 
     /**
@@ -592,8 +585,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                         + suffix : config.camera || count == 1 ? config.renameCropFileName : StringUtils.rename(config.renameCropFileName));
         UCrop.of(uri, Uri.fromFile(file))
                 .withOptions(options)
-                .startAnimationMultipleCropActivity(this, config.windowAnimationStyle != null
-                        ? config.windowAnimationStyle.activityCropEnterAnimation : R.anim.picture_anim_enter);
+                .startAnimationMultipleCropActivity(this, PictureSelectionConfig.windowAnimationStyle.activityCropEnterAnimation);
     }
 
     /**
@@ -613,17 +605,17 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     private UCrop.Options basicOptions(ArrayList<CutInfo> list) {
         int toolbarColor = 0, statusColor = 0, titleColor = 0;
         boolean isChangeStatusBarFontColor;
-        if (config.cropStyle != null) {
-            if (config.cropStyle.cropTitleBarBackgroundColor != 0) {
-                toolbarColor = config.cropStyle.cropTitleBarBackgroundColor;
+        if (PictureSelectionConfig.cropStyle != null) {
+            if (PictureSelectionConfig.cropStyle.cropTitleBarBackgroundColor != 0) {
+                toolbarColor = PictureSelectionConfig.cropStyle.cropTitleBarBackgroundColor;
             }
-            if (config.cropStyle.cropStatusBarColorPrimaryDark != 0) {
-                statusColor = config.cropStyle.cropStatusBarColorPrimaryDark;
+            if (PictureSelectionConfig.cropStyle.cropStatusBarColorPrimaryDark != 0) {
+                statusColor = PictureSelectionConfig.cropStyle.cropStatusBarColorPrimaryDark;
             }
-            if (config.cropStyle.cropTitleColor != 0) {
-                titleColor = config.cropStyle.cropTitleColor;
+            if (PictureSelectionConfig.cropStyle.cropTitleColor != 0) {
+                titleColor = PictureSelectionConfig.cropStyle.cropTitleColor;
             }
-            isChangeStatusBarFontColor = config.cropStyle.isChangeStatusBarFontColor;
+            isChangeStatusBarFontColor = PictureSelectionConfig.cropStyle.isChangeStatusBarFontColor;
         } else {
             if (config.cropTitleBarBackgroundColor != 0) {
                 toolbarColor = config.cropTitleBarBackgroundColor;
@@ -666,11 +658,12 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         options.setRenameCropFileName(config.renameCropFileName);
         options.isCamera(config.camera);
         options.setCutListData(list);
+        if (PictureSelectionConfig.cropStyle != null && PictureSelectionConfig.cropStyle.cropNavBarColor != 0) {
+            options.setNavBarColor(PictureSelectionConfig.cropStyle.cropNavBarColor);
+        }
         options.isWithVideoImage(config.isWithVideoImage);
         options.setFreeStyleCropEnabled(config.freeStyleCropEnabled);
-        options.setCropExitAnimation(config.windowAnimationStyle != null
-                ? config.windowAnimationStyle.activityCropExitAnimation : 0);
-        options.setNavBarColor(config.cropStyle != null ? config.cropStyle.cropNavBarColor : 0);
+        options.setCropExitAnimation(PictureSelectionConfig.windowAnimationStyle.activityCropExitAnimation);
         options.withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y);
         options.isMultipleRecyclerAnimation(config.isMultipleRecyclerAnimation);
         if (config.cropWidth > 0 && config.cropHeight > 0) {
@@ -835,9 +828,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (config.camera) {
             overridePendingTransition(0, R.anim.picture_anim_fade_out);
         } else {
-            overridePendingTransition(0, config.windowAnimationStyle != null
-                    && config.windowAnimationStyle.activityExitAnimation != 0 ?
-                    config.windowAnimationStyle.activityExitAnimation : R.anim.picture_anim_exit);
+            overridePendingTransition(0,
+                    PictureSelectionConfig.windowAnimationStyle.activityExitAnimation);
         }
         if (config.camera) {
             if (getContext() instanceof PictureSelectorCameraEmptyActivity
@@ -914,16 +906,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
 
                 File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(),
                         chooseMode, cameraFileName, config.suffixType, config.outPutCameraPath);
-                if (cameraFile != null) {
-                    config.cameraPath = cameraFile.getAbsolutePath();
-                    imageUri = PictureFileUtils.parUri(this, cameraFile);
-                } else {
-                    ToastUtils.s(getContext(), "open is camera error，the uri is empty ");
-                    if (config.camera) {
-                        closeActivity();
-                    }
-                    return;
-                }
+                config.cameraPath = cameraFile.getAbsolutePath();
+                imageUri = PictureFileUtils.parUri(this, cameraFile);
             }
             config.cameraMimeType = PictureMimeType.ofImage();
             if (config.isCameraAroundState) {
@@ -964,16 +948,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                 }
                 File cameraFile = PictureFileUtils.createCameraFile(getApplicationContext(),
                         chooseMode, cameraFileName, config.suffixType, config.outPutCameraPath);
-                if (cameraFile != null) {
-                    config.cameraPath = cameraFile.getAbsolutePath();
-                    videoUri = PictureFileUtils.parUri(this, cameraFile);
-                } else {
-                    ToastUtils.s(getContext(), "open is camera error，the uri is empty ");
-                    if (config.camera) {
-                        closeActivity();
-                    }
-                    return;
-                }
+                config.cameraPath = cameraFile.getAbsolutePath();
+                videoUri = PictureFileUtils.parUri(this, cameraFile);
             }
             config.cameraMimeType = PictureMimeType.ofVideo();
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoUri);
