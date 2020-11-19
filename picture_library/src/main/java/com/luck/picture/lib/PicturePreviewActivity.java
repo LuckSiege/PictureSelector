@@ -738,31 +738,26 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
 
                 // 如果宽高为0，重新获取宽高
                 if (image.getWidth() == 0 || image.getHeight() == 0) {
-                    int width = 0, height = 0;
                     image.setOrientation(-1);
                     if (PictureMimeType.isContent(image.getPath())) {
                         if (PictureMimeType.isHasVideo(image.getMimeType())) {
-                            int[] size = MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(image.getPath()));
-                            width = size[0];
-                            height = size[1];
+                            MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(image.getPath()), image);
                         } else if (PictureMimeType.isHasImage(image.getMimeType())) {
                             int[] size = MediaUtils.getImageSizeForUri(getContext(), Uri.parse(image.getPath()));
-                            width = size[0];
-                            height = size[1];
+                            image.setWidth(size[0]);
+                            image.setHeight(size[1]);
                         }
                     } else {
                         if (PictureMimeType.isHasVideo(image.getMimeType())) {
                             int[] size = MediaUtils.getVideoSizeForUrl(image.getPath());
-                            width = size[0];
-                            height = size[1];
+                            image.setWidth(size[0]);
+                            image.setHeight(size[1]);
                         } else if (PictureMimeType.isHasImage(image.getMimeType())) {
                             int[] size = MediaUtils.getImageSizeForUrl(image.getPath());
-                            width = size[0];
-                            height = size[1];
+                            image.setWidth(size[0]);
+                            image.setHeight(size[1]);
                         }
                     }
-                    image.setWidth(width);
-                    image.setHeight(height);
                 }
 
                 // 如果有旋转信息图片宽高则是相反

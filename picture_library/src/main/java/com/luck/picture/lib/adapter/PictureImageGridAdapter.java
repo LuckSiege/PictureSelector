@@ -25,8 +25,6 @@ import com.luck.picture.lib.listener.OnPhotoSelectChangedListener;
 import com.luck.picture.lib.tools.AnimUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.MediaUtils;
-import com.luck.picture.lib.tools.PictureFileUtils;
-import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.VoiceUtils;
@@ -518,34 +516,28 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             if (config.selectionMode == PictureConfig.SINGLE) {
                 singleRadioMediaImage();
             }
-
             // If the width and height are 0, regain the width and height
             if (image.getWidth() == 0 || image.getHeight() == 0) {
-                int width = 0, height = 0;
                 image.setOrientation(-1);
                 if (PictureMimeType.isContent(image.getPath())) {
                     if (PictureMimeType.isHasVideo(image.getMimeType())) {
-                        int[] size = MediaUtils.getVideoSizeForUri(context, Uri.parse(image.getPath()));
-                        width = size[0];
-                        height = size[1];
+                        MediaUtils.getVideoSizeForUri(context, Uri.parse(image.getPath()), image);
                     } else if (PictureMimeType.isHasImage(image.getMimeType())) {
                         int[] size = MediaUtils.getImageSizeForUri(context, Uri.parse(image.getPath()));
-                        width = size[0];
-                        height = size[1];
+                        image.setWidth(size[0]);
+                        image.setHeight(size[1]);
                     }
                 } else {
                     if (PictureMimeType.isHasVideo(image.getMimeType())) {
                         int[] size = MediaUtils.getVideoSizeForUrl(image.getPath());
-                        width = size[0];
-                        height = size[1];
+                        image.setWidth(size[0]);
+                        image.setHeight(size[1]);
                     } else if (PictureMimeType.isHasImage(image.getMimeType())) {
                         int[] size = MediaUtils.getImageSizeForUrl(image.getPath());
-                        width = size[0];
-                        height = size[1];
+                        image.setWidth(size[0]);
+                        image.setHeight(size[1]);
                     }
                 }
-                image.setWidth(width);
-                image.setHeight(height);
             }
 
             selectData.add(image);

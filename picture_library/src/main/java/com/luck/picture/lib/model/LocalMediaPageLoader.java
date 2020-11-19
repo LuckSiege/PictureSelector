@@ -1,10 +1,8 @@
 package com.luck.picture.lib.model;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -19,6 +17,7 @@ import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.entity.MediaData;
 import com.luck.picture.lib.listener.OnQueryDataResultListener;
 import com.luck.picture.lib.thread.PictureThreadUtils;
+import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.ValueOf;
@@ -194,7 +193,7 @@ public final class LocalMediaPageLoader {
         Cursor data = null;
         try {
             if (SdkVersionUtils.checkedAndroid_R()) {
-                Bundle queryArgs = createQueryArgsBundle(getPageSelection(bucketId), getPageSelectionArgs(bucketId), 1, 0);
+                Bundle queryArgs = MediaUtils.createQueryArgsBundle(getPageSelection(bucketId), getPageSelectionArgs(bucketId), 1, 0);
                 data = mContext.getContentResolver().query(QUERY_URI, new String[]{
                         MediaStore.Files.FileColumns._ID,
                         MediaStore.MediaColumns.DATA}, queryArgs, null);
@@ -264,7 +263,7 @@ public final class LocalMediaPageLoader {
                 Cursor data = null;
                 try {
                     if (SdkVersionUtils.checkedAndroid_R()) {
-                        Bundle queryArgs = createQueryArgsBundle(getPageSelection(bucketId), getPageSelectionArgs(bucketId), limit, (page - 1) * pageSize);
+                        Bundle queryArgs = MediaUtils.createQueryArgsBundle(getPageSelection(bucketId), getPageSelectionArgs(bucketId), limit, (page - 1) * pageSize);
                         data = mContext.getContentResolver().query(QUERY_URI, PROJECTION_PAGE, queryArgs, null);
                     } else {
                         String orderBy = page == -1 ? MediaStore.Files.FileColumns._ID + " DESC" : MediaStore.Files.FileColumns._ID + " DESC limit " + limit + " offset " + (page - 1) * pageSize;
@@ -493,28 +492,6 @@ public final class LocalMediaPageLoader {
                 }
             }
         });
-    }
-
-    /**
-     * R  createQueryArgsBundle
-     *
-     * @param selection
-     * @param selectionArgs
-     * @param limitCount
-     * @param offset
-     * @return
-     */
-    private Bundle createQueryArgsBundle(String selection, String[] selectionArgs, int limitCount, int offset) {
-        Bundle queryArgs = new Bundle();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            queryArgs.putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection);
-            queryArgs.putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArgs);
-            queryArgs.putString(ContentResolver.QUERY_ARG_SQL_SORT_ORDER, MediaStore.Files.FileColumns._ID + " DESC");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                queryArgs.putString(ContentResolver.QUERY_ARG_SQL_LIMIT, limitCount + " offset " + offset);
-            }
-        }
-        return queryArgs;
     }
 
     /**

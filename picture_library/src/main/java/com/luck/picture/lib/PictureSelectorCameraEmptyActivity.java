@@ -198,31 +198,26 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         media.setCutPath(cutPath);
         String mimeType = PictureMimeType.getImageMimeType(cutPath);
         media.setMimeType(mimeType);
-        int width = 0, height = 0;
         media.setOrientation(-1);
         if (PictureMimeType.isContent(media.getPath())) {
             if (PictureMimeType.isHasVideo(media.getMimeType())) {
-                int[] size = MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(media.getPath()));
-                width = size[0];
-                height = size[1];
+                MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(media.getPath()), media);
             } else if (PictureMimeType.isHasImage(media.getMimeType())) {
                 int[] size = MediaUtils.getImageSizeForUri(getContext(), Uri.parse(media.getPath()));
-                width = size[0];
-                height = size[1];
+                media.setWidth(size[0]);
+                media.setHeight(size[1]);
             }
         } else {
             if (PictureMimeType.isHasVideo(media.getMimeType())) {
                 int[] size = MediaUtils.getVideoSizeForUrl(media.getPath());
-                width = size[0];
-                height = size[1];
+                media.setWidth(size[0]);
+                media.setHeight(size[1]);
             } else if (PictureMimeType.isHasImage(media.getMimeType())) {
                 int[] size = MediaUtils.getImageSizeForUrl(media.getPath());
-                width = size[0];
-                height = size[1];
+                media.setWidth(size[0]);
+                media.setHeight(size[1]);
             }
         }
-        media.setWidth(width);
-        media.setHeight(height);
         // The width and height of the image are reversed if there is rotation information
         MediaUtils.setOrientationAsynchronous(getContext(), media, config.isAndroidQChangeWH, config.isAndroidQChangeVideoWH,
                 item -> {
@@ -249,7 +244,6 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             public LocalMedia doInBackground() {
                 LocalMedia media = new LocalMedia();
                 String mimeType = isAudio ? PictureMimeType.MIME_TYPE_AUDIO : "";
-                int[] newSize = new int[2];
                 long duration = 0;
                 if (!isAudio) {
                     if (PictureMimeType.isContent(config.cameraPath)) {
@@ -261,9 +255,11 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                             media.setSize(cameraFile.length());
                         }
                         if (PictureMimeType.isHasImage(mimeType)) {
-                            newSize = MediaUtils.getImageSizeForUrlToAndroidQ(getContext(), config.cameraPath);
+                            int[] newSize = MediaUtils.getImageSizeForUrlToAndroidQ(getContext(), config.cameraPath);
+                            media.setWidth(newSize[0]);
+                            media.setHeight(newSize[1]);
                         } else if (PictureMimeType.isHasVideo(mimeType)) {
-                            newSize = MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(config.cameraPath));
+                            MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(config.cameraPath), media);
                             duration = MediaUtils.extractDuration(getContext(), SdkVersionUtils.checkedAndroid_Q(), config.cameraPath);
                         }
                         int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
@@ -279,10 +275,14 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                         if (PictureMimeType.isHasImage(mimeType)) {
                             int degree = PictureFileUtils.readPictureDegree(getContext(), config.cameraPath);
                             BitmapUtils.rotateImage(degree, config.cameraPath);
-                            newSize = MediaUtils.getImageSizeForUrl(config.cameraPath);
+                            int[] newSize = MediaUtils.getImageSizeForUrl(config.cameraPath);
+                            media.setWidth(newSize[0]);
+                            media.setHeight(newSize[1]);
                         } else if (PictureMimeType.isHasVideo(mimeType)) {
-                            newSize = MediaUtils.getVideoSizeForUrl(config.cameraPath);
+                            int[] newSize = MediaUtils.getVideoSizeForUrl(config.cameraPath);
                             duration = MediaUtils.extractDuration(getContext(), SdkVersionUtils.checkedAndroid_Q(), config.cameraPath);
+                            media.setWidth(newSize[0]);
+                            media.setHeight(newSize[1]);
                         }
                         // Taking a photo generates a temporary id
                         media.setId(System.currentTimeMillis());
@@ -290,8 +290,6 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     media.setPath(config.cameraPath);
                     media.setDuration(duration);
                     media.setMimeType(mimeType);
-                    media.setWidth(newSize[0]);
-                    media.setHeight(newSize[1]);
                     if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasVideo(media.getMimeType())) {
                         media.setParentFolderName(Environment.DIRECTORY_MOVIES);
                     } else {
