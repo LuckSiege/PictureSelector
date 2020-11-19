@@ -110,6 +110,8 @@
         <item name="picture.folder.textColor">@color/picture_color_4d</item>
         <!--相册目录文件夹字体大小-->
         <item name="picture.folder.textSize">16sp</item>
+        <!--相册背景底色-->
+        <item name="picture.container.backgroundColor">@color/picture_color_white</item>
     </style>
 
 
@@ -172,6 +174,8 @@
         <item name="picture.folder.textColor">@color/picture_color_4d</item>
         <!--相册目录文件夹字体大小-->
         <item name="picture.folder.textSize">16sp</item>
+        <!--相册背景底色-->
+        <item name="picture.container.backgroundColor">@color/picture_color_black</item>
     </style>
 
     <style name="Picture.Theme.Translucent" parent="Base.Theme.NoActionBar">

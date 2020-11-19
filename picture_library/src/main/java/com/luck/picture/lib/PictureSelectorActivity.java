@@ -395,6 +395,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (rightTitleColor != 0) {
                 mTvPictureRight.setTextColor(rightTitleColor);
             }
+            int containerBackgroundColor = AttrsUtils.getTypeValueColor(getContext(), R.attr.picture_container_backgroundColor);
+            if (containerBackgroundColor != 0) {
+                container.setBackgroundColor(containerBackgroundColor);
+            }
             Drawable leftDrawable = AttrsUtils.getTypeValueDrawable(getContext(), R.attr.picture_leftBack_icon, R.drawable.picture_icon_back);
             mIvPictureLeftBack.setImageDrawable(leftDrawable);
 
@@ -405,7 +409,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 Drawable downDrawable = AttrsUtils.getTypeValueDrawable(getContext(), R.attr.picture_arrow_down_icon, R.drawable.picture_icon_arrow_down);
                 mIvArrow.setImageDrawable(downDrawable);
             }
-
             int pictureBottomBgColor = AttrsUtils.getTypeValueColor(getContext(), R.attr.picture_bottom_bg);
             if (pictureBottomBgColor != 0) {
                 mBottomLayout.setBackgroundColor(pictureBottomBgColor);

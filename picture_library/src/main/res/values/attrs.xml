@@ -41,4 +41,5 @@
     <attr name="picture.original.text.color" format="reference|color" />
     <attr name="picture.folder.textColor" format="color"/>
     <attr name="picture.folder.textSize" format="dimension"/>
+    <attr name="picture.container.backgroundColor" format="color"/>
 </resources>

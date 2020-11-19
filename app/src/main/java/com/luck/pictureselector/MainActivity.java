@@ -425,7 +425,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (mode) {
                 // 进入相册 以下是例子：不需要的api可以不写
                 PictureSelector.create(MainActivity.this)
-                        .openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
+                        .openGallery(PictureMimeType.ofVideo())// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
                         .imageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                         .theme(themeId)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style v2.3.3后 建议使用setPictureStyle()动态方式
                         .isWeChatStyle(isWeChatStyle)// 是否开启微信图片选择风格
@@ -1382,18 +1382,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE:
-                // 存储权限
-                for (int i = 0; i < grantResults.length; i++) {
-                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        PictureFileUtils.deleteCacheDirFile(getContext(), PictureMimeType.ofImage());
-                    } else {
-                        Toast.makeText(MainActivity.this,
-                                getString(R.string.picture_jurisdiction), Toast.LENGTH_SHORT).show();
-                    }
+        if (requestCode == PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE) {// 存储权限
+            for (int grantResult : grantResults) {
+                if (grantResult == PackageManager.PERMISSION_GRANTED) {
+                    PictureFileUtils.deleteCacheDirFile(getContext(), PictureMimeType.ofImage());
+                } else {
+                    Toast.makeText(MainActivity.this,
+                            getString(R.string.picture_jurisdiction), Toast.LENGTH_SHORT).show();
                 }
-                break;
+            }
         }
     }
 
