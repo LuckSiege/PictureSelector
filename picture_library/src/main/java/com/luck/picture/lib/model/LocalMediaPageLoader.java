@@ -273,24 +273,27 @@ public final class LocalMediaPageLoader {
                     if (data != null) {
                         List<LocalMedia> result = new ArrayList<>();
                         if (data.getCount() > 0) {
+                            int idColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[0]);
+                            int dataColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[1]);
+                            int mimeTypeColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[2]);
+                            int widthColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[3]);
+                            int heightColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[4]);
+                            int durationColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[5]);
+                            int sizeColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[6]);
+                            int folderNameColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[7]);
+                            int fileNameColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[8]);
+                            int bucketIdColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[9]);
                             data.moveToFirst();
                             do {
-                                long id = data.getLong
-                                        (data.getColumnIndexOrThrow(PROJECTION_PAGE[0]));
-
-                                String absolutePath = data.getString
-                                        (data.getColumnIndexOrThrow(PROJECTION_PAGE[1]));
-
+                                long id = data.getLong(idColumn);
+                                String absolutePath = data.getString(dataColumn);
                                 String url = SdkVersionUtils.checkedAndroid_Q() ? getRealPathAndroid_Q(id) : absolutePath;
-
                                 if (config.isFilterInvalidFile) {
                                     if (!PictureFileUtils.isFileExists(absolutePath)) {
                                         continue;
                                     }
                                 }
-                                String mimeType = data.getString
-                                        (data.getColumnIndexOrThrow(PROJECTION_PAGE[2]));
-
+                                String mimeType = data.getString(mimeTypeColumn);
                                 mimeType = TextUtils.isEmpty(mimeType) ? PictureMimeType.ofJPEG() : mimeType;
                                 // Here, it is solved that some models obtain mimeType and return the format of image / *,
                                 // which makes it impossible to distinguish the specific type, such as mi 8,9,10 and other models
@@ -318,34 +321,18 @@ public final class LocalMediaPageLoader {
                                         continue;
                                     }
                                 }
-
-                                int width = data.getInt
-                                        (data.getColumnIndexOrThrow(PROJECTION_PAGE[3]));
-
-                                int height = data.getInt
-                                        (data.getColumnIndexOrThrow(PROJECTION_PAGE[4]));
-
-                                long duration = data.getLong
-                                        (data.getColumnIndexOrThrow(PROJECTION_PAGE[5]));
-
-                                long size = data.getLong
-                                        (data.getColumnIndexOrThrow(PROJECTION_PAGE[6]));
-
-                                String folderName = data.getString
-                                        (data.getColumnIndexOrThrow(PROJECTION_PAGE[7]));
-
-                                String fileName = data.getString
-                                        (data.getColumnIndexOrThrow(PROJECTION_PAGE[8]));
-
-                                long bucket_id = data.getLong
-                                        (data.getColumnIndexOrThrow(PROJECTION_PAGE[9]));
-
+                                int width = data.getInt(widthColumn);
+                                int height = data.getInt(heightColumn);
+                                long duration = data.getLong(durationColumn);
+                                long size = data.getLong(sizeColumn);
+                                String folderName = data.getString(folderNameColumn);
+                                String fileName = data.getString(fileNameColumn);
+                                long bucket_id = data.getLong(bucketIdColumn);
                                 if (config.filterFileSize > 0) {
                                     if (size > config.filterFileSize * FILE_SIZE_UNIT) {
                                         continue;
                                     }
                                 }
-
                                 if (PictureMimeType.isHasVideo(mimeType)) {
                                     if (config.videoMinSecond > 0 && duration < config.videoMinSecond) {
                                         // If you set the minimum number of seconds of video to display

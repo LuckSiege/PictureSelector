@@ -152,19 +152,22 @@ public final class LocalMediaLoader {
                 List<LocalMedia> latelyImages = new ArrayList<>();
                 int count = data.getCount();
                 if (count > 0) {
+                    int idColumn = data.getColumnIndexOrThrow(PROJECTION[0]);
+                    int dataColumn = data.getColumnIndexOrThrow(PROJECTION[1]);
+                    int mimeTypeColumn = data.getColumnIndexOrThrow(PROJECTION[2]);
+                    int widthColumn = data.getColumnIndexOrThrow(PROJECTION[3]);
+                    int heightColumn = data.getColumnIndexOrThrow(PROJECTION[4]);
+                    int durationColumn = data.getColumnIndexOrThrow(PROJECTION[5]);
+                    int sizeColumn = data.getColumnIndexOrThrow(PROJECTION[6]);
+                    int folderNameColumn = data.getColumnIndexOrThrow(PROJECTION[7]);
+                    int fileNameColumn = data.getColumnIndexOrThrow(PROJECTION[8]);
+                    int bucketIdColumn = data.getColumnIndexOrThrow(PROJECTION[9]);
                     data.moveToFirst();
                     do {
-                        long id = data.getLong
-                                (data.getColumnIndexOrThrow(PROJECTION[0]));
-
-                        String absolutePath = data.getString
-                                (data.getColumnIndexOrThrow(PROJECTION[1]));
-
+                        long id = data.getLong(idColumn);
+                        String absolutePath = data.getString(dataColumn);
                         String url = isAndroidQ ? getRealPathAndroid_Q(id) : absolutePath;
-
-                        String mimeType = data.getString
-                                (data.getColumnIndexOrThrow(PROJECTION[2]));
-
+                        String mimeType = data.getString(mimeTypeColumn);
                         mimeType = TextUtils.isEmpty(mimeType) ? PictureMimeType.ofJPEG() : mimeType;
                         // Here, it is solved that some models obtain mimeType and return the format of image / *,
                         // which makes it impossible to distinguish the specific type, such as mi 8,9,10 and other models
@@ -191,26 +194,14 @@ public final class LocalMediaLoader {
                                 continue;
                             }
                         }
-                        int width = data.getInt
-                                (data.getColumnIndexOrThrow(PROJECTION[3]));
 
-                        int height = data.getInt
-                                (data.getColumnIndexOrThrow(PROJECTION[4]));
-
-                        long duration = data.getLong
-                                (data.getColumnIndexOrThrow(PROJECTION[5]));
-
-                        long size = data.getLong
-                                (data.getColumnIndexOrThrow(PROJECTION[6]));
-
-                        String folderName = data.getString
-                                (data.getColumnIndexOrThrow(PROJECTION[7]));
-
-                        String fileName = data.getString
-                                (data.getColumnIndexOrThrow(PROJECTION[8]));
-
-                        long bucketId = data.getLong(data.getColumnIndexOrThrow(PROJECTION[9]));
-
+                        int width = data.getInt(widthColumn);
+                        int height = data.getInt(heightColumn);
+                        long duration = data.getLong(durationColumn);
+                        long size = data.getLong(sizeColumn);
+                        String folderName = data.getString(folderNameColumn);
+                        String fileName = data.getString(fileNameColumn);
+                        long bucketId = data.getLong(bucketIdColumn);
                         if (config.filterFileSize > 0) {
                             if (size > config.filterFileSize * FILE_SIZE_UNIT) {
                                 continue;
