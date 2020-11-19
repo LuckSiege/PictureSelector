@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.manager.UCropManager;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.immersive.ImmersiveManage;
 import com.luck.picture.lib.permissions.PermissionChecker;
@@ -336,7 +337,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         boolean isHasImage = PictureMimeType.isHasImage(media.getMimeType());
         if (config.enableCrop && isHasImage) {
             config.originalPath = config.cameraPath;
-            startCrop(config.cameraPath, media.getMimeType());
+            UCropManager.ofCrop(this,config.cameraPath, media.getMimeType());
         } else if (config.isCompress && isHasImage && !config.isCheckOriginalImage) {
             List<LocalMedia> result = new ArrayList<>();
             result.add(media);

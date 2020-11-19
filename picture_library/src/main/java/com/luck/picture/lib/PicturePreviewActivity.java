@@ -23,6 +23,7 @@ import com.luck.picture.lib.adapter.PictureSimpleFragmentAdapter;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.manager.UCropManager;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnQueryDataResultListener;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
@@ -877,7 +878,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             boolean isHasImage = PictureMimeType.isHasImage(mimeType);
             if (config.selectionMode == PictureConfig.SINGLE && isHasImage) {
                 config.originalPath = image.getPath();
-                startCrop(config.originalPath, image.getMimeType());
+                UCropManager.ofCrop(this, config.originalPath, image.getMimeType());
             } else {
                 // 是图片和选择压缩并且是多张，调用批量压缩
                 ArrayList<CutInfo> cuts = new ArrayList<>();
@@ -910,7 +911,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     onBackPressed();
                 } else {
                     // 图片和视频共存
-                    startCrop(cuts);
+                    UCropManager.ofCrop(this, cuts);
                 }
             }
         } else {
@@ -929,7 +930,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             isCompleteOrSelected = false;
             if (config.selectionMode == PictureConfig.SINGLE) {
                 config.originalPath = image.getPath();
-                startCrop(config.originalPath, image.getMimeType());
+                UCropManager.ofCrop(this,config.originalPath, image.getMimeType());
             } else {
                 // 是图片和选择压缩并且是多张，调用批量压缩
                 ArrayList<CutInfo> cuts = new ArrayList<>();
@@ -952,7 +953,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     cutInfo.setRealPath(media.getRealPath());
                     cuts.add(cutInfo);
                 }
-                startCrop(cuts);
+                UCropManager.ofCrop(this, cuts);
             }
         } else {
             onBackPressed();

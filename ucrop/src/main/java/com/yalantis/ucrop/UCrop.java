@@ -710,7 +710,9 @@ public class UCrop {
          * @param navBarColor set NavBar Color
          */
         public void setNavBarColor(@ColorInt int navBarColor) {
-            mOptionBundle.putInt(EXTRA_NAV_BAR_COLOR, navBarColor);
+            if (navBarColor != 0) {
+                mOptionBundle.putInt(EXTRA_NAV_BAR_COLOR, navBarColor);
+            }
         }
 
         /**

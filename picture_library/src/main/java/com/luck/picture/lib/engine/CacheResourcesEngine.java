@@ -7,6 +7,7 @@ import android.content.Context;
  * @date：2020-03-24 09:36
  * @describe：CacheResourcesEngine
  */
+@Deprecated
 public interface CacheResourcesEngine {
     /**
      * Get the cache path
