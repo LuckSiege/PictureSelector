@@ -9,7 +9,7 @@
     androidx.camera.core" />
 
     <!--适配Android R包可见性 开始-->
-    <queries>
+    <queries package="${applicationId}">
         <intent>
             <action android:name="android.media.action.IMAGE_CAPTURE" />
         </intent>

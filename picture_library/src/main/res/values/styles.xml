@@ -106,6 +106,10 @@
         <item name="picture.original.check.style">@drawable/picture_original_wechat_checkbox</item>
         <!--原图字体颜色-->
         <item name="picture.original.text.color">@color/picture_color_white</item>
+        <!--相册目录文件夹字体颜色-->
+        <item name="picture.folder.textColor">@color/picture_color_4d</item>
+        <!--相册目录文件夹字体大小-->
+        <item name="picture.folder.textSize">16sp</item>
     </style>
 
 
@@ -164,6 +168,10 @@
         <item name="picture.original.check.style">@drawable/picture_original_wechat_checkbox</item>
         <!--原图字体颜色-->
         <item name="picture.original.text.color">@color/picture_color_white</item>
+        <!--相册目录文件夹字体颜色-->
+        <item name="picture.folder.textColor">@color/picture_color_4d</item>
+        <!--相册目录文件夹字体大小-->
+        <item name="picture.folder.textSize">16sp</item>
     </style>
 
     <style name="Picture.Theme.Translucent" parent="Base.Theme.NoActionBar">

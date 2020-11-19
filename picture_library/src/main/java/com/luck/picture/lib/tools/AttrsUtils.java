@@ -17,6 +17,28 @@ import androidx.core.content.ContextCompat;
 public class AttrsUtils {
 
     /**
+     * get attrs size
+     *
+     * @param context
+     * @param attr
+     * @return
+     */
+    public static float getTypeValueSize(Context context, int attr) {
+        float textSize = 0;
+        try {
+            TypedValue typedValue = new TypedValue();
+            int[] attribute = new int[]{attr};
+            TypedArray array = context.obtainStyledAttributes(typedValue.resourceId, attribute);
+            textSize = array.getDimensionPixelSize(0, 0);
+            array.recycle();
+            return textSize;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return textSize;
+    }
+
+    /**
      * get attrs color
      *
      * @param context
@@ -24,17 +46,17 @@ public class AttrsUtils {
      * @return
      */
     public static int getTypeValueColor(Context context, int attr) {
+        int textSize = 0;
         try {
             TypedValue typedValue = new TypedValue();
             int[] attribute = new int[]{attr};
             TypedArray array = context.obtainStyledAttributes(typedValue.resourceId, attribute);
-            int color = array.getColor(0, 0);
+            textSize = array.getColor(0, 0);
             array.recycle();
-            return color;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return 0;
+        return textSize;
     }
 
     /**
@@ -66,17 +88,17 @@ public class AttrsUtils {
      * @return
      */
     public static boolean getTypeValueBoolean(Context context, int attr) {
+        boolean flag = false;
         try {
             TypedValue typedValue = new TypedValue();
             int[] attribute = new int[]{attr};
             TypedArray array = context.obtainStyledAttributes(typedValue.resourceId, attribute);
-            boolean statusFont = array.getBoolean(0, false);
+            flag = array.getBoolean(0, false);
             array.recycle();
-            return statusFont;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return flag;
     }
 
     /**

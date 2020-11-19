@@ -211,6 +211,9 @@ public class Luban implements Handler.Callback {
 
         while (iterator.hasNext()) {
             InputStreamProvider provider = iterator.next();
+            if (provider.getMedia() == null) {
+                continue;
+            }
             InputStream inputStream = provider.open();
             if (inputStream != null) {
                 if (provider.getMedia().isCompressed()
@@ -299,7 +302,7 @@ public class Luban implements Handler.Callback {
                     } else {
                         String androidQToPath = AndroidQTransformUtils.copyPathToAndroidQ(context, path.getPath(),
                                 media.getWidth(), media.getHeight(), media.getMimeType(), filename);
-                        if (androidQToPath !=null) {
+                        if (androidQToPath != null) {
                             result = new File(androidQToPath);
                         }
                     }
@@ -327,7 +330,7 @@ public class Luban implements Handler.Callback {
                     String newFilePath = media.isCut() ? media.getCutPath() :
                             AndroidQTransformUtils.copyPathToAndroidQ(context,
                                     path.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), filename);
-                    if (newFilePath !=null) {
+                    if (newFilePath != null) {
                         result = new File(newFilePath);
                     }
                 } else {

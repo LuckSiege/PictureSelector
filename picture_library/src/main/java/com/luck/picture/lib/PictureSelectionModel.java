@@ -249,7 +249,7 @@ public class PictureSelectionModel {
 
 
     /**
-     * @param enablePreviewAudio Do you want to ic_play audio ?
+     * @param enablePreviewAudio {@link use isEnablePreviewAudio}
      * @return
      */
     @Deprecated
@@ -259,10 +259,9 @@ public class PictureSelectionModel {
     }
 
     /**
-     * @param enablePreviewAudio Do you want to ic_play audio ?
+     * @param enablePreviewAudio
      * @return
      */
-    @Deprecated
     public PictureSelectionModel isEnablePreviewAudio(boolean enablePreviewAudio) {
         selectionConfig.enablePreviewAudio = enablePreviewAudio;
         return this;

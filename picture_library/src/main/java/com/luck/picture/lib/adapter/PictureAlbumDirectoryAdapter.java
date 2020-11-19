@@ -2,6 +2,7 @@ package com.luck.picture.lib.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,11 +109,27 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
             ivFirstImage = itemView.findViewById(R.id.first_image);
             tvFolderName = itemView.findViewById(R.id.tv_folder_name);
             tvSign = itemView.findViewById(R.id.tv_sign);
-            if (PictureSelectionConfig.style != null && PictureSelectionConfig.style.pictureFolderCheckedDotStyle != 0) {
-                tvSign.setBackgroundResource(PictureSelectionConfig.style.pictureFolderCheckedDotStyle);
+            if (PictureSelectionConfig.style != null) {
+                if (PictureSelectionConfig.style.pictureFolderCheckedDotStyle != 0) {
+                    tvSign.setBackgroundResource(PictureSelectionConfig.style.pictureFolderCheckedDotStyle);
+                }
+                if (PictureSelectionConfig.style.folderTextColor != 0) {
+                    tvFolderName.setTextColor(PictureSelectionConfig.style.folderTextColor);
+                }
+                if (PictureSelectionConfig.style.folderTextSize > 0) {
+                    tvFolderName.setTextSize(PictureSelectionConfig.style.folderTextSize);
+                }
             } else {
                 Drawable folderCheckedDotDrawable = AttrsUtils.getTypeValueDrawable(itemView.getContext(), R.attr.picture_folder_checked_dot, R.drawable.picture_orange_oval);
                 tvSign.setBackground(folderCheckedDotDrawable);
+                int folderTextColor = AttrsUtils.getTypeValueColor(itemView.getContext(), R.attr.picture_folder_textColor);
+                if (folderTextColor != 0) {
+                    tvFolderName.setTextColor(folderTextColor);
+                }
+                float folderTextSize = AttrsUtils.getTypeValueSize(itemView.getContext(), R.attr.picture_folder_textSize);
+                if (folderTextSize > 0) {
+                    tvFolderName.setTextSize(TypedValue.COMPLEX_UNIT_PX, folderTextSize);
+                }
             }
         }
     }

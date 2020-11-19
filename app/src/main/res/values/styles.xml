@@ -104,7 +104,8 @@
         <!--预览界面标题文字颜色-->
         <item name="picture.ac_preview.title.textColor">@color/app_color_white</item>
         <!--预览界面已完成文字颜色-->
-        <item name="picture.ac_preview.complete.textColor">@color/picture_list_blue_text_color</item>
+        <item name="picture.ac_preview.complete.textColor">@color/picture_list_blue_text_color
+        </item>
         <!--预览界面标题栏背景色-->
         <item name="picture.ac_preview.title.bg">@color/app_color_blue</item>
         <!--预览界面底部背景色-->
@@ -123,6 +124,10 @@
         <item name="picture.original.check.style">@drawable/picture_original_blue_checkbox</item>
         <!--原图字体颜色-->
         <item name="picture.original.text.color">@color/picture_color_blue</item>
+        <!--相册目录文件夹字体颜色-->
+        <item name="picture.folder.textColor">@color/picture_color_4d</item>
+        <!--相册目录文件夹字体大小-->
+        <item name="picture.folder.textSize">16sp</item>
     </style>
 
 
@@ -182,6 +187,10 @@
         <item name="picture.original.check.style">@drawable/picture_original_checkbox</item>
         <!--原图字体颜色-->
         <item name="picture.original.text.color">@color/picture_color_53575e</item>
+        <!--相册目录文件夹字体颜色-->
+        <item name="picture.folder.textColor">@color/picture_color_4d</item>
+        <!--相册目录文件夹字体大小-->
+        <item name="picture.folder.textSize">16sp</item>
     </style>
 
 </resources>

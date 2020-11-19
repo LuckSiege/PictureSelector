@@ -258,6 +258,13 @@
                         android:textColor="@color/app_color_53575e"
                         android:textSize="14sp" />
 
+                    <RadioButton
+                        android:id="@+id/rb_spanish"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="西班牙语"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
 
                 </RadioGroup>
 

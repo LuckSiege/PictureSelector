@@ -211,6 +211,16 @@ public class PictureParameterStyle implements Parcelable {
     public boolean isCompleteReplaceNum;
 
     /**
+     * 文件夹字体颜色
+     */
+    public int folderTextColor;
+
+    /**
+     * 文件夹字体大小
+     */
+    public int folderTextSize;
+
+    /**
      * WeChatStyle 预览右下角 勾选CheckBox drawable样式
      */
     @DrawableRes
@@ -577,6 +587,8 @@ public class PictureParameterStyle implements Parcelable {
         dest.writeInt(this.pictureLeftBackIcon);
         dest.writeInt(this.pictureCheckedStyle);
         dest.writeByte(this.isCompleteReplaceNum ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.folderTextColor);
+        dest.writeInt(this.folderTextSize);
         dest.writeInt(this.pictureWeChatChooseStyle);
         dest.writeInt(this.pictureWeChatLeftBackStyle);
         dest.writeInt(this.pictureWeChatTitleBackgroundStyle);
@@ -626,6 +638,8 @@ public class PictureParameterStyle implements Parcelable {
         this.pictureLeftBackIcon = in.readInt();
         this.pictureCheckedStyle = in.readInt();
         this.isCompleteReplaceNum = in.readByte() != 0;
+        this.folderTextColor = in.readInt();
+        this.folderTextSize = in.readInt();
         this.pictureWeChatChooseStyle = in.readInt();
         this.pictureWeChatLeftBackStyle = in.readInt();
         this.pictureWeChatTitleBackgroundStyle = in.readInt();
@@ -639,7 +653,7 @@ public class PictureParameterStyle implements Parcelable {
         this.pictureAlbumStyle = in.readInt();
     }
 
-    public static final Parcelable.Creator<PictureParameterStyle> CREATOR = new Parcelable.Creator<PictureParameterStyle>() {
+    public static final Creator<PictureParameterStyle> CREATOR = new Creator<PictureParameterStyle>() {
         @Override
         public PictureParameterStyle createFromParcel(Parcel source) {
             return new PictureParameterStyle(source);

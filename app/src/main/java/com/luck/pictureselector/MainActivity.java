@@ -829,6 +829,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.rb_fr:
                 language = LanguageConfig.FRANCE;
                 break;
+            case R.id.rb_spanish:
+                language = LanguageConfig.SPANISH;
+                break;
             case R.id.rb_crop_default:
                 aspect_ratio_x = 0;
                 aspect_ratio_y = 0;
@@ -956,6 +959,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
         // 设置NavBar Color SDK Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP有效
         mPictureParameterStyle.pictureNavBarColor = Color.parseColor("#393a3e");
+        // 文件夹字体颜色
+        mPictureParameterStyle.folderTextColor = Color.parseColor("#4d4d4d");
+        // 文件夹字体大小
+        mPictureParameterStyle.folderTextSize = 16;
 //        // 自定义相册右侧文本内容设置
 //        mPictureParameterStyle.pictureRightDefaultText = "";
 //        // 自定义相册未完成文本内容

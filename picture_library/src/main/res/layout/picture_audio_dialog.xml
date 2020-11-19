@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="00:00"
+            android:layout_marginLeft="5dp"
             android:textColor="@color/picture_color_9b"
             android:textSize="12sp" />
 
@@ -56,6 +57,7 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/musicSeekBar"
             android:text="00:00"
+            android:layout_marginRight="5dp"
             android:textColor="@color/picture_color_9b"
             android:textSize="12sp" />
 
