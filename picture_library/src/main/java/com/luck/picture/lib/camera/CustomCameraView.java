@@ -1,6 +1,9 @@
 package com.luck.picture.lib.camera;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -21,6 +24,7 @@ import androidx.camera.core.ImageCaptureException;
 import androidx.camera.view.CameraView;
 import androidx.camera.view.video.OnVideoSavedCallback;
 import androidx.camera.view.video.OutputFileResults;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
@@ -346,7 +350,8 @@ public class CustomCameraView extends RelativeLayout {
         if (SdkVersionUtils.checkedAndroid_Q()) {
             String diskCacheDir = PictureFileUtils.getDiskCacheDir(getContext());
             File rootDir = new File(diskCacheDir);
-            if (!rootDir.exists() && rootDir.mkdirs()) {
+            if (!rootDir.exists()) {
+                rootDir.mkdirs();
             }
             boolean isOutFileNameEmpty = TextUtils.isEmpty(mConfig.cameraFileName);
             String suffix = TextUtils.isEmpty(mConfig.suffixType) ? PictureFileUtils.POSTFIX : mConfig.suffixType;
@@ -366,9 +371,7 @@ public class CustomCameraView extends RelativeLayout {
             }
             File cameraFile = PictureFileUtils.createCameraFile(getContext(),
                     PictureMimeType.ofImage(), cameraFileName, mConfig.suffixType, mConfig.outPutCameraPath);
-            if (cameraFile != null) {
-                mConfig.cameraPath = cameraFile.getAbsolutePath();
-            }
+            mConfig.cameraPath = cameraFile.getAbsolutePath();
             return cameraFile;
         }
     }
@@ -377,7 +380,8 @@ public class CustomCameraView extends RelativeLayout {
         if (SdkVersionUtils.checkedAndroid_Q()) {
             String diskCacheDir = PictureFileUtils.getVideoDiskCacheDir(getContext());
             File rootDir = new File(diskCacheDir);
-            if (!rootDir.exists() && rootDir.mkdirs()) {
+            if (!rootDir.exists()) {
+                rootDir.mkdirs();
             }
             boolean isOutFileNameEmpty = TextUtils.isEmpty(mConfig.cameraFileName);
             String suffix = TextUtils.isEmpty(mConfig.suffixType) ? PictureMimeType.MP4 : mConfig.suffixType;
@@ -417,10 +421,12 @@ public class CustomCameraView extends RelativeLayout {
     }
 
     public void setBindToLifecycle(LifecycleOwner lifecycleOwner) {
-        mCameraView.bindToLifecycle(lifecycleOwner);
-        lifecycleOwner.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            mCameraView.bindToLifecycle(lifecycleOwner);
+            lifecycleOwner.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
 
-        });
+            });
+        }
     }
 
     /**

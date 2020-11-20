@@ -427,14 +427,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 PictureSelector.create(MainActivity.this)
                         .openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
                         .imageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
-                        .theme(themeId)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style v2.3.3后 建议使用setPictureStyle()动态方式
+                        //.theme(themeId)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style v2.3.3后 建议使用setPictureStyle()动态方式
                         .isWeChatStyle(isWeChatStyle)// 是否开启微信图片选择风格
                         .isUseCustomCamera(cb_custom_camera.isChecked())// 是否使用自定义相机
                         .setLanguage(language)// 设置语言，默认中文
                         .isPageStrategy(cbPage.isChecked())// 是否开启分页策略 & 每页多少条；默认开启
-                        //.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
-                        //.setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
-                        //.setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
+                        .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
+                        .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
+                        .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
                         .setRecyclerAnimationMode(animationMode)// 列表动画效果
                         .isWithVideoImage(true)// 图片和视频是否可以同选,只在ofAll模式下有效
                         .isMaxSelectEnabledMask(cbEnabledMask.isChecked())// 选择数到了最大阀值列表是否启用蒙层效果
