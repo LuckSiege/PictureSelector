@@ -643,7 +643,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         return;
                     }
 
-                    if (selectData.size() >= config.maxSelectNum && !check.isSelected()) {
+                    if (currentSize >= config.maxSelectNum && !check.isSelected()) {
                         showPromptDialog(getString(R.string.picture_message_max_num, config.maxSelectNum));
                         return;
                     }
@@ -665,9 +665,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                         showPromptDialog(getContext().getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
                         return;
                     }
-                }
-                if (PictureMimeType.isHasImage(image.getMimeType())) {
-                    if (selectData.size() >= config.maxSelectNum && !check.isSelected()) {
+                } else {
+                    if (currentSize >= config.maxSelectNum && !check.isSelected()) {
                         showPromptDialog(getString(R.string.picture_message_max_num, config.maxSelectNum));
                         return;
                     }
@@ -930,7 +929,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             isCompleteOrSelected = false;
             if (config.selectionMode == PictureConfig.SINGLE) {
                 config.originalPath = image.getPath();
-                UCropManager.ofCrop(this,config.originalPath, image.getMimeType());
+                UCropManager.ofCrop(this, config.originalPath, image.getMimeType());
             } else {
                 // 是图片和选择压缩并且是多张，调用批量压缩
                 ArrayList<CutInfo> cuts = new ArrayList<>();

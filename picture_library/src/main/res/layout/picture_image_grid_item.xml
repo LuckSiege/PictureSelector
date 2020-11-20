@@ -15,8 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_margin="8dp"
-        android:background="?attr/picture.checked.style"
         android:gravity="center"
+        android:background="@drawable/picture_checkbox_selector"
         android:textColor="@color/picture_color_white"
         android:textSize="12sp" />
 

@@ -392,7 +392,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      */
     private void handleCompressCallBack(List<LocalMedia> images, List<File> files) {
         if (images == null || files == null) {
-            closeActivity();
+            exit();
             return;
         }
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
@@ -507,7 +507,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                 Intent intent = PictureSelector.putIntentResult(images);
                 setResult(RESULT_OK, intent);
             }
-            closeActivity();
+            exit();
         }
     }
 
@@ -561,7 +561,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                         Intent intent = PictureSelector.putIntentResult(images);
                         setResult(RESULT_OK, intent);
                     }
-                    closeActivity();
+                    exit();
                 }
             }
         });
@@ -570,20 +570,17 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     /**
      * Close Activity
      */
-    protected void closeActivity() {
+    protected void exit() {
         finish();
         if (config.camera) {
             overridePendingTransition(0, R.anim.picture_anim_fade_out);
-        } else {
-            overridePendingTransition(0,
-                    PictureSelectionConfig.windowAnimationStyle.activityExitAnimation);
-        }
-        if (config.camera) {
             if (getContext() instanceof PictureSelectorCameraEmptyActivity
                     || getContext() instanceof PictureCustomCameraActivity) {
                 releaseResultListener();
             }
         } else {
+            overridePendingTransition(0,
+                    PictureSelectionConfig.windowAnimationStyle.activityExitAnimation);
             if (getContext() instanceof PictureSelectorActivity) {
                 releaseResultListener();
                 if (config.openClickSound) {
@@ -637,7 +634,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                 } else {
                     ToastUtils.s(getContext(), "open is camera error，the uri is empty ");
                     if (config.camera) {
-                        closeActivity();
+                        exit();
                     }
                     return;
                 }
@@ -680,7 +677,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                 } else {
                     ToastUtils.s(getContext(), "open is camera error，the uri is empty ");
                     if (config.camera) {
-                        closeActivity();
+                        exit();
                     }
                     return;
                 }

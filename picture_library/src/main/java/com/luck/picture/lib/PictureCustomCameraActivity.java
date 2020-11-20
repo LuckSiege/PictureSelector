@@ -200,7 +200,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
         if (config != null && config.camera && PictureSelectionConfig.listener != null) {
             PictureSelectionConfig.listener.onCancel();
         }
-        closeActivity();
+        exit();
     }
 
     @Override
@@ -260,7 +260,10 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
             if (!isFinishing()) {
                 dialog.dismiss();
             }
-            closeActivity();
+            if (PictureSelectionConfig.listener != null) {
+                PictureSelectionConfig.listener.onCancel();
+            }
+            exit();
         });
         btn_commit.setOnClickListener(v -> {
             if (!isFinishing()) {

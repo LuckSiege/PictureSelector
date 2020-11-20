@@ -87,7 +87,7 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
             videoPath = media.getPath();
         }
         if (TextUtils.isEmpty(videoPath)) {
-            closeActivity();
+            exit();
             return;
         }
         ibLeftBack = findViewById(R.id.pictureLeftBack);
@@ -186,7 +186,7 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
             finish();
             overridePendingTransition(0, PictureSelectionConfig.windowAnimationStyle.activityPreviewExitAnimation);
         } else {
-            closeActivity();
+            exit();
         }
     }
 

@@ -3,6 +3,7 @@ package com.luck.picture.lib.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnPhotoSelectChangedListener;
 import com.luck.picture.lib.tools.AnimUtils;
+import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.StringUtils;
@@ -204,10 +206,34 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             if (config.enablePreview || config.enPreviewVideo || config.enablePreviewAudio) {
                 contentHolder.btnCheck.setOnClickListener(v -> {
                     if (config.isMaxSelectEnabledMask) {
-                        if (!contentHolder.tvCheck.isSelected() && getSelectedSize() >= config.maxSelectNum) {
-                            String msg = StringUtils.getMsg(context, config.chooseMode == PictureMimeType.ofAll() ? null : image.getMimeType(), config.maxSelectNum);
-                            showPromptDialog(msg);
-                            return;
+                        if (config.isWithVideoImage) {
+                            int selectedCount = getSelectedSize();
+                            int videoSize = 0;
+                            for (int i = 0; i < selectedCount; i++) {
+                                LocalMedia media = selectData.get(i);
+                                if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                                    videoSize++;
+                                }
+                            }
+                            String errorMsg;
+                            boolean isNotOption;
+                            if (PictureMimeType.isHasVideo(image.getMimeType())) {
+                                isNotOption = !contentHolder.tvCheck.isSelected() && videoSize >= config.maxVideoSelectNum;
+                                errorMsg = StringUtils.getMsg(context, image.getMimeType(), config.maxVideoSelectNum);
+                            } else {
+                                isNotOption = !contentHolder.tvCheck.isSelected() && selectedCount >= config.maxSelectNum;
+                                errorMsg = StringUtils.getMsg(context, image.getMimeType(), config.maxSelectNum);
+                            }
+                            if (isNotOption) {
+                                showPromptDialog(errorMsg);
+                                return;
+                            }
+                        } else {
+                            if (!contentHolder.tvCheck.isSelected() && getSelectedSize() >= config.maxSelectNum) {
+                                String msg = StringUtils.getMsg(context, image.getMimeType(), config.maxSelectNum);
+                                showPromptDialog(msg);
+                                return;
+                            }
                         }
                     }
                     // If the original path does not exist or the path does exist but the file does not exist
@@ -363,6 +389,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 if (PictureSelectionConfig.style.pictureCheckedStyle != 0) {
                     tvCheck.setBackgroundResource(PictureSelectionConfig.style.pictureCheckedStyle);
                 }
+            } else {
+                Drawable checkedStyleDrawable = AttrsUtils.getTypeValueDrawable(itemView.getContext(), R.attr.picture_checked_style, R.drawable.picture_checkbox_selector);
+                tvCheck.setBackground(checkedStyleDrawable);
             }
         }
     }
@@ -428,7 +457,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     return;
                 }
 
-                if (getSelectedSize() >= config.maxSelectNum && !isChecked) {
+                if (count >= config.maxSelectNum && !isChecked) {
                     showPromptDialog(context.getString(R.string.picture_message_max_num, config.maxSelectNum));
                     return;
                 }
@@ -447,15 +476,12 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     showPromptDialog(context.getString(R.string.picture_choose_max_seconds, config.videoMaxSecond / 1000));
                     return;
                 }
-            }
-
-            if (PictureMimeType.isHasImage(image.getMimeType())) {
-                if (getSelectedSize() >= config.maxSelectNum && !isChecked) {
+            } else {
+                if (count >= config.maxSelectNum && !isChecked) {
                     showPromptDialog(context.getString(R.string.picture_message_max_num, config.maxSelectNum));
                     return;
                 }
             }
-
         } else {
             if (!TextUtils.isEmpty(mimeType)) {
                 boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, image.getMimeType());

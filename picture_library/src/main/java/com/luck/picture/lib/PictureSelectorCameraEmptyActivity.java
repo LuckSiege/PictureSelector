@@ -51,7 +51,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (config == null) {
-            closeActivity();
+            exit();
             return;
         }
         if (!config.isUseCustomCamera) {
@@ -145,16 +145,18 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     break;
             }
         } else if (resultCode == RESULT_CANCELED) {
-            if (config != null && PictureSelectionConfig.listener != null) {
+            if (PictureSelectionConfig.listener != null) {
                 PictureSelectionConfig.listener.onCancel();
             }
-            closeActivity();
+            exit();
         } else if (resultCode == UCrop.RESULT_ERROR) {
             if (data == null) {
                 return;
             }
             Throwable throwable = (Throwable) data.getSerializableExtra(UCrop.EXTRA_ERROR);
-            ToastUtils.s(getContext(), throwable.getMessage());
+            if (throwable != null) {
+                ToastUtils.s(getContext(), throwable.getMessage());
+            }
         }
     }
 
@@ -337,7 +339,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         boolean isHasImage = PictureMimeType.isHasImage(media.getMimeType());
         if (config.enableCrop && isHasImage) {
             config.originalPath = config.cameraPath;
-            UCropManager.ofCrop(this,config.cameraPath, media.getMimeType());
+            UCropManager.ofCrop(this, config.cameraPath, media.getMimeType());
         } else if (config.isCompress && isHasImage && !config.isCheckOriginalImage) {
             List<LocalMedia> result = new ArrayList<>();
             result.add(media);
@@ -361,7 +363,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                             new String[]{Manifest.permission.CAMERA}, PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE);
                 } else {
                     ToastUtils.s(getContext(), getString(R.string.picture_jurisdiction));
-                    closeActivity();
+                    exit();
                 }
                 break;
             case PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE:
@@ -369,7 +371,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     onTakePhoto();
                 } else {
-                    closeActivity();
+                    exit();
                     ToastUtils.s(getContext(), getString(R.string.picture_camera));
                 }
                 break;
@@ -378,7 +380,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     onTakePhoto();
                 } else {
-                    closeActivity();
+                    exit();
                     ToastUtils.s(getContext(), getString(R.string.picture_audio));
                 }
                 break;
@@ -389,6 +391,6 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        closeActivity();
+        exit();
     }
 }

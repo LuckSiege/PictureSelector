@@ -23,6 +23,7 @@ import com.luck.picture.lib.listener.OnCallbackListener;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 
 import java.io.InputStream;
+import java.util.Objects;
 
 
 /**
@@ -46,11 +47,15 @@ public class MediaUtils {
         // ContentValues是我们希望这条记录被创建时包含的数据信息
         ContentValues values = new ContentValues(3);
         values.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
-        values.put(MediaStore.Images.Media.DATE_TAKEN, time);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.Images.Media.DATE_TAKEN, time);
+        }
         values.put(MediaStore.Images.Media.MIME_TYPE, TextUtils.isEmpty(suffixType) ? PictureMimeType.MIME_TYPE_IMAGE : suffixType);
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
         if (status.equals(Environment.MEDIA_MOUNTED)) {
-            values.put(MediaStore.Images.Media.RELATIVE_PATH, PictureMimeType.DCIM);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                values.put(MediaStore.Images.Media.RELATIVE_PATH, PictureMimeType.DCIM);
+            }
             imageFilePath[0] = context.getContentResolver()
                     .insert(MediaStore.Images.Media.getContentUri("external"), values);
         } else {
@@ -76,11 +81,15 @@ public class MediaUtils {
         // ContentValues是我们希望这条记录被创建时包含的数据信息
         ContentValues values = new ContentValues(3);
         values.put(MediaStore.Video.Media.DISPLAY_NAME, DateUtils.getCreateFileName("VID_"));
-        values.put(MediaStore.Video.Media.DATE_TAKEN, time);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.Video.Media.DATE_TAKEN, time);
+        }
         values.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(suffixType) ? PictureMimeType.MIME_TYPE_VIDEO : suffixType);
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
         if (status.equals(Environment.MEDIA_MOUNTED)) {
-            values.put(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                values.put(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES);
+            }
             imageFilePath[0] = context.getContentResolver()
                     .insert(MediaStore.Video.Media.getContentUri("external"), values);
         } else {
@@ -140,8 +149,8 @@ public class MediaUtils {
         try {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
             mmr.setDataSource(context, uri);
-            return Long.parseLong(mmr.extractMetadata
-                    (MediaMetadataRetriever.METADATA_KEY_DURATION));
+            return Long.parseLong(Objects.requireNonNull(mmr.extractMetadata
+                    (MediaMetadataRetriever.METADATA_KEY_DURATION)));
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
@@ -157,8 +166,8 @@ public class MediaUtils {
         try {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
             mmr.setDataSource(path);
-            return Long.parseLong(mmr.extractMetadata
-                    (MediaMetadataRetriever.METADATA_KEY_DURATION));
+            return Long.parseLong(Objects.requireNonNull(mmr.extractMetadata
+                    (MediaMetadataRetriever.METADATA_KEY_DURATION)));
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
