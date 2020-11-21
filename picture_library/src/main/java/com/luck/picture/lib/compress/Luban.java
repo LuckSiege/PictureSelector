@@ -153,12 +153,10 @@ public class Luban implements Handler.Callback {
                     index++;
                     mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_START));
                     String newPath;
-                    if (path.open() != null) {
-                        if (path.getMedia().isCompressed()
-                                && !TextUtils.isEmpty(path.getMedia().getCompressPath())) {
+                    if (path.open() != null && path.getMedia() != null) {
+                        if (path.getMedia().isCompressed() && !TextUtils.isEmpty(path.getMedia().getCompressPath())) {
                             // 压缩过的图片不重复压缩  注意:如果是开启了裁剪 就算压缩过也要重新压缩
                             boolean exists = !path.getMedia().isCut() && new File(path.getMedia().getCompressPath()).exists();
-
                             File result = exists ? new File(path.getMedia().getCompressPath())
                                     : compress(context, path);
                             newPath = result.getAbsolutePath();
@@ -185,7 +183,7 @@ public class Luban implements Handler.Callback {
                     } else {
                         mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_ERROR, new IOException()));
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_ERROR, e));
                 }
             });
@@ -205,7 +203,7 @@ public class Luban implements Handler.Callback {
         }
     }
 
-    private List<File> get(Context context) throws IOException {
+    private List<File> get(Context context) throws Exception {
         List<File> results = new ArrayList<>();
         Iterator<InputStreamProvider> iterator = mStreamProviders.iterator();
 
@@ -237,7 +235,7 @@ public class Luban implements Handler.Callback {
         return results;
     }
 
-    private File compress(Context context, InputStreamProvider path) throws IOException {
+    private File compress(Context context, InputStreamProvider path) throws Exception {
         try {
             return compressRealLocalMedia(context, path);
         } finally {
@@ -274,12 +272,9 @@ public class Luban implements Handler.Callback {
         return result;
     }
 
-    private File compressRealLocalMedia(Context context, InputStreamProvider path) throws IOException {
+    private File compressRealLocalMedia(Context context, InputStreamProvider path) throws Exception {
         File result = null;
         LocalMedia media = path.getMedia();
-        if (media == null) {
-            throw new NullPointerException("Luban Compress LocalMedia Can't be empty");
-        }
         String newPath = media.isCut() && !TextUtils.isEmpty(media.getCutPath()) ? media.getCutPath() : media.getRealPath();
         String suffix = Checker.SINGLE.extSuffix(media.getMimeType());
         File outFile = getImageCacheFile(context, path, TextUtils.isEmpty(suffix) ? Checker.SINGLE.extSuffix(path) : suffix);
@@ -292,7 +287,6 @@ public class Luban implements Handler.Callback {
         if (outFile.exists()) {
             return outFile;
         }
-
         if (mCompressionPredicate != null) {
             if (Checker.SINGLE.extSuffix(path).startsWith(".gif")) {
                 // GIF without compression
@@ -382,14 +376,12 @@ public class Luban implements Handler.Callback {
         private List<String> mPaths;
         private List<LocalMedia> mediaList;
         private int dataCount;
-        private boolean isAndroidQ;
 
         Builder(Context context) {
             this.context = context;
             this.mPaths = new ArrayList<>();
             this.mediaList = new ArrayList<>();
             this.mStreamProviders = new ArrayList<>();
-            this.isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         }
 
         private Luban build() {
@@ -638,7 +630,7 @@ public class Luban implements Handler.Callback {
          *
          * @return the thumb image file list
          */
-        public List<File> get() throws IOException {
+        public List<File> get() throws Exception {
             return build().get(context);
         }
     }
