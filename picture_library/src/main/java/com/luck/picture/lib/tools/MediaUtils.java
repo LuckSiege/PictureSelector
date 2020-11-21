@@ -41,7 +41,7 @@ public class MediaUtils {
      */
     @Nullable
     public static Uri createImageUri(final Context context, String suffixType) {
-        final Uri[] imageFilePath = {null};
+        Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();
         String time = ValueOf.toString(System.currentTimeMillis());
         // ContentValues是我们希望这条记录被创建时包含的数据信息
@@ -50,7 +50,7 @@ public class MediaUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             values.put(MediaStore.Images.Media.DATE_TAKEN, time);
         }
-        values.put(MediaStore.Images.Media.MIME_TYPE, TextUtils.isEmpty(suffixType) ? PictureMimeType.MIME_TYPE_IMAGE : suffixType);
+        values.put(MediaStore.Images.Media.MIME_TYPE, TextUtils.isEmpty(suffixType) || suffixType.startsWith("video") ? PictureMimeType.MIME_TYPE_IMAGE : suffixType);
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
         if (status.equals(Environment.MEDIA_MOUNTED)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -75,7 +75,7 @@ public class MediaUtils {
      */
     @Nullable
     public static Uri createVideoUri(final Context context, String suffixType) {
-        final Uri[] imageFilePath = {null};
+        Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();
         String time = ValueOf.toString(System.currentTimeMillis());
         // ContentValues是我们希望这条记录被创建时包含的数据信息
@@ -84,7 +84,7 @@ public class MediaUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             values.put(MediaStore.Video.Media.DATE_TAKEN, time);
         }
-        values.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(suffixType) ? PictureMimeType.MIME_TYPE_VIDEO : suffixType);
+        values.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(suffixType) || suffixType.startsWith("image") ? PictureMimeType.MIME_TYPE_VIDEO : suffixType);
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
         if (status.equals(Environment.MEDIA_MOUNTED)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

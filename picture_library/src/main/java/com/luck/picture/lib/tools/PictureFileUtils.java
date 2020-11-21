@@ -44,7 +44,7 @@ import okio.Okio;
 
 public class PictureFileUtils {
 
-    public static final String POSTFIX = ".jpg";
+    public static final String POSTFIX = ".jpeg";
     public static final String POST_VIDEO = ".mp4";
     public static final String POST_AUDIO = ".mp3";
 

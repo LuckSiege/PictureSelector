@@ -1,7 +1,6 @@
 package com.luck.picture.lib.camera;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
@@ -354,7 +353,12 @@ public class CustomCameraView extends RelativeLayout {
                 rootDir.mkdirs();
             }
             boolean isOutFileNameEmpty = TextUtils.isEmpty(mConfig.cameraFileName);
-            String suffix = TextUtils.isEmpty(mConfig.suffixType) ? PictureFileUtils.POSTFIX : mConfig.suffixType;
+            String suffix;
+            if (mConfig.suffixType.startsWith("image/")) {
+                suffix = mConfig.suffixType.replaceAll("image/", ".");
+            } else {
+                suffix = PictureMimeType.JPEG;
+            }
             String newFileImageName = isOutFileNameEmpty ? DateUtils.getCreateFileName("IMG_") + suffix : mConfig.cameraFileName;
             File cameraFile = new File(rootDir, newFileImageName);
             Uri outUri = getOutUri(PictureMimeType.ofImage());
@@ -384,7 +388,12 @@ public class CustomCameraView extends RelativeLayout {
                 rootDir.mkdirs();
             }
             boolean isOutFileNameEmpty = TextUtils.isEmpty(mConfig.cameraFileName);
-            String suffix = TextUtils.isEmpty(mConfig.suffixType) ? PictureMimeType.MP4 : mConfig.suffixType;
+            String suffix;
+            if (mConfig.suffixType.startsWith("video/")) {
+                suffix = mConfig.suffixType.replaceAll("video/", ".");
+            } else {
+                suffix = PictureMimeType.MP4;
+            }
             String newFileImageName = isOutFileNameEmpty ? DateUtils.getCreateFileName("VID_") + suffix : mConfig.cameraFileName;
             File cameraFile = new File(rootDir, newFileImageName);
             Uri outUri = getOutUri(PictureMimeType.ofVideo());
