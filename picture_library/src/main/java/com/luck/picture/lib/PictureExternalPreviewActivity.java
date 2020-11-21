@@ -90,7 +90,9 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         ibDelete = findViewById(R.id.ib_delete);
         viewPager = findViewById(R.id.preview_pager);
         position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
-        images = (List<LocalMedia>) getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
+        if (getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST) != null) {
+            images = (List<LocalMedia>) getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
+        }
         ibLeftBack.setOnClickListener(this);
         ibDelete.setOnClickListener(this);
         ibDelete.setVisibility(PictureSelectionConfig.style != null ? PictureSelectionConfig.style.pictureExternalPreviewGonePreviewDelete
@@ -275,12 +277,12 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 longImageView.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
                 // 压缩过的gif就不是gif了
                 if (isGif && !media.isCompressed()) {
-                    if (config != null && PictureSelectionConfig.imageEngine != null) {
+                    if (PictureSelectionConfig.imageEngine != null) {
                         PictureSelectionConfig.imageEngine.loadAsGifImage
                                 (getContext(), path, imageView);
                     }
                 } else {
-                    if (config != null && PictureSelectionConfig.imageEngine != null) {
+                    if (PictureSelectionConfig.imageEngine != null) {
                         if (isHttp) {
                             // 网络图片
                             PictureSelectionConfig.imageEngine.loadImage(contentView.getContext(), path,
