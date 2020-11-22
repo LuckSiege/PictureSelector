@@ -112,6 +112,8 @@
         <item name="picture.folder.textSize">16sp</item>
         <!--相册背景底色-->
         <item name="picture.container.backgroundColor">@color/picture_color_white</item>
+        <!--标题栏高度-->
+        <item name="picture.titleBar.height">48dp</item>
     </style>
 
 
@@ -176,6 +178,10 @@
         <item name="picture.folder.textSize">16sp</item>
         <!--相册背景底色-->
         <item name="picture.container.backgroundColor">@color/picture_color_black</item>
+        <!--标题栏高度-->
+        <item name="picture.titleBar.height">48dp</item>
+        <!--标题栏右侧按钮方向箭头left Padding-->
+        <item name="picture.titleRightArrow.LeftPadding">3dp</item>
     </style>
 
     <style name="Picture.Theme.Translucent" parent="Base.Theme.NoActionBar">

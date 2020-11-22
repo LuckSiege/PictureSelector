@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
@@ -53,9 +54,12 @@ import java.util.List;
 public class PicturePreviewActivity extends PictureBaseActivity implements
         View.OnClickListener, PictureSimpleFragmentAdapter.OnCallBackActivity {
     private static final String TAG = PicturePreviewActivity.class.getSimpleName();
+    protected ViewGroup mTitleBar;
     protected ImageView pictureLeftBack;
-    protected TextView tvMediaNum, tvTitle, mTvPictureOk;
+    protected TextView mTvPictureRight, tvMediaNum, tvTitle, mTvPictureOk;
+    protected ImageView mIvArrow;
     protected PreviewViewPager viewPager;
+    protected View mPicturePreview;
     protected int position;
     protected boolean isBottomPreview;
     private int totalNumber;
@@ -70,7 +74,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     protected Handler mHandler;
     protected RelativeLayout selectBarLayout;
     protected CheckBox mCbOriginal;
-    protected View titleViewBg;
     protected boolean isShowCamera;
     protected String currentDirectory;
     /**
@@ -111,21 +114,31 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     protected void initWidgets() {
         super.initWidgets();
         mHandler = new Handler();
-        titleViewBg = findViewById(R.id.titleViewBg);
+        mTitleBar = findViewById(R.id.titleBar);
         screenWidth = ScreenUtils.getScreenWidth(this);
         animation = AnimationUtils.loadAnimation(this, R.anim.picture_anim_modal_in);
         pictureLeftBack = findViewById(R.id.pictureLeftBack);
+        mTvPictureRight = findViewById(R.id.picture_right);
+        mIvArrow = findViewById(R.id.ivArrow);
         viewPager = findViewById(R.id.preview_pager);
+        mPicturePreview = findViewById(R.id.picture_id_preview);
         btnCheck = findViewById(R.id.btnCheck);
         check = findViewById(R.id.check);
         pictureLeftBack.setOnClickListener(this);
-        mTvPictureOk = findViewById(R.id.tv_ok);
+        mTvPictureOk = findViewById(R.id.picture_tv_ok);
         mCbOriginal = findViewById(R.id.cb_original);
-        tvMediaNum = findViewById(R.id.tvMediaNum);
+        tvMediaNum = findViewById(R.id.tv_media_num);
         selectBarLayout = findViewById(R.id.select_bar_layout);
         mTvPictureOk.setOnClickListener(this);
         tvMediaNum.setOnClickListener(this);
         tvTitle = findViewById(R.id.picture_title);
+        mPicturePreview.setVisibility(View.GONE);
+        mIvArrow.setVisibility(View.GONE);
+        mTvPictureRight.setVisibility(View.GONE);
+
+        check.setVisibility(View.VISIBLE);
+        btnCheck.setVisibility(View.VISIBLE);
+
         position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
         if (numComplete) {
             initCompleteText(0);
@@ -349,6 +362,10 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             if (!TextUtils.isEmpty(PictureSelectionConfig.style.pictureUnCompleteText)) {
                 mTvPictureOk.setText(PictureSelectionConfig.style.pictureUnCompleteText);
             }
+            if (PictureSelectionConfig.style.pictureTitleBarHeight > 0) {
+                ViewGroup.LayoutParams params = mTitleBar.getLayoutParams();
+                params.height = PictureSelectionConfig.style.pictureTitleBarHeight;
+            }
             if (config.isOriginalControl) {
                 if (PictureSelectionConfig.style.pictureOriginalControlStyle != 0) {
                     mCbOriginal.setButtonDrawable(PictureSelectionConfig.style.pictureOriginalControlStyle);
@@ -384,6 +401,11 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             if (previewBottomBgColor != 0) {
                 selectBarLayout.setBackgroundColor(previewBottomBgColor);
             }
+            int titleBarHeight = AttrsUtils.getTypeValueSizeForInt(getContext(), R.attr.picture_titleBar_height);
+            if (titleBarHeight > 0) {
+                ViewGroup.LayoutParams params = mTitleBar.getLayoutParams();
+                params.height = titleBarHeight;
+            }
             if (config.isOriginalControl) {
                 Drawable originalDrawable = AttrsUtils.getTypeValueDrawable(getContext(), R.attr.picture_original_check_style, R.drawable.picture_original_wechat_checkbox);
                 mCbOriginal.setButtonDrawable(originalDrawable);
@@ -393,7 +415,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 }
             }
         }
-        titleViewBg.setBackgroundColor(colorPrimary);
+        mTitleBar.setBackgroundColor(colorPrimary);
         onSelectNumChange(false);
     }
 
@@ -608,7 +630,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         int id = view.getId();
         if (id == R.id.pictureLeftBack) {
             onBackPressed();
-        } else if (id == R.id.tv_ok || id == R.id.tvMediaNum) {
+        } else if (id == R.id.picture_tv_ok || id == R.id.tv_media_num) {
             onComplete();
         } else if (id == R.id.btnCheck) {
             onCheckedComplete();

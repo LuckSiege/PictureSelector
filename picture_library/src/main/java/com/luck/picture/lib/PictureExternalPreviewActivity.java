@@ -74,7 +74,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     private String downloadPath;
     private String mMimeType;
     private ImageButton ibDelete;
-    private View titleViewBg;
+    private View mTitleBar;
 
     @Override
     public int getResourceId() {
@@ -84,7 +84,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     @Override
     protected void initWidgets() {
         super.initWidgets();
-        titleViewBg = findViewById(R.id.titleViewBg);
+        mTitleBar = findViewById(R.id.titleBar);
         tvTitle = findViewById(R.id.picture_title);
         ibLeftBack = findViewById(R.id.left_back);
         ibDelete = findViewById(R.id.ib_delete);
@@ -119,14 +119,14 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 ibDelete.setImageResource(PictureSelectionConfig.style.pictureExternalPreviewDeleteStyle);
             }
             if (PictureSelectionConfig.style.pictureTitleBarBackgroundColor != 0) {
-                titleViewBg.setBackgroundColor(colorPrimary);
+                mTitleBar.setBackgroundColor(colorPrimary);
             }
         } else {
             int previewBgColor = AttrsUtils.getTypeValueColor(getContext(), R.attr.picture_ac_preview_title_bg);
             if (previewBgColor != 0) {
-                titleViewBg.setBackgroundColor(previewBgColor);
+                mTitleBar.setBackgroundColor(previewBgColor);
             } else {
-                titleViewBg.setBackgroundColor(colorPrimary);
+                mTitleBar.setBackgroundColor(colorPrimary);
             }
         }
     }

@@ -39,6 +39,28 @@ public class AttrsUtils {
     }
 
     /**
+     * get attrs size
+     *
+     * @param context
+     * @param attr
+     * @return
+     */
+    public static int getTypeValueSizeForInt(Context context, int attr) {
+        int textSize = 0;
+        try {
+            TypedValue typedValue = new TypedValue();
+            int[] attribute = new int[]{attr};
+            TypedArray array = context.obtainStyledAttributes(typedValue.resourceId, attribute);
+            textSize = array.getDimensionPixelSize(0, 0);
+            array.recycle();
+            return textSize;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return textSize;
+    }
+
+    /**
      * get attrs color
      *
      * @param context

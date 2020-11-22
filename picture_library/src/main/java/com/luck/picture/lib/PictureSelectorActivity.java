@@ -14,6 +14,7 @@ import android.os.Parcelable;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -87,7 +88,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private static final String TAG = PictureSelectorActivity.class.getSimpleName();
     protected ImageView mIvPictureLeftBack;
     protected ImageView mIvArrow;
-    protected View titleViewBg;
+    protected View mTitleBar;
+    protected View viewClickMask;
     protected TextView mTvPictureTitle, mTvPictureRight, mTvPictureOk, mTvEmpty,
             mTvPictureImgNum, mTvPicturePreview, mTvPlayPause, mTvStop, mTvQuit,
             mTvMusicStatus, mTvMusicTotal, mTvMusicTime;
@@ -156,17 +158,18 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected void initWidgets() {
         super.initWidgets();
         container = findViewById(R.id.container);
-        titleViewBg = findViewById(R.id.titleViewBg);
+        mTitleBar = findViewById(R.id.titleBar);
         mIvPictureLeftBack = findViewById(R.id.pictureLeftBack);
         mTvPictureTitle = findViewById(R.id.picture_title);
         mTvPictureRight = findViewById(R.id.picture_right);
         mTvPictureOk = findViewById(R.id.picture_tv_ok);
         mCbOriginal = findViewById(R.id.cb_original);
         mIvArrow = findViewById(R.id.ivArrow);
+        viewClickMask = findViewById(R.id.viewClickMask);
         mTvPicturePreview = findViewById(R.id.picture_id_preview);
-        mTvPictureImgNum = findViewById(R.id.picture_tvMediaNum);
+        mTvPictureImgNum = findViewById(R.id.tv_media_num);
         mRecyclerView = findViewById(R.id.picture_recycler);
-        mBottomLayout = findViewById(R.id.rl_bottom);
+        mBottomLayout = findViewById(R.id.select_bar_layout);
         mTvEmpty = findViewById(R.id.tv_empty);
         isNumComplete(numComplete);
         if (!numComplete) {
@@ -174,7 +177,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
         mTvPicturePreview.setOnClickListener(this);
         if (config.isAutomaticTitleRecyclerTop) {
-            titleViewBg.setOnClickListener(this);
+            mTitleBar.setOnClickListener(this);
         }
         mTvPicturePreview.setVisibility(config.chooseMode != PictureMimeType.ofAudio() && config.enablePreview ? View.VISIBLE : View.GONE);
         mBottomLayout.setVisibility(config.selectionMode == PictureConfig.SINGLE
@@ -182,6 +185,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mIvPictureLeftBack.setOnClickListener(this);
         mTvPictureRight.setOnClickListener(this);
         mTvPictureOk.setOnClickListener(this);
+        viewClickMask.setOnClickListener(this);
         mTvPictureImgNum.setOnClickListener(this);
         mTvPictureTitle.setOnClickListener(this);
         mIvArrow.setOnClickListener(this);
@@ -369,6 +373,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (!TextUtils.isEmpty(PictureSelectionConfig.style.pictureUnPreviewText)) {
                 mTvPicturePreview.setText(PictureSelectionConfig.style.pictureUnPreviewText);
             }
+
+            if (PictureSelectionConfig.style.pictureTitleRightArrowLeftPadding != 0) {
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mIvArrow.getLayoutParams();
+                params.leftMargin = PictureSelectionConfig.style.pictureTitleRightArrowLeftPadding;
+            }
+
+            if (PictureSelectionConfig.style.pictureTitleBarHeight > 0) {
+                ViewGroup.LayoutParams params = mTitleBar.getLayoutParams();
+                params.height = PictureSelectionConfig.style.pictureTitleBarHeight;
+            }
             if (config.isOriginalControl) {
                 if (PictureSelectionConfig.style.pictureOriginalControlStyle != 0) {
                     mCbOriginal.setButtonDrawable(PictureSelectionConfig.style.pictureOriginalControlStyle);
@@ -422,9 +436,19 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (previewColorStateList != null) {
                 mTvPicturePreview.setTextColor(previewColorStateList);
             }
+            int pictureTitleRightArrowLeftPadding = AttrsUtils.getTypeValueSizeForInt(getContext(), R.attr.picture_titleRightArrow_LeftPadding);
+            if (pictureTitleRightArrowLeftPadding != 0) {
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mIvArrow.getLayoutParams();
+                params.leftMargin = pictureTitleRightArrowLeftPadding;
+            }
             Drawable ovalBgDrawable = AttrsUtils.getTypeValueDrawable(getContext(), R.attr.picture_num_style, R.drawable.picture_num_oval);
             mTvPictureImgNum.setBackground(ovalBgDrawable);
 
+            int titleBarHeight = AttrsUtils.getTypeValueSizeForInt(getContext(), R.attr.picture_titleBar_height);
+            if (titleBarHeight > 0) {
+                ViewGroup.LayoutParams params = mTitleBar.getLayoutParams();
+                params.height = titleBarHeight;
+            }
             if (config.isOriginalControl) {
                 Drawable originalDrawable = AttrsUtils.getTypeValueDrawable(getContext(), R.attr.picture_original_check_style, R.drawable.picture_original_wechat_checkbox);
                 mCbOriginal.setButtonDrawable(originalDrawable);
@@ -434,7 +458,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
             }
         }
-        titleViewBg.setBackgroundColor(colorPrimary);
+        mTitleBar.setBackgroundColor(colorPrimary);
         mAdapter.bindSelectData(selectionMedias);
     }
 
@@ -757,7 +781,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.pictureLeftBack || id == R.id.picture_right) {
+        if (id == R.id.pictureLeftBack
+                || id == R.id.picture_right) {
             if (folderWindow != null && folderWindow.isShowing()) {
                 folderWindow.dismiss();
             } else {
@@ -765,12 +790,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
             return;
         }
-        if (id == R.id.picture_title || id == R.id.ivArrow) {
+
+        if (id == R.id.picture_title || id == R.id.ivArrow || id == R.id.viewClickMask) {
             if (folderWindow.isShowing()) {
                 folderWindow.dismiss();
             } else {
                 if (!folderWindow.isEmpty()) {
-                    folderWindow.showAsDropDown(titleViewBg);
+                    folderWindow.showAsDropDown(mTitleBar);
                     if (!config.isSingleDirectReturn) {
                         List<LocalMedia> selectedImages = mAdapter.getSelectedData();
                         folderWindow.updateFolderCheckStatus(selectedImages);
@@ -785,12 +811,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             return;
         }
 
-        if (id == R.id.picture_tv_ok || id == R.id.picture_tvMediaNum) {
+        if (id == R.id.picture_tv_ok || id == R.id.tv_media_num) {
             onComplete();
             return;
         }
 
-        if (id == R.id.titleViewBg) {
+        if (id == R.id.titleBar) {
             if (config.isAutomaticTitleRecyclerTop) {
                 int intervalTime = 500;
                 if (SystemClock.uptimeMillis() - intervalClickTime < intervalTime) {

@@ -91,8 +91,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean needScaleBig = true;
     private boolean needScaleSmall = true;
     private int language = -1;
-    private PictureParameterStyle mPictureParameterStyle = PictureParameterStyle.ofDefaultStyle();
-    private PictureCropParameterStyle mCropParameterStyle = PictureCropParameterStyle.ofDefaultCropStyle();
+    private int x = 0, y = 0;
+    private PictureParameterStyle mPictureParameterStyle;
+    private PictureCropParameterStyle mCropParameterStyle;
     private PictureWindowAnimationStyle mWindowAnimationStyle = PictureWindowAnimationStyle.ofDefaultWindowAnimationStyle();
     private ItemTouchHelper mItemTouchHelper;
     private DragListener mDragListener;
@@ -861,35 +862,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.rb_default_style:
                 themeId = R.style.picture_default_style;
                 isWeChatStyle = false;
-                mPictureParameterStyle = PictureParameterStyle.ofDefaultStyle();
-                mCropParameterStyle = PictureCropParameterStyle.ofDefaultCropStyle();
-                // getDefaultStyle();
+                mPictureParameterStyle = getDefaultStyle();
                 break;
             case R.id.rb_white_style:
                 themeId = R.style.picture_white_style;
                 isWeChatStyle = false;
-                getWhiteStyle();
+                mPictureParameterStyle = getWhiteStyle();
                 break;
             case R.id.rb_num_style:
                 themeId = R.style.picture_QQ_style;
                 isWeChatStyle = false;
-                mPictureParameterStyle = PictureParameterStyle.ofSelectNumberStyle();
-                mCropParameterStyle = PictureCropParameterStyle.ofSelectNumberStyle();
-                //getNumStyle();
+                mPictureParameterStyle = getNumStyle();
                 break;
             case R.id.rb_sina_style:
                 themeId = R.style.picture_Sina_style;
                 isWeChatStyle = false;
-                mPictureParameterStyle = PictureParameterStyle.ofSelectTotalStyle();
-                mCropParameterStyle = PictureCropParameterStyle.ofSelectTotalStyle();
-                //getSinaStyle();
+                mPictureParameterStyle = getSinaStyle();
                 break;
             case R.id.rb_we_chat_style:
                 themeId = R.style.picture_WeChat_style;
                 isWeChatStyle = true;
-                mPictureParameterStyle = PictureParameterStyle.ofNewStyle();
-                mCropParameterStyle = PictureCropParameterStyle.ofNewStyle();
-                //getWeChatStyle();
+                mPictureParameterStyle = getWeChatStyle();
                 break;
             case R.id.rb_default:
                 animationMode = AnimationType.DEFAULT_ANIMATION;
@@ -904,9 +897,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void getDefaultStyle() {
+    private PictureParameterStyle getDefaultStyle() {
         // 相册主题
-        mPictureParameterStyle = new PictureParameterStyle();
+        PictureParameterStyle mPictureParameterStyle = new PictureParameterStyle();
         // 是否改变状态栏字体颜色(黑白切换)
         mPictureParameterStyle.isChangeStatusBarFontColor = false;
         // 是否开启右下角已完成(0/9)风格
@@ -992,11 +985,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Color.parseColor("#393a3e"),
                 ContextCompat.getColor(getContext(), R.color.app_color_white),
                 mPictureParameterStyle.isChangeStatusBarFontColor);
+
+        return mPictureParameterStyle;
     }
 
-    private void getWhiteStyle() {
+    private PictureParameterStyle getWhiteStyle() {
         // 相册主题
-        mPictureParameterStyle = new PictureParameterStyle();
+        PictureParameterStyle mPictureParameterStyle = new PictureParameterStyle();
         // 是否改变状态栏字体颜色(黑白切换)
         mPictureParameterStyle.isChangeStatusBarFontColor = true;
         // 是否开启右下角已完成(0/9)风格
@@ -1073,11 +1068,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ContextCompat.getColor(getContext(), R.color.app_color_white),
                 ContextCompat.getColor(getContext(), R.color.app_color_black),
                 mPictureParameterStyle.isChangeStatusBarFontColor);
+        return mPictureParameterStyle;
     }
 
-    private void getNumStyle() {
+    private PictureParameterStyle getNumStyle() {
         // 相册主题
-        mPictureParameterStyle = new PictureParameterStyle();
+        PictureParameterStyle mPictureParameterStyle = new PictureParameterStyle();
         // 是否改变状态栏字体颜色(黑白切换)
         mPictureParameterStyle.isChangeStatusBarFontColor = false;
         // 是否开启右下角已完成(0/9)风格
@@ -1154,11 +1150,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ContextCompat.getColor(getContext(), R.color.app_color_blue),
                 ContextCompat.getColor(getContext(), R.color.app_color_white),
                 mPictureParameterStyle.isChangeStatusBarFontColor);
+        return mPictureParameterStyle;
     }
 
-    private void getSinaStyle() {
+    private PictureParameterStyle getSinaStyle() {
         // 相册主题
-        mPictureParameterStyle = new PictureParameterStyle();
+        PictureParameterStyle mPictureParameterStyle = new PictureParameterStyle();
         // 是否改变状态栏字体颜色(黑白切换)
         mPictureParameterStyle.isChangeStatusBarFontColor = true;
         // 是否开启右下角已完成(0/9)风格
@@ -1236,12 +1233,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ContextCompat.getColor(getContext(), R.color.app_color_white),
                 ContextCompat.getColor(getContext(), R.color.app_color_black),
                 mPictureParameterStyle.isChangeStatusBarFontColor);
+        return mPictureParameterStyle;
     }
 
 
-    private void getWeChatStyle() {
+    private PictureParameterStyle getWeChatStyle() {
         // 相册主题
-        mPictureParameterStyle = new PictureParameterStyle();
+        PictureParameterStyle mPictureParameterStyle = new PictureParameterStyle();
         // 是否改变状态栏字体颜色(黑白切换)
         mPictureParameterStyle.isChangeStatusBarFontColor = false;
         // 是否开启右下角已完成(0/9)风格
@@ -1308,6 +1306,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPictureParameterStyle.pictureExternalPreviewGonePreviewDelete = true;
         // 设置NavBar Color SDK Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP有效
         mPictureParameterStyle.pictureNavBarColor = Color.parseColor("#393a3e");
+        // 标题栏高度
+        mPictureParameterStyle.pictureTitleBarHeight = ScreenUtils.dip2px(getContext(), 48);
+        // 标题栏右侧按钮方向箭头left Padding
+        mPictureParameterStyle.pictureTitleRightArrowLeftPadding = ScreenUtils.dip2px(getContext(),3);
 
         // 完成文案是否采用(%1$d/%2$d)的字符串，只允许两个占位符哟
 //        mPictureParameterStyle.isCompleteReplaceNum = true;
@@ -1342,9 +1344,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Color.parseColor("#393a3e"),
                 ContextCompat.getColor(getContext(), R.color.app_color_white),
                 mPictureParameterStyle.isChangeStatusBarFontColor);
+
+        return mPictureParameterStyle;
     }
 
-    private int x = 0, y = 0;
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

@@ -285,6 +285,16 @@ public class PictureParameterStyle implements Parcelable {
     @DrawableRes
     public int pictureAlbumStyle;
 
+    /**
+     * 标题栏高度
+     */
+    public int pictureTitleBarHeight;
+
+    /**
+     * 标题栏右侧按钮方向箭头left Padding
+     */
+    public int pictureTitleRightArrowLeftPadding;
+
 
     public PictureParameterStyle() {
         super();
@@ -600,6 +610,8 @@ public class PictureParameterStyle implements Parcelable {
         dest.writeInt(this.pictureOriginalControlStyle);
         dest.writeByte(this.pictureExternalPreviewGonePreviewDelete ? (byte) 1 : (byte) 0);
         dest.writeInt(this.pictureAlbumStyle);
+        dest.writeInt(this.pictureTitleBarHeight);
+        dest.writeInt(this.pictureTitleRightArrowLeftPadding);
     }
 
     protected PictureParameterStyle(Parcel in) {
@@ -651,6 +663,8 @@ public class PictureParameterStyle implements Parcelable {
         this.pictureOriginalControlStyle = in.readInt();
         this.pictureExternalPreviewGonePreviewDelete = in.readByte() != 0;
         this.pictureAlbumStyle = in.readInt();
+        this.pictureTitleBarHeight = in.readInt();
+        this.pictureTitleRightArrowLeftPadding = in.readInt();
     }
 
     public static final Creator<PictureParameterStyle> CREATOR = new Creator<PictureParameterStyle>() {

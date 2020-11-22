@@ -66,26 +66,5 @@
         android:layout_alignStart="@id/rlAlbum"
         android:layout_alignEnd="@id/rlAlbum" />
 
-    <TextView
-        android:id="@+id/check"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="16dp"
-        android:gravity="center"
-        android:textColor="@color/picture_color_white"
-        android:textSize="12sp"
-        android:visibility="gone" />
-
-    <View
-        android:id="@+id/btnCheck"
-        android:layout_width="45dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:background="@color/picture_color_transparent"
-        android:visibility="gone" />
-
 </RelativeLayout>
 

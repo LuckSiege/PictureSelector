@@ -66,6 +66,8 @@
         <item name="picture.original.check.style">@drawable/picture_original_checkbox</item>
         <!--原图字体颜色-->
         <item name="picture.original.text.color">@color/picture_color_53575e</item>
+        <!--标题栏高度-->
+        <item name="picture.titleBar.height">48dp</item>
     </style>
 
     <!--QQ数字风格样式，注意每一项都不能少-->
@@ -195,6 +197,8 @@
         <item name="picture.folder.textSize">16sp</item>
         <!--相册背景底色-->
         <item name="picture.container.backgroundColor">@color/picture_color_white</item>
+        <!--标题栏高度-->
+        <item name="picture.titleBar.height">48dp</item>
     </style>
 
 </resources>
