@@ -41,8 +41,7 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
                 PictureConfig.SINGLE && config.isSingleDirectReturn;
         mTvPictureRight.setVisibility(isChooseMode ? View.GONE : View.VISIBLE);
         mTvPictureRight.setOnClickListener(this);
-        if (rlAlbum.getLayoutParams() != null
-                && rlAlbum.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
+        if (rlAlbum.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlAlbum.getLayoutParams();
             if (isChooseMode) {
                 lp.addRule(RelativeLayout.CENTER_HORIZONTAL);

@@ -59,6 +59,9 @@ public class PictureParameterStyle implements Parcelable {
 
     /**
      * 相册取消按钮色值
+     * <p>
+     * {@link pictureRightDefaultTextColor or pictureRightDefaultTextColor}
+     * </p>
      */
     @ColorInt
     @Deprecated
