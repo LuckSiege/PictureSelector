@@ -162,8 +162,14 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (isImmersive()) {
             immersive();
         }
-        if (PictureSelectionConfig.style != null && PictureSelectionConfig.style.pictureNavBarColor != 0) {
-            NavBarUtils.setNavBarColor(this, PictureSelectionConfig.style.pictureNavBarColor);
+        if (PictureSelectionConfig.uiStyle != null) {
+            if (PictureSelectionConfig.uiStyle.picture_navBarColor != 0) {
+                NavBarUtils.setNavBarColor(this, PictureSelectionConfig.uiStyle.picture_navBarColor);
+            }
+        } else if (PictureSelectionConfig.style != null) {
+            if (PictureSelectionConfig.style.pictureNavBarColor != 0) {
+                NavBarUtils.setNavBarColor(this, PictureSelectionConfig.style.pictureNavBarColor);
+            }
         }
         int layoutResID = getResourceId();
         if (layoutResID != 0) {
@@ -231,7 +237,19 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      */
     private void initConfig() {
         selectionMedias = config.selectionMedias == null ? new ArrayList<>() : config.selectionMedias;
-        if (PictureSelectionConfig.style != null) {
+        if (PictureSelectionConfig.uiStyle != null) {
+            openWhiteStatusBar = PictureSelectionConfig.uiStyle.picture_statusBarChangeTextColor;
+            if (PictureSelectionConfig.uiStyle.picture_top_titleBarBackgroundColor != 0) {
+                colorPrimary = PictureSelectionConfig.uiStyle.picture_top_titleBarBackgroundColor;
+            }
+            if (PictureSelectionConfig.uiStyle.picture_statusBarBackgroundColor != 0) {
+                colorPrimaryDark = PictureSelectionConfig.uiStyle.picture_statusBarBackgroundColor;
+            }
+            numComplete = PictureSelectionConfig.uiStyle.picture_switchSelectTotalStyle;
+
+            config.checkNumMode = PictureSelectionConfig.uiStyle.picture_switchSelectNumberStyle;
+
+        } else if (PictureSelectionConfig.style != null) {
             openWhiteStatusBar = PictureSelectionConfig.style.isChangeStatusBarFontColor;
             if (PictureSelectionConfig.style.pictureTitleBarBackgroundColor != 0) {
                 colorPrimary = PictureSelectionConfig.style.pictureTitleBarBackgroundColor;

@@ -1,8 +1,6 @@
 package com.luck.picture.lib.style;
 
 import android.graphics.Color;
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
@@ -12,9 +10,11 @@ import com.luck.picture.lib.R;
 /**
  * @author：luck
  * @date：2019-11-22 17:24
- * @describe：相册动态样式参数设置
+ * @describe：相册动态样式参数设置 <p>
+ * {@link PictureSelectorUIStyle}
+ * </p>
  */
-public class PictureParameterStyle implements Parcelable {
+public class PictureParameterStyle {
     /**
      * 是否改变状态栏字体颜色 黑白切换
      */
@@ -27,6 +27,11 @@ public class PictureParameterStyle implements Parcelable {
      * 是否开启QQ 数字选择风格
      */
     public boolean isOpenCheckNumStyle;
+
+    /**
+     * 开启新选择风格
+     */
+    public boolean isNewSelectStyle;
 
     /**
      * 状态栏色值
@@ -488,6 +493,8 @@ public class PictureParameterStyle implements Parcelable {
      */
     public static PictureParameterStyle ofNewStyle() {
         PictureParameterStyle uiStyle = new PictureParameterStyle();
+        // 开启新选择风格
+        uiStyle.isNewSelectStyle = true;
         // 是否改变状态栏字体颜色(黑白切换)
         uiStyle.isChangeStatusBarFontColor = false;
         // 是否开启右下角已完成(0/9)风格
@@ -558,127 +565,4 @@ public class PictureParameterStyle implements Parcelable {
     }
 
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte(this.isChangeStatusBarFontColor ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isOpenCompletedNumStyle ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isOpenCheckNumStyle ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.pictureStatusBarColor);
-        dest.writeInt(this.pictureTitleBarBackgroundColor);
-        dest.writeInt(this.pictureContainerBackgroundColor);
-        dest.writeInt(this.pictureTitleTextColor);
-        dest.writeInt(this.pictureTitleTextSize);
-        dest.writeInt(this.pictureCancelTextColor);
-        dest.writeInt(this.pictureRightDefaultTextColor);
-        dest.writeInt(this.pictureRightTextSize);
-        dest.writeString(this.pictureRightDefaultText);
-        dest.writeInt(this.pictureRightSelectedTextColor);
-        dest.writeInt(this.pictureBottomBgColor);
-        dest.writeInt(this.pictureCompleteTextColor);
-        dest.writeInt(this.pictureUnCompleteTextColor);
-        dest.writeInt(this.pictureCompleteTextSize);
-        dest.writeInt(this.pictureUnPreviewTextColor);
-        dest.writeInt(this.picturePreviewTextSize);
-        dest.writeString(this.pictureUnCompleteText);
-        dest.writeString(this.pictureCompleteText);
-        dest.writeInt(this.picturePreviewTextColor);
-        dest.writeString(this.pictureUnPreviewText);
-        dest.writeString(this.picturePreviewText);
-        dest.writeInt(this.picturePreviewBottomBgColor);
-        dest.writeInt(this.pictureNavBarColor);
-        dest.writeInt(this.pictureOriginalFontColor);
-        dest.writeInt(this.pictureOriginalTextSize);
-        dest.writeInt(this.pictureUnCompleteBackgroundStyle);
-        dest.writeInt(this.pictureCompleteBackgroundStyle);
-        dest.writeInt(this.pictureTitleUpResId);
-        dest.writeInt(this.pictureTitleDownResId);
-        dest.writeInt(this.pictureLeftBackIcon);
-        dest.writeInt(this.pictureCheckedStyle);
-        dest.writeByte(this.isCompleteReplaceNum ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.folderTextColor);
-        dest.writeInt(this.folderTextSize);
-        dest.writeInt(this.pictureWeChatChooseStyle);
-        dest.writeInt(this.pictureWeChatLeftBackStyle);
-        dest.writeInt(this.pictureWeChatTitleBackgroundStyle);
-        dest.writeInt(this.pictureWeChatPreviewSelectedTextSize);
-        dest.writeString(this.pictureWeChatPreviewSelectedText);
-        dest.writeInt(this.pictureCheckNumBgStyle);
-        dest.writeInt(this.pictureFolderCheckedDotStyle);
-        dest.writeInt(this.pictureExternalPreviewDeleteStyle);
-        dest.writeInt(this.pictureOriginalControlStyle);
-        dest.writeByte(this.pictureExternalPreviewGonePreviewDelete ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.pictureAlbumStyle);
-        dest.writeInt(this.pictureTitleBarHeight);
-        dest.writeInt(this.pictureTitleRightArrowLeftPadding);
-    }
-
-    protected PictureParameterStyle(Parcel in) {
-        this.isChangeStatusBarFontColor = in.readByte() != 0;
-        this.isOpenCompletedNumStyle = in.readByte() != 0;
-        this.isOpenCheckNumStyle = in.readByte() != 0;
-        this.pictureStatusBarColor = in.readInt();
-        this.pictureTitleBarBackgroundColor = in.readInt();
-        this.pictureContainerBackgroundColor = in.readInt();
-        this.pictureTitleTextColor = in.readInt();
-        this.pictureTitleTextSize = in.readInt();
-        this.pictureCancelTextColor = in.readInt();
-        this.pictureRightDefaultTextColor = in.readInt();
-        this.pictureRightTextSize = in.readInt();
-        this.pictureRightDefaultText = in.readString();
-        this.pictureRightSelectedTextColor = in.readInt();
-        this.pictureBottomBgColor = in.readInt();
-        this.pictureCompleteTextColor = in.readInt();
-        this.pictureUnCompleteTextColor = in.readInt();
-        this.pictureCompleteTextSize = in.readInt();
-        this.pictureUnPreviewTextColor = in.readInt();
-        this.picturePreviewTextSize = in.readInt();
-        this.pictureUnCompleteText = in.readString();
-        this.pictureCompleteText = in.readString();
-        this.picturePreviewTextColor = in.readInt();
-        this.pictureUnPreviewText = in.readString();
-        this.picturePreviewText = in.readString();
-        this.picturePreviewBottomBgColor = in.readInt();
-        this.pictureNavBarColor = in.readInt();
-        this.pictureOriginalFontColor = in.readInt();
-        this.pictureOriginalTextSize = in.readInt();
-        this.pictureUnCompleteBackgroundStyle = in.readInt();
-        this.pictureCompleteBackgroundStyle = in.readInt();
-        this.pictureTitleUpResId = in.readInt();
-        this.pictureTitleDownResId = in.readInt();
-        this.pictureLeftBackIcon = in.readInt();
-        this.pictureCheckedStyle = in.readInt();
-        this.isCompleteReplaceNum = in.readByte() != 0;
-        this.folderTextColor = in.readInt();
-        this.folderTextSize = in.readInt();
-        this.pictureWeChatChooseStyle = in.readInt();
-        this.pictureWeChatLeftBackStyle = in.readInt();
-        this.pictureWeChatTitleBackgroundStyle = in.readInt();
-        this.pictureWeChatPreviewSelectedTextSize = in.readInt();
-        this.pictureWeChatPreviewSelectedText = in.readString();
-        this.pictureCheckNumBgStyle = in.readInt();
-        this.pictureFolderCheckedDotStyle = in.readInt();
-        this.pictureExternalPreviewDeleteStyle = in.readInt();
-        this.pictureOriginalControlStyle = in.readInt();
-        this.pictureExternalPreviewGonePreviewDelete = in.readByte() != 0;
-        this.pictureAlbumStyle = in.readInt();
-        this.pictureTitleBarHeight = in.readInt();
-        this.pictureTitleRightArrowLeftPadding = in.readInt();
-    }
-
-    public static final Creator<PictureParameterStyle> CREATOR = new Creator<PictureParameterStyle>() {
-        @Override
-        public PictureParameterStyle createFromParcel(Parcel source) {
-            return new PictureParameterStyle(source);
-        }
-
-        @Override
-        public PictureParameterStyle[] newArray(int size) {
-            return new PictureParameterStyle[size];
-        }
-    };
 }

@@ -8,6 +8,8 @@ import android.util.TypedValue;
 
 import androidx.core.content.ContextCompat;
 
+import com.luck.picture.lib.config.PictureSelectionConfig;
+
 /**
  * @author：luck
  * @data：2018/3/28 下午1:00
@@ -143,5 +145,23 @@ public class AttrsUtils {
             e.printStackTrace();
         }
         return drawable == null ? ContextCompat.getDrawable(context, defaultResId) : drawable;
+    }
+
+    /**
+     * getColorStateList
+     *
+     * @param colors
+     * @return
+     */
+    public static ColorStateList getColorStateList(int[] colors) {
+        try {
+            int[][] states = new int[2][];
+            states[0] = new int[]{-android.R.attr.state_selected};
+            states[1] = new int[]{android.R.attr.state_selected};
+            return new ColorStateList(states, colors);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

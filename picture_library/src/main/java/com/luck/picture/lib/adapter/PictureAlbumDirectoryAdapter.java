@@ -65,8 +65,14 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
         int checkedNum = folder.getCheckedNum();
         holder.tvSign.setVisibility(checkedNum > 0 ? View.VISIBLE : View.INVISIBLE);
         holder.itemView.setSelected(isChecked);
-        if (PictureSelectionConfig.style != null && PictureSelectionConfig.style.pictureAlbumStyle != 0) {
-            holder.itemView.setBackgroundResource(PictureSelectionConfig.style.pictureAlbumStyle);
+        if (PictureSelectionConfig.uiStyle != null) {
+            if (PictureSelectionConfig.uiStyle.picture_album_backgroundStyle != 0) {
+                holder.itemView.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_album_backgroundStyle);
+            }
+        } else if (PictureSelectionConfig.style != null) {
+            if (PictureSelectionConfig.style.pictureAlbumStyle != 0) {
+                holder.itemView.setBackgroundResource(PictureSelectionConfig.style.pictureAlbumStyle);
+            }
         }
         if (chooseMode == PictureMimeType.ofAudio()) {
             holder.ivFirstImage.setImageResource(R.drawable.picture_audio_placeholder);
@@ -109,7 +115,17 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
             ivFirstImage = itemView.findViewById(R.id.first_image);
             tvFolderName = itemView.findViewById(R.id.tv_folder_name);
             tvSign = itemView.findViewById(R.id.tv_sign);
-            if (PictureSelectionConfig.style != null) {
+            if (PictureSelectionConfig.uiStyle != null) {
+                if (PictureSelectionConfig.uiStyle.picture_album_checkDotStyle != 0) {
+                    tvSign.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_album_checkDotStyle);
+                }
+                if (PictureSelectionConfig.uiStyle.picture_album_textColor != 0) {
+                    tvFolderName.setTextColor(PictureSelectionConfig.uiStyle.picture_album_textColor);
+                }
+                if (PictureSelectionConfig.uiStyle.picture_album_textSize > 0) {
+                    tvFolderName.setTextSize(PictureSelectionConfig.uiStyle.picture_album_textSize);
+                }
+            } else if (PictureSelectionConfig.style != null) {
                 if (PictureSelectionConfig.style.pictureFolderCheckedDotStyle != 0) {
                     tvSign.setBackgroundResource(PictureSelectionConfig.style.pictureFolderCheckedDotStyle);
                 }

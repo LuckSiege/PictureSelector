@@ -148,7 +148,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void onBindViewHolder(@NotNull final RecyclerView.ViewHolder holder, final int position) {
         if (getItemViewType(position) == PictureConfig.TYPE_CAMERA) {
             CameraViewHolder headerHolder = (CameraViewHolder) holder;
-            headerHolder.headerView.setOnClickListener(v -> {
+            headerHolder.itemView.setOnClickListener(v -> {
                 if (imageSelectChangedListener != null) {
                     imageSelectChangedListener.onTakePhoto();
                 }
@@ -189,9 +189,31 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             if (isHasVideo || PictureMimeType.isHasAudio(mimeType)) {
                 contentHolder.tvDuration.setVisibility(View.VISIBLE);
                 contentHolder.tvDuration.setText(DateUtils.formatDurationTime(image.getDuration()));
-                contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                        (isHasVideo ? R.drawable.picture_icon_video : R.drawable.picture_icon_audio,
-                                0, 0, 0);
+                if (PictureSelectionConfig.uiStyle != null) {
+                    if (isHasVideo) {
+                        if (PictureSelectionConfig.uiStyle.picture_adapter_item_video_textLeftDrawable != 0) {
+                            contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
+                                    (PictureSelectionConfig.uiStyle.picture_adapter_item_video_textLeftDrawable,
+                                            0, 0, 0);
+                        } else {
+                            contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
+                                    (R.drawable.picture_icon_video, 0, 0, 0);
+                        }
+                    } else {
+                        if (PictureSelectionConfig.uiStyle.picture_adapter_item_audio_textLeftDrawable != 0) {
+                            contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
+                                    (PictureSelectionConfig.uiStyle.picture_adapter_item_audio_textLeftDrawable,
+                                            0, 0, 0);
+                        } else {
+                            contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
+                                    (R.drawable.picture_icon_audio, 0, 0, 0);
+                        }
+                    }
+                } else {
+                    contentHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
+                            (isHasVideo ? R.drawable.picture_icon_video : R.drawable.picture_icon_audio,
+                                    0, 0, 0);
+                }
             } else {
                 contentHolder.tvDuration.setVisibility(View.GONE);
             }
@@ -355,17 +377,34 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public class CameraViewHolder extends RecyclerView.ViewHolder {
-        View headerView;
         TextView tvCamera;
 
         public CameraViewHolder(View itemView) {
             super(itemView);
-            headerView = itemView;
             tvCamera = itemView.findViewById(R.id.tvCamera);
-            String title = config.chooseMode == PictureMimeType.ofAudio() ?
-                    context.getString(R.string.picture_tape)
-                    : context.getString(R.string.picture_take_picture);
-            tvCamera.setText(title);
+            if (PictureSelectionConfig.uiStyle != null) {
+                if (PictureSelectionConfig.uiStyle.picture_adapter_item_camera_backgroundColor != 0) {
+                    itemView.setBackgroundColor(PictureSelectionConfig.uiStyle.picture_adapter_item_camera_backgroundColor);
+                }
+                if (PictureSelectionConfig.uiStyle.picture_adapter_item_camera_textSize != 0) {
+                    tvCamera.setTextSize(PictureSelectionConfig.uiStyle.picture_adapter_item_camera_textSize);
+                }
+                if (PictureSelectionConfig.uiStyle.picture_adapter_item_camera_textColor != 0) {
+                    tvCamera.setTextColor(PictureSelectionConfig.uiStyle.picture_adapter_item_camera_textColor);
+                }
+                if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_adapter_item_camera_text)) {
+                    tvCamera.setText(PictureSelectionConfig.uiStyle.picture_adapter_item_camera_text);
+                } else {
+                    tvCamera.setText(config.chooseMode == PictureMimeType.ofAudio() ? context.getString(R.string.picture_tape)
+                            : context.getString(R.string.picture_take_picture));
+                }
+                if (PictureSelectionConfig.uiStyle.picture_adapter_item_camera_textTopDrawable != 0) {
+                    tvCamera.setCompoundDrawablesWithIntrinsicBounds(0, PictureSelectionConfig.uiStyle.picture_adapter_item_camera_textTopDrawable, 0, 0);
+                }
+            } else {
+                tvCamera.setText(config.chooseMode == PictureMimeType.ofAudio() ? context.getString(R.string.picture_tape)
+                        : context.getString(R.string.picture_take_picture));
+            }
         }
     }
 
@@ -385,7 +424,23 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             tvDuration = itemView.findViewById(R.id.tv_duration);
             tvIsGif = itemView.findViewById(R.id.tv_isGif);
             tvLongChart = itemView.findViewById(R.id.tv_long_chart);
-            if (PictureSelectionConfig.style != null) {
+            if (PictureSelectionConfig.uiStyle != null) {
+                if (PictureSelectionConfig.uiStyle.picture_check_style != 0) {
+                    tvCheck.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_check_style);
+                }
+                if (PictureSelectionConfig.uiStyle.picture_check_textSize != 0) {
+                    tvCheck.setTextSize(PictureSelectionConfig.uiStyle.picture_check_textSize);
+                }
+                if (PictureSelectionConfig.uiStyle.picture_check_textColor != 0) {
+                    tvCheck.setTextColor(PictureSelectionConfig.uiStyle.picture_check_textColor);
+                }
+                if (PictureSelectionConfig.uiStyle.picture_adapter_item_textSize > 0) {
+                    tvDuration.setTextSize(PictureSelectionConfig.uiStyle.picture_adapter_item_textSize);
+                }
+                if (PictureSelectionConfig.uiStyle.picture_adapter_item_textColor != 0) {
+                    tvDuration.setTextColor(PictureSelectionConfig.uiStyle.picture_adapter_item_textColor);
+                }
+            } else if (PictureSelectionConfig.style != null) {
                 if (PictureSelectionConfig.style.pictureCheckedStyle != 0) {
                     tvCheck.setBackgroundResource(PictureSelectionConfig.style.pictureCheckedStyle);
                 }

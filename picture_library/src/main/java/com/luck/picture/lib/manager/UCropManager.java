@@ -116,7 +116,19 @@ public class UCropManager {
         PictureSelectionConfig config = PictureSelectionConfig.getInstance();
         int toolbarColor = 0, statusColor = 0, titleColor = 0, cropNavBarColor = 0;
         boolean isChangeStatusBarFontColor;
-        if (PictureSelectionConfig.cropStyle != null) {
+        if (PictureSelectionConfig.uiStyle != null) {
+            cropNavBarColor = PictureSelectionConfig.uiStyle.picture_navBarColor;
+            isChangeStatusBarFontColor = PictureSelectionConfig.uiStyle.picture_statusBarChangeTextColor;
+            if (PictureSelectionConfig.uiStyle.picture_top_titleBarBackgroundColor != 0) {
+                toolbarColor = PictureSelectionConfig.uiStyle.picture_top_titleBarBackgroundColor;
+            }
+            if (PictureSelectionConfig.uiStyle.picture_statusBarBackgroundColor != 0) {
+                statusColor = PictureSelectionConfig.uiStyle.picture_statusBarBackgroundColor;
+            }
+            if (PictureSelectionConfig.uiStyle.picture_top_titleTextColor != 0) {
+                titleColor = PictureSelectionConfig.uiStyle.picture_top_titleTextColor;
+            }
+        } else if (PictureSelectionConfig.cropStyle != null) {
             cropNavBarColor = PictureSelectionConfig.cropStyle.cropNavBarColor;
             isChangeStatusBarFontColor = PictureSelectionConfig.cropStyle.isChangeStatusBarFontColor;
             if (PictureSelectionConfig.cropStyle.cropTitleBarBackgroundColor != 0) {

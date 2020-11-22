@@ -1,5 +1,6 @@
 package com.luck.picture.lib;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.decoration.WrapContentLinearLayoutManager;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 
 
@@ -120,7 +122,79 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
     @Override
     public void initPictureSelectorStyle() {
         super.initPictureSelectorStyle();
-        if (PictureSelectionConfig.style != null) {
+        if (PictureSelectionConfig.uiStyle != null) {
+            if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText)) {
+                mTvPictureRight.setText(PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText);
+            }
+            if (PictureSelectionConfig.uiStyle.picture_top_titleRightTextNormalBackground != 0) {
+                mTvPictureRight.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_top_titleRightTextNormalBackground);
+            } else {
+                mTvPictureRight.setBackgroundResource(R.drawable.picture_send_button_bg);
+            }
+            if (PictureSelectionConfig.uiStyle.picture_top_titleRightTextSize != 0) {
+                mTvPictureRight.setTextSize(PictureSelectionConfig.uiStyle.picture_top_titleRightTextSize);
+            }
+            if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_selectedText)) {
+                mTvSelected.setText(PictureSelectionConfig.uiStyle.picture_bottom_selectedText);
+            }
+            if (PictureSelectionConfig.uiStyle.picture_bottom_selectedTextSize != 0) {
+                mTvSelected.setTextSize(PictureSelectionConfig.uiStyle.picture_bottom_selectedTextSize);
+            }
+            if (PictureSelectionConfig.uiStyle.picture_bottom_selectedTextColor != 0) {
+                mTvSelected.setTextColor(PictureSelectionConfig.uiStyle.picture_bottom_selectedTextColor);
+            }
+            if (PictureSelectionConfig.uiStyle.picture_bottom_barBackgroundColor != 0) {
+                selectBarLayout.setBackgroundColor(PictureSelectionConfig.uiStyle.picture_bottom_barBackgroundColor);
+            } else {
+                selectBarLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.picture_color_half_grey));
+            }
+
+            mTvPictureRight.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_white));
+
+            if (PictureSelectionConfig.uiStyle.picture_bottom_selectedCheckStyle != 0) {
+                check.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_bottom_selectedCheckStyle);
+            } else {
+                check.setBackgroundResource(R.drawable.picture_wechat_select_cb);
+            }
+
+            if (PictureSelectionConfig.uiStyle.picture_top_leftBack != 0) {
+                pictureLeftBack.setImageResource(PictureSelectionConfig.uiStyle.picture_top_leftBack);
+            } else {
+                pictureLeftBack.setImageResource(R.drawable.picture_icon_back);
+            }
+
+            if (PictureSelectionConfig.uiStyle.picture_bottom_gallery_backgroundColor != 0) {
+                mRvGallery.setBackgroundColor(PictureSelectionConfig.uiStyle.picture_bottom_gallery_backgroundColor);
+            }
+
+            if (PictureSelectionConfig.uiStyle.picture_bottom_gallery_height > 0) {
+                ViewGroup.LayoutParams params = mRvGallery.getLayoutParams();
+                params.height = PictureSelectionConfig.uiStyle.picture_bottom_gallery_height;
+            }
+
+            if (config.isOriginalControl) {
+                if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureText)) {
+                    mCbOriginal.setText(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureText);
+                } else {
+                    mCbOriginal.setText(getString(R.string.picture_original_image));
+                }
+                if (PictureSelectionConfig.uiStyle.picture_bottom_originalPictureTextSize != 0) {
+                    mCbOriginal.setTextSize(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureTextSize);
+                } else {
+                    mCbOriginal.setTextSize(14);
+                }
+                if (PictureSelectionConfig.uiStyle.picture_bottom_originalPictureTextColor != 0) {
+                    mCbOriginal.setTextColor(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureTextColor);
+                } else {
+                    mCbOriginal.setTextColor(Color.parseColor("#FFFFFF"));
+                }
+                if (PictureSelectionConfig.uiStyle.picture_bottom_originalPictureCheckStyle != 0) {
+                    mCbOriginal.setButtonDrawable(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureCheckStyle);
+                } else {
+                    mCbOriginal.setButtonDrawable(R.drawable.picture_original_wechat_checkbox);
+                }
+            }
+        } else if (PictureSelectionConfig.style != null) {
             if (PictureSelectionConfig.style.pictureCompleteBackgroundStyle != 0) {
                 mTvPictureRight.setBackgroundResource(PictureSelectionConfig.style.pictureCompleteBackgroundStyle);
             } else {

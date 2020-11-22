@@ -48,6 +48,7 @@ import com.luck.picture.lib.listener.OnVideoSelectedPlayCallback;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
+import com.luck.picture.lib.style.PictureSelectorUIStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
@@ -429,13 +430,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
                         .imageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                         //.theme(themeId)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style v2.3.3后 建议使用setPictureStyle()动态方式
+                        .setPictureUIStyle(PictureSelectorUIStyle.ofDefaultStyle())
+                        //.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
+                        //.setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
+                        .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
                         .isWeChatStyle(isWeChatStyle)// 是否开启微信图片选择风格
                         .isUseCustomCamera(cb_custom_camera.isChecked())// 是否使用自定义相机
                         .setLanguage(language)// 设置语言，默认中文
                         .isPageStrategy(cbPage.isChecked())// 是否开启分页策略 & 每页多少条；默认开启
-                        .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
-                        .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
-                        .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
                         .setRecyclerAnimationMode(animationMode)// 列表动画效果
                         .isWithVideoImage(true)// 图片和视频是否可以同选,只在ofAll模式下有效
                         .isMaxSelectEnabledMask(cbEnabledMask.isChecked())// 选择数到了最大阀值列表是否启用蒙层效果
@@ -1309,7 +1311,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 标题栏高度
         mPictureParameterStyle.pictureTitleBarHeight = ScreenUtils.dip2px(getContext(), 48);
         // 标题栏右侧按钮方向箭头left Padding
-        mPictureParameterStyle.pictureTitleRightArrowLeftPadding = ScreenUtils.dip2px(getContext(),3);
+        mPictureParameterStyle.pictureTitleRightArrowLeftPadding = ScreenUtils.dip2px(getContext(), 3);
 
         // 完成文案是否采用(%1$d/%2$d)的字符串，只允许两个占位符哟
 //        mPictureParameterStyle.isCompleteReplaceNum = true;

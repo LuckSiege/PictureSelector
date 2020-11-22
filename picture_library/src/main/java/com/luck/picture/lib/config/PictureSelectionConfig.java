@@ -18,6 +18,7 @@ import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.listener.OnVideoSelectedPlayCallback;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
+import com.luck.picture.lib.style.PictureSelectorUIStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public int chooseMode;
     public boolean camera;
     public boolean isSingleDirectReturn;
+    public static PictureSelectorUIStyle uiStyle;
     public static PictureParameterStyle style;
     public static PictureCropParameterStyle cropStyle;
     public static PictureWindowAnimationStyle windowAnimationStyle = PictureWindowAnimationStyle.ofDefaultWindowAnimationStyle();
@@ -166,6 +168,7 @@ public final class PictureSelectionConfig implements Parcelable {
         camera = false;
         themeStyleId = R.style.picture_default_style;
         selectionMode = PictureConfig.MULTIPLE;
+        uiStyle = null;
         style = null;
         cropStyle = null;
         maxSelectNum = 9;

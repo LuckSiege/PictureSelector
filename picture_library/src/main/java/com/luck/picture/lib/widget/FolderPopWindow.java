@@ -58,7 +58,14 @@ public class FolderPopWindow extends PopupWindow {
         this.setFocusable(true);
         this.setOutsideTouchable(true);
         this.update();
-        if (PictureSelectionConfig.style != null) {
+        if (PictureSelectionConfig.uiStyle != null) {
+            if (PictureSelectionConfig.uiStyle.picture_top_titleArrowUpDrawable != 0) {
+                this.drawableUp = ContextCompat.getDrawable(context, PictureSelectionConfig.uiStyle.picture_top_titleArrowUpDrawable);
+            }
+            if (PictureSelectionConfig.uiStyle.picture_top_titleArrowDownDrawable != 0) {
+                this.drawableDown = ContextCompat.getDrawable(context, PictureSelectionConfig.uiStyle.picture_top_titleArrowDownDrawable);
+            }
+        } else if (PictureSelectionConfig.style != null) {
             if (PictureSelectionConfig.style.pictureTitleUpResId != 0) {
                 this.drawableUp = ContextCompat.getDrawable(context, PictureSelectionConfig.style.pictureTitleUpResId);
             }

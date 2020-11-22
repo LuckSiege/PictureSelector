@@ -25,6 +25,7 @@ import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.listener.OnVideoSelectedPlayCallback;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
+import com.luck.picture.lib.style.PictureSelectorUIStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
@@ -64,6 +65,24 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel theme(@StyleRes int themeStyleId) {
         selectionConfig.themeStyleId = themeStyleId;
+        return this;
+    }
+
+    /**
+     * Setting PictureSelector UI Style
+     *
+     * @param uiStyle <p>
+     *                {@link PictureSelectorUIStyle}
+     *                </p>
+     * @return
+     */
+    public PictureSelectionModel setPictureUIStyle(PictureSelectorUIStyle uiStyle) {
+        if (uiStyle != null) {
+            PictureSelectionConfig.uiStyle = uiStyle;
+            if (!selectionConfig.isWeChatStyle) {
+                selectionConfig.isWeChatStyle = PictureSelectionConfig.uiStyle.isNewSelectStyle;
+            }
+        }
         return this;
     }
 
@@ -1164,8 +1183,10 @@ public class PictureSelectionModel {
      * 动态设置裁剪主题样式
      *
      * @param style 裁剪页主题
+     *              <p>{@link PictureSelectorUIStyle}</>
      * @return
      */
+    @Deprecated
     public PictureSelectionModel setPictureCropStyle(PictureCropParameterStyle style) {
         if (style != null) {
             PictureSelectionConfig.cropStyle = style;
@@ -1179,11 +1200,16 @@ public class PictureSelectionModel {
      * 动态设置相册主题样式
      *
      * @param style 主题
+     *              <p>{@link PictureSelectorUIStyle}</>
      * @return
      */
+    @Deprecated
     public PictureSelectionModel setPictureStyle(PictureParameterStyle style) {
         if (style != null) {
             PictureSelectionConfig.style = style;
+            if (!selectionConfig.isWeChatStyle) {
+                selectionConfig.isWeChatStyle = style.isNewSelectStyle;
+            }
         } else {
             PictureSelectionConfig.style = PictureParameterStyle.ofDefaultStyle();
         }

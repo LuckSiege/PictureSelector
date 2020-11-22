@@ -10,7 +10,9 @@ import androidx.annotation.ColorInt;
 /**
  * @author：luck
  * @date：2019-11-22 17:24
- * @describe：裁剪动态样式参数设置
+ * @describe：裁剪动态样式参数设置 <p>
+ * {@link PictureSelectorUIStyle}
+ * </>
  */
 public class PictureCropParameterStyle implements Parcelable {
     /**

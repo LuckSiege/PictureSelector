@@ -1,6 +1,7 @@
 package com.luck.picture.lib;
 
 
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
@@ -53,7 +54,51 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
 
     @Override
     public void initPictureSelectorStyle() {
-        if (PictureSelectionConfig.style != null) {
+        if (PictureSelectionConfig.uiStyle != null) {
+            if (PictureSelectionConfig.uiStyle.picture_top_titleRightTextDefaultBackground != 0) {
+                mTvPictureRight.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_top_titleRightTextDefaultBackground);
+            } else {
+                mTvPictureRight.setBackgroundResource(R.drawable.picture_send_button_default_bg);
+            }
+            if (PictureSelectionConfig.uiStyle.picture_bottom_barBackgroundColor != 0) {
+                mBottomLayout.setBackgroundColor(PictureSelectionConfig.uiStyle.picture_bottom_barBackgroundColor);
+            } else {
+                mBottomLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.picture_color_grey));
+            }
+            if (PictureSelectionConfig.uiStyle.picture_top_titleRightTextColor.length > 0) {
+                ColorStateList colorStateList = AttrsUtils.getColorStateList(PictureSelectionConfig.uiStyle.picture_top_titleRightTextColor);
+                mTvPictureRight.setTextColor(colorStateList);
+            } else {
+                mTvPictureRight.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_53575e));
+            }
+            if (PictureSelectionConfig.uiStyle.picture_top_titleRightTextSize != 0) {
+                mTvPictureRight.setTextSize(PictureSelectionConfig.uiStyle.picture_top_titleRightTextSize);
+            }
+
+            if (config.isOriginalControl) {
+                if (PictureSelectionConfig.uiStyle.picture_bottom_originalPictureCheckStyle != 0) {
+                    mCbOriginal.setButtonDrawable(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureCheckStyle);
+                }
+                if (PictureSelectionConfig.uiStyle.picture_bottom_originalPictureTextColor != 0) {
+                    mCbOriginal.setTextColor(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureTextColor);
+                }
+                if (PictureSelectionConfig.uiStyle.picture_bottom_originalPictureTextSize != 0) {
+                    mCbOriginal.setTextSize(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureTextSize);
+                }
+            }
+            if (PictureSelectionConfig.uiStyle.picture_container_backgroundColor != 0) {
+                container.setBackgroundColor(PictureSelectionConfig.uiStyle.picture_container_backgroundColor);
+            }
+            if (PictureSelectionConfig.uiStyle.picture_top_titleAlbumBackground != 0) {
+                rlAlbum.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_top_titleAlbumBackground);
+            } else {
+                rlAlbum.setBackgroundResource(R.drawable.picture_album_bg);
+            }
+            if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText)) {
+                mTvPictureRight.setText(PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText);
+            }
+
+        } else if (PictureSelectionConfig.style != null) {
             if (PictureSelectionConfig.style.pictureUnCompleteBackgroundStyle != 0) {
                 mTvPictureRight.setBackgroundResource(PictureSelectionConfig.style.pictureUnCompleteBackgroundStyle);
             } else {
@@ -139,7 +184,28 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             mTvPicturePreview.setEnabled(true);
             mTvPicturePreview.setSelected(true);
             initCompleteText(selectData);
-            if (PictureSelectionConfig.style != null) {
+            if (PictureSelectionConfig.uiStyle != null) {
+                if (PictureSelectionConfig.uiStyle.picture_top_titleRightTextNormalBackground != 0) {
+                    mTvPictureRight.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_top_titleRightTextNormalBackground);
+                } else {
+                    mTvPictureRight.setBackgroundResource(R.drawable.picture_send_button_bg);
+                }
+                if (PictureSelectionConfig.uiStyle.picture_bottom_previewTextColor.length > 0) {
+                    ColorStateList colorStateList = AttrsUtils.getColorStateList(PictureSelectionConfig.uiStyle.picture_bottom_previewTextColor);
+                    mTvPicturePreview.setTextColor(colorStateList);
+                } else {
+                    mTvPicturePreview.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_white));
+                }
+                if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_previewNormalText)) {
+                    if (PictureSelectionConfig.uiStyle.isCompleteReplaceNum) {
+                        mTvPicturePreview.setText(String.format(PictureSelectionConfig.uiStyle.picture_bottom_previewNormalText, size));
+                    } else {
+                        mTvPicturePreview.setText(PictureSelectionConfig.uiStyle.picture_bottom_previewNormalText);
+                    }
+                } else {
+                    mTvPicturePreview.setText(getString(R.string.picture_preview_num, size));
+                }
+            } else if (PictureSelectionConfig.style != null) {
                 if (PictureSelectionConfig.style.pictureCompleteBackgroundStyle != 0) {
                     mTvPictureRight.setBackgroundResource(PictureSelectionConfig.style.pictureCompleteBackgroundStyle);
                 } else {
@@ -171,7 +237,23 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             mTvPictureRight.setSelected(false);
             mTvPicturePreview.setEnabled(false);
             mTvPicturePreview.setSelected(false);
-            if (PictureSelectionConfig.style != null) {
+            if (PictureSelectionConfig.uiStyle != null) {
+                if (PictureSelectionConfig.uiStyle.picture_top_titleRightTextDefaultBackground != 0) {
+                    mTvPictureRight.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_top_titleRightTextDefaultBackground);
+                } else {
+                    mTvPictureRight.setBackgroundResource(R.drawable.picture_send_button_default_bg);
+                }
+                if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText)) {
+                    mTvPictureRight.setText(PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText);
+                } else {
+                    mTvPictureRight.setText(getString(R.string.picture_send));
+                }
+                if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_previewDefaultText)) {
+                    mTvPicturePreview.setText(PictureSelectionConfig.uiStyle.picture_bottom_previewDefaultText);
+                } else {
+                    mTvPicturePreview.setText(getString(R.string.picture_preview));
+                }
+            } else if (PictureSelectionConfig.style != null) {
                 if (PictureSelectionConfig.style.pictureUnCompleteBackgroundStyle != 0) {
                     mTvPictureRight.setBackgroundResource(PictureSelectionConfig.style.pictureUnCompleteBackgroundStyle);
                 } else {
