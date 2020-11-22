@@ -67,7 +67,9 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             }
             if (PictureSelectionConfig.uiStyle.picture_top_titleRightTextColor.length > 0) {
                 ColorStateList colorStateList = AttrsUtils.getColorStateList(PictureSelectionConfig.uiStyle.picture_top_titleRightTextColor);
-                mTvPictureRight.setTextColor(colorStateList);
+                if (colorStateList != null) {
+                    mTvPictureRight.setTextColor(colorStateList);
+                }
             } else {
                 mTvPictureRight.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_53575e));
             }
@@ -192,7 +194,9 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
                 }
                 if (PictureSelectionConfig.uiStyle.picture_bottom_previewTextColor.length > 0) {
                     ColorStateList colorStateList = AttrsUtils.getColorStateList(PictureSelectionConfig.uiStyle.picture_bottom_previewTextColor);
-                    mTvPicturePreview.setTextColor(colorStateList);
+                    if (colorStateList != null) {
+                        mTvPicturePreview.setTextColor(colorStateList);
+                    }
                 } else {
                     mTvPicturePreview.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_white));
                 }

@@ -331,7 +331,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
             if (PictureSelectionConfig.uiStyle.picture_top_titleRightTextColor.length > 0) {
                 ColorStateList colorStateList = AttrsUtils.getColorStateList(PictureSelectionConfig.uiStyle.picture_top_titleRightTextColor);
-                mTvPictureRight.setTextColor(colorStateList);
+                if (colorStateList != null) {
+                    mTvPictureRight.setTextColor(colorStateList);
+                }
             }
             if (PictureSelectionConfig.uiStyle.picture_top_titleRightTextSize != 0) {
                 mTvPictureRight.setTextSize(PictureSelectionConfig.uiStyle.picture_top_titleRightTextSize);
@@ -341,7 +343,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
             if (PictureSelectionConfig.uiStyle.picture_bottom_previewTextColor.length > 0) {
                 ColorStateList colorStateList = AttrsUtils.getColorStateList(PictureSelectionConfig.uiStyle.picture_bottom_previewTextColor);
-                mTvPicturePreview.setTextColor(colorStateList);
+                if (colorStateList != null) {
+                    mTvPicturePreview.setTextColor(colorStateList);
+                }
             }
             if (PictureSelectionConfig.uiStyle.picture_bottom_previewTextSize != 0) {
                 mTvPicturePreview.setTextSize(PictureSelectionConfig.uiStyle.picture_bottom_previewTextSize);
@@ -361,7 +365,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
             if (PictureSelectionConfig.uiStyle.picture_bottom_completeTextColor.length > 0) {
                 ColorStateList colorStateList = AttrsUtils.getColorStateList(PictureSelectionConfig.uiStyle.picture_bottom_completeTextColor);
-                mTvPictureOk.setTextColor(colorStateList);
+                if (colorStateList != null) {
+                    mTvPictureOk.setTextColor(colorStateList);
+                }
             }
             if (PictureSelectionConfig.uiStyle.picture_bottom_completeTextSize != 0) {
                 mTvPictureOk.setTextSize(PictureSelectionConfig.uiStyle.picture_bottom_completeTextSize);

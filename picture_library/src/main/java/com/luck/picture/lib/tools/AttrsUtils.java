@@ -155,10 +155,14 @@ public class AttrsUtils {
      */
     public static ColorStateList getColorStateList(int[] colors) {
         try {
-            int[][] states = new int[2][];
-            states[0] = new int[]{-android.R.attr.state_selected};
-            states[1] = new int[]{android.R.attr.state_selected};
-            return new ColorStateList(states, colors);
+            if (colors.length == 2) {
+                int[][] states = new int[2][];
+                states[0] = new int[]{-android.R.attr.state_selected};
+                states[1] = new int[]{android.R.attr.state_selected};
+                return new ColorStateList(states, colors);
+            } else {
+                return ColorStateList.valueOf(colors[0]);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
