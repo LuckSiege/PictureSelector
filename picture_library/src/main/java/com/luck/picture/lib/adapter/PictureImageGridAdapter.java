@@ -440,6 +440,24 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 if (PictureSelectionConfig.uiStyle.picture_adapter_item_textColor != 0) {
                     tvDuration.setTextColor(PictureSelectionConfig.uiStyle.picture_adapter_item_textColor);
                 }
+
+                if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_adapter_item_tag_text)) {
+                    tvIsGif.setText(PictureSelectionConfig.uiStyle.picture_adapter_item_tag_text);
+                }
+                if (PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_show) {
+                    tvIsGif.setVisibility(View.VISIBLE);
+                } else {
+                    tvIsGif.setVisibility(View.GONE);
+                }
+                if (PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_background != 0) {
+                    tvIsGif.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_background);
+                }
+                if (PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_textColor != 0) {
+                    tvIsGif.setTextColor(PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_textColor);
+                }
+                if (PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_textSize != 0) {
+                    tvIsGif.setTextSize(PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_textSize);
+                }
             } else if (PictureSelectionConfig.style != null) {
                 if (PictureSelectionConfig.style.pictureCheckedStyle != 0) {
                     tvCheck.setBackgroundResource(PictureSelectionConfig.style.pictureCheckedStyle);

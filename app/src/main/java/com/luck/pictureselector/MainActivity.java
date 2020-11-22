@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean needScaleSmall = true;
     private int language = -1;
     private int x = 0, y = 0;
+    private PictureSelectorUIStyle mSelectorUIStyle;
     private PictureParameterStyle mPictureParameterStyle;
     private PictureCropParameterStyle mCropParameterStyle;
     private PictureWindowAnimationStyle mWindowAnimationStyle = PictureWindowAnimationStyle.ofDefaultWindowAnimationStyle();
@@ -111,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         setContentView(R.layout.activity_main);
         themeId = R.style.picture_default_style;
+        mSelectorUIStyle = PictureSelectorUIStyle.ofDefaultStyle();
         ImageView minus = findViewById(R.id.minus);
         ImageView plus = findViewById(R.id.plus);
         tvDeleteText = findViewById(R.id.tv_delete_text);
@@ -430,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
                         .imageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
                         //.theme(themeId)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style v2.3.3后 建议使用setPictureStyle()动态方式
-                        .setPictureUIStyle(PictureSelectorUIStyle.ofDefaultStyle())
+                        .setPictureUIStyle(mSelectorUIStyle)
                         //.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
                         //.setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
                         .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
@@ -865,26 +867,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 themeId = R.style.picture_default_style;
                 isWeChatStyle = false;
                 mPictureParameterStyle = getDefaultStyle();
+                mSelectorUIStyle = PictureSelectorUIStyle.ofDefaultStyle();
                 break;
             case R.id.rb_white_style:
                 themeId = R.style.picture_white_style;
                 isWeChatStyle = false;
                 mPictureParameterStyle = getWhiteStyle();
+                mSelectorUIStyle = PictureSelectorUIStyle.ofSelectTotalStyle();
                 break;
             case R.id.rb_num_style:
                 themeId = R.style.picture_QQ_style;
                 isWeChatStyle = false;
                 mPictureParameterStyle = getNumStyle();
+                mSelectorUIStyle = PictureSelectorUIStyle.ofSelectNumberStyle();
                 break;
             case R.id.rb_sina_style:
                 themeId = R.style.picture_Sina_style;
                 isWeChatStyle = false;
                 mPictureParameterStyle = getSinaStyle();
+                mSelectorUIStyle = PictureSelectorUIStyle.ofSelectTotalStyle();
                 break;
             case R.id.rb_we_chat_style:
                 themeId = R.style.picture_WeChat_style;
                 isWeChatStyle = true;
                 mPictureParameterStyle = getWeChatStyle();
+                mSelectorUIStyle = PictureSelectorUIStyle.ofNewStyle();
                 break;
             case R.id.rb_default:
                 animationMode = AnimationType.DEFAULT_ANIMATION;

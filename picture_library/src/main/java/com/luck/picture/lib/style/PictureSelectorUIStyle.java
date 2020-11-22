@@ -322,27 +322,27 @@ public class PictureSelectorUIStyle {
     /**
      * adapter item标签文案
      */
-    public int picture_adapter_item_tag_text;
+    public String picture_adapter_item_tag_text;
 
     /**
      * 是否显示tag
      */
-    public boolean picture_adapter_item_show_tag;
+    public boolean picture_adapter_item_gif_tag_show = true;
 
     /**
      * adapter item标签文字大小
      */
-    public int picture_adapter_item_tag_textSize;
+    public int picture_adapter_item_gif_tag_textSize;
 
     /**
      * adapter item标签文字颜色
      */
-    public int picture_adapter_item_tag_textColor;
+    public int picture_adapter_item_gif_tag_textColor;
 
     /**
      * adapter item标签背景
      */
-    public int picture_adapter_item_tag_background;
+    public int picture_adapter_item_gif_tag_background;
 
 
     /**
