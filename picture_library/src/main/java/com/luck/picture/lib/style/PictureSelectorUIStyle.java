@@ -354,7 +354,7 @@ public class PictureSelectorUIStyle {
         PictureSelectorUIStyle uiStyle = new PictureSelectorUIStyle();
 
         uiStyle.picture_statusBarBackgroundColor = Color.parseColor("#393a3e");
-        uiStyle.picture_container_backgroundColor = Color.parseColor("#393a3e");
+        uiStyle.picture_container_backgroundColor = Color.parseColor("#000000");
 
         uiStyle.picture_navBarColor = Color.parseColor("#393a3e");
 
@@ -584,7 +584,7 @@ public class PictureSelectorUIStyle {
 
         uiStyle.picture_statusBarBackgroundColor = Color.parseColor("#393a3e");
 
-        uiStyle.picture_container_backgroundColor = Color.parseColor("#393a3e");
+        uiStyle.picture_container_backgroundColor = Color.parseColor("#000000");
 
         uiStyle.picture_switchSelectNumberStyle = true;
 
@@ -609,7 +609,7 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_album_textColor = Color.parseColor("#4d4d4d");
         uiStyle.picture_album_checkDotStyle = R.drawable.picture_orange_oval;
 
-        uiStyle.picture_bottom_previewTextSize = 18;
+        uiStyle.picture_bottom_previewTextSize = 16;
         uiStyle.picture_bottom_previewTextColor = new int[]{Color.parseColor("#9b9b9b"), Color.parseColor("#FFFFFF")};
 
         uiStyle.picture_bottom_completeTextColor = new int[]{Color.parseColor("#9b9b9b"), Color.parseColor("#FA632D")};
