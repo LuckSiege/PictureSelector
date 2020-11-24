@@ -24,6 +24,7 @@ import java.util.List;
 public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity {
     private TextView mPictureSendView;
     private RelativeLayout rlAlbum;
+    private RelativeLayout selectButtomLayout;
 
 
     @Override
@@ -36,6 +37,7 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
         super.initWidgets();
         rlAlbum = findViewById(R.id.rlAlbum);
         mPictureSendView = findViewById(R.id.picture_send);
+        selectButtomLayout = findViewById(R.id.select_buttom_layout);
         mPictureSendView.setOnClickListener(this);
         mPictureSendView.setText(getString(R.string.picture_send));
         mTvPicturePreview.setTextSize(16);
@@ -51,6 +53,12 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             } else {
                 lp.addRule(RelativeLayout.RIGHT_OF, R.id.pictureLeftBack);
             }
+        }
+
+        if (config.isSingleDirectReturn) {
+            selectButtomLayout.setVisibility(View.GONE);
+        } else {
+            selectButtomLayout.setVisibility(View.VISIBLE);
         }
     }
 
