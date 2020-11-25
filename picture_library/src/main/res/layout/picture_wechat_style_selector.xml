@@ -293,7 +293,6 @@
         android:layout_marginRight="15dp"
         android:gravity="center"
         android:lineSpacingExtra="3dp"
-        android:text="@string/picture_empty"
         android:textColor="@color/picture_color_9b"
         android:textSize="18sp"
         android:visibility="invisible" />

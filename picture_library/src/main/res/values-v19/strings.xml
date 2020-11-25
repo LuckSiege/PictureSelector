@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="no_photos_available">No photos available</string>
+    <string name="no_videos_available">No videos available</string>
+</resources>

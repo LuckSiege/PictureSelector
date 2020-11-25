@@ -60,4 +60,6 @@
     <string name="picture_go_setting">去设置</string>
     <string name="picture_know">我知道了</string>
     <string name="picture_data_null">这里空空如也…</string>
+    <string name="no_photos_available">No photos available</string>
+    <string name="no_videos_available">No videos available</string>
 </resources>

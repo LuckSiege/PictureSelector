@@ -60,4 +60,6 @@
     <string name="picture_go_setting">설치</string>
     <string name="picture_know">알 겠 습 니 다</string>
     <string name="picture_data_null">데이터 없 음…</string>
+    <string name="no_photos_available">No photos available</string>
+    <string name="no_videos_available">No videos available</string>
 </resources>

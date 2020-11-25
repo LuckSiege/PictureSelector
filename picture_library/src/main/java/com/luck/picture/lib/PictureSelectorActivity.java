@@ -311,6 +311,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                     if (!isFinishing()) {
                                         if (result.size() == 0) {
                                             mAdapter.clear();
+                                            showDataNull(getString(R.string.no_photos_available), R.drawable.picture_icon_no_data);
+                                        } else {
+                                            hideDataNull();
                                         }
                                         mAdapter.bindData(result);
                                         mRecyclerView.onScrolled(0, 0);
@@ -326,6 +329,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                     if (!isFinishing()) {
                                         if (result.size() == 0) {
                                             mAdapter.clear();
+                                            showDataNull(getString(R.string.no_videos_available), R.drawable.picture_icon_no_data);
+                                        } else {
+                                            hideDataNull();
                                         }
                                         mAdapter.bindData(result);
                                         mRecyclerView.onScrolled(0, 0);
@@ -408,7 +414,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                 } else {
                                     boolean isEmpty = mAdapter.isDataEmpty();
                                     if (isEmpty) {
-                                        showDataNull(bucketId == -1 ? getString(R.string.picture_empty) : getString(R.string.picture_data_null), R.drawable.picture_icon_no_data);
+                                        if (config.chooseMode == PictureMimeType.ofImage()) {
+                                            showDataNull(getString(R.string.no_photos_available), R.drawable.picture_icon_no_data);
+                                        } else if (config.chooseMode == PictureMimeType.ofVideo()){
+                                            showDataNull(getString(R.string.no_videos_available), R.drawable.picture_icon_no_data);
+                                        } else  {
+                                            showDataNull(getString(R.string.no_photos_or_videos_available), R.drawable.picture_icon_no_data);
+                                        }
+
                                     }
                                 }
                             }
@@ -672,7 +685,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                 }
                                 boolean isEmpty = mAdapter.isDataEmpty();
                                 if (isEmpty) {
-                                    showDataNull(getString(R.string.picture_empty), R.drawable.picture_icon_no_data);
+                                    showDataNull(getString(R.string.no_photos_available), R.drawable.picture_icon_no_data);
                                 } else {
                                     hideDataNull();
                                 }
@@ -2411,19 +2424,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * @param msg
      */
     private void showDataNull(String msg, int topErrorResId) {
-        if (mTvEmpty.getVisibility() == View.GONE || mTvEmpty.getVisibility() == View.INVISIBLE) {
-            mTvEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds(0, topErrorResId, 0, 0);
-            mTvEmpty.setText(msg);
-            mTvEmpty.setVisibility(View.VISIBLE);
-        }
+        mTvEmpty.setText(msg);
+        mTvEmpty.setVisibility(View.VISIBLE);
     }
 
     /**
      * hidden
      */
     private void hideDataNull() {
-        if (mTvEmpty.getVisibility() == View.VISIBLE) {
-            mTvEmpty.setVisibility(View.GONE);
-        }
+        mTvEmpty.setVisibility(View.GONE);
     }
 }

@@ -61,4 +61,6 @@
     <string name="picture_go_setting">Set up</string>
     <string name="picture_know">Das stimmt</string>
     <string name="picture_data_null">Hier ist es leer…</string>
+    <string name="no_photos_available">No photos available</string>
+    <string name="no_videos_available">No videos available</string>
 </resources>
