@@ -311,7 +311,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                     if (!isFinishing()) {
                                         if (result.size() == 0) {
                                             mAdapter.clear();
-                                            showDataNull(getString(R.string.no_photos_available), R.drawable.picture_icon_no_data);
+                                            showDataNull();
                                         } else {
                                             hideDataNull();
                                         }
@@ -329,7 +329,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                     if (!isFinishing()) {
                                         if (result.size() == 0) {
                                             mAdapter.clear();
-                                            showDataNull(getString(R.string.no_videos_available), R.drawable.picture_icon_no_data);
+                                            showDataNull();
                                         } else {
                                             hideDataNull();
                                         }
@@ -414,13 +414,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                 } else {
                                     boolean isEmpty = mAdapter.isDataEmpty();
                                     if (isEmpty) {
-                                        if (config.chooseMode == PictureMimeType.ofImage()) {
-                                            showDataNull(getString(R.string.no_photos_available), R.drawable.picture_icon_no_data);
-                                        } else if (config.chooseMode == PictureMimeType.ofVideo()){
-                                            showDataNull(getString(R.string.no_videos_available), R.drawable.picture_icon_no_data);
-                                        } else  {
-                                            showDataNull(getString(R.string.no_photos_or_videos_available), R.drawable.picture_icon_no_data);
-                                        }
+                                        showDataNull();
 
                                     }
                                 }
@@ -685,7 +679,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                                 }
                                 boolean isEmpty = mAdapter.isDataEmpty();
                                 if (isEmpty) {
-                                    showDataNull(getString(R.string.no_photos_available), R.drawable.picture_icon_no_data);
+                                    showDataNull();
                                 } else {
                                     hideDataNull();
                                 }
@@ -694,7 +688,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         }
                     });
         } else {
-            showDataNull(getString(R.string.picture_data_exception), R.drawable.picture_icon_data_error);
+            showDataNull();
             dismissDialog();
         }
     }
@@ -762,16 +756,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     }
                     boolean isEmpty = mAdapter.isDataEmpty();
                     if (isEmpty) {
-                        showDataNull(getString(R.string.picture_empty), R.drawable.picture_icon_no_data);
+                        showDataNull();
                     } else {
                         hideDataNull();
                     }
                 }
             } else {
-                showDataNull(getString(R.string.picture_empty), R.drawable.picture_icon_no_data);
+                showDataNull();
             }
         } else {
-            showDataNull(getString(R.string.picture_data_exception), R.drawable.picture_icon_data_error);
+            showDataNull();
         }
         dismissDialog();
     }
@@ -2420,11 +2414,17 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
     /**
      * set Data Null
-     *
-     * @param msg
      */
-    private void showDataNull(String msg, int topErrorResId) {
-        mTvEmpty.setText(msg);
+    private void showDataNull() {
+
+        if (config.chooseMode == PictureMimeType.ofImage()) {
+            mTvEmpty.setText(getString(R.string.no_photos_available));
+        } else if (config.chooseMode == PictureMimeType.ofVideo()){
+            mTvEmpty.setText(getString(R.string.no_videos_available));
+        } else  {
+            mTvEmpty.setText(getString(R.string.no_photos_or_videos_available));
+        }
+
         mTvEmpty.setVisibility(View.VISIBLE);
     }
 
