@@ -87,7 +87,7 @@ public class GridImageAdapter extends
         }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView mImg;
         ImageView mIvDel;
@@ -124,14 +124,12 @@ public class GridImageAdapter extends
      */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = mInflater.inflate(R.layout.gv_filter_image,
-                viewGroup, false);
-        final ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        View view = mInflater.inflate(R.layout.gv_filter_image, viewGroup, false);
+        return new ViewHolder(view);
     }
 
     private boolean isShowAddItem(int position) {
-        int size = list.size() == 0 ? 0 : list.size();
+        int size = list.size();
         return position == size;
     }
 

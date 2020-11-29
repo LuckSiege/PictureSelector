@@ -526,7 +526,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .isUseCustomCamera(cb_custom_camera.isChecked())// 是否使用自定义相机
-                        //.setOutputCameraPath()// 自定义相机输出目录，只针对Android Q以下，例如 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM) +  File.separator + "Camera" + File.separator;
+                        //.setOutputCameraPath()// 自定义相机输出目录
                         .minSelectNum(1)// 最小选择数量
                         //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
                         .closeAndroidQChangeWH(true)//如果图片有旋转角度则对换宽高，默认为true
@@ -579,20 +579,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @return
      */
     private String createCustomCameraOutPath() {
-        File customFile = null;
+        File customFile;
         if (SdkVersionUtils.checkedAndroid_Q()) {
-            customFile = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        }
-        if (customFile == null) {
-            // Android Q版本(沙盒机制)以后，此方式不推荐使用了
-            File directory = Environment.getExternalStorageDirectory();
-            String path = directory.getAbsolutePath() + File.separator + "CustomPictureCamera";
-            customFile = new File(path);
+            // 在Android Q上不能直接使用外部存储目录
+            customFile = getContext().getExternalFilesDir(chooseMode == PictureMimeType.ofVideo() ? Environment.DIRECTORY_MOVIES : Environment.DIRECTORY_PICTURES);
+        } else {
+            File rootFile = Environment.getExternalStorageDirectory();
+            customFile = new File(rootFile.getAbsolutePath() + File.separator + "CustomPictureCamera");
             if (!customFile.exists()) {
                 customFile.mkdirs();
             }
         }
-        return customFile.getAbsolutePath() + File.separator;
+        return customFile != null ? customFile.getAbsolutePath() + File.separator : null;
     }
 
     /**

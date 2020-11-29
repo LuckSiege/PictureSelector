@@ -35,18 +35,30 @@ public class MediaUtils {
     /**
      * 创建一条图片地址uri,用于保存拍照后的照片
      *
-     * @param context
+     * @param ctx
+     * @param cameraFileName
      * @param suffixType
      * @return 图片的uri
      */
     @Nullable
-    public static Uri createImageUri(final Context context, String suffixType) {
+    public static Uri createImageUri(final Context ctx, String cameraFileName, String suffixType) {
+        Context context = ctx.getApplicationContext();
         Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();
         String time = ValueOf.toString(System.currentTimeMillis());
         // ContentValues是我们希望这条记录被创建时包含的数据信息
         ContentValues values = new ContentValues(3);
-        values.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
+        if (TextUtils.isEmpty(cameraFileName)) {
+            values.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
+        } else {
+            if (cameraFileName.lastIndexOf(".") == -1) {
+                values.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
+            } else {
+                String suffix = cameraFileName.substring(cameraFileName.lastIndexOf("."));
+                String fileName = cameraFileName.replaceAll(suffix, "");
+                values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName);
+            }
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             values.put(MediaStore.Images.Media.DATE_TAKEN, time);
         }
@@ -69,18 +81,30 @@ public class MediaUtils {
     /**
      * 创建一条视频地址uri,用于保存录制的视频
      *
-     * @param context
+     * @param ctx
+     * @param cameraFileName
      * @param suffixType
      * @return 视频的uri
      */
     @Nullable
-    public static Uri createVideoUri(final Context context, String suffixType) {
+    public static Uri createVideoUri(final Context ctx, String cameraFileName, String suffixType) {
+        Context context = ctx.getApplicationContext();
         Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();
         String time = ValueOf.toString(System.currentTimeMillis());
         // ContentValues是我们希望这条记录被创建时包含的数据信息
         ContentValues values = new ContentValues(3);
-        values.put(MediaStore.Video.Media.DISPLAY_NAME, DateUtils.getCreateFileName("VID_"));
+        if (TextUtils.isEmpty(cameraFileName)) {
+            values.put(MediaStore.Video.Media.DISPLAY_NAME, DateUtils.getCreateFileName("VID_"));
+        } else {
+            if (cameraFileName.lastIndexOf(".") == -1) {
+                values.put(MediaStore.Video.Media.DISPLAY_NAME, DateUtils.getCreateFileName("VID_"));
+            } else {
+                String suffix = cameraFileName.substring(cameraFileName.lastIndexOf("."));
+                String fileName = cameraFileName.replaceAll(suffix, "");
+                values.put(MediaStore.Video.Media.DISPLAY_NAME, fileName);
+            }
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             values.put(MediaStore.Video.Media.DATE_TAKEN, time);
         }

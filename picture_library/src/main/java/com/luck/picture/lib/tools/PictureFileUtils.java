@@ -51,20 +51,20 @@ public class PictureFileUtils {
 
     /**
      * @param context
-     * @param type
+     * @param chooseMode
      * @param format
      * @param outCameraDirectory
      * @return
      */
-    public static File createCameraFile(Context context, int type, String fileName, String format, String outCameraDirectory) {
-        return createMediaFile(context, type, fileName, format, outCameraDirectory);
+    public static File createCameraFile(Context context, int chooseMode, String fileName, String format, String outCameraDirectory) {
+        return createMediaFile(context, chooseMode, fileName, format, outCameraDirectory);
     }
 
     /**
      * 创建文件
      *
      * @param context
-     * @param type
+     * @param chooseMode
      * @param fileName
      * @param format
      * @param outCameraDirectory
@@ -74,7 +74,18 @@ public class PictureFileUtils {
         return createOutFile(context, chooseMode, fileName, format, outCameraDirectory);
     }
 
-    private static File createOutFile(Context context, int chooseMode, String fileName, String format, String outCameraDirectory) {
+    /**
+     * 创建文件
+     *
+     * @param ctx                上下文
+     * @param chooseMode         选择模式
+     * @param fileName           文件名
+     * @param format             文件格式
+     * @param outCameraDirectory 输出目录
+     * @return
+     */
+    private static File createOutFile(Context ctx, int chooseMode, String fileName, String format, String outCameraDirectory) {
+        Context context = ctx.getApplicationContext();
         File folderDir;
         if (TextUtils.isEmpty(outCameraDirectory)) {
             // 外部没有自定义拍照存储路径使用默认
