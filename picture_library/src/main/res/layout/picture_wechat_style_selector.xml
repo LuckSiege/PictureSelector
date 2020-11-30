@@ -297,4 +297,18 @@
         android:textSize="18sp"
         android:visibility="invisible" />
 
+
+    <TextView
+        android:id="@+id/send"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/red_ff6500"
+        android:textColor="@color/ucrop_color_white"
+        android:textSize="15sp"
+        android:text="@string/send"
+        android:visibility="gone"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        />
+
 </RelativeLayout>

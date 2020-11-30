@@ -65,4 +65,5 @@
     <string name="no_photos_available">No photos available</string>
     <string name="no_videos_available">No videos available</string>
     <string name="no_photos_or_videos_available">No photos or videos available.</string>
+    <string name="send">Send</string>
 </resources>

@@ -1,6 +1,9 @@
 package com.luck.picture.lib;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -121,6 +124,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private ImageView mIvClose;
     private TextView mTvSelectMax;
     private List<LocalMedia> mSelectData;
+    private TextView mSend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,6 +191,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mSelectedLocalMedia = findViewById(R.id.rv_selected);
         mtTvCount = findViewById(R.id.tv_count);
         mTvSelectMax = findViewById(R.id.tv_select_max);
+        mSend = findViewById(R.id.send);
         isNumComplete(numComplete);
         if (!numComplete) {
             animation = AnimationUtils.loadAnimation(this, R.anim.picture_anim_modal_in);
@@ -203,6 +208,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mTvPictureOk.setOnClickListener(this);
         if (mtTvCount != null) {
             mtTvCount.setOnClickListener(this);
+        }
+        if (mSend != null) {
+            mSend.setOnClickListener(this);
         }
         mTvPictureImgNum.setOnClickListener(this);
         mTvPictureTitle.setOnClickListener(this);
@@ -892,7 +900,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             return;
         }
 
-        if (id == R.id.picture_tv_ok || id == R.id.picture_tvMediaNum || id == R.id.tv_count) {
+        if (id == R.id.picture_tv_ok || id == R.id.picture_tvMediaNum || id == R.id.tv_count || id == R.id.send) {
 
             if (mSelectData == null || mSelectData.size() == 0) {
                 return;
@@ -1449,7 +1457,34 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mtTvCount.setText("Next (" +selectData.size()+")");
                 mtTvCount.setTextColor(getResources().getColor(R.color.ucrop_color_white));
                 mtTvCount.setBackground(getResources().getDrawable(R.drawable.radius_bg_shape));
+
+                //判断是否展示
+                if (config.isMessageStyle){
+                    if (mSend.getVisibility() != View.VISIBLE) {
+                        mSend.setVisibility(View.VISIBLE);
+                        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mSend, "alpha", 0.0f, 1.0f);
+                        objectAnimator.setDuration(300);
+                        objectAnimator.start();
+                    }
+
+                }
             } else {
+                ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mSend, "alpha", 1.0f, 0.0f);
+                objectAnimator.setDuration(300);
+                objectAnimator.start();
+
+                objectAnimator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation, boolean isReverse) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation, boolean isReverse) {
+                        mSend.setVisibility(View.GONE);
+                    }
+                });
+
                 mtTvCount.setClickable(true);
                 mtTvCount.setText("Next (0)");
                 mtTvCount.setTextColor(getResources().getColor(R.color.picture_color_light_grey));

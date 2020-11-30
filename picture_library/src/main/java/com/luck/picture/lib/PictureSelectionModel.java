@@ -248,6 +248,15 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param messageStyle
+     * @return PictureSelectionModel
+     */
+    public PictureSelectionModel isMessageStyle(boolean messageStyle) {
+        selectionConfig.isMessageStyle = messageStyle;
+        return this;
+    }
+
+    /**
      * @param uCropOptions UCrop parameter configuration is provided
      * @return
      */

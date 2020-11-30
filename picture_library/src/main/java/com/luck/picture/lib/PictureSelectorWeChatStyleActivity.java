@@ -55,7 +55,7 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             }
         }
 
-        if (config.isSingleDirectReturn) {
+        if (config.isMessageStyle) {
             selectButtomLayout.setVisibility(View.GONE);
         } else {
             selectButtomLayout.setVisibility(View.VISIBLE);

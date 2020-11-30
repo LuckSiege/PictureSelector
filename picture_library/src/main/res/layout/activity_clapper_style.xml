@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ClapperStyleActivity">
+
+    <RelativeLayout
+        android:id="@+id/titleContainer"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/radius_shape"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tl_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@+id/iv_close"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            app:tabIndicatorColor="@color/ucrop_color_black"
+            app:tabTextAppearance="@style/TabLayoutTextSize"
+            app:tabTextColor="@drawable/select_text_color_selecter">
+
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:tag="Images"
+                android:text="Images" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:tag="Videos"
+                android:text="Videos" />
+
+
+        </com.google.android.material.tabs.TabLayout>
+
+
+        <TextView
+            android:id="@+id/tv_video_title"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="Videos"
+            android:textColor="#333"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="40dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:src="@drawable/ic_video_close" />
+
+    </RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:id="@+id/selectBottomContainer"
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/picture_color_white"
+        android:gravity="center_vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_selected"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="8dp"
+            android:background="#fff" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e8e8e8" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="80dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_select_max"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:textSize="12sp"
+                android:text="You can Upload up to 1 videos" />
+
+            <TextView
+                android:id="@+id/tv_count"
+                android:layout_width="84dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="14dp"
+                android:background="@drawable/radius_bg_shape"
+                android:gravity="center"
+                android:text="Next (0)"
+                android:textColor="@color/picture_color_white"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="80dp"
+            android:background="#e8e8e8" />
+
+    </RelativeLayout>
+
+    <com.luck.picture.lib.widget.RecyclerPreloadView
+        android:id="@+id/picture_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/selectBottomContainer"
+        android:layout_below="@id/titleContainer"
+        android:background="@color/picture_color_white" />
+
+    <TextView
+        android:id="@+id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:gravity="center"
+        android:lineSpacingExtra="3dp"
+        android:textColor="@color/picture_color_9b"
+        android:textSize="18sp"
+        android:visibility="invisible" />
+
+</RelativeLayout>

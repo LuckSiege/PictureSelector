@@ -170,6 +170,8 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isCanPreView;
     //点击item 是否可以展开item 默认是true
     public boolean isShowPreView;
+    //发送消息的图片选择
+    public boolean isMessageStyle;
 
     protected void initDefaultValue() {
         chooseMode = PictureMimeType.ofImage();
@@ -278,6 +280,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isAndroidQChangeVideoWH = false;
         isQuickCapture = true;
         isShowPreView = true;
+        isMessageStyle = false;
     }
 
     public static PictureSelectionConfig getInstance() {
