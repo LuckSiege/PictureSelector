@@ -473,6 +473,10 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             Drawable leftDrawable = AttrsUtils.getTypeValueDrawable(getContext(), R.attr.picture_preview_leftBack_icon, R.drawable.picture_icon_back);
             pictureLeftBack.setImageDrawable(leftDrawable);
 
+            int titleColor = AttrsUtils.getTypeValueColor(getContext(), R.attr.picture_ac_preview_title_textColor);
+            if (titleColor != 0) {
+                tvTitle.setTextColor(titleColor);
+            }
             Drawable ovalBgDrawable = AttrsUtils.getTypeValueDrawable(getContext(), R.attr.picture_num_style, R.drawable.picture_num_oval);
             tvMediaNum.setBackground(ovalBgDrawable);
 
