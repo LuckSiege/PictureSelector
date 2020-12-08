@@ -394,13 +394,14 @@ public final class LocalMediaLoader {
      * @return
      */
     private String getDurationCondition(long exMaxLimit, long exMinLimit) {
-        long maxS = config.videoMaxSecond == 0 ? Long.MAX_VALUE : config.videoMaxSecond;
+        long maxS = config.videoMaxSecond;
+        maxS = ( maxS == 0 || (maxS != 0 && config.showOutLengthVideos)) ? Long.MAX_VALUE : config.videoMaxSecond;
         if (exMaxLimit != 0) {
             maxS = Math.min(maxS, exMaxLimit);
         }
         return String.format(Locale.CHINA, "%d <%s " + MediaStore.MediaColumns.DURATION + " and " + MediaStore.MediaColumns.DURATION + " <= %d",
-                Math.max(exMinLimit, config.videoMinSecond),
-                Math.max(exMinLimit, config.videoMinSecond) == 0 ? "" : "=",
+                config.showOutLengthVideos? 0:Math.max(exMinLimit, config.videoMinSecond),
+                Math.max(exMinLimit, config.videoMinSecond) == 0 || (Math.max(exMinLimit, config.videoMinSecond) != 0 && config.showOutLengthVideos) ? "" : "=",
                 maxS);
     }
 

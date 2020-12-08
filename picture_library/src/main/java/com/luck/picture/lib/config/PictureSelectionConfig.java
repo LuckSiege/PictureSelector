@@ -156,6 +156,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isAndroidQChangeWH;
     public boolean isAndroidQChangeVideoWH;
     public boolean isQuickCapture;
+    public boolean showOutLengthVideos;
     /**
      * 内测专用###########
      */
@@ -265,6 +266,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isAndroidQChangeWH = true;
         isAndroidQChangeVideoWH = false;
         isQuickCapture = true;
+        showOutLengthVideos = false;
     }
 
     public static PictureSelectionConfig getInstance() {
@@ -404,6 +406,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte(this.isFallbackVersion ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFallbackVersion2 ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFallbackVersion3 ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.showOutLengthVideos ? (byte) 1 : (byte) 0);
     }
 
     protected PictureSelectionConfig(Parcel in) {
@@ -508,6 +511,7 @@ public final class PictureSelectionConfig implements Parcelable {
         this.isFallbackVersion = in.readByte() != 0;
         this.isFallbackVersion2 = in.readByte() != 0;
         this.isFallbackVersion3 = in.readByte() != 0;
+        this.showOutLengthVideos = in.readByte() != 0;
     }
 
     public static final Creator<PictureSelectionConfig> CREATOR = new Creator<PictureSelectionConfig>() {

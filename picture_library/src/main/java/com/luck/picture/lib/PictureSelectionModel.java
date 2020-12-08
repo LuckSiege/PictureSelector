@@ -1465,4 +1465,14 @@ public class PictureSelectionModel {
             throw new NullPointerException("This PictureSelector is Null");
         }
     }
+
+    /**
+     * @param show whether to show too long and too short videos
+     * @return
+     */
+    public PictureSelectionModel isShowOutLengthVideos(boolean show) {
+        selectionConfig.showOutLengthVideos = show;
+        return this;
+    }
+
 }
