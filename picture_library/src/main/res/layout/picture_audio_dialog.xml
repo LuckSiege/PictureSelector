@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:padding="10dp"
-        android:text="播放"
+        android:text="@string/picture_play_audio"
         android:textColor="@color/picture_color_9b"
         android:textSize="14sp" />
 
@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="00:00"
+            android:layout_marginLeft="5dp"
             android:textColor="@color/picture_color_9b"
             android:textSize="12sp" />
 
@@ -41,7 +42,6 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_toRightOf="@+id/tv_musicTime"
-            android:layout_weight="1"
             android:max="100"
             android:maxHeight="4.0dp"
             android:minHeight="4.0dp"
@@ -57,6 +57,7 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/musicSeekBar"
             android:text="00:00"
+            android:layout_marginRight="5dp"
             android:textColor="@color/picture_color_9b"
             android:textSize="12sp" />
 

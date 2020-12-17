@@ -49,7 +49,7 @@
     <string name="picture_send_num">完成(%1$d/%2$d)</string>
     <string name="picture_preview_num">预览(%1$d)</string>
     <string name="picture_select">选择</string>
-    <string name="picture_data_exception">获取相册数据异常...</string>
+    <string name="picture_data_exception">获取相册数据异常…</string>
     <string name="picture_recording_time_is_short">录制时间过短</string>
     <string name="picture_photo_camera">单击拍照，长按摄像</string>
     <string name="picture_photo_pictures">单击拍照</string>

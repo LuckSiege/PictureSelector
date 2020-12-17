@@ -36,7 +36,6 @@ import java.util.List;
 public class FolderPopWindow extends PopupWindow {
     private Context context;
     private View window;
-    private View rootView;
     private RecyclerView mRecyclerView;
     private PictureAlbumDirectoryAdapter adapter;
     private boolean isDismiss = false;
@@ -47,9 +46,9 @@ public class FolderPopWindow extends PopupWindow {
     private int maxHeight;
     private View rootViewBg;
 
-    public FolderPopWindow(Context context, PictureSelectionConfig config) {
+    public FolderPopWindow(Context context) {
         this.context = context;
-        this.config = config;
+        this.config = PictureSelectionConfig.getInstance();
         this.chooseMode = config.chooseMode;
         this.window = LayoutInflater.from(context).inflate(R.layout.picture_window_folder, null);
         this.setContentView(window);
@@ -59,12 +58,19 @@ public class FolderPopWindow extends PopupWindow {
         this.setFocusable(true);
         this.setOutsideTouchable(true);
         this.update();
-        if (config.style != null) {
-            if (config.style.pictureTitleUpResId != 0) {
-                this.drawableUp = ContextCompat.getDrawable(context, config.style.pictureTitleUpResId);
+        if (PictureSelectionConfig.uiStyle != null) {
+            if (PictureSelectionConfig.uiStyle.picture_top_titleArrowUpDrawable != 0) {
+                this.drawableUp = ContextCompat.getDrawable(context, PictureSelectionConfig.uiStyle.picture_top_titleArrowUpDrawable);
             }
-            if (config.style.pictureTitleDownResId != 0) {
-                this.drawableDown = ContextCompat.getDrawable(context, config.style.pictureTitleDownResId);
+            if (PictureSelectionConfig.uiStyle.picture_top_titleArrowDownDrawable != 0) {
+                this.drawableDown = ContextCompat.getDrawable(context, PictureSelectionConfig.uiStyle.picture_top_titleArrowDownDrawable);
+            }
+        } else if (PictureSelectionConfig.style != null) {
+            if (PictureSelectionConfig.style.pictureTitleUpResId != 0) {
+                this.drawableUp = ContextCompat.getDrawable(context, PictureSelectionConfig.style.pictureTitleUpResId);
+            }
+            if (PictureSelectionConfig.style.pictureTitleDownResId != 0) {
+                this.drawableDown = ContextCompat.getDrawable(context, PictureSelectionConfig.style.pictureTitleDownResId);
             }
         } else {
             if (config.isWeChatStyle) {
@@ -75,13 +81,13 @@ public class FolderPopWindow extends PopupWindow {
                     this.drawableUp = ContextCompat.getDrawable(context, config.upResId);
                 } else {
                     // 兼容老的Theme方式
-                    this.drawableUp = AttrsUtils.getTypeValueDrawable(context, R.attr.picture_arrow_up_icon);
+                    this.drawableUp = AttrsUtils.getTypeValueDrawable(context, R.attr.picture_arrow_up_icon, R.drawable.picture_icon_arrow_up);
                 }
                 if (config.downResId != 0) {
                     this.drawableDown = ContextCompat.getDrawable(context, config.downResId);
                 } else {
                     // 兼容老的Theme方式 picture.arrow_down.icon
-                    this.drawableDown = AttrsUtils.getTypeValueDrawable(context, R.attr.picture_arrow_down_icon);
+                    this.drawableDown = AttrsUtils.getTypeValueDrawable(context, R.attr.picture_arrow_down_icon, R.drawable.picture_icon_arrow_down);
                 }
             }
         }
@@ -95,7 +101,7 @@ public class FolderPopWindow extends PopupWindow {
         mRecyclerView = window.findViewById(R.id.folder_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         mRecyclerView.setAdapter(adapter);
-        rootView = window.findViewById(R.id.rootView);
+        View rootView = window.findViewById(R.id.rootView);
         rootViewBg.setOnClickListener(v -> dismiss());
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             rootView.setOnClickListener(v -> dismiss());

@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.AnimRes;
 
+import com.luck.picture.lib.R;
+
 /**
  * @author：luck
  * @date：2019-11-25 18:17
@@ -57,6 +59,10 @@ public class PictureWindowAnimationStyle implements Parcelable {
         super();
         this.activityEnterAnimation = activityEnterAnimation;
         this.activityExitAnimation = activityExitAnimation;
+        this.activityPreviewEnterAnimation = activityEnterAnimation;
+        this.activityPreviewExitAnimation = activityExitAnimation;
+        this.activityCropEnterAnimation = activityEnterAnimation;
+        this.activityCropExitAnimation = activityExitAnimation;
     }
 
     public PictureWindowAnimationStyle(@AnimRes int activityEnterAnimation,
@@ -68,6 +74,26 @@ public class PictureWindowAnimationStyle implements Parcelable {
         this.activityExitAnimation = activityExitAnimation;
         this.activityPreviewEnterAnimation = activityPreviewEnterAnimation;
         this.activityPreviewExitAnimation = activityPreviewExitAnimation;
+    }
+
+    /**
+     * 默认WindowAnimationStyle
+     *
+     * @return this
+     */
+    public static PictureWindowAnimationStyle ofDefaultWindowAnimationStyle() {
+        return new PictureWindowAnimationStyle(R.anim.picture_anim_enter, R.anim.picture_anim_exit);
+    }
+
+    /**
+     * 自定义WindowAnimationStyle
+     *
+     * @param activityEnterAnimation
+     * @param activityExitAnimation
+     * @return this
+     */
+    public static PictureWindowAnimationStyle ofCustomWindowAnimationStyle(int activityEnterAnimation, int activityExitAnimation) {
+        return new PictureWindowAnimationStyle(activityEnterAnimation, activityExitAnimation);
     }
 
     /**
@@ -87,6 +113,7 @@ public class PictureWindowAnimationStyle implements Parcelable {
         this.activityCropExitAnimation = exitAnimation;
 
     }
+
 
     @Override
     public int describeContents() {
@@ -112,7 +139,7 @@ public class PictureWindowAnimationStyle implements Parcelable {
         this.activityCropExitAnimation = in.readInt();
     }
 
-    public static final Creator<PictureWindowAnimationStyle> CREATOR = new Creator<PictureWindowAnimationStyle>() {
+    public static final Parcelable.Creator<PictureWindowAnimationStyle> CREATOR = new Parcelable.Creator<PictureWindowAnimationStyle>() {
         @Override
         public PictureWindowAnimationStyle createFromParcel(Parcel source) {
             return new PictureWindowAnimationStyle(source);

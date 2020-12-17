@@ -19,7 +19,7 @@
         android:layout_height="12dp"
         android:layout_alignRight="@id/first_image"
         android:layout_margin="4dp"
-        android:background="?attr/picture.folder_checked_dot"
+        android:background="@drawable/picture_orange_oval"
         android:visibility="invisible" />
 
     <TextView

@@ -52,4 +52,9 @@ public class LanguageConfig {
      * 俄语
      */
     public static final int RUSSIAN = 9;
+
+     * 西班牙语
+     */
+    public static final int SPANISH = 10;
+
 }

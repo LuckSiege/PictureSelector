@@ -15,7 +15,9 @@ public class PictureLoadingDialog extends Dialog {
         setCancelable(true);
         setCanceledOnTouchOutside(false);
         Window window = getWindow();
-        window.setWindowAnimations(R.style.PictureThemeDialogWindowStyle);
+        if (window != null) {
+            window.setWindowAnimations(R.style.PictureThemeDialogWindowStyle);
+        }
     }
 
 

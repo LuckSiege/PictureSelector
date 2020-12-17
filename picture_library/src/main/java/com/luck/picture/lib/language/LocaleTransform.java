@@ -37,6 +37,9 @@ public class LocaleTransform {
             case LanguageConfig.RUSSIAN:
                 //俄语
                 return new Locale("ru");
+            case LanguageConfig.SPANISH:
+                // 西班牙语
+                return new Locale("es", "ES");
             default:
                 // 简体中文
                 return Locale.CHINESE;

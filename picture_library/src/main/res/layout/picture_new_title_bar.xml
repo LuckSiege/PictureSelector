@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/titleBar"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:background="@color/picture_color_grey">
+
+    <TextView
+        android:id="@+id/picture_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="15dp"
+        android:gravity="center"
+        android:text="@string/picture_cancel"
+        android:textColor="@color/picture_color_white"
+        android:textSize="14sp" />
+
+
+    <ImageView
+        android:id="@+id/pictureLeftBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:src="@drawable/picture_icon_back" />
+
+    <RelativeLayout
+        android:id="@+id/rlAlbum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/picture_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxEms="8"
+            android:maxLines="1"
+            android:text="@string/picture_camera_roll"
+            android:textColor="@color/picture_color_white"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/ivArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/picture_title"
+            android:scaleType="centerInside"
+            android:src="@drawable/picture_icon_arrow_down" />
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/viewClickMask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignStart="@id/rlAlbum"
+        android:layout_alignEnd="@id/rlAlbum" />
+
+</RelativeLayout>
+

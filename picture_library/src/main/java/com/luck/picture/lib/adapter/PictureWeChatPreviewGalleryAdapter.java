@@ -84,7 +84,7 @@ public class PictureWeChatPreviewGalleryAdapter
         return list != null && list.size() > 0 ? list.get(position) : null;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivImage;
         ImageView ivPlay;
         View viewBorder;
@@ -94,6 +94,9 @@ public class PictureWeChatPreviewGalleryAdapter
             ivImage = itemView.findViewById(R.id.ivImage);
             ivPlay = itemView.findViewById(R.id.ivPlay);
             viewBorder = itemView.findViewById(R.id.viewBorder);
+            if (PictureSelectionConfig.uiStyle != null) {
+                viewBorder.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_bottom_gallery_frameBackground);
+            }
         }
     }
 

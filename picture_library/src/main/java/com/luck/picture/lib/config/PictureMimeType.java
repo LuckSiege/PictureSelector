@@ -233,8 +233,8 @@ public final class PictureMimeType {
             if (!TextUtils.isEmpty(path)) {
                 File file = new File(path);
                 String fileName = file.getName();
-                int last = fileName.lastIndexOf(".") + 1;
-                String temp = fileName.substring(last);
+                int beginIndex = fileName.lastIndexOf(".");
+                String temp = beginIndex == -1 ? "jpeg" : fileName.substring(beginIndex + 1);
                 return "image/" + temp;
             }
         } catch (Exception e) {
@@ -315,7 +315,7 @@ public final class PictureMimeType {
         }
     }
 
-    public final static String JPEG = ".jpg";
+    public final static String JPEG = ".jpeg";
 
     public final static String PNG = ".png";
 
