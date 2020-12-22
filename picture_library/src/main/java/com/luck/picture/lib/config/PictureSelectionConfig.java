@@ -77,7 +77,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean zoomAnim;
     public boolean isCompress;
     public boolean isOriginalControl;
-    public boolean isCamera;
+    public boolean isCamera = true;
     public boolean isGif;
     public boolean isWebp;
     public boolean isBmp;
