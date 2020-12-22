@@ -21,7 +21,7 @@
     <ImageView
         android:id="@+id/pictureLeftBack"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
