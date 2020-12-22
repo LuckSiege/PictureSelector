@@ -39,12 +39,8 @@ public final class PictureThreadUtils {
     private static final Map<Task, ExecutorService> TASK_POOL_MAP = new ConcurrentHashMap<>();
 
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
-    private static final Timer TIMER = new Timer();
 
-    private static final byte TYPE_SINGLE = -1;
-    private static final byte TYPE_CACHED = -2;
     private static final byte TYPE_IO = -4;
-    private static final byte TYPE_CPU = -8;
 
     private static Executor sDeliver;
 
@@ -65,7 +61,7 @@ public final class PictureThreadUtils {
      * @return a IO thread pool
      */
     public static ExecutorService getIoPool() {
-        return getPoolByTypeAndPriority(TYPE_IO);
+        return getPoolByTypeAndPriority();
     }
 
     /**
@@ -76,7 +72,7 @@ public final class PictureThreadUtils {
      * @return a IO thread pool
      */
     public static ExecutorService getIoPool(@IntRange(from = 1, to = 10) final int priority) {
-        return getPoolByTypeAndPriority(TYPE_IO, priority);
+        return getPoolByTypeAndPriority(priority);
     }
 
 
@@ -87,7 +83,7 @@ public final class PictureThreadUtils {
      * @param <T>  The type of the task's result.
      */
     public static <T> void executeByIo(final Task<T> task) {
-        execute(getPoolByTypeAndPriority(TYPE_IO), task);
+        execute(getPoolByTypeAndPriority(), task);
     }
 
     /**
@@ -153,11 +149,11 @@ public final class PictureThreadUtils {
     }
 
     private static <T> void execute(final ExecutorService pool, final Task<T> task) {
-        execute(pool, task, 0, 0, null);
+        execute(pool, task, null);
     }
 
     private static <T> void execute(final ExecutorService pool, final Task<T> task,
-                                    long delay, final long period, final TimeUnit unit) {
+                                    final TimeUnit unit) {
         synchronized (TASK_POOL_MAP) {
             if (TASK_POOL_MAP.get(task) != null) {
                 Log.e("ThreadUtils", "Task can only be executed once.");
@@ -165,47 +161,26 @@ public final class PictureThreadUtils {
             }
             TASK_POOL_MAP.put(task, pool);
         }
-        if (period == 0) {
-            if (delay == 0) {
-                pool.execute(task);
-            } else {
-                TimerTask timerTask = new TimerTask() {
-                    @Override
-                    public void run() {
-                        pool.execute(task);
-                    }
-                };
-                TIMER.schedule(timerTask, unit.toMillis(delay));
-            }
-        } else {
-            task.setSchedule(true);
-            TimerTask timerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    pool.execute(task);
-                }
-            };
-            TIMER.scheduleAtFixedRate(timerTask, unit.toMillis(delay), unit.toMillis(period));
-        }
+        pool.execute(task);
     }
 
-    private static ExecutorService getPoolByTypeAndPriority(final int type) {
-        return getPoolByTypeAndPriority(type, Thread.NORM_PRIORITY);
+    private static ExecutorService getPoolByTypeAndPriority() {
+        return getPoolByTypeAndPriority(Thread.NORM_PRIORITY);
     }
 
-    private static ExecutorService getPoolByTypeAndPriority(final int type, final int priority) {
+    private static ExecutorService getPoolByTypeAndPriority(final int priority) {
         synchronized (TYPE_PRIORITY_POOLS) {
             ExecutorService pool;
-            Map<Integer, ExecutorService> priorityPools = TYPE_PRIORITY_POOLS.get(type);
+            Map<Integer, ExecutorService> priorityPools = TYPE_PRIORITY_POOLS.get((int) PictureThreadUtils.TYPE_IO);
             if (priorityPools == null) {
                 priorityPools = new ConcurrentHashMap<>();
-                pool = ThreadPoolExecutor4Util.createPool(type, priority);
+                pool = ThreadPoolExecutor4Util.createPool(priority);
                 priorityPools.put(priority, pool);
-                TYPE_PRIORITY_POOLS.put(type, priorityPools);
+                TYPE_PRIORITY_POOLS.put((int) PictureThreadUtils.TYPE_IO, priorityPools);
             } else {
                 pool = priorityPools.get(priority);
                 if (pool == null) {
-                    pool = ThreadPoolExecutor4Util.createPool(type, priority);
+                    pool = ThreadPoolExecutor4Util.createPool(priority);
                     priorityPools.put(priority, pool);
                 }
             }
@@ -215,39 +190,12 @@ public final class PictureThreadUtils {
 
     static final class ThreadPoolExecutor4Util extends ThreadPoolExecutor {
 
-        private static ExecutorService createPool(final int type, final int priority) {
-            switch (type) {
-                case TYPE_SINGLE:
-                    return new ThreadPoolExecutor4Util(1, 1,
-                            0L, TimeUnit.MILLISECONDS,
-                            new LinkedBlockingQueue4Util(),
-                            new UtilsThreadFactory("single", priority)
-                    );
-                case TYPE_CACHED:
-                    return new ThreadPoolExecutor4Util(0, 128,
-                            60L, TimeUnit.SECONDS,
-                            new LinkedBlockingQueue4Util(true),
-                            new UtilsThreadFactory("cached", priority)
-                    );
-                case TYPE_IO:
-                    return new ThreadPoolExecutor4Util(2 * CPU_COUNT + 1, 2 * CPU_COUNT + 1,
-                            30, TimeUnit.SECONDS,
-                            new LinkedBlockingQueue4Util(),
-                            new UtilsThreadFactory("io", priority)
-                    );
-                case TYPE_CPU:
-                    return new ThreadPoolExecutor4Util(CPU_COUNT + 1, 2 * CPU_COUNT + 1,
-                            30, TimeUnit.SECONDS,
-                            new LinkedBlockingQueue4Util(true),
-                            new UtilsThreadFactory("cpu", priority)
-                    );
-                default:
-                    return new ThreadPoolExecutor4Util(type, type,
-                            0L, TimeUnit.MILLISECONDS,
-                            new LinkedBlockingQueue4Util(),
-                            new UtilsThreadFactory("fixed(" + type + ")", priority)
-                    );
-            }
+        private static ExecutorService createPool(final int priority) {
+            return new ThreadPoolExecutor4Util(2 * CPU_COUNT + 1, 2 * CPU_COUNT + 1,
+                        30, TimeUnit.SECONDS,
+                        new LinkedBlockingQueue4Util(),
+                        new UtilsThreadFactory("io", priority)
+                );
         }
 
         private final AtomicInteger mSubmittedCount = new AtomicInteger();

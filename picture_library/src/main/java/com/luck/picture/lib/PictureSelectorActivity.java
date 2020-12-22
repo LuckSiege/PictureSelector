@@ -378,13 +378,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (PictureSelectionConfig.uiStyle.picture_container_backgroundColor != 0) {
                 container.setBackgroundColor(PictureSelectionConfig.uiStyle.picture_container_backgroundColor);
             }
-            if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText)) {
+            if (PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText != 0) {
                 mTvPictureRight.setText(PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText);
             }
-            if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText)) {
+            if (PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText != 0) {
                 mTvPictureOk.setText(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText);
             }
-            if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_previewNormalText)) {
+            if (PictureSelectionConfig.uiStyle.picture_bottom_previewNormalText != 0) {
                 mTvPicturePreview.setText(PictureSelectionConfig.uiStyle.picture_bottom_previewNormalText);
             }
 
@@ -417,7 +417,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (PictureSelectionConfig.uiStyle.picture_bottom_originalPictureTextSize != 0) {
                     mCbOriginal.setTextSize(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureTextSize);
                 }
-                if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureText)) {
+                if (PictureSelectionConfig.uiStyle.picture_bottom_originalPictureText != 0) {
                     mCbOriginal.setText(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureText);
                 }
             } else {
@@ -605,11 +605,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (startCount <= 0) {
                 if (PictureSelectionConfig.uiStyle != null) {
                     if (PictureSelectionConfig.uiStyle.isCompleteReplaceNum) {
-                        mTvPictureOk.setText(!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText)
-                                ? String.format(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText, startCount, 1) : getString(R.string.picture_please_select));
+                        mTvPictureOk.setText(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText != 0
+                                ? String.format(getString(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText), startCount, 1) : getString(R.string.picture_please_select));
                     } else {
-                        mTvPictureOk.setText(!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText)
-                                ? PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText : getString(R.string.picture_please_select));
+                        mTvPictureOk.setText(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText != 0
+                                ? getString(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText) : getString(R.string.picture_please_select));
                     }
                 } else if (PictureSelectionConfig.style != null) {
                     if (PictureSelectionConfig.style.isCompleteReplaceNum && !TextUtils.isEmpty(PictureSelectionConfig.style.pictureUnCompleteText)) {
@@ -622,11 +622,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             } else {
                 if (PictureSelectionConfig.uiStyle != null) {
                     if (PictureSelectionConfig.uiStyle.isCompleteReplaceNum) {
-                        mTvPictureOk.setText(!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText)
-                                ? String.format(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText, startCount, 1) : getString(R.string.picture_done));
+                        mTvPictureOk.setText(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText != 0
+                                ? String.format(getString(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText), startCount, 1) : getString(R.string.picture_done));
                     } else {
-                        mTvPictureOk.setText(!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText)
-                                ? PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText : getString(R.string.picture_done));
+                        mTvPictureOk.setText(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText != 0
+                                ? getString(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText) : getString(R.string.picture_done));
                     }
                 } else if (PictureSelectionConfig.style != null) {
                     if (PictureSelectionConfig.style.isCompleteReplaceNum && !TextUtils.isEmpty(PictureSelectionConfig.style.pictureCompleteText)) {
@@ -642,12 +642,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (startCount <= 0) {
                 if (PictureSelectionConfig.uiStyle != null) {
                     if (PictureSelectionConfig.uiStyle.isCompleteReplaceNum) {
-                        mTvPictureOk.setText(!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText)
-                                ? String.format(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText, startCount, config.maxSelectNum) :
+                        mTvPictureOk.setText(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText != 0
+                                ? String.format(getString(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText), startCount, config.maxSelectNum) :
                                 getString(R.string.picture_done_front_num, startCount, config.maxSelectNum));
                     } else {
-                        mTvPictureOk.setText(!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText)
-                                ? PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText :
+                        mTvPictureOk.setText(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText != 0
+                                ? getString(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText) :
                                 getString(R.string.picture_done_front_num, startCount, config.maxSelectNum));
                     }
                 } else if (PictureSelectionConfig.style != null) {
@@ -665,14 +665,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (PictureSelectionConfig.uiStyle != null) {
 
                     if (PictureSelectionConfig.uiStyle.isCompleteReplaceNum) {
-                        if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText)) {
-                            mTvPictureOk.setText(String.format(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText, startCount, config.maxSelectNum));
+                        if (PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText != 0) {
+                            mTvPictureOk.setText(String.format(getString(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText), startCount, config.maxSelectNum));
                         } else {
                             mTvPictureOk.setText(getString(R.string.picture_done_front_num, startCount, config.maxSelectNum));
                         }
                     } else {
-                        if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText)) {
-                            mTvPictureOk.setText(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText);
+                        if (PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText != 0) {
+                            mTvPictureOk.setText(getString(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText));
                         } else {
                             mTvPictureOk.setText(getString(R.string.picture_done_front_num, startCount, config.maxSelectNum));
                         }
@@ -1603,9 +1603,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             mTvPicturePreview.setEnabled(true);
             mTvPicturePreview.setSelected(true);
             if (PictureSelectionConfig.uiStyle != null) {
-                if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_previewNormalText)) {
+                if (PictureSelectionConfig.uiStyle.picture_bottom_previewNormalText !=0) {
                     if (PictureSelectionConfig.uiStyle.isCompleteReplaceNum) {
-                        mTvPicturePreview.setText(String.format(PictureSelectionConfig.uiStyle.picture_bottom_previewNormalText, selectData.size()));
+                        mTvPicturePreview.setText(String.format(getString(PictureSelectionConfig.uiStyle.picture_bottom_previewNormalText), selectData.size()));
                     } else {
                         mTvPicturePreview.setText(PictureSelectionConfig.uiStyle.picture_bottom_previewNormalText);
                     }
@@ -1635,8 +1635,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mTvPictureImgNum.setVisibility(View.VISIBLE);
                 mTvPictureImgNum.setText(String.valueOf(selectData.size()));
                 if (PictureSelectionConfig.uiStyle != null) {
-                    if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText)) {
-                        mTvPictureOk.setText(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText);
+                    if (PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText !=0) {
+                        mTvPictureOk.setText(getString(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText));
                     }
                 } else if (PictureSelectionConfig.style != null) {
                     if (!TextUtils.isEmpty(PictureSelectionConfig.style.pictureCompleteText)) {
@@ -1653,8 +1653,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             mTvPicturePreview.setEnabled(false);
             mTvPicturePreview.setSelected(false);
             if (PictureSelectionConfig.uiStyle != null) {
-                if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_previewDefaultText)) {
-                    mTvPicturePreview.setText(PictureSelectionConfig.uiStyle.picture_bottom_previewDefaultText);
+                if (PictureSelectionConfig.uiStyle.picture_bottom_previewDefaultText !=0) {
+                    mTvPicturePreview.setText(getString(PictureSelectionConfig.uiStyle.picture_bottom_previewDefaultText));
                 } else {
                     mTvPicturePreview.setText(getString(R.string.picture_preview));
                 }
@@ -1677,8 +1677,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             } else {
                 mTvPictureImgNum.setVisibility(View.INVISIBLE);
                 if (PictureSelectionConfig.uiStyle != null) {
-                    if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText)) {
-                        mTvPictureOk.setText(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText);
+                    if (PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText !=0) {
+                        mTvPictureOk.setText(getString(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText));
                     }
                 } else if (PictureSelectionConfig.style != null) {
                     if (!TextUtils.isEmpty(PictureSelectionConfig.style.pictureUnCompleteText)) {

@@ -292,8 +292,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             if (startCount <= 0) {
                 // 未选择任何图片
                 if (PictureSelectionConfig.uiStyle != null) {
-                    mTvPictureOk.setText(!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText)
-                            ? PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText : getString(R.string.picture_please_select));
+                    mTvPictureOk.setText(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText != 0
+                            ? getString(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText) : getString(R.string.picture_please_select));
                 } else if (PictureSelectionConfig.style != null) {
                     mTvPictureOk.setText(!TextUtils.isEmpty(PictureSelectionConfig.style.pictureUnCompleteText)
                             ? PictureSelectionConfig.style.pictureUnCompleteText : getString(R.string.picture_please_select));
@@ -301,11 +301,11 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             } else {
                 // 已选择
                 if (PictureSelectionConfig.uiStyle != null) {
-                    if (PictureSelectionConfig.uiStyle.isCompleteReplaceNum && !TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText)) {
-                        mTvPictureOk.setText(String.format(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText, startCount, 1));
+                    if (PictureSelectionConfig.uiStyle.isCompleteReplaceNum && PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText != 0) {
+                        mTvPictureOk.setText(String.format(getString(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText), startCount, 1));
                     } else {
-                        mTvPictureOk.setText(!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText)
-                                ? PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText : getString(R.string.picture_done));
+                        mTvPictureOk.setText(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText != 0
+                                ? getString(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText) : getString(R.string.picture_done));
                     }
                 } else if (PictureSelectionConfig.style != null) {
                     if (PictureSelectionConfig.style.isCompleteReplaceNum && !TextUtils.isEmpty(PictureSelectionConfig.style.pictureCompleteText)) {
@@ -320,8 +320,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             if (startCount <= 0) {
                 // 未选择任何图片
                 if (PictureSelectionConfig.uiStyle != null) {
-                    mTvPictureOk.setText(PictureSelectionConfig.uiStyle.isCompleteReplaceNum && !TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText)
-                            ? String.format(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText, startCount, config.maxSelectNum) : getString(R.string.picture_done_front_num,
+                    mTvPictureOk.setText(PictureSelectionConfig.uiStyle.isCompleteReplaceNum && PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText != 0
+                            ? String.format(getString(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText), startCount, config.maxSelectNum) : getString(R.string.picture_done_front_num,
                             startCount, config.maxSelectNum));
                 } else if (PictureSelectionConfig.style != null) {
                     mTvPictureOk.setText(PictureSelectionConfig.style.isCompleteReplaceNum && !TextUtils.isEmpty(PictureSelectionConfig.style.pictureUnCompleteText)
@@ -331,8 +331,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             } else {
                 // 已选择
                 if (PictureSelectionConfig.uiStyle != null) {
-                    if (PictureSelectionConfig.uiStyle.isCompleteReplaceNum && !TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText)) {
-                        mTvPictureOk.setText(String.format(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText, startCount, config.maxSelectNum));
+                    if (PictureSelectionConfig.uiStyle.isCompleteReplaceNum && PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText != 0) {
+                        mTvPictureOk.setText(String.format(getString(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText), startCount, config.maxSelectNum));
                     } else {
                         mTvPictureOk.setText(getString(R.string.picture_done_front_num, startCount, config.maxSelectNum));
                     }
@@ -386,7 +386,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     mTvPictureOk.setTextColor(colorStateList);
                 }
             }
-            if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText)) {
+            if (PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText != 0) {
                 mTvPictureOk.setText(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText);
             }
             if (PictureSelectionConfig.uiStyle.picture_top_titleBarHeight > 0) {
@@ -680,7 +680,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 tvMediaNum.setVisibility(View.VISIBLE);
                 tvMediaNum.setText(String.valueOf(selectData.size()));
                 if (PictureSelectionConfig.uiStyle != null) {
-                    if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText)) {
+                    if (PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText != 0) {
                         mTvPictureOk.setText(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText);
                     }
                 } else if (PictureSelectionConfig.style != null) {
@@ -706,7 +706,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             } else {
                 tvMediaNum.setVisibility(View.INVISIBLE);
                 if (PictureSelectionConfig.uiStyle != null) {
-                    if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText)) {
+                    if (PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText != 0) {
                         mTvPictureOk.setText(PictureSelectionConfig.uiStyle.picture_bottom_completeDefaultText);
                     }
                 } else if (PictureSelectionConfig.style != null) {

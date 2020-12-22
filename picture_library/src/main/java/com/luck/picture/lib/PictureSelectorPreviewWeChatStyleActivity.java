@@ -1,12 +1,10 @@
 package com.luck.picture.lib;
 
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
@@ -19,7 +17,6 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.decoration.WrapContentLinearLayoutManager;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 
 
@@ -123,8 +120,8 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
     public void initPictureSelectorStyle() {
         super.initPictureSelectorStyle();
         if (PictureSelectionConfig.uiStyle != null) {
-            if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText)) {
-                mTvPictureRight.setText(PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText);
+            if (PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText !=0) {
+                mTvPictureRight.setText(getString(PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText));
             }
             if (PictureSelectionConfig.uiStyle.picture_top_titleRightTextNormalBackground != 0) {
                 mTvPictureRight.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_top_titleRightTextNormalBackground);
@@ -134,8 +131,8 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
             if (PictureSelectionConfig.uiStyle.picture_top_titleRightTextSize != 0) {
                 mTvPictureRight.setTextSize(PictureSelectionConfig.uiStyle.picture_top_titleRightTextSize);
             }
-            if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_selectedText)) {
-                mTvSelected.setText(PictureSelectionConfig.uiStyle.picture_bottom_selectedText);
+            if (PictureSelectionConfig.uiStyle.picture_bottom_selectedText !=0) {
+                mTvSelected.setText(getString(PictureSelectionConfig.uiStyle.picture_bottom_selectedText));
             }
             if (PictureSelectionConfig.uiStyle.picture_bottom_selectedTextSize != 0) {
                 mTvSelected.setTextSize(PictureSelectionConfig.uiStyle.picture_bottom_selectedTextSize);
@@ -173,8 +170,8 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
             }
 
             if (config.isOriginalControl) {
-                if (!TextUtils.isEmpty(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureText)) {
-                    mCbOriginal.setText(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureText);
+                if (PictureSelectionConfig.uiStyle.picture_bottom_originalPictureText !=0) {
+                    mCbOriginal.setText(getString(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureText));
                 } else {
                     mCbOriginal.setText(getString(R.string.picture_original_image));
                 }

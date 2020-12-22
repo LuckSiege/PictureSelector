@@ -95,12 +95,12 @@ public class PictureSelectorUIStyle {
     /**
      * 标题栏右侧按钮默认文案
      */
-    public String picture_top_titleRightDefaultText;
+    public int picture_top_titleRightDefaultText;
 
     /**
      * 标题栏右侧按钮正常文案(可点击)
      */
-    public String picture_top_titleRightNormalText;
+    public int picture_top_titleRightNormalText;
 
     /**
      * 标题栏右侧文字大小
@@ -158,12 +158,12 @@ public class PictureSelectorUIStyle {
     /**
      * 底部预览默认文字
      */
-    public String picture_bottom_previewDefaultText;
+    public int picture_bottom_previewDefaultText;
 
     /**
      * 底部预览文字(可点击)
      */
-    public String picture_bottom_previewNormalText;
+    public int picture_bottom_previewNormalText;
 
     /**
      * 底部预览文字大小
@@ -182,7 +182,7 @@ public class PictureSelectorUIStyle {
     /**
      * 原图文案
      */
-    public String picture_bottom_originalPictureText;
+    public int picture_bottom_originalPictureText;
 
     /**
      * 原图文字大小
@@ -196,12 +196,12 @@ public class PictureSelectorUIStyle {
     /**
      * 完成默认文案
      */
-    public String picture_bottom_completeDefaultText;
+    public int picture_bottom_completeDefaultText;
 
     /**
      * 完成正常文案(可点击)
      */
-    public String picture_bottom_completeNormalText;
+    public int picture_bottom_completeNormalText;
 
     /**
      * 完成文字大小
@@ -229,7 +229,7 @@ public class PictureSelectorUIStyle {
     /**
      * 选择按钮文案(新样式支持)
      */
-    public String picture_bottom_selectedText;
+    public int picture_bottom_selectedText;
 
     /**
      * 选择按钮文案字体大小(新样式支持)
@@ -292,7 +292,7 @@ public class PictureSelectorUIStyle {
     /**
      * adapter 拍照文案
      */
-    public String picture_adapter_item_camera_text;
+    public int picture_adapter_item_camera_text;
     /**
      * adapter 拍照文字大小
      */
@@ -322,7 +322,7 @@ public class PictureSelectorUIStyle {
     /**
      * adapter item标签文案
      */
-    public String picture_adapter_item_tag_text;
+    public int picture_adapter_item_tag_text;
 
     /**
      * 是否显示tag
@@ -398,22 +398,21 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_bottom_originalPictureTextSize = 14;
         uiStyle.picture_bottom_originalPictureCheckStyle = R.drawable.picture_original_wechat_checkbox;
         uiStyle.picture_bottom_originalPictureTextColor = Color.parseColor("#FFFFFF");
-
+        uiStyle.picture_bottom_previewNormalText = R.string.picture_preview_num;
+        uiStyle.picture_bottom_originalPictureText = R.string.picture_original_image;
+        uiStyle.picture_bottom_completeDefaultText = R.string.picture_please_select;
+        uiStyle.picture_bottom_completeNormalText = R.string.picture_completed;
+        uiStyle.picture_adapter_item_camera_text = R.string.picture_take_picture;
+        uiStyle.picture_top_titleRightDefaultText = R.string.picture_cancel;
+        uiStyle.picture_top_titleRightNormalText = R.string.picture_cancel;
+        uiStyle.picture_bottom_previewDefaultText = R.string.picture_preview;
         IApp app = PictureAppMaster.getInstance().getApp();
         Context appContext = app.getAppContext();
         if (appContext != null) {
             uiStyle.picture_top_titleBarHeight = ScreenUtils.dip2px(appContext, 48);
-            uiStyle.picture_top_titleRightDefaultText = appContext.getString(R.string.picture_cancel);
-            uiStyle.picture_top_titleRightNormalText = appContext.getString(R.string.picture_cancel);
             uiStyle.picture_bottom_barHeight = ScreenUtils.dip2px(appContext, 45);
-            uiStyle.picture_bottom_previewDefaultText = appContext.getString(R.string.picture_preview);
             // 如果文本内容设置(%1$d/%2$d)，请开启true
             uiStyle.isCompleteReplaceNum = true;
-            uiStyle.picture_bottom_previewNormalText = appContext.getString(R.string.picture_preview_num);
-            uiStyle.picture_bottom_originalPictureText = appContext.getString(R.string.picture_original_image);
-            uiStyle.picture_bottom_completeDefaultText = appContext.getString(R.string.picture_please_select);
-            uiStyle.picture_bottom_completeNormalText = appContext.getString(R.string.picture_completed);
-            uiStyle.picture_adapter_item_camera_text = appContext.getString(R.string.picture_take_picture);
         }
         return uiStyle;
     }
@@ -472,22 +471,22 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_bottom_originalPictureTextSize = 14;
         uiStyle.picture_bottom_originalPictureCheckStyle = R.drawable.picture_original_checkbox;
         uiStyle.picture_bottom_originalPictureTextColor = Color.parseColor("#53575e");
-
+        uiStyle.picture_bottom_previewNormalText = R.string.picture_preview_num;
+        uiStyle.picture_bottom_originalPictureText = R.string.picture_original_image;
+        uiStyle.picture_bottom_completeDefaultText = R.string.picture_done;
+        uiStyle.picture_bottom_completeNormalText = R.string.picture_done_front_num;
+        uiStyle.picture_adapter_item_camera_text = R.string.picture_take_picture;
+        uiStyle.picture_top_titleRightDefaultText = R.string.picture_cancel;
+        uiStyle.picture_top_titleRightNormalText = R.string.picture_cancel;
+        uiStyle.picture_bottom_previewDefaultText = R.string.picture_preview;
         IApp app = PictureAppMaster.getInstance().getApp();
         Context appContext = app.getAppContext();
         if (appContext != null) {
             uiStyle.picture_top_titleBarHeight = ScreenUtils.dip2px(appContext, 48);
-            uiStyle.picture_top_titleRightDefaultText = appContext.getString(R.string.picture_cancel);
-            uiStyle.picture_top_titleRightNormalText = appContext.getString(R.string.picture_cancel);
             uiStyle.picture_bottom_barHeight = ScreenUtils.dip2px(appContext, 45);
-            uiStyle.picture_bottom_previewDefaultText = appContext.getString(R.string.picture_preview);
             // 如果文本内容设置(%1$d/%2$d)，请开启true
             uiStyle.isCompleteReplaceNum = true;
-            uiStyle.picture_bottom_previewNormalText = appContext.getString(R.string.picture_preview_num);
-            uiStyle.picture_bottom_originalPictureText = appContext.getString(R.string.picture_original_image);
-            uiStyle.picture_bottom_completeDefaultText = appContext.getString(R.string.picture_done);
-            uiStyle.picture_bottom_completeNormalText = appContext.getString(R.string.picture_done_front_num);
-            uiStyle.picture_adapter_item_camera_text = appContext.getString(R.string.picture_take_picture);
+
         }
 
         return uiStyle;
@@ -550,24 +549,22 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_bottom_originalPictureTextSize = 14;
         uiStyle.picture_bottom_originalPictureCheckStyle = R.drawable.picture_original_blue_checkbox;
         uiStyle.picture_bottom_originalPictureTextColor = Color.parseColor("#7D7DFF");
-
+        uiStyle.picture_bottom_previewNormalText = R.string.picture_preview_num;
+        uiStyle.picture_bottom_originalPictureText = R.string.picture_original_image;
+        uiStyle.picture_bottom_completeDefaultText = R.string.picture_please_select;
+        uiStyle.picture_bottom_completeNormalText = R.string.picture_completed;
+        uiStyle.picture_adapter_item_camera_text = R.string.picture_take_picture;
+        uiStyle.picture_top_titleRightDefaultText = R.string.picture_cancel;
+        uiStyle.picture_top_titleRightNormalText = R.string.picture_cancel;
+        uiStyle.picture_bottom_previewDefaultText = R.string.picture_preview;
         IApp app = PictureAppMaster.getInstance().getApp();
         Context appContext = app.getAppContext();
         if (appContext != null) {
             uiStyle.picture_top_titleBarHeight = ScreenUtils.dip2px(appContext, 48);
-            uiStyle.picture_top_titleRightDefaultText = appContext.getString(R.string.picture_cancel);
-            uiStyle.picture_top_titleRightNormalText = appContext.getString(R.string.picture_cancel);
             uiStyle.picture_bottom_barHeight = ScreenUtils.dip2px(appContext, 45);
-            uiStyle.picture_bottom_previewDefaultText = appContext.getString(R.string.picture_preview);
             // 如果文本内容设置(%1$d/%2$d)，请开启true
             uiStyle.isCompleteReplaceNum = true;
-            uiStyle.picture_bottom_previewNormalText = appContext.getString(R.string.picture_preview_num);
-            uiStyle.picture_bottom_originalPictureText = appContext.getString(R.string.picture_original_image);
-            uiStyle.picture_bottom_completeDefaultText = appContext.getString(R.string.picture_please_select);
-            uiStyle.picture_bottom_completeNormalText = appContext.getString(R.string.picture_completed);
-            uiStyle.picture_adapter_item_camera_text = appContext.getString(R.string.picture_take_picture);
         }
-
         return uiStyle;
     }
 
@@ -635,24 +632,22 @@ public class PictureSelectorUIStyle {
         Context appContext = app.getAppContext();
         if (appContext != null) {
             uiStyle.picture_top_titleBarHeight = ScreenUtils.dip2px(appContext, 48);
-            uiStyle.picture_top_titleRightDefaultText = appContext.getString(R.string.picture_send);
-            uiStyle.picture_top_titleRightNormalText = appContext.getString(R.string.picture_cancel);
+            uiStyle.picture_top_titleRightDefaultText = R.string.picture_send;
+            uiStyle.picture_top_titleRightNormalText = R.string.picture_cancel;
             uiStyle.picture_bottom_barHeight = ScreenUtils.dip2px(appContext, 45);
-            uiStyle.picture_bottom_previewDefaultText = appContext.getString(R.string.picture_preview);
+            uiStyle.picture_bottom_previewDefaultText = R.string.picture_preview;
+            uiStyle.picture_bottom_previewNormalText = R.string.picture_preview_num;
+            uiStyle.picture_bottom_originalPictureText = R.string.picture_original_image;
+            uiStyle.picture_bottom_completeDefaultText = R.string.picture_please_select;
+            uiStyle.picture_bottom_completeNormalText = R.string.picture_completed;
+            uiStyle.picture_adapter_item_camera_text = R.string.picture_take_picture;
+            uiStyle.picture_bottom_selectedText = R.string.picture_select;
+            uiStyle.picture_bottom_selectedCheckStyle = R.drawable.picture_wechat_select_cb;
             // 如果文本内容设置(%1$d/%2$d)，请开启true
             uiStyle.isCompleteReplaceNum = true;
-            uiStyle.picture_bottom_previewNormalText = appContext.getString(R.string.picture_preview_num);
-            uiStyle.picture_bottom_originalPictureText = appContext.getString(R.string.picture_original_image);
-            uiStyle.picture_bottom_completeDefaultText = appContext.getString(R.string.picture_please_select);
-            uiStyle.picture_bottom_completeNormalText = appContext.getString(R.string.picture_completed);
-            uiStyle.picture_adapter_item_camera_text = appContext.getString(R.string.picture_take_picture);
             uiStyle.picture_top_titleArrowLeftPadding = ScreenUtils.dip2px(appContext, 3);
-
-            uiStyle.picture_bottom_selectedText = appContext.getString(R.string.picture_select);
             uiStyle.picture_bottom_selectedTextColor = Color.parseColor("#FFFFFF");
             uiStyle.picture_bottom_selectedTextSize = 16;
-            uiStyle.picture_bottom_selectedCheckStyle = R.drawable.picture_wechat_select_cb;
-
             uiStyle.picture_bottom_gallery_height = ScreenUtils.dip2px(appContext, 80);
             uiStyle.picture_bottom_gallery_backgroundColor = Color.parseColor("#a0393a3e");
             uiStyle.picture_bottom_gallery_frameBackground = R.drawable.picture_preview_gallery_border_bg;
