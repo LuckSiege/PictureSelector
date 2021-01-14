@@ -1456,7 +1456,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mtTvCount.setClickable(true);
                 mtTvCount.setText("Next (" +selectData.size()+")");
                 mtTvCount.setTextColor(getResources().getColor(R.color.ucrop_color_white));
-                mtTvCount.setBackground(getResources().getDrawable(R.drawable.radius_bg_shape));
+                mtTvCount.setBackground(getResources().getDrawable(R.drawable.radius_bg_shape_16));
 
                 //判断是否展示
                 if (config.isMessageStyle){
@@ -1488,7 +1488,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mtTvCount.setClickable(true);
                 mtTvCount.setText("Next (0)");
                 mtTvCount.setTextColor(getResources().getColor(R.color.picture_color_light_grey));
-                mtTvCount.setBackground(getResources().getDrawable(R.drawable.radius_bg_shape_gray));
+                mtTvCount.setBackground(getResources().getDrawable(R.drawable.radius_bg_shape_gray_16));
             }
         }
     }
