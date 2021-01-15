@@ -310,6 +310,7 @@
         android:text="@string/send"
         android:visibility="gone"
         android:gravity="center"
+        android:layout_marginBottom="16dp"
         android:layout_alignParentBottom="true"
         />
 
