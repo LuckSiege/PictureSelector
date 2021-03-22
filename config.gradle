@@ -15,10 +15,10 @@ ext {
             version_appcompat             : "1.2.0",
             localbroadcastmanager         : "1.0.0",
 
-            camerax_view                  : "1.0.0-alpha20",
+            camerax_view                  : "1.0.0-alpha22",
             camerax_version               : "1.1.0-alpha02",
             camera_core_version           : "1.0.0-beta03",
-            experimental_version          : "1.1.0-alpha01",
+            experimental_version          : "1.1.0-beta01",
             futures_version               : "1.1.0",
 
             // ucrop
