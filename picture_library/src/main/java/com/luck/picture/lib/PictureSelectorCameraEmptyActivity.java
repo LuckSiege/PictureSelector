@@ -390,7 +390,11 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (SdkVersionUtils.checkedAndroid_Q()) {
+            finishAfterTransition();
+        } else {
+            super.onBackPressed();
+        }
         exit();
     }
 }

@@ -597,7 +597,11 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (SdkVersionUtils.checkedAndroid_Q()) {
+            finishAfterTransition();
+        } else {
+            super.onBackPressed();
+        }
         finish();
         exitAnimation();
     }
