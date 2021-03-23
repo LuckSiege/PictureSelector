@@ -1841,6 +1841,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             File cameraFile = new File(path);
                             mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                             media.setSize(cameraFile.length());
+                            media.setFileName(cameraFile.getName());
                         }
                         if (PictureMimeType.isHasImage(mimeType)) {
                             int[] newSize = MediaUtils.getImageSizeForUrlToAndroidQ(getContext(), config.cameraPath);
@@ -1860,6 +1861,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         File cameraFile = new File(config.cameraPath);
                         mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                         media.setSize(cameraFile.length());
+                        media.setFileName(cameraFile.getName());
                         if (PictureMimeType.isHasImage(mimeType)) {
                             int degree = PictureFileUtils.readPictureDegree(getContext(), config.cameraPath);
                             BitmapUtils.rotateImage(degree, config.cameraPath);
