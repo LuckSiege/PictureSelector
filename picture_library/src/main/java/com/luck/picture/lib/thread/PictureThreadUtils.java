@@ -191,11 +191,11 @@ public final class PictureThreadUtils {
     static final class ThreadPoolExecutor4Util extends ThreadPoolExecutor {
 
         private static ExecutorService createPool(final int priority) {
-            return new ThreadPoolExecutor4Util(2 * CPU_COUNT + 1, 2 * CPU_COUNT + 1,
-                        30, TimeUnit.SECONDS,
-                        new LinkedBlockingQueue4Util(),
-                        new UtilsThreadFactory("io", priority)
-                );
+            return new ThreadPoolExecutor4Util(0, 4,
+                    30, TimeUnit.SECONDS,
+                    new LinkedBlockingQueue4Util(),
+                    new UtilsThreadFactory("io", priority)
+            );
         }
 
         private final AtomicInteger mSubmittedCount = new AtomicInteger();
