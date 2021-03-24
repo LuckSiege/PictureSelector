@@ -22,7 +22,7 @@
     <application>
         <provider
             android:name="com.luck.picture.lib.PictureFileProvider"
-            android:authorities="${applicationId}.provider"
+            android:authorities="${applicationId}.luckProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

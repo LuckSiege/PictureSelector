@@ -568,7 +568,7 @@ public class PictureFileUtils {
      */
     public static Uri parUri(Context context, File cameraFile) {
         Uri imageUri;
-        String authority = context.getPackageName() + ".provider";
+        String authority = context.getPackageName() + ".luckProvider";
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             //通过FileProvider创建一个content类型的Uri
             imageUri = FileProvider.getUriForFile(context, authority, cameraFile);
