@@ -108,9 +108,9 @@ public final class PictureSelectionConfig implements Parcelable {
     public UCropOptions uCropOptions;
     public static ImageEngine imageEngine;
     public static CacheResourcesEngine cacheResourcesEngine;
-    public static OnResultCallbackListener listener;
-    public static OnVideoSelectedPlayCallback customVideoPlayCallback;
-    public static OnCustomImagePreviewCallback onCustomImagePreviewCallback;
+    public static OnResultCallbackListener<LocalMedia> listener;
+    public static OnVideoSelectedPlayCallback<LocalMedia> customVideoPlayCallback;
+    public static OnCustomImagePreviewCallback<LocalMedia> onCustomImagePreviewCallback;
     public static OnCustomCameraInterfaceListener onCustomCameraInterfaceListener;
     public List<LocalMedia> selectionMedias;
     public String cameraFileName;

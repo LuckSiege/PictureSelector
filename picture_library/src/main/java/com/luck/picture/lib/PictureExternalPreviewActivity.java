@@ -90,8 +90,9 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         ibDelete = findViewById(R.id.ib_delete);
         viewPager = findViewById(R.id.preview_pager);
         position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
-        if (getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST) != null) {
-            images = (List<LocalMedia>) getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
+        List<LocalMedia> mediaList = getIntent().getParcelableArrayListExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
+        if (mediaList != null && mediaList.size() > 0) {
+            images.addAll(mediaList);
         }
         ibLeftBack.setOnClickListener(this);
         ibDelete.setOnClickListener(this);
@@ -163,7 +164,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             finish();
             exitAnimation();
         } else if (id == R.id.ib_delete) {
-            if (images != null && images.size() > 0) {
+            if (images.size() > 0) {
                 int currentItem = viewPager.getCurrentItem();
                 images.remove(currentItem);
                 adapter.removeCacheView(currentItem);

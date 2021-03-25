@@ -1983,13 +1983,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     if (videoSize >= config.maxVideoSelectNum) {
                         showPromptDialog(getString(R.string.picture_message_max_num, config.maxVideoSelectNum));
                     } else {
-                        selectedData.add(0, media);
+                        selectedData.add(media);
                         mAdapter.bindSelectData(selectedData);
                     }
                 }
             } else {
                 if (selectedData.size() < config.maxSelectNum) {
-                    selectedData.add(0, media);
+                    selectedData.add(media);
                     mAdapter.bindSelectData(selectedData);
                 } else {
                     showPromptDialog(StringUtils.getMsg(getContext(), media.getMimeType(), config.maxSelectNum));
@@ -2001,7 +2001,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (count < config.maxVideoSelectNum) {
                     if (mimeTypeSame || count == 0) {
                         if (selectedData.size() < config.maxVideoSelectNum) {
-                            selectedData.add(0, media);
+                            selectedData.add(media);
                             mAdapter.bindSelectData(selectedData);
                         }
                     }
@@ -2012,7 +2012,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             } else {
                 if (count < config.maxSelectNum) {
                     if (mimeTypeSame || count == 0) {
-                        selectedData.add(0, media);
+                        selectedData.add(media);
                         mAdapter.bindSelectData(selectedData);
                     }
                 } else {
