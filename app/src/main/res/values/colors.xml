@@ -15,4 +15,77 @@
     <color name="app_color_9b">#9b9b9b</color>
     <color name="app_color_e0ff6100">#E0FF6100</color>
     <color name="app_color_red">#FF0000</color>
+
+
+    <color name="colorAccent">#13bb00</color>
+    <color name="colorAccentDark">#0d8200</color>
+    <color name="actionButton">#13bb00</color>
+    <color name="toolbar">#13bb00</color>
+    <color name="refreshSchemeColor">#13bb00</color>
+
+    <color name="chartPie10">#ff5edb</color>
+    <color name="chartPie20">#84b000</color>
+    <color name="chartPie30">#00cd20</color>
+    <color name="chartPie40">#00cbcd</color>
+    <color name="chartPie50">#2046e7</color>
+    <color name="chartPie60">#b612ea</color>
+    <color name="chartPie70">#f88e06</color>
+    <color name="chartPie0">#ffc200</color>
+
+    <color name="edit_title">#F0F0F0</color>
+    <color name="edit_text">#000000</color>
+    <color name="edit_hint">#AAAAAA</color>
+    <color name="text_error">#FF4500</color>
+
+    <color name="text_white">#FFFFFF</color>
+    <color name="text_black">#000000</color>
+    <color name="text_dark_gray">#4a4a4a</color>
+    <color name="text_gray">#7A7A7A</color>
+    <color name="text_light_gray">#AAAAAA</color>
+    <color name="text_etc">#3e4759</color>
+    <color name="text_accent">#647188</color>
+    <color name="text_toolbar">#FFFFFF</color>
+    <color name="text_tag">#798bac</color>
+
+    <color name="img_dark">#3F4558</color>
+    <color name="img_white">#FFFFFF</color>
+    <color name="img_disable">#f0f0f0</color>
+    <color name="img_black">#000000</color>
+    <color name="img_accent">#647188</color>
+    <color name="img_gray">#7A7A7A</color>
+    <color name="img_dark_gray">#4a4a4a</color>
+    <color name="img_light_gray">#AAAAAA</color>
+    <color name="img_etc">#3e4759</color>
+    <color name="img_red">#FF4500</color>
+    <color name="img_torch_red">#ff002c</color>
+
+    <color name="divider">#f0f0f0</color>
+
+    <color name="red_flush_orange">#FF7E00</color>
+
+    <color name="background_white">#FFFFFF</color>
+    <color name="background_gray">#f0f0f0</color>
+    <color name="background_chat_toolbar">#d4dbe8</color>
+    <color name="background_chat_row">#C6CFDF</color>
+    <color name="background_add_tag">#DADADA</color>
+    <color name="background_etc">#8f9fbf</color>
+    <color name="background_black">#000000</color>
+    <color name="background_pink">#FF5C78</color>
+
+    <color name="facebook">#4460a0</color>
+    <color name="naver">#13bb00</color>
+    <color name="chat_message">#13bb00</color>
+
+    <color name="tooltip_green_jungle">#249676</color>
+
+    <color name="chat_download_background">#F8F8F8</color>
+    <color name="chat_download_button">#5A5A5A</color>
+    <color name="chat_download_text_name">#2C2C2C</color>
+    <color name="chat_download_text_etc">#7A7A7A</color>
+
+    <color name="alpha_black_half_black">#80000000</color>
+    <color name="alpha_gray_silver">#CABBBBBB</color>
+    <color name="alpha_red_froly">#80f2798d</color>
+    <color name="alpha_white_white">#88000000</color>
+    <color name="alpha_login">#BBFFFFFF</color>
 </resources>

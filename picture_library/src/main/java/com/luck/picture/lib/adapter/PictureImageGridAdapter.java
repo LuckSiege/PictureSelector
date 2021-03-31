@@ -13,6 +13,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,7 +21,6 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
-import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnPhotoSelectChangedListener;
 import com.luck.picture.lib.tools.AnimUtils;
@@ -753,12 +753,12 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
      * Tips
      */
     private void showPromptDialog(String content) {
-        PictureCustomDialog dialog = new PictureCustomDialog(context, R.layout.picture_prompt_dialog);
-        TextView btnOk = dialog.findViewById(R.id.btnOk);
-        TextView tvContent = dialog.findViewById(R.id.tv_content);
-        tvContent.setText(content);
-        btnOk.setOnClickListener(v -> dialog.dismiss());
-        dialog.show();
+
+        new AlertDialog.Builder(context)
+                .setMessage(content)
+                .setPositiveButton(R.string.picture_know, (dialog, which) -> {
+                })
+                .show();
     }
 
 

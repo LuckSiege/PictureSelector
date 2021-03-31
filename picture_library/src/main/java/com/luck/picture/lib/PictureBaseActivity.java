@@ -12,9 +12,9 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.luck.picture.lib.app.PictureAppMaster;
@@ -23,7 +23,6 @@ import com.luck.picture.lib.compress.OnCompressListener;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
-import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.dialog.PictureLoadingDialog;
 import com.luck.picture.lib.engine.PictureSelectorEngine;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -84,7 +83,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      */
     @Override
     public boolean isImmersive() {
-        return true;
+        return false;
     }
 
     /**
@@ -776,8 +775,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     /**
      * showPermissionsDialog
      *
-     * @param isCamera
-     * @param errorMsg
+     * @param isCamera isCamera
+     * @param errorMsg errorMsg
      */
     protected void showPermissionsDialog(boolean isCamera, String errorMsg) {
 
@@ -786,20 +785,15 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     /**
      * Dialog
      *
-     * @param content
+     * @param content content
      */
     protected void showPromptDialog(String content) {
         if (!isFinishing()) {
-            PictureCustomDialog dialog = new PictureCustomDialog(getContext(), R.layout.picture_prompt_dialog);
-            TextView btnOk = dialog.findViewById(R.id.btnOk);
-            TextView tvContent = dialog.findViewById(R.id.tv_content);
-            tvContent.setText(content);
-            btnOk.setOnClickListener(v -> {
-                if (!isFinishing()) {
-                    dialog.dismiss();
-                }
-            });
-            dialog.show();
+            new AlertDialog.Builder(getContext())
+                    .setMessage(content)
+                    .setPositiveButton(R.string.picture_know, (dialog, which) -> {
+                    })
+                    .show();
         }
     }
 
@@ -807,7 +801,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     /**
      * sort
      *
-     * @param imageFolders
+     * @param imageFolders image folder list
      */
     protected void sortFolder(List<LocalMediaFolder> imageFolders) {
         Collections.sort(imageFolders, (lhs, rhs) -> {
