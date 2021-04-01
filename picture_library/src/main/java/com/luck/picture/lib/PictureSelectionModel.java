@@ -1435,6 +1435,34 @@ public class PictureSelectionModel {
 	/**
 	 * Start to select media and wait for result.
 	 *
+	 * @param intent   Picture selector intent
+	 * @param listener The resulting callback listens
+	 */
+	public void forResult (Intent intent, OnResultCallbackListener listener) {
+		if (!DoubleUtils.isFastDoubleClick()) {
+			Activity activity = selector.getActivity();
+			if (activity == null || selectionConfig == null) {
+				return;
+			}
+			// 绑定回调监听
+			PictureSelectionConfig.listener = new WeakReference<>(listener).get();
+			selectionConfig.isCallbackMode = true;
+			Fragment fragment = selector.getFragment();
+			if (fragment != null) {
+				fragment.startActivity(intent);
+			}
+			else {
+				activity.startActivity(intent);
+			}
+			PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.windowAnimationStyle;
+			activity.overridePendingTransition(
+					windowAnimationStyle.activityEnterAnimation, R.anim.picture_anim_fade_in);
+		}
+	}
+
+	/**
+	 * Start to select media and wait for result.
+	 *
 	 * @param requestCode Identity of the request Activity or Fragment.
 	 * @param listener    The resulting callback listens
 	 */
