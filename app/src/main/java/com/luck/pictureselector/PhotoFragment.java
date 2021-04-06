@@ -684,6 +684,9 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                 chooseMode = PictureMimeType.ofAudio();
                 cb_preview_audio.setVisibility(View.VISIBLE);
                 break;
+            case R.id.rb_system:
+                language = -1;
+                break;
             case R.id.rb_jpan:
                 language = LanguageConfig.JAPAN;
                 break;
