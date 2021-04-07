@@ -517,7 +517,7 @@ public final class LocalMediaPageLoader {
 
 
     private String getPageSelection(long bucketId) {
-        String durationCondition = getDurationCondition(0, 0);
+        String durationCondition = getDurationCondition(0);
         boolean isQueryFormat = !TextUtils.isEmpty(config.specifiedFormat);
         switch (config.chooseMode) {
             case PictureConfig.TYPE_ALL:
@@ -610,7 +610,7 @@ public final class LocalMediaPageLoader {
         switch (config.chooseMode) {
             case PictureConfig.TYPE_ALL:
                 // Get all, not including audio
-                return getSelectionArgsForAllMediaCondition(getDurationCondition(0, 0), config.isGif);
+                return getSelectionArgsForAllMediaCondition(getDurationCondition(0), config.isGif);
             case PictureConfig.TYPE_IMAGE:
                 if (!TextUtils.isEmpty(config.specifiedFormat)) {
                     // 获取指定类型的图片
@@ -632,7 +632,7 @@ public final class LocalMediaPageLoader {
                     }
                     return SELECTION_SPECIFIED_FORMAT + "='" + config.specifiedFormat + "') AND " + MediaStore.MediaColumns.SIZE + ">0)" + GROUP_BY_BUCKET_Id;
                 }
-                return getSelectionArgsForSingleMediaCondition(getDurationCondition(0, 0));
+                return getSelectionArgsForSingleMediaCondition(getDurationCondition(0));
             case PictureConfig.TYPE_AUDIO:
                 // Get Audio
                 if (!TextUtils.isEmpty(config.specifiedFormat)) {
@@ -642,7 +642,7 @@ public final class LocalMediaPageLoader {
                     }
                     return SELECTION_SPECIFIED_FORMAT + "='" + config.specifiedFormat + "') AND " + MediaStore.MediaColumns.SIZE + ">0)" + GROUP_BY_BUCKET_Id;
                 }
-                return getSelectionArgsForSingleMediaCondition(getDurationCondition(0, AUDIO_DURATION));
+                return getSelectionArgsForSingleMediaCondition(getDurationCondition(AUDIO_DURATION));
         }
         return null;
     }
@@ -692,15 +692,11 @@ public final class LocalMediaPageLoader {
     /**
      * Get video (maximum or minimum time)
      *
-     * @param exMaxLimit
      * @param exMinLimit
      * @return
      */
-    private String getDurationCondition(long exMaxLimit, long exMinLimit) {
+    private String getDurationCondition(long exMinLimit) {
         long maxS = config.videoMaxSecond == 0 ? Long.MAX_VALUE : config.videoMaxSecond;
-        if (exMaxLimit != 0) {
-            maxS = Math.min(maxS, exMaxLimit);
-        }
         return String.format(Locale.CHINA, "%d <%s " + MediaStore.MediaColumns.DURATION + " and " + MediaStore.MediaColumns.DURATION + " <= %d",
                 Math.max(exMinLimit, config.videoMinSecond),
                 Math.max(exMinLimit, config.videoMinSecond) == 0 ? "" : "=",

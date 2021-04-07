@@ -105,12 +105,11 @@ public final class LocalMediaLoader {
      * @return
      */
     private static String getSelectionArgsForAllMediaCondition(String time_condition, boolean isGif) {
-        String condition = "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
+        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
                 + (isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF)
                 + " OR "
                 + (MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + time_condition) + ")"
                 + " AND " + MediaStore.MediaColumns.SIZE + ">0";
-        return condition;
     }
 
     /**
@@ -272,7 +271,7 @@ public final class LocalMediaLoader {
         switch (config.chooseMode) {
             case PictureConfig.TYPE_ALL:
                 // Get all, not including audio
-                return getSelectionArgsForAllMediaCondition(getDurationCondition(0, 0), config.isGif);
+                return getSelectionArgsForAllMediaCondition(getDurationCondition(0), config.isGif);
             case PictureConfig.TYPE_IMAGE:
                 if (!TextUtils.isEmpty(config.specifiedFormat)) {
                     // Gets the image of the specified type
@@ -292,7 +291,7 @@ public final class LocalMediaLoader {
                     // Gets the image of the specified type
                     return SELECTION_SPECIFIED_FORMAT + "='" + config.specifiedFormat + "'";
                 }
-                return getSelectionArgsForSingleMediaCondition(getDurationCondition(0, AUDIO_DURATION));
+                return getSelectionArgsForSingleMediaCondition(getDurationCondition(AUDIO_DURATION));
         }
         return null;
     }
@@ -389,15 +388,11 @@ public final class LocalMediaLoader {
     /**
      * Get video (maximum or minimum time)
      *
-     * @param exMaxLimit
      * @param exMinLimit
      * @return
      */
-    private String getDurationCondition(long exMaxLimit, long exMinLimit) {
+    private String getDurationCondition(long exMinLimit) {
         long maxS = config.videoMaxSecond == 0 ? Long.MAX_VALUE : config.videoMaxSecond;
-        if (exMaxLimit != 0) {
-            maxS = Math.min(maxS, exMaxLimit);
-        }
         return String.format(Locale.CHINA, "%d <%s " + MediaStore.MediaColumns.DURATION + " and " + MediaStore.MediaColumns.DURATION + " <= %d",
                 Math.max(exMinLimit, config.videoMinSecond),
                 Math.max(exMinLimit, config.videoMinSecond) == 0 ? "" : "=",
