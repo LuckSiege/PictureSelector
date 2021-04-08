@@ -62,7 +62,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     protected int colorPrimary, colorPrimaryDark;
     protected PictureLoadingDialog mLoadingDialog;
     protected List<LocalMedia> selectionMedias;
-    protected Handler mHandler;
+    protected Handler mHandler = new Handler(Looper.getMainLooper());
     protected View container;
     /**
      * if there more
@@ -153,7 +153,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (isRequestedOrientation()) {
             setNewRequestedOrientation();
         }
-        mHandler = new Handler(Looper.getMainLooper());
         initConfig();
         if (isImmersive()) {
             immersive();

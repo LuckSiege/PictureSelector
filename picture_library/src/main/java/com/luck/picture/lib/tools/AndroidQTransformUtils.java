@@ -2,10 +2,6 @@ package com.luck.picture.lib.tools;
 
 import android.content.Context;
 import android.net.Uri;
-import android.text.TextUtils;
-
-import com.luck.picture.lib.config.PictureSelectionConfig;
-
 import java.io.File;
 import java.io.OutputStream;
 import java.util.Objects;
@@ -54,7 +50,7 @@ public class AndroidQTransformUtils {
                 PictureFileUtils.close(inBuffer);
             }
         }
-        return null;
+        return "";
     }
 
     /**

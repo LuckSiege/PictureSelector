@@ -1239,9 +1239,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             mTvPlayPause = audioDialog.findViewById(R.id.tv_PlayPause);
             mTvStop = audioDialog.findViewById(R.id.tv_Stop);
             mTvQuit = audioDialog.findViewById(R.id.tv_Quit);
-            if (mHandler != null) {
-                mHandler.postDelayed(() -> initPlayer(path), 30);
-            }
+            mHandler.postDelayed(() -> initPlayer(path), 30);
             mTvPlayPause.setOnClickListener(new AudioOnClick(path));
             mTvStop.setOnClickListener(new AudioOnClick(path));
             mTvQuit.setOnClickListener(new AudioOnClick(path));
@@ -1262,9 +1260,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
             });
             audioDialog.setOnDismissListener(dialog -> {
-                if (mHandler != null) {
-                    mHandler.removeCallbacks(mRunnable);
-                }
+                mHandler.removeCallbacks(mRunnable);
                 new Handler().postDelayed(() -> stop(path), 30);
                 try {
                     if (audioDialog != null
@@ -1275,9 +1271,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     e.printStackTrace();
                 }
             });
-            if (mHandler != null) {
-                mHandler.post(mRunnable);
-            }
+            mHandler.post(mRunnable);
             audioDialog.show();
         }
     }
@@ -1291,9 +1285,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     musicSeekBar.setProgress(mediaPlayer.getCurrentPosition());
                     musicSeekBar.setMax(mediaPlayer.getDuration());
                     mTvMusicTotal.setText(DateUtils.formatDurationTime(mediaPlayer.getDuration()));
-                    if (mHandler != null) {
-                        mHandler.postDelayed(mRunnable, 200);
-                    }
+                    mHandler.postDelayed(mRunnable, 200);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1341,18 +1333,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 stop(path);
             }
             if (id == R.id.tv_Quit) {
-                if (mHandler != null) {
-                    mHandler.postDelayed(() -> stop(path), 30);
-                    try {
-                        if (audioDialog != null
-                                && audioDialog.isShowing()) {
-                            audioDialog.dismiss();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                mHandler.postDelayed(() -> stop(path), 30);
+                try {
+                    if (audioDialog != null
+                            && audioDialog.isShowing()) {
+                        audioDialog.dismiss();
                     }
-                    mHandler.removeCallbacks(mRunnable);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                mHandler.removeCallbacks(mRunnable);
             }
         }
     }
@@ -1376,9 +1366,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             playOrPause();
         }
         if (!isPlayAudio) {
-            if (mHandler != null) {
-                mHandler.post(mRunnable);
-            }
+            mHandler.post(mRunnable);
             isPlayAudio = true;
         }
     }
@@ -2393,7 +2381,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             animation.cancel();
             animation = null;
         }
-        if (mediaPlayer != null && mHandler != null) {
+        if (mediaPlayer != null) {
             mHandler.removeCallbacks(mRunnable);
             mediaPlayer.release();
             mediaPlayer = null;
