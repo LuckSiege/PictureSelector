@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.util.Locale;
+import java.util.Objects;
 
 import okio.BufferedSink;
 import okio.BufferedSource;
@@ -103,6 +104,9 @@ public class PictureFileUtils {
         } else {
             // 自定义存储路径
             folderDir = new File(outCameraDirectory);
+            if (!Objects.requireNonNull(folderDir.getParentFile()).exists()) {
+                folderDir.getParentFile().mkdirs();
+            }
         }
         if (!folderDir.exists()) {
             folderDir.mkdirs();
