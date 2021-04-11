@@ -920,7 +920,7 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel isBmp(boolean isBmp) {
-        selectionConfig.isWebp = isBmp;
+        selectionConfig.isBmp = isBmp;
         return this;
     }
 
