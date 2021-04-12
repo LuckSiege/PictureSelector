@@ -144,9 +144,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         config = PictureSelectionConfig.getInstance();
         PictureLanguageUtils.setAppLanguage(getContext(), config.language);
-        if (!config.camera) {
-            setTheme(config.themeStyleId == 0 ? R.style.picture_default_style : config.themeStyleId);
-        }
+        setTheme(config.themeStyleId == 0 ? R.style.picture_default_style : config.themeStyleId);
         super.onCreate(savedInstanceState);
         newCreateEngine();
         newCreateResultCallbackListener();

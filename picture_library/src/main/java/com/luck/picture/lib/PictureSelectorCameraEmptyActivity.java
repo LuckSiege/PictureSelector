@@ -7,6 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -54,6 +57,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             exit();
             return;
         }
+        setActivitySize();
         if (!config.isUseCustomCamera) {
             if (savedInstanceState == null) {
                 if (PermissionChecker
@@ -76,8 +80,21 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                             Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
                 }
             }
-            setTheme(R.style.Picture_Theme_Translucent);
         }
+    }
+
+    /**
+     * 设置个1像素的Activity
+     */
+    private void setActivitySize() {
+        Window window = getWindow();
+        window.setGravity(Gravity.LEFT | Gravity.TOP);
+        WindowManager.LayoutParams params = window.getAttributes();
+        params.x = 0;
+        params.y = 0;
+        params.height = 1;
+        params.width = 1;
+        window.setAttributes(params);
     }
 
 

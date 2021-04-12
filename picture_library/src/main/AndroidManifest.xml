@@ -38,8 +38,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
             android:name=".PictureSelectorCameraEmptyActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/Picture.Theme.Translucent" />
+            android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
             android:name=".PictureCustomCameraActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
