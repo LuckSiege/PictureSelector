@@ -366,6 +366,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                         item.setMaxSelectEnabledMask(!isSelected && getSelectedSize() == config.maxSelectNum);
                     }
                 }
+            } else {
+                item.setMaxSelectEnabledMask(false);// reset mask state
             }
         }
     }
