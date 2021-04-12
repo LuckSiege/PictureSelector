@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.app.IApp;
 import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.tools.ScreenUtils;
 
@@ -406,9 +405,8 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_top_titleRightDefaultText = R.string.picture_cancel;
         uiStyle.picture_top_titleRightNormalText = R.string.picture_cancel;
         uiStyle.picture_bottom_previewDefaultText = R.string.picture_preview;
-        IApp app = PictureAppMaster.getInstance().getApp();
-        Context appContext = app.getAppContext();
-        if (appContext != null) {
+        if (PictureAppMaster.getInstance().getApp() != null) {
+            Context appContext = PictureAppMaster.getInstance().getApp().getAppContext();
             uiStyle.picture_top_titleBarHeight = ScreenUtils.dip2px(appContext, 48);
             uiStyle.picture_bottom_barHeight = ScreenUtils.dip2px(appContext, 45);
             // 如果文本内容设置(%1$d/%2$d)，请开启true
@@ -479,9 +477,8 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_top_titleRightDefaultText = R.string.picture_cancel;
         uiStyle.picture_top_titleRightNormalText = R.string.picture_cancel;
         uiStyle.picture_bottom_previewDefaultText = R.string.picture_preview;
-        IApp app = PictureAppMaster.getInstance().getApp();
-        Context appContext = app.getAppContext();
-        if (appContext != null) {
+        if (PictureAppMaster.getInstance().getApp() != null) {
+            Context appContext = PictureAppMaster.getInstance().getApp().getAppContext();
             uiStyle.picture_top_titleBarHeight = ScreenUtils.dip2px(appContext, 48);
             uiStyle.picture_bottom_barHeight = ScreenUtils.dip2px(appContext, 45);
             // 如果文本内容设置(%1$d/%2$d)，请开启true
@@ -557,9 +554,8 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_top_titleRightDefaultText = R.string.picture_cancel;
         uiStyle.picture_top_titleRightNormalText = R.string.picture_cancel;
         uiStyle.picture_bottom_previewDefaultText = R.string.picture_preview;
-        IApp app = PictureAppMaster.getInstance().getApp();
-        Context appContext = app.getAppContext();
-        if (appContext != null) {
+        if (PictureAppMaster.getInstance().getApp() != null) {
+            Context appContext = PictureAppMaster.getInstance().getApp().getAppContext();
             uiStyle.picture_top_titleBarHeight = ScreenUtils.dip2px(appContext, 48);
             uiStyle.picture_bottom_barHeight = ScreenUtils.dip2px(appContext, 45);
             // 如果文本内容设置(%1$d/%2$d)，请开启true
@@ -627,10 +623,8 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_bottom_originalPictureTextColor = Color.parseColor("#FFFFFF");
         uiStyle.picture_top_titleRightTextDefaultBackground = R.drawable.picture_send_button_default_bg;
         uiStyle.picture_top_titleRightTextNormalBackground = R.drawable.picture_send_button_bg;
-
-        IApp app = PictureAppMaster.getInstance().getApp();
-        Context appContext = app.getAppContext();
-        if (appContext != null) {
+        if (PictureAppMaster.getInstance().getApp() != null) {
+            Context appContext = PictureAppMaster.getInstance().getApp().getAppContext();
             uiStyle.picture_top_titleBarHeight = ScreenUtils.dip2px(appContext, 48);
             uiStyle.picture_top_titleRightDefaultText = R.string.picture_send;
             uiStyle.picture_top_titleRightNormalText = R.string.picture_cancel;
