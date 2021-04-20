@@ -15,10 +15,12 @@ public class PictureCustomDialog extends Dialog {
         super(context, R.style.Picture_Theme_Dialog);
         setContentView(layout);
         Window window = getWindow();
-        WindowManager.LayoutParams params = window.getAttributes();
-        params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        params.gravity = Gravity.CENTER;
-        window.setAttributes(params);
+        if (window != null) {
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            params.gravity = Gravity.CENTER;
+            window.setAttributes(params);
+        }
     }
 }

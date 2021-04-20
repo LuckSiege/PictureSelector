@@ -5,12 +5,21 @@
 
     <uses-sdk tools:overrideLibrary="androidx.camera.view,     androidx.camera:camera-camera2,     androidx.camera.camera2,androidx.camera.lifecycle,     androidx.camera.core" />
 
-    <application android:requestLegacyExternalStorage="true">
-        <activity android:name=".ClapperStyleActivity"></activity>
+    <!--适配Android R包可见性 开始-->
+    <queries package="${applicationId}">
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+        <intent>
+            <action android:name="android.media.action.ACTION_VIDEO_CAPTURE" />
+        </intent>
+    </queries>
+    <!--适配Android R包可见性 结束-->
 
+    <application>
         <provider
-            android:name=".PictureFileProvider"
-            android:authorities="${applicationId}.provider"
+            android:name="com.luck.picture.lib.PictureFileProvider"
+            android:authorities="${applicationId}.luckProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

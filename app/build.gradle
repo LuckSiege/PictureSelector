@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 
+static def releaseTime() {
+    def date = new Date()
+    return date.format("yyyy-MM-dd") + "_" + date.format("hhmmss")
+}
+
 android {
     compileSdkVersion cfgs.compileSdkVersion
 
@@ -10,10 +15,40 @@ android {
         versionCode cfgs.versionCode
         versionName cfgs.versionName
     }
+
+    signingConfigs {
+        pictureSelectorKey {
+            storeFile file("signature/picture.jks")
+            storePassword "luck888A"
+            keyAlias "picture"
+            keyPassword "luck888A"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.pictureSelectorKey
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.pictureSelectorKey
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        applicationVariants.all { variant ->
+            variant.outputs.all { output ->
+                if ('release' == variant.buildType.name) {
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        def time = releaseTime()
+                        def fileName = getProject().name + "_${time}${"_" + versionName}.apk"
+                        outputFileName = fileName
+                    }
+                }
+            }
         }
     }
 

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.tools.DateUtils;
+import com.luck.picture.lib.tools.SdkVersionUtils;
 
 /**
  * # No longer maintain audio related functions,
@@ -125,7 +126,7 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
             handler.removeCallbacks(runnable);
             new Handler().postDelayed(() -> stop(audio_path), 30);
             try {
-                closeActivity();
+                exit();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -195,8 +196,12 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        closeActivity();
+        if (SdkVersionUtils.checkedAndroid_Q()) {
+            finishAfterTransition();
+        } else {
+            super.onBackPressed();
+        }
+        exit();
     }
 
     @Override

@@ -557,6 +557,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                 Log.i(TAG, "是否压缩:" + media.isCompressed());
                 Log.i(TAG, "压缩:" + media.getCompressPath());
                 Log.i(TAG, "原图:" + media.getPath());
+                Log.i(TAG, "绝对路径:" + media.getRealPath());
                 Log.i(TAG, "是否裁剪:" + media.isCut());
                 Log.i(TAG, "裁剪:" + media.getCutPath());
                 Log.i(TAG, "是否开启原图:" + media.isOriginal());
@@ -597,6 +598,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         Log.i(TAG, "是否压缩:" + media.isCompressed());
                         Log.i(TAG, "压缩:" + media.getCompressPath());
                         Log.i(TAG, "原图:" + media.getPath());
+                        Log.i(TAG, "绝对路径:" + media.getRealPath());
                         Log.i(TAG, "是否裁剪:" + media.isCut());
                         Log.i(TAG, "裁剪:" + media.getCutPath());
                         Log.i(TAG, "是否开启原图:" + media.isOriginal());
@@ -682,6 +684,9 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                 chooseMode = PictureMimeType.ofAudio();
                 cb_preview_audio.setVisibility(View.VISIBLE);
                 break;
+            case R.id.rb_system:
+                language = -1;
+                break;
             case R.id.rb_jpan:
                 language = LanguageConfig.JAPAN;
                 break;
@@ -699,6 +704,9 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                 break;
             case R.id.rb_fr:
                 language = LanguageConfig.FRANCE;
+                break;
+            case R.id.rb_spanish:
+                language = LanguageConfig.SPANISH;
                 break;
             case R.id.rb_crop_default:
                 aspect_ratio_x = 0;
@@ -852,13 +860,13 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         // 相册列表标题栏背景色
         mPictureParameterStyle.pictureTitleBarBackgroundColor = Color.parseColor("#FFFFFF");
         // 相册列表标题栏右侧上拉箭头
-        mPictureParameterStyle.pictureTitleUpResId = R.drawable.ic_orange_arrow_up;
+        mPictureParameterStyle.pictureTitleUpResId = R.drawable.picture_icon_orange_arrow_up;
         // 相册列表标题栏右侧下拉箭头
-        mPictureParameterStyle.pictureTitleDownResId = R.drawable.ic_orange_arrow_down;
+        mPictureParameterStyle.pictureTitleDownResId = R.drawable.picture_icon_orange_arrow_down;
         // 相册文件夹列表选中圆点
         mPictureParameterStyle.pictureFolderCheckedDotStyle = R.drawable.picture_orange_oval;
         // 相册返回箭头
-        mPictureParameterStyle.pictureLeftBackIcon = R.drawable.ic_back_arrow;
+        mPictureParameterStyle.pictureLeftBackIcon = R.drawable.picture_icon_back_arrow;
         // 标题栏字体颜色
         mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(getContext(), R.color.app_color_black);
         // 相册右侧取消按钮字体颜色  废弃 改用.pictureRightDefaultTextColor和.pictureRightDefaultTextColor
@@ -943,11 +951,11 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         // 相册右侧取消按钮字体颜色  废弃 改用.pictureRightDefaultTextColor和.pictureRightDefaultTextColor
         mPictureParameterStyle.pictureCancelTextColor = ContextCompat.getColor(getContext(), R.color.app_color_white);
         // 相册列表勾选图片样式
-        mPictureParameterStyle.pictureCheckedStyle = R.drawable.checkbox_num_selector;
+        mPictureParameterStyle.pictureCheckedStyle = R.drawable.picture_checkbox_num_selector;
         // 相册列表底部背景色
         mPictureParameterStyle.pictureBottomBgColor = ContextCompat.getColor(getContext(), R.color.picture_color_fa);
         // 已选数量圆点背景样式
-        mPictureParameterStyle.pictureCheckNumBgStyle = R.drawable.num_oval_blue;
+        mPictureParameterStyle.pictureCheckNumBgStyle = R.drawable.picture_num_oval_blue;
         // 相册列表底下预览文字色值(预览按钮可点击时的色值)
         mPictureParameterStyle.picturePreviewTextColor = ContextCompat.getColor(getContext(), R.color.picture_color_blue);
         // 相册列表底下不可预览文字色值(预览按钮不可点击时的色值)
@@ -1010,13 +1018,13 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         // 相册列表标题栏背景色
         mPictureParameterStyle.pictureTitleBarBackgroundColor = Color.parseColor("#FFFFFF");
         // 相册列表标题栏右侧上拉箭头
-        mPictureParameterStyle.pictureTitleUpResId = R.drawable.ic_orange_arrow_up;
+        mPictureParameterStyle.pictureTitleUpResId = R.drawable.picture_icon_orange_arrow_up;
         // 相册列表标题栏右侧下拉箭头
-        mPictureParameterStyle.pictureTitleDownResId = R.drawable.ic_orange_arrow_down;
+        mPictureParameterStyle.pictureTitleDownResId = R.drawable.picture_icon_orange_arrow_down;
         // 相册文件夹列表选中圆点
         mPictureParameterStyle.pictureFolderCheckedDotStyle = R.drawable.picture_orange_oval;
         // 相册返回箭头
-        mPictureParameterStyle.pictureLeftBackIcon = R.drawable.ic_back_arrow;
+        mPictureParameterStyle.pictureLeftBackIcon = R.drawable.picture_icon_back_arrow;
         // 标题栏字体颜色
         mPictureParameterStyle.pictureTitleTextColor = ContextCompat.getColor(getContext(), R.color.app_color_black);
         // 相册右侧取消按钮字体颜色  废弃 改用.pictureRightDefaultTextColor和.pictureRightDefaultTextColor

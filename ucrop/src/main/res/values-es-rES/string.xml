@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="ucrop_gif_tag" tools:override="true">gif</string>
+    <string name="ucrop_label_edit_photo" tools:override="true">Editar foto</string>
+    <string name="ucrop_label_original" tools:override="true">Original</string>
+    <string name="ucrop_menu_crop" tools:override="true">Recortar</string>
+</resources>

@@ -49,8 +49,8 @@ public class ImmersiveManage {
                     //5.0版本及以上
                     window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
                             | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-                    LightStatusBarUtils.setLightStatusBar(baseActivity, isMarginStatusBar
-                            , isMarginNavigationBar
+                    LightStatusBarUtils.setLightStatusBar(baseActivity, true
+                            , true
                             , statusBarColor == Color.TRANSPARENT
                             , isDarkStatusBarIcon);
 
@@ -60,20 +60,20 @@ public class ImmersiveManage {
                     window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
                             | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 
-                    LightStatusBarUtils.setLightStatusBar(baseActivity, isMarginStatusBar
-                            , isMarginNavigationBar
+                    LightStatusBarUtils.setLightStatusBar(baseActivity, false
+                            , false
                             , statusBarColor == Color.TRANSPARENT
                             , isDarkStatusBarIcon);
 
                     window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
 
-                } else if (!isMarginStatusBar && isMarginNavigationBar) {
+                } else if (!isMarginStatusBar) {
                     window.requestFeature(Window.FEATURE_NO_TITLE);
                     window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
                             | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-                    LightStatusBarUtils.setLightStatusBar(baseActivity, isMarginStatusBar
-                            , isMarginNavigationBar
+                    LightStatusBarUtils.setLightStatusBar(baseActivity, false
+                            , true
                             , statusBarColor == Color.TRANSPARENT
                             , isDarkStatusBarIcon);
 

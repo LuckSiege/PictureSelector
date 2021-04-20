@@ -2,10 +2,6 @@ package com.luck.picture.lib.tools;
 
 import android.content.Context;
 import android.net.Uri;
-import android.text.TextUtils;
-
-import com.luck.picture.lib.config.PictureSelectionConfig;
-
 import java.io.File;
 import java.io.OutputStream;
 import java.util.Objects;
@@ -32,14 +28,6 @@ public class AndroidQTransformUtils {
      * @return
      */
     public static String copyPathToAndroidQ(Context ctx, String url, int width, int height, String mineType, String customFileName) {
-        // 这里就是利用图片加载引擎的特性，因为图片加载器加载过了图片本地就有缓存，当然前提是用户设置了缓存策略
-        if (PictureSelectionConfig.cacheResourcesEngine != null) {
-            String cachePath = PictureSelectionConfig.cacheResourcesEngine.onCachePath(ctx, url);
-            if (!TextUtils.isEmpty(cachePath)) {
-                return cachePath;
-            }
-        }
-
         // 走普通的文件复制流程，拷贝至应用沙盒内来
         BufferedSource inBuffer = null;
         try {
@@ -62,7 +50,7 @@ public class AndroidQTransformUtils {
                 PictureFileUtils.close(inBuffer);
             }
         }
-        return null;
+        return "";
     }
 
     /**

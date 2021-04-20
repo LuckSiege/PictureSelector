@@ -62,6 +62,12 @@
         <item name="picture.crop.title.color">@color/app_color_black</item>
         <!--相册文件夹列表选中图标-->
         <item name="picture.folder_checked_dot">@drawable/picture_orange_oval</item>
+        <!--原图勾选样式-->
+        <item name="picture.original.check.style">@drawable/picture_original_checkbox</item>
+        <!--原图字体颜色-->
+        <item name="picture.original.text.color">@color/picture_color_53575e</item>
+        <!--标题栏高度-->
+        <item name="picture.titleBar.height">48dp</item>
     </style>
 
     <!--QQ数字风格样式，注意每一项都不能少-->
@@ -84,7 +90,7 @@
         <!--标题栏右边文字-->
         <item name="picture.right.textColor">@color/app_color_white</item>
         <!--图片列表勾选样式-->
-        <item name="picture.checked.style">@drawable/checkbox_num_selector</item>
+        <item name="picture.checked.style">@drawable/picture_checkbox_num_selector</item>
         <!--开启图片列表勾选数字模式,开启的话勾选样式要换-->
         <item name="picture.style.checkNumMode">true</item>
         <!--选择图片样式0/9-->
@@ -92,15 +98,16 @@
         <!--图片列表底部背景色-->
         <item name="picture.bottom.bg">@color/app_color_fa</item>
         <!--图片列表预览文字颜色-->
-        <item name="picture.preview.textColor">@color/app_color_blue</item>
+        <item name="picture.preview.textColor">@color/picture_list_blue_text_color</item>
         <!--图片列表已完成文字颜色-->
-        <item name="picture.complete.textColor">@color/app_color_blue</item>
+        <item name="picture.complete.textColor">@color/picture_list_blue_text_color</item>
         <!--图片已选数量圆点背景色-->
-        <item name="picture.num.style">@drawable/num_oval_blue</item>
+        <item name="picture.num.style">@drawable/picture_num_oval_blue</item>
         <!--预览界面标题文字颜色-->
         <item name="picture.ac_preview.title.textColor">@color/app_color_white</item>
         <!--预览界面已完成文字颜色-->
-        <item name="picture.ac_preview.complete.textColor">@color/app_color_blue</item>
+        <item name="picture.ac_preview.complete.textColor">@color/picture_list_blue_text_color
+        </item>
         <!--预览界面标题栏背景色-->
         <item name="picture.ac_preview.title.bg">@color/app_color_blue</item>
         <!--预览界面底部背景色-->
@@ -115,6 +122,16 @@
         <item name="picture.crop.title.color">@color/app_color_white</item>
         <!--相册文件夹列表选中图标-->
         <item name="picture.folder_checked_dot">@drawable/picture_orange_oval</item>
+        <!--原图勾选样式-->
+        <item name="picture.original.check.style">@drawable/picture_original_blue_checkbox</item>
+        <!--原图字体颜色-->
+        <item name="picture.original.text.color">@color/picture_color_blue</item>
+        <!--相册目录文件夹字体颜色-->
+        <item name="picture.folder.textColor">@color/picture_color_4d</item>
+        <!--相册目录文件夹字体大小-->
+        <item name="picture.folder.textSize">16sp</item>
+        <!--相册背景底色-->
+        <item name="picture.container.backgroundColor">@color/picture_color_white</item>
     </style>
 
 
@@ -170,6 +187,18 @@
         <item name="picture.crop.title.color">@color/app_color_black</item>
         <!--相册文件夹列表选中图标-->
         <item name="picture.folder_checked_dot">@drawable/picture_orange_oval</item>
+        <!--原图勾选样式-->
+        <item name="picture.original.check.style">@drawable/picture_original_checkbox</item>
+        <!--原图字体颜色-->
+        <item name="picture.original.text.color">@color/picture_color_53575e</item>
+        <!--相册目录文件夹字体颜色-->
+        <item name="picture.folder.textColor">@color/picture_color_4d</item>
+        <!--相册目录文件夹字体大小-->
+        <item name="picture.folder.textSize">16sp</item>
+        <!--相册背景底色-->
+        <item name="picture.container.backgroundColor">@color/picture_color_white</item>
+        <!--标题栏高度-->
+        <item name="picture.titleBar.height">48dp</item>
     </style>
 
 </resources>

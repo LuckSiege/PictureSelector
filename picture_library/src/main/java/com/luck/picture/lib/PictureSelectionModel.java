@@ -3,6 +3,7 @@ package com.luck.picture.lib;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
+import android.text.TextUtils;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.FloatRange;
@@ -24,6 +25,7 @@ import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.listener.OnVideoSelectedPlayCallback;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
+import com.luck.picture.lib.style.PictureSelectorUIStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
@@ -63,6 +65,24 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel theme(@StyleRes int themeStyleId) {
         selectionConfig.themeStyleId = themeStyleId;
+        return this;
+    }
+
+    /**
+     * Setting PictureSelector UI Style
+     *
+     * @param uiStyle <p>
+     *                {@link PictureSelectorUIStyle}
+     *                </p>
+     * @return
+     */
+    public PictureSelectionModel setPictureUIStyle(PictureSelectorUIStyle uiStyle) {
+        if (uiStyle != null) {
+            PictureSelectionConfig.uiStyle = uiStyle;
+            if (!selectionConfig.isWeChatStyle) {
+                selectionConfig.isWeChatStyle = PictureSelectionConfig.uiStyle.isNewSelectStyle;
+            }
+        }
         return this;
     }
 
@@ -125,6 +145,9 @@ public class PictureSelectionModel {
 
     /**
      * Only for Android version Q
+     * <p>
+     * 已废弃，没有存在的意义了，之前主要是为了解决在华为10系统上一直loading问题
+     * </p>
      *
      * @param cacheResourcesEngine Image Cache
      * @return
@@ -276,7 +299,7 @@ public class PictureSelectionModel {
 
 
     /**
-     * @param enablePreviewAudio Do you want to ic_play audio ?
+     * @param enablePreviewAudio {@link use isEnablePreviewAudio}
      * @return
      */
     @Deprecated
@@ -286,10 +309,9 @@ public class PictureSelectionModel {
     }
 
     /**
-     * @param enablePreviewAudio Do you want to ic_play audio ?
+     * @param enablePreviewAudio
      * @return
      */
-    @Deprecated
     public PictureSelectionModel isEnablePreviewAudio(boolean enablePreviewAudio) {
         selectionConfig.enablePreviewAudio = enablePreviewAudio;
         return this;
@@ -452,7 +474,7 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel maxVideoSelectNum(int maxVideoSelectNum) {
-        selectionConfig.maxVideoSelectNum = maxVideoSelectNum;
+        selectionConfig.maxVideoSelectNum = selectionConfig.chooseMode == PictureMimeType.ofVideo() ? 0 : maxVideoSelectNum;
         return this;
     }
 
@@ -572,12 +594,26 @@ public class PictureSelectionModel {
     }
 
     /**
-     * # alternative api cameraFileName(xxx.PNG);
+     * <p>
+     * if Android SDK >=Q Please use the video/mp4 or video/jpeg ... PictureMimeType.MP4_Q or PictureMimeType.PNG_Q
+     * else PictureMimeType.PNG or PictureMimeType.JPEG
+     * </p>
      *
      * @param suffixType PictureSelector media format
      * @return
      */
     public PictureSelectionModel imageFormat(String suffixType) {
+        if (SdkVersionUtils.checkedAndroid_Q() || SdkVersionUtils.checkedAndroid_R()) {
+            if (TextUtils.equals(suffixType, PictureMimeType.PNG)) {
+                suffixType = PictureMimeType.PNG_Q;
+            }
+            if (TextUtils.equals(suffixType, PictureMimeType.JPEG)) {
+                suffixType = PictureMimeType.JPEG_Q;
+            }
+            if (TextUtils.equals(suffixType, PictureMimeType.MP4)) {
+                suffixType = PictureMimeType.MP4_Q;
+            }
+        }
         selectionConfig.suffixType = suffixType;
         return this;
     }
@@ -927,7 +963,7 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel isBmp(boolean isBmp) {
-        selectionConfig.isWebp = isBmp;
+        selectionConfig.isBmp = isBmp;
         return this;
     }
 
@@ -1190,10 +1226,16 @@ public class PictureSelectionModel {
      * 动态设置裁剪主题样式
      *
      * @param style 裁剪页主题
+     *              <p>{@link PictureSelectorUIStyle}</>
      * @return
      */
+    @Deprecated
     public PictureSelectionModel setPictureCropStyle(PictureCropParameterStyle style) {
-        selectionConfig.cropStyle = style;
+        if (style != null) {
+            PictureSelectionConfig.cropStyle = style;
+        } else {
+            PictureSelectionConfig.cropStyle = PictureCropParameterStyle.ofDefaultCropStyle();
+        }
         return this;
     }
 
@@ -1201,10 +1243,19 @@ public class PictureSelectionModel {
      * 动态设置相册主题样式
      *
      * @param style 主题
+     *              <p>{@link PictureSelectorUIStyle}</>
      * @return
      */
+    @Deprecated
     public PictureSelectionModel setPictureStyle(PictureParameterStyle style) {
-        selectionConfig.style = style;
+        if (style != null) {
+            PictureSelectionConfig.style = style;
+            if (!selectionConfig.isWeChatStyle) {
+                selectionConfig.isWeChatStyle = style.isNewSelectStyle;
+            }
+        } else {
+            PictureSelectionConfig.style = PictureParameterStyle.ofDefaultStyle();
+        }
         return this;
     }
 
@@ -1215,7 +1266,11 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel setPictureWindowAnimationStyle(PictureWindowAnimationStyle windowAnimationStyle) {
-        selectionConfig.windowAnimationStyle = windowAnimationStyle;
+        if (windowAnimationStyle != null) {
+            PictureSelectionConfig.windowAnimationStyle = windowAnimationStyle;
+        } else {
+            PictureSelectionConfig.windowAnimationStyle = PictureWindowAnimationStyle.ofDefaultWindowAnimationStyle();
+        }
         return this;
     }
 
@@ -1303,11 +1358,8 @@ public class PictureSelectionModel {
             } else {
                 activity.startActivityForResult(intent, requestCode);
             }
-            PictureWindowAnimationStyle windowAnimationStyle = selectionConfig.windowAnimationStyle;
-            activity.overridePendingTransition(windowAnimationStyle != null &&
-                    windowAnimationStyle.activityEnterAnimation != 0 ?
-                    windowAnimationStyle.activityEnterAnimation :
-                    R.anim.picture_anim_enter, R.anim.picture_anim_fade_in);
+            PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.windowAnimationStyle;
+            activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.picture_anim_fade_in);
         }
     }
 
@@ -1371,11 +1423,9 @@ public class PictureSelectionModel {
             } else {
                 activity.startActivity(intent);
             }
-            PictureWindowAnimationStyle windowAnimationStyle = selectionConfig.windowAnimationStyle;
-            activity.overridePendingTransition(windowAnimationStyle != null &&
-                    windowAnimationStyle.activityEnterAnimation != 0 ?
-                    windowAnimationStyle.activityEnterAnimation :
-                    R.anim.picture_anim_enter, R.anim.picture_anim_fade_in);
+            PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.windowAnimationStyle;
+            activity.overridePendingTransition(
+                    windowAnimationStyle.activityEnterAnimation, R.anim.picture_anim_fade_in);
         }
     }
 
@@ -1409,11 +1459,8 @@ public class PictureSelectionModel {
             } else {
                 activity.startActivityForResult(intent, requestCode);
             }
-            PictureWindowAnimationStyle windowAnimationStyle = selectionConfig.windowAnimationStyle;
-            activity.overridePendingTransition(windowAnimationStyle != null &&
-                    windowAnimationStyle.activityEnterAnimation != 0 ?
-                    windowAnimationStyle.activityEnterAnimation :
-                    R.anim.picture_anim_enter, R.anim.picture_anim_fade_in);
+            PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.windowAnimationStyle;
+            activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.picture_anim_fade_in);
         }
     }
 
@@ -1425,10 +1472,7 @@ public class PictureSelectionModel {
      */
     public void openExternalPreview(int position, List<LocalMedia> medias) {
         if (selector != null) {
-            selector.externalPicturePreview(position, medias,
-                    selectionConfig.windowAnimationStyle != null &&
-                            selectionConfig.windowAnimationStyle.activityPreviewEnterAnimation != 0
-                            ? selectionConfig.windowAnimationStyle.activityPreviewEnterAnimation : 0);
+            selector.externalPicturePreview(position, medias, PictureSelectionConfig.windowAnimationStyle.activityPreviewEnterAnimation);
         } else {
             throw new NullPointerException("This PictureSelector is Null");
         }
@@ -1446,9 +1490,7 @@ public class PictureSelectionModel {
     public void openExternalPreview(int position, String directory_path, List<LocalMedia> medias) {
         if (selector != null) {
             selector.externalPicturePreview(position, directory_path, medias,
-                    selectionConfig.windowAnimationStyle != null &&
-                            selectionConfig.windowAnimationStyle.activityPreviewEnterAnimation != 0
-                            ? selectionConfig.windowAnimationStyle.activityPreviewEnterAnimation : 0);
+                    PictureSelectionConfig.windowAnimationStyle.activityPreviewEnterAnimation);
         } else {
             throw new NullPointerException("This PictureSelector is Null");
         }

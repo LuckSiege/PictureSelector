@@ -18,6 +18,7 @@ import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.listener.OnVideoSelectedPlayCallback;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
+import com.luck.picture.lib.style.PictureSelectorUIStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 
 import java.util.ArrayList;
@@ -30,42 +31,43 @@ import java.util.List;
  */
 
 public final class PictureSelectionConfig implements Parcelable {
-    public int chooseMode;
-    public boolean camera;
+    public int chooseMode = PictureMimeType.ofImage();
+    public boolean camera = false;
     public boolean isSingleDirectReturn;
-    public PictureParameterStyle style;
-    public PictureCropParameterStyle cropStyle;
-    public PictureWindowAnimationStyle windowAnimationStyle;
+    public static PictureSelectorUIStyle uiStyle;
+    public static PictureParameterStyle style;
+    public static PictureCropParameterStyle cropStyle;
+    public static PictureWindowAnimationStyle windowAnimationStyle = PictureWindowAnimationStyle.ofDefaultWindowAnimationStyle();
     public String compressSavePath;
     public String suffixType;
     public boolean focusAlpha;
     public String renameCompressFileName;
     public String renameCropFileName;
     public String specifiedFormat;
-    public int requestedOrientation;
-    public int buttonFeatures;
+    public int requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+    public int buttonFeatures = CustomCameraView.BUTTON_STATE_BOTH;
     public boolean isCameraAroundState;
     public boolean isAndroidQTransform;
     @StyleRes
-    public int themeStyleId;
-    public int selectionMode;
-    public int maxSelectNum;
-    public int minSelectNum;
-    public int maxVideoSelectNum;
-    public int minVideoSelectNum;
-    public int videoQuality;
-    public int cropCompressQuality;
+    public int themeStyleId = R.style.picture_default_style;
+    public int selectionMode = PictureConfig.MULTIPLE;
+    public int maxSelectNum = 9;
+    public int minSelectNum = 0;
+    public int maxVideoSelectNum = 1;
+    public int minVideoSelectNum = 0;
+    public int videoQuality = 1;
+    public int cropCompressQuality = 90;
     public int videoMaxSecond;
     public int videoMinSecond;
-    public int recordVideoSecond;
+    public int recordVideoSecond = 60;
     public int recordVideoMinSecond;
-    public int minimumCompressSize;
-    public int imageSpanCount;
+    public int minimumCompressSize = PictureConfig.MAX_COMPRESS_SIZE;
+    public int imageSpanCount = PictureConfig.DEFAULT_SPAN_COUNT;
     public int aspect_ratio_x;
     public int aspect_ratio_y;
     public int cropWidth;
     public int cropHeight;
-    public int compressQuality;
+    public int compressQuality = 80;
     public float filterFileSize;
     public int language;
     public boolean isMultipleRecyclerAnimation;
@@ -75,7 +77,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean zoomAnim;
     public boolean isCompress;
     public boolean isOriginalControl;
-    public boolean isCamera;
+    public boolean isCamera = true;
     public boolean isGif;
     public boolean isWebp;
     public boolean isBmp;
@@ -106,9 +108,9 @@ public final class PictureSelectionConfig implements Parcelable {
     public UCropOptions uCropOptions;
     public static ImageEngine imageEngine;
     public static CacheResourcesEngine cacheResourcesEngine;
-    public static OnResultCallbackListener listener;
-    public static OnVideoSelectedPlayCallback customVideoPlayCallback;
-    public static OnCustomImagePreviewCallback onCustomImagePreviewCallback;
+    public static OnResultCallbackListener<LocalMedia> listener;
+    public static OnVideoSelectedPlayCallback<LocalMedia> customVideoPlayCallback;
+    public static OnCustomImagePreviewCallback<LocalMedia> onCustomImagePreviewCallback;
     public static OnCustomCameraInterfaceListener onCustomCameraInterfaceListener;
     public List<LocalMedia> selectionMedias;
     public List<String> filterMimeType;
@@ -144,17 +146,17 @@ public final class PictureSelectionConfig implements Parcelable {
 
     public String originalPath;
     public String cameraPath;
-    public int cameraMimeType;
-    public int pageSize;
-    public boolean isPageStrategy;
+    public int cameraMimeType = -1;
+    public int pageSize = PictureConfig.MAX_PAGE_SIZE;
+    public boolean isPageStrategy = true;
     public boolean isFilterInvalidFile;
     public boolean isMaxSelectEnabledMask;
-    public int animationMode;
-    public boolean isAutomaticTitleRecyclerTop;
+    public int animationMode = -1;
+    public boolean isAutomaticTitleRecyclerTop = true;
     public boolean isCallbackMode;
     public boolean isAndroidQChangeWH;
     public boolean isAndroidQChangeVideoWH;
-    public boolean isQuickCapture;
+    public boolean isQuickCapture = true;
     /**
      * 内测专用###########
      */
@@ -179,9 +181,12 @@ public final class PictureSelectionConfig implements Parcelable {
         camera = false;
         themeStyleId = R.style.picture_default_style;
         selectionMode = PictureConfig.MULTIPLE;
+        uiStyle = null;
+        style = null;
+        cropStyle = null;
         maxSelectNum = 9;
         minSelectNum = 0;
-        maxVideoSelectNum = 0;
+        maxVideoSelectNum = 1;
         minVideoSelectNum = 0;
         videoQuality = 1;
         language = -1;
@@ -192,16 +197,13 @@ public final class PictureSelectionConfig implements Parcelable {
         recordVideoSecond = 60;
         recordVideoMinSecond = 0;
         compressQuality = 80;
-        minimumCompressSize = PictureConfig.MAX_COMPRESS_SIZE;
-        imageSpanCount = 4;
+        imageSpanCount = PictureConfig.DEFAULT_SPAN_COUNT;
         isCompress = false;
         isOriginalControl = false;
         aspect_ratio_x = 0;
         aspect_ratio_y = 0;
         cropWidth = 0;
         cropHeight = 0;
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
-        buttonFeatures = CustomCameraView.BUTTON_STATE_BOTH;  //初始化按钮为可录制可拍照
         isCameraAroundState = false;
         isWithVideoImage = false;
         isAndroidQTransform = false;
@@ -249,9 +251,6 @@ public final class PictureSelectionConfig implements Parcelable {
         renameCropFileName = "";
         selectionMedias = new ArrayList<>();
         uCropOptions = null;
-        style = null;
-        cropStyle = null;
-        windowAnimationStyle = null;
         titleBarBackgroundColor = 0;
         pictureStatusBarColor = 0;
         cropTitleBarBackgroundColor = 0;
@@ -322,9 +321,6 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(this.chooseMode);
         dest.writeByte(this.camera ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isSingleDirectReturn ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(this.style, flags);
-        dest.writeParcelable(this.cropStyle, flags);
-        dest.writeParcelable(this.windowAnimationStyle, flags);
         dest.writeString(this.compressSavePath);
         dest.writeString(this.suffixType);
         dest.writeByte(this.focusAlpha ? (byte) 1 : (byte) 0);
@@ -429,9 +425,6 @@ public final class PictureSelectionConfig implements Parcelable {
         this.chooseMode = in.readInt();
         this.camera = in.readByte() != 0;
         this.isSingleDirectReturn = in.readByte() != 0;
-        this.style = in.readParcelable(PictureParameterStyle.class.getClassLoader());
-        this.cropStyle = in.readParcelable(PictureCropParameterStyle.class.getClassLoader());
-        this.windowAnimationStyle = in.readParcelable(PictureWindowAnimationStyle.class.getClassLoader());
         this.compressSavePath = in.readString();
         this.suffixType = in.readString();
         this.focusAlpha = in.readByte() != 0;

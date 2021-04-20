@@ -33,6 +33,7 @@ dependencies {
     implementation "androidx.concurrent:concurrent-futures:${cfgs.futures_version}"
     implementation "androidx.annotation:annotation-experimental:${cfgs.experimental_version}"
     implementation "com.squareup.okio:okio:${cfgs.okio_version}"
+    implementation "androidx.exifinterface:exifinterface:${cfgs.androidx_exifinterface_version}"
     implementation "androidx.camera:camera-lifecycle:${cfgs.camerax_version}"
     implementation "androidx.localbroadcastmanager:localbroadcastmanager:${cfgs.localbroadcastmanager}"
     implementation "androidx.camera:camera-view:${cfgs.camerax_view}"

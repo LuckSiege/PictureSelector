@@ -1,7 +1,6 @@
 package com.yalantis.ucrop;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,6 +16,7 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.yalantis.ucrop.model.AspectRatio;
 import com.yalantis.ucrop.model.CutInfo;
@@ -37,7 +37,7 @@ public class UCrop {
     public static final int RESULT_ERROR = 96;
     public static final int MIN_SIZE = 10;
 
-    private static final String EXTRA_PREFIX = BuildConfig.APPLICATION_ID;
+    private static final String EXTRA_PREFIX = "com.yalantis.ucrop";
 
     public static final String EXTRA_INPUT_URI = EXTRA_PREFIX + ".InputUri";
     public static final String EXTRA_OUTPUT_URI = EXTRA_PREFIX + ".OutputUri";
@@ -710,7 +710,9 @@ public class UCrop {
          * @param navBarColor set NavBar Color
          */
         public void setNavBarColor(@ColorInt int navBarColor) {
-            mOptionBundle.putInt(EXTRA_NAV_BAR_COLOR, navBarColor);
+            if (navBarColor != 0) {
+                mOptionBundle.putInt(EXTRA_NAV_BAR_COLOR, navBarColor);
+            }
         }
 
         /**

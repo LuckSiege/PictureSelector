@@ -26,15 +26,15 @@
         android:layout_height="48dp"
         android:background="@color/picture_color_transparent"
         android:scaleType="centerInside"
-        android:src="?attr/picture.preview.leftBack.icon" />
+        android:src="@drawable/picture_icon_back" />
 
     <TextView
         android:id="@+id/tv_confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/picture_send_button_bg"
         android:text="@string/picture_confirm"
         android:textColor="@color/picture_color_white"

@@ -74,7 +74,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     private String downloadPath;
     private String mMimeType;
     private ImageButton ibDelete;
-    private View titleViewBg;
+    private View mTitleBar;
 
     @Override
     public int getResourceId() {
@@ -84,16 +84,19 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     @Override
     protected void initWidgets() {
         super.initWidgets();
-        titleViewBg = findViewById(R.id.titleViewBg);
+        mTitleBar = findViewById(R.id.titleBar);
         tvTitle = findViewById(R.id.picture_title);
         ibLeftBack = findViewById(R.id.left_back);
         ibDelete = findViewById(R.id.ib_delete);
         viewPager = findViewById(R.id.preview_pager);
         position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
-        images = (List<LocalMedia>) getIntent().getSerializableExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
+        List<LocalMedia> mediaList = getIntent().getParcelableArrayListExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
+        if (mediaList != null && mediaList.size() > 0) {
+            images.addAll(mediaList);
+        }
         ibLeftBack.setOnClickListener(this);
         ibDelete.setOnClickListener(this);
-        ibDelete.setVisibility(config.style != null ? config.style.pictureExternalPreviewGonePreviewDelete
+        ibDelete.setVisibility(PictureSelectionConfig.style != null ? PictureSelectionConfig.style.pictureExternalPreviewGonePreviewDelete
                 ? View.VISIBLE : View.GONE : View.GONE);
         initViewPageAdapterData();
     }
@@ -103,28 +106,28 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
      */
     @Override
     public void initPictureSelectorStyle() {
-        if (config.style != null) {
-            if (config.style.pictureTitleTextColor != 0) {
-                tvTitle.setTextColor(config.style.pictureTitleTextColor);
+        if (PictureSelectionConfig.style != null) {
+            if (PictureSelectionConfig.style.pictureTitleTextColor != 0) {
+                tvTitle.setTextColor(PictureSelectionConfig.style.pictureTitleTextColor);
             }
-            if (config.style.pictureTitleTextSize != 0) {
-                tvTitle.setTextSize(config.style.pictureTitleTextSize);
+            if (PictureSelectionConfig.style.pictureTitleTextSize != 0) {
+                tvTitle.setTextSize(PictureSelectionConfig.style.pictureTitleTextSize);
             }
-            if (config.style.pictureLeftBackIcon != 0) {
-                ibLeftBack.setImageResource(config.style.pictureLeftBackIcon);
+            if (PictureSelectionConfig.style.pictureLeftBackIcon != 0) {
+                ibLeftBack.setImageResource(PictureSelectionConfig.style.pictureLeftBackIcon);
             }
-            if (config.style.pictureExternalPreviewDeleteStyle != 0) {
-                ibDelete.setImageResource(config.style.pictureExternalPreviewDeleteStyle);
+            if (PictureSelectionConfig.style.pictureExternalPreviewDeleteStyle != 0) {
+                ibDelete.setImageResource(PictureSelectionConfig.style.pictureExternalPreviewDeleteStyle);
             }
-            if (config.style.pictureTitleBarBackgroundColor != 0) {
-                titleViewBg.setBackgroundColor(colorPrimary);
+            if (PictureSelectionConfig.style.pictureTitleBarBackgroundColor != 0) {
+                mTitleBar.setBackgroundColor(colorPrimary);
             }
         } else {
             int previewBgColor = AttrsUtils.getTypeValueColor(getContext(), R.attr.picture_ac_preview_title_bg);
             if (previewBgColor != 0) {
-                titleViewBg.setBackgroundColor(previewBgColor);
+                mTitleBar.setBackgroundColor(previewBgColor);
             } else {
-                titleViewBg.setBackgroundColor(colorPrimary);
+                mTitleBar.setBackgroundColor(colorPrimary);
             }
         }
     }
@@ -161,7 +164,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             finish();
             exitAnimation();
         } else if (id == R.id.ib_delete) {
-            if (images != null && images.size() > 0) {
+            if (images.size() > 0) {
                 int currentItem = viewPager.getCurrentItem();
                 images.remove(currentItem);
                 adapter.removeCacheView(currentItem);
@@ -275,12 +278,12 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 longImageView.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
                 // 压缩过的gif就不是gif了
                 if (isGif && !media.isCompressed()) {
-                    if (config != null && PictureSelectionConfig.imageEngine != null) {
+                    if (PictureSelectionConfig.imageEngine != null) {
                         PictureSelectionConfig.imageEngine.loadAsGifImage
                                 (getContext(), path, imageView);
                     }
                 } else {
-                    if (config != null && PictureSelectionConfig.imageEngine != null) {
+                    if (PictureSelectionConfig.imageEngine != null) {
                         if (isHttp) {
                             // 网络图片
                             PictureSelectionConfig.imageEngine.loadImage(contentView.getContext(), path,
@@ -371,7 +374,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     private void displayLongPic(Uri uri, SubsamplingScaleImageView longImg) {
         longImg.setQuickScaleEnabled(true);
         longImg.setZoomEnabled(true);
-        longImg.setPanEnabled(true);
         longImg.setDoubleTapZoomDuration(100);
         longImg.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
         longImg.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
@@ -596,15 +598,17 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (SdkVersionUtils.checkedAndroid_Q()) {
+            finishAfterTransition();
+        } else {
+            super.onBackPressed();
+        }
         finish();
         exitAnimation();
     }
 
     private void exitAnimation() {
-        overridePendingTransition(R.anim.picture_anim_fade_in, config.windowAnimationStyle != null
-                && config.windowAnimationStyle.activityPreviewExitAnimation != 0
-                ? config.windowAnimationStyle.activityPreviewExitAnimation : R.anim.picture_anim_exit);
+        overridePendingTransition(R.anim.picture_anim_fade_in, PictureSelectionConfig.windowAnimationStyle.activityPreviewExitAnimation);
     }
 
     @Override
@@ -619,17 +623,14 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE:
-                // 存储权限
-                for (int i = 0; i < grantResults.length; i++) {
-                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        showDownLoadDialog();
-                    } else {
-                        ToastUtils.s(getContext(), getString(R.string.picture_jurisdiction));
-                    }
+        if (requestCode == PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE) {// 存储权限
+            for (int grantResult : grantResults) {
+                if (grantResult == PackageManager.PERMISSION_GRANTED) {
+                    showDownLoadDialog();
+                } else {
+                    ToastUtils.s(getContext(), getString(R.string.picture_jurisdiction));
                 }
-                break;
+            }
         }
     }
 }

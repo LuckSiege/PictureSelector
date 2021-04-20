@@ -9,7 +9,7 @@
     <string name="picture_message_video_max_num">你最多只能选择%1$s个视频</string>
     <string name="picture_message_audio_max_num">你最多只能选择%1$s个音频</string>
     <string name="picture_preview">预览</string>
-    <string name="picture_please">请稍候...</string>
+    <string name="picture_please">请稍候…</string>
     <string name="picture_done_front_num">%1$d/%2$d 完成</string>
     <string name="picture_completed">已完成</string>
     <string name="picture_done">完 成</string>
@@ -49,7 +49,7 @@
     <string name="picture_send_num">完成(%1$d/%2$d)</string>
     <string name="picture_preview_num">预览(%1$d)</string>
     <string name="picture_select">选择</string>
-    <string name="picture_data_exception">获取相册数据异常...</string>
+    <string name="picture_data_exception">获取相册数据异常…</string>
     <string name="picture_recording_time_is_short">录制时间过短</string>
     <string name="picture_photo_camera">单击拍照，长按摄像</string>
     <string name="picture_photo_pictures">单击拍照</string>

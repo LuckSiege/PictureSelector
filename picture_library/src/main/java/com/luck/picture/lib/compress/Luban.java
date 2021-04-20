@@ -17,6 +17,8 @@ import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -153,12 +155,10 @@ public class Luban implements Handler.Callback {
                     index++;
                     mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_START));
                     String newPath;
-                    if (path.open() != null) {
-                        if (path.getMedia().isCompressed()
-                                && !TextUtils.isEmpty(path.getMedia().getCompressPath())) {
+                    if (path.open() != null && path.getMedia() != null) {
+                        if (path.getMedia().isCompressed() && !TextUtils.isEmpty(path.getMedia().getCompressPath())) {
                             // 压缩过的图片不重复压缩  注意:如果是开启了裁剪 就算压缩过也要重新压缩
                             boolean exists = !path.getMedia().isCut() && new File(path.getMedia().getCompressPath()).exists();
-
                             File result = exists ? new File(path.getMedia().getCompressPath())
                                     : compress(context, path);
                             newPath = result.getAbsolutePath();
@@ -185,7 +185,7 @@ public class Luban implements Handler.Callback {
                     } else {
                         mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_ERROR, new IOException()));
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_ERROR, e));
                 }
             });
@@ -205,12 +205,15 @@ public class Luban implements Handler.Callback {
         }
     }
 
-    private List<File> get(Context context) throws IOException {
+    private List<File> get(Context context) throws Exception {
         List<File> results = new ArrayList<>();
         Iterator<InputStreamProvider> iterator = mStreamProviders.iterator();
 
         while (iterator.hasNext()) {
             InputStreamProvider provider = iterator.next();
+            if (provider.getMedia() == null) {
+                continue;
+            }
             InputStream inputStream = provider.open();
             if (inputStream != null) {
                 if (provider.getMedia().isCompressed()
@@ -234,7 +237,7 @@ public class Luban implements Handler.Callback {
         return results;
     }
 
-    private File compress(Context context, InputStreamProvider path) throws IOException {
+    private File compress(Context context, InputStreamProvider path) throws Exception {
         try {
             return compressRealLocalMedia(context, path);
         } finally {
@@ -271,12 +274,9 @@ public class Luban implements Handler.Callback {
         return result;
     }
 
-    private File compressRealLocalMedia(Context context, InputStreamProvider path) throws IOException {
-        File result = null;
+    private File compressRealLocalMedia(Context context, InputStreamProvider path) throws Exception {
+        File result;
         LocalMedia media = path.getMedia();
-        if (media == null) {
-            throw new NullPointerException("Luban Compress LocalMedia Can't be empty");
-        }
         String newPath = media.isCut() && !TextUtils.isEmpty(media.getCutPath()) ? media.getCutPath() : media.getRealPath();
         String suffix = Checker.SINGLE.extSuffix(media.getMimeType());
         File outFile = getImageCacheFile(context, path, TextUtils.isEmpty(suffix) ? Checker.SINGLE.extSuffix(path) : suffix);
@@ -289,7 +289,6 @@ public class Luban implements Handler.Callback {
         if (outFile.exists()) {
             return outFile;
         }
-
         if (mCompressionPredicate != null) {
             if (Checker.SINGLE.extSuffix(path).startsWith(".gif")) {
                 // GIF without compression
@@ -299,9 +298,7 @@ public class Luban implements Handler.Callback {
                     } else {
                         String androidQToPath = AndroidQTransformUtils.copyPathToAndroidQ(context, path.getPath(),
                                 media.getWidth(), media.getHeight(), media.getMimeType(), filename);
-                        if (!TextUtils.isEmpty(androidQToPath)) {
-                            result = new File(androidQToPath);
-                        }
+                        result = new File(androidQToPath);
                     }
                 } else {
                     result = new File(newPath);
@@ -309,14 +306,20 @@ public class Luban implements Handler.Callback {
             } else {
                 boolean isCompress = Checker.SINGLE.needCompressToLocalMedia(mLeastCompressSize, newPath);
                 if (mCompressionPredicate.apply(newPath) && isCompress) {
-                    // 压缩
                     result = new Engine(path, outFile, focusAlpha, compressQuality).compress();
                 } else {
                     if (isCompress) {
-                        // 压缩
                         result = new Engine(path, outFile, focusAlpha, compressQuality).compress();
                     } else {
-                        result = new File(newPath);
+                        // 这种情况判断一下，如果是小于设置的图片压缩阀值，再Android 10以上做下拷贝的处理
+                        if (SdkVersionUtils.checkedAndroid_Q()) {
+                            String newFilePath = media.isCut() ? media.getCutPath() :
+                                    AndroidQTransformUtils.copyPathToAndroidQ(context,
+                                            path.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), filename);
+                            result = new File(TextUtils.isEmpty(newFilePath) ? newPath : newFilePath);
+                        } else {
+                            result = new File(newPath);
+                        }
                     }
                 }
             }
@@ -327,19 +330,24 @@ public class Luban implements Handler.Callback {
                     String newFilePath = media.isCut() ? media.getCutPath() :
                             AndroidQTransformUtils.copyPathToAndroidQ(context,
                                     path.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), filename);
-                    if (!TextUtils.isEmpty(newFilePath)) {
-                        result = new File(newFilePath);
-                    }
+                    result = new File(TextUtils.isEmpty(newFilePath) ? newPath : newFilePath);
                 } else {
                     result = new File(newPath);
                 }
             } else {
                 boolean isCompress = Checker.SINGLE.needCompressToLocalMedia(mLeastCompressSize, newPath);
                 if (isCompress) {
-                    // 压缩
                     result = new Engine(path, outFile, focusAlpha, compressQuality).compress();
                 } else {
-                    result = new File(newPath);
+                    // 这种情况判断一下，如果是小于设置的图片压缩阀值，再Android 10以上做下拷贝的处理
+                    if (SdkVersionUtils.checkedAndroid_Q()) {
+                        String newFilePath = media.isCut() ? media.getCutPath() :
+                                AndroidQTransformUtils.copyPathToAndroidQ(context,
+                                        path.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), filename);
+                        result = new File(TextUtils.isEmpty(newFilePath) ? newPath : newFilePath);
+                    } else {
+                        result = new File(newPath);
+                    }
                 }
             }
         }
@@ -347,7 +355,7 @@ public class Luban implements Handler.Callback {
     }
 
     @Override
-    public boolean handleMessage(Message msg) {
+    public boolean handleMessage(@NotNull Message msg) {
         if (mCompressListener == null) return false;
 
         switch (msg.what) {
@@ -379,14 +387,12 @@ public class Luban implements Handler.Callback {
         private List<String> mPaths;
         private List<LocalMedia> mediaList;
         private int dataCount;
-        private boolean isAndroidQ;
 
         Builder(Context context) {
             this.context = context;
             this.mPaths = new ArrayList<>();
             this.mediaList = new ArrayList<>();
             this.mStreamProviders = new ArrayList<>();
-            this.isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         }
 
         private Luban build() {
@@ -635,7 +641,7 @@ public class Luban implements Handler.Callback {
          *
          * @return the thumb image file list
          */
-        public List<File> get() throws IOException {
+        public List<File> get() throws Exception {
             return build().get(context);
         }
     }

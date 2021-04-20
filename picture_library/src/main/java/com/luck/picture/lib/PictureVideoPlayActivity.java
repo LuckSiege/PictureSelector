@@ -19,6 +19,7 @@ import android.widget.VideoView;
 
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 
@@ -64,9 +65,9 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
 
     @Override
     protected void initPictureSelectorStyle() {
-        if (config.style != null) {
-            if (config.style.pictureLeftBackIcon != 0) {
-                ibLeftBack.setImageResource(config.style.pictureLeftBackIcon);
+        if (PictureSelectionConfig.style != null) {
+            if (PictureSelectionConfig.style.pictureLeftBackIcon != 0) {
+                ibLeftBack.setImageResource(PictureSelectionConfig.style.pictureLeftBackIcon);
             }
         }
     }
@@ -86,7 +87,7 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
             videoPath = media.getPath();
         }
         if (TextUtils.isEmpty(videoPath)) {
-            closeActivity();
+            exit();
             return;
         }
         ibLeftBack = findViewById(R.id.pictureLeftBack);
@@ -180,14 +181,12 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
 
     @Override
     public void onBackPressed() {
-        if (config.windowAnimationStyle != null
-                && config.windowAnimationStyle.activityPreviewExitAnimation != 0) {
+        if (PictureSelectionConfig.windowAnimationStyle != null
+                && PictureSelectionConfig.windowAnimationStyle.activityPreviewExitAnimation != 0) {
             finish();
-            overridePendingTransition(0, config.windowAnimationStyle != null
-                    && config.windowAnimationStyle.activityPreviewExitAnimation != 0 ?
-                    config.windowAnimationStyle.activityPreviewExitAnimation : R.anim.picture_anim_exit);
+            overridePendingTransition(0, PictureSelectionConfig.windowAnimationStyle.activityPreviewExitAnimation);
         } else {
-            closeActivity();
+            exit();
         }
     }
 

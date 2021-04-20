@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -94,8 +95,10 @@ public class PictureLanguageUtils {
         Configuration config = resources.getConfiguration();
         DisplayMetrics dm = resources.getDisplayMetrics();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            config.setLocale(config.locale);
+            config.setLocale(Locale.getDefault());
             context.createConfigurationContext(config);
+        } else {
+            config.locale = Locale.getDefault();
         }
         resources.updateConfiguration(config, dm);
     }
