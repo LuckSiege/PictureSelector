@@ -6,6 +6,7 @@
     <color name="picture_color_blue">#7D7DFF</color>
     <color name="picture_color_light_grey">#999999</color>
     <color name="picture_color_a83">#a8333333</color>
+    <color name="picture_color_3">#333333</color>
     <color name="picture_color_70">#70000000</color>
     <color name="picture_color_80">#80000000</color>
     <color name="picture_color_20">#20000000</color>
@@ -36,4 +37,5 @@
     <color name="picture_color_half_white">#99FFFFFF</color>
     <color name="picture_color_ff572e">#ff572e</color>
     <color name="picture_color_529BeA">#529BeA</color>
+    <color name="red_ff6500">#ff6500</color>
 </resources>

@@ -113,6 +113,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static OnCustomImagePreviewCallback<LocalMedia> onCustomImagePreviewCallback;
     public static OnCustomCameraInterfaceListener onCustomCameraInterfaceListener;
     public List<LocalMedia> selectionMedias;
+    public List<String> filterMimeType;
     public String cameraFileName;
     public boolean isCheckOriginalImage;
     @Deprecated
@@ -163,8 +164,20 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isFallbackVersion2;
     public boolean isFallbackVersion3;
 
+    //点击下一步的文案提示 例如 最多可选35个视频等等
+    public String selectMaxPrompt;
+    //是否仅仅展示Video
+    public boolean isOnlyVideo;
+    //是否可以预览图片或者视频
+    public boolean isCanPreView;
+    //点击item 是否可以展开item 默认是true
+    public boolean isShowPreView;
+    //发送消息的图片选择
+    public boolean isMessageStyle;
+
     protected void initDefaultValue() {
         chooseMode = PictureMimeType.ofImage();
+        filterMimeType = new ArrayList<>();
         camera = false;
         themeStyleId = R.style.picture_default_style;
         selectionMode = PictureConfig.MULTIPLE;
@@ -265,6 +278,8 @@ public final class PictureSelectionConfig implements Parcelable {
         isAndroidQChangeWH = true;
         isAndroidQChangeVideoWH = false;
         isQuickCapture = true;
+        isShowPreView = true;
+        isMessageStyle = false;
     }
 
     public static PictureSelectionConfig getInstance() {

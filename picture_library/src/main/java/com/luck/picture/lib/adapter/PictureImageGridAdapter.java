@@ -555,6 +555,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     return;
                 }
             }
+
         } else {
             if (!TextUtils.isEmpty(mimeType)) {
                 boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, image.getMimeType());
@@ -701,6 +702,29 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
 
         selectImage(contentHolder, !isChecked);
+        if (imageSelectChangedListener != null) {
+            imageSelectChangedListener.onChange(selectData);
+        }
+    }
+
+
+
+    public void changeCheckboxState(LocalMedia image) {
+        int count = selectData.size();
+
+        for (int i = 0; i < count; i++) {
+            LocalMedia media = selectData.get(i);
+            if (media == null || TextUtils.isEmpty(media.getPath())) {
+                continue;
+            }
+            if (media.getPath().equals(image.getPath())
+                    || media.getId() == image.getId()) {
+                selectData.remove(media);
+                subSelectPosition();
+                break;
+            }
+        }
+        notifyDataSetChanged();
         if (imageSelectChangedListener != null) {
             imageSelectChangedListener.onChange(selectData);
         }

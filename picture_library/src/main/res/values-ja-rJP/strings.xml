@@ -60,4 +60,7 @@
     <string name="picture_go_setting">設定</string>
     <string name="picture_know">はい</string>
     <string name="picture_data_null">データがありません…</string>
+    <string name="no_photos_available">No photos available</string>
+    <string name="no_videos_available">No videos available</string>
+    <string name="send">Send</string>
 </resources>

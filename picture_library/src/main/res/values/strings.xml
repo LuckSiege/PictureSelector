@@ -60,4 +60,10 @@
     <string name="picture_go_setting">去设置</string>
     <string name="picture_know">我知道了</string>
     <string name="picture_data_null">这里空空如也…</string>
+    <string name="uploading_this_video_is_not_supported_please_convert_to_MP4_file">uploading this video is not supported, please convert to MP4 file</string>
+    <string name="sorry_please_convert_your_video_to_MP4_or_MOV_format">Sorry, please convert your video to MP4 or MOV format.</string>
+    <string name="no_photos_available">No photos available</string>
+    <string name="no_videos_available">No videos available</string>
+    <string name="no_photos_or_videos_available">No photos or videos available.</string>
+    <string name="send">Send</string>
 </resources>

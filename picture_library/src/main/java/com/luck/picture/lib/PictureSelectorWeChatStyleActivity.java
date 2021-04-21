@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
@@ -24,6 +25,8 @@ import java.util.List;
  */
 public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity {
     private RelativeLayout rlAlbum;
+    private RelativeLayout selectButtomLayout;
+    private TextView mPictureSendView;
 
     @Override
     public int getResourceId() {
@@ -34,8 +37,15 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
     protected void initWidgets() {
         super.initWidgets();
         rlAlbum = findViewById(R.id.rlAlbum);
+
+        mPictureSendView = findViewById(R.id.picture_send);
+        selectButtomLayout = findViewById(R.id.select_buttom_layout);
+        mPictureSendView.setOnClickListener(this);
+        mPictureSendView.setText(getString(R.string.picture_send));
+
         mTvPictureRight.setOnClickListener(this);
         mTvPictureRight.setText(getString(R.string.picture_send));
+
         mTvPicturePreview.setTextSize(16);
         mCbOriginal.setTextSize(16);
         boolean isChooseMode = config.selectionMode ==
@@ -49,6 +59,12 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             } else {
                 lp.addRule(RelativeLayout.RIGHT_OF, R.id.pictureLeftBack);
             }
+        }
+
+        if (config.isMessageStyle) {
+            selectButtomLayout.setVisibility(View.GONE);
+        } else {
+            selectButtomLayout.setVisibility(View.VISIBLE);
         }
     }
 

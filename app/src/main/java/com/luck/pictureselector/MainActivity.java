@@ -427,6 +427,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onAddPicClick() {
             boolean mode = cb_mode.isChecked();
             if (mode) {
+
+                List<String> filterMimeType = new ArrayList<>();
+                filterMimeType.add("video/mp4");
+                filterMimeType.add("video/mov");
+                filterMimeType.add("image/jpeg");
+                filterMimeType.add("image/png");
+
                 // 进入相册 以下是例子：不需要的api可以不写
                 PictureSelector.create(MainActivity.this)
                         .openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
@@ -814,9 +821,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 chooseMode = PictureMimeType.ofAudio();
                 cb_preview_audio.setVisibility(View.VISIBLE);
                 break;
-            case R.id.rb_system:
-                language = -1;
-                break;
             case R.id.rb_jpan:
                 language = LanguageConfig.JAPAN;
                 break;
@@ -834,9 +838,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.rb_fr:
                 language = LanguageConfig.FRANCE;
-                break;
-            case R.id.rb_spanish:
-                language = LanguageConfig.SPANISH;
                 break;
             case R.id.rb_crop_default:
                 aspect_ratio_x = 0;
@@ -1257,9 +1258,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 是否开启类似QQ相册带数字选择风格
         mPictureParameterStyle.isOpenCheckNumStyle = true;
         // 状态栏背景色
-        mPictureParameterStyle.pictureStatusBarColor = Color.parseColor("#393a3e");
+        mPictureParameterStyle.pictureStatusBarColor = Color.parseColor("#ffffff");
         // 相册列表标题栏背景色
-        mPictureParameterStyle.pictureTitleBarBackgroundColor = Color.parseColor("#393a3e");
+        mPictureParameterStyle.pictureTitleBarBackgroundColor = Color.parseColor("#ffffff");
         // 相册父容器背景色
         mPictureParameterStyle.pictureContainerBackgroundColor = ContextCompat.getColor(getContext(), R.color.app_color_black);
         // 相册列表标题栏右侧上拉箭头

@@ -34,7 +34,6 @@ android {
 
         debug {
             minifyEnabled false
-            signingConfig signingConfigs.pictureSelectorKey
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 

@@ -61,4 +61,7 @@
     <string name="picture_photo_recording">Imagerie</string>
     <string name="picture_know">Je sais</string>
     <string name="picture_data_null">Pas de données…</string>
+    <string name="no_photos_available">No photos available</string>
+    <string name="no_videos_available">No videos available</string>
+    <string name="send">Send</string>
 </resources>

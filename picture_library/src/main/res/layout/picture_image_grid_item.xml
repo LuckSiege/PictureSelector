@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.luck.picture.lib.widget.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:background="@color/picture_color_white"
     android:layout_height="wrap_content">
 
     <ImageView
@@ -16,8 +17,8 @@
         android:layout_alignParentEnd="true"
         android:layout_margin="8dp"
         android:gravity="center"
+        android:textColor="@color/picture_color_3"
         android:background="@drawable/picture_checkbox_selector"
-        android:textColor="@color/picture_color_white"
         android:textSize="12sp" />
 
     <View
@@ -56,14 +57,14 @@
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_alignParentBottom="true"
+        android:gravity="end"
         android:background="@drawable/picture_icon_shadow_bg"
-        android:drawableLeft="@drawable/picture_icon_video"
         android:drawablePadding="5dp"
-        android:gravity="center_vertical"
-        android:paddingLeft="5dp"
+        android:paddingRight="8dp"
         android:paddingTop="8dp"
         android:text="00:00"
+        android:layout_alignParentEnd="true"
         android:textColor="@color/picture_color_white"
-        android:textSize="11sp"
-        android:visibility="gone" />
+        android:textSize="12sp"
+         />
 </com.luck.picture.lib.widget.SquareRelativeLayout>

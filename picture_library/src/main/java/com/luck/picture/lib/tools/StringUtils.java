@@ -61,6 +61,16 @@ public class StringUtils {
         }
     }
 
+    public static String getMsg(Context context, String mimeType, String maxSelectNum) {
+        if (PictureMimeType.isHasVideo(mimeType)) {
+            return context.getString(R.string.picture_message_video_max_num, maxSelectNum);
+        } else if (PictureMimeType.isHasAudio(mimeType)) {
+            return context.getString(R.string.picture_message_audio_max_num, maxSelectNum);
+        } else {
+            return context.getString(R.string.picture_message_max_num, maxSelectNum);
+        }
+    }
+
     /**
      * 重命名相册拍照
      *

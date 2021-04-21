@@ -96,6 +96,16 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param
+     * @return PictureSelectionModel
+     *
+     */
+    public PictureSelectionModel setFilterMimeType(List filterMimeType) {
+        selectionConfig.filterMimeType = filterMimeType;
+        return this;
+    }
+
+    /**
      * Change the desired orientation of this activity.  If the activity
      * is currently in the foreground or otherwise impacting the screen
      * orientation, the screen will immediately be changed (possibly causing
@@ -248,6 +258,24 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel isEnableCrop(boolean enableCrop) {
         selectionConfig.enableCrop = enableCrop;
+        return this;
+    }
+
+    /**
+     * @param showPreView Language
+     * @return PictureSelectionModel
+     */
+    public PictureSelectionModel isShowPreView(boolean showPreView) {
+        selectionConfig.isShowPreView = showPreView;
+        return this;
+    }
+
+    /**
+     * @param messageStyle
+     * @return PictureSelectionModel
+     */
+    public PictureSelectionModel isMessageStyle(boolean messageStyle) {
+        selectionConfig.isMessageStyle = messageStyle;
         return this;
     }
 
@@ -631,6 +659,21 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel videoMinSecond(int videoMinSecond) {
         selectionConfig.videoMinSecond = videoMinSecond * 1000;
+        return this;
+    }
+
+    public PictureSelectionModel selectMaxPrompt(String prompt) {
+        selectionConfig.selectMaxPrompt = prompt;
+        return this;
+    }
+
+    public PictureSelectionModel isOnlyVideo(boolean isOnlyVideo) {
+        selectionConfig.isOnlyVideo = isOnlyVideo;
+        return this;
+    }
+
+    public PictureSelectionModel isCanPreView(boolean isCanPreView) {
+        selectionConfig.isCanPreView = isCanPreView;
         return this;
     }
 

@@ -5,9 +5,9 @@
     <string name="picture_take_picture">Shot</string>
     <string name="picture_rule">not pictures or video</string>
     <string name="picture_min_video_num">Video Selection Cannot%1$sNumber</string>
-    <string name="picture_message_max_num">Select up to %1$s images</string>
+    <string name="picture_message_max_num">Only %1$s video/image can be selected</string>
     <string name="picture_message_audio_max_num">Select up to %1$s Audio</string>
-    <string name="picture_message_video_max_num">Select up to %1$s Video</string>
+    <string name="picture_message_video_max_num">Only %1$s video/image can be selected</string>
     <string name="picture_preview">Preview</string>
     <string name="picture_please">Please later…</string>
     <string name="picture_done_front_num">%1$d/%2$d Ok</string>
@@ -38,9 +38,9 @@
     <string name="picture_stop_audio">Stop</string>
     <string name="picture_quit_audio">Quit</string>
     <string name="picture_pause_audio">Pause</string>
-    <string name="picture_error">The picture is corrupted</string>
-    <string name="picture_video_error">The video is corrupted</string>
-    <string name="picture_audio_error">The audio is corrupted</string>
+    <string name="picture_error">Oops, this image is corrupted.</string>
+    <string name="picture_video_error">Oops, this video is corrupted.</string>
+    <string name="picture_audio_error">Oops, this audio is corrupted.</string>
     <string name="picture_confirm">Confirm</string>
     <string name="picture_preview_image_num">%1$d/%2$d</string>
     <string name="picture_not_crop_data">No cropped data</string>
@@ -59,6 +59,10 @@
     <string name="picture_photo_pictures">Take Picture</string>
     <string name="picture_photo_recording">Long Press Camera</string>
     <string name="picture_go_setting">Go Setting</string>
-    <string name="picture_know">I know the</string>
+    <string name="picture_know">Get it</string>
     <string name="picture_data_null">There no data here…</string>
+    <string name="uploading_this_video_is_not_supported_please_convert_to_MP4_file">uploading this video is not supported, please convert to MP4 file</string>
+    <string name="no_photos_available">No photos available</string>
+    <string name="no_videos_available">No videos available</string>
+    <string name="send">Send</string>
 </resources>

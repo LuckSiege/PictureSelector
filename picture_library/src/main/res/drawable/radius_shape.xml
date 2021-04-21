@@ -1,0 +1,20 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:shape="rectangle"
+    tools:ignore="MissingDefaultResource">
+    <!-- rectangle表示为矩形 -->
+
+    <!-- 填充的颜色 -->
+    <solid android:color="@color/ucrop_color_white" />
+
+    <!-- 边框的颜色和粗细 -->
+
+    <!-- android:radius 圆角的半径 -->
+    <corners
+        android:bottomLeftRadius="0dp"
+        android:bottomRightRadius="0dp"
+        android:radius="2dp"
+        android:topLeftRadius="12dp"
+        android:topRightRadius="12dp" />
+
+</shape>
