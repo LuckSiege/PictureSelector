@@ -19,7 +19,6 @@
         android:gravity="center"
         android:textColor="@color/picture_color_3"
         android:background="@drawable/picture_checkbox_selector"
-        android:textColor="@color/picture_color_white"
         android:textSize="12sp" />
 
     <View

@@ -50,14 +50,6 @@ public class ClapperStyleActivity extends AppCompatActivity {
         mAdapter = new PictureImageGridAdapter(this, selectionConfig);
 
 
-        //查找多媒体数据
-        LocalMediaPageLoader.getInstance(this, selectionConfig).loadPageMediaData(-1, mPage,
-                (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
-
-
-                }
-        );
-
 
     }
 

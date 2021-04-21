@@ -31,4 +31,15 @@
         android:layout_marginTop="10dp"
         android:text="dialog"
         android:textAllCaps="false" />
+
+
+    <Button
+        android:id="@+id/clapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_dialog"
+        android:layout_marginTop="10dp"
+        android:text="clapper"
+        android:textAllCaps="false" />
+
 </RelativeLayout>

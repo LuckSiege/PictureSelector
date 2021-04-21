@@ -9,6 +9,7 @@
     android:fitsSystemWindows="true"
     tools:context="com.luck.picture.lib.PictureSelectorActivity">
 
+
     <RelativeLayout
         android:id="@+id/rl_title"
         android:layout_width="match_parent"
@@ -212,11 +213,6 @@
 
     </RelativeLayout>
 
-    <include layout="@layout/picture_title_bar" />
-
-    <include layout="@layout/picture_bottom_bar" />
-
-
     <RelativeLayout
         android:id="@+id/select_buttom_layout"
         android:layout_width="match_parent"
@@ -287,7 +283,6 @@
         android:layout_above="@id/select_buttom_layout"
         android:layout_below="@id/rl_custom"
         android:background="@color/picture_color_white" />
-
 
     <TextView
         android:id="@+id/tv_empty"

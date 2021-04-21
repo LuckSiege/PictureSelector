@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
@@ -25,6 +26,7 @@ import java.util.List;
 public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity {
     private RelativeLayout rlAlbum;
     private RelativeLayout selectButtomLayout;
+    private TextView mPictureSendView;
 
     @Override
     public int getResourceId() {
