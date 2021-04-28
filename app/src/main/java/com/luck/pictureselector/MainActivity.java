@@ -447,12 +447,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.loadCacheResourcesCallback(GlideCacheEngine.createCacheEngine())// 获取图片资源缓存，主要是解决华为10部分机型在拷贝文件过多时会出现卡的问题，这里可以判断只在会出现一直转圈问题机型上使用
                         //.setOutputCameraPath(createCustomCameraOutPath())// 自定义相机输出目录
                         //.setButtonFeatures(CustomCameraView.BUTTON_STATE_BOTH)// 设置自定义相机按钮状态
+                        .setCaptureLoadingColor(ContextCompat.getColor(getContext(), R.color.app_color_blue))
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
                         .maxVideoSelectNum(1) // 视频最大选择数量
                         //.minVideoSelectNum(1)// 视频最小选择数量
                         //.closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 关闭在AndroidQ下获取图片或视频宽高相反自动转换
                         .imageSpanCount(4)// 每行显示个数
+                        //.queryFileSize() // 过滤最大资源,已废弃
+                        //.filterMinFileSize()// 过滤最小资源，单位kb
+                        //.filterMaxFileSize()// 过滤最大资源，单位kb
                         .isReturnEmpty(false)// 未选择数据时点击按钮是否可以返回
                         .closeAndroidQChangeWH(true)//如果图片有旋转角度则对换宽高,默认为true
                         .closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 如果视频有旋转角度则对换宽高,默认为false

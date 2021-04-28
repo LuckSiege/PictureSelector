@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.camera.view.CameraView;
 
 import com.luck.picture.lib.camera.CustomCameraView;
 import com.luck.picture.lib.camera.listener.CameraListener;
@@ -25,7 +24,6 @@ import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.permissions.PermissionChecker;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 
 /**
  * @author：luck
@@ -129,8 +127,6 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
      */
     protected void initView() {
         mCameraView.setPictureSelectionConfig(config);
-        // 绑定生命周期
-        mCameraView.setBindToLifecycle(new WeakReference<>(this).get());
         // 视频最大拍摄时长
         if (config.recordVideoSecond > 0) {
             mCameraView.setRecordVideoMaxTime(config.recordVideoSecond);
@@ -139,10 +135,13 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
         if (config.recordVideoMinSecond > 0) {
             mCameraView.setRecordVideoMinTime(config.recordVideoMinSecond);
         }
+        // 设置拍照时loading色值
+        if (config.captureLoadingColor != 0) {
+            mCameraView.setCaptureLoadingColor(config.captureLoadingColor);
+        }
         // 获取CameraView
-        CameraView cameraView = mCameraView.getCameraView();
-        if (cameraView != null && config.isCameraAroundState) {
-            cameraView.toggleCamera();
+        if (config.isCameraAroundState) {
+            mCameraView.toggleCamera();
         }
         // 获取录制按钮
         CaptureLayout captureLayout = mCameraView.getCaptureLayout();
@@ -273,5 +272,13 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
             isEnterSetting = true;
         });
         dialog.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mCameraView != null) {
+            mCameraView.unbindCameraController();
+        }
+        super.onDestroy();
     }
 }

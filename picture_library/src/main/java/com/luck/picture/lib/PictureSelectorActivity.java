@@ -1708,8 +1708,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         } else if (resultCode == RESULT_CANCELED) {
             previewCallback(data);
             // Delete this cameraPath when you cancel the camera
-            if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(config.cameraPath)) {
-                getContentResolver().delete(Uri.parse(config.cameraPath), null, null);
+            if (requestCode == PictureConfig.REQUEST_CAMERA) {
+                MediaUtils.deleteCamera(this, config.cameraPath);
             }
         } else if (resultCode == UCrop.RESULT_ERROR) {
             if (data != null) {

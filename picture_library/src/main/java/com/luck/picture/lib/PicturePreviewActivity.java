@@ -660,7 +660,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
 
     protected void onSelectNumChange(boolean isRefresh) {
         this.refresh = isRefresh;
-        boolean enable = selectData != null && selectData.size() != 0;
+        boolean enable = selectData.size() != 0;
         if (enable) {
             mTvPictureOk.setEnabled(true);
             mTvPictureOk.setSelected(true);
@@ -741,8 +741,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 ToastUtils.s(getContext(), PictureMimeType.s(getContext(), image.getMimeType()));
                 return;
             }
-            String mimeType = selectData.size() > 0 ?
-                    selectData.get(0).getMimeType() : "";
+            String mimeType = selectData.size() > 0 ? selectData.get(0).getMimeType() : "";
             int currentSize = selectData.size();
             if (config.isWithVideoImage) {
                 // 混选模式

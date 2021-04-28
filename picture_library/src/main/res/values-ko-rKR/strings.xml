@@ -60,4 +60,9 @@
     <string name="picture_go_setting">설치</string>
     <string name="picture_know">알 겠 습 니 다</string>
     <string name="picture_data_null">데이터 없 음…</string>
+
+    <string name="ucrop_label_edit_photo">사진 편집</string>
+    <string name="ucrop_label_original">원본</string>
+    <string name="ucrop_menu_crop">확인</string>
+    <string name="ucrop_gif_tag">움직이</string>
 </resources>

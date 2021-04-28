@@ -57,8 +57,8 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             exit();
             return;
         }
-        setActivitySize();
         if (!config.isUseCustomCamera) {
+            setActivitySize();
             if (savedInstanceState == null) {
                 if (PermissionChecker
                         .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
@@ -164,6 +164,10 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         } else if (resultCode == RESULT_CANCELED) {
             if (PictureSelectionConfig.listener != null) {
                 PictureSelectionConfig.listener.onCancel();
+            }
+            // Delete this cameraPath when you cancel the camera
+            if (requestCode == PictureConfig.REQUEST_CAMERA) {
+                MediaUtils.deleteCamera(this, config.cameraPath);
             }
             exit();
         } else if (resultCode == UCrop.RESULT_ERROR) {

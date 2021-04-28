@@ -60,4 +60,10 @@
     <string name="picture_go_setting">設定</string>
     <string name="picture_know">はい</string>
     <string name="picture_data_null">データがありません…</string>
+
+    <string name="ucrop_label_original">元の比率</string>
+    <string name="ucrop_label_edit_photo">切り取り</string>
+
+    <string name="ucrop_menu_crop">切り取り</string>
+    <string name="ucrop_gif_tag">gif図</string>
 </resources>

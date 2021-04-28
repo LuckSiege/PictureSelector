@@ -19,12 +19,9 @@ import com.luck.picture.lib.tools.DoubleUtils;
 
 
 /**
- * =====================================
- * 作    者: 陈嘉桐 445263848@qq.com
- * 版    本：1.1.4
- * 创建日期：2017/4/25
- * 描    述：拍照按钮
- * =====================================
+ * @author：luck
+ * @date：2019-01-04 13:41
+ * @describe：CaptureLayout
  */
 public class CaptureButton extends View {
 
@@ -70,6 +67,7 @@ public class CaptureButton extends View {
     private LongPressRunnable longPressRunnable;    //长按后处理的逻辑Runnable
     private CaptureListener captureLisenter;        //按钮回调接口
     private RecordCountDownTimer timer;             //计时器
+    private boolean isTakeCamera = true;
 
     public CaptureButton(Context context) {
         super(context);
@@ -96,7 +94,7 @@ public class CaptureButton extends View {
         state = STATE_IDLE;                //初始化为空闲状态
         button_state = CustomCameraView.BUTTON_STATE_BOTH;  //初始化按钮为可录制可拍照
         duration = 10 * 1000;              //默认最长录制时间为10s
-        min_duration = 1500;              //默认最短录制时间为1.5s
+        min_duration = CustomCameraView.DEFAULT_MIN_RECORD_VIDEO;              //默认最短录制时间为1.5s
 
         center_X = (button_size + outside_add_size * 2) / 2;
         center_Y = (button_size + outside_add_size * 2) / 2;
@@ -139,30 +137,32 @@ public class CaptureButton extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (event.getPointerCount() > 1 || state != STATE_IDLE)
-                    break;
-                event_Y = event.getY();     //记录Y值
-                state = STATE_PRESS;        //修改当前状态为点击按下
+        if (isTakeCamera) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (event.getPointerCount() > 1 || state != STATE_IDLE)
+                        break;
+                    event_Y = event.getY();     //记录Y值
+                    state = STATE_PRESS;        //修改当前状态为点击按下
 
-                //判断按钮状态是否为可录制状态
-                if ((button_state == CustomCameraView.BUTTON_STATE_ONLY_RECORDER || button_state == CustomCameraView.BUTTON_STATE_BOTH))
-                    postDelayed(longPressRunnable, 500);    //同时延长500启动长按后处理的逻辑Runnable
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (captureLisenter != null
-                        && state == STATE_RECORDERING
-                        && (button_state == CustomCameraView.BUTTON_STATE_ONLY_RECORDER || button_state == CustomCameraView.BUTTON_STATE_BOTH)) {
-                    //记录当前Y值与按下时候Y值的差值，调用缩放回调接口
-                    captureLisenter.recordZoom(event_Y - event.getY());
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                //根据当前按钮的状态进行相应的处理  ----CodeReview---抬起瞬间应该重置状态 当前状态可能为按下和正在录制
-                //state = STATE_BAN;
-                handlerPressByState();
-                break;
+                    //判断按钮状态是否为可录制状态
+                    if ((button_state == CustomCameraView.BUTTON_STATE_ONLY_RECORDER || button_state == CustomCameraView.BUTTON_STATE_BOTH))
+                        postDelayed(longPressRunnable, 500);    //同时延长500启动长按后处理的逻辑Runnable
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (captureLisenter != null
+                            && state == STATE_RECORDERING
+                            && (button_state == CustomCameraView.BUTTON_STATE_ONLY_RECORDER || button_state == CustomCameraView.BUTTON_STATE_BOTH)) {
+                        //记录当前Y值与按下时候Y值的差值，调用缩放回调接口
+                        captureLisenter.recordZoom(event_Y - event.getY());
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    //根据当前按钮的状态进行相应的处理  ----CodeReview---抬起瞬间应该重置状态 当前状态可能为按下和正在录制
+                    //state = STATE_BAN;
+                    handlerPressByState();
+                    break;
+            }
         }
         return true;
     }
@@ -369,7 +369,11 @@ public class CaptureButton extends View {
 
     //是否空闲状态
     public boolean isIdle() {
-        return state == STATE_IDLE ? true : false;
+        return state == STATE_IDLE;
+    }
+
+    public void setButtonCaptureEnabled(boolean enabled) {
+        this.isTakeCamera = enabled;
     }
 
     //设置状态

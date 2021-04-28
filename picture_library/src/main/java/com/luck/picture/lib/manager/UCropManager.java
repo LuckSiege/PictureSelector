@@ -31,9 +31,9 @@ public class UCropManager {
     /**
      * 裁剪
      *
-     * @param activity
-     * @param originalPath
-     * @param mimeType
+     * @param activity     上下文
+     * @param originalPath 文件源路径
+     * @param mimeType     文件类型
      */
     public static void ofCrop(Activity activity, String originalPath, String mimeType) {
         if (DoubleUtils.isFastDoubleClick()) {
@@ -58,8 +58,8 @@ public class UCropManager {
     /**
      * 裁剪
      *
-     * @param activity
-     * @param list
+     * @param activity 上下文
+     * @param list     待裁剪图片集合
      */
     public static void ofCrop(Activity activity, ArrayList<CutInfo> list) {
         if (DoubleUtils.isFastDoubleClick()) {
@@ -179,6 +179,7 @@ public class UCropManager {
         options.setHideBottomControls(config.hideBottomControls);
         options.setCompressionQuality(config.cropCompressQuality);
         options.setRenameCropFileName(config.renameCropFileName);
+        options.setRequestedOrientation(config.requestedOrientation);
         options.isCamera(config.camera);
         options.setNavBarColor(cropNavBarColor);
         options.isWithVideoImage(config.isWithVideoImage);

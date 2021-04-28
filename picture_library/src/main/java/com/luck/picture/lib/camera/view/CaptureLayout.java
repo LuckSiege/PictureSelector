@@ -6,31 +6,28 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.BlendMode;
+import android.graphics.BlendModeColorFilter;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.camera.listener.CaptureListener;
 import com.luck.picture.lib.camera.listener.ClickListener;
 import com.luck.picture.lib.camera.listener.TypeListener;
-import com.luck.picture.lib.tools.DoubleUtils;
+import com.luck.picture.lib.tools.ScreenUtils;
 
 import static com.luck.picture.lib.camera.CustomCameraView.BUTTON_STATE_ONLY_CAPTURE;
 import static com.luck.picture.lib.camera.CustomCameraView.BUTTON_STATE_ONLY_RECORDER;
 
 /**
- * =====================================
- * 作    者: 陈嘉桐 445263848@qq.com
- * 版    本：1.0.4
- * 创建日期：2017/4/26
- * 描    述：集成各个控件的布局
- * =====================================
+ * @author：luck
+ * @date：2019-01-04 13:41
+ * @describe：CaptureLayout
  */
 
 public class CaptureLayout extends FrameLayout {
@@ -48,6 +45,7 @@ public class CaptureLayout extends FrameLayout {
         this.captureListener = captureListener;
     }
 
+    private ProgressBar progress_bar;       // 拍照等待loading
     private CaptureButton btn_capture;      //拍照按钮
     private TypeButton btn_confirm;         //确认按钮
     private TypeButton btn_cancel;          //取消按钮
@@ -56,9 +54,9 @@ public class CaptureLayout extends FrameLayout {
     private ImageView iv_custom_right;            //右边自定义按钮
     private TextView txt_tip;               //提示文本
 
-    private int layout_width;
-    private int layout_height;
-    private int button_size;
+    private final int layout_width;
+    private final int layout_height;
+    private final int button_size;
     private int iconLeft = 0;
     private int iconRight = 0;
 
@@ -73,14 +71,11 @@ public class CaptureLayout extends FrameLayout {
     public CaptureLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        manager.getDefaultDisplay().getMetrics(outMetrics);
-
+        int screenWidth = ScreenUtils.getScreenWidth(getContext());
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            layout_width = outMetrics.widthPixels;
+            layout_width = screenWidth;
         } else {
-            layout_width = outMetrics.widthPixels / 2;
+            layout_width = screenWidth / 2;
         }
         button_size = (int) (layout_width / 4.5f);
         layout_height = button_size + (button_size / 5) * 2 + 100;
@@ -137,6 +132,12 @@ public class CaptureLayout extends FrameLayout {
     private void initView() {
         setWillNotDraw(false);
         //拍照按钮
+        progress_bar = new ProgressBar(getContext());
+        FrameLayout.LayoutParams progress_bar_param = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        progress_bar_param.gravity = Gravity.CENTER;
+        progress_bar.setLayoutParams(progress_bar_param);
+        progress_bar.setVisibility(GONE);
+
         btn_capture = new CaptureButton(getContext(), button_size);
         FrameLayout.LayoutParams btn_capture_param = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         btn_capture_param.gravity = Gravity.CENTER;
@@ -259,6 +260,7 @@ public class CaptureLayout extends FrameLayout {
         txt_tip.setLayoutParams(txt_param);
 
         this.addView(btn_capture);
+        this.addView(progress_bar);
         this.addView(btn_cancel);
         this.addView(btn_confirm);
         this.addView(btn_return);
@@ -278,6 +280,16 @@ public class CaptureLayout extends FrameLayout {
             default:
                 return getContext().getString(R.string.picture_photo_camera);
         }
+    }
+
+    public void setButtonCaptureEnabled(boolean enabled) {
+        this.progress_bar.setVisibility(enabled ? GONE : VISIBLE);
+        this.btn_capture.setButtonCaptureEnabled(enabled);
+    }
+
+    public void setCaptureLoadingColor(int color) {
+        BlendModeColorFilter colorFilter = new BlendModeColorFilter(color, BlendMode.SRC_IN);
+        progress_bar.getIndeterminateDrawable().setColorFilter(colorFilter);
     }
 
     public void resetCaptureLayout() {

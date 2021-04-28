@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.luck.picture.lib.widget.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -15,8 +16,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_margin="8dp"
-        android:gravity="center"
         android:background="@drawable/picture_checkbox_selector"
+        android:gravity="center"
         android:textColor="@color/picture_color_white"
         android:textSize="12sp" />
 
@@ -57,7 +58,6 @@
         android:layout_height="30dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/picture_icon_shadow_bg"
-        android:drawableLeft="@drawable/picture_icon_video"
         android:drawablePadding="5dp"
         android:gravity="center_vertical"
         android:paddingLeft="5dp"
@@ -65,5 +65,6 @@
         android:text="00:00"
         android:textColor="@color/picture_color_white"
         android:textSize="11sp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:drawableLeftCompat="@drawable/picture_icon_video" />
 </com.luck.picture.lib.widget.SquareRelativeLayout>

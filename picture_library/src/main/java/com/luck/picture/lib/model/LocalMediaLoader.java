@@ -37,9 +37,9 @@ public final class LocalMediaLoader {
      * Filter out recordings that are less than 500 milliseconds long
      */
     private static final int AUDIO_DURATION = 500;
-    private Context mContext;
-    private boolean isAndroidQ;
-    private PictureSelectionConfig config;
+    private final Context mContext;
+    private final boolean isAndroidQ;
+    private final PictureSelectionConfig config;
     /**
      * unit
      */
@@ -60,56 +60,29 @@ public final class LocalMediaLoader {
             MediaStore.MediaColumns.BUCKET_ID};
 
     /**
-     * Image
-     */
-    private static final String SELECTION = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-            + " AND " + MediaStore.MediaColumns.SIZE + ">0";
-
-    private static final String SELECTION_NOT_GIF = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-            + " AND " + MediaStore.MediaColumns.SIZE + ">0"
-            + " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF;
-    /**
-     * Queries for images with the specified suffix
-     */
-    private static final String SELECTION_SPECIFIED_FORMAT = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-            + " AND " + MediaStore.MediaColumns.SIZE + ">0"
-            + " AND " + MediaStore.MediaColumns.MIME_TYPE;
-
-    /**
-     * Query criteria (audio and video)
-     *
-     * @param time_condition
-     * @return
-     */
-    private static String getSelectionArgsForSingleMediaCondition(String time_condition) {
-        return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                + " AND " + MediaStore.MediaColumns.SIZE + ">0"
-                + " AND " + time_condition;
-    }
-
-    /**
      * Query (video)
      *
+     * @param sizeCondition
      * @return
      */
-    private static String getSelectionArgsForSingleMediaCondition() {
-        return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                + " AND " + MediaStore.MediaColumns.SIZE + ">0";
+    private static String getSelectionArgsForSingleMediaCondition(String sizeCondition) {
+        return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + " AND " + sizeCondition;
     }
 
     /**
      * Query conditions in all modes
      *
-     * @param time_condition
+     * @param timeCondition
+     * @param sizeCondition
      * @param isGif
      * @return
      */
-    private static String getSelectionArgsForAllMediaCondition(String time_condition, boolean isGif) {
+    private static String getSelectionArgsForAllMediaCondition(String timeCondition, String sizeCondition, boolean isGif) {
         return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
                 + (isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF)
                 + " OR "
-                + (MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + time_condition) + ")"
-                + " AND " + MediaStore.MediaColumns.SIZE + ">0";
+                + (MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + timeCondition) + ")"
+                + " AND " + sizeCondition;
     }
 
     /**
@@ -201,11 +174,12 @@ public final class LocalMediaLoader {
                         String folderName = data.getString(folderNameColumn);
                         String fileName = data.getString(fileNameColumn);
                         long bucketId = data.getLong(bucketIdColumn);
-                        if (config.filterFileSize > 0) {
+                         if (config.filterFileSize > 0) {
                             if (size > config.filterFileSize * FILE_SIZE_UNIT) {
                                 continue;
                             }
                         }
+
                         if (PictureMimeType.isHasVideo(mimeType)) {
                             if (config.videoMinSecond > 0 && duration < config.videoMinSecond) {
                                 // If you set the minimum number of seconds of video to display
@@ -268,28 +242,44 @@ public final class LocalMediaLoader {
     }
 
     private String getSelection() {
+        String fileSizeCondition = getFileSizeCondition();
         switch (config.chooseMode) {
             case PictureConfig.TYPE_ALL:
                 // Get all, not including audio
-                return getSelectionArgsForAllMediaCondition(getDurationCondition(0), config.isGif);
+                return getSelectionArgsForAllMediaCondition(getDurationCondition(0), fileSizeCondition, config.isGif);
             case PictureConfig.TYPE_IMAGE:
                 if (!TextUtils.isEmpty(config.specifiedFormat)) {
                     // Gets the image of the specified type
-                    return SELECTION_SPECIFIED_FORMAT + "='" + config.specifiedFormat + "'";
+                    String selection_specified_format = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
+                            + " AND " + fileSizeCondition
+                            + " AND " + MediaStore.MediaColumns.MIME_TYPE;
+                    return selection_specified_format + "='" + config.specifiedFormat + "'";
                 }
-                return config.isGif ? SELECTION : SELECTION_NOT_GIF;
+                if (config.isGif) {
+                    return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + " AND " + fileSizeCondition;
+                } else {
+                    return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
+                            + " AND " + fileSizeCondition
+                            + " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF;
+                }
             case PictureConfig.TYPE_VIDEO:
                 // Access to video
                 if (!TextUtils.isEmpty(config.specifiedFormat)) {
                     // Gets the image of the specified type
-                    return SELECTION_SPECIFIED_FORMAT + "='" + config.specifiedFormat + "'";
+                    String selection_specified_format = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
+                            + " AND " + fileSizeCondition
+                            + " AND " + MediaStore.MediaColumns.MIME_TYPE;
+                    return selection_specified_format + "='" + config.specifiedFormat + "'";
                 }
-                return getSelectionArgsForSingleMediaCondition();
+                return getSelectionArgsForSingleMediaCondition(fileSizeCondition);
             case PictureConfig.TYPE_AUDIO:
                 // Access to the audio
                 if (!TextUtils.isEmpty(config.specifiedFormat)) {
                     // Gets the image of the specified type
-                    return SELECTION_SPECIFIED_FORMAT + "='" + config.specifiedFormat + "'";
+                    String selection_specified_format = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
+                            + " AND " + fileSizeCondition
+                            + " AND " + MediaStore.MediaColumns.MIME_TYPE;
+                    return selection_specified_format + "='" + config.specifiedFormat + "'";
                 }
                 return getSelectionArgsForSingleMediaCondition(getDurationCondition(AUDIO_DURATION));
         }
@@ -396,6 +386,19 @@ public final class LocalMediaLoader {
         return String.format(Locale.CHINA, "%d <%s " + MediaStore.MediaColumns.DURATION + " and " + MediaStore.MediaColumns.DURATION + " <= %d",
                 Math.max(exMinLimit, config.videoMinSecond),
                 Math.max(exMinLimit, config.videoMinSecond) == 0 ? "" : "=",
+                maxS);
+    }
+
+    /**
+     * Get media size (maxFileSize or miniFileSize)
+     *
+     * @return
+     */
+    private String getFileSizeCondition() {
+        long maxS = config.filterMaxFileSize == 0 ? Long.MAX_VALUE : config.filterMaxFileSize;
+        return String.format(Locale.CHINA, "%d <%s " + MediaStore.MediaColumns.SIZE + " and " + MediaStore.MediaColumns.SIZE + " <= %d",
+                Math.max(0, config.filterMinFileSize),
+                Math.max(0, config.filterMinFileSize) == 0 ? "" : "=",
                 maxS);
     }
 

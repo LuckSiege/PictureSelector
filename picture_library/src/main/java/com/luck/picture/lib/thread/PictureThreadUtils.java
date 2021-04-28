@@ -5,7 +5,6 @@ import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.CallSuper;
-import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 
 import java.util.HashMap;
@@ -38,8 +37,6 @@ public final class PictureThreadUtils {
 
     private static final Map<Task, ExecutorService> TASK_POOL_MAP = new ConcurrentHashMap<>();
 
-    private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
-
     private static final byte TYPE_IO = -4;
 
     private static Executor sDeliver;
@@ -62,17 +59,6 @@ public final class PictureThreadUtils {
      */
     public static ExecutorService getIoPool() {
         return getPoolByTypeAndPriority();
-    }
-
-    /**
-     * Return a thread pool that creates (2 * CPU_COUNT + 1) threads
-     * operating off a queue which size is 128.
-     *
-     * @param priority The priority of thread in the poll.
-     * @return a IO thread pool
-     */
-    public static ExecutorService getIoPool(@IntRange(from = 1, to = 10) final int priority) {
-        return getPoolByTypeAndPriority(priority);
     }
 
 
@@ -139,15 +125,6 @@ public final class PictureThreadUtils {
         }
     }
 
-    /**
-     * Set the deliver.
-     *
-     * @param deliver The deliver.
-     */
-    public static void setDeliver(final Executor deliver) {
-        sDeliver = deliver;
-    }
-
     private static <T> void execute(final ExecutorService pool, final Task<T> task) {
         execute(pool, task, null);
     }
@@ -200,7 +177,7 @@ public final class PictureThreadUtils {
 
         private final AtomicInteger mSubmittedCount = new AtomicInteger();
 
-        private LinkedBlockingQueue4Util mWorkQueue;
+        private final LinkedBlockingQueue4Util mWorkQueue;
 
         ThreadPoolExecutor4Util(int corePoolSize, int maximumPoolSize,
                                 long keepAliveTime, TimeUnit unit,
@@ -213,10 +190,6 @@ public final class PictureThreadUtils {
             );
             workQueue.mPool = this;
             mWorkQueue = workQueue;
-        }
-
-        private int getSubmittedCount() {
-            return mSubmittedCount.get();
         }
 
         @Override

@@ -1,32 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="CameraView">
-        <attr format="enum" name="scaleType">
-            <enum name="centerCrop" value="0"/>
-            <enum name="centerInside" value="1"/>
+        <attr name="scaleType" format="enum">
+            <enum name="centerCrop" value="0" />
+            <enum name="centerInside" value="1" />
         </attr>
-        <attr format="enum" name="lensFacing">
-            <enum name="none" value="0"/>
-            <enum name="front" value="1"/>
-            <enum name="back" value="2"/>
+        <attr name="lensFacing" format="enum">
+            <enum name="none" value="0" />
+            <enum name="front" value="1" />
+            <enum name="back" value="2" />
         </attr>
-        <attr format="enum" name="captureMode">
-            <enum name="image" value="0"/>
-            <enum name="video" value="1"/>
-            <enum name="mixed" value="2"/>
+        <attr name="captureMode" format="enum">
+            <enum name="image" value="0" />
+            <enum name="video" value="1" />
+            <enum name="mixed" value="2" />
         </attr>
-        <attr format="enum" name="flash">
-            <enum name="auto" value="1"/>
-            <enum name="on" value="2"/>
-            <enum name="off" value="4"/>
+        <attr name="flash" format="enum">
+            <enum name="auto" value="1" />
+            <enum name="on" value="2" />
+            <enum name="off" value="4" />
         </attr>
 
-        <attr format="boolean" name="pinchToZoomEnabled"/>
+        <attr name="pinchToZoomEnabled" format="boolean" />
     </declare-styleable>
     <declare-styleable name="PreviewView">
-        <attr format="enum" name="implementationMode">
-            <enum name="surfaceView" value="0"/>
-            <enum name="textureView" value="1"/>
+        <attr name="implementationMode" format="enum">
+            <enum name="surfaceView" value="0" />
+            <enum name="textureView" value="1" />
         </attr>
     </declare-styleable>
+
+    <integer name="ucrop_progress_loading_anim_time">1500</integer>
 </resources>

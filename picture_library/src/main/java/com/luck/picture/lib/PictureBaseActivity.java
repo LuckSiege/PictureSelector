@@ -61,7 +61,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     protected boolean openWhiteStatusBar, numComplete;
     protected int colorPrimary, colorPrimaryDark;
     protected PictureLoadingDialog mLoadingDialog;
-    protected List<LocalMedia> selectionMedias;
+    protected List<LocalMedia> selectionMedias = new ArrayList<>();
     protected Handler mHandler = new Handler(Looper.getMainLooper());
     protected View container;
     /**
@@ -229,7 +229,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      * init Config
      */
     private void initConfig() {
-        selectionMedias = config.selectionMedias == null ? new ArrayList<>() : config.selectionMedias;
+        if (config.selectionMedias != null) {
+            selectionMedias.clear();
+            selectionMedias.addAll(config.selectionMedias);
+        }
         if (PictureSelectionConfig.uiStyle != null) {
             openWhiteStatusBar = PictureSelectionConfig.uiStyle.picture_statusBarChangeTextColor;
             if (PictureSelectionConfig.uiStyle.picture_top_titleBarBackgroundColor != 0) {
@@ -500,8 +503,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         } else {
             dismissDialog();
             if (config.camera
-                    && config.selectionMode == PictureConfig.MULTIPLE
-                    && selectionMedias != null) {
+                    && config.selectionMode == PictureConfig.MULTIPLE) {
                 images.addAll(images.size() > 0 ? images.size() - 1 : 0, selectionMedias);
             }
             if (config.isCheckOriginalImage) {
@@ -562,8 +564,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                 dismissDialog();
                 if (images != null) {
                     if (config.camera
-                            && config.selectionMode == PictureConfig.MULTIPLE
-                            && selectionMedias != null) {
+                            && config.selectionMode == PictureConfig.MULTIPLE) {
                         images.addAll(images.size() > 0 ? images.size() - 1 : 0, selectionMedias);
                     }
                     if (PictureSelectionConfig.listener != null) {

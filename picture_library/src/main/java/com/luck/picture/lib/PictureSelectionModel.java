@@ -42,8 +42,8 @@ import static android.os.Build.VERSION_CODES.KITKAT;
  */
 
 public class PictureSelectionModel {
-    private PictureSelectionConfig selectionConfig;
-    private PictureSelector selector;
+    private final PictureSelectionConfig selectionConfig;
+    private final PictureSelector selector;
 
     public PictureSelectionModel(PictureSelector selector, int chooseMode) {
         this.selector = selector;
@@ -229,6 +229,17 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel setButtonFeatures(int buttonFeatures) {
         selectionConfig.buttonFeatures = buttonFeatures;
+        return this;
+    }
+
+    /**
+     * Set Custom Camera Photo Loading color
+     *
+     * @param color
+     * @return
+     */
+    public PictureSelectionModel setCaptureLoadingColor(int color) {
+        selectionConfig.captureLoadingColor = color;
         return this;
     }
 
@@ -889,11 +900,43 @@ public class PictureSelectionModel {
     /**
      * # file size The unit is M
      *
-     * @param fileSize Filter file size
+     * @param fileSize Filter max file size
+     *                 Use {@link .filterMaxFileSize()}
      * @return
      */
-    public PictureSelectionModel queryMaxFileSize(float fileSize) {
-        selectionConfig.filterFileSize = fileSize;
+    @Deprecated
+    public PictureSelectionModel queryFileSize(float fileMSize) {
+        selectionConfig.filterFileSize = fileMSize;
+        return this;
+    }
+
+    /**
+     * # file size The unit is KB
+     *
+     * @param fileSize Filter max file size
+     * @return
+     */
+    public PictureSelectionModel filterMaxFileSize(long fileKbSize) {
+        if (fileKbSize >= PictureConfig.MB) {
+            selectionConfig.filterMaxFileSize = fileKbSize;
+        } else {
+            selectionConfig.filterMaxFileSize = fileKbSize * 1024;
+        }
+        return this;
+    }
+
+    /**
+     * # file size The unit is KB
+     *
+     * @param fileSize Filter min file size
+     * @return
+     */
+    public PictureSelectionModel filterMinFileSize(long fileKbSize) {
+        if (fileKbSize >= PictureConfig.MB) {
+            selectionConfig.filterMinFileSize = fileKbSize;
+        } else {
+            selectionConfig.filterMinFileSize = fileKbSize * 1024;
+        }
         return this;
     }
 

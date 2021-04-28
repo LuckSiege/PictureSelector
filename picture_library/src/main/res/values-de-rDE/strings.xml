@@ -61,4 +61,9 @@
     <string name="picture_go_setting">Set up</string>
     <string name="picture_know">Das stimmt</string>
     <string name="picture_data_null">Hier ist es leer…</string>
+
+    <string name="ucrop_label_edit_photo">Foto editieren</string>
+    <string name="ucrop_label_original">Original</string>
+    <string name="ucrop_menu_crop">Zuschneiden</string>
+    <string name="ucrop_gif_tag">Bewegen</string>
 </resources>

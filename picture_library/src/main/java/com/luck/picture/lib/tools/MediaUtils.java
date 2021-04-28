@@ -21,7 +21,6 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnCallbackListener;
 import com.luck.picture.lib.thread.PictureThreadUtils;
-
 import java.io.InputStream;
 import java.util.Objects;
 
@@ -642,5 +641,20 @@ public class MediaUtils {
             }
         }
         return queryArgs;
+    }
+
+    /**
+     * delete camera PATH
+     *
+     * @param context    Context
+     * @param cameraPath Camera url
+     */
+    public static void deleteCamera(Context context, String cameraPath) {
+        if (TextUtils.isEmpty(cameraPath)) {
+            return;
+        }
+        if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(cameraPath)) {
+            context.getContentResolver().delete(Uri.parse(cameraPath), null, null);
+        }
     }
 }
