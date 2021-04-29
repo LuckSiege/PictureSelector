@@ -79,8 +79,10 @@ public final class LocalMediaLoader {
      * @return
      */
     private static String getSelectionArgsForAllMediaCondition(String timeCondition, String sizeCondition, String queryMimeCondition) {
-        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                + queryMimeCondition + " OR " + (MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + timeCondition) + ")" + " AND " + sizeCondition;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeCondition).append(" OR ")
+                .append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=? AND ").append(timeCondition).append(") AND ").append(sizeCondition).toString();
+        return stringBuilder.toString();
     }
 
     /**

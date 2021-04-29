@@ -24,8 +24,10 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
     private MediaPlayer mediaPlayer;
     private SeekBar musicSeekBar;
     private boolean isPlayAudio = false;
-    private TextView tv_PlayPause, tv_Stop, tv_Quit,
-            tv_musicStatus, tv_musicTotal, tv_musicTime;
+    private TextView tv_PlayPause;
+    private TextView tv_musicStatus;
+    private TextView tv_musicTotal;
+    private TextView tv_musicTime;
 
 
     @Override
@@ -49,8 +51,8 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
         musicSeekBar = findViewById(R.id.musicSeekBar);
         tv_musicTotal = findViewById(R.id.tv_musicTotal);
         tv_PlayPause = findViewById(R.id.tv_PlayPause);
-        tv_Stop = findViewById(R.id.tv_Stop);
-        tv_Quit = findViewById(R.id.tv_Quit);
+        TextView tv_Stop = findViewById(R.id.tv_Stop);
+        TextView tv_Quit = findViewById(R.id.tv_Quit);
         handler.postDelayed(() -> initPlayer(audio_path), 30);
         tv_PlayPause.setOnClickListener(this);
         tv_Stop.setOnClickListener(this);

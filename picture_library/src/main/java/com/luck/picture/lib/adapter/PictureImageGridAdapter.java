@@ -45,12 +45,12 @@ import java.util.List;
  */
 public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private Context context;
+    private final Context context;
     private boolean showCamera;
-    private OnPhotoSelectChangedListener imageSelectChangedListener;
+    private OnPhotoSelectChangedListener<LocalMedia> imageSelectChangedListener;
     private List<LocalMedia> data = new ArrayList<>();
     private List<LocalMedia> selectData = new ArrayList<>();
-    private PictureSelectionConfig config;
+    private final PictureSelectionConfig config;
 
     public PictureImageGridAdapter(Context context, PictureSelectionConfig config) {
         this.context = context;
@@ -156,7 +156,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         } else {
             final ViewHolder contentHolder = (ViewHolder) holder;
             final LocalMedia image = data.get(showCamera ? position - 1 : position);
-            image.position = contentHolder.getAdapterPosition();
+            image.position = contentHolder.getAbsoluteAdapterPosition();
             final String path = image.getPath();
             final String mimeType = image.getMimeType();
             if (config.checkNumMode) {
@@ -392,7 +392,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 if (PictureSelectionConfig.uiStyle.picture_adapter_item_camera_textColor != 0) {
                     tvCamera.setTextColor(PictureSelectionConfig.uiStyle.picture_adapter_item_camera_textColor);
                 }
-                if (PictureSelectionConfig.uiStyle.picture_adapter_item_camera_text !=0) {
+                if (PictureSelectionConfig.uiStyle.picture_adapter_item_camera_text != 0) {
                     tvCamera.setText(itemView.getContext().getString(PictureSelectionConfig.uiStyle.picture_adapter_item_camera_text));
                 } else {
                     tvCamera.setText(config.chooseMode == PictureMimeType.ofAudio() ? context.getString(R.string.picture_tape)
@@ -441,7 +441,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     tvDuration.setTextColor(PictureSelectionConfig.uiStyle.picture_adapter_item_textColor);
                 }
 
-                if (PictureSelectionConfig.uiStyle.picture_adapter_item_tag_text !=0) {
+                if (PictureSelectionConfig.uiStyle.picture_adapter_item_tag_text != 0) {
                     tvIsGif.setText(itemView.getContext().getString(PictureSelectionConfig.uiStyle.picture_adapter_item_tag_text));
                 }
                 if (PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_show) {

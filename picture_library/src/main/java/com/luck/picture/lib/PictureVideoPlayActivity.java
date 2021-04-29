@@ -38,7 +38,6 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
     private ImageButton ibLeftBack;
     private MediaController mMediaController;
     private VideoView mVideoView;
-    private TextView tvConfirm;
     private ImageView iv_play;
     private int mPositionWhenPaused = -1;
 
@@ -92,7 +91,7 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
         }
         ibLeftBack = findViewById(R.id.pictureLeftBack);
         mVideoView = findViewById(R.id.video_view);
-        tvConfirm = findViewById(R.id.tv_confirm);
+        TextView tvConfirm = findViewById(R.id.tv_confirm);
         mVideoView.setBackgroundColor(Color.BLACK);
         iv_play = findViewById(R.id.iv_play);
         mMediaController = new MediaController(this);

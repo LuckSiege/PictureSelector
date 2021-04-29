@@ -36,20 +36,20 @@ public class Luban implements Handler.Callback {
     private static final int MSG_COMPRESS_ERROR = 2;
 
     private String mTargetDir;
-    private String mNewFileName;
-    private boolean focusAlpha;
-    private boolean isCamera;
-    private int mLeastCompressSize;
-    private OnRenameListener mRenameListener;
-    private OnCompressListener mCompressListener;
-    private CompressionPredicate mCompressionPredicate;
-    private List<InputStreamProvider> mStreamProviders;
-    private List<String> mPaths;
-    private List<LocalMedia> mediaList;
+    private final String mNewFileName;
+    private final boolean focusAlpha;
+    private final boolean isCamera;
+    private final int mLeastCompressSize;
+    private final OnRenameListener mRenameListener;
+    private final OnCompressListener mCompressListener;
+    private final CompressionPredicate mCompressionPredicate;
+    private final List<InputStreamProvider> mStreamProviders;
+    private final List<String> mPaths;
+    private final List<LocalMedia> mediaList;
     private int index = -1;
-    private int compressQuality;
-    private Handler mHandler;
-    private int dataCount;
+    private final int compressQuality;
+    private final Handler mHandler;
+    private final int dataCount;
 
     private Luban(Builder builder) {
         this.mPaths = builder.mPaths;

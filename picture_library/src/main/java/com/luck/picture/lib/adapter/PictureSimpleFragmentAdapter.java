@@ -39,8 +39,8 @@ import java.util.List;
 
 public class PictureSimpleFragmentAdapter extends PagerAdapter {
     private List<LocalMedia> data;
-    private OnCallBackActivity onBackPressed;
-    private PictureSelectionConfig config;
+    private final OnCallBackActivity onBackPressed;
+    private final PictureSelectionConfig config;
     /**
      * Maximum number of cached images
      */

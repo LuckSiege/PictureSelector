@@ -20,6 +20,7 @@ import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.style.PictureSelectorUIStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
+import com.yalantis.ucrop.UCrop;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -111,7 +112,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isDragFrame;
     public boolean isNotPreviewDownload;
     public boolean isWithVideoImage;
-    public UCropOptions uCropOptions;
+    public UCrop.Options uCropOptions;
     public static ImageEngine imageEngine;
     public static CacheResourcesEngine cacheResourcesEngine;
     public static OnResultCallbackListener<LocalMedia> listener;
@@ -242,7 +243,6 @@ public final class PictureSelectionConfig implements Parcelable {
         isDragFrame = in.readByte() != 0;
         isNotPreviewDownload = in.readByte() != 0;
         isWithVideoImage = in.readByte() != 0;
-        uCropOptions = in.readParcelable(UCropOptions.class.getClassLoader());
         selectionMedias = in.createTypedArrayList(LocalMedia.CREATOR);
         cameraFileName = in.readString();
         isCheckOriginalImage = in.readByte() != 0;
@@ -350,7 +350,6 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isDragFrame ? 1 : 0));
         dest.writeByte((byte) (isNotPreviewDownload ? 1 : 0));
         dest.writeByte((byte) (isWithVideoImage ? 1 : 0));
-        dest.writeParcelable(uCropOptions, flags);
         dest.writeTypedList(selectionMedias);
         dest.writeString(cameraFileName);
         dest.writeByte((byte) (isCheckOriginalImage ? 1 : 0));

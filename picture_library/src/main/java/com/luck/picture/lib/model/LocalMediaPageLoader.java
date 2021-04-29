@@ -68,12 +68,14 @@ public final class LocalMediaPageLoader {
      * @return
      */
     private static String getSelectionArgsForAllMediaCondition(String timeCondition, String sizeCondition, String queryMimeTypeOptions) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeTypeOptions).append(" OR ")
+                .append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=? AND ").append(timeCondition).append(") AND ").append(sizeCondition);
         if (SdkVersionUtils.checkedAndroid_Q()) {
-            return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeTypeOptions
-                    + " OR " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + timeCondition + ") AND " + sizeCondition;
+            return stringBuilder.toString();
+        } else {
+            return stringBuilder.append(")").append(GROUP_BY_BUCKET_Id).toString();
         }
-        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeTypeOptions
-                + " OR " + (MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + timeCondition) + ")" + " AND " + sizeCondition + ")" + GROUP_BY_BUCKET_Id;
     }
 
     /**
@@ -84,10 +86,11 @@ public final class LocalMediaPageLoader {
      * @return
      */
     private static String getSelectionArgsForImageMediaCondition(String queryMimeTypeOptions, String fileSizeCondition) {
+        StringBuilder stringBuilder = new StringBuilder();
         if (SdkVersionUtils.checkedAndroid_Q()) {
-            return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeTypeOptions + " AND " + fileSizeCondition;
+            return stringBuilder.append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeTypeOptions).append(" AND ").append(fileSizeCondition).toString();
         } else {
-            return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeTypeOptions + ") AND " + fileSizeCondition + ")" + GROUP_BY_BUCKET_Id;
+            return stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeTypeOptions).append(") AND ").append(fileSizeCondition).append(")").append(GROUP_BY_BUCKET_Id).toString();
         }
     }
 
@@ -99,10 +102,12 @@ public final class LocalMediaPageLoader {
      * @return
      */
     private static String getSelectionArgsForVideoOrAudioMediaCondition(String queryMimeTypeOptions, String fileSizeCondition) {
+        StringBuilder stringBuilder = new StringBuilder();
         if (SdkVersionUtils.checkedAndroid_Q()) {
-            return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeTypeOptions + " AND " + fileSizeCondition;
+            return stringBuilder.append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeTypeOptions).append(" AND ").append(fileSizeCondition).toString();
+        } else {
+            return stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeTypeOptions).append(") AND ").append(fileSizeCondition).append(")").append(GROUP_BY_BUCKET_Id).toString();
         }
-        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeTypeOptions + ") AND " + fileSizeCondition + ")" + GROUP_BY_BUCKET_Id;
     }
 
     /**
@@ -515,28 +520,34 @@ public final class LocalMediaPageLoader {
     }
 
     private static String getPageSelectionArgsForAllMediaCondition(long bucketId, String queryMimeCondition, String durationCondition, String sizeCondition) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE)
+                .append("=?").append(queryMimeCondition).append(" OR ").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=? AND ").append(durationCondition).append(") AND ");
         if (bucketId == -1) {
-            return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeCondition
-                    + " OR " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + durationCondition + ") AND " + sizeCondition;
+            return stringBuilder.append(sizeCondition).toString();
+        } else {
+            return stringBuilder.append(COLUMN_BUCKET_ID).append("=? AND ").append(sizeCondition).toString();
         }
-        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeCondition
-                + " OR " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + durationCondition + ") AND " + COLUMN_BUCKET_ID + "=? AND " + sizeCondition;
-
     }
 
     private static String getPageSelectionArgsForImageMediaCondition(long bucketId, String queryMimeCondition, String sizeCondition) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?");
         if (bucketId == -1) {
-            return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeCondition + ") AND " + sizeCondition;
+            return stringBuilder.append(queryMimeCondition).append(") AND ").append(sizeCondition).toString();
+        } else {
+            return stringBuilder.append(queryMimeCondition).append(") AND ").append(COLUMN_BUCKET_ID).append("=? AND ").append(sizeCondition).toString();
         }
-        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeCondition + ") AND " + COLUMN_BUCKET_ID + "=? AND " + sizeCondition;
-
     }
 
     private static String getPageSelectionArgsForVideoOrAudioMediaCondition(long bucketId, String queryMimeCondition, String durationCondition, String sizeCondition) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeCondition).append(" AND ").append(durationCondition).append(") AND ");
         if (bucketId == -1) {
-            return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeCondition + " AND " + durationCondition + ") AND " + sizeCondition;
+            return stringBuilder.append(sizeCondition).toString();
+        } else {
+            return stringBuilder.append(COLUMN_BUCKET_ID).append("=? AND ").append(sizeCondition).toString();
         }
-        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeCondition + " AND " + durationCondition + ") AND " + COLUMN_BUCKET_ID + "=? AND " + sizeCondition;
     }
 
     private String[] getPageSelectionArgs(long bucketId) {

@@ -68,7 +68,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     private ImageButton ibLeftBack;
     private TextView tvTitle;
     private PreviewViewPager viewPager;
-    private List<LocalMedia> images = new ArrayList<>();
+    private final List<LocalMedia> images = new ArrayList<>();
     private int position = 0;
     private SimpleFragmentAdapter adapter;
     private String downloadPath;
@@ -217,7 +217,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
         @Override
         public int getCount() {
-            return images != null ? images.size() : 0;
+            return images.size();
         }
 
         @Override
