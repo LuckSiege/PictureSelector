@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -39,68 +40,79 @@ import java.util.Set;
  */
 public final class LocalMediaPageLoader {
     private static final String TAG = LocalMediaPageLoader.class.getSimpleName();
-
-    private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
-    private static final String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
-    private static final String NOT_GIF_UNKNOWN = "!='image/*'";
-    private static final String NOT_GIF = "!='image/gif' AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF_UNKNOWN;
-    private static final String GROUP_BY_BUCKET_Id = " GROUP BY (bucket_id";
-    private static final String COLUMN_COUNT = "count";
-    private static final String COLUMN_BUCKET_ID = "bucket_id";
-    private static final String COLUMN_BUCKET_DISPLAY_NAME = "bucket_display_name";
-
-    /**
-     * Filter out recordings that are less than 500 milliseconds long
-     */
-    private static final int AUDIO_DURATION = 500;
-    private final Context mContext;
-    private final PictureSelectionConfig config;
     /**
      * unit
      */
     private static final long FILE_SIZE_UNIT = 1024 * 1024L;
+    private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
+    private static final String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
+    private static final String NOT_GIF_UNKNOWN = "!='image/*'";
+    private static final String NOT_GIF = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/gif' AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF_UNKNOWN + ")";
+    private static final String GROUP_BY_BUCKET_Id = " GROUP BY (bucket_id";
+    private static final String COLUMN_COUNT = "count";
+    private static final String COLUMN_BUCKET_ID = "bucket_id";
+    private static final String COLUMN_BUCKET_DISPLAY_NAME = "bucket_display_name";
+    private final Context mContext;
+    private final PictureSelectionConfig config;
 
-    /**
-     * Query criteria (audio and video)
-     *
-     * @param timeCondition
-     * @param sizeCondition
-     * @return
-     */
-    private static String getSelectionArgsForSingleMediaCondition(String timeCondition, String sizeCondition) {
-        if (SdkVersionUtils.checkedAndroid_Q()) {
-            return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + " AND " + sizeCondition + " AND " + timeCondition;
-        }
-        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + ") AND " + sizeCondition + " AND " + timeCondition + ")" + GROUP_BY_BUCKET_Id;
+    public LocalMediaPageLoader(Context context) {
+        this.mContext = context;
+        this.config = PictureSelectionConfig.getInstance();
     }
 
     /**
-     * All mode conditions
+     * Query conditions in all modes
      *
      * @param timeCondition
      * @param sizeCondition
-     * @param isGif
      * @return
      */
-    private static String getSelectionArgsForAllMediaCondition(String timeCondition, String sizeCondition, boolean isGif) {
+    private static String getSelectionArgsForAllMediaCondition(String timeCondition, String sizeCondition, String queryMimeTypeOptions) {
         if (SdkVersionUtils.checkedAndroid_Q()) {
-            return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                    + (isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF)
+            return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeTypeOptions
                     + " OR " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + timeCondition + ") AND " + sizeCondition;
         }
-
-        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                + (isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF)
-                + " OR " + (MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + timeCondition) + ")" + " AND " + sizeCondition + " " + GROUP_BY_BUCKET_Id;
+        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeTypeOptions
+                + " OR " + (MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + timeCondition) + ")" + " AND " + sizeCondition + ")" + GROUP_BY_BUCKET_Id;
     }
 
     /**
-     * Get pictures or videos
+     * Query conditions in image modes
+     *
+     * @param queryMimeTypeOptions
+     * @param fileSizeCondition
+     * @return
      */
-    private static final String[] SELECTION_ALL_ARGS = {
-            String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
-            String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO),
-    };
+    private static String getSelectionArgsForImageMediaCondition(String queryMimeTypeOptions, String fileSizeCondition) {
+        if (SdkVersionUtils.checkedAndroid_Q()) {
+            return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeTypeOptions + " AND " + fileSizeCondition;
+        } else {
+            return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeTypeOptions + ") AND " + fileSizeCondition + ")" + GROUP_BY_BUCKET_Id;
+        }
+    }
+
+    /**
+     * Video or Audio mode conditions
+     *
+     * @param queryMimeTypeOptions
+     * @param fileSizeCondition
+     * @return
+     */
+    private static String getSelectionArgsForVideoOrAudioMediaCondition(String queryMimeTypeOptions, String fileSizeCondition) {
+        if (SdkVersionUtils.checkedAndroid_Q()) {
+            return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeTypeOptions + " AND " + fileSizeCondition;
+        }
+        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeTypeOptions + ") AND " + fileSizeCondition + ")" + GROUP_BY_BUCKET_Id;
+    }
+
+    /**
+     * Gets a file of the specified type
+     *
+     * @return
+     */
+    private static String[] getSelectionArgsForAllMediaType() {
+        return new String[]{String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE), String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)};
+    }
 
     /**
      * Gets a file of the specified type
@@ -120,12 +132,6 @@ public final class LocalMediaPageLoader {
      */
     private static String[] getSelectionArgsForPageSingleMediaType(int mediaType, long bucketId) {
         return bucketId == -1 ? new String[]{String.valueOf(mediaType)} : new String[]{String.valueOf(mediaType), ValueOf.toString(bucketId)};
-    }
-
-
-    public LocalMediaPageLoader(Context context) {
-        this.mContext = context;
-        this.config = PictureSelectionConfig.getInstance();
     }
 
     private static final String[] PROJECTION_29 = {
@@ -282,13 +288,11 @@ public final class LocalMediaPageLoader {
                                         }
                                     }
                                 }
-
                                 if (!config.isWebp) {
                                     if (mimeType.startsWith(PictureMimeType.ofWEBP())) {
                                         continue;
                                     }
                                 }
-
                                 if (!config.isBmp) {
                                     if (mimeType.startsWith(PictureMimeType.ofBMP())) {
                                         continue;
@@ -491,66 +495,48 @@ public final class LocalMediaPageLoader {
         return cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
     }
 
-
     private String getPageSelection(long bucketId) {
-        String durationCondition = getDurationCondition(0);
+        String durationCondition = getDurationCondition();
         String sizeCondition = getFileSizeCondition();
-        boolean isQueryFormat = !TextUtils.isEmpty(config.specifiedFormat);
+        String queryMimeCondition = getQueryMimeCondition();
         switch (config.chooseMode) {
             case PictureConfig.TYPE_ALL:
-                if (bucketId == -1) {
-                    // ofAll
-                    return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                            + (config.isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF)
-                            + " OR " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + durationCondition + ") AND " + sizeCondition;
-                }
-                // Gets the specified album directory
-                return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                        + (config.isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF)
-                        + " OR " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + durationCondition + ") AND " + COLUMN_BUCKET_ID + "=? AND " + sizeCondition;
-
+                //  Gets the all
+                return getPageSelectionArgsForAllMediaCondition(bucketId, queryMimeCondition, durationCondition, sizeCondition);
             case PictureConfig.TYPE_IMAGE:
                 // Gets the image of the specified type
-                if (bucketId == -1) {
-                    // ofAll
-                    if (isQueryFormat) {
-                        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                                + (" AND " + MediaStore.MediaColumns.MIME_TYPE + "='" + config.specifiedFormat + "'")
-                                + ") AND " + sizeCondition;
-                    } else {
-                        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                                + (config.isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF)
-                                + ") AND " + sizeCondition;
-                    }
-                }
-                // Gets the specified album directory
-                if (isQueryFormat) {
-                    return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                            + (config.isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF + " AND " + MediaStore.MediaColumns.MIME_TYPE + "='" + config.specifiedFormat + "'")
-                            + ") AND " + COLUMN_BUCKET_ID + "=? AND " + sizeCondition;
-                } else {
-                    return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                            + (config.isGif ? "" : " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF)
-                            + ") AND " + COLUMN_BUCKET_ID + "=? AND " + sizeCondition;
-                }
+                return getPageSelectionArgsForImageMediaCondition(bucketId, queryMimeCondition, sizeCondition);
             case PictureConfig.TYPE_VIDEO:
             case PictureConfig.TYPE_AUDIO:
-                if (bucketId == -1) {
-                    // ofAll
-                    if (isQueryFormat) {
-                        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + MediaStore.MediaColumns.MIME_TYPE + "='" + config.specifiedFormat + "'" + " AND " + durationCondition + ") AND " + sizeCondition;
-                    } else {
-                        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + durationCondition + ") AND " + sizeCondition;
-                    }
-                }
-                // Gets the specified album directory
-                if (isQueryFormat) {
-                    return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + MediaStore.MediaColumns.MIME_TYPE + "='" + config.specifiedFormat + "'" + " AND " + durationCondition + ") AND " + COLUMN_BUCKET_ID + "=? AND " + sizeCondition;
-                } else {
-                    return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + durationCondition + ") AND " + COLUMN_BUCKET_ID + "=? AND " + sizeCondition;
-                }
+                //  Gets the video or audio
+                return getPageSelectionArgsForVideoOrAudioMediaCondition(bucketId, queryMimeCondition, durationCondition, sizeCondition);
         }
         return null;
+    }
+
+    private static String getPageSelectionArgsForAllMediaCondition(long bucketId, String queryMimeCondition, String durationCondition, String sizeCondition) {
+        if (bucketId == -1) {
+            return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeCondition
+                    + " OR " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + durationCondition + ") AND " + sizeCondition;
+        }
+        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeCondition
+                + " OR " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " + durationCondition + ") AND " + COLUMN_BUCKET_ID + "=? AND " + sizeCondition;
+
+    }
+
+    private static String getPageSelectionArgsForImageMediaCondition(long bucketId, String queryMimeCondition, String sizeCondition) {
+        if (bucketId == -1) {
+            return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeCondition + ") AND " + sizeCondition;
+        }
+        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeCondition + ") AND " + COLUMN_BUCKET_ID + "=? AND " + sizeCondition;
+
+    }
+
+    private static String getPageSelectionArgsForVideoOrAudioMediaCondition(long bucketId, String queryMimeCondition, String durationCondition, String sizeCondition) {
+        if (bucketId == -1) {
+            return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeCondition + " AND " + durationCondition + ") AND " + sizeCondition;
+        }
+        return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeCondition + " AND " + durationCondition + ") AND " + COLUMN_BUCKET_ID + "=? AND " + sizeCondition;
     }
 
     private String[] getPageSelectionArgs(long bucketId) {
@@ -585,60 +571,18 @@ public final class LocalMediaPageLoader {
 
     private String getSelection() {
         String fileSizeCondition = getFileSizeCondition();
+        String queryMimeCondition = getQueryMimeCondition();
         switch (config.chooseMode) {
             case PictureConfig.TYPE_ALL:
                 // Get all, not including audio
-                return getSelectionArgsForAllMediaCondition(getDurationCondition(0), fileSizeCondition, config.isGif);
+                return getSelectionArgsForAllMediaCondition(getDurationCondition(), fileSizeCondition, queryMimeCondition);
             case PictureConfig.TYPE_IMAGE:
-                if (!TextUtils.isEmpty(config.specifiedFormat)) {
-                    // 获取指定类型的图片
-                    if (SdkVersionUtils.checkedAndroid_Q()) {
-                        String selection_specified_format_29 = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + " AND " + MediaStore.MediaColumns.MIME_TYPE;
-                        return selection_specified_format_29 + "='" + config.specifiedFormat + "' AND " + fileSizeCondition;
-                    }
-                    String selection_specified_format = "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                            + " AND " + MediaStore.MediaColumns.MIME_TYPE;
-                    return selection_specified_format + "='" + config.specifiedFormat + "') AND " + fileSizeCondition + ")" + GROUP_BY_BUCKET_Id;
-                }
-                if (SdkVersionUtils.checkedAndroid_Q()) {
-                    if (config.isGif) {
-                        return MediaStore.Files.FileColumns.MEDIA_TYPE + "=? " + " AND " + fileSizeCondition;
-                    } else {
-                        return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                                + " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF + " AND " + fileSizeCondition;
-                    }
-                }
-
-                if (config.isGif) {
-                    return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=? )" + " AND " + fileSizeCondition + ")" + GROUP_BY_BUCKET_Id;
-                } else {
-                    return "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                            + " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF + ") AND " + fileSizeCondition + ")" + GROUP_BY_BUCKET_Id;
-                }
+                // Get Images
+                return getSelectionArgsForImageMediaCondition(queryMimeCondition, fileSizeCondition);
             case PictureConfig.TYPE_VIDEO:
-                // 获取视频
-                if (!TextUtils.isEmpty(config.specifiedFormat)) {
-                    // Gets the specified album directory
-                    if (SdkVersionUtils.checkedAndroid_Q()) {
-                        String selection_specified_format_29 = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + " AND " + MediaStore.MediaColumns.MIME_TYPE;
-                        return selection_specified_format_29 + "='" + config.specifiedFormat + "' AND " + fileSizeCondition;
-                    }
-                    String selection_specified_format = "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + " AND " + MediaStore.MediaColumns.MIME_TYPE;
-                    return selection_specified_format + "='" + config.specifiedFormat + "') AND " + fileSizeCondition + ")" + GROUP_BY_BUCKET_Id;
-                }
-                return getSelectionArgsForSingleMediaCondition(getDurationCondition(0), fileSizeCondition);
             case PictureConfig.TYPE_AUDIO:
-                // Get Audio
-                if (!TextUtils.isEmpty(config.specifiedFormat)) {
-                    // Gets the specified album directory
-                    if (SdkVersionUtils.checkedAndroid_Q()) {
-                        String selection_specified_format_29 = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + " AND " + MediaStore.MediaColumns.MIME_TYPE;
-                        return selection_specified_format_29 + "='" + config.specifiedFormat + "' AND " + fileSizeCondition;
-                    }
-                    String selection_specified_format = "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + " AND " + MediaStore.MediaColumns.MIME_TYPE;
-                    return selection_specified_format + "='" + config.specifiedFormat + "') AND " + fileSizeCondition + ")" + GROUP_BY_BUCKET_Id;
-                }
-                return getSelectionArgsForSingleMediaCondition(getDurationCondition(AUDIO_DURATION), fileSizeCondition);
+                // Gets the specified album directory
+                return getSelectionArgsForVideoOrAudioMediaCondition(queryMimeCondition, fileSizeCondition);
         }
         return null;
     }
@@ -646,7 +590,8 @@ public final class LocalMediaPageLoader {
     private String[] getSelectionArgs() {
         switch (config.chooseMode) {
             case PictureConfig.TYPE_ALL:
-                return SELECTION_ALL_ARGS;
+                // Get all
+                return getSelectionArgsForAllMediaType();
             case PictureConfig.TYPE_IMAGE:
                 // Get photo
                 return getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
@@ -654,6 +599,7 @@ public final class LocalMediaPageLoader {
                 // Get video
                 return getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO);
             case PictureConfig.TYPE_AUDIO:
+                // Get audio
                 return getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO);
         }
         return null;
@@ -688,14 +634,13 @@ public final class LocalMediaPageLoader {
     /**
      * Get video (maximum or minimum time)
      *
-     * @param exMinLimit
      * @return
      */
-    private String getDurationCondition(long exMinLimit) {
+    private String getDurationCondition() {
         long maxS = config.videoMaxSecond == 0 ? Long.MAX_VALUE : config.videoMaxSecond;
         return String.format(Locale.CHINA, "%d <%s " + MediaStore.MediaColumns.DURATION + " and " + MediaStore.MediaColumns.DURATION + " <= %d",
-                Math.max(exMinLimit, config.videoMinSecond),
-                Math.max(exMinLimit, config.videoMinSecond) == 0 ? "" : "=",
+                Math.max((long) 0, config.videoMinSecond),
+                Math.max((long) 0, config.videoMinSecond) == 0 ? "" : "=",
                 maxS);
     }
 
@@ -712,6 +657,28 @@ public final class LocalMediaPageLoader {
                 maxS);
     }
 
+    private String getQueryMimeCondition() {
+        HashSet<String> stringHashSet = config.queryMimeTypeHashSet;
+        if (stringHashSet == null) {
+            stringHashSet = new HashSet<>();
+        }
+        if (!TextUtils.isEmpty(config.specifiedFormat)) {
+            stringHashSet.add(config.specifiedFormat);
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        Iterator<String> iterator = stringHashSet.iterator();
+        int index = -1;
+        while (iterator.hasNext()) {
+            index++;
+            stringBuilder.append(index == 0 ? " AND " : " OR ").append(MediaStore.MediaColumns.MIME_TYPE).append("='").append(iterator.next()).append("'");
+        }
+        if (config.chooseMode != PictureMimeType.ofVideo()) {
+            if (!config.isGif && !stringHashSet.contains(PictureMimeType.ofGIF())) {
+                stringBuilder.append(NOT_GIF);
+            }
+        }
+        return stringBuilder.toString();
+    }
 
     @SuppressLint("StaticFieldLeak")
     private static LocalMediaPageLoader instance;

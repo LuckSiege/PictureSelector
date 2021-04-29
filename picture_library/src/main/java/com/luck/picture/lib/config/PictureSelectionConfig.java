@@ -22,6 +22,7 @@ import com.luck.picture.lib.style.PictureSelectorUIStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -43,6 +44,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean focusAlpha;
     public String renameCompressFileName;
     public String renameCropFileName;
+    @Deprecated
     public String specifiedFormat;
     public int requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
     public int buttonFeatures = CustomCameraView.BUTTON_STATE_BOTH;
@@ -117,6 +119,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static OnCustomImagePreviewCallback<LocalMedia> onCustomImagePreviewCallback;
     public static OnCustomCameraInterfaceListener onCustomCameraInterfaceListener;
     public List<LocalMedia> selectionMedias;
+    public HashSet<String> queryMimeTypeHashSet;
     public String cameraFileName;
     public boolean isCheckOriginalImage;
     @Deprecated
@@ -475,6 +478,7 @@ public final class PictureSelectionConfig implements Parcelable {
         specifiedFormat = "";
         renameCompressFileName = "";
         renameCropFileName = "";
+        queryMimeTypeHashSet = null;
         selectionMedias = new ArrayList<>();
         uCropOptions = null;
         titleBarBackgroundColor = 0;
@@ -533,7 +537,6 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.onCustomCameraInterfaceListener = null;
         PictureSelectionConfig.cacheResourcesEngine = null;
     }
-
 
 
 }

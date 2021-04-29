@@ -422,7 +422,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private GridImageAdapter.onAddPicClickListener onAddPicClickListener = new GridImageAdapter.onAddPicClickListener() {
+    private final GridImageAdapter.onAddPicClickListener onAddPicClickListener = new GridImageAdapter.onAddPicClickListener() {
         @Override
         public void onAddPicClick() {
             boolean mode = cb_mode.isChecked();
@@ -475,6 +475,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .isPreviewImage(cb_preview_img.isChecked())// 是否可预览图片
                         .isPreviewVideo(cb_preview_video.isChecked())// 是否可预览视频
                         //.querySpecifiedFormatSuffix(PictureMimeType.ofJPEG())// 查询指定后缀格式资源
+                        //.queryMimeTypeConditions(PictureMimeType.ofWEBP())
                         .isEnablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
                         .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
                         //.isMultipleSkipCrop(false)// 多图裁剪时是否支持跳过，默认支持

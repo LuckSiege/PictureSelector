@@ -31,6 +31,8 @@ import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static android.os.Build.VERSION_CODES.KITKAT;
@@ -941,6 +943,21 @@ public class PictureSelectionModel {
     }
 
     /**
+     * query specified mimeType
+     *
+     * @param mimeTypes Use example {@link { image/jpeg or image/png ... }}
+     * @return
+     */
+    public PictureSelectionModel queryMimeTypeConditions(String... mimeTypes) {
+        if (mimeTypes != null && mimeTypes.length > 0) {
+            selectionConfig.queryMimeTypeHashSet = new HashSet<>(Arrays.asList(mimeTypes));
+        } else {
+            selectionConfig.queryMimeTypeHashSet = null;
+        }
+        return this;
+    }
+
+    /**
      * @param isGif Whether to open gif
      * @return
      */
@@ -1016,8 +1033,10 @@ public class PictureSelectionModel {
 
     /**
      * @param Specify get image format
+     *                Use {@link .queryMimeTypeConditions()}
      * @return
      */
+    @Deprecated
     public PictureSelectionModel querySpecifiedFormatSuffix(String specifiedFormat) {
         selectionConfig.specifiedFormat = specifiedFormat;
         return this;
