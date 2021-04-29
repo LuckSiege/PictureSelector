@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DoubleUtils;
@@ -16,10 +17,10 @@ import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.yalantis.ucrop.UCrop;
-import com.yalantis.ucrop.model.CutInfo;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author：luck
@@ -61,7 +62,7 @@ public class UCropManager {
      * @param activity 上下文
      * @param list     待裁剪图片集合
      */
-    public static void ofCrop(Activity activity, ArrayList<CutInfo> list) {
+    public static void ofCrop(Activity activity, ArrayList<LocalMedia> list) {
         if (DoubleUtils.isFastDoubleClick()) {
             return;
         }
@@ -79,7 +80,7 @@ public class UCropManager {
             boolean isHasVideo = PictureMimeType.isHasVideo(mimeType);
             if (isHasVideo) {
                 for (int i = 0; i < size; i++) {
-                    CutInfo cutInfo = list.get(i);
+                    LocalMedia cutInfo = list.get(i);
                     if (cutInfo != null && PictureMimeType.isHasImage(cutInfo.getMimeType())) {
                         index = i;
                         break;
@@ -88,7 +89,7 @@ public class UCropManager {
             }
         }
         if (index < size) {
-            CutInfo info = list.get(index);
+            LocalMedia info = list.get(index);
             boolean isHttp = PictureMimeType.isHasHttp(info.getPath());
             Uri uri;
             if (TextUtils.isEmpty(info.getAndroidQToPath())) {

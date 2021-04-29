@@ -57,7 +57,8 @@ public final class LocalMediaLoader {
             MediaStore.MediaColumns.SIZE,
             MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
             MediaStore.MediaColumns.DISPLAY_NAME,
-            MediaStore.MediaColumns.BUCKET_ID};
+            MediaStore.MediaColumns.BUCKET_ID,
+            MediaStore.MediaColumns.DATE_ADDED};
 
     /**
      * Video or Audio mode conditions
@@ -146,6 +147,8 @@ public final class LocalMediaLoader {
                     int folderNameColumn = data.getColumnIndexOrThrow(PROJECTION[7]);
                     int fileNameColumn = data.getColumnIndexOrThrow(PROJECTION[8]);
                     int bucketIdColumn = data.getColumnIndexOrThrow(PROJECTION[9]);
+                    int dateAddedColumn = data.getColumnIndexOrThrow(PROJECTION[10]);
+
                     data.moveToFirst();
                     do {
                         long id = data.getLong(idColumn);
@@ -211,7 +214,7 @@ public final class LocalMediaLoader {
                             }
                         }
                         LocalMedia image = new LocalMedia
-                                (id, url, absolutePath, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size, bucketId);
+                                (id, url, absolutePath, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size, bucketId, data.getLong(dateAddedColumn));
                         LocalMediaFolder folder = getImageFolder(url, folderName, imageFolders);
                         folder.setBucketId(image.getBucketId());
                         List<LocalMedia> images = folder.getData();

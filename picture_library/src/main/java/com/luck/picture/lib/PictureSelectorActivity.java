@@ -69,7 +69,6 @@ import com.luck.picture.lib.tools.ValueOf;
 import com.luck.picture.lib.widget.FolderPopWindow;
 import com.luck.picture.lib.widget.RecyclerPreloadView;
 import com.yalantis.ucrop.UCrop;
-import com.yalantis.ucrop.model.CutInfo;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -1129,9 +1128,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 config.originalPath = image.getPath();
                 UCropManager.ofCrop(this, config.originalPath, image.getMimeType());
             } else {
-                ArrayList<CutInfo> cuts = new ArrayList<>();
-                int count = images.size();
                 int imageNum = 0;
+                int count = images.size();
                 for (int i = 0; i < count; i++) {
                     LocalMedia media = images.get(i);
                     if (media == null
@@ -1141,20 +1139,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     if (PictureMimeType.isHasImage(media.getMimeType())) {
                         imageNum++;
                     }
-                    CutInfo cutInfo = new CutInfo();
-                    cutInfo.setId(media.getId());
-                    cutInfo.setPath(media.getPath());
-                    cutInfo.setImageWidth(media.getWidth());
-                    cutInfo.setImageHeight(media.getHeight());
-                    cutInfo.setMimeType(media.getMimeType());
-                    cutInfo.setDuration(media.getDuration());
-                    cutInfo.setRealPath(media.getRealPath());
-                    cuts.add(cutInfo);
                 }
                 if (imageNum <= 0) {
                     onResult(images);
                 } else {
-                    UCropManager.ofCrop(this, cuts);
+                    UCropManager.ofCrop(this, (ArrayList<LocalMedia>) images);
                 }
             }
         } else if (config.isCompress) {
@@ -1193,25 +1182,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 config.originalPath = image.getPath();
                 UCropManager.ofCrop(this, config.originalPath, image.getMimeType());
             } else {
-                ArrayList<CutInfo> cuts = new ArrayList<>();
-                int count = images.size();
-                for (int i = 0; i < count; i++) {
-                    LocalMedia media = images.get(i);
-                    if (media == null
-                            || TextUtils.isEmpty(media.getPath())) {
-                        continue;
-                    }
-                    CutInfo cutInfo = new CutInfo();
-                    cutInfo.setId(media.getId());
-                    cutInfo.setPath(media.getPath());
-                    cutInfo.setImageWidth(media.getWidth());
-                    cutInfo.setImageHeight(media.getHeight());
-                    cutInfo.setMimeType(media.getMimeType());
-                    cutInfo.setDuration(media.getDuration());
-                    cutInfo.setRealPath(media.getRealPath());
-                    cuts.add(cutInfo);
-                }
-                UCropManager.ofCrop(this, cuts);
+                UCropManager.ofCrop(this, (ArrayList<LocalMedia>) images);
             }
         } else if (config.isCompress
                 && isHasImage) {
@@ -1879,6 +1850,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     media.setChooseModel(config.chooseMode);
                     long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
                     media.setBucketId(bucketId);
+                    media.setDateAddedTime(Long.parseLong(String.valueOf(System.currentTimeMillis()).substring(0, 10)));
                     // The width and height of the image are reversed if there is rotation information
                     MediaUtils.setOrientationSynchronous(getContext(), media, config.isAndroidQChangeWH, config.isAndroidQChangeVideoWH);
                 }
@@ -2143,60 +2115,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (data == null) {
             return;
         }
-        List<CutInfo> mCuts = UCrop.getMultipleOutput(data);
-        if (mCuts == null || mCuts.size() == 0) {
-            return;
-        }
-        int size = mCuts.size();
-        boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
-        List<LocalMedia> list = data.getParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST);
-        if (list != null) {
-            mAdapter.bindSelectData(list);
+        List<LocalMedia> result = UCrop.getMultipleOutput(data);
+        if (result != null && result.size() > 0) {
+            mAdapter.bindSelectData(result);
             mAdapter.notifyDataSetChanged();
-        }
-        int oldSize = mAdapter != null ? mAdapter.getSelectedData().size() : 0;
-        if (oldSize == size) {
-            List<LocalMedia> result = mAdapter.getSelectedData();
-            for (int i = 0; i < size; i++) {
-                CutInfo c = mCuts.get(i);
-                LocalMedia media = result.get(i);
-                media.setCut(!TextUtils.isEmpty(c.getCutPath()));
-                media.setPath(c.getPath());
-                media.setMimeType(c.getMimeType());
-                media.setCutPath(c.getCutPath());
-                media.setWidth(c.getImageWidth());
-                media.setHeight(c.getImageHeight());
-                media.setAndroidQToPath(isAndroidQ ? c.getCutPath() : media.getAndroidQToPath());
-                media.setSize(!TextUtils.isEmpty(c.getCutPath()) ? new File(c.getCutPath()).length() : media.getSize());
-            }
-            handlerResult(result);
-        } else {
-            // Fault-tolerant processing
-            List<LocalMedia> result = new ArrayList<>();
-            for (int i = 0; i < size; i++) {
-                CutInfo c = mCuts.get(i);
-                LocalMedia media = new LocalMedia();
-                media.setId(c.getId());
-                media.setCut(!TextUtils.isEmpty(c.getCutPath()));
-                media.setPath(c.getPath());
-                media.setCutPath(c.getCutPath());
-                media.setMimeType(c.getMimeType());
-                media.setWidth(c.getImageWidth());
-                media.setHeight(c.getImageHeight());
-                media.setDuration(c.getDuration());
-                media.setChooseModel(config.chooseMode);
-                media.setAndroidQToPath(isAndroidQ ? c.getCutPath() : c.getAndroidQToPath());
-                if (!TextUtils.isEmpty(c.getCutPath())) {
-                    media.setSize(new File(c.getCutPath()).length());
-                } else {
-                    if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(c.getPath())) {
-                        media.setSize(!TextUtils.isEmpty(c.getRealPath()) ? new File(c.getRealPath()).length() : 0);
-                    } else {
-                        media.setSize(new File(c.getPath()).length());
-                    }
-                }
-                result.add(media);
-            }
             handlerResult(result);
         }
     }
@@ -2206,8 +2128,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     private void singleRadioMediaImage() {
         List<LocalMedia> selectData = mAdapter.getSelectedData();
-        if (selectData != null
-                && selectData.size() > 0) {
+        if (selectData != null && selectData.size() > 0) {
             LocalMedia media = selectData.get(0);
             int position = media.getPosition();
             selectData.clear();

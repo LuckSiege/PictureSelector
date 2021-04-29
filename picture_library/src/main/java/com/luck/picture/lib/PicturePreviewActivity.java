@@ -38,7 +38,6 @@ import com.luck.picture.lib.tools.ValueOf;
 import com.luck.picture.lib.tools.VoiceUtils;
 import com.luck.picture.lib.widget.PreviewViewPager;
 import com.yalantis.ucrop.UCrop;
-import com.yalantis.ucrop.model.CutInfo;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -996,9 +995,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 UCropManager.ofCrop(this, config.originalPath, image.getMimeType());
             } else {
                 // 是图片和选择压缩并且是多张，调用批量压缩
-                ArrayList<CutInfo> cuts = new ArrayList<>();
-                int count = selectData.size();
                 int imageNum = 0;
+                int count = selectData.size();
                 for (int i = 0; i < count; i++) {
                     LocalMedia media = selectData.get(i);
                     if (media == null
@@ -1008,17 +1006,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     if (PictureMimeType.isHasImage(media.getMimeType())) {
                         imageNum++;
                     }
-                    CutInfo cutInfo = new CutInfo();
-                    cutInfo.setId(media.getId());
-                    cutInfo.setPath(media.getPath());
-                    cutInfo.setImageWidth(media.getWidth());
-                    cutInfo.setImageHeight(media.getHeight());
-                    cutInfo.setMimeType(media.getMimeType());
-                    cutInfo.setAndroidQToPath(media.getAndroidQToPath());
-                    cutInfo.setId(media.getId());
-                    cutInfo.setDuration(media.getDuration());
-                    cutInfo.setRealPath(media.getRealPath());
-                    cuts.add(cutInfo);
                 }
                 if (imageNum <= 0) {
                     // 全是视频
@@ -1026,7 +1013,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     onBackPressed();
                 } else {
                     // 图片和视频共存
-                    UCropManager.ofCrop(this, cuts);
+                    UCropManager.ofCrop(this, (ArrayList<LocalMedia>) selectData);
                 }
             }
         } else {
@@ -1048,27 +1035,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 UCropManager.ofCrop(this, config.originalPath, image.getMimeType());
             } else {
                 // 是图片和选择压缩并且是多张，调用批量压缩
-                ArrayList<CutInfo> cuts = new ArrayList<>();
-                int count = selectData.size();
-                for (int i = 0; i < count; i++) {
-                    LocalMedia media = selectData.get(i);
-                    if (media == null
-                            || TextUtils.isEmpty(media.getPath())) {
-                        continue;
-                    }
-                    CutInfo cutInfo = new CutInfo();
-                    cutInfo.setId(media.getId());
-                    cutInfo.setPath(media.getPath());
-                    cutInfo.setImageWidth(media.getWidth());
-                    cutInfo.setImageHeight(media.getHeight());
-                    cutInfo.setMimeType(media.getMimeType());
-                    cutInfo.setAndroidQToPath(media.getAndroidQToPath());
-                    cutInfo.setId(media.getId());
-                    cutInfo.setDuration(media.getDuration());
-                    cutInfo.setRealPath(media.getRealPath());
-                    cuts.add(cutInfo);
-                }
-                UCropManager.ofCrop(this, cuts);
+                UCropManager.ofCrop(this, (ArrayList<LocalMedia>) selectData);
             }
         } else {
             onBackPressed();
@@ -1082,12 +1049,10 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             switch (requestCode) {
                 case UCrop.REQUEST_MULTI_CROP:
                     // 裁剪数据
-                    List<CutInfo> list = UCrop.getMultipleOutput(data);
-                    data.putParcelableArrayListExtra(UCrop.Options.EXTRA_OUTPUT_URI_LIST,
-                            (ArrayList<? extends Parcelable>) list);
+                    ArrayList<LocalMedia> list = UCrop.getMultipleOutput(data);
+                    data.putParcelableArrayListExtra(UCrop.Options.EXTRA_OUTPUT_URI_LIST, list);
                     // 已选数量
-                    data.putParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST,
-                            (ArrayList<? extends Parcelable>) selectData);
+                    data.putParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST, (ArrayList<? extends Parcelable>) selectData);
                     setResult(RESULT_OK, data);
                     finish();
                     break;

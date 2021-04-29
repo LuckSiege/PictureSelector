@@ -19,8 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.yalantis.ucrop.model.AspectRatio;
-import com.yalantis.ucrop.model.CutInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -326,7 +326,7 @@ public class UCrop {
      * @param intent crop result intent
      */
     @Nullable
-    public static List<CutInfo> getMultipleOutput(@NonNull Intent intent) {
+    public static ArrayList<LocalMedia> getMultipleOutput(@NonNull Intent intent) {
         return intent.getParcelableArrayListExtra(Options.EXTRA_OUTPUT_URI_LIST);
     }
 
@@ -462,7 +462,7 @@ public class UCrop {
         /**
          * @param -set cuts path
          */
-        public void setCutListData(ArrayList<CutInfo> list) {
+        public void setCutListData(ArrayList<LocalMedia> list) {
             mOptionBundle.putParcelableArrayList(EXTRA_CUT_CROP, list);
         }
 

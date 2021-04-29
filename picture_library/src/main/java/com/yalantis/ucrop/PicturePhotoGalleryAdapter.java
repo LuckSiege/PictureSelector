@@ -16,9 +16,9 @@
 
 package com.yalantis.ucrop;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +30,8 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.yalantis.ucrop.callback.BitmapLoadCallback;
-import com.yalantis.ucrop.model.CutInfo;
 import com.yalantis.ucrop.model.ExifInfo;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
 import com.yalantis.ucrop.util.MimeType;
@@ -48,37 +48,23 @@ import java.util.List;
 
 
 public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhotoGalleryAdapter.ViewHolder> {
-    private final int maxImageWidth = 200;
-    private final int maxImageHeight = 220;
-    private Context context;
-    private List<CutInfo> list;
-    private LayoutInflater mInflater;
+    private final List<LocalMedia> list;
 
-    public PicturePhotoGalleryAdapter(Context context, List<CutInfo> list) {
-        mInflater = LayoutInflater.from(context);
-        this.context = context;
+    public PicturePhotoGalleryAdapter(List<LocalMedia> list) {
         this.list = list;
-    }
-
-    public void setData(List<CutInfo> list) {
-        this.list = list;
-        notifyDataSetChanged();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
-        View view = mInflater.inflate(R.layout.ucrop_picture_gf_adapter_edit_list,
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ucrop_picture_gf_adapter_edit_list,
                 parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        String path = "";
-        CutInfo photoInfo = list.get(position);
-        if (photoInfo != null) {
-            path = photoInfo.getPath();
-        }
+        LocalMedia photoInfo = list.get(position);
+        String path = photoInfo.getPath();
         if (photoInfo.isCut()) {
             holder.iv_dot.setVisibility(View.VISIBLE);
             holder.iv_dot.setImageResource(R.drawable.ucrop_oval_true);
@@ -95,14 +81,17 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
             holder.mIvVideo.setVisibility(View.GONE);
             Uri uri = SdkUtils.isQ() || MimeType.isHttp(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
             holder.tvGif.setVisibility(MimeType.isGif(photoInfo.getMimeType()) ? View.VISIBLE : View.GONE);
-            BitmapLoadUtils.decodeBitmapInBackground(context, uri, photoInfo.getHttpOutUri(), maxImageWidth,
+            int maxImageWidth = 200;
+            int maxImageHeight = 220;
+            Uri outputUri = TextUtils.isEmpty(photoInfo.getCropHttpOutUri()) ? null : Uri.fromFile(new File(photoInfo.getCropHttpOutUri()));
+            BitmapLoadUtils.decodeBitmapInBackground(holder.itemView.getContext(), uri, outputUri, maxImageWidth,
                     maxImageHeight, new BitmapLoadCallback() {
                         @Override
                         public void onBitmapLoaded(@NonNull Bitmap bitmap,
                                                    @NonNull ExifInfo exifInfo,
                                                    @NonNull String imageInputPath,
                                                    @Nullable String imageOutputPath) {
-                            if (holder.mIvPhoto != null && bitmap != null) {
+                            if (holder.mIvPhoto != null) {
                                 holder.mIvPhoto.setImageBitmap(bitmap);
                             }
                         }
@@ -114,7 +103,6 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
                             }
                         }
                     });
-
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

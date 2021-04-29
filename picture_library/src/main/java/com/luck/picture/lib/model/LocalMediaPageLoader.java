@@ -166,7 +166,8 @@ public final class LocalMediaPageLoader {
             MediaStore.MediaColumns.SIZE,
             MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
             MediaStore.MediaColumns.DISPLAY_NAME,
-            COLUMN_BUCKET_ID};
+            COLUMN_BUCKET_ID,
+            MediaStore.MediaColumns.DATE_ADDED};
 
     /**
      * Get the latest cover of an album catalog
@@ -267,6 +268,7 @@ public final class LocalMediaPageLoader {
                             int folderNameColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[7]);
                             int fileNameColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[8]);
                             int bucketIdColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[9]);
+                            int dateAddedColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[10]);
                             data.moveToFirst();
                             do {
                                 long id = data.getLong(idColumn);
@@ -337,7 +339,7 @@ public final class LocalMediaPageLoader {
                                 }
 
                                 LocalMedia image = new LocalMedia
-                                        (id, url, absolutePath, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size, bucket_id);
+                                        (id, url, absolutePath, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size, bucket_id, data.getLong(dateAddedColumn));
 
                                 result.add(image);
 

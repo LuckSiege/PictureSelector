@@ -100,6 +100,36 @@ public class LocalMedia implements Parcelable {
     private int height;
 
     /**
+     * crop picture network address
+     * # For internal use only
+     */
+    private String cropHttpOutUri;
+
+    /**
+     * Crop the width of the picture
+     */
+    private int cropImageWidth;
+
+    /**
+     * Crop the height of the picture
+     */
+    private int cropImageHeight;
+
+    /**
+     * Crop ratio x
+     */
+    private int cropOffsetX;
+    /**
+     * Crop ratio y
+     */
+    private int cropOffsetY;
+
+    /**
+     * Crop Aspect Ratio
+     */
+    private float cropResultAspectRatio;
+
+    /**
      * file size
      */
     private long size;
@@ -148,33 +178,17 @@ public class LocalMedia implements Parcelable {
      */
     private boolean isMaxSelectEnabledMask;
 
+    /**
+     * media create time
+     */
+    private long dateAddedTime;
+
     public LocalMedia() {
 
     }
 
-    public LocalMedia(String path, long duration, int chooseModel, String mimeType) {
-        this.path = path;
-        this.duration = duration;
-        this.chooseModel = chooseModel;
-        this.mimeType = mimeType;
-    }
-
-    public LocalMedia(long id, String path, String fileName, String parentFolderName, long duration, int chooseModel,
-                      String mimeType, int width, int height, long size) {
-        this.id = id;
-        this.path = path;
-        this.fileName = fileName;
-        this.parentFolderName = parentFolderName;
-        this.duration = duration;
-        this.chooseModel = chooseModel;
-        this.mimeType = mimeType;
-        this.width = width;
-        this.height = height;
-        this.size = size;
-    }
-
     public LocalMedia(long id, String path, String absolutePath, String fileName, String parentFolderName, long duration, int chooseModel,
-                      String mimeType, int width, int height, long size, long bucketId) {
+                      String mimeType, int width, int height, long size, long bucketId, long dateAddedColumn) {
         this.id = id;
         this.path = path;
         this.realPath = absolutePath;
@@ -187,10 +201,10 @@ public class LocalMedia implements Parcelable {
         this.height = height;
         this.size = size;
         this.bucketId = bucketId;
+        this.dateAddedTime = dateAddedColumn;
     }
 
-    public LocalMedia(String path, long duration,
-                      boolean isChecked, int position, int num, int chooseModel) {
+    public LocalMedia(String path, long duration, boolean isChecked, int position, int num, int chooseModel) {
         this.path = path;
         this.duration = duration;
         this.isChecked = isChecked;
@@ -198,6 +212,97 @@ public class LocalMedia implements Parcelable {
         this.num = num;
         this.chooseModel = chooseModel;
     }
+
+
+    protected LocalMedia(Parcel in) {
+        id = in.readLong();
+        path = in.readString();
+        realPath = in.readString();
+        originalPath = in.readString();
+        compressPath = in.readString();
+        cutPath = in.readString();
+        androidQToPath = in.readString();
+        duration = in.readLong();
+        isChecked = in.readByte() != 0;
+        isCut = in.readByte() != 0;
+        position = in.readInt();
+        num = in.readInt();
+        mimeType = in.readString();
+        chooseModel = in.readInt();
+        compressed = in.readByte() != 0;
+        width = in.readInt();
+        height = in.readInt();
+        cropHttpOutUri = in.readString();
+        cropImageWidth = in.readInt();
+        cropImageHeight = in.readInt();
+        cropOffsetX = in.readInt();
+        cropOffsetY = in.readInt();
+        cropResultAspectRatio = in.readFloat();
+        size = in.readLong();
+        isOriginal = in.readByte() != 0;
+        fileName = in.readString();
+        parentFolderName = in.readString();
+        orientation = in.readInt();
+        loadLongImageStatus = in.readInt();
+        isLongImage = in.readByte() != 0;
+        bucketId = in.readLong();
+        isMaxSelectEnabledMask = in.readByte() != 0;
+        dateAddedTime = in.readLong();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(path);
+        dest.writeString(realPath);
+        dest.writeString(originalPath);
+        dest.writeString(compressPath);
+        dest.writeString(cutPath);
+        dest.writeString(androidQToPath);
+        dest.writeLong(duration);
+        dest.writeByte((byte) (isChecked ? 1 : 0));
+        dest.writeByte((byte) (isCut ? 1 : 0));
+        dest.writeInt(position);
+        dest.writeInt(num);
+        dest.writeString(mimeType);
+        dest.writeInt(chooseModel);
+        dest.writeByte((byte) (compressed ? 1 : 0));
+        dest.writeInt(width);
+        dest.writeInt(height);
+        dest.writeString(cropHttpOutUri);
+        dest.writeInt(cropImageWidth);
+        dest.writeInt(cropImageHeight);
+        dest.writeInt(cropOffsetX);
+        dest.writeInt(cropOffsetY);
+        dest.writeFloat(cropResultAspectRatio);
+        dest.writeLong(size);
+        dest.writeByte((byte) (isOriginal ? 1 : 0));
+        dest.writeString(fileName);
+        dest.writeString(parentFolderName);
+        dest.writeInt(orientation);
+        dest.writeInt(loadLongImageStatus);
+        dest.writeByte((byte) (isLongImage ? 1 : 0));
+        dest.writeLong(bucketId);
+        dest.writeByte((byte) (isMaxSelectEnabledMask ? 1 : 0));
+        dest.writeLong(dateAddedTime);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<LocalMedia> CREATOR = new Creator<LocalMedia>() {
+        @Override
+        public LocalMedia createFromParcel(Parcel in) {
+            return new LocalMedia(in);
+        }
+
+        @Override
+        public LocalMedia[] newArray(int size) {
+            return new LocalMedia[size];
+        }
+    };
 
     public String getPath() {
         return path;
@@ -392,80 +497,97 @@ public class LocalMedia implements Parcelable {
         isMaxSelectEnabledMask = maxSelectEnabledMask;
     }
 
+    public long getDateAddedTime() {
+        return dateAddedTime;
+    }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setDateAddedTime(long dateAddedTime) {
+        this.dateAddedTime = dateAddedTime;
+    }
+
+    public int getCropImageWidth() {
+        return cropImageWidth;
+    }
+
+    public void setCropImageWidth(int cropImageWidth) {
+        this.cropImageWidth = cropImageWidth;
+    }
+
+    public int getCropImageHeight() {
+        return cropImageHeight;
+    }
+
+    public void setCropImageHeight(int cropImageHeight) {
+        this.cropImageHeight = cropImageHeight;
+    }
+
+    public int getCropOffsetX() {
+        return cropOffsetX;
+    }
+
+    public void setCropOffsetX(int cropOffsetX) {
+        this.cropOffsetX = cropOffsetX;
+    }
+
+    public int getCropOffsetY() {
+        return cropOffsetY;
+    }
+
+    public void setCropOffsetY(int cropOffsetY) {
+        this.cropOffsetY = cropOffsetY;
+    }
+
+    public float getCropResultAspectRatio() {
+        return cropResultAspectRatio;
+    }
+
+    public void setCropResultAspectRatio(float cropResultAspectRatio) {
+        this.cropResultAspectRatio = cropResultAspectRatio;
+    }
+
+    public String getCropHttpOutUri() {
+        return cropHttpOutUri;
+    }
+
+    public void setCropHttpOutUri(String cropHttpOutUri) {
+        this.cropHttpOutUri = cropHttpOutUri;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.id);
-        dest.writeString(this.path);
-        dest.writeString(this.realPath);
-        dest.writeString(this.originalPath);
-        dest.writeString(this.compressPath);
-        dest.writeString(this.cutPath);
-        dest.writeString(this.androidQToPath);
-        dest.writeLong(this.duration);
-        dest.writeByte(this.isChecked ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isCut ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.position);
-        dest.writeInt(this.num);
-        dest.writeString(this.mimeType);
-        dest.writeInt(this.chooseModel);
-        dest.writeByte(this.compressed ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.width);
-        dest.writeInt(this.height);
-        dest.writeLong(this.size);
-        dest.writeByte(this.isOriginal ? (byte) 1 : (byte) 0);
-        dest.writeString(this.fileName);
-        dest.writeString(this.parentFolderName);
-        dest.writeInt(this.orientation);
-        dest.writeInt(this.loadLongImageStatus);
-        dest.writeByte(this.isLongImage ? (byte) 1 : (byte) 0);
-        dest.writeLong(this.bucketId);
-        dest.writeByte(this.isMaxSelectEnabledMask ? (byte) 1 : (byte) 0);
+    public String toString() {
+        return "LocalMedia{" +
+                "id=" + id +
+                ", path='" + path + '\'' +
+                ", realPath='" + realPath + '\'' +
+                ", originalPath='" + originalPath + '\'' +
+                ", compressPath='" + compressPath + '\'' +
+                ", cutPath='" + cutPath + '\'' +
+                ", androidQToPath='" + androidQToPath + '\'' +
+                ", duration=" + duration +
+                ", isChecked=" + isChecked +
+                ", isCut=" + isCut +
+                ", position=" + position +
+                ", num=" + num +
+                ", mimeType='" + mimeType + '\'' +
+                ", chooseModel=" + chooseModel +
+                ", compressed=" + compressed +
+                ", width=" + width +
+                ", height=" + height +
+                ", cropImageWidth=" + cropImageWidth +
+                ", cropImageHeight=" + cropImageHeight +
+                ", cropOffsetX=" + cropOffsetX +
+                ", cropOffsetY=" + cropOffsetY +
+                ", cropResultAspectRatio=" + cropResultAspectRatio +
+                ", size=" + size +
+                ", isOriginal=" + isOriginal +
+                ", fileName='" + fileName + '\'' +
+                ", parentFolderName='" + parentFolderName + '\'' +
+                ", orientation=" + orientation +
+                ", loadLongImageStatus=" + loadLongImageStatus +
+                ", isLongImage=" + isLongImage +
+                ", bucketId=" + bucketId +
+                ", isMaxSelectEnabledMask=" + isMaxSelectEnabledMask +
+                ", dateAddedTime=" + dateAddedTime +
+                '}';
     }
-
-    protected LocalMedia(Parcel in) {
-        this.id = in.readLong();
-        this.path = in.readString();
-        this.realPath = in.readString();
-        this.originalPath = in.readString();
-        this.compressPath = in.readString();
-        this.cutPath = in.readString();
-        this.androidQToPath = in.readString();
-        this.duration = in.readLong();
-        this.isChecked = in.readByte() != 0;
-        this.isCut = in.readByte() != 0;
-        this.position = in.readInt();
-        this.num = in.readInt();
-        this.mimeType = in.readString();
-        this.chooseModel = in.readInt();
-        this.compressed = in.readByte() != 0;
-        this.width = in.readInt();
-        this.height = in.readInt();
-        this.size = in.readLong();
-        this.isOriginal = in.readByte() != 0;
-        this.fileName = in.readString();
-        this.parentFolderName = in.readString();
-        this.orientation = in.readInt();
-        this.loadLongImageStatus = in.readInt();
-        this.isLongImage = in.readByte() != 0;
-        this.bucketId = in.readLong();
-        this.isMaxSelectEnabledMask = in.readByte() != 0;
-    }
-
-    public static final Creator<LocalMedia> CREATOR = new Creator<LocalMedia>() {
-        @Override
-        public LocalMedia createFromParcel(Parcel source) {
-            return new LocalMedia(source);
-        }
-
-        @Override
-        public LocalMedia[] newArray(int size) {
-            return new LocalMedia[size];
-        }
-    };
 }

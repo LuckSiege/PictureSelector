@@ -222,7 +222,7 @@ public class PictureFileUtils {
                 cursor.close();
             }
         }
-        return null;
+        return "";
     }
 
     /**
@@ -306,7 +306,7 @@ public class PictureFileUtils {
             return uri.getPath();
         }
 
-        return null;
+        return "";
     }
 
     /**

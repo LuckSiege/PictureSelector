@@ -17,13 +17,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.luck.picture.lib.R;
-import com.yalantis.ucrop.model.CutInfo;
+import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.yalantis.ucrop.util.FileUtils;
 import com.yalantis.ucrop.util.MimeType;
 import com.yalantis.ucrop.util.ScreenUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author：luck
@@ -34,7 +37,7 @@ public class PictureMultiCuttingActivity extends UCropActivity {
     private final static int MIN_NUM = 1;
     private RecyclerView mRecyclerView;
     private PicturePhotoGalleryAdapter mAdapter;
-    private ArrayList<CutInfo> list;
+    private final ArrayList<LocalMedia> list = new ArrayList<>();
     private boolean isWithVideoImage;
     private int cutIndex;
     private int oldCutIndex;
@@ -53,14 +56,15 @@ public class PictureMultiCuttingActivity extends UCropActivity {
         // 是否混选模式
         isWithVideoImage = intent.getBooleanExtra(UCrop.Options.EXTRA_WITH_VIDEO_IMAGE, false);
         // 裁剪数据
-        list = getIntent().getParcelableArrayListExtra(UCrop.Options.EXTRA_CUT_CROP);
+        List<LocalMedia> localMedia = getIntent().getParcelableArrayListExtra(UCrop.Options.EXTRA_CUT_CROP);
         // 列表是否显示动画效果
         isAnimation = getIntent().getBooleanExtra(UCrop.Options.EXTRA_MULTIPLE_RECYCLERANIMATION, true);
         // Crop cut list
-        if (list == null || list.size() == 0) {
+        if (localMedia == null || localMedia.size() == 0) {
             onBackPressed();
             return;
         }
+        list.addAll(localMedia);
         if (list.size() > MIN_NUM) {
             initLoadCutData();
             addPhotoRecyclerView();
@@ -88,17 +92,16 @@ public class PictureMultiCuttingActivity extends UCropActivity {
         }
         mRecyclerView.setLayoutManager(mLayoutManager);
         // 解决调用 notifyItemChanged 闪烁问题,取消默认动画
-        ((SimpleItemAnimator) mRecyclerView.getItemAnimator())
-                .setSupportsChangeAnimations(false);
+        ((SimpleItemAnimator) Objects.requireNonNull(mRecyclerView.getItemAnimator())).setSupportsChangeAnimations(false);
         resetCutDataStatus();
         list.get(cutIndex).setCut(true);
-        mAdapter = new PicturePhotoGalleryAdapter(this, list);
+        mAdapter = new PicturePhotoGalleryAdapter(list);
         mRecyclerView.setAdapter(mAdapter);
         if (isMultipleSkipCrop) {
             mAdapter.setOnItemClickListener(new PicturePhotoGalleryAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(int position, View view) {
-                    CutInfo cutInfo = list.get(position);
+                    LocalMedia cutInfo = list.get(position);
                     if (MimeType.isHasVideo(cutInfo.getMimeType())) {
                         return;
                     }
@@ -142,7 +145,7 @@ public class PictureMultiCuttingActivity extends UCropActivity {
         if (extras == null) {
             extras = new Bundle();
         }
-        CutInfo cutInfo = list.get(cutIndex);
+        LocalMedia cutInfo = list.get(cutIndex);
         String path = cutInfo.getPath();
         boolean isHttp = MimeType.isHttp(path);
         String suffix = MimeType.getLastImgType(MimeType.isContent(path)
@@ -211,7 +214,7 @@ public class PictureMultiCuttingActivity extends UCropActivity {
     private void resetCutDataStatus() {
         int size = list.size();
         for (int i = 0; i < size; i++) {
-            CutInfo cutInfo = list.get(i);
+            LocalMedia cutInfo = list.get(i);
             cutInfo.setCut(false);
         }
     }
@@ -230,7 +233,7 @@ public class PictureMultiCuttingActivity extends UCropActivity {
             getIndex(size);
         }
         for (int i = 0; i < size; i++) {
-            CutInfo cutInfo = list.get(i);
+            LocalMedia cutInfo = list.get(i);
             boolean isHttp = MimeType.isHttp(cutInfo.getPath());
             if (!isHttp) {
                 continue;
@@ -245,7 +248,7 @@ public class PictureMultiCuttingActivity extends UCropActivity {
             File newFile = new File(file, "temporary_thumbnail_" + i + imgType);
             String mimeType = MimeType.getImageMimeType(path);
             cutInfo.setMimeType(mimeType);
-            cutInfo.setHttpOutUri(Uri.fromFile(newFile));
+            cutInfo.setCropHttpOutUri(newFile.getAbsolutePath());
         }
     }
 
@@ -256,7 +259,7 @@ public class PictureMultiCuttingActivity extends UCropActivity {
      */
     private void getIndex(int size) {
         for (int i = 0; i < size; i++) {
-            CutInfo cutInfo = list.get(i);
+            LocalMedia cutInfo = list.get(i);
             if (cutInfo != null && MimeType.isHasImage(cutInfo.getMimeType())) {
                 cutIndex = i;
                 break;
@@ -291,14 +294,16 @@ public class PictureMultiCuttingActivity extends UCropActivity {
                 onBackPressed();
                 return;
             }
-            CutInfo info = list.get(cutIndex);
+            LocalMedia info = list.get(cutIndex);
             info.setCutPath(uri.getPath());
             info.setCut(true);
-            info.setResultAspectRatio(resultAspectRatio);
-            info.setOffsetX(offsetX);
-            info.setOffsetY(offsetY);
-            info.setImageWidth(imageWidth);
-            info.setImageHeight(imageHeight);
+            info.setCropResultAspectRatio(resultAspectRatio);
+            info.setCropOffsetX(offsetX);
+            info.setCropOffsetY(offsetY);
+            info.setCropImageWidth(imageWidth);
+            info.setCropImageHeight(imageHeight);
+            info.setAndroidQToPath(SdkVersionUtils.checkedAndroid_Q() ? info.getCutPath() : info.getAndroidQToPath());
+            info.setSize(!TextUtils.isEmpty(info.getCutPath()) ? new File(info.getCutPath()).length() : info.getSize());
             resetLastCropStatus();
             cutIndex++;
             if (isWithVideoImage) {
@@ -322,9 +327,11 @@ public class PictureMultiCuttingActivity extends UCropActivity {
             }
             oldCutIndex = cutIndex;
             if (cutIndex >= list.size()) {
-                setResult(RESULT_OK, new Intent()
-                        .putExtra(UCrop.Options.EXTRA_OUTPUT_URI_LIST, list)
-                );
+                for (int i = 0; i < list.size(); i++) {
+                    LocalMedia media = list.get(i);
+                    media.setCut(!TextUtils.isEmpty(media.getCutPath()));
+                }
+                setResult(RESULT_OK, new Intent().putExtra(UCrop.Options.EXTRA_OUTPUT_URI_LIST, list));
                 onBackPressed();
             } else {
                 resetCutData();
