@@ -406,8 +406,25 @@ public final class LocalMediaLoader {
         Iterator<String> iterator = stringHashSet.iterator();
         int index = -1;
         while (iterator.hasNext()) {
+            String value = iterator.next();
+            if (TextUtils.isEmpty(value)) {
+                continue;
+            }
+            if (config.chooseMode == PictureMimeType.ofVideo()) {
+                if (value.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE) || value.startsWith(PictureMimeType.MIME_TYPE_PREFIX_AUDIO)) {
+                    continue;
+                }
+            } else if (config.chooseMode == PictureMimeType.ofImage()) {
+                if (value.startsWith(PictureMimeType.MIME_TYPE_PREFIX_AUDIO) || value.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO)) {
+                    continue;
+                }
+            } else if (config.chooseMode == PictureMimeType.ofAudio()) {
+                if (value.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO) || value.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE)) {
+                    continue;
+                }
+            }
             index++;
-            stringBuilder.append(index == 0 ? " AND " : " OR ").append(MediaStore.MediaColumns.MIME_TYPE).append("='").append(iterator.next()).append("'");
+            stringBuilder.append(index == 0 ? " AND " : " OR ").append(MediaStore.MediaColumns.MIME_TYPE).append("='").append(value).append("'");
         }
         if (config.chooseMode != PictureMimeType.ofVideo()) {
             if (!config.isGif && !stringHashSet.contains(PictureMimeType.ofGIF())) {

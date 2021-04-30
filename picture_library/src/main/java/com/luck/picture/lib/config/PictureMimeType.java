@@ -338,8 +338,8 @@ public final class PictureMimeType {
     public final static String MIME_TYPE_AUDIO = "audio/mpeg";
 
 
-    private final static String MIME_TYPE_PREFIX_IMAGE = "image";
-    private final static String MIME_TYPE_PREFIX_VIDEO = "video";
-    private final static String MIME_TYPE_PREFIX_AUDIO = "audio";
+    public final static String MIME_TYPE_PREFIX_IMAGE = "image";
+    public final static String MIME_TYPE_PREFIX_VIDEO = "video";
+    public final static String MIME_TYPE_PREFIX_AUDIO = "audio";
 
 }
