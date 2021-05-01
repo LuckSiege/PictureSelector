@@ -1,7 +1,7 @@
 ext {
     cfgs = [
             compileSdkVersion             : 30,
-            buildToolsVersion             : "29.0.2",
+            buildToolsVersion             : "30.0.3",
             minSdkVersion                 : 19,
             targetSdkVersion              : 30,
             versionCode                   : 40,
@@ -10,7 +10,6 @@ ext {
             ucropVersionName              : "2.2.4-non-native",
 
             //open version control
-            androidSupportVersion         : "27.0.2",
             version_recyclerview          : "1.2.0",
             version_appcompat             : "1.2.0",
             localbroadcastmanager         : "1.0.0",
@@ -26,7 +25,7 @@ ext {
             androidx_transition_version   : "1.4.1",
 
             // okio
-            okio_version                  : '3.0.0-alpha.1',
+            okio_version                  : '3.0.0-alpha.4',
 
             // glide
             glide_version                 : "4.12.0",
