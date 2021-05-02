@@ -3,7 +3,7 @@
 
 [中文版🇨🇳](README_CN.md) 
 
-[Download APK](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2021-05-02_065231_v2.7.0-rc01.apk)<br>
+[Download APK](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2021-05-02_065231_v2.7.0-rc02.apk)<br>
 
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
@@ -30,17 +30,7 @@
 ## Version
 step 1
 ```sh
-implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.6.1'
-```
-
-step 2
-```sh
-allprojects {
-   repositories {
-      jcenter()
-      maven { url 'https://jitpack.io' }
-   }
-}
+implementation 'io.github.lucksiege:pictureselector:v2.7.0-rc02'
 ```
 
 ## Photo
