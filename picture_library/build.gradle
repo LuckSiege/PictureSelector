@@ -33,7 +33,6 @@ android {
 apply from: '../publish.gradle'
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "androidx.appcompat:appcompat:${cfgs.version_appcompat}"
     implementation "androidx.recyclerview:recyclerview:${cfgs.version_recyclerview}"
     implementation "androidx.concurrent:concurrent-futures:${cfgs.futures_version}"
