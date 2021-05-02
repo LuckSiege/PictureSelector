@@ -3,7 +3,7 @@
 
 [中文版🇨🇳](README_CN.md) 
 
-[Download APK](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2021-04-30_123505_v2.7.0.apk)<br>
+[Download APK](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2021-05-02_065231_v2.7.0-rc01.apk)<br>
 
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
