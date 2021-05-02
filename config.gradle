@@ -4,8 +4,8 @@ ext {
             buildToolsVersion             : "29.0.2",
             minSdkVersion                 : 19,
             targetSdkVersion              : 30,
-            versionCode                   : 41,
-            versionName                   : "v2.7.0-rc01",
+            versionCode                   : 42,
+            versionName                   : "v2.7.0-rc02",
             ucropVersionCode              : 24,
             ucropVersionName              : "2.2.4-non-native",
 
