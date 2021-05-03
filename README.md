@@ -28,7 +28,7 @@
 -[License](#License)<br>
 
 ## Version
-step 1
+
 ```sh
 implementation 'io.github.lucksiege:pictureselector:v2.7.0-rc02'
 ```
