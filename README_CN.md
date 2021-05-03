@@ -37,7 +37,6 @@
 
 
 ## 最新版本
-step 1
 
 ```sh
 implementation 'io.github.lucksiege:pictureselector:v2.7.0-rc02'
