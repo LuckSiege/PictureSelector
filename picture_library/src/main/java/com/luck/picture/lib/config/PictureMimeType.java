@@ -1,8 +1,11 @@
 package com.luck.picture.lib.config;
 
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
 
 import com.luck.picture.lib.R;
 
@@ -98,6 +101,15 @@ public final class PictureMimeType {
         return mimeType != null && (mimeType.equals("image/gif") || mimeType.equals("image/GIF"));
     }
 
+    /**
+     * isGif
+     *
+     * @param suffix
+     * @return
+     */
+    public static boolean isGifForSuffix(String suffix) {
+        return suffix != null && suffix.startsWith(".gif") || suffix.startsWith(".GIF");
+    }
 
     /**
      * isVideo
@@ -197,6 +209,28 @@ public final class PictureMimeType {
         }
     }
 
+
+    /**
+     * 获取mimeType
+     *
+     * @param context
+     * @param uri
+     * @return
+     */
+    public static String getMimeTypeFromMediaContentUri(Context context, Uri uri) {
+        String mimeType;
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver cr = context.getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return TextUtils.isEmpty(mimeType) ? "image/jpeg" : mimeType;
+    }
+
     /**
      * Determines if the file name is a picture
      *
@@ -244,6 +278,41 @@ public final class PictureMimeType {
         return MIME_TYPE_IMAGE;
     }
 
+    /**
+     * 获取图片后缀
+     *
+     * @param path
+     * @return
+     */
+    public static String getLastImgType(String path) {
+        try {
+            int index = path.lastIndexOf(".");
+            if (index > 0) {
+                String imageType = path.substring(index);
+                switch (imageType) {
+                    case ".png":
+                    case ".PNG":
+                    case ".jpg":
+                    case ".jpeg":
+                    case ".JPEG":
+                    case ".WEBP":
+                    case ".bmp":
+                    case ".BMP":
+                    case ".webp":
+                    case ".gif":
+                    case ".GIF":
+                        return imageType;
+                    default:
+                        return ".png";
+                }
+            } else {
+                return ".png";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ".png";
+        }
+    }
 
     /**
      * Picture or video

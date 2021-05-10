@@ -17,10 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.yalantis.ucrop.util.FileUtils;
-import com.yalantis.ucrop.util.MimeType;
 import com.yalantis.ucrop.util.ScreenUtils;
 
 import java.io.File;
@@ -102,7 +102,7 @@ public class PictureMultiCuttingActivity extends UCropActivity {
                 @Override
                 public void onItemClick(int position, View view) {
                     LocalMedia cutInfo = list.get(position);
-                    if (MimeType.isHasVideo(cutInfo.getMimeType())) {
+                    if (PictureMimeType.isHasVideo(cutInfo.getMimeType())) {
                         return;
                     }
                     if (cutIndex == position) {
@@ -147,14 +147,14 @@ public class PictureMultiCuttingActivity extends UCropActivity {
         }
         LocalMedia cutInfo = list.get(cutIndex);
         String path = cutInfo.getPath();
-        boolean isHttp = MimeType.isHttp(path);
-        String suffix = MimeType.getLastImgType(MimeType.isContent(path)
+        boolean isHttp = PictureMimeType.isHasHttp(path);
+        String suffix = PictureMimeType.getLastImgType(PictureMimeType.isContent(path)
                 ? FileUtils.getPath(this, Uri.parse(path)) : path);
         Uri uri;
         if (!TextUtils.isEmpty(cutInfo.getAndroidQToPath())) {
             uri = Uri.fromFile(new File(cutInfo.getAndroidQToPath()));
         } else {
-            uri = isHttp || MimeType.isContent(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
+            uri = isHttp || PictureMimeType.isContent(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
         }
         extras.putParcelable(UCrop.EXTRA_INPUT_URI, uri);
         File file = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ?
@@ -234,19 +234,19 @@ public class PictureMultiCuttingActivity extends UCropActivity {
         }
         for (int i = 0; i < size; i++) {
             LocalMedia cutInfo = list.get(i);
-            boolean isHttp = MimeType.isHttp(cutInfo.getPath());
+            boolean isHttp = PictureMimeType.isHasHttp(cutInfo.getPath());
             if (!isHttp) {
                 continue;
             }
             String path = list.get(i).getPath();
-            String imgType = MimeType.getLastImgType(path);
+            String imgType = PictureMimeType.getLastImgType(path);
             if (TextUtils.isEmpty(path) || TextUtils.isEmpty(imgType)) {
                 continue;
             }
             File file = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ?
                     getExternalFilesDir(Environment.DIRECTORY_PICTURES) : getCacheDir();
             File newFile = new File(file, "temporary_thumbnail_" + i + imgType);
-            String mimeType = MimeType.getImageMimeType(path);
+            String mimeType = PictureMimeType.getImageMimeType(path);
             cutInfo.setMimeType(mimeType);
             cutInfo.setCropHttpOutUri(newFile.getAbsolutePath());
         }
@@ -260,7 +260,7 @@ public class PictureMultiCuttingActivity extends UCropActivity {
     private void getIndex(int size) {
         for (int i = 0; i < size; i++) {
             LocalMedia cutInfo = list.get(i);
-            if (cutInfo != null && MimeType.isHasImage(cutInfo.getMimeType())) {
+            if (cutInfo != null && PictureMimeType.isHasImage(cutInfo.getMimeType())) {
                 cutIndex = i;
                 break;
             }
@@ -307,7 +307,7 @@ public class PictureMultiCuttingActivity extends UCropActivity {
             resetLastCropStatus();
             cutIndex++;
             if (isWithVideoImage) {
-                if (cutIndex < list.size() && MimeType.isHasVideo(list.get(cutIndex).getMimeType())) {
+                if (cutIndex < list.size() && PictureMimeType.isHasVideo(list.get(cutIndex).getMimeType())) {
                     // 一个死循环找到了图片为终止条件，这里不需要考虑全是视频的问题，因为在启动裁剪时就已经判断好了
                     while (true) {
                         if (cutIndex >= list.size()) {
@@ -315,7 +315,7 @@ public class PictureMultiCuttingActivity extends UCropActivity {
                             break;
                         }
                         String newMimeType = list.get(cutIndex).getMimeType();
-                        if (MimeType.isHasImage(newMimeType)) {
+                        if (PictureMimeType.isHasImage(newMimeType)) {
                             // 命中图片跳出循环
                             break;
                         } else {

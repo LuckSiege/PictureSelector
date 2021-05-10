@@ -43,11 +43,11 @@ import androidx.transition.Transition;
 import androidx.transition.TransitionManager;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.PictureMimeType;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.immersion.CropImmersiveManage;
 import com.yalantis.ucrop.model.AspectRatio;
 import com.yalantis.ucrop.util.FileUtils;
-import com.yalantis.ucrop.util.MimeType;
 import com.yalantis.ucrop.util.ScreenUtils;
 import com.yalantis.ucrop.util.SelectedStateListDrawable;
 import com.yalantis.ucrop.view.CropImageView;
@@ -309,18 +309,18 @@ public class UCropActivity extends AppCompatActivity {
         if (inputUri == null) {
             return true;
         }
-        boolean isHttp = MimeType.isHttp(inputUri.toString());
+        boolean isHttp = PictureMimeType.isHasHttp(inputUri.toString());
         if (isHttp) {
             // 网络图片
-            String lastImgType = MimeType.getLastImgType(inputUri.toString());
-            return !MimeType.isGifForSuffix(lastImgType);
+            String lastImgType = PictureMimeType.getLastImgType(inputUri.toString());
+            return !PictureMimeType.isGifForSuffix(lastImgType);
         } else {
-            String mimeType = MimeType.getMimeTypeFromMediaContentUri(this, inputUri);
+            String mimeType = PictureMimeType.getMimeTypeFromMediaContentUri(this, inputUri);
             if (mimeType.endsWith("image/*")) {
                 String path = FileUtils.getPath(this, inputUri);
-                mimeType = MimeType.getImageMimeType(path);
+                mimeType = PictureMimeType.getImageMimeType(path);
             }
-            return !MimeType.isGif(mimeType);
+            return !PictureMimeType.isGif(mimeType);
         }
     }
 

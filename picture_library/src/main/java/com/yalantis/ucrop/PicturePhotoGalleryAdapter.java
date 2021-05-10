@@ -30,12 +30,12 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.yalantis.ucrop.callback.BitmapLoadCallback;
 import com.yalantis.ucrop.model.ExifInfo;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
-import com.yalantis.ucrop.util.MimeType;
-import com.yalantis.ucrop.util.SdkUtils;
 
 import java.io.File;
 import java.util.List;
@@ -71,7 +71,7 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
         } else {
             holder.iv_dot.setVisibility(View.INVISIBLE);
         }
-        boolean isHasVideo = MimeType.isHasVideo(photoInfo.getMimeType());
+        boolean isHasVideo = PictureMimeType.isHasVideo(photoInfo.getMimeType());
         if (isHasVideo) {
             holder.mIvPhoto.setVisibility(View.GONE);
             holder.mIvVideo.setVisibility(View.VISIBLE);
@@ -79,8 +79,8 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
         } else {
             holder.mIvPhoto.setVisibility(View.VISIBLE);
             holder.mIvVideo.setVisibility(View.GONE);
-            Uri uri = SdkUtils.isQ() || MimeType.isHttp(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
-            holder.tvGif.setVisibility(MimeType.isGif(photoInfo.getMimeType()) ? View.VISIBLE : View.GONE);
+            Uri uri = SdkVersionUtils.checkedAndroid_Q() || PictureMimeType.isHasHttp(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
+            holder.tvGif.setVisibility(PictureMimeType.isGif(photoInfo.getMimeType()) ? View.VISIBLE : View.GONE);
             int maxImageWidth = 200;
             int maxImageHeight = 220;
             Uri outputUri = TextUtils.isEmpty(photoInfo.getCropHttpOutUri()) ? null : Uri.fromFile(new File(photoInfo.getCropHttpOutUri()));
