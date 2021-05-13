@@ -1,15 +1,18 @@
 package com.yalantis.ucrop.util;
 
-import android.graphics.PorterDuff;
+import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
+
+import androidx.core.graphics.BlendModeColorFilterCompat;
+import androidx.core.graphics.BlendModeCompat;
 
 /**
  * Hack class to properly support state drawable back to Android 1.6
  */
 public class SelectedStateListDrawable extends StateListDrawable {
 
-    private int mSelectionColor;
+    private final int mSelectionColor;
 
     public SelectedStateListDrawable(Drawable drawable, int selectionColor) {
         super();
@@ -27,7 +30,8 @@ public class SelectedStateListDrawable extends StateListDrawable {
             }
         }
         if (isStatePressedInArray) {
-            super.setColorFilter(mSelectionColor, PorterDuff.Mode.SRC_ATOP);
+            ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(mSelectionColor, BlendModeCompat.SRC_ATOP);
+            super.setColorFilter(colorFilter);
         } else {
             super.clearColorFilter();
         }

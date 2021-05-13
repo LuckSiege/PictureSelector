@@ -6,8 +6,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.BlendMode;
-import android.graphics.BlendModeColorFilter;
+import android.graphics.ColorFilter;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -15,6 +14,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.core.graphics.BlendModeColorFilterCompat;
+import androidx.core.graphics.BlendModeCompat;
+
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.camera.listener.CaptureListener;
 import com.luck.picture.lib.camera.listener.ClickListener;
@@ -288,7 +291,7 @@ public class CaptureLayout extends FrameLayout {
     }
 
     public void setCaptureLoadingColor(int color) {
-        BlendModeColorFilter colorFilter = new BlendModeColorFilter(color, BlendMode.SRC_IN);
+        ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, BlendModeCompat.SRC_IN);
         progress_bar.getIndeterminateDrawable().setColorFilter(colorFilter);
     }
 

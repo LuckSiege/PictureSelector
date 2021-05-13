@@ -262,6 +262,18 @@ public class CustomCameraView extends RelativeLayout {
                             }
                         }
                     });
+                } else {
+                    if (mCameraController.isImageCaptureEnabled()) {
+                        mImagePreview.setVisibility(INVISIBLE);
+                        if (mCameraListener != null) {
+                            mCameraListener.onPictureSuccess(mOutMediaFile);
+                        }
+                    } else {
+                        stopVideoPlay();
+                        if (mCameraListener != null || !mOutMediaFile.exists()) {
+                            mCameraListener.onRecordSuccess(mOutMediaFile);
+                        }
+                    }
                 }
             }
         });
