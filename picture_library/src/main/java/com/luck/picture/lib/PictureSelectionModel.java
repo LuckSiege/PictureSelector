@@ -20,6 +20,7 @@ import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnCustomCameraInterfaceListener;
 import com.luck.picture.lib.listener.OnCustomImagePreviewCallback;
+import com.luck.picture.lib.listener.OnPermissionsObtainCallback;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.listener.OnVideoSelectedPlayCallback;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
@@ -221,6 +222,17 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel bindCustomCameraInterfaceListener(OnCustomCameraInterfaceListener listener) {
         PictureSelectionConfig.onCustomCameraInterfaceListener = new WeakReference<>(listener).get();
+        return this;
+    }
+
+    /**
+     * Custom Permissions callback
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionModel bindCustomPermissionsObtainListener(OnPermissionsObtainCallback listener) {
+        PictureSelectionConfig.onPermissionsObtainCallback = new WeakReference<>(listener).get();
         return this;
     }
 

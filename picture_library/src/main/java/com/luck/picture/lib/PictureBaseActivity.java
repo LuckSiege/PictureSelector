@@ -774,9 +774,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      * showPermissionsDialog
      *
      * @param isCamera
+     * @param permissions
      * @param errorMsg
      */
-    protected void showPermissionsDialog(boolean isCamera, String errorMsg) {
+    protected void showPermissionsDialog(boolean isCamera,String[] permissions, String errorMsg) {
 
     }
 

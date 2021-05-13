@@ -21,6 +21,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
+import com.luck.picture.lib.listener.OnPermissionDialogOptionCallback;
 import com.luck.picture.lib.permissions.PermissionChecker;
 
 import java.io.File;
@@ -110,13 +111,13 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
                     if (isRecordAudio) {
                         createCameraView();
                     } else {
-                        showPermissionsDialog(false, getString(R.string.picture_audio));
+                        showPermissionsDialog(false, new String[]{Manifest.permission.RECORD_AUDIO}, getString(R.string.picture_audio));
                     }
                 } else {
-                    showPermissionsDialog(false, getString(R.string.picture_camera));
+                    showPermissionsDialog(false, new String[]{Manifest.permission.CAMERA}, getString(R.string.picture_camera));
                 }
             } else {
-                showPermissionsDialog(false, getString(R.string.picture_jurisdiction));
+                showPermissionsDialog(false, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, getString(R.string.picture_jurisdiction));
             }
             isEnterSetting = false;
         }
@@ -211,7 +212,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
                     PermissionChecker.requestPermissions(this,
                             new String[]{Manifest.permission.CAMERA}, PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE);
                 } else {
-                    showPermissionsDialog(true, getString(R.string.picture_jurisdiction));
+                    showPermissionsDialog(true, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, getString(R.string.picture_jurisdiction));
                 }
                 break;
             case PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE:
@@ -221,11 +222,10 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
                     if (isRecordAudio) {
                         createCameraView();
                     } else {
-                        PermissionChecker.requestPermissions(this,
-                                new String[]{Manifest.permission.RECORD_AUDIO}, PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE);
+                        PermissionChecker.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE);
                     }
                 } else {
-                    showPermissionsDialog(true, getString(R.string.picture_camera));
+                    showPermissionsDialog(true, new String[]{Manifest.permission.CAMERA}, getString(R.string.picture_camera));
                 }
                 break;
             case PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE:
@@ -233,19 +233,37 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     createCameraView();
                 } else {
-                    showPermissionsDialog(false, getString(R.string.picture_audio));
+                    showPermissionsDialog(false, new String[]{Manifest.permission.RECORD_AUDIO}, getString(R.string.picture_audio));
                 }
                 break;
         }
     }
 
     @Override
-    protected void showPermissionsDialog(boolean isCamera, String errorMsg) {
+    protected void showPermissionsDialog(boolean isCamera, String[] permissions, String errorMsg) {
         if (isFinishing()) {
             return;
         }
-        final PictureCustomDialog dialog =
-                new PictureCustomDialog(getContext(), R.layout.picture_wind_base_dialog);
+        if (PictureSelectionConfig.onPermissionsObtainCallback != null) {
+            PictureSelectionConfig.onPermissionsObtainCallback.onPermissionsIntercept(getContext(),
+                    isCamera, permissions, errorMsg, new OnPermissionDialogOptionCallback() {
+
+                        @Override
+                        public void onCancel() {
+                            if (PictureSelectionConfig.listener != null) {
+                                PictureSelectionConfig.listener.onCancel();
+                            }
+                            exit();
+                        }
+
+                        @Override
+                        public void onSetting() {
+                            isEnterSetting = true;
+                        }
+                    });
+            return;
+        }
+        PictureCustomDialog dialog = new PictureCustomDialog(getContext(), R.layout.picture_wind_base_dialog);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         Button btn_cancel = dialog.findViewById(R.id.btn_cancel);

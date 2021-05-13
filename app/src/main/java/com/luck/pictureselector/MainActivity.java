@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -39,10 +40,13 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
+import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.listener.OnCustomCameraInterfaceListener;
 import com.luck.picture.lib.listener.OnCustomImagePreviewCallback;
+import com.luck.picture.lib.listener.OnPermissionDialogOptionCallback;
+import com.luck.picture.lib.listener.OnPermissionsObtainCallback;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.listener.OnVideoSelectedPlayCallback;
 import com.luck.picture.lib.permissions.PermissionChecker;
@@ -57,6 +61,8 @@ import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.listener.DragListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -466,6 +472,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.bindCustomPlayVideoCallback(new MyVideoSelectedPlayCallback(getContext()))// 自定义视频播放回调控制，用户可以使用自己的视频播放界面
                         //.bindCustomPreviewCallback(new MyCustomPreviewInterfaceListener())// 自定义图片预览回调接口
                         //.bindCustomCameraInterfaceListener(new MyCustomCameraInterfaceListener())// 提供给用户的一些额外的自定义操作回调
+                        //.bindCustomPermissionsObtainListener(new MyPermissionsObtainCallback())// 自定义权限拦截
                         //.cameraFileName(System.currentTimeMillis() +".jpg")    // 重命名拍照文件名、如果是相册拍照则内部会自动拼上当前时间戳防止重复，注意这个只在使用相机时可以使用，如果使用相机又开启了压缩或裁剪 需要配合压缩和裁剪文件名api
                         //.renameCompressFile(System.currentTimeMillis() +".jpg")// 重命名压缩文件名、 如果是多张压缩则内部会自动拼上当前时间戳防止重复
                         //.renameCropFileName(System.currentTimeMillis() + ".jpg")// 重命名裁剪文件名、 如果是多张裁剪则内部会自动拼上当前时间戳防止重复
@@ -656,6 +663,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (context != null) {
                 ToastUtils.s(context, media.getPath());
             }
+        }
+    }
+
+    /**
+     * 自定义权限管理回调
+     */
+    private static class MyPermissionsObtainCallback implements OnPermissionsObtainCallback {
+
+        @Override
+        public void onPermissionsIntercept(Context context, boolean isCamera, String[] permissions, String tips, OnPermissionDialogOptionCallback dialogOptionCallback) {
+            PictureCustomDialog dialog = new PictureCustomDialog(context, R.layout.picture_wind_base_dialog);
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+            Button btn_commit = dialog.findViewById(R.id.btn_commit);
+            btn_commit.setText(context.getString(R.string.picture_go_setting));
+            TextView tvTitle = dialog.findViewById(R.id.tvTitle);
+            TextView tv_content = dialog.findViewById(R.id.tv_content);
+            tvTitle.setText(context.getString(R.string.picture_prompt));
+            tv_content.setText(tips);
+            btn_cancel.setOnClickListener(v -> {
+                dialog.dismiss();
+                dialogOptionCallback.onCancel();
+            });
+            btn_commit.setOnClickListener(v -> {
+                dialog.dismiss();
+                dialogOptionCallback.onSetting();
+                PermissionChecker.launchAppDetailsSettings(context);
+            });
+            dialog.show();
         }
     }
 
@@ -1414,7 +1451,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mAdapter != null && mAdapter.getData() != null && mAdapter.getData().size() > 0) {
             outState.putParcelableArrayList("selectorList",
@@ -1422,7 +1459,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
