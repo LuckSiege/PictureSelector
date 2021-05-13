@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
@@ -27,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -395,6 +397,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 注册广播
         BroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver,
                 BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.newsclapper.picture");
+        LocalReceiver localReceiver = new LocalReceiver();
+        //注册本地广播监听器
+        LocalBroadcastManager.getInstance(this).registerReceiver(localReceiver, intentFilter);
+
+    }
+
+    class LocalReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ArrayList<LocalMedia> result = intent.getParcelableArrayListExtra("LOCAL_MEDIA_LIST");
+        }
     }
 
     /**
@@ -456,10 +472,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.setButtonFeatures(CustomCameraView.BUTTON_STATE_BOTH)// 设置自定义相机按钮状态
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .minSelectNum(1)// 最小选择数量
-                        .maxVideoSelectNum(1) // 视频最大选择数量
+                        .maxVideoSelectNum(maxSelectNum) // 视频最大选择数量
                         //.minVideoSelectNum(1)// 视频最小选择数量
                         //.closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 关闭在AndroidQ下获取图片或视频宽高相反自动转换
                         .imageSpanCount(4)// 每行显示个数
+                        .selectCountText("yikai")
+                        .isCloseActivity(false)
                         .isReturnEmpty(false)// 未选择数据时点击按钮是否可以返回
                         .closeAndroidQChangeWH(true)//如果图片有旋转角度则对换宽高,默认为true
                         .closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 如果视频有旋转角度则对换宽高,默认为false

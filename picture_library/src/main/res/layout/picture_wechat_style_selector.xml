@@ -27,6 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginTop="10dp"
+            android:visibility="gone"
             android:orientation="horizontal">
 
             <TextView
@@ -140,8 +141,8 @@
             android:id="@+id/iv_close"
             android:layout_width="40dp"
             android:layout_height="24dp"
-            android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
+            android:layout_marginStart="4dp"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
             android:src="@drawable/ic_video_close" />
@@ -250,7 +251,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="16dp"
                 android:textSize="12sp"
-                android:text="You can Upload up to 1 videos" />
+                android:text="You can select one or more videos" />
 
             <TextView
                 android:id="@+id/tv_count"

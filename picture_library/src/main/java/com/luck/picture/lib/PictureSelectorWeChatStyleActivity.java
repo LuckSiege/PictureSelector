@@ -1,14 +1,20 @@
 package com.luck.picture.lib;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -27,6 +33,8 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
     private RelativeLayout rlAlbum;
     private RelativeLayout selectButtomLayout;
     private TextView mPictureSendView;
+    private ImageView mIvClose;
+    private LocalReceiver mLocalReceiver;
 
     @Override
     public int getResourceId() {
@@ -40,7 +48,9 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
 
         mPictureSendView = findViewById(R.id.picture_send);
         selectButtomLayout = findViewById(R.id.select_buttom_layout);
+        mIvClose = findViewById(R.id.iv_close);
         mPictureSendView.setOnClickListener(this);
+        mIvClose.setOnClickListener(this);
         mPictureSendView.setText(getString(R.string.picture_send));
 
         mTvPictureRight.setOnClickListener(this);
@@ -65,6 +75,20 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             selectButtomLayout.setVisibility(View.GONE);
         } else {
             selectButtomLayout.setVisibility(View.VISIBLE);
+        }
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.newsclapper.picture.close");
+        mLocalReceiver = new LocalReceiver();
+        //注册本地广播监听器
+        LocalBroadcastManager.getInstance(this).registerReceiver(mLocalReceiver, intentFilter);
+    }
+
+    class LocalReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            PictureSelectorWeChatStyleActivity.this.finish();
         }
     }
 
@@ -319,6 +343,8 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             } else {
                 mTvPictureOk.performClick();
             }
+        } else if (id == R.id.iv_close) {
+            onBackPressed();
         } else {
             super.onClick(v);
         }
@@ -378,5 +404,11 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
                 }
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mLocalReceiver);
     }
 }

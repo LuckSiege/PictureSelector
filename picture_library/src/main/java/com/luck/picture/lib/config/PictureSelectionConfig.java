@@ -164,6 +164,8 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isFallbackVersion2;
     public boolean isFallbackVersion3;
 
+    public String selectTextCount;
+
     //点击下一步的文案提示 例如 最多可选35个视频等等
     public String selectMaxPrompt;
     //是否仅仅展示Video
@@ -174,6 +176,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isShowPreView;
     //发送消息的图片选择
     public boolean isMessageStyle;
+    public boolean isCloseActivity = true;
 
     protected void initDefaultValue() {
         chooseMode = PictureMimeType.ofImage();
@@ -280,6 +283,8 @@ public final class PictureSelectionConfig implements Parcelable {
         isQuickCapture = true;
         isShowPreView = true;
         isMessageStyle = false;
+        selectTextCount = "";
+        isCloseActivity = true;
     }
 
     public static PictureSelectionConfig getInstance() {

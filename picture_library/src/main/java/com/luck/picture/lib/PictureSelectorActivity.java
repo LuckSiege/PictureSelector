@@ -5,6 +5,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
@@ -17,6 +19,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.os.SystemClock;
+import android.provider.SyncStateContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -28,9 +31,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -126,6 +131,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private TextView mTvSelectMax;
     private List<LocalMedia> mSelectData;
     private TextView mSend;
+    private CustomLoadingDialog mMyDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,12 +204,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             animation = AnimationUtils.loadAnimation(this, R.anim.picture_anim_modal_in);
         }
         mTvPicturePreview.setOnClickListener(this);
-        if (config.isAutomaticTitleRecyclerTop) {
+        if (config.isAutomaticTitleRecyclerTop && titleViewBg != null) {
             titleViewBg.setOnClickListener(this);
         }
         mTvPicturePreview.setVisibility(config.chooseMode != PictureMimeType.ofAudio() && config.enablePreview ? View.VISIBLE : View.GONE);
-        mBottomLayout.setVisibility(config.selectionMode == PictureConfig.SINGLE
-                && config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
+        if (mBottomLayout != null) {
+            mBottomLayout.setVisibility(config.selectionMode == PictureConfig.SINGLE
+                    && config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
+        }
         mIvPictureLeftBack.setOnClickListener(this);
         mTvPictureRight.setOnClickListener(this);
         mTvPictureOk.setOnClickListener(this);
@@ -213,7 +221,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (mSend != null) {
             mSend.setOnClickListener(this);
         }
-        mTvPictureImgNum.setOnClickListener(this);
+        if (mTvPictureImgNum != null) {
+            mTvPictureImgNum.setOnClickListener(this);
+        }
         mTvPictureTitle.setOnClickListener(this);
         mIvArrow.setOnClickListener(this);
         String title = config.chooseMode == PictureMimeType.ofAudio() ?
@@ -484,7 +494,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (config.style.picturePreviewTextSize != 0) {
                 mTvPicturePreview.setTextSize(config.style.picturePreviewTextSize);
             }
-            if (config.style.pictureCheckNumBgStyle != 0) {
+            if (config.style.pictureCheckNumBgStyle != 0 && mTvPictureImgNum != null) {
                 mTvPictureImgNum.setBackgroundResource(config.style.pictureCheckNumBgStyle);
             }
             if (config.style.pictureUnCompleteTextColor != 0) {
@@ -493,7 +503,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (config.style.pictureCompleteTextSize != 0) {
                 mTvPictureOk.setTextSize(config.style.pictureCompleteTextSize);
             }
-            if (config.style.pictureBottomBgColor != 0) {
+            if (config.style.pictureBottomBgColor != 0 && mBottomLayout != null) {
                 mBottomLayout.setBackgroundColor(config.style.pictureBottomBgColor);
             }
             if (config.style.pictureContainerBackgroundColor != 0) {
@@ -515,11 +525,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
             int pictureBottomBgColor = AttrsUtils.
                     getTypeValueColor(getContext(), R.attr.picture_bottom_bg);
-            if (pictureBottomBgColor != 0) {
+            if (pictureBottomBgColor != 0 && mBottomLayout != null) {
                 mBottomLayout.setBackgroundColor(pictureBottomBgColor);
             }
         }
-        titleViewBg.setBackgroundColor(colorPrimary);
+        if (titleViewBg != null) {
+            titleViewBg.setBackgroundColor(colorPrimary);
+        }
 
         if (config.isOriginalControl) {
             if (config.style != null) {
@@ -908,14 +920,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
 
             View view = getLayoutInflater().inflate(R.layout.ucrop_dialog_loading, null);
-            CustomLoadingDialog mMyDialog = new CustomLoadingDialog(this,
+            mMyDialog = new CustomLoadingDialog(this,
                     com.yalantis.ucrop.util.ScreenUtils.dip2px(this,228),
                     com.yalantis.ucrop.util.ScreenUtils.dip2px(this,108),
                     view,
                     R.style.ucrop_DialogStyle);
             mMyDialog.setCancelable(true);
             mMyDialog.show();
-            onComplete();
+            onComplete(config.isCloseActivity);
             return;
         }
 
@@ -967,7 +979,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     /**
      * Complete
      */
-    private void onComplete() {
+    private void onComplete(boolean isCloseActivity) {
         List<LocalMedia> result = mAdapter.getSelectedData();
         int size = result.size();
         LocalMedia image = result.size() > 0 ? result.get(0) : null;
@@ -1035,6 +1047,31 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             exit();
             return;
         }
+
+        if (!isCloseActivity) {
+            // 本地广播发起
+            long totalTime = 0;
+
+            for (LocalMedia localMedia: result) {
+                totalTime = totalTime + localMedia.getDuration();
+            }
+
+
+            if (totalTime < 6000) {
+                Toast.makeText(this, getString(R.string.video_at_least_6_seconds), Toast.LENGTH_SHORT).show();
+                if (mMyDialog != null) {
+                    mMyDialog.dismiss();
+                }
+                return;
+            }
+
+            LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);//获取实例
+            Intent intent = new Intent("com.newsclapper.picture");
+            intent.putParcelableArrayListExtra("LOCAL_MEDIA_LIST", (ArrayList<? extends Parcelable>) result);
+            localBroadcastManager.sendBroadcast(intent);
+            return;
+        }
+
         if (config.isCheckOriginalImage) {
             onResult(result);
             return;
@@ -1455,7 +1492,20 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             mSelectData = selectData;
             if (selectData.size() > 0) {
                 mtTvCount.setClickable(true);
-                mtTvCount.setText("Next (" +selectData.size()+")");
+                if (config.selectTextCount != null) {
+                    if (selectData.size() > 1) {
+                        mtTvCount.setText(config.selectTextCount + "(" + selectData.size() + ")");
+                    } else {
+                        mtTvCount.setText(config.selectTextCount);
+                    }
+                } else {
+                    if (selectData.size() > 1) {
+                        mtTvCount.setText("Next (" + selectData.size() + ")");
+                    } else {
+                        mtTvCount.setText("Next");
+                    }
+                }
+
                 mtTvCount.setTextColor(getResources().getColor(R.color.ucrop_color_white));
                 mtTvCount.setBackground(getResources().getDrawable(R.drawable.radius_bg_shape_16));
 
@@ -1487,7 +1537,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 });
 
                 mtTvCount.setClickable(true);
-                mtTvCount.setText("Next (0)");
+                if (config.selectTextCount != null) {
+                    mtTvCount.setText(config.selectTextCount);
+                } else {
+                    mtTvCount.setText("Next");
+                }
+
                 mtTvCount.setTextColor(getResources().getColor(R.color.picture_color_light_grey));
                 mtTvCount.setBackground(getResources().getDrawable(R.drawable.radius_bg_shape_gray_16));
             }
@@ -1603,11 +1658,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (numComplete) {
                 initCompleteText(selectData.size());
             } else {
-                if (!isStartAnimation) {
+                if (!isStartAnimation && mTvPictureImgNum != null) {
                     mTvPictureImgNum.startAnimation(animation);
+                    mTvPictureImgNum.setVisibility(View.VISIBLE);
+                    mTvPictureImgNum.setText(String.valueOf(selectData.size()));
                 }
-                mTvPictureImgNum.setVisibility(View.VISIBLE);
-                mTvPictureImgNum.setText(String.valueOf(selectData.size()));
                 if (config.style != null && !TextUtils.isEmpty(config.style.pictureCompleteText)) {
                     mTvPictureOk.setText(config.style.pictureCompleteText);
                 } else {
@@ -1636,7 +1691,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (numComplete) {
                 initCompleteText(selectData.size());
             } else {
-                mTvPictureImgNum.setVisibility(View.INVISIBLE);
+                if (mTvPictureImgNum != null) {
+                    mTvPictureImgNum.setVisibility(View.INVISIBLE);
+                }
                 if (config.style != null && !TextUtils.isEmpty(config.style.pictureUnCompleteText)) {
                     mTvPictureOk.setText(config.style.pictureUnCompleteText);
                 } else {
@@ -2333,6 +2390,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             PictureSelectionConfig.listener.onCancel();
         }
         exit();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mMyDialog != null) {
+            mMyDialog.dismiss();
+        }
     }
 
     @Override

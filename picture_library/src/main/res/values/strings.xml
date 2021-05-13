@@ -66,4 +66,5 @@
     <string name="no_videos_available">No videos available</string>
     <string name="no_photos_or_videos_available">No photos or videos available.</string>
     <string name="send">Send</string>
+    <string name="video_at_least_6_seconds">Video at least 6.0 seconds</string>
 </resources>

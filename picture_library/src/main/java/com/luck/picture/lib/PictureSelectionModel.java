@@ -667,6 +667,16 @@ public class PictureSelectionModel {
         return this;
     }
 
+    public PictureSelectionModel selectCountText(String selectTextCount) {
+        selectionConfig.selectTextCount = selectTextCount;
+        return this;
+    }
+
+    public PictureSelectionModel isCloseActivity(boolean isCloseActivity) {
+        selectionConfig.isCloseActivity = isCloseActivity;
+        return this;
+    }
+
     public PictureSelectionModel isOnlyVideo(boolean isOnlyVideo) {
         selectionConfig.isOnlyVideo = isOnlyVideo;
         return this;
