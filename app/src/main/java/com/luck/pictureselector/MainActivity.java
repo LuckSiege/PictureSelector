@@ -461,7 +461,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 关闭在AndroidQ下获取图片或视频宽高相反自动转换
                         .imageSpanCount(4)// 每行显示个数
                         //.queryFileSize() // 过滤最大资源,已废弃
-                        //.filterMinFileSize()// 过滤最小资源，单位kb
+                        .filterMinFileSize(1)// 过滤最小资源，单位kb
                         //.filterMaxFileSize()// 过滤最大资源，单位kb
                         .isReturnEmpty(false)// 未选择数据时点击按钮是否可以返回
                         .closeAndroidQChangeWH(true)//如果图片有旋转角度则对换宽高,默认为true

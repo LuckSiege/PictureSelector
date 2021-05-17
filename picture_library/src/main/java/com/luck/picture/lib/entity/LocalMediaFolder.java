@@ -2,6 +2,7 @@ package com.luck.picture.lib.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +74,7 @@ public class LocalMediaFolder implements Parcelable {
     }
 
     public String getName() {
-        return name;
+        return TextUtils.isEmpty(name) ? "unknown" : name;
     }
 
     public void setName(String name) {
