@@ -142,13 +142,13 @@ public class MediaUtils {
      * @return true 是 or false 不是
      */
     public static boolean isLongImg(LocalMedia media) {
-        if (null != media) {
-            int width = media.getWidth();
-            int height = media.getHeight();
-            int newHeight = width * 3;
-            return height > newHeight;
+        int width = media.getWidth();
+        int height = media.getHeight();
+        if (width <= 0 || height <= 0) {
+            return false;
         }
-        return false;
+        int newHeight = width * 3;
+        return height > newHeight;
     }
 
     /**
@@ -159,6 +159,9 @@ public class MediaUtils {
      * @return true 是 or false 不是
      */
     public static boolean isLongImg(int width, int height) {
+        if (width <= 0 || height <= 0) {
+            return false;
+        }
         int newHeight = width * 3;
         return height > newHeight;
     }

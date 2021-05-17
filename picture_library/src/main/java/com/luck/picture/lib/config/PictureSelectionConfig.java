@@ -76,7 +76,7 @@ public final class PictureSelectionConfig implements Parcelable {
     @Deprecated
     public float filterFileSize;
     public long filterMaxFileSize;
-    public long filterMinFileSize;
+    public long filterMinFileSize = 1024;
     public int language;
     public boolean isMultipleRecyclerAnimation;
     public boolean isMultipleSkipCrop;
@@ -423,7 +423,7 @@ public final class PictureSelectionConfig implements Parcelable {
         videoMinSecond = 0;
         filterFileSize = 0;
         filterMaxFileSize = 0;
-        filterMinFileSize = 0;
+        filterMinFileSize = 1024;
         recordVideoSecond = 60;
         recordVideoMinSecond = 0;
         compressQuality = 80;
