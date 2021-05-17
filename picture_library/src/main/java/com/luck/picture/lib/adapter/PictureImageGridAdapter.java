@@ -2,7 +2,7 @@ package com.luck.picture.lib.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.PorterDuff;
+import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.BlendModeColorFilterCompat;
+import androidx.core.graphics.BlendModeCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
@@ -325,8 +327,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         if (config.isWithVideoImage && config.maxVideoSelectNum > 0) {
             if (getSelectedSize() >= config.maxSelectNum) {
                 boolean isSelected = contentHolder.tvCheck.isSelected();
-                contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
-                        (context, isSelected ? R.color.picture_color_80 : R.color.picture_color_half_white), PorterDuff.Mode.SRC_ATOP);
+                ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(isSelected ?
+                                ContextCompat.getColor(context, R.color.picture_color_80) :
+                                ContextCompat.getColor(context, R.color.picture_color_half_white),
+                        BlendModeCompat.SRC_ATOP);
+                contentHolder.ivPicture.setColorFilter(colorFilter);
                 item.setMaxSelectEnabledMask(!isSelected);
             } else {
                 item.setMaxSelectEnabledMask(false);
@@ -339,29 +344,33 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     if (PictureMimeType.isHasImage(media.getMimeType())) {
                         // All videos are not optional
                         if (!isSelected && !PictureMimeType.isHasImage(item.getMimeType())) {
-                            contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
-                                    (context, PictureMimeType.isHasVideo(item.getMimeType()) ? R.color.picture_color_half_white : R.color.picture_color_20), PorterDuff.Mode.SRC_ATOP);
+                            ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(ContextCompat.getColor
+                                    (context, PictureMimeType.isHasVideo(item.getMimeType()) ? R.color.picture_color_half_white : R.color.picture_color_20), BlendModeCompat.SRC_ATOP);
+                            contentHolder.ivPicture.setColorFilter(colorFilter);
                         }
                         item.setMaxSelectEnabledMask(PictureMimeType.isHasVideo(item.getMimeType()));
                     } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
                         // All images are not optional
                         if (!isSelected && !PictureMimeType.isHasVideo(item.getMimeType())) {
-                            contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
-                                    (context, PictureMimeType.isHasImage(item.getMimeType()) ? R.color.picture_color_half_white : R.color.picture_color_20), PorterDuff.Mode.SRC_ATOP);
+                            ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(ContextCompat.getColor
+                                    (context, PictureMimeType.isHasImage(item.getMimeType()) ? R.color.picture_color_half_white : R.color.picture_color_20), BlendModeCompat.SRC_ATOP);
+                            contentHolder.ivPicture.setColorFilter(colorFilter);
                         }
                         item.setMaxSelectEnabledMask(PictureMimeType.isHasImage(item.getMimeType()));
                     }
                 } else {
                     if (config.chooseMode == PictureMimeType.ofVideo() && config.maxVideoSelectNum > 0) {
                         if (!isSelected && getSelectedSize() == config.maxVideoSelectNum) {
-                            contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
-                                    (context, R.color.picture_color_half_white), PorterDuff.Mode.SRC_ATOP);
+                            ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(ContextCompat.getColor
+                                    (context, R.color.picture_color_half_white), BlendModeCompat.SRC_ATOP);
+                            contentHolder.ivPicture.setColorFilter(colorFilter);
                         }
                         item.setMaxSelectEnabledMask(!isSelected && getSelectedSize() == config.maxVideoSelectNum);
                     } else {
                         if (!isSelected && getSelectedSize() == config.maxSelectNum) {
-                            contentHolder.ivPicture.setColorFilter(ContextCompat.getColor
-                                    (context, R.color.picture_color_half_white), PorterDuff.Mode.SRC_ATOP);
+                            ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(ContextCompat.getColor
+                                    (context, R.color.picture_color_half_white), BlendModeCompat.SRC_ATOP);
+                            contentHolder.ivPicture.setColorFilter(colorFilter);
                         }
                         item.setMaxSelectEnabledMask(!isSelected && getSelectedSize() == config.maxSelectNum);
                     }
@@ -740,13 +749,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
      */
     public void selectImage(ViewHolder holder, boolean isChecked) {
         holder.tvCheck.setSelected(isChecked);
-        if (isChecked) {
-            holder.ivPicture.setColorFilter(ContextCompat.getColor
-                    (context, R.color.picture_color_80), PorterDuff.Mode.SRC_ATOP);
-        } else {
-            holder.ivPicture.setColorFilter(ContextCompat.getColor
-                    (context, R.color.picture_color_20), PorterDuff.Mode.SRC_ATOP);
-        }
+        ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(isChecked ?
+                        ContextCompat.getColor(context, R.color.picture_color_80) :
+                        ContextCompat.getColor(context, R.color.picture_color_20),
+                BlendModeCompat.SRC_ATOP);
+        holder.ivPicture.setColorFilter(colorFilter);
     }
 
     /**
