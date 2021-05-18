@@ -323,6 +323,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             media.setBucketId(bucketId);
             media.setDateAddedTime(Long.parseLong(String.valueOf(System.currentTimeMillis()).substring(0, 10)));
         }
+        dispatchCameraHandleResult(media);
 
         if (!SdkVersionUtils.checkedAndroid_Q()) {
             if (config.isFallbackVersion3) {
@@ -330,13 +331,11 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             } else {
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(config.cameraPath))));
             }
-        }
-        dispatchCameraHandleResult(media);
-        // Solve some phone using Camera, DCIM will produce repetitive problems
-        if (!SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasImage(media.getMimeType())) {
-            int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
-            if (lastImageId != -1) {
-                MediaUtils.removeMedia(getContext(), lastImageId);
+            if (PictureMimeType.isHasImage(media.getMimeType())) {
+                int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
+                if (lastImageId != -1) {
+                    MediaUtils.removeMedia(getContext(), lastImageId);
+                }
             }
         }
     }

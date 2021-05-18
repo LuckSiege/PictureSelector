@@ -1853,21 +1853,20 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             media.setDateAddedTime(Long.parseLong(String.valueOf(System.currentTimeMillis()).substring(0, 10)));
         }
 
-        // Refresh the system library
+        // add data Adapter
+        notifyAdapterData(media);
+
         if (!SdkVersionUtils.checkedAndroid_Q()) {
             if (config.isFallbackVersion3) {
                 new PictureMediaScannerConnection(getContext(), config.cameraPath);
             } else {
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(config.cameraPath))));
             }
-        }
-        // add data Adapter
-        notifyAdapterData(media);
-        // Solve some phone using Camera, DCIM will produce repetitive problems
-        if (!SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasImage(media.getMimeType())) {
-            int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
-            if (lastImageId != -1) {
-                MediaUtils.removeMedia(getContext(), lastImageId);
+            if (PictureMimeType.isHasImage(media.getMimeType())) {
+                int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
+                if (lastImageId != -1) {
+                    MediaUtils.removeMedia(getContext(), lastImageId);
+                }
             }
         }
     }
