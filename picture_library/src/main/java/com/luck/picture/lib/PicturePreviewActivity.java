@@ -875,8 +875,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     }
                 }
 
-                // 如果有旋转信息图片宽高则是相反
-                MediaUtils.setOrientationAsynchronous(getContext(), image, config.isAndroidQChangeWH, config.isAndroidQChangeVideoWH, null);
                 selectData.add(image);
                 onSelectedChange(true, image);
                 image.setNum(selectData.size());

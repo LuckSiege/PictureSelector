@@ -266,8 +266,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                         ToastUtils.s(context, PictureMimeType.s(context, mimeType));
                         return;
                     }
-                    // The width and height of the image are reversed if there is rotation information
-                    MediaUtils.setOrientationAsynchronous(context, image, config.isAndroidQChangeWH, config.isAndroidQChangeVideoWH, null);
                     changeCheckboxState(contentHolder, image);
                 });
             }
@@ -287,8 +285,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 if (index == -1) {
                     return;
                 }
-                // The width and height of the image are reversed if there is rotation information
-                MediaUtils.setOrientationAsynchronous(context, image, config.isAndroidQChangeWH, config.isAndroidQChangeVideoWH, null);
                 boolean eqResult =
                         PictureMimeType.isHasImage(mimeType) && config.enablePreview
                                 || config.isSingleDirectReturn
