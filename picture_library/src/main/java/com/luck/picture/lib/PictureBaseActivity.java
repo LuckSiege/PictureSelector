@@ -543,7 +543,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                             && TextUtils.isEmpty(media.getAndroidQToPath());
                     if (isCopyAndroidQToPath && PictureMimeType.isContent(media.getPath())) {
                         if (!PictureMimeType.isHasHttp(media.getPath())) {
-                            String AndroidQToPath = AndroidQTransformUtils.copyPathToAndroidQ(getContext(),
+                            String AndroidQToPath = AndroidQTransformUtils.copyPathToAndroidQ(getContext(), media.getId(),
                                     media.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), config.cameraFileName);
                             media.setAndroidQToPath(AndroidQToPath);
                         }
@@ -777,7 +777,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      * @param permissions
      * @param errorMsg
      */
-    protected void showPermissionsDialog(boolean isCamera,String[] permissions, String errorMsg) {
+    protected void showPermissionsDialog(boolean isCamera, String[] permissions, String errorMsg) {
 
     }
 

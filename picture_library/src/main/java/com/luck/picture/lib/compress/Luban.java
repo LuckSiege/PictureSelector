@@ -76,7 +76,7 @@ public class Luban {
         String cacheBuilder = "";
         try {
             LocalMedia media = provider.getMedia();
-            String encryptionValue = StringUtils.getEncryptionValue(media.getPath(), media.getWidth(), media.getHeight());
+            String encryptionValue = StringUtils.getEncryptionValue(media.getId(), media.getWidth(), media.getHeight());
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(mTargetDir);
             if (!TextUtils.isEmpty(encryptionValue) && !media.isCut()) {
@@ -289,7 +289,7 @@ public class Luban {
                     if (media.isCut() && !TextUtils.isEmpty(media.getCutPath())) {
                         result = new File(media.getCutPath());
                     } else {
-                        String androidQToPath = AndroidQTransformUtils.copyPathToAndroidQ(context, streamProvider.getPath(),
+                        String androidQToPath = AndroidQTransformUtils.copyPathToAndroidQ(context,streamProvider.getMedia().getId(), streamProvider.getPath(),
                                 media.getWidth(), media.getHeight(), media.getMimeType(), filename);
                         result = new File(androidQToPath);
                     }
@@ -307,7 +307,7 @@ public class Luban {
                         // 这种情况判断一下，如果是小于设置的图片压缩阀值，再Android 10以上做下拷贝的处理
                         if (SdkVersionUtils.checkedAndroid_Q()) {
                             String newFilePath = media.isCut() ? media.getCutPath() :
-                                    AndroidQTransformUtils.copyPathToAndroidQ(context,
+                                    AndroidQTransformUtils.copyPathToAndroidQ(context,media.getId(),
                                             streamProvider.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), filename);
                             result = new File(TextUtils.isEmpty(newFilePath) ? newPath : newFilePath);
                         } else {
@@ -321,7 +321,7 @@ public class Luban {
                 // GIF without compression
                 if (SdkVersionUtils.checkedAndroid_Q()) {
                     String newFilePath = media.isCut() ? media.getCutPath() :
-                            AndroidQTransformUtils.copyPathToAndroidQ(context,
+                            AndroidQTransformUtils.copyPathToAndroidQ(context,media.getId(),
                                     streamProvider.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), filename);
                     result = new File(TextUtils.isEmpty(newFilePath) ? newPath : newFilePath);
                 } else {
@@ -335,7 +335,7 @@ public class Luban {
                     // 这种情况判断一下，如果是小于设置的图片压缩阀值，再Android 10以上做下拷贝的处理
                     if (SdkVersionUtils.checkedAndroid_Q()) {
                         String newFilePath = media.isCut() ? media.getCutPath() :
-                                AndroidQTransformUtils.copyPathToAndroidQ(context,
+                                AndroidQTransformUtils.copyPathToAndroidQ(context,media.getId(),
                                         streamProvider.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), filename);
                         result = new File(TextUtils.isEmpty(newFilePath) ? newPath : newFilePath);
                     } else {
