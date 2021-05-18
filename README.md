@@ -29,7 +29,14 @@
 ## Version
 
 ```sh
-implementation 'io.github.lucksiege:pictureselector:v2.7.0-rc04'
+repositories {
+  google()
+  mavenCentral()
+}
+
+dependencies {
+  implementation 'io.github.lucksiege:pictureselector:v2.7.0-rc04'
+}
 ```
 
 ## Photo
