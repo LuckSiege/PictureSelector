@@ -15,7 +15,7 @@
 
 ## 目录
 -[用前需知](https://github.com/LuckSiege/PictureSelector/wiki/%E7%94%A8%E5%89%8D%E9%9C%80%E7%9F%A5)<br>
--[集成使用](#集成使用)
+-[集成使用](#集成使用)<br>
 -[如何提Issues?](https://github.com/LuckSiege/PictureSelector/wiki/%E5%A6%82%E4%BD%95%E6%8F%90Issues%3F)<br>
 -[功能特点](https://github.com/LuckSiege/PictureSelector/wiki/%E5%8A%9F%E8%83%BD%E7%89%B9%E7%82%B9)<br>
 -[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.7.0-rc04)<br>
