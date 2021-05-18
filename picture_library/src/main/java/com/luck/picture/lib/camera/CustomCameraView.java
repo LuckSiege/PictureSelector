@@ -124,12 +124,6 @@ public class CustomCameraView extends RelativeLayout {
         mFlashLamp = findViewById(R.id.image_flash);
         mCaptureLayout = findViewById(R.id.capture_layout);
         mSwitchCamera.setImageResource(R.drawable.picture_ic_camera);
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            mCameraController = new LifecycleCameraController(getContext());
-            mCameraController.bindToLifecycle((LifecycleOwner) getContext());
-            mCameraPreviewView.setController(mCameraController);
-        }
-        setFlashRes();
         mFlashLamp.setOnClickListener(v -> {
             type_flash++;
             if (type_flash > 0x023)
@@ -285,6 +279,22 @@ public class CustomCameraView extends RelativeLayout {
     }
 
     /**
+     * init Camera
+     *
+     * @param config
+     */
+    public void initCamera(PictureSelectionConfig config) {
+        this.mConfig = config;
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            mCameraController = new LifecycleCameraController(getContext());
+            mCameraController.bindToLifecycle((LifecycleOwner) getContext());
+            mCameraController.setCameraSelector(mConfig.isCameraAroundState ? CameraSelector.DEFAULT_FRONT_CAMERA : CameraSelector.DEFAULT_BACK_CAMERA);
+            mCameraPreviewView.setController(mCameraController);
+        }
+        setFlashRes();
+    }
+
+    /**
      * 拍照回调
      */
     private static class MyImageResultCallback implements ImageCapture.OnImageSavedCallback {
@@ -435,10 +445,6 @@ public class CustomCameraView extends RelativeLayout {
 
     public void setCameraListener(CameraListener cameraListener) {
         this.mCameraListener = cameraListener;
-    }
-
-    public void setPictureSelectionConfig(PictureSelectionConfig config) {
-        this.mConfig = config;
     }
 
     /**

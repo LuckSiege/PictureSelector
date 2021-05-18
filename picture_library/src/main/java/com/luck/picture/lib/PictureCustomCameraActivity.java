@@ -127,7 +127,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
      * 初始化控件
      */
     protected void initView() {
-        mCameraView.setPictureSelectionConfig(config);
+        mCameraView.initCamera(config);
         // 视频最大拍摄时长
         if (config.recordVideoSecond > 0) {
             mCameraView.setRecordVideoMaxTime(config.recordVideoSecond);
@@ -139,10 +139,6 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
         // 设置拍照时loading色值
         if (config.captureLoadingColor != 0) {
             mCameraView.setCaptureLoadingColor(config.captureLoadingColor);
-        }
-        // 获取CameraView
-        if (config.isCameraAroundState) {
-            mCameraView.toggleCamera();
         }
         // 获取录制按钮
         CaptureLayout captureLayout = mCameraView.getCaptureLayout();
