@@ -31,6 +31,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.luck.picture.lib.tools.DateUtils;
+import com.luck.picture.lib.tools.ValueOf;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -162,7 +163,7 @@ public class FileUtils {
                 if (!TextUtils.isEmpty(id)) {
                     try {
                         final Uri contentUri = ContentUris.withAppendedId(
-                                Uri.parse("content://downloads/public_downloads"), Long.parseLong(id));
+                                Uri.parse("content://downloads/public_downloads"), ValueOf.toLong(id));
                         return getDataColumn(context, contentUri, null, null);
                     } catch (NumberFormatException e) {
                         Log.i(TAG, e.getMessage());

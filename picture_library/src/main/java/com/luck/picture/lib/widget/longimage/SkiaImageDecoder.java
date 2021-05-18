@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.luck.picture.lib.tools.ValueOf;
+
 import java.io.InputStream;
 import java.util.List;
 
@@ -48,7 +50,7 @@ public class SkiaImageDecoder implements ImageDecoder {
                 id = res.getIdentifier(resName, "drawable", packageName);
             } else if (size == 1 && TextUtils.isDigitsOnly(segments.get(0))) {
                 try {
-                    id = Integer.parseInt(segments.get(0));
+                    id = ValueOf.toInt(segments.get(0));
                 } catch (NumberFormatException ignored) {
                 }
             }

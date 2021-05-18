@@ -794,6 +794,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             if (cameraIntent.resolveActivity(getPackageManager()) != null) {
                 config.cameraMimeType = PictureMimeType.ofAudio();
                 startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
+            } else {
+                ToastUtils.s(getContext(), "System recording is not supported");
             }
         } else {
             PermissionChecker.requestPermissions(this,

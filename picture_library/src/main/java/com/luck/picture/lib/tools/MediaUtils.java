@@ -197,6 +197,25 @@ public class MediaUtils {
         return mediaExtraInfo;
     }
 
+    /**
+     * get Local video width or height
+     *
+     * @param url
+     * @return
+     */
+    public static MediaExtraInfo getAudioSize(String url) {
+        MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            retriever.setDataSource(url);
+            mediaExtraInfo.setDuration(ValueOf.toLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            retriever.release();
+        }
+        return mediaExtraInfo;
+    }
 
     /**
      * 删除部分手机 拍照在DCIM也生成一张的问题
