@@ -28,9 +28,7 @@ class Engine {
         this.focusAlpha = focusAlpha;
         this.compressQuality = compressQuality <= 0 ? DEFAULT_QUALITY : compressQuality;
 
-        if (srcImg.getMedia() != null
-                && srcImg.getMedia().getWidth() > 0
-                && srcImg.getMedia().getHeight() > 0) {
+        if (srcImg.getMedia().getWidth() > 0 && srcImg.getMedia().getHeight() > 0) {
             this.srcWidth = srcImg.getMedia().getWidth();
             this.srcHeight = srcImg.getMedia().getHeight();
         } else {
