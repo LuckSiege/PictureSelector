@@ -23,6 +23,7 @@ import com.luck.picture.lib.adapter.PictureSimpleFragmentAdapter;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.manager.UCropManager;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnQueryDataResultListener;
@@ -857,13 +858,13 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
 
                     } else {
                         if (PictureMimeType.isHasVideo(image.getMimeType())) {
-                            int[] size = MediaUtils.getVideoSizeForUrl(image.getPath());
-                            image.setWidth(size[0]);
-                            image.setHeight(size[1]);
+                            MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(image.getPath());
+                            image.setWidth(mediaExtraInfo.getWidth());
+                            image.setHeight(mediaExtraInfo.getHeight());
                         } else if (PictureMimeType.isHasImage(image.getMimeType())) {
-                            int[] size = MediaUtils.getImageSizeForUrl(image.getPath());
-                            image.setWidth(size[0]);
-                            image.setHeight(size[1]);
+                            MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(image.getPath());
+                            image.setWidth(mediaExtraInfo.getWidth());
+                            image.setHeight(mediaExtraInfo.getHeight());
                         }
                     }
                 }

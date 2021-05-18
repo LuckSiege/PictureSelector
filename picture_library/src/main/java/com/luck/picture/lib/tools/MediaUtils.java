@@ -17,7 +17,7 @@ import androidx.exifinterface.media.ExifInterface;
 
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
-import java.util.Objects;
+import com.luck.picture.lib.entity.MediaExtraInfo;
 
 
 /**
@@ -118,19 +118,6 @@ public class MediaUtils {
     }
 
     /**
-     * 获取视频时长
-     *
-     * @param context
-     * @param isAndroidQ
-     * @param path
-     * @return
-     */
-    public static long extractDuration(Context context, boolean isAndroidQ, String path) {
-        return isAndroidQ ? getLocalDuration(context, Uri.parse(path))
-                : getLocalDuration(path);
-    }
-
-    /**
      * 是否是长图
      *
      * @param media
@@ -161,109 +148,44 @@ public class MediaUtils {
         return height > newHeight;
     }
 
-    /**
-     * get Local video duration
-     *
-     * @return
-     */
-    private static long getLocalDuration(Context context, Uri uri) {
-        try {
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(context, uri);
-            return Long.parseLong(Objects.requireNonNull(mmr.extractMetadata
-                    (MediaMetadataRetriever.METADATA_KEY_DURATION)));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    /**
-     * get Local video duration
-     *
-     * @return
-     */
-    private static long getLocalDuration(String path) {
-        try {
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(path);
-            return Long.parseLong(Objects.requireNonNull(mmr.extractMetadata
-                    (MediaMetadataRetriever.METADATA_KEY_DURATION)));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-
-    /**
-     * get Local image width or height for api 29
-     *
-     * @return
-     */
-    public static int[] getImageSizeForUrlToAndroidQ(Context context, String url) {
-        int[] size = new int[2];
-        Cursor query = null;
-        try {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                query = context.getContentResolver()
-                        .query(Uri.parse(url),
-                                null, null, null);
-                if (query != null) {
-                    query.moveToFirst();
-                    size[0] = query.getInt(query.getColumnIndexOrThrow(MediaStore.Images
-                            .Media.WIDTH));
-                    size[1] = query.getInt(query.getColumnIndexOrThrow(MediaStore.Images
-                            .Media.HEIGHT));
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (query != null) {
-                query.close();
-            }
-        }
-        return size;
-    }
-
-    /**
-     * get Local video width or height
-     *
-     * @return
-     */
-    public static int[] getVideoSizeForUrl(String url) {
-        int[] size = new int[2];
-        try {
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(url);
-            size[0] = ValueOf.toInt(mmr.extractMetadata
-                    (MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
-            size[1] = ValueOf.toInt(mmr.extractMetadata
-                    (MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return size;
-    }
 
     /**
      * get Local image width or height
      *
      * @return
      */
-    public static int[] getImageSizeForUrl(String url) {
-        int width = 0, height = 0;
+    public static MediaExtraInfo getImageSize(String url) {
+        MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
         try {
             ExifInterface exifInterface = new ExifInterface(url);
-            // 获取图片的宽度
-            width = exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, ExifInterface.ORIENTATION_NORMAL);
-            // 获取图片的高度
-            height = exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, ExifInterface.ORIENTATION_NORMAL);
+            mediaExtraInfo.setWidth(exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, ExifInterface.ORIENTATION_NORMAL));
+            mediaExtraInfo.setHeight(exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, ExifInterface.ORIENTATION_NORMAL));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new int[]{width, height};
+        return mediaExtraInfo;
+    }
+
+    /**
+     * get Local video width or height
+     *
+     * @param url
+     * @return
+     */
+    public static MediaExtraInfo getVideoSize(String url) {
+        MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            retriever.setDataSource(url);
+            mediaExtraInfo.setWidth(ValueOf.toInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)));
+            mediaExtraInfo.setHeight(ValueOf.toInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)));
+            mediaExtraInfo.setDuration(ValueOf.toLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            retriever.release();
+        }
+        return mediaExtraInfo;
     }
 
 
@@ -378,7 +300,6 @@ public class MediaUtils {
         }
         return path;
     }
-
 
 
     /**

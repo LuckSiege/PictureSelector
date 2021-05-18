@@ -37,6 +37,7 @@ import com.luck.picture.lib.animators.SlideInBottomAnimationAdapter;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.listener.OnPermissionDialogOptionCallback;
 import com.luck.picture.lib.manager.UCropManager;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
@@ -1807,12 +1808,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             media.setFileName(cameraFile.getName());
                         }
                         if (PictureMimeType.isHasImage(mimeType)) {
-                            int[] newSize = MediaUtils.getImageSizeForUrlToAndroidQ(getContext(), config.cameraPath);
-                            media.setWidth(newSize[0]);
-                            media.setHeight(newSize[1]);
+                            MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(path);
+                            media.setWidth(mediaExtraInfo.getWidth());
+                            media.setHeight(mediaExtraInfo.getHeight());
                         } else if (PictureMimeType.isHasVideo(mimeType)) {
-
-                            duration = MediaUtils.extractDuration(getContext(), SdkVersionUtils.checkedAndroid_Q(), config.cameraPath);
+                            MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(path);
+                            media.setWidth(mediaExtraInfo.getWidth());
+                            media.setHeight(mediaExtraInfo.getHeight());
+                            duration = mediaExtraInfo.getDuration();
                         }
                         int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
                         media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
@@ -1828,14 +1831,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         if (PictureMimeType.isHasImage(mimeType)) {
                             int degree = PictureFileUtils.readPictureDegree(getContext(), config.cameraPath);
                             BitmapUtils.rotateImage(degree, config.cameraPath);
-                            int[] newSize = MediaUtils.getImageSizeForUrl(config.cameraPath);
-                            media.setWidth(newSize[0]);
-                            media.setHeight(newSize[1]);
+                            MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(config.cameraPath);
+                            media.setWidth(mediaExtraInfo.getWidth());
+                            media.setHeight(mediaExtraInfo.getHeight());
                         } else if (PictureMimeType.isHasVideo(mimeType)) {
-                            int[] newSize = MediaUtils.getVideoSizeForUrl(config.cameraPath);
-                            duration = MediaUtils.extractDuration(getContext(), SdkVersionUtils.checkedAndroid_Q(), config.cameraPath);
-                            media.setWidth(newSize[0]);
-                            media.setHeight(newSize[1]);
+                            MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(config.cameraPath);
+                            media.setWidth(mediaExtraInfo.getWidth());
+                            media.setHeight(mediaExtraInfo.getHeight());
+                            duration = mediaExtraInfo.getDuration();
                         }
                         // Taking a photo generates a temporary id
                         media.setId(System.currentTimeMillis());
