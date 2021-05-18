@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
@@ -188,7 +189,12 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
         });
 
         //左边按钮点击事件
-        mCameraView.setOnClickListener(() -> onBackPressed());
+        mCameraView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     @Override
