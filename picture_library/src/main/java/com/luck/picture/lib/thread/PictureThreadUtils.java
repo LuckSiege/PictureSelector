@@ -99,7 +99,6 @@ public final class PictureThreadUtils {
      * @param <T>  The type of the task's result.
      */
     public static <T> void executeBySingle(final Task<T> task) {
-        Log.i("YYY", "executeBySingle");
         execute(getPoolByTypeAndPriority(TYPE_SINGLE), task);
     }
 

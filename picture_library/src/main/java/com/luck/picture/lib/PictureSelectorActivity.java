@@ -1811,7 +1811,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             media.setWidth(newSize[0]);
                             media.setHeight(newSize[1]);
                         } else if (PictureMimeType.isHasVideo(mimeType)) {
-                            MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(config.cameraPath), media);
+
                             duration = MediaUtils.extractDuration(getContext(), SdkVersionUtils.checkedAndroid_Q(), config.cameraPath);
                         }
                         int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;

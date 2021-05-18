@@ -224,13 +224,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         media.setMimeType(mimeType);
         media.setOrientation(-1);
         if (PictureMimeType.isContent(media.getPath())) {
-            if (PictureMimeType.isHasVideo(media.getMimeType())) {
-                MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(media.getPath()), media);
-            } else if (PictureMimeType.isHasImage(media.getMimeType())) {
-                int[] size = MediaUtils.getImageSizeForUri(getContext(), Uri.parse(media.getPath()));
-                media.setWidth(size[0]);
-                media.setHeight(size[1]);
-            }
+
         } else {
             if (PictureMimeType.isHasVideo(media.getMimeType())) {
                 int[] size = MediaUtils.getVideoSizeForUrl(media.getPath());
@@ -279,7 +273,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                             media.setWidth(newSize[0]);
                             media.setHeight(newSize[1]);
                         } else if (PictureMimeType.isHasVideo(mimeType)) {
-                            MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(config.cameraPath), media);
+
                             duration = MediaUtils.extractDuration(getContext(), SdkVersionUtils.checkedAndroid_Q(), config.cameraPath);
                         }
                         int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;

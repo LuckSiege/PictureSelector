@@ -4,13 +4,11 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
@@ -19,7 +17,6 @@ import androidx.exifinterface.media.ExifInterface;
 
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.thread.PictureThreadUtils;
 import java.util.Objects;
 
 
@@ -251,34 +248,6 @@ public class MediaUtils {
     }
 
     /**
-     * get Local video width or height
-     *
-     * @return
-     */
-    public static void getVideoSizeForUri(Context context, Uri uri, LocalMedia media) {
-        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Integer[]>() {
-
-            @Override
-            public Integer[] doInBackground() {
-                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                mmr.setDataSource(context, uri);
-                int width = ValueOf.toInt(mmr.extractMetadata
-                        (MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
-                int height = ValueOf.toInt(mmr.extractMetadata
-                        (MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
-                return new Integer[]{width, height};
-            }
-
-            @Override
-            public void onSuccess(Integer[] result) {
-                media.setWidth(result[0]);
-                media.setHeight(result[1]);
-                PictureThreadUtils.cancel(this);
-            }
-        });
-    }
-
-    /**
      * get Local image width or height
      *
      * @return
@@ -293,32 +262,6 @@ public class MediaUtils {
             height = exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, ExifInterface.ORIENTATION_NORMAL);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        return new int[]{width, height};
-    }
-
-
-    /**
-     * get Local image width or height
-     *
-     * @return
-     */
-    public static int[] getImageSizeForUri(Context context, Uri uri) {
-        int width = 0, height = 0;
-        ParcelFileDescriptor fileDescriptor = null;
-        try {
-            fileDescriptor = context.getContentResolver().openFileDescriptor(uri, "r");
-            if (fileDescriptor != null) {
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFileDescriptor(fileDescriptor.getFileDescriptor(), null, options);
-                width = options.outWidth;
-                height = options.outHeight;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            PictureFileUtils.close(fileDescriptor);
         }
         return new int[]{width, height};
     }

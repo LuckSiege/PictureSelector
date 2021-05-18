@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -624,13 +623,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             if (image.getWidth() == 0 || image.getHeight() == 0) {
                 image.setOrientation(-1);
                 if (PictureMimeType.isContent(image.getPath())) {
-                    if (PictureMimeType.isHasVideo(image.getMimeType())) {
-                        MediaUtils.getVideoSizeForUri(context, Uri.parse(image.getPath()), image);
-                    } else if (PictureMimeType.isHasImage(image.getMimeType())) {
-                        int[] size = MediaUtils.getImageSizeForUri(context, Uri.parse(image.getPath()));
-                        image.setWidth(size[0]);
-                        image.setHeight(size[1]);
-                    }
+
                 } else {
                     if (PictureMimeType.isHasVideo(image.getMimeType())) {
                         int[] size = MediaUtils.getVideoSizeForUrl(image.getPath());

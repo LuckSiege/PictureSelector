@@ -412,7 +412,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
         int size = images.size();
         if (files.size() == size) {
-            for (int i = 0, j = size; i < j; i++) {
+            for (int i = 0; i < size; i++) {
                 File file = files.get(i);
                 if (file == null) {
                     continue;

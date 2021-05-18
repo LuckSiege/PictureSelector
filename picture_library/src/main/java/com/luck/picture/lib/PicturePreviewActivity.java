@@ -3,7 +3,6 @@ package com.luck.picture.lib;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -855,13 +854,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 if (image.getWidth() == 0 || image.getHeight() == 0) {
                     image.setOrientation(-1);
                     if (PictureMimeType.isContent(image.getPath())) {
-                        if (PictureMimeType.isHasVideo(image.getMimeType())) {
-                            MediaUtils.getVideoSizeForUri(getContext(), Uri.parse(image.getPath()), image);
-                        } else if (PictureMimeType.isHasImage(image.getMimeType())) {
-                            int[] size = MediaUtils.getImageSizeForUri(getContext(), Uri.parse(image.getPath()));
-                            image.setWidth(size[0]);
-                            image.setHeight(size[1]);
-                        }
+
                     } else {
                         if (PictureMimeType.isHasVideo(image.getMimeType())) {
                             int[] size = MediaUtils.getVideoSizeForUrl(image.getPath());
