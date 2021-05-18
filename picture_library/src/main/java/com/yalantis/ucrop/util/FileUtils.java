@@ -30,12 +30,13 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.luck.picture.lib.tools.DateUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
-import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 /**
@@ -232,7 +233,7 @@ public class FileUtils {
         } catch (Exception e) {
             return false;
         } finally {
-            if (fileInputStream != null) fileInputStream.close();
+            fileInputStream.close();
             if (inputChannel != null) inputChannel.close();
             if (outputChannel != null) outputChannel.close();
         }
@@ -263,29 +264,7 @@ public class FileUtils {
     }
 
 
-    private static SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd_HHmmssSS");
 
-    /**
-     * 根据时间戳创建文件名
-     *
-     * @param prefix 前缀名
-     * @return
-     */
-    public static String getCreateFileName(String prefix) {
-        long millis = System.currentTimeMillis();
-        return prefix + sf.format(millis);
-    }
-
-    /**
-     * 根据时间戳创建文件名
-     *
-     * @param prefix 前缀名
-     * @return
-     */
-    public static String getCreateFileName() {
-        long millis = System.currentTimeMillis();
-        return sf.format(millis);
-    }
 
 
     /**
@@ -297,6 +276,6 @@ public class FileUtils {
     public static String rename(String fileName) {
         String temp = fileName.substring(0, fileName.lastIndexOf("."));
         String suffix = fileName.substring(fileName.lastIndexOf("."));
-        return new StringBuffer().append(temp).append("_").append(getCreateFileName()).append(suffix).toString();
+        return temp + "_" + DateUtils.getCreateFileName() + suffix;
     }
 }

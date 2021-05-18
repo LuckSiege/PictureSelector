@@ -100,12 +100,6 @@ public class LocalMedia implements Parcelable {
     private int height;
 
     /**
-     * crop picture network address
-     * # For internal use only
-     */
-    private String cropHttpOutUri;
-
-    /**
      * Crop the width of the picture
      */
     private int cropImageWidth;
@@ -232,7 +226,6 @@ public class LocalMedia implements Parcelable {
         compressed = in.readByte() != 0;
         width = in.readInt();
         height = in.readInt();
-        cropHttpOutUri = in.readString();
         cropImageWidth = in.readInt();
         cropImageHeight = in.readInt();
         cropOffsetX = in.readInt();
@@ -269,7 +262,6 @@ public class LocalMedia implements Parcelable {
         dest.writeByte((byte) (compressed ? 1 : 0));
         dest.writeInt(width);
         dest.writeInt(height);
-        dest.writeString(cropHttpOutUri);
         dest.writeInt(cropImageWidth);
         dest.writeInt(cropImageHeight);
         dest.writeInt(cropOffsetX);
@@ -545,13 +537,6 @@ public class LocalMedia implements Parcelable {
         this.cropResultAspectRatio = cropResultAspectRatio;
     }
 
-    public String getCropHttpOutUri() {
-        return cropHttpOutUri;
-    }
-
-    public void setCropHttpOutUri(String cropHttpOutUri) {
-        this.cropHttpOutUri = cropHttpOutUri;
-    }
 
     @Override
     public String toString() {

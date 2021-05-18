@@ -152,7 +152,7 @@ public class Luban {
                             File result = exists ? new File(path.getMedia().getCompressPath()) : compress(context, path);
                             newPath = result.getAbsolutePath();
                         } else {
-                            if (PictureMimeType.isHasHttp(path.getMedia().getPath())) {
+                            if (PictureMimeType.isHasHttp(path.getMedia().getPath()) && TextUtils.isEmpty(path.getMedia().getCutPath())) {
                                 newPath = path.getMedia().getPath();
                             } else {
                                 File result = PictureMimeType.isHasVideo(path.getMedia().getMimeType())
@@ -220,7 +220,7 @@ public class Luban {
                         : compress(context, provider);
                 results.add(oldFile);
             } else {
-                boolean isHasHttp = PictureMimeType.isHasHttp(provider.getMedia().getPath());
+                boolean isHasHttp = PictureMimeType.isHasHttp(provider.getMedia().getPath()) && TextUtils.isEmpty(provider.getMedia().getCutPath());
                 boolean isHasVideo = PictureMimeType.isHasVideo(provider.getMedia().getMimeType());
                 results.add(isHasHttp || isHasVideo ? new File(provider.getMedia().getPath()) : compress(context, provider));
             }
@@ -408,12 +408,17 @@ public class Luban {
                 @Override
                 public InputStream openInternal() throws IOException {
                     if (PictureMimeType.isContent(media.getPath()) && !media.isCut()) {
-                        if (!TextUtils.isEmpty(media.getAndroidQToPath())) {
+                        if (TextUtils.isEmpty(media.getAndroidQToPath())) {
+                            return context.getContentResolver().openInputStream(Uri.parse(media.getPath()));
+                        } else {
                             return new FileInputStream(media.getAndroidQToPath());
                         }
-                        return context.getContentResolver().openInputStream(Uri.parse(media.getPath()));
                     } else {
-                        return PictureMimeType.isHasHttp(media.getPath()) ? null : new FileInputStream(media.isCut() ? media.getCutPath() : media.getPath());
+                        if (PictureMimeType.isHasHttp(media.getPath()) && TextUtils.isEmpty(media.getCutPath())) {
+                            return null;
+                        } else {
+                            return new FileInputStream(media.isCut() ? media.getCutPath() : media.getPath());
+                        }
                     }
                 }
 

@@ -16,28 +16,17 @@
 
 package com.yalantis.ucrop;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.tools.SdkVersionUtils;
-import com.yalantis.ucrop.callback.BitmapLoadCallback;
-import com.yalantis.ucrop.model.ExifInfo;
-import com.yalantis.ucrop.util.BitmapLoadUtils;
-
-import java.io.File;
 import java.util.List;
 
 /**
@@ -79,35 +68,15 @@ public class PicturePhotoGalleryAdapter extends RecyclerView.Adapter<PicturePhot
         } else {
             holder.mIvPhoto.setVisibility(View.VISIBLE);
             holder.mIvVideo.setVisibility(View.GONE);
-            Uri uri = SdkVersionUtils.checkedAndroid_Q() || PictureMimeType.isHasHttp(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
             holder.tvGif.setVisibility(PictureMimeType.isGif(photoInfo.getMimeType()) ? View.VISIBLE : View.GONE);
-            int maxImageWidth = 200;
-            int maxImageHeight = 220;
-            Uri outputUri = TextUtils.isEmpty(photoInfo.getCropHttpOutUri()) ? null : Uri.fromFile(new File(photoInfo.getCropHttpOutUri()));
-            BitmapLoadUtils.decodeBitmapInBackground(holder.itemView.getContext(), uri, outputUri, maxImageWidth,
-                    maxImageHeight, new BitmapLoadCallback() {
-                        @Override
-                        public void onBitmapLoaded(@NonNull Bitmap bitmap,
-                                                   @NonNull ExifInfo exifInfo,
-                                                   @NonNull String imageInputPath,
-                                                   @Nullable String imageOutputPath) {
-                            if (holder.mIvPhoto != null) {
-                                holder.mIvPhoto.setImageBitmap(bitmap);
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Exception bitmapWorkerException) {
-                            if (holder.mIvPhoto != null) {
-                                holder.mIvPhoto.setImageResource(R.color.ucrop_color_ba3);
-                            }
-                        }
-                    });
+            if (PictureSelectionConfig.imageEngine != null) {
+                PictureSelectionConfig.imageEngine.loadGridImage(holder.itemView.getContext(), path, holder.mIvPhoto);
+            }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
-                        listener.onItemClick(holder.getAdapterPosition(), v);
+                        listener.onItemClick(holder.getAbsoluteAdapterPosition(), v);
                     }
                 }
             });

@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class DateUtils {
-    private static SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd_HHmmssSS");
+    private static final SimpleDateFormat sf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 
     /**
      * 判断两个时间戳相差多少秒

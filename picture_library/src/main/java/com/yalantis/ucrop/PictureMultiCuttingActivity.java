@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.yalantis.ucrop.util.FileUtils;
 import com.yalantis.ucrop.util.ScreenUtils;
@@ -161,7 +162,7 @@ public class PictureMultiCuttingActivity extends UCropActivity {
                 getExternalFilesDir(Environment.DIRECTORY_PICTURES) : getCacheDir();
         extras.putParcelable(UCrop.EXTRA_OUTPUT_URI,
                 Uri.fromFile(new File(file,
-                        TextUtils.isEmpty(renameCropFilename) ? FileUtils.getCreateFileName("IMG_CROP_") + suffix : isCamera ? renameCropFilename : FileUtils.rename(renameCropFilename))));
+                        TextUtils.isEmpty(renameCropFilename) ? DateUtils.getCreateFileName("IMG_CROP_") + suffix : isCamera ? renameCropFilename : FileUtils.rename(renameCropFilename))));
         intent.putExtras(extras);
         setupViews(intent);
         refreshPhotoRecyclerData();
@@ -231,24 +232,6 @@ public class PictureMultiCuttingActivity extends UCropActivity {
         int size = list.size();
         if (isWithVideoImage) {
             getIndex(size);
-        }
-        for (int i = 0; i < size; i++) {
-            LocalMedia cutInfo = list.get(i);
-            boolean isHttp = PictureMimeType.isHasHttp(cutInfo.getPath());
-            if (!isHttp) {
-                continue;
-            }
-            String path = list.get(i).getPath();
-            String imgType = PictureMimeType.getLastImgType(path);
-            if (TextUtils.isEmpty(path) || TextUtils.isEmpty(imgType)) {
-                continue;
-            }
-            File file = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ?
-                    getExternalFilesDir(Environment.DIRECTORY_PICTURES) : getCacheDir();
-            File newFile = new File(file, "temporary_thumbnail_" + i + imgType);
-            String mimeType = PictureMimeType.getImageMimeType(path);
-            cutInfo.setMimeType(mimeType);
-            cutInfo.setCropHttpOutUri(newFile.getAbsolutePath());
         }
     }
 
