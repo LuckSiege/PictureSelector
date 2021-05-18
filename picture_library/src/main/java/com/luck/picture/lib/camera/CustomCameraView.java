@@ -233,7 +233,7 @@ public class CustomCameraView extends RelativeLayout {
                 }
                 // 拷贝一份至公共目录
                 if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(mConfig.cameraPath)) {
-                    PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<Boolean>() {
+                    PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Boolean>() {
 
                         @Override
                         public Boolean doInBackground() {

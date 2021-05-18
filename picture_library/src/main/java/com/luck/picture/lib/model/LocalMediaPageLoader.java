@@ -242,7 +242,7 @@ public final class LocalMediaPageLoader {
      */
     public void loadPageMediaData(long bucketId, int page, int limit, int pageSize,
                                   OnQueryDataResultListener<LocalMedia> listener) {
-        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<MediaData>() {
+        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<MediaData>() {
 
             @Override
             public MediaData doInBackground() {
@@ -374,7 +374,7 @@ public final class LocalMediaPageLoader {
      * @param listener
      */
     public void loadAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
-        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
+        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
             @Override
             public List<LocalMediaFolder> doInBackground() {
                 Cursor data = mContext.getContentResolver().query(QUERY_URI,

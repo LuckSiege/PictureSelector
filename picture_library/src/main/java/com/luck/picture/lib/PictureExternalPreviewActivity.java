@@ -402,7 +402,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 boolean isHttp = PictureMimeType.isHasHttp(downloadPath);
                 showPleaseDialog();
                 if (isHttp) {
-                    PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<String>() {
+                    PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<String>() {
                         @Override
                         public String doInBackground() {
                             return showLoadingImage(downloadPath);
@@ -499,7 +499,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             ToastUtils.s(getContext(), getString(R.string.picture_save_error));
             return;
         }
-        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<String>() {
+        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<String>() {
 
             @Override
             public String doInBackground() {

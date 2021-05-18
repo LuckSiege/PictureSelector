@@ -179,7 +179,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
                 == PackageManager.PERMISSION_GRANTED) {
             return FileUtils.getPath(mContext, mInputUri);
         } else {
-            return null;
+            return "";
         }
     }
 

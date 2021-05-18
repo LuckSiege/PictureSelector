@@ -256,7 +256,7 @@ public class MediaUtils {
      * @return
      */
     public static void getVideoSizeForUri(Context context, Uri uri, LocalMedia media) {
-        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<Integer[]>() {
+        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Integer[]>() {
 
             @Override
             public Integer[] doInBackground() {

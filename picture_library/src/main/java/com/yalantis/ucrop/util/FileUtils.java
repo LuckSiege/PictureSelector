@@ -162,11 +162,11 @@ public class FileUtils {
                 if (!TextUtils.isEmpty(id)) {
                     try {
                         final Uri contentUri = ContentUris.withAppendedId(
-                                Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+                                Uri.parse("content://downloads/public_downloads"), Long.parseLong(id));
                         return getDataColumn(context, contentUri, null, null);
                     } catch (NumberFormatException e) {
                         Log.i(TAG, e.getMessage());
-                        return null;
+                        return "";
                     }
                 }
 
@@ -209,7 +209,7 @@ public class FileUtils {
             return uri.getPath();
         }
 
-        return null;
+        return "";
     }
 
     /**

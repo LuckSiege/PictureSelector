@@ -135,7 +135,7 @@ public class Luban {
         if (mCompressListener != null) {
             mCompressListener.onStart();
         }
-        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<LocalMedia>>() {
+        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<List<LocalMedia>>() {
 
             @Override
             public List<LocalMedia> doInBackground() {
