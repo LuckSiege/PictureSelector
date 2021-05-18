@@ -1789,99 +1789,87 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (TextUtils.isEmpty(config.cameraPath)) {
             return;
         }
-        showPleaseDialog();
-        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<LocalMedia>() {
-
-            @Override
-            public LocalMedia doInBackground() {
-                LocalMedia media = new LocalMedia();
-                String mimeType = isAudio ? PictureMimeType.MIME_TYPE_AUDIO : "";
-                long duration = 0;
-                if (!isAudio) {
-                    if (PictureMimeType.isContent(config.cameraPath)) {
-                        // content: Processing rules
-                        String path = PictureFileUtils.getPath(getContext(), Uri.parse(config.cameraPath));
-                        if (!TextUtils.isEmpty(path)) {
-                            File cameraFile = new File(path);
-                            mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
-                            media.setSize(cameraFile.length());
-                            media.setFileName(cameraFile.getName());
-                        }
-                        if (PictureMimeType.isHasImage(mimeType)) {
-                            MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(path);
-                            media.setWidth(mediaExtraInfo.getWidth());
-                            media.setHeight(mediaExtraInfo.getHeight());
-                        } else if (PictureMimeType.isHasVideo(mimeType)) {
-                            MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(path);
-                            media.setWidth(mediaExtraInfo.getWidth());
-                            media.setHeight(mediaExtraInfo.getHeight());
-                            duration = mediaExtraInfo.getDuration();
-                        }
-                        int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
-                        media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
-                        media.setRealPath(path);
-                        // Custom photo has been in the application sandbox into the file
-                        String mediaPath = intent != null ? intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH) : null;
-                        media.setAndroidQToPath(mediaPath);
-                    } else {
-                        File cameraFile = new File(config.cameraPath);
-                        mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
-                        media.setSize(cameraFile.length());
-                        media.setFileName(cameraFile.getName());
-                        if (PictureMimeType.isHasImage(mimeType)) {
-                            int degree = PictureFileUtils.readPictureDegree(getContext(), config.cameraPath);
-                            BitmapUtils.rotateImage(degree, config.cameraPath);
-                            MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(config.cameraPath);
-                            media.setWidth(mediaExtraInfo.getWidth());
-                            media.setHeight(mediaExtraInfo.getHeight());
-                        } else if (PictureMimeType.isHasVideo(mimeType)) {
-                            MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(config.cameraPath);
-                            media.setWidth(mediaExtraInfo.getWidth());
-                            media.setHeight(mediaExtraInfo.getHeight());
-                            duration = mediaExtraInfo.getDuration();
-                        }
-                        // Taking a photo generates a temporary id
-                        media.setId(System.currentTimeMillis());
-                    }
-                    media.setPath(config.cameraPath);
-                    media.setDuration(duration);
-                    media.setMimeType(mimeType);
-                    if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasVideo(media.getMimeType())) {
-                        media.setParentFolderName(Environment.DIRECTORY_MOVIES);
-                    } else {
-                        media.setParentFolderName(PictureMimeType.CAMERA);
-                    }
-                    media.setChooseModel(config.chooseMode);
-                    long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
-                    media.setBucketId(bucketId);
-                    media.setDateAddedTime(Long.parseLong(String.valueOf(System.currentTimeMillis()).substring(0, 10)));
+        LocalMedia media = new LocalMedia();
+        String mimeType = isAudio ? PictureMimeType.MIME_TYPE_AUDIO : "";
+        if (isAudio) {
+            media.setPath(config.cameraPath);
+            media.setMimeType(mimeType);
+        } else {
+            if (PictureMimeType.isContent(config.cameraPath)) {
+                // content: Processing rules
+                String path = PictureFileUtils.getPath(getContext(), Uri.parse(config.cameraPath));
+                if (!TextUtils.isEmpty(path)) {
+                    File cameraFile = new File(path);
+                    mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
+                    media.setSize(cameraFile.length());
+                    media.setFileName(cameraFile.getName());
                 }
-                return media;
+                if (PictureMimeType.isHasImage(mimeType)) {
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(path);
+                    media.setWidth(mediaExtraInfo.getWidth());
+                    media.setHeight(mediaExtraInfo.getHeight());
+                } else if (PictureMimeType.isHasVideo(mimeType)) {
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(path);
+                    media.setWidth(mediaExtraInfo.getWidth());
+                    media.setHeight(mediaExtraInfo.getHeight());
+                    media.setDuration(mediaExtraInfo.getDuration());
+                }
+                int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
+                media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
+                media.setRealPath(path);
+                // Custom photo has been in the application sandbox into the file
+                String mediaPath = intent != null ? intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH) : null;
+                media.setAndroidQToPath(mediaPath);
+            } else {
+                File cameraFile = new File(config.cameraPath);
+                mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
+                media.setSize(cameraFile.length());
+                media.setFileName(cameraFile.getName());
+                if (PictureMimeType.isHasImage(mimeType)) {
+                    int degree = PictureFileUtils.readPictureDegree(getContext(), config.cameraPath);
+                    BitmapUtils.rotateImage(degree, config.cameraPath);
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(config.cameraPath);
+                    media.setWidth(mediaExtraInfo.getWidth());
+                    media.setHeight(mediaExtraInfo.getHeight());
+                } else if (PictureMimeType.isHasVideo(mimeType)) {
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(config.cameraPath);
+                    media.setWidth(mediaExtraInfo.getWidth());
+                    media.setHeight(mediaExtraInfo.getHeight());
+                    media.setDuration(mediaExtraInfo.getDuration());
+                }
+                // Taking a photo generates a temporary id
+                media.setId(System.currentTimeMillis());
             }
-
-            @Override
-            public void onSuccess(LocalMedia result) {
-                dismissDialog();
-                // Refresh the system library
-                if (!SdkVersionUtils.checkedAndroid_Q()) {
-                    if (config.isFallbackVersion3) {
-                        new PictureMediaScannerConnection(getContext(), config.cameraPath);
-                    } else {
-                        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(config.cameraPath))));
-                    }
-                }
-                // add data Adapter
-                notifyAdapterData(result);
-                // Solve some phone using Camera, DCIM will produce repetitive problems
-                if (!SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasImage(result.getMimeType())) {
-                    int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
-                    if (lastImageId != -1) {
-                        MediaUtils.removeMedia(getContext(), lastImageId);
-                    }
-                }
+            media.setPath(config.cameraPath);
+            media.setMimeType(mimeType);
+            if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasVideo(media.getMimeType())) {
+                media.setParentFolderName(Environment.DIRECTORY_MOVIES);
+            } else {
+                media.setParentFolderName(PictureMimeType.CAMERA);
             }
-        });
+            media.setChooseModel(config.chooseMode);
+            long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
+            media.setBucketId(bucketId);
+            media.setDateAddedTime(Long.parseLong(String.valueOf(System.currentTimeMillis()).substring(0, 10)));
+        }
 
+        // Refresh the system library
+        if (!SdkVersionUtils.checkedAndroid_Q()) {
+            if (config.isFallbackVersion3) {
+                new PictureMediaScannerConnection(getContext(), config.cameraPath);
+            } else {
+                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(config.cameraPath))));
+            }
+        }
+        // add data Adapter
+        notifyAdapterData(media);
+        // Solve some phone using Camera, DCIM will produce repetitive problems
+        if (!SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasImage(media.getMimeType())) {
+            int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
+            if (lastImageId != -1) {
+                MediaUtils.removeMedia(getContext(), lastImageId);
+            }
+        }
     }
 
     /**
