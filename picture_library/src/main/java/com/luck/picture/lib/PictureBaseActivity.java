@@ -808,7 +808,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (config != null) {
             PictureSelectionConfig.destroy();
             LocalMediaPageLoader.setInstanceNull();
-            PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
+            PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
         }
     }
 
