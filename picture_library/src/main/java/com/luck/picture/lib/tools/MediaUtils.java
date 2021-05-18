@@ -179,7 +179,7 @@ public class MediaUtils {
             retriever.setDataSource(url);
             String orientation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
             int width, height;
-            if (TextUtils.equals("90", orientation)) {
+            if (TextUtils.equals("90", orientation) || TextUtils.equals("270", orientation)) {
                 height = ValueOf.toInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
                 width = ValueOf.toInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
             } else {

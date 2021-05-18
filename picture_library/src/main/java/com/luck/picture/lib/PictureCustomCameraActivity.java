@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,6 +16,7 @@ import androidx.annotation.Nullable;
 
 import com.luck.picture.lib.camera.CustomCameraView;
 import com.luck.picture.lib.camera.listener.CameraListener;
+import com.luck.picture.lib.camera.listener.ClickListener;
 import com.luck.picture.lib.camera.view.CaptureLayout;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -189,9 +189,9 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
         });
 
         //左边按钮点击事件
-        mCameraView.setOnClickListener(new View.OnClickListener() {
+        mCameraView.setOnClickListener(new ClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick() {
                 onBackPressed();
             }
         });

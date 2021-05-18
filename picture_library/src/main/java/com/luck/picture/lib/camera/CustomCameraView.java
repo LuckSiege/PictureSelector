@@ -270,9 +270,12 @@ public class CustomCameraView extends RelativeLayout {
                 }
             }
         });
-        mCaptureLayout.setLeftClickListener(() -> {
-            if (mOnClickListener != null) {
-                mOnClickListener.onClick();
+        mCaptureLayout.setLeftClickListener(new ClickListener() {
+            @Override
+            public void onClick() {
+                if (mOnClickListener != null) {
+                    mOnClickListener.onClick();
+                }
             }
         });
     }
