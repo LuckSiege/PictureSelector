@@ -206,7 +206,7 @@ public class MediaUtils {
         Cursor query = null;
         try {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                query = context.getApplicationContext().getContentResolver()
+                query = context.getContentResolver()
                         .query(Uri.parse(url),
                                 null, null, null);
                 if (query != null) {
