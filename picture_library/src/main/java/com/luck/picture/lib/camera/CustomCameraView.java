@@ -242,7 +242,6 @@ public class CustomCameraView extends RelativeLayout {
 
                         @Override
                         public void onSuccess(Boolean result) {
-                            PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
                             if (mCameraController.isImageCaptureEnabled()) {
                                 mImagePreview.setVisibility(INVISIBLE);
                                 if (mCameraListener != null) {
