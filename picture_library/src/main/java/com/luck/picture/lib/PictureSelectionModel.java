@@ -1122,6 +1122,14 @@ public class PictureSelectionModel {
     }
 
     /**
+     * Compress image rotation, automatic correction
+     */
+    public PictureSelectionModel isAutoRotating(boolean isAutoRotating) {
+        selectionConfig.isAutoRotating = isAutoRotating;
+        return this;
+    }
+
+    /**
      * @param selectionMedia Select the selected picture set
      * @return Use {link .selectionData()}
      */

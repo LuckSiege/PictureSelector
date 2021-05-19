@@ -40,6 +40,7 @@ public class Luban {
     private int index = -1;
     private final int compressQuality;
     private final int dataCount;
+    private boolean isAutoRotating;
 
     private Luban(Builder builder) {
         this.mPaths = builder.mPaths;
@@ -53,6 +54,7 @@ public class Luban {
         this.mLeastCompressSize = builder.mLeastCompressSize;
         this.mCompressionPredicate = builder.mCompressionPredicate;
         this.compressQuality = builder.compressQuality;
+        this.isAutoRotating = builder.isAutoRotating;
         this.focusAlpha = builder.focusAlpha;
         this.isCamera = builder.isCamera;
     }
@@ -199,7 +201,7 @@ public class Luban {
      */
     private File get(InputStreamProvider input, Context context) throws IOException {
         try {
-            return new Engine(input, getImageCacheFile(context, input, Checker.SINGLE.extSuffix(input.getMedia().getMimeType())), focusAlpha, compressQuality).compress();
+            return new Engine(input, getImageCacheFile(context, input, Checker.SINGLE.extSuffix(input.getMedia().getMimeType())), focusAlpha, compressQuality, isAutoRotating).compress();
         } finally {
             input.close();
         }
@@ -250,7 +252,7 @@ public class Luban {
         if (mCompressionPredicate != null) {
             if (mCompressionPredicate.apply(streamProvider.getPath())
                     && Checker.SINGLE.needCompress(mLeastCompressSize, streamProvider.getPath())) {
-                result = new Engine(streamProvider, outFile, focusAlpha, compressQuality).compress();
+                result = new Engine(streamProvider, outFile, focusAlpha, compressQuality, isAutoRotating).compress();
             } else {
                 result = new File(streamProvider.getPath());
             }
@@ -260,7 +262,7 @@ public class Luban {
                 result = new File(streamProvider.getPath());
             } else {
                 result = Checker.SINGLE.needCompress(mLeastCompressSize, streamProvider.getPath()) ?
-                        new Engine(streamProvider, outFile, focusAlpha, compressQuality).compress() :
+                        new Engine(streamProvider, outFile, focusAlpha, compressQuality, isAutoRotating).compress() :
                         new File(streamProvider.getPath());
             }
         }
@@ -289,7 +291,7 @@ public class Luban {
                     if (media.isCut() && !TextUtils.isEmpty(media.getCutPath())) {
                         result = new File(media.getCutPath());
                     } else {
-                        String androidQToPath = AndroidQTransformUtils.copyPathToAndroidQ(context,streamProvider.getMedia().getId(), streamProvider.getPath(),
+                        String androidQToPath = AndroidQTransformUtils.copyPathToAndroidQ(context, streamProvider.getMedia().getId(), streamProvider.getPath(),
                                 media.getWidth(), media.getHeight(), media.getMimeType(), filename);
                         result = new File(androidQToPath);
                     }
@@ -299,15 +301,15 @@ public class Luban {
             } else {
                 boolean isCompress = Checker.SINGLE.needCompressToLocalMedia(mLeastCompressSize, newPath);
                 if (mCompressionPredicate.apply(newPath) && isCompress) {
-                    result = new Engine(streamProvider, outFile, focusAlpha, compressQuality).compress();
+                    result = new Engine(streamProvider, outFile, focusAlpha, compressQuality, isAutoRotating).compress();
                 } else {
                     if (isCompress) {
-                        result = new Engine(streamProvider, outFile, focusAlpha, compressQuality).compress();
+                        result = new Engine(streamProvider, outFile, focusAlpha, compressQuality, isAutoRotating).compress();
                     } else {
                         // 这种情况判断一下，如果是小于设置的图片压缩阀值，再Android 10以上做下拷贝的处理
                         if (SdkVersionUtils.checkedAndroid_Q()) {
                             String newFilePath = media.isCut() ? media.getCutPath() :
-                                    AndroidQTransformUtils.copyPathToAndroidQ(context,media.getId(),
+                                    AndroidQTransformUtils.copyPathToAndroidQ(context, media.getId(),
                                             streamProvider.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), filename);
                             result = new File(TextUtils.isEmpty(newFilePath) ? newPath : newFilePath);
                         } else {
@@ -321,7 +323,7 @@ public class Luban {
                 // GIF without compression
                 if (SdkVersionUtils.checkedAndroid_Q()) {
                     String newFilePath = media.isCut() ? media.getCutPath() :
-                            AndroidQTransformUtils.copyPathToAndroidQ(context,media.getId(),
+                            AndroidQTransformUtils.copyPathToAndroidQ(context, media.getId(),
                                     streamProvider.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), filename);
                     result = new File(TextUtils.isEmpty(newFilePath) ? newPath : newFilePath);
                 } else {
@@ -330,12 +332,12 @@ public class Luban {
             } else {
                 boolean isCompress = Checker.SINGLE.needCompressToLocalMedia(mLeastCompressSize, newPath);
                 if (isCompress) {
-                    result = new Engine(streamProvider, outFile, focusAlpha, compressQuality).compress();
+                    result = new Engine(streamProvider, outFile, focusAlpha, compressQuality, isAutoRotating).compress();
                 } else {
                     // 这种情况判断一下，如果是小于设置的图片压缩阀值，再Android 10以上做下拷贝的处理
                     if (SdkVersionUtils.checkedAndroid_Q()) {
                         String newFilePath = media.isCut() ? media.getCutPath() :
-                                AndroidQTransformUtils.copyPathToAndroidQ(context,media.getId(),
+                                AndroidQTransformUtils.copyPathToAndroidQ(context, media.getId(),
                                         streamProvider.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), filename);
                         result = new File(TextUtils.isEmpty(newFilePath) ? newPath : newFilePath);
                     } else {
@@ -354,6 +356,7 @@ public class Luban {
         private boolean focusAlpha;
         private boolean isCamera;
         private int compressQuality;
+        private boolean isAutoRotating;
         private int mLeastCompressSize = 100;
         private OnRenameListener mRenameListener;
         private OnCompressListener mCompressListener;
@@ -567,6 +570,15 @@ public class Luban {
             return this;
         }
 
+        /**
+         * If the picture is in the wrong direction Auto Rotate Picture
+         *
+         * @param isAutoRotating
+         */
+        public Builder isAutoRotating(boolean isAutoRotating) {
+            this.isAutoRotating = isAutoRotating;
+            return this;
+        }
 
         /**
          * do not compress when the origin image file size less than one value

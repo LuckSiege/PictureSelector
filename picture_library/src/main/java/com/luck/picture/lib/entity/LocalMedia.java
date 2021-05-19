@@ -25,9 +25,6 @@ public class LocalMedia implements Parcelable {
 
     /**
      * The real path，But you can't get access from AndroidQ
-     * <p>
-     * It could be empty
-     * <p/>
      */
     private String realPath;
 
@@ -147,6 +144,7 @@ public class LocalMedia implements Parcelable {
      * orientation info
      * # For internal use only
      */
+    @Deprecated
     private int orientation = -1;
 
     /**
@@ -465,10 +463,12 @@ public class LocalMedia implements Parcelable {
         this.parentFolderName = parentFolderName;
     }
 
+    @Deprecated
     public int getOrientation() {
         return orientation;
     }
 
+    @Deprecated
     public void setOrientation(int orientation) {
         this.orientation = orientation;
     }

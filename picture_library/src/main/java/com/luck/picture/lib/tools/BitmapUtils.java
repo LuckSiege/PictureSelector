@@ -52,7 +52,7 @@ public class BitmapUtils {
      * @param angle
      * @return
      */
-    private static Bitmap rotatingImage(Bitmap bitmap, int angle) {
+    public static Bitmap rotatingImage(Bitmap bitmap, int angle) {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
@@ -84,7 +84,7 @@ public class BitmapUtils {
      * @param filePath 图片绝对路径
      * @return degree旋转的角度
      */
-    private static int readPictureDegree(String filePath) {
+    public static int readPictureDegree(String filePath) {
         try {
             ExifInterface exifInterface = new ExifInterface(filePath);
             int orientation = exifInterface.getAttributeInt(
@@ -100,9 +100,9 @@ public class BitmapUtils {
                 default:
                     return 0;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            return -1;
+            return 0;
         }
     }
 }

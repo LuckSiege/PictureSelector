@@ -169,6 +169,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isAndroidQChangeVideoWH;
     public boolean isQuickCapture = true;
     public boolean isCameraRotateImage = true;
+    public boolean isAutoRotating = true;
     /**
      * 内测专用###########
      */
@@ -279,6 +280,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isAndroidQChangeVideoWH = in.readByte() != 0;
         isQuickCapture = in.readByte() != 0;
         isCameraRotateImage = in.readByte() != 0;
+        isAutoRotating = in.readByte() != 0;
         isFallbackVersion = in.readByte() != 0;
         isFallbackVersion2 = in.readByte() != 0;
         isFallbackVersion3 = in.readByte() != 0;
@@ -387,6 +389,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isAndroidQChangeVideoWH ? 1 : 0));
         dest.writeByte((byte) (isQuickCapture ? 1 : 0));
         dest.writeByte((byte) (isCameraRotateImage ? 1 : 0));
+        dest.writeByte((byte) (isAutoRotating ? 1 : 0));
         dest.writeByte((byte) (isFallbackVersion ? 1 : 0));
         dest.writeByte((byte) (isFallbackVersion2 ? 1 : 0));
         dest.writeByte((byte) (isFallbackVersion3 ? 1 : 0));
@@ -515,6 +518,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isAndroidQChangeVideoWH = false;
         isQuickCapture = true;
         isCameraRotateImage = true;
+        isAutoRotating = true;
     }
 
     public static PictureSelectionConfig getInstance() {

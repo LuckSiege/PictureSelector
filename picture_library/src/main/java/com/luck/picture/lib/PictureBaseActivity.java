@@ -367,6 +367,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                             .isCamera(config.camera)
                             .setTargetDir(config.compressSavePath)
                             .setCompressQuality(config.compressQuality)
+                            .isAutoRotating(config.isAutoRotating)
                             .setFocusAlpha(config.focusAlpha)
                             .setNewCompressFileName(config.renameCompressFileName)
                             .ignoreBy(config.minimumCompressSize).get();
@@ -388,6 +389,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                     .isCamera(config.camera)
                     .setCompressQuality(config.compressQuality)
                     .setTargetDir(config.compressSavePath)
+                    .isAutoRotating(config.isAutoRotating)
                     .setFocusAlpha(config.focusAlpha)
                     .setNewCompressFileName(config.renameCompressFileName)
                     .setCompressListener(new OnCompressListener() {
