@@ -10,6 +10,7 @@ import androidx.annotation.StyleRes;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.camera.CustomCameraView;
 import com.luck.picture.lib.engine.CacheResourcesEngine;
+import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnCustomCameraInterfaceListener;
@@ -115,6 +116,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isWithVideoImage;
     public UCrop.Options uCropOptions;
     public static ImageEngine imageEngine;
+    public static CompressEngine compressEngine;
     public static CacheResourcesEngine cacheResourcesEngine;
     public static OnResultCallbackListener<LocalMedia> listener;
     public static OnVideoSelectedPlayCallback<LocalMedia> customVideoPlayCallback;
@@ -538,6 +540,8 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.onCustomCameraInterfaceListener = null;
         PictureSelectionConfig.onPermissionsObtainCallback = null;
         PictureSelectionConfig.cacheResourcesEngine = null;
+        PictureSelectionConfig.imageEngine = null;
+        PictureSelectionConfig.compressEngine = null;
     }
 
 

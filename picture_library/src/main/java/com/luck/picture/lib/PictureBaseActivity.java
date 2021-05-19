@@ -31,6 +31,7 @@ import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.immersive.ImmersiveManage;
 import com.luck.picture.lib.immersive.NavBarUtils;
 import com.luck.picture.lib.language.PictureLanguageUtils;
+import com.luck.picture.lib.listener.OnCallbackListener;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.thread.PictureThreadUtils;
@@ -147,6 +148,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         setTheme(config.themeStyleId == 0 ? R.style.picture_default_style : config.themeStyleId);
         super.onCreate(savedInstanceState);
         newCreateEngine();
+        newCreateCompressEngine();
         newCreateResultCallbackListener();
         if (isRequestedOrientation()) {
             setNewRequestedOrientation();
@@ -180,6 +182,17 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (PictureSelectionConfig.imageEngine == null) {
             PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
             if (baseEngine != null) PictureSelectionConfig.imageEngine = baseEngine.createEngine();
+        }
+    }
+
+    /**
+     * Get the image compress engine again, provided that the user implements the IApp interface in the Application
+     */
+    private void newCreateCompressEngine() {
+        if (PictureSelectionConfig.compressEngine == null) {
+            PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
+            if (baseEngine != null)
+                PictureSelectionConfig.compressEngine = baseEngine.createCompressEngine();
         }
     }
 
@@ -336,9 +349,18 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     /**
      * compressImage
      */
-    protected void compressImage(final List<LocalMedia> result) {
-        showPleaseDialog();
-        compressToLuban(result);
+    protected void compressImage(List<LocalMedia> result) {
+        if (PictureSelectionConfig.compressEngine != null) {
+            PictureSelectionConfig.compressEngine.onCompress(result, new OnCallbackListener<List<LocalMedia>>() {
+                @Override
+                public void onCall(List<LocalMedia> result) {
+                    onResult(result);
+                }
+            });
+        } else {
+            showPleaseDialog();
+            compressToLuban(result);
+        }
     }
 
     /**
@@ -495,14 +517,11 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      * @param images
      */
     protected void onResult(List<LocalMedia> images) {
-        boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
-        if (isAndroidQ && config.isAndroidQTransform) {
-            showPleaseDialog();
+        if (SdkVersionUtils.checkedAndroid_Q() && config.isAndroidQTransform) {
             onResultToAndroidAsy(images);
         } else {
             dismissDialog();
-            if (config.camera
-                    && config.selectionMode == PictureConfig.MULTIPLE) {
+            if (config.camera && config.selectionMode == PictureConfig.MULTIPLE) {
                 images.addAll(images.size() > 0 ? images.size() - 1 : 0, selectionMedias);
             }
             if (config.isCheckOriginalImage) {
@@ -554,7 +573,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      * @param images
      */
     private void normalResult(List<LocalMedia> images) {
-        dismissDialog();
         int size = images.size();
         for (int i = 0; i < size; i++) {
             LocalMedia media = images.get(i);
@@ -587,6 +605,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      * @param images
      */
     private void startThreadCopySandbox(List<LocalMedia> images) {
+        showPleaseDialog();
         PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<List<LocalMedia>>() {
             @Override
             public List<LocalMedia> doInBackground() {

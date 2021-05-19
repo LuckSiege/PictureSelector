@@ -18,6 +18,13 @@ public interface PictureSelectorEngine {
     ImageEngine createEngine();
 
     /**
+     * Create Image Compress Engine
+     *
+     * @return
+     */
+    CompressEngine createCompressEngine();
+
+    /**
      * Create Result Listener
      *
      * @return
