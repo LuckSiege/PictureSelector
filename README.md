@@ -39,6 +39,16 @@ dependencies {
 }
 ```
 
+Or Maven:
+
+```sh
+<dependency>
+  <groupId>io.github.lucksiege</groupId>
+  <artifactId>pictureselector</artifactId>
+  <version>v2.7.0-rc05</version>
+</dependency>
+```
+
 ## Photo
 Quick call, more functions [More](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api)
 
