@@ -853,7 +853,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
 
                 // 如果宽高为0，重新获取宽高
                 if (image.getWidth() == 0 || image.getHeight() == 0) {
-                    image.setOrientation(-1);
                     if (PictureMimeType.isHasVideo(image.getMimeType())) {
                         MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(image.getRealPath());
                         image.setWidth(mediaExtraInfo.getWidth());

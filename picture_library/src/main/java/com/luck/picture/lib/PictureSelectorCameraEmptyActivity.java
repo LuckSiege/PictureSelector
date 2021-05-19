@@ -223,7 +223,6 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         media.setCutPath(cutPath);
         String mimeType = PictureMimeType.getImageMimeType(cutPath);
         media.setMimeType(mimeType);
-        media.setOrientation(-1);
         if (PictureMimeType.isContent(media.getPath())) {
             String path = PictureFileUtils.getPath(getContext(), Uri.parse(media.getPath()));
             media.setRealPath(path);

@@ -623,7 +623,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
             // If the width and height are 0, regain the width and height
             if (image.getWidth() == 0 || image.getHeight() == 0) {
-                image.setOrientation(-1);
                 if (PictureMimeType.isHasVideo(image.getMimeType())) {
                     MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(image.getRealPath());
                     image.setWidth(mediaExtraInfo.getWidth());
