@@ -15,7 +15,7 @@ public class ImageCompressEngine implements CompressEngine {
 
     @Override
     public void onCompress(List<LocalMedia> compressData, OnCallbackListener<List<LocalMedia>> listener) {
-
+        // TODO 压缩成功后需要把compressData数据源中的LocalMedia里的isCompress和CompressPath字段赋值
         listener.onCall(compressData);
     }
 
