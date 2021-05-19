@@ -448,6 +448,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .isPageStrategy(cbPage.isChecked())// 是否开启分页策略 & 每页多少条；默认开启
                         .setRecyclerAnimationMode(animationMode)// 列表动画效果
                         .isWithVideoImage(true)// 图片和视频是否可以同选,只在ofAll模式下有效
+                        //.isSyncCover(true)// 是否强制从MediaStore里同步相册封面，如果相册封面没显示异常则没必要设置
                         //.isCameraAroundState(false) // 是否开启前置摄像头，默认false，如果使用系统拍照 可能部分机型会有兼容性问题
                         //.isCameraRotateImage(false) // 拍照图片旋转是否自动纠正
                         //.isAutoRotating(false)// 压缩时自动纠正有旋转的图片

@@ -461,6 +461,17 @@ public class PictureSelectionModel {
     }
 
     /**
+     *  If SyncCover
+     *
+     * @param isSyncCover
+     * @return
+     */
+    public PictureSelectionModel isSyncCover(boolean isSyncCover) {
+        selectionConfig.isSyncCover = isSyncCover;
+        return this;
+    }
+
+    /**
      * @param maxSelectNum PictureSelector max selection
      * @return
      */

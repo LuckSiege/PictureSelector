@@ -710,7 +710,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         if (!isFinishing()) {
                             this.isHasMore = true;
                             initPageModel(data);
-                            synchronousCover();
+                            if (config.isSyncCover) {
+                                synchronousCover();
+                            }
                         }
                     });
         } else {
