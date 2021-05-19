@@ -1824,7 +1824,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             media.setSize(cameraFile.length());
             media.setFileName(cameraFile.getName());
             if (PictureMimeType.isHasImage(mimeType)) {
-                BitmapUtils.rotateImage(config.cameraPath);
+                BitmapUtils.rotateImage(config.isCameraRotateImage, config.cameraPath);
                 MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(config.cameraPath);
                 media.setWidth(mediaExtraInfo.getWidth());
                 media.setHeight(mediaExtraInfo.getHeight());

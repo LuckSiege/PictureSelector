@@ -3,7 +3,9 @@ package com.luck.picture.lib.tools;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+
 import androidx.exifinterface.media.ExifInterface;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,20 +21,23 @@ public class BitmapUtils {
     /**
      * 判断拍照 图片是否旋转
      *
+     * @param isCameraRotateImage
      * @param path
      */
-    public static void rotateImage(String path) {
+    public static void rotateImage(boolean isCameraRotateImage, String path) {
         try {
-            int degree = readPictureDegree(path);
-            if (degree > 0) {
-                BitmapFactory.Options opts = new BitmapFactory.Options();
-                opts.inSampleSize = 2;
-                File file = new File(path);
-                Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), opts);
-                bitmap = rotatingImage(bitmap, degree);
-                if (bitmap != null) {
-                    saveBitmapFile(bitmap, file);
-                    bitmap.recycle();
+            if (isCameraRotateImage) {
+                int degree = readPictureDegree(path);
+                if (degree > 0) {
+                    BitmapFactory.Options opts = new BitmapFactory.Options();
+                    opts.inSampleSize = 2;
+                    File file = new File(path);
+                    Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), opts);
+                    bitmap = rotatingImage(bitmap, degree);
+                    if (bitmap != null) {
+                        saveBitmapFile(bitmap, file);
+                        bitmap.recycle();
+                    }
                 }
             }
         } catch (Exception e) {

@@ -1106,10 +1106,18 @@ public class PictureSelectionModel {
 
 
     /**
-     * 设置摄像头方向(前后 默认后置)
+     * Set camera direction (after default image)
      */
     public PictureSelectionModel isCameraAroundState(boolean isCameraAroundState) {
         selectionConfig.isCameraAroundState = isCameraAroundState;
+        return this;
+    }
+
+    /**
+     * Camera image rotation, automatic correction
+     */
+    public PictureSelectionModel isCameraRotateImage(boolean isCameraRotateImage) {
+        selectionConfig.isCameraRotateImage = isCameraRotateImage;
         return this;
     }
 

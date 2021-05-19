@@ -294,7 +294,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
             media.setSize(cameraFile.length());
             if (PictureMimeType.isHasImage(mimeType)) {
-                BitmapUtils.rotateImage(config.cameraPath);
+                BitmapUtils.rotateImage(config.isCameraRotateImage,config.cameraPath);
                 MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(config.cameraPath);
                 media.setWidth(mediaExtraInfo.getWidth());
                 media.setHeight(mediaExtraInfo.getHeight());
