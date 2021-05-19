@@ -50,8 +50,15 @@ dependencies {
 }
 ```
 
+Or Maven:
 
-
+```sh
+<dependency>
+  <groupId>io.github.lucksiege</groupId>
+  <artifactId>pictureselector</artifactId>
+  <version>v2.7.0-rc05</version>
+</dependency>
+```
 
 ## 启动相册
 快捷调用，更多功能 [请查看](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)
