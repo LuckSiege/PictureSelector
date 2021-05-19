@@ -351,7 +351,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      */
     protected void compressImage(List<LocalMedia> result) {
         if (PictureSelectionConfig.compressEngine != null) {
-            PictureSelectionConfig.compressEngine.onCompress(result, new OnCallbackListener<List<LocalMedia>>() {
+            PictureSelectionConfig.compressEngine.onCompress(getContext(),result, new OnCallbackListener<List<LocalMedia>>() {
                 @Override
                 public void onCall(List<LocalMedia> result) {
                     onResult(result);
