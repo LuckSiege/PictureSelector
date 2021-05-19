@@ -31,6 +31,7 @@ import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
+import com.luck.picture.lib.tools.ValueOf;
 import com.luck.picture.lib.tools.VoiceUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -502,7 +503,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     || media.getId() == imageBean.getId()) {
                 imageBean.setNum(media.getNum());
                 media.setPosition(imageBean.getPosition());
-                viewHolder.tvCheck.setText(String.valueOf(imageBean.getNum()));
+                viewHolder.tvCheck.setText(ValueOf.toString(imageBean.getNum()));
             }
         }
     }

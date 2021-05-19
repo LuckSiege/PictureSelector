@@ -1594,7 +1594,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     mTvPictureImgNum.startAnimation(animation);
                 }
                 mTvPictureImgNum.setVisibility(View.VISIBLE);
-                mTvPictureImgNum.setText(String.valueOf(selectData.size()));
+                mTvPictureImgNum.setText(ValueOf.toString(selectData.size()));
                 if (PictureSelectionConfig.uiStyle != null) {
                     if (PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText != 0) {
                         mTvPictureOk.setText(getString(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText));
@@ -1779,92 +1779,96 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * @param intent
      */
     private void dispatchHandleCamera(Intent intent) {
-        // If PictureSelectionConfig is not empty, synchronize it
-        PictureSelectionConfig selectionConfig = intent != null ? intent.getParcelableExtra(PictureConfig.EXTRA_CONFIG) : null;
-        if (selectionConfig != null) {
-            config = selectionConfig;
-        }
-        boolean isAudio = config.chooseMode == PictureMimeType.ofAudio();
-        config.cameraPath = isAudio ? getAudioPath(intent) : config.cameraPath;
-        if (TextUtils.isEmpty(config.cameraPath)) {
-            return;
-        }
-        LocalMedia media = new LocalMedia();
-        String mimeType;
-        if (PictureMimeType.isContent(config.cameraPath)) {
-            // content: Processing rules
-            String path = PictureFileUtils.getPath(getContext(), Uri.parse(config.cameraPath));
-            File cameraFile = new File(path);
-            mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
-            media.setSize(cameraFile.length());
-            media.setFileName(cameraFile.getName());
+        try {
+            // If PictureSelectionConfig is not empty, synchronize it
+            PictureSelectionConfig selectionConfig = intent != null ? intent.getParcelableExtra(PictureConfig.EXTRA_CONFIG) : null;
+            if (selectionConfig != null) {
+                config = selectionConfig;
+            }
+            boolean isAudio = config.chooseMode == PictureMimeType.ofAudio();
+            config.cameraPath = isAudio ? getAudioPath(intent) : config.cameraPath;
+            if (TextUtils.isEmpty(config.cameraPath)) {
+                return;
+            }
+            LocalMedia media = new LocalMedia();
+            String mimeType;
+            if (PictureMimeType.isContent(config.cameraPath)) {
+                // content: Processing rules
+                String path = PictureFileUtils.getPath(getContext(), Uri.parse(config.cameraPath));
+                File cameraFile = new File(path);
+                mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
+                media.setSize(cameraFile.length());
+                media.setFileName(cameraFile.getName());
 
-            if (PictureMimeType.isHasImage(mimeType)) {
-                MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(path);
-                media.setWidth(mediaExtraInfo.getWidth());
-                media.setHeight(mediaExtraInfo.getHeight());
-            } else if (PictureMimeType.isHasVideo(mimeType)) {
-                MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(path);
-                media.setWidth(mediaExtraInfo.getWidth());
-                media.setHeight(mediaExtraInfo.getHeight());
-                media.setDuration(mediaExtraInfo.getDuration());
-            } else if (PictureMimeType.isHasAudio(mimeType)) {
-                MediaExtraInfo mediaExtraInfo = MediaUtils.getAudioSize(path);
-                media.setDuration(mediaExtraInfo.getDuration());
-            }
-            int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
-            media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
-            media.setRealPath(path);
-            // Custom photo has been in the application sandbox into the file
-            String mediaPath = intent != null ? intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH) : null;
-            media.setAndroidQToPath(mediaPath);
-        } else {
-            File cameraFile = new File(config.cameraPath);
-            mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
-            media.setSize(cameraFile.length());
-            media.setFileName(cameraFile.getName());
-            if (PictureMimeType.isHasImage(mimeType)) {
-                BitmapUtils.rotateImage(config.isCameraRotateImage, config.cameraPath);
-                MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(config.cameraPath);
-                media.setWidth(mediaExtraInfo.getWidth());
-                media.setHeight(mediaExtraInfo.getHeight());
-            } else if (PictureMimeType.isHasVideo(mimeType)) {
-                MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(config.cameraPath);
-                media.setWidth(mediaExtraInfo.getWidth());
-                media.setHeight(mediaExtraInfo.getHeight());
-                media.setDuration(mediaExtraInfo.getDuration());
-            } else if (PictureMimeType.isHasAudio(mimeType)) {
-                MediaExtraInfo mediaExtraInfo = MediaUtils.getAudioSize(config.cameraPath);
-                media.setDuration(mediaExtraInfo.getDuration());
-            }
-            // Taking a photo generates a temporary id
-            media.setId(System.currentTimeMillis());
-        }
-        media.setPath(config.cameraPath);
-        media.setMimeType(mimeType);
-        if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasVideo(media.getMimeType())) {
-            media.setParentFolderName(Environment.DIRECTORY_MOVIES);
-        } else {
-            media.setParentFolderName(PictureMimeType.CAMERA);
-        }
-        media.setChooseModel(config.chooseMode);
-        long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
-        media.setBucketId(bucketId);
-        media.setDateAddedTime(ValueOf.toLong(String.valueOf(System.currentTimeMillis()).substring(0, 10)));
-        // add data Adapter
-        notifyAdapterData(media);
-        if (!SdkVersionUtils.checkedAndroid_Q()) {
-            if (config.isFallbackVersion3) {
-                new PictureMediaScannerConnection(getContext(), config.cameraPath);
+                if (PictureMimeType.isHasImage(mimeType)) {
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(path);
+                    media.setWidth(mediaExtraInfo.getWidth());
+                    media.setHeight(mediaExtraInfo.getHeight());
+                } else if (PictureMimeType.isHasVideo(mimeType)) {
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(path);
+                    media.setWidth(mediaExtraInfo.getWidth());
+                    media.setHeight(mediaExtraInfo.getHeight());
+                    media.setDuration(mediaExtraInfo.getDuration());
+                } else if (PictureMimeType.isHasAudio(mimeType)) {
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getAudioSize(path);
+                    media.setDuration(mediaExtraInfo.getDuration());
+                }
+                int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
+                media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
+                media.setRealPath(path);
+                // Custom photo has been in the application sandbox into the file
+                String mediaPath = intent != null ? intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH) : null;
+                media.setAndroidQToPath(mediaPath);
             } else {
-                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(config.cameraPath))));
+                File cameraFile = new File(config.cameraPath);
+                mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
+                media.setSize(cameraFile.length());
+                media.setFileName(cameraFile.getName());
+                if (PictureMimeType.isHasImage(mimeType)) {
+                    BitmapUtils.rotateImage(config.isCameraRotateImage, config.cameraPath);
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(config.cameraPath);
+                    media.setWidth(mediaExtraInfo.getWidth());
+                    media.setHeight(mediaExtraInfo.getHeight());
+                } else if (PictureMimeType.isHasVideo(mimeType)) {
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(config.cameraPath);
+                    media.setWidth(mediaExtraInfo.getWidth());
+                    media.setHeight(mediaExtraInfo.getHeight());
+                    media.setDuration(mediaExtraInfo.getDuration());
+                } else if (PictureMimeType.isHasAudio(mimeType)) {
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getAudioSize(config.cameraPath);
+                    media.setDuration(mediaExtraInfo.getDuration());
+                }
+                // Taking a photo generates a temporary id
+                media.setId(System.currentTimeMillis());
             }
-            if (PictureMimeType.isHasImage(media.getMimeType())) {
-                int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
-                if (lastImageId != -1) {
-                    MediaUtils.removeMedia(getContext(), lastImageId);
+            media.setPath(config.cameraPath);
+            media.setMimeType(mimeType);
+            if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasVideo(media.getMimeType())) {
+                media.setParentFolderName(Environment.DIRECTORY_MOVIES);
+            } else {
+                media.setParentFolderName(PictureMimeType.CAMERA);
+            }
+            media.setChooseModel(config.chooseMode);
+            long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
+            media.setBucketId(bucketId);
+            media.setDateAddedTime(DateUtils.getCurrentTimeMillis());
+            // add data Adapter
+            notifyAdapterData(media);
+            if (!SdkVersionUtils.checkedAndroid_Q()) {
+                if (config.isFallbackVersion3) {
+                    new PictureMediaScannerConnection(getContext(), config.cameraPath);
+                } else {
+                    sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(config.cameraPath))));
+                }
+                if (PictureMimeType.isHasImage(media.getMimeType())) {
+                    int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
+                    if (lastImageId != -1) {
+                        MediaUtils.removeMedia(getContext(), lastImageId);
+                    }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

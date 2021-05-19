@@ -39,7 +39,7 @@ public class StringUtils {
      */
     public static int stringToInt(String str) {
         Pattern pattern = Pattern.compile("^[-\\+]?[\\d]+$");
-        return pattern.matcher(str).matches() ? Integer.valueOf(str) : 0;
+        return pattern.matcher(str).matches() ? ValueOf.toInt(str) : 0;
     }
 
     /**

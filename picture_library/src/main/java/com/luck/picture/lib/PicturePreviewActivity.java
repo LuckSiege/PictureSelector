@@ -604,7 +604,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 if (media.getPath().equals(imageBean.getPath())
                         || media.getId() == imageBean.getId()) {
                     imageBean.setNum(media.getNum());
-                    check.setText(String.valueOf(imageBean.getNum()));
+                    check.setText(ValueOf.toString(imageBean.getNum()));
                 }
             }
         }
@@ -677,7 +677,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     tvMediaNum.startAnimation(animation);
                 }
                 tvMediaNum.setVisibility(View.VISIBLE);
-                tvMediaNum.setText(String.valueOf(selectData.size()));
+                tvMediaNum.setText(ValueOf.toString(selectData.size()));
                 if (PictureSelectionConfig.uiStyle != null) {
                     if (PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText != 0) {
                         mTvPictureOk.setText(PictureSelectionConfig.uiStyle.picture_bottom_completeNormalText);
@@ -869,7 +869,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 onSelectedChange(true, image);
                 image.setNum(selectData.size());
                 if (config.checkNumMode) {
-                    check.setText(String.valueOf(image.getNum()));
+                    check.setText(ValueOf.toString(image.getNum()));
                 }
             } else {
                 int size = selectData.size();
