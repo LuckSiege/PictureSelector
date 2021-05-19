@@ -2,7 +2,6 @@ package com.luck.pictureselector;
 
 import android.util.Log;
 
-import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.engine.PictureSelectorEngine;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -23,13 +22,6 @@ public class PictureSelectorEngineImp implements PictureSelectorEngine {
         // TODO 这种情况是内存极度不足的情况下，比如开启开发者选项中的不保留活动或后台进程限制，导致ImageEngine被回收
         // 重新创建图片加载引擎
         return GlideEngine.createGlideEngine();
-    }
-
-    @Override
-    public CompressEngine createCompressEngine() {
-        // TODO 这种情况是内存极度不足的情况下，比如开启开发者选项中的不保留活动或后台进程限制，导致CompressEngine被回收
-        // 重新创建图片压缩引擎
-        return ImageCompressEngine.createCompressEngine();
     }
 
     @Override

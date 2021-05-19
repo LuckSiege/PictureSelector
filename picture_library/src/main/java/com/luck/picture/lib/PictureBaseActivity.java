@@ -148,7 +148,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         setTheme(config.themeStyleId == 0 ? R.style.picture_default_style : config.themeStyleId);
         super.onCreate(savedInstanceState);
         newCreateEngine();
-        newCreateCompressEngine();
         newCreateResultCallbackListener();
         if (isRequestedOrientation()) {
             setNewRequestedOrientation();
@@ -182,17 +181,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (PictureSelectionConfig.imageEngine == null) {
             PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
             if (baseEngine != null) PictureSelectionConfig.imageEngine = baseEngine.createEngine();
-        }
-    }
-
-    /**
-     * Get the image compress engine again, provided that the user implements the IApp interface in the Application
-     */
-    private void newCreateCompressEngine() {
-        if (PictureSelectionConfig.compressEngine == null) {
-            PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
-            if (baseEngine != null)
-                PictureSelectionConfig.compressEngine = baseEngine.createCompressEngine();
         }
     }
 
