@@ -4,11 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -17,8 +15,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
-import androidx.exifinterface.media.ExifInterface;
-
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 
@@ -27,7 +23,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.util.Locale;
@@ -409,42 +404,6 @@ public class PictureFileUtils {
     }
 
     /**
-     * 读取图片属性：旋转的角度
-     *
-     * @param path 图片绝对路径
-     * @return degree旋转的角度
-     */
-    public static int readPictureDegree(Context context, String path) {
-        int degree = 0;
-        try {
-            ExifInterface exifInterface;
-            if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(path)) {
-                ParcelFileDescriptor parcelFileDescriptor =
-                        context.getContentResolver()
-                                .openFileDescriptor(Uri.parse(path), "r");
-                exifInterface = new ExifInterface(parcelFileDescriptor.getFileDescriptor());
-            } else {
-                exifInterface = new ExifInterface(path);
-            }
-            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-            switch (orientation) {
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    degree = 90;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    degree = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    degree = 270;
-                    break;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return degree;
-    }
-
-    /**
      * getDCIMCameraPath
      *
      * @return
@@ -583,23 +542,6 @@ public class PictureFileUtils {
     }
 
     /**
-     * 获取图片后缀
-     *
-     * @param input
-     * @return
-     */
-    public static String extSuffix(InputStream input) {
-        try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(input, null, options);
-            return options.outMimeType.replace("image/", ".");
-        } catch (Exception e) {
-            return PictureMimeType.JPEG;
-        }
-    }
-
-    /**
      * 根据类型创建文件名
      *
      * @param context
@@ -650,16 +592,13 @@ public class PictureFileUtils {
      * @return
      */
     public static boolean isFileExists(String path) {
-        if (!TextUtils.isEmpty(path) && !new File(path).exists()) {
-            return false;
-        }
-        return true;
+        return TextUtils.isEmpty(path) || new File(path).exists();
     }
 
     @SuppressWarnings("ConstantConditions")
     public static void close(@Nullable Closeable c) {
         // java.lang.IncompatibleClassChangeError: interface not implemented
-        if (c != null && c instanceof Closeable) {
+        if (c instanceof Closeable) {
             try {
                 c.close();
             } catch (Exception e) {

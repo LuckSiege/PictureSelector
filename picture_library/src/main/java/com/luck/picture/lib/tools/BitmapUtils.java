@@ -3,10 +3,11 @@ package com.luck.picture.lib.tools;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-
+import androidx.exifinterface.media.ExifInterface;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * @author：luck
@@ -14,30 +15,16 @@ import java.io.FileOutputStream;
  * @describe：BitmapUtils
  */
 public class BitmapUtils {
-    /**
-     * 旋转Bitmap
-     *
-     * @param bitmap
-     * @param angle
-     * @return
-     */
-    public static Bitmap rotatingImage(Bitmap bitmap, int angle) {
-        Matrix matrix = new Matrix();
-
-        matrix.postRotate(angle);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-    }
 
     /**
      * 判断拍照 图片是否旋转
      *
-     * @param degree
-     * @param file
+     * @param path
      */
-    public static void rotateImage(int degree, String path) {
-        if (degree > 0) {
-            try {
-                // 针对相片有旋转问题的处理方式
+    public static void rotateImage(String path) {
+        try {
+            int degree = readPictureDegree(path);
+            if (degree > 0) {
                 BitmapFactory.Options opts = new BitmapFactory.Options();
                 opts.inSampleSize = 2;
                 File file = new File(path);
@@ -47,10 +34,23 @@ public class BitmapUtils {
                     saveBitmapFile(bitmap, file);
                     bitmap.recycle();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+
+    /**
+     * 旋转Bitmap
+     *
+     * @param bitmap
+     * @param angle
+     * @return
+     */
+    private static Bitmap rotatingImage(Bitmap bitmap, int angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     /**
@@ -59,34 +59,45 @@ public class BitmapUtils {
      * @param bitmap
      * @param file
      */
-    public static void saveBitmapFile(Bitmap bitmap, File file) {
+    private static void saveBitmapFile(Bitmap bitmap, File file) {
+        BufferedOutputStream bos = null;
         try {
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            bos = new BufferedOutputStream(new FileOutputStream(file));
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, bos);
             bos.flush();
-            bos.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            PictureFileUtils.close(bos);
         }
     }
 
+
     /**
-     * 获取旋转角度
+     * 读取图片属性：旋转的角度
      *
-     * @param orientation
-     * @return
+     * @param filePath 图片绝对路径
+     * @return degree旋转的角度
      */
-    public static int getRotationAngle(int orientation) {
-        switch (orientation) {
-            case 1:
-                return 0;
-            case 3:
-                return 180;
-            case 6:
-                return 90;
-            case 8:
-                return 270;
+    private static int readPictureDegree(String filePath) {
+        try {
+            ExifInterface exifInterface = new ExifInterface(filePath);
+            int orientation = exifInterface.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    return 90;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    return 180;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    return 270;
+                default:
+                    return 0;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return -1;
         }
-        return 0;
     }
 }
