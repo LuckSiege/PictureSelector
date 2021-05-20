@@ -15,10 +15,11 @@
 
     <ImageView
         android:id="@+id/ivFirstVideoFlag"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
         android:layout_alignBottom="@id/first_image"
         android:layout_margin="3dp"
+        android:scaleType="centerInside"
         android:src="@drawable/picture_icon_video_play"
         android:visibility="gone" />
 

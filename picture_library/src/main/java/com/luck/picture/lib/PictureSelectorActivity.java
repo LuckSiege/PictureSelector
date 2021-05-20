@@ -1840,6 +1840,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
                 // Taking a photo generates a temporary id
                 media.setId(System.currentTimeMillis());
+                media.setRealPath(config.cameraPath);
             }
             media.setPath(config.cameraPath);
             media.setMimeType(mimeType);
@@ -1854,7 +1855,15 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             media.setDateAddedTime(DateUtils.getCurrentTimeMillis());
             // add data Adapter
             notifyAdapterData(media);
-            if (!SdkVersionUtils.checkedAndroid_Q()) {
+            if (SdkVersionUtils.checkedAndroid_Q()) {
+                if (PictureMimeType.isHasVideo(media.getMimeType()) && PictureMimeType.isContent(config.cameraPath)) {
+                    if (config.isFallbackVersion3) {
+                        new PictureMediaScannerConnection(getContext(), media.getRealPath());
+                    } else {
+                        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(media.getRealPath()))));
+                    }
+                }
+            } else {
                 if (config.isFallbackVersion3) {
                     new PictureMediaScannerConnection(getContext(), config.cameraPath);
                 } else {
@@ -2222,7 +2231,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             allFolder.setImageNum(isAddSameImp(totalNum) ? allFolder.getImageNum() : allFolder.getImageNum() + 1);
 
             // Camera
-            LocalMediaFolder cameraFolder = getImageFolder(media.getPath(), media.getRealPath(),media.getMimeType(), folderWindow.getFolderData());
+            LocalMediaFolder cameraFolder = getImageFolder(media.getPath(), media.getRealPath(), media.getMimeType(), folderWindow.getFolderData());
             if (cameraFolder != null) {
                 cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
                 if (!isAddSameImp(totalNum)) {

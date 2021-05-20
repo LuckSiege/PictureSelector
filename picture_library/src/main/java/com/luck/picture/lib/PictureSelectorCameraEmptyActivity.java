@@ -310,6 +310,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 }
                 // Taking a photo generates a temporary id
                 media.setId(System.currentTimeMillis());
+                media.setRealPath(config.cameraPath);
             }
             media.setPath(config.cameraPath);
             media.setMimeType(mimeType);
@@ -326,7 +327,15 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
 
             dispatchCameraHandleResult(media);
 
-            if (!SdkVersionUtils.checkedAndroid_Q()) {
+            if (SdkVersionUtils.checkedAndroid_Q()) {
+                if (PictureMimeType.isHasVideo(media.getMimeType()) && PictureMimeType.isContent(config.cameraPath)) {
+                    if (config.isFallbackVersion3) {
+                        new PictureMediaScannerConnection(getContext(), media.getRealPath());
+                    } else {
+                        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(media.getRealPath()))));
+                    }
+                }
+            } else {
                 if (config.isFallbackVersion3) {
                     new PictureMediaScannerConnection(getContext(), config.cameraPath);
                 } else {
