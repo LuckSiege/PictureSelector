@@ -99,7 +99,7 @@ onActivityResult
 ```sh
  PictureSelector.create(this)
    .openCamera(PictureMimeType.ofImage())
-   .loadImageEngine(GlideEngine.createGlideEngine()) // Please refer to the Demo GlideEngine.java
+   .imageEngine(GlideEngine.createGlideEngine()) // Please refer to the Demo GlideEngine.java
    .forResult(PictureConfig.REQUEST_CAMERA);  
    
     @Override
@@ -121,7 +121,7 @@ Callback
 ```sh
 PictureSelector.create(this)
    .openCamera(PictureMimeType.ofImage())
-   .loadImageEngine(GlideEngine.createGlideEngine())
+   .imageEngine(GlideEngine.createGlideEngine())
    .forResult(new OnResultCallbackListener<LocalMedia>() {
        @Override
        public void onResult(List<LocalMedia> result) {
