@@ -461,7 +461,7 @@ public class PictureSelectionModel {
     }
 
     /**
-     *  If SyncCover
+     * If SyncCover
      *
      * @param isSyncCover
      * @return
@@ -951,6 +951,7 @@ public class PictureSelectionModel {
      * # file size The unit is M
      *
      * @param fileSize Filter file size
+     *                 Use {@link .filterMaxFileSize()}
      * @return
      */
     @Deprecated
