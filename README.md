@@ -1,9 +1,9 @@
 # PictureSelector 2.0 
    A Picture Selector for Android platform, support from the album to obtain pictures, video, audio & photo, support crop (single picture or multi-picture crop), compression, theme custom configuration and other functions, support dynamic access & adapt to Android 5.0+ system of open source picture selection framework。<br>
 
-[中文版🇨🇳](README_CN.md)
+[中文版🇨🇳](README_CN.md) 
 
-[Download APK](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2021-05-20_050823_v2.7.0-rc06.apk)<br>
+[Download APK](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2021-05-20_074005_v2.7.0-rc06.apk)<br>
 
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
@@ -13,7 +13,7 @@
 
 ## Directory
 -[Or use Gradle](#Version)<br>
--[Update Log](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.7.0-rc05)<br>
+-[Update Log](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.7.0-rc06)<br>
 -[Style Configuration-Xml](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98-Xml%E6%96%B9%E5%BC%8F)<br>
 -[Style Configuration-Code](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%A8%E6%80%81%E4%B8%BB%E9%A2%98(%E5%8C%85%E5%90%AB%E8%A3%81%E5%89%AA%E3%80%81%E7%9B%B8%E5%86%8C%E5%90%AF%E5%8A%A8%E5%8A%A8%E7%94%BB)-Code%E6%96%B9%E5%BC%8F)<br>
 -[Demo Effect](#Effect)<br>
@@ -35,7 +35,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'io.github.lucksiege:pictureselector:v2.7.0-rc05'
+  implementation 'io.github.lucksiege:pictureselector:v2.7.0-rc06'
 }
 ```
 
@@ -45,7 +45,7 @@ Or Maven:
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>v2.7.0-rc05</version>
+  <version>v2.7.0-rc06</version>
 </dependency>
 ```
 
