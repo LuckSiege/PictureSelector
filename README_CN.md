@@ -5,7 +5,7 @@
  
    [我的博客地址](http://blog.csdn.net/luck_mw)   
   
-   [体验Demo](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2021-05-19_042000_v2.7.0-rc05.apk)<br>
+   [体验Demo](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2021-05-19_090243_v2.7.0-rc05.apk)<br>
   
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
@@ -18,7 +18,7 @@
 -[集成使用](#集成使用)<br>
 -[如何提Issues?](https://github.com/LuckSiege/PictureSelector/wiki/%E5%A6%82%E4%BD%95%E6%8F%90Issues%3F)<br>
 -[功能特点](https://github.com/LuckSiege/PictureSelector/wiki/%E5%8A%9F%E8%83%BD%E7%89%B9%E7%82%B9)<br>
--[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.7.0-rc04)<br>
+-[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.7.0-rc05)<br>
 -[主题配置-Xml方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98-Xml%E6%96%B9%E5%BC%8F)<br>
 -[主题配置-Code方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%A8%E6%80%81%E4%B8%BB%E9%A2%98(%E5%8C%85%E5%90%AB%E8%A3%81%E5%89%AA%E3%80%81%E7%9B%B8%E5%86%8C%E5%90%AF%E5%8A%A8%E5%8A%A8%E7%94%BB)-Code%E6%96%B9%E5%BC%8F)<br>
 -[演示效果](#演示效果)<br>
@@ -46,12 +46,19 @@ repositories {
 }
 
 dependencies {
-  implementation 'io.github.lucksiege:pictureselector:v2.7.0-rc04'
+  implementation 'io.github.lucksiege:pictureselector:v2.7.0-rc05'
 }
 ```
 
+Or Maven:
 
-
+```sh
+<dependency>
+  <groupId>io.github.lucksiege</groupId>
+  <artifactId>pictureselector</artifactId>
+  <version>v2.7.0-rc05</version>
+</dependency>
+```
 
 ## 启动相册
 快捷调用，更多功能 [请查看](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)
@@ -60,7 +67,7 @@ dependencies {
 ```sh 
  PictureSelector.create(this)
    .openGallery(PictureMimeType.ofImage())
-   .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
+   .imageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
    .forResult(PictureConfig.CHOOSE_REQUEST);
    
     @Override
@@ -82,7 +89,7 @@ dependencies {
 ```sh
  PictureSelector.create(this)
    .openGallery(PictureMimeType.ofAll())
-   .loadImageEngine(GlideEngine.createGlideEngine())
+   .imageEngine(GlideEngine.createGlideEngine())
    .forResult(new OnResultCallbackListener<LocalMedia>() {
        @Override
        public void onResult(List<LocalMedia> result) {
