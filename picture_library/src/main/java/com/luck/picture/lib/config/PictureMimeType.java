@@ -108,7 +108,10 @@ public final class PictureMimeType {
      * @return
      */
     public static boolean isGifForSuffix(String suffix) {
-        return suffix != null && suffix.startsWith(".gif") || suffix.startsWith(".GIF");
+        if (TextUtils.isEmpty(suffix)){
+            return false;
+        }
+        return suffix.startsWith(".gif") || suffix.startsWith(".GIF");
     }
 
     /**

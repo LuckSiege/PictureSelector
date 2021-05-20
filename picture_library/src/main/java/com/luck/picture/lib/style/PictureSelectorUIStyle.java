@@ -344,11 +344,6 @@ public class PictureSelectorUIStyle {
     public int picture_adapter_item_gif_tag_background;
 
     /**
-     * folder windows adapter item video flag
-     */
-    public boolean picture_folder_adapter_item_video_flag_show = true;
-
-    /**
      * 默认样式
      *
      * @return

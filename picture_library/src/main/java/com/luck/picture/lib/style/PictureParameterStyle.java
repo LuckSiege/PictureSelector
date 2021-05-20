@@ -303,10 +303,6 @@ public class PictureParameterStyle {
      */
     public int pictureTitleRightArrowLeftPadding;
 
-    /**
-     * folder windows adapter item video flag
-     */
-    public boolean picture_folder_adapter_item_video_flag_show = true;
 
     public PictureParameterStyle() {
         super();

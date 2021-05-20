@@ -22,6 +22,7 @@ import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.style.PictureSelectorUIStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
+import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.yalantis.ucrop.UCrop;
 
 import java.util.ArrayList;
@@ -171,7 +172,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isQuickCapture = true;
     public boolean isCameraRotateImage = true;
     public boolean isAutoRotating = true;
-    public boolean isSyncCover;
+    public boolean isSyncCover = false;
     /**
      * 内测专用###########
      */
@@ -523,7 +524,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isQuickCapture = true;
         isCameraRotateImage = true;
         isAutoRotating = true;
-        isSyncCover = false;
+        isSyncCover = !SdkVersionUtils.checkedAndroid_Q();
     }
 
     public static PictureSelectionConfig getInstance() {
