@@ -886,9 +886,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (!TextUtils.isEmpty(newMedia.getPath()) && !TextUtils.isEmpty(oldMedia.getPath())) {
                 String newId = newMedia.getPath().substring(newMedia.getPath().lastIndexOf("/") + 1);
                 String oldId = oldMedia.getPath().substring(oldMedia.getPath().lastIndexOf("/") + 1);
-                if (newId.equals(oldId)) {
-                    return true;
-                }
+                return newId.equals(oldId);
             }
         }
         return false;
