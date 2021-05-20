@@ -167,7 +167,9 @@ public final class PictureSelectionConfig implements Parcelable {
     public int animationMode = -1;
     public boolean isAutomaticTitleRecyclerTop = true;
     public boolean isCallbackMode;
+    @Deprecated
     public boolean isAndroidQChangeWH;
+    @Deprecated
     public boolean isAndroidQChangeVideoWH;
     public boolean isQuickCapture = true;
     public boolean isCameraRotateImage = true;

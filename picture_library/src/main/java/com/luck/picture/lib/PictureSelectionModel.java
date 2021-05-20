@@ -513,6 +513,7 @@ public class PictureSelectionModel {
      * @param isChangeWH
      * @return
      */
+    @Deprecated
     public PictureSelectionModel closeAndroidQChangeWH(boolean isChangeWH) {
         selectionConfig.isAndroidQChangeWH = isChangeWH;
         return this;
@@ -524,6 +525,7 @@ public class PictureSelectionModel {
      * @param isChangeVideoWH
      * @return
      */
+    @Deprecated
     public PictureSelectionModel closeAndroidQChangeVideoWH(boolean isChangeVideoWH) {
         selectionConfig.isAndroidQChangeVideoWH = isChangeVideoWH;
         return this;
