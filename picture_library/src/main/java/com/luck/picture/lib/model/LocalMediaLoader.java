@@ -215,7 +215,7 @@ public final class LocalMediaLoader {
                         }
                         LocalMedia image = new LocalMedia
                                 (id, url, absolutePath, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size, bucketId, data.getLong(dateAddedColumn));
-                        LocalMediaFolder folder = getImageFolder(url, folderName, imageFolders);
+                        LocalMediaFolder folder = getImageFolder(url,mimeType, folderName, imageFolders);
                         folder.setBucketId(image.getBucketId());
                         List<LocalMedia> images = folder.getData();
                         images.add(image);
@@ -232,6 +232,7 @@ public final class LocalMediaLoader {
                         imageFolders.add(0, allImageFolder);
                         allImageFolder.setFirstImagePath
                                 (latelyImages.get(0).getPath());
+                        allImageFolder.setFirstMimeType(latelyImages.get(0).getMimeType());
                         String title = config.chooseMode == PictureMimeType.ofAudio() ?
                                 mContext.getString(R.string.picture_all_audio)
                                 : mContext.getString(R.string.picture_camera_roll);
@@ -324,12 +325,13 @@ public final class LocalMediaLoader {
     /**
      * Create folder
      *
-     * @param path
+     * @param firstPath
+     * @param firstMimeType
      * @param imageFolders
      * @param folderName
      * @return
      */
-    private LocalMediaFolder getImageFolder(String path, String folderName, List<LocalMediaFolder> imageFolders) {
+    private LocalMediaFolder getImageFolder(String firstPath,String firstMimeType, String folderName, List<LocalMediaFolder> imageFolders) {
         if (!config.isFallbackVersion) {
             for (LocalMediaFolder folder : imageFolders) {
                 // Under the same folder, return yourself, otherwise create a new folder
@@ -343,12 +345,13 @@ public final class LocalMediaLoader {
             }
             LocalMediaFolder newFolder = new LocalMediaFolder();
             newFolder.setName(folderName);
-            newFolder.setFirstImagePath(path);
+            newFolder.setFirstImagePath(firstPath);
+            newFolder.setFirstMimeType(firstMimeType);
             imageFolders.add(newFolder);
             return newFolder;
         } else {
             // Fault-tolerant processing
-            File imageFile = new File(path);
+            File imageFile = new File(firstPath);
             File folderFile = imageFile.getParentFile();
             for (LocalMediaFolder folder : imageFolders) {
                 // Under the same folder, return yourself, otherwise create a new folder
@@ -362,7 +365,8 @@ public final class LocalMediaLoader {
             }
             LocalMediaFolder newFolder = new LocalMediaFolder();
             newFolder.setName(folderFile != null ? folderFile.getName() : "");
-            newFolder.setFirstImagePath(path);
+            newFolder.setFirstImagePath(firstPath);
+            newFolder.setFirstMimeType(firstMimeType);
             imageFolders.add(newFolder);
             return newFolder;
         }

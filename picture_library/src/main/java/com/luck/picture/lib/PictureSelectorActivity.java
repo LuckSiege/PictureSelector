@@ -2140,6 +2140,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (allFolder != null) {
             int totalNum = allFolder.getImageNum();
             allFolder.setFirstImagePath(media.getPath());
+            allFolder.setFirstMimeType(media.getMimeType());
             allFolder.setImageNum(isAddSameImp(totalNum) ? allFolder.getImageNum() : allFolder.getImageNum() + 1);
             // Create All folder
             if (count == 0) {
@@ -2155,6 +2156,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 cameraFolder.setName(media.getParentFolderName());
                 cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
                 cameraFolder.setFirstImagePath(media.getPath());
+                cameraFolder.setFirstMimeType(media.getMimeType());
                 cameraFolder.setBucketId(media.getBucketId());
                 folderWindow.getFolderData().add(folderWindow.getFolderData().size(), cameraFolder);
             } else {
@@ -2166,6 +2168,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     if (!TextUtils.isEmpty(cameraFolder.getName()) && cameraFolder.getName().startsWith(newFolder)) {
                         media.setBucketId(cameraFolder.getBucketId());
                         cameraFolder.setFirstImagePath(config.cameraPath);
+                        cameraFolder.setFirstMimeType(media.getMimeType());
                         cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
                         if (cameraFolder.getData() != null && cameraFolder.getData().size() > 0) {
                             cameraFolder.getData().add(0, media);
@@ -2180,6 +2183,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     cameraFolder.setName(media.getParentFolderName());
                     cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
                     cameraFolder.setFirstImagePath(media.getPath());
+                    cameraFolder.setFirstMimeType(media.getMimeType());
                     cameraFolder.setBucketId(media.getBucketId());
                     folderWindow.getFolderData().add(cameraFolder);
                     sortFolder(folderWindow.getFolderData());
@@ -2212,12 +2216,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 allFolder = folderWindow.getFolderData().get(0);
             }
             allFolder.setFirstImagePath(media.getPath());
+            allFolder.setFirstMimeType(media.getMimeType());
             allFolder.setData(mAdapter.getData());
             allFolder.setBucketId(-1);
             allFolder.setImageNum(isAddSameImp(totalNum) ? allFolder.getImageNum() : allFolder.getImageNum() + 1);
 
             // Camera
-            LocalMediaFolder cameraFolder = getImageFolder(media.getPath(), media.getRealPath(), folderWindow.getFolderData());
+            LocalMediaFolder cameraFolder = getImageFolder(media.getPath(), media.getRealPath(),media.getMimeType(), folderWindow.getFolderData());
             if (cameraFolder != null) {
                 cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
                 if (!isAddSameImp(totalNum)) {
@@ -2225,6 +2230,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
                 cameraFolder.setBucketId(media.getBucketId());
                 cameraFolder.setFirstImagePath(config.cameraPath);
+                cameraFolder.setFirstMimeType(media.getMimeType());
             }
             folderWindow.bindFolder(folderWindow.getFolderData());
         } catch (Exception e) {

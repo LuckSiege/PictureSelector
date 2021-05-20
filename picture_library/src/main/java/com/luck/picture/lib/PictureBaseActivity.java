@@ -482,12 +482,13 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     /**
      * Insert the image into the camera folder
      *
-     * @param path
+     * @param firstPath
+     * @param firstMimeType
      * @param imageFolders
      * @return
      */
-    protected LocalMediaFolder getImageFolder(String path, String realPath, List<LocalMediaFolder> imageFolders) {
-        File imageFile = new File(PictureMimeType.isContent(path) ? realPath : path);
+    protected LocalMediaFolder getImageFolder(String firstPath, String realPath,String firstMimeType, List<LocalMediaFolder> imageFolders) {
+        File imageFile = new File(PictureMimeType.isContent(firstPath) ? realPath : firstPath);
         File folderFile = imageFile.getParentFile();
         for (LocalMediaFolder folder : imageFolders) {
             if (folderFile != null && folder.getName().equals(folderFile.getName())) {
@@ -496,7 +497,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         }
         LocalMediaFolder newFolder = new LocalMediaFolder();
         newFolder.setName(folderFile != null ? folderFile.getName() : "");
-        newFolder.setFirstImagePath(path);
+        newFolder.setFirstImagePath(firstPath);
+        newFolder.setFirstMimeType(firstMimeType);
         imageFolders.add(newFolder);
         return newFolder;
     }

@@ -57,7 +57,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final LocalMediaFolder folder = folders.get(position);
+        LocalMediaFolder folder = folders.get(position);
         String name = folder.getName();
         int imageNum = folder.getImageNum();
         String imagePath = folder.getFirstImagePath();
@@ -69,9 +69,19 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
             if (PictureSelectionConfig.uiStyle.picture_album_backgroundStyle != 0) {
                 holder.itemView.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_album_backgroundStyle);
             }
+            if (PictureSelectionConfig.uiStyle.picture_folder_adapter_item_video_flag_show){
+                holder.ivFirstVideoFlag.setVisibility(PictureMimeType.isHasVideo(folder.getFirstMimeType()) ? View.VISIBLE : View.GONE);
+            } else {
+                holder.ivFirstVideoFlag.setVisibility(View.GONE);
+            }
         } else if (PictureSelectionConfig.style != null) {
             if (PictureSelectionConfig.style.pictureAlbumStyle != 0) {
                 holder.itemView.setBackgroundResource(PictureSelectionConfig.style.pictureAlbumStyle);
+            }
+            if (PictureSelectionConfig.style.picture_folder_adapter_item_video_flag_show){
+                holder.ivFirstVideoFlag.setVisibility(PictureMimeType.isHasVideo(folder.getFirstMimeType()) ? View.VISIBLE : View.GONE);
+            } else {
+                holder.ivFirstVideoFlag.setVisibility(View.GONE);
             }
         }
         if (chooseMode == PictureMimeType.ofAudio()) {
@@ -108,11 +118,13 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivFirstImage;
+        ImageView ivFirstVideoFlag;
         TextView tvFolderName, tvSign;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ivFirstImage = itemView.findViewById(R.id.first_image);
+            ivFirstVideoFlag = itemView.findViewById(R.id.ivFirstVideoFlag);
             tvFolderName = itemView.findViewById(R.id.tv_folder_name);
             tvSign = itemView.findViewById(R.id.tv_sign);
             if (PictureSelectionConfig.uiStyle != null) {

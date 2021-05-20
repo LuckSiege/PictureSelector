@@ -39,6 +39,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean camera = false;
     public boolean isSingleDirectReturn;
     public static PictureSelectorUIStyle uiStyle;
+    @Deprecated
     public static PictureParameterStyle style;
     public static PictureCropParameterStyle cropStyle;
     public static PictureWindowAnimationStyle windowAnimationStyle = PictureWindowAnimationStyle.ofDefaultWindowAnimationStyle();

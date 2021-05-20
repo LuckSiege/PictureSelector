@@ -410,11 +410,13 @@ public final class LocalMediaPageLoader {
                                         mediaFolder.setBucketId(bucketId);
                                         String bucketDisplayName = data.getString(
                                                 data.getColumnIndex(COLUMN_BUCKET_DISPLAY_NAME));
+                                        String mimeType = data.getString(data.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE));
                                         long size = countMap.get(bucketId);
                                         long id = data.getLong(data.getColumnIndex(MediaStore.Files.FileColumns._ID));
                                         mediaFolder.setName(bucketDisplayName);
                                         mediaFolder.setImageNum(ValueOf.toInt(size));
                                         mediaFolder.setFirstImagePath(getRealPathAndroid_Q(id));
+                                        mediaFolder.setFirstMimeType(mimeType);
                                         mediaFolders.add(mediaFolder);
                                         hashSet.add(bucketId);
                                         totalCount += size;
@@ -427,11 +429,13 @@ public final class LocalMediaPageLoader {
                                     LocalMediaFolder mediaFolder = new LocalMediaFolder();
                                     long bucketId = data.getLong(data.getColumnIndex(COLUMN_BUCKET_ID));
                                     String bucketDisplayName = data.getString(data.getColumnIndex(COLUMN_BUCKET_DISPLAY_NAME));
+                                    String mimeType = data.getString(data.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE));
                                     int size = data.getInt(data.getColumnIndex(COLUMN_COUNT));
                                     mediaFolder.setBucketId(bucketId);
                                     String url = data.getString(data.getColumnIndex(MediaStore.MediaColumns.DATA));
                                     mediaFolder.setFirstImagePath(url);
                                     mediaFolder.setName(bucketDisplayName);
+                                    mediaFolder.setFirstMimeType(mimeType);
                                     mediaFolder.setImageNum(size);
                                     mediaFolders.add(mediaFolder);
                                     totalCount += size;
@@ -446,8 +450,8 @@ public final class LocalMediaPageLoader {
                             allMediaFolder.setChecked(true);
                             allMediaFolder.setBucketId(-1);
                             if (data.moveToFirst()) {
-                                String firstUrl = SdkVersionUtils.checkedAndroid_Q() ? getFirstUri(data) : getFirstUrl(data);
-                                allMediaFolder.setFirstImagePath(firstUrl);
+                                allMediaFolder.setFirstImagePath(SdkVersionUtils.checkedAndroid_Q() ? getFirstUri(data) : getFirstUrl(data));
+                                allMediaFolder.setFirstMimeType(getFirstCoverMimeType(data));
                             }
                             String bucketDisplayName = config.chooseMode == PictureMimeType.ofAudio() ?
                                     mContext.getString(R.string.picture_all_audio)
@@ -490,6 +494,16 @@ public final class LocalMediaPageLoader {
     private static String getFirstUri(Cursor cursor) {
         long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID));
         return getRealPathAndroid_Q(id);
+    }
+
+    /**
+     * Get cover uri mimeType
+     *
+     * @param cursor
+     * @return
+     */
+    private static String getFirstCoverMimeType(Cursor cursor) {
+        return cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.MIME_TYPE));
     }
 
     /**
