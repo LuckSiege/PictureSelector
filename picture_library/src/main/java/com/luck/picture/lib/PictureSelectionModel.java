@@ -948,6 +948,18 @@ public class PictureSelectionModel {
     }
 
     /**
+     * # file size The unit is M
+     *
+     * @param fileSize Filter file size
+     * @return
+     */
+    @Deprecated
+    public PictureSelectionModel queryMaxFileSize(float fileSize) {
+        selectionConfig.filterFileSize = fileSize;
+        return this;
+    }
+
+    /**
      * # file size The unit is KB
      *
      * @param fileSize Filter max file size
