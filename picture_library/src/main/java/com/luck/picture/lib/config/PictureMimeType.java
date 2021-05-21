@@ -108,7 +108,7 @@ public final class PictureMimeType {
      * @return
      */
     public static boolean isGifForSuffix(String suffix) {
-        if (TextUtils.isEmpty(suffix)){
+        if (TextUtils.isEmpty(suffix)) {
             return false;
         }
         return suffix.startsWith(".gif") || suffix.startsWith(".GIF");
@@ -206,7 +206,7 @@ public final class PictureMimeType {
             case PictureConfig.TYPE_VIDEO:
                 return MIME_TYPE_VIDEO;
             case PictureConfig.TYPE_AUDIO:
-`                return MIME_TYPE_AUDIO_AMR;
+                return MIME_TYPE_AUDIO_AMR;
             default:
                 return MIME_TYPE_IMAGE;
         }
