@@ -36,7 +36,6 @@ public class MediaUtils {
      * @param suffixType
      * @return 图片的uri
      */
-    @Nullable
     public static Uri createImageUri(final Context ctx, String cameraFileName, String suffixType) {
         Context context = ctx.getApplicationContext();
         Uri[] imageFilePath = {null};
@@ -82,7 +81,6 @@ public class MediaUtils {
      * @param suffixType
      * @return 视频的uri
      */
-    @Nullable
     public static Uri createVideoUri(final Context ctx, String cameraFileName, String suffixType) {
         Context context = ctx.getApplicationContext();
         Uri[] imageFilePath = {null};
@@ -127,7 +125,6 @@ public class MediaUtils {
      * @param suffixType
      * @return 音频的uri
      */
-    @Nullable
     public static Uri createAudioUri(final Context ctx, String suffixType) {
         Context context = ctx.getApplicationContext();
         Uri[] imageFilePath = {null};

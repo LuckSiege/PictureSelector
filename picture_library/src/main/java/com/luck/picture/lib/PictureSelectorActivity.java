@@ -1814,9 +1814,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     BufferedSource buffer = null;
                     try {
                         Uri audioOutUri = MediaUtils.createAudioUri(getContext(), config.suffixType);
-                        buffer = Okio.buffer(Okio.source(Objects.requireNonNull(getContentResolver().openInputStream(Uri.parse(config.cameraPath)))));
-                        OutputStream outputStream = getContentResolver().openOutputStream(audioOutUri);
-                        PictureFileUtils.bufferCopy(buffer, outputStream);
+                        if (audioOutUri != null) {
+                            buffer = Okio.buffer(Okio.source(Objects.requireNonNull(getContentResolver().openInputStream(Uri.parse(config.cameraPath)))));
+                            OutputStream outputStream = getContentResolver().openOutputStream(audioOutUri);
+                            PictureFileUtils.bufferCopy(buffer, outputStream);
+                            config.cameraPath = audioOutUri.toString();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
