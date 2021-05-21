@@ -1799,6 +1799,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 config = selectionConfig;
             }
             boolean isAudio = config.chooseMode == PictureMimeType.ofAudio();
+            config.cameraMimeType = isAudio ? PictureMimeType.ofAudio() : config.cameraMimeType;
             config.cameraPath = isAudio ? getAudioPath(intent) : config.cameraPath;
             if (TextUtils.isEmpty(config.cameraPath)) {
                 return;

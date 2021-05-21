@@ -259,6 +259,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
     protected void dispatchHandleCamera(Intent intent) {
         try {
             boolean isAudio = config.chooseMode == PictureMimeType.ofAudio();
+            config.cameraMimeType = isAudio ? PictureMimeType.ofAudio() : config.cameraMimeType;
             config.cameraPath = isAudio ? getAudioPath(intent) : config.cameraPath;
             if (TextUtils.isEmpty(config.cameraPath)) {
                 return;
