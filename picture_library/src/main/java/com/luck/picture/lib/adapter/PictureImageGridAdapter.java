@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -255,8 +256,12 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                             }
                         } else {
                             if (!contentHolder.tvCheck.isSelected() && getSelectedSize() >= config.maxSelectNum) {
-                                String msg = StringUtils.getMsg(context, image.getMimeType(), config.maxSelectNum);
-                                showPromptDialog(msg);
+                                String msg = "Select up to 35 "+ getSelectedSize() +" videos";
+
+//                                showPromptDialog(msg);
+
+                                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+
                                 return;
                             }
                         }
