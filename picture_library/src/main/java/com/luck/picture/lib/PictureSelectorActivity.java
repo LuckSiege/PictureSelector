@@ -1810,7 +1810,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (PictureMimeType.isContent(config.cameraPath)) {
                 // content: Processing rules
                 String path = PictureFileUtils.getPath(getContext(), Uri.parse(config.cameraPath));
-                ToastUtils.s(getContext(),"音频路径:"+path);
                 File cameraFile = new File(path);
                 mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                 media.setSize(cameraFile.length());
