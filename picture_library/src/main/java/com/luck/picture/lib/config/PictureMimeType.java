@@ -206,7 +206,7 @@ public final class PictureMimeType {
             case PictureConfig.TYPE_VIDEO:
                 return MIME_TYPE_VIDEO;
             case PictureConfig.TYPE_AUDIO:
-                return MIME_TYPE_AUDIO;
+`                return MIME_TYPE_AUDIO_AMR;
             default:
                 return MIME_TYPE_IMAGE;
         }
@@ -408,7 +408,7 @@ public final class PictureMimeType {
     public final static String MIME_TYPE_IMAGE = "image/jpeg";
     public final static String MIME_TYPE_VIDEO = "video/mp4";
     public final static String MIME_TYPE_AUDIO = "audio/mpeg";
-
+    public final static String MIME_TYPE_AUDIO_AMR = "audio/amr";
 
     public final static String MIME_TYPE_PREFIX_IMAGE = "image";
     public final static String MIME_TYPE_PREFIX_VIDEO = "video";

@@ -119,6 +119,41 @@ public class MediaUtils {
         return imageFilePath[0];
     }
 
+
+    /**
+     * 创建一条音频地址uri,用于保存录制的音频
+     *
+     * @param ctx
+     * @param suffixType
+     * @return 音频的uri
+     */
+    @Nullable
+    public static Uri createAudioUri(final Context ctx, String suffixType) {
+        Context context = ctx.getApplicationContext();
+        Uri[] imageFilePath = {null};
+        String status = Environment.getExternalStorageState();
+        String time = ValueOf.toString(System.currentTimeMillis());
+        // ContentValues是我们希望这条记录被创建时包含的数据信息
+        ContentValues values = new ContentValues(3);
+        values.put(MediaStore.Audio.Media.DISPLAY_NAME, DateUtils.getCreateFileName("AUD_"));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.Audio.Media.DATE_TAKEN, time);
+        }
+        values.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(suffixType) || suffixType.startsWith("image") || suffixType.startsWith("video") ? PictureMimeType.MIME_TYPE_AUDIO_AMR : suffixType);
+        // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                values.put(MediaStore.Audio.Media.RELATIVE_PATH, Environment.DIRECTORY_MUSIC);
+            }
+            imageFilePath[0] = context.getContentResolver()
+                    .insert(MediaStore.Audio.Media.getContentUri("external"), values);
+        } else {
+            imageFilePath[0] = context.getContentResolver()
+                    .insert(MediaStore.Audio.Media.getContentUri("internal"), values);
+        }
+        return imageFilePath[0];
+    }
+
     /**
      * 是否是长图
      *

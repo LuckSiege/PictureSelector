@@ -42,7 +42,7 @@ public class PictureFileUtils {
 
     public static final String POSTFIX = ".jpeg";
     public static final String POST_VIDEO = ".mp4";
-    public static final String POST_AUDIO = ".mp3";
+    public static final String POST_AUDIO = ".amr";
 
 
     /**
