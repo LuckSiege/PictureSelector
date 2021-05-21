@@ -27,8 +27,8 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginTop="10dp"
-            android:visibility="gone"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/picture_title"
@@ -98,7 +98,6 @@
         android:background="@drawable/radius_shape">
 
 
-
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tl_tabs"
             android:layout_width="match_parent"
@@ -106,9 +105,9 @@
             android:layout_below="@+id/iv_close"
             android:layout_marginTop="10dp"
             android:visibility="gone"
-            app:tabTextColor="@drawable/select_text_color_selecter"
+            app:tabIndicatorColor="@color/ucrop_color_black"
             app:tabTextAppearance="@style/TabLayoutTextSize"
-            app:tabIndicatorColor="@color/ucrop_color_black">
+            app:tabTextColor="@drawable/select_text_color_selecter">
 
 
             <com.google.android.material.tabs.TabItem
@@ -131,18 +130,18 @@
             android:id="@+id/tv_video_title"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:gravity="center"
             android:text="Videos"
             android:textColor="#333"
             android:textSize="15sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            />
+            android:textStyle="bold" />
+
         <ImageView
             android:id="@+id/iv_close"
             android:layout_width="40dp"
             android:layout_height="24dp"
-            android:layout_marginTop="10dp"
             android:layout_marginStart="4dp"
+            android:layout_marginTop="10dp"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
             android:src="@drawable/ic_video_close" />
@@ -217,7 +216,7 @@
     <RelativeLayout
         android:id="@+id/select_buttom_layout"
         android:layout_width="match_parent"
-        android:layout_height="128dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/picture_color_white"
         android:gravity="center_vertical">
@@ -225,23 +224,25 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_selected"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="74dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="14dp"
             android:layout_marginEnd="8dp"
+            android:visibility="gone"
             android:background="#fff" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_below="@id/rv_selected"
             android:background="#e8e8e8" />
-
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="80dp"
-            android:gravity="center_vertical">
+            android:layout_marginTop="2dp"
+            android:gravity="center_vertical"
+            android:layout_below="@id/rv_selected"
+            >
 
             <TextView
                 android:id="@+id/tv_select_max"
@@ -267,12 +268,6 @@
                 android:textSize="14sp" />
 
         </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="80dp"
-            android:background="#e8e8e8" />
 
     </RelativeLayout>
 
@@ -303,16 +298,15 @@
         android:id="@+id/send"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/radius_bg_shape_24"
+        android:gravity="center"
+        android:text="@string/send"
         android:textColor="@color/ucrop_color_white"
         android:textSize="15sp"
-        android:text="@string/send"
-        android:visibility="gone"
-        android:gravity="center"
-        android:layout_marginBottom="16dp"
-        android:layout_alignParentBottom="true"
-        />
+        android:visibility="gone" />
 
 </RelativeLayout>

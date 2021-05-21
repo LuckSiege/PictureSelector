@@ -287,6 +287,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     super.getItemOffsets(outRect, view, parent, state);
                     outRect.right = ScreenUtils.dip2px(PictureSelectorActivity.this, 4);
                     outRect.left = ScreenUtils.dip2px(PictureSelectorActivity.this, 4);
+
+                    outRect.top = ScreenUtils.dip2px(PictureSelectorActivity.this, 6);
+                    outRect.bottom = ScreenUtils.dip2px(PictureSelectorActivity.this, 6);
                 }
             });
 
@@ -1489,6 +1492,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         changeImageNumber(selectData);
         if (mSelectedLocalAdapter != null) {
             mSelectedLocalAdapter.setList(selectData);
+            if (mSelectedLocalMedia != null) {
+                if (selectData.size() > 0) {
+                    mSelectedLocalMedia.setVisibility(View.VISIBLE);
+                } else {
+                    mSelectedLocalMedia.setVisibility(View.GONE);
+                }
+            }
+
             mSelectData = selectData;
             if (selectData.size() > 0) {
                 mtTvCount.setClickable(true);

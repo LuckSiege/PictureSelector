@@ -6,8 +6,8 @@
     
     <ImageView
         android:id="@+id/iv_cover"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:scaleType="centerCrop"
         />
     
@@ -17,6 +17,16 @@
         android:layout_height="16dp"
         android:src="@drawable/item_close"
         android:layout_alignEnd="@id/iv_cover"
+        />
+
+    <TextView
+        android:id="@+id/tv_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/picture_color_white"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         />
 
 </RelativeLayout>

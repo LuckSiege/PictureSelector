@@ -6,6 +6,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -222,6 +223,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             } else {
                 if (PictureSelectionConfig.imageEngine != null) {
                     PictureSelectionConfig.imageEngine.loadGridImage(context, path, contentHolder.ivPicture);
+
+                    Log.d("yikai","path = " +path);
                 }
             }
 
