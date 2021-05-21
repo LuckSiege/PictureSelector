@@ -74,8 +74,13 @@ import com.yalantis.ucrop.UCrop;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import okio.BufferedSource;
+import okio.Okio;
 
 /**
  * @author：luck
@@ -1798,18 +1803,39 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (selectionConfig != null) {
                 config = selectionConfig;
             }
-            boolean isAudio = config.chooseMode == PictureMimeType.ofAudio();
-            config.cameraMimeType = isAudio ? PictureMimeType.ofAudio() : config.cameraMimeType;
-            config.cameraPath = isAudio ? getAudioPath(intent) : config.cameraPath;
+
+            if (config.chooseMode == PictureMimeType.ofAudio()) {
+                config.cameraMimeType = PictureMimeType.ofAudio();
+                config.cameraPath = getAudioPath(intent);
+                if (TextUtils.isEmpty(config.cameraPath)) {
+                    return;
+                }
+                if (SdkVersionUtils.checkedAndroid_R()) {
+                    BufferedSource buffer = null;
+                    try {
+                        Uri audioOutUri = MediaUtils.createAudioUri(getContext(), config.suffixType);
+                        buffer = Okio.buffer(Okio.source(Objects.requireNonNull(getContentResolver().openInputStream(Uri.parse(config.cameraPath)))));
+                        OutputStream outputStream = getContentResolver().openOutputStream(audioOutUri);
+                        PictureFileUtils.bufferCopy(buffer, outputStream);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (buffer != null && buffer.isOpen()) {
+                            PictureFileUtils.close(buffer);
+                        }
+                    }
+                }
+            }
+
             if (TextUtils.isEmpty(config.cameraPath)) {
                 return;
             }
-
             LocalMedia media = new LocalMedia();
             String mimeType;
             if (PictureMimeType.isContent(config.cameraPath)) {
                 // content: Processing rules
                 String path = PictureFileUtils.getPath(getContext(), Uri.parse(config.cameraPath));
+                ToastUtils.s(getContext(), "音频:" + path);
                 File cameraFile = new File(path);
                 mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                 media.setSize(cameraFile.length());

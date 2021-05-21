@@ -33,8 +33,13 @@ import com.luck.picture.lib.tools.ValueOf;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import okio.BufferedSource;
+import okio.Okio;
 
 /**
  * @author：luck
@@ -231,7 +236,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 media.setWidth(mediaExtraInfo.getWidth());
                 media.setHeight(mediaExtraInfo.getHeight());
             } else if (PictureMimeType.isHasImage(media.getMimeType())) {
-                MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(getContext(),media.getPath());
+                MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(getContext(), media.getPath());
                 media.setWidth(mediaExtraInfo.getWidth());
                 media.setHeight(mediaExtraInfo.getHeight());
             }
@@ -242,7 +247,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 media.setWidth(mediaExtraInfo.getWidth());
                 media.setHeight(mediaExtraInfo.getHeight());
             } else if (PictureMimeType.isHasImage(media.getMimeType())) {
-                MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(getContext(),media.getPath());
+                MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(getContext(), media.getPath());
                 media.setWidth(mediaExtraInfo.getWidth());
                 media.setHeight(mediaExtraInfo.getHeight());
             }
@@ -258,9 +263,29 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
      */
     protected void dispatchHandleCamera(Intent intent) {
         try {
-            boolean isAudio = config.chooseMode == PictureMimeType.ofAudio();
-            config.cameraMimeType = isAudio ? PictureMimeType.ofAudio() : config.cameraMimeType;
-            config.cameraPath = isAudio ? getAudioPath(intent) : config.cameraPath;
+            if (config.chooseMode == PictureMimeType.ofAudio()) {
+                config.cameraMimeType = PictureMimeType.ofAudio();
+                config.cameraPath = getAudioPath(intent);
+                if (TextUtils.isEmpty(config.cameraPath)) {
+                    return;
+                }
+                if (SdkVersionUtils.checkedAndroid_R()) {
+                    BufferedSource buffer = null;
+                    try {
+                        Uri audioOutUri = MediaUtils.createAudioUri(getContext(), config.suffixType);
+                        buffer = Okio.buffer(Okio.source(Objects.requireNonNull(getContentResolver().openInputStream(Uri.parse(config.cameraPath)))));
+                        OutputStream outputStream = getContentResolver().openOutputStream(audioOutUri);
+                        PictureFileUtils.bufferCopy(buffer, outputStream);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (buffer != null && buffer.isOpen()) {
+                            PictureFileUtils.close(buffer);
+                        }
+                    }
+                }
+            }
+
             if (TextUtils.isEmpty(config.cameraPath)) {
                 return;
             }
@@ -273,7 +298,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                 media.setSize(cameraFile.length());
                 if (PictureMimeType.isHasImage(mimeType)) {
-                    MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(getContext(),config.cameraPath);
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(getContext(), config.cameraPath);
                     media.setWidth(mediaExtraInfo.getWidth());
                     media.setHeight(mediaExtraInfo.getHeight());
                 } else if (PictureMimeType.isHasVideo(mimeType)) {
@@ -296,17 +321,17 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                 media.setSize(cameraFile.length());
                 if (PictureMimeType.isHasImage(mimeType)) {
-                    BitmapUtils.rotateImage(getContext(),config.isCameraRotateImage, config.cameraPath);
-                    MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(getContext(),config.cameraPath);
+                    BitmapUtils.rotateImage(getContext(), config.isCameraRotateImage, config.cameraPath);
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(getContext(), config.cameraPath);
                     media.setWidth(mediaExtraInfo.getWidth());
                     media.setHeight(mediaExtraInfo.getHeight());
                 } else if (PictureMimeType.isHasVideo(mimeType)) {
-                    MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(getContext(),config.cameraPath);
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(getContext(), config.cameraPath);
                     media.setWidth(mediaExtraInfo.getWidth());
                     media.setHeight(mediaExtraInfo.getHeight());
                     media.setDuration(mediaExtraInfo.getDuration());
                 } else if (PictureMimeType.isHasAudio(mimeType)) {
-                    MediaExtraInfo mediaExtraInfo = MediaUtils.getAudioSize(getContext(),config.cameraPath);
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getAudioSize(getContext(), config.cameraPath);
                     media.setDuration(mediaExtraInfo.getDuration());
                 }
                 // Taking a photo generates a temporary id
