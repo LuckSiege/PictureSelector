@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -1794,6 +1795,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     private void dispatchHandleCamera(Intent intent) {
         try {
+            long st = System.currentTimeMillis();
             // If PictureSelectionConfig is not empty, synchronize it
             PictureSelectionConfig selectionConfig = intent != null ? intent.getParcelableExtra(PictureConfig.EXTRA_CONFIG) : null;
             if (selectionConfig != null) {
@@ -1838,7 +1840,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 media.setSize(cameraFile.length());
                 media.setFileName(cameraFile.getName());
                 if (PictureMimeType.isHasImage(mimeType)) {
-                    BitmapUtils.rotateImage(config.isCameraRotateImage, config.cameraPath);
+                    BitmapUtils.rotateImage(getContext(),config.isCameraRotateImage, config.cameraPath);
                     MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(getContext(), config.cameraPath);
                     media.setWidth(mediaExtraInfo.getWidth());
                     media.setHeight(mediaExtraInfo.getHeight());
@@ -1889,6 +1891,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     }
                 }
             }
+            long et = System.currentTimeMillis();
+            Log.i("YYY", "共耗时: "+DateUtils.cdTime(st,et));
         } catch (Exception e) {
             e.printStackTrace();
         }

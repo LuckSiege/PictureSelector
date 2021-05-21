@@ -1,5 +1,6 @@
 package com.luck.picture.lib.compress;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -21,11 +22,13 @@ class Engine {
     private final boolean focusAlpha;
     private static final int DEFAULT_QUALITY = 80;
     private int compressQuality;
-    private boolean isAutoRotating;
+    private final boolean isAutoRotating;
+    private final Context context;
 
-    Engine(InputStreamProvider srcImg, File tagImg, boolean focusAlpha, int compressQuality, boolean isAutoRotating) throws IOException {
+    Engine(Context context, InputStreamProvider srcImg, File tagImg, boolean focusAlpha, int compressQuality, boolean isAutoRotating) throws IOException {
         this.tagImg = tagImg;
         this.srcImg = srcImg;
+        this.context = context;
         this.focusAlpha = focusAlpha;
         this.isAutoRotating = isAutoRotating;
         this.compressQuality = compressQuality <= 0 ? DEFAULT_QUALITY : compressQuality;
@@ -77,7 +80,7 @@ class Engine {
         if (isAutoRotating) {
             if (srcImg.getMedia() != null && !srcImg.getMedia().isCut()) {
                 if (Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
-                    int degree = BitmapUtils.readPictureDegree(srcImg.getMedia().getRealPath());
+                    int degree = BitmapUtils.readPictureDegree(context, srcImg.getMedia().getPath());
                     if (degree > 0) {
                         tagBitmap = BitmapUtils.rotatingImage(tagBitmap, degree);
                     }

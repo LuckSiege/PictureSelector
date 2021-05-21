@@ -1,15 +1,19 @@
 package com.luck.picture.lib.tools;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.net.Uri;
 
 import androidx.exifinterface.media.ExifInterface;
+
+import com.luck.picture.lib.config.PictureMimeType;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author：luck
@@ -21,13 +25,14 @@ public class BitmapUtils {
     /**
      * 判断拍照 图片是否旋转
      *
+     * @param context
      * @param isCameraRotateImage
      * @param path
      */
-    public static void rotateImage(boolean isCameraRotateImage, String path) {
+    public static void rotateImage(Context context, boolean isCameraRotateImage, String path) {
         try {
             if (isCameraRotateImage) {
-                int degree = readPictureDegree(path);
+                int degree = readPictureDegree(context, path);
                 if (degree > 0) {
                     BitmapFactory.Options opts = new BitmapFactory.Options();
                     opts.inSampleSize = 2;
@@ -81,15 +86,21 @@ public class BitmapUtils {
     /**
      * 读取图片属性：旋转的角度
      *
+     * @param context
      * @param filePath 图片绝对路径
      * @return degree旋转的角度
      */
-    public static int readPictureDegree(String filePath) {
+    public static int readPictureDegree(Context context, String filePath) {
+        ExifInterface exifInterface;
+        InputStream inputStream = null;
         try {
-            ExifInterface exifInterface = new ExifInterface(filePath);
-            int orientation = exifInterface.getAttributeInt(
-                    ExifInterface.TAG_ORIENTATION,
-                    ExifInterface.ORIENTATION_NORMAL);
+            if (PictureMimeType.isContent(filePath)) {
+                inputStream = context.getContentResolver().openInputStream(Uri.parse(filePath));
+                exifInterface = new ExifInterface(inputStream);
+            } else {
+                exifInterface = new ExifInterface(filePath);
+            }
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
             switch (orientation) {
                 case ExifInterface.ORIENTATION_ROTATE_90:
                     return 90;
@@ -103,6 +114,8 @@ public class BitmapUtils {
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
+        } finally {
+            PictureFileUtils.close(inputStream);
         }
     }
 }

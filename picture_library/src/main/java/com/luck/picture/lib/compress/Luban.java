@@ -201,7 +201,7 @@ public class Luban {
      */
     private File get(InputStreamProvider input, Context context) throws IOException {
         try {
-            return new Engine(input, getImageCacheFile(context, input, Checker.SINGLE.extSuffix(input.getMedia().getMimeType())), focusAlpha, compressQuality, isAutoRotating).compress();
+            return new Engine(context, input, getImageCacheFile(context, input, Checker.SINGLE.extSuffix(input.getMedia().getMimeType())), focusAlpha, compressQuality, isAutoRotating).compress();
         } finally {
             input.close();
         }
@@ -252,7 +252,7 @@ public class Luban {
         if (mCompressionPredicate != null) {
             if (mCompressionPredicate.apply(streamProvider.getPath())
                     && Checker.SINGLE.needCompress(mLeastCompressSize, streamProvider.getPath())) {
-                result = new Engine(streamProvider, outFile, focusAlpha, compressQuality, isAutoRotating).compress();
+                result = new Engine(context, streamProvider, outFile, focusAlpha, compressQuality, isAutoRotating).compress();
             } else {
                 result = new File(streamProvider.getPath());
             }
@@ -262,7 +262,7 @@ public class Luban {
                 result = new File(streamProvider.getPath());
             } else {
                 result = Checker.SINGLE.needCompress(mLeastCompressSize, streamProvider.getPath()) ?
-                        new Engine(streamProvider, outFile, focusAlpha, compressQuality, isAutoRotating).compress() :
+                        new Engine(context, streamProvider, outFile, focusAlpha, compressQuality, isAutoRotating).compress() :
                         new File(streamProvider.getPath());
             }
         }
@@ -301,10 +301,10 @@ public class Luban {
             } else {
                 boolean isCompress = Checker.SINGLE.needCompressToLocalMedia(mLeastCompressSize, newPath);
                 if (mCompressionPredicate.apply(newPath) && isCompress) {
-                    result = new Engine(streamProvider, outFile, focusAlpha, compressQuality, isAutoRotating).compress();
+                    result = new Engine(context, streamProvider, outFile, focusAlpha, compressQuality, isAutoRotating).compress();
                 } else {
                     if (isCompress) {
-                        result = new Engine(streamProvider, outFile, focusAlpha, compressQuality, isAutoRotating).compress();
+                        result = new Engine(context, streamProvider, outFile, focusAlpha, compressQuality, isAutoRotating).compress();
                     } else {
                         // 这种情况判断一下，如果是小于设置的图片压缩阀值，再Android 10以上做下拷贝的处理
                         if (SdkVersionUtils.checkedAndroid_Q()) {
@@ -332,7 +332,7 @@ public class Luban {
             } else {
                 boolean isCompress = Checker.SINGLE.needCompressToLocalMedia(mLeastCompressSize, newPath);
                 if (isCompress) {
-                    result = new Engine(streamProvider, outFile, focusAlpha, compressQuality, isAutoRotating).compress();
+                    result = new Engine(context, streamProvider, outFile, focusAlpha, compressQuality, isAutoRotating).compress();
                 } else {
                     // 这种情况判断一下，如果是小于设置的图片压缩阀值，再Android 10以上做下拷贝的处理
                     if (SdkVersionUtils.checkedAndroid_Q()) {
