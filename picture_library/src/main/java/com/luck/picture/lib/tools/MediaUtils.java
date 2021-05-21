@@ -19,6 +19,8 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
 
+import java.io.InputStream;
+
 
 /**
  * @author：luck
@@ -152,16 +154,27 @@ public class MediaUtils {
     /**
      * get Local image width or height
      *
+     * @param context
+     * @param url
      * @return
      */
-    public static MediaExtraInfo getImageSize(String url) {
+    public static MediaExtraInfo getImageSize(Context context, String url) {
         MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
+        ExifInterface exifInterface;
+        InputStream inputStream = null;
         try {
-            ExifInterface exifInterface = new ExifInterface(url);
+            if (PictureMimeType.isContent(url)) {
+                inputStream = context.getContentResolver().openInputStream(Uri.parse(url));
+                exifInterface = new ExifInterface(inputStream);
+            } else {
+                exifInterface = new ExifInterface(url);
+            }
             mediaExtraInfo.setWidth(exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, ExifInterface.ORIENTATION_NORMAL));
             mediaExtraInfo.setHeight(exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, ExifInterface.ORIENTATION_NORMAL));
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            PictureFileUtils.close(inputStream);
         }
         return mediaExtraInfo;
     }
@@ -169,14 +182,19 @@ public class MediaUtils {
     /**
      * get Local video width or height
      *
+     * @param context
      * @param url
      * @return
      */
-    public static MediaExtraInfo getVideoSize(String url) {
+    public static MediaExtraInfo getVideoSize(Context context, String url) {
         MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
-            retriever.setDataSource(url);
+            if (PictureMimeType.isContent(url)) {
+                retriever.setDataSource(context, Uri.parse(url));
+            } else {
+                retriever.setDataSource(url);
+            }
             String orientation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
             int width, height;
             if (TextUtils.equals("90", orientation) || TextUtils.equals("270", orientation)) {
@@ -200,14 +218,19 @@ public class MediaUtils {
     /**
      * get Local video width or height
      *
+     * @param context
      * @param url
      * @return
      */
-    public static MediaExtraInfo getAudioSize(String url) {
+    public static MediaExtraInfo getAudioSize(Context context, String url) {
         MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
-            retriever.setDataSource(url);
+            if (PictureMimeType.isContent(url)) {
+                retriever.setDataSource(context, Uri.parse(url));
+            } else {
+                retriever.setDataSource(url);
+            }
             mediaExtraInfo.setDuration(ValueOf.toLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)));
         } catch (Exception e) {
             e.printStackTrace();

@@ -339,7 +339,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      */
     protected void compressImage(List<LocalMedia> result) {
         if (PictureSelectionConfig.compressEngine != null) {
-            PictureSelectionConfig.compressEngine.onCompress(getContext(),result, new OnCallbackListener<List<LocalMedia>>() {
+            PictureSelectionConfig.compressEngine.onCompress(getContext(), result, new OnCallbackListener<List<LocalMedia>>() {
                 @Override
                 public void onCall(List<LocalMedia> result) {
                     onResult(result);
@@ -487,7 +487,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      * @param imageFolders
      * @return
      */
-    protected LocalMediaFolder getImageFolder(String firstPath, String realPath,String firstMimeType, List<LocalMediaFolder> imageFolders) {
+    protected LocalMediaFolder getImageFolder(String firstPath, String realPath, String firstMimeType, List<LocalMediaFolder> imageFolders) {
         File imageFile = new File(PictureMimeType.isContent(firstPath) ? realPath : firstPath);
         File folderFile = imageFile.getParentFile();
         for (LocalMediaFolder folder : imageFolders) {
@@ -685,15 +685,22 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      * @param data
      */
     protected String getAudioPath(Intent data) {
-        if (data != null && config.chooseMode == PictureMimeType.ofAudio()) {
-            try {
-                Uri uri = data.getData();
-                if (uri != null) {
-                    return Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT ? uri.getPath() : MediaUtils.getAudioFilePathFromUri(getContext(), uri);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            Uri uri = data.getData();
+            if (uri == null) {
+                return "";
             }
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+                return uri.getPath();
+            } else {
+                if (PictureMimeType.isContent(uri.toString())) {
+                    return uri.toString();
+                } else {
+                    return MediaUtils.getAudioFilePathFromUri(getContext(), uri);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return "";
     }

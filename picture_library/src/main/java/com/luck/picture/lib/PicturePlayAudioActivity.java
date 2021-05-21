@@ -1,6 +1,7 @@
 package com.luck.picture.lib;
 
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 
@@ -102,7 +104,11 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
     private void initPlayer(String path) {
         mediaPlayer = new MediaPlayer();
         try {
-            mediaPlayer.setDataSource(path);
+            if (PictureMimeType.isContent(path)) {
+                mediaPlayer.setDataSource(getContext(), Uri.parse(path));
+            } else {
+                mediaPlayer.setDataSource(path);
+            }
             mediaPlayer.prepare();
             mediaPlayer.setLooping(true);
             playAudio();
@@ -170,7 +176,11 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
             try {
                 mediaPlayer.stop();
                 mediaPlayer.reset();
-                mediaPlayer.setDataSource(path);
+                if (PictureMimeType.isContent(path)){
+                    mediaPlayer.setDataSource(getContext(),Uri.parse(path));
+                } else {
+                    mediaPlayer.setDataSource(path);
+                }
                 mediaPlayer.prepare();
                 mediaPlayer.seekTo(0);
             } catch (Exception e) {

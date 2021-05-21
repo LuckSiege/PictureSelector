@@ -227,22 +227,22 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             String path = PictureFileUtils.getPath(getContext(), Uri.parse(media.getPath()));
             media.setRealPath(path);
             if (PictureMimeType.isHasVideo(media.getMimeType())) {
-                MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(media.getRealPath());
+                MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(getContext(), media.getPath());
                 media.setWidth(mediaExtraInfo.getWidth());
                 media.setHeight(mediaExtraInfo.getHeight());
             } else if (PictureMimeType.isHasImage(media.getMimeType())) {
-                MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(media.getRealPath());
+                MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(getContext(),media.getPath());
                 media.setWidth(mediaExtraInfo.getWidth());
                 media.setHeight(mediaExtraInfo.getHeight());
             }
         } else {
             media.setRealPath(media.getPath());
             if (PictureMimeType.isHasVideo(media.getMimeType())) {
-                MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(media.getPath());
+                MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(getContext(), media.getPath());
                 media.setWidth(mediaExtraInfo.getWidth());
                 media.setHeight(mediaExtraInfo.getHeight());
             } else if (PictureMimeType.isHasImage(media.getMimeType())) {
-                MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(media.getPath());
+                MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(getContext(),media.getPath());
                 media.setWidth(mediaExtraInfo.getWidth());
                 media.setHeight(mediaExtraInfo.getHeight());
             }
@@ -272,16 +272,16 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                 media.setSize(cameraFile.length());
                 if (PictureMimeType.isHasImage(mimeType)) {
-                    MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(path);
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(getContext(),config.cameraPath);
                     media.setWidth(mediaExtraInfo.getWidth());
                     media.setHeight(mediaExtraInfo.getHeight());
                 } else if (PictureMimeType.isHasVideo(mimeType)) {
-                    MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(path);
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(getContext(), config.cameraPath);
                     media.setWidth(mediaExtraInfo.getWidth());
                     media.setHeight(mediaExtraInfo.getHeight());
                     media.setDuration(mediaExtraInfo.getDuration());
                 } else if (PictureMimeType.isHasAudio(mimeType)) {
-                    MediaExtraInfo mediaExtraInfo = MediaUtils.getAudioSize(path);
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getAudioSize(getContext(), config.cameraPath);
                     media.setDuration(mediaExtraInfo.getDuration());
                 }
                 int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
@@ -296,16 +296,16 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 media.setSize(cameraFile.length());
                 if (PictureMimeType.isHasImage(mimeType)) {
                     BitmapUtils.rotateImage(config.isCameraRotateImage, config.cameraPath);
-                    MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(config.cameraPath);
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(getContext(),config.cameraPath);
                     media.setWidth(mediaExtraInfo.getWidth());
                     media.setHeight(mediaExtraInfo.getHeight());
                 } else if (PictureMimeType.isHasVideo(mimeType)) {
-                    MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(config.cameraPath);
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(getContext(),config.cameraPath);
                     media.setWidth(mediaExtraInfo.getWidth());
                     media.setHeight(mediaExtraInfo.getHeight());
                     media.setDuration(mediaExtraInfo.getDuration());
                 } else if (PictureMimeType.isHasAudio(mimeType)) {
-                    MediaExtraInfo mediaExtraInfo = MediaUtils.getAudioSize(config.cameraPath);
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getAudioSize(getContext(),config.cameraPath);
                     media.setDuration(mediaExtraInfo.getDuration());
                 }
                 // Taking a photo generates a temporary id

@@ -1200,53 +1200,61 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * @param path
      */
     private void startPlayAudioDialog(final String path) {
-        if (!isFinishing()) {
-            audioDialog = new PictureCustomDialog(getContext(), R.layout.picture_audio_dialog);
-            if (audioDialog.getWindow() != null) {
-                audioDialog.getWindow().setWindowAnimations(R.style.Picture_Theme_Dialog_AudioStyle);
-            }
-            mTvMusicStatus = audioDialog.findViewById(R.id.tv_musicStatus);
-            mTvMusicTime = audioDialog.findViewById(R.id.tv_musicTime);
-            musicSeekBar = audioDialog.findViewById(R.id.musicSeekBar);
-            mTvMusicTotal = audioDialog.findViewById(R.id.tv_musicTotal);
-            mTvPlayPause = audioDialog.findViewById(R.id.tv_PlayPause);
-            mTvStop = audioDialog.findViewById(R.id.tv_Stop);
-            mTvQuit = audioDialog.findViewById(R.id.tv_Quit);
-            mHandler.postDelayed(() -> initPlayer(path), 30);
-            mTvPlayPause.setOnClickListener(new AudioOnClick(path));
-            mTvStop.setOnClickListener(new AudioOnClick(path));
-            mTvQuit.setOnClickListener(new AudioOnClick(path));
-            musicSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    if (fromUser) {
-                        mediaPlayer.seekTo(progress);
-                    }
-                }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-                }
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                }
-            });
-            audioDialog.setOnDismissListener(dialog -> {
-                mHandler.removeCallbacks(mRunnable);
-                new Handler().postDelayed(() -> stop(path), 30);
-                try {
-                    if (audioDialog != null
-                            && audioDialog.isShowing()) {
-                        audioDialog.dismiss();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-            mHandler.post(mRunnable);
-            audioDialog.show();
+        if (isFinishing()) {
+            return;
         }
+        audioDialog = new PictureCustomDialog(getContext(), R.layout.picture_audio_dialog);
+        audioDialog.getWindow().setWindowAnimations(R.style.Picture_Theme_Dialog_AudioStyle);
+        mTvMusicStatus = audioDialog.findViewById(R.id.tv_musicStatus);
+        mTvMusicTime = audioDialog.findViewById(R.id.tv_musicTime);
+        musicSeekBar = audioDialog.findViewById(R.id.musicSeekBar);
+        mTvMusicTotal = audioDialog.findViewById(R.id.tv_musicTotal);
+        mTvPlayPause = audioDialog.findViewById(R.id.tv_PlayPause);
+        mTvStop = audioDialog.findViewById(R.id.tv_Stop);
+        mTvQuit = audioDialog.findViewById(R.id.tv_Quit);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                initPlayer(path);
+            }
+        }, 30);
+        mTvPlayPause.setOnClickListener(new onAudioOnClick(path));
+        mTvStop.setOnClickListener(new onAudioOnClick(path));
+        mTvQuit.setOnClickListener(new onAudioOnClick(path));
+        musicSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    mediaPlayer.seekTo(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+        audioDialog.setOnDismissListener(dialog -> {
+            mHandler.removeCallbacks(mRunnable);
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    stop(path);
+                }
+            }, 30);
+            try {
+                if (audioDialog != null && audioDialog.isShowing()) {
+                    audioDialog.dismiss();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        mHandler.post(mRunnable);
+        audioDialog.show();
     }
 
     public Runnable mRunnable = new Runnable() {
@@ -1274,7 +1282,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private void initPlayer(String path) {
         mediaPlayer = new MediaPlayer();
         try {
-            mediaPlayer.setDataSource(path);
+            if (PictureMimeType.isContent(path)) {
+                mediaPlayer.setDataSource(getContext(), Uri.parse(path));
+            } else {
+                mediaPlayer.setDataSource(path);
+            }
             mediaPlayer.prepare();
             mediaPlayer.setLooping(true);
             playAudio();
@@ -1286,10 +1298,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     /**
      * Audio Click
      */
-    public class AudioOnClick implements View.OnClickListener {
+    public class onAudioOnClick implements View.OnClickListener {
         private String path;
 
-        public AudioOnClick(String path) {
+        public onAudioOnClick(String path) {
             super();
             this.path = path;
         }
@@ -1308,8 +1320,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (id == R.id.tv_Quit) {
                 mHandler.postDelayed(() -> stop(path), 30);
                 try {
-                    if (audioDialog != null
-                            && audioDialog.isShowing()) {
+                    if (audioDialog != null && audioDialog.isShowing()) {
                         audioDialog.dismiss();
                     }
                 } catch (Exception e) {
@@ -1332,12 +1343,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (ppStr.equals(getString(R.string.picture_play_audio))) {
             mTvPlayPause.setText(getString(R.string.picture_pause_audio));
             mTvMusicStatus.setText(getString(R.string.picture_play_audio));
-            playOrPause();
         } else {
             mTvPlayPause.setText(getString(R.string.picture_play_audio));
             mTvMusicStatus.setText(getString(R.string.picture_pause_audio));
-            playOrPause();
         }
+        playOrPause();
         if (!isPlayAudio) {
             mHandler.post(mRunnable);
             isPlayAudio = true;
@@ -1354,7 +1364,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             try {
                 mediaPlayer.stop();
                 mediaPlayer.reset();
-                mediaPlayer.setDataSource(path);
+                if (PictureMimeType.isContent(path)) {
+                    mediaPlayer.setDataSource(getContext(), Uri.parse(path));
+                } else {
+                    mediaPlayer.setDataSource(path);
+                }
                 mediaPlayer.prepare();
                 mediaPlayer.seekTo(0);
             } catch (Exception e) {
@@ -1525,7 +1539,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 result.add(media);
                 onResult(result);
             } else {
-                startPlayAudioDialog(TextUtils.isEmpty(media.getRealPath()) ? media.getPath() : media.getRealPath());
+                startPlayAudioDialog(media.getPath());
             }
         } else {
             // image
@@ -1799,18 +1813,17 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                 media.setSize(cameraFile.length());
                 media.setFileName(cameraFile.getName());
-
                 if (PictureMimeType.isHasImage(mimeType)) {
-                    MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(path);
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(getContext(), config.cameraPath);
                     media.setWidth(mediaExtraInfo.getWidth());
                     media.setHeight(mediaExtraInfo.getHeight());
                 } else if (PictureMimeType.isHasVideo(mimeType)) {
-                    MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(path);
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(getContext(), config.cameraPath);
                     media.setWidth(mediaExtraInfo.getWidth());
                     media.setHeight(mediaExtraInfo.getHeight());
                     media.setDuration(mediaExtraInfo.getDuration());
                 } else if (PictureMimeType.isHasAudio(mimeType)) {
-                    MediaExtraInfo mediaExtraInfo = MediaUtils.getAudioSize(path);
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getAudioSize(getContext(), config.cameraPath);
                     media.setDuration(mediaExtraInfo.getDuration());
                 }
                 int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
@@ -1826,16 +1839,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 media.setFileName(cameraFile.getName());
                 if (PictureMimeType.isHasImage(mimeType)) {
                     BitmapUtils.rotateImage(config.isCameraRotateImage, config.cameraPath);
-                    MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(config.cameraPath);
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(getContext(), config.cameraPath);
                     media.setWidth(mediaExtraInfo.getWidth());
                     media.setHeight(mediaExtraInfo.getHeight());
                 } else if (PictureMimeType.isHasVideo(mimeType)) {
-                    MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(config.cameraPath);
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(getContext(), config.cameraPath);
                     media.setWidth(mediaExtraInfo.getWidth());
                     media.setHeight(mediaExtraInfo.getHeight());
                     media.setDuration(mediaExtraInfo.getDuration());
                 } else if (PictureMimeType.isHasAudio(mimeType)) {
-                    MediaExtraInfo mediaExtraInfo = MediaUtils.getAudioSize(config.cameraPath);
+                    MediaExtraInfo mediaExtraInfo = MediaUtils.getAudioSize(getContext(), config.cameraPath);
                     media.setDuration(mediaExtraInfo.getDuration());
                 }
                 // Taking a photo generates a temporary id
