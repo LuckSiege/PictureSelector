@@ -693,7 +693,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
                 return uri.getPath();
             } else {
-                if (PictureMimeType.isContent(uri.toString())) {
+                if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(uri.toString())) {
                     return uri.toString();
                 } else {
                     return MediaUtils.getAudioFilePathFromUri(getContext(), uri);
