@@ -20,9 +20,9 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DateUtils;
+import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.yalantis.ucrop.util.FileUtils;
-import com.yalantis.ucrop.util.ScreenUtils;
 
 import java.io.File;
 import java.util.ArrayList;
