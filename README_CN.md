@@ -110,7 +110,7 @@ onActivityResult
 ```sh
  PictureSelector.create(this)
    .openCamera(PictureMimeType.ofImage())
-   .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
+   .imageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
    .forResult(PictureConfig.REQUEST_CAMERA);  
    
     @Override
@@ -132,7 +132,7 @@ Callback
 ```sh
 PictureSelector.create(this)
    .openCamera(PictureMimeType.ofImage())
-   .loadImageEngine(GlideEngine.createGlideEngine())
+   .imageEngine(GlideEngine.createGlideEngine())
    .forResult(new OnResultCallbackListener<LocalMedia>() {
        @Override
        public void onResult(List<LocalMedia> result) {
@@ -185,7 +185,7 @@ Application下实现如下接口
 PictureSelector.create(this)
  .themeStyle(R.style.picture_default_style)
  .isNotPreviewDownload(true)
- .loadImageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
+ .imageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
  .openExternalPreview(position, selectList);
 
 ```
