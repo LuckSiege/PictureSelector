@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -690,14 +689,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             if (uri == null) {
                 return "";
             }
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-                return uri.getPath();
+            if (PictureMimeType.isContent(uri.toString())) {
+                return uri.toString();
             } else {
-                if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(uri.toString())) {
-                    return uri.toString();
-                } else {
-                    return MediaUtils.getAudioFilePathFromUri(getContext(), uri);
-                }
+                return uri.getPath();
             }
         } catch (Exception e) {
             e.printStackTrace();
