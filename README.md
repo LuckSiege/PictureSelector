@@ -174,7 +174,7 @@ Application implementing interface
 PictureSelector.create(this)
  .themeStyle(R.style.picture_default_style)
  .isNotPreviewDownload(true)
- .loadImageEngine(GlideEngine.createGlideEngine())
+ .imageEngine(GlideEngine.createGlideEngine())
  .openExternalPreview(position, selectList);
 
 ```
