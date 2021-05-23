@@ -56,7 +56,7 @@ Quick call, more functions [More](https://github.com/LuckSiege/PictureSelector/w
 ```sh 
  PictureSelector.create(this)
    .openGallery(PictureMimeType.ofImage())
-   .loadImageEngine(GlideEngine.createGlideEngine()) // Please refer to the Demo GlideEngine.java
+   .imageEngine(GlideEngine.createGlideEngine()) // Please refer to the Demo GlideEngine.java
    .forResult(PictureConfig.CHOOSE_REQUEST);
    
     @Override
@@ -78,7 +78,7 @@ Quick call, more functions [More](https://github.com/LuckSiege/PictureSelector/w
 ```sh
  PictureSelector.create(this)
    .openGallery(PictureMimeType.ofAll())
-   .loadImageEngine(GlideEngine.createGlideEngine())
+   .imageEngine(GlideEngine.createGlideEngine())
    .forResult(new OnResultCallbackListener<LocalMedia>() {
        @Override
        public void onResult(List<LocalMedia> result) {
