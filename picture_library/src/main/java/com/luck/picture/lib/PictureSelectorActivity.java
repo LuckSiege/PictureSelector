@@ -912,9 +912,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
                 return;
             }
-            if (config.chooseMode != PictureMimeType.ofAudio() && config.isUseCustomCamera) {
-                startCustomCamera();
-                return;
+            if (config.chooseMode != PictureMimeType.ofAudio()) {
+                if (config.isUseCustomCamera) {
+                    startCustomCamera();
+                    return;
+                }
             }
             switch (config.chooseMode) {
                 case PictureConfig.TYPE_ALL:
