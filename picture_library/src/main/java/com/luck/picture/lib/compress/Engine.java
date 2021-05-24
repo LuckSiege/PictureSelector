@@ -3,6 +3,7 @@ package com.luck.picture.lib.compress;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 
 import com.luck.picture.lib.tools.BitmapUtils;
 
@@ -78,12 +79,11 @@ class Engine {
         Bitmap tagBitmap = BitmapFactory.decodeStream(srcImg.open(), null, options);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (isAutoRotating) {
-            if (srcImg.getMedia() != null && !srcImg.getMedia().isCut()) {
-                if (Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
-                    int degree = BitmapUtils.readPictureDegree(context, srcImg.getMedia().getPath());
-                    if (degree > 0) {
-                        tagBitmap = BitmapUtils.rotatingImage(tagBitmap, degree);
-                    }
+            if (Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
+                boolean isCut = srcImg.getMedia().isCut() && !TextUtils.isEmpty(srcImg.getMedia().getCutPath());
+                int degree = BitmapUtils.readPictureDegree(context, isCut ? srcImg.getMedia().getCutPath() : srcImg.getMedia().getPath());
+                if (degree > 0) {
+                    tagBitmap = BitmapUtils.rotatingImage(tagBitmap, degree);
                 }
             }
         }
