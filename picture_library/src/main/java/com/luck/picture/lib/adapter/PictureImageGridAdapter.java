@@ -256,7 +256,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                             }
                         } else {
                             if (!contentHolder.tvCheck.isSelected() && getSelectedSize() >= config.maxSelectNum) {
-                                String msg = "Select up to 35 "+ getSelectedSize() +" videos";
+                                String msg = "Select up to "+ getSelectedSize() +" videos";
 
 //                                showPromptDialog(msg);
 
