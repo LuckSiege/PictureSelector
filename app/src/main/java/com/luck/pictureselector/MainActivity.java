@@ -78,7 +78,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
-    private final static String TAG = MainActivity.class.getSimpleName();
+    private final static String TAG = "PictureSelectorTag";
     private GridImageAdapter mAdapter;
     private int maxSelectNum = 9;
     private TextView tv_select_num;
@@ -636,7 +636,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.i(TAG, "宽高: " + media.getWidth() + "x" + media.getHeight());
                 Log.i(TAG, "Size: " + media.getSize());
 
-                Log.i("MMM", "onResult: " + media.toString());
+                Log.i(TAG, "onResult: " + media.toString());
                 // TODO 可以通过PictureSelectorExternalUtils.getExifInterface();方法获取一些额外的资源信息，如旋转角度、经纬度等信息
             }
             if (mAdapterWeakReference.get() != null) {

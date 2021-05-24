@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -450,7 +451,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      * @param result
      */
     protected void handlerResult(List<LocalMedia> result) {
-        if (config.isCompress && !config.isCheckOriginalImage) {
+        if (config.isCompress) {
             compressImage(result);
         } else {
             onResult(result);
@@ -546,7 +547,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             if (media == null || TextUtils.isEmpty(media.getPath())) {
                 continue;
             }
-            if (!media.isCut() && !media.isCompressed() && TextUtils.isEmpty(media.getAndroidQToPath())) {
+            if (config.isCheckOriginalImage || (!media.isCut() && !media.isCompressed() && TextUtils.isEmpty(media.getAndroidQToPath()))) {
                 isNextCopyAndroidQToPath = true;
                 break;
             }
@@ -606,21 +607,27 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                     if (media == null || TextUtils.isEmpty(media.getPath())) {
                         continue;
                     }
-                    boolean isCopyAndroidQToPath = !media.isCut()
-                            && !media.isCompressed()
-                            && TextUtils.isEmpty(media.getAndroidQToPath());
+                    boolean isCopyAndroidQToPath = !media.isCut() && !media.isCompressed() && TextUtils.isEmpty(media.getAndroidQToPath());
+                    boolean isCopyPath = false;
                     if (isCopyAndroidQToPath && PictureMimeType.isContent(media.getPath())) {
                         if (!PictureMimeType.isHasHttp(media.getPath())) {
                             String AndroidQToPath = AndroidQTransformUtils.copyPathToAndroidQ(getContext(), media.getId(),
                                     media.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), config.cameraFileName);
                             media.setAndroidQToPath(AndroidQToPath);
+                            isCopyPath = true;
                         }
                     } else if (media.isCut() && media.isCompressed()) {
                         media.setAndroidQToPath(media.getCompressPath());
                     }
                     if (config.isCheckOriginalImage) {
                         media.setOriginal(true);
-                        media.setOriginalPath(media.getAndroidQToPath());
+                        if (isCopyPath) {
+                            media.setOriginalPath(media.getAndroidQToPath());
+                        } else {
+                            String originalPath = AndroidQTransformUtils.copyPathToAndroidQ(getContext(), media.getId(),
+                                    media.getPath(), media.getWidth(), media.getHeight(), media.getMimeType(), config.cameraFileName);
+                            media.setOriginalPath(originalPath);
+                        }
                     }
                 }
                 return images;
