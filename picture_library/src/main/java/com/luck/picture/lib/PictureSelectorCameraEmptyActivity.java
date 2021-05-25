@@ -300,6 +300,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 File cameraFile = new File(path);
                 mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                 media.setSize(cameraFile.length());
+                media.setFileName(cameraFile.getName());
                 if (PictureMimeType.isHasImage(mimeType)) {
                     MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(getContext(), config.cameraPath);
                     media.setWidth(mediaExtraInfo.getWidth());
@@ -323,6 +324,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 File cameraFile = new File(config.cameraPath);
                 mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
                 media.setSize(cameraFile.length());
+                media.setFileName(cameraFile.getName());
                 if (PictureMimeType.isHasImage(mimeType)) {
                     BitmapUtils.rotateImage(getContext(), config.isCameraRotateImage, config.cameraPath);
                     MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(getContext(), config.cameraPath);

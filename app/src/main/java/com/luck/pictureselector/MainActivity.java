@@ -558,6 +558,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .isPreviewVideo(cb_preview_video.isChecked())// 是否可预览视频
                         .isEnablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
                         .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
+                        .isAndroidQTransform(true)// 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && .isEnableCrop(false);有效,默认处理
                         .isEnableCrop(cb_crop.isChecked())// 是否裁剪
                         //.basicUCropConfig()//对外提供所有UCropOptions参数配制，但如果PictureSelector原本支持设置的还是会使用原有的设置
                         .isCompress(cb_compress.isChecked())// 是否压缩
@@ -624,6 +625,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onResult(List<LocalMedia> result) {
             for (LocalMedia media : result) {
+                Log.i(TAG, "文件名: "+media.getFileName());
                 Log.i(TAG, "是否压缩:" + media.isCompressed());
                 Log.i(TAG, "压缩:" + media.getCompressPath());
                 Log.i(TAG, "原图:" + media.getPath());
