@@ -231,6 +231,7 @@ PictureSelector.create(this).externalPictureVideo(video_path);
 ```
 
 ## 联系方式
+Android开发交流 新群 [662320389]() <br>
 Android开发交流 群一 [619458861]() (已满) <br>
 Android开发交流 群二 [679824206]() (已满) <br>
 Android开发交流 群三 [854136996]() (已满) <br>
