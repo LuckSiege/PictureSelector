@@ -112,7 +112,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     @Override
     protected void initWidgets() {
         super.initWidgets();
-        mHandler = new Handler();
+        mHandler = new Handler(getMainLooper());
         mTitleBar = findViewById(R.id.titleBar);
         screenWidth = ScreenUtils.getScreenWidth(this);
         animation = AnimationUtils.loadAnimation(this, R.anim.picture_anim_modal_in);

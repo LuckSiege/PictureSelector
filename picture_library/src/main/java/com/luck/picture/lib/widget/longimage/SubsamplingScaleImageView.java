@@ -35,6 +35,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build.VERSION;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
@@ -324,7 +325,7 @@ public class SubsamplingScaleImageView extends View {
         setMinimumDpi(160);
         setDoubleTapZoomDpi(160);
         setGestureDetector(context);
-        this.handler = new Handler(new Handler.Callback() {
+        this.handler = new Handler(Looper.getMainLooper(),new Handler.Callback() {
             public boolean handleMessage(Message message) {
                 if (message.what == MESSAGE_LONG_CLICK && onLongClickListener != null) {
                     maxTouchCount = 0;
