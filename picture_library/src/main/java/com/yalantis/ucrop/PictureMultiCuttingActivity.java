@@ -286,7 +286,6 @@ public class PictureMultiCuttingActivity extends UCropActivity {
             info.setCropImageWidth(imageWidth);
             info.setCropImageHeight(imageHeight);
             info.setAndroidQToPath(SdkVersionUtils.checkedAndroid_Q() ? info.getCutPath() : info.getAndroidQToPath());
-            info.setSize(!TextUtils.isEmpty(info.getCutPath()) ? new File(info.getCutPath()).length() : info.getSize());
             resetLastCropStatus();
             cutIndex++;
             if (isWithVideoImage) {

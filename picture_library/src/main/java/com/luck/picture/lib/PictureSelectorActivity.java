@@ -2104,16 +2104,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 media.setCutPath(cutPath);
                 media.setChooseModel(config.chooseMode);
                 boolean isCutPathEmpty = !TextUtils.isEmpty(cutPath);
-                if (SdkVersionUtils.checkedAndroid_Q()
-                        && PictureMimeType.isContent(media.getPath())) {
-                    if (isCutPathEmpty) {
-                        media.setSize(new File(cutPath).length());
-                    } else {
-                        media.setSize(!TextUtils.isEmpty(media.getRealPath()) ? new File(media.getRealPath()).length() : 0);
-                    }
+                if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(media.getPath())) {
                     media.setAndroidQToPath(cutPath);
-                } else {
-                    media.setSize(isCutPathEmpty ? new File(cutPath).length() : 0);
                 }
                 media.setCut(isCutPathEmpty);
                 result.add(media);
@@ -2126,16 +2118,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     media.setCutPath(cutPath);
                     media.setChooseModel(config.chooseMode);
                     boolean isCutPathEmpty = !TextUtils.isEmpty(cutPath);
-                    if (SdkVersionUtils.checkedAndroid_Q()
-                            && PictureMimeType.isContent(media.getPath())) {
-                        if (isCutPathEmpty) {
-                            media.setSize(new File(cutPath).length());
-                        } else {
-                            media.setSize(!TextUtils.isEmpty(media.getRealPath()) ? new File(media.getRealPath()).length() : 0);
-                        }
+                    if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(media.getPath())) {
                         media.setAndroidQToPath(cutPath);
-                    } else {
-                        media.setSize(isCutPathEmpty ? new File(cutPath).length() : 0);
                     }
                     media.setCut(isCutPathEmpty);
                     result.add(media);

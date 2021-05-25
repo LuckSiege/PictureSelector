@@ -209,20 +209,9 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
             media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
             media.setAndroidQToPath(cutPath);
-            if (isCutEmpty) {
-                if (PictureMimeType.isContent(config.cameraPath)) {
-                    String path = PictureFileUtils.getPath(this, Uri.parse(config.cameraPath));
-                    media.setSize(!TextUtils.isEmpty(path) ? new File(path).length() : 0);
-                } else {
-                    media.setSize(new File(config.cameraPath).length());
-                }
-            } else {
-                media.setSize(new File(cutPath).length());
-            }
         } else {
             // Taking a photo generates a temporary id
             media.setId(System.currentTimeMillis());
-            media.setSize(new File(isCutEmpty ? media.getPath() : cutPath).length());
         }
         media.setCut(!isCutEmpty);
         media.setCutPath(cutPath);
@@ -252,6 +241,11 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 media.setHeight(mediaExtraInfo.getHeight());
             }
         }
+
+        File file = new File(media.getRealPath());
+        media.setSize(file.length());
+        media.setFileName(file.getName());
+
         medias.add(media);
         handlerResult(medias);
     }
