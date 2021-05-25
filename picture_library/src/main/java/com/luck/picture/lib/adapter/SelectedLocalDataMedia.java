@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.tools.DateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,7 @@ public class SelectedLocalDataMedia extends RecyclerView
                     list.get(position).getPath(), holder.ivCover);
         }
 
-        holder.tvDuration.setText(secToTime((int) (list.get(position).getDuration() / 1000)));
+        holder.tvDuration.setText(DateUtils.formatDurationTime(list.get(position).getDuration()));
 
         holder.ivClose.setOnClickListener(new View.OnClickListener() {
             @Override

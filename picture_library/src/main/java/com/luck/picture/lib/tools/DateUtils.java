@@ -1,5 +1,7 @@
 package com.luck.picture.lib.tools;
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -37,10 +39,17 @@ public class DateUtils {
      * @return
      */
     public static String formatDurationTime(long duration) {
+
+        int remainder;
+        if (duration % 1000 >= 500) {
+            remainder = 1;
+        } else {
+            remainder = 0;
+        }
         return String.format(Locale.getDefault(), "%02d:%02d",
                 TimeUnit.MILLISECONDS.toMinutes(duration),
                 TimeUnit.MILLISECONDS.toSeconds(duration)
-                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
+                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)) + remainder);
     }
 
 
