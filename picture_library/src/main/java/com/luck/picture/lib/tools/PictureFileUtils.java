@@ -15,6 +15,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 
@@ -314,21 +315,17 @@ public class PictureFileUtils {
         if (pathFrom.equalsIgnoreCase(pathTo)) {
             return;
         }
-
         FileChannel outputChannel = null;
         FileChannel inputChannel = null;
         try {
             inputChannel = new FileInputStream(new File(pathFrom)).getChannel();
             outputChannel = new FileOutputStream(new File(pathTo)).getChannel();
             inputChannel.transferTo(0, inputChannel.size(), outputChannel);
-            inputChannel.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
-            if (inputChannel != null) {
-                inputChannel.close();
-            }
-            if (outputChannel != null) {
-                outputChannel.close();
-            }
+            close(inputChannel);
+            close(outputChannel);
         }
     }
 
