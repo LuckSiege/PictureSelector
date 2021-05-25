@@ -332,6 +332,34 @@ public class PictureFileUtils {
         }
     }
 
+
+    /**
+     * Copies one file into the other with the given paths.
+     * In the event that the paths are the same, trying to copy one file to the other
+     * will cause both files to become null.
+     * Simply skipping this step if the paths are identical.
+     */
+    public static boolean copyFile(FileInputStream fileInputStream, String outFilePath) throws IOException {
+        if (fileInputStream == null) {
+            return false;
+        }
+        FileChannel inputChannel = null;
+        FileChannel outputChannel = null;
+        try {
+            inputChannel = fileInputStream.getChannel();
+            outputChannel = new FileOutputStream(new File(outFilePath)).getChannel();
+            inputChannel.transferTo(0, inputChannel.size(), outputChannel);
+            inputChannel.close();
+            return true;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            fileInputStream.close();
+            if (inputChannel != null) inputChannel.close();
+            if (outputChannel != null) outputChannel.close();
+        }
+    }
+
     /**
      * 拷贝文件
      *
@@ -401,6 +429,18 @@ public class PictureFileUtils {
             close(outBuffer);
         }
         return false;
+    }
+
+    /**
+     * 重命名相册拍照
+     *
+     * @param fileName
+     * @return
+     */
+    public static String rename(String fileName) {
+        String temp = fileName.substring(0, fileName.lastIndexOf("."));
+        String suffix = fileName.substring(fileName.lastIndexOf("."));
+        return temp + "_" + DateUtils.getCreateFileName() + suffix;
     }
 
     /**

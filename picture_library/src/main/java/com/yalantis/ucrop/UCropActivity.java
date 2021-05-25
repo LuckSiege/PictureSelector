@@ -48,10 +48,10 @@ import androidx.transition.TransitionManager;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.immersive.ImmersiveManage;
+import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.model.AspectRatio;
-import com.yalantis.ucrop.util.FileUtils;
 import com.yalantis.ucrop.util.SelectedStateListDrawable;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
@@ -322,7 +322,7 @@ public class UCropActivity extends AppCompatActivity {
         } else {
             String mimeType = PictureMimeType.getMimeTypeFromMediaContentUri(this, inputUri);
             if (mimeType.endsWith("image/*")) {
-                String path = FileUtils.getPath(this, inputUri);
+                String path = PictureFileUtils.getPath(this, inputUri);
                 mimeType = PictureMimeType.getImageMimeType(path);
             }
             return !PictureMimeType.isGif(mimeType);

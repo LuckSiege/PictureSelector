@@ -20,9 +20,9 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.DateUtils;
+import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
-import com.yalantis.ucrop.util.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -150,7 +150,7 @@ public class PictureMultiCuttingActivity extends UCropActivity {
         String path = cutInfo.getPath();
         boolean isHttp = PictureMimeType.isHasHttp(path);
         String suffix = PictureMimeType.getLastImgType(PictureMimeType.isContent(path)
-                ? FileUtils.getPath(this, Uri.parse(path)) : path);
+                ? PictureFileUtils.getPath(this, Uri.parse(path)) : path);
         Uri uri;
         if (!TextUtils.isEmpty(cutInfo.getAndroidQToPath())) {
             uri = Uri.fromFile(new File(cutInfo.getAndroidQToPath()));
@@ -162,7 +162,7 @@ public class PictureMultiCuttingActivity extends UCropActivity {
                 getExternalFilesDir(Environment.DIRECTORY_PICTURES) : getCacheDir();
         extras.putParcelable(UCrop.EXTRA_OUTPUT_URI,
                 Uri.fromFile(new File(file,
-                        TextUtils.isEmpty(renameCropFilename) ? DateUtils.getCreateFileName("IMG_CROP_") + suffix : isCamera ? renameCropFilename : FileUtils.rename(renameCropFilename))));
+                        TextUtils.isEmpty(renameCropFilename) ? DateUtils.getCreateFileName("IMG_CROP_") + suffix : isCamera ? renameCropFilename : PictureFileUtils.rename(renameCropFilename))));
         intent.putExtras(extras);
         setupViews(intent);
         refreshPhotoRecyclerData();

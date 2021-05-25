@@ -14,12 +14,12 @@ import androidx.annotation.Nullable;
 import androidx.exifinterface.media.ExifInterface;
 
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.model.CropParameters;
 import com.yalantis.ucrop.model.ImageState;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
-import com.yalantis.ucrop.util.FileUtils;
 import com.yalantis.ucrop.util.ImageHeaderParser;
 
 import java.io.File;
@@ -175,10 +175,10 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
                 ParcelFileDescriptor parcelFileDescriptor =
                         getContext().getContentResolver().openFileDescriptor(Uri.parse(mImageInputPath), "r");
                 FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                FileUtils.copyFile(new FileInputStream(fileDescriptor), mImageOutputPath);
+                PictureFileUtils.copyFile(new FileInputStream(fileDescriptor), mImageOutputPath);
                 BitmapLoadUtils.close(parcelFileDescriptor);
             } else {
-                FileUtils.copyFile(mImageInputPath, mImageOutputPath);
+                PictureFileUtils.copyFile(mImageInputPath, mImageOutputPath);
             }
             return false;
         }
