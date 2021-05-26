@@ -40,7 +40,7 @@ public class Luban {
     private int index = -1;
     private final int compressQuality;
     private final int dataCount;
-    private boolean isAutoRotating;
+    private final boolean isAutoRotating;
 
     private Luban(Builder builder) {
         this.mPaths = builder.mPaths;
