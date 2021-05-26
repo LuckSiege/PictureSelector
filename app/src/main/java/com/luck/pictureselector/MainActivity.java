@@ -599,8 +599,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String createCustomCameraOutPath() {
         File customFile;
         if (SdkVersionUtils.checkedAndroid_Q()) {
-            // 在Android Q上不能直接使用外部存储目录
-            customFile = getContext().getExternalFilesDir(chooseMode == PictureMimeType.ofVideo() ? Environment.DIRECTORY_MOVIES : Environment.DIRECTORY_PICTURES);
+            // 在Android Q上不能直接使用外部存储目录；且沙盒内的资源是无法通过PictureSelector扫描出来的
+            File externalFilesDir = getContext().getExternalFilesDir(chooseMode == PictureMimeType.ofVideo() ? Environment.DIRECTORY_MOVIES : Environment.DIRECTORY_PICTURES);
+            customFile = new File(externalFilesDir.getAbsolutePath(), "PictureSelector");
+            if (!customFile.exists()) {
+                customFile.mkdirs();
+            }
         } else {
             File rootFile = Environment.getExternalStorageDirectory();
             customFile = new File(rootFile.getAbsolutePath() + File.separator + "CustomPictureCamera");
@@ -608,7 +612,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 customFile.mkdirs();
             }
         }
-        return customFile != null ? customFile.getAbsolutePath() + File.separator : null;
+        return customFile.getAbsolutePath() + File.separator;
     }
 
     /**
@@ -625,7 +629,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onResult(List<LocalMedia> result) {
             for (LocalMedia media : result) {
-                Log.i(TAG, "文件名: "+media.getFileName());
+                Log.i(TAG, "文件名: " + media.getFileName());
                 Log.i(TAG, "是否压缩:" + media.isCompressed());
                 Log.i(TAG, "压缩:" + media.getCompressPath());
                 Log.i(TAG, "原图:" + media.getPath());
