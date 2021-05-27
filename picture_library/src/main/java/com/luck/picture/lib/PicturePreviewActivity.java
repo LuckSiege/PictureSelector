@@ -233,6 +233,11 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             mCbOriginal.setChecked(config.isCheckOriginalImage);
             mCbOriginal.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 config.isCheckOriginalImage = isChecked;
+                if (selectData.size() == 0) {
+                    if (isChecked) {
+                        onCheckedComplete();
+                    }
+                }
             });
         }
     }
