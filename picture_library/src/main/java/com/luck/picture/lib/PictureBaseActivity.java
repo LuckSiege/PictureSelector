@@ -450,7 +450,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      * @param result
      */
     protected void handlerResult(List<LocalMedia> result) {
-        if (config.isCompress) {
+        if (config.isCompress && !config.isCheckOriginalImage) {
             compressImage(result);
         } else {
             onResult(result);

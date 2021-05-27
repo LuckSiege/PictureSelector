@@ -1109,7 +1109,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             exit();
             return;
         }
-
+        if (config.isCheckOriginalImage) {
+            onResult(result);
+            return;
+        }
         if (config.chooseMode == PictureMimeType.ofAll() && config.isWithVideoImage) {
             bothMimeTypeWith(isHasImage, result);
         } else {
@@ -1501,7 +1504,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (config.selectionMode == PictureConfig.SINGLE && config.isSingleDirectReturn) {
             List<LocalMedia> list = new ArrayList<>();
             list.add(media);
-            if (config.enableCrop && PictureMimeType.isHasImage(media.getMimeType())) {
+            if (config.enableCrop && PictureMimeType.isHasImage(media.getMimeType()) && !config.isCheckOriginalImage) {
                 mAdapter.bindSelectData(list);
                 UCropManager.ofCrop(this, media.getPath(), media.getMimeType());
             } else {
@@ -1740,7 +1743,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             break;
                         }
                     }
-                    if (imageSize <= 0 || !config.isCompress) {
+                    if (imageSize <= 0 || !config.isCompress || config.isCheckOriginalImage) {
                         onResult(list);
                     } else {
                         compressImage(list);
@@ -1748,7 +1751,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 } else {
                     // Determine if the resource is of the same type
                     String mimeType = list.size() > 0 ? list.get(0).getMimeType() : "";
-                    if (config.isCompress && PictureMimeType.isHasImage(mimeType)) {
+                    if (config.isCompress && PictureMimeType.isHasImage(mimeType) && !config.isCheckOriginalImage) {
                         compressImage(list);
                     } else {
                         onResult(list);
