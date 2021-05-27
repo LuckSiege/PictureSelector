@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
+import com.luck.picture.lib.PictureContentResolver;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
@@ -102,7 +103,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
         boolean decodeAttemptSuccess = false;
         while (!decodeAttemptSuccess) {
             try {
-                InputStream stream = mContext.getContentResolver().openInputStream(mInputUri);
+                InputStream stream = PictureContentResolver.getContentResolverOpenInputStream(mContext, mInputUri);
                 try {
                     decodeSampledBitmap = BitmapFactory.decodeStream(stream, null, options);
                     if (options.outWidth == -1 || options.outHeight == -1) {
@@ -116,7 +117,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
             } catch (OutOfMemoryError error) {
                 Log.e(TAG, "doInBackground: BitmapFactory.decodeFileDescriptor: ", error);
                 options.inSampleSize *= 2;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 Log.e(TAG, "doInBackground: ImageDecoder.createSource: ", e);
                 return new BitmapWorkerResult(new IllegalArgumentException("Bitmap could not be decoded from the Uri: [" + mInputUri + "]", e));
             }
@@ -193,7 +194,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
         InputStream inputStream = null;
         OutputStream outputStream = null;
         try {
-            inputStream = mContext.getContentResolver().openInputStream(inputUri);
+            inputStream = PictureContentResolver.getContentResolverOpenInputStream(mContext, inputUri);
             outputStream = new FileOutputStream(new File(outputUri.getPath()));
             if (inputStream == null) {
                 throw new NullPointerException("InputStream for given input Uri is null");
@@ -227,7 +228,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
             byte[] buffer = new byte[1024];
             int read;
             bin = new BufferedInputStream(u.openStream());
-            outputStream = mContext.getContentResolver().openOutputStream(outputUri);
+            outputStream = PictureContentResolver.getContentResolverOpenOutputStream(mContext, outputUri);
             if (outputStream != null) {
                 bout = new BufferedOutputStream(outputStream);
                 while ((read = bin.read(buffer)) > -1) {

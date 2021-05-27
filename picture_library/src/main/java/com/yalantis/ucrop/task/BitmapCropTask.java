@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.exifinterface.media.ExifInterface;
 
+import com.luck.picture.lib.PictureContentResolver;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
@@ -184,7 +185,7 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
         }
     }
 
-    private void saveImage(@NonNull Bitmap croppedBitmap) throws FileNotFoundException {
+    private void saveImage(@NonNull Bitmap croppedBitmap) {
         Context context = getContext();
         if (context == null) {
             return;
@@ -192,7 +193,7 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
 
         OutputStream outputStream = null;
         try {
-            outputStream = context.getContentResolver().openOutputStream(Uri.fromFile(new File(mImageOutputPath)));
+            outputStream = PictureContentResolver.getContentResolverOpenOutputStream(context, Uri.fromFile(new File(mImageOutputPath)));
             croppedBitmap.compress(mCompressFormat, mCompressQuality, outputStream);
             croppedBitmap.recycle();
         } finally {

@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.luck.picture.lib.PictureContentResolver;
 import com.luck.picture.lib.tools.ValueOf;
 
 import java.io.InputStream;
@@ -64,8 +65,7 @@ public class SkiaImageDecoder implements ImageDecoder {
         } else {
             InputStream inputStream = null;
             try {
-                ContentResolver contentResolver = context.getContentResolver();
-                inputStream = contentResolver.openInputStream(uri);
+                inputStream = PictureContentResolver.getContentResolverOpenInputStream(context,uri);
                 bitmap = BitmapFactory.decodeStream(inputStream, null, options);
             } finally {
                 if (inputStream != null) {

@@ -505,8 +505,10 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             public String doInBackground() {
                 BufferedSource buffer = null;
                 try {
-                    buffer = Okio.buffer(Okio.source(Objects.requireNonNull(getContentResolver().openInputStream(inputUri))));
-                    OutputStream outputStream = getContentResolver().openOutputStream(uri);
+                    InputStream inputStream = PictureContentResolver.getContentResolverOpenInputStream(getContext(), inputUri);
+                    buffer = Okio.buffer(Okio.source(Objects.requireNonNull(inputStream)));
+
+                    OutputStream outputStream = PictureContentResolver.getContentResolverOpenOutputStream(getContext(), uri);
                     boolean bufferCopy = PictureFileUtils.bufferCopy(buffer, outputStream);
                     if (bufferCopy) {
                         return PictureFileUtils.getPath(getContext(), uri);
@@ -567,7 +569,8 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     }
                     File folderDir = new File(!state.equals(Environment.MEDIA_MOUNTED)
                             ? rootDir.getAbsolutePath() : rootDir.getAbsolutePath() + File.separator + PictureMimeType.CAMERA + File.separator);
-                    if (!folderDir.exists() && folderDir.mkdirs()) {
+                    if (!folderDir.exists()) {
+                        folderDir.mkdirs();
                     }
                     String fileName = DateUtils.getCreateFileName("IMG_") + suffix;
                     File file = new File(folderDir, fileName);
@@ -575,7 +578,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 }
             }
             if (outImageUri != null) {
-                outputStream = Objects.requireNonNull(getContentResolver().openOutputStream(outImageUri));
+                outputStream = PictureContentResolver.getContentResolverOpenOutputStream(getContext(), outImageUri);
                 URL u = new URL(urlPath);
                 inputStream = u.openStream();
                 inBuffer = Okio.buffer(Okio.source(inputStream));

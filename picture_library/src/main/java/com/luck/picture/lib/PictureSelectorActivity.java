@@ -74,6 +74,7 @@ import com.yalantis.ucrop.UCrop;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -1813,8 +1814,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     try {
                         Uri audioOutUri = MediaUtils.createAudioUri(getContext(), config.suffixType);
                         if (audioOutUri != null) {
-                            buffer = Okio.buffer(Okio.source(Objects.requireNonNull(getContentResolver().openInputStream(Uri.parse(config.cameraPath)))));
-                            OutputStream outputStream = getContentResolver().openOutputStream(audioOutUri);
+                            InputStream inputStream = PictureContentResolver.getContentResolverOpenInputStream(this, Uri.parse(config.cameraPath));
+                            buffer = Okio.buffer(Okio.source(Objects.requireNonNull(inputStream)));
+
+                            OutputStream outputStream = PictureContentResolver.getContentResolverOpenOutputStream(this, audioOutUri);
                             PictureFileUtils.bufferCopy(buffer, outputStream);
                             config.cameraPath = audioOutUri.toString();
                         }

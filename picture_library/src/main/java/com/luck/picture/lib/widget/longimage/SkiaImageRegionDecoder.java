@@ -14,6 +14,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.luck.picture.lib.PictureContentResolver;
 import com.luck.picture.lib.tools.ValueOf;
 
 import java.io.InputStream;
@@ -69,8 +70,7 @@ public class SkiaImageRegionDecoder implements ImageRegionDecoder {
         } else {
             InputStream inputStream = null;
             try {
-                ContentResolver contentResolver = context.getContentResolver();
-                inputStream = contentResolver.openInputStream(uri);
+                inputStream = PictureContentResolver.getContentResolverOpenInputStream(context,uri);
                 decoder = BitmapRegionDecoder.newInstance(inputStream, false);
             } finally {
                 if (inputStream != null) {

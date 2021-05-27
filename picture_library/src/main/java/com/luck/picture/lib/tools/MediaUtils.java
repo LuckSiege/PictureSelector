@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import androidx.annotation.Nullable;
 import androidx.exifinterface.media.ExifInterface;
 
+import com.luck.picture.lib.PictureContentResolver;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
@@ -196,7 +197,7 @@ public class MediaUtils {
         InputStream inputStream = null;
         try {
             if (PictureMimeType.isContent(url)) {
-                inputStream = context.getContentResolver().openInputStream(Uri.parse(url));
+                inputStream = PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(url));
                 exifInterface = new ExifInterface(inputStream);
             } else {
                 exifInterface = new ExifInterface(url);

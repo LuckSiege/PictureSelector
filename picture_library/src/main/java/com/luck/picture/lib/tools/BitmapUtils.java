@@ -8,6 +8,7 @@ import android.net.Uri;
 
 import androidx.exifinterface.media.ExifInterface;
 
+import com.luck.picture.lib.PictureContentResolver;
 import com.luck.picture.lib.config.PictureMimeType;
 
 import java.io.BufferedOutputStream;
@@ -95,7 +96,7 @@ public class BitmapUtils {
         InputStream inputStream = null;
         try {
             if (PictureMimeType.isContent(filePath)) {
-                inputStream = context.getContentResolver().openInputStream(Uri.parse(filePath));
+                inputStream = PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(filePath));
                 exifInterface = new ExifInterface(inputStream);
             } else {
                 exifInterface = new ExifInterface(filePath);
@@ -116,6 +117,32 @@ public class BitmapUtils {
             return 0;
         } finally {
             PictureFileUtils.close(inputStream);
+        }
+    }
+
+    /**
+     * 读取图片属性：旋转的角度
+     *
+     * @param inputStream 数据流
+     * @return degree旋转的角度
+     */
+    public static int readPictureDegree(InputStream inputStream) {
+        try {
+            ExifInterface exifInterface = new ExifInterface(inputStream);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    return 90;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    return 180;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    return 270;
+                default:
+                    return 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
         }
     }
 }

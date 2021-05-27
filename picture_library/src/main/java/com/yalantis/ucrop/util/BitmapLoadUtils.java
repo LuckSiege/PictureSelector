@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.exifinterface.media.ExifInterface;
 
+import com.luck.picture.lib.PictureContentResolver;
 import com.yalantis.ucrop.callback.BitmapLoadCallback;
 import com.yalantis.ucrop.task.BitmapLoadTask;
 
@@ -70,7 +71,7 @@ public class BitmapLoadUtils {
     public static int getExifOrientation(@NonNull Context context, @NonNull Uri imageUri) {
         int orientation = ExifInterface.ORIENTATION_UNDEFINED;
         try {
-            InputStream stream = context.getContentResolver().openInputStream(imageUri);
+            InputStream stream = PictureContentResolver.getContentResolverOpenInputStream(context, imageUri);
             if (stream == null) {
                 return orientation;
             }

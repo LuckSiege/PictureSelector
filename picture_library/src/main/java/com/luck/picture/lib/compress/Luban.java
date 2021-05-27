@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.luck.picture.lib.PictureContentResolver;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.thread.PictureThreadUtils;
@@ -412,7 +413,7 @@ public class Luban {
                 public InputStream openInternal() throws IOException {
                     if (PictureMimeType.isContent(media.getPath()) && !media.isCut()) {
                         if (TextUtils.isEmpty(media.getAndroidQToPath())) {
-                            return context.getContentResolver().openInputStream(Uri.parse(media.getPath()));
+                            return PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(media.getPath()));
                         } else {
                             return new FileInputStream(media.getAndroidQToPath());
                         }
@@ -445,8 +446,8 @@ public class Luban {
         public Builder load(final Uri uri) {
             mStreamProviders.add(new InputStreamAdapter() {
                 @Override
-                public InputStream openInternal() throws IOException {
-                    return context.getContentResolver().openInputStream(uri);
+                public InputStream openInternal() {
+                    return PictureContentResolver.getContentResolverOpenInputStream(context, uri);
                 }
 
                 @Override
