@@ -956,10 +956,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         }
         isCompleteOrSelected = true;
         isChangeSelectedData = true;
-        if (config.isCheckOriginalImage) {
-            onBackPressed();
-            return;
-        }
+
         if (config.chooseMode == PictureMimeType.ofAll() && config.isWithVideoImage) {
             bothMimeTypeWith(mimeType, image);
         } else {

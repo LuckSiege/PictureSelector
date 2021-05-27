@@ -1109,10 +1109,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             exit();
             return;
         }
-        if (config.isCheckOriginalImage) {
-            onResult(result);
-            return;
-        }
+
         if (config.chooseMode == PictureMimeType.ofAll() && config.isWithVideoImage) {
             bothMimeTypeWith(isHasImage, result);
         } else {
@@ -1193,8 +1190,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             } else {
                 UCropManager.ofCrop(this, (ArrayList<LocalMedia>) images);
             }
-        } else if (config.isCompress
-                && isHasImage) {
+        } else if (config.isCompress && isHasImage) {
             compressImage(images);
         } else {
             onResult(images);
@@ -1743,7 +1739,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             break;
                         }
                     }
-                    if (imageSize <= 0 || !config.isCompress || config.isCheckOriginalImage) {
+                    if (imageSize <= 0 || !config.isCompress) {
                         onResult(list);
                     } else {
                         compressImage(list);
@@ -1751,7 +1747,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 } else {
                     // Determine if the resource is of the same type
                     String mimeType = list.size() > 0 ? list.get(0).getMimeType() : "";
-                    if (config.isCompress && PictureMimeType.isHasImage(mimeType) && !config.isCheckOriginalImage) {
+                    if (config.isCompress && PictureMimeType.isHasImage(mimeType)) {
                         compressImage(list);
                     } else {
                         onResult(list);
