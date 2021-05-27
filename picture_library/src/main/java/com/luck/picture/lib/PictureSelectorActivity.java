@@ -1129,7 +1129,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (image == null) {
             return;
         }
-        if (config.enableCrop) {
+        if (config.enableCrop && !config.isCheckOriginalImage) {
             if (config.selectionMode == PictureConfig.SINGLE && isHasImage) {
                 config.originalPath = image.getPath();
                 UCropManager.ofCrop(this, config.originalPath, image.getMimeType());
@@ -1183,7 +1183,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (image == null) {
             return;
         }
-        if (config.enableCrop && isHasImage) {
+        if (config.enableCrop && !config.isCheckOriginalImage && isHasImage) {
             if (config.selectionMode == PictureConfig.SINGLE) {
                 config.originalPath = image.getPath();
                 UCropManager.ofCrop(this, config.originalPath, image.getMimeType());
@@ -1778,7 +1778,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     private void singleDirectReturnCameraHandleResult(String mimeType) {
         boolean isHasImage = PictureMimeType.isHasImage(mimeType);
-        if (config.enableCrop && isHasImage) {
+        if (config.enableCrop && !config.isCheckOriginalImage && isHasImage) {
             config.originalPath = config.cameraPath;
             UCropManager.ofCrop(this, config.originalPath, mimeType);
         } else if (config.isCompress && isHasImage) {

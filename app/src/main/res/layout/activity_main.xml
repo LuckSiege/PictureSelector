@@ -181,7 +181,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:text="* 开启原图功能，用户就可以自由选择原图；可能会导致压缩、裁剪功能失效。"
+                    android:text="* 开启原图功能，用户就可以自由选择原图；但会跳过裁剪功能哦"
                     android:textColor="@android:color/holo_red_dark"
                     android:textSize="10dp"
                     android:visibility="gone" />

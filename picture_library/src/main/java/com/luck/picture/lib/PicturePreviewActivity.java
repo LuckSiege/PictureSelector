@@ -971,7 +971,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      * @param image
      */
     private void bothMimeTypeWith(String mimeType, LocalMedia image) {
-        if (config.enableCrop) {
+        if (config.enableCrop && !config.isCheckOriginalImage) {
             isCompleteOrSelected = false;
             boolean isHasImage = PictureMimeType.isHasImage(mimeType);
             if (config.selectionMode == PictureConfig.SINGLE && isHasImage) {
@@ -1012,7 +1012,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      * @param image
      */
     private void separateMimeTypeWith(String mimeType, LocalMedia image) {
-        if (config.enableCrop && PictureMimeType.isHasImage(mimeType)) {
+        if (config.enableCrop && !config.isCheckOriginalImage && PictureMimeType.isHasImage(mimeType)) {
             isCompleteOrSelected = false;
             if (config.selectionMode == PictureConfig.SINGLE) {
                 config.originalPath = image.getPath();
