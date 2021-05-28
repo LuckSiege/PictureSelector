@@ -1483,7 +1483,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (requestCode == PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE) {// 存储权限
             for (int grantResult : grantResults) {
                 if (grantResult == PackageManager.PERMISSION_GRANTED) {
-                    PictureCacheManager.deleteCacheDirFile(getContext(), PictureMimeType.ofImage());
+                    PictureCacheManager.deleteCacheDirFile(getContext(), PictureMimeType.ofImage(), new OnCallbackListener<String>() {
+                        @Override
+                        public void onCall(String absolutePath) {
+                            new PictureMediaScannerConnection(getContext(), absolutePath);
+                            Log.i(TAG, "刷新图库:" + absolutePath);
+                        }
+                    });
                 } else {
                     Toast.makeText(MainActivity.this,
                             getString(R.string.picture_jurisdiction), Toast.LENGTH_SHORT).show();

@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.luck.picture.lib.PictureMediaScannerConnection;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.broadcast.BroadcastAction;
 import com.luck.picture.lib.broadcast.BroadcastManager;
@@ -42,6 +43,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.language.LanguageConfig;
+import com.luck.picture.lib.listener.OnCallbackListener;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.manager.PictureCacheManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
@@ -401,7 +403,13 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         if (getContext() != null) {
             if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 //PictureCacheManager.deleteCacheDirFile(getContext(), PictureMimeType.ofImage());
-                PictureCacheManager.deleteAllCacheDirFile(getContext());
+                PictureCacheManager.deleteAllCacheDirFile(getContext(), new OnCallbackListener<String>() {
+                    @Override
+                    public void onCall(String absolutePath) {
+                        new PictureMediaScannerConnection(getContext(), absolutePath);
+                        Log.i(TAG, "刷新图库:" + absolutePath);
+                    }
+                });
             } else {
                 PermissionChecker.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
@@ -1218,6 +1226,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         }
     }
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -1226,7 +1235,13 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                 // 存储权限
                 for (int grantResult : grantResults) {
                     if (grantResult == PackageManager.PERMISSION_GRANTED) {
-                        PictureCacheManager.deleteCacheDirFile(getContext(), PictureMimeType.ofImage());
+                        PictureCacheManager.deleteCacheDirFile(getContext(), PictureMimeType.ofImage(), new OnCallbackListener<String>() {
+                            @Override
+                            public void onCall(String absolutePath) {
+                                new PictureMediaScannerConnection(getContext(), absolutePath);
+                                Log.i(TAG, "刷新图库:" + absolutePath);
+                            }
+                        });
                     } else {
                         Toast.makeText(getContext(),
                                 getString(R.string.picture_jurisdiction), Toast.LENGTH_SHORT).show();
