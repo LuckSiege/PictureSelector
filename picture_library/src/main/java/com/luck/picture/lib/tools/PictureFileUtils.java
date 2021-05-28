@@ -591,31 +591,31 @@ public class PictureFileUtils {
         if (PictureMimeType.isHasVideo(mineType)) {
             // 视频
             String filesDir = PictureFileUtils.getVideoDiskCacheDir(context) + File.separator;
-            if (!TextUtils.isEmpty(md5)) {
-                String fileName = TextUtils.isEmpty(customFileName) ? "VID_" + md5.toUpperCase() + suffix : customFileName;
+            if (TextUtils.isEmpty(md5)) {
+                String fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("VID_") + suffix : customFileName;
                 return filesDir + fileName;
             } else {
-                String fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("VID_") + suffix : customFileName;
+                String fileName = TextUtils.isEmpty(customFileName) ? "VID_" + md5.toUpperCase() + suffix : customFileName;
                 return filesDir + fileName;
             }
         } else if (PictureMimeType.isHasAudio(mineType)) {
             // 音频
             String filesDir = PictureFileUtils.getAudioDiskCacheDir(context) + File.separator;
-            if (!TextUtils.isEmpty(md5)) {
-                String fileName = TextUtils.isEmpty(customFileName) ? "AUD_" + md5.toUpperCase() + suffix : customFileName;
+            if (TextUtils.isEmpty(md5)) {
+                String fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("AUD_") + suffix : customFileName;
                 return filesDir + fileName;
             } else {
-                String fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("AUD_") + suffix : customFileName;
+                String fileName = TextUtils.isEmpty(customFileName) ? "AUD_" + md5.toUpperCase() + suffix : customFileName;
                 return filesDir + fileName;
             }
         } else {
             // 图片
             String filesDir = PictureFileUtils.getDiskCacheDir(context) + File.separator;
-            if (!TextUtils.isEmpty(md5)) {
-                String fileName = TextUtils.isEmpty(customFileName) ? "IMG_" + md5.toUpperCase() + suffix : customFileName;
+            if (TextUtils.isEmpty(md5)) {
+                String fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("IMG_") + suffix : customFileName;
                 return filesDir + fileName;
             } else {
-                String fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("IMG_") + suffix : customFileName;
+                String fileName = TextUtils.isEmpty(customFileName) ? "IMG_" + md5.toUpperCase() + suffix : customFileName;
                 return filesDir + fileName;
             }
         }

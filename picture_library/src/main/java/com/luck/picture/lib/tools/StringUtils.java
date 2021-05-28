@@ -93,6 +93,9 @@ public class StringUtils {
      * @return
      */
     public static String getEncryptionValue(long id, int width, int height) {
+        if (width == 0 && height == 0) {
+            return "";
+        }
         return id + "_" + width + height;
     }
 }
