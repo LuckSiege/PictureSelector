@@ -18,6 +18,7 @@ import androidx.core.content.FileProvider;
 
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.manager.PictureCacheManager;
 
 import java.io.Closeable;
 import java.io.File;
@@ -458,10 +459,12 @@ public class PictureFileUtils {
 
     /**
      * set empty PictureSelector Cache
+     * Use {@link PictureCacheManager}
      *
      * @param mContext
      * @param type     image or video ...
      */
+    @Deprecated
     public static void deleteCacheDirFile(Context mContext, int type) {
         File cutDir = mContext.getExternalFilesDir(type == PictureMimeType.ofImage()
                 ? Environment.DIRECTORY_PICTURES : Environment.DIRECTORY_MOVIES);
@@ -479,10 +482,12 @@ public class PictureFileUtils {
 
     /**
      * set empty PictureSelector Cache
+     * Use {@link PictureCacheManager}
      *
      * @param context
      * @param type    image、video、audio ...
      */
+    @Deprecated
     public static void deleteAllCacheDirFile(Context context) {
 
         File dirPictures = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);

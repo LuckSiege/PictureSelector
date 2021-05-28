@@ -51,6 +51,7 @@ import com.luck.picture.lib.listener.OnPermissionDialogOptionCallback;
 import com.luck.picture.lib.listener.OnPermissionsObtainCallback;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.listener.OnVideoSelectedPlayCallback;
+import com.luck.picture.lib.manager.PictureCacheManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
@@ -418,8 +419,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void clearCache() {
         // 清空图片缓存，包括裁剪、压缩后的图片 注意:必须要在上传完成后调用 必须要获取权限
         if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            //PictureFileUtils.deleteCacheDirFile(this, PictureMimeType.ofImage());
-            PictureFileUtils.deleteAllCacheDirFile(getContext());
+            //PictureCacheManager.deleteCacheDirFile(this, PictureMimeType.ofImage());
+            PictureCacheManager.deleteAllCacheDirFile(getContext());
         } else {
             PermissionChecker.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
@@ -1475,7 +1476,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (requestCode == PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE) {// 存储权限
             for (int grantResult : grantResults) {
                 if (grantResult == PackageManager.PERMISSION_GRANTED) {
-                    PictureFileUtils.deleteCacheDirFile(getContext(), PictureMimeType.ofImage());
+                    PictureCacheManager.deleteCacheDirFile(getContext(),PictureMimeType.ofImage());
                 } else {
                     Toast.makeText(MainActivity.this,
                             getString(R.string.picture_jurisdiction), Toast.LENGTH_SHORT).show();

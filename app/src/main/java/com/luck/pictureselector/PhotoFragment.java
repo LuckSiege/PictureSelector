@@ -43,6 +43,7 @@ import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
+import com.luck.picture.lib.manager.PictureCacheManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
@@ -399,8 +400,8 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         // 清空图片缓存，包括裁剪、压缩后的图片 注意:必须要在上传完成后调用 必须要获取权限
         if (getContext() != null) {
             if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                //PictureFileUtils.deleteCacheDirFile(this, PictureMimeType.ofImage());
-                PictureFileUtils.deleteAllCacheDirFile(getContext());
+                //PictureCacheManager.deleteCacheDirFile(getContext(), PictureMimeType.ofImage());
+                PictureCacheManager.deleteAllCacheDirFile(getContext());
             } else {
                 PermissionChecker.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
@@ -1223,9 +1224,9 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         switch (requestCode) {
             case PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE:
                 // 存储权限
-                for (int i = 0; i < grantResults.length; i++) {
-                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        PictureFileUtils.deleteCacheDirFile(getContext(), PictureMimeType.ofImage());
+                for (int grantResult : grantResults) {
+                    if (grantResult == PackageManager.PERMISSION_GRANTED) {
+                        PictureCacheManager.deleteCacheDirFile(getContext(), PictureMimeType.ofImage());
                     } else {
                         Toast.makeText(getContext(),
                                 getString(R.string.picture_jurisdiction), Toast.LENGTH_SHORT).show();
