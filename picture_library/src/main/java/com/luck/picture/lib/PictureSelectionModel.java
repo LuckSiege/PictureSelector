@@ -815,6 +815,7 @@ public class PictureSelectionModel {
      * @param focusAlpha After compression, the transparent channel is retained
      * @return
      */
+    @Deprecated
     public PictureSelectionModel compressFocusAlpha(boolean focusAlpha) {
         selectionConfig.focusAlpha = focusAlpha;
         return this;

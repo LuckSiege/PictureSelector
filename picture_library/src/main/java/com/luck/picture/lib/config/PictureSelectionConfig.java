@@ -46,6 +46,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static PictureWindowAnimationStyle windowAnimationStyle = PictureWindowAnimationStyle.ofDefaultWindowAnimationStyle();
     public String compressSavePath;
     public String suffixType;
+    @Deprecated
     public boolean focusAlpha;
     public String renameCompressFileName;
     public String renameCropFileName;

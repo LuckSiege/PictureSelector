@@ -19,6 +19,7 @@ class Engine {
     private final File tagImg;
     private int srcWidth;
     private int srcHeight;
+    @Deprecated
     private final boolean focusAlpha;
     private static final int DEFAULT_QUALITY = 80;
     private int compressQuality;

@@ -556,6 +556,7 @@ public class Luban {
          * @param focusAlpha <p> true - to keep alpha channel, the compress speed will be slow. </p>
          *                   <p> false - don't keep alpha channel, it might have a black background.</p>
          */
+        @Deprecated
         public Builder setFocusAlpha(boolean focusAlpha) {
             this.focusAlpha = focusAlpha;
             return this;
