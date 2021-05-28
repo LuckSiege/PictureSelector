@@ -119,4 +119,30 @@ public class BitmapUtils {
             PictureFileUtils.close(inputStream);
         }
     }
+
+    /**
+     * 读取图片属性：旋转的角度
+     *
+     * @param inputStream 数据流
+     * @return degree旋转的角度
+     */
+    public static int readPictureDegree(InputStream inputStream) {
+        try {
+            ExifInterface exifInterface = new ExifInterface(inputStream);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    return 90;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    return 180;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    return 270;
+                default:
+                    return 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 }

@@ -4,12 +4,15 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
+
+import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.tools.BitmapUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Responsible for starting compress and managing active and cached resources.
@@ -76,13 +79,19 @@ class Engine {
     File compress() throws IOException {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = computeSize();
-        Bitmap tagBitmap = BitmapFactory.decodeStream(srcImg.open(), null, options);
+        InputStream inputStream = srcImg.open();
+        Bitmap tagBitmap = BitmapFactory.decodeStream(inputStream, null, options);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (isAutoRotating) {
             if (Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
+                int degree = 0;
                 boolean isCut = srcImg.getMedia().isCut() && !TextUtils.isEmpty(srcImg.getMedia().getCutPath());
                 String url = isCut ? srcImg.getMedia().getCutPath() : srcImg.getMedia().getPath();
-                int degree = BitmapUtils.readPictureDegree(context, url);
+                if (PictureMimeType.isContent(url)) {
+                    degree = BitmapUtils.readPictureDegree(inputStream);
+                } else {
+                    degree = BitmapUtils.readPictureDegree(context, url);
+                }
                 if (degree > 0) {
                     tagBitmap = BitmapUtils.rotatingImage(tagBitmap, degree);
                 }
