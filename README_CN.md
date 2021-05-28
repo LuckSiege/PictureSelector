@@ -5,7 +5,7 @@
  
    [我的博客地址](http://blog.csdn.net/luck_mw)   
   
-   [体验Demo](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2021-05-28_090524_v2.7.3-rc01.apk)<br>
+   [体验Demo](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2021-05-28_102327_v2.7.3-rc01.apk)<br>
   
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
@@ -175,6 +175,13 @@ Application下实现如下接口
  PictureCacheManager.deleteCacheDirFile(this,type);
  // 清除所有缓存 例如：压缩、裁剪、视频、音频所生成的临时文件
  PictureCacheManager.deleteAllCacheDirFile(this);
+ // 清除缓存且刷新图库
+ PictureCacheManager.deleteAllCacheDirFile(getContext(), new OnCallbackListener<String>() {
+                 @Override
+                 public void onCall(String absolutePath) {
+                     new PictureMediaScannerConnection(getContext(), absolutePath);
+                 }
+             });
 ```
  
 ## 预览图片 
