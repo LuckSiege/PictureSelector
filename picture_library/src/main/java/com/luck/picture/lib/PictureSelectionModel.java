@@ -813,6 +813,7 @@ public class PictureSelectionModel {
 
     /**
      * @param focusAlpha After compression, the transparent channel is retained
+     *                   <p> 内部会自动判断图片通道 </p>
      * @return
      */
     @Deprecated

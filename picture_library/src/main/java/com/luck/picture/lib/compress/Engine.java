@@ -90,7 +90,7 @@ class Engine {
         }
         if (tagBitmap != null) {
             compressQuality = compressQuality <= 0 || compressQuality > 100 ? DEFAULT_QUALITY : compressQuality;
-            tagBitmap.compress(focusAlpha ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, compressQuality, stream);
+            tagBitmap.compress(focusAlpha || tagBitmap.hasAlpha() ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, compressQuality, stream);
             tagBitmap.recycle();
         }
         FileOutputStream fos = new FileOutputStream(tagImg);
