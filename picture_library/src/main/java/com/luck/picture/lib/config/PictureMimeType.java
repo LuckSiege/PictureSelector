@@ -387,9 +387,25 @@ public final class PictureMimeType {
         }
     }
 
+    public static boolean isHasSuffixJPEG(String suffix) {
+        return JPEG.equalsIgnoreCase(suffix) || JPG.equalsIgnoreCase(suffix);
+    }
+
+    public static boolean isHasSuffixPNG(String suffix) {
+        return PNG.equalsIgnoreCase(suffix);
+    }
+
+    public static boolean isHasSuffixWEBP(String suffix) {
+        return WEBP.equalsIgnoreCase(suffix);
+    }
+
     public final static String JPEG = ".jpeg";
 
+    public final static String JPG = ".jpg";
+
     public final static String PNG = ".png";
+
+    public final static String WEBP = ".webp";
 
     public final static String MP4 = ".mp4";
 

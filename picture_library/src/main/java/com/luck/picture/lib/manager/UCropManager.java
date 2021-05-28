@@ -2,6 +2,7 @@ package com.luck.picture.lib.manager;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.text.TextUtils;
 
@@ -51,6 +52,13 @@ public class UCropManager {
                 TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_CROP_") + suffix : config.renameCropFileName);
         Uri uri = isHttp || SdkVersionUtils.checkedAndroid_Q() ? Uri.parse(originalPath) : Uri.fromFile(new File(originalPath));
         UCrop.Options options = UCropManager.basicOptions(activity);
+        if (PictureMimeType.isHasSuffixJPEG(suffix)) {
+            options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
+        } else if (PictureMimeType.isHasSuffixPNG(suffix)) {
+            options.setCompressionFormat(Bitmap.CompressFormat.PNG);
+        } else if (PictureMimeType.isHasSuffixWEBP(suffix)) {
+            options.setCompressionFormat(Bitmap.CompressFormat.WEBP_LOSSLESS);
+        }
         UCrop.of(uri, Uri.fromFile(file))
                 .withOptions(options)
                 .startAnimationActivity(activity, PictureSelectionConfig.windowAnimationStyle.activityCropEnterAnimation);
@@ -101,6 +109,13 @@ public class UCropManager {
             File file = new File(PictureFileUtils.getDiskCacheDir(activity),
                     TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_CROP_")
                             + suffix : config.camera || size == 1 ? config.renameCropFileName : StringUtils.rename(config.renameCropFileName));
+            if (PictureMimeType.isHasSuffixJPEG(suffix)) {
+                options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
+            } else if (PictureMimeType.isHasSuffixPNG(suffix)) {
+                options.setCompressionFormat(Bitmap.CompressFormat.PNG);
+            } else if (PictureMimeType.isHasSuffixWEBP(suffix)) {
+                options.setCompressionFormat(Bitmap.CompressFormat.WEBP_LOSSLESS);
+            }
             UCrop.of(uri, Uri.fromFile(file)).withOptions(options)
                     .startAnimationMultipleCropActivity(activity, PictureSelectionConfig.windowAnimationStyle.activityCropEnterAnimation);
         }
