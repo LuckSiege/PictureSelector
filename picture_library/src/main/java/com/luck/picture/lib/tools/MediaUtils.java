@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
@@ -16,10 +17,12 @@ import androidx.annotation.Nullable;
 import androidx.exifinterface.media.ExifInterface;
 
 import com.luck.picture.lib.PictureContentResolver;
+import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 
 
@@ -204,6 +207,34 @@ public class MediaUtils {
             }
             mediaExtraInfo.setWidth(exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, ExifInterface.ORIENTATION_NORMAL));
             mediaExtraInfo.setHeight(exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, ExifInterface.ORIENTATION_NORMAL));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            PictureFileUtils.close(inputStream);
+        }
+        return mediaExtraInfo;
+    }
+
+    /**
+     * get Local image width or height
+     *
+     * @param url
+     * @return
+     */
+    public static MediaExtraInfo getImageSize(String url) {
+        MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
+        InputStream inputStream = null;
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            if (PictureMimeType.isContent(url)) {
+                inputStream = PictureContentResolver.getContentResolverOpenInputStream(PictureAppMaster.getInstance().getAppContext(), Uri.parse(url));
+            } else {
+                inputStream = new FileInputStream(url);
+            }
+            BitmapFactory.decodeStream(inputStream, null, options);
+            mediaExtraInfo.setWidth(options.outWidth);
+            mediaExtraInfo.setHeight(options.outHeight);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

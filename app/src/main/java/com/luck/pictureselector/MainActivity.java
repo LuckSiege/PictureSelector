@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -34,7 +33,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.PictureSelectorExternalUtils;
 import com.luck.picture.lib.animators.AnimationType;
+import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.broadcast.BroadcastAction;
 import com.luck.picture.lib.broadcast.BroadcastManager;
 import com.luck.picture.lib.config.PictureConfig;
@@ -43,6 +44,7 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.listener.OnCustomCameraInterfaceListener;
 import com.luck.picture.lib.listener.OnCustomImagePreviewCallback;
@@ -55,6 +57,7 @@ import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.style.PictureSelectorUIStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
+import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
@@ -632,6 +635,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onResult(List<LocalMedia> result) {
             for (LocalMedia media : result) {
+                if (media.getWidth() == 0 || media.getHeight() == 0) {
+                    if (PictureMimeType.isHasImage(media.getMimeType())) {
+                        MediaExtraInfo imageExtraInfo = MediaUtils.getImageSize(media.getPath());
+                        media.setWidth(imageExtraInfo.getWidth());
+                        media.setHeight(imageExtraInfo.getHeight());
+                    } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                        MediaExtraInfo videoExtraInfo = MediaUtils.getVideoSize(PictureAppMaster.getInstance().getAppContext(), media.getPath());
+                        media.setWidth(videoExtraInfo.getWidth());
+                        media.setHeight(videoExtraInfo.getHeight());
+                    }
+                }
                 Log.i(TAG, "文件名: " + media.getFileName());
                 Log.i(TAG, "是否压缩:" + media.isCompressed());
                 Log.i(TAG, "压缩:" + media.getCompressPath());
@@ -646,6 +660,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.i(TAG, "Size: " + media.getSize());
 
                 Log.i(TAG, "onResult: " + media.toString());
+
                 // TODO 可以通过PictureSelectorExternalUtils.getExifInterface();方法获取一些额外的资源信息，如旋转角度、经纬度等信息
             }
             if (mAdapterWeakReference.get() != null) {
