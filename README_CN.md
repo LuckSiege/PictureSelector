@@ -172,9 +172,9 @@ Application下实现如下接口
 ## 缓存清除
 ```sh
  //包括裁剪和压缩后的缓存，要在上传成功后调用，type 指的是图片or视频缓存取决于你设置的ofImage或ofVideo 注意：需要系统sd卡权限  
- PictureFileUtils.deleteCacheDirFile(this,type);
+ PictureCacheManager.deleteCacheDirFile(this,type);
  // 清除所有缓存 例如：压缩、裁剪、视频、音频所生成的临时文件
- PictureFileUtils.deleteAllCacheDirFile(this);
+ PictureCacheManager.deleteAllCacheDirFile(this);
 ```
  
 ## 预览图片 
