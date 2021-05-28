@@ -856,19 +856,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     selectData.clear();
                 }
 
-                // 如果宽高为0，重新获取宽高
-                if (image.getWidth() == 0 || image.getHeight() == 0) {
-                    if (PictureMimeType.isHasVideo(image.getMimeType())) {
-                        MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(getContext(), image.getPath());
-                        image.setWidth(mediaExtraInfo.getWidth());
-                        image.setHeight(mediaExtraInfo.getHeight());
-                    } else if (PictureMimeType.isHasImage(image.getMimeType())) {
-                        MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(getContext(), image.getPath());
-                        image.setWidth(mediaExtraInfo.getWidth());
-                        image.setHeight(mediaExtraInfo.getHeight());
-                    }
-                }
-
                 selectData.add(image);
                 onSelectedChange(true, image);
                 image.setNum(selectData.size());

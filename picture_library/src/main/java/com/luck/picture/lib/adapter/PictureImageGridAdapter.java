@@ -621,18 +621,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             if (config.selectionMode == PictureConfig.SINGLE) {
                 singleRadioMediaImage();
             }
-            // If the width and height are 0, regain the width and height
-            if (image.getWidth() == 0 || image.getHeight() == 0) {
-                if (PictureMimeType.isHasVideo(image.getMimeType())) {
-                    MediaExtraInfo mediaExtraInfo = MediaUtils.getVideoSize(contentHolder.itemView.getContext(), image.getPath());
-                    image.setWidth(mediaExtraInfo.getWidth());
-                    image.setHeight(mediaExtraInfo.getHeight());
-                } else if (PictureMimeType.isHasImage(image.getMimeType())) {
-                    MediaExtraInfo mediaExtraInfo = MediaUtils.getImageSize(contentHolder.itemView.getContext(), image.getPath());
-                    image.setWidth(mediaExtraInfo.getWidth());
-                    image.setHeight(mediaExtraInfo.getHeight());
-                }
-            }
 
             selectData.add(image);
             image.setNum(selectData.size());
