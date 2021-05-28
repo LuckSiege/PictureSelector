@@ -114,11 +114,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            // 被回收
-        } else {
-            clearCache();
-        }
         setContentView(R.layout.activity_main);
         themeId = R.style.picture_default_style;
         mSelectorUIStyle = PictureSelectorUIStyle.ofDefaultStyle();
@@ -1521,10 +1516,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (broadcastReceiver != null) {
-            BroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastReceiver,
-                    BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
-        }
+        BroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastReceiver, BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
+        clearCache();
     }
 
     public Context getContext() {
