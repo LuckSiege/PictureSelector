@@ -11,6 +11,7 @@ import com.luck.picture.lib.config.PictureConfig;
  * @author：luck
  * @date：2017-5-24 16:21
  * @describe：Media Entity
+ * @deprecated <a href="https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E8%B7%AF%E5%BE%84%E8%AF%B4%E6%98%8E">
  */
 
 public class LocalMedia implements Parcelable {
