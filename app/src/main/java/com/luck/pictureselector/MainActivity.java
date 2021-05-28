@@ -33,7 +33,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.PictureSelector;
-import com.luck.picture.lib.PictureSelectorExternalUtils;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.broadcast.BroadcastAction;
@@ -796,6 +795,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // 5.media.getAndroidQToPath();Android Q版本特有返回的字段，但如果开启了压缩或裁剪还是取裁剪或压缩路径；注意：.isAndroidQTransform 为false 此字段将返回空
                 // 如果同时开启裁剪和压缩，则取压缩路径为准因为是先裁剪后压缩
                 for (LocalMedia media : selectList) {
+                    if (media.getWidth() == 0 || media.getHeight() == 0) {
+                        if (PictureMimeType.isHasImage(media.getMimeType())) {
+                            MediaExtraInfo imageExtraInfo = MediaUtils.getImageSize(media.getPath());
+                            media.setWidth(imageExtraInfo.getWidth());
+                            media.setHeight(imageExtraInfo.getHeight());
+                        } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                            MediaExtraInfo videoExtraInfo = MediaUtils.getVideoSize(getContext(), media.getPath());
+                            media.setWidth(videoExtraInfo.getWidth());
+                            media.setHeight(videoExtraInfo.getHeight());
+                        }
+                    }
                     Log.i(TAG, "是否压缩:" + media.isCompressed());
                     Log.i(TAG, "压缩:" + media.getCompressPath());
                     Log.i(TAG, "原图:" + media.getPath());
