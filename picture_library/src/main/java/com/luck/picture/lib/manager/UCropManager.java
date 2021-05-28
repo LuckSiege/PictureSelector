@@ -52,13 +52,6 @@ public class UCropManager {
                 TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_CROP_") + suffix : config.renameCropFileName);
         Uri uri = isHttp || SdkVersionUtils.checkedAndroid_Q() ? Uri.parse(originalPath) : Uri.fromFile(new File(originalPath));
         UCrop.Options options = UCropManager.basicOptions(activity);
-        if (PictureMimeType.isHasSuffixJPEG(suffix)) {
-            options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
-        } else if (PictureMimeType.isHasSuffixPNG(suffix)) {
-            options.setCompressionFormat(Bitmap.CompressFormat.PNG);
-        } else if (PictureMimeType.isHasSuffixWEBP(suffix)) {
-            options.setCompressionFormat(Bitmap.CompressFormat.WEBP_LOSSLESS);
-        }
         UCrop.of(uri, Uri.fromFile(file))
                 .withOptions(options)
                 .startAnimationActivity(activity, PictureSelectionConfig.windowAnimationStyle.activityCropEnterAnimation);
@@ -109,13 +102,6 @@ public class UCropManager {
             File file = new File(PictureFileUtils.getDiskCacheDir(activity),
                     TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_CROP_")
                             + suffix : config.camera || size == 1 ? config.renameCropFileName : StringUtils.rename(config.renameCropFileName));
-            if (PictureMimeType.isHasSuffixJPEG(suffix)) {
-                options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
-            } else if (PictureMimeType.isHasSuffixPNG(suffix)) {
-                options.setCompressionFormat(Bitmap.CompressFormat.PNG);
-            } else if (PictureMimeType.isHasSuffixWEBP(suffix)) {
-                options.setCompressionFormat(Bitmap.CompressFormat.WEBP_LOSSLESS);
-            }
             UCrop.of(uri, Uri.fromFile(file)).withOptions(options)
                     .startAnimationMultipleCropActivity(activity, PictureSelectionConfig.windowAnimationStyle.activityCropEnterAnimation);
         }
@@ -194,6 +180,9 @@ public class UCropManager {
         options.isMultipleSkipCrop(config.isMultipleSkipCrop);
         options.setHideBottomControls(config.hideBottomControls);
         options.setCompressionQuality(config.cropCompressQuality);
+        if (!TextUtils.isEmpty(config.cropCompressFormat)) {
+            options.setCompressionFormat(Bitmap.CompressFormat.valueOf(config.cropCompressFormat));
+        }
         options.setRenameCropFileName(config.renameCropFileName);
         options.setRequestedOrientation(config.requestedOrientation);
         options.isCamera(config.camera);

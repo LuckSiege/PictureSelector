@@ -2,6 +2,7 @@ package com.luck.picture.lib;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.text.TextUtils;
 
@@ -762,6 +763,16 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel cutOutQuality(int cutQuality) {
         selectionConfig.cropCompressQuality = cutQuality;
+        return this;
+    }
+
+    /**
+     * @param cropCompressFormat crop compress format
+     *                           Use {@link Bitmap.CompressFormat.JPEG | Bitmap.CompressFormat.PNG  | Bitmap.CompressFormat.WEBP_LOSSLESS}
+     * @return
+     */
+    public PictureSelectionModel cutCompressFormat(String cropCompressFormat) {
+        selectionConfig.cropCompressFormat = cropCompressFormat;
         return this;
     }
 

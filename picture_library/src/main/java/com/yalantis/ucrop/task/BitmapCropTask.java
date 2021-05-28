@@ -52,7 +52,7 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
     private float mCurrentScale, mCurrentAngle;
     private final int mMaxResultImageSizeX, mMaxResultImageSizeY;
 
-    private final Bitmap.CompressFormat mCompressFormat;
+    private Bitmap.CompressFormat mCompressFormat;
     private final int mCompressQuality;
     private final String mImageInputPath, mImageOutputPath;
     private final BitmapCropCallback mCropCallback;
@@ -194,6 +194,11 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
         OutputStream outputStream = null;
         try {
             outputStream = PictureContentResolver.getContentResolverOpenOutputStream(context, Uri.fromFile(new File(mImageOutputPath)));
+            if (croppedBitmap.hasAlpha()) {
+                if (!mCompressFormat.equals(Bitmap.CompressFormat.PNG)) {
+                    mCompressFormat = Bitmap.CompressFormat.PNG;
+                }
+            }
             croppedBitmap.compress(mCompressFormat, mCompressQuality, outputStream);
             croppedBitmap.recycle();
         } finally {
