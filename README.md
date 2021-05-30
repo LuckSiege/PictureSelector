@@ -167,6 +167,13 @@ Application implementing interface
  PictureCacheManager.deleteAllCacheDirFile(this);
  // Clear the cache and refresh the gallery
   PictureCacheManager.deleteAllCacheDirRefreshFile(this);
+ or
+ PictureCacheManager.deleteAllCacheDirFile(this, new OnCallbackListener<String>() {
+            @Override
+            public void onCall(String absolutePath) {
+                // Refresh the photo album
+            }
+        });
 ```
  
 ## Preview Image
