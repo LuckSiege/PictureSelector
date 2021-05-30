@@ -167,7 +167,7 @@ Application implementing interface
  PictureCacheManager.deleteAllCacheDirFile(this);
  // Clear the cache and refresh the gallery
   PictureCacheManager.deleteAllCacheDirRefreshFile(this);
- or
+ // Clear the cache and refresh the gallery
  PictureCacheManager.deleteAllCacheDirFile(this, new OnCallbackListener<String>() {
             @Override
             public void onCall(String absolutePath) {
