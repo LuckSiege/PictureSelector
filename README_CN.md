@@ -178,7 +178,13 @@ Application下实现如下接口
  PictureCacheManager.deleteAllCacheDirFile(this);
  // 清除缓存且刷新图库
  PictureCacheManager.deleteAllCacheDirRefreshFile(this);
-
+ // 清除缓存且刷新图库
+ PictureCacheManager.deleteAllCacheDirFile(this, new OnCallbackListener<String>() {
+            @Override
+            public void onCall(String absolutePath) {
+                // 清空缓存并刷新相册
+            }
+        });
 ```
  
 ## 预览图片 
