@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.manager.PictureCacheManager;
-import com.luck.picture.lib.tools.PictureFileUtils;
 
 public class PhotoFragmentActivity extends AppCompatActivity {
     private PhotoFragment fragment;

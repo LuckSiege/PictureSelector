@@ -421,13 +421,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 清空图片缓存，包括裁剪、压缩后的图片 注意:必须要在上传完成后调用 必须要获取权限
         if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             //PictureCacheManager.deleteCacheDirFile(this, PictureMimeType.ofImage());
-            PictureCacheManager.deleteAllCacheDirFile(getContext(), new OnCallbackListener<String>() {
-                @Override
-                public void onCall(String absolutePath) {
-                    new PictureMediaScannerConnection(getContext(), absolutePath);
-                    Log.i(TAG, "刷新图库:" + absolutePath);
-                }
-            });
+            PictureCacheManager.deleteAllCacheDirRefreshFile(getContext());
         } else {
             PermissionChecker.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
