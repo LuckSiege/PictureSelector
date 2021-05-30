@@ -177,12 +177,8 @@ Application下实现如下接口
  // 清除所有缓存 例如：压缩、裁剪、视频、音频所生成的临时文件
  PictureCacheManager.deleteAllCacheDirFile(this);
  // 清除缓存且刷新图库
- PictureCacheManager.deleteAllCacheDirFile(getContext(), new OnCallbackListener<String>() {
-                 @Override
-                 public void onCall(String absolutePath) {
-                     new PictureMediaScannerConnection(getContext(), absolutePath);
-                 }
-             });
+ PictureCacheManager.deleteAllCacheDirRefreshFile(this);
+
 ```
  
 ## 预览图片 
