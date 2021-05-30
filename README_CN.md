@@ -5,7 +5,7 @@
  
    [我的博客地址](http://blog.csdn.net/luck_mw)   
   
-   [体验Demo](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2021-05-30_020221_v2.7.3-rc01.apk)<br>
+   [体验Demo](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/app_2021-05-30_093111_v2.7.3-rc02.apk)<br>
   
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
@@ -19,7 +19,7 @@
 -[如何提Issues?](https://github.com/LuckSiege/PictureSelector/wiki/%E5%A6%82%E4%BD%95%E6%8F%90Issues%3F)<br>
 -[功能特点](https://github.com/LuckSiege/PictureSelector/wiki/%E5%8A%9F%E8%83%BD%E7%89%B9%E7%82%B9)<br>
 -[LocalMedia路径说明](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E8%B7%AF%E5%BE%84%E8%AF%B4%E6%98%8E)<br>
--[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.7.3-rc01)<br>
+-[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.7.3-rc02)<br>
 -[主题配置-Xml方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98-Xml%E6%96%B9%E5%BC%8F)<br>
 -[主题配置-Code方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%A8%E6%80%81%E4%B8%BB%E9%A2%98(%E5%8C%85%E5%90%AB%E8%A3%81%E5%89%AA%E3%80%81%E7%9B%B8%E5%86%8C%E5%90%AF%E5%8A%A8%E5%8A%A8%E7%94%BB)-Code%E6%96%B9%E5%BC%8F)<br>
 -[演示效果](#演示效果)<br>
@@ -47,7 +47,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'io.github.lucksiege:pictureselector:v2.7.3-rc01'
+  implementation 'io.github.lucksiege:pictureselector:v2.7.3-rc02'
 }
 ```
 
@@ -57,7 +57,7 @@ Or Maven:
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>v2.7.3-rc01</version>
+  <version>v2.7.3-rc02</version>
 </dependency>
 ```
 
