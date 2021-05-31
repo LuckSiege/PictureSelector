@@ -78,7 +78,7 @@ Or Maven:
             switch (requestCode) {
                 case PictureConfig.CHOOSE_REQUEST:
                     // 结果回调
-                    List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
+                    List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
                     break;
                 default:
                     break;
@@ -121,7 +121,7 @@ onActivityResult
             switch (requestCode) {
                 case PictureConfig.REQUEST_CAMERA:
                     // 结果回调
-                    List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
+                    List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
                     break;
                 default:
                     break;
@@ -190,7 +190,7 @@ PictureSelector.create(this)
  .themeStyle(R.style.picture_default_style)
  .isNotPreviewDownload(true)
  .imageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
- .openExternalPreview(position, selectList);
+ .openExternalPreview(position, result);
 
 ```
 ## 预览视频

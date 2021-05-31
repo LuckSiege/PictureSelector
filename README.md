@@ -67,7 +67,7 @@ Quick call, more functions [More](https://github.com/LuckSiege/PictureSelector/w
             switch (requestCode) {
                 case PictureConfig.CHOOSE_REQUEST:
                     // onResult Callback
-                    List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
+                    List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
                     break;
                 default:
                     break;
@@ -110,7 +110,7 @@ onActivityResult
             switch (requestCode) {
                 case PictureConfig.REQUEST_CAMERA:
                     // onResult Callback
-                    List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(data);
+                    List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
                     break;
                 default:
                     break;
@@ -178,7 +178,7 @@ PictureSelector.create(this)
  .themeStyle(R.style.picture_default_style)
  .isNotPreviewDownload(true)
  .imageEngine(GlideEngine.createGlideEngine())
- .openExternalPreview(position, selectList);
+ .openExternalPreview(position, result);
 
 ```
 ## Preview Video
