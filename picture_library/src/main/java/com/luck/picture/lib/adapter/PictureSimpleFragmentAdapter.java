@@ -142,7 +142,7 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
                     .inflate(R.layout.picture_image_preview, container, false);
             mCacheView.put(position, contentView);
         }
-        PhotoView imageView = contentView.findViewById(R.id.preview_image);
+        PhotoView photoView = contentView.findViewById(R.id.preview_image);
         SubsamplingScaleImageView longImg = contentView.findViewById(R.id.longImg);
         ImageView ivPlay = contentView.findViewById(R.id.iv_play);
         LocalMedia media = getItem(position);
@@ -172,8 +172,8 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
                 }
             });
             boolean eqLongImg = MediaUtils.isLongImg(media);
-            imageView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
-            imageView.setOnViewTapListener((view, x, y) -> {
+            photoView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
+            photoView.setOnViewTapListener((view, x, y) -> {
                 if (onBackPressed != null) {
                     onBackPressed.onActivityBackPressed();
                 }
@@ -188,7 +188,7 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
             if (isGif && !media.isCompressed()) {
                 if (config != null && PictureSelectionConfig.imageEngine != null) {
                     PictureSelectionConfig.imageEngine.loadAsGifImage
-                            (contentView.getContext(), path, imageView);
+                            (contentView.getContext(), path, photoView);
                 }
             } else {
                 if (config != null && PictureSelectionConfig.imageEngine != null) {
@@ -197,12 +197,11 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
                                 ? Uri.parse(path) : Uri.fromFile(new File(path)), longImg);
                     } else {
                         PictureSelectionConfig.imageEngine.loadImage
-                                (contentView.getContext(), path, imageView);
+                                (contentView.getContext(), path, photoView);
                     }
                 }
             }
         }
-
         (container).addView(contentView, 0);
         return contentView;
     }
