@@ -15,12 +15,12 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.ImageViewTarget;
-import com.davemorrissey.labs.subscaleview.ImageSource;
-import com.davemorrissey.labs.subscaleview.ImageViewState;
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.listener.OnImageCompleteCallback;
 import com.luck.picture.lib.tools.MediaUtils;
+import com.luck.picture.lib.widget.longimage.ImageSource;
+import com.luck.picture.lib.widget.longimage.ImageViewState;
+import com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView;
 
 /**
  * @author：luck
@@ -94,7 +94,7 @@ public class GlideEngine implements ImageEngine {
                                 longImageView.setDoubleTapZoomDuration(100);
                                 longImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
                                 longImageView.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
-                                longImageView.setImage(ImageSource.bitmap(resource),
+                                longImageView.setImage(ImageSource.cachedBitmap(resource),
                                         new ImageViewState(0, new PointF(0, 0), 0));
                             } else {
                                 // 普通图片
@@ -137,7 +137,7 @@ public class GlideEngine implements ImageEngine {
                                 longImageView.setDoubleTapZoomDuration(100);
                                 longImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
                                 longImageView.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
-                                longImageView.setImage(ImageSource.bitmap(resource),
+                                longImageView.setImage(ImageSource.cachedBitmap(resource),
                                         new ImageViewState(0, new PointF(0, 0), 0));
                             } else {
                                 // 普通图片
