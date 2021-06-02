@@ -5,8 +5,8 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.luck.picture.lib.listener.OnImageCompleteCallback;
-import com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView;
 
 /**
  * @author：luck
