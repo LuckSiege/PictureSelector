@@ -1,18 +1,4 @@
-/*******************************************************************************
- * Copyright 2011, 2012 Chris Banes.
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
+
 package com.luck.picture.lib.photoview;
 
 import android.content.Context;
@@ -32,17 +18,17 @@ import android.widget.ImageView.ScaleType;
 import android.widget.OverScroller;
 
 /**
- * The component of {@link PhotoView} which does the work allowing for zooming, scaling, panning, etc.
- * It is made public in case you need to subclass something other than {@link ImageView} and still
- * gain the functionality that {@link PhotoView} offers
+ * The component of {@link com.github.chrisbanes.photoview.PhotoView} which does the work allowing for zooming, scaling, panning, etc.
+ * It is made public in case you need to subclass something other than AppCompatImageView and still
+ * gain the functionality that {@link com.github.chrisbanes.photoview.PhotoView} offers
  */
 public class PhotoViewAttacher implements View.OnTouchListener,
         View.OnLayoutChangeListener {
 
-    private static float DEFAULT_MAX_SCALE = 3.0f;
-    private static float DEFAULT_MID_SCALE = 1.75f;
-    private static float DEFAULT_MIN_SCALE = 1.0f;
-    private static int DEFAULT_ZOOM_DURATION = 200;
+    private static final float DEFAULT_MAX_SCALE = 3.0f;
+    private static final float DEFAULT_MID_SCALE = 1.75f;
+    private static final float DEFAULT_MIN_SCALE = 1.0f;
+    private static final int DEFAULT_ZOOM_DURATION = 200;
 
     private static final int HORIZONTAL_EDGE_NONE = -1;
     private static final int HORIZONTAL_EDGE_LEFT = 0;
@@ -52,7 +38,7 @@ public class PhotoViewAttacher implements View.OnTouchListener,
     private static final int VERTICAL_EDGE_TOP = 0;
     private static final int VERTICAL_EDGE_BOTTOM = 1;
     private static final int VERTICAL_EDGE_BOTH = 2;
-    private static int SINGLE_TOUCH = 1;
+    private static final int SINGLE_TOUCH = 1;
 
     private Interpolator mInterpolator = new AccelerateDecelerateInterpolator();
     private int mZoomDuration = DEFAULT_ZOOM_DURATION;
@@ -63,7 +49,7 @@ public class PhotoViewAttacher implements View.OnTouchListener,
     private boolean mAllowParentInterceptOnEdge = true;
     private boolean mBlockParentIntercept = false;
 
-    private ImageView mImageView;
+    private final ImageView mImageView;
 
     // Gesture Detectors
     private GestureDetector mGestureDetector;
@@ -95,7 +81,7 @@ public class PhotoViewAttacher implements View.OnTouchListener,
     private boolean mZoomEnabled = true;
     private ScaleType mScaleType = ScaleType.FIT_CENTER;
 
-    private OnGestureListener onGestureListener = new OnGestureListener() {
+    private final OnGestureListener onGestureListener = new OnGestureListener() {
         @Override
         public void onDrag(float dx, float dy) {
             if (mScaleDragDetector.isScaling()) {
@@ -144,11 +130,17 @@ public class PhotoViewAttacher implements View.OnTouchListener,
 
         @Override
         public void onScale(float scaleFactor, float focusX, float focusY) {
+            onScale(scaleFactor, focusX, focusY, 0, 0);
+        }
+
+        @Override
+        public void onScale(float scaleFactor, float focusX, float focusY, float dx, float dy) {
             if (getScale() < mMaxScale || scaleFactor < 1f) {
                 if (mScaleChangeListener != null) {
                     mScaleChangeListener.onScaleChange(scaleFactor, focusX, focusY);
                 }
                 mSuppMatrix.postScale(scaleFactor, scaleFactor, focusX, focusY);
+                mSuppMatrix.postTranslate(dx, dy);
                 checkAndDisplayMatrix();
             }
         }
