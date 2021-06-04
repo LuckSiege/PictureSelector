@@ -177,6 +177,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isAutoRotating = true;
     public boolean isSyncCover = false;
     public String cropCompressFormat;
+    public boolean isAutoScalePreviewImage = true;
     /**
      * 内测专用###########
      */
@@ -290,6 +291,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isAutoRotating = in.readByte() != 0;
         isSyncCover = in.readByte() != 0;
         cropCompressFormat = in.readString();
+        isAutoScalePreviewImage = in.readByte() != 0;
         isFallbackVersion = in.readByte() != 0;
         isFallbackVersion2 = in.readByte() != 0;
         isFallbackVersion3 = in.readByte() != 0;
@@ -401,6 +403,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isAutoRotating ? 1 : 0));
         dest.writeByte((byte) (isSyncCover ? 1 : 0));
         dest.writeString(cropCompressFormat);
+        dest.writeByte((byte) (isAutoScalePreviewImage ? 1 : 0));
         dest.writeByte((byte) (isFallbackVersion ? 1 : 0));
         dest.writeByte((byte) (isFallbackVersion2 ? 1 : 0));
         dest.writeByte((byte) (isFallbackVersion3 ? 1 : 0));
@@ -532,6 +535,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isAutoRotating = true;
         isSyncCover = !SdkVersionUtils.checkedAndroid_Q();
         cropCompressFormat = "";
+        isAutoScalePreviewImage = true;
     }
 
     public static PictureSelectionConfig getInstance() {

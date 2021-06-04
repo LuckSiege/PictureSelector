@@ -259,21 +259,21 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             // 视频播放按钮
             ImageView ivPlay = contentView.findViewById(R.id.iv_play);
             LocalMedia media = images.get(position);
-
-            float width = media.getWidth();
-            float height = media.getHeight();
-            //计算如果让照片是屏幕的宽，选要乘以多少？
-            float scale = mScreenWidth / width;
-            if (scale >= MIN_SCALE && width > 0 && height > 0) {
-                // 只需让图片的宽是屏幕的宽，高乘以比例
-                int displayHeight = (int) (mScreenHeight + Math.ceil(width * height / width));
-                //最终让图片按照宽是屏幕 高是等比例缩放的大小
-                FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) photoView.getLayoutParams();
-                layoutParams.width = mScreenWidth;
-                layoutParams.height = displayHeight;
-                layoutParams.gravity = Gravity.CENTER;
+            if (config.isAutoScalePreviewImage) {
+                float width = media.getWidth();
+                float height = media.getHeight();
+                //计算如果让照片是屏幕的宽，选要乘以多少？
+                float scale = mScreenWidth / width;
+                if (scale >= MIN_SCALE && width > 0 && height > 0) {
+                    // 只需让图片的宽是屏幕的宽，高乘以比例
+                    int displayHeight = (int) Math.ceil(width * height / width);
+                    //最终让图片按照宽是屏幕 高是等比例缩放的大小
+                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) photoView.getLayoutParams();
+                    layoutParams.width = mScreenWidth;
+                    layoutParams.height = Math.max(displayHeight, mScreenHeight);
+                    layoutParams.gravity = Gravity.CENTER;
+                }
             }
-
             final String path;
             if (media.isCut() && !media.isCompressed()) {
                 // 裁剪过
