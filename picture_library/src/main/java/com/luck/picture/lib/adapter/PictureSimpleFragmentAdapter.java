@@ -165,7 +165,7 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
                 //最终让图片按照宽是屏幕 高是等比例缩放的大小
                 FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) photoView.getLayoutParams();
                 layoutParams.width = mScreenWidth;
-                layoutParams.height = displayHeight < mScreenHeight ? displayHeight * 2 : displayHeight;
+                layoutParams.height = displayHeight < mScreenHeight ? displayHeight + mScreenHeight : displayHeight;
                 layoutParams.gravity = Gravity.CENTER;
             }
         }
