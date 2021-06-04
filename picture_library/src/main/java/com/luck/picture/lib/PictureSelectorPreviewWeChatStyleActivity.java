@@ -160,6 +160,10 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                 pictureLeftBack.setImageResource(R.drawable.picture_icon_back);
             }
 
+            if (PictureSelectionConfig.uiStyle.picture_bottom_gallery_dividerColor != 0) {
+                bottomLine.setBackgroundColor(PictureSelectionConfig.uiStyle.picture_bottom_gallery_dividerColor);
+            }
+
             if (PictureSelectionConfig.uiStyle.picture_bottom_gallery_backgroundColor != 0) {
                 mRvGallery.setBackgroundColor(PictureSelectionConfig.uiStyle.picture_bottom_gallery_backgroundColor);
             }

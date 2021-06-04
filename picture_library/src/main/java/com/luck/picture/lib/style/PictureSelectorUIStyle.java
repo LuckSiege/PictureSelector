@@ -250,6 +250,11 @@ public class PictureSelectorUIStyle {
     public int picture_bottom_gallery_frameBackground;
 
     /**
+     * 底部gallery分割线(新样式支持)
+     */
+    public int picture_bottom_gallery_dividerColor;
+
+    /**
      * 底部gallery背景色(新样式支持)
      */
     public int picture_bottom_gallery_backgroundColor;
@@ -643,6 +648,7 @@ public class PictureSelectorUIStyle {
             uiStyle.picture_bottom_selectedTextSize = 16;
             uiStyle.picture_bottom_gallery_height = ScreenUtils.dip2px(appContext, 80);
             uiStyle.picture_bottom_gallery_backgroundColor = Color.parseColor("#F2393a3e");
+            uiStyle.picture_bottom_gallery_dividerColor = Color.parseColor("#666666");
             uiStyle.picture_bottom_gallery_frameBackground = R.drawable.picture_preview_gallery_border_bg;
         }
 
