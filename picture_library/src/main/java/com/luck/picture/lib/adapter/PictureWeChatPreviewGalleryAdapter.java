@@ -73,8 +73,8 @@ public class PictureWeChatPreviewGalleryAdapter
             }
             holder.ivPlay.setVisibility(PictureMimeType.isHasVideo(item.getMimeType()) ? View.VISIBLE : View.GONE);
             holder.itemView.setOnClickListener(v -> {
-                if (listener != null && holder.getAdapterPosition() >= 0) {
-                    listener.onItemClick(holder.getAdapterPosition(), getItem(position), v);
+                if (listener != null && holder.getAbsoluteAdapterPosition() >= 0) {
+                    listener.onItemClick(holder.getAbsoluteAdapterPosition(), getItem(position), v);
                 }
             });
         }
