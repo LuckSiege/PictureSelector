@@ -605,7 +605,7 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_bottom_previewTextColor = new int[]{Color.parseColor("#9b9b9b"), Color.parseColor("#FFFFFF")};
 
         uiStyle.picture_bottom_completeTextColor = new int[]{Color.parseColor("#9b9b9b"), Color.parseColor("#FA632D")};
-        uiStyle.picture_bottom_barBackgroundColor = Color.parseColor("#393a3e");
+        uiStyle.picture_bottom_barBackgroundColor = Color.parseColor("#F2393a3e");
 
         uiStyle.picture_adapter_item_camera_backgroundColor = Color.parseColor("#999999");
         uiStyle.picture_adapter_item_camera_textColor = Color.parseColor("#FFFFFF");
@@ -642,7 +642,7 @@ public class PictureSelectorUIStyle {
             uiStyle.picture_bottom_selectedTextColor = Color.parseColor("#FFFFFF");
             uiStyle.picture_bottom_selectedTextSize = 16;
             uiStyle.picture_bottom_gallery_height = ScreenUtils.dip2px(appContext, 80);
-            uiStyle.picture_bottom_gallery_backgroundColor = Color.parseColor("#a0393a3e");
+            uiStyle.picture_bottom_gallery_backgroundColor = Color.parseColor("#F2393a3e");
             uiStyle.picture_bottom_gallery_frameBackground = R.drawable.picture_preview_gallery_border_bg;
         }
 

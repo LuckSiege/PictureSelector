@@ -1,13 +1,16 @@
 package com.luck.picture.lib.adapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -21,6 +24,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.photoview.PhotoView;
 import com.luck.picture.lib.tools.JumpUtils;
 import com.luck.picture.lib.tools.MediaUtils;
+import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.widget.longimage.ImageSource;
 import com.luck.picture.lib.widget.longimage.ImageViewState;
 import com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView;
@@ -41,6 +45,8 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
     private List<LocalMedia> data;
     private final OnCallBackActivity onBackPressed;
     private final PictureSelectionConfig config;
+    private final int mScreenWidth, mScreenHeight;
+    private static final float MIN_SCALE = 1.0F;
     /**
      * Maximum number of cached images
      */
@@ -70,12 +76,14 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
         void onActivityBackPressed();
     }
 
-    public PictureSimpleFragmentAdapter(PictureSelectionConfig config,
+    public PictureSimpleFragmentAdapter(Context context, PictureSelectionConfig config,
                                         OnCallBackActivity onBackPressed) {
         super();
         this.config = config;
         this.onBackPressed = onBackPressed;
         this.mCacheView = new SparseArray<>();
+        this.mScreenWidth = ScreenUtils.getScreenWidth(context);
+        this.mScreenHeight = ScreenUtils.getScreenHeight(context);
     }
 
     /**
@@ -146,59 +154,72 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
         SubsamplingScaleImageView longImg = contentView.findViewById(R.id.longImg);
         ImageView ivPlay = contentView.findViewById(R.id.iv_play);
         LocalMedia media = getItem(position);
-        if (media != null) {
-            final String mimeType = media.getMimeType();
-            final String path;
-            if (media.isCut() && !media.isCompressed()) {
-                path = media.getCutPath();
-            } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
-                path = media.getCompressPath();
-            } else {
-                path = media.getPath();
-            }
-            boolean isGif = PictureMimeType.isGif(mimeType);
-            boolean isHasVideo = PictureMimeType.isHasVideo(mimeType);
-            ivPlay.setVisibility(isHasVideo ? View.VISIBLE : View.GONE);
-            ivPlay.setOnClickListener(v -> {
-                if (PictureSelectionConfig.customVideoPlayCallback != null) {
-                    PictureSelectionConfig.customVideoPlayCallback.startPlayVideo(media);
-                } else {
-                    Intent intent = new Intent();
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean(PictureConfig.EXTRA_PREVIEW_VIDEO, true);
-                    bundle.putString(PictureConfig.EXTRA_VIDEO_PATH, path);
-                    intent.putExtras(bundle);
-                    JumpUtils.startPictureVideoPlayActivity(container.getContext(), bundle, PictureConfig.PREVIEW_VIDEO_CODE);
-                }
-            });
-            boolean eqLongImg = MediaUtils.isLongImg(media);
-            photoView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
-            photoView.setOnViewTapListener((view, x, y) -> {
-                if (onBackPressed != null) {
-                    onBackPressed.onActivityBackPressed();
-                }
-            });
-            longImg.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
-            longImg.setOnClickListener(v -> {
-                if (onBackPressed != null) {
-                    onBackPressed.onActivityBackPressed();
-                }
-            });
 
-            if (isGif && !media.isCompressed()) {
-                if (config != null && PictureSelectionConfig.imageEngine != null) {
-                    PictureSelectionConfig.imageEngine.loadAsGifImage
-                            (contentView.getContext(), path, photoView);
-                }
+        float width = media.getWidth();
+        float height = media.getHeight();
+        //计算如果让照片是屏幕的宽，选要乘以多少？
+        float scale = mScreenWidth / width;
+        if (scale >= MIN_SCALE && width > 0 && height > 0) {
+            // 只需让图片的宽是屏幕的宽，高乘以比例
+            int displayHeight = (int) (mScreenHeight + Math.ceil(width * height / width));
+            //最终让图片按照宽是屏幕 高是等比例缩放的大小
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) photoView.getLayoutParams();
+            layoutParams.width = mScreenWidth;
+            layoutParams.height = displayHeight;
+            layoutParams.gravity = Gravity.CENTER;
+        }
+
+        final String mimeType = media.getMimeType();
+        final String path;
+        if (media.isCut() && !media.isCompressed()) {
+            path = media.getCutPath();
+        } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
+            path = media.getCompressPath();
+        } else {
+            path = media.getPath();
+        }
+        boolean isGif = PictureMimeType.isGif(mimeType);
+        boolean isHasVideo = PictureMimeType.isHasVideo(mimeType);
+        ivPlay.setVisibility(isHasVideo ? View.VISIBLE : View.GONE);
+        ivPlay.setOnClickListener(v -> {
+            if (PictureSelectionConfig.customVideoPlayCallback != null) {
+                PictureSelectionConfig.customVideoPlayCallback.startPlayVideo(media);
             } else {
-                if (config != null && PictureSelectionConfig.imageEngine != null) {
-                    if (eqLongImg) {
-                        displayLongPic(PictureMimeType.isContent(path)
-                                ? Uri.parse(path) : Uri.fromFile(new File(path)), longImg);
-                    } else {
-                        PictureSelectionConfig.imageEngine.loadImage
-                                (contentView.getContext(), path, photoView);
-                    }
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(PictureConfig.EXTRA_PREVIEW_VIDEO, true);
+                bundle.putString(PictureConfig.EXTRA_VIDEO_PATH, path);
+                intent.putExtras(bundle);
+                JumpUtils.startPictureVideoPlayActivity(container.getContext(), bundle, PictureConfig.PREVIEW_VIDEO_CODE);
+            }
+        });
+        boolean eqLongImg = MediaUtils.isLongImg(media);
+        photoView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
+        photoView.setOnViewTapListener((view, x, y) -> {
+            if (onBackPressed != null) {
+                onBackPressed.onActivityBackPressed();
+            }
+        });
+        longImg.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
+        longImg.setOnClickListener(v -> {
+            if (onBackPressed != null) {
+                onBackPressed.onActivityBackPressed();
+            }
+        });
+
+        if (isGif && !media.isCompressed()) {
+            if (config != null && PictureSelectionConfig.imageEngine != null) {
+                PictureSelectionConfig.imageEngine.loadAsGifImage
+                        (contentView.getContext(), path, photoView);
+            }
+        } else {
+            if (config != null && PictureSelectionConfig.imageEngine != null) {
+                if (eqLongImg) {
+                    displayLongPic(PictureMimeType.isContent(path)
+                            ? Uri.parse(path) : Uri.fromFile(new File(path)), longImg);
+                } else {
+                    PictureSelectionConfig.imageEngine.loadImage
+                            (contentView.getContext(), path, photoView);
                 }
             }
         }

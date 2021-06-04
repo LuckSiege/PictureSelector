@@ -558,7 +558,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      * @param list
      */
     private void initViewPageAdapterData(List<LocalMedia> list) {
-        adapter = new PictureSimpleFragmentAdapter(config, this);
+        adapter = new PictureSimpleFragmentAdapter(getContext(),config, this);
         adapter.bindData(list);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(position);

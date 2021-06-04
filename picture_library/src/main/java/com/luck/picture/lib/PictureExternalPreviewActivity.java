@@ -11,10 +11,12 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,6 +41,7 @@ import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.JumpUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
+import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
@@ -64,7 +67,8 @@ import okio.Okio;
  * @描述: 预览图片
  */
 public class PictureExternalPreviewActivity extends PictureBaseActivity implements View.OnClickListener {
-
+    private static final float MIN_SCALE = 1.0F;
+    private int mScreenWidth, mScreenHeight;
     private ImageButton ibLeftBack;
     private TextView tvTitle;
     private PreviewViewPager viewPager;
@@ -90,6 +94,8 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         ibDelete = findViewById(R.id.ib_delete);
         viewPager = findViewById(R.id.preview_pager);
         position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
+        mScreenWidth = ScreenUtils.getScreenWidth(getContext());
+        mScreenHeight = ScreenUtils.getScreenHeight(getContext());
         List<LocalMedia> mediaList = getIntent().getParcelableArrayListExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
         if (mediaList != null && mediaList.size() > 0) {
             images.addAll(mediaList);
@@ -247,119 +253,132 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 mCacheView.put(position, contentView);
             }
             // 常规图控件
-            final PhotoView imageView = contentView.findViewById(R.id.preview_image);
+            final PhotoView photoView = contentView.findViewById(R.id.preview_image);
             // 长图控件
             final SubsamplingScaleImageView longImageView = contentView.findViewById(R.id.longImg);
             // 视频播放按钮
             ImageView ivPlay = contentView.findViewById(R.id.iv_play);
             LocalMedia media = images.get(position);
-            if (media != null) {
-                final String path;
-                if (media.isCut() && !media.isCompressed()) {
-                    // 裁剪过
-                    path = media.getCutPath();
-                } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
-                    // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
-                    path = media.getCompressPath();
-                } else if (!TextUtils.isEmpty(media.getAndroidQToPath())) {
-                    // AndroidQ特有path
-                    path = media.getAndroidQToPath();
-                } else {
-                    // 原图
-                    path = media.getPath();
-                }
-                boolean isHttp = PictureMimeType.isHasHttp(path);
-                String mimeType = isHttp && TextUtils.isEmpty(media.getMimeType()) ? PictureMimeType.getImageMimeType(media.getPath()) : media.getMimeType();
-                boolean isHasVideo = PictureMimeType.isHasVideo(mimeType);
-                ivPlay.setVisibility(isHasVideo ? View.VISIBLE : View.GONE);
-                boolean isGif = PictureMimeType.isGif(mimeType);
-                boolean eqLongImg = MediaUtils.isLongImg(media);
-                imageView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
-                longImageView.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
-                // 压缩过的gif就不是gif了
-                if (isGif && !media.isCompressed()) {
-                    if (PictureSelectionConfig.imageEngine != null) {
-                        PictureSelectionConfig.imageEngine.loadAsGifImage
-                                (getContext(), path, imageView);
-                    }
-                } else {
-                    if (PictureSelectionConfig.imageEngine != null) {
-                        if (isHttp) {
-                            // 网络图片
-                            PictureSelectionConfig.imageEngine.loadImage(contentView.getContext(), path,
-                                    imageView, longImageView, new OnImageCompleteCallback() {
-                                        @Override
-                                        public void onShowLoading() {
-                                            showPleaseDialog();
-                                        }
 
-                                        @Override
-                                        public void onHideLoading() {
-                                            dismissDialog();
-                                        }
-                                    });
-                        } else {
-                            if (eqLongImg) {
-                                displayLongPic(PictureMimeType.isContent(path)
-                                        ? Uri.parse(path) : Uri.fromFile(new File(path)), longImageView);
-                            } else {
-                                PictureSelectionConfig.imageEngine.loadImage(contentView.getContext(), path, imageView);
-                            }
-                        }
-                    }
+            float width = media.getWidth();
+            float height = media.getHeight();
+            //计算如果让照片是屏幕的宽，选要乘以多少？
+            float scale = mScreenWidth / width;
+            if (scale >= MIN_SCALE && width > 0 && height > 0) {
+                // 只需让图片的宽是屏幕的宽，高乘以比例
+                int displayHeight = (int) (mScreenHeight + Math.ceil(width * height / width));
+                //最终让图片按照宽是屏幕 高是等比例缩放的大小
+                FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) photoView.getLayoutParams();
+                layoutParams.width = mScreenWidth;
+                layoutParams.height = displayHeight;
+                layoutParams.gravity = Gravity.CENTER;
+            }
+
+            final String path;
+            if (media.isCut() && !media.isCompressed()) {
+                // 裁剪过
+                path = media.getCutPath();
+            } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
+                // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
+                path = media.getCompressPath();
+            } else if (!TextUtils.isEmpty(media.getAndroidQToPath())) {
+                // AndroidQ特有path
+                path = media.getAndroidQToPath();
+            } else {
+                // 原图
+                path = media.getPath();
+            }
+            boolean isHttp = PictureMimeType.isHasHttp(path);
+            String mimeType = isHttp && TextUtils.isEmpty(media.getMimeType()) ? PictureMimeType.getImageMimeType(media.getPath()) : media.getMimeType();
+            boolean isHasVideo = PictureMimeType.isHasVideo(mimeType);
+            ivPlay.setVisibility(isHasVideo ? View.VISIBLE : View.GONE);
+            boolean isGif = PictureMimeType.isGif(mimeType);
+            boolean eqLongImg = MediaUtils.isLongImg(media);
+            photoView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
+            longImageView.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
+            // 压缩过的gif就不是gif了
+            if (isGif && !media.isCompressed()) {
+                if (PictureSelectionConfig.imageEngine != null) {
+                    PictureSelectionConfig.imageEngine.loadAsGifImage
+                            (getContext(), path, photoView);
                 }
-                imageView.setOnViewTapListener((view, x, y) -> {
-                    finish();
-                    exitAnimation();
-                });
-                longImageView.setOnClickListener(v -> {
-                    finish();
-                    exitAnimation();
-                });
-                if (!isHasVideo) {
-                    longImageView.setOnLongClickListener(v -> {
-                        if (config.isNotPreviewDownload) {
-                            if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                                downloadPath = path;
-                                String currentMimeType = PictureMimeType.isHasHttp(path) && TextUtils.isEmpty(media.getMimeType()) ? PictureMimeType.getImageMimeType(media.getPath()) : media.getMimeType();
-                                mMimeType = PictureMimeType.isJPG(currentMimeType) ? PictureMimeType.MIME_TYPE_JPEG : currentMimeType;
-                                showDownLoadDialog();
-                            } else {
-                                PermissionChecker.requestPermissions(PictureExternalPreviewActivity.this,
-                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
-                            }
-                        }
-                        return true;
-                    });
-                }
-                if (!isHasVideo) {
-                    imageView.setOnLongClickListener(v -> {
-                        if (config.isNotPreviewDownload) {
-                            if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                                downloadPath = path;
-                                String currentMimeType = PictureMimeType.isHasHttp(path) && TextUtils.isEmpty(media.getMimeType()) ? PictureMimeType.getImageMimeType(media.getPath()) : media.getMimeType();
-                                mMimeType = PictureMimeType.isJPG(currentMimeType) ? PictureMimeType.MIME_TYPE_JPEG : currentMimeType;
-                                showDownLoadDialog();
-                            } else {
-                                PermissionChecker.requestPermissions(PictureExternalPreviewActivity.this,
-                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
-                            }
-                        }
-                        return true;
-                    });
-                }
-                ivPlay.setOnClickListener(v -> {
-                    if (PictureSelectionConfig.customVideoPlayCallback != null) {
-                        PictureSelectionConfig.customVideoPlayCallback.startPlayVideo(media);
+            } else {
+                if (PictureSelectionConfig.imageEngine != null) {
+                    if (isHttp) {
+                        // 网络图片
+                        PictureSelectionConfig.imageEngine.loadImage(contentView.getContext(), path,
+                                photoView, longImageView, new OnImageCompleteCallback() {
+                                    @Override
+                                    public void onShowLoading() {
+                                        showPleaseDialog();
+                                    }
+
+                                    @Override
+                                    public void onHideLoading() {
+                                        dismissDialog();
+                                    }
+                                });
                     } else {
-                        Intent intent = new Intent();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(PictureConfig.EXTRA_VIDEO_PATH, path);
-                        intent.putExtras(bundle);
-                        JumpUtils.startPictureVideoPlayActivity(container.getContext(), bundle, PictureConfig.PREVIEW_VIDEO_CODE);
+                        if (eqLongImg) {
+                            displayLongPic(PictureMimeType.isContent(path)
+                                    ? Uri.parse(path) : Uri.fromFile(new File(path)), longImageView);
+                        } else {
+                            PictureSelectionConfig.imageEngine.loadImage(contentView.getContext(), path, photoView);
+                        }
                     }
+                }
+            }
+            photoView.setOnViewTapListener((view, x, y) -> {
+                finish();
+                exitAnimation();
+            });
+            longImageView.setOnClickListener(v -> {
+                finish();
+                exitAnimation();
+            });
+            if (!isHasVideo) {
+                longImageView.setOnLongClickListener(v -> {
+                    if (config.isNotPreviewDownload) {
+                        if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                            downloadPath = path;
+                            String currentMimeType = PictureMimeType.isHasHttp(path) && TextUtils.isEmpty(media.getMimeType()) ? PictureMimeType.getImageMimeType(media.getPath()) : media.getMimeType();
+                            mMimeType = PictureMimeType.isJPG(currentMimeType) ? PictureMimeType.MIME_TYPE_JPEG : currentMimeType;
+                            showDownLoadDialog();
+                        } else {
+                            PermissionChecker.requestPermissions(PictureExternalPreviewActivity.this,
+                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
+                        }
+                    }
+                    return true;
                 });
             }
+            if (!isHasVideo) {
+                photoView.setOnLongClickListener(v -> {
+                    if (config.isNotPreviewDownload) {
+                        if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                            downloadPath = path;
+                            String currentMimeType = PictureMimeType.isHasHttp(path) && TextUtils.isEmpty(media.getMimeType()) ? PictureMimeType.getImageMimeType(media.getPath()) : media.getMimeType();
+                            mMimeType = PictureMimeType.isJPG(currentMimeType) ? PictureMimeType.MIME_TYPE_JPEG : currentMimeType;
+                            showDownLoadDialog();
+                        } else {
+                            PermissionChecker.requestPermissions(PictureExternalPreviewActivity.this,
+                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
+                        }
+                    }
+                    return true;
+                });
+            }
+            ivPlay.setOnClickListener(v -> {
+                if (PictureSelectionConfig.customVideoPlayCallback != null) {
+                    PictureSelectionConfig.customVideoPlayCallback.startPlayVideo(media);
+                } else {
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(PictureConfig.EXTRA_VIDEO_PATH, path);
+                    intent.putExtras(bundle);
+                    JumpUtils.startPictureVideoPlayActivity(container.getContext(), bundle, PictureConfig.PREVIEW_VIDEO_CODE);
+                }
+            });
             (container).addView(contentView, 0);
             return contentView;
         }
