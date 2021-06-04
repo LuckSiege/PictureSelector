@@ -260,8 +260,8 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             ImageView ivPlay = contentView.findViewById(R.id.iv_play);
             LocalMedia media = images.get(position);
             if (config.isAutoScalePreviewImage) {
-                float width = media.getWidth();
-                float height = media.getHeight();
+                float width = Math.min(media.getWidth(), media.getHeight());
+                float height = Math.max(media.getHeight(), media.getWidth());
                 //计算如果让照片是屏幕的宽，选要乘以多少？
                 float scale = mScreenWidth / width;
                 if (scale >= MIN_SCALE && width > 0 && height > 0) {
@@ -270,7 +270,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                     //最终让图片按照宽是屏幕 高是等比例缩放的大小
                     FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) photoView.getLayoutParams();
                     layoutParams.width = mScreenWidth;
-                    layoutParams.height = Math.max(displayHeight, mScreenHeight);
+                    layoutParams.height = displayHeight < mScreenHeight ? displayHeight * 2 : displayHeight;
                     layoutParams.gravity = Gravity.CENTER;
                 }
             }
