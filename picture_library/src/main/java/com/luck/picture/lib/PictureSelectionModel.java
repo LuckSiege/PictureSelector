@@ -1506,7 +1506,7 @@ public class PictureSelectionModel {
      *
      * @param listener The resulting callback listens
      */
-    public void forResult(OnResultCallbackListener listener) {
+    public void forResult(OnResultCallbackListener<LocalMedia> listener) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
             if (activity == null || selectionConfig == null) {
@@ -1542,7 +1542,7 @@ public class PictureSelectionModel {
      * @param requestCode Identity of the request Activity or Fragment.
      * @param listener    The resulting callback listens
      */
-    public void forResult(int requestCode, OnResultCallbackListener listener) {
+    public void forResult(int requestCode, OnResultCallbackListener<LocalMedia> listener) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
             if (activity == null || selectionConfig == null) {
