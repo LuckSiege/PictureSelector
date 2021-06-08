@@ -81,14 +81,9 @@ class Engine {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (isAutoRotating) {
             if (Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
-                int degree;
                 boolean isCut = srcImg.getMedia().isCut() && !TextUtils.isEmpty(srcImg.getMedia().getCutPath());
                 String url = isCut ? srcImg.getMedia().getCutPath() : srcImg.getMedia().getPath();
-                if (PictureMimeType.isContent(url)) {
-                    degree = BitmapUtils.readPictureDegree(srcImg.open());
-                } else {
-                    degree = BitmapUtils.readPictureDegree(context, url);
-                }
+                int degree = PictureMimeType.isContent(url) ? BitmapUtils.readPictureDegree(srcImg.open()) : BitmapUtils.readPictureDegree(context, url);
                 if (degree > 0) {
                     tagBitmap = BitmapUtils.rotatingImage(tagBitmap, degree);
                 }
