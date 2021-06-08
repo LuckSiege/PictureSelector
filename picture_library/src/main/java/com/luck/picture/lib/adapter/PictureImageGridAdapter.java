@@ -734,12 +734,21 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
      * Tips
      */
     private void showPromptDialog(String content) {
-        PictureCustomDialog dialog = new PictureCustomDialog(context, R.layout.picture_prompt_dialog);
-        TextView btnOk = dialog.findViewById(R.id.btnOk);
-        TextView tvContent = dialog.findViewById(R.id.tv_content);
-        tvContent.setText(content);
-        btnOk.setOnClickListener(v -> dialog.dismiss());
-        dialog.show();
+        if (PictureSelectionConfig.onChooseLimitCallback !=null){
+            PictureSelectionConfig.onChooseLimitCallback.onChooseLimit(context,content);
+        } else {
+            PictureCustomDialog dialog = new PictureCustomDialog(context, R.layout.picture_prompt_dialog);
+            TextView btnOk = dialog.findViewById(R.id.btnOk);
+            TextView tvContent = dialog.findViewById(R.id.tv_content);
+            tvContent.setText(content);
+            btnOk.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+        }
     }
 
 

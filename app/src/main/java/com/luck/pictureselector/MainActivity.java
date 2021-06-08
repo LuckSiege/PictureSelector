@@ -47,6 +47,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.listener.OnCallbackListener;
+import com.luck.picture.lib.listener.OnChooseLimitCallback;
 import com.luck.picture.lib.listener.OnCustomCameraInterfaceListener;
 import com.luck.picture.lib.listener.OnCustomImagePreviewCallback;
 import com.luck.picture.lib.listener.OnPermissionDialogOptionCallback;
@@ -478,6 +479,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.bindCustomPreviewCallback(new MyCustomPreviewInterfaceListener())// 自定义图片预览回调接口
                         //.bindCustomCameraInterfaceListener(new MyCustomCameraInterfaceListener())// 提供给用户的一些额外的自定义操作回调
                         //.bindCustomPermissionsObtainListener(new MyPermissionsObtainCallback())// 自定义权限拦截
+                        //.bindCustomChooseLimitListener(new MyChooseLimitCallback()) // 自定义选择限制条件Dialog
                         //.cameraFileName(System.currentTimeMillis() +".jpg")    // 重命名拍照文件名、如果是相册拍照则内部会自动拼上当前时间戳防止重复，注意这个只在使用相机时可以使用，如果使用相机又开启了压缩或裁剪 需要配合压缩和裁剪文件名api
                         //.renameCompressFile(System.currentTimeMillis() +".jpg")// 重命名压缩文件名、 如果是多张压缩则内部会自动拼上当前时间戳防止重复
                         //.renameCropFileName(System.currentTimeMillis() + ".jpg")// 重命名裁剪文件名、 如果是多张裁剪则内部会自动拼上当前时间戳防止重复
@@ -689,6 +691,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void startPlayVideo(LocalMedia media) {
             if (context != null) {
                 ToastUtils.s(context, media.getPath());
+            }
+        }
+    }
+
+    /**
+     * 自定义选择条件的限制提示
+     */
+    private static class MyChooseLimitCallback implements OnChooseLimitCallback {
+
+        @Override
+        public void onChooseLimit(Context context, String tips) {
+            // TODO 可以在这里实现自定义弹框和文案，具体可以根据返回的tips 替换成自己的文案
+            // 举个栗子
+            if (TextUtils.equals(tips, "默认文案")) {
+                ToastUtils.s(context, "我要实现我自己的默认文案~");
             }
         }
     }

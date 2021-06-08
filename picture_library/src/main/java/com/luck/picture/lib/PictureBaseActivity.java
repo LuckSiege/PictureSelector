@@ -884,16 +884,23 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      */
     protected void showPromptDialog(String content) {
         if (!isFinishing()) {
-            PictureCustomDialog dialog = new PictureCustomDialog(getContext(), R.layout.picture_prompt_dialog);
-            TextView btnOk = dialog.findViewById(R.id.btnOk);
-            TextView tvContent = dialog.findViewById(R.id.tv_content);
-            tvContent.setText(content);
-            btnOk.setOnClickListener(v -> {
-                if (!isFinishing()) {
-                    dialog.dismiss();
-                }
-            });
-            dialog.show();
+            if (PictureSelectionConfig.onChooseLimitCallback !=null){
+                PictureSelectionConfig.onChooseLimitCallback.onChooseLimit(getContext(),content);
+            } else {
+                PictureCustomDialog dialog = new PictureCustomDialog(getContext(), R.layout.picture_prompt_dialog);
+                TextView btnOk = dialog.findViewById(R.id.btnOk);
+                TextView tvContent = dialog.findViewById(R.id.tv_content);
+                tvContent.setText(content);
+                btnOk.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!isFinishing()) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                dialog.show();
+            }
         }
     }
 

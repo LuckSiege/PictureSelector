@@ -20,6 +20,7 @@ import com.luck.picture.lib.engine.CacheResourcesEngine;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.listener.OnChooseLimitCallback;
 import com.luck.picture.lib.listener.OnCustomCameraInterfaceListener;
 import com.luck.picture.lib.listener.OnCustomImagePreviewCallback;
 import com.luck.picture.lib.listener.OnPermissionsObtainCallback;
@@ -199,7 +200,7 @@ public class PictureSelectionModel {
      * @param callback Provide video playback control，Users are free to customize the video display interface
      * @return
      */
-    public PictureSelectionModel bindCustomPlayVideoCallback(OnVideoSelectedPlayCallback callback) {
+    public PictureSelectionModel bindCustomPlayVideoCallback(OnVideoSelectedPlayCallback<LocalMedia> callback) {
         PictureSelectionConfig.customVideoPlayCallback = new WeakReference<>(callback).get();
         return this;
     }
@@ -208,7 +209,7 @@ public class PictureSelectionModel {
      * @param callback Custom preview callback function
      * @return
      */
-    public PictureSelectionModel bindCustomPreviewCallback(OnCustomImagePreviewCallback callback) {
+    public PictureSelectionModel bindCustomPreviewCallback(OnCustomImagePreviewCallback<LocalMedia> callback) {
         PictureSelectionConfig.onCustomImagePreviewCallback = new WeakReference<>(callback).get();
         return this;
     }
@@ -246,6 +247,17 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel bindCustomPermissionsObtainListener(OnPermissionsObtainCallback listener) {
         PictureSelectionConfig.onPermissionsObtainCallback = new WeakReference<>(listener).get();
+        return this;
+    }
+
+    /**
+     * Custom choose limit dialog callback
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionModel bindCustomChooseLimitListener(OnChooseLimitCallback listener) {
+        PictureSelectionConfig.onChooseLimitCallback = new WeakReference<>(listener).get();
         return this;
     }
 
