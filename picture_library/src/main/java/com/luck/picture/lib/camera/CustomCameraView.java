@@ -381,7 +381,7 @@ public class CustomCameraView extends RelativeLayout {
             if (mConfig.suffixType.startsWith("image/")) {
                 suffix = mConfig.suffixType.replaceAll("image/", ".");
             } else {
-                suffix = PictureMimeType.JPEG;
+                suffix = PictureMimeType.JPG;
             }
             String newFileImageName = isOutFileNameEmpty ? DateUtils.getCreateFileName("IMG_") + suffix : mConfig.cameraFileName;
             File cameraFile = new File(rootDir, newFileImageName);
@@ -394,7 +394,7 @@ public class CustomCameraView extends RelativeLayout {
             String cameraFileName = "";
             if (!TextUtils.isEmpty(mConfig.cameraFileName)) {
                 boolean isSuffixOfImage = PictureMimeType.isSuffixOfImage(mConfig.cameraFileName);
-                mConfig.cameraFileName = !isSuffixOfImage ? StringUtils.renameSuffix(mConfig.cameraFileName, PictureMimeType.JPEG) : mConfig.cameraFileName;
+                mConfig.cameraFileName = !isSuffixOfImage ? StringUtils.renameSuffix(mConfig.cameraFileName, PictureMimeType.JPG) : mConfig.cameraFileName;
                 cameraFileName = mConfig.camera ? mConfig.cameraFileName : StringUtils.rename(mConfig.cameraFileName);
             }
             File cameraFile = PictureFileUtils.createCameraFile(getContext(),

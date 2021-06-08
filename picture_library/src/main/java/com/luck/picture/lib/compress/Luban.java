@@ -84,9 +84,9 @@ public class Luban {
             stringBuilder.append(mTargetDir);
             if (TextUtils.isEmpty(encryptionValue) && !media.isCut()) {
                 String imgCmpTime_ = DateUtils.getCreateFileName("IMG_CMP_");
-                cacheBuilder = stringBuilder.append("/").append(imgCmpTime_).append(TextUtils.isEmpty(suffix) ? PictureMimeType.JPEG : suffix).toString();
+                cacheBuilder = stringBuilder.append("/").append(imgCmpTime_).append(TextUtils.isEmpty(suffix) ? PictureMimeType.JPG : suffix).toString();
             } else {
-                cacheBuilder = stringBuilder.append("/IMG_CMP_").append(encryptionValue).append(TextUtils.isEmpty(suffix) ? PictureMimeType.JPEG : suffix).toString();
+                cacheBuilder = stringBuilder.append("/IMG_CMP_").append(encryptionValue).append(TextUtils.isEmpty(suffix) ? PictureMimeType.JPG : suffix).toString();
             }
         } catch (Exception e) {
             e.printStackTrace();

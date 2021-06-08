@@ -642,7 +642,7 @@ public class PictureSelectionModel {
             if (TextUtils.equals(suffixType, PictureMimeType.PNG)) {
                 suffixType = PictureMimeType.PNG_Q;
             }
-            if (TextUtils.equals(suffixType, PictureMimeType.JPEG)) {
+            if (TextUtils.equals(suffixType, PictureMimeType.JPG)) {
                 suffixType = PictureMimeType.JPEG_Q;
             }
             if (TextUtils.equals(suffixType, PictureMimeType.MP4)) {

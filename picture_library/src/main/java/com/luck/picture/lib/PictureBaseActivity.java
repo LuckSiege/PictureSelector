@@ -718,7 +718,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             int chooseMode = config.chooseMode == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_IMAGE : config.chooseMode;
             if (!TextUtils.isEmpty(config.cameraFileName)) {
                 boolean isSuffixOfImage = PictureMimeType.isSuffixOfImage(config.cameraFileName);
-                config.cameraFileName = !isSuffixOfImage ? StringUtils.renameSuffix(config.cameraFileName, PictureMimeType.JPEG) : config.cameraFileName;
+                config.cameraFileName = !isSuffixOfImage ? StringUtils.renameSuffix(config.cameraFileName, PictureMimeType.JPG) : config.cameraFileName;
                 cameraFileName = config.camera ? config.cameraFileName : StringUtils.rename(config.cameraFileName);
             }
             if (SdkVersionUtils.checkedAndroid_Q()) {
