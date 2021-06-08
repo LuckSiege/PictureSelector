@@ -12,7 +12,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Responsible for starting compress and managing active and cached resources.
@@ -78,8 +77,7 @@ class Engine {
     File compress() throws IOException {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = computeSize();
-        InputStream inputStream = srcImg.open();
-        Bitmap tagBitmap = BitmapFactory.decodeStream(inputStream, null, options);
+        Bitmap tagBitmap = BitmapFactory.decodeStream(srcImg.open(), null, options);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (isAutoRotating) {
             if (Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
@@ -87,7 +85,7 @@ class Engine {
                 boolean isCut = srcImg.getMedia().isCut() && !TextUtils.isEmpty(srcImg.getMedia().getCutPath());
                 String url = isCut ? srcImg.getMedia().getCutPath() : srcImg.getMedia().getPath();
                 if (PictureMimeType.isContent(url)) {
-                    degree = BitmapUtils.readPictureDegree(inputStream);
+                    degree = BitmapUtils.readPictureDegree(srcImg.open());
                 } else {
                     degree = BitmapUtils.readPictureDegree(context, url);
                 }
