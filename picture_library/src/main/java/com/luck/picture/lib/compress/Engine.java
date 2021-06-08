@@ -75,7 +75,6 @@ class Engine {
         }
     }
 
-
     File compress() throws IOException {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = computeSize();
@@ -84,7 +83,7 @@ class Engine {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (isAutoRotating) {
             if (Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
-                int degree = 0;
+                int degree;
                 boolean isCut = srcImg.getMedia().isCut() && !TextUtils.isEmpty(srcImg.getMedia().getCutPath());
                 String url = isCut ? srcImg.getMedia().getCutPath() : srcImg.getMedia().getPath();
                 if (PictureMimeType.isContent(url)) {
@@ -101,12 +100,13 @@ class Engine {
             compressQuality = compressQuality <= 0 || compressQuality > 100 ? DEFAULT_QUALITY : compressQuality;
             tagBitmap.compress(focusAlpha || tagBitmap.hasAlpha() ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, compressQuality, stream);
             tagBitmap.recycle();
+            FileOutputStream fos = new FileOutputStream(tagImg);
+            fos.write(stream.toByteArray());
+            fos.flush();
+            fos.close();
+            stream.close();
+            return tagImg;
         }
-        FileOutputStream fos = new FileOutputStream(tagImg);
-        fos.write(stream.toByteArray());
-        fos.flush();
-        fos.close();
-        stream.close();
-        return tagImg;
+        return null;
     }
 }

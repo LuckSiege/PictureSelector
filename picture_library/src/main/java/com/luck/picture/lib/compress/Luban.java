@@ -148,26 +148,30 @@ public class Luban {
                     try {
                         index++;
                         InputStreamProvider path = iterator.next();
-                        String newPath;
+                        String newPath = null;
                         if (path.getMedia().isCompressed() && !TextUtils.isEmpty(path.getMedia().getCompressPath())) {
                             // 压缩过的图片不重复压缩  注意:如果是开启了裁剪 就算压缩过也要重新压缩
                             boolean exists = !path.getMedia().isCut() && new File(path.getMedia().getCompressPath()).exists();
                             File result = exists ? new File(path.getMedia().getCompressPath()) : compress(context, path);
-                            newPath = result.getAbsolutePath();
+                            if (result != null) {
+                                newPath = result.getAbsolutePath();
+                            }
                         } else {
                             if (PictureMimeType.isHasHttp(path.getMedia().getPath()) && TextUtils.isEmpty(path.getMedia().getCutPath())) {
                                 newPath = path.getMedia().getPath();
                             } else {
                                 File result = PictureMimeType.isHasVideo(path.getMedia().getMimeType())
                                         ? new File(path.getPath()) : compress(context, path);
-                                newPath = result.getAbsolutePath();
+                                if (result != null) {
+                                    newPath = result.getAbsolutePath();
+                                }
                             }
                         }
                         if (mediaList != null && mediaList.size() > 0) {
                             LocalMedia media = mediaList.get(index);
                             boolean isHasHttp = PictureMimeType.isHasHttp(newPath);
                             boolean isHasVideo = PictureMimeType.isHasVideo(media.getMimeType());
-                            media.setCompressed(!isHasHttp && !isHasVideo);
+                            media.setCompressed(!isHasHttp && !isHasVideo && !TextUtils.isEmpty(newPath));
                             media.setCompressPath(isHasHttp || isHasVideo ? null : newPath);
                             media.setAndroidQToPath(SdkVersionUtils.checkedAndroid_Q() ? media.getCompressPath() : null);
                             boolean isLast = index == mediaList.size() - 1;
@@ -208,24 +212,44 @@ public class Luban {
         }
     }
 
-    private List<File> get(Context context) throws Exception {
-        List<File> results = new ArrayList<>();
+    private List<LocalMedia> get(Context context) throws Exception {
+        List<LocalMedia> results = new ArrayList<>();
         Iterator<InputStreamProvider> iterator = mStreamProviders.iterator();
         while (iterator.hasNext()) {
             InputStreamProvider provider = iterator.next();
             if (provider.getMedia() == null) {
                 continue;
             }
-            if (provider.getMedia().isCompressed() && !TextUtils.isEmpty(provider.getMedia().getCompressPath())) {
+            LocalMedia localMedia = provider.getMedia();
+            if (localMedia.isCompressed() && !TextUtils.isEmpty(localMedia.getCompressPath())) {
                 // 压缩过的图片不重复压缩  注意:如果是开启了裁剪 就算压缩过也要重新压缩
-                boolean exists = !provider.getMedia().isCut() && new File(provider.getMedia().getCompressPath()).exists();
-                File oldFile = exists ? new File(provider.getMedia().getCompressPath())
+                boolean exists = !localMedia.isCut() && new File(localMedia.getCompressPath()).exists();
+                File result = exists ? new File(localMedia.getCompressPath())
                         : compress(context, provider);
-                results.add(oldFile);
+                if (result != null) {
+                    String absolutePath = result.getAbsolutePath();
+                    localMedia.setCompressed(true);
+                    localMedia.setCompressPath(absolutePath);
+                    if (SdkVersionUtils.checkedAndroid_Q()) {
+                        localMedia.setAndroidQToPath(absolutePath);
+                    }
+                }
+                results.add(localMedia);
             } else {
-                boolean isHasHttp = PictureMimeType.isHasHttp(provider.getMedia().getPath()) && TextUtils.isEmpty(provider.getMedia().getCutPath());
-                boolean isHasVideo = PictureMimeType.isHasVideo(provider.getMedia().getMimeType());
-                results.add(isHasHttp || isHasVideo ? new File(provider.getMedia().getPath()) : compress(context, provider));
+                boolean isHasHttp = PictureMimeType.isHasHttp(localMedia.getPath()) && TextUtils.isEmpty(localMedia.getCutPath());
+                boolean isHasVideo = PictureMimeType.isHasVideo(localMedia.getMimeType());
+                File result = isHasHttp || isHasVideo ? new File(localMedia.getPath()) : compress(context, provider);
+                if (result != null) {
+                    String absolutePath = result.getAbsolutePath();
+                    boolean http = PictureMimeType.isHasHttp(absolutePath);
+                    boolean flag = !TextUtils.isEmpty(absolutePath) && http;
+                    localMedia.setCompressed(!isHasVideo && !flag);
+                    localMedia.setCompressPath(isHasVideo || flag ? null : absolutePath);
+                    if (SdkVersionUtils.checkedAndroid_Q()) {
+                        localMedia.setAndroidQToPath(localMedia.getCompressPath());
+                    }
+                }
+                results.add(localMedia);
             }
             iterator.remove();
         }
@@ -635,7 +659,7 @@ public class Luban {
          *
          * @return the thumb image file list
          */
-        public List<File> get() throws Exception {
+        public List<LocalMedia> get() throws Exception {
             return build().get(context);
         }
     }

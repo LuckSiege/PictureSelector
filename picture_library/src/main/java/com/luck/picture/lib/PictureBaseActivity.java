@@ -357,10 +357,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      */
     private void compressToLuban(List<LocalMedia> result) {
         if (config.synOrAsy) {
-            PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<List<File>>() {
+            PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<List<LocalMedia>>() {
 
                 @Override
-                public List<File> doInBackground() throws Exception {
+                public List<LocalMedia> doInBackground() throws Exception {
                     return Luban.with(getContext())
                             .loadMediaData(result)
                             .isCamera(config.camera)
@@ -373,12 +373,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onSuccess(List<File> files) {
-                    if (files != null && files.size() > 0 && files.size() == result.size()) {
-                        handleCompressCallBack(result, files);
-                    } else {
-                        onResult(result);
-                    }
+                public void onSuccess(List<LocalMedia> result) {
+                    onResult(result);
                 }
             });
         } else {
@@ -407,40 +403,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                         }
                     }).launch();
         }
-    }
-
-    /**
-     * handleCompressCallBack
-     *
-     * @param images
-     * @param files
-     */
-    private void handleCompressCallBack(List<LocalMedia> images, List<File> files) {
-        if (images == null || files == null) {
-            exit();
-            return;
-        }
-        boolean isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
-        int size = images.size();
-        if (files.size() == size) {
-            for (int i = 0; i < size; i++) {
-                File file = files.get(i);
-                if (file == null) {
-                    continue;
-                }
-                String path = file.getAbsolutePath();
-                LocalMedia image = images.get(i);
-                boolean http = PictureMimeType.isHasHttp(path);
-                boolean flag = !TextUtils.isEmpty(path) && http;
-                boolean isHasVideo = PictureMimeType.isHasVideo(image.getMimeType());
-                image.setCompressed(!isHasVideo && !flag);
-                image.setCompressPath(isHasVideo || flag ? null : path);
-                if (isAndroidQ) {
-                    image.setAndroidQToPath(image.getCompressPath());
-                }
-            }
-        }
-        onResult(images);
     }
 
 
@@ -884,8 +846,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      */
     protected void showPromptDialog(String content) {
         if (!isFinishing()) {
-            if (PictureSelectionConfig.onChooseLimitCallback !=null){
-                PictureSelectionConfig.onChooseLimitCallback.onChooseLimit(getContext(),content);
+            if (PictureSelectionConfig.onChooseLimitCallback != null) {
+                PictureSelectionConfig.onChooseLimitCallback.onChooseLimit(getContext(), content);
             } else {
                 PictureCustomDialog dialog = new PictureCustomDialog(getContext(), R.layout.picture_prompt_dialog);
                 TextView btnOk = dialog.findViewById(R.id.btnOk);
