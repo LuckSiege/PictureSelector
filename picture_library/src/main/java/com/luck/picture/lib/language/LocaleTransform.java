@@ -31,6 +31,12 @@ public class LocaleTransform {
             case LanguageConfig.VIETNAM:
                 // 越南语
                 return new Locale("vi");
+            case LanguageConfig.THAI:
+                //泰语
+                return new Locale("th");
+            case LanguageConfig.RUSSIAN:
+                //俄语
+                return new Locale("ru");
             case LanguageConfig.SPANISH:
                 // 西班牙语
                 return new Locale("es", "ES");

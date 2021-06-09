@@ -1086,9 +1086,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!isOnSaveInstanceState) {
-            ImagesObservable.getInstance().clearPreviewMediaData();
-        }
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
             mHandler = null;
@@ -1102,6 +1099,14 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         }
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        if (!isOnSaveInstanceState) {
+            ImagesObservable.getInstance().clearPreviewMediaData();
+        }
+    }
+        
     @Override
     public void onActivityBackPressed() {
         onBackPressed();

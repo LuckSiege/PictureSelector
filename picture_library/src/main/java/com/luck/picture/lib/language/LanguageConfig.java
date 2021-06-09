@@ -44,7 +44,17 @@ public class LanguageConfig {
     public static final int VIETNAM = 7;
 
     /**
+     * 泰语
+     */
+    public static final int THAI = 8;
+
+    /**
+     * 俄语
+     */
+    public static final int RUSSIAN = 9;
+
      * 西班牙语
      */
-    public static final int SPANISH = 8;
+    public static final int SPANISH = 10;
+
 }
