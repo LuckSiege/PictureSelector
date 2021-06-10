@@ -67,7 +67,6 @@ import okio.Okio;
  * @描述: 预览图片
  */
 public class PictureExternalPreviewActivity extends PictureBaseActivity implements View.OnClickListener {
-    private static final float MIN_SCALE = 1.0F;
     private int mScreenWidth, mScreenHeight;
     private ImageButton ibLeftBack;
     private TextView tvTitle;
@@ -262,9 +261,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             if (config.isAutoScalePreviewImage) {
                 float width = Math.min(media.getWidth(), media.getHeight());
                 float height = Math.max(media.getHeight(), media.getWidth());
-                //计算如果让照片是屏幕的宽，选要乘以多少？
-                float scale = mScreenWidth / width;
-                if (scale >= MIN_SCALE && width > 0 && height > 0) {
+                if (width > 0 && height > 0) {
                     // 只需让图片的宽是屏幕的宽，高乘以比例
                     int displayHeight = (int) Math.ceil(width * height / width);
                     //最终让图片按照宽是屏幕 高是等比例缩放的大小
