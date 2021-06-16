@@ -41,7 +41,7 @@ public class VoiceUtils {
 
     private void initPool(Context context) {
         if (soundPool == null) {
-            soundPool = new SoundPool(1, AudioManager.STREAM_ALARM, 0);
+            soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
             soundID = soundPool.load(context.getApplicationContext(), R.raw.picture_music, 1);
         }
     }
