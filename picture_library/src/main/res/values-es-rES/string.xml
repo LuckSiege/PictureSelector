@@ -22,6 +22,7 @@
     <string name="picture_empty_title">No hay fotos o videos\n</string>
     <string name="picture_error">Foto corrupta</string>
     <string name="picture_gif_tag">gif</string>
+    <string name="picture_webp_tag">webp</string>
     <string name="picture_go_setting">Configuración</string>
     <string name="picture_jurisdiction">Acceso a la tarjeta de memoria denegado</string>
     <string name="picture_know">Entendido</string>

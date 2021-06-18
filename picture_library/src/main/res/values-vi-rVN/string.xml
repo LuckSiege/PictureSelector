@@ -20,7 +20,8 @@
     <string name="picture_empty">Bạn có thể sử dụng máy ảnh để chụp ảnh hoặc quay video</string>
     <string name="picture_audio_empty">Bạn có thể ghi lại âm thanh bằng cách ghi hệ thống</string>
     <string name="picture_min_img_num">Lựa chọn tối thiểu của hình ảnh không được ít hơn%1$s</string>
-    <string name="picture_gif_tag">Hình ảnh chuyển động</string>
+    <string name="picture_gif_tag">gif</string>
+    <string name="picture_webp_tag">webp</string>
     <string name="picture_jurisdiction">Đọc thẻ nhớ bị từ chối</string>
     <string name="picture_camera">Nhận được sự cho phép của hệ thống camera</string>
     <string name="picture_audio">Nhận quyền ghi lại hệ thống bị từ chối</string>

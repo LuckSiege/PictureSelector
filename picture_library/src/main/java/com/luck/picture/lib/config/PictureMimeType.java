@@ -102,6 +102,16 @@ public final class PictureMimeType {
     }
 
     /**
+     * isWebp
+     *
+     * @param mimeType
+     * @return
+     */
+    public static boolean isWebp(String mimeType) {
+        return mimeType != null && mimeType.equalsIgnoreCase("image/webp");
+    }
+
+    /**
      * isGif
      *
      * @param suffix

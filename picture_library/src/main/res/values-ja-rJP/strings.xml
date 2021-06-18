@@ -20,6 +20,7 @@
     <string name="picture_audio_empty">システムを使って音声を録音することができます</string>
     <string name="picture_min_img_num">画像の最低値は %1$s 枚までとする</string>
     <string name="picture_gif_tag">动図</string>
+    <string name="picture_webp_tag">webp</string>
     <string name="picture_jurisdiction">メモリーカードの読み取り権限が拒否された</string>
     <string name="picture_camera">システムカメラの取得権限は拒否される</string>
     <string name="picture_audio">システムの録音権の取得は拒否される</string>

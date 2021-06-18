@@ -177,7 +177,15 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     dispatchHandleMask(contentHolder, image);
                 }
             }
-            contentHolder.tvIsGif.setVisibility(PictureMimeType.isGif(mimeType) ? View.VISIBLE : View.GONE);
+
+            boolean isGif = PictureMimeType.isGif(mimeType);
+            boolean isWebp = PictureMimeType.isWebp(mimeType);
+            if (isGif || isWebp) {
+                contentHolder.tvImageMimeType.setVisibility(View.VISIBLE);
+                contentHolder.tvImageMimeType.setText(isGif ? context.getString(R.string.picture_gif_tag) : context.getString(R.string.picture_webp_tag));
+            } else {
+                contentHolder.tvImageMimeType.setVisibility(View.GONE);
+            }
             if (PictureMimeType.isHasImage(image.getMimeType())) {
                 if (image.loadLongImageStatus == PictureConfig.NORMAL) {
                     image.isLongImage = MediaUtils.isLongImg(image);
@@ -417,7 +425,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivPicture;
         TextView tvCheck;
-        TextView tvDuration, tvIsGif, tvLongChart;
+        TextView tvDuration, tvImageMimeType, tvLongChart;
         View contentView;
         View btnCheck;
 
@@ -428,7 +436,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             tvCheck = itemView.findViewById(R.id.tvCheck);
             btnCheck = itemView.findViewById(R.id.btnCheck);
             tvDuration = itemView.findViewById(R.id.tv_duration);
-            tvIsGif = itemView.findViewById(R.id.tv_isGif);
+            tvImageMimeType = itemView.findViewById(R.id.tv_image_mime_type);
             tvLongChart = itemView.findViewById(R.id.tv_long_chart);
             if (PictureSelectionConfig.uiStyle != null) {
                 if (PictureSelectionConfig.uiStyle.picture_check_style != 0) {
@@ -448,21 +456,21 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 }
 
                 if (PictureSelectionConfig.uiStyle.picture_adapter_item_tag_text != 0) {
-                    tvIsGif.setText(itemView.getContext().getString(PictureSelectionConfig.uiStyle.picture_adapter_item_tag_text));
+                    tvImageMimeType.setText(itemView.getContext().getString(PictureSelectionConfig.uiStyle.picture_adapter_item_tag_text));
                 }
                 if (PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_show) {
-                    tvIsGif.setVisibility(View.VISIBLE);
+                    tvImageMimeType.setVisibility(View.VISIBLE);
                 } else {
-                    tvIsGif.setVisibility(View.GONE);
+                    tvImageMimeType.setVisibility(View.GONE);
                 }
                 if (PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_background != 0) {
-                    tvIsGif.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_background);
+                    tvImageMimeType.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_background);
                 }
                 if (PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_textColor != 0) {
-                    tvIsGif.setTextColor(PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_textColor);
+                    tvImageMimeType.setTextColor(PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_textColor);
                 }
                 if (PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_textSize != 0) {
-                    tvIsGif.setTextSize(PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_textSize);
+                    tvImageMimeType.setTextSize(PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_textSize);
                 }
             } else if (PictureSelectionConfig.style != null) {
                 if (PictureSelectionConfig.style.pictureCheckedStyle != 0) {

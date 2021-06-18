@@ -19,7 +19,8 @@
     <string name="picture_empty">사진을 찍거나 동영상을 찍을 수 있습니다</string>
     <string name="picture_audio_empty">시스템으로 오디오 녹음 작업을 할 수 있습니다</string>
     <string name="picture_min_img_num">그림 선택 최소 %1$s 달러 장 이상</string>
-    <string name="picture_gif_tag">움직이 지도</string>
+    <string name="picture_gif_tag">gif</string>
+    <string name="picture_webp_tag">webp</string>
     <string name="picture_jurisdiction">메모리 카드 읽기 권한이 거부됨</string>
     <string name="picture_camera">시스템 카메라 가져오기 권한이 거부됨</string>
     <string name="picture_audio">시스템 녹음 권한 가져오기 거부됨</string>

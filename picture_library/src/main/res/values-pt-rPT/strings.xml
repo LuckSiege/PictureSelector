@@ -20,7 +20,8 @@
     <string name="picture_empty">Você pode usar a câmera para tirar fotos ou vídeos</string>
     <string name="picture_audio_empty">Você pode gravar o áudio usando o sistema de gravação</string>
     <string name="picture_min_img_num">Não pode haver menos de %1$s imagens</string>
-    <string name="picture_gif_tag">Gif</string>
+    <string name="picture_gif_tag">gif</string>
+    <string name="picture_webp_tag">webp</string>
     <string name="picture_jurisdiction">A permissão para ler o cartão de memória foi negada</string>
     <string name="picture_camera">Acesso à câmera do sistema negado</string>
     <string name="picture_audio">Acesso ao sistema de gravação negado</string>
