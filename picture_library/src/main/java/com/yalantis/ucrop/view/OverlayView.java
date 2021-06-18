@@ -62,18 +62,18 @@ public class OverlayView extends View {
     private boolean mCircleDimmedLayer;
     private int mDimmedColor;
     private int mDimmedBorderColor;
-    private Path mCircularPath = new Path();
-    private Paint mDimmedStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private Paint mCropGridPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private Paint mCropFramePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private Paint mCropFrameCornersPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Path mCircularPath = new Path();
+    private final Paint mDimmedStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mCropGridPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mCropFramePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mCropFrameCornersPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     @FreestyleMode
     private int mFreestyleCropMode = DEFAULT_FREESTYLE_CROP_MODE;
     private float mPreviousTouchX = -1, mPreviousTouchY = -1;
     private int mCurrentTouchCornerIndex = -1;
-    private int mTouchPointThreshold;
-    private int mCropRectMinSize;
-    private int mCropRectCornerTouchAreaLineLength;
+    private final int mTouchPointThreshold;
+    private final int mCropRectMinSize;
+    private final int mCropRectCornerTouchAreaLineLength;
     private int mStrokeWidth = 1;
     private boolean mIsDragFrame = DEFAULT_DRAG_FRAME;
     private ValueAnimator smoothAnimator;
@@ -640,10 +640,8 @@ public class OverlayView extends View {
         final int offsetY = (int) (centerPoint.y - mCropViewRect.centerY());
         final int offsetX = (int) (centerPoint.x - mCropViewRect.centerX());
         final RectF before = new RectF(mCropViewRect);
-        Log.d("pisa", "pre" + mCropViewRect);
         RectF after = new RectF(mCropViewRect);
         after.offset(offsetX, offsetY);
-        Log.d("pisa", "after" + after);
         if (smoothAnimator != null) {
             smoothAnimator.cancel();
         }
