@@ -446,11 +446,12 @@ public class MediaUtils {
      * @param cameraPath Camera url
      */
     public static void deleteCamera(Context context, String cameraPath) {
-        if (TextUtils.isEmpty(cameraPath)) {
-            return;
-        }
-        if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(cameraPath)) {
-            context.getContentResolver().delete(Uri.parse(cameraPath), null, null);
+        try {
+            if (PictureMimeType.isContent(cameraPath)) {
+                context.getContentResolver().delete(Uri.parse(cameraPath), null, null);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

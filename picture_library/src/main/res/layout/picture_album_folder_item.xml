@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:padding="6dp">
 
-
     <ImageView
         android:id="@+id/first_image"
         android:layout_width="50dp"
@@ -17,7 +16,7 @@
         android:id="@+id/tv_sign"
         android:layout_width="12dp"
         android:layout_height="12dp"
-        android:layout_alignRight="@id/first_image"
+        android:layout_alignEnd="@id/first_image"
         android:layout_margin="4dp"
         android:background="@drawable/picture_orange_oval"
         android:visibility="invisible" />
@@ -26,12 +25,11 @@
         android:id="@+id/tv_folder_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
-        android:layout_toRightOf="@id/first_image"
+        android:layout_toEndOf="@id/first_image"
         android:text="@string/picture_camera_roll_num"
         android:textColor="@color/picture_color_4d"
         android:textSize="16sp" />
-
 
 </RelativeLayout>
