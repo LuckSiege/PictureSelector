@@ -270,6 +270,11 @@ public class PictureSelectorUIStyle {
     public int picture_navBarColor;
 
     /**
+     * 专辑栏标题位置居中
+     */
+    public boolean picture_album_horizontal = false;
+
+    /**
      * 专辑字体大小
      */
     public int picture_album_textSize;

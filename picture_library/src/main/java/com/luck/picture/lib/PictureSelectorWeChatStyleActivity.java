@@ -38,18 +38,10 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
         mTvPictureRight.setText(getString(R.string.picture_send));
         mTvPicturePreview.setTextSize(16);
         mCbOriginal.setTextSize(16);
-        boolean isChooseMode = config.selectionMode ==
-                PictureConfig.SINGLE && config.isSingleDirectReturn;
+        boolean isChooseMode = config.selectionMode == PictureConfig.SINGLE && config.isSingleDirectReturn;
         mTvPictureRight.setVisibility(isChooseMode ? View.GONE : View.VISIBLE);
         mTvPictureRight.setOnClickListener(this);
-        if (rlAlbum.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlAlbum.getLayoutParams();
-            if (isChooseMode) {
-                lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            } else {
-                lp.addRule(RelativeLayout.RIGHT_OF, R.id.pictureLeftBack);
-            }
-        }
+        setAlbumLayoutParams(isChooseMode);
     }
 
     @Override
@@ -96,6 +88,11 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
             } else {
                 rlAlbum.setBackgroundResource(R.drawable.picture_album_bg);
             }
+
+            if (PictureSelectionConfig.uiStyle.picture_album_horizontal) {
+                setAlbumLayoutParams(true);
+            }
+
             if (PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText !=0) {
                 mTvPictureRight.setText(getString(PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText));
             }
@@ -166,6 +163,23 @@ public class PictureSelectorWeChatStyleActivity extends PictureSelectorActivity 
         }
         super.initPictureSelectorStyle();
         goneParentView();
+    }
+
+    /**
+     * setting album LayoutParams
+     * @param isHorizontal
+     */
+    private void setAlbumLayoutParams(boolean isHorizontal){
+        if (rlAlbum.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlAlbum.getLayoutParams();
+            if (isHorizontal) {
+                lp.addRule(RelativeLayout.RIGHT_OF, RelativeLayout.TRUE);
+                lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            } else {
+                lp.addRule(RelativeLayout.CENTER_HORIZONTAL,RelativeLayout.TRUE);
+                lp.addRule(RelativeLayout.RIGHT_OF, R.id.pictureLeftBack);
+            }
+        }
     }
 
     /**
