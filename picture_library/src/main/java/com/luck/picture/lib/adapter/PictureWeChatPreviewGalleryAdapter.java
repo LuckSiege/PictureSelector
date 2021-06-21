@@ -75,7 +75,7 @@ public class PictureWeChatPreviewGalleryAdapter
         LocalMedia item = getItem(position);
         if (item != null) {
             ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                    ContextCompat.getColor(holder.itemView.getContext(), item.isMaxSelectEnabledMask() ? R.color.picture_color_half_white : R.color.picture_color_20), BlendModeCompat.SRC_ATOP);
+                    ContextCompat.getColor(holder.itemView.getContext(), item.isMaxSelectEnabledMask() ? R.color.picture_color_half_white : R.color.picture_color_transparent), BlendModeCompat.SRC_ATOP);
             if (item.isChecked() && item.isMaxSelectEnabledMask()) {
                 holder.viewBorder.setVisibility(View.VISIBLE);
             } else {
