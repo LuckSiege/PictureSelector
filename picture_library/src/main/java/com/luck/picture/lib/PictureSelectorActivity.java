@@ -1551,7 +1551,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 return;
             }
             List<LocalMedia> selectedData = mAdapter.getSelectedData();
-            ImagesObservable.getInstance().savePreviewMediaData(new ArrayList<>(previewData));
+            ImagesObservable.getInstance().saveData(new ArrayList<>(previewData));
             bundle.putParcelableArrayList(PictureConfig.EXTRA_SELECT_LIST, (ArrayList<? extends Parcelable>) selectedData);
             bundle.putInt(PictureConfig.EXTRA_POSITION, position);
             bundle.putBoolean(PictureConfig.EXTRA_CHANGE_ORIGINAL, config.isCheckOriginalImage);

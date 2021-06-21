@@ -23,14 +23,12 @@ import com.luck.picture.lib.adapter.PictureSimpleFragmentAdapter;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
-import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.manager.UCropManager;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnQueryDataResultListener;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.tools.AttrsUtils;
-import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
@@ -104,8 +102,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             selectData = cacheData != null ? cacheData : selectData;
             isCompleteOrSelected = savedInstanceState.getBoolean(PictureConfig.EXTRA_COMPLETE_SELECTED, false);
             isChangeSelectedData = savedInstanceState.getBoolean(PictureConfig.EXTRA_CHANGE_SELECTED_DATA, false);
-            onImageChecked(position);
-            onSelectNumChange(false);
         }
     }
 
@@ -156,22 +152,23 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             List<LocalMedia> data = getIntent().getParcelableArrayListExtra(PictureConfig.EXTRA_PREVIEW_SELECT_LIST);
             initViewPageAdapterData(data);
         } else {
-            List<LocalMedia> data = new ArrayList<>(ImagesObservable.getInstance().readPreviewMediaData());
-            boolean isEmpty = data.size() == 0;
+            List<LocalMedia> data = ImagesObservable.getInstance().getData();
+            List<LocalMedia> allAlbumList = new ArrayList<>(data);
+            ImagesObservable.getInstance().clearData();
             totalNumber = getIntent().getIntExtra(PictureConfig.EXTRA_DATA_COUNT, 0);
             if (config.isPageStrategy) {
-                if (isEmpty) {
+                if (allAlbumList.size() == 0) {
                     // 这种情况有可能是单例被回收了导致readPreviewMediaData();返回的数据为0，那就从第一页开始加载吧
                     setNewTitle();
                 } else {
                     mPage = getIntent().getIntExtra(PictureConfig.EXTRA_PAGE, 0);
                 }
-                initViewPageAdapterData(data);
+                initViewPageAdapterData(allAlbumList);
                 loadData();
                 setTitle();
             } else {
-                initViewPageAdapterData(data);
-                if (isEmpty) {
+                initViewPageAdapterData(allAlbumList);
+                if (allAlbumList.size() == 0) {
                     // 这种情况有可能是单例被回收了导致readPreviewMediaData();返回的数据为0，暂时自动切换成分页模式去获取数据
                     config.isPageStrategy = true;
                     setNewTitle();
@@ -558,7 +555,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      * @param list
      */
     private void initViewPageAdapterData(List<LocalMedia> list) {
-        adapter = new PictureSimpleFragmentAdapter(getContext(),config, this);
+        adapter = new PictureSimpleFragmentAdapter(getContext(), config, this);
         adapter.bindData(list);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(position);
@@ -1081,14 +1078,14 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         outState.putBoolean(PictureConfig.EXTRA_COMPLETE_SELECTED, isCompleteOrSelected);
         outState.putBoolean(PictureConfig.EXTRA_CHANGE_SELECTED_DATA, isChangeSelectedData);
         PictureSelector.saveSelectorList(outState, selectData);
+        if (adapter != null) {
+            ImagesObservable.getInstance().saveData(adapter.getData());
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!isOnSaveInstanceState) {
-            ImagesObservable.getInstance().clearPreviewMediaData();
-        }
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
             mHandler = null;
