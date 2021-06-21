@@ -50,7 +50,7 @@ import java.util.List;
  */
 public class PicturePreviewActivity extends PictureBaseActivity implements
         View.OnClickListener, PictureSimpleFragmentAdapter.OnCallBackActivity {
-    private static final String TAG = PicturePreviewActivity.class.getSimpleName();
+    public static final String TAG = PicturePreviewActivity.class.getSimpleName();
     protected ViewGroup mTitleBar;
     protected ImageView pictureLeftBack;
     protected TextView mTvPictureRight, tvMediaNum, tvTitle, mTvPictureOk;
@@ -852,7 +852,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 if (config.selectionMode == PictureConfig.SINGLE) {
                     selectData.clear();
                 }
-
                 selectData.add(image);
                 onSelectedChange(true, image);
                 image.setNum(selectData.size());

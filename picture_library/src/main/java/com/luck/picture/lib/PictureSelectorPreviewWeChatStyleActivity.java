@@ -2,6 +2,7 @@ package com.luck.picture.lib;
 
 import android.graphics.Color;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -26,6 +27,7 @@ import com.luck.picture.lib.tools.ScreenUtils;
  * @describe：PictureSelector WeChatStyle
  */
 public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewActivity {
+    private static final int GALLERY_MAX_COUNT = 5;
     /**
      * alpha duration
      */
@@ -291,32 +293,28 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
     protected void onSelectedChange(boolean isAddRemove, LocalMedia media) {
         if (isAddRemove) {
             media.setChecked(true);
-            if (config.selectionMode == PictureConfig.SINGLE) {
-                mGalleryAdapter.addSingleMediaToData(media);
+            if (isBottomPreview) {
+                LocalMedia localMedia = mGalleryAdapter.getItem(position);
+                localMedia.setMaxSelectEnabledMask(false);
+                mGalleryAdapter.notifyDataSetChanged();
+            } else {
+                if (config.selectionMode == PictureConfig.SINGLE) {
+                    mGalleryAdapter.addSingleMediaToData(media);
+                }
             }
         } else {
             media.setChecked(false);
-            mGalleryAdapter.removeMediaToData(media);
             if (isBottomPreview) {
-                if (selectData.size() > position) {
-                    selectData.get(position).setChecked(true);
-                }
-                if (mGalleryAdapter.isDataEmpty()) {
-                    onActivityBackPressed();
-                } else {
-                    int currentItem = viewPager.getCurrentItem();
-                    adapter.remove(currentItem);
-                    adapter.removeCacheView(currentItem);
-                    position = currentItem;
-                    tvTitle.setText(getString(R.string.picture_preview_image_num,
-                            position + 1, adapter.getSize()));
-                    check.setSelected(true);
-                    adapter.notifyDataSetChanged();
-                }
+                check.setSelected(false);
+                LocalMedia localMedia = mGalleryAdapter.getItem(position);
+                localMedia.setMaxSelectEnabledMask(true);
+                mGalleryAdapter.notifyDataSetChanged();
+            } else {
+                mGalleryAdapter.removeMediaToData(media);
             }
         }
         int itemCount = mGalleryAdapter.getItemCount();
-        if (itemCount > 5) {
+        if (itemCount > GALLERY_MAX_COUNT) {
             mRvGallery.smoothScrollToPosition(itemCount - 1);
         }
     }
@@ -370,8 +368,13 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                 mRvGallery.setVisibility(View.VISIBLE);
                 bottomLine.animate().alpha(1).setDuration(ALPHA_DURATION).setInterpolator(new AccelerateInterpolator());
                 bottomLine.setVisibility(View.VISIBLE);
-                // 重置一片内存区域 不然在其他地方添加也影响这里的数量
-                mGalleryAdapter.setNewData(selectData);
+                if (isBottomPreview && mGalleryAdapter.getItemCount() > 0) {
+                    // todo 预览模式就算勾选了取消但实际并没有从GalleryAdapter移除掉，所以可以忽略不操作
+                    Log.i(TAG, "gallery adapter ignore...");
+                } else {
+                    // 重置一片内存区域 不然在其他地方添加也影响这里的数量
+                    mGalleryAdapter.setNewData(selectData,isBottomPreview);
+                }
             }
             if (PictureSelectionConfig.style != null) {
                 if (PictureSelectionConfig.style.pictureCompleteTextColor != 0) {

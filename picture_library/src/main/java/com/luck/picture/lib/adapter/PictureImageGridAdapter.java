@@ -688,7 +688,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         if (isRefreshAll) {
             notifyDataSetChanged();
         } else {
-            notifyItemChanged(contentHolder.getAdapterPosition());
+            notifyItemChanged(contentHolder.getAbsoluteAdapterPosition());
         }
 
         selectImage(contentHolder, !isChecked);

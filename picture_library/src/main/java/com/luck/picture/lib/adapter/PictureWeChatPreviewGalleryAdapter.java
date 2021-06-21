@@ -1,11 +1,15 @@
 package com.luck.picture.lib.adapter;
 
+import android.graphics.ColorFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.BlendModeColorFilterCompat;
+import androidx.core.graphics.BlendModeCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
@@ -23,7 +27,7 @@ import java.util.List;
  */
 public class PictureWeChatPreviewGalleryAdapter
         extends RecyclerView.Adapter<PictureWeChatPreviewGalleryAdapter.ViewHolder> {
-    private List<LocalMedia> list;
+    private List<LocalMedia> mList = new ArrayList<>();
     private final PictureSelectionConfig config;
 
     public PictureWeChatPreviewGalleryAdapter(PictureSelectionConfig config) {
@@ -31,28 +35,31 @@ public class PictureWeChatPreviewGalleryAdapter
         this.config = config;
     }
 
-    public void setNewData(List<LocalMedia> data) {
-        this.list = data == null ? new ArrayList<>() : data;
-        notifyDataSetChanged();
+    public void setNewData(List<LocalMedia> data, boolean isBottomPreview) {
+        if (data != null) {
+            if (isBottomPreview) {
+                // 底部预览按钮进来重新加到一处新的集合区，因为取消选中不影响GalleryAdapter数据源
+                mList.clear();
+                mList.addAll(data);
+            } else {
+                // 非底部预览按钮进来GalleryAdapter数据源与已选中的数据共享同一片内存区域的数据
+                mList = data;
+            }
+            notifyDataSetChanged();
+        }
     }
 
     public void addSingleMediaToData(LocalMedia media) {
-        if (this.list != null) {
-            list.clear();
-            list.add(media);
-            notifyDataSetChanged();
-        }
+        mList.clear();
+        mList.add(media);
+        notifyDataSetChanged();
     }
 
     public void removeMediaToData(LocalMedia media) {
-        if (this.list != null && this.list.size() > 0) {
-            this.list.remove(media);
+        if (mList.size() > 0) {
+            mList.remove(media);
             notifyDataSetChanged();
         }
-    }
-
-    public boolean isDataEmpty() {
-        return list == null || list.size() == 0;
     }
 
     @NonNull
@@ -67,7 +74,15 @@ public class PictureWeChatPreviewGalleryAdapter
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         LocalMedia item = getItem(position);
         if (item != null) {
-            holder.viewBorder.setVisibility(item.isChecked() ? View.VISIBLE : View.GONE);
+            ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                    ContextCompat.getColor(holder.itemView.getContext(), item.isMaxSelectEnabledMask() ? R.color.picture_color_half_white : R.color.picture_color_20), BlendModeCompat.SRC_ATOP);
+            if (item.isChecked() && item.isMaxSelectEnabledMask()) {
+                holder.viewBorder.setVisibility(View.VISIBLE);
+            } else {
+                holder.viewBorder.setVisibility(item.isChecked() ? View.VISIBLE : View.GONE);
+            }
+            holder.ivImage.setColorFilter(colorFilter);
+            holder.ivImage.setColorFilter(colorFilter);
             if (config != null && PictureSelectionConfig.imageEngine != null) {
                 PictureSelectionConfig.imageEngine.loadImage(holder.itemView.getContext(), item.getPath(), holder.ivImage);
             }
@@ -81,7 +96,7 @@ public class PictureWeChatPreviewGalleryAdapter
     }
 
     public LocalMedia getItem(int position) {
-        return list != null && list.size() > 0 ? list.get(position) : null;
+        return mList.size() > 0 ? mList.get(position) : null;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -112,6 +127,6 @@ public class PictureWeChatPreviewGalleryAdapter
 
     @Override
     public int getItemCount() {
-        return list != null ? list.size() : 0;
+        return mList.size();
     }
 }
