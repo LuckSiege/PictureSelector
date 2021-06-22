@@ -102,6 +102,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             selectData = cacheData != null ? cacheData : selectData;
             isCompleteOrSelected = savedInstanceState.getBoolean(PictureConfig.EXTRA_COMPLETE_SELECTED, false);
             isChangeSelectedData = savedInstanceState.getBoolean(PictureConfig.EXTRA_CHANGE_SELECTED_DATA, false);
+            onImageChecked(position);
+            onSelectNumChange(false);
         }
     }
 
@@ -160,12 +162,13 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 if (allAlbumList.size() == 0) {
                     // 这种情况有可能是单例被回收了导致readPreviewMediaData();返回的数据为0，那就从第一页开始加载吧
                     setNewTitle();
+                    initViewPageAdapterData(allAlbumList);
+                    loadData();
                 } else {
                     mPage = getIntent().getIntExtra(PictureConfig.EXTRA_PAGE, 0);
+                    setTitle();
+                    initViewPageAdapterData(allAlbumList);
                 }
-                initViewPageAdapterData(allAlbumList);
-                loadData();
-                setTitle();
             } else {
                 initViewPageAdapterData(allAlbumList);
                 if (allAlbumList.size() == 0) {
