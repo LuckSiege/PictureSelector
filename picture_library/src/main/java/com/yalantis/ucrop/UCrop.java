@@ -374,6 +374,8 @@ public class UCrop {
         public static final String EXTRA_HIDE_BOTTOM_CONTROLS = EXTRA_PREFIX + ".HideBottomControls";
         public static final String EXTRA_FREE_STYLE_CROP = EXTRA_PREFIX + ".FreeStyleCrop";
 
+        public static final String EXTRA_DRAG_SMOOTH_CENTER = EXTRA_PREFIX + ".DragSmoothToCenter";
+
         public static final String EXTRA_ASPECT_RATIO_SELECTED_BY_DEFAULT = EXTRA_PREFIX + ".AspectRatioSelectedByDefault";
         public static final String EXTRA_ASPECT_RATIO_OPTIONS = EXTRA_PREFIX + ".AspectRatioOptions";
 
@@ -706,6 +708,13 @@ public class UCrop {
          */
         public void setFreeStyleCropEnabled(boolean enabled) {
             mOptionBundle.putBoolean(EXTRA_FREE_STYLE_CROP, enabled);
+        }
+
+        /**
+         * @param isDragCenter Crop and drag automatically center
+         */
+        public void setCropDragSmoothToCenter(boolean isDragCenter) {
+            mOptionBundle.putBoolean(EXTRA_DRAG_SMOOTH_CENTER, isDragCenter);
         }
 
         /**

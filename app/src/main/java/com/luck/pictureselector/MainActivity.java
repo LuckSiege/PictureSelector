@@ -513,6 +513,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.isWebp(false)// 是否显示webp图片,默认显示
                         //.isBmp(false)//是否显示bmp图片,默认显示
                         .freeStyleCropEnabled(cb_styleCrop.isChecked())// 裁剪框是否可拖拽
+                        .isCropDragSmoothToCenter(true)// 裁剪框拖动时图片自动跟随居中
                         .circleDimmedLayer(cb_crop_circular.isChecked())// 是否圆形裁剪
                         //.setCropDimmedColor(ContextCompat.getColor(getContext(), R.color.app_color_white))// 设置裁剪背景色值
                         //.setCircleDimmedBorderColor(ContextCompat.getColor(getApplicationContext(), R.color.app_color_white))// 设置圆形裁剪边框色值

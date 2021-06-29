@@ -75,7 +75,8 @@ public class OverlayView extends View {
     private final int mCropRectMinSize;
     private final int mCropRectCornerTouchAreaLineLength;
     private int mStrokeWidth = 1;
-    private boolean mIsDragFrame = DEFAULT_DRAG_FRAME;
+    private boolean isDragFrame = DEFAULT_DRAG_FRAME;
+    private boolean isDragCenter;
     private ValueAnimator smoothAnimator;
 
     private OverlayViewChangeListener mCallback;
@@ -130,12 +131,12 @@ public class OverlayView extends View {
         mFreestyleCropMode = freestyleCropEnabled ? FREESTYLE_CROP_MODE_ENABLE : FREESTYLE_CROP_MODE_DISABLE;
     }
 
-    public boolean isDragFrame() {
-        return mIsDragFrame;
+    public void setDragFrame(boolean isDragFrame) {
+        this.isDragFrame = isDragFrame;
     }
 
-    public void setDragFrame(boolean mIsDragFrame) {
-        this.mIsDragFrame = mIsDragFrame;
+    public void setDragSmoothToCenter(boolean isDragCenter) {
+        this.isDragCenter = isDragCenter;
     }
 
     /**
@@ -384,7 +385,9 @@ public class OverlayView extends View {
             if (mCallback != null) {
                 mCallback.onCropRectUpdated(mCropViewRect);
             }
-            smoothToCenter();
+            if (isDragCenter) {
+                smoothToCenter();
+            }
         }
 
         return false;
@@ -405,25 +408,25 @@ public class OverlayView extends View {
             // resize rectangle
             case 0:
                 // 是否可拖动裁剪框
-                if (isDragFrame()) {
+                if (isDragFrame) {
                     mTempRect.set(touchX, touchY, mCropViewRect.right, mCropViewRect.bottom);
                 }
                 break;
             case 1:
                 // 是否可拖动裁剪框
-                if (isDragFrame()) {
+                if (isDragFrame) {
                     mTempRect.set(mCropViewRect.left, touchY, touchX, mCropViewRect.bottom);
                 }
                 break;
             case 2:
                 // 是否可拖动裁剪框
-                if (isDragFrame()) {
+                if (isDragFrame) {
                     mTempRect.set(mCropViewRect.left, mCropViewRect.top, touchX, touchY);
                 }
                 break;
             case 3:
                 // 是否可拖动裁剪框
-                if (isDragFrame()) {
+                if (isDragFrame) {
                     mTempRect.set(touchX, mCropViewRect.top, mCropViewRect.right, touchY);
                 }
                 break;

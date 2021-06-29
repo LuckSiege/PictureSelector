@@ -189,6 +189,7 @@ public class UCropManager {
         options.setNavBarColor(cropNavBarColor);
         options.isWithVideoImage(config.isWithVideoImage);
         options.setFreeStyleCropEnabled(config.freeStyleCropEnabled);
+        options.setCropDragSmoothToCenter(config.isDragCenter);
         options.setCropExitAnimation(PictureSelectionConfig.windowAnimationStyle.activityCropExitAnimation);
         options.withAspectRatio(config.aspect_ratio_x, config.aspect_ratio_y);
         options.isMultipleRecyclerAnimation(config.isMultipleRecyclerAnimation);

@@ -101,6 +101,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean openClickSound;
     public boolean enableCrop;
     public boolean freeStyleCropEnabled;
+    public boolean isDragCenter;
     public boolean circleDimmedLayer;
     @ColorInt
     public int circleDimmedColor;
@@ -244,6 +245,7 @@ public final class PictureSelectionConfig implements Parcelable {
         openClickSound = in.readByte() != 0;
         enableCrop = in.readByte() != 0;
         freeStyleCropEnabled = in.readByte() != 0;
+        isDragCenter = in.readByte() != 0;
         circleDimmedLayer = in.readByte() != 0;
         circleDimmedColor = in.readInt();
         circleDimmedBorderColor = in.readInt();
@@ -356,6 +358,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (openClickSound ? 1 : 0));
         dest.writeByte((byte) (enableCrop ? 1 : 0));
         dest.writeByte((byte) (freeStyleCropEnabled ? 1 : 0));
+        dest.writeByte((byte) (isDragCenter ? 1 : 0));
         dest.writeByte((byte) (circleDimmedLayer ? 1 : 0));
         dest.writeInt(circleDimmedColor);
         dest.writeInt(circleDimmedBorderColor);
@@ -483,6 +486,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isMultipleSkipCrop = true;
         isMultipleRecyclerAnimation = true;
         freeStyleCropEnabled = false;
+        isDragCenter = false;
         circleDimmedLayer = false;
         showCropFrame = true;
         showCropGrid = true;

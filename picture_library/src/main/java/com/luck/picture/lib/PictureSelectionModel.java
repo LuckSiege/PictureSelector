@@ -349,6 +349,15 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param isDragCenter Crop and drag automatically center
+     * @return
+     */
+    public PictureSelectionModel isCropDragSmoothToCenter(boolean isDragCenter) {
+        selectionConfig.isDragCenter = isDragCenter;
+        return this;
+    }
+
+    /**
      * @param scaleEnabled Crop frame is zoom ?
      * @return
      */

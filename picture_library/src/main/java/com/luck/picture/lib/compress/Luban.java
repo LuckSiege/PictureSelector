@@ -268,7 +268,7 @@ public class Luban {
     private File compressReal(Context context, InputStreamProvider streamProvider) throws IOException {
         File result;
         String suffix = Checker.SINGLE.extSuffix(streamProvider.getMedia() != null ? streamProvider.getMedia().getMimeType() : "");
-        File outFile = getImageCacheFile(context, streamProvider, TextUtils.isEmpty(suffix) ? suffix : suffix);
+        File outFile = getImageCacheFile(context, streamProvider, suffix);
         if (mRenameListener != null) {
             String filename = mRenameListener.rename(streamProvider.getPath());
             outFile = getImageCustomFile(context, filename);
