@@ -141,7 +141,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         switch (config.chooseMode) {
             case PictureConfig.TYPE_ALL:
             case PictureConfig.TYPE_IMAGE:
-                startOpenCamera();
+                startOpenCameraImage();
                 break;
             case PictureConfig.TYPE_VIDEO:
                 startOpenCameraVideo();
@@ -267,7 +267,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 if (SdkVersionUtils.checkedAndroid_R()) {
                     BufferedSource buffer = null;
                     try {
-                        Uri audioOutUri = MediaUtils.createAudioUri(getContext(), config.suffixType);
+                        Uri audioOutUri = MediaUtils.createAudioUri(getContext(), TextUtils.isEmpty(config.cameraAudioFormat) ? config.suffixType : config.cameraAudioFormat);
                         if (audioOutUri != null) {
                             InputStream inputStream = PictureContentResolver.getContentResolverOpenInputStream(this, Uri.parse(config.cameraPath));
                             buffer = Okio.buffer(Okio.source(Objects.requireNonNull(inputStream)));

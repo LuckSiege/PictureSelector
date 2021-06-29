@@ -926,7 +926,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     selectedDialog.show(getSupportFragmentManager(), "PhotoItemSelectedDialog");
                     break;
                 case PictureConfig.TYPE_IMAGE:
-                    startOpenCamera();
+                    startOpenCameraImage();
                     break;
                 case PictureConfig.TYPE_VIDEO:
                     startOpenCameraVideo();
@@ -1811,7 +1811,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (SdkVersionUtils.checkedAndroid_R()) {
                     BufferedSource buffer = null;
                     try {
-                        Uri audioOutUri = MediaUtils.createAudioUri(getContext(), config.suffixType);
+                        Uri audioOutUri = MediaUtils.createAudioUri(getContext(), TextUtils.isEmpty(config.cameraAudioFormat) ? config.suffixType : config.cameraAudioFormat);
                         if (audioOutUri != null) {
                             InputStream inputStream = PictureContentResolver.getContentResolverOpenInputStream(this, Uri.parse(config.cameraPath));
                             buffer = Okio.buffer(Okio.source(Objects.requireNonNull(inputStream)));
@@ -2348,7 +2348,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     PictureSelectionConfig.onCustomCameraInterfaceListener.onCameraClick(getContext(), config, PictureConfig.TYPE_IMAGE);
                     config.cameraMimeType = PictureMimeType.ofImage();
                 } else {
-                    startOpenCamera();
+                    startOpenCameraImage();
                 }
                 break;
             case PhotoItemSelectedDialog.VIDEO_CAMERA:

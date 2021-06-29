@@ -377,13 +377,21 @@ public class CustomCameraView extends RelativeLayout {
                 rootDir.mkdirs();
             }
             boolean isOutFileNameEmpty = TextUtils.isEmpty(mConfig.cameraFileName);
-            String suffix;
-            if (mConfig.suffixType.startsWith("image/")) {
-                suffix = mConfig.suffixType.replaceAll("image/", ".");
+            String imageFormat;
+            if (TextUtils.isEmpty(mConfig.cameraImageFormat)) {
+                if (mConfig.suffixType.startsWith("image/")) {
+                    imageFormat = mConfig.suffixType.replaceAll("image/", ".");
+                } else {
+                    imageFormat = PictureMimeType.JPG;
+                }
             } else {
-                suffix = PictureMimeType.JPG;
+                if (mConfig.cameraImageFormat.startsWith("image/")) {
+                    imageFormat = mConfig.cameraImageFormat.replaceAll("image/", ".");
+                } else {
+                    imageFormat = mConfig.cameraImageFormat;
+                }
             }
-            String newFileImageName = isOutFileNameEmpty ? DateUtils.getCreateFileName("IMG_") + suffix : mConfig.cameraFileName;
+            String newFileImageName = isOutFileNameEmpty ? DateUtils.getCreateFileName("IMG_") + imageFormat : mConfig.cameraFileName;
             File cameraFile = new File(rootDir, newFileImageName);
             Uri outUri = getOutUri(PictureMimeType.ofImage());
             if (outUri != null) {
@@ -397,8 +405,9 @@ public class CustomCameraView extends RelativeLayout {
                 mConfig.cameraFileName = !isSuffixOfImage ? StringUtils.renameSuffix(mConfig.cameraFileName, PictureMimeType.JPG) : mConfig.cameraFileName;
                 cameraFileName = mConfig.camera ? mConfig.cameraFileName : StringUtils.rename(mConfig.cameraFileName);
             }
+            String imageFormat = TextUtils.isEmpty(mConfig.cameraImageFormat) ? mConfig.suffixType : mConfig.cameraImageFormat;
             File cameraFile = PictureFileUtils.createCameraFile(getContext(),
-                    PictureMimeType.ofImage(), cameraFileName, mConfig.suffixType, mConfig.outPutCameraPath);
+                    PictureMimeType.ofImage(), cameraFileName, imageFormat, mConfig.outPutCameraPath);
             mConfig.cameraPath = cameraFile.getAbsolutePath();
             return cameraFile;
         }
@@ -412,13 +421,21 @@ public class CustomCameraView extends RelativeLayout {
                 rootDir.mkdirs();
             }
             boolean isOutFileNameEmpty = TextUtils.isEmpty(mConfig.cameraFileName);
-            String suffix;
-            if (mConfig.suffixType.startsWith("video/")) {
-                suffix = mConfig.suffixType.replaceAll("video/", ".");
+            String imageFormat;
+            if (TextUtils.isEmpty(mConfig.cameraVideoFormat)) {
+                if (mConfig.suffixType.startsWith("video/")) {
+                    imageFormat = mConfig.suffixType.replaceAll("video/", ".");
+                } else {
+                    imageFormat = PictureMimeType.MP4;
+                }
             } else {
-                suffix = PictureMimeType.MP4;
+                if (mConfig.cameraVideoFormat.startsWith("video/")) {
+                    imageFormat = mConfig.cameraVideoFormat.replaceAll("video/", ".");
+                } else {
+                    imageFormat = mConfig.cameraVideoFormat;
+                }
             }
-            String newFileImageName = isOutFileNameEmpty ? DateUtils.getCreateFileName("VID_") + suffix : mConfig.cameraFileName;
+            String newFileImageName = isOutFileNameEmpty ? DateUtils.getCreateFileName("VID_") + imageFormat : mConfig.cameraFileName;
             File cameraFile = new File(rootDir, newFileImageName);
             Uri outUri = getOutUri(PictureMimeType.ofVideo());
             if (outUri != null) {
@@ -433,16 +450,21 @@ public class CustomCameraView extends RelativeLayout {
                         .renameSuffix(mConfig.cameraFileName, PictureMimeType.MP4) : mConfig.cameraFileName;
                 cameraFileName = mConfig.camera ? mConfig.cameraFileName : StringUtils.rename(mConfig.cameraFileName);
             }
+            String videoFormat = TextUtils.isEmpty(mConfig.cameraVideoFormat) ? mConfig.suffixType : mConfig.cameraVideoFormat;
             File cameraFile = PictureFileUtils.createCameraFile(getContext(),
-                    PictureMimeType.ofVideo(), cameraFileName, mConfig.suffixType, mConfig.outPutCameraPath);
+                    PictureMimeType.ofVideo(), cameraFileName, videoFormat, mConfig.outPutCameraPath);
             mConfig.cameraPath = cameraFile.getAbsolutePath();
             return cameraFile;
         }
     }
 
     private Uri getOutUri(int type) {
-        return type == PictureMimeType.ofVideo()
-                ? MediaUtils.createVideoUri(getContext(), mConfig.cameraFileName, mConfig.suffixType) : MediaUtils.createImageUri(getContext(), mConfig.cameraFileName, mConfig.suffixType);
+        boolean isHasVideo = type == PictureMimeType.ofVideo();
+        if (isHasVideo) {
+            return MediaUtils.createVideoUri(getContext(), mConfig.cameraFileName, TextUtils.isEmpty(mConfig.cameraVideoFormat) ? mConfig.suffixType : mConfig.cameraVideoFormat);
+        } else {
+            return MediaUtils.createImageUri(getContext(), mConfig.cameraFileName, TextUtils.isEmpty(mConfig.cameraImageFormat) ? mConfig.suffixType : mConfig.cameraImageFormat);
+        }
     }
 
     public void setCameraListener(CameraListener cameraListener) {
