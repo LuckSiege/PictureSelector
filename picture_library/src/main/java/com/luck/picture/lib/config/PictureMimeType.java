@@ -206,24 +206,6 @@ public final class PictureMimeType {
     }
 
     /**
-     * Determine whether the file type is an image or a video
-     *
-     * @param cameraMimeType
-     * @return
-     */
-    public static String getMimeType(int cameraMimeType) {
-        switch (cameraMimeType) {
-            case PictureConfig.TYPE_VIDEO:
-                return MIME_TYPE_VIDEO;
-            case PictureConfig.TYPE_AUDIO:
-                return MIME_TYPE_AUDIO_AMR;
-            default:
-                return MIME_TYPE_IMAGE;
-        }
-    }
-
-
-    /**
      * 获取mimeType
      *
      * @param context
@@ -289,6 +271,32 @@ public final class PictureMimeType {
             return MIME_TYPE_IMAGE;
         }
         return MIME_TYPE_IMAGE;
+    }
+
+    /**
+     * Get Image mimeType
+     *
+     * @param path
+     * @return
+     */
+    public static String getImageMimeType(String path, int cameraMimeType) {
+        try {
+            File file = new File(path);
+            String fileName = file.getName();
+            int beginIndex = fileName.lastIndexOf(".");
+            boolean isMatchSuccess = beginIndex != -1;
+            switch (cameraMimeType) {
+                case PictureConfig.TYPE_VIDEO:
+                    return isMatchSuccess ? "video/" + fileName.substring(beginIndex + 1) : MP4_Q;
+                case PictureConfig.TYPE_AUDIO:
+                    return isMatchSuccess ? "audio/" + fileName.substring(beginIndex + 1) : AMR_Q;
+                default:
+                    return isMatchSuccess ? "image/" + fileName.substring(beginIndex + 1) : JPEG_Q;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return JPEG_Q;
     }
 
     /**

@@ -294,7 +294,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 // content: Processing rules
                 String path = PictureFileUtils.getPath(getContext(), Uri.parse(config.cameraPath));
                 File cameraFile = new File(path);
-                mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
+                mimeType = PictureMimeType.getImageMimeType(path,config.cameraMimeType);
                 media.setSize(cameraFile.length());
                 media.setFileName(cameraFile.getName());
                 if (PictureMimeType.isHasImage(mimeType)) {
@@ -318,7 +318,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 media.setAndroidQToPath(mediaPath);
             } else {
                 File cameraFile = new File(config.cameraPath);
-                mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
+                mimeType = PictureMimeType.getImageMimeType(config.cameraPath,config.cameraMimeType);
                 media.setSize(cameraFile.length());
                 media.setFileName(cameraFile.getName());
                 if (PictureMimeType.isHasImage(mimeType)) {

@@ -496,7 +496,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.isMultipleRecyclerAnimation(false)// 多图裁剪底部列表显示动画效果
                         .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
                         //.imageFormat(PictureMimeType.PNG) // 拍照保存图片格式后缀,默认jpeg,Android Q使用PictureMimeType.PNG_Q
-                        .setCameraImageFormat(PictureMimeType.PNG) // 相机图片格式后缀,默认.jpeg
+                        .setCameraImageFormat(PictureMimeType.JPEG) // 相机图片格式后缀,默认.jpeg
                         .setCameraVideoFormat(PictureMimeType.MP4)// 相机视频格式后缀,默认.mp4
                         .setCameraAudioFormat(PictureMimeType.AMR)// 录音音频格式后缀,默认.amr
                         .isEnableCrop(cb_crop.isChecked())// 是否裁剪

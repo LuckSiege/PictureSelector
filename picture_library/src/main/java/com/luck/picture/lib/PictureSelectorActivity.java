@@ -1839,7 +1839,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 // content: Processing rules
                 String path = PictureFileUtils.getPath(getContext(), Uri.parse(config.cameraPath));
                 File cameraFile = new File(path);
-                mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
+                mimeType = PictureMimeType.getImageMimeType(path,config.cameraMimeType);
                 media.setSize(cameraFile.length());
                 media.setFileName(cameraFile.getName());
                 if (PictureMimeType.isHasImage(mimeType)) {
@@ -1863,7 +1863,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 media.setAndroidQToPath(mediaPath);
             } else {
                 File cameraFile = new File(config.cameraPath);
-                mimeType = PictureMimeType.getMimeType(config.cameraMimeType);
+                mimeType = PictureMimeType.getImageMimeType(config.cameraPath,config.cameraMimeType);
                 media.setSize(cameraFile.length());
                 media.setFileName(cameraFile.getName());
                 if (PictureMimeType.isHasImage(mimeType)) {
