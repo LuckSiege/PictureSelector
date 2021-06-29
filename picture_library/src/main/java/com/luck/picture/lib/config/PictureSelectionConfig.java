@@ -46,7 +46,11 @@ public final class PictureSelectionConfig implements Parcelable {
     public static PictureCropParameterStyle cropStyle;
     public static PictureWindowAnimationStyle windowAnimationStyle = PictureWindowAnimationStyle.ofDefaultWindowAnimationStyle();
     public String compressSavePath;
+    @Deprecated
     public String suffixType;
+    public String cameraImageFormat;
+    public String cameraVideoFormat;
+    public String cameraAudioFormat;
     @Deprecated
     public boolean focusAlpha;
     public String renameCompressFileName;
@@ -195,6 +199,9 @@ public final class PictureSelectionConfig implements Parcelable {
         isSingleDirectReturn = in.readByte() != 0;
         compressSavePath = in.readString();
         suffixType = in.readString();
+        cameraImageFormat = in.readString();
+        cameraVideoFormat = in.readString();
+        cameraAudioFormat = in.readString();
         focusAlpha = in.readByte() != 0;
         renameCompressFileName = in.readString();
         renameCropFileName = in.readString();
@@ -308,6 +315,9 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isSingleDirectReturn ? 1 : 0));
         dest.writeString(compressSavePath);
         dest.writeString(suffixType);
+        dest.writeString(cameraImageFormat);
+        dest.writeString(cameraVideoFormat);
+        dest.writeString(cameraAudioFormat);
         dest.writeByte((byte) (focusAlpha ? 1 : 0));
         dest.writeString(renameCompressFileName);
         dest.writeString(renameCropFileName);
@@ -503,6 +513,9 @@ public final class PictureSelectionConfig implements Parcelable {
         isDragFrame = true;
         compressSavePath = "";
         suffixType = "";
+        cameraImageFormat = "";
+        cameraVideoFormat = "";
+        cameraAudioFormat = "";
         cameraFileName = "";
         specifiedFormat = "";
         renameCompressFileName = "";

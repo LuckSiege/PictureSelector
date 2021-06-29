@@ -405,7 +405,15 @@ public final class PictureMimeType {
 
     public final static String WEBP = ".webp";
 
+    public final static String AMR = ".amr";
+
+    public final static String WAV = ".wav";
+
+    public final static String MP3 = ".mp3";
+
     public final static String MP4 = ".mp4";
+
+    public final static String AVI = ".avi";
 
     public final static String JPEG_Q = "image/jpeg";
 
@@ -414,6 +422,12 @@ public final class PictureMimeType {
     public final static String MP4_Q = "video/mp4";
 
     public final static String AVI_Q = "video/avi";
+
+    public final static String AMR_Q = "audio/amr";
+
+    public final static String WAV_Q = "audio/x-wav";
+
+    public final static String MP3_Q = "audio/mpeg";
 
     public final static String DCIM = "DCIM/Camera";
 

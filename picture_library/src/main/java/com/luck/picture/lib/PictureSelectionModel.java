@@ -644,14 +644,17 @@ public class PictureSelectionModel {
      * </p>
      *
      * @param suffixType PictureSelector media format
+     *                   <p>
+     *                   Please Use {@link ## setCameraImageFormat # setCameraVideoFormat # setCameraAudioFormat}
      * @return
      */
+    @Deprecated
     public PictureSelectionModel imageFormat(String suffixType) {
         if (SdkVersionUtils.checkedAndroid_Q() || SdkVersionUtils.checkedAndroid_R()) {
             if (TextUtils.equals(suffixType, PictureMimeType.PNG)) {
                 suffixType = PictureMimeType.PNG_Q;
             }
-            if (TextUtils.equals(suffixType, PictureMimeType.JPG)) {
+            if (TextUtils.equals(suffixType, PictureMimeType.JPG) || TextUtils.equals(suffixType, PictureMimeType.JPEG)) {
                 suffixType = PictureMimeType.JPEG_Q;
             }
             if (TextUtils.equals(suffixType, PictureMimeType.MP4)) {
@@ -659,6 +662,67 @@ public class PictureSelectionModel {
             }
         }
         selectionConfig.suffixType = suffixType;
+        return this;
+    }
+
+    /**
+     * camera output image format
+     *
+     * @param imageFormat PictureSelector media format
+     * @return
+     */
+    public PictureSelectionModel setCameraImageFormat(String imageFormat) {
+        if (SdkVersionUtils.checkedAndroid_Q() || SdkVersionUtils.checkedAndroid_R()) {
+            if (TextUtils.equals(imageFormat, PictureMimeType.PNG)) {
+                imageFormat = PictureMimeType.PNG_Q;
+            }
+            if (TextUtils.equals(imageFormat, PictureMimeType.JPG) || TextUtils.equals(imageFormat, PictureMimeType.JPEG)) {
+                imageFormat = PictureMimeType.JPEG_Q;
+            }
+        }
+        selectionConfig.cameraImageFormat = imageFormat;
+        return this;
+    }
+
+    /**
+     * camera output video format
+     *
+     * @param videoFormat PictureSelector media format
+     * @return
+     */
+    public PictureSelectionModel setCameraVideoFormat(String videoFormat) {
+        if (SdkVersionUtils.checkedAndroid_Q() || SdkVersionUtils.checkedAndroid_R()) {
+            if (TextUtils.equals(videoFormat, PictureMimeType.MP4)) {
+                videoFormat = PictureMimeType.MP4_Q;
+            }
+            if (TextUtils.equals(videoFormat, PictureMimeType.AVI)) {
+                videoFormat = PictureMimeType.AVI_Q;
+            }
+        }
+        selectionConfig.cameraVideoFormat = videoFormat;
+        return this;
+    }
+
+
+    /**
+     * camera output audio format
+     *
+     * @param videoFormat PictureSelector media format
+     * @return
+     */
+    public PictureSelectionModel setCameraAudioFormat(String audioFormat) {
+        if (SdkVersionUtils.checkedAndroid_Q() || SdkVersionUtils.checkedAndroid_R()) {
+            if (TextUtils.equals(audioFormat, PictureMimeType.AMR)) {
+                audioFormat = PictureMimeType.AMR_Q;
+            }
+            if (TextUtils.equals(audioFormat, PictureMimeType.WAV)) {
+                audioFormat = PictureMimeType.WAV_Q;
+            }
+            if (TextUtils.equals(audioFormat, PictureMimeType.MP3)) {
+                audioFormat = PictureMimeType.MP3_Q;
+            }
+        }
+        selectionConfig.cameraAudioFormat = audioFormat;
         return this;
     }
 
