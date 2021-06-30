@@ -33,6 +33,7 @@ import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.yalantis.ucrop.UCrop;
+import com.yalantis.ucrop.view.OverlayView;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
@@ -341,10 +342,26 @@ public class PictureSelectionModel {
 
     /**
      * @param freeStyleCropEnabled Crop frame is move ?
+     * <p>
+     *  Please Use {@link # freeStyleCropMode() }
+     * </p>
      * @return
      */
+    @Deprecated
     public PictureSelectionModel freeStyleCropEnabled(boolean freeStyleCropEnabled) {
         selectionConfig.freeStyleCropEnabled = freeStyleCropEnabled;
+        return this;
+    }
+
+    /**
+     * @param freeStyleCropMode Crop freeStyleCropMode
+     * <p>
+     *  Please Use {@link OverlayView.FreestyleMode #FREESTYLE_CROP_MODE_DISABLE # FREESTYLE_CROP_MODE_ENABLE # FREESTYLE_CROP_MODE_ENABLE_WITH_PASS_THROUGH}
+     * </p>
+     * @return
+     */
+    public PictureSelectionModel freeStyleCropMode(int freeStyleCropMode) {
+        selectionConfig.freeStyleCropMode = freeStyleCropMode;
         return this;
     }
 

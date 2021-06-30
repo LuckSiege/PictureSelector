@@ -112,6 +112,7 @@ public final class PictureSelectionConfig implements Parcelable {
     @ColorInt
     public int circleDimmedBorderColor;
     public int circleStrokeWidth;
+    public int freeStyleCropMode;
     public boolean showCropFrame;
     public boolean showCropGrid;
     public boolean hideBottomControls;
@@ -257,6 +258,7 @@ public final class PictureSelectionConfig implements Parcelable {
         circleDimmedColor = in.readInt();
         circleDimmedBorderColor = in.readInt();
         circleStrokeWidth = in.readInt();
+        freeStyleCropMode = in.readInt();
         showCropFrame = in.readByte() != 0;
         showCropGrid = in.readByte() != 0;
         hideBottomControls = in.readByte() != 0;
@@ -373,6 +375,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(circleDimmedColor);
         dest.writeInt(circleDimmedBorderColor);
         dest.writeInt(circleStrokeWidth);
+        dest.writeInt(freeStyleCropMode);
         dest.writeByte((byte) (showCropFrame ? 1 : 0));
         dest.writeByte((byte) (showCropGrid ? 1 : 0));
         dest.writeByte((byte) (hideBottomControls ? 1 : 0));
@@ -555,6 +558,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isSyncCover = !SdkVersionUtils.checkedAndroid_Q();
         cropCompressFormat = "";
         isAutoScalePreviewImage = true;
+        freeStyleCropMode = -1;
     }
 
     public static PictureSelectionConfig getInstance() {

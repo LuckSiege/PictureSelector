@@ -373,6 +373,7 @@ public class UCrop {
 
         public static final String EXTRA_HIDE_BOTTOM_CONTROLS = EXTRA_PREFIX + ".HideBottomControls";
         public static final String EXTRA_FREE_STYLE_CROP = EXTRA_PREFIX + ".FreeStyleCrop";
+        public static final String EXTRA_FREE_STYLE_CROP_MODE = EXTRA_PREFIX + ".FreeStyleCropMode";
 
         public static final String EXTRA_DRAG_SMOOTH_CENTER = EXTRA_PREFIX + ".DragSmoothToCenter";
 
@@ -708,6 +709,13 @@ public class UCrop {
          */
         public void setFreeStyleCropEnabled(boolean enabled) {
             mOptionBundle.putBoolean(EXTRA_FREE_STYLE_CROP, enabled);
+        }
+
+        /**
+         * @param freestyleCropMode set crop freestyle mode
+         */
+        public void setFreestyleCropMode(int freestyleCropMode) {
+            mOptionBundle.putInt(EXTRA_FREE_STYLE_CROP_MODE,freestyleCropMode);
         }
 
         /**

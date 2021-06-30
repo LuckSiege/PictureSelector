@@ -115,18 +115,19 @@ public class OverlayView extends View {
         return mCropViewRect;
     }
 
-    @Deprecated
     /***
      * Please use the new method {@link #getFreestyleCropMode() getFreestyleCropMode} method as we have more than 1 freestyle crop mode.
      */
+    @Deprecated
     public boolean isFreestyleCropEnabled() {
         return mFreestyleCropMode == FREESTYLE_CROP_MODE_ENABLE;
     }
 
-    @Deprecated
+
     /***
      * Please use the new method {@link #setFreestyleCropMode setFreestyleCropMode} method as we have more than 1 freestyle crop mode.
      */
+    @Deprecated
     public void setFreestyleCropEnabled(boolean freestyleCropEnabled) {
         mFreestyleCropMode = freestyleCropEnabled ? FREESTYLE_CROP_MODE_ENABLE : FREESTYLE_CROP_MODE_DISABLE;
     }
