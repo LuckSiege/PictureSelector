@@ -40,7 +40,7 @@ public class MediaUtils {
      * @param suffixType
      * @return 图片的uri
      */
-    public static Uri createImageUri(final Context ctx, String cameraFileName, String suffixType) {
+    public static Uri createImageUri(final Context ctx, String cameraFileName, String mimeType) {
         Context context = ctx.getApplicationContext();
         Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();
@@ -61,7 +61,7 @@ public class MediaUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             values.put(MediaStore.Images.Media.DATE_TAKEN, time);
         }
-        values.put(MediaStore.Images.Media.MIME_TYPE, TextUtils.isEmpty(suffixType) || suffixType.startsWith("video") ? PictureMimeType.MIME_TYPE_IMAGE : suffixType);
+        values.put(MediaStore.Images.Media.MIME_TYPE, TextUtils.isEmpty(mimeType) || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO) ? PictureMimeType.MIME_TYPE_IMAGE : mimeType);
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
         if (status.equals(Environment.MEDIA_MOUNTED)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -85,7 +85,7 @@ public class MediaUtils {
      * @param suffixType
      * @return 视频的uri
      */
-    public static Uri createVideoUri(final Context ctx, String cameraFileName, String suffixType) {
+    public static Uri createVideoUri(final Context ctx, String cameraFileName, String mimeType) {
         Context context = ctx.getApplicationContext();
         Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();
@@ -106,7 +106,7 @@ public class MediaUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             values.put(MediaStore.Video.Media.DATE_TAKEN, time);
         }
-        values.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(suffixType) || suffixType.startsWith("image") ? PictureMimeType.MIME_TYPE_VIDEO : suffixType);
+        values.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(mimeType) || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE) ? PictureMimeType.MIME_TYPE_VIDEO : mimeType);
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
         if (status.equals(Environment.MEDIA_MOUNTED)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -129,7 +129,7 @@ public class MediaUtils {
      * @param suffixType
      * @return 音频的uri
      */
-    public static Uri createAudioUri(final Context ctx, String suffixType) {
+    public static Uri createAudioUri(final Context ctx, String mimeType) {
         Context context = ctx.getApplicationContext();
         Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();
@@ -140,7 +140,7 @@ public class MediaUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             values.put(MediaStore.Audio.Media.DATE_TAKEN, time);
         }
-        values.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(suffixType) || suffixType.startsWith("image") || suffixType.startsWith("video") ? PictureMimeType.MIME_TYPE_AUDIO_AMR : suffixType);
+        values.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(mimeType) || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE) || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO) ? PictureMimeType.MIME_TYPE_AUDIO_AMR : mimeType);
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
         if (status.equals(Environment.MEDIA_MOUNTED)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

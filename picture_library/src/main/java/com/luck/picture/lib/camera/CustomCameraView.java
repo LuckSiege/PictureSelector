@@ -553,12 +553,16 @@ public class CustomCameraView extends RelativeLayout {
                 mCameraController.stopRecording();
             }
         }
+
         if (mOutMediaFile != null && mOutMediaFile.exists()) {
             mOutMediaFile.delete();
-            if (!SdkVersionUtils.checkedAndroid_Q()) {
+            if (SdkVersionUtils.checkedAndroid_Q()){
+                MediaUtils.deleteCamera(getContext(),mConfig.cameraPath);
+            } else {
                 new PictureMediaScannerConnection(getContext(), mOutMediaFile.getAbsolutePath());
             }
         }
+
         mSwitchCamera.setVisibility(VISIBLE);
         mFlashLamp.setVisibility(VISIBLE);
         mCameraPreviewView.setVisibility(View.VISIBLE);
