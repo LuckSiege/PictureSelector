@@ -1,6 +1,5 @@
 package com.luck.picture.lib;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -1646,7 +1645,6 @@ public class PictureSelectionModel {
      * @param launcher use {@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)}
      *                 passing in a {@link StartActivityForResult} object for the {@link ActivityResultContract}.
      */
-    @TargetApi(Build.VERSION_CODES.R)
     public void forResult(ActivityResultLauncher<Intent> launcher) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();

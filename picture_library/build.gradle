@@ -35,6 +35,8 @@ apply from: '../publish.gradle'
 dependencies {
     implementation "androidx.appcompat:appcompat:${cfgs.version_appcompat}"
     implementation "androidx.recyclerview:recyclerview:${cfgs.version_recyclerview}"
+    implementation "androidx.activity:activity:${cfgs.activity_version}"
+    implementation "androidx.fragment:fragment:${cfgs.fragment_version}"
     implementation "androidx.concurrent:concurrent-futures:${cfgs.futures_version}"
     implementation "androidx.annotation:annotation-experimental:${cfgs.experimental_version}"
     implementation "com.squareup.okio:okio:${cfgs.okio_version}"
