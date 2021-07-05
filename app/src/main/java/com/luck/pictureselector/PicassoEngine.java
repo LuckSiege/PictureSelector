@@ -39,10 +39,8 @@ public class PicassoEngine implements ImageEngine {
     @Override
     public void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
         VideoRequestHandler videoRequestHandler = new VideoRequestHandler();
-        if (PictureMimeType.isContent(url)) {
-            Picasso.get()
-                    .load(Uri.parse(url))
-                    .into(imageView);
+        if (PictureMimeType.isContent(url) || PictureMimeType.isHasHttp(url)) {
+            Picasso.get().load(Uri.parse(url)).into(imageView);
         } else {
             if (PictureMimeType.isUrlHasVideo(url)) {
                 Picasso picasso = new Picasso.Builder(context.getApplicationContext())
@@ -51,9 +49,7 @@ public class PicassoEngine implements ImageEngine {
                 picasso.load(videoRequestHandler.SCHEME_VIDEO + ":" + url)
                         .into(imageView);
             } else {
-                Picasso.get()
-                        .load(new File(url))
-                        .into(imageView);
+                Picasso.get().load(new File(url)).into(imageView);
             }
         }
     }
