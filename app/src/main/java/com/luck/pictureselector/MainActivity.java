@@ -23,10 +23,16 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -113,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ItemTouchHelper mItemTouchHelper;
     private DragListener mDragListener;
     private int animationMode = AnimationType.DEFAULT_ANIMATION;
-
+    private ActivityResultLauncher<Intent> launcherResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -403,6 +409,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 注册广播
         BroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver,
                 BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
+
+        // 注册需要写在onCreate或Fragment onAttach里，否则会报java.lang.IllegalStateException异常
+        launcherResult = createActivityResultLauncher();
     }
 
     /**
@@ -542,7 +551,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.scaleEnabled(false)// 裁剪是否可放大缩小图片
                         //.videoQuality()// 视频录制质量 0 or 1
                         //.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
-                        .forResult(new MyResultCallback(mAdapter));
+                        //.forResult(new MyResultCallback(mAdapter));
+                        .forResult(launcherResult);
+
             } else {
                 // 单独拍照
                 PictureSelector.create(MainActivity.this)
@@ -603,6 +614,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     };
+
+    /**
+     * 创建一个ActivityResultLauncher
+     *
+     * @return
+     */
+    private ActivityResultLauncher<Intent> createActivityResultLauncher() {
+        return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        int resultCode = result.getResultCode();
+                        if (resultCode == RESULT_OK) {
+                            List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(result.getData());
+                            // 例如 LocalMedia 里面返回五种path
+                            // 1.media.getPath(); 原图path
+                            // 2.media.getCutPath();裁剪后path，需判断media.isCut();切勿直接使用
+                            // 3.media.getCompressPath();压缩后path，需判断media.isCompressed();切勿直接使用
+                            // 4.media.getOriginalPath()); media.isOriginal());为true时此字段才有值
+                            // 5.media.getAndroidQToPath();Android Q版本特有返回的字段，但如果开启了压缩或裁剪还是取裁剪或压缩路径；注意：.isAndroidQTransform 为false 此字段将返回空
+                            // 如果同时开启裁剪和压缩，则取压缩路径为准因为是先裁剪后压缩
+                            for (LocalMedia media : selectList) {
+                                if (media.getWidth() == 0 || media.getHeight() == 0) {
+                                    if (PictureMimeType.isHasImage(media.getMimeType())) {
+                                        MediaExtraInfo imageExtraInfo = MediaUtils.getImageSize(media.getPath());
+                                        media.setWidth(imageExtraInfo.getWidth());
+                                        media.setHeight(imageExtraInfo.getHeight());
+                                    } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                                        MediaExtraInfo videoExtraInfo = MediaUtils.getVideoSize(getContext(), media.getPath());
+                                        media.setWidth(videoExtraInfo.getWidth());
+                                        media.setHeight(videoExtraInfo.getHeight());
+                                    }
+                                }
+                                Log.i(TAG, "是否压缩:" + media.isCompressed());
+                                Log.i(TAG, "压缩:" + media.getCompressPath());
+                                Log.i(TAG, "原图:" + media.getPath());
+                                Log.i(TAG, "绝对路径:" + media.getRealPath());
+                                Log.i(TAG, "是否裁剪:" + media.isCut());
+                                Log.i(TAG, "裁剪:" + media.getCutPath());
+                                Log.i(TAG, "是否开启原图:" + media.isOriginal());
+                                Log.i(TAG, "原图路径:" + media.getOriginalPath());
+                                Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
+                                Log.i(TAG, "宽高: " + media.getWidth() + "x" + media.getHeight());
+                                Log.i(TAG, "Size: " + media.getSize());
+
+                                // TODO 可以通过PictureSelectorExternalUtils.getExifInterface();方法获取一些额外的资源信息，如旋转角度、经纬度等信息
+                            }
+                            mAdapter.setList(selectList);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+    }
 
     /**
      * 创建自定义拍照输出目录
@@ -1553,6 +1617,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (launcherResult != null) {
+            launcherResult.unregister();
+        }
         BroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastReceiver, BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
         clearCache();
     }
