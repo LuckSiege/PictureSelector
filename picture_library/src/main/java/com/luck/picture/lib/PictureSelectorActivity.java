@@ -136,14 +136,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         super.onResume();
         if (isEnterSetting) {
             if (PermissionChecker
-                    .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
-                    PermissionChecker
                             .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 if (mAdapter.isDataEmpty()) {
                     readLocalMedia();
                 }
             } else {
-                showPermissionsDialog(false, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, getString(R.string.picture_jurisdiction));
+                showPermissionsDialog(false, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, getString(R.string.picture_jurisdiction));
             }
             isEnterSetting = false;
         }
@@ -310,14 +308,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     private void loadAllMediaData() {
         if (PermissionChecker
-                .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
-                PermissionChecker
-                        .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
             readLocalMedia();
         } else {
-            PermissionChecker.requestPermissions(this, new String[]{
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
+            PermissionChecker.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
         }
     }
 
@@ -1473,16 +1467,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     public void onTakePhoto() {
         // Check the permissions
         if (PermissionChecker.checkSelfPermission(this, Manifest.permission.CAMERA)) {
-            if (PermissionChecker
-                    .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
-                    PermissionChecker
-                            .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                startCamera();
-            } else {
-                PermissionChecker.requestPermissions(this, new String[]{
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_CAMERA_STORAGE_PERMISSIONS_CODE);
-            }
+            startCamera();
         } else {
             PermissionChecker
                     .requestPermissions(this,

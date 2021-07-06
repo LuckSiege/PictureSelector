@@ -67,10 +67,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         if (!config.isUseCustomCamera) {
             setActivitySize();
             if (savedInstanceState == null) {
-                if (PermissionChecker
-                        .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
-                        PermissionChecker
-                                .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                if (PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
                     if (PictureSelectionConfig.onCustomCameraInterfaceListener != null) {
                         if (config.chooseMode == PictureConfig.TYPE_VIDEO) {
@@ -83,7 +80,6 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     }
                 } else {
                     PermissionChecker.requestPermissions(this, new String[]{
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
                 }
             }

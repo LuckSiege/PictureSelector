@@ -56,30 +56,22 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         // 验证存储权限
-        boolean isExternalStorage = PermissionChecker
-                .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
-                PermissionChecker
-                        .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (!isExternalStorage) {
-            PermissionChecker.requestPermissions(this, new String[]{
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
-            return;
-        }
-
-        // 验证相机权限和麦克风权限
-        if (PermissionChecker
-                .checkSelfPermission(this, Manifest.permission.CAMERA)) {
-            boolean isRecordAudio = PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
-            if (isRecordAudio) {
-                createCameraView();
+        if (PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            // 验证相机权限和麦克风权限
+            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.CAMERA)) {
+                if (PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)) {
+                    createCameraView();
+                } else {
+                    PermissionChecker.requestPermissions(this,
+                            new String[]{Manifest.permission.RECORD_AUDIO}, PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE);
+                }
             } else {
                 PermissionChecker.requestPermissions(this,
-                        new String[]{Manifest.permission.RECORD_AUDIO}, PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE);
+                        new String[]{Manifest.permission.CAMERA}, PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE);
             }
         } else {
-            PermissionChecker.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA}, PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE);
+            PermissionChecker.requestPermissions(this, new String[]{
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
         }
     }
 
@@ -99,10 +91,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
         super.onResume();
         // 这里只针对权限被手动拒绝后进入设置页面重新获取权限后的操作
         if (isEnterSetting) {
-            boolean isExternalStorage = PermissionChecker
-                    .checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) &&
-                    PermissionChecker
-                            .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            boolean isExternalStorage = PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
             if (isExternalStorage) {
                 boolean isCameraPermissionChecker = PermissionChecker
                         .checkSelfPermission(this, Manifest.permission.CAMERA);
@@ -118,7 +107,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
                     showPermissionsDialog(false, new String[]{Manifest.permission.CAMERA}, getString(R.string.picture_camera));
                 }
             } else {
-                showPermissionsDialog(false, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, getString(R.string.picture_jurisdiction));
+                showPermissionsDialog(false, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, getString(R.string.picture_jurisdiction));
             }
             isEnterSetting = false;
         }
@@ -214,7 +203,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
                     PermissionChecker.requestPermissions(this,
                             new String[]{Manifest.permission.CAMERA}, PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE);
                 } else {
-                    showPermissionsDialog(true, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, getString(R.string.picture_jurisdiction));
+                    showPermissionsDialog(true, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, getString(R.string.picture_jurisdiction));
                 }
                 break;
             case PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE:
