@@ -13,7 +13,6 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
@@ -353,15 +352,8 @@ public class OverlayView extends View {
      * @param before
      */
     private void cropSizeChangedAnim(RectF before) {
-        boolean isBigTop = before.top > mCropViewRect.top;
-        boolean isBigBottom = before.bottom > mCropViewRect.bottom;
-        float diffHeightValue = isBigTop ? before.top - mCropViewRect.top : mCropViewRect.top - before.top;
-
-        Log.i("YYY", "老的left: " + before.left + " right:" + before.right + " top:" + before.top + " bottom:" + before.bottom);
-        Log.i("YYY", "新的left: " + mCropViewRect.left + " right:" + mCropViewRect.right + " top:" + mCropViewRect.top + " bottom:" + mCropViewRect.bottom);
-
-
-        Log.i("YYY", "cropSizeChangedAnim: " + diffHeightValue);
+        float diffX = mCropViewRect.left - before.left;
+        float diffY = mCropViewRect.top - before.top;
         if (cropSizeChangeAnimator != null) {
             cropSizeChangeAnimator.cancel();
         } else {
@@ -379,18 +371,15 @@ public class OverlayView extends View {
             });
         }
 
-        cropSizeChangeAnimator.setFloatValues(0, diffHeightValue);
+        cropSizeChangeAnimator.setFloatValues(0, 1);
         cropSizeChangeAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (float) animation.getAnimatedValue();
-                RectF newRectF = new RectF();
-                newRectF.left = mCropViewRect.left;
-                newRectF.right = mCropViewRect.right;
-                newRectF.top = isBigTop ? before.top - value : before.top + value;
-                newRectF.bottom = isBigBottom ? before.bottom - value : before.bottom + value;
-                mCropViewRect.set(newRectF);
+                float offsetX = value * diffX;
+                float offsetY = value * diffY;
+                mCropViewRect.set(new RectF(before.left + offsetX, before.top + offsetY, before.right - offsetX, before.bottom - offsetY));
                 updateGridPoints();
                 postInvalidate();
             }
