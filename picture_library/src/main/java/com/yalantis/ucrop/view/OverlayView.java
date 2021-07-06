@@ -1,6 +1,7 @@
 package com.yalantis.ucrop.view;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -15,6 +16,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 
 import androidx.annotation.ColorInt;
@@ -36,7 +38,8 @@ import java.lang.annotation.RetentionPolicy;
  * This must have LAYER_TYPE_SOFTWARE to draw itself properly.
  */
 public class OverlayView extends View {
-
+    private static final long CROP_SIZE_CHANGE_DURATION = 280;
+    private static final long SMOOTH_CENTER_DURATION = 1000;
     public static final int FREESTYLE_CROP_MODE_DISABLE = 0;
     public static final int FREESTYLE_CROP_MODE_ENABLE = 1;
     public static final int FREESTYLE_CROP_MODE_ENABLE_WITH_PASS_THROUGH = 2;
@@ -78,7 +81,7 @@ public class OverlayView extends View {
     private boolean isDragFrame = DEFAULT_DRAG_FRAME;
     private boolean isDragCenter;
     private ValueAnimator smoothAnimator;
-
+    private ValueAnimator cropSizeChangeAnimator;
     private OverlayViewChangeListener mCallback;
 
     private boolean mShouldSetupCropBounds;
@@ -262,10 +265,15 @@ public class OverlayView extends View {
      * @param targetAspectRatio - aspect ratio for image crop (e.g. 1.77(7) for 16:9)
      */
     public void setTargetAspectRatio(final float targetAspectRatio) {
+        boolean isNoFirst = mTargetAspectRatio != 0;
         mTargetAspectRatio = targetAspectRatio;
         if (mThisWidth > 0) {
+            RectF before = new RectF(getCropViewRect());
             setupCropBounds();
             postInvalidate();
+            if (isNoFirst) {
+                cropSizeChangedAnim(before);
+            }
         } else {
             mShouldSetupCropBounds = true;
         }
@@ -337,6 +345,57 @@ public class OverlayView extends View {
         super.onDraw(canvas);
         drawDimmedLayer(canvas);
         drawCropGrid(canvas);
+    }
+
+    /**
+     * Crop frame size changed
+     *
+     * @param before
+     */
+    private void cropSizeChangedAnim(RectF before) {
+        boolean isBigTop = before.top > mCropViewRect.top;
+        boolean isBigBottom = before.bottom > mCropViewRect.bottom;
+        float diffHeightValue = isBigTop ? before.top - mCropViewRect.top : mCropViewRect.top - before.top;
+
+        Log.i("YYY", "老的left: " + before.left + " right:" + before.right + " top:" + before.top + " bottom:" + before.bottom);
+        Log.i("YYY", "新的left: " + mCropViewRect.left + " right:" + mCropViewRect.right + " top:" + mCropViewRect.top + " bottom:" + mCropViewRect.bottom);
+
+
+        Log.i("YYY", "cropSizeChangedAnim: " + diffHeightValue);
+        if (cropSizeChangeAnimator != null) {
+            cropSizeChangeAnimator.cancel();
+        } else {
+            cropSizeChangeAnimator = new ValueAnimator();
+            cropSizeChangeAnimator.setInterpolator(new LinearInterpolator());
+            cropSizeChangeAnimator.setDuration(CROP_SIZE_CHANGE_DURATION);
+            cropSizeChangeAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    if (mCallback != null) {
+                        mCallback.onCropRectUpdated(mCropViewRect);
+                    }
+                }
+            });
+        }
+
+        cropSizeChangeAnimator.setFloatValues(0, diffHeightValue);
+        cropSizeChangeAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = (float) animation.getAnimatedValue();
+                RectF newRectF = new RectF();
+                newRectF.left = mCropViewRect.left;
+                newRectF.right = mCropViewRect.right;
+                newRectF.top = isBigTop ? before.top - value : before.top + value;
+                newRectF.bottom = isBigBottom ? before.bottom - value : before.bottom + value;
+                mCropViewRect.set(newRectF);
+                updateGridPoints();
+                postInvalidate();
+            }
+        });
+        cropSizeChangeAnimator.start();
     }
 
     @Override
@@ -648,10 +707,19 @@ public class OverlayView extends View {
         after.offset(offsetX, offsetY);
         if (smoothAnimator != null) {
             smoothAnimator.cancel();
+        } else {
+            smoothAnimator = ValueAnimator.ofFloat(0, 1);
+            smoothAnimator.setDuration(SMOOTH_CENTER_DURATION);
+            smoothAnimator.setInterpolator(new OvershootInterpolator());
+            smoothAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (mCallback != null) {
+                        mCallback.onCropRectUpdated(mCropViewRect);
+                    }
+                }
+            });
         }
-        smoothAnimator = ValueAnimator.ofFloat(0, 1);
-        smoothAnimator.setDuration(1000);
-        smoothAnimator.setInterpolator(new OvershootInterpolator());
         smoothAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             float lastAnimationValue = 0f;
 
@@ -674,29 +742,6 @@ public class OverlayView extends View {
                     );
                 }
                 lastAnimationValue = (float) animation.getAnimatedValue();
-            }
-        });
-        smoothAnimator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (mCallback != null) {
-                    mCallback.onCropRectUpdated(mCropViewRect);
-                }
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
             }
         });
         smoothAnimator.start();
