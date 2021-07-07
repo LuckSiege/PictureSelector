@@ -482,7 +482,7 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_bottom_previewTextColor = new int[]{Color.parseColor("#9b9b9b"), Color.parseColor("#FA632D")};
 
         uiStyle.picture_bottom_preview_editorTextSize = 14;
-        uiStyle.picture_bottom_preview_editorTextColor = Color.parseColor("#FFFFFF");
+        uiStyle.picture_bottom_preview_editorTextColor = Color.parseColor("#4d4d4d");
 
         uiStyle.picture_bottom_completeTextColor = new int[]{Color.parseColor("#9b9b9b"), Color.parseColor("#FA632D")};
         uiStyle.picture_bottom_barBackgroundColor = Color.parseColor("#FAFAFA");
@@ -558,7 +558,7 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_bottom_previewTextColor = new int[]{Color.parseColor("#9b9b9b"), Color.parseColor("#7D7DFF")};
 
         uiStyle.picture_bottom_preview_editorTextSize = 14;
-        uiStyle.picture_bottom_preview_editorTextColor = Color.parseColor("#FFFFFF");
+        uiStyle.picture_bottom_preview_editorTextColor = Color.parseColor("#4d4d4d");
 
         uiStyle.picture_bottom_completeRedDotTextSize = 12;
         uiStyle.picture_bottom_completeTextSize = 14;

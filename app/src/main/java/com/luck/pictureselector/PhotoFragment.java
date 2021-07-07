@@ -82,7 +82,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
     private CheckBox cb_voice, cb_choose_mode, cb_isCamera, cb_isGif,
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
             cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
-            cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back, cb_custom_camera;
+            cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back, cb_custom_camera,cbEditor;
     private int themeId;
     private int chooseMode = PictureMimeType.ofAll();
     private boolean isWeChatStyle;
@@ -144,6 +144,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         cb_original = view.findViewById(R.id.cb_original);
         cb_single_back = view.findViewById(R.id.cb_single_back);
         cb_custom_camera = view.findViewById(R.id.cb_custom_camera);
+        cbEditor = view.findViewById(R.id.cb_editor);
         cb_hide = view.findViewById(R.id.cb_hide);
         cb_crop_circular = view.findViewById(R.id.cb_crop_circular);
         rgb_crop.setOnCheckedChangeListener(this);
@@ -445,6 +446,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         .loadCacheResourcesCallback(GlideCacheEngine.createCacheEngine())// 获取图片资源缓存，主要是解决华为10部分机型在拷贝文件过多时会出现卡的问题，这里可以判断只在会出现一直转圈问题机型上使用
                         .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)// 设置相册Activity方向，不设置默认使用系统
                         .isOriginalImageControl(cb_original.isChecked())// 是否显示原图控制按钮，如果设置为true则用户可以自由选择是否使用原图，压缩、裁剪功能将会失效
+                        .isEditorImage(cbEditor.isChecked())//是否编辑图片
                         //.cameraFileName("test.png")    // 重命名拍照文件名、注意这个只在使用相机时可以使用，如果使用相机又开启了压缩或裁剪 需要配合压缩和裁剪文件名api
                         //.renameCompressFile("test.png")// 重命名压缩文件名、 注意这个不要重复，只适用于单张图压缩使用
                         //.renameCropFileName("test.png")// 重命名裁剪文件名、 注意这个不要重复，只适用于单张图裁剪使用
