@@ -699,7 +699,7 @@ public class OverlayView extends View {
         }
         smoothAnimator = ValueAnimator.ofFloat(0, 1);
         smoothAnimator.setDuration(SMOOTH_CENTER_DURATION);
-        smoothAnimator.setInterpolator(new OvershootInterpolator());
+        smoothAnimator.setInterpolator(new OvershootInterpolator(1.0F));
         smoothAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
