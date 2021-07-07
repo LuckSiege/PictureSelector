@@ -959,6 +959,15 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param isEditorImage is editor image
+     * @return
+     */
+    public PictureSelectionModel isEditorImage(boolean isEditorImage) {
+        selectionConfig.isEditorImage = isEditorImage;
+        return this;
+    }
+
+    /**
      * @param path save path
      * @return
      */

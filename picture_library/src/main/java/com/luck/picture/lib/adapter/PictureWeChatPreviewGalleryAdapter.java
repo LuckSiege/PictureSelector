@@ -1,6 +1,7 @@
 package com.luck.picture.lib.adapter;
 
 import android.graphics.ColorFilter;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,26 +74,30 @@ public class PictureWeChatPreviewGalleryAdapter
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         LocalMedia item = getItem(position);
-        if (item != null) {
-            ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                    ContextCompat.getColor(holder.itemView.getContext(), item.isMaxSelectEnabledMask() ? R.color.picture_color_half_white : R.color.picture_color_transparent), BlendModeCompat.SRC_ATOP);
-            if (item.isChecked() && item.isMaxSelectEnabledMask()) {
-                holder.viewBorder.setVisibility(View.VISIBLE);
-            } else {
-                holder.viewBorder.setVisibility(item.isChecked() ? View.VISIBLE : View.GONE);
-            }
-            holder.ivImage.setColorFilter(colorFilter);
-            holder.ivImage.setColorFilter(colorFilter);
-            if (config != null && PictureSelectionConfig.imageEngine != null) {
-                PictureSelectionConfig.imageEngine.loadImage(holder.itemView.getContext(), item.getPath(), holder.ivImage);
-            }
-            holder.ivPlay.setVisibility(PictureMimeType.isHasVideo(item.getMimeType()) ? View.VISIBLE : View.GONE);
-            holder.itemView.setOnClickListener(v -> {
-                if (listener != null && holder.getAbsoluteAdapterPosition() >= 0) {
-                    listener.onItemClick(holder.getAbsoluteAdapterPosition(), getItem(position), v);
-                }
-            });
+        ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                ContextCompat.getColor(holder.itemView.getContext(), item.isMaxSelectEnabledMask() ? R.color.picture_color_half_white : R.color.picture_color_transparent), BlendModeCompat.SRC_ATOP);
+        if (item.isChecked() && item.isMaxSelectEnabledMask()) {
+            holder.viewBorder.setVisibility(View.VISIBLE);
+        } else {
+            holder.viewBorder.setVisibility(item.isChecked() ? View.VISIBLE : View.GONE);
         }
+        String path = item.getPath();
+        if (item.isEditorImage() && !TextUtils.isEmpty(item.getCutPath())) {
+            path = item.getCutPath();
+            holder.ivEditor.setVisibility(View.VISIBLE);
+        } else {
+            holder.ivEditor.setVisibility(View.GONE);
+        }
+        holder.ivImage.setColorFilter(colorFilter);
+        if (config != null && PictureSelectionConfig.imageEngine != null) {
+            PictureSelectionConfig.imageEngine.loadImage(holder.itemView.getContext(), path, holder.ivImage);
+        }
+        holder.ivPlay.setVisibility(PictureMimeType.isHasVideo(item.getMimeType()) ? View.VISIBLE : View.GONE);
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null && holder.getAbsoluteAdapterPosition() >= 0) {
+                listener.onItemClick(holder.getAbsoluteAdapterPosition(), getItem(position), v);
+            }
+        });
     }
 
     public LocalMedia getItem(int position) {
@@ -102,15 +107,26 @@ public class PictureWeChatPreviewGalleryAdapter
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivImage;
         ImageView ivPlay;
+        ImageView ivEditor;
         View viewBorder;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ivImage = itemView.findViewById(R.id.ivImage);
             ivPlay = itemView.findViewById(R.id.ivPlay);
+            ivEditor = itemView.findViewById(R.id.ivEditor);
             viewBorder = itemView.findViewById(R.id.viewBorder);
             if (PictureSelectionConfig.uiStyle != null) {
-                viewBorder.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_bottom_gallery_frameBackground);
+                if (PictureSelectionConfig.uiStyle.picture_bottom_gallery_frameBackground != 0) {
+                    viewBorder.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_bottom_gallery_frameBackground);
+                }
+                if (PictureSelectionConfig.uiStyle.picture_adapter_item_editor_tag_icon != 0) {
+                    ivEditor.setImageResource(PictureSelectionConfig.uiStyle.picture_adapter_item_editor_tag_icon);
+                }
+            } else if (PictureSelectionConfig.style != null) {
+                if (PictureSelectionConfig.style.picture_adapter_item_editor_tag_icon != 0) {
+                    ivEditor.setImageResource(PictureSelectionConfig.style.picture_adapter_item_editor_tag_icon);
+                }
             }
         }
     }

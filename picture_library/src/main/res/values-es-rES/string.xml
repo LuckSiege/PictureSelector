@@ -62,6 +62,7 @@
     <string name="picture_video_error">Video corrupto</string>
     <string name="picture_video_toast">No hay vista previa del video</string>
     <string name="picture_warning">No hay ningún archivo</string>
+    <string name="picture_editor">Editar</string>
 
     <string name="ucrop_gif_tag" tools:override="true">gif</string>
     <string name="ucrop_label_edit_photo" tools:override="true">Editar foto</string>

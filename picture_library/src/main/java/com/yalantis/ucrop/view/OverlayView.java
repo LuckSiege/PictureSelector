@@ -37,7 +37,7 @@ import java.lang.annotation.RetentionPolicy;
  * This must have LAYER_TYPE_SOFTWARE to draw itself properly.
  */
 public class OverlayView extends View {
-    private static final long CROP_SIZE_CHANGE_DURATION = 280;
+    private static final long CROP_SIZE_CHANGE_DURATION = 260;
     private static final long SMOOTH_CENTER_DURATION = 1000;
     public static final int FREESTYLE_CROP_MODE_DISABLE = 0;
     public static final int FREESTYLE_CROP_MODE_ENABLE = 1;

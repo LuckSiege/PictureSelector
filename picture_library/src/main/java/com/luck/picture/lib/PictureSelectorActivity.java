@@ -456,6 +456,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (PictureSelectionConfig.style.picturePreviewTextSize != 0) {
                 mTvPicturePreview.setTextSize(PictureSelectionConfig.style.picturePreviewTextSize);
             }
+
             if (PictureSelectionConfig.style.pictureCheckNumBgStyle != 0) {
                 mTvPictureImgNum.setBackgroundResource(PictureSelectionConfig.style.pictureCheckNumBgStyle);
             }
@@ -2014,13 +2015,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * @param media
      */
     private void dispatchHandleSingle(LocalMedia media) {
+        List<LocalMedia> selectedData = mAdapter.getSelectedData();
         if (config.isSingleDirectReturn) {
-            List<LocalMedia> selectedData = mAdapter.getSelectedData();
             selectedData.add(media);
             mAdapter.bindSelectData(selectedData);
             singleDirectReturnCameraHandleResult(media.getMimeType());
         } else {
-            List<LocalMedia> selectedData = mAdapter.getSelectedData();
             String mimeType = selectedData.size() > 0 ? selectedData.get(0).getMimeType() : "";
             boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
             if (mimeTypeSame || selectedData.size() == 0) {

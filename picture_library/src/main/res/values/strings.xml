@@ -62,6 +62,7 @@
     <string name="picture_go_setting">Go Setting</string>
     <string name="picture_know">I know the</string>
     <string name="picture_data_null">There no data here…</string>
+    <string name="picture_editor">Editor</string>
 
 
     <string name="ucrop_label_original">Original</string>

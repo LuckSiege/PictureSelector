@@ -62,6 +62,7 @@
     <string name="picture_go_setting">Chuẩn bị</string>
     <string name="picture_know">Được rồi</string>
     <string name="picture_data_null">không có dữ liệu…</string>
+    <string name="picture_editor">Soạnthảo</string>
 
     <string name="ucrop_gif_tag" tools:override="true">gif</string>
     <string name="ucrop_label_edit_photo" tools:override="true">Editar foto</string>

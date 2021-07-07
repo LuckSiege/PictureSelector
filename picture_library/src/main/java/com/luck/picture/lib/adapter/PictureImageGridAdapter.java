@@ -23,7 +23,6 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.listener.OnPhotoSelectChangedListener;
 import com.luck.picture.lib.tools.AnimUtils;
 import com.luck.picture.lib.tools.AttrsUtils;
@@ -157,11 +156,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 }
             });
         } else {
-            final ViewHolder contentHolder = (ViewHolder) holder;
-            final LocalMedia image = data.get(showCamera ? position - 1 : position);
+            ViewHolder contentHolder = (ViewHolder) holder;
+            LocalMedia image = data.get(showCamera ? position - 1 : position);
             image.position = contentHolder.getAbsoluteAdapterPosition();
-            final String path = image.getPath();
-            final String mimeType = image.getMimeType();
+            String mimeType = image.getMimeType();
             if (config.checkNumMode) {
                 notifyCheckChanged(contentHolder, image);
             }
@@ -177,7 +175,13 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                     dispatchHandleMask(contentHolder, image);
                 }
             }
-
+            String path = image.getPath();
+            if (image.isEditorImage() && !TextUtils.isEmpty(image.getCutPath())) {
+                contentHolder.ivEditor.setVisibility(View.VISIBLE);
+                path = image.getCutPath();
+            } else {
+                contentHolder.ivEditor.setVisibility(View.GONE);
+            }
             boolean isGif = PictureMimeType.isGif(mimeType);
             boolean isWebp = PictureMimeType.isWebp(mimeType);
             if (isGif || isWebp) {
@@ -424,6 +428,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivPicture;
+        ImageView ivEditor;
         TextView tvCheck;
         TextView tvDuration, tvImageMimeType, tvLongChart;
         View contentView;
@@ -438,6 +443,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             tvDuration = itemView.findViewById(R.id.tv_duration);
             tvImageMimeType = itemView.findViewById(R.id.tv_image_mime_type);
             tvLongChart = itemView.findViewById(R.id.tv_long_chart);
+            ivEditor = itemView.findViewById(R.id.ivEditor);
             if (PictureSelectionConfig.uiStyle != null) {
                 if (PictureSelectionConfig.uiStyle.picture_check_style != 0) {
                     tvCheck.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_check_style);
@@ -466,6 +472,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                 if (PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_background != 0) {
                     tvImageMimeType.setBackgroundResource(PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_background);
                 }
+                if (PictureSelectionConfig.uiStyle.picture_adapter_item_editor_tag_icon != 0) {
+                    ivEditor.setImageResource(PictureSelectionConfig.uiStyle.picture_adapter_item_editor_tag_icon);
+                }
                 if (PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_textColor != 0) {
                     tvImageMimeType.setTextColor(PictureSelectionConfig.uiStyle.picture_adapter_item_gif_tag_textColor);
                 }
@@ -475,6 +484,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             } else if (PictureSelectionConfig.style != null) {
                 if (PictureSelectionConfig.style.pictureCheckedStyle != 0) {
                     tvCheck.setBackgroundResource(PictureSelectionConfig.style.pictureCheckedStyle);
+                }
+                if (PictureSelectionConfig.style.picture_adapter_item_editor_tag_icon != 0) {
+                    ivEditor.setImageResource(PictureSelectionConfig.style.picture_adapter_item_editor_tag_icon);
                 }
             } else {
                 Drawable checkedStyleDrawable = AttrsUtils.getTypeValueDrawable(itemView.getContext(), R.attr.picture_checked_style, R.drawable.picture_checkbox_selector);
@@ -490,13 +502,33 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             if (media == null || TextUtils.isEmpty(media.getPath())) {
                 continue;
             }
-            if (media.getPath()
-                    .equals(image.getPath())
+            if (TextUtils.equals(media.getPath(), image.getPath())
                     || media.getId() == image.getId()) {
+                setLocalMediaCropInfo(media, image);
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * 编辑模式下-设置裁剪相关信息
+     *
+     * @param selectedMedia
+     * @param curMedia
+     */
+    private void setLocalMediaCropInfo(LocalMedia selectedMedia, LocalMedia curMedia) {
+        if (selectedMedia.isEditorImage() && !curMedia.isEditorImage()) {
+            curMedia.setCut(selectedMedia.isCut());
+            curMedia.setCutPath(selectedMedia.getCutPath());
+            curMedia.setCropImageWidth(selectedMedia.getCropImageWidth());
+            curMedia.setCropImageHeight(selectedMedia.getCropImageHeight());
+            curMedia.setCropOffsetX(selectedMedia.getCropOffsetX());
+            curMedia.setCropOffsetY(selectedMedia.getCropOffsetY());
+            curMedia.setCropResultAspectRatio(selectedMedia.getCropResultAspectRatio());
+            curMedia.setAndroidQToPath(selectedMedia.getAndroidQToPath());
+            curMedia.setEditorImage(selectedMedia.isEditorImage());
+        }
     }
 
     /**
@@ -742,8 +774,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
      * Tips
      */
     private void showPromptDialog(String content) {
-        if (PictureSelectionConfig.onChooseLimitCallback !=null){
-            PictureSelectionConfig.onChooseLimitCallback.onChooseLimit(context,content);
+        if (PictureSelectionConfig.onChooseLimitCallback != null) {
+            PictureSelectionConfig.onChooseLimitCallback.onChooseLimit(context, content);
         } else {
             PictureCustomDialog dialog = new PictureCustomDialog(context, R.layout.picture_prompt_dialog);
             TextView btnOk = dialog.findViewById(R.id.btnOk);
@@ -765,7 +797,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
      *
      * @param imageSelectChangedListener
      */
-    public void setOnPhotoSelectChangedListener(OnPhotoSelectChangedListener
+    public void setOnPhotoSelectChangedListener(OnPhotoSelectChangedListener<LocalMedia>
                                                         imageSelectChangedListener) {
         this.imageSelectChangedListener = imageSelectChangedListener;
     }

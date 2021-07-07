@@ -129,6 +129,16 @@ public class PictureParameterStyle {
     public int picturePreviewTextSize;
 
     /**
+     * 图片预览编辑文字大小
+     */
+    public int picturePreviewEditorTextSize;
+
+    /**
+     * 图片预览编辑文字颜色
+     */
+    public int picturePreviewEditorTextColor;
+
+    /**
      * 相册列表未完成按钮文本
      */
     public String pictureUnCompleteText;
@@ -302,6 +312,11 @@ public class PictureParameterStyle {
      * 标题栏右侧按钮方向箭头left Padding
      */
     public int pictureTitleRightArrowLeftPadding;
+
+    /**
+     * 图片已编辑过的标识icon
+     */
+    public int picture_adapter_item_editor_tag_icon;
 
 
     public PictureParameterStyle() {

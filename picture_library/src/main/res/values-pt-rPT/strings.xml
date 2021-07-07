@@ -62,6 +62,7 @@
     <string name="picture_go_setting">As configurações</string>
     <string name="picture_know">Entendo</string>
     <string name="picture_data_null">Dados em branco…</string>
+    <string name="picture_editor">Editar</string>
 
     <string name="ucrop_rotate">Rotação</string>
     <string name="ucrop_scale">Proporção</string>

@@ -831,6 +831,7 @@ public class UCropActivity extends AppCompatActivity {
                 .putExtra(UCrop.EXTRA_OUTPUT_IMAGE_HEIGHT, imageHeight)
                 .putExtra(UCrop.EXTRA_OUTPUT_OFFSET_X, offsetX)
                 .putExtra(UCrop.EXTRA_OUTPUT_OFFSET_Y, offsetY)
+                .putExtra(UCrop.EXTRA_EDITOR_IMAGE, getIntent().getBooleanExtra(UCrop.Options.EXTRA_EDITOR_IMAGE, false))
         );
     }
 

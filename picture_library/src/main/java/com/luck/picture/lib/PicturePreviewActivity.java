@@ -3,6 +3,7 @@ package com.luck.picture.lib;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -30,6 +31,7 @@ import com.luck.picture.lib.model.LocalMediaPageLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
+import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
@@ -57,6 +59,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     protected ImageView mIvArrow;
     protected PreviewViewPager viewPager;
     protected View mPicturePreview;
+    protected TextView mPictureEditor;
     protected int position;
     protected boolean isBottomPreview;
     private int totalNumber;
@@ -119,6 +122,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         mIvArrow = findViewById(R.id.ivArrow);
         viewPager = findViewById(R.id.preview_pager);
         mPicturePreview = findViewById(R.id.picture_id_preview);
+        mPictureEditor = findViewById(R.id.picture_id_editor);
         btnCheck = findViewById(R.id.btnCheck);
         check = findViewById(R.id.check);
         pictureLeftBack.setOnClickListener(this);
@@ -136,6 +140,12 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         check.setVisibility(View.VISIBLE);
         btnCheck.setVisibility(View.VISIBLE);
 
+        if (config.isEditorImage) {
+            mPictureEditor.setVisibility(View.VISIBLE);
+            mPictureEditor.setOnClickListener(this);
+        } else {
+            mPictureEditor.setVisibility(View.GONE);
+        }
         position = getIntent().getIntExtra(PictureConfig.EXTRA_POSITION, 0);
         if (numComplete) {
             initCompleteText(0);
@@ -207,6 +217,11 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     boolean isHasVideo = PictureMimeType.isHasVideo(media.getMimeType());
                     mCbOriginal.setVisibility(isHasVideo ? View.GONE : View.VISIBLE);
                     mCbOriginal.setChecked(config.isCheckOriginalImage);
+                }
+                if (config.isEditorImage) {
+                    mPictureEditor.setVisibility(PictureMimeType.isHasVideo(media.getMimeType()) ? View.GONE : View.VISIBLE);
+                } else {
+                    mPictureEditor.setVisibility(View.GONE);
                 }
                 onPageSelectedChange(media);
 
@@ -402,6 +417,15 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 params.height = PictureSelectionConfig.uiStyle.picture_bottom_barHeight;
             }
 
+            if (config.isEditorImage) {
+                if (PictureSelectionConfig.uiStyle.picture_bottom_preview_editorTextSize != 0) {
+                    mPictureEditor.setTextSize(PictureSelectionConfig.uiStyle.picture_bottom_preview_editorTextSize);
+                }
+                if (PictureSelectionConfig.uiStyle.picture_bottom_preview_editorTextColor != 0) {
+                    mPictureEditor.setTextColor(PictureSelectionConfig.uiStyle.picture_bottom_preview_editorTextColor);
+                }
+            }
+
             if (config.isOriginalControl) {
                 if (PictureSelectionConfig.uiStyle.picture_bottom_originalPictureCheckStyle != 0) {
                     mCbOriginal.setButtonDrawable(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureCheckStyle);
@@ -449,6 +473,16 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 ViewGroup.LayoutParams params = mTitleBar.getLayoutParams();
                 params.height = PictureSelectionConfig.style.pictureTitleBarHeight;
             }
+
+            if (config.isEditorImage) {
+                if (PictureSelectionConfig.style.picturePreviewEditorTextSize != 0) {
+                    mPictureEditor.setTextSize(PictureSelectionConfig.style.picturePreviewEditorTextSize);
+                }
+                if (PictureSelectionConfig.style.picturePreviewEditorTextColor != 0) {
+                    mPictureEditor.setTextColor(PictureSelectionConfig.style.picturePreviewEditorTextColor);
+                }
+            }
+
             if (config.isOriginalControl) {
                 if (PictureSelectionConfig.style.pictureOriginalControlStyle != 0) {
                     mCbOriginal.setButtonDrawable(PictureSelectionConfig.style.pictureOriginalControlStyle);
@@ -733,6 +767,15 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             onComplete();
         } else if (id == R.id.btnCheck) {
             onCheckedComplete();
+        } else if (id == R.id.picture_id_editor) {
+            onEditorImage();
+        }
+    }
+
+    protected void onEditorImage() {
+        if (adapter.getSize() > 0) {
+            LocalMedia image = adapter.getItem(viewPager.getCurrentItem());
+            UCropManager.ofEditorImage(this, image.isEditorImage() && !TextUtils.isEmpty(image.getCutPath()) ? image.getCutPath() : image.getPath(), image.getMimeType());
         }
     }
 
@@ -890,6 +933,15 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     }
 
     /**
+     * 更新画廊数据
+     *
+     * @param media
+     */
+    protected void onUpdateGalleryChange(LocalMedia media) {
+
+    }
+
+    /**
      * 更新选中或是移除状态
      *
      * @param media
@@ -1033,11 +1085,61 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                     break;
                 case UCrop.REQUEST_CROP:
                     if (data != null) {
-                        data.putParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST,
-                                (ArrayList<? extends Parcelable>) selectData);
-                        setResult(RESULT_OK, data);
+                        boolean isEditorImage = data.getBooleanExtra(UCrop.EXTRA_EDITOR_IMAGE, false);
+                        if (isEditorImage) {
+                            Uri resultUri = UCrop.getOutput(data);
+                            if (resultUri != null && adapter != null) {
+                                String cutPath = resultUri.getPath();
+                                LocalMedia curLocalMedia = adapter.getItem(viewPager.getCurrentItem());
+                                LocalMedia selectLocalMedia = null;
+                                boolean isExits = false;
+                                for (int i = 0; i < selectData.size(); i++) {
+                                    LocalMedia item = selectData.get(i);
+                                    if (TextUtils.equals(curLocalMedia.getPath(), item.getPath()) || curLocalMedia.getId() == item.getId()) {
+                                        isExits = true;
+                                        selectLocalMedia = item;
+                                        break;
+                                    }
+                                }
+                                // 更新当前适配选中的LocalMedia裁剪参数
+                                curLocalMedia.setCut(!TextUtils.isEmpty(cutPath));
+                                curLocalMedia.setCutPath(cutPath);
+                                curLocalMedia.setCropOffsetX(data.getIntExtra(UCrop.EXTRA_OUTPUT_OFFSET_X, 0));
+                                curLocalMedia.setCropOffsetY(data.getIntExtra(UCrop.EXTRA_OUTPUT_OFFSET_Y, 0));
+                                curLocalMedia.setCropResultAspectRatio(data.getFloatExtra(UCrop.EXTRA_OUTPUT_CROP_ASPECT_RATIO, 0));
+                                curLocalMedia.setCropImageWidth(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_WIDTH, 0));
+                                curLocalMedia.setCropImageHeight(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_HEIGHT, 0));
+                                curLocalMedia.setEditorImage(true);
+                                if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(curLocalMedia.getPath())) {
+                                    curLocalMedia.setAndroidQToPath(cutPath);
+                                }
+                                if (isExits) {
+                                    // 更新当前选中列表的LocalMedia裁剪参数
+                                    selectLocalMedia.setCut(!TextUtils.isEmpty(cutPath));
+                                    selectLocalMedia.setCutPath(cutPath);
+                                    selectLocalMedia.setCropOffsetX(data.getIntExtra(UCrop.EXTRA_OUTPUT_OFFSET_X, 0));
+                                    selectLocalMedia.setCropOffsetY(data.getIntExtra(UCrop.EXTRA_OUTPUT_OFFSET_Y, 0));
+                                    selectLocalMedia.setCropResultAspectRatio(data.getFloatExtra(UCrop.EXTRA_OUTPUT_CROP_ASPECT_RATIO, 0));
+                                    selectLocalMedia.setCropImageWidth(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_WIDTH, 0));
+                                    selectLocalMedia.setCropImageHeight(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_HEIGHT, 0));
+                                    selectLocalMedia.setEditorImage(true);
+                                    if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(curLocalMedia.getPath())) {
+                                        selectLocalMedia.setAndroidQToPath(cutPath);
+                                    }
+                                    isChangeSelectedData = true;
+                                    onUpdateGalleryChange(selectLocalMedia);
+                                } else {
+                                    onCheckedComplete();
+                                }
+                                adapter.notifyDataSetChanged();
+                            }
+                        } else {
+                            data.putParcelableArrayListExtra(PictureConfig.EXTRA_SELECT_LIST,
+                                    (ArrayList<? extends Parcelable>) selectData);
+                            setResult(RESULT_OK, data);
+                            finish();
+                        }
                     }
-                    finish();
                     break;
             }
         } else if (resultCode == UCrop.RESULT_ERROR) {

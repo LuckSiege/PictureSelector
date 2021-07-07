@@ -60,6 +60,7 @@
     <string name="picture_go_setting">去设置</string>
     <string name="picture_know">我知道了</string>
     <string name="picture_data_null">这里空空如也…</string>
+    <string name="picture_editor">编辑</string>
 
     <string name="ucrop_rotate">旋转</string>
     <string name="ucrop_scale">比例</string>

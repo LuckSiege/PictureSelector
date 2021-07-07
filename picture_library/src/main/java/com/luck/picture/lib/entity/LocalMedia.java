@@ -172,6 +172,12 @@ public class LocalMedia implements Parcelable {
     private boolean isMaxSelectEnabledMask;
 
     /**
+     * Whether the image has been edited
+     * # For internal use only
+     */
+    private boolean isEditorImage;
+
+    /**
      * media create time
      */
     private long dateAddedTime;
@@ -239,6 +245,7 @@ public class LocalMedia implements Parcelable {
         isLongImage = in.readByte() != 0;
         bucketId = in.readLong();
         isMaxSelectEnabledMask = in.readByte() != 0;
+        isEditorImage = in.readByte() != 0;
         dateAddedTime = in.readLong();
     }
 
@@ -275,6 +282,7 @@ public class LocalMedia implements Parcelable {
         dest.writeByte((byte) (isLongImage ? 1 : 0));
         dest.writeLong(bucketId);
         dest.writeByte((byte) (isMaxSelectEnabledMask ? 1 : 0));
+        dest.writeByte((byte) (isEditorImage ? 1 : 0));
         dest.writeLong(dateAddedTime);
     }
 
@@ -538,6 +546,13 @@ public class LocalMedia implements Parcelable {
         this.cropResultAspectRatio = cropResultAspectRatio;
     }
 
+    public boolean isEditorImage() {
+        return isEditorImage;
+    }
+
+    public void setEditorImage(boolean editorImage) {
+        isEditorImage = editorImage;
+    }
 
     @Override
     public String toString() {
@@ -573,6 +588,7 @@ public class LocalMedia implements Parcelable {
                 ", isLongImage=" + isLongImage +
                 ", bucketId=" + bucketId +
                 ", isMaxSelectEnabledMask=" + isMaxSelectEnabledMask +
+                ", isEditorImage=" + isEditorImage +
                 ", dateAddedTime=" + dateAddedTime +
                 '}';
     }

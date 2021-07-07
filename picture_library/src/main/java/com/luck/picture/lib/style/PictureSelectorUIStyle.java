@@ -168,10 +168,22 @@ public class PictureSelectorUIStyle {
      * 底部预览文字大小
      */
     public int picture_bottom_previewTextSize;
+
     /**
      * 底部预览文字颜色
      */
     public int[] picture_bottom_previewTextColor;
+
+    /**
+     * 底部预览页面编辑文字大小
+     */
+    public int picture_bottom_preview_editorTextSize;
+
+    /**
+     * 底部预览页面编辑文字大小
+     */
+    public int picture_bottom_preview_editorTextColor;
+
 
     /**
      * 原图勾选样式
@@ -354,6 +366,11 @@ public class PictureSelectorUIStyle {
     public int picture_adapter_item_gif_tag_background;
 
     /**
+     * adapter item 已编辑图标
+     */
+    public int picture_adapter_item_editor_tag_icon;
+
+    /**
      * 默认样式
      *
      * @return
@@ -384,6 +401,9 @@ public class PictureSelectorUIStyle {
 
         uiStyle.picture_bottom_previewTextSize = 14;
         uiStyle.picture_bottom_previewTextColor = new int[]{Color.parseColor("#9b9b9b"), Color.parseColor("#FA632D")};
+
+        uiStyle.picture_bottom_preview_editorTextSize = 14;
+        uiStyle.picture_bottom_preview_editorTextColor = Color.parseColor("#FFFFFF");
 
         uiStyle.picture_bottom_completeRedDotTextSize = 12;
         uiStyle.picture_bottom_completeTextSize = 14;
@@ -461,6 +481,9 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_bottom_previewTextSize = 14;
         uiStyle.picture_bottom_previewTextColor = new int[]{Color.parseColor("#9b9b9b"), Color.parseColor("#FA632D")};
 
+        uiStyle.picture_bottom_preview_editorTextSize = 14;
+        uiStyle.picture_bottom_preview_editorTextColor = Color.parseColor("#FFFFFF");
+
         uiStyle.picture_bottom_completeTextColor = new int[]{Color.parseColor("#9b9b9b"), Color.parseColor("#FA632D")};
         uiStyle.picture_bottom_barBackgroundColor = Color.parseColor("#FAFAFA");
 
@@ -533,6 +556,9 @@ public class PictureSelectorUIStyle {
 
         uiStyle.picture_bottom_previewTextSize = 14;
         uiStyle.picture_bottom_previewTextColor = new int[]{Color.parseColor("#9b9b9b"), Color.parseColor("#7D7DFF")};
+
+        uiStyle.picture_bottom_preview_editorTextSize = 14;
+        uiStyle.picture_bottom_preview_editorTextColor = Color.parseColor("#FFFFFF");
 
         uiStyle.picture_bottom_completeRedDotTextSize = 12;
         uiStyle.picture_bottom_completeTextSize = 14;
@@ -613,6 +639,9 @@ public class PictureSelectorUIStyle {
 
         uiStyle.picture_bottom_previewTextSize = 16;
         uiStyle.picture_bottom_previewTextColor = new int[]{Color.parseColor("#9b9b9b"), Color.parseColor("#FFFFFF")};
+
+        uiStyle.picture_bottom_preview_editorTextSize = 16;
+        uiStyle.picture_bottom_preview_editorTextColor = Color.parseColor("#FFFFFF");
 
         uiStyle.picture_bottom_completeTextColor = new int[]{Color.parseColor("#9b9b9b"), Color.parseColor("#FA632D")};
         uiStyle.picture_bottom_barBackgroundColor = Color.parseColor("#F2393a3e");

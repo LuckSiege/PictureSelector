@@ -62,6 +62,7 @@
     <string name="picture_photo_recording">Imagerie</string>
     <string name="picture_know">Je sais</string>
     <string name="picture_data_null">Pas de données…</string>
+    <string name="picture_editor">Édition</string>
 
     <string name="ucrop_label_original">Original</string>
     <string name="ucrop_label_edit_photo">Modifier la photo</string>

@@ -46,6 +46,7 @@ public class UCrop {
     public static final String EXTRA_OUTPUT_IMAGE_HEIGHT = EXTRA_PREFIX + ".ImageHeight";
     public static final String EXTRA_OUTPUT_OFFSET_X = EXTRA_PREFIX + ".OffsetX";
     public static final String EXTRA_OUTPUT_OFFSET_Y = EXTRA_PREFIX + ".OffsetY";
+    public static final String EXTRA_EDITOR_IMAGE = EXTRA_PREFIX + ".EditorImage";
     public static final String EXTRA_ERROR = EXTRA_PREFIX + ".Error";
 
     public static final String EXTRA_ASPECT_RATIO_X = EXTRA_PREFIX + ".AspectRatioX";
@@ -372,6 +373,7 @@ public class UCrop {
         public static final String EXTRA_UCROP_LOGO_COLOR = EXTRA_PREFIX + ".UcropLogoColor";
 
         public static final String EXTRA_HIDE_BOTTOM_CONTROLS = EXTRA_PREFIX + ".HideBottomControls";
+        public static final String EXTRA_EDITOR_IMAGE = EXTRA_PREFIX + ".EditorImage";
         public static final String EXTRA_FREE_STYLE_CROP = EXTRA_PREFIX + ".FreeStyleCrop";
         public static final String EXTRA_FREE_STYLE_CROP_MODE = EXTRA_PREFIX + ".FreeStyleCropMode";
 
@@ -702,6 +704,15 @@ public class UCrop {
          */
         public void setHideBottomControls(boolean hide) {
             mOptionBundle.putBoolean(EXTRA_HIDE_BOTTOM_CONTROLS, hide);
+        }
+
+        /**
+         * Edit pictures
+         *
+         * @param isEditor
+         */
+        public void setEditorImage(boolean isEditor) {
+            mOptionBundle.putBoolean(EXTRA_EDITOR_IMAGE, isEditor);
         }
 
         /**
