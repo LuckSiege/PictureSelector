@@ -696,19 +696,19 @@ public class OverlayView extends View {
         after.offset(offsetX, offsetY);
         if (smoothAnimator != null) {
             smoothAnimator.cancel();
-        } else {
-            smoothAnimator = ValueAnimator.ofFloat(0, 1);
-            smoothAnimator.setDuration(SMOOTH_CENTER_DURATION);
-            smoothAnimator.setInterpolator(new OvershootInterpolator());
-            smoothAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    if (mCallback != null) {
-                        mCallback.onCropRectUpdated(mCropViewRect);
-                    }
-                }
-            });
         }
+        smoothAnimator = ValueAnimator.ofFloat(0, 1);
+        smoothAnimator.setDuration(SMOOTH_CENTER_DURATION);
+        smoothAnimator.setInterpolator(new OvershootInterpolator());
+        smoothAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (mCallback != null) {
+                    mCallback.onCropRectUpdated(mCropViewRect);
+                }
+            }
+        });
+
         smoothAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             float lastAnimationValue = 0f;
 
