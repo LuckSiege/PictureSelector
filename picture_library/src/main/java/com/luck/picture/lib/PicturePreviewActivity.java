@@ -30,6 +30,7 @@ import com.luck.picture.lib.listener.OnQueryDataResultListener;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.tools.AttrsUtils;
+import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
@@ -90,6 +91,10 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      */
     private int mPage = 0;
 
+    /**
+     * 当前文件大小
+     */
+    protected String fileSize;
 
     @Override
     public int getResourceId() {
@@ -214,9 +219,9 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 }
 
                 if (config.isOriginalControl) {
-                    boolean isHasVideo = PictureMimeType.isHasVideo(media.getMimeType());
-                    mCbOriginal.setVisibility(isHasVideo ? View.GONE : View.VISIBLE);
                     mCbOriginal.setChecked(config.isCheckOriginalImage);
+                    fileSize = PictureFileUtils.formatFileSize(media.getSize(), 2);
+                    mCbOriginal.setText(getString(R.string.picture_original_image, fileSize));
                 }
                 if (config.isEditorImage) {
                     mPictureEditor.setVisibility(PictureMimeType.isHasVideo(media.getMimeType()) ? View.GONE : View.VISIBLE);
@@ -601,6 +606,10 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         LocalMedia media = adapter.getItem(position);
         if (media != null) {
             index = media.getPosition();
+            if (config.isOriginalControl) {
+                fileSize = PictureFileUtils.formatFileSize(media.getSize(), 2);
+                mCbOriginal.setText(getString(R.string.picture_original_image, fileSize));
+            }
             if (config.checkNumMode) {
                 tvMediaNum.setSelected(true);
                 check.setText(ValueOf.toString(media.getNum()));

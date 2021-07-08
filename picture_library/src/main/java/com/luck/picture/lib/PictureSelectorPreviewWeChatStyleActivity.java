@@ -175,7 +175,7 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                 params.height = PictureSelectionConfig.uiStyle.picture_bottom_gallery_height;
             }
 
-            if (config.isEditorImage){
+            if (config.isEditorImage) {
                 if (PictureSelectionConfig.uiStyle.picture_bottom_preview_editorTextSize != 0) {
                     mPictureEditor.setTextSize(PictureSelectionConfig.uiStyle.picture_bottom_preview_editorTextSize);
                 }
@@ -185,11 +185,6 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
             }
 
             if (config.isOriginalControl) {
-                if (PictureSelectionConfig.uiStyle.picture_bottom_originalPictureText != 0) {
-                    mCbOriginal.setText(getString(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureText));
-                } else {
-                    mCbOriginal.setText(getString(R.string.picture_original_image));
-                }
                 if (PictureSelectionConfig.uiStyle.picture_bottom_originalPictureTextSize != 0) {
                     mCbOriginal.setTextSize(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureTextSize);
                 }
@@ -395,7 +390,7 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                     Log.i(TAG, "gallery adapter ignore...");
                 } else {
                     // 重置一片内存区域 不然在其他地方添加也影响这里的数量
-                    mGalleryAdapter.setNewData(selectData,isBottomPreview);
+                    mGalleryAdapter.setNewData(selectData, isBottomPreview);
                 }
             }
             if (PictureSelectionConfig.style != null) {

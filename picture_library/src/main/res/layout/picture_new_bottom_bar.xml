@@ -42,7 +42,7 @@
         android:button="@color/picture_color_transparent"
         android:gravity="center"
         android:paddingStart="5dp"
-        android:text="@string/picture_original_image"
+        android:text="@string/picture_default_original_image"
         android:textColor="@color/picture_color_white"
         android:textSize="14sp"
         android:visibility="gone" />

@@ -193,6 +193,7 @@ public class PictureSelectorUIStyle {
     /**
      * 原图文案
      */
+    @Deprecated
     public int picture_bottom_originalPictureText;
 
     /**
@@ -427,7 +428,6 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_bottom_originalPictureCheckStyle = R.drawable.picture_original_wechat_checkbox;
         uiStyle.picture_bottom_originalPictureTextColor = Color.parseColor("#FFFFFF");
         uiStyle.picture_bottom_previewNormalText = R.string.picture_preview_num;
-        uiStyle.picture_bottom_originalPictureText = R.string.picture_original_image;
         uiStyle.picture_bottom_completeDefaultText = R.string.picture_please_select;
         uiStyle.picture_bottom_completeNormalText = R.string.picture_completed;
         uiStyle.picture_adapter_item_camera_text = R.string.picture_take_picture;
@@ -502,7 +502,6 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_bottom_originalPictureCheckStyle = R.drawable.picture_original_checkbox;
         uiStyle.picture_bottom_originalPictureTextColor = Color.parseColor("#53575e");
         uiStyle.picture_bottom_previewNormalText = R.string.picture_preview_num;
-        uiStyle.picture_bottom_originalPictureText = R.string.picture_original_image;
         uiStyle.picture_bottom_completeDefaultText = R.string.picture_done;
         uiStyle.picture_bottom_completeNormalText = R.string.picture_done_front_num;
         uiStyle.picture_adapter_item_camera_text = R.string.picture_take_picture;
@@ -582,7 +581,6 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_bottom_originalPictureCheckStyle = R.drawable.picture_original_blue_checkbox;
         uiStyle.picture_bottom_originalPictureTextColor = Color.parseColor("#7D7DFF");
         uiStyle.picture_bottom_previewNormalText = R.string.picture_preview_num;
-        uiStyle.picture_bottom_originalPictureText = R.string.picture_original_image;
         uiStyle.picture_bottom_completeDefaultText = R.string.picture_please_select;
         uiStyle.picture_bottom_completeNormalText = R.string.picture_completed;
         uiStyle.picture_adapter_item_camera_text = R.string.picture_take_picture;
@@ -669,7 +667,6 @@ public class PictureSelectorUIStyle {
             uiStyle.picture_bottom_barHeight = ScreenUtils.dip2px(appContext, 45);
             uiStyle.picture_bottom_previewDefaultText = R.string.picture_preview;
             uiStyle.picture_bottom_previewNormalText = R.string.picture_preview_num;
-            uiStyle.picture_bottom_originalPictureText = R.string.picture_original_image;
             uiStyle.picture_bottom_completeDefaultText = R.string.picture_please_select;
             uiStyle.picture_bottom_completeNormalText = R.string.picture_completed;
             uiStyle.picture_adapter_item_camera_text = R.string.picture_take_picture;

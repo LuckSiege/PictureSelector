@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
@@ -26,6 +27,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.nio.channels.FileChannel;
 import java.util.Locale;
 import java.util.Objects;
@@ -635,6 +638,43 @@ public class PictureFileUtils {
     public static boolean isFileExists(String path) {
         return TextUtils.isEmpty(path) || new File(path).exists();
     }
+
+    public static final int BYTE = 1;
+    public static final int KB = 1024;
+    public static final int MB = 1048576;
+    public static final int GB = 1073741824;
+
+    @IntDef({BYTE, KB, MB, GB})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Unit {
+    }
+
+    /**
+     * Size of byte to fit size of memory.
+     * <p>to three decimal places</p>
+     *
+     * @param byteSize  Size of byte.
+     * @param precision The precision
+     * @return fit size of memory
+     */
+    @SuppressLint("DefaultLocale")
+    public static String formatFileSize(final long byteSize, int precision) {
+        if (precision < 0) {
+            throw new IllegalArgumentException("precision shouldn't be less than zero!");
+        }
+        if (byteSize < 0) {
+            throw new IllegalArgumentException("byteSize shouldn't be less than zero!");
+        } else if (byteSize < KB) {
+            return String.format("%." + precision + "fB", (double) byteSize);
+        } else if (byteSize < MB) {
+            return String.format("%." + precision + "fKB", (double) byteSize / KB);
+        } else if (byteSize < GB) {
+            return String.format("%." + precision + "fMB", (double) byteSize / MB);
+        } else {
+            return String.format("%." + precision + "fGB", (double) byteSize / GB);
+        }
+    }
+
 
     @SuppressWarnings("ConstantConditions")
     public static void close(@Nullable Closeable c) {
