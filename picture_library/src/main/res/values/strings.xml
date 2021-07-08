@@ -45,7 +45,7 @@
     <string name="picture_confirm">Confirm</string>
     <string name="picture_preview_image_num">%1$d/%2$d</string>
     <string name="picture_not_crop_data">No cropped data</string>
-    <string name="picture_original_image">Original(%1$s)</string>
+    <string name="picture_original_image">Original (%1$s)</string>
     <string name="picture_default_original_image">Original</string>
     <string name="picture_send">Complete</string>
     <string name="picture_send_num">Complete(%1$d/%2$d)</string>

@@ -45,7 +45,7 @@
     <string name="picture_confirm">확정</string>
     <string name="picture_preview_image_num">%1$d/%2$d</string>
     <string name="picture_not_crop_data">자른 데이터가 없습니다</string>
-    <string name="picture_original_image">원본 이미지(%1$s)</string>
+    <string name="picture_original_image">원본 이미지 (%1$s)</string>
     <string name="picture_default_original_image">원본 이미지</string>
     <string name="picture_send">완성</string>
     <string name="picture_send_num">완성(%1$d/%2$d)</string>

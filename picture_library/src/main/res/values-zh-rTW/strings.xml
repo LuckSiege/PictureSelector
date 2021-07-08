@@ -44,7 +44,7 @@
     <string name="picture_confirm">確定</string>
     <string name="picture_preview_image_num">%1$d/%2$d</string>
     <string name="picture_not_crop_data">無可用裁剪數據</string>
-    <string name="picture_original_image">原圖(%1$s)</string>
+    <string name="picture_original_image">原圖 (%1$s)</string>
     <string name="picture_default_original_image">原圖</string>
     <string name="picture_send">完成</string>
     <string name="picture_send_num">完成(%1$d/%2$d)</string>

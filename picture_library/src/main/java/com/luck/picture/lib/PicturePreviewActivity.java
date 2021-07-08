@@ -220,8 +220,12 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
 
                 if (config.isOriginalControl) {
                     mCbOriginal.setChecked(config.isCheckOriginalImage);
-                    fileSize = PictureFileUtils.formatFileSize(media.getSize(), 2);
-                    mCbOriginal.setText(getString(R.string.picture_original_image, fileSize));
+                    if (config.isDisplayOriginalSize) {
+                        fileSize = PictureFileUtils.formatFileSize(media.getSize(), 2);
+                        mCbOriginal.setText(getString(R.string.picture_original_image, fileSize));
+                    } else {
+                        mCbOriginal.setText(getString(R.string.picture_default_original_image));
+                    }
                 }
                 if (config.isEditorImage) {
                     mPictureEditor.setVisibility(PictureMimeType.isHasVideo(media.getMimeType()) ? View.GONE : View.VISIBLE);
@@ -607,8 +611,12 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         if (media != null) {
             index = media.getPosition();
             if (config.isOriginalControl) {
-                fileSize = PictureFileUtils.formatFileSize(media.getSize(), 2);
-                mCbOriginal.setText(getString(R.string.picture_original_image, fileSize));
+                if (config.isDisplayOriginalSize) {
+                    fileSize = PictureFileUtils.formatFileSize(media.getSize(), 2);
+                    mCbOriginal.setText(getString(R.string.picture_original_image, fileSize));
+                } else {
+                     mCbOriginal.setText(getString(R.string.picture_default_original_image));
+                }
             }
             if (config.checkNumMode) {
                 tvMediaNum.setSelected(true);

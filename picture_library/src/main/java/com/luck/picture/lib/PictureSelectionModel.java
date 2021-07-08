@@ -959,6 +959,15 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param isDisplayOriginalSize Whether the original image size is displayed
+     * @return
+     */
+    public PictureSelectionModel isDisplayOriginalSize(boolean isDisplayOriginalSize) {
+        selectionConfig.isDisplayOriginalSize = !selectionConfig.camera && isDisplayOriginalSize;
+        return this;
+    }
+
+    /**
      * @param isEditorImage is editor image
      * @return
      */

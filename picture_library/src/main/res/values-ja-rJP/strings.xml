@@ -45,7 +45,7 @@
     <string name="picture_confirm">確定</string>
     <string name="picture_preview_image_num">%1$d/%2$d</string>
     <string name="picture_not_crop_data">トリミングされたデータはありません</string>
-    <string name="picture_original_image">原図(%1$s)</string>
+    <string name="picture_original_image">原図 (%1$s)</string>
     <string name="picture_default_original_image">原図</string>
     <string name="picture_send">を選択します</string>
     <string name="picture_send_num">を選択します(%1$d/%2$d)</string>

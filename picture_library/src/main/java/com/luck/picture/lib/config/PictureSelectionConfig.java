@@ -94,6 +94,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean zoomAnim;
     public boolean isCompress;
     public boolean isOriginalControl;
+    public boolean isDisplayOriginalSize;
     public boolean isEditorImage;
     public boolean isCamera = true;
     public boolean isGif;
@@ -243,6 +244,7 @@ public final class PictureSelectionConfig implements Parcelable {
         zoomAnim = in.readByte() != 0;
         isCompress = in.readByte() != 0;
         isOriginalControl = in.readByte() != 0;
+        isDisplayOriginalSize = in.readByte() != 0;
         isEditorImage = in.readByte() != 0;
         isCamera = in.readByte() != 0;
         isGif = in.readByte() != 0;
@@ -361,6 +363,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (zoomAnim ? 1 : 0));
         dest.writeByte((byte) (isCompress ? 1 : 0));
         dest.writeByte((byte) (isOriginalControl ? 1 : 0));
+        dest.writeByte((byte) (isDisplayOriginalSize ? 1 : 0));
         dest.writeByte((byte) (isEditorImage ? 1 : 0));
         dest.writeByte((byte) (isCamera ? 1 : 0));
         dest.writeByte((byte) (isGif ? 1 : 0));
@@ -563,6 +566,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isAutoScalePreviewImage = true;
         freeStyleCropMode = -1;
         isEditorImage = false;
+        isDisplayOriginalSize = true;
     }
 
     public static PictureSelectionConfig getInstance() {

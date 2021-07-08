@@ -1487,16 +1487,20 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     protected void calculateFileTotalSize(List<LocalMedia> selectData) {
         if (config.isOriginalControl) {
-            long totalSize = 0;
-            for (int i = 0; i < selectData.size(); i++) {
-                LocalMedia media = selectData.get(i);
-                totalSize += media.getSize();
-            }
-            if (totalSize > 0) {
-                String fileSize = PictureFileUtils.formatFileSize(totalSize, 2);
-                mCbOriginal.setText(getString(R.string.picture_original_image, fileSize));
+            if (config.isDisplayOriginalSize) {
+                long totalSize = 0;
+                for (int i = 0; i < selectData.size(); i++) {
+                    LocalMedia media = selectData.get(i);
+                    totalSize += media.getSize();
+                }
+                if (totalSize > 0) {
+                    String fileSize = PictureFileUtils.formatFileSize(totalSize, 2);
+                    mCbOriginal.setText(getString(R.string.picture_original_image, fileSize));
+                } else {
+                    mCbOriginal.setText(getString(R.string.picture_default_original_image));
+                }
             } else {
-                mCbOriginal.setText(getString(R.string.picture_default_original_image));
+                 mCbOriginal.setText(getString(R.string.picture_default_original_image));
             }
         }
     }

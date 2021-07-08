@@ -33,7 +33,7 @@
     <string name="picture_min_img_num">Las imágenes seleccionadas no deben ser menos de %1$s</string>
     <string name="picture_min_video_num">Los videos seleccionados no deben ser menos de %1$s</string>
     <string name="picture_not_crop_data">No hay datos</string>
-    <string name="picture_original_image">Original(%1$s)</string>
+    <string name="picture_original_image">Original (%1$s)</string>
     <string name="picture_default_original_image">Original</string>
     <string name="picture_pause_audio">Pausar</string>
     <string name="picture_photo_camera">Foto con clic, foto con clic extendido</string>
