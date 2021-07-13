@@ -631,8 +631,8 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void finish() {
+        super.finish();
         if (adapter != null) {
             adapter.clear();
         }
