@@ -38,6 +38,9 @@ public class GlideEngine implements ImageEngine {
      */
     @Override
     public void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
+        if (!ImageLoaderUtils.assertValidRequest(context)) {
+            return;
+        }
         Glide.with(context)
                 .load(url)
                 .into(imageView);
@@ -57,6 +60,9 @@ public class GlideEngine implements ImageEngine {
     public void loadImage(@NonNull Context context, @NonNull String url,
                           @NonNull ImageView imageView,
                           SubsamplingScaleImageView longImageView, OnImageCompleteCallback callback) {
+        if (!ImageLoaderUtils.assertValidRequest(context)) {
+            return;
+        }
         Glide.with(context)
                 .asBitmap()
                 .load(url)
@@ -119,6 +125,9 @@ public class GlideEngine implements ImageEngine {
     public void loadImage(@NonNull Context context, @NonNull String url,
                           @NonNull ImageView imageView,
                           SubsamplingScaleImageView longImageView) {
+        if (!ImageLoaderUtils.assertValidRequest(context)) {
+            return;
+        }
         Glide.with(context)
                 .asBitmap()
                 .load(url)
@@ -157,6 +166,9 @@ public class GlideEngine implements ImageEngine {
      */
     @Override
     public void loadFolderImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
+        if (!ImageLoaderUtils.assertValidRequest(context)) {
+            return;
+        }
         Glide.with(context)
                 .asBitmap()
                 .load(url)
@@ -187,6 +199,9 @@ public class GlideEngine implements ImageEngine {
     @Override
     public void loadAsGifImage(@NonNull Context context, @NonNull String url,
                                @NonNull ImageView imageView) {
+        if (!ImageLoaderUtils.assertValidRequest(context)) {
+            return;
+        }
         Glide.with(context)
                 .asGif()
                 .load(url)
@@ -202,6 +217,9 @@ public class GlideEngine implements ImageEngine {
      */
     @Override
     public void loadGridImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
+        if (!ImageLoaderUtils.assertValidRequest(context)) {
+            return;
+        }
         Glide.with(context)
                 .load(url)
                 .override(200, 200)

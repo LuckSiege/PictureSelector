@@ -38,6 +38,9 @@ public class PicassoEngine implements ImageEngine {
      */
     @Override
     public void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
+        if (!ImageLoaderUtils.assertValidRequest(context)){
+            return;
+        }
         VideoRequestHandler videoRequestHandler = new VideoRequestHandler();
         if (PictureMimeType.isContent(url) || PictureMimeType.isHasHttp(url)) {
             Picasso.get().load(Uri.parse(url)).into(imageView);
@@ -68,6 +71,9 @@ public class PicassoEngine implements ImageEngine {
     public void loadImage(@NonNull Context context, @NonNull String url,
                           @NonNull ImageView imageView,
                           SubsamplingScaleImageView longImageView, OnImageCompleteCallback callback) {
+        if (!ImageLoaderUtils.assertValidRequest(context)){
+            return;
+        }
         Picasso.get()
                 .load(PictureMimeType.isContent(url) ? Uri.parse(url) : Uri.fromFile(new File(url)))
                 .into(new Target() {
@@ -127,6 +133,9 @@ public class PicassoEngine implements ImageEngine {
     public void loadImage(@NonNull Context context, @NonNull String url,
                           @NonNull ImageView imageView,
                           SubsamplingScaleImageView longImageView) {
+        if (!ImageLoaderUtils.assertValidRequest(context)){
+            return;
+        }
         Picasso.get()
                 .load(PictureMimeType.isContent(url) ? Uri.parse(url) : Uri.fromFile(new File(url)))
                 .into(new Target() {
@@ -174,6 +183,9 @@ public class PicassoEngine implements ImageEngine {
      */
     @Override
     public void loadFolderImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
+        if (!ImageLoaderUtils.assertValidRequest(context)){
+            return;
+        }
         VideoRequestHandler videoRequestHandler = new VideoRequestHandler();
         if (PictureMimeType.isContent(url)) {
             Picasso.get()
@@ -214,6 +226,9 @@ public class PicassoEngine implements ImageEngine {
     @Override
     public void loadAsGifImage(@NonNull Context context, @NonNull String url,
                                @NonNull ImageView imageView) {
+        if (!ImageLoaderUtils.assertValidRequest(context)){
+            return;
+        }
         if (PictureMimeType.isContent(url)) {
             Picasso.get()
                     .load(Uri.parse(url))
@@ -234,6 +249,9 @@ public class PicassoEngine implements ImageEngine {
      */
     @Override
     public void loadGridImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
+        if (!ImageLoaderUtils.assertValidRequest(context)){
+            return;
+        }
         VideoRequestHandler videoRequestHandler = new VideoRequestHandler();
         if (PictureMimeType.isContent(url)) {
             Picasso.get()
