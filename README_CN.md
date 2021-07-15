@@ -220,6 +220,9 @@ PictureSelector.create(this).externalPictureVideo(video_path);
 -keep class com.yalantis.ucrop** { *; }
 -keep interface com.yalantis.ucrop** { *; }
 
+# Animal Sniffer compileOnly dependency to ensure APIs are compatible with older versions of Java.
+-dontwarn org.codehaus.mojo.animal_sniffer.*
+
 ```
 ## License
 ```sh
