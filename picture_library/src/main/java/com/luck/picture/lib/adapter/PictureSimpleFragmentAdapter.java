@@ -42,7 +42,7 @@ import java.util.List;
  */
 
 public class PictureSimpleFragmentAdapter extends PagerAdapter {
-    private List<LocalMedia> data;
+    private List<LocalMedia> data = new ArrayList<>();
     private final OnCallBackActivity onBackPressed;
     private final PictureSelectionConfig config;
     private final int mScreenWidth, mScreenHeight;
@@ -87,7 +87,10 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
      * @param data
      */
     public void bindData(List<LocalMedia> data) {
-        this.data = data;
+        if (data != null) {
+            this.data.clear();
+            this.data.addAll(data);
+        }
     }
 
     /**
@@ -96,11 +99,11 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
      * @return
      */
     public List<LocalMedia> getData() {
-        return data == null ? new ArrayList<>() : data;
+        return data;
     }
 
     public int getSize() {
-        return data == null ? 0 : data.size();
+        return data.size();
     }
 
     public void remove(int currentItem) {
@@ -115,7 +118,7 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return data != null ? data.size() : 0;
+        return data.size();
     }
 
     @Override
