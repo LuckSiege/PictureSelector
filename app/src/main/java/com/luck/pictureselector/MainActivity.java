@@ -411,6 +411,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 注册需要写在onCreate或Fragment onAttach里，否则会报java.lang.IllegalStateException异常
         launcherResult = createActivityResultLauncher();
+
+        // 清除缓存
+        clearCache();
     }
 
     /**
@@ -1622,7 +1625,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             launcherResult.unregister();
         }
         BroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastReceiver, BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
-        clearCache();
     }
 
     public Context getContext() {

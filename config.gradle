@@ -28,7 +28,7 @@ ext {
             androidx_transition_version   : "1.4.1",
 
             // okio
-            okio_version                  : '3.0.0-alpha.8',
+            okio_version                  : '3.0.0-alpha.4',
 
             // glide
             glide_version                 : "4.12.0",

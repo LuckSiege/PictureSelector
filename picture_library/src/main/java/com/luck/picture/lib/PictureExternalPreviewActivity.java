@@ -200,24 +200,20 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         /**
          * 缓存view
          */
-        private SparseArray<View> mCacheView;
+        private final SparseArray<View> mCacheView = new SparseArray<>();
 
         private void clear() {
-            if (null != mCacheView) {
-                mCacheView.clear();
-                mCacheView = null;
-            }
+            mCacheView.clear();
         }
 
         public void removeCacheView(int position) {
-            if (mCacheView != null && position < mCacheView.size()) {
+            if (position < mCacheView.size()) {
                 mCacheView.removeAt(position);
             }
         }
 
         public SimpleFragmentAdapter() {
             super();
-            this.mCacheView = new SparseArray<>();
         }
 
         @Override
