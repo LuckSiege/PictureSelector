@@ -53,17 +53,14 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
     /**
      * To cache the view
      */
-    private SparseArray<View> mCacheView;
+    private final SparseArray<View> mCacheView = new SparseArray<>();
 
     public void clear() {
-        if (null != mCacheView) {
-            mCacheView.clear();
-            mCacheView = null;
-        }
+        mCacheView.clear();
     }
 
     public void removeCacheView(int position) {
-        if (mCacheView != null && position < mCacheView.size()) {
+        if (position < mCacheView.size()) {
             mCacheView.removeAt(position);
         }
     }
@@ -80,7 +77,6 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
         super();
         this.config = config;
         this.onBackPressed = onBackPressed;
-        this.mCacheView = new SparseArray<>();
         this.mScreenWidth = ScreenUtils.getScreenWidth(context);
         this.mScreenHeight = ScreenUtils.getScreenHeight(context);
     }
