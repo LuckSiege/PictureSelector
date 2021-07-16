@@ -192,6 +192,7 @@ public class PicassoEngine implements ImageEngine {
                     .load(Uri.parse(url))
                     .resize(180, 180)
                     .centerCrop()
+                    .noFade()
                     .placeholder(R.drawable.picture_image_placeholder)
                     .into(imageView);
         } else {
@@ -202,6 +203,7 @@ public class PicassoEngine implements ImageEngine {
                 picasso.load(videoRequestHandler.SCHEME_VIDEO + ":" + url)
                         .resize(180, 180)
                         .centerCrop()
+                        .noFade()
                         .placeholder(R.drawable.picture_image_placeholder)
                         .into(imageView);
             } else {
@@ -209,6 +211,7 @@ public class PicassoEngine implements ImageEngine {
                         .load(new File(url))
                         .resize(180, 180)
                         .centerCrop()
+                        .noFade()
                         .placeholder(R.drawable.picture_image_placeholder)
                         .into(imageView);
             }
@@ -258,6 +261,7 @@ public class PicassoEngine implements ImageEngine {
                     .load(Uri.parse(url))
                     .resize(200, 200)
                     .centerCrop()
+                    .noFade()
                     .placeholder(R.drawable.picture_image_placeholder)
                     .into(imageView);
         } else {
@@ -268,6 +272,7 @@ public class PicassoEngine implements ImageEngine {
                 picasso.load(videoRequestHandler.SCHEME_VIDEO + ":" + url)
                         .resize(200, 200)
                         .centerCrop()
+                        .noFade()
                         .placeholder(R.drawable.picture_image_placeholder)
                         .into(imageView);
             } else {
@@ -275,6 +280,7 @@ public class PicassoEngine implements ImageEngine {
                         .load(new File(url))
                         .resize(200, 200)
                         .centerCrop()
+                        .noFade()
                         .placeholder(R.drawable.picture_image_placeholder)
                         .into(imageView);
             }
