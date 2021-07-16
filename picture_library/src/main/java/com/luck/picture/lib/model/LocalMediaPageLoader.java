@@ -192,7 +192,8 @@ public final class LocalMediaPageLoader {
             if (data != null && data.getCount() > 0) {
                 if (data.moveToFirst()) {
                     long id = data.getLong(data.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID));
-                    return SdkVersionUtils.checkedAndroid_Q() ? getRealPathAndroid_Q(id) : data.getString
+                    String mimeType = data.getString(data.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE));
+                    return SdkVersionUtils.checkedAndroid_Q() ? PictureMimeType.getRealPathUri(id, mimeType) : data.getString
                             (data.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA));
                 }
                 return null;
@@ -272,15 +273,15 @@ public final class LocalMediaPageLoader {
                             data.moveToFirst();
                             do {
                                 long id = data.getLong(idColumn);
+                                String mimeType = data.getString(mimeTypeColumn);
+                                mimeType = TextUtils.isEmpty(mimeType) ? PictureMimeType.ofJPEG() : mimeType;
                                 String absolutePath = data.getString(dataColumn);
-                                String url = SdkVersionUtils.checkedAndroid_Q() ? getRealPathAndroid_Q(id) : absolutePath;
+                                String url = SdkVersionUtils.checkedAndroid_Q() ? PictureMimeType.getRealPathUri(id, mimeType) : absolutePath;
                                 if (config.isFilterInvalidFile) {
                                     if (!PictureFileUtils.isFileExists(absolutePath)) {
                                         continue;
                                     }
                                 }
-                                String mimeType = data.getString(mimeTypeColumn);
-                                mimeType = TextUtils.isEmpty(mimeType) ? PictureMimeType.ofJPEG() : mimeType;
                                 // Here, it is solved that some models obtain mimeType and return the format of image / *,
                                 // which makes it impossible to distinguish the specific type, such as mi 8,9,10 and other models
                                 if (mimeType.endsWith("image/*")) {
@@ -415,7 +416,7 @@ public final class LocalMediaPageLoader {
                                         long id = data.getLong(data.getColumnIndex(MediaStore.Files.FileColumns._ID));
                                         mediaFolder.setName(bucketDisplayName);
                                         mediaFolder.setImageNum(ValueOf.toInt(size));
-                                        mediaFolder.setFirstImagePath(getRealPathAndroid_Q(id));
+                                        mediaFolder.setFirstImagePath(PictureMimeType.getRealPathUri(id, mimeType));
                                         mediaFolder.setFirstMimeType(mimeType);
                                         mediaFolders.add(mediaFolder);
                                         hashSet.add(bucketId);
@@ -493,7 +494,8 @@ public final class LocalMediaPageLoader {
      */
     private static String getFirstUri(Cursor cursor) {
         long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID));
-        return getRealPathAndroid_Q(id);
+        String mimeType = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.MIME_TYPE));
+        return PictureMimeType.getRealPathUri(id, mimeType);
     }
 
     /**
@@ -646,16 +648,6 @@ public final class LocalMediaPageLoader {
             int rSize = rhs.getImageNum();
             return Integer.compare(rSize, lSize);
         });
-    }
-
-    /**
-     * Android Q
-     *
-     * @param id
-     * @return
-     */
-    private static String getRealPathAndroid_Q(long id) {
-        return QUERY_URI.buildUpon().appendPath(ValueOf.toString(id)).build().toString();
     }
 
     /**

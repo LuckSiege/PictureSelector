@@ -2,8 +2,10 @@ package com.luck.picture.lib.config;
 
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
@@ -90,6 +92,26 @@ public final class PictureMimeType {
     private final static String MIME_TYPE_MPEG = "video/mpeg";
     private final static String MIME_TYPE_AVI = "video/avi";
 
+
+    /**
+     * get uri
+     *
+     * @param id
+     * @return
+     */
+    public static String getRealPathUri(long id, String mimeType) {
+        Uri contentUri;
+        if (PictureMimeType.isHasImage(mimeType)) {
+            contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        } else if (PictureMimeType.isHasVideo(mimeType)) {
+            contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+        } else if (PictureMimeType.isHasAudio(mimeType)) {
+            contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        } else {
+            contentUri = MediaStore.Files.getContentUri("external");
+        }
+        return ContentUris.withAppendedId(contentUri, id).toString();
+    }
 
     /**
      * isGif

@@ -152,10 +152,10 @@ public final class LocalMediaLoader {
                     data.moveToFirst();
                     do {
                         long id = data.getLong(idColumn);
-                        String absolutePath = data.getString(dataColumn);
-                        String url = isAndroidQ ? getRealPathAndroid_Q(id) : absolutePath;
                         String mimeType = data.getString(mimeTypeColumn);
                         mimeType = TextUtils.isEmpty(mimeType) ? PictureMimeType.ofJPEG() : mimeType;
+                        String absolutePath = data.getString(dataColumn);
+                        String url = isAndroidQ ? PictureMimeType.getRealPathUri(id,mimeType) : absolutePath;
                         // Here, it is solved that some models obtain mimeType and return the format of image / *,
                         // which makes it impossible to distinguish the specific type, such as mi 8,9,10 and other models
                         if (mimeType.endsWith("image/*")) {
@@ -310,16 +310,6 @@ public final class LocalMediaLoader {
             int rSize = rhs.getImageNum();
             return Integer.compare(rSize, lSize);
         });
-    }
-
-    /**
-     * Android Q
-     *
-     * @param id
-     * @return
-     */
-    private String getRealPathAndroid_Q(long id) {
-        return QUERY_URI.buildUpon().appendPath(ValueOf.toString(id)).build().toString();
     }
 
     /**
