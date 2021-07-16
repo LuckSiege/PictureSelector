@@ -72,7 +72,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     protected boolean refresh;
     protected int index;
     protected int screenWidth;
-    protected Handler mHandler;
     protected RelativeLayout selectBarLayout;
     protected CheckBox mCbOriginal;
     protected boolean isShowCamera;
@@ -118,7 +117,6 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     @Override
     protected void initWidgets() {
         super.initWidgets();
-        mHandler = new Handler(getMainLooper());
         mTitleBar = findViewById(R.id.titleBar);
         screenWidth = ScreenUtils.getScreenWidth(this);
         animation = AnimationUtils.loadAnimation(this, R.anim.picture_anim_modal_in);
@@ -1207,13 +1205,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mHandler != null) {
-            mHandler.removeCallbacksAndMessages(null);
-            mHandler = null;
-        }
         if (animation != null) {
             animation.cancel();
-            animation = null;
         }
         if (adapter != null) {
             adapter.clear();

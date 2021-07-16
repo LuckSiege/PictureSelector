@@ -643,6 +643,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             mLoadingDialog = null;
         }
         super.onDestroy();
+        mHandler.removeCallbacksAndMessages(null);
     }
 
 

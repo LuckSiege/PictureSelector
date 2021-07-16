@@ -459,11 +459,13 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         File rootDir = state.equals(Environment.MEDIA_MOUNTED)
                 ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
                 : getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        if (rootDir != null && !rootDir.exists() && rootDir.mkdirs()) {
+        if (rootDir != null && !rootDir.exists()) {
+            rootDir.mkdirs();
         }
         File folderDir = new File(SdkVersionUtils.checkedAndroid_Q() || !state.equals(Environment.MEDIA_MOUNTED)
                 ? rootDir.getAbsolutePath() : rootDir.getAbsolutePath() + File.separator + PictureMimeType.CAMERA + File.separator);
-        if (folderDir != null && !folderDir.exists() && folderDir.mkdirs()) {
+        if (!folderDir.exists()) {
+            folderDir.mkdirs();
         }
         String fileName = DateUtils.getCreateFileName("IMG_") + suffix;
         File file = new File(folderDir, fileName);

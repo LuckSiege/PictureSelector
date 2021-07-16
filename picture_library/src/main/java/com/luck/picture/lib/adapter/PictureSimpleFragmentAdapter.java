@@ -42,7 +42,7 @@ import java.util.List;
  */
 
 public class PictureSimpleFragmentAdapter extends PagerAdapter {
-    private List<LocalMedia> data = new ArrayList<>();
+    private final List<LocalMedia> data = new ArrayList<>();
     private final OnCallBackActivity onBackPressed;
     private final PictureSelectionConfig config;
     private final int mScreenWidth, mScreenHeight;
@@ -204,12 +204,12 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
         });
 
         if (isGif && !media.isCompressed()) {
-            if (config != null && PictureSelectionConfig.imageEngine != null) {
+            if (PictureSelectionConfig.imageEngine != null) {
                 PictureSelectionConfig.imageEngine.loadAsGifImage
                         (contentView.getContext(), path, photoView);
             }
         } else {
-            if (config != null && PictureSelectionConfig.imageEngine != null) {
+            if (PictureSelectionConfig.imageEngine != null) {
                 if (eqLongImg) {
                     displayLongPic(PictureMimeType.isContent(path)
                             ? Uri.parse(path) : Uri.fromFile(new File(path)), longImg);
