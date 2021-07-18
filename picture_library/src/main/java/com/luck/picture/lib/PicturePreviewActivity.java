@@ -1124,7 +1124,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                                 curLocalMedia.setCropResultAspectRatio(data.getFloatExtra(UCrop.EXTRA_OUTPUT_CROP_ASPECT_RATIO, 0));
                                 curLocalMedia.setCropImageWidth(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_WIDTH, 0));
                                 curLocalMedia.setCropImageHeight(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_HEIGHT, 0));
-                                curLocalMedia.setEditorImage(true);
+                                curLocalMedia.setEditorImage(curLocalMedia.isCut());
                                 if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(curLocalMedia.getPath())) {
                                     curLocalMedia.setAndroidQToPath(cutPath);
                                 }
@@ -1137,7 +1137,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                                     selectLocalMedia.setCropResultAspectRatio(data.getFloatExtra(UCrop.EXTRA_OUTPUT_CROP_ASPECT_RATIO, 0));
                                     selectLocalMedia.setCropImageWidth(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_WIDTH, 0));
                                     selectLocalMedia.setCropImageHeight(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_HEIGHT, 0));
-                                    selectLocalMedia.setEditorImage(true);
+                                    selectLocalMedia.setEditorImage(curLocalMedia.isCut());
                                     if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(curLocalMedia.getPath())) {
                                         selectLocalMedia.setAndroidQToPath(cutPath);
                                     }

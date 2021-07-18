@@ -184,7 +184,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
             boolean isGif = PictureMimeType.isGif(mimeType);
             boolean isWebp = PictureMimeType.isWebp(mimeType);
-            if (isGif || isWebp) {
+            boolean isLongImg = MediaUtils.isLongImg(image);
+            if ((isGif || isWebp) && !isLongImg) {
                 contentHolder.tvImageMimeType.setVisibility(View.VISIBLE);
                 contentHolder.tvImageMimeType.setText(isGif ? context.getString(R.string.picture_gif_tag) : context.getString(R.string.picture_webp_tag));
             } else {
@@ -192,7 +193,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
             if (PictureMimeType.isHasImage(image.getMimeType())) {
                 if (image.loadLongImageStatus == PictureConfig.NORMAL) {
-                    image.isLongImage = MediaUtils.isLongImg(image);
+                    image.isLongImage = isLongImg;
                     image.loadLongImageStatus = PictureConfig.LOADED;
                 }
                 contentHolder.tvLongChart.setVisibility(image.isLongImage ? View.VISIBLE : View.GONE);
