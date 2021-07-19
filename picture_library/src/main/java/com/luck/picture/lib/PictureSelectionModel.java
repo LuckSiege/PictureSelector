@@ -268,7 +268,18 @@ public class PictureSelectionModel {
      *                       # 具体参考 CustomCameraView.BUTTON_STATE_BOTH、BUTTON_STATE_ONLY_CAPTURE、BUTTON_STATE_ONLY_RECORDER
      * @return
      */
+    @Deprecated
     public PictureSelectionModel setButtonFeatures(int buttonFeatures) {
+        selectionConfig.buttonFeatures = buttonFeatures;
+        return this;
+    }
+
+    /**
+     * @param buttonFeatures Set the record button function
+     *                       # 具体参考 CustomCameraView.BUTTON_STATE_BOTH、BUTTON_STATE_ONLY_CAPTURE、BUTTON_STATE_ONLY_RECORDER
+     * @return
+     */
+    public PictureSelectionModel setCustomCameraFeatures(int buttonFeatures) {
         selectionConfig.buttonFeatures = buttonFeatures;
         return this;
     }
@@ -1570,6 +1581,9 @@ public class PictureSelectionModel {
             if (activity == null || selectionConfig == null) {
                 return;
             }
+            if (PictureSelectionConfig.imageEngine == null){
+                throw new NullPointerException("api imageEngine is null,Please implement ImageEngine");
+            }
             Intent intent;
             if (selectionConfig.camera && selectionConfig.isUseCustomCamera) {
                 intent = new Intent(activity, PictureCustomCameraActivity.class);
@@ -1603,10 +1617,13 @@ public class PictureSelectionModel {
     public void forResult(int requestCode, int enterAnim, int exitAnim) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
-            if (activity == null) {
+            if (activity == null || selectionConfig == null) {
                 return;
             }
-            Intent intent = new Intent(activity, selectionConfig != null && selectionConfig.camera
+            if (PictureSelectionConfig.imageEngine == null){
+                throw new NullPointerException("api imageEngine is null,Please implement ImageEngine");
+            }
+            Intent intent = new Intent(activity, selectionConfig.camera
                     ? PictureSelectorCameraEmptyActivity.class :
                     selectionConfig.isWeChatStyle ? PictureSelectorWeChatStyleActivity.class :
                             PictureSelectorActivity.class);
@@ -1632,6 +1649,9 @@ public class PictureSelectionModel {
             Activity activity = selector.getActivity();
             if (activity == null || selectionConfig == null) {
                 return;
+            }
+            if (PictureSelectionConfig.imageEngine == null){
+                throw new NullPointerException("api imageEngine is null,Please implement ImageEngine");
             }
             // 绑定回调监听
             PictureSelectionConfig.listener = new WeakReference<>(listener).get();
@@ -1669,6 +1689,9 @@ public class PictureSelectionModel {
             if (launcher == null || activity == null || selectionConfig == null) {
                 return;
             }
+            if (PictureSelectionConfig.imageEngine == null){
+                throw new NullPointerException("api imageEngine is null,Please implement ImageEngine");
+            }
             Intent intent;
             if (selectionConfig.camera && selectionConfig.isUseCustomCamera) {
                 intent = new Intent(activity, PictureCustomCameraActivity.class);
@@ -1696,6 +1719,9 @@ public class PictureSelectionModel {
             Activity activity = selector.getActivity();
             if (activity == null || selectionConfig == null) {
                 return;
+            }
+            if (PictureSelectionConfig.imageEngine == null){
+                throw new NullPointerException("api imageEngine is null,Please implement ImageEngine");
             }
             // 绑定回调监听
             PictureSelectionConfig.listener = new WeakReference<>(listener).get();

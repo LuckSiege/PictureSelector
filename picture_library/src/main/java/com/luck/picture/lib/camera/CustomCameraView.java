@@ -146,7 +146,6 @@ public class CustomCameraView extends RelativeLayout {
                 mCaptureLayout.setButtonCaptureEnabled(false);
                 mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
-                mCameraController.setEnabledUseCases(LifecycleCameraController.IMAGE_CAPTURE);
                 ImageCapture.OutputFileOptions fileOptions =
                         new ImageCapture.OutputFileOptions.Builder(mOutMediaFile)
                                 .build();
@@ -291,6 +290,9 @@ public class CustomCameraView extends RelativeLayout {
             mCameraController = new LifecycleCameraController(getContext());
             mCameraController.bindToLifecycle((LifecycleOwner) getContext());
             mCameraController.setCameraSelector(mConfig.isCameraAroundState ? CameraSelector.DEFAULT_FRONT_CAMERA : CameraSelector.DEFAULT_BACK_CAMERA);
+            if (mConfig.buttonFeatures == BUTTON_STATE_BOTH || mConfig.buttonFeatures == BUTTON_STATE_ONLY_CAPTURE){
+                mCameraController.setEnabledUseCases(LifecycleCameraController.IMAGE_CAPTURE);
+            }
             mCameraPreviewView.setController(mCameraController);
         }
         setFlashRes();
