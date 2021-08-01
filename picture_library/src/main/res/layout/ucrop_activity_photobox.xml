@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ucrop_photobox"
     android:layout_width="match_parent"
@@ -37,7 +36,6 @@
             android:layout_width="@dimen/ucrop_default_crop_logo_size"
             android:layout_height="@dimen/ucrop_default_crop_logo_size"
             android:layout_gravity="center"
-            app:srcCompat="@drawable/ucrop_vector_ic_crop"
             tools:background="@drawable/ucrop_vector_ic_crop"
             tools:ignore="ContentDescription,MissingPrefix" />
 

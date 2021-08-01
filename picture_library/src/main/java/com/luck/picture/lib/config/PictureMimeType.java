@@ -143,7 +143,7 @@ public final class PictureMimeType {
         if (TextUtils.isEmpty(suffix)) {
             return false;
         }
-        return suffix.startsWith(".gif") || suffix.startsWith(".GIF");
+        return GIF.equalsIgnoreCase(suffix);
     }
 
     /**
@@ -221,10 +221,8 @@ public final class PictureMimeType {
         if (TextUtils.isEmpty(path)) {
             return false;
         }
-        return path.startsWith("http")
-                || path.startsWith("https")
-                || path.startsWith("/http")
-                || path.startsWith("/https");
+        return path.startsWith("http") || path.startsWith("https")
+                || path.startsWith("/http") || path.startsWith("/https");
     }
 
     /**
@@ -245,20 +243,22 @@ public final class PictureMimeType {
             mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
                     fileExtension.toLowerCase());
         }
-        return TextUtils.isEmpty(mimeType) ? "image/jpeg" : mimeType;
+        return TextUtils.isEmpty(mimeType) ? MIME_TYPE_JPEG : mimeType;
     }
 
     /**
      * Determines if the file name is a picture
      *
-     * @param name
+     * @param fileName
      * @return
      */
-    public static boolean isSuffixOfImage(String name) {
-        return !TextUtils.isEmpty(name) && name.endsWith(".PNG") || name.endsWith(".png") || name.endsWith(".jpeg")
-                || name.endsWith(".gif") || name.endsWith(".GIF") || name.endsWith(".jpg")
-                || name.endsWith(".webp") || name.endsWith(".WEBP") || name.endsWith(".JPEG")
-                || name.endsWith(".bmp");
+    public static boolean isSuffixOfImage(String fileName) {
+        if (TextUtils.isEmpty(fileName)) {
+            return false;
+        }
+        return PNG.equalsIgnoreCase(fileName) || JPEG.equalsIgnoreCase(fileName)
+                || JPG.equalsIgnoreCase(fileName) || WEBP.equalsIgnoreCase(fileName)
+                || GIF.equalsIgnoreCase(fileName) || BMP.equalsIgnoreCase(fileName);
     }
 
     /**
@@ -330,30 +330,10 @@ public final class PictureMimeType {
     public static String getLastImgType(String path) {
         try {
             int index = path.lastIndexOf(".");
-            if (index > 0) {
-                String imageType = path.substring(index);
-                switch (imageType) {
-                    case ".png":
-                    case ".PNG":
-                    case ".jpg":
-                    case ".jpeg":
-                    case ".JPEG":
-                    case ".WEBP":
-                    case ".bmp":
-                    case ".BMP":
-                    case ".webp":
-                    case ".gif":
-                    case ".GIF":
-                        return imageType;
-                    default:
-                        return ".png";
-                }
-            } else {
-                return ".png";
-            }
+            return index > 0 ? path.substring(index) : PNG;
         } catch (Exception e) {
             e.printStackTrace();
-            return ".png";
+            return PNG;
         }
     }
 
@@ -434,6 +414,10 @@ public final class PictureMimeType {
     public final static String PNG = ".png";
 
     public final static String WEBP = ".webp";
+
+    public final static String GIF = ".gif";
+
+    public final static String BMP = ".bmp";
 
     public final static String AMR = ".amr";
 
