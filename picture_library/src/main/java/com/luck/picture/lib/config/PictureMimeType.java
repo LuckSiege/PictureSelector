@@ -330,7 +330,7 @@ public final class PictureMimeType {
     public static String getLastImgType(String path) {
         try {
             int index = path.lastIndexOf(".");
-            return index > 0 ? path.substring(index) : PNG;
+            return index != -1 ? path.substring(index) : PNG;
         } catch (Exception e) {
             e.printStackTrace();
             return PNG;
