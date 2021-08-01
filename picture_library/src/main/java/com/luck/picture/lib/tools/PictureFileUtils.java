@@ -12,7 +12,6 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 
-import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
@@ -594,15 +593,9 @@ public class PictureFileUtils {
         return TextUtils.isEmpty(path) || new File(path).exists();
     }
 
-    public static final int BYTE = 1;
     public static final int KB = 1024;
     public static final int MB = 1048576;
     public static final int GB = 1073741824;
-
-    @IntDef({BYTE, KB, MB, GB})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface Unit {
-    }
 
     /**
      * Size of byte to fit size of memory.
