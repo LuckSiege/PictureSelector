@@ -14,7 +14,6 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.tools.SdkVersionUtils;
-import com.luck.picture.lib.tools.ValueOf;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -213,8 +212,7 @@ public final class LocalMediaLoader {
                                 continue;
                             }
                         }
-                        LocalMedia image = new LocalMedia
-                                (id, url, absolutePath, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size, bucketId, data.getLong(dateAddedColumn));
+                        LocalMedia image = LocalMedia.parseLocalMedia(id, url, absolutePath, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size, bucketId, data.getLong(dateAddedColumn));
                         LocalMediaFolder folder = getImageFolder(url,mimeType, folderName, imageFolders);
                         folder.setBucketId(image.getBucketId());
                         List<LocalMedia> images = folder.getData();

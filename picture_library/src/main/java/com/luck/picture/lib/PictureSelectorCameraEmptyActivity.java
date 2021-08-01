@@ -37,10 +37,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
-import okio.BufferedSource;
-import okio.Okio;
 
 /**
  * @author：luck
@@ -200,8 +196,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         }
         String cutPath = resultUri.getPath();
         boolean isCutEmpty = TextUtils.isEmpty(cutPath);
-        LocalMedia media = new LocalMedia(config.cameraPath, 0, false,
-                config.isCamera ? 1 : 0, 0, config.chooseMode);
+        LocalMedia media = LocalMedia.parseLocalMedia(config.cameraPath, config.isCamera ? 1 : 0, config.chooseMode);
         if (SdkVersionUtils.checkedAndroid_Q()) {
             int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
             media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
@@ -214,6 +209,12 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         media.setCutPath(cutPath);
         String mimeType = PictureMimeType.getImageMimeType(cutPath);
         media.setMimeType(mimeType);
+        media.setCropImageWidth(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_WIDTH,0));
+        media.setCropImageHeight(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_HEIGHT,0));
+        media.setCropOffsetX(data.getIntExtra(UCrop.EXTRA_OUTPUT_OFFSET_X,0));
+        media.setCropOffsetY(data.getIntExtra(UCrop.EXTRA_OUTPUT_OFFSET_Y,0));
+        media.setCropResultAspectRatio(data.getFloatExtra(UCrop.EXTRA_OUTPUT_CROP_ASPECT_RATIO,0F));
+        media.setEditorImage(data.getBooleanExtra(UCrop.EXTRA_EDITOR_IMAGE,false));
         if (PictureMimeType.isContent(media.getPath())) {
             String path = PictureFileUtils.getPath(getContext(), Uri.parse(media.getPath()));
             media.setRealPath(path);
@@ -261,22 +262,16 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     return;
                 }
                 if (SdkVersionUtils.checkedAndroid_R()) {
-                    BufferedSource buffer = null;
                     try {
                         Uri audioOutUri = MediaUtils.createAudioUri(getContext(), TextUtils.isEmpty(config.cameraAudioFormat) ? config.suffixType : config.cameraAudioFormat);
                         if (audioOutUri != null) {
                             InputStream inputStream = PictureContentResolver.getContentResolverOpenInputStream(this, Uri.parse(config.cameraPath));
-                            buffer = Okio.buffer(Okio.source(Objects.requireNonNull(inputStream)));
                             OutputStream outputStream = PictureContentResolver.getContentResolverOpenOutputStream(this, audioOutUri);
-                            PictureFileUtils.bufferCopy(buffer, outputStream);
+                            PictureFileUtils.writeFileFromIS(inputStream,outputStream);
                             config.cameraPath = audioOutUri.toString();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                    } finally {
-                        if (buffer != null && buffer.isOpen()) {
-                            PictureFileUtils.close(buffer);
-                        }
                     }
                 }
             }

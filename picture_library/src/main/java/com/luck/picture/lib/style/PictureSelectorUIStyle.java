@@ -434,12 +434,12 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_top_titleRightDefaultText = R.string.picture_cancel;
         uiStyle.picture_top_titleRightNormalText = R.string.picture_cancel;
         uiStyle.picture_bottom_previewDefaultText = R.string.picture_preview;
+        // 如果文本内容设置(%1$d/%2$d)，请开启true
+        uiStyle.isCompleteReplaceNum = true;
         Context appContext = PictureAppMaster.getInstance().getAppContext();
         if (appContext != null) {
             uiStyle.picture_top_titleBarHeight = ScreenUtils.dip2px(appContext, 48);
             uiStyle.picture_bottom_barHeight = ScreenUtils.dip2px(appContext, 45);
-            // 如果文本内容设置(%1$d/%2$d)，请开启true
-            uiStyle.isCompleteReplaceNum = true;
         }
         return uiStyle;
     }
@@ -508,13 +508,12 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_top_titleRightDefaultText = R.string.picture_cancel;
         uiStyle.picture_top_titleRightNormalText = R.string.picture_cancel;
         uiStyle.picture_bottom_previewDefaultText = R.string.picture_preview;
+        // 如果文本内容设置(%1$d/%2$d)，请开启true
+        uiStyle.isCompleteReplaceNum = true;
         Context appContext = PictureAppMaster.getInstance().getAppContext();
         if (appContext != null) {
             uiStyle.picture_top_titleBarHeight = ScreenUtils.dip2px(appContext, 48);
             uiStyle.picture_bottom_barHeight = ScreenUtils.dip2px(appContext, 45);
-            // 如果文本内容设置(%1$d/%2$d)，请开启true
-            uiStyle.isCompleteReplaceNum = true;
-
         }
 
         return uiStyle;
@@ -587,12 +586,12 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_top_titleRightDefaultText = R.string.picture_cancel;
         uiStyle.picture_top_titleRightNormalText = R.string.picture_cancel;
         uiStyle.picture_bottom_previewDefaultText = R.string.picture_preview;
+        // 如果文本内容设置(%1$d/%2$d)，请开启true
+        uiStyle.isCompleteReplaceNum = true;
         Context appContext = PictureAppMaster.getInstance().getAppContext();
         if (appContext != null) {
             uiStyle.picture_top_titleBarHeight = ScreenUtils.dip2px(appContext, 48);
             uiStyle.picture_bottom_barHeight = ScreenUtils.dip2px(appContext, 45);
-            // 如果文本内容设置(%1$d/%2$d)，请开启true
-            uiStyle.isCompleteReplaceNum = true;
         }
         return uiStyle;
     }
@@ -659,28 +658,30 @@ public class PictureSelectorUIStyle {
         uiStyle.picture_bottom_originalPictureTextColor = Color.parseColor("#FFFFFF");
         uiStyle.picture_top_titleRightTextDefaultBackground = R.drawable.picture_send_button_default_bg;
         uiStyle.picture_top_titleRightTextNormalBackground = R.drawable.picture_send_button_bg;
+        // 如果文本内容设置(%1$d/%2$d)，请开启true
+        uiStyle.isCompleteReplaceNum = true;
+        uiStyle.picture_top_titleRightDefaultText = R.string.picture_send;
+        uiStyle.picture_top_titleRightNormalText = R.string.picture_cancel;
+        uiStyle.picture_bottom_previewDefaultText = R.string.picture_preview;
+        uiStyle.picture_bottom_previewNormalText = R.string.picture_preview_num;
+        uiStyle.picture_bottom_completeDefaultText = R.string.picture_please_select;
+        uiStyle.picture_bottom_completeNormalText = R.string.picture_completed;
+        uiStyle.picture_adapter_item_camera_text = R.string.picture_take_picture;
+        uiStyle.picture_bottom_selectedText = R.string.picture_select;
+        uiStyle.picture_bottom_selectedCheckStyle = R.drawable.picture_wechat_select_cb;
+
+        uiStyle.picture_bottom_selectedTextColor = Color.parseColor("#FFFFFF");
+        uiStyle.picture_bottom_selectedTextSize = 16;
+        uiStyle.picture_bottom_gallery_backgroundColor = Color.parseColor("#F2393a3e");
+        uiStyle.picture_bottom_gallery_dividerColor = Color.parseColor("#666666");
+        uiStyle.picture_bottom_gallery_frameBackground = R.drawable.picture_preview_gallery_border_bg;
+
         Context appContext = PictureAppMaster.getInstance().getAppContext();
         if (appContext != null) {
             uiStyle.picture_top_titleBarHeight = ScreenUtils.dip2px(appContext, 48);
-            uiStyle.picture_top_titleRightDefaultText = R.string.picture_send;
-            uiStyle.picture_top_titleRightNormalText = R.string.picture_cancel;
             uiStyle.picture_bottom_barHeight = ScreenUtils.dip2px(appContext, 45);
-            uiStyle.picture_bottom_previewDefaultText = R.string.picture_preview;
-            uiStyle.picture_bottom_previewNormalText = R.string.picture_preview_num;
-            uiStyle.picture_bottom_completeDefaultText = R.string.picture_please_select;
-            uiStyle.picture_bottom_completeNormalText = R.string.picture_completed;
-            uiStyle.picture_adapter_item_camera_text = R.string.picture_take_picture;
-            uiStyle.picture_bottom_selectedText = R.string.picture_select;
-            uiStyle.picture_bottom_selectedCheckStyle = R.drawable.picture_wechat_select_cb;
-            // 如果文本内容设置(%1$d/%2$d)，请开启true
-            uiStyle.isCompleteReplaceNum = true;
             uiStyle.picture_top_titleArrowLeftPadding = ScreenUtils.dip2px(appContext, 3);
-            uiStyle.picture_bottom_selectedTextColor = Color.parseColor("#FFFFFF");
-            uiStyle.picture_bottom_selectedTextSize = 16;
             uiStyle.picture_bottom_gallery_height = ScreenUtils.dip2px(appContext, 80);
-            uiStyle.picture_bottom_gallery_backgroundColor = Color.parseColor("#F2393a3e");
-            uiStyle.picture_bottom_gallery_dividerColor = Color.parseColor("#666666");
-            uiStyle.picture_bottom_gallery_frameBackground = R.drawable.picture_preview_gallery_border_bg;
         }
 
         return uiStyle;

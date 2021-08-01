@@ -187,12 +187,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
 //        List<LocalMedia> list = new ArrayList<>();
-//        LocalMedia m = new LocalMedia();
-//        m.setPath("https://wx1.sinaimg.cn/mw690/006e0i7xly1gaxqq5m7t8j31311g2ao6.jpg");
-//        LocalMedia m1 = new LocalMedia();
-//        m1.setPath("https://ww1.sinaimg.cn/bmiddle/bcd10523ly1g96mg4sfhag20c806wu0x.gif");
-//        list.add(m);
-//        list.add(m1);
+//        list.add(LocalMedia.parseHttpLocalMedia("https://wx1.sinaimg.cn/mw690/006e0i7xly1gaxqq5m7t8j31311g2ao6.jpg", PictureMimeType.ofJPEG()));
+//        list.add(LocalMedia.parseHttpLocalMedia("https://ww1.sinaimg.cn/bmiddle/bcd10523ly1g96mg4sfhag20c806wu0x.gif", PictureMimeType.ofGIF()));
 //        mAdapter.setList(list);
 
         mAdapter.setSelectMax(maxSelectNum);

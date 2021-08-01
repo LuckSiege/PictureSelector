@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
 
 /**
  * @author：luck
@@ -186,32 +187,6 @@ public class LocalMedia implements Parcelable {
 
     }
 
-    public LocalMedia(long id, String path, String absolutePath, String fileName, String parentFolderName, long duration, int chooseModel,
-                      String mimeType, int width, int height, long size, long bucketId, long dateAddedColumn) {
-        this.id = id;
-        this.path = path;
-        this.realPath = absolutePath;
-        this.fileName = fileName;
-        this.parentFolderName = parentFolderName;
-        this.duration = duration;
-        this.chooseModel = chooseModel;
-        this.mimeType = mimeType;
-        this.width = width;
-        this.height = height;
-        this.size = size;
-        this.bucketId = bucketId;
-        this.dateAddedTime = dateAddedColumn;
-    }
-
-    public LocalMedia(String path, long duration, boolean isChecked, int position, int num, int chooseModel) {
-        this.path = path;
-        this.duration = duration;
-        this.isChecked = isChecked;
-        this.position = position;
-        this.num = num;
-        this.chooseModel = chooseModel;
-    }
-
 
     protected LocalMedia(Parcel in) {
         id = in.readLong();
@@ -302,6 +277,74 @@ public class LocalMedia implements Parcelable {
             return new LocalMedia[size];
         }
     };
+
+    /**
+     * 构造网络资源下的LocalMedia
+     *
+     * @param url      网络url
+     * @param mimeType 资源类型 {@link PictureMimeType.ofJPEG() # PictureMimeType.ofGIF() ...}
+     * @return
+     */
+    public static LocalMedia parseHttpLocalMedia(String url, String mimeType) {
+        return parseLocalMedia(0, url, "", "", "", 0, PictureMimeType.ofImage(), mimeType,
+                0, 0, 0, -1, 0);
+    }
+
+    /**
+     * 构造LocalMedia
+     *
+     * @param path        资源路径
+     * @param position    图片所在下标
+     * @param chooseModel 相册模式
+     * @return
+     */
+    public static LocalMedia parseLocalMedia(String path, int position, int chooseModel) {
+        LocalMedia localMedia = parseLocalMedia(0, path,
+                "", "", "", 0, chooseModel, "",
+                0, 0, 0, -1, 0);
+        localMedia.setPosition(position);
+        return localMedia;
+    }
+
+    /**
+     * 构造LocalMedia
+     *
+     * @param id               资源id
+     * @param path             资源路径
+     * @param absolutePath     资源绝对路径
+     * @param fileName         文件名
+     * @param parentFolderName 文件所在相册目录名称
+     * @param duration         视频/音频时长
+     * @param chooseModel      相册选择模式
+     * @param mimeType         资源类型
+     * @param width            资源宽
+     * @param height           资源高
+     * @param size             资源大小
+     * @param bucketId         文件目录id
+     * @param dateAddedColumn  资源添加时间
+     * @return
+     */
+    public static LocalMedia parseLocalMedia(long id, String path, String absolutePath,
+                                             String fileName, String parentFolderName,
+                                             long duration, int chooseModel, String mimeType,
+                                             int width, int height, long size, long bucketId, long dateAddedColumn) {
+        LocalMedia localMedia = new LocalMedia();
+        localMedia.setId(id);
+        localMedia.setPath(path);
+        localMedia.setRealPath(absolutePath);
+        localMedia.setFileName(fileName);
+        localMedia.setParentFolderName(parentFolderName);
+        localMedia.setDuration(duration);
+        localMedia.setChooseModel(chooseModel);
+        localMedia.setMimeType(mimeType);
+        localMedia.setWidth(width);
+        localMedia.setHeight(height);
+        localMedia.setSize(size);
+        localMedia.setBucketId(bucketId);
+        localMedia.setDateAddedTime(dateAddedColumn);
+        return localMedia;
+    }
+
 
     public String getPath() {
         return path;

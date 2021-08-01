@@ -21,21 +21,20 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.manager.PictureCacheManager;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.nio.channels.FileChannel;
 import java.util.Locale;
 import java.util.Objects;
-
-import okio.BufferedSink;
-import okio.BufferedSource;
-import okio.Okio;
 
 /**
  * @author：luck
@@ -44,7 +43,7 @@ import okio.Okio;
  */
 
 public class PictureFileUtils {
-
+    private static final int BYTE_SIZE = 8192;
     public static final String POSTFIX = ".jpeg";
     public static final String POST_VIDEO = ".mp4";
     public static final String POST_AUDIO = ".amr";
@@ -315,7 +314,7 @@ public class PictureFileUtils {
      * will cause both files to become null.
      * Simply skipping this step if the paths are identical.
      */
-    public static void copyFile(@NonNull String pathFrom, @NonNull String pathTo) throws IOException {
+    public static void copyFile(@NonNull String pathFrom, @NonNull String pathTo) {
         if (pathFrom.equalsIgnoreCase(pathTo)) {
             return;
         }
@@ -340,7 +339,7 @@ public class PictureFileUtils {
      * will cause both files to become null.
      * Simply skipping this step if the paths are identical.
      */
-    public static boolean copyFile(FileInputStream fileInputStream, String outFilePath) throws IOException {
+    public static boolean copyFile(FileInputStream fileInputStream, String outFilePath) {
         if (fileInputStream == null) {
             return false;
         }
@@ -361,75 +360,32 @@ public class PictureFileUtils {
     }
 
     /**
-     * 拷贝文件
+     * 复制文件
      *
-     * @param outFile
+     * @param is 文件输入流
+     * @param os 文件输出流
      * @return
      */
-    public static boolean bufferCopy(BufferedSource inBuffer, File outFile) {
-        BufferedSink outBuffer = null;
+    public static boolean writeFileFromIS(final InputStream is, final OutputStream os) {
+        OutputStream osBuffer = null;
+        BufferedInputStream isBuffer = null;
         try {
-            outBuffer = Okio.buffer(Okio.sink(outFile));
-            outBuffer.writeAll(inBuffer);
-            outBuffer.flush();
+            isBuffer = new BufferedInputStream(is);
+            osBuffer = new BufferedOutputStream(os);
+            byte[] data = new byte[BYTE_SIZE];
+            for (int len; (len = isBuffer.read(data)) != -1; ) {
+                os.write(data, 0, len);
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         } finally {
-            close(inBuffer);
-            close(outBuffer);
+            close(isBuffer);
+            close(osBuffer);
         }
-        return false;
     }
 
-    /**
-     * 拷贝文件
-     *
-     * @param outputStream
-     * @return
-     */
-    public static boolean bufferCopy(BufferedSource inBuffer, OutputStream outputStream) {
-        BufferedSink outBuffer = null;
-        try {
-            outBuffer = Okio.buffer(Okio.sink(outputStream));
-            outBuffer.writeAll(inBuffer);
-            outBuffer.flush();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            close(inBuffer);
-            close(outBuffer);
-        }
-        return false;
-    }
-
-
-    /**
-     * 拷贝文件
-     *
-     * @param inFile
-     * @param outPutStream
-     * @return
-     */
-    public static boolean bufferCopy(File inFile, OutputStream outPutStream) {
-        BufferedSource inBuffer = null;
-        BufferedSink outBuffer = null;
-        try {
-            inBuffer = Okio.buffer(Okio.source(inFile));
-            outBuffer = Okio.buffer(Okio.sink(outPutStream));
-            outBuffer.writeAll(inBuffer);
-            outBuffer.flush();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            close(inBuffer);
-            close(outPutStream);
-            close(outBuffer);
-        }
-        return false;
-    }
 
     /**
      * 重命名相册拍照

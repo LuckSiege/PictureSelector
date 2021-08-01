@@ -182,11 +182,13 @@ public final class LocalMediaPageLoader {
                 Bundle queryArgs = MediaUtils.createQueryArgsBundle(getPageSelection(bucketId), getPageSelectionArgs(bucketId), 1, 0);
                 data = mContext.getContentResolver().query(QUERY_URI, new String[]{
                         MediaStore.Files.FileColumns._ID,
+                        MediaStore.MediaColumns.MIME_TYPE,
                         MediaStore.MediaColumns.DATA}, queryArgs, null);
             } else {
                 String orderBy = MediaStore.Files.FileColumns._ID + " DESC limit 1 offset 0";
                 data = mContext.getContentResolver().query(QUERY_URI, new String[]{
                         MediaStore.Files.FileColumns._ID,
+                        MediaStore.MediaColumns.MIME_TYPE,
                         MediaStore.MediaColumns.DATA}, getPageSelection(bucketId), getPageSelectionArgs(bucketId), orderBy);
             }
             if (data != null && data.getCount() > 0) {
@@ -339,9 +341,7 @@ public final class LocalMediaPageLoader {
                                     }
                                 }
 
-                                LocalMedia image = new LocalMedia
-                                        (id, url, absolutePath, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size, bucket_id, data.getLong(dateAddedColumn));
-
+                                LocalMedia image = LocalMedia.parseLocalMedia(id, url, absolutePath, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size, bucket_id, data.getLong(dateAddedColumn));
                                 result.add(image);
 
                             } while (data.moveToNext());
@@ -468,7 +468,6 @@ public final class LocalMediaPageLoader {
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.i(TAG, "loadAllMedia Data Error: " + e.getMessage());
-                    return null;
                 } finally {
                     if (data != null && !data.isClosed()) {
                         data.close();

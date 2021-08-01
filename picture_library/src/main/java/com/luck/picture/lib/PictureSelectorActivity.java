@@ -78,10 +78,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
-import okio.BufferedSource;
-import okio.Okio;
 
 /**
  * @author：luck
@@ -737,54 +733,49 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * @param folders
      */
     private void initPageModel(List<LocalMediaFolder> folders) {
-        if (folders != null) {
-            folderWindow.bindFolder(folders);
-            mPage = 1;
-            LocalMediaFolder folder = folderWindow.getFolder(0);
-            mTvPictureTitle.setTag(R.id.view_count_tag, folder != null ? folder.getImageNum() : 0);
-            mTvPictureTitle.setTag(R.id.view_index_tag, 0);
-            long bucketId = folder != null ? folder.getBucketId() : -1;
-            mRecyclerView.setEnabledLoadMore(true);
-            LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage,
-                    (OnQueryDataResultListener<LocalMedia>) (data, currentPage, isHasMore) -> {
-                        if (!isFinishing()) {
-                            dismissDialog();
-                            if (mAdapter != null) {
-                                this.isHasMore = true;
-                                // IsHasMore being true means that there's still data, but data being 0 might be a filter that's turned on and that doesn't happen to fit on the whole page
-                                if (isHasMore && data.size() == 0) {
-                                    onRecyclerViewPreloadMore();
-                                    return;
-                                }
-                                int currentSize = mAdapter.getSize();
-                                int resultSize = data.size();
-                                oldCurrentListSize = oldCurrentListSize + currentSize;
-                                if (resultSize >= currentSize) {
-                                    // This situation is mainly caused by the use of camera memory, the Activity is recycled
-                                    if (currentSize > 0 && currentSize < resultSize && oldCurrentListSize != resultSize) {
-                                        if (isLocalMediaSame(data.get(0))) {
-                                            mAdapter.bindData(data);
-                                        } else {
-                                            mAdapter.getData().addAll(data);
-                                        }
-                                    } else {
-                                        mAdapter.bindData(data);
-                                    }
-                                }
-                                boolean isEmpty = mAdapter.isDataEmpty();
-                                if (isEmpty) {
-                                    showDataNull(getString(R.string.picture_empty), R.drawable.picture_icon_no_data);
-                                } else {
-                                    hideDataNull();
-                                }
-
+        folderWindow.bindFolder(folders);
+        mPage = 1;
+        LocalMediaFolder folder = folderWindow.getFolder(0);
+        mTvPictureTitle.setTag(R.id.view_count_tag, folder != null ? folder.getImageNum() : 0);
+        mTvPictureTitle.setTag(R.id.view_index_tag, 0);
+        long bucketId = folder != null ? folder.getBucketId() : -1;
+        mRecyclerView.setEnabledLoadMore(true);
+        LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage,
+                (OnQueryDataResultListener<LocalMedia>) (data, currentPage, isHasMore) -> {
+                    if (!isFinishing()) {
+                        dismissDialog();
+                        if (mAdapter != null) {
+                            this.isHasMore = true;
+                            // IsHasMore being true means that there's still data, but data being 0 might be a filter that's turned on and that doesn't happen to fit on the whole page
+                            if (isHasMore && data.size() == 0) {
+                                onRecyclerViewPreloadMore();
+                                return;
                             }
+                            int currentSize = mAdapter.getSize();
+                            int resultSize = data.size();
+                            oldCurrentListSize = oldCurrentListSize + currentSize;
+                            if (resultSize >= currentSize) {
+                                // This situation is mainly caused by the use of camera memory, the Activity is recycled
+                                if (currentSize > 0 && currentSize < resultSize && oldCurrentListSize != resultSize) {
+                                    if (isLocalMediaSame(data.get(0))) {
+                                        mAdapter.bindData(data);
+                                    } else {
+                                        mAdapter.getData().addAll(data);
+                                    }
+                                } else {
+                                    mAdapter.bindData(data);
+                                }
+                            }
+                            boolean isEmpty = mAdapter.isDataEmpty();
+                            if (isEmpty) {
+                                showDataNull(getString(R.string.picture_empty), R.drawable.picture_icon_no_data);
+                            } else {
+                                hideDataNull();
+                            }
+
                         }
-                    });
-        } else {
-            showDataNull(getString(R.string.picture_data_exception), R.drawable.picture_icon_data_error);
-            dismissDialog();
-        }
+                    }
+                });
     }
 
     /**
@@ -796,14 +787,17 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
                 @Override
                 public Boolean doInBackground() {
-                    int size = folderWindow.getFolderData().size();
-                    for (int i = 0; i < size; i++) {
-                        LocalMediaFolder mediaFolder = folderWindow.getFolder(i);
+                    List<LocalMediaFolder> folderList = folderWindow.getFolderData();
+                    for (int i = 0; i < folderList.size(); i++) {
+                        LocalMediaFolder mediaFolder = folderList.get(i);
                         if (mediaFolder == null) {
                             continue;
                         }
                         String firstCover = LocalMediaPageLoader
                                 .getInstance(getContext()).getFirstCover(mediaFolder.getBucketId());
+                        if (TextUtils.isEmpty(firstCover)){
+                            continue;
+                        }
                         mediaFolder.setFirstImagePath(firstCover);
                     }
                     return true;
@@ -1819,23 +1813,16 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     return;
                 }
                 if (SdkVersionUtils.checkedAndroid_R()) {
-                    BufferedSource buffer = null;
                     try {
                         Uri audioOutUri = MediaUtils.createAudioUri(getContext(), TextUtils.isEmpty(config.cameraAudioFormat) ? config.suffixType : config.cameraAudioFormat);
                         if (audioOutUri != null) {
                             InputStream inputStream = PictureContentResolver.getContentResolverOpenInputStream(this, Uri.parse(config.cameraPath));
-                            buffer = Okio.buffer(Okio.source(Objects.requireNonNull(inputStream)));
-
                             OutputStream outputStream = PictureContentResolver.getContentResolverOpenOutputStream(this, audioOutUri);
-                            PictureFileUtils.bufferCopy(buffer, outputStream);
+                            PictureFileUtils.writeFileFromIS(inputStream,outputStream);
                             config.cameraPath = audioOutUri.toString();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                    } finally {
-                        if (buffer != null && buffer.isOpen()) {
-                            PictureFileUtils.close(buffer);
-                        }
                     }
                 }
             }
@@ -2118,6 +2105,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(media.getPath())) {
                     media.setAndroidQToPath(cutPath);
                 }
+                media.setCropImageWidth(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_WIDTH,0));
+                media.setCropImageHeight(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_HEIGHT,0));
+                media.setCropOffsetX(data.getIntExtra(UCrop.EXTRA_OUTPUT_OFFSET_X,0));
+                media.setCropOffsetY(data.getIntExtra(UCrop.EXTRA_OUTPUT_OFFSET_Y,0));
+                media.setCropResultAspectRatio(data.getFloatExtra(UCrop.EXTRA_OUTPUT_CROP_ASPECT_RATIO,0F));
+                media.setEditorImage(data.getBooleanExtra(UCrop.EXTRA_EDITOR_IMAGE,false));
                 media.setCut(isCutPathEmpty);
                 result.add(media);
                 handlerResult(result);
@@ -2132,6 +2125,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(media.getPath())) {
                         media.setAndroidQToPath(cutPath);
                     }
+                    media.setCropImageWidth(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_WIDTH,0));
+                    media.setCropImageHeight(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_HEIGHT,0));
+                    media.setCropOffsetX(data.getIntExtra(UCrop.EXTRA_OUTPUT_OFFSET_X,0));
+                    media.setCropOffsetY(data.getIntExtra(UCrop.EXTRA_OUTPUT_OFFSET_Y,0));
+                    media.setCropResultAspectRatio(data.getFloatExtra(UCrop.EXTRA_OUTPUT_CROP_ASPECT_RATIO,0F));
+                    media.setEditorImage(data.getBooleanExtra(UCrop.EXTRA_EDITOR_IMAGE,false));
                     media.setCut(isCutPathEmpty);
                     result.add(media);
                     handlerResult(result);

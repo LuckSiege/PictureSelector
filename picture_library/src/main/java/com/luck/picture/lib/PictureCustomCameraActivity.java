@@ -55,12 +55,18 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
         }
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
-        // 验证存储权限
+        setContentView(R.layout.picture_custom_camera);
+        mCameraView = findViewById(R.id.cameraView);
+        initView();
+        requestCamera();
+    }
+
+    private void requestCamera() {
         if (PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             // 验证相机权限和麦克风权限
             if (PermissionChecker.checkSelfPermission(this, Manifest.permission.CAMERA)) {
                 if (PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)) {
-                    createCameraView();
+                    mCameraView.initCamera();
                 } else {
                     PermissionChecker.requestPermissions(this,
                             new String[]{Manifest.permission.RECORD_AUDIO}, PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE);
@@ -75,16 +81,6 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
         }
     }
 
-    /**
-     * 创建CameraView
-     */
-    private void createCameraView() {
-        if (mCameraView == null) {
-            mCameraView = new CustomCameraView(getContext());
-            setContentView(mCameraView);
-            initView();
-        }
-    }
 
     @Override
     protected void onResume() {
@@ -99,7 +95,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
                     boolean isRecordAudio = PermissionChecker
                             .checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
                     if (isRecordAudio) {
-                        createCameraView();
+                        mCameraView.initCamera();
                     } else {
                         showPermissionsDialog(false, new String[]{Manifest.permission.RECORD_AUDIO}, getString(R.string.picture_audio));
                     }
@@ -117,7 +113,6 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
      * 初始化控件
      */
     protected void initView() {
-        mCameraView.initCamera(config);
         // 视频最大拍摄时长
         if (config.recordVideoSecond > 0) {
             mCameraView.setRecordVideoMaxTime(config.recordVideoSecond);
@@ -211,7 +206,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     boolean isRecordAudio = PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
                     if (isRecordAudio) {
-                        createCameraView();
+                        mCameraView.initCamera();
                     } else {
                         PermissionChecker.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE);
                     }
@@ -222,7 +217,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
             case PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE:
                 // 录音权限
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    createCameraView();
+                    mCameraView.initCamera();
                 } else {
                     showPermissionsDialog(false, new String[]{Manifest.permission.RECORD_AUDIO}, getString(R.string.picture_audio));
                 }
@@ -281,13 +276,5 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
             isEnterSetting = true;
         });
         dialog.show();
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (mCameraView != null) {
-            mCameraView.unbindCameraController();
-        }
-        super.onDestroy();
     }
 }

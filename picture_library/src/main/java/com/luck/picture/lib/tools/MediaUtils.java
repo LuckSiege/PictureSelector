@@ -68,10 +68,10 @@ public class MediaUtils {
                 values.put(MediaStore.Images.Media.RELATIVE_PATH, PictureMimeType.DCIM);
             }
             imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Images.Media.getContentUri("external"), values);
+                    .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
         } else {
             imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Images.Media.getContentUri("internal"), values);
+                    .insert(MediaStore.Images.Media.INTERNAL_CONTENT_URI, values);
         }
         return imageFilePath[0];
     }
@@ -113,10 +113,10 @@ public class MediaUtils {
                 values.put(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES);
             }
             imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Video.Media.getContentUri("external"), values);
+                    .insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
         } else {
             imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Video.Media.getContentUri("internal"), values);
+                    .insert(MediaStore.Video.Media.INTERNAL_CONTENT_URI, values);
         }
         return imageFilePath[0];
     }
@@ -147,10 +147,10 @@ public class MediaUtils {
                 values.put(MediaStore.Audio.Media.RELATIVE_PATH, Environment.DIRECTORY_MUSIC);
             }
             imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Audio.Media.getContentUri("external"), values);
+                    .insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
         } else {
             imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Audio.Media.getContentUri("internal"), values);
+                    .insert(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, values);
         }
         return imageFilePath[0];
     }
@@ -449,6 +449,22 @@ public class MediaUtils {
         try {
             if (PictureMimeType.isContent(cameraPath)) {
                 context.getContentResolver().delete(Uri.parse(cameraPath), null, null);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * delete camera PATH
+     *
+     * @param context Context
+     * @param url     Camera url
+     */
+    public static void deleteUri(Context context, Uri url) {
+        try {
+            if (url != null){
+                context.getContentResolver().delete(url, null, null);
             }
         } catch (Exception e){
             e.printStackTrace();

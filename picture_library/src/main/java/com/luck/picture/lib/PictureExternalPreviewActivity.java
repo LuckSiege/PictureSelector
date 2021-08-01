@@ -56,10 +56,6 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
-import okio.BufferedSource;
-import okio.Okio;
 
 /**
  * @author：luck
@@ -411,9 +407,8 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 }
             });
             btn_commit.setOnClickListener(view -> {
-                boolean isHttp = PictureMimeType.isHasHttp(downloadPath);
-                showPleaseDialog();
-                if (isHttp) {
+                if (PictureMimeType.isHasHttp(downloadPath)) {
+                    showPleaseDialog();
                     PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<String>() {
                         @Override
                         public String doInBackground() {
@@ -423,21 +418,14 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                         @Override
                         public void onSuccess(String result) {
                             onSuccessful(result);
+                            dismissDialog();
                         }
                     });
                 } else {
-                    // 有可能本地图片
-                    try {
-                        if (PictureMimeType.isContent(downloadPath)) {
-                            savePictureAlbumAndroidQ(PictureMimeType.isContent(downloadPath) ? Uri.parse(downloadPath) : Uri.fromFile(new File(downloadPath)));
-                        } else {
-                            // 把文件插入到系统图库
-                            savePictureAlbum();
-                        }
-                    } catch (Exception e) {
-                        ToastUtils.s(getContext(), getString(R.string.picture_save_error) + "\n" + e.getMessage());
-                        dismissDialog();
-                        e.printStackTrace();
+                    if (SdkVersionUtils.checkedAndroid_Q()) {
+                        savePictureAlbumAndroidQ(PictureMimeType.isContent(downloadPath) ? Uri.parse(downloadPath) : Uri.fromFile(new File(downloadPath)));
+                    } else {
+                        savePictureAlbum();
                     }
                 }
                 if (!isFinishing()) {
@@ -451,9 +439,8 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     /**
      * 保存相片至本地相册
      *
-     * @throws Exception
      */
-    private void savePictureAlbum() throws Exception {
+    private void savePictureAlbum() {
         String suffix = PictureMimeType.getLastImgSuffix(mMimeType);
         String state = Environment.getExternalStorageState();
         File rootDir = state.equals(Environment.MEDIA_MOUNTED)
@@ -476,24 +463,14 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
     /**
      * 图片保存成功
      *
-     * @param result
+     * @param filePath
      */
-    private void onSuccessful(String result) {
-        dismissDialog();
-        if (!TextUtils.isEmpty(result)) {
-            try {
-                if (!SdkVersionUtils.checkedAndroid_Q()) {
-                    File file = new File(result);
-                    MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), file.getName(), null);
-                    new PictureMediaScannerConnection(getContext(), file.getAbsolutePath(), () -> {
-                    });
-                }
-                ToastUtils.s(getContext(), getString(R.string.picture_save_success) + "\n" + result);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
+    private void onSuccessful(String filePath) {
+        if (TextUtils.isEmpty(filePath)) {
             ToastUtils.s(getContext(), getString(R.string.picture_save_error));
+        } else {
+            new PictureMediaScannerConnection(getContext(), filePath, null);
+            ToastUtils.s(getContext(), getString(R.string.picture_save_success) + "\n" + filePath);
         }
     }
 
@@ -517,22 +494,15 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
             @Override
             public String doInBackground() {
-                BufferedSource buffer = null;
                 try {
                     InputStream inputStream = PictureContentResolver.getContentResolverOpenInputStream(getContext(), inputUri);
-                    buffer = Okio.buffer(Okio.source(Objects.requireNonNull(inputStream)));
-
                     OutputStream outputStream = PictureContentResolver.getContentResolverOpenOutputStream(getContext(), uri);
-                    boolean bufferCopy = PictureFileUtils.bufferCopy(buffer, outputStream);
+                    boolean bufferCopy = PictureFileUtils.writeFileFromIS(inputStream, outputStream);
                     if (bufferCopy) {
                         return PictureFileUtils.getPath(getContext(), uri);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                } finally {
-                    if (buffer != null && buffer.isOpen()) {
-                        PictureFileUtils.close(buffer);
-                    }
                 }
                 return "";
             }
@@ -547,68 +517,49 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
 
     /**
-     * 针对Q版本创建uri
+     * 下载图片至本地
      *
+     * @param urlPath 图片网络url
      * @return
      */
-    private Uri createOutImageUri() {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
-        contentValues.put(MediaStore.Images.Media.DATE_TAKEN, ValueOf.toString(System.currentTimeMillis()));
-        contentValues.put(MediaStore.Images.Media.MIME_TYPE, mMimeType);
-        contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, PictureMimeType.DCIM);
-
-        return getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
-    }
-
-    // 下载图片保存至手机
     public String showLoadingImage(String urlPath) {
         Uri outImageUri = null;
         OutputStream outputStream = null;
         InputStream inputStream = null;
-        BufferedSource inBuffer = null;
         try {
             if (SdkVersionUtils.checkedAndroid_Q()) {
-                outImageUri = createOutImageUri();
+                outImageUri = MediaUtils.createImageUri(getContext(), "", mMimeType);
             } else {
                 String suffix = PictureMimeType.getLastImgSuffix(mMimeType);
                 String state = Environment.getExternalStorageState();
-                File rootDir =
-                        state.equals(Environment.MEDIA_MOUNTED)
+                File rootDir = state.equals(Environment.MEDIA_MOUNTED)
                                 ? Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
                                 : getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-                if (rootDir != null) {
-                    if (!rootDir.exists()) {
-                        rootDir.mkdirs();
-                    }
-                    File folderDir = new File(!state.equals(Environment.MEDIA_MOUNTED)
-                            ? rootDir.getAbsolutePath() : rootDir.getAbsolutePath() + File.separator + PictureMimeType.CAMERA + File.separator);
-                    if (!folderDir.exists()) {
-                        folderDir.mkdirs();
-                    }
-                    String fileName = DateUtils.getCreateFileName("IMG_") + suffix;
-                    File file = new File(folderDir, fileName);
-                    outImageUri = Uri.fromFile(file);
+                if (!rootDir.exists()) {
+                    rootDir.mkdirs();
                 }
+                File folderDir = new File(!state.equals(Environment.MEDIA_MOUNTED)
+                        ? rootDir.getAbsolutePath() : rootDir.getAbsolutePath() + File.separator + PictureMimeType.CAMERA + File.separator);
+                if (!folderDir.exists()) {
+                    folderDir.mkdirs();
+                }
+                String fileName = DateUtils.getCreateFileName("IMG_") + suffix;
+                File outFile = new File(folderDir, fileName);
+                outImageUri = Uri.fromFile(outFile);
             }
-            if (outImageUri != null) {
-                outputStream = PictureContentResolver.getContentResolverOpenOutputStream(getContext(), outImageUri);
-                URL u = new URL(urlPath);
-                inputStream = u.openStream();
-                inBuffer = Okio.buffer(Okio.source(inputStream));
-                boolean bufferCopy = PictureFileUtils.bufferCopy(inBuffer, outputStream);
-                if (bufferCopy) {
-                    return PictureFileUtils.getPath(this, outImageUri);
-                }
+            outputStream = PictureContentResolver.getContentResolverOpenOutputStream(getContext(), outImageUri);
+            inputStream = new URL(urlPath).openStream();
+            boolean bufferCopy = PictureFileUtils.writeFileFromIS(inputStream, outputStream);
+            if (bufferCopy) {
+                return PictureFileUtils.getPath(this, outImageUri);
             }
         } catch (Exception e) {
-            if (outImageUri != null && SdkVersionUtils.checkedAndroid_Q()) {
-                getContentResolver().delete(outImageUri, null, null);
+            if (SdkVersionUtils.checkedAndroid_Q()) {
+                MediaUtils.deleteUri(getContext(), outImageUri);
             }
         } finally {
             PictureFileUtils.close(inputStream);
             PictureFileUtils.close(outputStream);
-            PictureFileUtils.close(inBuffer);
         }
         return null;
     }

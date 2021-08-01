@@ -36,7 +36,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
     }
 
     public void bindFolderData(List<LocalMediaFolder> folders) {
-        this.folders = folders == null ? new ArrayList<>() : folders;
+        this.folders = folders;
         notifyDataSetChanged();
     }
 
@@ -45,7 +45,7 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
     }
 
     public List<LocalMediaFolder> getFolderData() {
-        return folders == null ? new ArrayList<>() : folders;
+        return folders;
     }
 
     @Override
