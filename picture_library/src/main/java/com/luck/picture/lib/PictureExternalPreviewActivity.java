@@ -299,7 +299,11 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                                 photoView, longImageView, new OnImageCompleteCallback() {
                                     @Override
                                     public void onShowLoading() {
-                                        showPleaseDialog();
+                                        int currentItem = viewPager.getCurrentItem();
+                                        LocalMedia localMedia = images.get(currentItem);
+                                        if (TextUtils.equals(path, localMedia.getPath())) {
+                                            showPleaseDialog();
+                                        }
                                     }
 
                                     @Override

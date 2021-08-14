@@ -245,8 +245,7 @@ public class CustomCameraView extends RelativeLayout {
         mCaptureLayout.setTypeListener(new TypeListener() {
             @Override
             public void cancel() {
-                stopVideoPlay();
-                resetState();
+                onCancelMedia();
             }
 
             @Override
@@ -719,6 +718,14 @@ public class CustomCameraView extends RelativeLayout {
             videoViewParam.gravity = Gravity.CENTER;
             mTextureView.setLayoutParams(videoViewParam);
         }
+    }
+
+    /**
+     * 取消拍摄相关
+     */
+    public void onCancelMedia() {
+        stopVideoPlay();
+        resetState();
     }
 
     /**

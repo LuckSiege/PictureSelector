@@ -44,7 +44,7 @@ android {
                     def outputFile = output.outputFile
                     if (outputFile != null && outputFile.name.endsWith('.apk')) {
                         def time = releaseTime()
-                        def fileName = getProject().name + "_${time}${"_" + versionName}.apk"
+                        def fileName = "demo_${time}${"_" + versionName}.apk"
                         outputFileName = fileName
                     }
                 }

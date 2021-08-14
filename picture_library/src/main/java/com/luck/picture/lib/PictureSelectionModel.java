@@ -14,6 +14,7 @@ import androidx.annotation.StyleRes;
 import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.animators.AnimationType;
+import com.luck.picture.lib.camera.CustomCameraView;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -57,6 +58,7 @@ public class PictureSelectionModel {
         this.selector = selector;
         selectionConfig = PictureSelectionConfig.getCleanInstance();
         selectionConfig.chooseMode = chooseMode;
+        initCustomCameraFeatures();
     }
 
     public PictureSelectionModel(PictureSelector selector, int chooseMode, boolean camera) {
@@ -64,6 +66,7 @@ public class PictureSelectionModel {
         selectionConfig = PictureSelectionConfig.getCleanInstance();
         selectionConfig.camera = camera;
         selectionConfig.chooseMode = chooseMode;
+        initCustomCameraFeatures();
     }
 
     /**
@@ -276,11 +279,33 @@ public class PictureSelectionModel {
 
     /**
      * @param buttonFeatures Set the record button function
-     *                       # 具体参考 CustomCameraView.BUTTON_STATE_BOTH、BUTTON_STATE_ONLY_CAPTURE、BUTTON_STATE_ONLY_RECORDER
+     *                       # 具体参考 {@link CustomCameraView.BUTTON_STATE_BOTH # CustomCameraView.BUTTON_STATE_ONLY_CAPTURE # CustomCameraView.BUTTON_STATE_ONLY_RECORDER}
      * @return
      */
     public PictureSelectionModel setCustomCameraFeatures(int buttonFeatures) {
-        selectionConfig.buttonFeatures = buttonFeatures;
+        if (selectionConfig.chooseMode == PictureMimeType.ofImage()) {
+            selectionConfig.buttonFeatures = CustomCameraView.BUTTON_STATE_ONLY_CAPTURE;
+        } else if (selectionConfig.chooseMode == PictureMimeType.ofVideo()) {
+            selectionConfig.buttonFeatures = CustomCameraView.BUTTON_STATE_ONLY_RECORDER;
+        } else {
+            selectionConfig.buttonFeatures = buttonFeatures;
+        }
+        return this;
+    }
+
+    /**
+     * @param buttonFeatures Set the record button function
+     *                       # 具体参考 {@link CustomCameraView.BUTTON_STATE_BOTH # CustomCameraView.BUTTON_STATE_ONLY_CAPTURE # CustomCameraView.BUTTON_STATE_ONLY_RECORDER}
+     * @return
+     */
+    private PictureSelectionModel initCustomCameraFeatures() {
+        if (selectionConfig.chooseMode == PictureMimeType.ofImage()) {
+            selectionConfig.buttonFeatures = CustomCameraView.BUTTON_STATE_ONLY_CAPTURE;
+        } else if (selectionConfig.chooseMode == PictureMimeType.ofVideo()) {
+            selectionConfig.buttonFeatures = CustomCameraView.BUTTON_STATE_ONLY_RECORDER;
+        } else {
+            selectionConfig.buttonFeatures = CustomCameraView.BUTTON_STATE_BOTH;
+        }
         return this;
     }
 
