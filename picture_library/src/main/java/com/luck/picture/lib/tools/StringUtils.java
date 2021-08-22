@@ -76,7 +76,7 @@ public class StringUtils {
     /**
      * 重命名后缀
      *
-     * @param fileName
+     * @param fileName 文件名
      * @return
      */
     public static String renameSuffix(String fileName, String suffix) {
@@ -87,14 +87,14 @@ public class StringUtils {
     /**
      * getEncryptionValue
      *
-     * @param id
-     * @param width
-     * @param height
+     * @param id     资源id
+     * @param width  图片宽
+     * @param height 图片高
      * @return
      */
     public static String getEncryptionValue(long id, int width, int height) {
         if (width == 0 && height == 0) {
-            return "";
+            return id + "_" + System.currentTimeMillis();
         }
         return id + "_" + width + height;
     }

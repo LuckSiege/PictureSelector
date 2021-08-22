@@ -374,6 +374,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
 
                 @Override
                 public void onSuccess(List<LocalMedia> result) {
+                    PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
                     onResult(result);
                 }
             });
@@ -596,6 +597,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(List<LocalMedia> images) {
+                PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
                 dismissDialog();
                 if (images != null) {
                     if (config.camera && config.selectionMode == PictureConfig.MULTIPLE) {

@@ -721,6 +721,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
                 @Override
                 public void onSuccess(List<LocalMediaFolder> folders) {
+                    PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
                     initStandardModel(folders);
                 }
             });
@@ -806,6 +807,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 @Override
                 public void onSuccess(Boolean result) {
                     // TODO Synchronous Success
+                    PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
                 }
             });
         }

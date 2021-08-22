@@ -421,6 +421,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
                         @Override
                         public void onSuccess(String result) {
+                            PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
                             onSuccessful(result);
                             dismissDialog();
                         }

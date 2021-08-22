@@ -454,6 +454,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
                         .isWeChatStyle(isWeChatStyle)// 是否开启微信图片选择风格
                         .isUseCustomCamera(cb_custom_camera.isChecked())// 是否使用自定义相机
+                        //.isCameraCopyExternalFile(true)
                         .setLanguage(language)// 设置语言，默认中文
                         .isPageStrategy(cbPage.isChecked())// 是否开启分页策略 & 每页多少条；默认开启
                         .setRecyclerAnimationMode(animationMode)// 列表动画效果

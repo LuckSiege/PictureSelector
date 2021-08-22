@@ -189,6 +189,7 @@ public class Luban {
 
             @Override
             public void onSuccess(List<LocalMedia> result) {
+                PictureThreadUtils.cancel(this);
                 if (mCompressListener == null) {
                     return;
                 }

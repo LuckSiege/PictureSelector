@@ -362,6 +362,7 @@ public final class LocalMediaPageLoader {
 
             @Override
             public void onSuccess(MediaData result) {
+                PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
                 if (listener != null && result != null) {
                     listener.onComplete(result.data, page, result.isHasNextMore);
                 }
@@ -478,6 +479,7 @@ public final class LocalMediaPageLoader {
 
             @Override
             public void onSuccess(List<LocalMediaFolder> result) {
+                PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
                 if (listener != null && result != null) {
                     listener.onComplete(result, 1, false);
                 }

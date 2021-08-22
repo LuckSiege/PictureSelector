@@ -202,6 +202,15 @@ public class PictureSelectionModel {
     }
 
     /**
+     * @param isCameraCopyExternalFile Copy File to External
+     * @return
+     */
+    public PictureSelectionModel isCameraCopyExternalFile(boolean isCameraCopyExternalFile) {
+        selectionConfig.isCameraCopyExternalFile = isCameraCopyExternalFile;
+        return this;
+    }
+
+    /**
      * @param callback Provide video playback control，Users are free to customize the video display interface
      * @return
      */

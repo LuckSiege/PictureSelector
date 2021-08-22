@@ -255,28 +255,44 @@ public class CustomCameraView extends RelativeLayout {
                 }
                 // 拷贝一份至公共目录
                 if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(mConfig.cameraPath)) {
-                    PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Boolean>() {
+                    if (mConfig.isCameraCopyExternalFile) {
+                        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Boolean>() {
 
-                        @Override
-                        public Boolean doInBackground() {
-                            return AndroidQTransformUtils.copyPathToDCIM(getContext(), mOutMediaFile, Uri.parse(mConfig.cameraPath));
-                        }
+                            @Override
+                            public Boolean doInBackground() {
+                                return AndroidQTransformUtils.copyPathToDCIM(getContext(), mOutMediaFile, Uri.parse(mConfig.cameraPath));
+                            }
 
-                        @Override
-                        public void onSuccess(Boolean result) {
-                            if (isImageCaptureEnabled()) {
-                                mImagePreview.setVisibility(INVISIBLE);
-                                if (mCameraListener != null) {
-                                    mCameraListener.onPictureSuccess(mOutMediaFile);
-                                }
-                            } else {
-                                stopVideoPlay();
-                                if (mCameraListener != null || !mOutMediaFile.exists()) {
-                                    mCameraListener.onRecordSuccess(mOutMediaFile);
+                            @Override
+                            public void onSuccess(Boolean result) {
+                                PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
+                                if (isImageCaptureEnabled()) {
+                                    mImagePreview.setVisibility(INVISIBLE);
+                                    if (mCameraListener != null) {
+                                        mCameraListener.onPictureSuccess(mOutMediaFile);
+                                    }
+                                } else {
+                                    stopVideoPlay();
+                                    if (mCameraListener != null || !mOutMediaFile.exists()) {
+                                        mCameraListener.onRecordSuccess(mOutMediaFile);
+                                    }
                                 }
                             }
+                        });
+                    } else {
+                        mConfig.cameraPath = mOutMediaFile.getAbsolutePath();
+                        if (isImageCaptureEnabled()) {
+                            mImagePreview.setVisibility(INVISIBLE);
+                            if (mCameraListener != null) {
+                                mCameraListener.onPictureSuccess(mOutMediaFile);
+                            }
+                        } else {
+                            stopVideoPlay();
+                            if (mCameraListener != null || !mOutMediaFile.exists()) {
+                                mCameraListener.onRecordSuccess(mOutMediaFile);
+                            }
                         }
-                    });
+                    }
                 } else {
                     if (isImageCaptureEnabled()) {
                         mImagePreview.setVisibility(INVISIBLE);
