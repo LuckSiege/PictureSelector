@@ -5,7 +5,7 @@
     <string name="picture_cancel">Отмена</string>
     <string name="picture_take_picture">Сделать фото</string>
     <string name="picture_rule">Нет картинок или видео</string>
-    <string name="picture_min_video_num">Video Selection Cannot%1$sNumber</string>
+    <string name="picture_min_video_num">Минимум %1$s видео</string>
     <string name="picture_message_max_num">Выберите до %1$s изображений</string>
     <string name="picture_message_audio_max_num">Выберите до %1$s аудио</string>
     <string name="picture_message_video_max_num">Выберите до %1$s видео</string>
@@ -30,7 +30,7 @@
     <string name="picture_photograph">Фотография</string>
     <string name="picture_long_chart">Длинный</string>
     <string name="picture_warning">Нет медиа файлов!</string>
-    <string name="picture_prompt">Prompt</string>
+    <string name="picture_prompt">Подсказка</string>
     <string name="picture_prompt_content">Вы хотите сохранить фотографии на ваш телефон?</string>
     <string name="picture_save_error">Не удалось сохранить фото</string>
     <string name="picture_save_success">Изображение успешно сохранено</string>
