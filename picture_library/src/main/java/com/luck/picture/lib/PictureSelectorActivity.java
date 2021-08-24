@@ -935,16 +935,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      * Open Custom Camera
      */
     private void startCustomCamera() {
-        if (PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)) {
-            Intent intent = new Intent(this, PictureCustomCameraActivity.class);
-            startActivityForResult(intent, PictureConfig.REQUEST_CAMERA);
-            PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.windowAnimationStyle;
-            overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.picture_anim_fade_in);
-        } else {
-            PermissionChecker
-                    .requestPermissions(this,
-                            new String[]{Manifest.permission.RECORD_AUDIO}, PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE);
-        }
+        Intent intent = new Intent(this, PictureCustomCameraActivity.class);
+        startActivityForResult(intent, PictureConfig.REQUEST_CAMERA);
+        PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.windowAnimationStyle;
+        overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.picture_anim_fade_in);
     }
 
 
@@ -2403,14 +2397,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 } else {
                     showPermissionsDialog(false, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE}, getString(R.string.picture_jurisdiction));
-                }
-                break;
-            case PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE:
-                // Recording Permissions
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startCustomCamera();
-                } else {
-                    showPermissionsDialog(false, new String[]{Manifest.permission.RECORD_AUDIO}, getString(R.string.picture_audio));
                 }
                 break;
         }

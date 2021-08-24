@@ -1,6 +1,7 @@
 package com.luck.picture.lib.camera;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
@@ -42,8 +43,10 @@ import com.luck.picture.lib.camera.listener.ClickListener;
 import com.luck.picture.lib.camera.listener.ImageCallbackListener;
 import com.luck.picture.lib.camera.listener.TypeListener;
 import com.luck.picture.lib.camera.view.CaptureLayout;
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.DateUtils;

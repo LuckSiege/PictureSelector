@@ -107,19 +107,8 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
      * open camera
      */
     private void onTakePhoto() {
-        if (PermissionChecker
-                .checkSelfPermission(this, Manifest.permission.CAMERA)) {
-            boolean isPermissionChecker = true;
-            if (config != null && config.isUseCustomCamera) {
-                isPermissionChecker = PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
-            }
-            if (isPermissionChecker) {
-                startCamera();
-            } else {
-                PermissionChecker
-                        .requestPermissions(this,
-                                new String[]{Manifest.permission.RECORD_AUDIO}, PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE);
-            }
+        if (PermissionChecker.checkSelfPermission(this, Manifest.permission.CAMERA)) {
+            startCamera();
         } else {
             PermissionChecker.requestPermissions(this,
                     new String[]{Manifest.permission.CAMERA}, PictureConfig.APPLY_CAMERA_PERMISSIONS_CODE);
@@ -414,15 +403,6 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 } else {
                     exit();
                     ToastUtils.s(getContext(), getString(R.string.picture_camera));
-                }
-                break;
-            case PictureConfig.APPLY_RECORD_AUDIO_PERMISSIONS_CODE:
-                // Recording Permissions
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    onTakePhoto();
-                } else {
-                    exit();
-                    ToastUtils.s(getContext(), getString(R.string.picture_audio));
                 }
                 break;
         }
