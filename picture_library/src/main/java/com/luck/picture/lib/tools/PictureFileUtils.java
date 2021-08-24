@@ -372,6 +372,7 @@ public class PictureFileUtils {
             for (int len; (len = isBuffer.read(data)) != -1; ) {
                 os.write(data, 0, len);
             }
+            os.flush();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
