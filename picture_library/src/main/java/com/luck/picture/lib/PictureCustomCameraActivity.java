@@ -204,7 +204,6 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE:
                 // 存储权限
