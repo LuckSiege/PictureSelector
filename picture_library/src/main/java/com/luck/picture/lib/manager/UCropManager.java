@@ -122,12 +122,7 @@ public class UCropManager {
         if (index < size) {
             LocalMedia info = list.get(index);
             boolean isHttp = PictureMimeType.isHasHttp(info.getPath());
-            Uri uri;
-            if (TextUtils.isEmpty(info.getAndroidQToPath())) {
-                uri = isHttp || PictureMimeType.isContent(info.getPath()) ? Uri.parse(info.getPath()) : Uri.fromFile(new File(info.getPath()));
-            } else {
-                uri = Uri.fromFile(new File(info.getAndroidQToPath()));
-            }
+            Uri uri = isHttp || PictureMimeType.isContent(info.getPath()) ? Uri.parse(info.getPath()) : Uri.fromFile(new File(info.getPath()));
             String suffix = info.getMimeType().replace("image/", ".");
             File file = new File(PictureFileUtils.getDiskCacheDir(activity),
                     TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_CROP_")

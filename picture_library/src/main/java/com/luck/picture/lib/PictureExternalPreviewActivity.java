@@ -413,7 +413,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             btn_commit.setOnClickListener(view -> {
                 if (PictureMimeType.isHasHttp(downloadPath)) {
                     showPleaseDialog();
-                    PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<String>() {
+                    PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<String>() {
                         @Override
                         public String doInBackground() {
                             return showLoadingImage(downloadPath);
@@ -421,7 +421,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
                         @Override
                         public void onSuccess(String result) {
-                            PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
+                            PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
                             onSuccessful(result);
                             dismissDialog();
                         }
@@ -495,7 +495,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             ToastUtils.s(getContext(), getString(R.string.picture_save_error));
             return;
         }
-        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<String>() {
+        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<String>() {
 
             @Override
             public String doInBackground() {
@@ -514,7 +514,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
             @Override
             public void onSuccess(String result) {
-                PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
+                PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
                 onSuccessful(result);
             }
         });

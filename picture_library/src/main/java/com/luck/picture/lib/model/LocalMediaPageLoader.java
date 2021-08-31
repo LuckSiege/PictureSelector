@@ -245,7 +245,7 @@ public final class LocalMediaPageLoader {
      */
     public void loadPageMediaData(long bucketId, int page, int limit, int pageSize,
                                   OnQueryDataResultListener<LocalMedia> listener) {
-        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<MediaData>() {
+        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<MediaData>() {
 
             @Override
             public MediaData doInBackground() {
@@ -362,7 +362,7 @@ public final class LocalMediaPageLoader {
 
             @Override
             public void onSuccess(MediaData result) {
-                PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
+                PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
                 if (listener != null && result != null) {
                     listener.onComplete(result.data, page, result.isHasNextMore);
                 }
@@ -376,7 +376,7 @@ public final class LocalMediaPageLoader {
      * @param listener
      */
     public void loadAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
-        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
+        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
             @Override
             public List<LocalMediaFolder> doInBackground() {
                 Cursor data = mContext.getContentResolver().query(QUERY_URI,
@@ -479,7 +479,7 @@ public final class LocalMediaPageLoader {
 
             @Override
             public void onSuccess(List<LocalMediaFolder> result) {
-                PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
+                PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
                 if (listener != null && result != null) {
                     listener.onComplete(result, 1, false);
                 }

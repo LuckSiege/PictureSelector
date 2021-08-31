@@ -104,13 +104,9 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
         while (!decodeAttemptSuccess) {
             try {
                 InputStream stream = PictureContentResolver.getContentResolverOpenInputStream(mContext, mInputUri);
-                try {
-                    decodeSampledBitmap = BitmapFactory.decodeStream(stream, null, options);
-                    if (options.outWidth == -1 || options.outHeight == -1) {
-                        return new BitmapWorkerResult(new IllegalArgumentException("Bounds for bitmap could not be retrieved from the Uri: [" + mInputUri + "]"));
-                    }
-                } finally {
-                    BitmapLoadUtils.close(stream);
+                decodeSampledBitmap = BitmapFactory.decodeStream(stream, null, options);
+                if (options.outWidth == -1 || options.outHeight == -1) {
+                    return new BitmapWorkerResult(new IllegalArgumentException("Bounds for bitmap could not be retrieved from the Uri: [" + mInputUri + "]"));
                 }
                 if (checkSize(decodeSampledBitmap, options)) continue;
                 decodeAttemptSuccess = true;

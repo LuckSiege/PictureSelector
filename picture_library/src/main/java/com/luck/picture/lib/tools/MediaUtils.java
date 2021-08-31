@@ -197,7 +197,7 @@ public class MediaUtils {
     public static MediaExtraInfo getImageSize(Context context, String url) {
         MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
         ExifInterface exifInterface;
-        InputStream inputStream = null;
+        InputStream inputStream;
         try {
             if (PictureMimeType.isContent(url)) {
                 inputStream = PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(url));
@@ -209,8 +209,6 @@ public class MediaUtils {
             mediaExtraInfo.setHeight(exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, ExifInterface.ORIENTATION_NORMAL));
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            PictureFileUtils.close(inputStream);
         }
         return mediaExtraInfo;
     }
@@ -223,7 +221,7 @@ public class MediaUtils {
      */
     public static MediaExtraInfo getImageSize(String url) {
         MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
-        InputStream inputStream = null;
+        InputStream inputStream;
         try {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
@@ -237,8 +235,6 @@ public class MediaUtils {
             mediaExtraInfo.setHeight(options.outHeight);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            PictureFileUtils.close(inputStream);
         }
         return mediaExtraInfo;
     }

@@ -29,6 +29,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.immersive.ImmersiveManage;
 import com.luck.picture.lib.immersive.NavBarUtils;
+import com.luck.picture.lib.io.ArrayPoolProvide;
 import com.luck.picture.lib.language.PictureLanguageUtils;
 import com.luck.picture.lib.listener.OnCallbackListener;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
@@ -357,7 +358,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      */
     private void compressToLuban(List<LocalMedia> result) {
         if (config.synOrAsy) {
-            PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<List<LocalMedia>>() {
+            PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<LocalMedia>>() {
 
                 @Override
                 public List<LocalMedia> doInBackground() throws Exception {
@@ -374,7 +375,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
 
                 @Override
                 public void onSuccess(List<LocalMedia> result) {
-                    PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
+                    PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
                     onResult(result);
                 }
             });
@@ -560,7 +561,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      */
     private void startThreadCopySandbox(List<LocalMedia> images) {
         showPleaseDialog();
-        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<List<LocalMedia>>() {
+        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<LocalMedia>>() {
             @Override
             public List<LocalMedia> doInBackground() {
                 int size = images.size();
@@ -597,7 +598,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(List<LocalMedia> images) {
-                PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
+                PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
                 dismissDialog();
                 if (images != null) {
                     if (config.camera && config.selectionMode == PictureConfig.MULTIPLE) {
@@ -815,7 +816,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (config != null) {
             PictureSelectionConfig.destroy();
             LocalMediaPageLoader.setInstanceNull();
-            PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
+            PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
+            ArrayPoolProvide.getInstance().clearMemory();
         }
     }
 

@@ -1,7 +1,6 @@
 package com.luck.picture.lib.camera;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
@@ -43,10 +42,8 @@ import com.luck.picture.lib.camera.listener.ClickListener;
 import com.luck.picture.lib.camera.listener.ImageCallbackListener;
 import com.luck.picture.lib.camera.listener.TypeListener;
 import com.luck.picture.lib.camera.view.CaptureLayout;
-import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
-import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.DateUtils;
@@ -259,7 +256,7 @@ public class CustomCameraView extends RelativeLayout {
                 // 拷贝一份至公共目录
                 if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(mConfig.cameraPath)) {
                     if (mConfig.isCameraCopyExternalFile) {
-                        PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Boolean>() {
+                        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<Boolean>() {
 
                             @Override
                             public Boolean doInBackground() {
@@ -268,7 +265,7 @@ public class CustomCameraView extends RelativeLayout {
 
                             @Override
                             public void onSuccess(Boolean result) {
-                                PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
+                                PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
                                 if (isImageCaptureEnabled()) {
                                     mImagePreview.setVisibility(INVISIBLE);
                                     if (mCameraListener != null) {

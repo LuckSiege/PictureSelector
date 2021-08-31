@@ -712,7 +712,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         }
                     });
         } else {
-            PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
+            PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
 
                 @Override
                 public List<LocalMediaFolder> doInBackground() {
@@ -721,7 +721,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
                 @Override
                 public void onSuccess(List<LocalMediaFolder> folders) {
-                    PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
+                    PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
                     initStandardModel(folders);
                 }
             });
@@ -784,7 +784,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     private void synchronousCover() {
         if (config.chooseMode == PictureMimeType.ofAll()) {
-            PictureThreadUtils.executeBySingle(new PictureThreadUtils.SimpleTask<Boolean>() {
+            PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<Boolean>() {
 
                 @Override
                 public Boolean doInBackground() {
@@ -807,7 +807,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 @Override
                 public void onSuccess(Boolean result) {
                     // TODO Synchronous Success
-                    PictureThreadUtils.cancel(PictureThreadUtils.getSinglePool());
+                    PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
                 }
             });
         }
