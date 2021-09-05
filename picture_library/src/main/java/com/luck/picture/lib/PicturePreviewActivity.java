@@ -5,7 +5,6 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.View;
@@ -24,9 +23,9 @@ import com.luck.picture.lib.adapter.PictureSimpleFragmentAdapter;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
-import com.luck.picture.lib.manager.UCropManager;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnQueryDataResultListener;
+import com.luck.picture.lib.manager.UCropManager;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.tools.AttrsUtils;
@@ -790,7 +789,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     protected void onEditorImage() {
         if (adapter.getSize() > 0) {
             LocalMedia image = adapter.getItem(viewPager.getCurrentItem());
-            UCropManager.ofEditorImage(this, image.isEditorImage() && !TextUtils.isEmpty(image.getCutPath()) ? image.getCutPath() : image.getPath(), image.getMimeType());
+            UCropManager.ofEditorImage(this, image.getPath(), image.getMimeType());
         }
     }
 

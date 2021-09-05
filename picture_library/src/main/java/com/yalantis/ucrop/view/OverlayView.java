@@ -264,15 +264,10 @@ public class OverlayView extends View {
      * @param targetAspectRatio - aspect ratio for image crop (e.g. 1.77(7) for 16:9)
      */
     public void setTargetAspectRatio(final float targetAspectRatio) {
-        boolean isNoFirst = mTargetAspectRatio != 0;
         mTargetAspectRatio = targetAspectRatio;
         if (mThisWidth > 0) {
-            RectF before = new RectF(getCropViewRect());
             setupCropBounds();
             postInvalidate();
-            if (isNoFirst) {
-                cropSizeChangedAnim(before);
-            }
         } else {
             mShouldSetupCropBounds = true;
         }

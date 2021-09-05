@@ -191,7 +191,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
         OutputStream outputStream = null;
         try {
             inputStream = PictureContentResolver.getContentResolverOpenInputStream(mContext, inputUri);
-            outputStream = new FileOutputStream(new File(outputUri.getPath()));
+            outputStream = new FileOutputStream(outputUri.getPath());
             if (inputStream == null) {
                 throw new NullPointerException("InputStream for given input Uri is null");
             }

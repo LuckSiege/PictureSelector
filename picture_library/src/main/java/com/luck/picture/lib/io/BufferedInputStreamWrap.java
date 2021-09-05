@@ -10,7 +10,7 @@ import java.io.InputStream;
  * @describe：BufferedInputStreamWrap
  */
 public class BufferedInputStreamWrap extends FilterInputStream {
-    public static final int MARK_READ_LIMIT = 5 * 1024 * 1024;
+    public static final int DEFAULT_MARK_READ_LIMIT = 5 * 1024 * 1024;
 
     /**
      * The buffer containing the current bytes read from the target InputStream.
@@ -25,13 +25,13 @@ public class BufferedInputStreamWrap extends FilterInputStream {
     /**
      * The current limit, which when passed, invalidates the current mark.
      */
-    private int marklimit;
+    private int markLimit;
 
     /**
      * The currently marked position. -1 indicates no mark has been put or the mark has been
      * invalidated.
      */
-    private int markpos = -1;
+    private int markPos = -1;
 
     /**
      * The current position within the byte array {@code buf}.
@@ -61,7 +61,7 @@ public class BufferedInputStreamWrap extends FilterInputStream {
         // in could be invalidated by close().
         InputStream localIn = in;
         if (buf == null || localIn == null) {
-            throw streamClosed();
+            return 0;
         }
         return count - pos + localIn.available();
     }
@@ -80,7 +80,7 @@ public class BufferedInputStreamWrap extends FilterInputStream {
     // Public API.
     @SuppressWarnings("WeakerAccess")
     public synchronized void fixMarkLimit() {
-        marklimit = buf.length;
+        markLimit = buf.length;
     }
 
     public synchronized void release() {
@@ -110,11 +110,11 @@ public class BufferedInputStreamWrap extends FilterInputStream {
     }
 
     private int fillbuf(InputStream localIn, byte[] localBuf) throws IOException {
-        if (markpos == -1 || pos - markpos >= marklimit) {
-            // Mark position not put or exceeded readlimit
+        if (markPos == -1 || pos - markPos >= markLimit) {
+            // Mark position not put or exceeded readLimit
             int result = localIn.read(localBuf);
             if (result > 0) {
-                markpos = -1;
+                markPos = -1;
                 pos = 0;
                 count = result;
             }
@@ -122,18 +122,18 @@ public class BufferedInputStreamWrap extends FilterInputStream {
         }
         // Added count == localBuf.length so that we do not immediately double the buffer size before
         // reading any data
-        // when marklimit > localBuf.length. Instead, we will double the buffer size only after
+        // when markLimit > localBuf.length. Instead, we will double the buffer size only after
         // reading the initial
         // localBuf worth of data without finding what we're looking for in the stream. This allows
         // us to put a
-        // relatively small initial buffer size and a large marklimit for safety without causing an
+        // relatively small initial buffer size and a large markLimit for safety without causing an
         // allocation each time
         // read is called.
-        if (markpos == 0 && marklimit > localBuf.length && count == localBuf.length) {
-            // Increase buffer size to accommodate the readlimit
+        if (markPos == 0 && markLimit > localBuf.length && count == localBuf.length) {
+            // Increase buffer size to accommodate the readLimit
             int newLength = localBuf.length * 2;
-            if (newLength > marklimit) {
-                newLength = marklimit;
+            if (newLength > markLimit) {
+                newLength = markLimit;
             }
             byte[] newbuf = ArrayPoolProvide.getInstance().get(newLength);
             System.arraycopy(localBuf, 0, newbuf, 0, localBuf.length);
@@ -142,15 +142,15 @@ public class BufferedInputStreamWrap extends FilterInputStream {
             // FIXME: what if buf was null?
             localBuf = buf = newbuf;
             ArrayPoolProvide.getInstance().put(oldbuf);
-        } else if (markpos > 0) {
-            System.arraycopy(localBuf, markpos, localBuf, 0, localBuf.length - markpos);
+        } else if (markPos > 0) {
+            System.arraycopy(localBuf, markPos, localBuf, 0, localBuf.length - markPos);
         }
         // Set the new position and mark position
-        pos -= markpos;
-        count = markpos = 0;
-        int bytesread = localIn.read(localBuf, pos, localBuf.length - pos);
-        count = bytesread <= 0 ? pos : pos + bytesread;
-        return bytesread;
+        pos -= markPos;
+        count = markPos = 0;
+        int byteRead = localIn.read(localBuf, pos, localBuf.length - pos);
+        count = byteRead <= 0 ? pos : pos + byteRead;
+        return byteRead;
     }
 
     /**
@@ -159,17 +159,17 @@ public class BufferedInputStreamWrap extends FilterInputStream {
      * back to the marked position if {@code readlimit} has not been surpassed. The underlying buffer
      * may be increased in size to allow {@code readlimit} number of bytes to be supported.
      *
-     * @param readlimit the number of bytes that can be read before the mark is invalidated.
+     * @param readLimit the number of bytes that can be read before the mark is invalidated.
      * @see #reset()
      */
     @Override
-    public synchronized void mark(int readlimit) {
+    public synchronized void mark(int readLimit) {
         // This is stupid, but BitmapFactory.decodeStream calls mark(1024)
         // which is too small for a substantial portion of images. This
-        // change (using Math.max) ensures that we don't overwrite readlimit
+        // change (using Math.max) ensures that we don't overwrite readLimit
         // with a smaller value
-        marklimit = Math.max(marklimit, readlimit);
-        markpos = pos;
+        markLimit = Math.max(markLimit, readLimit);
+        markPos = pos;
     }
 
     /**
@@ -274,7 +274,7 @@ public class BufferedInputStreamWrap extends FilterInputStream {
             int read;
             // If we're not marked and the required size is greater than the buffer,
             // simply read the bytes directly bypassing the buffer.
-            if (markpos == -1 && required >= localBuf.length) {
+            if (markPos == -1 && required >= localBuf.length) {
                 read = localIn.read(buffer, offset, required);
                 if (read == -1) {
                     return required == byteCount ? -1 : byteCount - required;
@@ -318,11 +318,11 @@ public class BufferedInputStreamWrap extends FilterInputStream {
         if (buf == null) {
             throw new IOException("Stream is closed");
         }
-        if (-1 == markpos) {
+        if (-1 == markPos) {
             throw new InvalidMarkException(
-                    "Mark has been invalidated, pos: " + pos + " markLimit: " + marklimit);
+                    "Mark has been invalidated, pos: " + pos + " markLimit: " + markLimit);
         }
-        pos = markpos;
+        pos = markPos;
     }
 
     /**
@@ -357,7 +357,7 @@ public class BufferedInputStreamWrap extends FilterInputStream {
         long read = (long) count - pos;
         pos = count;
 
-        if (markpos != -1 && byteCount <= marklimit) {
+        if (markPos != -1 && byteCount <= markLimit) {
             if (fillbuf(localIn, localBuf) == -1) {
                 return read;
             }

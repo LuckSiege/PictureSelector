@@ -76,7 +76,6 @@ public class BitmapLoadUtils {
                 return orientation;
             }
             orientation = new ImageHeaderParser(stream).getOrientation();
-            close(stream);
         } catch (IOException e) {
             Log.e(TAG, "getExifOrientation: " + imageUri.toString(), e);
         }

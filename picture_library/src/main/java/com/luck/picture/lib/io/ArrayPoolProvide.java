@@ -2,7 +2,6 @@ package com.luck.picture.lib.io;
 
 import android.content.ContentResolver;
 import android.net.Uri;
-import android.util.Log;
 import android.util.LruCache;
 
 import com.luck.picture.lib.tools.PictureFileUtils;
@@ -57,23 +56,16 @@ public class ArrayPoolProvide {
      * @return
      */
     public InputStream openInputStream(ContentResolver resolver, Uri uri) {
-        BufferedInputStreamWrap bufferedInputStreamWrap = null;
+        BufferedInputStreamWrap bufferedInputStreamWrap;
         try {
             bufferedInputStreamWrap = bufferedLruCache.get(uri.toString());
             if (bufferedInputStreamWrap != null) {
-                Log.i("YYY", "复用:"+uri.toString());
                 bufferedInputStreamWrap.reset();
             } else {
                 bufferedInputStreamWrap = wrapInputStream(resolver, uri);
-                Log.i("YYY", "首次:"+uri.toString());
             }
         } catch (Exception e) {
-            try {
-                Log.i("YYY", "注异常了: "+e.getMessage());
-                bufferedInputStreamWrap = wrapInputStream(resolver, uri);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
+            bufferedInputStreamWrap = wrapInputStream(resolver, uri);
         }
         return bufferedInputStreamWrap;
     }
@@ -83,14 +75,18 @@ public class ArrayPoolProvide {
      *
      * @param resolver ContentResolver
      * @param uri      data
-     * @return
-     * @throws Exception
      */
-    private BufferedInputStreamWrap wrapInputStream(ContentResolver resolver, Uri uri) throws Exception {
-        BufferedInputStreamWrap bufferedInputStreamWrap = new BufferedInputStreamWrap(resolver.openInputStream(uri));
-        bufferedInputStreamWrap.mark(BufferedInputStreamWrap.MARK_READ_LIMIT);
-        bufferedLruCache.put(uri.toString(), bufferedInputStreamWrap);
-        keyCache.add(uri.toString());
+    private BufferedInputStreamWrap wrapInputStream(ContentResolver resolver, Uri uri) {
+        BufferedInputStreamWrap bufferedInputStreamWrap = null;
+        try {
+            bufferedInputStreamWrap = new BufferedInputStreamWrap(resolver.openInputStream(uri));
+            int available = bufferedInputStreamWrap.available();
+            bufferedInputStreamWrap.mark(available > 0 ? available : BufferedInputStreamWrap.DEFAULT_MARK_READ_LIMIT);
+            bufferedLruCache.put(uri.toString(), bufferedInputStreamWrap);
+            keyCache.add(uri.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return bufferedInputStreamWrap;
     }
 
@@ -106,7 +102,6 @@ public class ArrayPoolProvide {
         }
         keyCache.clear();
         arrayPool.clearMemory();
-        Log.i("YYY", "clearMemory: " + bufferedLruCache.size());
     }
 
     private static final ArrayPoolProvide mInstance = new ArrayPoolProvide();

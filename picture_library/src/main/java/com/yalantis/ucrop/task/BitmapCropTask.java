@@ -6,7 +6,6 @@ import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -15,6 +14,7 @@ import androidx.exifinterface.media.ExifInterface;
 
 import com.luck.picture.lib.PictureContentResolver;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.io.ArrayPoolProvide;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
@@ -24,9 +24,9 @@ import com.yalantis.ucrop.util.BitmapLoadUtils;
 import com.yalantis.ucrop.util.ImageHeaderParser;
 
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 
@@ -154,11 +154,9 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
 
         if (shouldCrop) {
             ExifInterface originalExif;
-            ParcelFileDescriptor parcelFileDescriptor = null;
             if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(mImageInputPath)) {
-                parcelFileDescriptor =
-                        getContext().getContentResolver().openFileDescriptor(Uri.parse(mImageInputPath), "r");
-                originalExif = new ExifInterface(new FileInputStream(parcelFileDescriptor.getFileDescriptor()));
+                InputStream inputStream = ArrayPoolProvide.getInstance().openInputStream(getContext().getContentResolver(), Uri.parse(mImageInputPath));
+                originalExif = new ExifInterface(inputStream);
             } else {
                 originalExif = new ExifInterface(mImageInputPath);
             }
@@ -166,17 +164,11 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
             if (mCompressFormat.equals(Bitmap.CompressFormat.JPEG)) {
                 ImageHeaderParser.copyExif(originalExif, mCroppedImageWidth, mCroppedImageHeight, mImageOutputPath);
             }
-            if (parcelFileDescriptor != null) {
-                BitmapLoadUtils.close(parcelFileDescriptor);
-            }
             return true;
         } else {
             if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(mImageInputPath)) {
-                ParcelFileDescriptor parcelFileDescriptor =
-                        getContext().getContentResolver().openFileDescriptor(Uri.parse(mImageInputPath), "r");
-                FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                PictureFileUtils.copyFile(new FileInputStream(fileDescriptor), mImageOutputPath);
-                BitmapLoadUtils.close(parcelFileDescriptor);
+                InputStream inputStream = ArrayPoolProvide.getInstance().openInputStream(getContext().getContentResolver(), Uri.parse(mImageInputPath));
+                PictureFileUtils.writeFileFromIS(inputStream, new FileOutputStream(mImageOutputPath));
             } else {
                 PictureFileUtils.copyFile(mImageInputPath, mImageOutputPath);
             }
