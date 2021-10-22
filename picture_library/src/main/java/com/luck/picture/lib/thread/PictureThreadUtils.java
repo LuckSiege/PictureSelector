@@ -270,9 +270,9 @@ public final class PictureThreadUtils {
                             new UtilsThreadFactory("cached", priority)
                     );
                 case TYPE_IO:
-                    return new ThreadPoolExecutor4Util(2 * CPU_COUNT + 1, 2 * CPU_COUNT + 1,
+                    return new ThreadPoolExecutor4Util(5, 10,
                             30, TimeUnit.SECONDS,
-                            new LinkedBlockingQueue4Util(),
+                            new LinkedBlockingQueue4Util(100),
                             new UtilsThreadFactory("io", priority)
                     );
                 case TYPE_CPU:

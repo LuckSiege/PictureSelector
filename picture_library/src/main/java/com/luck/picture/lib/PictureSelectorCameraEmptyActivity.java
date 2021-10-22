@@ -187,8 +187,8 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         boolean isCutEmpty = TextUtils.isEmpty(cutPath);
         LocalMedia media = LocalMedia.parseLocalMedia(config.cameraPath, config.isCamera ? 1 : 0, config.chooseMode);
         if (SdkVersionUtils.checkedAndroid_Q()) {
-            int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
-            media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
+            int lastIndexOf = TextUtils.isEmpty(config.cameraPath) ? 0 : config.cameraPath.lastIndexOf("/") + 1;
+            media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : System.currentTimeMillis());
             media.setAndroidQToPath(cutPath);
         } else {
             // Taking a photo generates a temporary id
@@ -290,8 +290,8 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                     MediaExtraInfo mediaExtraInfo = MediaUtils.getAudioSize(getContext(), config.cameraPath);
                     media.setDuration(mediaExtraInfo.getDuration());
                 }
-                int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
-                media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : -1);
+                int lastIndexOf = TextUtils.isEmpty(config.cameraPath) ? 0 : config.cameraPath.lastIndexOf("/") + 1;
+                media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : System.currentTimeMillis());
                 media.setRealPath(path);
                 // Custom photo has been in the application sandbox into the file
                 String mediaPath = intent != null ? intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH) : null;
