@@ -72,4 +72,6 @@ public final class PictureConfig {
     public final static int PREVIEW_VIDEO_CODE = 166;
     public final static int CHOOSE_REQUEST = 188;
     public final static int REQUEST_CAMERA = 909;
+
+    public final static int UNKNOWN_LANGUAGE = -2;
 }

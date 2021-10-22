@@ -144,7 +144,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         config = PictureSelectionConfig.getInstance();
-        PictureLanguageUtils.setAppLanguage(getContext(), config.language);
+        if (config.language != PictureConfig.UNKNOWN_LANGUAGE) {
+            PictureLanguageUtils.setAppLanguage(getContext(), config.language);
+        }
         setTheme(config.themeStyleId == 0 ? R.style.picture_default_style : config.themeStyleId);
         super.onCreate(savedInstanceState);
         newCreateEngine();
@@ -200,7 +202,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        if (config == null) {
+        if (config == null || config.language == PictureConfig.UNKNOWN_LANGUAGE) {
             super.attachBaseContext(newBase);
         } else {
             super.attachBaseContext(PictureContextWrapper.wrap(newBase, config.language));

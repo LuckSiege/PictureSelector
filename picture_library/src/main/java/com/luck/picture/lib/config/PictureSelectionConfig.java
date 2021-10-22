@@ -86,7 +86,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public float filterFileSize;
     public long filterMaxFileSize;
     public long filterMinFileSize = 1024;
-    public int language;
+    public int language = PictureConfig.UNKNOWN_LANGUAGE;
     public boolean isMultipleRecyclerAnimation;
     public boolean isMultipleSkipCrop;
     public boolean isWeChatStyle;
@@ -466,7 +466,7 @@ public final class PictureSelectionConfig implements Parcelable {
         maxVideoSelectNum = 1;
         minVideoSelectNum = 0;
         videoQuality = 1;
-        language = -1;
+        language = PictureConfig.UNKNOWN_LANGUAGE;
         cropCompressQuality = 90;
         videoMaxSecond = 0;
         videoMinSecond = 0;

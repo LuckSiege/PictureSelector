@@ -20,6 +20,7 @@
     <string name="picture_audio_empty">妳可以使用系統錄音錄制音頻</string>
     <string name="picture_min_img_num">圖片最低選擇不能少於%1$s張</string>
     <string name="picture_gif_tag">動圖</string>
+    <string name="picture_webp_tag">webp</string>
     <string name="picture_jurisdiction">讀取內存卡權限被拒絕</string>
     <string name="picture_camera">獲取系統相機權限被拒絕</string>
     <string name="picture_audio">獲取系統錄音權限被拒絕</string>
