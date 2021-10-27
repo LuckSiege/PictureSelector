@@ -27,7 +27,7 @@ android {
         abortOnError false
     }
 
-    resourcePrefix 'ucrop_'
+//    resourcePrefix 'ucrop_'
 }
 
 apply from: '../publish.gradle'

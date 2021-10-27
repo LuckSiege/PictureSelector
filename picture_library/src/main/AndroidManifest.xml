@@ -26,9 +26,6 @@
 			android:name=".PictureSelectorWeChatStyleActivity"
 			android:configChanges="orientation|keyboardHidden|screenSize" />
 		<activity
-			android:name=".PictureSelectorDoctalkActivity"
-			android:configChanges="orientation|keyboardHidden|screenSize" />
-		<activity
 			android:name=".PictureSelectorCameraEmptyActivity"
 			android:configChanges="orientation|keyboardHidden|screenSize"
 			android:theme="@style/Picture.Theme.Translucent" />
