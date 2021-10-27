@@ -30,8 +30,6 @@ android {
 //    resourcePrefix 'ucrop_'
 }
 
-apply from: '../publish.gradle'
-
 dependencies {
     implementation "androidx.appcompat:appcompat:${cfgs.version_appcompat}"
     implementation "androidx.recyclerview:recyclerview:${cfgs.version_recyclerview}"
