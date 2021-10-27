@@ -1712,10 +1712,39 @@ public class PictureSelectionModel {
     }
 
     /**
+     * Doctalk 사용
+     * @param intent
+     * @param listener
+     */
+    public void forResult (Intent intent, OnResultCallbackListener<LocalMedia> listener) {
+        if (!DoubleUtils.isFastDoubleClick()) {
+            Activity activity = selector.getActivity();
+            if (activity == null || selectionConfig == null) {
+                return;
+            }
+            if (PictureSelectionConfig.imageEngine == null){
+                throw new NullPointerException("api imageEngine is null,Please implement ImageEngine");
+            }
+            // 绑定回调监听
+            PictureSelectionConfig.listener = new WeakReference<>(listener).get();
+            selectionConfig.isCallbackMode = true;
+            Fragment fragment = selector.getFragment();
+            if (fragment != null) {
+                fragment.startActivity(intent);
+            }
+            else {
+                activity.startActivity(intent);
+            }
+            PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.windowAnimationStyle;
+            activity.overridePendingTransition(
+                    windowAnimationStyle.activityEnterAnimation, R.anim.picture_anim_fade_in);
+        }
+    }
+
+    /**
      * Start to select media and wait for result.
      *
-     * @param launcher use {@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)}
-     *                 passing in a {@link StartActivityForResult} object for the {@link ActivityResultContract}.
+     * @param launcher
      */
     public void forResult(ActivityResultLauncher<Intent> launcher) {
         if (!DoubleUtils.isFastDoubleClick()) {
@@ -1734,6 +1763,27 @@ public class PictureSelectionModel {
                         ? PictureSelectorCameraEmptyActivity.class :
                         selectionConfig.isWeChatStyle ? PictureSelectorWeChatStyleActivity.class
                                 : PictureSelectorActivity.class);
+            }
+            selectionConfig.isCallbackMode = false;
+            launcher.launch(intent);
+            PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.windowAnimationStyle;
+            activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.picture_anim_fade_in);
+        }
+    }
+
+    /**
+     * Start to select media and wait for result.
+     *
+     * @param launcher
+     */
+    public void forResult(Intent intent, ActivityResultLauncher<Intent> launcher) {
+        if (!DoubleUtils.isFastDoubleClick()) {
+            Activity activity = selector.getActivity();
+            if (launcher == null || activity == null || selectionConfig == null) {
+                return;
+            }
+            if (PictureSelectionConfig.imageEngine == null){
+                throw new NullPointerException("api imageEngine is null,Please implement ImageEngine");
             }
             selectionConfig.isCallbackMode = false;
             launcher.launch(intent);
