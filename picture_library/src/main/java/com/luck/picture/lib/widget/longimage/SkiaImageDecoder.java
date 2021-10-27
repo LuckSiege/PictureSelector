@@ -9,11 +9,16 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import androidx.annotation.Keep;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+
 import java.io.InputStream;
 import java.util.List;
 
 /**
- * Default implementation of {@link com.davemorrissey.labs.subscaleview.decoder.ImageDecoder}
+ * Default implementation of {@link ImageDecoder}
  * using Android's {@link BitmapFactory}, based on the Skia library. This
  * works well in most circumstances and has reasonable performance, however it has some problems
  * with grayscale, indexed and CMYK images.
@@ -24,12 +29,33 @@ public class SkiaImageDecoder implements ImageDecoder {
     private static final String ASSET_PREFIX = FILE_PREFIX + "/android_asset/";
     private static final String RESOURCE_PREFIX = ContentResolver.SCHEME_ANDROID_RESOURCE + "://";
 
+    private final Bitmap.Config bitmapConfig;
+
+    @Keep
+    @SuppressWarnings("unused")
+    public SkiaImageDecoder() {
+        this(null);
+    }
+
+    @SuppressWarnings({"WeakerAccess", "SameParameterValue"})
+    public SkiaImageDecoder(@Nullable Bitmap.Config bitmapConfig) {
+        Bitmap.Config globalBitmapConfig = SubsamplingScaleImageView.getPreferredBitmapConfig();
+        if (bitmapConfig != null) {
+            this.bitmapConfig = bitmapConfig;
+        } else if (globalBitmapConfig != null) {
+            this.bitmapConfig = globalBitmapConfig;
+        } else {
+            this.bitmapConfig = Bitmap.Config.RGB_565;
+        }
+    }
+
     @Override
-    public Bitmap decode(Context context, Uri uri) throws Exception {
+    @NonNull
+    public Bitmap decode(Context context, @NonNull Uri uri) throws Exception {
         String uriString = uri.toString();
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap bitmap;
-        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        options.inPreferredConfig = bitmapConfig;
         if (uriString.startsWith(RESOURCE_PREFIX)) {
             Resources res;
             String packageName = uri.getAuthority();
@@ -67,7 +93,7 @@ public class SkiaImageDecoder implements ImageDecoder {
                 bitmap = BitmapFactory.decodeStream(inputStream, null, options);
             } finally {
                 if (inputStream != null) {
-                    try { inputStream.close(); } catch (Exception e) { }
+                    try { inputStream.close(); } catch (Exception e) { /* Ignore */ }
                 }
             }
         }

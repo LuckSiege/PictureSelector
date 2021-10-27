@@ -1,33 +1,31 @@
 ext {
     cfgs = [
             compileSdkVersion             : 30,
-            buildToolsVersion             : "28.0.3",
+            buildToolsVersion             : "29.0.2",
             minSdkVersion                 : 19,
             targetSdkVersion              : 30,
-            versionCode                   : 30,
-            versionName                   : "2.6.0",
+            versionCode                   : 56,
+            versionName                   : "v2.7.3-rc08",
             ucropVersionCode              : 24,
             ucropVersionName              : "2.2.4-non-native",
 
             //open version control
             androidSupportVersion         : "27.0.2",
-            version_recyclerview          : "1.1.0",
-            version_appcompat             : "1.2.0",
+            version_recyclerview          : "1.2.1",
+            version_appcompat             : "1.3.1",
             localbroadcastmanager         : "1.0.0",
+            activity_version              : "1.3.1",
+            fragment_version              : "1.3.6",
 
-            camerax_view                  : "1.0.0-alpha22",
-            camerax_version               : "1.1.0-alpha02",
-            camera_core_version           : "1.0.0-beta03",
-            experimental_version          : "1.1.0-rc01",
+            camerax_view                  : "1.0.0-alpha28",
+            camerax_version               : "1.1.0-alpha08",
+            camera_core_version           : "1.0.0-rc04",
+            experimental_version          : "1.1.0",
             futures_version               : "1.1.0",
 
             // ucrop
-            androidx_appcompat_version    : "1.2.0",
-            androidx_exifinterface_version: "1.3.2",
-            androidx_transition_version   : "1.3.1",
-
-            // okio
-            okio_version                  : "2.10.0",
+            androidx_exifinterface_version: "1.3.3",
+            androidx_transition_version   : "1.4.1",
 
             // glide
             glide_version                 : "4.12.0",

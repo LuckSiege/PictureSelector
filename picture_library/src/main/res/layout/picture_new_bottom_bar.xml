@@ -19,6 +19,19 @@
         android:textColor="@color/picture_list_text_color"
         android:textSize="14sp" />
 
+    <TextView
+        android:id="@+id/picture_id_editor"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:visibility="gone"
+        android:text="@string/picture_editor"
+        android:textColor="@color/picture_color_white"
+        android:textSize="14sp" />
+
     <CheckBox
         android:id="@+id/cb_original"
         android:layout_width="wrap_content"
@@ -29,7 +42,7 @@
         android:button="@color/picture_color_transparent"
         android:gravity="center"
         android:paddingStart="5dp"
-        android:text="@string/picture_original_image"
+        android:text="@string/picture_default_original_image"
         android:textColor="@color/picture_color_white"
         android:textSize="14sp"
         android:visibility="gone" />

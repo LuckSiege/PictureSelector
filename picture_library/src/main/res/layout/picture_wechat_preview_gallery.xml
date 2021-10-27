@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:gravity="center">
 
     <ImageView
         android:id="@+id/ivImage"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:layout_centerInParent="true"
         android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/ivEditor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/ivImage"
+        android:layout_margin="5dp"
+        android:src="@drawable/picture_icon_editor"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/ivPlay"
@@ -28,4 +37,5 @@
         android:layout_alignEnd="@id/ivImage"
         android:layout_alignBottom="@id/ivImage"
         android:background="@drawable/picture_preview_gallery_border_bg" />
+
 </RelativeLayout>

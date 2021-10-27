@@ -12,17 +12,11 @@ import java.util.List;
  */
 public class ImagesObservable {
     private List<LocalMedia> mData = new ArrayList<>();
-    private static ImagesObservable sObserver;
+
+    private static final ImagesObservable mInstance = new ImagesObservable();
 
     public static ImagesObservable getInstance() {
-        if (sObserver == null) {
-            synchronized (ImagesObservable.class) {
-                if (sObserver == null) {
-                    sObserver = new ImagesObservable();
-                }
-            }
-        }
-        return sObserver;
+        return mInstance;
     }
 
     /**
@@ -30,21 +24,21 @@ public class ImagesObservable {
      *
      * @param data
      */
-    public void savePreviewMediaData(List<LocalMedia> data) {
+    public void saveData(List<LocalMedia> data) {
         this.mData = data;
     }
 
     /**
      * 读取预览的图片
      */
-    public List<LocalMedia> readPreviewMediaData() {
+    public List<LocalMedia> getData() {
         return mData;
     }
 
     /**
      * 清空预览的图片
      */
-    public void clearPreviewMediaData() {
+    public void clearData() {
         mData.clear();
     }
 }

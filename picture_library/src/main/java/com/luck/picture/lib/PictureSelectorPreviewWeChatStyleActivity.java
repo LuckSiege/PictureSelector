@@ -2,6 +2,7 @@ package com.luck.picture.lib;
 
 import android.graphics.Color;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -26,6 +27,7 @@ import com.luck.picture.lib.tools.ScreenUtils;
  * @describe：PictureSelector WeChatStyle
  */
 public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewActivity {
+    private static final int GALLERY_MAX_COUNT = 5;
     /**
      * alpha duration
      */
@@ -81,7 +83,7 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
             }
         });
         if (isBottomPreview) {
-            if (selectData != null && selectData.size() > position) {
+            if (selectData.size() > position) {
                 int size = selectData.size();
                 for (int i = 0; i < size; i++) {
                     LocalMedia media = selectData.get(i);
@@ -91,7 +93,7 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                 media.setChecked(true);
             }
         } else {
-            int size = selectData != null ? selectData.size() : 0;
+            int size = selectData.size();
             for (int i = 0; i < size; i++) {
                 LocalMedia media = selectData.get(i);
                 if (isEqualsDirectory(media.getParentFolderName(), currentDirectory)) {
@@ -120,7 +122,7 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
     public void initPictureSelectorStyle() {
         super.initPictureSelectorStyle();
         if (PictureSelectionConfig.uiStyle != null) {
-            if (PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText !=0) {
+            if (PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText != 0) {
                 mTvPictureRight.setText(getString(PictureSelectionConfig.uiStyle.picture_top_titleRightDefaultText));
             }
             if (PictureSelectionConfig.uiStyle.picture_top_titleRightTextNormalBackground != 0) {
@@ -131,7 +133,7 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
             if (PictureSelectionConfig.uiStyle.picture_top_titleRightTextSize != 0) {
                 mTvPictureRight.setTextSize(PictureSelectionConfig.uiStyle.picture_top_titleRightTextSize);
             }
-            if (PictureSelectionConfig.uiStyle.picture_bottom_selectedText !=0) {
+            if (PictureSelectionConfig.uiStyle.picture_bottom_selectedText != 0) {
                 mTvSelected.setText(getString(PictureSelectionConfig.uiStyle.picture_bottom_selectedText));
             }
             if (PictureSelectionConfig.uiStyle.picture_bottom_selectedTextSize != 0) {
@@ -160,6 +162,10 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                 pictureLeftBack.setImageResource(R.drawable.picture_icon_back);
             }
 
+            if (PictureSelectionConfig.uiStyle.picture_bottom_gallery_dividerColor != 0) {
+                bottomLine.setBackgroundColor(PictureSelectionConfig.uiStyle.picture_bottom_gallery_dividerColor);
+            }
+
             if (PictureSelectionConfig.uiStyle.picture_bottom_gallery_backgroundColor != 0) {
                 mRvGallery.setBackgroundColor(PictureSelectionConfig.uiStyle.picture_bottom_gallery_backgroundColor);
             }
@@ -169,16 +175,18 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                 params.height = PictureSelectionConfig.uiStyle.picture_bottom_gallery_height;
             }
 
-            if (config.isOriginalControl) {
-                if (PictureSelectionConfig.uiStyle.picture_bottom_originalPictureText !=0) {
-                    mCbOriginal.setText(getString(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureText));
-                } else {
-                    mCbOriginal.setText(getString(R.string.picture_original_image));
+            if (config.isEditorImage) {
+                if (PictureSelectionConfig.uiStyle.picture_bottom_preview_editorTextSize != 0) {
+                    mPictureEditor.setTextSize(PictureSelectionConfig.uiStyle.picture_bottom_preview_editorTextSize);
                 }
+                if (PictureSelectionConfig.uiStyle.picture_bottom_preview_editorTextColor != 0) {
+                    mPictureEditor.setTextColor(PictureSelectionConfig.uiStyle.picture_bottom_preview_editorTextColor);
+                }
+            }
+
+            if (config.isOriginalControl) {
                 if (PictureSelectionConfig.uiStyle.picture_bottom_originalPictureTextSize != 0) {
                     mCbOriginal.setTextSize(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureTextSize);
-                } else {
-                    mCbOriginal.setTextSize(14);
                 }
                 if (PictureSelectionConfig.uiStyle.picture_bottom_originalPictureTextColor != 0) {
                     mCbOriginal.setTextColor(PictureSelectionConfig.uiStyle.picture_bottom_originalPictureTextColor);
@@ -235,6 +243,16 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                             .getDrawable(this, R.drawable.picture_original_wechat_checkbox));
                 }
             }
+
+            if (config.isEditorImage) {
+                if (PictureSelectionConfig.style.picturePreviewEditorTextSize != 0) {
+                    mPictureEditor.setTextSize(PictureSelectionConfig.style.picturePreviewEditorTextSize);
+                }
+                if (PictureSelectionConfig.style.picturePreviewEditorTextColor != 0) {
+                    mPictureEditor.setTextColor(PictureSelectionConfig.style.picturePreviewEditorTextColor);
+                }
+            }
+
             if (PictureSelectionConfig.style.pictureWeChatLeftBackStyle != 0) {
                 pictureLeftBack.setImageResource(PictureSelectionConfig.style.pictureWeChatLeftBackStyle);
             } else {
@@ -284,35 +302,36 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
     }
 
     @Override
+    protected void onUpdateGalleryChange(LocalMedia media) {
+        mGalleryAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     protected void onSelectedChange(boolean isAddRemove, LocalMedia media) {
         if (isAddRemove) {
             media.setChecked(true);
-            if (config.selectionMode == PictureConfig.SINGLE) {
-                mGalleryAdapter.addSingleMediaToData(media);
+            if (isBottomPreview) {
+                LocalMedia localMedia = mGalleryAdapter.getItem(position);
+                localMedia.setMaxSelectEnabledMask(false);
+                mGalleryAdapter.notifyDataSetChanged();
+            } else {
+                if (config.selectionMode == PictureConfig.SINGLE) {
+                    mGalleryAdapter.addSingleMediaToData(media);
+                }
             }
         } else {
             media.setChecked(false);
-            mGalleryAdapter.removeMediaToData(media);
             if (isBottomPreview) {
-                if (selectData != null && selectData.size() > position) {
-                    selectData.get(position).setChecked(true);
-                }
-                if (mGalleryAdapter.isDataEmpty()) {
-                    onActivityBackPressed();
-                } else {
-                    int currentItem = viewPager.getCurrentItem();
-                    adapter.remove(currentItem);
-                    adapter.removeCacheView(currentItem);
-                    position = currentItem;
-                    tvTitle.setText(getString(R.string.picture_preview_image_num,
-                            position + 1, adapter.getSize()));
-                    check.setSelected(true);
-                    adapter.notifyDataSetChanged();
-                }
+                check.setSelected(false);
+                LocalMedia localMedia = mGalleryAdapter.getItem(position);
+                localMedia.setMaxSelectEnabledMask(true);
+                mGalleryAdapter.notifyDataSetChanged();
+            } else {
+                mGalleryAdapter.removeMediaToData(media);
             }
         }
         int itemCount = mGalleryAdapter.getItemCount();
-        if (itemCount > 5) {
+        if (itemCount > GALLERY_MAX_COUNT) {
             mRvGallery.smoothScrollToPosition(itemCount - 1);
         }
     }
@@ -358,7 +377,7 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
     @Override
     protected void onSelectNumChange(boolean isRefresh) {
         goneParent();
-        boolean enable = selectData != null && selectData.size() != 0;
+        boolean enable = selectData.size() != 0;
         if (enable) {
             initCompleteText(selectData.size());
             if (mRvGallery.getVisibility() == View.GONE) {
@@ -366,8 +385,13 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                 mRvGallery.setVisibility(View.VISIBLE);
                 bottomLine.animate().alpha(1).setDuration(ALPHA_DURATION).setInterpolator(new AccelerateInterpolator());
                 bottomLine.setVisibility(View.VISIBLE);
-                // 重置一片内存区域 不然在其他地方添加也影响这里的数量
-                mGalleryAdapter.setNewData(selectData);
+                if (isBottomPreview && mGalleryAdapter.getItemCount() > 0) {
+                    // todo 预览模式就算勾选了取消但实际并没有从GalleryAdapter移除掉，所以可以忽略不操作
+                    Log.i(TAG, "gallery adapter ignore...");
+                } else {
+                    // 重置一片内存区域 不然在其他地方添加也影响这里的数量
+                    mGalleryAdapter.setNewData(selectData, isBottomPreview);
+                }
             }
             if (PictureSelectionConfig.style != null) {
                 if (PictureSelectionConfig.style.pictureCompleteTextColor != 0) {
@@ -427,7 +451,7 @@ public class PictureSelectorPreviewWeChatStyleActivity extends PicturePreviewAct
                 }
             }
         } else {
-            String mimeType = selectData.get(0).getMimeType();
+            String mimeType = selectData.size() > 0 ? selectData.get(0).getMimeType() : "";
             int maxSize = PictureMimeType.isHasVideo(mimeType) && config.maxVideoSelectNum > 0 ? config.maxVideoSelectNum : config.maxSelectNum;
             if (config.selectionMode == PictureConfig.SINGLE) {
                 if (startCount <= 0) {

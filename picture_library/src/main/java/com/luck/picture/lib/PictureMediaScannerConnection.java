@@ -15,8 +15,8 @@ public class PictureMediaScannerConnection implements MediaScannerConnection.Med
         void onScanFinish();
     }
 
-    private MediaScannerConnection mMs;
-    private String mPath;
+    private final MediaScannerConnection mMs;
+    private final String mPath;
     private ScanListener mListener;
 
     public PictureMediaScannerConnection(Context context, String path, ScanListener l) {

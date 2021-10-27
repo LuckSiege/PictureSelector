@@ -3,9 +3,7 @@ package com.luck.picture.lib.language;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.os.Build;
 import android.util.DisplayMetrics;
-
 import androidx.annotation.NonNull;
 
 import com.luck.picture.lib.tools.SPUtils;
@@ -75,12 +73,8 @@ public class PictureLanguageUtils {
             return;
         }
         DisplayMetrics dm = resources.getDisplayMetrics();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            config.setLocale(locale);
-            context.createConfigurationContext(config);
-        } else {
-            config.locale = locale;
-        }
+        config.setLocale(locale);
+        context.createConfigurationContext(config);
         resources.updateConfiguration(config, dm);
     }
 
@@ -93,10 +87,8 @@ public class PictureLanguageUtils {
         Resources resources = context.getResources();
         Configuration config = resources.getConfiguration();
         DisplayMetrics dm = resources.getDisplayMetrics();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            config.setLocale(config.locale);
-            context.createConfigurationContext(config);
-        }
+        config.setLocale(Locale.getDefault());
+        context.createConfigurationContext(config);
         resources.updateConfiguration(config, dm);
     }
 

@@ -10,18 +10,24 @@ import androidx.annotation.StyleRes;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.camera.CustomCameraView;
 import com.luck.picture.lib.engine.CacheResourcesEngine;
+import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.listener.OnChooseLimitCallback;
 import com.luck.picture.lib.listener.OnCustomCameraInterfaceListener;
 import com.luck.picture.lib.listener.OnCustomImagePreviewCallback;
+import com.luck.picture.lib.listener.OnPermissionsObtainCallback;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.listener.OnVideoSelectedPlayCallback;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.style.PictureSelectorUIStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
+import com.luck.picture.lib.tools.SdkVersionUtils;
+import com.yalantis.ucrop.UCrop;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -35,17 +41,25 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean camera = false;
     public boolean isSingleDirectReturn;
     public static PictureSelectorUIStyle uiStyle;
+    @Deprecated
     public static PictureParameterStyle style;
     public static PictureCropParameterStyle cropStyle;
     public static PictureWindowAnimationStyle windowAnimationStyle = PictureWindowAnimationStyle.ofDefaultWindowAnimationStyle();
     public String compressSavePath;
+    @Deprecated
     public String suffixType;
+    public String cameraImageFormat;
+    public String cameraVideoFormat;
+    public String cameraAudioFormat;
+    @Deprecated
     public boolean focusAlpha;
     public String renameCompressFileName;
     public String renameCropFileName;
+    @Deprecated
     public String specifiedFormat;
     public int requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
     public int buttonFeatures = CustomCameraView.BUTTON_STATE_BOTH;
+    public int captureLoadingColor;
     public boolean isCameraAroundState;
     public boolean isAndroidQTransform;
     @StyleRes
@@ -68,8 +82,11 @@ public final class PictureSelectionConfig implements Parcelable {
     public int cropWidth;
     public int cropHeight;
     public int compressQuality = 80;
+    @Deprecated
     public float filterFileSize;
-    public int language;
+    public long filterMaxFileSize;
+    public long filterMinFileSize = 1024;
+    public int language = PictureConfig.UNKNOWN_LANGUAGE;
     public boolean isMultipleRecyclerAnimation;
     public boolean isMultipleSkipCrop;
     public boolean isWeChatStyle;
@@ -78,6 +95,8 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean zoomAnim;
     public boolean isCompress;
     public boolean isOriginalControl;
+    public boolean isDisplayOriginalSize;
+    public boolean isEditorImage;
     public boolean isCamera = true;
     public boolean isGif;
     public boolean isWebp;
@@ -89,12 +108,14 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean openClickSound;
     public boolean enableCrop;
     public boolean freeStyleCropEnabled;
+    public boolean isDragCenter;
     public boolean circleDimmedLayer;
     @ColorInt
     public int circleDimmedColor;
     @ColorInt
     public int circleDimmedBorderColor;
     public int circleStrokeWidth;
+    public int freeStyleCropMode;
     public boolean showCropFrame;
     public boolean showCropGrid;
     public boolean hideBottomControls;
@@ -106,14 +127,18 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isDragFrame;
     public boolean isNotPreviewDownload;
     public boolean isWithVideoImage;
-    public UCropOptions uCropOptions;
+    public UCrop.Options uCropOptions;
     public static ImageEngine imageEngine;
+    public static CompressEngine compressEngine;
     public static CacheResourcesEngine cacheResourcesEngine;
-    public static OnResultCallbackListener listener;
-    public static OnVideoSelectedPlayCallback customVideoPlayCallback;
-    public static OnCustomImagePreviewCallback onCustomImagePreviewCallback;
+    public static OnResultCallbackListener<LocalMedia> listener;
+    public static OnVideoSelectedPlayCallback<LocalMedia> customVideoPlayCallback;
+    public static OnCustomImagePreviewCallback<LocalMedia> onCustomImagePreviewCallback;
     public static OnCustomCameraInterfaceListener onCustomCameraInterfaceListener;
+    public static OnPermissionsObtainCallback onPermissionsObtainCallback;
+    public static OnChooseLimitCallback onChooseLimitCallback;
     public List<LocalMedia> selectionMedias;
+    public HashSet<String> queryMimeTypeHashSet;
     public String cameraFileName;
     public boolean isCheckOriginalImage;
     @Deprecated
@@ -154,15 +179,280 @@ public final class PictureSelectionConfig implements Parcelable {
     public int animationMode = -1;
     public boolean isAutomaticTitleRecyclerTop = true;
     public boolean isCallbackMode;
+    @Deprecated
     public boolean isAndroidQChangeWH;
+    @Deprecated
     public boolean isAndroidQChangeVideoWH;
     public boolean isQuickCapture = true;
+    public boolean isCameraRotateImage = true;
+    public boolean isAutoRotating = true;
+    public boolean isSyncCover = false;
+    public String cropCompressFormat;
+    public boolean isAutoScalePreviewImage = true;
+    public boolean isCameraCopyExternalFile = true;
     /**
      * 内测专用###########
      */
     public boolean isFallbackVersion;
     public boolean isFallbackVersion2;
     public boolean isFallbackVersion3;
+
+
+    protected PictureSelectionConfig(Parcel in) {
+        chooseMode = in.readInt();
+        camera = in.readByte() != 0;
+        isSingleDirectReturn = in.readByte() != 0;
+        compressSavePath = in.readString();
+        suffixType = in.readString();
+        cameraImageFormat = in.readString();
+        cameraVideoFormat = in.readString();
+        cameraAudioFormat = in.readString();
+        focusAlpha = in.readByte() != 0;
+        renameCompressFileName = in.readString();
+        renameCropFileName = in.readString();
+        specifiedFormat = in.readString();
+        requestedOrientation = in.readInt();
+        buttonFeatures = in.readInt();
+        captureLoadingColor = in.readInt();
+        isCameraAroundState = in.readByte() != 0;
+        isAndroidQTransform = in.readByte() != 0;
+        themeStyleId = in.readInt();
+        selectionMode = in.readInt();
+        maxSelectNum = in.readInt();
+        minSelectNum = in.readInt();
+        maxVideoSelectNum = in.readInt();
+        minVideoSelectNum = in.readInt();
+        videoQuality = in.readInt();
+        cropCompressQuality = in.readInt();
+        videoMaxSecond = in.readInt();
+        videoMinSecond = in.readInt();
+        recordVideoSecond = in.readInt();
+        recordVideoMinSecond = in.readInt();
+        minimumCompressSize = in.readInt();
+        imageSpanCount = in.readInt();
+        aspect_ratio_x = in.readInt();
+        aspect_ratio_y = in.readInt();
+        cropWidth = in.readInt();
+        cropHeight = in.readInt();
+        compressQuality = in.readInt();
+        filterFileSize = in.readFloat();
+        filterMaxFileSize = in.readLong();
+        filterMinFileSize = in.readLong();
+        language = in.readInt();
+        isMultipleRecyclerAnimation = in.readByte() != 0;
+        isMultipleSkipCrop = in.readByte() != 0;
+        isWeChatStyle = in.readByte() != 0;
+        isUseCustomCamera = in.readByte() != 0;
+        zoomAnim = in.readByte() != 0;
+        isCompress = in.readByte() != 0;
+        isOriginalControl = in.readByte() != 0;
+        isDisplayOriginalSize = in.readByte() != 0;
+        isEditorImage = in.readByte() != 0;
+        isCamera = in.readByte() != 0;
+        isGif = in.readByte() != 0;
+        isWebp = in.readByte() != 0;
+        isBmp = in.readByte() != 0;
+        enablePreview = in.readByte() != 0;
+        enPreviewVideo = in.readByte() != 0;
+        enablePreviewAudio = in.readByte() != 0;
+        checkNumMode = in.readByte() != 0;
+        openClickSound = in.readByte() != 0;
+        enableCrop = in.readByte() != 0;
+        freeStyleCropEnabled = in.readByte() != 0;
+        isDragCenter = in.readByte() != 0;
+        circleDimmedLayer = in.readByte() != 0;
+        circleDimmedColor = in.readInt();
+        circleDimmedBorderColor = in.readInt();
+        circleStrokeWidth = in.readInt();
+        freeStyleCropMode = in.readInt();
+        showCropFrame = in.readByte() != 0;
+        showCropGrid = in.readByte() != 0;
+        hideBottomControls = in.readByte() != 0;
+        rotateEnabled = in.readByte() != 0;
+        scaleEnabled = in.readByte() != 0;
+        previewEggs = in.readByte() != 0;
+        synOrAsy = in.readByte() != 0;
+        returnEmpty = in.readByte() != 0;
+        isDragFrame = in.readByte() != 0;
+        isNotPreviewDownload = in.readByte() != 0;
+        isWithVideoImage = in.readByte() != 0;
+        selectionMedias = in.createTypedArrayList(LocalMedia.CREATOR);
+        cameraFileName = in.readString();
+        isCheckOriginalImage = in.readByte() != 0;
+        overrideWidth = in.readInt();
+        overrideHeight = in.readInt();
+        sizeMultiplier = in.readFloat();
+        isChangeStatusBarFontColor = in.readByte() != 0;
+        isOpenStyleNumComplete = in.readByte() != 0;
+        isOpenStyleCheckNumMode = in.readByte() != 0;
+        titleBarBackgroundColor = in.readInt();
+        pictureStatusBarColor = in.readInt();
+        cropTitleBarBackgroundColor = in.readInt();
+        cropStatusBarColorPrimaryDark = in.readInt();
+        cropTitleColor = in.readInt();
+        upResId = in.readInt();
+        downResId = in.readInt();
+        outPutCameraPath = in.readString();
+        originalPath = in.readString();
+        cameraPath = in.readString();
+        cameraMimeType = in.readInt();
+        pageSize = in.readInt();
+        isPageStrategy = in.readByte() != 0;
+        isFilterInvalidFile = in.readByte() != 0;
+        isMaxSelectEnabledMask = in.readByte() != 0;
+        animationMode = in.readInt();
+        isAutomaticTitleRecyclerTop = in.readByte() != 0;
+        isCallbackMode = in.readByte() != 0;
+        isAndroidQChangeWH = in.readByte() != 0;
+        isAndroidQChangeVideoWH = in.readByte() != 0;
+        isQuickCapture = in.readByte() != 0;
+        isCameraRotateImage = in.readByte() != 0;
+        isAutoRotating = in.readByte() != 0;
+        isSyncCover = in.readByte() != 0;
+        cropCompressFormat = in.readString();
+        isAutoScalePreviewImage = in.readByte() != 0;
+        isCameraCopyExternalFile = in.readByte() != 0;
+        isFallbackVersion = in.readByte() != 0;
+        isFallbackVersion2 = in.readByte() != 0;
+        isFallbackVersion3 = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(chooseMode);
+        dest.writeByte((byte) (camera ? 1 : 0));
+        dest.writeByte((byte) (isSingleDirectReturn ? 1 : 0));
+        dest.writeString(compressSavePath);
+        dest.writeString(suffixType);
+        dest.writeString(cameraImageFormat);
+        dest.writeString(cameraVideoFormat);
+        dest.writeString(cameraAudioFormat);
+        dest.writeByte((byte) (focusAlpha ? 1 : 0));
+        dest.writeString(renameCompressFileName);
+        dest.writeString(renameCropFileName);
+        dest.writeString(specifiedFormat);
+        dest.writeInt(requestedOrientation);
+        dest.writeInt(buttonFeatures);
+        dest.writeInt(captureLoadingColor);
+        dest.writeByte((byte) (isCameraAroundState ? 1 : 0));
+        dest.writeByte((byte) (isAndroidQTransform ? 1 : 0));
+        dest.writeInt(themeStyleId);
+        dest.writeInt(selectionMode);
+        dest.writeInt(maxSelectNum);
+        dest.writeInt(minSelectNum);
+        dest.writeInt(maxVideoSelectNum);
+        dest.writeInt(minVideoSelectNum);
+        dest.writeInt(videoQuality);
+        dest.writeInt(cropCompressQuality);
+        dest.writeInt(videoMaxSecond);
+        dest.writeInt(videoMinSecond);
+        dest.writeInt(recordVideoSecond);
+        dest.writeInt(recordVideoMinSecond);
+        dest.writeInt(minimumCompressSize);
+        dest.writeInt(imageSpanCount);
+        dest.writeInt(aspect_ratio_x);
+        dest.writeInt(aspect_ratio_y);
+        dest.writeInt(cropWidth);
+        dest.writeInt(cropHeight);
+        dest.writeInt(compressQuality);
+        dest.writeFloat(filterFileSize);
+        dest.writeLong(filterMaxFileSize);
+        dest.writeLong(filterMinFileSize);
+        dest.writeInt(language);
+        dest.writeByte((byte) (isMultipleRecyclerAnimation ? 1 : 0));
+        dest.writeByte((byte) (isMultipleSkipCrop ? 1 : 0));
+        dest.writeByte((byte) (isWeChatStyle ? 1 : 0));
+        dest.writeByte((byte) (isUseCustomCamera ? 1 : 0));
+        dest.writeByte((byte) (zoomAnim ? 1 : 0));
+        dest.writeByte((byte) (isCompress ? 1 : 0));
+        dest.writeByte((byte) (isOriginalControl ? 1 : 0));
+        dest.writeByte((byte) (isDisplayOriginalSize ? 1 : 0));
+        dest.writeByte((byte) (isEditorImage ? 1 : 0));
+        dest.writeByte((byte) (isCamera ? 1 : 0));
+        dest.writeByte((byte) (isGif ? 1 : 0));
+        dest.writeByte((byte) (isWebp ? 1 : 0));
+        dest.writeByte((byte) (isBmp ? 1 : 0));
+        dest.writeByte((byte) (enablePreview ? 1 : 0));
+        dest.writeByte((byte) (enPreviewVideo ? 1 : 0));
+        dest.writeByte((byte) (enablePreviewAudio ? 1 : 0));
+        dest.writeByte((byte) (checkNumMode ? 1 : 0));
+        dest.writeByte((byte) (openClickSound ? 1 : 0));
+        dest.writeByte((byte) (enableCrop ? 1 : 0));
+        dest.writeByte((byte) (freeStyleCropEnabled ? 1 : 0));
+        dest.writeByte((byte) (isDragCenter ? 1 : 0));
+        dest.writeByte((byte) (circleDimmedLayer ? 1 : 0));
+        dest.writeInt(circleDimmedColor);
+        dest.writeInt(circleDimmedBorderColor);
+        dest.writeInt(circleStrokeWidth);
+        dest.writeInt(freeStyleCropMode);
+        dest.writeByte((byte) (showCropFrame ? 1 : 0));
+        dest.writeByte((byte) (showCropGrid ? 1 : 0));
+        dest.writeByte((byte) (hideBottomControls ? 1 : 0));
+        dest.writeByte((byte) (rotateEnabled ? 1 : 0));
+        dest.writeByte((byte) (scaleEnabled ? 1 : 0));
+        dest.writeByte((byte) (previewEggs ? 1 : 0));
+        dest.writeByte((byte) (synOrAsy ? 1 : 0));
+        dest.writeByte((byte) (returnEmpty ? 1 : 0));
+        dest.writeByte((byte) (isDragFrame ? 1 : 0));
+        dest.writeByte((byte) (isNotPreviewDownload ? 1 : 0));
+        dest.writeByte((byte) (isWithVideoImage ? 1 : 0));
+        dest.writeTypedList(selectionMedias);
+        dest.writeString(cameraFileName);
+        dest.writeByte((byte) (isCheckOriginalImage ? 1 : 0));
+        dest.writeInt(overrideWidth);
+        dest.writeInt(overrideHeight);
+        dest.writeFloat(sizeMultiplier);
+        dest.writeByte((byte) (isChangeStatusBarFontColor ? 1 : 0));
+        dest.writeByte((byte) (isOpenStyleNumComplete ? 1 : 0));
+        dest.writeByte((byte) (isOpenStyleCheckNumMode ? 1 : 0));
+        dest.writeInt(titleBarBackgroundColor);
+        dest.writeInt(pictureStatusBarColor);
+        dest.writeInt(cropTitleBarBackgroundColor);
+        dest.writeInt(cropStatusBarColorPrimaryDark);
+        dest.writeInt(cropTitleColor);
+        dest.writeInt(upResId);
+        dest.writeInt(downResId);
+        dest.writeString(outPutCameraPath);
+        dest.writeString(originalPath);
+        dest.writeString(cameraPath);
+        dest.writeInt(cameraMimeType);
+        dest.writeInt(pageSize);
+        dest.writeByte((byte) (isPageStrategy ? 1 : 0));
+        dest.writeByte((byte) (isFilterInvalidFile ? 1 : 0));
+        dest.writeByte((byte) (isMaxSelectEnabledMask ? 1 : 0));
+        dest.writeInt(animationMode);
+        dest.writeByte((byte) (isAutomaticTitleRecyclerTop ? 1 : 0));
+        dest.writeByte((byte) (isCallbackMode ? 1 : 0));
+        dest.writeByte((byte) (isAndroidQChangeWH ? 1 : 0));
+        dest.writeByte((byte) (isAndroidQChangeVideoWH ? 1 : 0));
+        dest.writeByte((byte) (isQuickCapture ? 1 : 0));
+        dest.writeByte((byte) (isCameraRotateImage ? 1 : 0));
+        dest.writeByte((byte) (isAutoRotating ? 1 : 0));
+        dest.writeByte((byte) (isSyncCover ? 1 : 0));
+        dest.writeString(cropCompressFormat);
+        dest.writeByte((byte) (isAutoScalePreviewImage ? 1 : 0));
+        dest.writeByte((byte) (isCameraCopyExternalFile ? 1 : 0));
+        dest.writeByte((byte) (isFallbackVersion ? 1 : 0));
+        dest.writeByte((byte) (isFallbackVersion2 ? 1 : 0));
+        dest.writeByte((byte) (isFallbackVersion3 ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<PictureSelectionConfig> CREATOR = new Creator<PictureSelectionConfig>() {
+        @Override
+        public PictureSelectionConfig createFromParcel(Parcel in) {
+            return new PictureSelectionConfig(in);
+        }
+
+        @Override
+        public PictureSelectionConfig[] newArray(int size) {
+            return new PictureSelectionConfig[size];
+        }
+    };
 
     protected void initDefaultValue() {
         chooseMode = PictureMimeType.ofImage();
@@ -177,11 +467,13 @@ public final class PictureSelectionConfig implements Parcelable {
         maxVideoSelectNum = 1;
         minVideoSelectNum = 0;
         videoQuality = 1;
-        language = -1;
+        language = PictureConfig.UNKNOWN_LANGUAGE;
         cropCompressQuality = 90;
         videoMaxSecond = 0;
         videoMinSecond = 0;
-        filterFileSize = -1;
+        filterFileSize = 0;
+        filterMaxFileSize = 0;
+        filterMinFileSize = 1024;
         recordVideoSecond = 60;
         recordVideoMinSecond = 0;
         compressQuality = 80;
@@ -217,6 +509,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isMultipleSkipCrop = true;
         isMultipleRecyclerAnimation = true;
         freeStyleCropEnabled = false;
+        isDragCenter = false;
         circleDimmedLayer = false;
         showCropFrame = true;
         showCropGrid = true;
@@ -233,10 +526,14 @@ public final class PictureSelectionConfig implements Parcelable {
         isDragFrame = true;
         compressSavePath = "";
         suffixType = "";
+        cameraImageFormat = "";
+        cameraVideoFormat = "";
+        cameraAudioFormat = "";
         cameraFileName = "";
         specifiedFormat = "";
         renameCompressFileName = "";
         renameCropFileName = "";
+        queryMimeTypeHashSet = null;
         selectionMedias = new ArrayList<>();
         uCropOptions = null;
         titleBarBackgroundColor = 0;
@@ -266,6 +563,15 @@ public final class PictureSelectionConfig implements Parcelable {
         isAndroidQChangeWH = true;
         isAndroidQChangeVideoWH = false;
         isQuickCapture = true;
+        isCameraRotateImage = true;
+        isAutoRotating = true;
+        isSyncCover = !SdkVersionUtils.checkedAndroid_Q();
+        cropCompressFormat = "";
+        isAutoScalePreviewImage = true;
+        freeStyleCropMode = -1;
+        isEditorImage = false;
+        isDisplayOriginalSize = true;
+        isCameraCopyExternalFile = true;
     }
 
     public static PictureSelectionConfig getInstance() {
@@ -293,233 +599,12 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.customVideoPlayCallback = null;
         PictureSelectionConfig.onCustomImagePreviewCallback = null;
         PictureSelectionConfig.onCustomCameraInterfaceListener = null;
+        PictureSelectionConfig.onPermissionsObtainCallback = null;
+        PictureSelectionConfig.onChooseLimitCallback = null;
         PictureSelectionConfig.cacheResourcesEngine = null;
+        PictureSelectionConfig.imageEngine = null;
+        PictureSelectionConfig.compressEngine = null;
     }
 
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.chooseMode);
-        dest.writeByte(this.camera ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isSingleDirectReturn ? (byte) 1 : (byte) 0);
-        dest.writeString(this.compressSavePath);
-        dest.writeString(this.suffixType);
-        dest.writeByte(this.focusAlpha ? (byte) 1 : (byte) 0);
-        dest.writeString(this.renameCompressFileName);
-        dest.writeString(this.renameCropFileName);
-        dest.writeString(this.specifiedFormat);
-        dest.writeInt(this.requestedOrientation);
-        dest.writeInt(this.buttonFeatures);
-        dest.writeByte(this.isCameraAroundState ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isAndroidQTransform ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.themeStyleId);
-        dest.writeInt(this.selectionMode);
-        dest.writeInt(this.maxSelectNum);
-        dest.writeInt(this.minSelectNum);
-        dest.writeInt(this.maxVideoSelectNum);
-        dest.writeInt(this.minVideoSelectNum);
-        dest.writeInt(this.videoQuality);
-        dest.writeInt(this.cropCompressQuality);
-        dest.writeInt(this.videoMaxSecond);
-        dest.writeInt(this.videoMinSecond);
-        dest.writeInt(this.recordVideoSecond);
-        dest.writeInt(this.recordVideoMinSecond);
-        dest.writeInt(this.minimumCompressSize);
-        dest.writeInt(this.imageSpanCount);
-        dest.writeInt(this.aspect_ratio_x);
-        dest.writeInt(this.aspect_ratio_y);
-        dest.writeInt(this.cropWidth);
-        dest.writeInt(this.cropHeight);
-        dest.writeInt(this.compressQuality);
-        dest.writeFloat(this.filterFileSize);
-        dest.writeInt(this.language);
-        dest.writeByte(this.isMultipleRecyclerAnimation ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isMultipleSkipCrop ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isWeChatStyle ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isUseCustomCamera ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.zoomAnim ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isCompress ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isOriginalControl ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isCamera ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isGif ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isWebp ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isBmp ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.enablePreview ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.enPreviewVideo ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.enablePreviewAudio ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.checkNumMode ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.openClickSound ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.enableCrop ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.freeStyleCropEnabled ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.circleDimmedLayer ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.circleDimmedColor);
-        dest.writeInt(this.circleDimmedBorderColor);
-        dest.writeInt(this.circleStrokeWidth);
-        dest.writeByte(this.showCropFrame ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.showCropGrid ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.hideBottomControls ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.rotateEnabled ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.scaleEnabled ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.previewEggs ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.synOrAsy ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.returnEmpty ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isDragFrame ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isNotPreviewDownload ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isWithVideoImage ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(this.uCropOptions, flags);
-        dest.writeTypedList(this.selectionMedias);
-        dest.writeString(this.cameraFileName);
-        dest.writeByte(this.isCheckOriginalImage ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.overrideWidth);
-        dest.writeInt(this.overrideHeight);
-        dest.writeFloat(this.sizeMultiplier);
-        dest.writeByte(this.isChangeStatusBarFontColor ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isOpenStyleNumComplete ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isOpenStyleCheckNumMode ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.titleBarBackgroundColor);
-        dest.writeInt(this.pictureStatusBarColor);
-        dest.writeInt(this.cropTitleBarBackgroundColor);
-        dest.writeInt(this.cropStatusBarColorPrimaryDark);
-        dest.writeInt(this.cropTitleColor);
-        dest.writeInt(this.upResId);
-        dest.writeInt(this.downResId);
-        dest.writeString(this.outPutCameraPath);
-        dest.writeString(this.originalPath);
-        dest.writeString(this.cameraPath);
-        dest.writeInt(this.cameraMimeType);
-        dest.writeInt(this.pageSize);
-        dest.writeByte(this.isPageStrategy ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isFilterInvalidFile ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isMaxSelectEnabledMask ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.animationMode);
-        dest.writeByte(this.isAutomaticTitleRecyclerTop ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isCallbackMode ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isAndroidQChangeWH ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isAndroidQChangeVideoWH ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isQuickCapture ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isFallbackVersion ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isFallbackVersion2 ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isFallbackVersion3 ? (byte) 1 : (byte) 0);
-    }
-
-    protected PictureSelectionConfig(Parcel in) {
-        this.chooseMode = in.readInt();
-        this.camera = in.readByte() != 0;
-        this.isSingleDirectReturn = in.readByte() != 0;
-        this.compressSavePath = in.readString();
-        this.suffixType = in.readString();
-        this.focusAlpha = in.readByte() != 0;
-        this.renameCompressFileName = in.readString();
-        this.renameCropFileName = in.readString();
-        this.specifiedFormat = in.readString();
-        this.requestedOrientation = in.readInt();
-        this.buttonFeatures = in.readInt();
-        this.isCameraAroundState = in.readByte() != 0;
-        this.isAndroidQTransform = in.readByte() != 0;
-        this.themeStyleId = in.readInt();
-        this.selectionMode = in.readInt();
-        this.maxSelectNum = in.readInt();
-        this.minSelectNum = in.readInt();
-        this.maxVideoSelectNum = in.readInt();
-        this.minVideoSelectNum = in.readInt();
-        this.videoQuality = in.readInt();
-        this.cropCompressQuality = in.readInt();
-        this.videoMaxSecond = in.readInt();
-        this.videoMinSecond = in.readInt();
-        this.recordVideoSecond = in.readInt();
-        this.recordVideoMinSecond = in.readInt();
-        this.minimumCompressSize = in.readInt();
-        this.imageSpanCount = in.readInt();
-        this.aspect_ratio_x = in.readInt();
-        this.aspect_ratio_y = in.readInt();
-        this.cropWidth = in.readInt();
-        this.cropHeight = in.readInt();
-        this.compressQuality = in.readInt();
-        this.filterFileSize = in.readFloat();
-        this.language = in.readInt();
-        this.isMultipleRecyclerAnimation = in.readByte() != 0;
-        this.isMultipleSkipCrop = in.readByte() != 0;
-        this.isWeChatStyle = in.readByte() != 0;
-        this.isUseCustomCamera = in.readByte() != 0;
-        this.zoomAnim = in.readByte() != 0;
-        this.isCompress = in.readByte() != 0;
-        this.isOriginalControl = in.readByte() != 0;
-        this.isCamera = in.readByte() != 0;
-        this.isGif = in.readByte() != 0;
-        this.isWebp = in.readByte() != 0;
-        this.isBmp = in.readByte() != 0;
-        this.enablePreview = in.readByte() != 0;
-        this.enPreviewVideo = in.readByte() != 0;
-        this.enablePreviewAudio = in.readByte() != 0;
-        this.checkNumMode = in.readByte() != 0;
-        this.openClickSound = in.readByte() != 0;
-        this.enableCrop = in.readByte() != 0;
-        this.freeStyleCropEnabled = in.readByte() != 0;
-        this.circleDimmedLayer = in.readByte() != 0;
-        this.circleDimmedColor = in.readInt();
-        this.circleDimmedBorderColor = in.readInt();
-        this.circleStrokeWidth = in.readInt();
-        this.showCropFrame = in.readByte() != 0;
-        this.showCropGrid = in.readByte() != 0;
-        this.hideBottomControls = in.readByte() != 0;
-        this.rotateEnabled = in.readByte() != 0;
-        this.scaleEnabled = in.readByte() != 0;
-        this.previewEggs = in.readByte() != 0;
-        this.synOrAsy = in.readByte() != 0;
-        this.returnEmpty = in.readByte() != 0;
-        this.isDragFrame = in.readByte() != 0;
-        this.isNotPreviewDownload = in.readByte() != 0;
-        this.isWithVideoImage = in.readByte() != 0;
-        this.uCropOptions = in.readParcelable(UCropOptions.class.getClassLoader());
-        this.selectionMedias = in.createTypedArrayList(LocalMedia.CREATOR);
-        this.cameraFileName = in.readString();
-        this.isCheckOriginalImage = in.readByte() != 0;
-        this.overrideWidth = in.readInt();
-        this.overrideHeight = in.readInt();
-        this.sizeMultiplier = in.readFloat();
-        this.isChangeStatusBarFontColor = in.readByte() != 0;
-        this.isOpenStyleNumComplete = in.readByte() != 0;
-        this.isOpenStyleCheckNumMode = in.readByte() != 0;
-        this.titleBarBackgroundColor = in.readInt();
-        this.pictureStatusBarColor = in.readInt();
-        this.cropTitleBarBackgroundColor = in.readInt();
-        this.cropStatusBarColorPrimaryDark = in.readInt();
-        this.cropTitleColor = in.readInt();
-        this.upResId = in.readInt();
-        this.downResId = in.readInt();
-        this.outPutCameraPath = in.readString();
-        this.originalPath = in.readString();
-        this.cameraPath = in.readString();
-        this.cameraMimeType = in.readInt();
-        this.pageSize = in.readInt();
-        this.isPageStrategy = in.readByte() != 0;
-        this.isFilterInvalidFile = in.readByte() != 0;
-        this.isMaxSelectEnabledMask = in.readByte() != 0;
-        this.animationMode = in.readInt();
-        this.isAutomaticTitleRecyclerTop = in.readByte() != 0;
-        this.isCallbackMode = in.readByte() != 0;
-        this.isAndroidQChangeWH = in.readByte() != 0;
-        this.isAndroidQChangeVideoWH = in.readByte() != 0;
-        this.isQuickCapture = in.readByte() != 0;
-        this.isFallbackVersion = in.readByte() != 0;
-        this.isFallbackVersion2 = in.readByte() != 0;
-        this.isFallbackVersion3 = in.readByte() != 0;
-    }
-
-    public static final Creator<PictureSelectionConfig> CREATOR = new Creator<PictureSelectionConfig>() {
-        @Override
-        public PictureSelectionConfig createFromParcel(Parcel source) {
-            return new PictureSelectionConfig(source);
-        }
-
-        @Override
-        public PictureSelectionConfig[] newArray(int size) {
-            return new PictureSelectionConfig[size];
-        }
-    };
 }

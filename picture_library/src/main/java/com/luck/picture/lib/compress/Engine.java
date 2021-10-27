@@ -1,9 +1,12 @@
 package com.luck.picture.lib.compress;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
+import android.text.TextUtils;
+
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.tools.BitmapUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -14,23 +17,26 @@ import java.io.IOException;
  * Responsible for starting compress and managing active and cached resources.
  */
 class Engine {
-    private InputStreamProvider srcImg;
-    private File tagImg;
+    private final InputStreamProvider srcImg;
+    private final File tagImg;
     private int srcWidth;
     private int srcHeight;
-    private boolean focusAlpha;
+    @Deprecated
+    private final boolean focusAlpha;
     private static final int DEFAULT_QUALITY = 80;
     private int compressQuality;
+    private final boolean isAutoRotating;
+    private final Context context;
 
-    Engine(InputStreamProvider srcImg, File tagImg, boolean focusAlpha, int compressQuality) throws IOException {
+    Engine(Context context, InputStreamProvider srcImg, File tagImg, boolean focusAlpha, int compressQuality, boolean isAutoRotating) throws IOException {
         this.tagImg = tagImg;
         this.srcImg = srcImg;
+        this.context = context;
         this.focusAlpha = focusAlpha;
+        this.isAutoRotating = isAutoRotating;
         this.compressQuality = compressQuality <= 0 ? DEFAULT_QUALITY : compressQuality;
 
-        if (srcImg.getMedia() != null
-                && srcImg.getMedia().getWidth() > 0
-                && srcImg.getMedia().getHeight() > 0) {
+        if (srcImg.getMedia().getWidth() > 0 && srcImg.getMedia().getHeight() > 0) {
             this.srcWidth = srcImg.getMedia().getWidth();
             this.srcHeight = srcImg.getMedia().getHeight();
         } else {
@@ -68,54 +74,32 @@ class Engine {
         }
     }
 
-    private Bitmap rotatingImage(Bitmap bitmap, int angle) {
-        Matrix matrix = new Matrix();
-
-        matrix.postRotate(angle);
-
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-    }
-
     File compress() throws IOException {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = computeSize();
         Bitmap tagBitmap = BitmapFactory.decodeStream(srcImg.open(), null, options);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        if (srcImg.getMedia() != null && !srcImg.getMedia().isCut()) {
+        if (isAutoRotating) {
             if (Checker.SINGLE.isJPG(srcImg.getMedia().getMimeType())) {
-                int orientation = srcImg.getMedia().getOrientation();
-                if (orientation > 0) {
-                    boolean isOrientation = true;
-                    switch (orientation) {
-                        case ExifInterface.ORIENTATION_ROTATE_90:
-                            orientation = 90;
-                            break;
-                        case ExifInterface.ORIENTATION_ROTATE_180:
-                            orientation = 180;
-                            break;
-                        case ExifInterface.ORIENTATION_ROTATE_270:
-                            orientation = 270;
-                            break;
-                        default:
-                            isOrientation = false;
-                            break;
-                    }
-                    if (isOrientation) {
-                        tagBitmap = rotatingImage(tagBitmap, orientation);
-                    }
+                boolean isCut = srcImg.getMedia().isCut() && !TextUtils.isEmpty(srcImg.getMedia().getCutPath());
+                String url = isCut ? srcImg.getMedia().getCutPath() : srcImg.getMedia().getPath();
+                int degree = PictureMimeType.isContent(url) ? BitmapUtils.readPictureDegree(srcImg.open()) : BitmapUtils.readPictureDegree(context, url);
+                if (degree > 0) {
+                    tagBitmap = BitmapUtils.rotatingImage(tagBitmap, degree);
                 }
             }
         }
         if (tagBitmap != null) {
             compressQuality = compressQuality <= 0 || compressQuality > 100 ? DEFAULT_QUALITY : compressQuality;
-            tagBitmap.compress(focusAlpha ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, compressQuality, stream);
+            tagBitmap.compress(focusAlpha || tagBitmap.hasAlpha() ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, compressQuality, stream);
             tagBitmap.recycle();
+            FileOutputStream fos = new FileOutputStream(tagImg);
+            fos.write(stream.toByteArray());
+            fos.flush();
+            fos.close();
+            stream.close();
+            return tagImg;
         }
-        FileOutputStream fos = new FileOutputStream(tagImg);
-        fos.write(stream.toByteArray());
-        fos.flush();
-        fos.close();
-        stream.close();
-        return tagImg;
+        return null;
     }
 }

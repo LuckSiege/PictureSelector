@@ -28,7 +28,7 @@ public class PictureSelectorExternalUtils {
         InputStream inputStream = null;
         try {
             if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(url)) {
-                inputStream = context.getContentResolver().openInputStream(Uri.parse(url));
+                inputStream = PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(url));
                 if (inputStream != null) {
                     exifInterface = new ExifInterface(inputStream);
                 }

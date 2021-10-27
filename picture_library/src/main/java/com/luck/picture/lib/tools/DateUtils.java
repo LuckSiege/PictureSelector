@@ -11,7 +11,12 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class DateUtils {
-    private static SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd_HHmmssSS");
+    private static final SimpleDateFormat sf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+
+    public static long getCurrentTimeMillis() {
+        String timeToString = ValueOf.toString(System.currentTimeMillis());
+        return ValueOf.toLong(timeToString.length() > 10 ? timeToString.substring(0, 10) : timeToString);
+    }
 
     /**
      * 判断两个时间戳相差多少秒
@@ -21,7 +26,7 @@ public class DateUtils {
      */
     public static int dateDiffer(long d) {
         try {
-            long l1 = ValueOf.toLong(String.valueOf(System.currentTimeMillis()).substring(0, 10));
+            long l1 = getCurrentTimeMillis();
             long interval = l1 - d;
             return (int) Math.abs(interval);
         } catch (Exception e) {

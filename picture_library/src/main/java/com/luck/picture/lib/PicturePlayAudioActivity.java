@@ -1,14 +1,15 @@
 package com.luck.picture.lib;
 
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 
@@ -16,7 +17,7 @@ import com.luck.picture.lib.tools.SdkVersionUtils;
  * # No longer maintain audio related functions,
  * but can continue to use but there will be phone compatibility issues.
  * <p>
- * 不再维护音频相关功能，但可以继续使用但会有机型兼容性问题
+ * 不再维护音频相关功能，但可以继续使用，可能会有机型兼容性问题
  */
 @Deprecated
 public class PicturePlayAudioActivity extends PictureBaseActivity implements View.OnClickListener {
@@ -24,9 +25,10 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
     private MediaPlayer mediaPlayer;
     private SeekBar musicSeekBar;
     private boolean isPlayAudio = false;
-    private TextView tv_PlayPause, tv_Stop, tv_Quit,
-            tv_musicStatus, tv_musicTotal, tv_musicTime;
-
+    private TextView tv_PlayPause;
+    private TextView tv_musicStatus;
+    private TextView tv_musicTotal;
+    private TextView tv_musicTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +51,9 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
         musicSeekBar = findViewById(R.id.musicSeekBar);
         tv_musicTotal = findViewById(R.id.tv_musicTotal);
         tv_PlayPause = findViewById(R.id.tv_PlayPause);
-        tv_Stop = findViewById(R.id.tv_Stop);
-        tv_Quit = findViewById(R.id.tv_Quit);
-        handler.postDelayed(() -> initPlayer(audio_path), 30);
+        TextView tv_Stop = findViewById(R.id.tv_Stop);
+        TextView tv_Quit = findViewById(R.id.tv_Quit);
+        mHandler.postDelayed(() -> initPlayer(audio_path), 30);
         tv_PlayPause.setOnClickListener(this);
         tv_Stop.setOnClickListener(this);
         tv_Quit.setOnClickListener(this);
@@ -73,8 +75,6 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
         });
     }
 
-    //  通过 Handler 更新 UI 上的组件状态
-    public Handler handler = new Handler();
     public Runnable runnable = new Runnable() {
         @Override
         public void run() {
@@ -84,7 +84,7 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
                     musicSeekBar.setProgress(mediaPlayer.getCurrentPosition());
                     musicSeekBar.setMax(mediaPlayer.getDuration());
                     tv_musicTotal.setText(DateUtils.formatDurationTime(mediaPlayer.getDuration()));
-                    handler.postDelayed(runnable, 200);
+                    mHandler.postDelayed(runnable, 200);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -100,7 +100,11 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
     private void initPlayer(String path) {
         mediaPlayer = new MediaPlayer();
         try {
-            mediaPlayer.setDataSource(path);
+            if (PictureMimeType.isContent(path)) {
+                mediaPlayer.setDataSource(getContext(), Uri.parse(path));
+            } else {
+                mediaPlayer.setDataSource(path);
+            }
             mediaPlayer.prepare();
             mediaPlayer.setLooping(true);
             playAudio();
@@ -123,8 +127,8 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
 
         }
         if (i == R.id.tv_Quit) {
-            handler.removeCallbacks(runnable);
-            new Handler().postDelayed(() -> stop(audio_path), 30);
+            mHandler.removeCallbacks(runnable);
+            mHandler.postDelayed(() -> stop(audio_path), 30);
             try {
                 exit();
             } catch (Exception e) {
@@ -146,14 +150,13 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
         if (ppStr.equals(getString(R.string.picture_play_audio))) {
             tv_PlayPause.setText(getString(R.string.picture_pause_audio));
             tv_musicStatus.setText(getString(R.string.picture_play_audio));
-            playOrPause();
         } else {
             tv_PlayPause.setText(getString(R.string.picture_play_audio));
             tv_musicStatus.setText(getString(R.string.picture_pause_audio));
-            playOrPause();
         }
+        playOrPause();
         if (!isPlayAudio) {
-            handler.post(runnable);
+            mHandler.post(runnable);
             isPlayAudio = true;
         }
     }
@@ -168,7 +171,11 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
             try {
                 mediaPlayer.stop();
                 mediaPlayer.reset();
-                mediaPlayer.setDataSource(path);
+                if (PictureMimeType.isContent(path)){
+                    mediaPlayer.setDataSource(getContext(),Uri.parse(path));
+                } else {
+                    mediaPlayer.setDataSource(path);
+                }
                 mediaPlayer.prepare();
                 mediaPlayer.seekTo(0);
             } catch (Exception e) {
@@ -207,8 +214,8 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mediaPlayer != null && handler != null) {
-            handler.removeCallbacks(runnable);
+        if (mediaPlayer != null) {
+            mHandler.removeCallbacks(runnable);
             mediaPlayer.release();
             mediaPlayer = null;
         }

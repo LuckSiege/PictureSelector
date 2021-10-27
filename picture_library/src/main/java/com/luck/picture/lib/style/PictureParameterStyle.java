@@ -129,6 +129,16 @@ public class PictureParameterStyle {
     public int picturePreviewTextSize;
 
     /**
+     * 图片预览编辑文字大小
+     */
+    public int picturePreviewEditorTextSize;
+
+    /**
+     * 图片预览编辑文字颜色
+     */
+    public int picturePreviewEditorTextColor;
+
+    /**
      * 相册列表未完成按钮文本
      */
     public String pictureUnCompleteText;
@@ -303,6 +313,11 @@ public class PictureParameterStyle {
      */
     public int pictureTitleRightArrowLeftPadding;
 
+    /**
+     * 图片已编辑过的标识icon
+     */
+    public int picture_adapter_item_editor_tag_icon;
+
 
     public PictureParameterStyle() {
         super();
@@ -367,6 +382,7 @@ public class PictureParameterStyle {
         uiStyle.pictureExternalPreviewGonePreviewDelete = true;
         // 设置NavBar Color SDK Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP有效
         uiStyle.pictureNavBarColor = Color.parseColor("#393a3e");
+
         return uiStyle;
     }
 

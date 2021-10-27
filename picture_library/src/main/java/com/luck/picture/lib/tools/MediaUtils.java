@@ -10,20 +10,20 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 import androidx.exifinterface.media.ExifInterface;
 
+import com.luck.picture.lib.PictureContentResolver;
+import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.listener.OnCallbackListener;
-import com.luck.picture.lib.thread.PictureThreadUtils;
+import com.luck.picture.lib.entity.MediaExtraInfo;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Objects;
 
 
 /**
@@ -40,8 +40,7 @@ public class MediaUtils {
      * @param suffixType
      * @return 图片的uri
      */
-    @Nullable
-    public static Uri createImageUri(final Context ctx, String cameraFileName, String suffixType) {
+    public static Uri createImageUri(final Context ctx, String cameraFileName, String mimeType) {
         Context context = ctx.getApplicationContext();
         Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();
@@ -62,17 +61,17 @@ public class MediaUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             values.put(MediaStore.Images.Media.DATE_TAKEN, time);
         }
-        values.put(MediaStore.Images.Media.MIME_TYPE, TextUtils.isEmpty(suffixType) || suffixType.startsWith("video") ? PictureMimeType.MIME_TYPE_IMAGE : suffixType);
+        values.put(MediaStore.Images.Media.MIME_TYPE, TextUtils.isEmpty(mimeType) || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO) ? PictureMimeType.MIME_TYPE_IMAGE : mimeType);
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
         if (status.equals(Environment.MEDIA_MOUNTED)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 values.put(MediaStore.Images.Media.RELATIVE_PATH, PictureMimeType.DCIM);
             }
             imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Images.Media.getContentUri("external"), values);
+                    .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
         } else {
             imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Images.Media.getContentUri("internal"), values);
+                    .insert(MediaStore.Images.Media.INTERNAL_CONTENT_URI, values);
         }
         return imageFilePath[0];
     }
@@ -86,8 +85,7 @@ public class MediaUtils {
      * @param suffixType
      * @return 视频的uri
      */
-    @Nullable
-    public static Uri createVideoUri(final Context ctx, String cameraFileName, String suffixType) {
+    public static Uri createVideoUri(final Context ctx, String cameraFileName, String mimeType) {
         Context context = ctx.getApplicationContext();
         Uri[] imageFilePath = {null};
         String status = Environment.getExternalStorageState();
@@ -108,32 +106,53 @@ public class MediaUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             values.put(MediaStore.Video.Media.DATE_TAKEN, time);
         }
-        values.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(suffixType) || suffixType.startsWith("image") ? PictureMimeType.MIME_TYPE_VIDEO : suffixType);
+        values.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(mimeType) || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE) ? PictureMimeType.MIME_TYPE_VIDEO : mimeType);
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
         if (status.equals(Environment.MEDIA_MOUNTED)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 values.put(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES);
             }
             imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Video.Media.getContentUri("external"), values);
+                    .insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
         } else {
             imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Video.Media.getContentUri("internal"), values);
+                    .insert(MediaStore.Video.Media.INTERNAL_CONTENT_URI, values);
         }
         return imageFilePath[0];
     }
 
+
     /**
-     * 获取视频时长
+     * 创建一条音频地址uri,用于保存录制的音频
      *
-     * @param context
-     * @param isAndroidQ
-     * @param path
-     * @return
+     * @param ctx
+     * @param suffixType
+     * @return 音频的uri
      */
-    public static long extractDuration(Context context, boolean isAndroidQ, String path) {
-        return isAndroidQ ? getLocalDuration(context, Uri.parse(path))
-                : getLocalDuration(path);
+    public static Uri createAudioUri(final Context ctx, String mimeType) {
+        Context context = ctx.getApplicationContext();
+        Uri[] imageFilePath = {null};
+        String status = Environment.getExternalStorageState();
+        String time = ValueOf.toString(System.currentTimeMillis());
+        // ContentValues是我们希望这条记录被创建时包含的数据信息
+        ContentValues values = new ContentValues(3);
+        values.put(MediaStore.Audio.Media.DISPLAY_NAME, DateUtils.getCreateFileName("AUD_"));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.Audio.Media.DATE_TAKEN, time);
+        }
+        values.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(mimeType) || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE) || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO) ? PictureMimeType.MIME_TYPE_AUDIO_AMR : mimeType);
+        // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                values.put(MediaStore.Audio.Media.RELATIVE_PATH, Environment.DIRECTORY_MUSIC);
+            }
+            imageFilePath[0] = context.getContentResolver()
+                    .insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
+        } else {
+            imageFilePath[0] = context.getContentResolver()
+                    .insert(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, values);
+        }
+        return imageFilePath[0];
     }
 
     /**
@@ -143,13 +162,13 @@ public class MediaUtils {
      * @return true 是 or false 不是
      */
     public static boolean isLongImg(LocalMedia media) {
-        if (null != media) {
-            int width = media.getWidth();
-            int height = media.getHeight();
-            int newHeight = width * 3;
-            return height > newHeight;
+        int width = media.getWidth();
+        int height = media.getHeight();
+        if (width <= 0 || height <= 0) {
+            return false;
         }
-        return false;
+        int newHeight = width * 3;
+        return height > newHeight;
     }
 
     /**
@@ -160,169 +179,126 @@ public class MediaUtils {
      * @return true 是 or false 不是
      */
     public static boolean isLongImg(int width, int height) {
+        if (width <= 0 || height <= 0) {
+            return false;
+        }
         int newHeight = width * 3;
         return height > newHeight;
     }
 
-    /**
-     * get Local video duration
-     *
-     * @return
-     */
-    private static long getLocalDuration(Context context, Uri uri) {
-        try {
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(context, uri);
-            return Long.parseLong(Objects.requireNonNull(mmr.extractMetadata
-                    (MediaMetadataRetriever.METADATA_KEY_DURATION)));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
 
     /**
-     * get Local video duration
+     * get Local image width or height
      *
+     * @param context
+     * @param url
      * @return
      */
-    private static long getLocalDuration(String path) {
+    public static MediaExtraInfo getImageSize(Context context, String url) {
+        MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
+        ExifInterface exifInterface;
+        InputStream inputStream;
         try {
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(path);
-            return Long.parseLong(Objects.requireNonNull(mmr.extractMetadata
-                    (MediaMetadataRetriever.METADATA_KEY_DURATION)));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-
-    /**
-     * get Local image width or height for api 29
-     *
-     * @return
-     */
-    public static int[] getImageSizeForUrlToAndroidQ(Context context, String url) {
-        int[] size = new int[2];
-        Cursor query = null;
-        try {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                query = context.getApplicationContext().getContentResolver()
-                        .query(Uri.parse(url),
-                                null, null, null);
-                if (query != null) {
-                    query.moveToFirst();
-                    size[0] = query.getInt(query.getColumnIndexOrThrow(MediaStore.Images
-                            .Media.WIDTH));
-                    size[1] = query.getInt(query.getColumnIndexOrThrow(MediaStore.Images
-                            .Media.HEIGHT));
-                }
+            if (PictureMimeType.isContent(url)) {
+                inputStream = PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(url));
+                exifInterface = new ExifInterface(inputStream);
+            } else {
+                exifInterface = new ExifInterface(url);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (query != null) {
-                query.close();
-            }
-        }
-        return size;
-    }
-
-    /**
-     * get Local video width or height
-     *
-     * @return
-     */
-    public static int[] getVideoSizeForUrl(String url) {
-        int[] size = new int[2];
-        try {
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(url);
-            size[0] = ValueOf.toInt(mmr.extractMetadata
-                    (MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
-            size[1] = ValueOf.toInt(mmr.extractMetadata
-                    (MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+            mediaExtraInfo.setWidth(exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, ExifInterface.ORIENTATION_NORMAL));
+            mediaExtraInfo.setHeight(exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, ExifInterface.ORIENTATION_NORMAL));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return size;
-    }
-
-    /**
-     * get Local video width or height
-     *
-     * @return
-     */
-    public static void getVideoSizeForUri(Context context, Uri uri, LocalMedia media) {
-        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<Integer[]>() {
-
-            @Override
-            public Integer[] doInBackground() {
-                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                mmr.setDataSource(context, uri);
-                int width = ValueOf.toInt(mmr.extractMetadata
-                        (MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
-                int height = ValueOf.toInt(mmr.extractMetadata
-                        (MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
-                return new Integer[]{width, height};
-            }
-
-            @Override
-            public void onSuccess(Integer[] result) {
-                media.setWidth(result[0]);
-                media.setHeight(result[1]);
-                PictureThreadUtils.cancel(this);
-            }
-        });
+        return mediaExtraInfo;
     }
 
     /**
      * get Local image width or height
      *
+     * @param url
      * @return
      */
-    public static int[] getImageSizeForUrl(String url) {
-        int width = 0, height = 0;
+    public static MediaExtraInfo getImageSize(String url) {
+        MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
+        InputStream inputStream;
         try {
-            ExifInterface exifInterface = new ExifInterface(url);
-            // 获取图片的宽度
-            width = exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, ExifInterface.ORIENTATION_NORMAL);
-            // 获取图片的高度
-            height = exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, ExifInterface.ORIENTATION_NORMAL);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            if (PictureMimeType.isContent(url)) {
+                inputStream = PictureContentResolver.getContentResolverOpenInputStream(PictureAppMaster.getInstance().getAppContext(), Uri.parse(url));
+            } else {
+                inputStream = new FileInputStream(url);
+            }
+            BitmapFactory.decodeStream(inputStream, null, options);
+            mediaExtraInfo.setWidth(options.outWidth);
+            mediaExtraInfo.setHeight(options.outHeight);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new int[]{width, height};
+        return mediaExtraInfo;
     }
 
-
     /**
-     * get Local image width or height
+     * get Local video width or height
      *
+     * @param context
+     * @param url
      * @return
      */
-    public static int[] getImageSizeForUri(Context context, Uri uri) {
-        int width = 0, height = 0;
-        ParcelFileDescriptor fileDescriptor = null;
+    public static MediaExtraInfo getVideoSize(Context context, String url) {
+        MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
-            fileDescriptor = context.getContentResolver().openFileDescriptor(uri, "r");
-            if (fileDescriptor != null) {
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFileDescriptor(fileDescriptor.getFileDescriptor(), null, options);
-                width = options.outWidth;
-                height = options.outHeight;
+            if (PictureMimeType.isContent(url)) {
+                retriever.setDataSource(context, Uri.parse(url));
+            } else {
+                retriever.setDataSource(url);
             }
+            String orientation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
+            int width, height;
+            if (TextUtils.equals("90", orientation) || TextUtils.equals("270", orientation)) {
+                height = ValueOf.toInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
+                width = ValueOf.toInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+            } else {
+                width = ValueOf.toInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
+                height = ValueOf.toInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+            }
+            mediaExtraInfo.setWidth(width);
+            mediaExtraInfo.setHeight(height);
+            mediaExtraInfo.setDuration(ValueOf.toLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            PictureFileUtils.close(fileDescriptor);
+            retriever.release();
         }
-        return new int[]{width, height};
+        return mediaExtraInfo;
     }
 
+    /**
+     * get Local video width or height
+     *
+     * @param context
+     * @param url
+     * @return
+     */
+    public static MediaExtraInfo getAudioSize(Context context, String url) {
+        MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            if (PictureMimeType.isContent(url)) {
+                retriever.setDataSource(context, Uri.parse(url));
+            } else {
+                retriever.setDataSource(url);
+            }
+            mediaExtraInfo.setDuration(ValueOf.toLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            retriever.release();
+        }
+        return mediaExtraInfo;
+    }
 
     /**
      * 删除部分手机 拍照在DCIM也生成一张的问题
@@ -438,191 +414,6 @@ public class MediaUtils {
 
 
     /**
-     * 获取旋转角度
-     *
-     * @param path
-     * @return
-     */
-    public static int getVideoOrientationForUrl(String path) {
-        try {
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(path);
-            int rotation = ValueOf.toInt(mmr.extractMetadata
-                    (MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION));
-            switch (rotation) {
-                case 90:
-                    return ExifInterface.ORIENTATION_ROTATE_90;
-                case 270:
-                    return ExifInterface.ORIENTATION_ROTATE_270;
-                default:
-                    return 0;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    /**
-     * 获取旋转角度
-     *
-     * @param uri
-     * @return
-     */
-    public static int getVideoOrientationForUri(Context context, Uri uri) {
-        try {
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(context, uri);
-            int orientation = ValueOf.toInt(mmr.extractMetadata
-                    (MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION));
-            switch (orientation) {
-                case 90:
-                    return ExifInterface.ORIENTATION_ROTATE_90;
-                case 270:
-                    return ExifInterface.ORIENTATION_ROTATE_270;
-                default:
-                    return 0;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    /**
-     * 获取旋转角度
-     *
-     * @param context
-     * @param url
-     * @return
-     */
-    public static int getImageOrientationForUrl(Context context, String url) {
-        ExifInterface exifInterface = null;
-        InputStream inputStream = null;
-        int defaultInt = 0;
-        try {
-            if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(url)) {
-                inputStream = context.getContentResolver().openInputStream(Uri.parse(url));
-                if (inputStream != null) {
-                    exifInterface = new ExifInterface(inputStream);
-                }
-            } else {
-                exifInterface = new ExifInterface(url);
-            }
-            return exifInterface != null ? exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL) : 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            PictureFileUtils.close(inputStream);
-        }
-        return defaultInt;
-    }
-
-    /**
-     * 设置LocalMedia旋转信息
-     *
-     * @param context
-     * @param media
-     * @param isAndroidQChangeWH
-     * @param listener
-     * @return
-     */
-    public static void setOrientationAsynchronous(Context context, LocalMedia media,
-                                                  boolean isAndroidQChangeWH,
-                                                  boolean isAndroidQChangeVideoWH,
-                                                  OnCallbackListener<LocalMedia> listener) {
-        if (PictureMimeType.isHasImage(media.getMimeType())) {
-            if (!isAndroidQChangeWH) {
-                return;
-            }
-        }
-
-        if (PictureMimeType.isHasVideo(media.getMimeType())) {
-            if (!isAndroidQChangeVideoWH) {
-                return;
-            }
-        }
-
-        if (media.getOrientation() != -1) {
-            if (listener != null) {
-                listener.onCall(media);
-            }
-            return;
-        }
-        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<Integer>() {
-
-            @Override
-            public Integer doInBackground() {
-                int orientation = 0;
-                if (PictureMimeType.isHasImage(media.getMimeType())) {
-                    orientation = MediaUtils.getImageOrientationForUrl(context, media.getPath());
-                } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
-                    if (PictureMimeType.isContent(media.getPath())) {
-                        orientation = MediaUtils.getVideoOrientationForUri(context, Uri.parse(media.getPath()));
-                    } else {
-                        orientation = MediaUtils.getVideoOrientationForUrl(media.getPath());
-                    }
-                }
-                return orientation;
-            }
-
-            @Override
-            public void onSuccess(Integer orientation) {
-                if (orientation == ExifInterface.ORIENTATION_ROTATE_90
-                        || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
-                    media.setWidth(media.getHeight());
-                    media.setHeight(media.getWidth());
-                }
-                media.setOrientation(orientation);
-                if (listener != null) {
-                    listener.onCall(media);
-                }
-            }
-        });
-    }
-
-    /**
-     * 设置LocalMedia旋转信息
-     *
-     * @param context
-     * @param media
-     * @param isAndroidQChangeWH
-     * @return
-     */
-    public static void setOrientationSynchronous(Context context, LocalMedia media,
-                                                 boolean isAndroidQChangeWH,
-                                                 boolean isAndroidQChangeVideoWH) {
-        if (PictureMimeType.isHasImage(media.getMimeType())) {
-            if (!isAndroidQChangeWH) {
-                return;
-            }
-        }
-        if (PictureMimeType.isHasVideo(media.getMimeType())) {
-            if (!isAndroidQChangeVideoWH) {
-                return;
-            }
-        }
-        // 如果有旋转信息图片宽高则是相反
-        int orientation = 0;
-        if (PictureMimeType.isHasImage(media.getMimeType())) {
-            orientation = MediaUtils.getImageOrientationForUrl(context, media.getPath());
-        } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
-            if (PictureMimeType.isContent(media.getPath())) {
-                orientation = MediaUtils.getVideoOrientationForUri(context, Uri.parse(media.getPath()));
-            } else {
-                orientation = MediaUtils.getVideoOrientationForUrl(media.getPath());
-            }
-        }
-        if (orientation == ExifInterface.ORIENTATION_ROTATE_90
-                || orientation == ExifInterface.ORIENTATION_ROTATE_270) {
-            media.setWidth(media.getHeight());
-            media.setHeight(media.getWidth());
-        }
-        media.setOrientation(orientation);
-    }
-
-
-    /**
      * R  createQueryArgsBundle
      *
      * @param selection
@@ -642,5 +433,37 @@ public class MediaUtils {
             }
         }
         return queryArgs;
+    }
+
+    /**
+     * delete camera PATH
+     *
+     * @param context    Context
+     * @param cameraPath Camera url
+     */
+    public static void deleteCamera(Context context, String cameraPath) {
+        try {
+            if (PictureMimeType.isContent(cameraPath)) {
+                context.getContentResolver().delete(Uri.parse(cameraPath), null, null);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * delete camera PATH
+     *
+     * @param context Context
+     * @param url     Camera url
+     */
+    public static void deleteUri(Context context, Uri url) {
+        try {
+            if (url != null){
+                context.getContentResolver().delete(url, null, null);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

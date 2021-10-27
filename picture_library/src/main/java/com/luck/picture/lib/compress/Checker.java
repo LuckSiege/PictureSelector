@@ -1,6 +1,5 @@
 package com.luck.picture.lib.compress;
 
-import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -157,24 +156,12 @@ enum Checker {
         return 0;
     }
 
-    String extSuffix(InputStreamProvider input) {
-        try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(input.open(), null, options);
-            return options.outMimeType.replace("image/", ".");
-        } catch (Exception e) {
+    String extSuffix(String mimeType) {
+        if (TextUtils.isEmpty(mimeType)) {
             return JPG;
         }
-    }
-
-    String extSuffix(String mimeType) {
         try {
-            if (TextUtils.isEmpty(mimeType)) {
-                return JPG;
-            }
-            return mimeType.startsWith("video") ? mimeType.replace("video/", ".")
-                    : mimeType.replace("image/", ".");
+            return mimeType.startsWith("video") ? mimeType.replace("video/", ".") : mimeType.replace("image/", ".");
         } catch (Exception e) {
             return JPG;
         }

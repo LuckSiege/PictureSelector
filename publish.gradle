@@ -1,0 +1,155 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+Properties localProperties = new Properties()
+localProperties.load(project.rootProject.file('local.properties').newDataInputStream())
+localProperties.each { name, value ->
+    project.ext[name] = value
+}
+
+def mavenUsername = localProperties.getProperty("sonatype.username")
+def mavenPassword = localProperties.getProperty("sonatype.password")
+def projectGroupId = localProperties.getProperty("groupId")
+def projectArtifactId = localProperties.getProperty("artifactId")
+def projectVersionName = cfgs.versionName
+def projectDescription = localProperties.getProperty("description")
+def projectGitUrl = localProperties.getProperty("gitUrl")
+def projectLicense = localProperties.getProperty("license")
+def projectLicenseUrl = projectLicense ? "https://opensource.org/licenses/${projectLicense.toString().replace(" ", "-")} " : null
+def developerAuthorEmail = localProperties.getProperty("email")
+
+def developerAuthorId = mavenUsername
+def developerAuthorName = mavenUsername
+
+
+println("${mavenUsername} ${mavenPassword} - ${projectGroupId}:${projectArtifactId}:${projectVersionName}")
+println("${projectLicense} - ${projectLicenseUrl}")
+
+if (!mavenUsername || !mavenPassword || !projectGroupId || !projectArtifactId || !projectVersionName) {
+    println('Error：缺少参数')
+    return
+}
+if (!projectDescription || !projectGitUrl || !projectLicense || !projectLicenseUrl || !developerAuthorId || !developerAuthorName || !developerAuthorEmail) {
+    println('Warning：缺少可选信息')
+}
+
+def isAndroidProject = project.hasProperty('android')
+if (isAndroidProject) {
+    println("使用Android工程方式发布")
+    task androidJavadocs(type: Javadoc) {
+        source = android.sourceSets.main.java.srcDirs
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    }
+    task javadocsJar(type: Jar, dependsOn: androidJavadocs) {
+        archiveClassifier.set("javadoc")
+        from androidJavadocs.destinationDir
+    }
+    task sourcesJar(type: Jar) {
+        archiveClassifier.set("sources")
+        from android.sourceSets.main.java.srcDirs
+    }
+} else {
+    println("使用Java工程方式发布")
+    task javadocsJar(type: Jar, dependsOn: javadoc) {
+        archiveClassifier.set("javadoc")
+        from javadoc.destinationDir
+    }
+    task sourcesJar(type: Jar) {
+        archiveClassifier.set("sources")
+        from sourceSets.main.allJava
+    }
+}
+
+tasks.withType(Javadoc).all {
+    options {
+        encoding "UTF-8"
+        charSet 'UTF-8'
+        author true
+        version true
+        links "http://docs.oracle.com/javase/8/docs/api"
+        if (isAndroidProject) {
+            linksOffline "http://d.android.com/reference", "${android.sdkDirectory}/docs/reference"
+        }
+        failOnError = false
+    }
+    enabled = false
+}
+
+artifacts {
+    archives javadocsJar, sourcesJar
+}
+
+publishing {
+    publications {
+        aar(MavenPublication) {
+            groupId = projectGroupId
+            artifactId = projectArtifactId
+            version = projectVersionName
+            // Tell maven to prepare the generated "*.aar" file for publishing
+            if (isAndroidProject) {
+                artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
+            } else {
+                artifact("$buildDir/libs/${project.getName()}.jar")
+            }
+            artifact javadocsJar
+            artifact sourcesJar
+
+            pom {
+                name = projectArtifactId
+                description = projectDescription
+                // If your project has a dedicated site, use its URL here
+                url = projectGitUrl
+                licenses {
+                    license {
+                        name = projectLicense
+                        url = projectLicenseUrl
+                    }
+                }
+                developers {
+                    developer {
+                        id = developerAuthorId
+                        name = developerAuthorName
+                        email = developerAuthorEmail
+                    }
+                }
+                // Version control info, if you're using GitHub, follow the format as seen here
+                scm {
+                    connection = "scm:git:${projectGitUrl}"
+                    developerConnection = "scm:git:${projectGitUrl}"
+                    url = projectGitUrl
+                }
+                withXml {
+                    def dependenciesNode = asNode().appendNode('dependencies')
+                    project.configurations.implementation.allDependencies.each {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = projectArtifactId
+
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            // You only need this if you want to publish snapshots, otherwise just set the URL
+            // to the release repo directly
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+            // The username and password we've fetched earlier
+            credentials {
+                username mavenUsername
+                password mavenPassword
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications
+}

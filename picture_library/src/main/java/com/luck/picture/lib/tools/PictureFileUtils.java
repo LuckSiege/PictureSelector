@@ -4,11 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -17,24 +15,22 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
-import androidx.exifinterface.media.ExifInterface;
 
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.manager.PictureCacheManager;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.util.Locale;
-
-import okio.BufferedSink;
-import okio.BufferedSource;
-import okio.Okio;
+import java.util.Objects;
 
 /**
  * @author：luck
@@ -43,10 +39,10 @@ import okio.Okio;
  */
 
 public class PictureFileUtils {
-
+    private static final int BYTE_SIZE = 8192;
     public static final String POSTFIX = ".jpeg";
     public static final String POST_VIDEO = ".mp4";
-    public static final String POST_AUDIO = ".mp3";
+    public static final String POST_AUDIO = ".amr";
 
 
     /**
@@ -103,6 +99,9 @@ public class PictureFileUtils {
         } else {
             // 自定义存储路径
             folderDir = new File(outCameraDirectory);
+            if (!Objects.requireNonNull(folderDir.getParentFile()).exists()) {
+                folderDir.getParentFile().mkdirs();
+            }
         }
         if (!folderDir.exists()) {
             folderDir.mkdirs();
@@ -218,7 +217,7 @@ public class PictureFileUtils {
                 cursor.close();
             }
         }
-        return null;
+        return "";
     }
 
     /**
@@ -260,7 +259,7 @@ public class PictureFileUtils {
 
                 final String id = DocumentsContract.getDocumentId(uri);
                 final Uri contentUri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+                        Uri.parse("content://downloads/public_downloads"), ValueOf.toLong(id));
 
                 return getDataColumn(context, contentUri, null, null);
             }
@@ -302,7 +301,7 @@ public class PictureFileUtils {
             return uri.getPath();
         }
 
-        return null;
+        return "";
     }
 
     /**
@@ -311,133 +310,64 @@ public class PictureFileUtils {
      * will cause both files to become null.
      * Simply skipping this step if the paths are identical.
      */
-    public static void copyFile(@NonNull String pathFrom, @NonNull String pathTo) throws IOException {
+    public static void copyFile(@NonNull String pathFrom, @NonNull String pathTo) {
         if (pathFrom.equalsIgnoreCase(pathTo)) {
             return;
         }
-
         FileChannel outputChannel = null;
         FileChannel inputChannel = null;
         try {
-            inputChannel = new FileInputStream(new File(pathFrom)).getChannel();
-            outputChannel = new FileOutputStream(new File(pathTo)).getChannel();
+            inputChannel = new FileInputStream(pathFrom).getChannel();
+            outputChannel = new FileOutputStream(pathTo).getChannel();
             inputChannel.transferTo(0, inputChannel.size(), outputChannel);
-            inputChannel.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
-            if (inputChannel != null) {
-                inputChannel.close();
-            }
-            if (outputChannel != null) {
-                outputChannel.close();
-            }
+            close(inputChannel);
+            close(outputChannel);
         }
     }
 
+
     /**
-     * 拷贝文件
+     * 复制文件
      *
-     * @param outFile
+     * @param is 文件输入流
+     * @param os 文件输出流
      * @return
      */
-    public static boolean bufferCopy(BufferedSource inBuffer, File outFile) {
-        BufferedSink outBuffer = null;
+    public static boolean writeFileFromIS(final InputStream is, final OutputStream os) {
+        OutputStream osBuffer = null;
+        BufferedInputStream isBuffer = null;
         try {
-            outBuffer = Okio.buffer(Okio.sink(outFile));
-            outBuffer.writeAll(inBuffer);
-            outBuffer.flush();
+            isBuffer = new BufferedInputStream(is);
+            osBuffer = new BufferedOutputStream(os);
+            byte[] data = new byte[BYTE_SIZE];
+            for (int len; (len = isBuffer.read(data)) != -1; ) {
+                os.write(data, 0, len);
+            }
+            os.flush();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         } finally {
-            close(inBuffer);
-            close(outBuffer);
+            close(isBuffer);
+            close(osBuffer);
         }
-        return false;
     }
 
+
     /**
-     * 拷贝文件
+     * 重命名相册拍照
      *
-     * @param outputStream
+     * @param fileName
      * @return
      */
-    public static boolean bufferCopy(BufferedSource inBuffer, OutputStream outputStream) {
-        BufferedSink outBuffer = null;
-        try {
-            outBuffer = Okio.buffer(Okio.sink(outputStream));
-            outBuffer.writeAll(inBuffer);
-            outBuffer.flush();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            close(inBuffer);
-            close(outBuffer);
-        }
-        return false;
-    }
-
-
-    /**
-     * 拷贝文件
-     *
-     * @param inFile
-     * @param outPutStream
-     * @return
-     */
-    public static boolean bufferCopy(File inFile, OutputStream outPutStream) {
-        BufferedSource inBuffer = null;
-        BufferedSink outBuffer = null;
-        try {
-            inBuffer = Okio.buffer(Okio.source(inFile));
-            outBuffer = Okio.buffer(Okio.sink(outPutStream));
-            outBuffer.writeAll(inBuffer);
-            outBuffer.flush();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            close(inBuffer);
-            close(outPutStream);
-            close(outBuffer);
-        }
-        return false;
-    }
-
-    /**
-     * 读取图片属性：旋转的角度
-     *
-     * @param path 图片绝对路径
-     * @return degree旋转的角度
-     */
-    public static int readPictureDegree(Context context, String path) {
-        int degree = 0;
-        try {
-            ExifInterface exifInterface;
-            if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(path)) {
-                ParcelFileDescriptor parcelFileDescriptor =
-                        context.getContentResolver()
-                                .openFileDescriptor(Uri.parse(path), "r");
-                exifInterface = new ExifInterface(parcelFileDescriptor.getFileDescriptor());
-            } else {
-                exifInterface = new ExifInterface(path);
-            }
-            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-            switch (orientation) {
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    degree = 90;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    degree = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    degree = 270;
-                    break;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return degree;
+    public static String rename(String fileName) {
+        String temp = fileName.substring(0, fileName.lastIndexOf("."));
+        String suffix = fileName.substring(fileName.lastIndexOf("."));
+        return temp + "_" + DateUtils.getCreateFileName() + suffix;
     }
 
     /**
@@ -459,10 +389,12 @@ public class PictureFileUtils {
 
     /**
      * set empty PictureSelector Cache
+     * Use {@link PictureCacheManager}
      *
      * @param mContext
      * @param type     image or video ...
      */
+    @Deprecated
     public static void deleteCacheDirFile(Context mContext, int type) {
         File cutDir = mContext.getExternalFilesDir(type == PictureMimeType.ofImage()
                 ? Environment.DIRECTORY_PICTURES : Environment.DIRECTORY_MOVIES);
@@ -480,10 +412,12 @@ public class PictureFileUtils {
 
     /**
      * set empty PictureSelector Cache
+     * Use {@link PictureCacheManager}
      *
      * @param context
      * @param type    image、video、audio ...
      */
+    @Deprecated
     public static void deleteAllCacheDirFile(Context context) {
 
         File dirPictures = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -579,23 +513,6 @@ public class PictureFileUtils {
     }
 
     /**
-     * 获取图片后缀
-     *
-     * @param input
-     * @return
-     */
-    public static String extSuffix(InputStream input) {
-        try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(input, null, options);
-            return options.outMimeType.replace("image/", ".");
-        } catch (Exception e) {
-            return PictureMimeType.JPEG;
-        }
-    }
-
-    /**
      * 根据类型创建文件名
      *
      * @param context
@@ -609,31 +526,31 @@ public class PictureFileUtils {
         if (PictureMimeType.isHasVideo(mineType)) {
             // 视频
             String filesDir = PictureFileUtils.getVideoDiskCacheDir(context) + File.separator;
-            if (!TextUtils.isEmpty(md5)) {
-                String fileName = TextUtils.isEmpty(customFileName) ? "VID_" + md5.toUpperCase() + suffix : customFileName;
+            if (TextUtils.isEmpty(md5)) {
+                String fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("VID_") + suffix : customFileName;
                 return filesDir + fileName;
             } else {
-                String fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("VID_") + suffix : customFileName;
+                String fileName = TextUtils.isEmpty(customFileName) ? "VID_" + md5.toUpperCase() + suffix : customFileName;
                 return filesDir + fileName;
             }
         } else if (PictureMimeType.isHasAudio(mineType)) {
             // 音频
             String filesDir = PictureFileUtils.getAudioDiskCacheDir(context) + File.separator;
-            if (!TextUtils.isEmpty(md5)) {
-                String fileName = TextUtils.isEmpty(customFileName) ? "AUD_" + md5.toUpperCase() + suffix : customFileName;
+            if (TextUtils.isEmpty(md5)) {
+                String fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("AUD_") + suffix : customFileName;
                 return filesDir + fileName;
             } else {
-                String fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("AUD_") + suffix : customFileName;
+                String fileName = TextUtils.isEmpty(customFileName) ? "AUD_" + md5.toUpperCase() + suffix : customFileName;
                 return filesDir + fileName;
             }
         } else {
             // 图片
             String filesDir = PictureFileUtils.getDiskCacheDir(context) + File.separator;
-            if (!TextUtils.isEmpty(md5)) {
-                String fileName = TextUtils.isEmpty(customFileName) ? "IMG_" + md5.toUpperCase() + suffix : customFileName;
+            if (TextUtils.isEmpty(md5)) {
+                String fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("IMG_") + suffix : customFileName;
                 return filesDir + fileName;
             } else {
-                String fileName = TextUtils.isEmpty(customFileName) ? DateUtils.getCreateFileName("IMG_") + suffix : customFileName;
+                String fileName = TextUtils.isEmpty(customFileName) ? "IMG_" + md5.toUpperCase() + suffix : customFileName;
                 return filesDir + fileName;
             }
         }
@@ -646,16 +563,44 @@ public class PictureFileUtils {
      * @return
      */
     public static boolean isFileExists(String path) {
-        if (!TextUtils.isEmpty(path) && !new File(path).exists()) {
-            return false;
-        }
-        return true;
+        return TextUtils.isEmpty(path) || new File(path).exists();
     }
+
+    public static final int KB = 1024;
+    public static final int MB = 1048576;
+    public static final int GB = 1073741824;
+
+    /**
+     * Size of byte to fit size of memory.
+     * <p>to three decimal places</p>
+     *
+     * @param byteSize  Size of byte.
+     * @param precision The precision
+     * @return fit size of memory
+     */
+    @SuppressLint("DefaultLocale")
+    public static String formatFileSize(final long byteSize, int precision) {
+        if (precision < 0) {
+            throw new IllegalArgumentException("precision shouldn't be less than zero!");
+        }
+        if (byteSize < 0) {
+            throw new IllegalArgumentException("byteSize shouldn't be less than zero!");
+        } else if (byteSize < KB) {
+            return String.format("%." + precision + "fB", (double) byteSize);
+        } else if (byteSize < MB) {
+            return String.format("%." + precision + "fKB", (double) byteSize / KB);
+        } else if (byteSize < GB) {
+            return String.format("%." + precision + "fMB", (double) byteSize / MB);
+        } else {
+            return String.format("%." + precision + "fGB", (double) byteSize / GB);
+        }
+    }
+
 
     @SuppressWarnings("ConstantConditions")
     public static void close(@Nullable Closeable c) {
         // java.lang.IncompatibleClassChangeError: interface not implemented
-        if (c != null && c instanceof Closeable) {
+        if (c instanceof Closeable) {
             try {
                 c.close();
             } catch (Exception e) {

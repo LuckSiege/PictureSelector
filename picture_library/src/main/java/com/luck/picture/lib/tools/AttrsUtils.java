@@ -70,17 +70,17 @@ public class AttrsUtils {
      * @return
      */
     public static int getTypeValueColor(Context context, int attr) {
-        int textSize = 0;
+        int color = 0;
         try {
             TypedValue typedValue = new TypedValue();
             int[] attribute = new int[]{attr};
             TypedArray array = context.obtainStyledAttributes(typedValue.resourceId, attribute);
-            textSize = array.getColor(0, 0);
+            color = array.getColor(0, 0);
             array.recycle();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return textSize;
+        return color;
     }
 
     /**

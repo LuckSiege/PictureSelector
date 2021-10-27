@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="picture_all_audio">Todos los audios</string>
+    <string name="picture_audio">Permiso de acceso al sistema de grabación denegado</string>
+    <string name="picture_audio_empty">Puedes utilizar el sistema de grabación para grabar audios</string>
+    <string name="picture_audio_error">Audio corrupto</string>
+    <string name="picture_camera">Permiso de acceso a la cámara denegado</string>
+    <string name="picture_camera_roll">Galería</string>
+    <string name="picture_camera_roll_num">%1$s (%2$d)</string>
+    <string name="picture_cancel">Cancelar</string>
+    <string name="picture_choose_limit_seconds">Únicamente pueden seleccionarse videos entre %1$ds y %2$ds</string>
+    <string name="picture_choose_max_seconds">Puedes seleccionar videos de no más de %1$ds</string>
+    <string name="picture_choose_min_seconds">No puedes seleccionar videos de menos de %1$ds</string>
+    <string name="picture_completed">Completado</string>
+    <string name="picture_confirm">Confirmar</string>
+    <string name="picture_data_exception">Error al obtener datos de galería…</string>
+    <string name="picture_data_null">No hay nada aquí…</string>
+    <string name="picture_done">Completar</string>
+    <string name="picture_done_front_num">%1$d/%2$d Ok</string>
+    <string name="picture_empty">Puedes utilizar tu cámara para tomar fotos o videos</string>
+    <string name="picture_empty_audio_title">No hay audios\n</string>
+    <string name="picture_empty_title">No hay fotos o videos\n</string>
+    <string name="picture_error">Foto corrupta</string>
+    <string name="picture_gif_tag">gif</string>
+    <string name="picture_webp_tag">webp</string>
+    <string name="picture_go_setting">Configuración</string>
+    <string name="picture_jurisdiction">Acceso a la tarjeta de memoria denegado</string>
+    <string name="picture_know">Entendido</string>
+    <string name="picture_long_chart">Imagen larga</string>
+    <string name="picture_message_audio_max_num">Seleccciona hasta %1$s audios</string>
+    <string name="picture_message_max_num">Selecciona hasta %1$s fotos</string>
+    <string name="picture_message_video_max_num">Selecciona %1$s videos</string>
+    <string name="picture_min_img_num">Las imágenes seleccionadas no deben ser menos de %1$s</string>
+    <string name="picture_min_video_num">Los videos seleccionados no deben ser menos de %1$s</string>
+    <string name="picture_not_crop_data">No hay datos</string>
+    <string name="picture_original_image">Original (%1$s)</string>
+    <string name="picture_default_original_image">Original</string>
+    <string name="picture_pause_audio">Pausar</string>
+    <string name="picture_photo_camera">Foto con clic, foto con clic extendido</string>
+    <string name="picture_photo_pictures">Tomar foto con clic</string>
+    <string name="picture_photo_recording">Tomar foto con clic extendido</string>
+    <string name="picture_photograph">Tomar foto</string>
+    <string name="picture_play_audio">Reproducir</string>
+    <string name="picture_please">Espera un momento…</string>
+    <string name="picture_please_select">Seleccionar</string>
+    <string name="picture_preview">Vista previa</string>
+    <string name="picture_preview_image_num">%1$d/%2$d</string>
+    <string name="picture_preview_num">Vista previa(%1$d)</string>
+    <string name="picture_prompt">Aviso</string>
+    <string name="picture_prompt_content">¿Guardar las imágenes en tu teléfono?</string>
+    <string name="picture_quit_audio">Salir</string>
+    <string name="picture_record_video">Grabar video</string>
+    <string name="picture_recording_time_is_short">Tiempo de grabación demasiado breve</string>
+    <string name="picture_rule">No pueden seleccionarse fotos y videos simultáneamente</string>
+    <string name="picture_save_error">Guardado fallido</string>
+    <string name="picture_save_success">Foto guardada exitosamente en</string>
+    <string name="picture_select">Seleccionar</string>
+    <string name="picture_send">Completar</string>
+    <string name="picture_send_num">Completar(%1$d/%2$d)</string>
+    <string name="picture_stop_audio">Detener</string>
+    <string name="picture_take_picture">Capturar</string>
+    <string name="picture_tape">Grabar</string>
+    <string name="picture_video_error">Video corrupto</string>
+    <string name="picture_video_toast">No hay vista previa del video</string>
+    <string name="picture_warning">No hay ningún archivo</string>
+    <string name="picture_editor">Editar</string>
+
+    <string name="ucrop_gif_tag" tools:override="true">gif</string>
+    <string name="ucrop_label_edit_photo" tools:override="true">Editar foto</string>
+    <string name="ucrop_label_original" tools:override="true">Original</string>
+    <string name="ucrop_menu_crop" tools:override="true">Recortar</string>
+</resources>

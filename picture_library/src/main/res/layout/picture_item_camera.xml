@@ -16,6 +16,6 @@
         android:gravity="center"
         android:text="@string/picture_take_picture"
         android:textColor="@color/picture_color_white"
-        android:textSize="14dp" />
+        android:textSize="14sp" />
 
 </com.luck.picture.lib.widget.SquareRelativeLayout>

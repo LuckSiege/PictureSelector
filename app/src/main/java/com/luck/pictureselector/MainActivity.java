@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,6 +15,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -21,6 +23,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,33 +36,45 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.luck.picture.lib.PictureMediaScannerConnection;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.animators.AnimationType;
+import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.broadcast.BroadcastAction;
 import com.luck.picture.lib.broadcast.BroadcastManager;
+import com.luck.picture.lib.camera.CustomCameraView;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
+import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.language.LanguageConfig;
+import com.luck.picture.lib.listener.OnCallbackListener;
+import com.luck.picture.lib.listener.OnChooseLimitCallback;
 import com.luck.picture.lib.listener.OnCustomCameraInterfaceListener;
 import com.luck.picture.lib.listener.OnCustomImagePreviewCallback;
+import com.luck.picture.lib.listener.OnPermissionDialogOptionCallback;
+import com.luck.picture.lib.listener.OnPermissionsObtainCallback;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.listener.OnVideoSelectedPlayCallback;
+import com.luck.picture.lib.manager.PictureCacheManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
 import com.luck.picture.lib.style.PictureSelectorUIStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
-import com.luck.picture.lib.tools.PictureFileUtils;
+import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.listener.DragListener;
-import com.luck.pictureselector.style.PictureUtils;
+import com.yalantis.ucrop.view.OverlayView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -72,7 +90,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
-    private final static String TAG = MainActivity.class.getSimpleName();
+    private final static String TAG = "PictureSelectorTag";
     private GridImageAdapter mAdapter;
     private int maxSelectNum = 9;
     private TextView tv_select_num;
@@ -84,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
             cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
             cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
-            cb_custom_camera, cbPage, cbEnabledMask;
+            cb_custom_camera, cbPage, cbEnabledMask,cbEditor;
     private int themeId;
     private int chooseMode = PictureMimeType.ofAll();
     private boolean isWeChatStyle;
@@ -100,214 +118,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ItemTouchHelper mItemTouchHelper;
     private DragListener mDragListener;
     private int animationMode = AnimationType.DEFAULT_ANIMATION;
-
-
-    private GridImageAdapter.onAddPicClickListener onAddPicClickListener = new GridImageAdapter.onAddPicClickListener() {
-        @Override
-        public void onAddPicClick () {
-            boolean mode = cb_mode.isChecked();
-            if (mode) {
-
-                PictureSelector.create(MainActivity.this)
-                        .openGallery(PictureMimeType.ofImage())
-                        .imageEngine(GlideEngine.createGlideEngine())
-                        .selectionMode(PictureConfig.MULTIPLE)
-                        .isPageStrategy(true)
-                        .setPictureUIStyle(PictureUtils.ofDoctalkStyle())
-                        .isCamera(true)
-                        .isDoctalkStyle(true)
-                        .maxSelectNum(3)
-                        .minSelectNum(1)
-                        .imageSpanCount(4)
-                        .isEnableCrop(true)
-                        .isPreviewImage(false)
-                        .withAspectRatio(1, 1)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
-                        .hideBottomControls(false)
-                        .imageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
-                        .forResult(new MyResultCallback(mAdapter));
-
-                //                // 进入相册 以下是例子：不需要的api可以不写
-                //                PictureSelector.create(MainActivity.this)
-                //                        .openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
-                //                        .imageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
-                //                        //.theme(themeId)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style v2.3.3后 建议使用setPictureStyle()动态方式
-                //                        .setPictureUIStyle(mSelectorUIStyle)
-                //                        //.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
-                //                        //.setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
-                //                        .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
-                //                        .isWeChatStyle(isWeChatStyle)// 是否开启微信图片选择风格
-                //                        .isUseCustomCamera(cb_custom_camera.isChecked())// 是否使用自定义相机
-                //                        .setLanguage(language)// 设置语言，默认中文
-                //                        .isPageStrategy(cbPage.isChecked())// 是否开启分页策略 & 每页多少条；默认开启
-                //                        .setRecyclerAnimationMode(animationMode)// 列表动画效果
-                //                        .isWithVideoImage(true)// 图片和视频是否可以同选,只在ofAll模式下有效
-                //                        .isMaxSelectEnabledMask(cbEnabledMask.isChecked())// 选择数到了最大阀值列表是否启用蒙层效果
-                //                        //.isAutomaticTitleRecyclerTop(false)// 连续点击标题栏RecyclerView是否自动回到顶部,默认true
-                //                        //.loadCacheResourcesCallback(GlideCacheEngine.createCacheEngine())// 获取图片资源缓存，主要是解决华为10部分机型在拷贝文件过多时会出现卡的问题，这里可以判断只在会出现一直转圈问题机型上使用
-                //                        //.setOutputCameraPath(createCustomCameraOutPath())// 自定义相机输出目录
-                //                        //.setButtonFeatures(CustomCameraView.BUTTON_STATE_BOTH)// 设置自定义相机按钮状态
-                //                        .maxSelectNum(maxSelectNum)// 最大图片选择数量
-                //                        .minSelectNum(1)// 最小选择数量
-                //                        .maxVideoSelectNum(1) // 视频最大选择数量
-                //                        //.minVideoSelectNum(1)// 视频最小选择数量
-                //                        //.closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 关闭在AndroidQ下获取图片或视频宽高相反自动转换
-                //                        .imageSpanCount(4)// 每行显示个数
-                //                        .isReturnEmpty(false)// 未选择数据时点击按钮是否可以返回
-                //                        .closeAndroidQChangeWH(true)//如果图片有旋转角度则对换宽高,默认为true
-                //                        .closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 如果视频有旋转角度则对换宽高,默认为false
-                //                        .isAndroidQTransform(false)// 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && .isEnableCrop(false);有效,默认处理
-                //                        .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)// 设置相册Activity方向，不设置默认使用系统
-                //                        .isOriginalImageControl(cb_original.isChecked())// 是否显示原图控制按钮，如果设置为true则用户可以自由选择是否使用原图，压缩、裁剪功能将会失效
-                //                        //.bindCustomPlayVideoCallback(new MyVideoSelectedPlayCallback(getContext()))// 自定义视频播放回调控制，用户可以使用自己的视频播放界面
-                //                        //.bindCustomPreviewCallback(new MyCustomPreviewInterfaceListener())// 自定义图片预览回调接口
-                //                        //.bindCustomCameraInterfaceListener(new MyCustomCameraInterfaceListener())// 提供给用户的一些额外的自定义操作回调
-                //                        //.cameraFileName(System.currentTimeMillis() +".jpg")    // 重命名拍照文件名、如果是相册拍照则内部会自动拼上当前时间戳防止重复，注意这个只在使用相机时可以使用，如果使用相机又开启了压缩或裁剪 需要配合压缩和裁剪文件名api
-                //                        //.renameCompressFile(System.currentTimeMillis() +".jpg")// 重命名压缩文件名、 如果是多张压缩则内部会自动拼上当前时间戳防止重复
-                //                        //.renameCropFileName(System.currentTimeMillis() + ".jpg")// 重命名裁剪文件名、 如果是多张裁剪则内部会自动拼上当前时间戳防止重复
-                //                        .selectionMode(cb_choose_mode.isChecked() ?
-                //                                PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
-                //                        .isSingleDirectReturn(cb_single_back.isChecked())// 单选模式下是否直接返回，PictureConfig.SINGLE模式下有效
-                //                        .isPreviewImage(cb_preview_img.isChecked())// 是否可预览图片
-                //                        .isPreviewVideo(cb_preview_video.isChecked())// 是否可预览视频
-                //                        //.querySpecifiedFormatSuffix(PictureMimeType.ofJPEG())// 查询指定后缀格式资源
-                //                        .isEnablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
-                //                        .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
-                //                        //.isMultipleSkipCrop(false)// 多图裁剪时是否支持跳过，默认支持
-                //                        //.isMultipleRecyclerAnimation(false)// 多图裁剪底部列表显示动画效果
-                //                        .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
-                //                        //.imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg,Android Q使用PictureMimeType.PNG_Q
-                //                        .isEnableCrop(cb_crop.isChecked())// 是否裁剪
-                //                        //.basicUCropConfig()//对外提供所有UCropOptions参数配制，但如果PictureSelector原本支持设置的还是会使用原有的设置
-                //                        .isCompress(cb_compress.isChecked())// 是否压缩
-                //                        //.compressQuality(80)// 图片压缩后输出质量 0~ 100
-                //                        .synOrAsy(false)//同步true或异步false 压缩 默认同步
-                //                        //.queryMaxFileSize(10)// 只查多少M以内的图片、视频、音频  单位M
-                //                        //.compressSavePath(getPath())//压缩图片保存地址
-                //                        //.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效 注：已废弃
-                //                        //.glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度 注：已废弃
-                //                        .withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
-                //                        .hideBottomControls(!cb_hide.isChecked())// 是否显示uCrop工具栏，默认不显示
-                //                        .isGif(cb_isGif.isChecked())// 是否显示gif图片
-                //                        //.isWebp(false)// 是否显示webp图片,默认显示
-                //                        //.isBmp(false)//是否显示bmp图片,默认显示
-                //                        .freeStyleCropEnabled(cb_styleCrop.isChecked())// 裁剪框是否可拖拽
-                //                        .circleDimmedLayer(cb_crop_circular.isChecked())// 是否圆形裁剪
-                //                        //.setCropDimmedColor(ContextCompat.getColor(getContext(), R.color.app_color_white))// 设置裁剪背景色值
-                //                        //.setCircleDimmedBorderColor(ContextCompat.getColor(getApplicationContext(), R.color.app_color_white))// 设置圆形裁剪边框色值
-                //                        //.setCircleStrokeWidth(3)// 设置圆形裁剪边框粗细
-                //                        .showCropFrame(cb_showCropFrame.isChecked())// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
-                //                        .showCropGrid(cb_showCropGrid.isChecked())// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
-                //                        .isOpenClickSound(cb_voice.isChecked())// 是否开启点击声音
-                //                        .selectionData(mAdapter.getData())// 是否传入已选图片
-                //                        //.isDragFrame(false)// 是否可拖动裁剪框(固定)
-                //                        //.videoMinSecond(10)// 查询多少秒以内的视频
-                //                        //.videoMaxSecond(15)// 查询多少秒以内的视频
-                //                        //.recordVideoSecond(10)//录制视频秒数 默认60s
-                //                        //.isPreviewEggs(true)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
-                //                        //.cropCompressQuality(90)// 注：已废弃 改用cutOutQuality()
-                //                        .cutOutQuality(90)// 裁剪输出质量 默认100
-                //                        .minimumCompressSize(100)// 小于多少kb的图片不压缩
-                //                        //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
-                //                        //.cropImageWideHigh()// 裁剪宽高比，设置如果大于图片本身宽高则无效
-                //                        //.rotateEnabled(false) // 裁剪是否可旋转图片
-                //                        //.scaleEnabled(false)// 裁剪是否可放大缩小图片
-                //                        //.videoQuality()// 视频录制质量 0 or 1
-                //                        //.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
-                //                        .forResult(new MyResultCallback(mAdapter));
-            }
-            else {
-                // 单独拍照
-                PictureSelector.create(MainActivity.this)
-                        .openCamera(chooseMode)// 单独拍照，也可录像或也可音频 看你传入的类型是图片or视频
-                        .theme(themeId)// 主题样式设置 具体参考 values/styles
-                        .imageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
-                        .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
-                        .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
-                        .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
-                        .maxSelectNum(maxSelectNum)// 最大图片选择数量
-                        .isUseCustomCamera(cb_custom_camera.isChecked())// 是否使用自定义相机
-                        //.setOutputCameraPath()// 自定义相机输出目录
-                        .minSelectNum(1)// 最小选择数量
-                        //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
-                        .closeAndroidQChangeWH(true)//如果图片有旋转角度则对换宽高，默认为true
-                        .closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 如果视频有旋转角度则对换宽高，默认false
-                        .selectionMode(cb_choose_mode.isChecked() ?
-                                PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
-                        //.cameraFileName(System.currentTimeMillis() + ".jpg")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用
-                        //.renameCompressFile(System.currentTimeMillis() + ".jpg")// 重命名压缩文件名、 注意这个不要重复，只适用于单张图压缩使用
-                        //.renameCropFileName(System.currentTimeMillis() + ".jpg")// 重命名裁剪文件名、 注意这个不要重复，只适用于单张图裁剪使用
-                        .loadCacheResourcesCallback(GlideCacheEngine.createCacheEngine())// 获取图片资源缓存，主要是解决华为10部分机型在拷贝文件过多时会出现卡的问题，这里可以判断只在会出现一直转圈问题机型上使用
-                        .isPreviewImage(cb_preview_img.isChecked())// 是否可预览图片
-                        .isPreviewVideo(cb_preview_video.isChecked())// 是否可预览视频
-                        .isEnablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
-                        .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
-                        .isEnableCrop(cb_crop.isChecked())// 是否裁剪
-                        //.basicUCropConfig()//对外提供所有UCropOptions参数配制，但如果PictureSelector原本支持设置的还是会使用原有的设置
-                        .isCompress(cb_compress.isChecked())// 是否压缩
-                        .compressQuality(60)// 图片压缩后输出质量
-                        .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
-                        .withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
-                        .hideBottomControls(!cb_hide.isChecked())// 是否显示uCrop工具栏，默认不显示
-                        .isGif(cb_isGif.isChecked())// 是否显示gif图片
-                        .freeStyleCropEnabled(cb_styleCrop.isChecked())// 裁剪框是否可拖拽
-                        .circleDimmedLayer(cb_crop_circular.isChecked())// 是否圆形裁剪
-                        //.setCircleDimmedColor(ContextCompat.getColor(this, R.color.app_color_white))// 设置圆形裁剪背景色值
-                        //.setCircleDimmedBorderColor(ContextCompat.getColor(this, R.color.app_color_white))// 设置圆形裁剪边框色值
-                        //.setCircleStrokeWidth(3)// 设置圆形裁剪边框粗细
-                        .showCropFrame(cb_showCropFrame.isChecked())// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
-                        .showCropGrid(cb_showCropGrid.isChecked())// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
-                        .isOpenClickSound(cb_voice.isChecked())// 是否开启点击声音
-                        .selectionData(mAdapter.getData())// 是否传入已选图片
-                        //.isPreviewEggs(true)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
-                        //.cropCompressQuality(90)// 废弃 改用cutOutQuality()
-                        .cutOutQuality(90)// 裁剪输出质量 默认100
-                        .minimumCompressSize(100)// 小于100kb的图片不压缩
-                        //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
-                        //.cropImageWideHigh()// 裁剪宽高比，设置如果大于图片本身宽高则无效
-                        //.rotateEnabled() // 裁剪是否可旋转图片
-                        //.scaleEnabled()// 裁剪是否可放大缩小图片
-                        //.videoQuality()// 视频录制质量 0 or 1
-                        //.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
-                        .forResult(new MyResultCallback(mAdapter));
-            }
-        }
-    };
-
-    /**
-     * 重置
-     */
-    private void resetState () {
-        if (mDragListener != null) {
-            mDragListener.deleteState(false);
-            mDragListener.dragState(false);
-        }
-        isUpward = false;
-    }
-
-    /**
-     * 清空缓存包括裁剪、压缩、AndroidQToPath所生成的文件，注意调用时机必须是处理完本身的业务逻辑后调用；非强制性
-     */
-    private void clearCache () {
-        // 清空图片缓存，包括裁剪、压缩后的图片 注意:必须要在上传完成后调用 必须要获取权限
-        if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            //PictureFileUtils.deleteCacheDirFile(this, PictureMimeType.ofImage());
-            PictureFileUtils.deleteAllCacheDirFile(getContext());
-        }
-        else {
-            PermissionChecker.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
-        }
-    }
+    private ActivityResultLauncher<Intent> launcherResult;
 
     @Override
-    protected void onCreate (Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            // 被回收
-        }
-        else {
-            clearCache();
-        }
         setContentView(R.layout.activity_main);
         themeId = R.style.picture_default_style;
         mSelectorUIStyle = PictureSelectorUIStyle.ofDefaultStyle();
@@ -331,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_preview_video = findViewById(R.id.cb_preview_video);
         cb_crop = findViewById(R.id.cb_crop);
         cbPage = findViewById(R.id.cbPage);
+        cbEditor = findViewById(R.id.cb_editor);
         cbEnabledMask = findViewById(R.id.cbEnabledMask);
         cb_styleCrop = findViewById(R.id.cb_styleCrop);
         cb_compress = findViewById(R.id.cb_compress);
@@ -371,12 +187,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
 //        List<LocalMedia> list = new ArrayList<>();
-//        LocalMedia m = new LocalMedia();
-//        m.setPath("https://wx1.sinaimg.cn/mw690/006e0i7xly1gaxqq5m7t8j31311g2ao6.jpg");
-//        LocalMedia m1 = new LocalMedia();
-//        m1.setPath("https://ww1.sinaimg.cn/bmiddle/bcd10523ly1g96mg4sfhag20c806wu0x.gif");
-//        list.add(m);
-//        list.add(m1);
+//        list.add(LocalMedia.parseHttpLocalMedia("https://wx1.sinaimg.cn/mw690/006e0i7xly1gaxqq5m7t8j31311g2ao6.jpg", PictureMimeType.ofJPEG()));
+//        list.add(LocalMedia.parseHttpLocalMedia("https://ww1.sinaimg.cn/bmiddle/bcd10523ly1g96mg4sfhag20c806wu0x.gif", PictureMimeType.ofGIF()));
 //        mAdapter.setList(list);
 
         mAdapter.setSelectMax(maxSelectNum);
@@ -408,19 +220,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     default:
                         // 预览图片 可自定长按保存路径
-                        //                        PictureWindowAnimationStyle animationStyle = new PictureWindowAnimationStyle();
-                        //                        animationStyle.activityPreviewEnterAnimation = R.anim.picture_anim_up_in;
-                        //                        animationStyle.activityPreviewExitAnimation = R.anim.picture_anim_down_out;
-                        //                        PictureSelector.create(MainActivity.this)
-                        //                                .themeStyle(R.style.picture_default_style) // xml设置主题
-                        //                                .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
-                        //                                //.setPictureWindowAnimationStyle(animationStyle)// 自定义页面启动动画
-                        //                                .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)// 设置相册Activity方向，不设置默认使用系统
-                        //                                .isNotPreviewDownload(true)// 预览图片长按是否可以下载
-                        //                                //.bindCustomPlayVideoCallback(new MyVideoSelectedPlayCallback(getContext()))// 自定义播放回调控制，用户可以使用自己的视频播放界面
-                        //                                .imageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
-                        //                                .openExternalPreview(position, selectList);
-
+//                        PictureWindowAnimationStyle animationStyle = new PictureWindowAnimationStyle();
+//                        animationStyle.activityPreviewEnterAnimation = R.anim.picture_anim_up_in;
+//                        animationStyle.activityPreviewExitAnimation = R.anim.picture_anim_down_out;
+                        PictureSelector.create(MainActivity.this)
+                                .themeStyle(R.style.picture_default_style) // xml设置主题
+                                .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
+                                //.setPictureWindowAnimationStyle(animationStyle)// 自定义页面启动动画
+                                .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)// 设置相册Activity方向，不设置默认使用系统
+                                .isNotPreviewDownload(true)// 预览图片长按是否可以下载
+                                //.bindCustomPlayVideoCallback(new MyVideoSelectedPlayCallback(getContext()))// 自定义播放回调控制，用户可以使用自己的视频播放界面
+                                .imageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
+                                .openExternalPreview(position, selectList);
                         break;
                 }
             }
@@ -594,6 +405,269 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 注册广播
         BroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver,
                 BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
+
+        // 注册需要写在onCreate或Fragment onAttach里，否则会报java.lang.IllegalStateException异常
+        launcherResult = createActivityResultLauncher();
+
+        // 清除缓存
+        clearCache();
+    }
+
+    /**
+     * 重置
+     */
+    private void resetState() {
+        if (mDragListener != null) {
+            mDragListener.deleteState(false);
+            mDragListener.dragState(false);
+        }
+        isUpward = false;
+    }
+
+    /**
+     * 清空缓存包括裁剪、压缩、AndroidQToPath所生成的文件，注意调用时机必须是处理完本身的业务逻辑后调用；非强制性
+     */
+    private void clearCache() {
+        // 清空图片缓存，包括裁剪、压缩后的图片 注意:必须要在上传完成后调用 必须要获取权限
+        if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            //PictureCacheManager.deleteCacheDirFile(this, PictureMimeType.ofImage());
+            PictureCacheManager.deleteAllCacheDirRefreshFile(getContext());
+        } else {
+            PermissionChecker.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
+        }
+    }
+
+    private final GridImageAdapter.onAddPicClickListener onAddPicClickListener = new GridImageAdapter.onAddPicClickListener() {
+        @Override
+        public void onAddPicClick() {
+            boolean mode = cb_mode.isChecked();
+            if (mode) {
+                // 进入相册 以下是例子：不需要的api可以不写
+                PictureSelector.create(MainActivity.this)
+                        .openGallery(chooseMode)// 全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
+                        .imageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
+                        //.theme(themeId)// 主题样式设置 具体参考 values/styles   用法：R.style.picture.white.style v2.3.3后 建议使用setPictureStyle()动态方式
+                        .setPictureUIStyle(mSelectorUIStyle)
+                        //.setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
+                        //.setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
+                        .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
+                        .isWeChatStyle(isWeChatStyle)// 是否开启微信图片选择风格
+                        .isUseCustomCamera(cb_custom_camera.isChecked())// 是否使用自定义相机
+                        //.isCameraCopyExternalFile(true)
+                        .setLanguage(language)// 设置语言，默认中文
+                        .isPageStrategy(cbPage.isChecked())// 是否开启分页策略 & 每页多少条；默认开启
+                        .setRecyclerAnimationMode(animationMode)// 列表动画效果
+                        .isWithVideoImage(true)// 图片和视频是否可以同选,只在ofAll模式下有效
+                        //.isSyncCover(true)// 是否强制从MediaStore里同步相册封面，如果相册封面没显示异常则没必要设置
+                        //.isCameraAroundState(false) // 是否开启前置摄像头，默认false，如果使用系统拍照 可能部分机型会有兼容性问题
+                        //.isCameraRotateImage(false) // 拍照图片旋转是否自动纠正
+                        //.isAutoRotating(false)// 压缩时自动纠正有旋转的图片
+                        .isMaxSelectEnabledMask(cbEnabledMask.isChecked())// 选择数到了最大阀值列表是否启用蒙层效果
+                        //.isAutomaticTitleRecyclerTop(false)// 连续点击标题栏RecyclerView是否自动回到顶部,默认true
+                        //.loadCacheResourcesCallback(GlideCacheEngine.createCacheEngine())// 获取图片资源缓存，主要是解决华为10部分机型在拷贝文件过多时会出现卡的问题，这里可以判断只在会出现一直转圈问题机型上使用
+                        //.setOutputCameraPath(createCustomCameraOutPath())// 自定义相机输出目录
+                        .setCustomCameraFeatures(CustomCameraView.BUTTON_STATE_BOTH)// 设置自定义相机按钮状态
+                        .setCaptureLoadingColor(ContextCompat.getColor(getContext(), R.color.app_color_blue))
+                        .maxSelectNum(maxSelectNum)// 最大图片选择数量
+                        .minSelectNum(1)// 最小选择数量
+                        .maxVideoSelectNum(1) // 视频最大选择数量
+                        //.minVideoSelectNum(1)// 视频最小选择数量
+                        //.closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 关闭在AndroidQ下获取图片或视频宽高相反自动转换
+                        .imageSpanCount(4)// 每行显示个数
+                        //.queryFileSize() // 过滤最大资源,已废弃
+                        //.filterMinFileSize(5)// 过滤最小资源，单位kb
+                        //.filterMaxFileSize()// 过滤最大资源，单位kb
+                        .isReturnEmpty(false)// 未选择数据时点击按钮是否可以返回
+                        .closeAndroidQChangeWH(true)//如果图片有旋转角度则对换宽高,默认为true
+                        .closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 如果视频有旋转角度则对换宽高,默认为false
+                        .isAndroidQTransform(true)// 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && .isEnableCrop(false);有效,默认处理
+                        .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)// 设置相册Activity方向，不设置默认使用系统
+                        .isOriginalImageControl(cb_original.isChecked())// 是否显示原图控制按钮，如果设置为true则用户可以自由选择是否使用原图，裁剪功能将会失效
+                        .isDisplayOriginalSize(true)// 是否显示原文件大小，isOriginalImageControl true有效
+                        .isEditorImage(cbEditor.isChecked())//是否编辑图片
+                        //.isAutoScalePreviewImage(true)// 如果图片宽度不能充满屏幕则自动处理成充满模式
+                        //.bindCustomPlayVideoCallback(new MyVideoSelectedPlayCallback(getContext()))// 自定义视频播放回调控制，用户可以使用自己的视频播放界面
+                        //.bindCustomPreviewCallback(new MyCustomPreviewInterfaceListener())// 自定义图片预览回调接口
+                        //.bindCustomCameraInterfaceListener(new MyCustomCameraInterfaceListener())// 提供给用户的一些额外的自定义操作回调
+                        //.bindCustomPermissionsObtainListener(new MyPermissionsObtainCallback())// 自定义权限拦截
+                        //.bindCustomChooseLimitListener(new MyChooseLimitCallback()) // 自定义选择限制条件Dialog
+                        //.cameraFileName(System.currentTimeMillis() +".jpg")    // 重命名拍照文件名、如果是相册拍照则内部会自动拼上当前时间戳防止重复，注意这个只在使用相机时可以使用，如果使用相机又开启了压缩或裁剪 需要配合压缩和裁剪文件名api
+                        //.renameCompressFile(System.currentTimeMillis() +".jpg")// 重命名压缩文件名、 如果是多张压缩则内部会自动拼上当前时间戳防止重复
+                        //.renameCropFileName(System.currentTimeMillis() + ".jpg")// 重命名裁剪文件名、 如果是多张裁剪则内部会自动拼上当前时间戳防止重复
+                        .selectionMode(cb_choose_mode.isChecked() ?
+                                PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
+                        .isSingleDirectReturn(cb_single_back.isChecked())// 单选模式下是否直接返回，PictureConfig.SINGLE模式下有效
+                        .isPreviewImage(cb_preview_img.isChecked())// 是否可预览图片
+                        .isPreviewVideo(cb_preview_video.isChecked())// 是否可预览视频
+                        //.querySpecifiedFormatSuffix(PictureMimeType.ofJPEG())// 查询指定后缀格式资源
+                        //.queryMimeTypeConditions(PictureMimeType.ofWEBP())
+                        .isEnablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
+                        .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
+                        //.isMultipleSkipCrop(false)// 多图裁剪时是否支持跳过，默认支持
+                        //.isMultipleRecyclerAnimation(false)// 多图裁剪底部列表显示动画效果
+                        .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
+                        //.imageFormat(PictureMimeType.PNG) // 拍照保存图片格式后缀,默认jpeg,Android Q使用PictureMimeType.PNG_Q
+                        .setCameraImageFormat(PictureMimeType.JPEG) // 相机图片格式后缀,默认.jpeg
+                        .setCameraVideoFormat(PictureMimeType.MP4)// 相机视频格式后缀,默认.mp4
+                        .setCameraAudioFormat(PictureMimeType.AMR)// 录音音频格式后缀,默认.amr
+                        .isEnableCrop(cb_crop.isChecked())// 是否裁剪
+                        //.basicUCropConfig()//对外提供所有UCropOptions参数配制，但如果PictureSelector原本支持设置的还是会使用原有的设置
+                        .isCompress(cb_compress.isChecked())// 是否压缩
+                        //.compressFocusAlpha(true)// 压缩时是否开启透明通道
+                        //.compressEngine(ImageCompressEngine.createCompressEngine()) // 自定义压缩引擎
+                        //.compressQuality(80)// 图片压缩后输出质量 0~ 100
+                        .synOrAsy(false)//同步true或异步false 压缩 默认同步
+                        //.queryMaxFileSize(10)// 只查多少M以内的图片、视频、音频  单位M
+                        //.compressSavePath(getPath())//压缩图片保存地址
+                        //.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效 注：已废弃
+                        //.glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度 注：已废弃
+                        .withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
+                        .hideBottomControls(!cb_hide.isChecked())// 是否显示uCrop工具栏，默认不显示
+                        .isGif(cb_isGif.isChecked())// 是否显示gif图片
+                        //.isWebp(false)// 是否显示webp图片,默认显示
+                        //.isBmp(false)//是否显示bmp图片,默认显示
+                        .freeStyleCropEnabled(cb_styleCrop.isChecked())// 裁剪框是否可拖拽
+                        //.freeStyleCropMode(OverlayView.DEFAULT_FREESTYLE_CROP_MODE)// 裁剪框拖动模式
+                        .isCropDragSmoothToCenter(true)// 裁剪框拖动时图片自动跟随居中
+                        .circleDimmedLayer(cb_crop_circular.isChecked())// 是否圆形裁剪
+                        //.setCropDimmedColor(ContextCompat.getColor(getContext(), R.color.app_color_white))// 设置裁剪背景色值
+                        //.setCircleDimmedBorderColor(ContextCompat.getColor(getApplicationContext(), R.color.app_color_white))// 设置圆形裁剪边框色值
+                        //.setCircleStrokeWidth(3)// 设置圆形裁剪边框粗细
+                        .showCropFrame(cb_showCropFrame.isChecked())// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
+                        .showCropGrid(cb_showCropGrid.isChecked())// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
+                        .isOpenClickSound(cb_voice.isChecked())// 是否开启点击声音
+                        .selectionData(mAdapter.getData())// 是否传入已选图片
+                        //.isDragFrame(false)// 是否可拖动裁剪框(固定)
+                        //.videoMinSecond(10)// 查询多少秒以内的视频
+                        //.videoMaxSecond(15)// 查询多少秒以内的视频
+                        //.recordVideoSecond(10)//录制视频秒数 默认60s
+                        //.isPreviewEggs(true)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+                        //.cropCompressQuality(90)// 注：已废弃 改用cutOutQuality()
+                        .cutOutQuality(90)// 裁剪输出质量 默认100
+                        //.cutCompressFormat(Bitmap.CompressFormat.PNG.name())//裁剪图片输出Format格式，默认JPEG
+                        .minimumCompressSize(100)// 小于多少kb的图片不压缩
+                        //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
+                        //.cropImageWideHigh()// 裁剪宽高比，设置如果大于图片本身宽高则无效
+                        //.rotateEnabled(false) // 裁剪是否可旋转图片
+                        //.scaleEnabled(false)// 裁剪是否可放大缩小图片
+                        //.videoQuality()// 视频录制质量 0 or 1
+                        //.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
+                        //.forResult(new MyResultCallback(mAdapter));
+                        .forResult(launcherResult);
+
+            } else {
+                // 单独拍照
+                PictureSelector.create(MainActivity.this)
+                        .openCamera(chooseMode)// 单独拍照，也可录像或也可音频 看你传入的类型是图片or视频
+                        .theme(themeId)// 主题样式设置 具体参考 values/styles
+                        .imageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
+                        .setPictureStyle(mPictureParameterStyle)// 动态自定义相册主题
+                        .setPictureCropStyle(mCropParameterStyle)// 动态自定义裁剪主题
+                        .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
+                        .maxSelectNum(maxSelectNum)// 最大图片选择数量
+                        .isUseCustomCamera(cb_custom_camera.isChecked())// 是否使用自定义相机
+                        //.setOutputCameraPath()// 自定义相机输出目录
+                        .minSelectNum(1)// 最小选择数量
+                        //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
+                        .closeAndroidQChangeWH(true)//如果图片有旋转角度则对换宽高，默认为true
+                        .closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 如果视频有旋转角度则对换宽高，默认false
+                        .selectionMode(cb_choose_mode.isChecked() ?
+                                PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
+                        //.cameraFileName(System.currentTimeMillis() + ".jpg")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用
+                        //.renameCompressFile(System.currentTimeMillis() + ".jpg")// 重命名压缩文件名、 注意这个不要重复，只适用于单张图压缩使用
+                        //.renameCropFileName(System.currentTimeMillis() + ".jpg")// 重命名裁剪文件名、 注意这个不要重复，只适用于单张图裁剪使用
+                        .loadCacheResourcesCallback(GlideCacheEngine.createCacheEngine())// 获取图片资源缓存，主要是解决华为10部分机型在拷贝文件过多时会出现卡的问题，这里可以判断只在会出现一直转圈问题机型上使用
+                        .isPreviewImage(cb_preview_img.isChecked())// 是否可预览图片
+                        .isPreviewVideo(cb_preview_video.isChecked())// 是否可预览视频
+                        .isEnablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
+                        .isCamera(cb_isCamera.isChecked())// 是否显示拍照按钮
+                        .isAndroidQTransform(true)// 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && .isEnableCrop(false);有效,默认处理
+                        .isEnableCrop(cb_crop.isChecked())// 是否裁剪
+                        //.basicUCropConfig()//对外提供所有UCropOptions参数配制，但如果PictureSelector原本支持设置的还是会使用原有的设置
+                        .isCompress(cb_compress.isChecked())// 是否压缩
+                        .compressQuality(60)// 图片压缩后输出质量
+                        .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
+                        .withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
+                        .hideBottomControls(!cb_hide.isChecked())// 是否显示uCrop工具栏，默认不显示
+                        .isGif(cb_isGif.isChecked())// 是否显示gif图片
+                        .freeStyleCropEnabled(cb_styleCrop.isChecked())// 裁剪框是否可拖拽
+                        .freeStyleCropMode(OverlayView.DEFAULT_FREESTYLE_CROP_MODE)// 裁剪框拖动模式
+                        .circleDimmedLayer(cb_crop_circular.isChecked())// 是否圆形裁剪
+                        //.setCircleDimmedColor(ContextCompat.getColor(this, R.color.app_color_white))// 设置圆形裁剪背景色值
+                        //.setCircleDimmedBorderColor(ContextCompat.getColor(this, R.color.app_color_white))// 设置圆形裁剪边框色值
+                        //.setCircleStrokeWidth(3)// 设置圆形裁剪边框粗细
+                        .showCropFrame(cb_showCropFrame.isChecked())// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
+                        .showCropGrid(cb_showCropGrid.isChecked())// 是否显示裁剪矩形网格 圆形裁剪时建议设为false
+                        .isOpenClickSound(cb_voice.isChecked())// 是否开启点击声音
+                        .selectionData(mAdapter.getData())// 是否传入已选图片
+                        .isAutoScalePreviewImage(true)// 如果图片宽度不能充满屏幕则自动处理成充满模式
+                        //.isPreviewEggs(true)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
+                        //.cropCompressQuality(90)// 废弃 改用cutOutQuality()
+                        .cutOutQuality(90)// 裁剪输出质量 默认100
+                        .minimumCompressSize(100)// 小于100kb的图片不压缩
+                        //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
+                        //.cropImageWideHigh()// 裁剪宽高比，设置如果大于图片本身宽高则无效
+                        //.rotateEnabled() // 裁剪是否可旋转图片
+                        //.scaleEnabled()// 裁剪是否可放大缩小图片
+                        //.videoQuality()// 视频录制质量 0 or 1
+                        //.forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
+                        .forResult(new MyResultCallback(mAdapter));
+            }
+        }
+    };
+
+    /**
+     * 创建一个ActivityResultLauncher
+     *
+     * @return
+     */
+    private ActivityResultLauncher<Intent> createActivityResultLauncher() {
+        return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        int resultCode = result.getResultCode();
+                        if (resultCode == RESULT_OK) {
+                            List<LocalMedia> selectList = PictureSelector.obtainMultipleResult(result.getData());
+                            // 例如 LocalMedia 里面返回五种path
+                            // 1.media.getPath(); 原图path
+                            // 2.media.getCutPath();裁剪后path，需判断media.isCut();切勿直接使用
+                            // 3.media.getCompressPath();压缩后path，需判断media.isCompressed();切勿直接使用
+                            // 4.media.getOriginalPath()); media.isOriginal());为true时此字段才有值
+                            // 5.media.getAndroidQToPath();Android Q版本特有返回的字段，但如果开启了压缩或裁剪还是取裁剪或压缩路径；注意：.isAndroidQTransform 为false 此字段将返回空
+                            // 如果同时开启裁剪和压缩，则取压缩路径为准因为是先裁剪后压缩
+                            for (LocalMedia media : selectList) {
+                                if (media.getWidth() == 0 || media.getHeight() == 0) {
+                                    if (PictureMimeType.isHasImage(media.getMimeType())) {
+                                        MediaExtraInfo imageExtraInfo = MediaUtils.getImageSize(media.getPath());
+                                        media.setWidth(imageExtraInfo.getWidth());
+                                        media.setHeight(imageExtraInfo.getHeight());
+                                    } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                                        MediaExtraInfo videoExtraInfo = MediaUtils.getVideoSize(getContext(), media.getPath());
+                                        media.setWidth(videoExtraInfo.getWidth());
+                                        media.setHeight(videoExtraInfo.getHeight());
+                                    }
+                                }
+                                Log.i(TAG, "是否压缩:" + media.isCompressed());
+                                Log.i(TAG, "压缩:" + media.getCompressPath());
+                                Log.i(TAG, "原图:" + media.getPath());
+                                Log.i(TAG, "绝对路径:" + media.getRealPath());
+                                Log.i(TAG, "是否裁剪:" + media.isCut());
+                                Log.i(TAG, "裁剪:" + media.getCutPath());
+                                Log.i(TAG, "是否开启原图:" + media.isOriginal());
+                                Log.i(TAG, "原图路径:" + media.getOriginalPath());
+                                Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
+                                Log.i(TAG, "宽高: " + media.getWidth() + "x" + media.getHeight());
+                                Log.i(TAG, "Size: " + media.getSize());
+
+                                // TODO 可以通过PictureSelectorExternalUtils.getExifInterface();方法获取一些额外的资源信息，如旋转角度、经纬度等信息
+                            }
+                            mAdapter.setList(selectList);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
     }
 
     /**
@@ -604,8 +678,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String createCustomCameraOutPath() {
         File customFile;
         if (SdkVersionUtils.checkedAndroid_Q()) {
-            // 在Android Q上不能直接使用外部存储目录
-            customFile = getContext().getExternalFilesDir(chooseMode == PictureMimeType.ofVideo() ? Environment.DIRECTORY_MOVIES : Environment.DIRECTORY_PICTURES);
+            // 在Android Q上不能直接使用外部存储目录；且沙盒内的资源是无法通过PictureSelector扫描出来的
+            File externalFilesDir = getContext().getExternalFilesDir(chooseMode == PictureMimeType.ofVideo() ? Environment.DIRECTORY_MOVIES : Environment.DIRECTORY_PICTURES);
+            customFile = new File(externalFilesDir.getAbsolutePath(), "PictureSelector");
+            if (!customFile.exists()) {
+                customFile.mkdirs();
+            }
         } else {
             File rootFile = Environment.getExternalStorageDirectory();
             customFile = new File(rootFile.getAbsolutePath() + File.separator + "CustomPictureCamera");
@@ -613,7 +691,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 customFile.mkdirs();
             }
         }
-        return customFile != null ? customFile.getAbsolutePath() + File.separator : null;
+        return customFile.getAbsolutePath() + File.separator;
     }
 
     /**
@@ -630,6 +708,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onResult(List<LocalMedia> result) {
             for (LocalMedia media : result) {
+                if (media.getWidth() == 0 || media.getHeight() == 0) {
+                    if (PictureMimeType.isHasImage(media.getMimeType())) {
+                        MediaExtraInfo imageExtraInfo = MediaUtils.getImageSize(media.getPath());
+                        media.setWidth(imageExtraInfo.getWidth());
+                        media.setHeight(imageExtraInfo.getHeight());
+                    } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                        MediaExtraInfo videoExtraInfo = MediaUtils.getVideoSize(PictureAppMaster.getInstance().getAppContext(), media.getPath());
+                        media.setWidth(videoExtraInfo.getWidth());
+                        media.setHeight(videoExtraInfo.getHeight());
+                    }
+                }
+                Log.i(TAG, "文件名: " + media.getFileName());
                 Log.i(TAG, "是否压缩:" + media.isCompressed());
                 Log.i(TAG, "压缩:" + media.getCompressPath());
                 Log.i(TAG, "原图:" + media.getPath());
@@ -641,6 +731,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.i(TAG, "Android Q 特有Path:" + media.getAndroidQToPath());
                 Log.i(TAG, "宽高: " + media.getWidth() + "x" + media.getHeight());
                 Log.i(TAG, "Size: " + media.getSize());
+
+                Log.i(TAG, "onResult: " + media.toString());
+
                 // TODO 可以通过PictureSelectorExternalUtils.getExifInterface();方法获取一些额外的资源信息，如旋转角度、经纬度等信息
             }
             if (mAdapterWeakReference.get() != null) {
@@ -659,12 +752,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 自定义播放逻辑处理，用户可以自己实现播放界面
      */
     private static class MyVideoSelectedPlayCallback implements OnVideoSelectedPlayCallback<LocalMedia> {
-        private WeakReference<Context> mContextWeakReference;
-        private Context context;
+        private final Context context;
 
         public MyVideoSelectedPlayCallback(Context context) {
             super();
-            this.mContextWeakReference = new WeakReference<>(context);
+            WeakReference<Context> mContextWeakReference = new WeakReference<>(context);
             this.context = mContextWeakReference.get();
         }
 
@@ -673,6 +765,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (context != null) {
                 ToastUtils.s(context, media.getPath());
             }
+        }
+    }
+
+    /**
+     * 自定义选择条件的限制提示
+     */
+    private static class MyChooseLimitCallback implements OnChooseLimitCallback {
+
+        @Override
+        public void onChooseLimit(Context context, String tips) {
+            // TODO 可以在这里实现自定义弹框和文案，具体可以根据返回的tips 替换成自己的文案
+            // 举个栗子
+            if (TextUtils.equals(tips, "默认文案")) {
+                ToastUtils.s(context, "我要实现我自己的默认文案~");
+            }
+        }
+    }
+
+    /**
+     * 自定义权限管理回调
+     */
+    private static class MyPermissionsObtainCallback implements OnPermissionsObtainCallback {
+
+        @Override
+        public void onPermissionsIntercept(Context context, boolean isCamera, String[] permissions, String tips, OnPermissionDialogOptionCallback dialogOptionCallback) {
+            PictureCustomDialog dialog = new PictureCustomDialog(context, R.layout.picture_wind_base_dialog);
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
+            Button btn_commit = dialog.findViewById(R.id.btn_commit);
+            btn_commit.setText(context.getString(R.string.picture_go_setting));
+            TextView tvTitle = dialog.findViewById(R.id.tvTitle);
+            TextView tv_content = dialog.findViewById(R.id.tv_content);
+            tvTitle.setText(context.getString(R.string.picture_prompt));
+            tv_content.setText(tips);
+            btn_cancel.setOnClickListener(v -> {
+                dialog.dismiss();
+                dialogOptionCallback.onCancel();
+            });
+            btn_commit.setOnClickListener(v -> {
+                dialog.dismiss();
+                dialogOptionCallback.onSetting();
+                PermissionChecker.launchAppDetailsSettings(context);
+            });
+            dialog.show();
         }
     }
 
@@ -747,6 +884,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // 5.media.getAndroidQToPath();Android Q版本特有返回的字段，但如果开启了压缩或裁剪还是取裁剪或压缩路径；注意：.isAndroidQTransform 为false 此字段将返回空
                 // 如果同时开启裁剪和压缩，则取压缩路径为准因为是先裁剪后压缩
                 for (LocalMedia media : selectList) {
+                    if (media.getWidth() == 0 || media.getHeight() == 0) {
+                        if (PictureMimeType.isHasImage(media.getMimeType())) {
+                            MediaExtraInfo imageExtraInfo = MediaUtils.getImageSize(media.getPath());
+                            media.setWidth(imageExtraInfo.getWidth());
+                            media.setHeight(imageExtraInfo.getHeight());
+                        } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                            MediaExtraInfo videoExtraInfo = MediaUtils.getVideoSize(getContext(), media.getPath());
+                            media.setWidth(videoExtraInfo.getWidth());
+                            media.setHeight(videoExtraInfo.getHeight());
+                        }
+                    }
                     Log.i(TAG, "是否压缩:" + media.isCompressed());
                     Log.i(TAG, "压缩:" + media.getCompressPath());
                     Log.i(TAG, "原图:" + media.getPath());
@@ -837,6 +985,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 chooseMode = PictureMimeType.ofAudio();
                 cb_preview_audio.setVisibility(View.VISIBLE);
                 break;
+            case R.id.rb_system:
+                language = -1;
+                break;
             case R.id.rb_jpan:
                 language = LanguageConfig.JAPAN;
                 break;
@@ -857,6 +1008,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.rb_spanish:
                 language = LanguageConfig.SPANISH;
+                break;
+            case R.id.rb_portugal:
+                language = LanguageConfig.PORTUGAL;
                 break;
             case R.id.rb_crop_default:
                 aspect_ratio_x = 0;
@@ -1418,7 +1572,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (requestCode == PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE) {// 存储权限
             for (int grantResult : grantResults) {
                 if (grantResult == PackageManager.PERMISSION_GRANTED) {
-                    PictureFileUtils.deleteCacheDirFile(getContext(), PictureMimeType.ofImage());
+                    PictureCacheManager.deleteCacheDirFile(getContext(), PictureMimeType.ofImage(), new OnCallbackListener<String>() {
+                        @Override
+                        public void onCall(String absolutePath) {
+                            new PictureMediaScannerConnection(getContext(), absolutePath);
+                            Log.i(TAG, "刷新图库:" + absolutePath);
+                        }
+                    });
                 } else {
                     Toast.makeText(MainActivity.this,
                             getString(R.string.picture_jurisdiction), Toast.LENGTH_SHORT).show();
@@ -1428,7 +1588,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mAdapter != null && mAdapter.getData() != null && mAdapter.getData().size() > 0) {
             outState.putParcelableArrayList("selectorList",
@@ -1436,7 +1596,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -1459,10 +1619,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (broadcastReceiver != null) {
-            BroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastReceiver,
-                    BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
+        if (launcherResult != null) {
+            launcherResult.unregister();
         }
+        BroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastReceiver, BroadcastAction.ACTION_DELETE_PREVIEW_POSITION);
     }
 
     public Context getContext() {

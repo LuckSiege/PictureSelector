@@ -3,12 +3,12 @@ apply from: "config.gradle"
 
 buildscript {
     repositories {
-        jcenter()
+        google()
+        mavenCentral()
         maven {
             url 'https://maven.google.com/'
             name 'Google'
         }
-        google()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.3'
@@ -18,11 +18,10 @@ buildscript {
 }
 
 allprojects {
-    version = VERSION_NAME
-    group = GROUP
 
     repositories {
-        jcenter()
+        google()
+        mavenCentral()
         maven {
             url 'https://maven.google.com/'
             name 'Google'

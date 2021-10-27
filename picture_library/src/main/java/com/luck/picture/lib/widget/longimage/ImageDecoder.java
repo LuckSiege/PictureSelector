@@ -4,23 +4,29 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
+
 /**
- * Interface for image decoding classes, allowing the default {@link android.graphics.BitmapRegionDecoder}
+ * Interface for image decoding classes, allowing the default {@link android.graphics.BitmapFactory}
  * based on the Skia library to be replaced with a custom class.
  */
 public interface ImageDecoder {
 
     /**
-     * Decode an image. When possible, initial setup work once in this method. This method
-     * must return the dimensions of the image. The URI can be in one of the following formats:
-     * File: file:///scard/picture.jpg
-     * Asset: file:///android_asset/picture.png
-     * Resource: android.resource://com.example.app/drawable/picture
-     * @param context Application context. A reference may be held, but must be cleared on recycle.
-     * @param uri URI of the image.
-     * @return Dimensions of the image.
-     * @throws Exception if initialisation fails.
+     * Decode an image. The URI can be in one of the following formats:
+     * <br>
+     * File: <code>file:///scard/picture.jpg</code>
+     * <br>
+     * Asset: <code>file:///android_asset/picture.png</code>
+     * <br>
+     * Resource: <code>android.resource://com.example.app/drawable/picture</code>
+     *
+     * @param context Application context
+     * @param uri URI of the image
+     * @return the decoded bitmap
+     * @throws Exception if decoding fails.
      */
-    Bitmap decode(Context context, Uri uri) throws Exception;
+    @NonNull
+    Bitmap decode(Context context, @NonNull Uri uri) throws Exception;
 
 }

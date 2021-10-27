@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.luck.picture.lib.PictureMediaScannerConnection;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.broadcast.BroadcastAction;
 import com.luck.picture.lib.broadcast.BroadcastManager;
@@ -42,7 +43,9 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.language.LanguageConfig;
+import com.luck.picture.lib.listener.OnCallbackListener;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
+import com.luck.picture.lib.manager.PictureCacheManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.style.PictureCropParameterStyle;
 import com.luck.picture.lib.style.PictureParameterStyle;
@@ -53,6 +56,7 @@ import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.listener.DragListener;
+import com.yalantis.ucrop.view.OverlayView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -78,7 +82,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
     private CheckBox cb_voice, cb_choose_mode, cb_isCamera, cb_isGif,
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
             cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
-            cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back, cb_custom_camera;
+            cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back, cb_custom_camera,cbEditor;
     private int themeId;
     private int chooseMode = PictureMimeType.ofAll();
     private boolean isWeChatStyle;
@@ -140,6 +144,7 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         cb_original = view.findViewById(R.id.cb_original);
         cb_single_back = view.findViewById(R.id.cb_single_back);
         cb_custom_camera = view.findViewById(R.id.cb_custom_camera);
+        cbEditor = view.findViewById(R.id.cb_editor);
         cb_hide = view.findViewById(R.id.cb_hide);
         cb_crop_circular = view.findViewById(R.id.cb_crop_circular);
         rgb_crop.setOnCheckedChangeListener(this);
@@ -399,8 +404,14 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         // 清空图片缓存，包括裁剪、压缩后的图片 注意:必须要在上传完成后调用 必须要获取权限
         if (getContext() != null) {
             if (PermissionChecker.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                //PictureFileUtils.deleteCacheDirFile(this, PictureMimeType.ofImage());
-                PictureFileUtils.deleteAllCacheDirFile(getContext());
+                //PictureCacheManager.deleteCacheDirFile(getContext(), PictureMimeType.ofImage());
+                PictureCacheManager.deleteAllCacheDirFile(getContext(), new OnCallbackListener<String>() {
+                    @Override
+                    public void onCall(String absolutePath) {
+                        new PictureMediaScannerConnection(getContext(), absolutePath);
+                        Log.i(TAG, "刷新图库:" + absolutePath);
+                    }
+                });
             } else {
                 PermissionChecker.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE);
@@ -434,7 +445,9 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         //.isAndroidQTransform(false)// 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对.isCompress(false); && .isEnableCrop(false);有效,默认处理
                         .loadCacheResourcesCallback(GlideCacheEngine.createCacheEngine())// 获取图片资源缓存，主要是解决华为10部分机型在拷贝文件过多时会出现卡的问题，这里可以判断只在会出现一直转圈问题机型上使用
                         .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)// 设置相册Activity方向，不设置默认使用系统
-                        .isOriginalImageControl(cb_original.isChecked())// 是否显示原图控制按钮，如果设置为true则用户可以自由选择是否使用原图，压缩、裁剪功能将会失效
+                        .isOriginalImageControl(cb_original.isChecked())// 是否显示原图控制按钮，如果设置为true则用户可以自由选择是否使用原图，裁剪功能将会失效
+                        .isDisplayOriginalSize(true)// 是否显示原文件大小，isOriginalImageControl true有效
+                        .isEditorImage(cbEditor.isChecked())//是否编辑图片
                         //.cameraFileName("test.png")    // 重命名拍照文件名、注意这个只在使用相机时可以使用，如果使用相机又开启了压缩或裁剪 需要配合压缩和裁剪文件名api
                         //.renameCompressFile("test.png")// 重命名压缩文件名、 注意这个不要重复，只适用于单张图压缩使用
                         //.renameCropFileName("test.png")// 重命名裁剪文件名、 注意这个不要重复，只适用于单张图裁剪使用
@@ -449,6 +462,9 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         //.isMultipleSkipCrop(false)// 多图裁剪时是否支持跳过，默认支持
                         .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
                         //.imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg
+                        .setCameraImageFormat(PictureMimeType.PNG) // 相机图片格式后缀,默认.jpeg
+                        .setCameraVideoFormat(PictureMimeType.MP4)// 相机视频格式后缀,默认.mp4
+                        .setCameraAudioFormat(PictureMimeType.AMR)// 录音音频格式后缀,默认.amr
                         .isEnableCrop(cb_crop.isChecked())// 是否裁剪
                         .isCompress(cb_compress.isChecked())// 是否压缩
                         .compressQuality(80)// 图片压缩后输出质量 0~ 100
@@ -461,6 +477,8 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         .hideBottomControls(!cb_hide.isChecked())// 是否显示uCrop工具栏，默认不显示
                         .isGif(cb_isGif.isChecked())// 是否显示gif图片
                         .freeStyleCropEnabled(cb_styleCrop.isChecked())// 裁剪框是否可拖拽
+                        .freeStyleCropMode(OverlayView.DEFAULT_FREESTYLE_CROP_MODE)// 裁剪框拖动模式
+                        .isCropDragSmoothToCenter(false)// 裁剪框拖动时图片自动跟随居中
                         .circleDimmedLayer(cb_crop_circular.isChecked())// 是否圆形裁剪
                         //.setCircleDimmedColor(ContextCompat.getColor(this, R.color.app_color_white))// 设置圆形裁剪背景色值
                         //.setCircleDimmedBorderColor(ContextCompat.getColor(getApplicationContext(), R.color.app_color_white))// 设置圆形裁剪边框色值
@@ -516,6 +534,8 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                         .hideBottomControls(!cb_hide.isChecked())// 是否显示uCrop工具栏，默认不显示
                         .isGif(cb_isGif.isChecked())// 是否显示gif图片
                         .freeStyleCropEnabled(cb_styleCrop.isChecked())// 裁剪框是否可拖拽
+                        .freeStyleCropMode(OverlayView.DEFAULT_FREESTYLE_CROP_MODE)// 裁剪框拖动模式
+                        .isCropDragSmoothToCenter(false)// 裁剪框拖动时图片自动跟随居中
                         .circleDimmedLayer(cb_crop_circular.isChecked())// 是否圆形裁剪
                         //.setCircleDimmedColor(ContextCompat.getColor(this, R.color.app_color_white))// 设置圆形裁剪背景色值
                         //.setCircleDimmedBorderColor(ContextCompat.getColor(this, R.color.app_color_white))// 设置圆形裁剪边框色值
@@ -684,6 +704,9 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                 chooseMode = PictureMimeType.ofAudio();
                 cb_preview_audio.setVisibility(View.VISIBLE);
                 break;
+            case R.id.rb_system:
+                language = -1;
+                break;
             case R.id.rb_jpan:
                 language = LanguageConfig.JAPAN;
                 break;
@@ -704,6 +727,9 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
                 break;
             case R.id.rb_spanish:
                 language = LanguageConfig.SPANISH;
+                break;
+            case R.id.rb_portugal:
+                language = LanguageConfig.PORTUGAL;
                 break;
             case R.id.rb_crop_default:
                 aspect_ratio_x = 0;
@@ -1214,15 +1240,22 @@ public class PhotoFragment extends Fragment implements View.OnClickListener,
         }
     }
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case PictureConfig.APPLY_STORAGE_PERMISSIONS_CODE:
                 // 存储权限
-                for (int i = 0; i < grantResults.length; i++) {
-                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        PictureFileUtils.deleteCacheDirFile(getContext(), PictureMimeType.ofImage());
+                for (int grantResult : grantResults) {
+                    if (grantResult == PackageManager.PERMISSION_GRANTED) {
+                        PictureCacheManager.deleteCacheDirFile(getContext(), PictureMimeType.ofImage(), new OnCallbackListener<String>() {
+                            @Override
+                            public void onCall(String absolutePath) {
+                                new PictureMediaScannerConnection(getContext(), absolutePath);
+                                Log.i(TAG, "刷新图库:" + absolutePath);
+                            }
+                        });
                     } else {
                         Toast.makeText(getContext(),
                                 getString(R.string.picture_jurisdiction), Toast.LENGTH_SHORT).show();

@@ -36,13 +36,13 @@ public class GridImageAdapter extends
     public static final String TAG = "PictureSelector";
     public static final int TYPE_CAMERA = 1;
     public static final int TYPE_PICTURE = 2;
-    private LayoutInflater mInflater;
+    private final LayoutInflater mInflater;
     private List<LocalMedia> list = new ArrayList<>();
     private int selectMax = 9;
     /**
      * 点击添加图片跳转
      */
-    private onAddPicClickListener mOnAddPicClickListener;
+    private final onAddPicClickListener mOnAddPicClickListener;
 
     public interface onAddPicClickListener {
         void onAddPicClick();
@@ -138,7 +138,7 @@ public class GridImageAdapter extends
      */
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
-        //少于8张，显示继续添加的图标
+        //少于MaxSize张，显示继续添加的图标
         if (getItemViewType(position) == TYPE_CAMERA) {
             viewHolder.mImg.setImageResource(R.drawable.ic_add_image);
             viewHolder.mImg.setOnClickListener(v -> mOnAddPicClickListener.onAddPicClick());
@@ -146,9 +146,7 @@ public class GridImageAdapter extends
         } else {
             viewHolder.mIvDel.setVisibility(View.VISIBLE);
             viewHolder.mIvDel.setOnClickListener(view -> {
-                int index = viewHolder.getAdapterPosition();
-                // 这里有时会返回-1造成数据下标越界,具体可参考getAdapterPosition()源码，
-                // 通过源码分析应该是bindViewHolder()暂未绘制完成导致，知道原因的也可联系我~感谢
+                int index = viewHolder.getAbsoluteAdapterPosition();
                 if (index != RecyclerView.NO_POSITION && list.size() > index) {
                     list.remove(index);
                     notifyItemRemoved(index);
@@ -156,16 +154,12 @@ public class GridImageAdapter extends
                 }
             });
             LocalMedia media = list.get(position);
-            if (media == null
-                    || TextUtils.isEmpty(media.getPath())) {
-                return;
-            }
             int chooseModel = media.getChooseModel();
             String path;
             if (media.isCut() && !media.isCompressed()) {
                 // 裁剪过
                 path = media.getCutPath();
-            } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
+            } else if (media.isCut() || media.isCompressed()) {
                 // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
                 path = media.getCompressPath();
             } else {
@@ -217,14 +211,14 @@ public class GridImageAdapter extends
             //itemView 的点击事件
             if (mItemClickListener != null) {
                 viewHolder.itemView.setOnClickListener(v -> {
-                    int adapterPosition = viewHolder.getAdapterPosition();
+                    int adapterPosition = viewHolder.getAbsoluteAdapterPosition();
                     mItemClickListener.onItemClick(v, adapterPosition);
                 });
             }
 
             if (mItemLongClickListener != null) {
                 viewHolder.itemView.setOnLongClickListener(v -> {
-                    int adapterPosition = viewHolder.getAdapterPosition();
+                    int adapterPosition = viewHolder.getAbsoluteAdapterPosition();
                     mItemLongClickListener.onItemLongClick(viewHolder, adapterPosition, v);
                     return true;
                 });

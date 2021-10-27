@@ -13,7 +13,6 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.luck.picture.lib.engine.ImageEngine;
@@ -39,6 +38,9 @@ public class GlideEngine implements ImageEngine {
      */
     @Override
     public void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
+        if (!ImageLoaderUtils.assertValidRequest(context)) {
+            return;
+        }
         Glide.with(context)
                 .load(url)
                 .into(imageView);
@@ -58,6 +60,9 @@ public class GlideEngine implements ImageEngine {
     public void loadImage(@NonNull Context context, @NonNull String url,
                           @NonNull ImageView imageView,
                           SubsamplingScaleImageView longImageView, OnImageCompleteCallback callback) {
+        if (!ImageLoaderUtils.assertValidRequest(context)) {
+            return;
+        }
         Glide.with(context)
                 .asBitmap()
                 .load(url)
@@ -95,7 +100,7 @@ public class GlideEngine implements ImageEngine {
                                 longImageView.setDoubleTapZoomDuration(100);
                                 longImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
                                 longImageView.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
-                                longImageView.setImage(ImageSource.bitmap(resource),
+                                longImageView.setImage(ImageSource.cachedBitmap(resource),
                                         new ImageViewState(0, new PointF(0, 0), 0));
                             } else {
                                 // 普通图片
@@ -120,6 +125,9 @@ public class GlideEngine implements ImageEngine {
     public void loadImage(@NonNull Context context, @NonNull String url,
                           @NonNull ImageView imageView,
                           SubsamplingScaleImageView longImageView) {
+        if (!ImageLoaderUtils.assertValidRequest(context)) {
+            return;
+        }
         Glide.with(context)
                 .asBitmap()
                 .load(url)
@@ -138,7 +146,7 @@ public class GlideEngine implements ImageEngine {
                                 longImageView.setDoubleTapZoomDuration(100);
                                 longImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
                                 longImageView.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
-                                longImageView.setImage(ImageSource.bitmap(resource),
+                                longImageView.setImage(ImageSource.cachedBitmap(resource),
                                         new ImageViewState(0, new PointF(0, 0), 0));
                             } else {
                                 // 普通图片
@@ -158,13 +166,16 @@ public class GlideEngine implements ImageEngine {
      */
     @Override
     public void loadFolderImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
+        if (!ImageLoaderUtils.assertValidRequest(context)) {
+            return;
+        }
         Glide.with(context)
                 .asBitmap()
                 .load(url)
                 .override(180, 180)
                 .centerCrop()
                 .sizeMultiplier(0.5f)
-                .apply(new RequestOptions().placeholder(R.drawable.picture_image_placeholder))
+                .placeholder(R.drawable.picture_image_placeholder)
                 .into(new BitmapImageViewTarget(imageView) {
                     @Override
                     protected void setResource(Bitmap resource) {
@@ -188,6 +199,9 @@ public class GlideEngine implements ImageEngine {
     @Override
     public void loadAsGifImage(@NonNull Context context, @NonNull String url,
                                @NonNull ImageView imageView) {
+        if (!ImageLoaderUtils.assertValidRequest(context)) {
+            return;
+        }
         Glide.with(context)
                 .asGif()
                 .load(url)
@@ -203,11 +217,14 @@ public class GlideEngine implements ImageEngine {
      */
     @Override
     public void loadGridImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
+        if (!ImageLoaderUtils.assertValidRequest(context)) {
+            return;
+        }
         Glide.with(context)
                 .load(url)
                 .override(200, 200)
                 .centerCrop()
-                .apply(new RequestOptions().placeholder(R.drawable.picture_image_placeholder))
+                .placeholder(R.drawable.picture_image_placeholder)
                 .into(imageView);
     }
 

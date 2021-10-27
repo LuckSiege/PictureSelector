@@ -2,6 +2,7 @@ package com.luck.picture.lib.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,12 @@ public class LocalMediaFolder implements Parcelable {
      * Folder first path
      */
     private String firstImagePath;
+
+    /**
+     * first data mime type
+     */
+    private String firstMimeType;
+
     /**
      * Folder media num
      */
@@ -64,6 +71,58 @@ public class LocalMediaFolder implements Parcelable {
      */
     private boolean isHasMore;
 
+
+    public LocalMediaFolder() {
+    }
+
+    protected LocalMediaFolder(Parcel in) {
+        bucketId = in.readLong();
+        name = in.readString();
+        firstImagePath = in.readString();
+        firstMimeType = in.readString();
+        imageNum = in.readInt();
+        checkedNum = in.readInt();
+        isChecked = in.readByte() != 0;
+        ofAllType = in.readInt();
+        isCameraFolder = in.readByte() != 0;
+        data = in.createTypedArrayList(LocalMedia.CREATOR);
+        currentDataPage = in.readInt();
+        isHasMore = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(bucketId);
+        dest.writeString(name);
+        dest.writeString(firstImagePath);
+        dest.writeString(firstMimeType);
+        dest.writeInt(imageNum);
+        dest.writeInt(checkedNum);
+        dest.writeByte((byte) (isChecked ? 1 : 0));
+        dest.writeInt(ofAllType);
+        dest.writeByte((byte) (isCameraFolder ? 1 : 0));
+        dest.writeTypedList(data);
+        dest.writeInt(currentDataPage);
+        dest.writeByte((byte) (isHasMore ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<LocalMediaFolder> CREATOR = new Creator<LocalMediaFolder>() {
+        @Override
+        public LocalMediaFolder createFromParcel(Parcel in) {
+            return new LocalMediaFolder(in);
+        }
+
+        @Override
+        public LocalMediaFolder[] newArray(int size) {
+            return new LocalMediaFolder[size];
+        }
+    };
+
     public long getBucketId() {
         return bucketId;
     }
@@ -73,7 +132,7 @@ public class LocalMediaFolder implements Parcelable {
     }
 
     public String getName() {
-        return name;
+        return TextUtils.isEmpty(name) ? "unknown" : name;
     }
 
     public void setName(String name) {
@@ -152,53 +211,11 @@ public class LocalMediaFolder implements Parcelable {
         isHasMore = hasMore;
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getFirstMimeType() {
+        return firstMimeType;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.bucketId);
-        dest.writeString(this.name);
-        dest.writeString(this.firstImagePath);
-        dest.writeInt(this.imageNum);
-        dest.writeInt(this.checkedNum);
-        dest.writeByte(this.isChecked ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.ofAllType);
-        dest.writeByte(this.isCameraFolder ? (byte) 1 : (byte) 0);
-        dest.writeTypedList(this.data);
-        dest.writeInt(this.currentDataPage);
-        dest.writeByte(this.isHasMore ? (byte) 1 : (byte) 0);
+    public void setFirstMimeType(String firstMimeType) {
+        this.firstMimeType = firstMimeType;
     }
-
-    public LocalMediaFolder() {
-    }
-
-    protected LocalMediaFolder(Parcel in) {
-        this.bucketId = in.readLong();
-        this.name = in.readString();
-        this.firstImagePath = in.readString();
-        this.imageNum = in.readInt();
-        this.checkedNum = in.readInt();
-        this.isChecked = in.readByte() != 0;
-        this.ofAllType = in.readInt();
-        this.isCameraFolder = in.readByte() != 0;
-        this.data = in.createTypedArrayList(LocalMedia.CREATOR);
-        this.currentDataPage = in.readInt();
-        this.isHasMore = in.readByte() != 0;
-    }
-
-    public static final Creator<LocalMediaFolder> CREATOR = new Creator<LocalMediaFolder>() {
-        @Override
-        public LocalMediaFolder createFromParcel(Parcel source) {
-            return new LocalMediaFolder(source);
-        }
-
-        @Override
-        public LocalMediaFolder[] newArray(int size) {
-            return new LocalMediaFolder[size];
-        }
-    };
 }

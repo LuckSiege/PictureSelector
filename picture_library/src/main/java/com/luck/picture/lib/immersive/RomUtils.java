@@ -3,6 +3,7 @@ package com.luck.picture.lib.immersive;
 import android.os.Build;
 import android.text.TextUtils;
 import com.luck.picture.lib.tools.StringUtils;
+import com.luck.picture.lib.tools.ValueOf;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +16,8 @@ import java.io.InputStreamReader;
  */
 
 public class RomUtils {
-    public class AvailableRomType {
+
+    public static class AvailableRomType {
         public static final int MIUI = 1;
         public static final int FLYME = 2;
         public static final int ANDROID_NATIVE = 3;
@@ -68,9 +70,7 @@ public class RomUtils {
 
             String version = displayId.substring(0, 1);
 
-            if (version != null) {
-                return StringUtils.stringToInt(version);
-            }
+            return StringUtils.stringToInt(version);
         }
         return 0;
     }
@@ -81,11 +81,12 @@ public class RomUtils {
         String miuiVersionCodeStr = getSystemProperty("ro.miui.ui.version.code");
         if (!TextUtils.isEmpty(miuiVersionCodeStr)) {
             try {
-                int miuiVersionCode = Integer.parseInt(miuiVersionCodeStr);
+                int miuiVersionCode = ValueOf.toInt(miuiVersionCodeStr);
                 if (miuiVersionCode >= 4) {
                     return true;
                 }
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         return false;
@@ -97,9 +98,10 @@ public class RomUtils {
         int miuiVersionCode = 0;
         if (!TextUtils.isEmpty(miuiVersionCodeStr)) {
             try {
-                miuiVersionCode = Integer.parseInt(miuiVersionCodeStr);
+                miuiVersionCode = ValueOf.toInt(miuiVersionCodeStr);
                 return miuiVersionCode;
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         return miuiVersionCode;
@@ -130,6 +132,7 @@ public class RomUtils {
                 try {
                     input.close();
                 } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }

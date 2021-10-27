@@ -132,6 +132,7 @@
                         android:textColor="@color/app_color_53575e"
                         android:textSize="14sp" />
 
+
                 </RadioGroup>
 
                 <RadioGroup
@@ -181,10 +182,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:text="* 开启原图功能，用户就可以自由选择原图；可能会导致压缩、裁剪功能失效。"
+                    android:text="* 开启原图功能，用户就可以自由选择原图；但会跳过裁剪功能哦"
                     android:textColor="@android:color/holo_red_dark"
                     android:textSize="10dp"
                     android:visibility="gone" />
+
+                <CheckBox
+                    android:id="@+id/cb_editor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="是否开启图片编辑"
+                    android:checked="true"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
 
                 <CheckBox
                     android:id="@+id/cb_custom_camera"
@@ -295,6 +306,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="日语"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_portugal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="葡萄牙语"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_system"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="系统语言"
                         android:textColor="@color/app_color_53575e"
                         android:textSize="14sp" />
                 </RadioGroup>

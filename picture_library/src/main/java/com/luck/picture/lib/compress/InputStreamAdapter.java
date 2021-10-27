@@ -13,7 +13,6 @@ public abstract class InputStreamAdapter implements InputStreamProvider {
 
   @Override
   public InputStream open() throws IOException {
-    close();
     inputStream = openInternal();
     return inputStream;
   }

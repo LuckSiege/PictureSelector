@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.luck.pictureselector",
+  "variantName": "debug",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "properties": [],
+      "versionCode": 31,
+      "versionName": "2.6.1",
+      "enabled": true,
+      "outputFile": "app-debug.apk"
+    }
+  ]
+}
