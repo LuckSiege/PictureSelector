@@ -78,7 +78,7 @@ public class RomUtils {
     //MIUI V6对应的versionCode是4
     //MIUI V7对应的versionCode是5
     private static boolean isMIUIV6OrAbove() {
-        String miuiVersionCodeStr = getSystemProperty("ro.miui.ui.version.code");
+        String miuiVersionCodeStr = getSystemProperty();
         if (!TextUtils.isEmpty(miuiVersionCodeStr)) {
             try {
                 int miuiVersionCode = ValueOf.toInt(miuiVersionCodeStr);
@@ -94,7 +94,7 @@ public class RomUtils {
 
 
     public static int getMIUIVersionCode() {
-        String miuiVersionCodeStr = getSystemProperty("ro.miui.ui.version.code");
+        String miuiVersionCodeStr = getSystemProperty();
         int miuiVersionCode = 0;
         if (!TextUtils.isEmpty(miuiVersionCodeStr)) {
             try {
@@ -110,18 +110,15 @@ public class RomUtils {
 
     //Android Api 23以上
     private static boolean isAndroid5OrAbove() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return true;
-        }
-        return false;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
 
-    public static String getSystemProperty(String propName) {
+    private static String getSystemProperty() {
         String line;
         BufferedReader input = null;
         try {
-            Process p = Runtime.getRuntime().exec("getprop " + propName);
+            Process p = Runtime.getRuntime().exec("getprop " + "ro.miui.ui.version.code");
             input = new BufferedReader(new InputStreamReader(p.getInputStream()), 1024);
             line = input.readLine();
             input.close();
