@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -209,6 +210,13 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (config.language != PictureConfig.UNKNOWN_LANGUAGE) {
+            PictureLanguageUtils.setAppLanguage(getContext(), config.language);
+        }
+    }
 
     /**
      * setNewRequestedOrientation
