@@ -620,6 +620,11 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 check.setText(ValueOf.toString(media.getNum()));
                 notifyCheckChanged(media);
             }
+            if (config.isEditorImage) {
+                mPictureEditor.setVisibility(PictureMimeType.isHasVideo(media.getMimeType()) ? View.GONE : View.VISIBLE);
+            } else {
+                mPictureEditor.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -789,7 +794,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     protected void onEditorImage() {
         if (adapter.getSize() > 0) {
             LocalMedia image = adapter.getItem(viewPager.getCurrentItem());
-            UCropManager.ofEditorImage(this, image.getPath(), image.getMimeType());
+            UCropManager.ofEditorImage(this, image.getPath(), image.getMimeType(),image.getWidth(),image.getHeight());
         }
     }
 
@@ -1033,7 +1038,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             boolean isHasImage = PictureMimeType.isHasImage(mimeType);
             if (config.selectionMode == PictureConfig.SINGLE && isHasImage) {
                 config.originalPath = image.getPath();
-                UCropManager.ofCrop(this, config.originalPath, image.getMimeType());
+                UCropManager.ofCrop(this, config.originalPath, image.getMimeType(),image.getWidth(),image.getHeight());
             } else {
                 // 是图片和选择压缩并且是多张，调用批量压缩
                 int imageNum = 0;
@@ -1073,7 +1078,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             isCompleteOrSelected = false;
             if (config.selectionMode == PictureConfig.SINGLE) {
                 config.originalPath = image.getPath();
-                UCropManager.ofCrop(this, config.originalPath, image.getMimeType());
+                UCropManager.ofCrop(this, config.originalPath, image.getMimeType(),image.getWidth(),image.getHeight());
             } else {
                 // 是图片和选择压缩并且是多张，调用批量压缩
                 UCropManager.ofCrop(this, (ArrayList<LocalMedia>) selectData);

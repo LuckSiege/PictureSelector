@@ -36,8 +36,10 @@ public class UCropManager {
      * @param activity     上下文
      * @param originalPath 文件源路径
      * @param mimeType     文件类型
+     * @param width        图片宽度
+     * @param height       图片高度
      */
-    public static void ofEditorImage(Activity activity, String originalPath, String mimeType) {
+    public static void ofEditorImage(Activity activity, String originalPath, String mimeType,int width,int height) {
         if (DoubleUtils.isFastDoubleClick()) {
             return;
         }
@@ -52,6 +54,8 @@ public class UCropManager {
                 TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_CROP_") + suffix : config.renameCropFileName);
         Uri uri = isHttp || PictureMimeType.isContent(originalPath) ? Uri.parse(originalPath) : Uri.fromFile(new File(originalPath));
         UCrop.Options options = UCropManager.basicOptions(activity);
+        options.setInputImageWidth(width);
+        options.setInputImageHeight(height);
         options.setHideBottomControls(false);
         options.setEditorImage(true);
         options.setToolbarTitle(activity.getString(R.string.picture_editor));
@@ -66,8 +70,10 @@ public class UCropManager {
      * @param activity     上下文
      * @param originalPath 文件源路径
      * @param mimeType     文件类型
+     * @param width        图片宽度
+     * @param height       图片高度
      */
-    public static void ofCrop(Activity activity, String originalPath, String mimeType) {
+    public static void ofCrop(Activity activity, String originalPath, String mimeType,int width,int height) {
         if (DoubleUtils.isFastDoubleClick()) {
             return;
         }
@@ -82,6 +88,8 @@ public class UCropManager {
                 TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_CROP_") + suffix : config.renameCropFileName);
         Uri uri = isHttp || PictureMimeType.isContent(originalPath) ? Uri.parse(originalPath) : Uri.fromFile(new File(originalPath));
         UCrop.Options options = UCropManager.basicOptions(activity);
+        options.setInputImageWidth(width);
+        options.setInputImageHeight(height);
         UCrop.of(uri, Uri.fromFile(file))
                 .withOptions(options)
                 .startAnimationActivity(activity, PictureSelectionConfig.windowAnimationStyle.activityCropEnterAnimation);
@@ -121,6 +129,8 @@ public class UCropManager {
         }
         if (index < size) {
             LocalMedia info = list.get(index);
+            options.setInputImageWidth(info.getWidth());
+            options.setInputImageHeight(info.getHeight());
             boolean isHttp = PictureMimeType.isHasHttp(info.getPath());
             Uri uri = isHttp || PictureMimeType.isContent(info.getPath()) ? Uri.parse(info.getPath()) : Uri.fromFile(new File(info.getPath()));
             String suffix = info.getMimeType().replace("image/", ".");

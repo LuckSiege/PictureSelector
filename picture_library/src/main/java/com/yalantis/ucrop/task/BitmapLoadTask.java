@@ -48,7 +48,8 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
     private final Uri mOutputUri;
     private final int mRequiredWidth;
     private final int mRequiredHeight;
-
+    private final int mInputImageWidth;
+    private final int mInputImageHeight;
     private final BitmapLoadCallback mBitmapLoadCallback;
 
     public static class BitmapWorkerResult {
@@ -71,12 +72,15 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
     public BitmapLoadTask(@NonNull Context context,
                           @NonNull Uri inputUri, @Nullable Uri outputUri,
                           int requiredWidth, int requiredHeight,
+                          int imageWidth, int imageHeight,
                           BitmapLoadCallback loadCallback) {
         mContext = context;
         mInputUri = inputUri;
         mOutputUri = outputUri;
         mRequiredWidth = requiredWidth;
         mRequiredHeight = requiredHeight;
+        mInputImageWidth = imageWidth;
+        mInputImageHeight = imageHeight;
         mBitmapLoadCallback = loadCallback;
     }
 
@@ -95,7 +99,11 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
 
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        options.inSampleSize = BitmapLoadUtils.calculateInSampleSize(options, mRequiredWidth, mRequiredHeight);
+        if (options.outWidth == 0 && options.outHeight == 0) {
+            options.inSampleSize = BitmapLoadUtils.calculateInSampleSize(mInputImageWidth, mInputImageHeight, mInputImageWidth, mInputImageHeight);
+        } else {
+            options.inSampleSize = BitmapLoadUtils.calculateInSampleSize(options.outWidth, options.outHeight, mRequiredWidth, mRequiredHeight);
+        }
         options.inJustDecodeBounds = false;
 
         Bitmap decodeSampledBitmap = null;

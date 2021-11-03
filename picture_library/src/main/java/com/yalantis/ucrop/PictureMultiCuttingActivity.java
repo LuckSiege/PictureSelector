@@ -157,6 +157,8 @@ public class PictureMultiCuttingActivity extends UCropActivity {
         } else {
             uri = Uri.fromFile(new File(cutInfo.getAndroidQToPath()));
         }
+        extras.putInt(UCrop.Options.EXTRA_INPUT_IMAGE_WIDTH, cutInfo.getWidth());
+        extras.putInt(UCrop.Options.EXTRA_INPUT_IMAGE_HEIGHT, cutInfo.getHeight());
         extras.putParcelable(UCrop.EXTRA_INPUT_URI, uri);
         File file = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ?
                 getExternalFilesDir(Environment.DIRECTORY_PICTURES) : getCacheDir();

@@ -136,10 +136,10 @@ public class TransformImageView extends AppCompatImageView {
      * @param imageUri - image Uri
      * @throws Exception - can throw exception if having problems with decoding Uri or OOM.
      */
-    public void setImageUri(@NonNull Uri imageUri, @Nullable Uri outputUri) throws Exception {
+    public void setImageUri(@NonNull Uri imageUri, @Nullable Uri outputUri,int imageWidth,int imageHeight) throws Exception {
         int maxBitmapSize = getMaxBitmapSize();
 
-        BitmapLoadUtils.decodeBitmapInBackground(getContext(), imageUri, outputUri, maxBitmapSize, maxBitmapSize,
+        BitmapLoadUtils.decodeBitmapInBackground(getContext(), imageUri, outputUri, maxBitmapSize, maxBitmapSize, imageWidth, imageHeight,
                 new BitmapLoadCallback() {
 
                     @Override

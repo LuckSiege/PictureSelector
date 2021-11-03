@@ -280,7 +280,10 @@ public class UCropActivity extends AppCompatActivity {
                 boolean isOnTouch = isOnTouch(inputUri);
                 mGestureCropImageView.setRotateEnabled(isOnTouch ? isRotateEnabled : isOnTouch);
                 mGestureCropImageView.setScaleEnabled(isOnTouch ? isScaleEnabled : isOnTouch);
-                mGestureCropImageView.setImageUri(inputUri, outputUri);
+                int inputImageWidth = intent.getIntExtra(UCrop.Options.EXTRA_INPUT_IMAGE_WIDTH, 0);
+                int inputImageHeight = intent.getIntExtra(UCrop.Options.EXTRA_INPUT_IMAGE_HEIGHT, 0);
+                Log.i("YYY", "setImageData: "+inputImageWidth+"x"+inputImageHeight);
+                mGestureCropImageView.setImageUri(inputUri, outputUri, inputImageWidth, inputImageHeight);
             } catch (Exception e) {
                 setResultError(e);
                 onBackPressed();

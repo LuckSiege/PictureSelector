@@ -34,9 +34,10 @@ public class BitmapLoadUtils {
     public static void decodeBitmapInBackground(@NonNull Context context,
                                                 @NonNull Uri uri, @Nullable Uri outputUri,
                                                 int requiredWidth, int requiredHeight,
+                                                int imageWidth, int imageHeight,
                                                 BitmapLoadCallback loadCallback) {
 
-        new BitmapLoadTask(context, uri, outputUri, requiredWidth, requiredHeight, loadCallback)
+        new BitmapLoadTask(context, uri, outputUri, requiredWidth, requiredHeight, imageWidth, imageHeight, loadCallback)
                 .executeOnExecutor(Executors.newCachedThreadPool());
     }
 
@@ -52,12 +53,12 @@ public class BitmapLoadUtils {
         return bitmap;
     }
 
-    public static int calculateInSampleSize(@NonNull BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    public static int calculateInSampleSize(@NonNull int width,int height, int reqWidth, int reqHeight) {
         // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
         int inSampleSize = 1;
-
+        if (width == 0 && height == 0) {
+            return inSampleSize * 2;
+        }
         if (height > reqHeight || width > reqWidth) {
             // Calculate the largest inSampleSize value that is a power of 2 and keeps both
             // height and width lower or equal to the requested height and width.

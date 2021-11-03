@@ -400,6 +400,8 @@ public class UCrop {
         public static final String EXTRA_WITH_VIDEO_IMAGE = EXTRA_PREFIX + ".isWithVideoImage";
         public static final String EXTRA_OUTPUT_URI_LIST = EXTRA_PREFIX + ".OutputUriList";
         public static final String EXTRA_WINDOW_EXIT_ANIMATION = EXTRA_PREFIX + ".WindowAnimation";
+        public static final String EXTRA_INPUT_IMAGE_WIDTH = EXTRA_PREFIX + ".InputImageWidth";
+        public static final String EXTRA_INPUT_IMAGE_HEIGHT = EXTRA_PREFIX + ".InputImageHeight";
 
         private final Bundle mOptionBundle;
 
@@ -743,6 +745,23 @@ public class UCrop {
             mOptionBundle.putInt(EXTRA_WINDOW_EXIT_ANIMATION, activityCropExitAnimation);
         }
 
+        /**
+         * Input image data width
+         *
+         * @param width
+         */
+        public void setInputImageWidth(int width) {
+            mOptionBundle.putInt(EXTRA_INPUT_IMAGE_WIDTH, width);
+        }
+
+        /**
+         * Input image data height
+         *
+         * @param height
+         */
+        public void setInputImageHeight(int height) {
+            mOptionBundle.putInt(EXTRA_INPUT_IMAGE_HEIGHT, height);
+        }
 
         /**
          * @param navBarColor set NavBar Color

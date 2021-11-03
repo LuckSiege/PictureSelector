@@ -1117,7 +1117,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (config.enableCrop && !config.isCheckOriginalImage) {
             if (config.selectionMode == PictureConfig.SINGLE && isHasImage) {
                 config.originalPath = image.getPath();
-                UCropManager.ofCrop(this, config.originalPath, image.getMimeType());
+                UCropManager.ofCrop(this, config.originalPath, image.getMimeType(),image.getWidth(),image.getHeight());
             } else {
                 int imageNum = 0;
                 int count = images.size();
@@ -1171,7 +1171,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (config.enableCrop && !config.isCheckOriginalImage && isHasImage) {
             if (config.selectionMode == PictureConfig.SINGLE) {
                 config.originalPath = image.getPath();
-                UCropManager.ofCrop(this, config.originalPath, image.getMimeType());
+                UCropManager.ofCrop(this, config.originalPath, image.getMimeType(),image.getWidth(),image.getHeight());
             } else {
                 UCropManager.ofCrop(this, (ArrayList<LocalMedia>) images);
             }
@@ -1502,7 +1502,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             list.add(media);
             if (config.enableCrop && PictureMimeType.isHasImage(media.getMimeType()) && !config.isCheckOriginalImage) {
                 mAdapter.bindSelectData(list);
-                UCropManager.ofCrop(this, media.getPath(), media.getMimeType());
+                UCropManager.ofCrop(this, media.getPath(), media.getMimeType(),media.getWidth(),media.getHeight());
             } else {
                 handlerResult(list);
             }
@@ -1774,13 +1774,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     /**
      * singleDirectReturn
      *
-     * @param mimeType
+     * @param media
      */
-    private void singleDirectReturnCameraHandleResult(String mimeType) {
+    private void singleDirectReturnCameraHandleResult(LocalMedia media) {
+        String mimeType = media.getMimeType();
         boolean isHasImage = PictureMimeType.isHasImage(mimeType);
         if (config.enableCrop && !config.isCheckOriginalImage && isHasImage) {
             config.originalPath = config.cameraPath;
-            UCropManager.ofCrop(this, config.originalPath, mimeType);
+            UCropManager.ofCrop(this, config.originalPath, mimeType,media.getWidth(),media.getHeight());
         } else if (config.isCompress && isHasImage) {
             List<LocalMedia> selectedImages = mAdapter.getSelectedData();
             compressImage(selectedImages);
@@ -2026,7 +2027,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         if (config.isSingleDirectReturn) {
             selectedData.add(media);
             mAdapter.bindSelectData(selectedData);
-            singleDirectReturnCameraHandleResult(media.getMimeType());
+            singleDirectReturnCameraHandleResult(media);
         } else {
             String mimeType = selectedData.size() > 0 ? selectedData.get(0).getMimeType() : "";
             boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(mimeType, media.getMimeType());
