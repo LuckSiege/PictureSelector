@@ -1,1 +1,1 @@
-include ':app', ':picture_library', ':ucrop'
+include ':app', ':picture_library'
