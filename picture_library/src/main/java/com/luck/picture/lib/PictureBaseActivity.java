@@ -520,7 +520,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             if (media == null || TextUtils.isEmpty(media.getPath())) {
                 continue;
             }
-            if (config.isCheckOriginalImage || (!media.isCut() && !media.isCompressed() && TextUtils.isEmpty(media.getAndroidQToPath()))) {
+            if (config.isCheckOriginalImage || (!media.isCut() && !media.isCompressed() && !media.isToSandboxPath())) {
                 isNextCopyAndroidQToPath = true;
                 break;
             }
@@ -580,7 +580,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                     if (media == null || TextUtils.isEmpty(media.getPath())) {
                         continue;
                     }
-                    boolean isCopyAndroidQToPath = !media.isCut() && !media.isCompressed() && TextUtils.isEmpty(media.getAndroidQToPath());
+                    boolean isCopyAndroidQToPath = !media.isCut() && !media.isCompressed() && !media.isToSandboxPath();
                     boolean isCopyPath = false;
                     if (isCopyAndroidQToPath && PictureMimeType.isContent(media.getPath())) {
                         if (!PictureMimeType.isHasHttp(media.getPath())) {

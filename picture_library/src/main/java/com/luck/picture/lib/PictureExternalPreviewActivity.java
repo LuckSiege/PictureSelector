@@ -270,7 +270,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
                 // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
                 path = media.getCompressPath();
-            } else if (!TextUtils.isEmpty(media.getAndroidQToPath())) {
+            } else if (media.isToSandboxPath()) {
                 // AndroidQ特有path
                 path = media.getAndroidQToPath();
             } else {

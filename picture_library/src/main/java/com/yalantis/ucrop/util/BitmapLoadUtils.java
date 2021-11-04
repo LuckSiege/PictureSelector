@@ -2,7 +2,6 @@ package com.yalantis.ucrop.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -56,7 +55,7 @@ public class BitmapLoadUtils {
     public static int calculateInSampleSize(@NonNull int width,int height, int reqWidth, int reqHeight) {
         // Raw height and width of image
         int inSampleSize = 1;
-        if (width == 0 && height == 0) {
+        if ((width == 0 && height == 0) || (width == reqWidth && height == reqHeight)) {
             return inSampleSize * 2;
         }
         if (height > reqHeight || width > reqWidth) {

@@ -63,6 +63,7 @@ public class LocalMedia implements Parcelable {
      * If the cut
      */
     private boolean isCut;
+
     /**
      * media position of list
      */
@@ -403,7 +404,7 @@ public class LocalMedia implements Parcelable {
     }
 
     public boolean isCut() {
-        return isCut;
+        return isCut && !TextUtils.isEmpty(getCutPath());
     }
 
     public void setCut(boolean cut) {
@@ -435,7 +436,7 @@ public class LocalMedia implements Parcelable {
     }
 
     public boolean isCompressed() {
-        return compressed;
+        return compressed && !TextUtils.isEmpty(getCompressPath());
     }
 
     public void setCompressed(boolean compressed) {
@@ -597,6 +598,10 @@ public class LocalMedia implements Parcelable {
         isEditorImage = editorImage;
     }
 
+    public boolean isToSandboxPath(){
+        return !TextUtils.isEmpty(getAndroidQToPath());
+    }
+
     @Override
     public String toString() {
         return "LocalMedia{" +
@@ -627,8 +632,6 @@ public class LocalMedia implements Parcelable {
                 ", fileName='" + fileName + '\'' +
                 ", parentFolderName='" + parentFolderName + '\'' +
                 ", orientation=" + orientation +
-                ", loadLongImageStatus=" + loadLongImageStatus +
-                ", isLongImage=" + isLongImage +
                 ", bucketId=" + bucketId +
                 ", isMaxSelectEnabledMask=" + isMaxSelectEnabledMask +
                 ", isEditorImage=" + isEditorImage +

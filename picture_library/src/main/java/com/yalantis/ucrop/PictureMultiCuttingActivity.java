@@ -152,10 +152,10 @@ public class PictureMultiCuttingActivity extends UCropActivity {
         String suffix = PictureMimeType.getLastImgType(PictureMimeType.isContent(path)
                 ? PictureFileUtils.getPath(this, Uri.parse(path)) : path);
         Uri uri;
-        if (TextUtils.isEmpty(cutInfo.getAndroidQToPath())) {
-            uri = isHttp || PictureMimeType.isContent(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
-        } else {
+        if (cutInfo.isToSandboxPath()) {
             uri = Uri.fromFile(new File(cutInfo.getAndroidQToPath()));
+        } else {
+            uri = isHttp || PictureMimeType.isContent(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
         }
         extras.putInt(UCrop.Options.EXTRA_INPUT_IMAGE_WIDTH, cutInfo.getWidth());
         extras.putInt(UCrop.Options.EXTRA_INPUT_IMAGE_HEIGHT, cutInfo.getHeight());

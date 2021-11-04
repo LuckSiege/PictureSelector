@@ -149,7 +149,7 @@ public class Luban {
                         index++;
                         InputStreamProvider path = iterator.next();
                         String newPath = null;
-                        if (path.getMedia().isCompressed() && !TextUtils.isEmpty(path.getMedia().getCompressPath())) {
+                        if (path.getMedia().isCompressed()) {
                             // 压缩过的图片不重复压缩  注意:如果是开启了裁剪 就算压缩过也要重新压缩
                             boolean exists = !path.getMedia().isCut() && new File(path.getMedia().getCompressPath()).exists();
                             File result = exists ? new File(path.getMedia().getCompressPath()) : compress(context, path);
@@ -222,7 +222,7 @@ public class Luban {
                 continue;
             }
             LocalMedia localMedia = provider.getMedia();
-            if (localMedia.isCompressed() && !TextUtils.isEmpty(localMedia.getCompressPath())) {
+            if (localMedia.isCompressed()) {
                 // 压缩过的图片不重复压缩  注意:如果是开启了裁剪 就算压缩过也要重新压缩
                 boolean exists = !localMedia.isCut() && new File(localMedia.getCompressPath()).exists();
                 File result = exists ? new File(localMedia.getCompressPath())
@@ -298,7 +298,7 @@ public class Luban {
     private File compressRealLocalMedia(Context context, InputStreamProvider streamProvider) throws Exception {
         File result;
         LocalMedia media = streamProvider.getMedia();
-        String newPath = media.isCut() && !TextUtils.isEmpty(media.getCutPath()) ? media.getCutPath() : media.getRealPath();
+        String newPath = media.isCut() ? media.getCutPath() : media.getRealPath();
         String suffix = Checker.SINGLE.extSuffix(media.getMimeType());
         File outFile = getImageCacheFile(context, streamProvider, suffix);
         String filename = "";
@@ -314,7 +314,7 @@ public class Luban {
             if (suffix.startsWith(".gif")) {
                 // GIF without compression
                 if (SdkVersionUtils.checkedAndroid_Q()) {
-                    if (media.isCut() && !TextUtils.isEmpty(media.getCutPath())) {
+                    if (media.isCut()) {
                         result = new File(media.getCutPath());
                     } else {
                         String androidQToPath = AndroidQTransformUtils.copyPathToAndroidQ(context, streamProvider.getMedia().getId(), streamProvider.getPath(),
@@ -437,10 +437,10 @@ public class Luban {
                 @Override
                 public InputStream openInternal() throws IOException {
                     if (PictureMimeType.isContent(media.getPath()) && !media.isCut()) {
-                        if (TextUtils.isEmpty(media.getAndroidQToPath())) {
-                            return PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(media.getPath()));
-                        } else {
+                        if (media.isToSandboxPath()) {
                             return new FileInputStream(media.getAndroidQToPath());
+                        } else {
+                            return PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(media.getPath()));
                         }
                     } else {
                         if (PictureMimeType.isHasHttp(media.getPath()) && TextUtils.isEmpty(media.getCutPath())) {
@@ -456,7 +456,7 @@ public class Luban {
                     if (media.isCut()) {
                         return media.getCutPath();
                     } else {
-                        return TextUtils.isEmpty(media.getAndroidQToPath()) ? media.getPath() : media.getAndroidQToPath();
+                        return media.isToSandboxPath() ? media.getAndroidQToPath():media.getPath();
                     }
                 }
 
