@@ -19,13 +19,11 @@ import androidx.core.graphics.BlendModeColorFilterCompat;
 import androidx.core.graphics.BlendModeCompat;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.camera.CustomCameraType;
 import com.luck.picture.lib.camera.listener.CaptureListener;
 import com.luck.picture.lib.camera.listener.ClickListener;
 import com.luck.picture.lib.camera.listener.TypeListener;
 import com.luck.picture.lib.tools.ScreenUtils;
-
-import static com.luck.picture.lib.camera.CustomCameraView.BUTTON_STATE_ONLY_CAPTURE;
-import static com.luck.picture.lib.camera.CustomCameraView.BUTTON_STATE_ONLY_RECORDER;
 
 /**
  * @author：luck
@@ -276,9 +274,9 @@ public class CaptureLayout extends FrameLayout {
     private String getCaptureTip() {
         int buttonFeatures = btn_capture.getButtonFeatures();
         switch (buttonFeatures) {
-            case BUTTON_STATE_ONLY_CAPTURE:
+            case CustomCameraType.BUTTON_STATE_ONLY_CAPTURE:
                 return getContext().getString(R.string.picture_photo_pictures);
-            case BUTTON_STATE_ONLY_RECORDER:
+            case CustomCameraType.BUTTON_STATE_ONLY_RECORDER:
                 return getContext().getString(R.string.picture_photo_recording);
             default:
                 return getContext().getString(R.string.picture_photo_camera);

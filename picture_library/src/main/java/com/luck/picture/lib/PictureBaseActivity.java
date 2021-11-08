@@ -691,7 +691,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             Uri imageUri;
             String cameraFileName = null;
-            String imageFormat = TextUtils.isEmpty(config.cameraImageFormat) ? config.suffixType : config.cameraImageFormat;
             int chooseMode = config.chooseMode == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_IMAGE : config.chooseMode;
             if (!TextUtils.isEmpty(config.cameraFileName)) {
                 boolean isSuffixOfImage = PictureMimeType.isSuffixOfImage(config.cameraFileName);
@@ -700,10 +699,10 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             }
             if (SdkVersionUtils.checkedAndroid_Q()) {
                 if (TextUtils.isEmpty(config.outPutCameraPath)) {
-                    imageUri = MediaUtils.createImageUri(this, config.cameraFileName, imageFormat);
+                    imageUri = MediaUtils.createImageUri(this, config.cameraFileName, config.cameraImageFormatForQ);
                 } else {
                     File cameraFile = PictureFileUtils.createCameraFile(this,
-                            chooseMode, cameraFileName, imageFormat, config.outPutCameraPath);
+                            chooseMode, cameraFileName, config.cameraImageFormat, config.outPutCameraPath);
                     config.cameraPath = cameraFile.getAbsolutePath();
                     imageUri = PictureFileUtils.parUri(this, cameraFile);
                 }
@@ -711,7 +710,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                     config.cameraPath = imageUri.toString();
                 }
             } else {
-                File cameraFile = PictureFileUtils.createCameraFile(this, chooseMode, cameraFileName, imageFormat, config.outPutCameraPath);
+                File cameraFile = PictureFileUtils.createCameraFile(this, chooseMode, cameraFileName, config.cameraImageFormat, config.outPutCameraPath);
                 config.cameraPath = cameraFile.getAbsolutePath();
                 imageUri = PictureFileUtils.parUri(this, cameraFile);
             }
@@ -740,7 +739,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             Uri videoUri;
             String cameraFileName = null;
-            String videoFormat = TextUtils.isEmpty(config.cameraVideoFormat) ? config.suffixType : config.cameraVideoFormat;
             int chooseMode = config.chooseMode == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_VIDEO : config.chooseMode;
             if (!TextUtils.isEmpty(config.cameraFileName)) {
                 boolean isSuffixOfImage = PictureMimeType.isSuffixOfImage(config.cameraFileName);
@@ -749,9 +747,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             }
             if (SdkVersionUtils.checkedAndroid_Q()) {
                 if (TextUtils.isEmpty(config.outPutCameraPath)) {
-                    videoUri = MediaUtils.createVideoUri(this, config.cameraFileName, videoFormat);
+                    videoUri = MediaUtils.createVideoUri(this, config.cameraFileName, config.cameraVideoFormatForQ);
                 } else {
-                    File cameraFile = PictureFileUtils.createCameraFile(this, chooseMode, cameraFileName, videoFormat, config.outPutCameraPath);
+                    File cameraFile = PictureFileUtils.createCameraFile(this, chooseMode, cameraFileName, config.cameraVideoFormat, config.outPutCameraPath);
                     config.cameraPath = cameraFile.getAbsolutePath();
                     videoUri = PictureFileUtils.parUri(this, cameraFile);
                 }
@@ -759,7 +757,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                     config.cameraPath = videoUri.toString();
                 }
             } else {
-                File cameraFile = PictureFileUtils.createCameraFile(this, chooseMode, cameraFileName, videoFormat, config.outPutCameraPath);
+                File cameraFile = PictureFileUtils.createCameraFile(this, chooseMode, cameraFileName, config.cameraVideoFormat, config.outPutCameraPath);
                 config.cameraPath = cameraFile.getAbsolutePath();
                 videoUri = PictureFileUtils.parUri(this, cameraFile);
             }
@@ -791,9 +789,8 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
                 Intent cameraIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
                 if (cameraIntent.resolveActivity(getPackageManager()) != null) {
                     config.cameraMimeType = PictureMimeType.ofAudio();
-                    String audioFormat = TextUtils.isEmpty(config.cameraAudioFormat) ? config.suffixType : config.cameraAudioFormat;
                     if (SdkVersionUtils.checkedAndroid_Q()) {
-                        Uri audioUri = MediaUtils.createAudioUri(this, audioFormat);
+                        Uri audioUri = MediaUtils.createAudioUri(this, config.cameraAudioFormatForQ);
                         if (audioUri == null) {
                             ToastUtils.s(getContext(), "open is audio error，the uri is empty ");
                             if (config.camera) {

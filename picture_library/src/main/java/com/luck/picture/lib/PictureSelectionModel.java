@@ -14,6 +14,7 @@ import androidx.annotation.StyleRes;
 import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.animators.AnimationType;
+import com.luck.picture.lib.camera.CustomCameraType;
 import com.luck.picture.lib.camera.CustomCameraView;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -293,9 +294,9 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel setCustomCameraFeatures(int buttonFeatures) {
         if (selectionConfig.chooseMode == PictureMimeType.ofImage()) {
-            selectionConfig.buttonFeatures = CustomCameraView.BUTTON_STATE_ONLY_CAPTURE;
+            selectionConfig.buttonFeatures = CustomCameraType.BUTTON_STATE_ONLY_CAPTURE;
         } else if (selectionConfig.chooseMode == PictureMimeType.ofVideo()) {
-            selectionConfig.buttonFeatures = CustomCameraView.BUTTON_STATE_ONLY_RECORDER;
+            selectionConfig.buttonFeatures = CustomCameraType.BUTTON_STATE_ONLY_RECORDER;
         } else {
             selectionConfig.buttonFeatures = buttonFeatures;
         }
@@ -309,11 +310,11 @@ public class PictureSelectionModel {
      */
     private PictureSelectionModel initCustomCameraFeatures() {
         if (selectionConfig.chooseMode == PictureMimeType.ofImage()) {
-            selectionConfig.buttonFeatures = CustomCameraView.BUTTON_STATE_ONLY_CAPTURE;
+            selectionConfig.buttonFeatures = CustomCameraType.BUTTON_STATE_ONLY_CAPTURE;
         } else if (selectionConfig.chooseMode == PictureMimeType.ofVideo()) {
-            selectionConfig.buttonFeatures = CustomCameraView.BUTTON_STATE_ONLY_RECORDER;
+            selectionConfig.buttonFeatures = CustomCameraType.BUTTON_STATE_ONLY_RECORDER;
         } else {
-            selectionConfig.buttonFeatures = CustomCameraView.BUTTON_STATE_BOTH;
+            selectionConfig.buttonFeatures = CustomCameraType.BUTTON_STATE_BOTH;
         }
         return this;
     }
@@ -713,17 +714,6 @@ public class PictureSelectionModel {
      */
     @Deprecated
     public PictureSelectionModel imageFormat(String suffixType) {
-        if (SdkVersionUtils.checkedAndroid_Q() || SdkVersionUtils.checkedAndroid_R()) {
-            if (TextUtils.equals(suffixType, PictureMimeType.PNG)) {
-                suffixType = PictureMimeType.PNG_Q;
-            }
-            if (TextUtils.equals(suffixType, PictureMimeType.JPG) || TextUtils.equals(suffixType, PictureMimeType.JPEG)) {
-                suffixType = PictureMimeType.JPEG_Q;
-            }
-            if (TextUtils.equals(suffixType, PictureMimeType.MP4)) {
-                suffixType = PictureMimeType.MP4_Q;
-            }
-        }
         selectionConfig.suffixType = suffixType;
         return this;
     }
@@ -735,15 +725,15 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel setCameraImageFormat(String imageFormat) {
+        selectionConfig.cameraImageFormat = imageFormat;
         if (SdkVersionUtils.checkedAndroid_Q() || SdkVersionUtils.checkedAndroid_R()) {
             if (TextUtils.equals(imageFormat, PictureMimeType.PNG)) {
-                imageFormat = PictureMimeType.PNG_Q;
+                selectionConfig.cameraImageFormatForQ = PictureMimeType.PNG_Q;
             }
             if (TextUtils.equals(imageFormat, PictureMimeType.JPG) || TextUtils.equals(imageFormat, PictureMimeType.JPEG)) {
-                imageFormat = PictureMimeType.JPEG_Q;
+                selectionConfig.cameraImageFormatForQ = PictureMimeType.JPEG_Q;
             }
         }
-        selectionConfig.cameraImageFormat = imageFormat;
         return this;
     }
 
@@ -754,15 +744,15 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel setCameraVideoFormat(String videoFormat) {
+        selectionConfig.cameraVideoFormat = videoFormat;
         if (SdkVersionUtils.checkedAndroid_Q() || SdkVersionUtils.checkedAndroid_R()) {
             if (TextUtils.equals(videoFormat, PictureMimeType.MP4)) {
-                videoFormat = PictureMimeType.MP4_Q;
+                selectionConfig.cameraVideoFormatForQ = PictureMimeType.MP4_Q;
             }
             if (TextUtils.equals(videoFormat, PictureMimeType.AVI)) {
-                videoFormat = PictureMimeType.AVI_Q;
+                selectionConfig.cameraVideoFormatForQ = PictureMimeType.AVI_Q;
             }
         }
-        selectionConfig.cameraVideoFormat = videoFormat;
         return this;
     }
 
@@ -774,18 +764,18 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel setCameraAudioFormat(String audioFormat) {
+        selectionConfig.cameraAudioFormat = audioFormat;
         if (SdkVersionUtils.checkedAndroid_Q() || SdkVersionUtils.checkedAndroid_R()) {
             if (TextUtils.equals(audioFormat, PictureMimeType.AMR)) {
-                audioFormat = PictureMimeType.AMR_Q;
+                selectionConfig.cameraAudioFormatForQ = PictureMimeType.AMR_Q;
             }
             if (TextUtils.equals(audioFormat, PictureMimeType.WAV)) {
-                audioFormat = PictureMimeType.WAV_Q;
+                selectionConfig.cameraAudioFormatForQ = PictureMimeType.WAV_Q;
             }
             if (TextUtils.equals(audioFormat, PictureMimeType.MP3)) {
-                audioFormat = PictureMimeType.MP3_Q;
+                selectionConfig.cameraAudioFormatForQ = PictureMimeType.MP3_Q;
             }
         }
-        selectionConfig.cameraAudioFormat = audioFormat;
         return this;
     }
 
@@ -1113,9 +1103,7 @@ public class PictureSelectionModel {
     }
 
     /**
-     * Extra used with {@link #Environment.getExternalStorageDirectory() +  File.separator + "CustomCamera" + File.separator}  to indicate that
-     *
-     * @param outPutCameraPath Camera save path 只支持Build.VERSION.SDK_INT < Build.VERSION_CODES.Q
+     * @param outPutCameraPath Camera out path
      * @return
      */
     public PictureSelectionModel setOutputCameraPath(String outPutCameraPath) {

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.luck.picture.lib.camera.CustomCameraType;
 import com.luck.picture.lib.camera.CustomCameraView;
 import com.luck.picture.lib.camera.listener.CameraListener;
 import com.luck.picture.lib.camera.listener.ClickListener;
@@ -66,7 +67,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
         if (PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             // 验证相机权限和麦克风权限
             if (PermissionChecker.checkSelfPermission(this, Manifest.permission.CAMERA)) {
-                if (config.buttonFeatures == CustomCameraView.BUTTON_STATE_ONLY_CAPTURE) {
+                if (config.buttonFeatures == CustomCameraType.BUTTON_STATE_ONLY_CAPTURE) {
                     mCameraView.initCamera();
                 } else {
                     if (PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)) {
@@ -94,7 +95,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
         if (isEnterSetting) {
             if (PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 if (PermissionChecker.checkSelfPermission(this, Manifest.permission.CAMERA)) {
-                    if (config.buttonFeatures == CustomCameraView.BUTTON_STATE_ONLY_CAPTURE) {
+                    if (config.buttonFeatures == CustomCameraType.BUTTON_STATE_ONLY_CAPTURE) {
                         mCameraView.initCamera();
                     } else {
                         if (PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)) {

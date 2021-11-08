@@ -8,6 +8,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.StyleRes;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.camera.CustomCameraType;
 import com.luck.picture.lib.camera.CustomCameraView;
 import com.luck.picture.lib.engine.CacheResourcesEngine;
 import com.luck.picture.lib.engine.CompressEngine;
@@ -51,6 +52,9 @@ public final class PictureSelectionConfig implements Parcelable {
     public String cameraImageFormat;
     public String cameraVideoFormat;
     public String cameraAudioFormat;
+    public String cameraImageFormatForQ;
+    public String cameraVideoFormatForQ;
+    public String cameraAudioFormatForQ;
     @Deprecated
     public boolean focusAlpha;
     public String renameCompressFileName;
@@ -58,7 +62,7 @@ public final class PictureSelectionConfig implements Parcelable {
     @Deprecated
     public String specifiedFormat;
     public int requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
-    public int buttonFeatures = CustomCameraView.BUTTON_STATE_BOTH;
+    public int buttonFeatures = CustomCameraType.BUTTON_STATE_BOTH;
     public int captureLoadingColor;
     public boolean isCameraAroundState;
     public boolean isAndroidQTransform;
@@ -206,6 +210,9 @@ public final class PictureSelectionConfig implements Parcelable {
         cameraImageFormat = in.readString();
         cameraVideoFormat = in.readString();
         cameraAudioFormat = in.readString();
+        cameraImageFormatForQ = in.readString();
+        cameraVideoFormatForQ = in.readString();
+        cameraAudioFormatForQ = in.readString();
         focusAlpha = in.readByte() != 0;
         renameCompressFileName = in.readString();
         renameCropFileName = in.readString();
@@ -326,6 +333,9 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeString(cameraImageFormat);
         dest.writeString(cameraVideoFormat);
         dest.writeString(cameraAudioFormat);
+        dest.writeString(cameraImageFormatForQ);
+        dest.writeString(cameraVideoFormatForQ);
+        dest.writeString(cameraAudioFormatForQ);
         dest.writeByte((byte) (focusAlpha ? 1 : 0));
         dest.writeString(renameCompressFileName);
         dest.writeString(renameCropFileName);
@@ -528,6 +538,9 @@ public final class PictureSelectionConfig implements Parcelable {
         cameraImageFormat = "";
         cameraVideoFormat = "";
         cameraAudioFormat = "";
+        cameraImageFormatForQ = "";
+        cameraVideoFormatForQ = "";
+        cameraAudioFormatForQ = "";
         cameraFileName = "";
         specifiedFormat = "";
         renameCompressFileName = "";
