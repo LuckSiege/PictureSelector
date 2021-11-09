@@ -203,7 +203,7 @@ public class PicturePlayAudioActivity extends PictureBaseActivity implements Vie
 
     @Override
     public void onBackPressed() {
-        if (SdkVersionUtils.checkedAndroid_Q()) {
+        if (SdkVersionUtils.isQ()) {
             finishAfterTransition();
         } else {
             super.onBackPressed();

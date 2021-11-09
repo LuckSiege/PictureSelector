@@ -13,7 +13,7 @@ public class SdkVersionUtils {
      *
      * @return
      */
-    public static boolean checkedAndroid_Q() {
+    public static boolean isQ() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
     }
 
@@ -22,7 +22,7 @@ public class SdkVersionUtils {
      *
      * @return
      */
-    public static boolean checkedAndroid_R() {
+    public static boolean isR() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
     }
 }

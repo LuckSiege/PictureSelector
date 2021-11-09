@@ -110,7 +110,7 @@ public class PictureVideoPlayActivity extends PictureBaseActivity implements
     @Override
     public void onStart() {
         // Play Video
-        if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(videoPath)) {
+        if (SdkVersionUtils.isQ() && PictureMimeType.isContent(videoPath)) {
             mVideoView.setVideoURI(Uri.parse(videoPath));
         } else {
             mVideoView.setVideoPath(videoPath);

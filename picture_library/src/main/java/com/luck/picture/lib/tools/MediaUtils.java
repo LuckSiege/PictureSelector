@@ -1,7 +1,6 @@
 package com.luck.picture.lib.tools;
 
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
@@ -9,7 +8,6 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
@@ -32,128 +30,6 @@ import java.io.InputStream;
  * @describe：资源处理工具类
  */
 public class MediaUtils {
-    /**
-     * 创建一条图片地址uri,用于保存拍照后的照片
-     *
-     * @param ctx
-     * @param cameraFileName
-     * @param suffixType
-     * @return 图片的uri
-     */
-    public static Uri createImageUri(final Context ctx, String cameraFileName, String mimeType) {
-        Context context = ctx.getApplicationContext();
-        Uri[] imageFilePath = {null};
-        String status = Environment.getExternalStorageState();
-        String time = ValueOf.toString(System.currentTimeMillis());
-        // ContentValues是我们希望这条记录被创建时包含的数据信息
-        ContentValues values = new ContentValues(3);
-        if (TextUtils.isEmpty(cameraFileName)) {
-            values.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
-        } else {
-            if (cameraFileName.lastIndexOf(".") == -1) {
-                values.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
-            } else {
-                String suffix = cameraFileName.substring(cameraFileName.lastIndexOf("."));
-                String fileName = cameraFileName.replaceAll(suffix, "");
-                values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName);
-            }
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            values.put(MediaStore.Images.Media.DATE_TAKEN, time);
-        }
-        values.put(MediaStore.Images.Media.MIME_TYPE, TextUtils.isEmpty(mimeType) || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO) ? PictureMimeType.MIME_TYPE_IMAGE : mimeType);
-        // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
-        if (status.equals(Environment.MEDIA_MOUNTED)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                values.put(MediaStore.Images.Media.RELATIVE_PATH, PictureMimeType.DCIM);
-            }
-            imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-        } else {
-            imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Images.Media.INTERNAL_CONTENT_URI, values);
-        }
-        return imageFilePath[0];
-    }
-
-
-    /**
-     * 创建一条视频地址uri,用于保存录制的视频
-     *
-     * @param ctx
-     * @param cameraFileName
-     * @param suffixType
-     * @return 视频的uri
-     */
-    public static Uri createVideoUri(final Context ctx, String cameraFileName, String mimeType) {
-        Context context = ctx.getApplicationContext();
-        Uri[] imageFilePath = {null};
-        String status = Environment.getExternalStorageState();
-        String time = ValueOf.toString(System.currentTimeMillis());
-        // ContentValues是我们希望这条记录被创建时包含的数据信息
-        ContentValues values = new ContentValues(3);
-        if (TextUtils.isEmpty(cameraFileName)) {
-            values.put(MediaStore.Video.Media.DISPLAY_NAME, DateUtils.getCreateFileName("VID_"));
-        } else {
-            if (cameraFileName.lastIndexOf(".") == -1) {
-                values.put(MediaStore.Video.Media.DISPLAY_NAME, DateUtils.getCreateFileName("VID_"));
-            } else {
-                String suffix = cameraFileName.substring(cameraFileName.lastIndexOf("."));
-                String fileName = cameraFileName.replaceAll(suffix, "");
-                values.put(MediaStore.Video.Media.DISPLAY_NAME, fileName);
-            }
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            values.put(MediaStore.Video.Media.DATE_TAKEN, time);
-        }
-        values.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(mimeType) || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE) ? PictureMimeType.MIME_TYPE_VIDEO : mimeType);
-        // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
-        if (status.equals(Environment.MEDIA_MOUNTED)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                values.put(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES);
-            }
-            imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
-        } else {
-            imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Video.Media.INTERNAL_CONTENT_URI, values);
-        }
-        return imageFilePath[0];
-    }
-
-
-    /**
-     * 创建一条音频地址uri,用于保存录制的音频
-     *
-     * @param ctx
-     * @param suffixType
-     * @return 音频的uri
-     */
-    public static Uri createAudioUri(final Context ctx, String mimeType) {
-        Context context = ctx.getApplicationContext();
-        Uri[] imageFilePath = {null};
-        String status = Environment.getExternalStorageState();
-        String time = ValueOf.toString(System.currentTimeMillis());
-        // ContentValues是我们希望这条记录被创建时包含的数据信息
-        ContentValues values = new ContentValues(3);
-        values.put(MediaStore.Audio.Media.DISPLAY_NAME, DateUtils.getCreateFileName("AUD_"));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            values.put(MediaStore.Audio.Media.DATE_TAKEN, time);
-        }
-        values.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(mimeType) || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE) || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO) ? PictureMimeType.MIME_TYPE_AUDIO_AMR : mimeType);
-        // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
-        if (status.equals(Environment.MEDIA_MOUNTED)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                values.put(MediaStore.Audio.Media.RELATIVE_PATH, Environment.DIRECTORY_MUSIC);
-            }
-            imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
-        } else {
-            imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, values);
-        }
-        return imageFilePath[0];
-    }
 
     /**
      * 是否是长图
@@ -330,7 +206,7 @@ public class MediaUtils {
             String selection = MediaStore.Images.Media.DATA + " like ?";
             //定义selectionArgs：
             String[] selectionArgs = {absolutePath + "%"};
-            if (SdkVersionUtils.checkedAndroid_R()) {
+            if (SdkVersionUtils.isR()) {
                 Bundle queryArgs = MediaUtils.createQueryArgsBundle(selection, selectionArgs, 1, 0);
                 data = context.getApplicationContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, queryArgs, null);
             } else {
@@ -369,7 +245,7 @@ public class MediaUtils {
             String selection = MediaStore.Files.FileColumns.DATA + " like ?";
             //定义selectionArgs：
             String[] selectionArgs = {absolutePath + "%"};
-            if (SdkVersionUtils.checkedAndroid_R()) {
+            if (SdkVersionUtils.isR()) {
                 Bundle queryArgs = MediaUtils.createQueryArgsBundle(selection, selectionArgs, 1, 0);
                 data = context.getApplicationContext().getContentResolver().query(MediaStore.Files.getContentUri("external"), null, queryArgs, null);
             } else {
@@ -446,7 +322,7 @@ public class MediaUtils {
             if (PictureMimeType.isContent(cameraPath)) {
                 context.getContentResolver().delete(Uri.parse(cameraPath), null, null);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -459,10 +335,10 @@ public class MediaUtils {
      */
     public static void deleteUri(Context context, Uri url) {
         try {
-            if (url != null){
+            if (url != null) {
                 context.getContentResolver().delete(url, null, null);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

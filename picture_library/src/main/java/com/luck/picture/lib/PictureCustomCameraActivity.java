@@ -27,8 +27,6 @@ import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.listener.OnPermissionDialogOptionCallback;
 import com.luck.picture.lib.permissions.PermissionChecker;
 
-import java.io.File;
-
 /**
  * @author：luck
  * @date：2020-01-04 14:05
@@ -137,18 +135,18 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
             captureLayout.setButtonFeatures(config.buttonFeatures);
         }
         // 拍照预览
-        mCameraView.setImageCallbackListener((file, imageView) -> {
-            if (config != null && PictureSelectionConfig.imageEngine != null && file != null) {
-                PictureSelectionConfig.imageEngine.loadImage(getContext(), file.getAbsolutePath(), imageView);
+        mCameraView.setImageCallbackListener((url, imageView) -> {
+            if (config != null && PictureSelectionConfig.imageEngine != null) {
+                PictureSelectionConfig.imageEngine.loadImage(getContext(), url, imageView);
             }
         });
         // 设置拍照或拍视频回调监听
         mCameraView.setCameraListener(new CameraListener() {
             @Override
-            public void onPictureSuccess(@NonNull File file) {
+            public void onPictureSuccess(@NonNull String url) {
                 config.cameraMimeType = PictureMimeType.ofImage();
                 Intent intent = new Intent();
-                intent.putExtra(PictureConfig.EXTRA_MEDIA_PATH, file.getAbsolutePath());
+                intent.putExtra(PictureConfig.EXTRA_MEDIA_PATH, url);
                 intent.putExtra(PictureConfig.EXTRA_CONFIG, config);
                 if (config.camera) {
                     dispatchHandleCamera(intent);
@@ -159,10 +157,10 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
             }
 
             @Override
-            public void onRecordSuccess(@NonNull File file) {
+            public void onRecordSuccess(@NonNull String url) {
                 config.cameraMimeType = PictureMimeType.ofVideo();
                 Intent intent = new Intent();
-                intent.putExtra(PictureConfig.EXTRA_MEDIA_PATH, file.getAbsolutePath());
+                intent.putExtra(PictureConfig.EXTRA_MEDIA_PATH, url);
                 intent.putExtra(PictureConfig.EXTRA_CONFIG, config);
                 if (config.camera) {
                     dispatchHandleCamera(intent);

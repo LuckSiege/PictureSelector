@@ -43,7 +43,6 @@ import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.broadcast.BroadcastAction;
 import com.luck.picture.lib.broadcast.BroadcastManager;
 import com.luck.picture.lib.camera.CustomCameraType;
-import com.luck.picture.lib.camera.CustomCameraView;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -455,10 +454,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
                         .isWeChatStyle(isWeChatStyle)// 是否开启微信图片选择风格
                         .isUseCustomCamera(cb_custom_camera.isChecked())// 是否使用自定义相机
-                        //.isCameraCopyExternalFile(true)
                         .setLanguage(language)// 设置语言，默认中文
                         .isPageStrategy(cbPage.isChecked())// 是否开启分页策略 & 每页多少条；默认开启
                         .setRecyclerAnimationMode(animationMode)// 列表动画效果
+                        //.setOfAllCameraType(PictureMimeType.ofVideo())
                         .isWithVideoImage(true)// 图片和视频是否可以同选,只在ofAll模式下有效
                         //.isSyncCover(true)// 是否强制从MediaStore里同步相册封面，如果相册封面没显示异常则没必要设置
                         //.isCameraAroundState(false) // 是否开启前置摄像头，默认false，如果使用系统拍照 可能部分机型会有兼容性问题
@@ -466,8 +465,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.isAutoRotating(false)// 压缩时自动纠正有旋转的图片
                         .isMaxSelectEnabledMask(cbEnabledMask.isChecked())// 选择数到了最大阀值列表是否启用蒙层效果
                         //.isAutomaticTitleRecyclerTop(false)// 连续点击标题栏RecyclerView是否自动回到顶部,默认true
-                        //.loadCacheResourcesCallback(GlideCacheEngine.createCacheEngine())// 获取图片资源缓存，主要是解决华为10部分机型在拷贝文件过多时会出现卡的问题，这里可以判断只在会出现一直转圈问题机型上使用
-                        .setOutputCameraPath(createCustomCameraOutPath())// 自定义相机输出目录
+                        //.setOutputCameraPath(createCustomCameraOutPath())// 自定义相机输出目录
                         .setCustomCameraFeatures(CustomCameraType.BUTTON_STATE_BOTH)// 设置自定义相机按钮状态
                         .setCaptureLoadingColor(ContextCompat.getColor(getContext(), R.color.app_color_blue))
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
@@ -480,8 +478,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.filterMinFileSize(5)// 过滤最小资源，单位kb
                         //.filterMaxFileSize()// 过滤最大资源，单位kb
                         .isReturnEmpty(false)// 未选择数据时点击按钮是否可以返回
-                        .closeAndroidQChangeWH(true)//如果图片有旋转角度则对换宽高,默认为true
-                        .closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 如果视频有旋转角度则对换宽高,默认为false
                         .isAndroidQTransform(true)// 是否需要处理Android Q 拷贝至应用沙盒的操作，只针对compress(false); && .isEnableCrop(false);有效,默认处理
                         .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)// 设置相册Activity方向，不设置默认使用系统
                         .isOriginalImageControl(cb_original.isChecked())// 是否显示原图控制按钮，如果设置为true则用户可以自由选择是否使用原图，裁剪功能将会失效
@@ -521,8 +517,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .synOrAsy(false)//同步true或异步false 压缩 默认同步
                         //.queryMaxFileSize(10)// 只查多少M以内的图片、视频、音频  单位M
                         //.compressSavePath(getPath())//压缩图片保存地址
-                        //.sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效 注：已废弃
-                        //.glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度 注：已废弃
                         .withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
                         .hideBottomControls(!cb_hide.isChecked())// 是否显示uCrop工具栏，默认不显示
                         .isGif(cb_isGif.isChecked())// 是否显示gif图片
@@ -571,14 +565,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.setOutputCameraPath()// 自定义相机输出目录
                         .minSelectNum(1)// 最小选择数量
                         //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
-                        .closeAndroidQChangeWH(true)//如果图片有旋转角度则对换宽高，默认为true
-                        .closeAndroidQChangeVideoWH(!SdkVersionUtils.checkedAndroid_Q())// 如果视频有旋转角度则对换宽高，默认false
                         .selectionMode(cb_choose_mode.isChecked() ?
                                 PictureConfig.MULTIPLE : PictureConfig.SINGLE)// 多选 or 单选
                         //.cameraFileName(System.currentTimeMillis() + ".jpg")// 使用相机时保存至本地的文件名称,注意这个只在拍照时可以使用
                         //.renameCompressFile(System.currentTimeMillis() + ".jpg")// 重命名压缩文件名、 注意这个不要重复，只适用于单张图压缩使用
                         //.renameCropFileName(System.currentTimeMillis() + ".jpg")// 重命名裁剪文件名、 注意这个不要重复，只适用于单张图裁剪使用
-                        .loadCacheResourcesCallback(GlideCacheEngine.createCacheEngine())// 获取图片资源缓存，主要是解决华为10部分机型在拷贝文件过多时会出现卡的问题，这里可以判断只在会出现一直转圈问题机型上使用
                         .isPreviewImage(cb_preview_img.isChecked())// 是否可预览图片
                         .isPreviewVideo(cb_preview_video.isChecked())// 是否可预览视频
                         .isEnablePreviewAudio(cb_preview_audio.isChecked()) // 是否可播放音频
@@ -588,7 +579,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.basicUCropConfig()//对外提供所有UCropOptions参数配制，但如果PictureSelector原本支持设置的还是会使用原有的设置
                         .isCompress(cb_compress.isChecked())// 是否压缩
                         .compressQuality(60)// 图片压缩后输出质量
-                        .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
                         .withAspectRatio(aspect_ratio_x, aspect_ratio_y)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
                         .hideBottomControls(!cb_hide.isChecked())// 是否显示uCrop工具栏，默认不显示
                         .isGif(cb_isGif.isChecked())// 是否显示gif图片
@@ -678,7 +668,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private String createCustomCameraOutPath() {
         File customFile;
-        if (SdkVersionUtils.checkedAndroid_Q()) {
+        if (SdkVersionUtils.isQ()) {
             // 在Android Q上不能直接使用外部存储目录；且沙盒内的资源是无法通过PictureSelector扫描出来的
             File externalFilesDir = getContext().getExternalFilesDir(chooseMode == PictureMimeType.ofVideo() ? Environment.DIRECTORY_MOVIES : Environment.DIRECTORY_PICTURES);
             customFile = new File(externalFilesDir.getAbsolutePath(), "PictureSelector");

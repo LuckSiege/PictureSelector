@@ -28,11 +28,9 @@ import com.luck.picture.lib.tools.ScreenUtils;
 public class PhotoItemSelectedDialog extends DialogFragment implements View.OnClickListener {
     public static final int IMAGE_CAMERA = 0;
     public static final int VIDEO_CAMERA = 1;
-    private TextView tvPicturePhoto, tvPictureVideo, tvPictureCancel;
 
     public static PhotoItemSelectedDialog newInstance() {
-        PhotoItemSelectedDialog selectedDialog = new PhotoItemSelectedDialog();
-        return selectedDialog;
+        return new PhotoItemSelectedDialog();
     }
 
     @Nullable
@@ -51,9 +49,9 @@ public class PhotoItemSelectedDialog extends DialogFragment implements View.OnCl
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        tvPicturePhoto = view.findViewById(R.id.picture_tv_photo);
-        tvPictureVideo = view.findViewById(R.id.picture_tv_video);
-        tvPictureCancel = view.findViewById(R.id.picture_tv_cancel);
+        TextView tvPicturePhoto = view.findViewById(R.id.picture_tv_photo);
+        TextView tvPictureVideo = view.findViewById(R.id.picture_tv_video);
+        TextView tvPictureCancel = view.findViewById(R.id.picture_tv_cancel);
         tvPictureVideo.setOnClickListener(this);
         tvPicturePhoto.setOnClickListener(this);
         tvPictureCancel.setOnClickListener(this);

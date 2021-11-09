@@ -2,8 +2,6 @@ package com.luck.picture.lib.camera.listener;
 
 import androidx.annotation.NonNull;
 
-import java.io.File;
-
 /**
  * @author：luck
  * @date：2020-01-04 13:38
@@ -13,16 +11,16 @@ public interface CameraListener {
     /**
      * 拍照成功返回
      *
-     * @param file
+     * @param url
      */
-    void onPictureSuccess(@NonNull File file);
+    void onPictureSuccess(@NonNull String url);
 
     /**
      * 录像成功返回
      *
-     * @param file
+     * @param url
      */
-    void onRecordSuccess(@NonNull File file);
+    void onRecordSuccess(@NonNull String url);
 
     /**
      * 使用相机出错

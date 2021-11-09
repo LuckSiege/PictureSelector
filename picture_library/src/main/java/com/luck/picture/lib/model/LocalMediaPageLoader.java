@@ -71,7 +71,7 @@ public final class LocalMediaPageLoader {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeTypeOptions).append(" OR ")
                 .append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=? AND ").append(timeCondition).append(") AND ").append(sizeCondition);
-        if (SdkVersionUtils.checkedAndroid_Q()) {
+        if (SdkVersionUtils.isQ()) {
             return stringBuilder.toString();
         } else {
             return stringBuilder.append(")").append(GROUP_BY_BUCKET_Id).toString();
@@ -87,7 +87,7 @@ public final class LocalMediaPageLoader {
      */
     private static String getSelectionArgsForImageMediaCondition(String queryMimeTypeOptions, String fileSizeCondition) {
         StringBuilder stringBuilder = new StringBuilder();
-        if (SdkVersionUtils.checkedAndroid_Q()) {
+        if (SdkVersionUtils.isQ()) {
             return stringBuilder.append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeTypeOptions).append(" AND ").append(fileSizeCondition).toString();
         } else {
             return stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeTypeOptions).append(") AND ").append(fileSizeCondition).append(")").append(GROUP_BY_BUCKET_Id).toString();
@@ -103,7 +103,7 @@ public final class LocalMediaPageLoader {
      */
     private static String getSelectionArgsForVideoOrAudioMediaCondition(String queryMimeTypeOptions, String fileSizeCondition) {
         StringBuilder stringBuilder = new StringBuilder();
-        if (SdkVersionUtils.checkedAndroid_Q()) {
+        if (SdkVersionUtils.isQ()) {
             return stringBuilder.append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeTypeOptions).append(" AND ").append(fileSizeCondition).toString();
         } else {
             return stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeTypeOptions).append(") AND ").append(fileSizeCondition).append(")").append(GROUP_BY_BUCKET_Id).toString();
@@ -178,7 +178,7 @@ public final class LocalMediaPageLoader {
     public String getFirstCover(long bucketId) {
         Cursor data = null;
         try {
-            if (SdkVersionUtils.checkedAndroid_R()) {
+            if (SdkVersionUtils.isR()) {
                 Bundle queryArgs = MediaUtils.createQueryArgsBundle(getPageSelection(bucketId), getPageSelectionArgs(bucketId), 1, 0);
                 data = mContext.getContentResolver().query(QUERY_URI, new String[]{
                         MediaStore.Files.FileColumns._ID,
@@ -195,7 +195,7 @@ public final class LocalMediaPageLoader {
                 if (data.moveToFirst()) {
                     long id = data.getLong(data.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID));
                     String mimeType = data.getString(data.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE));
-                    return SdkVersionUtils.checkedAndroid_Q() ? PictureMimeType.getRealPathUri(id, mimeType) : data.getString
+                    return SdkVersionUtils.isQ() ? PictureMimeType.getRealPathUri(id, mimeType) : data.getString
                             (data.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA));
                 }
                 return null;
@@ -251,7 +251,7 @@ public final class LocalMediaPageLoader {
             public MediaData doInBackground() {
                 Cursor data = null;
                 try {
-                    if (SdkVersionUtils.checkedAndroid_R()) {
+                    if (SdkVersionUtils.isR()) {
                         Bundle queryArgs = MediaUtils.createQueryArgsBundle(getPageSelection(bucketId), getPageSelectionArgs(bucketId), limit, (page - 1) * pageSize);
                         data = mContext.getContentResolver().query(QUERY_URI, PROJECTION_PAGE, queryArgs, null);
                     } else {
@@ -278,7 +278,7 @@ public final class LocalMediaPageLoader {
                                 String mimeType = data.getString(mimeTypeColumn);
                                 mimeType = TextUtils.isEmpty(mimeType) ? PictureMimeType.ofJPEG() : mimeType;
                                 String absolutePath = data.getString(dataColumn);
-                                String url = SdkVersionUtils.checkedAndroid_Q() ? PictureMimeType.getRealPathUri(id, mimeType) : absolutePath;
+                                String url = SdkVersionUtils.isQ() ? PictureMimeType.getRealPathUri(id, mimeType) : absolutePath;
                                 if (config.isFilterInvalidFile) {
                                     if (!PictureFileUtils.isFileExists(absolutePath)) {
                                         continue;
@@ -380,7 +380,7 @@ public final class LocalMediaPageLoader {
             @Override
             public List<LocalMediaFolder> doInBackground() {
                 Cursor data = mContext.getContentResolver().query(QUERY_URI,
-                        SdkVersionUtils.checkedAndroid_Q() ? PROJECTION_29 : PROJECTION,
+                        SdkVersionUtils.isQ() ? PROJECTION_29 : PROJECTION,
                         getSelection(), getSelectionArgs(), ORDER_BY);
                 try {
                     if (data != null) {
@@ -388,7 +388,7 @@ public final class LocalMediaPageLoader {
                         int totalCount = 0;
                         List<LocalMediaFolder> mediaFolders = new ArrayList<>();
                         if (count > 0) {
-                            if (SdkVersionUtils.checkedAndroid_Q()) {
+                            if (SdkVersionUtils.isQ()) {
                                 Map<Long, Long> countMap = new HashMap<>();
                                 while (data.moveToNext()) {
                                     long bucketId = data.getLong(data.getColumnIndex(COLUMN_BUCKET_ID));
@@ -452,7 +452,7 @@ public final class LocalMediaPageLoader {
                             allMediaFolder.setChecked(true);
                             allMediaFolder.setBucketId(-1);
                             if (data.moveToFirst()) {
-                                allMediaFolder.setFirstImagePath(SdkVersionUtils.checkedAndroid_Q() ? getFirstUri(data) : getFirstUrl(data));
+                                allMediaFolder.setFirstImagePath(SdkVersionUtils.isQ() ? getFirstUri(data) : getFirstUrl(data));
                                 allMediaFolder.setFirstMimeType(getFirstCoverMimeType(data));
                             }
                             String bucketDisplayName = config.chooseMode == PictureMimeType.ofAudio() ?

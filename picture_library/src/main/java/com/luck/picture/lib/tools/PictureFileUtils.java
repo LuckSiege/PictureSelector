@@ -39,7 +39,7 @@ import java.util.Objects;
  */
 
 public class PictureFileUtils {
-    private static final int BYTE_SIZE = 8192;
+    private static final int BYTE_SIZE = 1024;
     public static final String POSTFIX = ".jpeg";
     public static final String POST_VIDEO = ".mp4";
     public static final String POST_AUDIO = ".amr";
@@ -245,7 +245,7 @@ public class PictureFileUtils {
                 final String type = split[0];
 
                 if ("primary".equalsIgnoreCase(type)) {
-                    if (SdkVersionUtils.checkedAndroid_Q()) {
+                    if (SdkVersionUtils.isQ()) {
                         return context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + split[1];
                     } else {
                         return Environment.getExternalStorageDirectory() + "/" + split[1];

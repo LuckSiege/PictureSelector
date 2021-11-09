@@ -68,9 +68,14 @@ public class StringUtils {
      * @return
      */
     public static String rename(String fileName) {
-        String temp = fileName.substring(0, fileName.lastIndexOf("."));
-        String suffix = fileName.substring(fileName.lastIndexOf("."));
-        return temp + "_" + DateUtils.getCreateFileName() + suffix;
+        try {
+            String temp = fileName.substring(0, fileName.lastIndexOf("."));
+            String suffix = fileName.substring(fileName.lastIndexOf("."));
+            return temp + "_" + DateUtils.getCreateFileName() + suffix;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return "";
     }
 
     /**
@@ -80,8 +85,13 @@ public class StringUtils {
      * @return
      */
     public static String renameSuffix(String fileName, String suffix) {
-        String temp = fileName.substring(0, fileName.lastIndexOf("."));
-        return temp + suffix;
+        try {
+            String temp = fileName.substring(0, fileName.lastIndexOf("."));
+            return temp + suffix;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return "";
     }
 
     /**

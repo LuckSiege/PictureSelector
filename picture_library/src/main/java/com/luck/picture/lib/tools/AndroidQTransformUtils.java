@@ -6,10 +6,8 @@ import android.net.Uri;
 import com.luck.picture.lib.PictureContentResolver;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * @author：luck
@@ -50,22 +48,4 @@ public class AndroidQTransformUtils {
         }
         return "";
     }
-
-    /**
-     * 复制文件至AndroidQ手机相册目录
-     *
-     * @param context
-     * @param inFile
-     * @param outUri
-     */
-    public static boolean copyPathToDCIM(Context context, File inFile, Uri outUri) {
-        try {
-            OutputStream os = PictureContentResolver.getContentResolverOpenOutputStream(context, outUri);
-            return PictureFileUtils.writeFileFromIS(new FileInputStream(inFile), os);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
 }

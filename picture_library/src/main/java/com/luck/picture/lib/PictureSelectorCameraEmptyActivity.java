@@ -30,6 +30,7 @@ import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
+import com.luck.picture.lib.tools.CameraFileUtils;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -186,7 +187,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
         String cutPath = resultUri.getPath();
         boolean isCutEmpty = TextUtils.isEmpty(cutPath);
         LocalMedia media = LocalMedia.parseLocalMedia(config.cameraPath, config.isCamera ? 1 : 0, config.chooseMode);
-        if (SdkVersionUtils.checkedAndroid_Q()) {
+        if (SdkVersionUtils.isQ()) {
             int lastIndexOf = TextUtils.isEmpty(config.cameraPath) ? 0 : config.cameraPath.lastIndexOf("/") + 1;
             media.setId(lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : System.currentTimeMillis());
             media.setAndroidQToPath(cutPath);
@@ -250,9 +251,9 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 if (TextUtils.isEmpty(config.cameraPath)) {
                     return;
                 }
-                if (SdkVersionUtils.checkedAndroid_R()) {
+                if (SdkVersionUtils.isR()) {
                     try {
-                        Uri audioOutUri = MediaUtils.createAudioUri(getContext(), TextUtils.isEmpty(config.cameraAudioFormatForQ) ? config.suffixType : config.cameraAudioFormatForQ);
+                        Uri audioOutUri = CameraFileUtils.createAudioUri(getContext(), TextUtils.isEmpty(config.cameraAudioFormatForQ) ? config.suffixType : config.cameraAudioFormatForQ);
                         if (audioOutUri != null) {
                             InputStream inputStream = PictureContentResolver.getContentResolverOpenInputStream(this, Uri.parse(config.cameraPath));
                             OutputStream outputStream = PictureContentResolver.getContentResolverOpenOutputStream(this, audioOutUri);
@@ -295,7 +296,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 media.setRealPath(path);
                 // Custom photo has been in the application sandbox into the file
                 String mediaPath = intent != null ? intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH) : null;
-                media.setAndroidQToPath(mediaPath);
+                media.setAndroidQToPath(SdkVersionUtils.isQ() && !PictureMimeType.isContent(mediaPath) ? mediaPath : null);
             } else {
                 File cameraFile = new File(config.cameraPath);
                 mimeType = PictureMimeType.getImageMimeType(config.cameraPath,config.cameraMimeType);
@@ -318,10 +319,13 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 // Taking a photo generates a temporary id
                 media.setId(System.currentTimeMillis());
                 media.setRealPath(config.cameraPath);
+                // Custom photo has been in the application sandbox into the file
+                String mediaPath = intent != null ? intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH) : null;
+                media.setAndroidQToPath(SdkVersionUtils.isQ() && !PictureMimeType.isContent(mediaPath) ? mediaPath : null);
             }
             media.setPath(config.cameraPath);
             media.setMimeType(mimeType);
-            if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasVideo(media.getMimeType())) {
+            if (SdkVersionUtils.isQ() && PictureMimeType.isHasVideo(media.getMimeType())) {
                 media.setParentFolderName(Environment.DIRECTORY_MOVIES);
             } else {
                 media.setParentFolderName(PictureMimeType.CAMERA);
@@ -334,7 +338,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
 
             dispatchCameraHandleResult(media);
 
-            if (SdkVersionUtils.checkedAndroid_Q()) {
+            if (SdkVersionUtils.isQ()) {
                 if (PictureMimeType.isHasVideo(media.getMimeType()) && PictureMimeType.isContent(config.cameraPath)) {
                     if (config.isFallbackVersion3) {
                         new PictureMediaScannerConnection(getContext(), media.getRealPath());
@@ -411,7 +415,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (SdkVersionUtils.checkedAndroid_Q()) {
+        if (SdkVersionUtils.isQ()) {
             finishAfterTransition();
         } else {
             super.onBackPressed();

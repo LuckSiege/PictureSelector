@@ -45,6 +45,7 @@ import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
+import com.luck.picture.lib.tools.CameraFileUtils;
 import com.luck.picture.lib.widget.PreviewViewPager;
 import com.luck.picture.lib.widget.longimage.ImageSource;
 import com.luck.picture.lib.widget.longimage.ImageViewState;
@@ -427,7 +428,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                         }
                     });
                 } else {
-                    if (SdkVersionUtils.checkedAndroid_Q()) {
+                    if (SdkVersionUtils.isQ()) {
                         savePictureAlbumAndroidQ(PictureMimeType.isContent(downloadPath) ? Uri.parse(downloadPath) : Uri.fromFile(new File(downloadPath)));
                     } else {
                         savePictureAlbum();
@@ -454,7 +455,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         if (rootDir != null && !rootDir.exists()) {
             rootDir.mkdirs();
         }
-        File folderDir = new File(SdkVersionUtils.checkedAndroid_Q() || !state.equals(Environment.MEDIA_MOUNTED)
+        File folderDir = new File(SdkVersionUtils.isQ() || !state.equals(Environment.MEDIA_MOUNTED)
                 ? rootDir.getAbsolutePath() : rootDir.getAbsolutePath() + File.separator + PictureMimeType.CAMERA + File.separator);
         if (!folderDir.exists()) {
             folderDir.mkdirs();
@@ -532,8 +533,8 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         OutputStream outputStream = null;
         InputStream inputStream = null;
         try {
-            if (SdkVersionUtils.checkedAndroid_Q()) {
-                outImageUri = MediaUtils.createImageUri(getContext(), "", mMimeType);
+            if (SdkVersionUtils.isQ()) {
+                outImageUri = CameraFileUtils.createImageUri(getContext(), "", mMimeType);
             } else {
                 String suffix = PictureMimeType.getLastImgSuffix(mMimeType);
                 String state = Environment.getExternalStorageState();
@@ -559,7 +560,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                 return PictureFileUtils.getPath(this, outImageUri);
             }
         } catch (Exception e) {
-            if (SdkVersionUtils.checkedAndroid_Q()) {
+            if (SdkVersionUtils.isQ()) {
                 MediaUtils.deleteUri(getContext(), outImageUri);
             }
         } finally {
@@ -571,7 +572,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
     @Override
     public void onBackPressed() {
-        if (SdkVersionUtils.checkedAndroid_Q()) {
+        if (SdkVersionUtils.isQ()) {
             finishAfterTransition();
         } else {
             super.onBackPressed();

@@ -1129,7 +1129,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                                 curLocalMedia.setCropImageWidth(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_WIDTH, 0));
                                 curLocalMedia.setCropImageHeight(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_HEIGHT, 0));
                                 curLocalMedia.setEditorImage(curLocalMedia.isCut());
-                                if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(curLocalMedia.getPath())) {
+                                if (SdkVersionUtils.isQ() && PictureMimeType.isContent(curLocalMedia.getPath())) {
                                     curLocalMedia.setAndroidQToPath(cutPath);
                                 }
                                 if (isExits) {
@@ -1142,7 +1142,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                                     selectLocalMedia.setCropImageWidth(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_WIDTH, 0));
                                     selectLocalMedia.setCropImageHeight(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_HEIGHT, 0));
                                     selectLocalMedia.setEditorImage(curLocalMedia.isCut());
-                                    if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(curLocalMedia.getPath())) {
+                                    if (SdkVersionUtils.isQ() && PictureMimeType.isContent(curLocalMedia.getPath())) {
                                         selectLocalMedia.setAndroidQToPath(cutPath);
                                     }
                                     isChangeSelectedData = true;

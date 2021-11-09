@@ -53,7 +53,6 @@ import com.luck.picture.lib.model.LocalMediaLoader;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.permissions.PermissionChecker;
-import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.BitmapUtils;
@@ -67,6 +66,7 @@ import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
+import com.luck.picture.lib.tools.CameraFileUtils;
 import com.luck.picture.lib.widget.FolderPopWindow;
 import com.luck.picture.lib.widget.RecyclerPreloadView;
 import com.yalantis.ucrop.UCrop;
@@ -904,17 +904,17 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
                 return;
             }
-            if (config.chooseMode != PictureMimeType.ofAudio()) {
-                if (config.isUseCustomCamera) {
-                    startCustomCamera();
-                    return;
-                }
-            }
             switch (config.chooseMode) {
                 case PictureConfig.TYPE_ALL:
-                    PhotoItemSelectedDialog selectedDialog = PhotoItemSelectedDialog.newInstance();
-                    selectedDialog.setOnItemClickListener(this);
-                    selectedDialog.show(getSupportFragmentManager(), "PhotoItemSelectedDialog");
+                    if (config.ofAllCameraType == PictureMimeType.ofImage()) {
+                        startOpenCameraImage();
+                    } else if (config.ofAllCameraType == PictureMimeType.ofVideo()) {
+                        startOpenCameraVideo();
+                    } else {
+                        PhotoItemSelectedDialog selectedDialog = PhotoItemSelectedDialog.newInstance();
+                        selectedDialog.setOnItemClickListener(this);
+                        selectedDialog.show(getSupportFragmentManager(), "PhotoItemSelectedDialog");
+                    }
                     break;
                 case PictureConfig.TYPE_IMAGE:
                     startOpenCameraImage();
@@ -931,15 +931,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
     }
 
-    /**
-     * Open Custom Camera
-     */
-    private void startCustomCamera() {
-        Intent intent = new Intent(this, PictureCustomCameraActivity.class);
-        startActivityForResult(intent, PictureConfig.REQUEST_CAMERA);
-        PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.windowAnimationStyle;
-        overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.picture_anim_fade_in);
-    }
 
 
     @Override
@@ -1809,9 +1800,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (TextUtils.isEmpty(config.cameraPath)) {
                     return;
                 }
-                if (SdkVersionUtils.checkedAndroid_R()) {
+                if (SdkVersionUtils.isR()) {
                     try {
-                        Uri audioOutUri = MediaUtils.createAudioUri(getContext(), TextUtils.isEmpty(config.cameraAudioFormatForQ) ? config.suffixType : config.cameraAudioFormatForQ);
+                        Uri audioOutUri = CameraFileUtils.createAudioUri(getContext(), TextUtils.isEmpty(config.cameraAudioFormatForQ) ? config.suffixType : config.cameraAudioFormatForQ);
                         if (audioOutUri != null) {
                             InputStream inputStream = PictureContentResolver.getContentResolverOpenInputStream(this, Uri.parse(config.cameraPath));
                             OutputStream outputStream = PictureContentResolver.getContentResolverOpenOutputStream(this, audioOutUri);
@@ -1854,7 +1845,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 media.setRealPath(path);
                 // Custom photo has been in the application sandbox into the file
                 String mediaPath = intent != null ? intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH) : null;
-                media.setAndroidQToPath(mediaPath);
+                media.setAndroidQToPath(SdkVersionUtils.isQ() && !PictureMimeType.isContent(mediaPath) ? mediaPath : null);
             } else {
                 File cameraFile = new File(config.cameraPath);
                 mimeType = PictureMimeType.getImageMimeType(config.cameraPath,config.cameraMimeType);
@@ -1877,10 +1868,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 // Taking a photo generates a temporary id
                 media.setId(System.currentTimeMillis());
                 media.setRealPath(config.cameraPath);
+                // Custom photo has been in the application sandbox into the file
+                String mediaPath = intent != null ? intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH) : null;
+                media.setAndroidQToPath(SdkVersionUtils.isQ() && !PictureMimeType.isContent(mediaPath) ? mediaPath : null);
             }
             media.setPath(config.cameraPath);
             media.setMimeType(mimeType);
-            if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasVideo(media.getMimeType())) {
+            if (SdkVersionUtils.isQ() && PictureMimeType.isHasVideo(media.getMimeType())) {
                 media.setParentFolderName(Environment.DIRECTORY_MOVIES);
             } else {
                 media.setParentFolderName(PictureMimeType.CAMERA);
@@ -1891,7 +1885,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             media.setDateAddedTime(DateUtils.getCurrentTimeMillis());
             // add data Adapter
             notifyAdapterData(media);
-            if (SdkVersionUtils.checkedAndroid_Q()) {
+            if (SdkVersionUtils.isQ()) {
                 if (PictureMimeType.isHasVideo(media.getMimeType()) && PictureMimeType.isContent(config.cameraPath)) {
                     if (config.isFallbackVersion3) {
                         new PictureMediaScannerConnection(getContext(), media.getRealPath());
@@ -2099,7 +2093,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 media.setCutPath(cutPath);
                 media.setChooseModel(config.chooseMode);
                 boolean isCutPathEmpty = !TextUtils.isEmpty(cutPath);
-                if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(media.getPath())) {
+                if (SdkVersionUtils.isQ() && PictureMimeType.isContent(media.getPath())) {
                     media.setAndroidQToPath(cutPath);
                 }
                 media.setCropImageWidth(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_WIDTH,0));
@@ -2119,7 +2113,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     media.setCutPath(cutPath);
                     media.setChooseModel(config.chooseMode);
                     boolean isCutPathEmpty = !TextUtils.isEmpty(cutPath);
-                    if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(media.getPath())) {
+                    if (SdkVersionUtils.isQ() && PictureMimeType.isContent(media.getPath())) {
                         media.setAndroidQToPath(cutPath);
                     }
                     media.setCropImageWidth(data.getIntExtra(UCrop.EXTRA_OUTPUT_IMAGE_WIDTH,0));
@@ -2201,7 +2195,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 folderWindow.getFolderData().add(folderWindow.getFolderData().size(), cameraFolder);
             } else {
                 boolean isCamera = false;
-                String newFolder = SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isHasVideo(media.getMimeType())
+                String newFolder = SdkVersionUtils.isQ() && PictureMimeType.isHasVideo(media.getMimeType())
                         ? Environment.DIRECTORY_MOVIES : PictureMimeType.CAMERA;
                 for (int i = 0; i < count; i++) {
                     LocalMediaFolder cameraFolder = folderWindow.getFolderData().get(i);
@@ -2320,7 +2314,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
     @Override
     public void onBackPressed() {
-        if (SdkVersionUtils.checkedAndroid_Q()) {
+        if (SdkVersionUtils.isQ()) {
             finishAfterTransition();
         } else {
             super.onBackPressed();

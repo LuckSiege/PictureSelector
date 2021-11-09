@@ -154,7 +154,7 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
 
         if (shouldCrop) {
             ExifInterface originalExif;
-            if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(mImageInputPath)) {
+            if (SdkVersionUtils.isQ() && PictureMimeType.isContent(mImageInputPath)) {
                 InputStream inputStream = ArrayPoolProvide.getInstance().openInputStream(getContext().getContentResolver(), Uri.parse(mImageInputPath));
                 originalExif = new ExifInterface(inputStream);
             } else {
@@ -166,7 +166,7 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
             }
             return true;
         } else {
-            if (SdkVersionUtils.checkedAndroid_Q() && PictureMimeType.isContent(mImageInputPath)) {
+            if (SdkVersionUtils.isQ() && PictureMimeType.isContent(mImageInputPath)) {
                 InputStream inputStream = ArrayPoolProvide.getInstance().openInputStream(getContext().getContentResolver(), Uri.parse(mImageInputPath));
                 PictureFileUtils.writeFileFromIS(inputStream, new FileOutputStream(mImageOutputPath));
             } else {

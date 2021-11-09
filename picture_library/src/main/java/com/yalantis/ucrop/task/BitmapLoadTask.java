@@ -164,7 +164,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
         } else if ("content".equals(inputUriScheme)) {
             String path = getFilePath();
             if (!TextUtils.isEmpty(path) && new File(path).exists()) {
-                mInputUri = SdkVersionUtils.checkedAndroid_Q() ? mInputUri : Uri.fromFile(new File(path));
+                mInputUri = SdkVersionUtils.isQ() ? mInputUri : Uri.fromFile(new File(path));
             } else {
                 try {
                     copyFile(mInputUri, mOutputUri);

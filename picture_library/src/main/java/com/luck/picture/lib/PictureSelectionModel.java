@@ -1,25 +1,24 @@
 package com.luck.picture.lib;
 
+import static android.os.Build.VERSION_CODES.KITKAT;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.text.TextUtils;
+
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.ColorInt;
-import androidx.annotation.FloatRange;
-import androidx.annotation.IntRange;
 import androidx.annotation.StyleRes;
 import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.camera.CustomCameraType;
-import com.luck.picture.lib.camera.CustomCameraView;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
-import com.luck.picture.lib.engine.CacheResourcesEngine;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -42,8 +41,6 @@ import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-
-import static android.os.Build.VERSION_CODES.KITKAT;
 
 /**
  * @author：luck
@@ -156,24 +153,6 @@ public class PictureSelectionModel {
         return this;
     }
 
-    /**
-     * Only for Android version Q
-     * <p>
-     * 已废弃，没有存在的意义了，之前主要是为了解决在华为10系统上一直loading问题
-     * </p>
-     *
-     * @param cacheResourcesEngine Image Cache
-     * @return
-     */
-    @Deprecated
-    public PictureSelectionModel loadCacheResourcesCallback(CacheResourcesEngine cacheResourcesEngine) {
-        if (SdkVersionUtils.checkedAndroid_Q()) {
-            if (PictureSelectionConfig.cacheResourcesEngine != cacheResourcesEngine) {
-                PictureSelectionConfig.cacheResourcesEngine = new WeakReference<>(cacheResourcesEngine).get();
-            }
-        }
-        return this;
-    }
 
     /**
      * @param selectionMode PictureSelector Selection model and PictureConfig.MULTIPLE or PictureConfig.SINGLE
@@ -199,15 +178,6 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel isUseCustomCamera(boolean isUseCustomCamera) {
         selectionConfig.isUseCustomCamera = Build.VERSION.SDK_INT > KITKAT && isUseCustomCamera;
-        return this;
-    }
-
-    /**
-     * @param isCameraCopyExternalFile Copy File to External
-     * @return
-     */
-    public PictureSelectionModel isCameraCopyExternalFile(boolean isCameraCopyExternalFile) {
-        selectionConfig.isCameraCopyExternalFile = isCameraCopyExternalFile;
         return this;
     }
 
@@ -289,7 +259,7 @@ public class PictureSelectionModel {
 
     /**
      * @param buttonFeatures Set the record button function
-     *                       # 具体参考 {@link CustomCameraView.BUTTON_STATE_BOTH # CustomCameraView.BUTTON_STATE_ONLY_CAPTURE # CustomCameraView.BUTTON_STATE_ONLY_RECORDER}
+     *                       # 具体参考 {@link CustomCameraType.BUTTON_STATE_BOTH # CustomCameraView.BUTTON_STATE_ONLY_CAPTURE # CustomCameraView.BUTTON_STATE_ONLY_RECORDER}
      * @return
      */
     public PictureSelectionModel setCustomCameraFeatures(int buttonFeatures) {
@@ -298,15 +268,21 @@ public class PictureSelectionModel {
         } else if (selectionConfig.chooseMode == PictureMimeType.ofVideo()) {
             selectionConfig.buttonFeatures = CustomCameraType.BUTTON_STATE_ONLY_RECORDER;
         } else {
-            selectionConfig.buttonFeatures = buttonFeatures;
+            if (selectionConfig.ofAllCameraType == PictureMimeType.ofImage()){
+                selectionConfig.buttonFeatures = CustomCameraType.BUTTON_STATE_ONLY_CAPTURE;
+            } else if (selectionConfig.ofAllCameraType == PictureMimeType.ofVideo()){
+                selectionConfig.buttonFeatures = CustomCameraType.BUTTON_STATE_ONLY_RECORDER;
+            } else {
+                selectionConfig.buttonFeatures = buttonFeatures;
+            }
         }
         return this;
     }
 
     /**
-     * @param buttonFeatures Set the record button function
-     *                       # 具体参考 {@link CustomCameraView.BUTTON_STATE_BOTH # CustomCameraView.BUTTON_STATE_ONLY_CAPTURE # CustomCameraView.BUTTON_STATE_ONLY_RECORDER}
-     * @return
+     * initCustomCameraFeatures
+     *
+     * @return this
      */
     private PictureSelectionModel initCustomCameraFeatures() {
         if (selectionConfig.chooseMode == PictureMimeType.ofImage()) {
@@ -314,7 +290,13 @@ public class PictureSelectionModel {
         } else if (selectionConfig.chooseMode == PictureMimeType.ofVideo()) {
             selectionConfig.buttonFeatures = CustomCameraType.BUTTON_STATE_ONLY_RECORDER;
         } else {
-            selectionConfig.buttonFeatures = CustomCameraType.BUTTON_STATE_BOTH;
+            if (selectionConfig.ofAllCameraType == PictureMimeType.ofImage()) {
+                selectionConfig.buttonFeatures = CustomCameraType.BUTTON_STATE_ONLY_CAPTURE;
+            } else if (selectionConfig.ofAllCameraType == PictureMimeType.ofVideo()) {
+                selectionConfig.buttonFeatures = CustomCameraType.BUTTON_STATE_ONLY_RECORDER;
+            } else {
+                selectionConfig.buttonFeatures = CustomCameraType.BUTTON_STATE_BOTH;
+            }
         }
         return this;
     }
@@ -525,6 +507,8 @@ public class PictureSelectionModel {
     }
 
     /**
+     * You can select pictures and videos at the same time
+     *
      * @param isWithVideoImage Whether the pictures and videos can be selected together
      * @return
      */
@@ -532,6 +516,18 @@ public class PictureSelectionModel {
         selectionConfig.isWithVideoImage =
                 selectionConfig.selectionMode != PictureConfig.SINGLE
                         && selectionConfig.chooseMode == PictureMimeType.ofAll() && isWithVideoImage;
+        return this;
+    }
+
+    /**
+     * Choose between photographing and shooting in ofAll mode
+     *
+     * @param ofAllCameraType {@link PictureMimeType.ofImage or PictureMimeType.ofVideo}
+     *                        The default is ofAll() mode
+     * @return
+     */
+    public PictureSelectionModel setOfAllCameraType(int ofAllCameraType) {
+        selectionConfig.ofAllCameraType = ofAllCameraType;
         return this;
     }
 
@@ -593,29 +589,6 @@ public class PictureSelectionModel {
         return this;
     }
 
-    /**
-     * Turn off Android Q to solve the problem that the width and height are reversed
-     *
-     * @param isChangeWH
-     * @return
-     */
-    @Deprecated
-    public PictureSelectionModel closeAndroidQChangeWH(boolean isChangeWH) {
-        selectionConfig.isAndroidQChangeWH = isChangeWH;
-        return this;
-    }
-
-    /**
-     * Turn off Android Q to solve the problem that the width and height are reversed
-     *
-     * @param isChangeVideoWH
-     * @return
-     */
-    @Deprecated
-    public PictureSelectionModel closeAndroidQChangeVideoWH(boolean isChangeVideoWH) {
-        selectionConfig.isAndroidQChangeVideoWH = isChangeVideoWH;
-        return this;
-    }
 
     /**
      * By clicking the title bar consecutively, RecyclerView automatically rolls back to the top
@@ -726,7 +699,7 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel setCameraImageFormat(String imageFormat) {
         selectionConfig.cameraImageFormat = imageFormat;
-        if (SdkVersionUtils.checkedAndroid_Q() || SdkVersionUtils.checkedAndroid_R()) {
+        if (SdkVersionUtils.isQ() || SdkVersionUtils.isR()) {
             if (TextUtils.equals(imageFormat, PictureMimeType.PNG)) {
                 selectionConfig.cameraImageFormatForQ = PictureMimeType.PNG_Q;
             }
@@ -745,7 +718,7 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel setCameraVideoFormat(String videoFormat) {
         selectionConfig.cameraVideoFormat = videoFormat;
-        if (SdkVersionUtils.checkedAndroid_Q() || SdkVersionUtils.checkedAndroid_R()) {
+        if (SdkVersionUtils.isQ() || SdkVersionUtils.isR()) {
             if (TextUtils.equals(videoFormat, PictureMimeType.MP4)) {
                 selectionConfig.cameraVideoFormatForQ = PictureMimeType.MP4_Q;
             }
@@ -765,7 +738,7 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel setCameraAudioFormat(String audioFormat) {
         selectionConfig.cameraAudioFormat = audioFormat;
-        if (SdkVersionUtils.checkedAndroid_Q() || SdkVersionUtils.checkedAndroid_R()) {
+        if (SdkVersionUtils.isQ() || SdkVersionUtils.isR()) {
             if (TextUtils.equals(audioFormat, PictureMimeType.AMR)) {
                 selectionConfig.cameraAudioFormatForQ = PictureMimeType.AMR_Q;
             }
@@ -839,31 +812,6 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel recordVideoMinSecond(int recordVideoMinSecond) {
         selectionConfig.recordVideoMinSecond = recordVideoMinSecond;
-        return this;
-    }
-
-    /**
-     * @param width  glide width
-     * @param height glide height
-     * @return 2.2.9开始 Glide改为外部用户自己定义此方法没有意义了
-     */
-    @Deprecated
-    public PictureSelectionModel glideOverride(@IntRange(from = 100) int width,
-                                               @IntRange(from = 100) int height) {
-        selectionConfig.overrideWidth = width;
-        selectionConfig.overrideHeight = height;
-        return this;
-    }
-
-    /**
-     * @param sizeMultiplier The multiplier to apply to the
-     *                       {@link com.bumptech.glide.request.target.Target}'s dimensions when
-     *                       loading the resource.
-     * @return 2.2.9开始Glide改为外部用户自己定义此方法没有意义了
-     */
-    @Deprecated
-    public PictureSelectionModel sizeMultiplier(@FloatRange(from = 0.1f) float sizeMultiplier) {
-        selectionConfig.sizeMultiplier = sizeMultiplier;
         return this;
     }
 

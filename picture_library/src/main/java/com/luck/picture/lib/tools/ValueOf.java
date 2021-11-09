@@ -29,7 +29,7 @@ public class ValueOf {
 
         double value;
         try {
-            value = Double.valueOf(o.toString().trim());
+            value = Double.parseDouble(o.toString().trim());
         } catch (Exception e) {
             value = defaultValue;
         }
@@ -45,9 +45,9 @@ public class ValueOf {
         try {
             String s = o.toString().trim();
             if (s.contains(".")) {
-                value = Long.valueOf(s.substring(0, s.lastIndexOf(".")));
+                value = Long.parseLong(s.substring(0, s.lastIndexOf(".")));
             } else {
-                value = Long.valueOf(s);
+                value = Long.parseLong(s);
             }
         } catch (Exception e) {
             value = defaultValue;
@@ -69,7 +69,7 @@ public class ValueOf {
         float value = 0;
         try {
             String s = o.toString().trim();
-            value = Float.valueOf(s);
+            value = Float.parseFloat(s);
         } catch (Exception e) {
             value = defaultValue;
         }
@@ -91,9 +91,9 @@ public class ValueOf {
         try {
             String s = o.toString().trim();
             if (s.contains(".")) {
-                value = Integer.valueOf(s.substring(0, s.lastIndexOf(".")));
+                value = Integer.parseInt(s.substring(0, s.lastIndexOf(".")));
             } else {
-                value = Integer.valueOf(s);
+                value = Integer.parseInt(s);
             }
         } catch (Exception e) {
             value = defaultValue;

@@ -118,7 +118,7 @@ public final class LocalMediaLoader {
 
     public LocalMediaLoader(Context context) {
         this.mContext = context.getApplicationContext();
-        this.isAndroidQ = SdkVersionUtils.checkedAndroid_Q();
+        this.isAndroidQ = SdkVersionUtils.isQ();
         this.config = PictureSelectionConfig.getInstance();
     }
 
