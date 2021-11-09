@@ -296,7 +296,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 media.setRealPath(path);
                 // Custom photo has been in the application sandbox into the file
                 String mediaPath = intent != null ? intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH) : null;
-                media.setAndroidQToPath(SdkVersionUtils.isQ() && !PictureMimeType.isContent(mediaPath) ? mediaPath : null);
+                media.setAndroidQToPath(!PictureMimeType.isContent(mediaPath) ? mediaPath : null);
             } else {
                 File cameraFile = new File(config.cameraPath);
                 mimeType = PictureMimeType.getImageMimeType(config.cameraPath,config.cameraMimeType);
@@ -321,7 +321,13 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 media.setRealPath(config.cameraPath);
                 // Custom photo has been in the application sandbox into the file
                 String mediaPath = intent != null ? intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH) : null;
-                media.setAndroidQToPath(SdkVersionUtils.isQ() && !PictureMimeType.isContent(mediaPath) ? mediaPath : null);
+                if (SdkVersionUtils.isQ()){
+                    if (!TextUtils.isEmpty(mediaPath) && !PictureMimeType.isContent(mediaPath)){
+                        media.setAndroidQToPath(mediaPath);
+                    } else if (!PictureMimeType.isContent(config.cameraPath)){
+                        media.setAndroidQToPath(config.cameraPath);
+                    }
+                }
             }
             media.setPath(config.cameraPath);
             media.setMimeType(mimeType);

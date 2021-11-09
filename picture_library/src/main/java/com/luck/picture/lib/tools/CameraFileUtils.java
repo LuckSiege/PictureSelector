@@ -32,7 +32,6 @@ public class CameraFileUtils {
         Uri imageUri;
         String cameraFileName;
         config.cameraMimeType = PictureMimeType.ofImage();
-        int chooseMode = config.chooseMode == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_IMAGE : config.chooseMode;
         if (TextUtils.isEmpty(config.cameraFileName)) {
             cameraFileName = "";
         } else {
@@ -44,7 +43,7 @@ public class CameraFileUtils {
             imageUri = createImageUri(context, cameraFileName, config.cameraImageFormatForQ);
             config.cameraPath = imageUri != null ? imageUri.toString() : null;
         } else {
-            File cameraFile = PictureFileUtils.createCameraFile(context, chooseMode, cameraFileName, config.cameraImageFormat, config.outPutCameraPath);
+            File cameraFile = PictureFileUtils.createCameraFile(context, PictureConfig.TYPE_IMAGE, cameraFileName, config.cameraImageFormat, config.outPutCameraPath);
             config.cameraPath = cameraFile.getAbsolutePath();
             imageUri = PictureFileUtils.parUri(context, cameraFile);
         }
@@ -63,7 +62,6 @@ public class CameraFileUtils {
         Uri videoUri;
         String cameraFileName;
         config.cameraMimeType = PictureMimeType.ofVideo();
-        int chooseMode = config.chooseMode == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_VIDEO : config.chooseMode;
         if (TextUtils.isEmpty(config.cameraFileName)) {
             cameraFileName = "";
         } else {
@@ -75,7 +73,7 @@ public class CameraFileUtils {
             videoUri = createVideoUri(context, cameraFileName, config.cameraVideoFormatForQ);
             config.cameraPath = videoUri != null ? videoUri.toString() : "";
         } else {
-            File cameraFile = PictureFileUtils.createCameraFile(context, chooseMode, cameraFileName, config.cameraVideoFormat, config.outPutCameraPath);
+            File cameraFile = PictureFileUtils.createCameraFile(context, PictureConfig.TYPE_VIDEO, cameraFileName, config.cameraVideoFormat, config.outPutCameraPath);
             config.cameraPath = cameraFile.getAbsolutePath();
             videoUri = PictureFileUtils.parUri(context, cameraFile);
         }
