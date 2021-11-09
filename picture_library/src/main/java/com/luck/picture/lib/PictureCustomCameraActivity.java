@@ -126,9 +126,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
             mCameraView.setRecordVideoMinTime(config.recordVideoMinSecond);
         }
         // 设置拍照时loading色值
-        if (config.captureLoadingColor != 0) {
-            mCameraView.setCaptureLoadingColor(config.captureLoadingColor);
-        }
+        mCameraView.setCaptureLoadingColor(config.captureLoadingColor);
         // 获取录制按钮
         CaptureLayout captureLayout = mCameraView.getCaptureLayout();
         if (captureLayout != null) {

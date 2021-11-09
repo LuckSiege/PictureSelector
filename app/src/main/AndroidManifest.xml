@@ -25,10 +25,14 @@
     <!--适配Android R包可见性 开始-->
     <queries package="${applicationId}">
         <intent>
-            <action android:name="android.media.action.IMAGE_CAPTURE" />
+            <action android:name="android.media.action.IMAGE_CAPTURE" >
+
+            </action>
         </intent>
         <intent>
-            <action android:name="android.media.action.ACTION_VIDEO_CAPTURE" />
+            <action android:name="android.media.action.ACTION_VIDEO_CAPTURE" >
+
+            </action>
         </intent>
     </queries>
     <!--适配Android R包可见性 结束-->
@@ -44,17 +48,20 @@
         <!-- 全面屏-->
         <meta-data
             android:name="android.max_aspect"
-            android:value="2.1" />
+            android:value="2.1"></meta-data>
 
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+
+        </activity>
         <activity
             android:name=".PhotoFragmentActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".SimpleActivity"
+            android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
