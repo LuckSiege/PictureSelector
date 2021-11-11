@@ -9,6 +9,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.tools.MediaUtils;
+import com.luck.picture.lib.tools.ValueOf;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -70,6 +71,7 @@ public final class SandboxFileLoader {
                 long size = f.length();
                 String mimeType = PictureMimeType.getMimeTypeFromMediaContentUri(context, Uri.fromFile(f));
                 String parentFolderName = f.getParentFile() != null ? f.getParentFile().getName() : "";
+                long bucketId = ValueOf.toLong(parentFolderName.hashCode());
                 long dateTime = f.lastModified() / 1000;
                 long duration;
                 int width, height;
@@ -88,7 +90,7 @@ public final class SandboxFileLoader {
                     duration = 0L;
                 }
                 LocalMedia media = LocalMedia.parseLocalMedia(dateTime, absolutePath, absolutePath, f.getName(),
-                        parentFolderName, duration, chooseModel, mimeType, width, height, size, dateTime, dateTime);
+                        parentFolderName, duration, chooseModel, mimeType, width, height, size, bucketId, dateTime);
                 media.setAndroidQToPath(absolutePath);
                 list.add(media);
             }

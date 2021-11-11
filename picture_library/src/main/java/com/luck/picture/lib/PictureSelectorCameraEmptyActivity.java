@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.Window;
@@ -24,7 +23,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.immersive.ImmersiveManage;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.tools.BitmapUtils;
-import com.luck.picture.lib.tools.DateUtils;
+import com.luck.picture.lib.tools.AlbumUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
@@ -297,6 +296,10 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 // Custom photo has been in the application sandbox into the file
                 String mediaPath = intent != null ? intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH) : null;
                 media.setAndroidQToPath(!PictureMimeType.isContent(mediaPath) ? mediaPath : null);
+
+                long bucketId = AlbumUtils.generateCameraBucketId(getContext(), cameraFile, "");
+                media.setBucketId(bucketId);
+                media.setDateAddedTime(cameraFile.lastModified() / 1000);
             } else {
                 File cameraFile = new File(config.cameraPath);
                 mimeType = PictureMimeType.getImageMimeType(config.cameraPath,config.cameraMimeType);
@@ -322,25 +325,23 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
                 // Custom photo has been in the application sandbox into the file
                 String mediaPath = intent != null ? intent.getStringExtra(PictureConfig.EXTRA_MEDIA_PATH) : null;
                 if (SdkVersionUtils.isQ()){
-                    if (!TextUtils.isEmpty(mediaPath) && !PictureMimeType.isContent(mediaPath)){
+                    if (!TextUtils.isEmpty(mediaPath) && !PictureMimeType.isContent(mediaPath)) {
                         media.setAndroidQToPath(mediaPath);
-                    } else if (!PictureMimeType.isContent(config.cameraPath)){
+                    } else {
                         media.setAndroidQToPath(config.cameraPath);
                     }
                 }
+
+                long bucketId = AlbumUtils.generateCameraBucketId(getContext(), cameraFile, config.outPutCameraPath);
+                media.setBucketId(bucketId);
+                media.setDateAddedTime(cameraFile.lastModified() / 1000);
             }
             media.setPath(config.cameraPath);
             media.setMimeType(mimeType);
-            if (SdkVersionUtils.isQ() && PictureMimeType.isHasVideo(media.getMimeType())) {
-                media.setParentFolderName(Environment.DIRECTORY_MOVIES);
-            } else {
-                media.setParentFolderName(PictureMimeType.CAMERA);
-            }
-            media.setChooseModel(config.chooseMode);
-            long bucketId = MediaUtils.getCameraFirstBucketId(getContext());
-            media.setBucketId(bucketId);
+            String folderName = AlbumUtils.createFolderName(config.cameraPath, mimeType, config.outPutCameraPath);
+            media.setParentFolderName(folderName);
 
-            media.setDateAddedTime(DateUtils.getCurrentTimeMillis());
+            media.setChooseModel(config.chooseMode);
 
             dispatchCameraHandleResult(media);
 

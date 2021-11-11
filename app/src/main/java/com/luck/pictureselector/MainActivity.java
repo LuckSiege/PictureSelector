@@ -465,7 +465,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.isAutoRotating(false)// 压缩时自动纠正有旋转的图片
                         .isMaxSelectEnabledMask(cbEnabledMask.isChecked())// 选择数到了最大阀值列表是否启用蒙层效果
                         //.isAutomaticTitleRecyclerTop(false)// 连续点击标题栏RecyclerView是否自动回到顶部,默认true
-                        //.setOutputCameraPath(createCustomCameraOutPath())// 自定义相机输出目录
+                        .setOutputCameraPath(createCustomCameraOutPath())// 自定义相机输出目录
                         .setQuerySandboxDirectory(createCustomCameraOutPath())// 查询自定义相机输出目录
                         .setCustomCameraFeatures(CustomCameraType.BUTTON_STATE_BOTH)// 设置自定义相机按钮状态
                         .setCaptureLoadingColor(ContextCompat.getColor(getContext(), R.color.app_color_blue))
