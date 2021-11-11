@@ -123,6 +123,24 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
         this.config = config;
     }
 
+    @Override
+    public void loadOnlyInAppDirectoryAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
+         PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<LocalMediaFolder>() {
+
+             @Override
+             public LocalMediaFolder doInBackground() {
+                 return SandboxFileLoader.loadSandboxFolderFile(mContext, config.sandboxFolderPath);
+             }
+
+             @Override
+             public void onSuccess(LocalMediaFolder result) {
+                 PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
+                 if (listener != null) {
+                     listener.onComplete(result);
+                 }
+             }
+         });
+    }
 
     @Override
     public void loadAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
@@ -271,7 +289,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
             @Override
             public void onSuccess(List<LocalMediaFolder> result) {
                 PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
-                if (listener != null && result != null) {
+                if (listener != null) {
                     listener.onComplete(result);
                 }
             }

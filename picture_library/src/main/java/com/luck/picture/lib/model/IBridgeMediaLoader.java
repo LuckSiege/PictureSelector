@@ -21,6 +21,17 @@ public class IBridgeMediaLoader {
     }
 
     /**
+     * 查询指定目录下资源
+     *
+     * @param listener 回调监听
+     * @return
+     */
+    public void loadOnlyInAppDirectoryAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
+
+    }
+
+
+    /**
      * Queries for data in the specified directory
      *
      * @param bucketId

@@ -27,4 +27,13 @@ public class OnQueryDataResultListener<T> {
     public void onComplete(List<T> data) {
 
     }
+
+    /**
+     * Query all to complete The callback listener
+     *
+     * @param data The data source
+     */
+    public void onComplete(T data) {
+
+    }
 }

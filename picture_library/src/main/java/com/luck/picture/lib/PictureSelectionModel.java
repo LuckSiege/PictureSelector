@@ -1015,7 +1015,7 @@ public class PictureSelectionModel {
 
     /**
      * @param previewEggs preview eggs  It doesn't make much sense
-     * @return Use {link .isPreviewEggs()}
+     * @return Use {@link .isPreviewEggs()}
      */
     @Deprecated
     public PictureSelectionModel previewEggs(boolean previewEggs) {
@@ -1064,7 +1064,7 @@ public class PictureSelectionModel {
      *
      * @param directoryPath Camera out path
      *                      <p>
-     *                      正常情况下这个路径应该是对应setOutputCameraPath();
+     *                      Normally, it should be consistent with {@link PictureSelectionConfig.setOutputCameraPath()};
      *                      </p>
      * @return
      */
@@ -1073,12 +1073,25 @@ public class PictureSelectionModel {
         return this;
     }
 
+    /**
+     * Only the resources in the specified directory are displayed
+     * <p>
+     * Only Display setQuerySandboxDirectory();  Source
+     * <p/>
+     *
+     * @param isOnlySandboxDir true or Only Display {@link PictureSelectionConfig.setQuerySandboxDirectory();}
+     * @return
+     */
+    public PictureSelectionModel isDisplayOnlySandbox(boolean isOnlySandboxDir) {
+        selectionConfig.isOnlySandboxDir = isOnlySandboxDir;
+        return this;
+    }
 
     /**
      * # file size The unit is M
      *
      * @param fileSize Filter max file size
-     *                 Use {@link .filterMaxFileSize()}
+     *                 Use {@link PictureSelectionConfig.filterMaxFileSize()}
      * @return
      */
     @Deprecated

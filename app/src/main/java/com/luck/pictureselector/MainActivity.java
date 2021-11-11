@@ -467,6 +467,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //.isAutomaticTitleRecyclerTop(false)// 连续点击标题栏RecyclerView是否自动回到顶部,默认true
                         .setOutputCameraPath(createCustomCameraOutPath())// 自定义相机输出目录
                         .setQuerySandboxDirectory(createCustomCameraOutPath())// 查询自定义相机输出目录
+                        .isDisplayOnlySandbox(false) // 是否只显示某个目录下的资源；需与setQuerySandboxDirectory相对应
                         .setCustomCameraFeatures(CustomCameraType.BUTTON_STATE_BOTH)// 设置自定义相机按钮状态
                         .setCaptureLoadingColor(ContextCompat.getColor(getContext(), R.color.app_color_blue))
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
@@ -563,7 +564,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .isUseCustomCamera(cb_custom_camera.isChecked())// 是否使用自定义相机
-                        //.setOutputCameraPath()// 自定义相机输出目录
+                        .setQuerySandboxDirectory(createCustomCameraOutPath())// 查询自定义相机输出目录
+                        .isDisplayOnlySandbox(false) // 是否只显示某个目录下的资源；需与setQuerySandboxDirectory相对应
                         .minSelectNum(1)// 最小选择数量
                         //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
                         .selectionMode(cb_choose_mode.isChecked() ?

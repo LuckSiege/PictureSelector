@@ -51,12 +51,12 @@ import com.luck.picture.lib.manager.UCropManager;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.thread.PictureThreadUtils;
+import com.luck.picture.lib.tools.AlbumUtils;
 import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.BitmapUtils;
 import com.luck.picture.lib.tools.CameraFileUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DoubleUtils;
-import com.luck.picture.lib.tools.AlbumUtils;
 import com.luck.picture.lib.tools.JumpUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
@@ -190,10 +190,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mTvPictureImgNum.setOnClickListener(this);
         mTvPictureTitle.setOnClickListener(this);
         mIvArrow.setOnClickListener(this);
-        String title = config.chooseMode == PictureMimeType.ofAudio() ?
-                getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll);
-        mTvPictureTitle.setText(title);
-        mTvPictureTitle.setTag(R.id.view_tag, -1);
+        setTitle(null);
         folderWindow = new FolderPopWindow(this);
         folderWindow.setArrowImageView(mIvArrow);
         folderWindow.setOnAlbumItemClickListener(this);
@@ -239,6 +236,20 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 config.isCheckOriginalImage = isChecked;
             });
         }
+    }
+
+    /**
+     * 设置标题栏
+     */
+    private void setTitle(String title) {
+        if (TextUtils.isEmpty(title)) {
+            String defaultTitle = config.chooseMode == PictureMimeType.ofAudio() ?
+                    getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll);
+            mTvPictureTitle.setText(defaultTitle);
+        } else {
+            mTvPictureTitle.setText(title);
+        }
+        mTvPictureTitle.setTag(R.id.view_tag, -1);
     }
 
     @Override
@@ -705,28 +716,44 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     protected void readLocalMedia() {
         showPleaseDialog();
-        if (config.isPageStrategy) {
-            mLoader.loadAllMedia(new OnQueryDataResultListener<LocalMediaFolder>(){
-
+        if (config.isOnlySandboxDir){
+            mLoader.loadOnlyInAppDirectoryAllMedia(new OnQueryDataResultListener<LocalMediaFolder>(){
                 @Override
-                public void onComplete(List<LocalMediaFolder> data) {
-                    if (isFinishing()) {
-                        return;
+                public void onComplete(LocalMediaFolder folder) {
+                    List<LocalMediaFolder> folders = new ArrayList<>();
+                    if (folder != null) {
+                        folders.add(folder);
+                        setTitle(folder.getName());
+                    } else {
+                        setTitle(null);
                     }
-                    PictureSelectorActivity.this.isHasMore = true;
-                    initPageModel(data);
-                    if (config.isSyncCover) {
-                        synchronousCover();
-                    }
+                    initAllModel(folders);
                 }
             });
         } else {
-            mLoader.loadAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
-                @Override
-                public void onComplete(List<LocalMediaFolder> folders) {
-                    initStandardModel(folders);
-                }
-            });
+            if (config.isPageStrategy) {
+                mLoader.loadAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
+
+                    @Override
+                    public void onComplete(List<LocalMediaFolder> data) {
+                        if (isFinishing()) {
+                            return;
+                        }
+                        PictureSelectorActivity.this.isHasMore = true;
+                        initPageModel(data);
+                        if (config.isSyncCover) {
+                            synchronousCover();
+                        }
+                    }
+                });
+            } else {
+                mLoader.loadAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
+                    @Override
+                    public void onComplete(List<LocalMediaFolder> folders) {
+                        initAllModel(folders);
+                    }
+                });
+            }
         }
     }
 
@@ -819,11 +846,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     }
 
     /**
-     * Standard Model
+     * All Model
      *
      * @param folders
      */
-    private void initStandardModel(List<LocalMediaFolder> folders) {
+    private void initAllModel(List<LocalMediaFolder> folders) {
         if (folders != null) {
             if (folders.size() > 0) {
                 folderWindow.bindFolder(folders);
@@ -952,6 +979,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
 
         if (id == R.id.picture_title || id == R.id.ivArrow || id == R.id.viewClickMask) {
+            if (config.isOnlySandboxDir) {
+                return;
+            }
             if (folderWindow.isShowing()) {
                 folderWindow.dismiss();
             } else {
@@ -1952,10 +1982,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             mAdapter.notifyItemInserted(config.isCamera ? 1 : 0);
             mAdapter.notifyItemRangeChanged(config.isCamera ? 1 : 0, mAdapter.getSize());
             // Solve the problem that some mobile phones do not refresh the system library timely after using Camera
-            if (config.isPageStrategy) {
-                manualSaveFolderForPageModel(media);
+            if (config.isOnlySandboxDir) {
+                setTitle(media.getParentFolderName());
             } else {
-                manualSaveFolder(media);
+                if (config.isPageStrategy) {
+                    manualSaveFolderForPageModel(media);
+                } else {
+                    manualSaveFolder(media);
+                }
             }
             mTvEmpty.setVisibility(mAdapter.getSize() > 0 || config.isSingleDirectReturn ? View.GONE : View.VISIBLE);
             // update all count

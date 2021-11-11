@@ -354,20 +354,39 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.i(TAG, "loadMedia Page Data Error: " + e.getMessage());
-                    return null;
+                    return new MediaData();
                 } finally {
                     if (data != null && !data.isClosed()) {
                         data.close();
                     }
                 }
-                return null;
+                return new MediaData();
             }
 
             @Override
             public void onSuccess(MediaData result) {
                 PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
-                if (listener != null && result != null) {
-                    listener.onComplete(result.data, page, result.isHasNextMore);
+                if (listener != null) {
+                    listener.onComplete(result.data != null ? result.data : new ArrayList<>(), page, result.isHasNextMore);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void loadOnlyInAppDirectoryAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
+        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<LocalMediaFolder>() {
+
+            @Override
+            public LocalMediaFolder doInBackground() {
+                return SandboxFileLoader.loadSandboxFolderFile(mContext, config.sandboxFolderPath);
+            }
+
+            @Override
+            public void onSuccess(LocalMediaFolder result) {
+                PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
+                if (listener != null) {
+                    listener.onComplete(result);
                 }
             }
         });
@@ -492,7 +511,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
             @Override
             public void onSuccess(List<LocalMediaFolder> result) {
                 PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
-                if (listener != null && result != null) {
+                if (listener != null) {
                     listener.onComplete(result);
                 }
             }
