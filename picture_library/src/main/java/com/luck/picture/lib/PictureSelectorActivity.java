@@ -36,19 +36,19 @@ import com.luck.picture.lib.animators.SlideInBottomAnimationAdapter;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
-import com.luck.picture.lib.entity.MediaExtraInfo;
-import com.luck.picture.lib.listener.OnPermissionDialogOptionCallback;
-import com.luck.picture.lib.manager.UCropManager;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.dialog.PhotoItemSelectedDialog;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
+import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.listener.OnAlbumItemClickListener;
 import com.luck.picture.lib.listener.OnItemClickListener;
+import com.luck.picture.lib.listener.OnPermissionDialogOptionCallback;
 import com.luck.picture.lib.listener.OnPhotoSelectChangedListener;
 import com.luck.picture.lib.listener.OnQueryDataResultListener;
 import com.luck.picture.lib.listener.OnRecyclerViewPreloadMoreListener;
+import com.luck.picture.lib.manager.UCropManager;
 import com.luck.picture.lib.model.LocalMediaLoader;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
@@ -56,6 +56,7 @@ import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.BitmapUtils;
+import com.luck.picture.lib.tools.CameraFileUtils;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.JumpUtils;
@@ -66,7 +67,6 @@ import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
-import com.luck.picture.lib.tools.CameraFileUtils;
 import com.luck.picture.lib.widget.FolderPopWindow;
 import com.luck.picture.lib.widget.RecyclerPreloadView;
 import com.yalantis.ucrop.UCrop;
@@ -270,9 +270,13 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mPage++;
                 long bucketId = ValueOf.toLong(mTvPictureTitle.getTag(R.id.view_tag));
                 LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage, getPageLimit(),
-                        (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
-                            if (!isFinishing()) {
-                                this.isHasMore = isHasMore;
+                        new OnQueryDataResultListener<LocalMedia>(){
+                            @Override
+                            public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
+                                if (isFinishing()) {
+                                    return;
+                                }
+                                PictureSelectorActivity.this.isHasMore = isHasMore;
                                 if (isHasMore) {
                                     hideDataNull();
                                     int size = result.size();
@@ -701,27 +705,25 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected void readLocalMedia() {
         showPleaseDialog();
         if (config.isPageStrategy) {
-            LocalMediaPageLoader.getInstance(getContext()).loadAllMedia(
-                    (OnQueryDataResultListener<LocalMediaFolder>) (data, currentPage, isHasMore) -> {
-                        if (!isFinishing()) {
-                            this.isHasMore = true;
-                            initPageModel(data);
-                            if (config.isSyncCover) {
-                                synchronousCover();
-                            }
-                        }
-                    });
-        } else {
-            PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
+            LocalMediaPageLoader.getInstance(getContext())
+                    .loadAllMedia(new OnQueryDataResultListener<LocalMediaFolder>(){
 
                 @Override
-                public List<LocalMediaFolder> doInBackground() {
-                    return new LocalMediaLoader(getContext()).loadAllMedia();
+                public void onComplete(List<LocalMediaFolder> data) {
+                    if (isFinishing()) {
+                        return;
+                    }
+                    PictureSelectorActivity.this.isHasMore = true;
+                    initPageModel(data);
+                    if (config.isSyncCover) {
+                        synchronousCover();
+                    }
                 }
-
+            });
+        } else {
+            new LocalMediaLoader(getContext()).loadAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
                 @Override
-                public void onSuccess(List<LocalMediaFolder> folders) {
-                    PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
+                public void onComplete(List<LocalMediaFolder> folders) {
                     initStandardModel(folders);
                 }
             });
@@ -742,29 +744,33 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         long bucketId = folder != null ? folder.getBucketId() : -1;
         mRecyclerView.setEnabledLoadMore(true);
         LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage,
-                (OnQueryDataResultListener<LocalMedia>) (data, currentPage, isHasMore) -> {
-                    if (!isFinishing()) {
+                new OnQueryDataResultListener<LocalMedia>(){
+                    @Override
+                    public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
+                        if (isFinishing()) {
+                            return;
+                        }
                         dismissDialog();
                         if (mAdapter != null) {
-                            this.isHasMore = true;
+                            PictureSelectorActivity.this.isHasMore = true;
                             // IsHasMore being true means that there's still data, but data being 0 might be a filter that's turned on and that doesn't happen to fit on the whole page
-                            if (isHasMore && data.size() == 0) {
+                            if (isHasMore && result.size() == 0) {
                                 onRecyclerViewPreloadMore();
                                 return;
                             }
                             int currentSize = mAdapter.getSize();
-                            int resultSize = data.size();
+                            int resultSize = result.size();
                             oldCurrentListSize = oldCurrentListSize + currentSize;
                             if (resultSize >= currentSize) {
                                 // This situation is mainly caused by the use of camera memory, the Activity is recycled
                                 if (currentSize > 0 && currentSize < resultSize && oldCurrentListSize != resultSize) {
-                                    if (isLocalMediaSame(data.get(0))) {
-                                        mAdapter.bindData(data);
+                                    if (isLocalMediaSame(result.get(0))) {
+                                        mAdapter.bindData(result);
                                     } else {
-                                        mAdapter.getData().addAll(data);
+                                        mAdapter.getData().addAll(result);
                                     }
                                 } else {
-                                    mAdapter.bindData(data);
+                                    mAdapter.bindData(result);
                                 }
                             }
                             boolean isEmpty = mAdapter.isDataEmpty();
@@ -1391,16 +1397,19 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     mPage = 1;
                     showPleaseDialog();
                     LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage,
-                            (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
-                                this.isHasMore = isHasMore;
-                                if (!isFinishing()) {
-                                    if (result.size() == 0) {
-                                        mAdapter.clear();
+                            new OnQueryDataResultListener<LocalMedia>(){
+                                @Override
+                                public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
+                                    PictureSelectorActivity.this.isHasMore = isHasMore;
+                                    if (!isFinishing()) {
+                                        if (result.size() == 0) {
+                                            mAdapter.clear();
+                                        }
+                                        mAdapter.bindData(result);
+                                        mRecyclerView.onScrolled(0, 0);
+                                        mRecyclerView.smoothScrollToPosition(0);
+                                        dismissDialog();
                                     }
-                                    mAdapter.bindData(result);
-                                    mRecyclerView.onScrolled(0, 0);
-                                    mRecyclerView.smoothScrollToPosition(0);
-                                    dismissDialog();
                                 }
                             });
                 }

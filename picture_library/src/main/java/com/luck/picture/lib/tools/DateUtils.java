@@ -1,6 +1,9 @@
 package com.luck.picture.lib.tools;
 
+import android.annotation.SuppressLint;
+
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -80,5 +83,23 @@ public class DateUtils {
     public static String cdTime(long sTime, long eTime) {
         long diff = eTime - sTime;
         return diff > 1000 ? diff / 1000 + "秒" : diff + "毫秒";
+    }
+
+    /**
+     * 时间转时间戳
+     *
+     * @param s 时间
+     * @return
+     */
+    public static long parseTime(String s) {
+        try {
+            @SuppressLint("SimpleDateFormat")
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+            Date date = simpleDateFormat.parse(s);
+            return date != null ? date.getTime() : 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0L;
     }
 }

@@ -270,9 +270,13 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         long bucketId = getIntent().getLongExtra(PictureConfig.EXTRA_BUCKET_ID, -1);
         mPage++;
         LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage, config.pageSize,
-                (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
-                    if (!isFinishing()) {
-                        this.isHasMore = isHasMore;
+                new OnQueryDataResultListener<LocalMedia>() {
+                    @Override
+                    public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
+                        if (isFinishing()) {
+                            return;
+                        }
+                        PicturePreviewActivity.this.isHasMore = isHasMore;
                         if (isHasMore) {
                             int size = result.size();
                             if (size > 0 && adapter != null) {
@@ -294,9 +298,13 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
         long bucketId = getIntent().getLongExtra(PictureConfig.EXTRA_BUCKET_ID, -1);
         mPage++;
         LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage, config.pageSize,
-                (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
-                    if (!isFinishing()) {
-                        this.isHasMore = isHasMore;
+                new OnQueryDataResultListener<LocalMedia>() {
+                    @Override
+                    public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
+                        if (isFinishing()) {
+                            return;
+                        }
+                        PicturePreviewActivity.this.isHasMore = isHasMore;
                         if (isHasMore) {
                             int size = result.size();
                             if (size > 0 && adapter != null) {

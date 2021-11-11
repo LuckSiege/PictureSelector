@@ -38,7 +38,7 @@ import java.util.Set;
  * @date：2020-04-13 15:06
  * @describe：Local media database query class，Support paging
  */
-public final class LocalMediaPageLoader {
+public final class LocalMediaPageLoader implements IBridgeMediaLoader {
     private static final String TAG = LocalMediaPageLoader.class.getSimpleName();
     /**
      * unit
@@ -375,6 +375,7 @@ public final class LocalMediaPageLoader {
      *
      * @param listener
      */
+    @Override
     public void loadAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
         PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
             @Override
@@ -481,7 +482,7 @@ public final class LocalMediaPageLoader {
             public void onSuccess(List<LocalMediaFolder> result) {
                 PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
                 if (listener != null && result != null) {
-                    listener.onComplete(result, 1, false);
+                    listener.onComplete(result);
                 }
             }
         });

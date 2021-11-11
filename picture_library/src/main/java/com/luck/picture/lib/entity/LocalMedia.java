@@ -322,13 +322,13 @@ public class LocalMedia implements Parcelable {
      * @param height           资源高
      * @param size             资源大小
      * @param bucketId         文件目录id
-     * @param dateAddedColumn  资源添加时间
+     * @param dateAdded  资源添加时间
      * @return
      */
     public static LocalMedia parseLocalMedia(long id, String path, String absolutePath,
                                              String fileName, String parentFolderName,
                                              long duration, int chooseModel, String mimeType,
-                                             int width, int height, long size, long bucketId, long dateAddedColumn) {
+                                             int width, int height, long size, long bucketId, long dateAdded) {
         LocalMedia localMedia = new LocalMedia();
         localMedia.setId(id);
         localMedia.setPath(path);
@@ -342,7 +342,7 @@ public class LocalMedia implements Parcelable {
         localMedia.setHeight(height);
         localMedia.setSize(size);
         localMedia.setBucketId(bucketId);
-        localMedia.setDateAddedTime(dateAddedColumn);
+        localMedia.setDateAddedTime(dateAdded);
         return localMedia;
     }
 

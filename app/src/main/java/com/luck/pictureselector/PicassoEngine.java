@@ -120,61 +120,6 @@ public class PicassoEngine implements ImageEngine {
     }
 
     /**
-     * 加载网络图片适配长图方案
-     * # 注意：此方法只有加载网络图片才会回调
-     *
-     * @param context
-     * @param url
-     * @param imageView
-     * @param longImageView
-     * @ 已废弃
-     */
-    @Override
-    public void loadImage(@NonNull Context context, @NonNull String url,
-                          @NonNull ImageView imageView,
-                          SubsamplingScaleImageView longImageView) {
-        if (!ImageLoaderUtils.assertValidRequest(context)){
-            return;
-        }
-        Picasso.get()
-                .load(PictureMimeType.isContent(url) ? Uri.parse(url) : Uri.fromFile(new File(url)))
-                .into(new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
-                        if (resource != null) {
-                            boolean eqLongImage = MediaUtils.isLongImg(resource.getWidth(),
-                                    resource.getHeight());
-                            longImageView.setVisibility(eqLongImage ? View.VISIBLE : View.GONE);
-                            imageView.setVisibility(eqLongImage ? View.GONE : View.VISIBLE);
-                            if (eqLongImage) {
-                                // 加载长图
-                                longImageView.setQuickScaleEnabled(true);
-                                longImageView.setZoomEnabled(true);
-                                longImageView.setDoubleTapZoomDuration(100);
-                                longImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
-                                longImageView.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
-                                longImageView.setImage(ImageSource.cachedBitmap(resource),
-                                        new ImageViewState(0, new PointF(0, 0), 0));
-                            } else {
-                                // 普通图片
-                                imageView.setImageBitmap(resource);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                    }
-                });
-    }
-
-    /**
      * 加载相册目录
      *
      * @param context   上下文
@@ -218,30 +163,6 @@ public class PicassoEngine implements ImageEngine {
         }
     }
 
-
-    /**
-     * 加载gif
-     *
-     * @param context   上下文
-     * @param url       图片路径
-     * @param imageView 承载图片ImageView
-     */
-    @Override
-    public void loadAsGifImage(@NonNull Context context, @NonNull String url,
-                               @NonNull ImageView imageView) {
-        if (!ImageLoaderUtils.assertValidRequest(context)){
-            return;
-        }
-        if (PictureMimeType.isContent(url)) {
-            Picasso.get()
-                    .load(Uri.parse(url))
-                    .into(imageView);
-        } else {
-            Picasso.get()
-                    .load(new File(url))
-                    .into(imageView);
-        }
-    }
 
     /**
      * 加载图片列表图片

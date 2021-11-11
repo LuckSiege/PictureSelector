@@ -410,7 +410,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         launcherResult = createActivityResultLauncher();
 
         // 清除缓存
-        clearCache();
+//        clearCache();
     }
 
     /**
