@@ -49,8 +49,6 @@ import com.luck.picture.lib.listener.OnPhotoSelectChangedListener;
 import com.luck.picture.lib.listener.OnQueryDataResultListener;
 import com.luck.picture.lib.listener.OnRecyclerViewPreloadMoreListener;
 import com.luck.picture.lib.manager.UCropManager;
-import com.luck.picture.lib.model.LocalMediaLoader;
-import com.luck.picture.lib.model.LocalMediaPageLoader;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.thread.PictureThreadUtils;
@@ -112,6 +110,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private int allFolderSize;
     private int mOpenCameraCount;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,6 +124,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mAdapter.bindSelectData(selectionMedias);
             }
         }
+
     }
 
     @Override
@@ -269,7 +269,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             if (isHasMore) {
                 mPage++;
                 long bucketId = ValueOf.toLong(mTvPictureTitle.getTag(R.id.view_tag));
-                LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage, getPageLimit(),
+                mLoader.loadPageMediaData(bucketId, mPage, getPageLimit(),
                         new OnQueryDataResultListener<LocalMedia>(){
                             @Override
                             public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
@@ -705,8 +705,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     protected void readLocalMedia() {
         showPleaseDialog();
         if (config.isPageStrategy) {
-            LocalMediaPageLoader.getInstance(getContext())
-                    .loadAllMedia(new OnQueryDataResultListener<LocalMediaFolder>(){
+            mLoader.loadAllMedia(new OnQueryDataResultListener<LocalMediaFolder>(){
 
                 @Override
                 public void onComplete(List<LocalMediaFolder> data) {
@@ -721,7 +720,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 }
             });
         } else {
-            new LocalMediaLoader(getContext()).loadAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
+            mLoader.loadAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
                 @Override
                 public void onComplete(List<LocalMediaFolder> folders) {
                     initStandardModel(folders);
@@ -743,7 +742,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         mTvPictureTitle.setTag(R.id.view_index_tag, 0);
         long bucketId = folder != null ? folder.getBucketId() : -1;
         mRecyclerView.setEnabledLoadMore(true);
-        LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage,
+        mLoader.loadPageMediaData(bucketId, mPage,
                 new OnQueryDataResultListener<LocalMedia>(){
                     @Override
                     public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
@@ -800,8 +799,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         if (mediaFolder == null) {
                             continue;
                         }
-                        String firstCover = LocalMediaPageLoader
-                                .getInstance(getContext()).getFirstCover(mediaFolder.getBucketId());
+                        String firstCover = mLoader.getFirstCover(mediaFolder.getBucketId());
                         if (TextUtils.isEmpty(firstCover)){
                             continue;
                         }
@@ -1396,20 +1394,21 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 if (!isCurrentCacheFolderData) {
                     mPage = 1;
                     showPleaseDialog();
-                    LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage,
+                    mLoader.loadPageMediaData(bucketId, mPage,
                             new OnQueryDataResultListener<LocalMedia>(){
                                 @Override
                                 public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
                                     PictureSelectorActivity.this.isHasMore = isHasMore;
-                                    if (!isFinishing()) {
-                                        if (result.size() == 0) {
-                                            mAdapter.clear();
-                                        }
-                                        mAdapter.bindData(result);
-                                        mRecyclerView.onScrolled(0, 0);
-                                        mRecyclerView.smoothScrollToPosition(0);
-                                        dismissDialog();
+                                    if (isFinishing()) {
+                                        return;
                                     }
+                                    if (result.size() == 0) {
+                                        mAdapter.clear();
+                                    }
+                                    mAdapter.bindData(result);
+                                    mRecyclerView.onScrolled(0, 0);
+                                    mRecyclerView.smoothScrollToPosition(0);
+                                    dismissDialog();
                                 }
                             });
                 }

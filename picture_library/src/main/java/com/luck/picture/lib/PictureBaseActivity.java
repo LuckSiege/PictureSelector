@@ -33,16 +33,18 @@ import com.luck.picture.lib.immersive.NavBarUtils;
 import com.luck.picture.lib.io.ArrayPoolProvide;
 import com.luck.picture.lib.language.PictureLanguageUtils;
 import com.luck.picture.lib.listener.OnCallbackListener;
+import com.luck.picture.lib.model.IBridgeMediaLoader;
+import com.luck.picture.lib.model.LocalMediaLoader;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.tools.AndroidQTransformUtils;
 import com.luck.picture.lib.tools.AttrsUtils;
+import com.luck.picture.lib.tools.CameraFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.VoiceUtils;
-import com.luck.picture.lib.tools.CameraFileUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -77,6 +79,11 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      * is onSaveInstanceState
      */
     protected boolean isOnSaveInstanceState;
+
+    /**
+     * Base LocalMedia Loader class
+     */
+    protected IBridgeMediaLoader mLoader;
 
     /**
      * Whether to use immersion, subclasses copy the method to determine whether to use immersion
@@ -171,9 +178,21 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (layoutResID != 0) {
             setContentView(layoutResID);
         }
+        initLoader();
         initWidgets();
         initPictureSelectorStyle();
         isOnSaveInstanceState = false;
+    }
+
+    /**
+     * init LocalMedia Loader
+     */
+    protected void initLoader() {
+        if (config.isPageStrategy) {
+            mLoader = new LocalMediaPageLoader(getContext());
+        } else {
+            mLoader = new LocalMediaLoader(getContext());
+        }
     }
 
     /**
@@ -786,7 +805,6 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     private void releaseResultListener() {
         if (config != null) {
             PictureSelectionConfig.destroy();
-            LocalMediaPageLoader.setInstanceNull();
             PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
             ArrayPoolProvide.getInstance().clearMemory();
         }

@@ -1,6 +1,5 @@
 package com.luck.picture.lib.model;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -38,7 +37,7 @@ import java.util.Set;
  * @date：2020-04-13 15:06
  * @describe：Local media database query class，Support paging
  */
-public final class LocalMediaPageLoader implements IBridgeMediaLoader {
+public final class LocalMediaPageLoader extends IBridgeMediaLoader {
     private static final String TAG = LocalMediaPageLoader.class.getSimpleName();
     /**
      * unit
@@ -175,6 +174,7 @@ public final class LocalMediaPageLoader implements IBridgeMediaLoader {
      * @param bucketId
      * @return
      */
+    @Override
     public String getFirstCover(long bucketId) {
         Cursor data = null;
         try {
@@ -219,6 +219,7 @@ public final class LocalMediaPageLoader implements IBridgeMediaLoader {
      * @param listener
      * @return
      */
+    @Override
     public void loadPageMediaData(long bucketId, int page, int limit, OnQueryDataResultListener<LocalMedia> listener) {
         loadPageMediaData(bucketId, page, limit, config.pageSize, listener);
     }
@@ -230,6 +231,7 @@ public final class LocalMediaPageLoader implements IBridgeMediaLoader {
      * @param listener
      * @return
      */
+    @Override
     public void loadPageMediaData(long bucketId, int page, OnQueryDataResultListener<LocalMedia> listener) {
         loadPageMediaData(bucketId, page, config.pageSize, config.pageSize, listener);
     }
@@ -243,6 +245,7 @@ public final class LocalMediaPageLoader implements IBridgeMediaLoader {
      * @param pageSize
      * @return
      */
+    @Override
     public void loadPageMediaData(long bucketId, int page, int limit, int pageSize,
                                   OnQueryDataResultListener<LocalMedia> listener) {
         PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<MediaData>() {
@@ -716,26 +719,5 @@ public final class LocalMediaPageLoader implements IBridgeMediaLoader {
             }
         }
         return stringBuilder.toString();
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    private static LocalMediaPageLoader instance;
-
-    public static LocalMediaPageLoader getInstance(Context context) {
-        if (instance == null) {
-            synchronized (LocalMediaPageLoader.class) {
-                if (instance == null) {
-                    instance = new LocalMediaPageLoader(context.getApplicationContext());
-                }
-            }
-        }
-        return instance;
-    }
-
-    /**
-     * set empty
-     */
-    public static void setInstanceNull() {
-        instance = null;
     }
 }

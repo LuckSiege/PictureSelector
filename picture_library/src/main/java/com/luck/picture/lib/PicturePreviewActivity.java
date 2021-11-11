@@ -186,6 +186,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 if (allAlbumList.size() == 0) {
                     // 这种情况有可能是单例被回收了导致readPreviewMediaData();返回的数据为0，暂时自动切换成分页模式去获取数据
                     config.isPageStrategy = true;
+                    mLoader = new LocalMediaPageLoader(getContext());
                     setNewTitle();
                     loadData();
                 }
@@ -269,7 +270,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     private void loadData() {
         long bucketId = getIntent().getLongExtra(PictureConfig.EXTRA_BUCKET_ID, -1);
         mPage++;
-        LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage, config.pageSize,
+        mLoader.loadPageMediaData(bucketId, mPage, config.pageSize,
                 new OnQueryDataResultListener<LocalMedia>() {
                     @Override
                     public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
@@ -297,7 +298,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     private void loadMoreData() {
         long bucketId = getIntent().getLongExtra(PictureConfig.EXTRA_BUCKET_ID, -1);
         mPage++;
-        LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage, config.pageSize,
+        mLoader.loadPageMediaData(bucketId, mPage, config.pageSize,
                 new OnQueryDataResultListener<LocalMedia>() {
                     @Override
                     public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
