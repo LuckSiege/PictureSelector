@@ -1897,7 +1897,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             media.setPath(config.cameraPath);
             media.setMimeType(mimeType);
 
-            String folderName = AlbumUtils.createFolderName(config.cameraPath, mimeType, config.outPutCameraPath);
+            String folderName = AlbumUtils.generateCameraFolderName(config.cameraPath, mimeType, config.outPutCameraPath);
             media.setParentFolderName(folderName);
 
             media.setChooseModel(config.chooseMode);
@@ -2190,59 +2190,57 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         }
         int count = folderWindow.getFolderData().size();
         LocalMediaFolder allFolder = count > 0 ? folderWindow.getFolderData().get(0) : new LocalMediaFolder();
-        if (allFolder != null) {
-            int totalNum = allFolder.getImageNum();
-            allFolder.setFirstImagePath(media.getPath());
-            allFolder.setFirstMimeType(media.getMimeType());
-            allFolder.setImageNum(isAddSameImp(totalNum) ? allFolder.getImageNum() : allFolder.getImageNum() + 1);
-            // Create All folder
-            if (count == 0) {
-                allFolder.setName(config.chooseMode == PictureMimeType.ofAudio() ?
-                        getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll));
-                allFolder.setOfAllType(config.chooseMode);
-                allFolder.setCameraFolder(true);
-                allFolder.setChecked(true);
-                allFolder.setBucketId(-1);
-                folderWindow.getFolderData().add(0, allFolder);
-                // Create Camera
+        int totalNum = allFolder.getImageNum();
+        allFolder.setFirstImagePath(media.getPath());
+        allFolder.setFirstMimeType(media.getMimeType());
+        allFolder.setImageNum(isAddSameImp(totalNum) ? allFolder.getImageNum() : allFolder.getImageNum() + 1);
+        // Create All folder
+        if (count == 0) {
+            allFolder.setName(config.chooseMode == PictureMimeType.ofAudio() ?
+                    getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll));
+            allFolder.setOfAllType(config.chooseMode);
+            allFolder.setCameraFolder(true);
+            allFolder.setChecked(true);
+            allFolder.setBucketId(-1);
+            folderWindow.getFolderData().add(0, allFolder);
+            // Create Camera
+            LocalMediaFolder cameraFolder = new LocalMediaFolder();
+            cameraFolder.setName(media.getParentFolderName());
+            cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
+            cameraFolder.setFirstImagePath(media.getPath());
+            cameraFolder.setFirstMimeType(media.getMimeType());
+            cameraFolder.setBucketId(media.getBucketId());
+            folderWindow.getFolderData().add(folderWindow.getFolderData().size(), cameraFolder);
+        } else {
+            boolean isCamera = false;
+            String newFolderName = AlbumUtils.generateCameraFolderName(media.getPath(), media.getMimeType(), config.outPutCameraPath);
+            for (int i = 0; i < count; i++) {
+                LocalMediaFolder cameraFolder = folderWindow.getFolderData().get(i);
+                if (!TextUtils.isEmpty(cameraFolder.getName()) && cameraFolder.getName().startsWith(newFolderName)) {
+                    media.setBucketId(cameraFolder.getBucketId());
+                    cameraFolder.setFirstImagePath(config.cameraPath);
+                    cameraFolder.setFirstMimeType(media.getMimeType());
+                    cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
+                    if (cameraFolder.getData() != null && cameraFolder.getData().size() > 0) {
+                        cameraFolder.getData().add(0, media);
+                    }
+                    isCamera = true;
+                    break;
+                }
+            }
+            if (!isCamera) {
+                // There is no Camera folder locally. Create one
                 LocalMediaFolder cameraFolder = new LocalMediaFolder();
                 cameraFolder.setName(media.getParentFolderName());
                 cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
                 cameraFolder.setFirstImagePath(media.getPath());
                 cameraFolder.setFirstMimeType(media.getMimeType());
                 cameraFolder.setBucketId(media.getBucketId());
-                folderWindow.getFolderData().add(folderWindow.getFolderData().size(), cameraFolder);
-            } else {
-                boolean isCamera = false;
-                String newFolderName = AlbumUtils.createFolderName(media.getPath(),media.getMimeType(),config.outPutCameraPath);
-                for (int i = 0; i < count; i++) {
-                    LocalMediaFolder cameraFolder = folderWindow.getFolderData().get(i);
-                    if (!TextUtils.isEmpty(cameraFolder.getName()) && cameraFolder.getName().startsWith(newFolderName)) {
-                        media.setBucketId(cameraFolder.getBucketId());
-                        cameraFolder.setFirstImagePath(config.cameraPath);
-                        cameraFolder.setFirstMimeType(media.getMimeType());
-                        cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
-                        if (cameraFolder.getData() != null && cameraFolder.getData().size() > 0) {
-                            cameraFolder.getData().add(0, media);
-                        }
-                        isCamera = true;
-                        break;
-                    }
-                }
-                if (!isCamera) {
-                    // There is no Camera folder locally. Create one
-                    LocalMediaFolder cameraFolder = new LocalMediaFolder();
-                    cameraFolder.setName(media.getParentFolderName());
-                    cameraFolder.setImageNum(isAddSameImp(totalNum) ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
-                    cameraFolder.setFirstImagePath(media.getPath());
-                    cameraFolder.setFirstMimeType(media.getMimeType());
-                    cameraFolder.setBucketId(media.getBucketId());
-                    folderWindow.getFolderData().add(cameraFolder);
-                    sortFolder(folderWindow.getFolderData());
-                }
+                folderWindow.getFolderData().add(cameraFolder);
+                sortFolder(folderWindow.getFolderData());
             }
-            folderWindow.bindFolder(folderWindow.getFolderData());
         }
+        folderWindow.bindFolder(folderWindow.getFolderData());
     }
 
     /**

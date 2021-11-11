@@ -45,7 +45,7 @@ public class AlbumUtils {
      * @param outPutCameraPath 自定义拍照输出路径
      * @return
      */
-    public static String createFolderName(String path, String mimeType, String outPutCameraPath) {
+    public static String generateCameraFolderName(String path, String mimeType, String outPutCameraPath) {
         String folderName;
         if (TextUtils.isEmpty(outPutCameraPath)) {
             if (SdkVersionUtils.isQ() && PictureMimeType.isHasVideo(mimeType)) {

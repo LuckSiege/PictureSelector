@@ -338,7 +338,7 @@ public class PictureSelectorCameraEmptyActivity extends PictureBaseActivity {
             }
             media.setPath(config.cameraPath);
             media.setMimeType(mimeType);
-            String folderName = AlbumUtils.createFolderName(config.cameraPath, mimeType, config.outPutCameraPath);
+            String folderName = AlbumUtils.generateCameraFolderName(config.cameraPath, mimeType, config.outPutCameraPath);
             media.setParentFolderName(folderName);
 
             media.setChooseModel(config.chooseMode);

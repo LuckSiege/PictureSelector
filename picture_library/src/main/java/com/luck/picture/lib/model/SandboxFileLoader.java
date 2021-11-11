@@ -9,6 +9,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.tools.MediaUtils;
+import com.luck.picture.lib.tools.SortUtils;
 import com.luck.picture.lib.tools.ValueOf;
 
 import java.io.File;
@@ -32,6 +33,7 @@ public final class SandboxFileLoader {
         List<LocalMedia> list = loadSandboxFile(context, directoryPath);
         LocalMediaFolder folder = null;
         if (list != null && list.size() > 0) {
+            SortUtils.sortLocalMediaAddedTime(list);
             LocalMedia firstMedia = list.get(0);
             folder = new LocalMediaFolder();
             folder.setName(firstMedia.getParentFolderName());
