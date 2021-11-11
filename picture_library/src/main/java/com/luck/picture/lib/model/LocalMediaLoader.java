@@ -15,10 +15,10 @@ import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.listener.OnQueryDataResultListener;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
+import com.luck.picture.lib.tools.SortUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -36,7 +36,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
     private static final String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
     private static final String NOT_GIF_UNKNOWN = "!='image/*'";
     private static final String NOT_GIF = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/gif' AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF_UNKNOWN + ")";
-
+    private static final int MAX_SORT_SIZE = 60;
     private final Context mContext;
     private final boolean isAndroidQ;
     private final PictureSelectionConfig config;
@@ -117,10 +117,10 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
     }
 
 
-    public LocalMediaLoader(Context context) {
+    public LocalMediaLoader(Context context,PictureSelectionConfig config) {
         this.mContext = context.getApplicationContext();
         this.isAndroidQ = SdkVersionUtils.isQ();
-        this.config = PictureSelectionConfig.getInstance();
+        this.config = config;
     }
 
 
@@ -228,8 +228,21 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
 
                             } while (data.moveToNext());
 
+                            LocalMediaFolder selfFolder = SandboxFileLoader.loadSandboxFolderFile(mContext, config.sandboxFolderPath);
+                            if (selfFolder != null) {
+                                imageFolders.add(selfFolder);
+                                allImageFolder.setImageNum(allImageFolder.getImageNum() + selfFolder.getImageNum());
+                                allImageFolder.setData(selfFolder.getData());
+                                latelyImages.addAll(0, selfFolder.getData());
+                            }
+
                             if (latelyImages.size() > 0) {
-                                sortFolder(imageFolders);
+                                if (latelyImages.size() > MAX_SORT_SIZE) {
+                                    SortUtils.sortLocalMediaAddedTime(latelyImages.subList(0, MAX_SORT_SIZE));
+                                } else {
+                                    SortUtils.sortLocalMediaAddedTime(latelyImages);
+                                }
+                                SortUtils.sortFolder(imageFolders);
                                 imageFolders.add(0, allImageFolder);
                                 allImageFolder.setFirstImagePath
                                         (latelyImages.get(0).getPath());
@@ -304,21 +317,6 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
         return null;
     }
 
-    /**
-     * Sort by the number of files
-     *
-     * @param imageFolders
-     */
-    private void sortFolder(List<LocalMediaFolder> imageFolders) {
-        Collections.sort(imageFolders, (lhs, rhs) -> {
-            if (lhs.getData() == null || rhs.getData() == null) {
-                return 0;
-            }
-            int lSize = lhs.getImageNum();
-            int rSize = rhs.getImageNum();
-            return Integer.compare(rSize, lSize);
-        });
-    }
 
     /**
      * Create folder

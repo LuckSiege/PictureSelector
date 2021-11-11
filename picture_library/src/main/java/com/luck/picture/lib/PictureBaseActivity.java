@@ -189,9 +189,9 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
      */
     protected void initLoader() {
         if (config.isPageStrategy) {
-            mLoader = new LocalMediaPageLoader(getContext());
+            mLoader = new LocalMediaPageLoader(getContext(), config);
         } else {
-            mLoader = new LocalMediaLoader(getContext());
+            mLoader = new LocalMediaLoader(getContext(), config);
         }
     }
 

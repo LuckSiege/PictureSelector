@@ -2,8 +2,11 @@ package com.luck.picture.lib.model;
 
 import android.content.Context;
 import android.net.Uri;
+import android.text.TextUtils;
+
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.tools.MediaUtils;
 
@@ -24,7 +27,32 @@ public final class SandboxFileLoader {
      * @param context       上下文
      * @param directoryPath 资源目标路径
      */
+    public static LocalMediaFolder loadSandboxFolderFile(Context context, String directoryPath) {
+        List<LocalMedia> list = loadSandboxFile(context, directoryPath);
+        LocalMediaFolder folder = null;
+        if (list != null && list.size() > 0) {
+            LocalMedia firstMedia = list.get(0);
+            folder = new LocalMediaFolder();
+            folder.setName(firstMedia.getParentFolderName());
+            folder.setFirstImagePath(firstMedia.getPath());
+            folder.setFirstMimeType(firstMedia.getMimeType());
+            folder.setBucketId(firstMedia.getBucketId());
+            folder.setImageNum(list.size());
+            folder.setData(list);
+        }
+        return folder;
+    }
+
+    /**
+     * 查询应用内部目录的图片
+     *
+     * @param context       上下文
+     * @param directoryPath 资源目标路径
+     */
     public static List<LocalMedia> loadSandboxFile(Context context, String directoryPath) {
+        if (TextUtils.isEmpty(directoryPath)) {
+            return null;
+        }
         List<LocalMedia> list = new ArrayList<>();
         File sandboxFile = new File(directoryPath);
         if (sandboxFile.exists()) {
@@ -42,7 +70,7 @@ public final class SandboxFileLoader {
                 long size = f.length();
                 String mimeType = PictureMimeType.getMimeTypeFromMediaContentUri(context, Uri.fromFile(f));
                 String parentFolderName = f.getParentFile() != null ? f.getParentFile().getName() : "";
-                long dateTime = f.lastModified();
+                long dateTime = f.lastModified() / 1000;
                 long duration;
                 int width, height;
                 int chooseModel;

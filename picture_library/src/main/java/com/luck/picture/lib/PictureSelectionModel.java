@@ -1059,6 +1059,20 @@ public class PictureSelectionModel {
         return this;
     }
 
+    /**
+     * Query the pictures or videos in the specified directory
+     *
+     * @param directoryPath Camera out path
+     *                      <p>
+     *                      正常情况下这个路径应该是对应setOutputCameraPath();
+     *                      </p>
+     * @return
+     */
+    public PictureSelectionModel setQuerySandboxDirectory(String directoryPath) {
+        selectionConfig.sandboxFolderPath = directoryPath;
+        return this;
+    }
+
 
     /**
      * # file size The unit is M

@@ -186,7 +186,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 if (allAlbumList.size() == 0) {
                     // 这种情况有可能是单例被回收了导致readPreviewMediaData();返回的数据为0，暂时自动切换成分页模式去获取数据
                     config.isPageStrategy = true;
-                    mLoader = new LocalMediaPageLoader(getContext());
+                    mLoader = new LocalMediaPageLoader(getContext(), config);
                     setNewTitle();
                     loadData();
                 }

@@ -20,10 +20,10 @@ import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
+import com.luck.picture.lib.tools.SortUtils;
 import com.luck.picture.lib.tools.ValueOf;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -54,9 +54,9 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
     private final Context mContext;
     private final PictureSelectionConfig config;
 
-    public LocalMediaPageLoader(Context context) {
+    public LocalMediaPageLoader(Context context, PictureSelectionConfig config) {
         this.mContext = context;
-        this.config = PictureSelectionConfig.getInstance();
+        this.config = config;
     }
 
     /**
@@ -448,10 +448,18 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                 } while (data.moveToNext());
                             }
 
-                            sortFolder(mediaFolders);
-
                             // 相机胶卷
                             LocalMediaFolder allMediaFolder = new LocalMediaFolder();
+
+                            LocalMediaFolder selfFolder = SandboxFileLoader.loadSandboxFolderFile(mContext, config.sandboxFolderPath);
+                            if (selfFolder != null) {
+                                mediaFolders.add(selfFolder);
+                                totalCount += selfFolder.getImageNum();
+                                allMediaFolder.setData(selfFolder.getData());
+                            }
+
+                            SortUtils.sortFolder(mediaFolders);
+
                             allMediaFolder.setImageNum(totalCount);
                             allMediaFolder.setChecked(true);
                             allMediaFolder.setBucketId(-1);
@@ -639,21 +647,6 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
         return null;
     }
 
-    /**
-     * Sort by number of files
-     *
-     * @param imageFolders
-     */
-    private void sortFolder(List<LocalMediaFolder> imageFolders) {
-        Collections.sort(imageFolders, (lhs, rhs) -> {
-            if (lhs.getData() == null || rhs.getData() == null) {
-                return 0;
-            }
-            int lSize = lhs.getImageNum();
-            int rSize = rhs.getImageNum();
-            return Integer.compare(rSize, lSize);
-        });
-    }
 
     /**
      * Get video (maximum or minimum time)

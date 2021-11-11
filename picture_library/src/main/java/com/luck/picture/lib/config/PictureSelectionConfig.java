@@ -162,7 +162,7 @@ public final class PictureSelectionConfig implements Parcelable {
     @Deprecated
     public int downResId;
     public String outPutCameraPath;
-
+    public String sandboxFolderPath;
     public String originalPath;
     public String cameraPath;
     public int cameraMimeType = -1;
@@ -283,6 +283,7 @@ public final class PictureSelectionConfig implements Parcelable {
         upResId = in.readInt();
         downResId = in.readInt();
         outPutCameraPath = in.readString();
+        sandboxFolderPath = in.readString();
         originalPath = in.readString();
         cameraPath = in.readString();
         cameraMimeType = in.readInt();
@@ -401,6 +402,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(upResId);
         dest.writeInt(downResId);
         dest.writeString(outPutCameraPath);
+        dest.writeString(sandboxFolderPath);
         dest.writeString(originalPath);
         dest.writeString(cameraPath);
         dest.writeInt(cameraMimeType);
@@ -536,6 +538,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isOpenStyleNumComplete = false;
         isOpenStyleCheckNumMode = false;
         outPutCameraPath = "";
+        sandboxFolderPath = "";
         originalPath = "";
         cameraPath = "";
         cameraMimeType = -1;

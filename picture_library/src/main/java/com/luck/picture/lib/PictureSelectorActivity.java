@@ -62,6 +62,7 @@ import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.ScreenUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
+import com.luck.picture.lib.tools.SortUtils;
 import com.luck.picture.lib.tools.StringUtils;
 import com.luck.picture.lib.tools.ToastUtils;
 import com.luck.picture.lib.tools.ValueOf;
@@ -737,13 +738,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private void initPageModel(List<LocalMediaFolder> folders) {
         folderWindow.bindFolder(folders);
         mPage = 1;
-        LocalMediaFolder folder = folderWindow.getFolder(0);
-        mTvPictureTitle.setTag(R.id.view_count_tag, folder != null ? folder.getImageNum() : 0);
+        LocalMediaFolder firstFolder = folderWindow.getFolder(0);
+        mTvPictureTitle.setTag(R.id.view_count_tag, firstFolder != null ? firstFolder.getImageNum() : 0);
         mTvPictureTitle.setTag(R.id.view_index_tag, 0);
-        long bucketId = folder != null ? folder.getBucketId() : -1;
+        long bucketId = firstFolder != null ? firstFolder.getBucketId() : -1;
         mRecyclerView.setEnabledLoadMore(true);
-        mLoader.loadPageMediaData(bucketId, mPage,
-                new OnQueryDataResultListener<LocalMedia>(){
+        mLoader.loadPageMediaData(bucketId, mPage, new OnQueryDataResultListener<LocalMedia>(){
                     @Override
                     public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
                         if (isFinishing()) {
@@ -762,13 +762,14 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                             oldCurrentListSize = oldCurrentListSize + currentSize;
                             if (resultSize >= currentSize) {
                                 // This situation is mainly caused by the use of camera memory, the Activity is recycled
-                                if (currentSize > 0 && currentSize < resultSize && oldCurrentListSize != resultSize) {
-                                    if (isLocalMediaSame(result.get(0))) {
-                                        mAdapter.bindData(result);
-                                    } else {
-                                        mAdapter.getData().addAll(result);
-                                    }
+                                if (currentSize > 0 && currentSize < resultSize
+                                        && oldCurrentListSize != resultSize && !isLocalMediaSame(result.get(0))) {
+                                    mAdapter.getData().addAll(result);
                                 } else {
+                                    if (currentPage == 1 && firstFolder != null) {
+                                        result.addAll(0, firstFolder.getData());
+                                        SortUtils.sortLocalMediaAddedTime(result);
+                                    }
                                     mAdapter.bindData(result);
                                 }
                             }
