@@ -129,7 +129,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
 
              @Override
              public LocalMediaFolder doInBackground() {
-                 return SandboxFileLoader.loadSandboxFolderFile(mContext, config.sandboxFolderPath);
+                 return SandboxFileLoader.loadInAppSandboxFolderFile(mContext, config.sandboxFolderPath);
              }
 
              @Override
@@ -246,20 +246,22 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
 
                             } while (data.moveToNext());
 
-                            LocalMediaFolder selfFolder = SandboxFileLoader.loadSandboxFolderFile(mContext, config.sandboxFolderPath);
+                            LocalMediaFolder selfFolder = SandboxFileLoader.loadInAppSandboxFolderFile(mContext, config.sandboxFolderPath);
                             if (selfFolder != null) {
                                 imageFolders.add(selfFolder);
                                 allImageFolder.setImageNum(allImageFolder.getImageNum() + selfFolder.getImageNum());
                                 allImageFolder.setData(selfFolder.getData());
                                 latelyImages.addAll(0, selfFolder.getData());
+                                if (MAX_SORT_SIZE > selfFolder.getImageNum()) {
+                                    if (latelyImages.size() > MAX_SORT_SIZE) {
+                                        SortUtils.sortLocalMediaAddedTime(latelyImages.subList(0, MAX_SORT_SIZE));
+                                    } else {
+                                        SortUtils.sortLocalMediaAddedTime(latelyImages);
+                                    }
+                                }
                             }
 
                             if (latelyImages.size() > 0) {
-                                if (latelyImages.size() > MAX_SORT_SIZE) {
-                                    SortUtils.sortLocalMediaAddedTime(latelyImages.subList(0, MAX_SORT_SIZE));
-                                } else {
-                                    SortUtils.sortLocalMediaAddedTime(latelyImages);
-                                }
                                 SortUtils.sortFolder(imageFolders);
                                 imageFolders.add(0, allImageFolder);
                                 allImageFolder.setFirstImagePath

@@ -1066,6 +1066,12 @@ public class PictureSelectionModel {
      *                      <p>
      *                      Normally, it should be consistent with {@link PictureSelectionConfig.setOutputCameraPath()};
      *                      </p>
+     *
+     *                      <p>
+     *                      If build.version.sdk_INT < 29,{@link PictureSelectionConfig.setQuerySandboxDirectory();}
+     *                      Do not set the external storage path,
+     *                      which may cause the problem of picture duplication
+     *                      </p>
      * @return
      */
     public PictureSelectionModel setQuerySandboxDirectory(String directoryPath) {
@@ -1082,7 +1088,7 @@ public class PictureSelectionModel {
      * @param isOnlySandboxDir true or Only Display {@link PictureSelectionConfig.setQuerySandboxDirectory();}
      * @return
      */
-    public PictureSelectionModel isDisplayOnlySandbox(boolean isOnlySandboxDir) {
+    public PictureSelectionModel isGetOnlySandboxDirectory(boolean isOnlySandboxDir) {
         selectionConfig.isOnlySandboxDir = isOnlySandboxDir;
         return this;
     }

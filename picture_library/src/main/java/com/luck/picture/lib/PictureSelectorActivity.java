@@ -50,7 +50,6 @@ import com.luck.picture.lib.listener.OnRecyclerViewPreloadMoreListener;
 import com.luck.picture.lib.manager.UCropManager;
 import com.luck.picture.lib.observable.ImagesObservable;
 import com.luck.picture.lib.permissions.PermissionChecker;
-import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.tools.AlbumUtils;
 import com.luck.picture.lib.tools.AttrsUtils;
 import com.luck.picture.lib.tools.BitmapUtils;
@@ -741,9 +740,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         }
                         PictureSelectorActivity.this.isHasMore = true;
                         initPageModel(data);
-                        if (config.isSyncCover) {
-                            synchronousCover();
-                        }
                     }
                 });
             } else {
@@ -812,38 +808,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 });
     }
 
-    /**
-     * ofAll Page Model Synchronous cover
-     */
-    private void synchronousCover() {
-        if (config.chooseMode == PictureMimeType.ofAll()) {
-            PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<Boolean>() {
-
-                @Override
-                public Boolean doInBackground() {
-                    List<LocalMediaFolder> folderList = folderWindow.getFolderData();
-                    for (int i = 0; i < folderList.size(); i++) {
-                        LocalMediaFolder mediaFolder = folderList.get(i);
-                        if (mediaFolder == null) {
-                            continue;
-                        }
-                        String firstCover = mLoader.getFirstCover(mediaFolder.getBucketId());
-                        if (TextUtils.isEmpty(firstCover)){
-                            continue;
-                        }
-                        mediaFolder.setFirstImagePath(firstCover);
-                    }
-                    return true;
-                }
-
-                @Override
-                public void onSuccess(Boolean result) {
-                    // TODO Synchronous Success
-                    PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
-                }
-            });
-        }
-    }
 
     /**
      * All Model

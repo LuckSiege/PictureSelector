@@ -9,6 +9,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.tools.MediaUtils;
+import com.luck.picture.lib.tools.SdkVersionUtils;
 import com.luck.picture.lib.tools.SortUtils;
 import com.luck.picture.lib.tools.ValueOf;
 
@@ -29,8 +30,8 @@ public final class SandboxFileLoader {
      * @param context       上下文
      * @param directoryPath 资源目标路径
      */
-    public static LocalMediaFolder loadSandboxFolderFile(Context context, String directoryPath) {
-        List<LocalMedia> list = loadSandboxFile(context, directoryPath);
+    public static LocalMediaFolder loadInAppSandboxFolderFile(Context context, String directoryPath) {
+        List<LocalMedia> list = loadInAppSandboxFile(context, directoryPath);
         LocalMediaFolder folder = null;
         if (list != null && list.size() > 0) {
             SortUtils.sortLocalMediaAddedTime(list);
@@ -52,7 +53,7 @@ public final class SandboxFileLoader {
      * @param context       上下文
      * @param directoryPath 资源目标路径
      */
-    public static List<LocalMedia> loadSandboxFile(Context context, String directoryPath) {
+    public static List<LocalMedia> loadInAppSandboxFile(Context context, String directoryPath) {
         if (TextUtils.isEmpty(directoryPath)) {
             return null;
         }
@@ -93,7 +94,7 @@ public final class SandboxFileLoader {
                 }
                 LocalMedia media = LocalMedia.parseLocalMedia(dateTime, absolutePath, absolutePath, f.getName(),
                         parentFolderName, duration, chooseModel, mimeType, width, height, size, bucketId, dateTime);
-                media.setAndroidQToPath(absolutePath);
+                media.setAndroidQToPath(SdkVersionUtils.isQ() ? absolutePath : null);
                 list.add(media);
             }
         }

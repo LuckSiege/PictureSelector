@@ -379,7 +379,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
 
             @Override
             public LocalMediaFolder doInBackground() {
-                return SandboxFileLoader.loadSandboxFolderFile(mContext, config.sandboxFolderPath);
+                return SandboxFileLoader.loadInAppSandboxFolderFile(mContext, config.sandboxFolderPath);
             }
 
             @Override
@@ -470,22 +470,24 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                             // 相机胶卷
                             LocalMediaFolder allMediaFolder = new LocalMediaFolder();
 
-                            LocalMediaFolder selfFolder = SandboxFileLoader.loadSandboxFolderFile(mContext, config.sandboxFolderPath);
+                            LocalMediaFolder selfFolder = SandboxFileLoader.loadInAppSandboxFolderFile(mContext, config.sandboxFolderPath);
                             if (selfFolder != null) {
                                 mediaFolders.add(selfFolder);
                                 totalCount += selfFolder.getImageNum();
                                 allMediaFolder.setData(selfFolder.getData());
+                                allMediaFolder.setFirstImagePath(selfFolder.getFirstImagePath());
+                                allMediaFolder.setFirstMimeType(selfFolder.getFirstMimeType());
+                            } else {
+                                if (data.moveToFirst()) {
+                                    allMediaFolder.setFirstImagePath(SdkVersionUtils.isQ() ? getFirstUri(data) : getFirstUrl(data));
+                                    allMediaFolder.setFirstMimeType(getFirstCoverMimeType(data));
+                                }
                             }
 
                             SortUtils.sortFolder(mediaFolders);
-
                             allMediaFolder.setImageNum(totalCount);
                             allMediaFolder.setChecked(true);
                             allMediaFolder.setBucketId(-1);
-                            if (data.moveToFirst()) {
-                                allMediaFolder.setFirstImagePath(SdkVersionUtils.isQ() ? getFirstUri(data) : getFirstUrl(data));
-                                allMediaFolder.setFirstMimeType(getFirstCoverMimeType(data));
-                            }
                             String bucketDisplayName = config.chooseMode == PictureMimeType.ofAudio() ?
                                     mContext.getString(R.string.picture_all_audio)
                                     : mContext.getString(R.string.picture_camera_roll);
@@ -493,7 +495,11 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                             allMediaFolder.setOfAllType(config.chooseMode);
                             allMediaFolder.setCameraFolder(true);
                             mediaFolders.add(0, allMediaFolder);
-
+                            if (config.isSyncCover) {
+                                if (config.chooseMode == PictureMimeType.ofAll()) {
+                                    synchronousFirstCover(mediaFolders);
+                                }
+                            }
                             return mediaFolders;
                         }
                     }
@@ -516,6 +522,25 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                 }
             }
         });
+    }
+
+    /**
+     * Synchronous  First data Cover
+     *
+     * @param mediaFolders
+     */
+    private void synchronousFirstCover(List<LocalMediaFolder> mediaFolders) {
+        for (int i = 0; i < mediaFolders.size(); i++) {
+            LocalMediaFolder mediaFolder = mediaFolders.get(i);
+            if (mediaFolder == null) {
+                continue;
+            }
+            String firstCover = getFirstCover(mediaFolder.getBucketId());
+            if (TextUtils.isEmpty(firstCover)) {
+                continue;
+            }
+            mediaFolder.setFirstImagePath(firstCover);
+        }
     }
 
     /**
