@@ -37,9 +37,6 @@ public final class PictureConfig {
     public final static int DEFAULT_SPAN_COUNT = 4;
 
 
-    public final static int SINGLE = 1;
-    public final static int MULTIPLE = 2;
-
     public final static int REQUEST_CAMERA = 909;
 
     public final static int ADAPTER_TYPE_CAMERA = 1;

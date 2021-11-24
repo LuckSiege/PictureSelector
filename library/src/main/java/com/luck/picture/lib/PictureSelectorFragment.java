@@ -23,6 +23,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
+import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.dialog.AlbumListPopWindow;
 import com.luck.picture.lib.dialog.AudioPlayDialog;
@@ -431,16 +432,16 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
             @Override
             public void onItemClick(View selectedView, int position, LocalMedia media) {
-                if (config.selectionMode == PictureConfig.SINGLE && config.isDirectReturnSingle) {
+                if (config.selectionMode == SelectModeConfig.SINGLE && config.isDirectReturnSingle) {
                     SelectedManager.getSelectedResult().add(media);
                     dispatchTransformResult();
                 } else {
                     boolean isPreview = PictureMimeType.isHasImage(media.getMimeType()) && config.isEnablePreview
                             || config.isDirectReturnSingle
                             || PictureMimeType.isHasVideo(media.getMimeType()) && (config.isEnPreviewVideo
-                            || config.selectionMode == PictureConfig.SINGLE)
+                            || config.selectionMode == SelectModeConfig.SINGLE)
                             || PictureMimeType.isHasAudio(media.getMimeType()) && (config.isEnablePreviewAudio
-                            || config.selectionMode == PictureConfig.SINGLE);
+                            || config.selectionMode == SelectModeConfig.SINGLE);
                     if (isPreview) {
                         if (DoubleUtils.isFastDoubleClick()) {
                             return;
@@ -541,7 +542,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
             mAdapter.getData().add(0, media);
             openCameraNumber++;
         }
-        if (config.selectionMode == PictureConfig.SINGLE) {
+        if (config.selectionMode == SelectModeConfig.SINGLE) {
             String exitsMimeType = SelectedManager.getTopResultMimeType();
             if (checkOnlyMimeTypeValidity(false, media.getMimeType(), exitsMimeType, media.getDuration())) {
                 if (config.isDirectReturnSingle) {

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.PictureSelectionConfig;
 
 /**
  * @author：luck
@@ -13,6 +14,7 @@ import com.luck.picture.lib.R;
  * @describe：PreviewTitleBar
  */
 public class PreviewTitleBar extends TitleBar {
+
     public PreviewTitleBar(Context context) {
         super(context);
     }
@@ -34,7 +36,11 @@ public class PreviewTitleBar extends TitleBar {
         viewAlbumClickArea.setOnClickListener(null);
         tvRightMenu.setText("");
         tvRightMenu.setTextSize(0);
-        tvRightMenu.setBackgroundResource(R.drawable.ps_checkbox_selector);
+        if (PictureSelectionConfig.getInstance().isExternalPreview){
+            tvRightMenu.setBackgroundResource(R.drawable.ps_ic_delete);
+        } else {
+            tvRightMenu.setBackgroundResource(R.drawable.ps_checkbox_selector);
+        }
     }
 
     public TextView getSelectedView() {

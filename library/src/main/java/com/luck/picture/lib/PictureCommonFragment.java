@@ -26,6 +26,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
+import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.dialog.PhotoItemSelectedDialog;
 import com.luck.picture.lib.dialog.PictureLoadingDialog;
 import com.luck.picture.lib.dialog.RemindDialog;
@@ -111,7 +112,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     }
 
     @Override
-    public void onSelectedChange(boolean isAddRemove,LocalMedia currentMedia) {
+    public void onSelectedChange(boolean isAddRemove, LocalMedia currentMedia) {
 
     }
 
@@ -225,7 +226,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             }
             resultCode = SelectedManager.REMOVE;
         } else {
-            if (config.selectionMode == PictureConfig.SINGLE) {
+            if (config.selectionMode == SelectModeConfig.SINGLE) {
                 selectedResult.clear();
             }
             selectedResult.add(currentMedia);
@@ -327,13 +328,13 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
 
     @Override
-    public void sendSelectedChangeEvent(boolean isAddRemove,LocalMedia currentMedia) {
+    public void sendSelectedChangeEvent(boolean isAddRemove, LocalMedia currentMedia) {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
             List<Fragment> fragments = getActivity().getSupportFragmentManager().getFragments();
             for (int i = 0; i < fragments.size(); i++) {
                 Fragment fragment = fragments.get(i);
                 if (fragment instanceof PictureCommonFragment) {
-                    ((PictureCommonFragment) fragment).onSelectedChange(isAddRemove,currentMedia);
+                    ((PictureCommonFragment) fragment).onSelectedChange(isAddRemove, currentMedia);
                 }
             }
         }
@@ -763,9 +764,10 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         } else if (context instanceof IBridgePictureBehavior) {
             iBridgePictureBehavior = (IBridgePictureBehavior) context;
         } else {
-            if (this instanceof PictureOnlyCameraFragment) {
+            if (this instanceof PictureOnlyCameraFragment
+                    || this instanceof PictureSelectorPreviewFragment) {
                 /**
-                 * {@link com.luck.picture.lib.PictureSelector.openCamera}
+                 * {@link com.luck.picture.lib.PictureSelector.openCamera or startPreview}
                  * <p>
                  *     不需要使用到IBridgePictureBehavior，可以忽略
                  * </p>

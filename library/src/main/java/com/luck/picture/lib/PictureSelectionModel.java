@@ -13,15 +13,18 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
+import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnCameraEventInterceptListener;
+import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +38,11 @@ import java.util.List;
 public class PictureSelectionModel {
     private final PictureSelectionConfig selectionConfig;
     private final PictureSelector selector;
+
+    public PictureSelectionModel(PictureSelector selector) {
+        this.selector = selector;
+        selectionConfig = PictureSelectionConfig.getCleanInstance();
+    }
 
     public PictureSelectionModel(PictureSelector selector, int chooseMode) {
         this.selector = selector;
@@ -108,7 +116,11 @@ public class PictureSelectionModel {
 
 
     /**
-     * @param selectionMode PictureSelector Selection model and PictureConfig.MULTIPLE or PictureConfig.SINGLE
+     * @param selectionMode PictureSelector Selection model
+     *                      and SelectModeConfig.MULTIPLE or SelectModeConfig.SINGLE
+     *                      <p>
+     *                      Use {@link SelectModeConfig}
+     *                      </p>
      * @return
      */
     public PictureSelectionModel selectionMode(int selectionMode) {
@@ -118,6 +130,8 @@ public class PictureSelectionModel {
 
 
     /**
+     * Preview audio files
+     *
      * @param enablePreviewAudio
      * @return
      */
@@ -135,7 +149,7 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel isWithSelectVideoImage(boolean isWithVideoImage) {
         selectionConfig.isWithVideoImage =
-                selectionConfig.selectionMode != PictureConfig.SINGLE
+                selectionConfig.selectionMode != SelectModeConfig.SINGLE
                         && selectionConfig.chooseMode == SelectMimeType.ofAll() && isWithVideoImage;
         return this;
     }
@@ -175,6 +189,8 @@ public class PictureSelectionModel {
     }
 
     /**
+     * Select the maximum number of files
+     *
      * @param maxSelectNum PictureSelector max selection
      * @return
      */
@@ -184,6 +200,8 @@ public class PictureSelectionModel {
     }
 
     /**
+     * Select the minimum number of files
+     *
      * @param minSelectNum PictureSelector min selection
      * @return
      */
@@ -193,6 +211,8 @@ public class PictureSelectionModel {
     }
 
     /**
+     * Select the maximum video number of files
+     *
      * @param maxVideoSelectNum PictureSelector video max selection
      * @return
      */
@@ -202,6 +222,8 @@ public class PictureSelectionModel {
     }
 
     /**
+     * Select the minimum video number of files
+     *
      * @param minVideoSelectNum PictureSelector video min selection
      * @return
      */
@@ -229,8 +251,9 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel isDirectReturnSingle(boolean isDirectReturn) {
         selectionConfig.isDirectReturnSingle = selectionConfig.selectionMode
-                == PictureConfig.SINGLE && isDirectReturn;
-        selectionConfig.isOriginalControl = (selectionConfig.selectionMode != PictureConfig.SINGLE || !isDirectReturn) && selectionConfig.isOriginalControl;
+                == SelectModeConfig.SINGLE && isDirectReturn;
+        selectionConfig.isOriginalControl = (selectionConfig.selectionMode != SelectModeConfig.SINGLE
+                || !isDirectReturn) && selectionConfig.isOriginalControl;
         return this;
     }
 
@@ -679,7 +702,7 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel selectionData(List<LocalMedia> selectionData) {
-        if (selectionConfig.selectionMode == PictureConfig.SINGLE && selectionConfig.isDirectReturnSingle) {
+        if (selectionConfig.selectionMode == SelectModeConfig.SINGLE && selectionConfig.isDirectReturnSingle) {
             selectionConfig.selectionMedias = null;
         } else {
             selectionConfig.selectionMedias = selectionData;
@@ -697,6 +720,48 @@ public class PictureSelectionModel {
     public PictureSelectionModel setRecyclerAnimationMode(int animationMode) {
         selectionConfig.animationMode = animationMode;
         return this;
+    }
+
+    /**
+     * preview LocalMedia
+     *
+     * @param position current position
+     * @param list     preview data
+     * @param listener
+     */
+    public void startPreview(int position, List<LocalMedia> list,
+                           OnExternalPreviewEventListener listener) {
+        if (!DoubleUtils.isFastDoubleClick()) {
+            Activity activity = selector.getActivity();
+            if (activity == null) {
+                throw new NullPointerException("getActivity is null");
+            }
+            if (PictureSelectionConfig.imageEngine == null) {
+                throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
+            }
+            if (list == null || list.size() == 0) {
+                throw new NullPointerException("preview data is null");
+            }
+            // 绑定回调监听
+            PictureSelectionConfig.previewEventListener = listener;
+            selectionConfig.isExternalPreview = true;
+            FragmentManager fragmentManager = null;
+            if (activity instanceof AppCompatActivity) {
+                fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
+            } else if (activity instanceof FragmentActivity) {
+                fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
+            }
+            if (fragmentManager == null) {
+                throw new NullPointerException(" FragmentManager is empty ");
+            }
+            PictureSelectorPreviewFragment fragment = PictureSelectorPreviewFragment.newInstance();
+            List<LocalMedia> previewData = new ArrayList<>(list);
+            fragment.setData(position, previewData.size(), previewData);
+            fragmentManager.beginTransaction()
+                    .add(android.R.id.content, fragment, PictureSelectorPreviewFragment.TAG)
+                    .addToBackStack(PictureSelectorPreviewFragment.TAG)
+                    .commitAllowingStateLoss();
+        }
     }
 
     /**

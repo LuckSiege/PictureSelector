@@ -1,20 +1,27 @@
 package com.luck.picture.lib;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.luck.picture.lib.adapter.PicturePreviewAdapter;
+import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.decoration.ViewPage2ItemDecoration;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.loader.LocalMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaPageLoader;
 import com.luck.picture.lib.manager.SelectedManager;
+import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.widget.BottomNavBar;
 import com.luck.picture.lib.widget.PreviewBottomNavBar;
@@ -52,6 +59,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     private int screenWidth;
 
+    private boolean isTransformPage = false;
+
     public void setData(int position, int totalNum, List<LocalMedia> data) {
         this.mData = data;
         this.totalNum = totalNum;
@@ -64,7 +73,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     }
 
     @Override
-    public void onSelectedChange(boolean isAddRemove,LocalMedia currentMedia) {
+    public void onSelectedChange(boolean isAddRemove, LocalMedia currentMedia) {
         titleBar.getSelectedView().setSelected(SelectedManager.getSelectedResult().contains(currentMedia));
         bottomNarBar.setSelectedChange();
     }
@@ -78,7 +87,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         bottomNarBar = view.findViewById(R.id.bottom_nar_bar);
         initLoader();
         initTitleBar();
-        initBottomNavBar();
+        if (config.isExternalPreview) {
+            bottomNarBar.setVisibility(View.GONE);
+        } else {
+            initBottomNavBar();
+        }
         initViewPager();
     }
 
@@ -98,20 +111,74 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         titleBar.setOnTitleBarListener(new TitleBar.OnTitleBarListener() {
             @Override
             public void onBackPressed() {
-                iBridgePictureBehavior.onFinish();
+                if (config.isExternalPreview) {
+                    handleExternalPreviewBack();
+                } else {
+                    iBridgePictureBehavior.onFinish();
+                }
             }
         });
         titleBar.setTitle((curPosition + 1) + "/" + totalNum);
         titleBar.getSelectedClickView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LocalMedia currentMedia = mData.get(viewPager.getCurrentItem());
-                int resultCode = confirmSelect(currentMedia, titleBar.getSelectedView().isSelected());
-                if (resultCode == SelectedManager.ADD_SUCCESS) {
-                    titleBar.getSelectedView().startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.ps_anim_modal_in));
+                if (config.isExternalPreview) {
+                    handleExternalPreview();
+                } else {
+                    LocalMedia currentMedia = mData.get(viewPager.getCurrentItem());
+                    int resultCode = confirmSelect(currentMedia, titleBar.getSelectedView().isSelected());
+                    if (resultCode == SelectedManager.ADD_SUCCESS) {
+                        titleBar.getSelectedView().startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.ps_anim_modal_in));
+                    }
                 }
             }
         });
+    }
+
+    /**
+     * 调用了startPreview预览逻辑
+     */
+    @SuppressLint("NotifyDataSetChanged")
+    private void handleExternalPreview() {
+        if (PictureSelectionConfig.previewEventListener != null) {
+            PictureSelectionConfig.previewEventListener.onPreviewDelete(viewPager.getCurrentItem());
+            int currentItem = viewPager.getCurrentItem();
+            mData.remove(currentItem);
+            if (mData.size() == 0) {
+                if (!ActivityCompatHelper.isDestroy(getActivity())) {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
+                return;
+            }
+            titleBar.setTitle(getString(R.string.picture_preview_image_num,
+                    curPosition + 1, mData.size()));
+            totalNum = mData.size();
+            curPosition = currentItem;
+            viewPager.setCurrentItem(curPosition, false);
+            isTransformPage = true;
+            viewPager.setPageTransformer(new ViewPager2.PageTransformer() {
+                @Override
+                public void transformPage(@NonNull View page, float position) {
+                    if (isTransformPage) {
+                        ObjectAnimator animator = ObjectAnimator.ofFloat(page, "alpha", 0F, 1F);
+                        animator.setDuration(450);
+                        animator.setInterpolator(new LinearInterpolator());
+                        animator.start();
+                        isTransformPage = false;
+                    }
+                }
+            });
+            viewPageAdapter.notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * 处理外部预览返回处理
+     */
+    private void handleExternalPreviewBack() {
+        if (!ActivityCompatHelper.isDestroy(getActivity())) {
+            getActivity().getSupportFragmentManager().popBackStack();
+        }
     }
 
 
@@ -133,11 +200,15 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     }
 
     private void initViewPager() {
-        viewPageAdapter = new PicturePreviewAdapter(getContext(),mData, config);
+        viewPageAdapter = new PicturePreviewAdapter(getContext(), mData, config);
         viewPageAdapter.setOnPreviewEventListener(new PicturePreviewAdapter.OnPreviewEventListener() {
             @Override
             public void onBackPressed() {
-                iBridgePictureBehavior.onFinish();
+                if (config.isExternalPreview) {
+                    handleExternalPreview();
+                } else {
+                    iBridgePictureBehavior.onFinish();
+                }
             }
 
             @Override

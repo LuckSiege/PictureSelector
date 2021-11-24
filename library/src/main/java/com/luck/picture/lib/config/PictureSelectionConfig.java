@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.interfaces.OnCameraEventInterceptListener;
+import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.engine.CompressEngine;
@@ -92,12 +93,14 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isAutoScalePreviewImage;
     public int ofAllCameraType;
     public boolean isOnlySandboxDir;
+    public boolean isExternalPreview;
 
     public static ImageEngine imageEngine;
     public static CompressEngine compressEngine;
     public static CropEngine cropEngine;
     public static SandboxFileEngine sandboxFileEngine;
     public static OnResultCallbackListener<LocalMedia> resultCallListener;
+    public static OnExternalPreviewEventListener previewEventListener;
 
 
     protected PictureSelectionConfig(Parcel in) {
@@ -161,6 +164,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isAutoScalePreviewImage = in.readByte() != 0;
         ofAllCameraType = in.readInt();
         isOnlySandboxDir = in.readByte() != 0;
+        isExternalPreview = in.readByte() != 0;
     }
 
     @Override
@@ -225,6 +229,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isAutoScalePreviewImage ? 1 : 0));
         dest.writeInt(ofAllCameraType);
         dest.writeByte((byte) (isOnlySandboxDir ? 1 : 0));
+        dest.writeByte((byte) (isExternalPreview ? 1 : 0));
     }
 
     @Override
@@ -247,7 +252,7 @@ public final class PictureSelectionConfig implements Parcelable {
     protected void initDefaultValue() {
         chooseMode = SelectMimeType.ofImage();
         isOnlyCamera = false;
-        selectionMode = PictureConfig.MULTIPLE;
+        selectionMode = SelectModeConfig.MULTIPLE;
         selectorStyle = new PictureSelectorStyle();
         maxSelectNum = 9;
         minSelectNum = 0;
@@ -307,6 +312,7 @@ public final class PictureSelectionConfig implements Parcelable {
         ofAllCameraType = SelectMimeType.ofAll();
         isOnlySandboxDir = false;
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+        isExternalPreview = false;
     }
 
 
@@ -343,6 +349,7 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.cropEngine = null;
         PictureSelectionConfig.sandboxFileEngine = null;
         PictureSelectionConfig.interceptCameraListener = null;
+        PictureSelectionConfig.previewEventListener = null;
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         ArrayPoolProvide.getInstance().clearMemory();
         SelectedManager.clear();

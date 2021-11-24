@@ -70,6 +70,15 @@ public final class PictureSelector {
     }
 
     /**
+     * preview data
+     *
+     * @return
+     */
+    public PictureSelectionModel openPreview() {
+        return new PictureSelectionModel(this);
+    }
+
+    /**
      * @return Activity.
      */
     @Nullable

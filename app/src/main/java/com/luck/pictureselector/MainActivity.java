@@ -28,9 +28,11 @@ import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.SelectMimeType;
+import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
+import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.tools.MediaUtils;
@@ -162,14 +164,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String mimeType = media.getMimeType();
                 int mediaType = PictureMimeType.getMimeType(mimeType);
                 switch (mediaType) {
-                    case PictureConfig.TYPE_VIDEO:
-                        // 预览视频
-                        break;
                     case PictureConfig.TYPE_AUDIO:
                         // 预览音频
                         break;
+                    case PictureConfig.TYPE_VIDEO:
+                        // 预览视频
                     default:
                         // 预览图片 可自定长按保存路径
+                        PictureSelector.create(MainActivity.this)
+                                .openPreview()
+                                .imageEngine(GlideEngine.createGlideEngine())
+                                .startPreview(position, selectList,
+                                        new OnExternalPreviewEventListener() {
+                                            @Override
+                                            public void onPreviewDelete(int position) {
+                                                mAdapter.remove(position);
+                                                mAdapter.notifyItemRemoved(position);
+                                            }
+                                        });
                         break;
                 }
             }
@@ -365,8 +377,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 PictureSelector.create(MainActivity.this)
                         .openGallery(SelectMimeType.ofAll())
                         .imageEngine(GlideEngine.createGlideEngine())
+                        .selectionMode(SelectModeConfig.MULTIPLE)
                         .maxSelectNum(maxSelectNum)
-                        .isMaxSelectEnabledMask(true)
                         .forResult(new MyResultCallback(mAdapter));
             } else {
                 // 单独拍照

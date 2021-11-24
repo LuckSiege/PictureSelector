@@ -20,6 +20,7 @@ import com.luck.picture.lib.adapter.PictureImageGridAdapter;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.MediaAdapterStyle;
@@ -66,7 +67,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         ivPicture = itemView.findViewById(R.id.ivPicture);
         tvCheck = itemView.findViewById(R.id.tvCheck);
         btnCheck = itemView.findViewById(R.id.btnCheck);
-        if (config.selectionMode == PictureConfig.SINGLE && config.isDirectReturnSingle) {
+        if (config.selectionMode == SelectModeConfig.SINGLE && config.isDirectReturnSingle) {
             tvCheck.setVisibility(View.GONE);
             btnCheck.setVisibility(View.GONE);
         } else {
@@ -130,7 +131,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
 
         selectedMedia(isSelected(media));
 
-        if (config.isMaxSelectEnabledMask && config.selectionMode == PictureConfig.MULTIPLE) {
+        if (config.isMaxSelectEnabledMask && config.selectionMode == SelectModeConfig.MULTIPLE) {
             dispatchHandleMask(media);
         }
 
