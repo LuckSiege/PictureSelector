@@ -5,7 +5,7 @@ import android.util.Log;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.engine.PictureSelectorEngine;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.listener.OnResultCallbackListener;
+import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 
 import java.util.List;
 

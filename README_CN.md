@@ -67,7 +67,7 @@ Or Maven:
 1、onActivityResult
 ```sh 
  PictureSelector.create(this)
-   .openGallery(PictureMimeType.ofImage())
+   .openGallery(SelectMimeType.ofImage())
    .imageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
    .forResult(PictureConfig.CHOOSE_REQUEST);
    
@@ -89,7 +89,7 @@ Or Maven:
 2、Callback
 ```sh
  PictureSelector.create(this)
-   .openGallery(PictureMimeType.ofAll())
+   .openGallery(SelectMimeType.ofAll())
    .imageEngine(GlideEngine.createGlideEngine())
    .forResult(new OnResultCallbackListener<LocalMedia>() {
        @Override
@@ -110,7 +110,7 @@ Or Maven:
 onActivityResult
 ```sh
  PictureSelector.create(this)
-   .openCamera(PictureMimeType.ofImage())
+   .openCamera(SelectMimeType.ofImage())
    .imageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
    .forResult(PictureConfig.REQUEST_CAMERA);  
    
@@ -132,7 +132,7 @@ onActivityResult
 Callback
 ```sh
 PictureSelector.create(this)
-   .openCamera(PictureMimeType.ofImage())
+   .openCamera(SelectMimeType.ofImage())
    .imageEngine(GlideEngine.createGlideEngine())
    .forResult(new OnResultCallbackListener<LocalMedia>() {
        @Override

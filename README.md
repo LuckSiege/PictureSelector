@@ -56,7 +56,7 @@ Quick call, more functions [More](https://github.com/LuckSiege/PictureSelector/w
 1、onActivityResult
 ```sh 
  PictureSelector.create(this)
-   .openGallery(PictureMimeType.ofImage())
+   .openGallery(SelectMimeType.ofImage())
    .imageEngine(GlideEngine.createGlideEngine()) // Please refer to the Demo GlideEngine.java
    .forResult(PictureConfig.CHOOSE_REQUEST);
    
@@ -78,7 +78,7 @@ Quick call, more functions [More](https://github.com/LuckSiege/PictureSelector/w
 2、Callback
 ```sh
  PictureSelector.create(this)
-   .openGallery(PictureMimeType.ofAll())
+   .openGallery(SelectMimeType.ofAll())
    .imageEngine(GlideEngine.createGlideEngine())
    .forResult(new OnResultCallbackListener<LocalMedia>() {
        @Override
@@ -99,7 +99,7 @@ Quick Use, separately start the photo or video according to PictureMimeType auto
 onActivityResult
 ```sh
  PictureSelector.create(this)
-   .openCamera(PictureMimeType.ofImage())
+   .openCamera(SelectMimeType.ofImage())
    .imageEngine(GlideEngine.createGlideEngine()) // Please refer to the Demo GlideEngine.java
    .forResult(PictureConfig.REQUEST_CAMERA);  
    
@@ -121,7 +121,7 @@ onActivityResult
 Callback
 ```sh
 PictureSelector.create(this)
-   .openCamera(PictureMimeType.ofImage())
+   .openCamera(SelectMimeType.ofImage())
    .imageEngine(GlideEngine.createGlideEngine())
    .forResult(new OnResultCallbackListener<LocalMedia>() {
        @Override

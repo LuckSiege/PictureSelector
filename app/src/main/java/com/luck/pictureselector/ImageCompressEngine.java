@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.listener.OnCallbackListener;
+import com.luck.picture.lib.interfaces.OnCallbackListener;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
 public class ImageCompressEngine implements CompressEngine {
 
     @Override
-    public void onCompress(Context context, List<LocalMedia> compressData, OnCallbackListener<List<LocalMedia>> listener) {
+    public void onStartCompress(Context context, List<LocalMedia> compressData, OnCallbackListener<List<LocalMedia>> listener) {
         // TODO 1、使用自定义压缩框架进行图片压缩
 
         // TODO 2、压缩成功后需要把compressData数据源中的LocalMedia里的isCompress和CompressPath字段赋值

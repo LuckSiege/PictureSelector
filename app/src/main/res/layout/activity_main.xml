@@ -19,7 +19,7 @@
             android:layout_centerVertical="true"
             android:background="@color/app_color_transparent"
             android:padding="15dp"
-            android:src="@drawable/picture_icon_back"
+            android:src="@drawable/ps_ic_back"
             android:visibility="visible" />
 
         <TextView
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@color/app_color_red"
-            android:drawableTop="@drawable/picture_icon_delete"
+            android:drawableTop="@drawable/ps_ic_delete"
             android:drawablePadding="5dp"
             android:gravity="center"
             android:paddingTop="8dp"

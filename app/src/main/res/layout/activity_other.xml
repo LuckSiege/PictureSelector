@@ -10,15 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="Activity"
+        android:text="开始体验"
         android:textAllCaps="false" />
 
-    <Button
-        android:id="@+id/btn_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_activity"
-        android:layout_marginTop="10dp"
-        android:text="Fragment"
-        android:textAllCaps="false" />
 </RelativeLayout>

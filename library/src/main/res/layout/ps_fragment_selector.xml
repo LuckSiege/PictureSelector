@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false">
+
+    <com.luck.picture.lib.widget.RecyclerPreloadView
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_nar_bar"
+        android:layout_below="@+id/title_bar"
+        android:background="@color/picture_color_white"
+        android:overScrollMode="never" />
+
+    <com.luck.picture.lib.widget.TitleBar
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout_height="48dp" />
+
+    <com.luck.picture.lib.widget.BottomNavBar
+        android:id="@+id/bottom_nar_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        tools:layout_height="45dp" />
+
+    <TextView
+        android:id="@+id/tv_data_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:gravity="center"
+        android:lineSpacingExtra="3dp"
+        android:text="@string/picture_empty"
+        android:textColor="@color/picture_color_aab2bd"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+</RelativeLayout>

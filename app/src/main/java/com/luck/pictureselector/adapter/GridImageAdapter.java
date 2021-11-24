@@ -15,8 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.listener.OnItemClickListener;
+import com.luck.picture.lib.interfaces.OnItemClickListener;
 import com.luck.picture.lib.tools.DateUtils;
 import com.luck.pictureselector.R;
 import com.luck.pictureselector.listener.OnItemLongClickListener;
@@ -176,8 +177,8 @@ public class GridImageAdapter extends
                 Log.i(TAG, "压缩地址::" + media.getCompressPath());
                 Log.i(TAG, "压缩后文件大小::" + new File(media.getCompressPath()).length() / 1024 + "k");
             }
-            if (!TextUtils.isEmpty(media.getAndroidQToPath())) {
-                Log.i(TAG, "Android Q特有地址::" + media.getAndroidQToPath());
+            if (!TextUtils.isEmpty(media.getSandboxPath())) {
+                Log.i(TAG, "Android Q特有地址::" + media.getSandboxPath());
             }
             if (media.isOriginal()) {
                 Log.i(TAG, "是否开启原图功能::" + true);
@@ -187,18 +188,18 @@ public class GridImageAdapter extends
             long duration = media.getDuration();
             viewHolder.tvDuration.setVisibility(PictureMimeType.isHasVideo(media.getMimeType())
                     ? View.VISIBLE : View.GONE);
-            if (chooseModel == PictureMimeType.ofAudio()) {
+            if (chooseModel == SelectMimeType.ofAudio()) {
                 viewHolder.tvDuration.setVisibility(View.VISIBLE);
                 viewHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                        (R.drawable.picture_icon_audio, 0, 0, 0);
+                        (R.drawable.ps_ic_audio, 0, 0, 0);
 
             } else {
                 viewHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds
-                        (R.drawable.picture_icon_video, 0, 0, 0);
+                        (R.drawable.ps_ic_video, 0, 0, 0);
             }
             viewHolder.tvDuration.setText(DateUtils.formatDurationTime(duration));
-            if (chooseModel == PictureMimeType.ofAudio()) {
-                viewHolder.mImg.setImageResource(R.drawable.picture_audio_placeholder);
+            if (chooseModel == SelectMimeType.ofAudio()) {
+                viewHolder.mImg.setImageResource(R.drawable.ps_audio_placeholder);
             } else {
                 Glide.with(viewHolder.itemView.getContext())
                         .load(PictureMimeType.isContent(path) && !media.isCut() && !media.isCompressed() ? Uri.parse(path)

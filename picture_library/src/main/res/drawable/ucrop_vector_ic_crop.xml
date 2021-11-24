@@ -1,9 +1,0 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-        android:width="24dp"
-        android:height="24dp"
-        android:viewportHeight="20.0"
-        android:viewportWidth="20.0">
-    <path
-        android:fillColor="@color/ucrop_color_default_logo"
-        android:pathData="M20,1.25L18.75,0L14.66,4.02L6.04,4.02L6.04,0L4,0L4,4.02L0,4.02L0,6.03L4,6.03L4,15.98L14,15.98L14,20L16,20L16,15.98L20,15.98L20,13.99L16,13.99L16,5.33L20,1.25ZM6.03,6.02L12.55,6.02L6.03,12.67L6.03,6.02ZM7.18,13.99L13.99,7.2L13.99,13.99L7.18,13.99ZM7.18,13.99"/>
-</vector>
