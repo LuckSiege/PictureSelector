@@ -165,6 +165,14 @@ public class LocalMedia implements Parcelable {
      */
     private long dateAddedTime;
 
+    /**
+     * custom data
+     * <p>
+     * User defined data can be expanded freely
+     * </p>
+     */
+    private String customData;
+
     public LocalMedia() {
 
     }
@@ -201,6 +209,7 @@ public class LocalMedia implements Parcelable {
         isMaxSelectEnabledMask = in.readByte() != 0;
         isEditorImage = in.readByte() != 0;
         dateAddedTime = in.readLong();
+        customData = in.readString();
     }
 
     @Override
@@ -235,6 +244,7 @@ public class LocalMedia implements Parcelable {
         dest.writeByte((byte) (isMaxSelectEnabledMask ? 1 : 0));
         dest.writeByte((byte) (isEditorImage ? 1 : 0));
         dest.writeLong(dateAddedTime);
+        dest.writeString(customData);
     }
 
     @Override
@@ -297,7 +307,7 @@ public class LocalMedia implements Parcelable {
      * @param height           资源高
      * @param size             资源大小
      * @param bucketId         文件目录id
-     * @param dateAdded  资源添加时间
+     * @param dateAdded        资源添加时间
      * @return
      */
     public static LocalMedia parseLocalMedia(long id, String path, String absolutePath,
@@ -581,5 +591,13 @@ public class LocalMedia implements Parcelable {
 
     public void setDateAddedTime(long dateAddedTime) {
         this.dateAddedTime = dateAddedTime;
+    }
+
+    public String getCustomData() {
+        return customData;
+    }
+
+    public void setCustomData(String customData) {
+        this.customData = customData;
     }
 }

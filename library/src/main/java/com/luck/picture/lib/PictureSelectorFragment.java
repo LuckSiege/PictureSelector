@@ -532,7 +532,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
             }
             if (iBridgePictureBehavior != null) {
                 PictureSelectorPreviewFragment previewFragment = PictureSelectorPreviewFragment.newInstance();
-                previewFragment.setData(position, totalNum, data);
+                previewFragment.setData(isBottomPreview, titleBar.getTitleText(), mAdapter.isShowCamera(),
+                        position, totalNum, data);
                 iBridgePictureBehavior.injectFragmentFromScreen(PictureSelectorPreviewFragment.TAG, previewFragment);
             }
         }

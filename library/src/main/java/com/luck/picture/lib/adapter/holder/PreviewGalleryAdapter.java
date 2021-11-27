@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -20,6 +21,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.StyleUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +33,7 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
     private final List<LocalMedia> mData;
 
     public PreviewGalleryAdapter(List<LocalMedia> list) {
-        this.mData = list;
+        this.mData = new ArrayList<>(list);
     }
 
     @NonNull
@@ -40,6 +42,107 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.preview_gallery_item, parent, false);
         return new ViewHolder(itemView);
+    }
+
+    public void clear() {
+        mData.clear();
+    }
+
+    /**
+     * 添加选中的至画廊效果里
+     *
+     * @param currentMedia
+     */
+    public void addGalleryData(boolean isBottomPreview, LocalMedia currentMedia) {
+        int lastCheckPosition = getLastCheckPosition();
+        if (lastCheckPosition != RecyclerView.NO_POSITION) {
+            LocalMedia lastSelectedMedia = mData.get(lastCheckPosition);
+            lastSelectedMedia.setChecked(false);
+            notifyItemChanged(lastCheckPosition);
+        }
+        if (isBottomPreview && mData.contains(currentMedia)) {
+            int currentPosition = getCurrentPosition(currentMedia);
+            LocalMedia media = mData.get(currentPosition);
+            media.setMaxSelectEnabledMask(false);
+            media.setChecked(true);
+            notifyItemChanged(currentPosition);
+        } else {
+            currentMedia.setChecked(true);
+            mData.add(currentMedia);
+            notifyItemChanged(mData.size() - 1);
+        }
+    }
+
+    /**
+     * 移除画廊中未选中的结果
+     *
+     * @param currentMedia
+     */
+    public void removeGalleryData(boolean isBottomPreview, LocalMedia currentMedia) {
+        int currentPosition = getCurrentPosition(currentMedia);
+        if (currentPosition != RecyclerView.NO_POSITION) {
+            if (isBottomPreview) {
+                LocalMedia media = mData.get(currentPosition);
+                media.setMaxSelectEnabledMask(true);
+                notifyItemChanged(currentPosition);
+            } else {
+                mData.remove(currentPosition);
+                notifyItemRemoved(currentPosition);
+            }
+        }
+    }
+
+    /**
+     * 当前LocalMedia是否选中
+     *
+     * @param currentMedia
+     */
+    public void isSelectMedia(LocalMedia currentMedia) {
+        int lastCheckPosition = getLastCheckPosition();
+        if (lastCheckPosition != RecyclerView.NO_POSITION) {
+            LocalMedia lastSelectedMedia = mData.get(lastCheckPosition);
+            lastSelectedMedia.setChecked(false);
+            notifyItemChanged(lastCheckPosition);
+        }
+
+        int currentPosition = getCurrentPosition(currentMedia);
+        if (currentPosition != RecyclerView.NO_POSITION) {
+            LocalMedia media = mData.get(currentPosition);
+            media.setChecked(true);
+            notifyItemChanged(currentPosition);
+        }
+    }
+
+    /**
+     * 获取画廊上一次选中的位置
+     *
+     * @return
+     */
+    private int getLastCheckPosition() {
+        for (int i = 0; i < mData.size(); i++) {
+            LocalMedia media = mData.get(i);
+            if (media.isChecked()) {
+                return i;
+            }
+        }
+        return RecyclerView.NO_POSITION;
+    }
+
+    /**
+     * 获取当前画廊LocalMedia的位置
+     *
+     * @param currentMedia
+     * @return
+     */
+    private int getCurrentPosition(LocalMedia currentMedia) {
+        for (int i = 0; i < mData.size(); i++) {
+            LocalMedia media = mData.get(i);
+            if (TextUtils.equals(media.getPath(), currentMedia.getPath())
+                    || media.getId() == currentMedia.getId()) {
+                return i;
+            }
+        }
+        return RecyclerView.NO_POSITION;
     }
 
     @Override
@@ -94,6 +197,13 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
             }
             if (StyleUtils.checkStyleValidity(selectMainStyle.getAdapterPreviewGalleryFrameResource())) {
                 viewBorder.setBackgroundResource(selectMainStyle.getAdapterPreviewGalleryFrameResource());
+            }
+
+            int adapterPreviewGalleryItemSize = selectMainStyle.getAdapterPreviewGalleryItemSize();
+            if (StyleUtils.checkSizeValidity(adapterPreviewGalleryItemSize)) {
+                RelativeLayout.LayoutParams params =
+                        new RelativeLayout.LayoutParams(adapterPreviewGalleryItemSize, adapterPreviewGalleryItemSize);
+                itemView.setLayoutParams(params);
             }
         }
     }

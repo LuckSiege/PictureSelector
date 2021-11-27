@@ -615,7 +615,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 numberSelectMainStyle.setSelectNormalBackgroundResources(R.drawable.ps_select_complete_normal_bg);
                 numberSelectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
                 numberSelectMainStyle.setSelectNormalText(getString(R.string.ps_send));
-
+                numberSelectMainStyle.setAdapterPreviewGalleryBackgroundResource(R.drawable.ps_preview_gallery_bg);
+                numberSelectMainStyle.setAdapterPreviewGalleryItemSize(DensityUtil.dip2px(getContext(), 52));
+                numberSelectMainStyle.setPreviewSelectText(getString(R.string.ps_select));
+                numberSelectMainStyle.setPreviewSelectTextSize(14);
+                numberSelectMainStyle.setPreviewSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
+                numberSelectMainStyle.setPreviewSelectMarginRight(DensityUtil.dip2px(getContext(), 6));
                 numberSelectMainStyle.setSelectBackgroundResources(R.drawable.ps_select_complete_bg);
                 numberSelectMainStyle.setSelectText(getString(R.string.ps_send_num));
                 numberSelectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));

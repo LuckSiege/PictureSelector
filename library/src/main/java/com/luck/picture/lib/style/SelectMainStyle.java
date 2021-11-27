@@ -26,6 +26,27 @@ public class SelectMainStyle implements Parcelable {
     private boolean isPreviewDisplaySelectGallery;
 
     /**
+     * 预览页选择按钮MarginRight
+     */
+    private int previewSelectMarginRight;
+
+    /**
+     * 预览页选择按钮文本
+     */
+    private String previewSelectText;
+
+    /**
+     * 预览页选择按钮字体大小
+     */
+    private int previewSelectTextSize;
+
+    /**
+     * 预览页选择按钮字体颜色
+     */
+    private int previewSelectTextColor;
+
+
+    /**
      * 勾选样式
      */
     private int selectBackground;
@@ -193,7 +214,15 @@ public class SelectMainStyle implements Parcelable {
     /**
      * 预览页画廊背景色
      */
-    private int adapterPreviewGalleryBackgroundColor;
+    private int adapterPreviewGalleryBackgroundResource;
+
+    /**
+     * 预览页画廊item大小
+     * <p>
+     * unit dp
+     * </p>
+     */
+    private int adapterPreviewGalleryItemSize;
 
     public SelectMainStyle() {
 
@@ -203,6 +232,10 @@ public class SelectMainStyle implements Parcelable {
         isCompleteSelectRelativeTop = in.readByte() != 0;
         isPreviewSelectRelativeBottom = in.readByte() != 0;
         isPreviewDisplaySelectGallery = in.readByte() != 0;
+        previewSelectMarginRight = in.readInt();
+        previewSelectText = in.readString();
+        previewSelectTextSize = in.readInt();
+        previewSelectTextColor = in.readInt();
         selectBackground = in.readInt();
         isSelectNumberStyle = in.readByte() != 0;
         isPreviewSelectNumberStyle = in.readByte() != 0;
@@ -237,7 +270,8 @@ public class SelectMainStyle implements Parcelable {
         adapterImageEditorResources = in.readInt();
         adapterImageEditorGravity = in.createIntArray();
         adapterPreviewGalleryFrameResource = in.readInt();
-        adapterPreviewGalleryBackgroundColor = in.readInt();
+        adapterPreviewGalleryBackgroundResource = in.readInt();
+        adapterPreviewGalleryItemSize = in.readInt();
     }
 
     @Override
@@ -245,6 +279,10 @@ public class SelectMainStyle implements Parcelable {
         dest.writeByte((byte) (isCompleteSelectRelativeTop ? 1 : 0));
         dest.writeByte((byte) (isPreviewSelectRelativeBottom ? 1 : 0));
         dest.writeByte((byte) (isPreviewDisplaySelectGallery ? 1 : 0));
+        dest.writeInt(previewSelectMarginRight);
+        dest.writeString(previewSelectText);
+        dest.writeInt(previewSelectTextSize);
+        dest.writeInt(previewSelectTextColor);
         dest.writeInt(selectBackground);
         dest.writeByte((byte) (isSelectNumberStyle ? 1 : 0));
         dest.writeByte((byte) (isPreviewSelectNumberStyle ? 1 : 0));
@@ -279,7 +317,8 @@ public class SelectMainStyle implements Parcelable {
         dest.writeInt(adapterImageEditorResources);
         dest.writeIntArray(adapterImageEditorGravity);
         dest.writeInt(adapterPreviewGalleryFrameResource);
-        dest.writeInt(adapterPreviewGalleryBackgroundColor);
+        dest.writeInt(adapterPreviewGalleryBackgroundResource);
+        dest.writeInt(adapterPreviewGalleryItemSize);
     }
 
     @Override
@@ -321,6 +360,38 @@ public class SelectMainStyle implements Parcelable {
 
     public void setPreviewDisplaySelectGallery(boolean previewDisplaySelectGallery) {
         isPreviewDisplaySelectGallery = previewDisplaySelectGallery;
+    }
+
+    public int getPreviewSelectMarginRight() {
+        return previewSelectMarginRight;
+    }
+
+    public void setPreviewSelectMarginRight(int previewSelectMarginRight) {
+        this.previewSelectMarginRight = previewSelectMarginRight;
+    }
+
+    public String getPreviewSelectText() {
+        return previewSelectText;
+    }
+
+    public void setPreviewSelectText(String previewSelectText) {
+        this.previewSelectText = previewSelectText;
+    }
+
+    public int getPreviewSelectTextSize() {
+        return previewSelectTextSize;
+    }
+
+    public void setPreviewSelectTextSize(int previewSelectTextSize) {
+        this.previewSelectTextSize = previewSelectTextSize;
+    }
+
+    public int getPreviewSelectTextColor() {
+        return previewSelectTextColor;
+    }
+
+    public void setPreviewSelectTextColor(int previewSelectTextColor) {
+        this.previewSelectTextColor = previewSelectTextColor;
     }
 
     public int getSelectBackground() {
@@ -595,11 +666,19 @@ public class SelectMainStyle implements Parcelable {
         this.adapterPreviewGalleryFrameResource = adapterPreviewGalleryFrameResource;
     }
 
-    public int getAdapterPreviewGalleryBackgroundColor() {
-        return adapterPreviewGalleryBackgroundColor;
+    public int getAdapterPreviewGalleryBackgroundResource() {
+        return adapterPreviewGalleryBackgroundResource;
     }
 
-    public void setAdapterPreviewGalleryBackgroundColor(int adapterPreviewGalleryBackgroundColor) {
-        this.adapterPreviewGalleryBackgroundColor = adapterPreviewGalleryBackgroundColor;
+    public void setAdapterPreviewGalleryBackgroundResource(int adapterPreviewGalleryBackgroundResource) {
+        this.adapterPreviewGalleryBackgroundResource = adapterPreviewGalleryBackgroundResource;
+    }
+
+    public int getAdapterPreviewGalleryItemSize() {
+        return adapterPreviewGalleryItemSize;
+    }
+
+    public void setAdapterPreviewGalleryItemSize(int adapterPreviewGalleryItemSize) {
+        this.adapterPreviewGalleryItemSize = adapterPreviewGalleryItemSize;
     }
 }

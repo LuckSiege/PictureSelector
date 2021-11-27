@@ -63,6 +63,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
         this.showCamera = showCamera;
     }
 
+    public boolean isShowCamera() {
+        return showCamera;
+    }
+
     public List<LocalMedia> getData() {
         return mData;
     }

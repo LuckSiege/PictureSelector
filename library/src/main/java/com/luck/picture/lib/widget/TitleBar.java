@@ -77,6 +77,13 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
         tvTitle.setText(title);
     }
 
+    /**
+     * Get title text
+     */
+    public String getTitleText() {
+        return tvTitle.getText().toString();
+    }
+
     public void setTitleBarStyle() {
         PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
         TitleBarStyle titleBarStyle = selectorStyle.getTitleBarStyle();
