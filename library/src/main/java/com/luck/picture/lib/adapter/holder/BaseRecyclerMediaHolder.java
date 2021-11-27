@@ -108,8 +108,8 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
             int clickArea = selectMainStyle.getAdapterSelectClickArea();
             if (StyleUtils.checkSizeValidity(clickArea)) {
                 ViewGroup.LayoutParams clickAreaParams = btnCheck.getLayoutParams();
-                clickAreaParams.width = DensityUtil.dip2px(itemView.getContext(), clickArea);
-                clickAreaParams.height = DensityUtil.dip2px(itemView.getContext(), clickArea);
+                clickAreaParams.width = clickArea;
+                clickAreaParams.height = clickArea;
             }
         }
     }

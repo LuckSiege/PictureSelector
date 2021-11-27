@@ -256,6 +256,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private void initComplete() {
         SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
 
+        if (StyleUtils.checkStyleValidity(selectMainStyle.getPreviewSelectBackground())) {
+            tvSelected.setBackgroundResource(selectMainStyle.getPreviewSelectBackground());
+        } else if (StyleUtils.checkStyleValidity(selectMainStyle.getSelectBackground())) {
+            tvSelected.setBackgroundResource(selectMainStyle.getSelectBackground());
+        }
         if (StyleUtils.checkTextValidity(selectMainStyle.getPreviewSelectText())) {
             tvSelectedWord.setText(selectMainStyle.getPreviewSelectText());
         } else {
@@ -429,9 +434,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      */
     private void externalPreviewStyle() {
         TitleBarStyle titleBarStyle = PictureSelectionConfig.selectorStyle.getTitleBarStyle();
-        int rightBackgroundRes = titleBarStyle.getTitleCancelBackgroundResource();
-        if (StyleUtils.checkStyleValidity(rightBackgroundRes)) {
-            tvSelected.setBackgroundResource(rightBackgroundRes);
+        int deleteBackgroundResource = titleBarStyle.getPreviewDeleteBackgroundResource();
+        if (StyleUtils.checkStyleValidity(deleteBackgroundResource)) {
+            tvSelected.setBackgroundResource(deleteBackgroundResource);
         } else {
             tvSelected.setBackgroundResource(R.drawable.ps_ic_delete);
         }

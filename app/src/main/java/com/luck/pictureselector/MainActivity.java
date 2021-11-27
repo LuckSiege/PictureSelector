@@ -33,7 +33,9 @@ import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.dialog.AudioPlayDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
+import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
+import com.luck.picture.lib.interfaces.OnMediaEditEventInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.style.BottomNavBarStyle;
@@ -387,10 +389,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .selectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
                         .isDirectReturnSingle(cb_single_back.isChecked())
                         .maxSelectNum(maxSelectNum)
+                        .setRecyclerAnimationMode(animationMode)
                         .isGif(cb_isGif.isChecked())
                         .selectedData(mAdapter.getData())
                         .isOriginalImageControl(cb_original.isChecked())
                         .isDisplayOriginalSize(cb_original.isChecked())
+                        .setEditMediaInterceptListener(new OnMediaEditEventInterceptListener() {
+                            @Override
+                            public void onStartMediaEdit(Context context, LocalMedia media, OnCallbackListener<LocalMedia> listener) {
+
+                            }
+                        })
                         .forResult(new MyResultCallback(mAdapter));
             } else {
                 // 单独拍照
@@ -593,16 +602,66 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.rb_default_style:
                 selectorStyle = new PictureSelectorStyle();
-                SelectMainStyle defaultSelectMainStyle = new SelectMainStyle();
-                defaultSelectMainStyle.setSelectBackground(R.drawable.ps_checkbox_selector);
-                selectorStyle.setSelectMainStyle(defaultSelectMainStyle);
                 break;
             case R.id.rb_white_style:
+                selectorStyle = new PictureSelectorStyle();
+                TitleBarStyle whiteTitleBarStyle = new TitleBarStyle();
+                whiteTitleBarStyle.setTitleBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
+                whiteTitleBarStyle.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
+                whiteTitleBarStyle.setTitleDrawableRightResource(R.drawable.ic_orange_arrow_down);
+                whiteTitleBarStyle.setDarkStatusBarBlack(true);
+                whiteTitleBarStyle.setTitleLeftBackResource(R.drawable.ic_back_arrow);
+                whiteTitleBarStyle.setTitleTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_black));
+                whiteTitleBarStyle.setTitleCancelTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
 
+
+                BottomNavBarStyle whiteBottomNavBarStyle = new BottomNavBarStyle();
+                whiteBottomNavBarStyle.setBottomNarBarBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
+                whiteBottomNavBarStyle.setBottomPreviewSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
+
+                whiteBottomNavBarStyle.setBottomPreviewNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
+                whiteBottomNavBarStyle.setBottomPreviewSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_fa632d));
+                whiteBottomNavBarStyle.setCompleteCountTips(false);
+                whiteBottomNavBarStyle.setBottomEditorTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
+                whiteBottomNavBarStyle.setBottomOriginalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
+
+                SelectMainStyle selectMainStyle = new SelectMainStyle();
+                selectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
+                selectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_fa632d));
+                selectMainStyle.setSelectText(getString(R.string.ps_done_front_num));
+
+                selectorStyle.setTitleBarStyle(whiteTitleBarStyle);
+                selectorStyle.setBottomBarStyle(whiteBottomNavBarStyle);
+                selectorStyle.setSelectMainStyle(selectMainStyle);
                 break;
             case R.id.rb_num_style:
-                break;
-            case R.id.rb_sina_style:
+                selectorStyle = new PictureSelectorStyle();
+                TitleBarStyle blueTitleBarStyle = new TitleBarStyle();
+                blueTitleBarStyle.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));
+                blueTitleBarStyle.setTitleBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));
+
+                BottomNavBarStyle numberBlueBottomNavBarStyle = new BottomNavBarStyle();
+                numberBlueBottomNavBarStyle.setBottomPreviewNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
+                numberBlueBottomNavBarStyle.setBottomPreviewSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));
+                numberBlueBottomNavBarStyle.setBottomNarBarBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
+                numberBlueBottomNavBarStyle.setBottomSelectNumResources(R.drawable.picture_num_oval_blue);
+                numberBlueBottomNavBarStyle.setBottomEditorTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
+                numberBlueBottomNavBarStyle.setBottomOriginalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
+
+
+                SelectMainStyle numberBlueSelectMainStyle = new SelectMainStyle();
+                numberBlueSelectMainStyle.setSelectNumberStyle(true);
+                numberBlueSelectMainStyle.setPreviewSelectNumberStyle(true);
+                numberBlueSelectMainStyle.setSelectBackground(R.drawable.picture_checkbox_num_selector);
+
+
+                numberBlueSelectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
+                numberBlueSelectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));
+                numberBlueSelectMainStyle.setSelectText(getString(R.string.ps_completed));
+
+                selectorStyle.setTitleBarStyle(blueTitleBarStyle);
+                selectorStyle.setBottomBarStyle(numberBlueBottomNavBarStyle);
+                selectorStyle.setSelectMainStyle(numberBlueSelectMainStyle);
                 break;
             case R.id.rb_we_chat_style:
                 // 主体风格
@@ -611,6 +670,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 numberSelectMainStyle.setPreviewSelectNumberStyle(false);
                 numberSelectMainStyle.setPreviewDisplaySelectGallery(true);
                 numberSelectMainStyle.setSelectBackground(R.drawable.ps_default_num_selector);
+                numberSelectMainStyle.setPreviewSelectBackground(R.drawable.ps_checkbox_selector);
                 numberSelectMainStyle.setSelectNormalBackgroundResources(R.drawable.ps_select_complete_normal_bg);
                 numberSelectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
                 numberSelectMainStyle.setSelectNormalText(getString(R.string.ps_send));

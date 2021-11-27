@@ -201,8 +201,8 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
 
             int adapterPreviewGalleryItemSize = selectMainStyle.getAdapterPreviewGalleryItemSize();
             if (StyleUtils.checkSizeValidity(adapterPreviewGalleryItemSize)) {
-                RelativeLayout.LayoutParams params =
-                        new RelativeLayout.LayoutParams(adapterPreviewGalleryItemSize, adapterPreviewGalleryItemSize);
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams
+                        (adapterPreviewGalleryItemSize, adapterPreviewGalleryItemSize);
                 itemView.setLayoutParams(params);
             }
         }

@@ -32,6 +32,9 @@ public class TitleBarStyle implements Parcelable {
 
     /**
      * 标题栏高度
+     * <p>
+     * use  unit dp
+     * </p>
      */
     private int titleBarHeight;
 
@@ -60,6 +63,11 @@ public class TitleBarStyle implements Parcelable {
      * 是否隐藏取消按钮
      */
     private boolean isHideCancelButton;
+
+    /**
+     * 外部预览删除
+     */
+    private int previewDeleteBackgroundResource;
 
     /**
      * 标题栏右边默认文本
@@ -104,6 +112,7 @@ public class TitleBarStyle implements Parcelable {
         titleDrawableRightResource = in.readInt();
         titleCancelBackgroundResource = in.readInt();
         isHideCancelButton = in.readByte() != 0;
+        previewDeleteBackgroundResource = in.readInt();
         titleCancelText = in.readString();
         titleCancelTextSize = in.readInt();
         titleCancelTextColor = in.readInt();
@@ -125,6 +134,7 @@ public class TitleBarStyle implements Parcelable {
         dest.writeInt(titleDrawableRightResource);
         dest.writeInt(titleCancelBackgroundResource);
         dest.writeByte((byte) (isHideCancelButton ? 1 : 0));
+        dest.writeInt(previewDeleteBackgroundResource);
         dest.writeString(titleCancelText);
         dest.writeInt(titleCancelTextSize);
         dest.writeInt(titleCancelTextColor);
@@ -236,6 +246,14 @@ public class TitleBarStyle implements Parcelable {
 
     public void setHideCancelButton(boolean hideCancelButton) {
         isHideCancelButton = hideCancelButton;
+    }
+
+    public int getPreviewDeleteBackgroundResource() {
+        return previewDeleteBackgroundResource;
+    }
+
+    public void setPreviewDeleteBackgroundResource(int previewDeleteBackgroundResource) {
+        this.previewDeleteBackgroundResource = previewDeleteBackgroundResource;
     }
 
     public String getTitleCancelText() {

@@ -87,7 +87,7 @@ public class CompleteSelectView extends LinearLayout {
         BottomNavBarStyle bottomBarStyle = selectorStyle.getBottomBarStyle();
 
         if (bottomBarStyle.isCompleteCountTips()) {
-            int selectNumRes = bottomBarStyle.getBottomSelectNumRes();
+            int selectNumRes = bottomBarStyle.getBottomSelectNumResources();
             if (StyleUtils.checkStyleValidity(selectNumRes)) {
                 tvSelectNum.setBackgroundResource(selectNumRes);
             }

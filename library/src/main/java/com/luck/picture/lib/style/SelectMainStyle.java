@@ -27,6 +27,9 @@ public class SelectMainStyle implements Parcelable {
 
     /**
      * 预览页选择按钮MarginRight
+     * <p>
+     * unit dp
+     * </p>
      */
     private int previewSelectMarginRight;
 
@@ -50,6 +53,11 @@ public class SelectMainStyle implements Parcelable {
      * 勾选样式
      */
     private int selectBackground;
+
+    /**
+     * 预览样式勾选样式
+     */
+    private int previewSelectBackground;
 
     /**
      * 勾选样式是否使用数量类型
@@ -109,6 +117,9 @@ public class SelectMainStyle implements Parcelable {
 
     /**
      * 勾选按钮点击区域
+     * <p>
+     * use unit dp
+     * </p>
      */
     private int adapterSelectClickArea;
 
@@ -219,7 +230,7 @@ public class SelectMainStyle implements Parcelable {
     /**
      * 预览页画廊item大小
      * <p>
-     * unit dp
+     * use unit dp
      * </p>
      */
     private int adapterPreviewGalleryItemSize;
@@ -237,6 +248,7 @@ public class SelectMainStyle implements Parcelable {
         previewSelectTextSize = in.readInt();
         previewSelectTextColor = in.readInt();
         selectBackground = in.readInt();
+        previewSelectBackground = in.readInt();
         isSelectNumberStyle = in.readByte() != 0;
         isPreviewSelectNumberStyle = in.readByte() != 0;
         mainListBackgroundColor = in.readInt();
@@ -284,6 +296,7 @@ public class SelectMainStyle implements Parcelable {
         dest.writeInt(previewSelectTextSize);
         dest.writeInt(previewSelectTextColor);
         dest.writeInt(selectBackground);
+        dest.writeInt(previewSelectBackground);
         dest.writeByte((byte) (isSelectNumberStyle ? 1 : 0));
         dest.writeByte((byte) (isPreviewSelectNumberStyle ? 1 : 0));
         dest.writeInt(mainListBackgroundColor);
@@ -400,6 +413,14 @@ public class SelectMainStyle implements Parcelable {
 
     public void setSelectBackground(int selectBackground) {
         this.selectBackground = selectBackground;
+    }
+
+    public int getPreviewSelectBackground() {
+        return previewSelectBackground;
+    }
+
+    public void setPreviewSelectBackground(int previewSelectBackground) {
+        this.previewSelectBackground = previewSelectBackground;
     }
 
     public boolean isSelectNumberStyle() {

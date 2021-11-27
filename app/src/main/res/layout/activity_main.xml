@@ -117,18 +117,10 @@
                         android:textSize="14sp" />
 
                     <RadioButton
-                        android:id="@+id/rb_sina_style"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="主题样式三"
-                        android:textColor="@color/app_color_53575e"
-                        android:textSize="14sp" />
-
-                    <RadioButton
                         android:id="@+id/rb_we_chat_style"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="主题样式四 (仿微信-全新风格)"
+                        android:text="主题样式三 (仿微信-全新风格)"
                         android:textColor="@color/app_color_53575e"
                         android:textSize="14sp" />
 

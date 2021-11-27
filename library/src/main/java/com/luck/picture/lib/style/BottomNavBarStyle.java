@@ -21,6 +21,9 @@ public class BottomNavBarStyle implements Parcelable {
 
     /**
      * 底部导航栏高度
+     * <p>
+     * use unit dp
+     * </p>
      */
     private int bottomNarBarHeight;
 
@@ -80,7 +83,7 @@ public class BottomNavBarStyle implements Parcelable {
     /**
      * 已选数量背景样式
      */
-    private int bottomSelectNumRes;
+    private int bottomSelectNumResources;
     /**
      * 已选数量文字大小
      */
@@ -115,7 +118,7 @@ public class BottomNavBarStyle implements Parcelable {
         bottomOriginalText = in.readString();
         bottomOriginalTextSize = in.readInt();
         bottomOriginalTextColor = in.readInt();
-        bottomSelectNumRes = in.readInt();
+        bottomSelectNumResources = in.readInt();
         bottomSelectNumTextSize = in.readInt();
         bottomSelectNumTextColor = in.readInt();
         isCompleteCountTips = in.readByte() != 0;
@@ -138,7 +141,7 @@ public class BottomNavBarStyle implements Parcelable {
         dest.writeString(bottomOriginalText);
         dest.writeInt(bottomOriginalTextSize);
         dest.writeInt(bottomOriginalTextColor);
-        dest.writeInt(bottomSelectNumRes);
+        dest.writeInt(bottomSelectNumResources);
         dest.writeInt(bottomSelectNumTextSize);
         dest.writeInt(bottomSelectNumTextColor);
         dest.writeByte((byte) (isCompleteCountTips ? 1 : 0));
@@ -281,12 +284,12 @@ public class BottomNavBarStyle implements Parcelable {
         this.bottomOriginalTextColor = bottomOriginalTextColor;
     }
 
-    public int getBottomSelectNumRes() {
-        return bottomSelectNumRes;
+    public int getBottomSelectNumResources() {
+        return bottomSelectNumResources;
     }
 
-    public void setBottomSelectNumRes(int bottomSelectNumRes) {
-        this.bottomSelectNumRes = bottomSelectNumRes;
+    public void setBottomSelectNumResources(int bottomSelectNumResources) {
+        this.bottomSelectNumResources = bottomSelectNumResources;
     }
 
     public int getBottomSelectNumTextSize() {
