@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean isUpward;
     private boolean needScaleBig = true;
     private boolean needScaleSmall = true;
-    private int language = -1;
+    private int language = LanguageConfig.UNKNOWN_LANGUAGE;
     private int x = 0, y = 0;
     private ItemTouchHelper mItemTouchHelper;
     private DragListener mDragListener;
@@ -178,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     PictureSelector.create(MainActivity.this)
                             .openPreview()
                             .imageEngine(GlideEngine.createGlideEngine())
+                            .setSelectorUIStyle(selectorStyle)
                             .startPreview(position, selectList, true,
                                     new OnExternalPreviewEventListener() {
                                         @Override
@@ -387,6 +388,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .imageEngine(GlideEngine.createGlideEngine())
                         .setSelectorUIStyle(selectorStyle)
                         .selectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
+                        .setLanguage(language)
                         .isDirectReturnSingle(cb_single_back.isChecked())
                         .maxSelectNum(maxSelectNum)
                         .setRecyclerAnimationMode(animationMode)
@@ -549,7 +551,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cb_preview_audio.setVisibility(View.VISIBLE);
                 break;
             case R.id.rb_system:
-                language = -1;
+                language = LanguageConfig.UNKNOWN_LANGUAGE;
                 break;
             case R.id.rb_jpan:
                 language = LanguageConfig.JAPAN;
@@ -602,6 +604,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.rb_default_style:
                 selectorStyle = new PictureSelectorStyle();
+
                 break;
             case R.id.rb_white_style:
                 selectorStyle = new PictureSelectorStyle();
@@ -613,7 +616,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 whiteTitleBarStyle.setTitleLeftBackResource(R.drawable.ic_back_arrow);
                 whiteTitleBarStyle.setTitleTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_black));
                 whiteTitleBarStyle.setTitleCancelTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
-
 
                 BottomNavBarStyle whiteBottomNavBarStyle = new BottomNavBarStyle();
                 whiteBottomNavBarStyle.setBottomNarBarBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));

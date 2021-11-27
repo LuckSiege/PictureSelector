@@ -76,6 +76,7 @@ public class PermissionChecker {
                 ((PictureCommonFragment) fragment).setPermissionsResultAction(permissionResultCallback);
                 String[] requestArray = new String[permissionList.size()];
                 permissionList.toArray(requestArray);
+                fragment.requestPermissions(requestArray, requestCode);
                 ActivityCompat.requestPermissions(activity, requestArray, requestCode);
             } else {
                 if (permissionResultCallback != null) {
