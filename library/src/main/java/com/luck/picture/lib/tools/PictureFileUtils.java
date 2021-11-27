@@ -110,10 +110,10 @@ public class PictureFileUtils {
 
         boolean isOutFileNameEmpty = TextUtils.isEmpty(fileName);
         switch (chooseMode) {
-            case PictureConfig.TYPE_VIDEO:
+            case SelectMimeType.TYPE_VIDEO:
                 String newFileVideoName = isOutFileNameEmpty ? DateUtils.getCreateFileName("VID_") + POST_VIDEO : fileName;
                 return new File(folderDir, newFileVideoName);
-            case PictureConfig.TYPE_AUDIO:
+            case SelectMimeType.TYPE_AUDIO:
                 String newFileAudioName = isOutFileNameEmpty ? DateUtils.getCreateFileName("AUD_") + POST_AUDIO : fileName;
                 return new File(folderDir, newFileAudioName);
             default:
@@ -132,9 +132,9 @@ public class PictureFileUtils {
      */
     private static File getRootDirFile(Context context, int type) {
         switch (type) {
-            case PictureConfig.TYPE_VIDEO:
+            case SelectMimeType.TYPE_VIDEO:
                 return context.getExternalFilesDir(Environment.DIRECTORY_MOVIES);
-            case PictureConfig.TYPE_AUDIO:
+            case SelectMimeType.TYPE_AUDIO:
                 return context.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
             default:
                 return context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);

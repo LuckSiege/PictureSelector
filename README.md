@@ -182,7 +182,7 @@ Application implementing interface
 *Prompt .themeStyle(R.style.theme)；Inside the parameters can not be deleted, otherwise crash...
 
 PictureSelector.create(this)
- .themeStyle(R.style.picture_default_style)
+ .themeStyle(R.style.ps_default_style)
  .isNotPreviewDownload(true)
  .imageEngine(GlideEngine.createGlideEngine())
  .openExternalPreview(position, result);
@@ -244,26 +244,26 @@ QQ [893855882]() <br>
 
 | Default Style | Preview | Multiple Crop |
 |:-----------:|:--------:|:---------:|
-|![](image/picture_default_style_1.jpg) | <img src="image/picture_default_style_2.jpg"/> | ![](image/picture_default_style_new_3.jpg)|  
+|![](image/ps_default_style_1.jpg) | <img src="image/ps_default_style_2.jpg"/> | ![](image/ps_default_style_new_3.jpg)|
 
 | Digital Style | Preview | Multiple Crop |
 |:-----------:|:--------:|:---------:|
-|![](image/picture_num_style_new_1.jpg) | ![](image/picture_num_style_new_2.jpg) | ![](image/picture_num_style_new_3.jpg)| 
+|![](image/ps_num_style_new_1.jpg) | ![](image/ps_num_style_new_2.jpg) | ![](image/ps_num_style_new_3.jpg)|
 
 | White Style | Preview | Single Crop |
 |:-----------:|:--------:|:---------:|
-|![](image/picture_sina_style_1.jpg) | ![](image/picture_sina_style_new_2.jpg) | ![](image/picture_sina_style_new_3.jpg)| 
+|![](image/ps_sina_style_1.jpg) | ![](image/ps_sina_style_new_2.jpg) | ![](image/ps_sina_style_new_3.jpg)|
 
 | New Style | Preview | Multiple Crop |
 |:-----------:|:--------:|:---------:|
-|![](image/picture_wechat_style_1.jpg) | ![](image/picture_wechat_style_2.jpg) | ![](image/picture_wechat_style_new_3.jpg)| 
+|![](image/ps_wechat_style_1.jpg) | ![](image/ps_wechat_style_2.jpg) | ![](image/ps_wechat_style_new_3.jpg)|
 
 | Photo Album Directory | Single Mode | Circular Crop|
 |:-----------:|:--------:|:--------:|
-|![](image/picture_wechat_album_style.jpg) |![](image/picture_wechat_single_style_3.jpg) | ![](image/picture_circular_crop_new_style.jpg)| 
+|![](image/ps_wechat_album_style.jpg) |![](image/ps_wechat_single_style_3.jpg) | ![](image/ps_circular_crop_new_style.jpg)|
 
 | White Style | Video | Audio |
 |:-----------:|:-----------:|:--------:|
-|![](image/picture_white_style.jpeg) |![](image/picture_video.jpg) | ![](image/picture_audio.jpg)| 
+|![](image/ps_white_style.jpeg) |![](image/ps_video.jpg) | ![](image/ps_audio.jpg)|
 
 

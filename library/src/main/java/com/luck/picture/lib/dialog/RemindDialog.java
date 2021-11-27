@@ -36,6 +36,7 @@ public class RemindDialog extends Dialog implements View.OnClickListener {
         params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         params.gravity = Gravity.CENTER;
+        getWindow().setWindowAnimations(R.style.PictureThemeDialogWindowStyle);
         getWindow().setAttributes(params);
     }
 

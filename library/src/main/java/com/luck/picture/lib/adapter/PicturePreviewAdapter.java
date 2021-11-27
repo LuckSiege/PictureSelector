@@ -19,7 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -41,6 +40,14 @@ import java.util.List;
  * @describe：PicturePreviewAdapter2
  */
 public class PicturePreviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    /**
+     * 图片
+     */
+    private final static int ADAPTER_TYPE_IMAGE = 1;
+    /**
+     * 视频
+     */
+    private final static int ADAPTER_TYPE_VIDEO = 2;
     private final List<LocalMedia> mData;
     private final PictureSelectionConfig config;
     private final int screenWidth, screenHeight;
@@ -55,7 +62,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == PictureConfig.ADAPTER_TYPE_VIDEO) {
+        if (viewType == ADAPTER_TYPE_VIDEO) {
             return new PreviewVideoHolder(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.ps_preview_video, parent, false));
         } else {
@@ -72,11 +79,13 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             path = media.getCutPath();
         } else if (media.isCompressed() || (media.isCut() && media.isCompressed())) {
             path = media.getCompressPath();
+        } else if (!TextUtils.isEmpty(media.getSandboxPath())) {
+            path = media.getSandboxPath();
         } else {
             path = media.getPath();
         }
         PhotoView previewView;
-        if (getItemViewType(position) == PictureConfig.ADAPTER_TYPE_VIDEO) {
+        if (getItemViewType(position) == ADAPTER_TYPE_VIDEO) {
             PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
             previewView = videoHolder.previewView;
             PictureSelectionConfig.imageEngine.loadImage(holder.itemView.getContext(), path, previewView);
@@ -112,25 +121,31 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             boolean isLongImage = MediaUtils.isLongImg(media);
             imageHolder.previewLongView.setVisibility(isLongImage && !isGif ? View.VISIBLE : View.GONE);
             if (PictureMimeType.isHasHttp(path)) {
-                PictureSelectionConfig.imageEngine.loadImageBitmap(holder.itemView.getContext(), path, new OnCallbackListener<Bitmap>() {
-                    @Override
-                    public void onCall(Bitmap resource) {
-                        boolean isLongImage = MediaUtils.isLongImg(resource.getWidth(), resource.getHeight());
-                        imageHolder.previewLongView.setVisibility(isLongImage ? View.VISIBLE : View.GONE);
-                        previewView.setVisibility(isLongImage ? View.GONE : View.VISIBLE);
-                        if (isLongImage) {
-                            imageHolder.previewLongView.setQuickScaleEnabled(true);
-                            imageHolder.previewLongView.setZoomEnabled(true);
-                            imageHolder.previewLongView.setDoubleTapZoomDuration(100);
-                            imageHolder.previewLongView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
-                            imageHolder.previewLongView.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
-                            imageHolder.previewLongView.setImage(ImageSource.cachedBitmap(resource),
-                                    new ImageViewState(0, new PointF(0, 0), 0));
-                        } else {
-                            previewView.setImageBitmap(resource);
+                String mimeType = PictureMimeType.getImageMimeType(path);
+                if (PictureMimeType.isGif(mimeType) || PictureMimeType.isGif(media.getMimeType())
+                        || PictureMimeType.isWebp(mimeType) || PictureMimeType.isWebp(media.getMimeType())) {
+                    PictureSelectionConfig.imageEngine.loadImage(holder.itemView.getContext(), path, previewView);
+                } else {
+                    PictureSelectionConfig.imageEngine.loadImageBitmap(holder.itemView.getContext(), path, new OnCallbackListener<Bitmap>() {
+                        @Override
+                        public void onCall(Bitmap resource) {
+                            boolean isLongImage = MediaUtils.isLongImg(resource.getWidth(), resource.getHeight());
+                            imageHolder.previewLongView.setVisibility(isLongImage ? View.VISIBLE : View.GONE);
+                            previewView.setVisibility(isLongImage ? View.GONE : View.VISIBLE);
+                            if (isLongImage) {
+                                imageHolder.previewLongView.setQuickScaleEnabled(true);
+                                imageHolder.previewLongView.setZoomEnabled(true);
+                                imageHolder.previewLongView.setDoubleTapZoomDuration(100);
+                                imageHolder.previewLongView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
+                                imageHolder.previewLongView.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
+                                imageHolder.previewLongView.setImage(ImageSource.cachedBitmap(resource),
+                                        new ImageViewState(0, new PointF(0, 0), 0));
+                            } else {
+                                previewView.setImageBitmap(resource);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             } else {
                 if (isLongImage) {
                     Uri uri = PictureMimeType.isContent(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
@@ -179,14 +194,24 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 }
             }
         });
+
+        previewView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (mPreviewEventListener != null) {
+                    mPreviewEventListener.onLongPressDownload(media);
+                }
+                return false;
+            }
+        });
     }
 
     @Override
     public int getItemViewType(int position) {
         if (PictureMimeType.isHasVideo(mData.get(position).getMimeType())) {
-            return PictureConfig.ADAPTER_TYPE_VIDEO;
+            return ADAPTER_TYPE_VIDEO;
         } else {
-            return PictureConfig.ADAPTER_TYPE_IMAGE;
+            return ADAPTER_TYPE_IMAGE;
         }
     }
 
@@ -333,5 +358,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         void onBackPressed();
 
         void onPreviewVideoTitle(String videoName);
+
+        void onLongPressDownload(LocalMedia media);
     }
 }

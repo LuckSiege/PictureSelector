@@ -18,6 +18,7 @@ import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,16 +26,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.app.PictureAppMaster;
-import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
+import com.luck.picture.lib.dialog.AudioPlayDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.language.LanguageConfig;
+import com.luck.picture.lib.style.BottomNavBarStyle;
+import com.luck.picture.lib.style.PictureSelectorStyle;
+import com.luck.picture.lib.style.SelectMainStyle;
+import com.luck.picture.lib.style.TitleBarStyle;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.ValueOf;
 import com.luck.picture.lib.utils.DensityUtil;
@@ -79,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ItemTouchHelper mItemTouchHelper;
     private DragListener mDragListener;
     private int animationMode = AnimationType.DEFAULT_ANIMATION;
+    private PictureSelectorStyle selectorStyle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,28 +167,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             List<LocalMedia> selectList = mAdapter.getData();
             if (selectList.size() > 0) {
                 LocalMedia media = selectList.get(position);
-                String mimeType = media.getMimeType();
-                int mediaType = PictureMimeType.getMimeType(mimeType);
-                switch (mediaType) {
-                    case PictureConfig.TYPE_AUDIO:
-                        // 预览音频
-                        break;
-                    case PictureConfig.TYPE_VIDEO:
-                        // 预览视频
-                    default:
-                        // 预览图片 可自定长按保存路径
-                        PictureSelector.create(MainActivity.this)
-                                .openPreview()
-                                .imageEngine(GlideEngine.createGlideEngine())
-                                .startPreview(position, selectList,
-                                        new OnExternalPreviewEventListener() {
-                                            @Override
-                                            public void onPreviewDelete(int position) {
-                                                mAdapter.remove(position);
-                                                mAdapter.notifyItemRemoved(position);
-                                            }
-                                        });
-                        break;
+                String availablePath = media.getAvailablePath();
+                if (PictureMimeType.isHasAudio(media.getMimeType())) {
+                    // 预览音频
+                    AudioPlayDialog.showPlayAudioDialog(getContext(), availablePath);
+                } else {
+                    // 预览图片 or 预览视频
+                    PictureSelector.create(MainActivity.this)
+                            .openPreview()
+                            .imageEngine(GlideEngine.createGlideEngine())
+                            .startPreview(position, selectList, true,
+                                    new OnExternalPreviewEventListener() {
+                                        @Override
+                                        public void onPreviewDelete(int position) {
+                                            mAdapter.remove(position);
+                                            mAdapter.notifyItemRemoved(position);
+                                        }
+
+                                        @Override
+                                        public boolean onLongPressDownload(LocalMedia media) {
+                                            return false;
+                                        }
+                                    });
                 }
             }
         });
@@ -375,10 +381,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (mode) {
                 // 进入相册
                 PictureSelector.create(MainActivity.this)
-                        .openGallery(SelectMimeType.ofAll())
+                        .openGallery(chooseMode)
                         .imageEngine(GlideEngine.createGlideEngine())
-                        .selectionMode(SelectModeConfig.MULTIPLE)
+                        .setSelectorUIStyle(selectorStyle)
+                        .selectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
+                        .isDirectReturnSingle(cb_single_back.isChecked())
                         .maxSelectNum(maxSelectNum)
+                        .isGif(cb_isGif.isChecked())
+                        .isEditorImage(true)
+                        .selectedData(mAdapter.getData())
+                        .isOriginalImageControl(cb_original.isChecked())
+                        .isDisplayOriginalSize(cb_original.isChecked())
                         .forResult(new MyResultCallback(mAdapter));
             } else {
                 // 单独拍照
@@ -575,18 +588,64 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 aspect_ratio_y = 9;
                 break;
             case R.id.rb_photo_default_animation:
+
                 break;
             case R.id.rb_photo_up_animation:
                 break;
             case R.id.rb_default_style:
+                selectorStyle = new PictureSelectorStyle();
+                SelectMainStyle defaultSelectMainStyle = new SelectMainStyle();
+                defaultSelectMainStyle.setSelectBackground(R.drawable.ps_checkbox_selector);
+                selectorStyle.setSelectMainStyle(defaultSelectMainStyle);
                 break;
             case R.id.rb_white_style:
+
                 break;
             case R.id.rb_num_style:
                 break;
             case R.id.rb_sina_style:
                 break;
             case R.id.rb_we_chat_style:
+                // 主体风格
+                SelectMainStyle numberSelectMainStyle = new SelectMainStyle();
+                numberSelectMainStyle.setSelectNumberStyle(true);
+                numberSelectMainStyle.setPreviewSelectNumberStyle(false);
+                numberSelectMainStyle.setPreviewDisplaySelectGallery(true);
+                numberSelectMainStyle.setSelectBackground(R.drawable.ps_default_num_selector);
+                numberSelectMainStyle.setSelectNormalBackgroundResources(R.drawable.ps_select_complete_normal_bg);
+                numberSelectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
+                numberSelectMainStyle.setSelectNormalText(getString(R.string.ps_send));
+
+                numberSelectMainStyle.setSelectBackgroundResources(R.drawable.ps_select_complete_bg);
+                numberSelectMainStyle.setSelectText(getString(R.string.ps_send_num));
+                numberSelectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
+                numberSelectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_black));
+                numberSelectMainStyle.setCompleteSelectRelativeTop(true);
+                numberSelectMainStyle.setPreviewSelectRelativeBottom(true);
+
+                // 头部TitleBar 风格
+                TitleBarStyle numberTitleBarStyle = new TitleBarStyle();
+                numberTitleBarStyle.setHideCancelButton(true);
+                numberTitleBarStyle.setAlbumTitleRelativeLeft(true);
+                numberTitleBarStyle.setTitleAlbumBackgroundResource(R.drawable.ps_album_bg);
+                numberTitleBarStyle.setTitleDrawableRightResource(R.drawable.ps_ic_grey_arrow);
+
+                // 底部NavBar 风格
+                BottomNavBarStyle numberBottomNavBarStyle = new BottomNavBarStyle();
+                numberBottomNavBarStyle.setBottomPreviewNarBarBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_half_grey));
+                numberBottomNavBarStyle.setBottomPreviewNormalText(getString(R.string.ps_preview));
+                numberBottomNavBarStyle.setBottomPreviewNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
+                numberBottomNavBarStyle.setBottomPreviewNormalTextSize(16);
+                numberBottomNavBarStyle.setCompleteCountTips(false);
+                numberBottomNavBarStyle.setBottomPreviewSelectText(getString(R.string.ps_preview_num));
+                numberBottomNavBarStyle.setBottomPreviewSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
+
+                selectorStyle = new PictureSelectorStyle();
+
+                selectorStyle.setTitleBarStyle(numberTitleBarStyle);
+                selectorStyle.setBottomBarStyle(numberBottomNavBarStyle);
+                selectorStyle.setSelectMainStyle(numberSelectMainStyle);
+
                 break;
             case R.id.rb_default:
                 animationMode = AnimationType.DEFAULT_ANIMATION;

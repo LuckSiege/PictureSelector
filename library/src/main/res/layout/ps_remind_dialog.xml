@@ -15,7 +15,7 @@
         android:paddingTop="35dp"
         android:paddingRight="15dp"
         android:paddingBottom="35dp"
-        android:textColor="@color/picture_color_4d"
+        android:textColor="@color/ps_color_4d"
         android:textSize="15sp"
         android:textStyle="bold" />
 
@@ -23,7 +23,7 @@
         android:id="@+id/bottom_line"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/picture_color_e" />
+        android:background="@color/ps_color_e" />
 
     <TextView
         android:id="@+id/btnOk"
@@ -31,7 +31,7 @@
         android:layout_height="50dp"
         android:background="@drawable/ps_btn_selector"
         android:gravity="center"
-        android:text="@string/picture_know"
-        android:textColor="@color/picture_color_9b"
+        android:text="@string/ps_know"
+        android:textColor="@color/ps_color_9b"
         android:textStyle="bold" />
 </LinearLayout>

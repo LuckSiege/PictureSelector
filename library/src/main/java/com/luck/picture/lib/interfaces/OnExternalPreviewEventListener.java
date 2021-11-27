@@ -1,5 +1,7 @@
 package com.luck.picture.lib.interfaces;
 
+import com.luck.picture.lib.entity.LocalMedia;
+
 /**
  * @author：luck
  * @date：2021/11/24 7:30 下午
@@ -12,4 +14,13 @@ public interface OnExternalPreviewEventListener {
      * @param position 删除的下标
      */
     void onPreviewDelete(int position);
+
+    /**
+     * 长按下载
+     *
+     * @param media 资源
+     * @return false 自己实现下载逻辑；默认true
+     */
+    boolean onLongPressDownload(LocalMedia media);
+
 }

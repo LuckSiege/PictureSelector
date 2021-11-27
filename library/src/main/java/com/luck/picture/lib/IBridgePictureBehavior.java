@@ -21,4 +21,9 @@ public interface IBridgePictureBehavior {
      * finish activity
      */
     void onFinish();
+
+    /**
+     * immediate finish activity
+     */
+    void onImmediateFinish();
 }

@@ -12,7 +12,7 @@ public class TitleBarStyle implements Parcelable {
     /**
      * 标题栏左边关闭样式
      */
-    private int titleLeftBackRes;
+    private int titleLeftBackResource;
     /**
      * 标题栏默认文案
      */
@@ -38,37 +38,41 @@ public class TitleBarStyle implements Parcelable {
     /**
      * 标题栏专辑背景
      */
-    private int titleAlbumBackgroundRes;
+    private int titleAlbumBackgroundResource;
 
     /**
      * 标题栏位置居左
      */
-    private boolean isTitleGravityLeft;
+    private boolean isAlbumTitleRelativeLeft;
+
+
     /**
      * 标题栏右边向上图标
      */
-    private int titleDrawableRightRes;
+    private int titleDrawableRightResource;
 
     /**
-     * 标题栏右边背景
+     * 标题栏右边取消按钮背景
      */
-    private int titleRightBackgroundRes;
+    private int titleCancelBackgroundResource;
+
+    /**
+     * 是否隐藏取消按钮
+     */
+    private boolean isHideCancelButton;
+
     /**
      * 标题栏右边默认文本
      */
-    private String titleRightNormalText;
-    /**
-     * 标题栏右边可选文本
-     */
-    private String titleRightSelectText;
+    private String titleCancelText;
     /**
      * 标题栏右边文本字体大小
      */
-    private int titleRightTextSize;
+    private int titleCancelTextSize;
     /**
      * 标题栏右边文本字体色值
      */
-    private int titleRightTextColor;
+    private int titleCancelTextColor;
 
     /**
      * 状态栏背景色
@@ -89,20 +93,20 @@ public class TitleBarStyle implements Parcelable {
     }
 
     protected TitleBarStyle(Parcel in) {
-        titleLeftBackRes = in.readInt();
+        titleLeftBackResource = in.readInt();
         titleDefaultText = in.readString();
         titleTextSize = in.readInt();
         titleTextColor = in.readInt();
         titleBackgroundColor = in.readInt();
         titleBarHeight = in.readInt();
-        titleAlbumBackgroundRes = in.readInt();
-        isTitleGravityLeft = in.readByte() != 0;
-        titleDrawableRightRes = in.readInt();
-        titleRightBackgroundRes = in.readInt();
-        titleRightNormalText = in.readString();
-        titleRightSelectText = in.readString();
-        titleRightTextSize = in.readInt();
-        titleRightTextColor = in.readInt();
+        titleAlbumBackgroundResource = in.readInt();
+        isAlbumTitleRelativeLeft = in.readByte() != 0;
+        titleDrawableRightResource = in.readInt();
+        titleCancelBackgroundResource = in.readInt();
+        isHideCancelButton = in.readByte() != 0;
+        titleCancelText = in.readString();
+        titleCancelTextSize = in.readInt();
+        titleCancelTextColor = in.readInt();
         statusBarColor = in.readInt();
         navigationBarColor = in.readInt();
         isDarkStatusBarBlack = in.readByte() != 0;
@@ -110,20 +114,20 @@ public class TitleBarStyle implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(titleLeftBackRes);
+        dest.writeInt(titleLeftBackResource);
         dest.writeString(titleDefaultText);
         dest.writeInt(titleTextSize);
         dest.writeInt(titleTextColor);
         dest.writeInt(titleBackgroundColor);
         dest.writeInt(titleBarHeight);
-        dest.writeInt(titleAlbumBackgroundRes);
-        dest.writeByte((byte) (isTitleGravityLeft ? 1 : 0));
-        dest.writeInt(titleDrawableRightRes);
-        dest.writeInt(titleRightBackgroundRes);
-        dest.writeString(titleRightNormalText);
-        dest.writeString(titleRightSelectText);
-        dest.writeInt(titleRightTextSize);
-        dest.writeInt(titleRightTextColor);
+        dest.writeInt(titleAlbumBackgroundResource);
+        dest.writeByte((byte) (isAlbumTitleRelativeLeft ? 1 : 0));
+        dest.writeInt(titleDrawableRightResource);
+        dest.writeInt(titleCancelBackgroundResource);
+        dest.writeByte((byte) (isHideCancelButton ? 1 : 0));
+        dest.writeString(titleCancelText);
+        dest.writeInt(titleCancelTextSize);
+        dest.writeInt(titleCancelTextColor);
         dest.writeInt(statusBarColor);
         dest.writeInt(navigationBarColor);
         dest.writeByte((byte) (isDarkStatusBarBlack ? 1 : 0));
@@ -146,12 +150,12 @@ public class TitleBarStyle implements Parcelable {
         }
     };
 
-    public int getTitleLeftBackRes() {
-        return titleLeftBackRes;
+    public int getTitleLeftBackResource() {
+        return titleLeftBackResource;
     }
 
-    public void setTitleLeftBackRes(int titleLeftBackRes) {
-        this.titleLeftBackRes = titleLeftBackRes;
+    public void setTitleLeftBackResource(int titleLeftBackResource) {
+        this.titleLeftBackResource = titleLeftBackResource;
     }
 
     public String getTitleDefaultText() {
@@ -194,68 +198,68 @@ public class TitleBarStyle implements Parcelable {
         this.titleBarHeight = titleBarHeight;
     }
 
-    public int getTitleAlbumBackgroundRes() {
-        return titleAlbumBackgroundRes;
+    public int getTitleAlbumBackgroundResource() {
+        return titleAlbumBackgroundResource;
     }
 
-    public void setTitleAlbumBackgroundRes(int titleAlbumBackgroundRes) {
-        this.titleAlbumBackgroundRes = titleAlbumBackgroundRes;
+    public void setTitleAlbumBackgroundResource(int titleAlbumBackgroundResource) {
+        this.titleAlbumBackgroundResource = titleAlbumBackgroundResource;
     }
 
-    public boolean isTitleGravityLeft() {
-        return isTitleGravityLeft;
+    public boolean isAlbumTitleRelativeLeft() {
+        return isAlbumTitleRelativeLeft;
     }
 
-    public void setTitleGravityLeft(boolean titleGravityLeft) {
-        isTitleGravityLeft = titleGravityLeft;
+    public void setAlbumTitleRelativeLeft(boolean albumTitleRelativeLeft) {
+        isAlbumTitleRelativeLeft = albumTitleRelativeLeft;
     }
 
-    public int getTitleDrawableRightRes() {
-        return titleDrawableRightRes;
+    public int getTitleDrawableRightResource() {
+        return titleDrawableRightResource;
     }
 
-    public void setTitleDrawableRightRes(int titleDrawableRightRes) {
-        this.titleDrawableRightRes = titleDrawableRightRes;
+    public void setTitleDrawableRightResource(int titleDrawableRightResource) {
+        this.titleDrawableRightResource = titleDrawableRightResource;
     }
 
-    public int getTitleRightBackgroundRes() {
-        return titleRightBackgroundRes;
+    public int getTitleCancelBackgroundResource() {
+        return titleCancelBackgroundResource;
     }
 
-    public void setTitleRightBackgroundRes(int titleRightBackgroundRes) {
-        this.titleRightBackgroundRes = titleRightBackgroundRes;
+    public void setTitleCancelBackgroundResource(int titleCancelBackgroundResource) {
+        this.titleCancelBackgroundResource = titleCancelBackgroundResource;
     }
 
-    public String getTitleRightNormalText() {
-        return titleRightNormalText;
+    public boolean isHideCancelButton() {
+        return isHideCancelButton;
     }
 
-    public void setTitleRightNormalText(String titleRightNormalText) {
-        this.titleRightNormalText = titleRightNormalText;
+    public void setHideCancelButton(boolean hideCancelButton) {
+        isHideCancelButton = hideCancelButton;
     }
 
-    public String getTitleRightSelectText() {
-        return titleRightSelectText;
+    public String getTitleCancelText() {
+        return titleCancelText;
     }
 
-    public void setTitleRightSelectText(String titleRightSelectText) {
-        this.titleRightSelectText = titleRightSelectText;
+    public void setTitleCancelText(String titleCancelText) {
+        this.titleCancelText = titleCancelText;
     }
 
-    public int getTitleRightTextSize() {
-        return titleRightTextSize;
+    public int getTitleCancelTextSize() {
+        return titleCancelTextSize;
     }
 
-    public void setTitleRightTextSize(int titleRightTextSize) {
-        this.titleRightTextSize = titleRightTextSize;
+    public void setTitleCancelTextSize(int titleCancelTextSize) {
+        this.titleCancelTextSize = titleCancelTextSize;
     }
 
-    public int getTitleRightTextColor() {
-        return titleRightTextColor;
+    public int getTitleCancelTextColor() {
+        return titleCancelTextColor;
     }
 
-    public void setTitleRightTextColor(int titleRightTextColor) {
-        this.titleRightTextColor = titleRightTextColor;
+    public void setTitleCancelTextColor(int titleCancelTextColor) {
+        this.titleCancelTextColor = titleCancelTextColor;
     }
 
     public int getStatusBarColor() {

@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureSelectionConfig;
-import com.luck.picture.lib.style.MediaAdapterStyle;
+import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.StyleUtils;
 
 /**
@@ -20,8 +20,8 @@ public class CameraViewHolder extends BaseRecyclerMediaHolder {
     public CameraViewHolder(@NonNull View itemView) {
         super(itemView);
         TextView tvCamera = itemView.findViewById(R.id.tvCamera);
-        MediaAdapterStyle adapterStyle = PictureSelectionConfig.selectorStyle.getAdapterStyle();
-        int background = adapterStyle.getAdapterCameraBackground();
+        SelectMainStyle adapterStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
+        int background = adapterStyle.getAdapterCameraBackgroundColor();
         if (StyleUtils.checkStyleValidity(background)) {
             tvCamera.setBackgroundColor(background);
         }

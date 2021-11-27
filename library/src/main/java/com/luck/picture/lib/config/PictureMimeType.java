@@ -233,14 +233,14 @@ public final class PictureMimeType {
      */
     public static int getMimeType(String mimeType) {
         if (TextUtils.isEmpty(mimeType)) {
-            return PictureConfig.TYPE_IMAGE;
+            return SelectMimeType.TYPE_IMAGE;
         }
         if (mimeType.startsWith(MIME_TYPE_PREFIX_VIDEO)) {
-            return PictureConfig.TYPE_VIDEO;
+            return SelectMimeType.TYPE_VIDEO;
         } else if (mimeType.startsWith(MIME_TYPE_PREFIX_AUDIO)) {
-            return PictureConfig.TYPE_AUDIO;
+            return SelectMimeType.TYPE_AUDIO;
         } else {
-            return PictureConfig.TYPE_IMAGE;
+            return SelectMimeType.TYPE_IMAGE;
         }
     }
 
@@ -288,11 +288,11 @@ public final class PictureMimeType {
     public static String s(Context context, String mimeType) {
         Context ctx = context.getApplicationContext();
         if (isHasVideo(mimeType)) {
-            return ctx.getString(R.string.picture_video_error);
+            return ctx.getString(R.string.ps_video_error);
         } else if (isHasAudio(mimeType)) {
-            return ctx.getString(R.string.picture_audio_error);
+            return ctx.getString(R.string.ps_audio_error);
         } else {
-            return ctx.getString(R.string.picture_error);
+            return ctx.getString(R.string.ps_error);
         }
     }
 

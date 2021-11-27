@@ -28,8 +28,8 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         android:layout_toEndOf="@id/first_image"
-        android:text="@string/picture_camera_roll_num"
-        android:textColor="@color/picture_color_4d"
+        android:text="@string/ps_camera_roll_num"
+        android:textColor="@color/ps_color_4d"
         android:textSize="16sp" />
 
 </RelativeLayout>

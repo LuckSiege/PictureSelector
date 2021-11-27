@@ -329,6 +329,19 @@ public class LocalMedia implements Parcelable {
         return TextUtils.equals(getPath(), media.getPath()) || getId() == media.getId();
     }
 
+    public String getAvailablePath() {
+        String path;
+        if (isCompressed()) {
+            path = getCompressPath();
+        } else if (isCut()) {
+            path = getCutPath();
+        } else if (!TextUtils.isEmpty(getSandboxPath())) {
+            path = getSandboxPath();
+        } else {
+            path = getPath();
+        }
+        return path;
+    }
 
     public long getId() {
         return id;

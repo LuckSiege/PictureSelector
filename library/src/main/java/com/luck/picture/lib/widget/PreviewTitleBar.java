@@ -2,11 +2,9 @@ package com.luck.picture.lib.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.config.PictureSelectionConfig;
 
 /**
  * @author：luck
@@ -28,29 +26,18 @@ public class PreviewTitleBar extends TitleBar {
     }
 
     @Override
-    protected void init() {
-        super.init();
-        ivArrow.setVisibility(GONE);
-        viewAlbumClickArea.setVisibility(GONE);
+    public void setTitleBarStyle() {
+        super.setTitleBarStyle();
         rlAlbumBg.setOnClickListener(null);
         viewAlbumClickArea.setOnClickListener(null);
-        tvRightMenu.setText("");
-        tvRightMenu.setTextSize(0);
-        if (PictureSelectionConfig.getInstance().isExternalPreview){
-            tvRightMenu.setBackgroundResource(R.drawable.ps_ic_delete);
-        } else {
-            tvRightMenu.setBackgroundResource(R.drawable.ps_checkbox_selector);
-        }
+        RelativeLayout.LayoutParams layoutParams = (LayoutParams) rlAlbumBg.getLayoutParams();
+        layoutParams.removeRule(RelativeLayout.END_OF);
+        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        rlAlbumBg.setBackgroundResource(R.drawable.ps_trans_1px);
+        tvCancel.setVisibility(GONE);
+        ivArrow.setVisibility(GONE);
+        viewAlbumClickArea.setVisibility(GONE);
+
     }
 
-    public TextView getSelectedView() {
-        return tvRightMenu;
-    }
-
-    public View getSelectedClickView() {
-        if (viewChecked.getVisibility() == GONE) {
-            viewChecked.setVisibility(View.VISIBLE);
-        }
-        return viewChecked;
-    }
 }

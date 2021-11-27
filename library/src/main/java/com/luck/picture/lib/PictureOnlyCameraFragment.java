@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.permissions.PermissionResultCallback;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
@@ -51,6 +52,7 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
 
     @Override
     public void dispatchCameraMediaResult(LocalMedia media) {
+        SelectedManager.getSelectedResult().add(media);
+        dispatchTransformResult();
     }
-
 }

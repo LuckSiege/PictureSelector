@@ -16,6 +16,7 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.BottomNavBarStyle;
 import com.luck.picture.lib.style.PictureSelectorStyle;
+import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.tools.ValueOf;
 import com.luck.picture.lib.utils.StyleUtils;
 
@@ -48,17 +49,23 @@ public class CompleteSelectView extends LinearLayout {
     private void init() {
         inflate(getContext(), R.layout.ps_complete_selected_layout, this);
         setOrientation(LinearLayout.HORIZONTAL);
-        tvSelectNum = findViewById(R.id.picture_tv_select_num);
-        tvComplete = findViewById(R.id.picture_tv_complete);
+        tvSelectNum = findViewById(R.id.ps_tv_select_num);
+        tvComplete = findViewById(R.id.ps_tv_complete);
         setGravity(Gravity.CENTER_VERTICAL);
         numberChangeAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.ps_anim_modal_in);
         config = PictureSelectionConfig.getInstance();
     }
 
+    /**
+     * 完成选择按钮样式
+     */
     public void setCompleteSelectViewStyle() {
         PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
-        BottomNavBarStyle bottomBarStyle = selectorStyle.getBottomBarStyle();
-        String selectNormalText = bottomBarStyle.getBottomSelectNormalText();
+        SelectMainStyle selectMainStyle = selectorStyle.getSelectMainStyle();
+        if (StyleUtils.checkStyleValidity(selectMainStyle.getSelectNormalBackgroundResources())) {
+            setBackgroundResource(selectMainStyle.getSelectNormalBackgroundResources());
+        }
+        String selectNormalText = selectMainStyle.getSelectNormalText();
         if (StyleUtils.checkTextValidity(selectNormalText)) {
             if (StyleUtils.checkTextTwoFormatValidity(selectNormalText)) {
                 tvComplete.setText(String.format(selectNormalText, SelectedManager.getCount(), config.maxSelectNum));
@@ -67,41 +74,50 @@ public class CompleteSelectView extends LinearLayout {
             }
         }
 
-        int selectNormalTextSize = bottomBarStyle.getBottomSelectNormalTextSize();
+        int selectNormalTextSize = selectMainStyle.getSelectNormalTextSize();
         if (StyleUtils.checkSizeValidity(selectNormalTextSize)) {
             tvComplete.setTextSize(selectNormalTextSize);
         }
 
-        int selectNormalTextColor = bottomBarStyle.getBottomSelectNormalTextColor();
+        int selectNormalTextColor = selectMainStyle.getSelectNormalTextColor();
         if (StyleUtils.checkStyleValidity(selectNormalTextColor)) {
             tvComplete.setTextColor(selectNormalTextColor);
         }
 
-        int selectNumRes = bottomBarStyle.getBottomSelectNumRes();
-        if (StyleUtils.checkStyleValidity(selectNumRes)) {
-            tvSelectNum.setBackgroundResource(selectNumRes);
-        }
-        int selectNumTextSize = bottomBarStyle.getBottomSelectNumTextSize();
-        if (StyleUtils.checkSizeValidity(selectNumTextSize)) {
-            tvSelectNum.setTextSize(selectNumTextSize);
-        }
+        BottomNavBarStyle bottomBarStyle = selectorStyle.getBottomBarStyle();
 
-        int selectNumTextColor = bottomBarStyle.getBottomSelectNumTextColor();
-        if (StyleUtils.checkStyleValidity(selectNumTextColor)) {
-            tvSelectNum.setTextColor(selectNumTextColor);
+        if (bottomBarStyle.isCompleteCountTips()) {
+            int selectNumRes = bottomBarStyle.getBottomSelectNumRes();
+            if (StyleUtils.checkStyleValidity(selectNumRes)) {
+                tvSelectNum.setBackgroundResource(selectNumRes);
+            }
+            int selectNumTextSize = bottomBarStyle.getBottomSelectNumTextSize();
+            if (StyleUtils.checkSizeValidity(selectNumTextSize)) {
+                tvSelectNum.setTextSize(selectNumTextSize);
+            }
+
+            int selectNumTextColor = bottomBarStyle.getBottomSelectNumTextColor();
+            if (StyleUtils.checkStyleValidity(selectNumTextColor)) {
+                tvSelectNum.setTextColor(selectNumTextColor);
+            }
         }
     }
 
     /**
      * 选择结果发生变化
      */
-    public void setSelectedChange() {
+    public void setSelectedChange(boolean isPreview) {
         PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
-        BottomNavBarStyle bottomBarStyle = selectorStyle.getBottomBarStyle();
+        SelectMainStyle selectMainStyle = selectorStyle.getSelectMainStyle();
         if (SelectedManager.getCount() > 0) {
             setEnabled(true);
-            tvSelectNum.setVisibility(bottomBarStyle.isSelectNumVisible() ? VISIBLE : INVISIBLE);
-            String selectText = bottomBarStyle.getBottomSelectText();
+            int selectBackground = selectMainStyle.getSelectBackgroundResources();
+            if (StyleUtils.checkStyleValidity(selectBackground)) {
+                setBackgroundResource(selectBackground);
+            } else {
+                setBackgroundResource(R.drawable.ps_trans_1px);
+            }
+            String selectText = selectMainStyle.getSelectText();
             if (StyleUtils.checkTextValidity(selectText)) {
                 if (StyleUtils.checkTextTwoFormatValidity(selectText)) {
                     tvComplete.setText(String.format(selectText, SelectedManager.getCount(), config.maxSelectNum));
@@ -109,25 +125,59 @@ public class CompleteSelectView extends LinearLayout {
                     tvComplete.setText(selectText);
                 }
             } else {
-                tvComplete.setText(getContext().getString(R.string.picture_completed));
+                tvComplete.setText(getContext().getString(R.string.ps_completed));
             }
 
-            int selectTextSize = bottomBarStyle.getBottomSelectTextSize();
+            int selectTextSize = selectMainStyle.getSelectTextSize();
             if (StyleUtils.checkSizeValidity(selectTextSize)) {
                 tvComplete.setTextSize(selectTextSize);
             }
-            int selectTextColor = bottomBarStyle.getBottomSelectTextColor();
+            int selectTextColor = selectMainStyle.getSelectTextColor();
             if (StyleUtils.checkStyleValidity(selectTextColor)) {
                 tvComplete.setTextColor(selectTextColor);
             } else {
-                tvComplete.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_fa632d));
+                tvComplete.setTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_fa632d));
             }
-            tvSelectNum.setText(ValueOf.toString(SelectedManager.getCount()));
-            tvSelectNum.startAnimation(numberChangeAnimation);
+            if (selectorStyle.getBottomBarStyle().isCompleteCountTips()) {
+                tvSelectNum.setVisibility(VISIBLE);
+                tvSelectNum.setText(ValueOf.toString(SelectedManager.getCount()));
+                tvSelectNum.startAnimation(numberChangeAnimation);
+            } else {
+                tvSelectNum.setVisibility(GONE);
+            }
         } else {
-            setEnabled(false);
-            tvSelectNum.setVisibility(INVISIBLE);
-            String selectNormalText = bottomBarStyle.getBottomSelectNormalText();
+            if (isPreview && selectMainStyle.isCompleteSelectRelativeTop()) {
+                setEnabled(true);
+                int selectBackground = selectMainStyle.getSelectBackgroundResources();
+                if (StyleUtils.checkStyleValidity(selectBackground)) {
+                    setBackgroundResource(selectBackground);
+                } else {
+                    setBackgroundResource(R.drawable.ps_trans_1px);
+                }
+                int selectTextColor = selectMainStyle.getSelectTextColor();
+                if (StyleUtils.checkStyleValidity(selectTextColor)) {
+                    tvComplete.setTextColor(selectTextColor);
+                } else {
+                    tvComplete.setTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
+                }
+            } else {
+                setEnabled(false);
+                int normalBackground = selectMainStyle.getSelectNormalBackgroundResources();
+                if (StyleUtils.checkStyleValidity(normalBackground)) {
+                    setBackgroundResource(normalBackground);
+                } else {
+                    setBackgroundResource(R.drawable.ps_trans_1px);
+                }
+                int normalTextColor = selectMainStyle.getSelectNormalTextColor();
+                if (StyleUtils.checkStyleValidity(normalTextColor)) {
+                    tvComplete.setTextColor(normalTextColor);
+                } else {
+                    tvComplete.setTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
+                }
+            }
+
+            tvSelectNum.setVisibility(GONE);
+            String selectNormalText = selectMainStyle.getSelectNormalText();
             if (StyleUtils.checkTextValidity(selectNormalText)) {
                 if (StyleUtils.checkTextTwoFormatValidity(selectNormalText)) {
                     tvComplete.setText(String.format(selectNormalText, SelectedManager.getCount(), config.maxSelectNum));
@@ -135,17 +185,11 @@ public class CompleteSelectView extends LinearLayout {
                     tvComplete.setText(selectNormalText);
                 }
             } else {
-                tvComplete.setText(getContext().getString(R.string.picture_please_select));
+                tvComplete.setText(getContext().getString(R.string.ps_please_select));
             }
-            int normalTextSize = bottomBarStyle.getBottomSelectNormalTextSize();
+            int normalTextSize = selectMainStyle.getSelectNormalTextSize();
             if (StyleUtils.checkSizeValidity(normalTextSize)) {
                 tvComplete.setTextSize(normalTextSize);
-            }
-            int normalTextColor = bottomBarStyle.getBottomSelectNormalTextColor();
-            if (StyleUtils.checkStyleValidity(normalTextColor)) {
-                tvComplete.setTextColor(normalTextColor);
-            } else {
-                tvComplete.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_9b));
             }
         }
     }

@@ -68,9 +68,9 @@ public class PictureAlbumAdapter extends RecyclerView.Adapter<PictureAlbumAdapte
         }
         Context context = holder.itemView.getContext();
         String firstTitle = folder.getOfAllType() != -1 ? folder.getOfAllType() == SelectMimeType.ofAudio() ?
-                context.getString(R.string.picture_all_audio)
-                : context.getString(R.string.picture_camera_roll) : name;
-        holder.tvFolderName.setText(context.getString(R.string.picture_camera_roll_num, firstTitle, imageNum));
+                context.getString(R.string.ps_all_audio)
+                : context.getString(R.string.ps_camera_roll) : name;
+        holder.tvFolderName.setText(context.getString(R.string.ps_camera_roll_num, firstTitle, imageNum));
         holder.itemView.setOnClickListener(view -> {
             if (onAlbumItemClickListener == null) {
                 return;

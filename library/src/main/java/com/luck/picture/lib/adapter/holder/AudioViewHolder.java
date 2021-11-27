@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.style.MediaAdapterStyle;
+import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.StyleUtils;
 import com.luck.picture.lib.tools.DateUtils;
 
@@ -26,7 +26,7 @@ public class AudioViewHolder extends BaseRecyclerMediaHolder {
         super(itemView, config);
         tvDuration = itemView.findViewById(R.id.tv_duration);
         ImageView ivMask = itemView.findViewById(R.id.iv_mask);
-        MediaAdapterStyle adapterStyle = PictureSelectionConfig.selectorStyle.getAdapterStyle();
+        SelectMainStyle adapterStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
         int drawableLeft = adapterStyle.getAdapterDurationDrawableLeft();
         if (StyleUtils.checkStyleValidity(drawableLeft)) {
             tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds(drawableLeft, 0, 0, 0);
@@ -40,7 +40,7 @@ public class AudioViewHolder extends BaseRecyclerMediaHolder {
             tvDuration.setTextColor(textColor);
         }
 
-        int shadowBackground = adapterStyle.getAdapterDurationShadowBackground();
+        int shadowBackground = adapterStyle.getAdapterDurationBackgroundResources();
         if (StyleUtils.checkStyleValidity(shadowBackground)) {
             tvDuration.setBackgroundResource(shadowBackground);
         }

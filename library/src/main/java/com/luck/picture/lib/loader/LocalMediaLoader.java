@@ -261,8 +261,8 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                         (latelyImages.get(0).getPath());
                                 allImageFolder.setFirstMimeType(latelyImages.get(0).getMimeType());
                                 String title = config.chooseMode == SelectMimeType.ofAudio() ?
-                                        mContext.getString(R.string.picture_all_audio)
-                                        : mContext.getString(R.string.picture_camera_roll);
+                                        mContext.getString(R.string.ps_all_audio)
+                                        : mContext.getString(R.string.ps_camera_roll);
                                 allImageFolder.setName(title);
                                 allImageFolder.setBucketId(-1);
                                 allImageFolder.setOfAllType(config.chooseMode);
@@ -296,16 +296,16 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
         String fileSizeCondition = getFileSizeCondition();
         String queryMimeCondition = getQueryMimeCondition();
         switch (config.chooseMode) {
-            case PictureConfig.TYPE_ALL:
+            case SelectMimeType.TYPE_ALL:
                 // Get all, not including audio
                 return getSelectionArgsForAllMediaCondition(durationCondition, fileSizeCondition, queryMimeCondition);
-            case PictureConfig.TYPE_IMAGE:
+            case SelectMimeType.TYPE_IMAGE:
                 // Gets the image
                 return getSelectionArgsForImageMediaCondition(fileSizeCondition, queryMimeCondition);
-            case PictureConfig.TYPE_VIDEO:
+            case SelectMimeType.TYPE_VIDEO:
                 // Access to video
                 return getSelectionArgsForVideoOrAudioMediaCondition(fileSizeCondition, queryMimeCondition);
-            case PictureConfig.TYPE_AUDIO:
+            case SelectMimeType.TYPE_AUDIO:
                 // Access to the audio
                 return getSelectionArgsForVideoOrAudioMediaCondition(durationCondition, queryMimeCondition);
         }
@@ -314,16 +314,16 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
 
     private String[] getSelectionArgs() {
         switch (config.chooseMode) {
-            case PictureConfig.TYPE_ALL:
+            case SelectMimeType.TYPE_ALL:
                 // Get All
                 return getSelectionArgsForAllMediaType();
-            case PictureConfig.TYPE_IMAGE:
+            case SelectMimeType.TYPE_IMAGE:
                 // Get Image
                 return getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
-            case PictureConfig.TYPE_VIDEO:
+            case SelectMimeType.TYPE_VIDEO:
                 // Get Video
                 return getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO);
-            case PictureConfig.TYPE_AUDIO:
+            case SelectMimeType.TYPE_AUDIO:
                 // Get Audio
                 return getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO);
         }

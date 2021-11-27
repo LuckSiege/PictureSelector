@@ -2,6 +2,7 @@ package com.luck.picture.lib.adapter.holder;
 
 import android.content.Context;
 import android.graphics.ColorFilter;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,14 +18,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.PictureImageGridAdapter;
-import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.manager.SelectedManager;
-import com.luck.picture.lib.style.MediaAdapterStyle;
+import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.tools.AnimUtils;
+import com.luck.picture.lib.tools.ValueOf;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.StyleUtils;
 
@@ -41,15 +42,16 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
     public View btnCheck;
     public Context mContext;
     public PictureSelectionConfig config;
+    public boolean isSelectNumberStyle;
 
     public static BaseRecyclerMediaHolder generate(ViewGroup parent, int viewType, int resource, PictureSelectionConfig config) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);
         switch (viewType) {
-            case PictureConfig.ADAPTER_TYPE_CAMERA:
+            case PictureImageGridAdapter.ADAPTER_TYPE_CAMERA:
                 return new CameraViewHolder(itemView);
-            case PictureConfig.ADAPTER_TYPE_VIDEO:
+            case PictureImageGridAdapter.ADAPTER_TYPE_VIDEO:
                 return new VideoViewHolder(itemView, config);
-            case PictureConfig.ADAPTER_TYPE_AUDIO:
+            case PictureImageGridAdapter.ADAPTER_TYPE_AUDIO:
                 return new AudioViewHolder(itemView, config);
             default:
                 return new ImageViewHolder(itemView, config);
@@ -64,6 +66,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         super(itemView);
         this.mContext = itemView.getContext();
         this.config = config;
+        this.isSelectNumberStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle().isSelectNumberStyle();
         ivPicture = itemView.findViewById(R.id.ivPicture);
         tvCheck = itemView.findViewById(R.id.tvCheck);
         btnCheck = itemView.findViewById(R.id.btnCheck);
@@ -74,20 +77,20 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
             tvCheck.setVisibility(View.VISIBLE);
             btnCheck.setVisibility(View.VISIBLE);
         }
-        MediaAdapterStyle adapterStyle = PictureSelectionConfig.selectorStyle.getAdapterStyle();
-        int textSize = adapterStyle.getAdapterSelectTextSize();
+        SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
+        int textSize = selectMainStyle.getAdapterSelectTextSize();
         if (StyleUtils.checkSizeValidity(textSize)) {
             tvCheck.setTextSize(textSize);
         }
-        int textColor = adapterStyle.getAdapterSelectTextColor();
+        int textColor = selectMainStyle.getAdapterSelectTextColor();
         if (StyleUtils.checkStyleValidity(textColor)) {
             tvCheck.setTextColor(textColor);
         }
-        int adapterSelectStyle = adapterStyle.getAdapterSelectStyle();
-        if (StyleUtils.checkStyleValidity(adapterSelectStyle)) {
-            tvCheck.setBackgroundResource(adapterSelectStyle);
+        int adapterSelectBackground = selectMainStyle.getSelectBackground();
+        if (StyleUtils.checkStyleValidity(adapterSelectBackground)) {
+            tvCheck.setBackgroundResource(adapterSelectBackground);
         }
-        int[] selectStyleGravity = adapterStyle.getAdapterSelectStyleGravity();
+        int[] selectStyleGravity = selectMainStyle.getAdapterSelectStyleGravity();
         if (StyleUtils.checkArrayValidity(selectStyleGravity)) {
             if (tvCheck.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
                 ((RelativeLayout.LayoutParams) tvCheck.getLayoutParams()).removeRule(RelativeLayout.ALIGN_PARENT_END);
@@ -102,7 +105,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
                 }
             }
 
-            int clickArea = adapterStyle.getAdapterSelectClickArea();
+            int clickArea = selectMainStyle.getAdapterSelectClickArea();
             if (StyleUtils.checkSizeValidity(clickArea)) {
                 ViewGroup.LayoutParams clickAreaParams = btnCheck.getLayoutParams();
                 clickAreaParams.width = DensityUtil.dip2px(itemView.getContext(), clickArea);
@@ -130,6 +133,10 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         }
 
         selectedMedia(isSelected(media));
+
+        if (isSelectNumberStyle) {
+            notifySelectNumberStyle(media);
+        }
 
         if (config.isMaxSelectEnabledMask && config.selectionMode == SelectModeConfig.MULTIPLE) {
             dispatchHandleMask(media);
@@ -171,6 +178,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         });
     }
 
+
     /**
      * 处理到达选择条件后的蒙层效果
      */
@@ -191,7 +199,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         }
         if (isEnabledMask) {
             ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                    ContextCompat.getColor(mContext, R.color.picture_color_half_white),
+                    ContextCompat.getColor(mContext, R.color.ps_color_half_white),
                     BlendModeCompat.SRC_ATOP);
             ivPicture.setColorFilter(colorFilter);
             media.setMaxSelectEnabledMask(true);
@@ -213,8 +221,8 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
             AnimUtils.zoomItemAnimation(ivPicture, tvCheck.isSelected());
         }
         ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(isChecked ?
-                ContextCompat.getColor(mContext, R.color.picture_color_80) :
-                ContextCompat.getColor(mContext, R.color.picture_color_20), BlendModeCompat.SRC_ATOP);
+                ContextCompat.getColor(mContext, R.color.ps_color_80) :
+                ContextCompat.getColor(mContext, R.color.ps_color_20), BlendModeCompat.SRC_ATOP);
         ivPicture.setColorFilter(colorFilter);
     }
 
@@ -227,6 +235,22 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
     private boolean isSelected(LocalMedia currentMedia) {
         List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
         return selectedResult.contains(currentMedia);
+    }
+
+    /**
+     * 对选择数量进行编号排序
+     */
+    private void notifySelectNumberStyle(LocalMedia currentMedia) {
+        tvCheck.setText("");
+        for (int i = 0; i < SelectedManager.getCount(); i++) {
+            LocalMedia media = SelectedManager.getSelectedResult().get(i);
+            if (TextUtils.equals(media.getPath(), currentMedia.getPath())
+                    || media.getId() == currentMedia.getId()) {
+                currentMedia.setNum(media.getNum());
+                media.setPosition(currentMedia.getPosition());
+                tvCheck.setText(ValueOf.toString(currentMedia.getNum()));
+            }
+        }
     }
 
     private PictureImageGridAdapter.OnItemClickListener listener;

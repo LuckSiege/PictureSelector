@@ -17,7 +17,7 @@
         android:layout_margin="8dp"
         android:background="@drawable/ps_checkbox_selector"
         android:gravity="center"
-        android:textColor="@color/picture_color_white"
+        android:textColor="@color/ps_color_white"
         android:textSize="12sp" />
 
     <View
@@ -25,7 +25,7 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_alignParentEnd="true"
-        android:background="@color/picture_color_transparent" />
+        android:background="@color/ps_color_transparent" />
 
 
     <ImageView
@@ -48,7 +48,7 @@
         android:paddingLeft="5dp"
         android:paddingTop="8dp"
         android:text="00:00"
-        android:textColor="@color/picture_color_white"
+        android:textColor="@color/ps_color_white"
         android:textSize="11sp" />
 
 </com.luck.picture.lib.widget.SquareRelativeLayout>

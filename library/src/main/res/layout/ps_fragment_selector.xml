@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,37 +9,56 @@
     <com.luck.picture.lib.widget.RecyclerPreloadView
         android:id="@+id/recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/bottom_nar_bar"
-        android:layout_below="@+id/title_bar"
-        android:background="@color/picture_color_white"
-        android:overScrollMode="never" />
+        android:layout_height="0dp"
+        android:background="@color/ps_color_white"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nar_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar" />
 
     <com.luck.picture.lib.widget.TitleBar
         android:id="@+id/title_bar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:layout_height="48dp" />
 
     <com.luck.picture.lib.widget.BottomNavBar
         android:id="@+id/bottom_nar_bar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:layout_height="45dp" />
+
+
+    <com.luck.picture.lib.widget.CompleteSelectView
+        android:id="@+id/ps_complete_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:enabled="false"
+        app:layout_constraintBottom_toBottomOf="@id/bottom_nar_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/bottom_nar_bar" />
 
     <TextView
         android:id="@+id/tv_data_empty"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
         android:gravity="center"
         android:lineSpacingExtra="3dp"
-        android:text="@string/picture_empty"
-        android:textColor="@color/picture_color_aab2bd"
+        android:text="@string/ps_empty"
+        android:textColor="@color/ps_color_aab2bd"
         android:textSize="14sp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,24 +4,24 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/picture_tv_select_num"
+        android:id="@+id/ps_tv_select_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="5dp"
         android:background="@drawable/ps_num_oval"
         android:gravity="center"
-        android:textColor="@color/picture_color_white"
+        android:textColor="@color/ps_color_white"
         android:textSize="11sp"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
     <TextView
-        android:id="@+id/picture_tv_complete"
+        android:id="@+id/ps_tv_complete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/picture_please_select"
+        android:text="@string/ps_please_select"
         android:includeFontPadding="false"
-        android:textColor="@color/picture_color_9b"
+        android:textColor="@color/ps_color_9b"
         android:textSize="14sp" />
 
 

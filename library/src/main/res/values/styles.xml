@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="Base.Theme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar" />
+
     <style name="PictureThemeWindowStyle">
         <item name="android:windowEnterAnimation">@anim/ps_anim_album_show</item>
         <item name="android:windowExitAnimation">@anim/ps_anim_album_dismiss</item>
@@ -21,7 +23,7 @@
         <item name="android:windowIsTranslucent">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">false</item>
-        <item name="android:windowBackground">@color/picture_color_transparent</item>
+        <item name="android:windowBackground">@color/ps_color_transparent</item>
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:backgroundDimAmount">0.4</item>
@@ -49,8 +51,5 @@
         <!-- 自己想要的背景 -->
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
-
-
-    <style name="Base.Theme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar" />
 
 </resources>

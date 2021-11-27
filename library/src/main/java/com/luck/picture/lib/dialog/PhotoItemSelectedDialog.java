@@ -49,9 +49,9 @@ public class PhotoItemSelectedDialog extends DialogFragment implements View.OnCl
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView tvPicturePhoto = view.findViewById(R.id.picture_tv_photo);
-        TextView tvPictureVideo = view.findViewById(R.id.picture_tv_video);
-        TextView tvPictureCancel = view.findViewById(R.id.picture_tv_cancel);
+        TextView tvPicturePhoto = view.findViewById(R.id.ps_tv_photo);
+        TextView tvPictureVideo = view.findViewById(R.id.ps_tv_video);
+        TextView tvPictureCancel = view.findViewById(R.id.ps_tv_cancel);
         tvPictureVideo.setOnClickListener(this);
         tvPicturePhoto.setOnClickListener(this);
         tvPictureCancel.setOnClickListener(this);
@@ -88,10 +88,10 @@ public class PhotoItemSelectedDialog extends DialogFragment implements View.OnCl
     public void onClick(View v) {
         int id = v.getId();
         if (onItemClickListener != null) {
-            if (id == R.id.picture_tv_photo) {
+            if (id == R.id.ps_tv_photo) {
                 onItemClickListener.onItemClick(v, IMAGE_CAMERA);
             }
-            if (id == R.id.picture_tv_video) {
+            if (id == R.id.ps_tv_video) {
                 onItemClickListener.onItemClick(v, VIDEO_CAMERA);
             }
         }

@@ -96,12 +96,12 @@ public class AudioPlayDialog extends Dialog implements View.OnClickListener, See
         musicSeekBar.setProgress(mediaPlayer.getCurrentPosition());
         musicSeekBar.setMax(mediaPlayer.getDuration());
         if (mediaPlayer.isPlaying()) {
-            tvPlayPause.setText(tvPlayPause.getContext().getString(R.string.picture_play_audio));
-            tvMusicStatus.setText(tvPlayPause.getContext().getString(R.string.picture_pause_audio));
+            tvPlayPause.setText(tvPlayPause.getContext().getString(R.string.ps_play_audio));
+            tvMusicStatus.setText(tvPlayPause.getContext().getString(R.string.ps_pause_audio));
             mediaPlayer.pause();
         } else {
-            tvPlayPause.setText(tvPlayPause.getContext().getString(R.string.picture_pause_audio));
-            tvMusicStatus.setText(tvPlayPause.getContext().getString(R.string.picture_play_audio));
+            tvPlayPause.setText(tvPlayPause.getContext().getString(R.string.ps_pause_audio));
+            tvMusicStatus.setText(tvPlayPause.getContext().getString(R.string.ps_play_audio));
             mediaPlayer.start();
             mHandler.post(mRunnable);
         }
@@ -123,8 +123,8 @@ public class AudioPlayDialog extends Dialog implements View.OnClickListener, See
             }
             mediaPlayer.prepare();
             mediaPlayer.seekTo(0);
-            tvMusicStatus.setText(tvMusicStatus.getContext().getString(R.string.picture_stop_audio));
-            tvPlayPause.setText(tvMusicStatus.getContext().getString(R.string.picture_play_audio));
+            tvMusicStatus.setText(tvMusicStatus.getContext().getString(R.string.ps_stop_audio));
+            tvPlayPause.setText(tvMusicStatus.getContext().getString(R.string.ps_play_audio));
         } catch (Exception e) {
             e.printStackTrace();
         }

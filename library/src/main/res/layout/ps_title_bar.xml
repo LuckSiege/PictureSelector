@@ -4,7 +4,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/picture_iv_left_back"
+        android:id="@+id/ps_iv_left_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -16,15 +16,16 @@
         android:src="@drawable/ps_ic_back" />
 
     <RelativeLayout
-        android:id="@+id/picture_rl_album_bg"
+        android:id="@+id/ps_rl_album_bg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <com.luck.picture.lib.widget.MarqueeTextView
-            android:id="@+id/picture_tv_title"
+            android:id="@+id/ps_tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -32,51 +33,46 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="center"
+            android:includeFontPadding="false"
             android:marqueeRepeatLimit="marquee_forever"
             android:maxEms="6"
             android:scrollHorizontally="true"
             android:singleLine="true"
-            android:text="@string/picture_camera_roll"
-            android:textColor="@color/picture_color_white"
+            android:text="@string/ps_camera_roll"
+            android:textColor="@color/ps_color_white"
             android:textSize="18sp" />
 
         <ImageView
-            android:id="@+id/picture_iv_arrow"
+            android:id="@+id/ps_iv_arrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/picture_tv_title"
+            android:layout_marginStart="3dp"
+            android:layout_toEndOf="@id/ps_tv_title"
             android:scaleType="centerInside"
-            android:src="@drawable/ps_ic_arrow_down" />
+            android:src="@drawable/ps_ic_default_arrow" />
     </RelativeLayout>
 
 
     <View
-        android:id="@+id/picture_rl_album_click"
+        android:id="@+id/ps_rl_album_click"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignStart="@id/picture_rl_album_bg"
-        android:layout_alignEnd="@id/picture_rl_album_bg" />
+        android:layout_alignStart="@id/ps_rl_album_bg"
+        android:layout_alignEnd="@id/ps_rl_album_bg" />
 
 
     <TextView
-        android:id="@+id/picture_tv_right_menu"
+        android:id="@+id/ps_tv_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="15dp"
         android:gravity="center"
-        android:text="@string/picture_cancel"
-        android:textColor="@color/picture_color_white"
+        android:text="@string/ps_cancel"
+        android:textColor="@color/ps_color_white"
         android:textSize="14sp" />
 
-    <View
-        android:id="@+id/view_checked"
-        android:layout_width="100dp"
-        android:layout_height="45dp"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:visibility="gone" />
 
 </merge>

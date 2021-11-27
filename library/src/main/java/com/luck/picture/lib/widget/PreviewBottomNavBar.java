@@ -5,6 +5,9 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.style.BottomNavBarStyle;
+import com.luck.picture.lib.utils.StyleUtils;
 
 /**
  * @author：luck
@@ -29,14 +32,24 @@ public class PreviewBottomNavBar extends BottomNavBar {
     protected void init() {
         super.init();
         tvPreview.setVisibility(GONE);
-        tvImageEditor.setVisibility(VISIBLE);
         tvImageEditor.setOnClickListener(this);
+        tvImageEditor.setVisibility(config.isEditorImage ? View.VISIBLE : GONE);
+    }
+
+    @Override
+    public void setBottomNavBarStyle() {
+        super.setBottomNavBarStyle();
+        BottomNavBarStyle bottomBarStyle = PictureSelectionConfig.selectorStyle.getBottomBarStyle();
+        int backgroundColor = bottomBarStyle.getBottomPreviewNarBarBackgroundColor();
+        if (StyleUtils.checkStyleValidity(backgroundColor)) {
+            setBackgroundColor(backgroundColor);
+        }
     }
 
     @Override
     public void onClick(View view) {
         super.onClick(view);
-        if (view.getId() == R.id.picture_tv_editor) {
+        if (view.getId() == R.id.ps_tv_editor) {
             if (bottomNavBarListener != null) {
                 bottomNavBarListener.onEditImage();
             }

@@ -15,13 +15,28 @@ public class BottomNavBarStyle implements Parcelable {
     private int bottomNarBarBackgroundColor;
 
     /**
+     * 底部预览页NarBar背景色
+     */
+    private int bottomPreviewNarBarBackgroundColor;
+
+    /**
      * 底部导航栏高度
      */
     private int bottomNarBarHeight;
+
     /**
      * 底部预览文本
      */
-    private String bottomPreviewText;
+    private String bottomPreviewNormalText;
+
+    /**
+     * 底部预览文本字体大小
+     */
+    private int bottomPreviewNormalTextSize;
+    /**
+     * 底部预览文本正常字体色值
+     */
+    private int bottomPreviewNormalTextColor;
 
     /**
      * 底部选中预览文本
@@ -29,41 +44,10 @@ public class BottomNavBarStyle implements Parcelable {
     private String bottomPreviewSelectText;
 
     /**
-     * 底部预览文本字体大小
-     */
-    private int bottomPreviewTextSize;
-    /**
-     * 底部预览文本正常字体色值
-     */
-    private int bottomPreviewNormalTextColor;
-    /**
      * 底部预览文本选中字体色值
      */
     private int bottomPreviewSelectTextColor;
-    /**
-     * 底部默认选择文本
-     */
-    private String bottomSelectNormalText;
-    /**
-     * 底部默认选择文本字体大小
-     */
-    private int bottomSelectNormalTextSize;
-    /**
-     * 底部默认选择文本字体色值
-     */
-    private int bottomSelectNormalTextColor;
-    /**
-     * 底部选择文本
-     */
-    private String bottomSelectText;
-    /**
-     * 底部选择文本字体大小
-     */
-    private int bottomSelectTextSize;
-    /**
-     * 底部选择文本字体色值
-     */
-    private int bottomSelectTextColor;
+
     /**
      * 底部编辑文字
      */
@@ -109,7 +93,7 @@ public class BottomNavBarStyle implements Parcelable {
     /**
      * 是否显示已选数量圆点提醒
      */
-    private boolean isSelectNumVisible = true;
+    private boolean isCompleteCountTips = true;
 
 
     public BottomNavBarStyle() {
@@ -117,18 +101,13 @@ public class BottomNavBarStyle implements Parcelable {
 
     protected BottomNavBarStyle(Parcel in) {
         bottomNarBarBackgroundColor = in.readInt();
+        bottomPreviewNarBarBackgroundColor = in.readInt();
         bottomNarBarHeight = in.readInt();
-        bottomPreviewText = in.readString();
-        bottomPreviewSelectText = in.readString();
-        bottomPreviewTextSize = in.readInt();
+        bottomPreviewNormalText = in.readString();
+        bottomPreviewNormalTextSize = in.readInt();
         bottomPreviewNormalTextColor = in.readInt();
+        bottomPreviewSelectText = in.readString();
         bottomPreviewSelectTextColor = in.readInt();
-        bottomSelectNormalText = in.readString();
-        bottomSelectNormalTextSize = in.readInt();
-        bottomSelectNormalTextColor = in.readInt();
-        bottomSelectText = in.readString();
-        bottomSelectTextSize = in.readInt();
-        bottomSelectTextColor = in.readInt();
         bottomEditorText = in.readString();
         bottomEditorTextSize = in.readInt();
         bottomEditorTextColor = in.readInt();
@@ -139,24 +118,19 @@ public class BottomNavBarStyle implements Parcelable {
         bottomSelectNumRes = in.readInt();
         bottomSelectNumTextSize = in.readInt();
         bottomSelectNumTextColor = in.readInt();
-        isSelectNumVisible = in.readByte() != 0;
+        isCompleteCountTips = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(bottomNarBarBackgroundColor);
+        dest.writeInt(bottomPreviewNarBarBackgroundColor);
         dest.writeInt(bottomNarBarHeight);
-        dest.writeString(bottomPreviewText);
-        dest.writeString(bottomPreviewSelectText);
-        dest.writeInt(bottomPreviewTextSize);
+        dest.writeString(bottomPreviewNormalText);
+        dest.writeInt(bottomPreviewNormalTextSize);
         dest.writeInt(bottomPreviewNormalTextColor);
+        dest.writeString(bottomPreviewSelectText);
         dest.writeInt(bottomPreviewSelectTextColor);
-        dest.writeString(bottomSelectNormalText);
-        dest.writeInt(bottomSelectNormalTextSize);
-        dest.writeInt(bottomSelectNormalTextColor);
-        dest.writeString(bottomSelectText);
-        dest.writeInt(bottomSelectTextSize);
-        dest.writeInt(bottomSelectTextColor);
         dest.writeString(bottomEditorText);
         dest.writeInt(bottomEditorTextSize);
         dest.writeInt(bottomEditorTextColor);
@@ -167,7 +141,7 @@ public class BottomNavBarStyle implements Parcelable {
         dest.writeInt(bottomSelectNumRes);
         dest.writeInt(bottomSelectNumTextSize);
         dest.writeInt(bottomSelectNumTextColor);
-        dest.writeByte((byte) (isSelectNumVisible ? 1 : 0));
+        dest.writeByte((byte) (isCompleteCountTips ? 1 : 0));
     }
 
     @Override
@@ -195,6 +169,14 @@ public class BottomNavBarStyle implements Parcelable {
         this.bottomNarBarBackgroundColor = bottomNarBarBackgroundColor;
     }
 
+    public int getBottomPreviewNarBarBackgroundColor() {
+        return bottomPreviewNarBarBackgroundColor;
+    }
+
+    public void setBottomPreviewNarBarBackgroundColor(int bottomPreviewNarBarBackgroundColor) {
+        this.bottomPreviewNarBarBackgroundColor = bottomPreviewNarBarBackgroundColor;
+    }
+
     public int getBottomNarBarHeight() {
         return bottomNarBarHeight;
     }
@@ -203,28 +185,20 @@ public class BottomNavBarStyle implements Parcelable {
         this.bottomNarBarHeight = bottomNarBarHeight;
     }
 
-    public String getBottomPreviewText() {
-        return bottomPreviewText;
+    public String getBottomPreviewNormalText() {
+        return bottomPreviewNormalText;
     }
 
-    public void setBottomPreviewText(String bottomPreviewText) {
-        this.bottomPreviewText = bottomPreviewText;
+    public void setBottomPreviewNormalText(String bottomPreviewNormalText) {
+        this.bottomPreviewNormalText = bottomPreviewNormalText;
     }
 
-    public String getBottomPreviewSelectText() {
-        return bottomPreviewSelectText;
+    public int getBottomPreviewNormalTextSize() {
+        return bottomPreviewNormalTextSize;
     }
 
-    public void setBottomPreviewSelectText(String bottomPreviewSelectText) {
-        this.bottomPreviewSelectText = bottomPreviewSelectText;
-    }
-
-    public int getBottomPreviewTextSize() {
-        return bottomPreviewTextSize;
-    }
-
-    public void setBottomPreviewTextSize(int bottomPreviewTextSize) {
-        this.bottomPreviewTextSize = bottomPreviewTextSize;
+    public void setBottomPreviewNormalTextSize(int bottomPreviewNormalTextSize) {
+        this.bottomPreviewNormalTextSize = bottomPreviewNormalTextSize;
     }
 
     public int getBottomPreviewNormalTextColor() {
@@ -235,60 +209,20 @@ public class BottomNavBarStyle implements Parcelable {
         this.bottomPreviewNormalTextColor = bottomPreviewNormalTextColor;
     }
 
+    public String getBottomPreviewSelectText() {
+        return bottomPreviewSelectText;
+    }
+
+    public void setBottomPreviewSelectText(String bottomPreviewSelectText) {
+        this.bottomPreviewSelectText = bottomPreviewSelectText;
+    }
+
     public int getBottomPreviewSelectTextColor() {
         return bottomPreviewSelectTextColor;
     }
 
     public void setBottomPreviewSelectTextColor(int bottomPreviewSelectTextColor) {
         this.bottomPreviewSelectTextColor = bottomPreviewSelectTextColor;
-    }
-
-    public String getBottomSelectNormalText() {
-        return bottomSelectNormalText;
-    }
-
-    public void setBottomSelectNormalText(String bottomSelectNormalText) {
-        this.bottomSelectNormalText = bottomSelectNormalText;
-    }
-
-    public int getBottomSelectNormalTextSize() {
-        return bottomSelectNormalTextSize;
-    }
-
-    public void setBottomSelectNormalTextSize(int bottomSelectNormalTextSize) {
-        this.bottomSelectNormalTextSize = bottomSelectNormalTextSize;
-    }
-
-    public int getBottomSelectNormalTextColor() {
-        return bottomSelectNormalTextColor;
-    }
-
-    public void setBottomSelectNormalTextColor(int bottomSelectNormalTextColor) {
-        this.bottomSelectNormalTextColor = bottomSelectNormalTextColor;
-    }
-
-    public String getBottomSelectText() {
-        return bottomSelectText;
-    }
-
-    public void setBottomSelectText(String bottomSelectText) {
-        this.bottomSelectText = bottomSelectText;
-    }
-
-    public int getBottomSelectTextSize() {
-        return bottomSelectTextSize;
-    }
-
-    public void setBottomSelectTextSize(int bottomSelectTextSize) {
-        this.bottomSelectTextSize = bottomSelectTextSize;
-    }
-
-    public int getBottomSelectTextColor() {
-        return bottomSelectTextColor;
-    }
-
-    public void setBottomSelectTextColor(int bottomSelectTextColor) {
-        this.bottomSelectTextColor = bottomSelectTextColor;
     }
 
     public String getBottomEditorText() {
@@ -371,11 +305,11 @@ public class BottomNavBarStyle implements Parcelable {
         this.bottomSelectNumTextColor = bottomSelectNumTextColor;
     }
 
-    public boolean isSelectNumVisible() {
-        return isSelectNumVisible;
+    public boolean isCompleteCountTips() {
+        return isCompleteCountTips;
     }
 
-    public void setSelectNumVisible(boolean selectNumVisible) {
-        isSelectNumVisible = selectNumVisible;
+    public void setCompleteCountTips(boolean completeCountTips) {
+        isCompleteCountTips = completeCountTips;
     }
 }

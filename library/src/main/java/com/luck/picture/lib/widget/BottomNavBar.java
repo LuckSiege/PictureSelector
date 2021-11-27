@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -11,9 +12,11 @@ import androidx.core.content.ContextCompat;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.BottomNavBarStyle;
 import com.luck.picture.lib.style.PictureSelectorStyle;
+import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.StyleUtils;
 
@@ -26,7 +29,6 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
     protected TextView tvPreview;
     protected TextView tvImageEditor;
     private CheckBox originalCheckbox;
-    private CompleteSelectView completeSelectView;
     protected PictureSelectionConfig config;
 
     public BottomNavBar(Context context) {
@@ -46,22 +48,36 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
 
     protected void init() {
         inflate(getContext(), R.layout.ps_bottom_nav_bar, this);
+        setClickable(true);
+        setFocusable(true);
         config = PictureSelectionConfig.getInstance();
-        tvPreview = findViewById(R.id.picture_tv_preview);
-        tvImageEditor = findViewById(R.id.picture_tv_editor);
+        tvPreview = findViewById(R.id.ps_tv_preview);
+        tvImageEditor = findViewById(R.id.ps_tv_editor);
         originalCheckbox = findViewById(R.id.cb_original);
-        completeSelectView = findViewById(R.id.picture_ll_select);
         tvPreview.setOnClickListener(this);
-        completeSelectView.setOnClickListener(this);
-        setBackgroundColor(ContextCompat.getColor(getContext(), R.color.picture_color_grey));
+        tvImageEditor.setVisibility(GONE);
+        setBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
+        originalCheckbox.setChecked(config.isCheckOriginalImage);
+        originalCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                config.isCheckOriginalImage = isChecked;
+                originalCheckbox.setChecked(config.isCheckOriginalImage);
+                if (bottomNavBarListener != null) {
+                    bottomNavBarListener.onCheckOriginalChange();
+                }
+            }
+        });
     }
 
 
     public void setBottomNavBarStyle() {
+        if (config.isDirectReturnSingle) {
+            setVisibility(GONE);
+            return;
+        }
         PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
         BottomNavBarStyle bottomBarStyle = selectorStyle.getBottomBarStyle();
-        completeSelectView.setCompleteSelectViewStyle();
-        tvImageEditor.setVisibility(config.isEditorImage ? View.VISIBLE : GONE);
         if (config.isOriginalControl) {
             originalCheckbox.setVisibility(View.VISIBLE);
             int originalDrawableLeft = bottomBarStyle.getBottomOriginalDrawableLeft();
@@ -98,11 +114,11 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
         if (StyleUtils.checkStyleValidity(previewNormalTextColor)) {
             tvPreview.setTextColor(previewNormalTextColor);
         }
-        int previewTextSize = bottomBarStyle.getBottomPreviewTextSize();
+        int previewTextSize = bottomBarStyle.getBottomPreviewNormalTextSize();
         if (StyleUtils.checkSizeValidity(previewTextSize)) {
             tvPreview.setTextSize(previewTextSize);
         }
-        String bottomPreviewText = bottomBarStyle.getBottomPreviewText();
+        String bottomPreviewText = bottomBarStyle.getBottomPreviewNormalText();
         if (StyleUtils.checkTextValidity(bottomPreviewText)) {
             tvPreview.setText(bottomPreviewText);
         }
@@ -141,20 +157,27 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
         }
     }
 
+    /**
+     * 原图选项发生变化
+     */
+    public void setOriginalCheck() {
+        originalCheckbox.setChecked(config.isCheckOriginalImage);
+    }
 
     /**
      * 选择结果发生变化
      */
     public void setSelectedChange() {
-        completeSelectView.setSelectedChange();
-        BottomNavBarStyle bottomBarStyle = PictureSelectionConfig.selectorStyle.getBottomBarStyle();
+        calculateFileTotalSize();
+        PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
+        BottomNavBarStyle bottomBarStyle = selectorStyle.getBottomBarStyle();
         if (SelectedManager.getCount() > 0) {
             tvPreview.setEnabled(true);
             int previewSelectTextColor = bottomBarStyle.getBottomPreviewSelectTextColor();
             if (StyleUtils.checkStyleValidity(previewSelectTextColor)) {
                 tvPreview.setTextColor(previewSelectTextColor);
             } else {
-                tvPreview.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_fa632d));
+                tvPreview.setTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_fa632d));
             }
             String previewSelectText = bottomBarStyle.getBottomPreviewSelectText();
             if (StyleUtils.checkTextValidity(previewSelectText)) {
@@ -164,7 +187,7 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
                     tvPreview.setText(previewSelectText);
                 }
             } else {
-                tvPreview.setText(getContext().getString(R.string.picture_preview_num, SelectedManager.getCount()));
+                tvPreview.setText(getContext().getString(R.string.ps_preview_num, SelectedManager.getCount()));
             }
         } else {
             tvPreview.setEnabled(false);
@@ -172,14 +195,35 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
             if (StyleUtils.checkStyleValidity(previewNormalTextColor)) {
                 tvPreview.setTextColor(previewNormalTextColor);
             } else {
-                tvPreview.setTextColor(ContextCompat.getColor(getContext(), R.color.picture_color_9b));
+                tvPreview.setTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
             }
-            String previewText = bottomBarStyle.getBottomPreviewText();
+            String previewText = bottomBarStyle.getBottomPreviewNormalText();
             if (StyleUtils.checkTextValidity(previewText)) {
                 tvPreview.setText(previewText);
             } else {
-                tvPreview.setText(getContext().getString(R.string.picture_preview));
+                tvPreview.setText(getContext().getString(R.string.ps_preview));
             }
+        }
+    }
+
+    /**
+     * 计算原图大小
+     */
+    private void calculateFileTotalSize() {
+        if (config.isOriginalControl && config.isDisplayOriginalSize) {
+            long totalSize = 0;
+            for (int i = 0; i < SelectedManager.getCount(); i++) {
+                LocalMedia media = SelectedManager.getSelectedResult().get(i);
+                totalSize += media.getSize();
+            }
+            if (totalSize > 0) {
+                String fileSize = PictureFileUtils.formatFileSize(totalSize, 2);
+                originalCheckbox.setText(getContext().getString(R.string.ps_original_image, fileSize));
+            } else {
+                originalCheckbox.setText(getContext().getString(R.string.ps_default_original_image));
+            }
+        } else {
+            originalCheckbox.setText(getContext().getString(R.string.ps_default_original_image));
         }
     }
 
@@ -189,10 +233,8 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
             return;
         }
         int id = view.getId();
-        if (id == R.id.picture_tv_preview) {
+        if (id == R.id.ps_tv_preview) {
             bottomNavBarListener.onPreview();
-        } else if (id == R.id.picture_ll_select) {
-            bottomNavBarListener.onComplete();
         }
     }
 
@@ -216,16 +258,16 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
         }
 
         /**
-         * 完成
+         * 编辑图片
          */
-        public void onComplete() {
+        public void onEditImage() {
 
         }
 
         /**
-         * 编辑图片
+         * 原图发生变化
          */
-        public void onEditImage() {
+        public void onCheckOriginalChange() {
 
         }
     }

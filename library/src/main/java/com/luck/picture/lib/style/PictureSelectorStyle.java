@@ -17,9 +17,9 @@ public class PictureSelectorStyle {
     private TitleBarStyle titleBarStyle;
 
     /**
-     * Middle Adapter UI Style
+     * SelectMainStyle
      */
-    private MediaAdapterStyle mediaAdapterStyle;
+    private SelectMainStyle selectMainStyle;
     /**
      * BottomBar UI Style
      */
@@ -38,12 +38,12 @@ public class PictureSelectorStyle {
         this.titleBarStyle = titleBarStyle;
     }
 
-    public MediaAdapterStyle getAdapterStyle() {
-        return mediaAdapterStyle == null ? new MediaAdapterStyle() : mediaAdapterStyle;
+    public SelectMainStyle getSelectMainStyle() {
+        return selectMainStyle == null ? new SelectMainStyle() : selectMainStyle;
     }
 
-    public void setAdapterStyle(MediaAdapterStyle mediaAdapterStyle) {
-        this.mediaAdapterStyle = mediaAdapterStyle;
+    public void setSelectMainStyle(SelectMainStyle selectMainStyle) {
+        this.selectMainStyle = selectMainStyle;
     }
 
     public BottomNavBarStyle getBottomBarStyle() {

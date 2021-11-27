@@ -27,9 +27,9 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
     protected ImageView ivLeftBack;
     protected ImageView ivArrow;
     protected MarqueeTextView tvTitle;
-    protected TextView tvRightMenu;
-    protected View viewChecked;
+    protected TextView tvCancel;
     protected View viewAlbumClickArea;
+    protected PictureSelectionConfig config;
 
     public TitleBar(Context context) {
         super(context);
@@ -48,18 +48,20 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
 
     protected void init() {
         inflate(getContext(), R.layout.ps_title_bar, this);
-        ivLeftBack = findViewById(R.id.picture_iv_left_back);
-        rlAlbumBg = findViewById(R.id.picture_rl_album_bg);
-        viewAlbumClickArea = findViewById(R.id.picture_rl_album_click);
-        tvTitle = findViewById(R.id.picture_tv_title);
-        ivArrow = findViewById(R.id.picture_iv_arrow);
-        tvRightMenu = findViewById(R.id.picture_tv_right_menu);
-        viewChecked = findViewById(R.id.view_checked);
+        setClickable(true);
+        setFocusable(true);
+        ivLeftBack = findViewById(R.id.ps_iv_left_back);
+        rlAlbumBg = findViewById(R.id.ps_rl_album_bg);
+        viewAlbumClickArea = findViewById(R.id.ps_rl_album_click);
+        tvTitle = findViewById(R.id.ps_tv_title);
+        ivArrow = findViewById(R.id.ps_iv_arrow);
+        tvCancel = findViewById(R.id.ps_tv_cancel);
         ivLeftBack.setOnClickListener(this);
-        tvRightMenu.setOnClickListener(this);
+        tvCancel.setOnClickListener(this);
         rlAlbumBg.setOnClickListener(this);
         viewAlbumClickArea.setOnClickListener(this);
-        setBackgroundColor(ContextCompat.getColor(getContext(), R.color.picture_color_grey));
+        setBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
+        config = PictureSelectionConfig.getInstance();
     }
 
     public ImageView getImageArrow() {
@@ -88,7 +90,7 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
         if (StyleUtils.checkStyleValidity(backgroundColor)) {
             setBackgroundColor(backgroundColor);
         }
-        int backResId = titleBarStyle.getTitleLeftBackRes();
+        int backResId = titleBarStyle.getTitleLeftBackResource();
         if (StyleUtils.checkStyleValidity(backResId)) {
             ivLeftBack.setImageResource(backResId);
         }
@@ -104,46 +106,46 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
         if (StyleUtils.checkStyleValidity(titleTextColor)) {
             tvTitle.setTextColor(titleTextColor);
         }
-        int arrowResId = titleBarStyle.getTitleDrawableRightRes();
+        int arrowResId = titleBarStyle.getTitleDrawableRightResource();
         if (StyleUtils.checkStyleValidity(arrowResId)) {
             ivArrow.setImageResource(arrowResId);
         }
-        int albumBackgroundRes = titleBarStyle.getTitleAlbumBackgroundRes();
+        int albumBackgroundRes = titleBarStyle.getTitleAlbumBackgroundResource();
         if (StyleUtils.checkStyleValidity(albumBackgroundRes)) {
             rlAlbumBg.setBackgroundResource(albumBackgroundRes);
         }
-        boolean isGravityLeft = titleBarStyle.isTitleGravityLeft();
-        if (isGravityLeft) {
-            RelativeLayout.LayoutParams layoutParams = (LayoutParams) rlAlbumBg.getLayoutParams();
-            layoutParams.removeRule(RelativeLayout.CENTER_HORIZONTAL);
-            layoutParams.addRule(RelativeLayout.END_OF, R.id.picture_iv_left_back);
-        }
-        int rightBackgroundRes = titleBarStyle.getTitleRightBackgroundRes();
-        if (StyleUtils.checkStyleValidity(rightBackgroundRes)) {
-            tvRightMenu.setBackgroundResource(rightBackgroundRes);
-        }
-        String rightNormalText = titleBarStyle.getTitleRightNormalText();
-        if (StyleUtils.checkTextValidity(rightNormalText)) {
-            tvRightMenu.setText(rightNormalText);
-        }
-        int rightTextColor = titleBarStyle.getTitleRightTextColor();
-        if (StyleUtils.checkStyleValidity(rightTextColor)) {
-            tvRightMenu.setTextColor(rightTextColor);
-        }
-        int rightTextSize = titleBarStyle.getTitleRightTextSize();
-        if (StyleUtils.checkSizeValidity(rightTextSize)) {
-            tvRightMenu.setTextSize(rightTextSize);
+
+        if (titleBarStyle.isHideCancelButton()) {
+            tvCancel.setVisibility(GONE);
+        } else {
+            tvCancel.setVisibility(VISIBLE);
+            int rightBackgroundRes = titleBarStyle.getTitleCancelBackgroundResource();
+            if (StyleUtils.checkStyleValidity(rightBackgroundRes)) {
+                tvCancel.setBackgroundResource(rightBackgroundRes);
+            }
+            String rightNormalText = titleBarStyle.getTitleCancelText();
+            if (StyleUtils.checkTextValidity(rightNormalText)) {
+                tvCancel.setText(rightNormalText);
+            }
+            int rightTextColor = titleBarStyle.getTitleCancelTextColor();
+            if (StyleUtils.checkStyleValidity(rightTextColor)) {
+                tvCancel.setTextColor(rightTextColor);
+            }
+            int rightTextSize = titleBarStyle.getTitleCancelTextSize();
+            if (StyleUtils.checkSizeValidity(rightTextSize)) {
+                tvCancel.setTextSize(rightTextSize);
+            }
         }
     }
 
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.picture_iv_left_back || id == R.id.picture_tv_right_menu) {
+        if (id == R.id.ps_iv_left_back || id == R.id.ps_tv_cancel) {
             if (titleBarListener != null) {
                 titleBarListener.onBackPressed();
             }
-        } else if (id == R.id.picture_rl_album_bg || id == R.id.picture_rl_album_click) {
+        } else if (id == R.id.ps_rl_album_bg || id == R.id.ps_rl_album_click) {
             if (titleBarListener != null) {
                 titleBarListener.onShowAlbumPopWindow(this);
             }

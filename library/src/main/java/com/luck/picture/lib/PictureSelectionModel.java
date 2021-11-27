@@ -20,6 +20,8 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnCameraEventInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
+import com.luck.picture.lib.manager.SelectedManager;
+import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
@@ -55,6 +57,27 @@ public class PictureSelectionModel {
         selectionConfig = PictureSelectionConfig.getCleanInstance();
         selectionConfig.isOnlyCamera = isOnlyCamera;
         selectionConfig.chooseMode = chooseMode;
+    }
+
+    /**
+     * PictureSelector theme style settings
+     *
+     * @param uiStyle <p>
+     *                Use {@link  PictureSelectorStyle
+     *                It consists of the following parts and can be set separately}
+     *                {@link com.luck.picture.lib.style.TitleBarStyle}
+     *                {@link com.luck.picture.lib.style.AlbumWindowStyle}
+     *                {@link com.luck.picture.lib.style.SelectMainStyle}
+     *                {@link com.luck.picture.lib.style.BottomNavBarStyle}
+     *                {@link com.luck.picture.lib.style.PictureWindowAnimationStyle}
+     *                <p/>
+     * @return PictureSelectorStyle
+     */
+    public PictureSelectionModel setSelectorUIStyle(PictureSelectorStyle uiStyle) {
+        if (uiStyle != null) {
+            PictureSelectionConfig.selectorStyle = uiStyle;
+        }
+        return this;
     }
 
     /**
@@ -125,6 +148,8 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel selectionMode(int selectionMode) {
         selectionConfig.selectionMode = selectionMode;
+        selectionConfig.maxSelectNum = selectionConfig.selectionMode ==
+                SelectModeConfig.SINGLE ? 1 : selectionConfig.maxSelectNum;
         return this;
     }
 
@@ -195,7 +220,7 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel maxSelectNum(int maxSelectNum) {
-        selectionConfig.maxSelectNum = maxSelectNum;
+        selectionConfig.maxSelectNum = selectionConfig.selectionMode == SelectModeConfig.SINGLE ? 1 : maxSelectNum;
         return this;
     }
 
@@ -698,14 +723,17 @@ public class PictureSelectionModel {
     }
 
     /**
-     * @param selectionData Select the selected picture set
+     * @param selectedList Select the selected picture set
      * @return
      */
-    public PictureSelectionModel selectionData(List<LocalMedia> selectionData) {
+    public PictureSelectionModel selectedData(List<LocalMedia> selectedList) {
+        if (selectedList == null) {
+            return this;
+        }
         if (selectionConfig.selectionMode == SelectModeConfig.SINGLE && selectionConfig.isDirectReturnSingle) {
-            selectionConfig.selectionMedias = null;
+            SelectedManager.clear();
         } else {
-            selectionConfig.selectionMedias = selectionData;
+            SelectedManager.getSelectedResult().addAll(new ArrayList<>(selectedList));
         }
         return this;
     }
@@ -725,12 +753,14 @@ public class PictureSelectionModel {
     /**
      * preview LocalMedia
      *
-     * @param position current position
-     * @param list     preview data
+     * @param position    current position
+     * @param list        preview data
+     * @param isHasDelete if visible delete
      * @param listener
      */
     public void startPreview(int position, List<LocalMedia> list,
-                           OnExternalPreviewEventListener listener) {
+                             boolean isHasDelete,
+                             OnExternalPreviewEventListener listener) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
             if (activity == null) {
@@ -744,7 +774,6 @@ public class PictureSelectionModel {
             }
             // 绑定回调监听
             PictureSelectionConfig.previewEventListener = listener;
-            selectionConfig.isExternalPreview = true;
             FragmentManager fragmentManager = null;
             if (activity instanceof AppCompatActivity) {
                 fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
@@ -756,7 +785,7 @@ public class PictureSelectionModel {
             }
             PictureSelectorPreviewFragment fragment = PictureSelectorPreviewFragment.newInstance();
             List<LocalMedia> previewData = new ArrayList<>(list);
-            fragment.setData(position, previewData.size(), previewData);
+            fragment.setPreviewData(position, previewData.size(), previewData, isHasDelete);
             fragmentManager.beginTransaction()
                     .add(android.R.id.content, fragment, PictureSelectorPreviewFragment.TAG)
                     .addToBackStack(PictureSelectorPreviewFragment.TAG)

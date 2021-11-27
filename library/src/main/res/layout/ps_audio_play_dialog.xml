@@ -10,8 +10,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:padding="10dp"
-        android:text="@string/picture_play_audio"
-        android:textColor="@color/picture_color_9b"
+        android:text="@string/ps_play_audio"
+        android:textColor="@color/ps_color_9b"
         android:textSize="14sp" />
 
     <RelativeLayout
@@ -30,7 +30,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="5dp"
             android:text="00:00"
-            android:textColor="@color/picture_color_9b"
+            android:textColor="@color/ps_color_9b"
             android:textSize="12sp" />
 
 
@@ -58,7 +58,7 @@
             android:layout_marginEnd="5dp"
             android:layout_toEndOf="@+id/music_seek_bar"
             android:text="00:00"
-            android:textColor="@color/picture_color_9b"
+            android:textColor="@color/ps_color_9b"
             android:textSize="12sp" />
 
     </RelativeLayout>
@@ -80,8 +80,8 @@
             android:layout_weight="1"
             android:background="@drawable/ps_btn_music_shape"
             android:gravity="center"
-            android:text="@string/picture_play_audio"
-            android:textColor="@color/picture_color_white"
+            android:text="@string/ps_play_audio"
+            android:textColor="@color/ps_color_white"
             android:textSize="14sp" />
 
         <TextView
@@ -92,8 +92,8 @@
             android:layout_weight="1"
             android:background="@drawable/ps_btn_music_shape"
             android:gravity="center"
-            android:text="@string/picture_stop_audio"
-            android:textColor="@color/picture_color_white"
+            android:text="@string/ps_stop_audio"
+            android:textColor="@color/ps_color_white"
             android:textSize="14sp" />
 
         <TextView
@@ -105,8 +105,8 @@
             android:layout_weight="1"
             android:background="@drawable/ps_btn_music_shape"
             android:gravity="center"
-            android:text="@string/picture_quit_audio"
-            android:textColor="@color/picture_color_white"
+            android:text="@string/ps_quit_audio"
+            android:textColor="@color/ps_color_white"
             android:textSize="14sp" />
     </LinearLayout>
 </RelativeLayout>

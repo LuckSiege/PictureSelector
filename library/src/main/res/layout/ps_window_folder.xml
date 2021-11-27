@@ -17,5 +17,5 @@
         android:layout_height="1000dp"
         android:layout_below="@id/folder_list"
         android:alpha="0"
-        android:background="@color/picture_color_80" />
+        android:background="@color/ps_color_80" />
 </RelativeLayout>

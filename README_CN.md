@@ -193,7 +193,7 @@ Application下实现如下接口
 *注意 .themeStyle(R.style.theme)；里面的参数不可删，否则闪退...
 
 PictureSelector.create(this)
- .themeStyle(R.style.picture_default_style)
+ .themeStyle(R.style.ps_default_style)
  .isNotPreviewDownload(true)
  .imageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
  .openExternalPreview(position, result);
@@ -261,25 +261,25 @@ QQ [893855882]() <br>
 
 | 默认风格 | 预览 | 多图裁剪 |
 |:-----------:|:--------:|:---------:|
-|![](image/picture_default_style_1.jpg) | <img src="image/picture_default_style_2.jpg"/> | ![](image/picture_default_style_new_3.jpg)|  
+|![](image/ps_default_style_1.jpg) | <img src="image/ps_default_style_2.jpg"/> | ![](image/ps_default_style_new_3.jpg)|
 
 | 数字风格 | 预览 | 多图裁剪 |
 |:-----------:|:--------:|:---------:|
-|![](image/picture_num_style_new_1.jpg) | ![](image/picture_num_style_new_2.jpg) | ![](image/picture_num_style_new_3.jpg)| 
+|![](image/ps_num_style_new_1.jpg) | ![](image/ps_num_style_new_2.jpg) | ![](image/ps_num_style_new_3.jpg)|
 
 | 白色风格 | 预览 | 单图裁剪 |
 |:-----------:|:--------:|:---------:|
-|![](image/picture_sina_style_1.jpg) | ![](image/picture_sina_style_new_2.jpg) | ![](image/picture_sina_style_new_3.jpg)| 
+|![](image/ps_sina_style_1.jpg) | ![](image/ps_sina_style_new_2.jpg) | ![](image/ps_sina_style_new_3.jpg)|
 
 | 全新风格 | 预览 | 多图裁剪 |
 |:-----------:|:--------:|:---------:|
-|![](image/picture_wechat_style_1.jpg) | ![](image/picture_wechat_style_2.jpg) | ![](image/picture_wechat_style_new_3.jpg)| 
+|![](image/ps_wechat_style_1.jpg) | ![](image/ps_wechat_style_2.jpg) | ![](image/ps_wechat_style_new_3.jpg)|
 
 | 相册目录 | 单选模式 | 头像裁剪|
 |:-----------:|:--------:|:--------:|
-|![](image/picture_wechat_album_style.jpg) |![](image/picture_wechat_single_style_3.jpg) | ![](image/picture_circular_crop_new_style.jpg)| 
+|![](image/ps_wechat_album_style.jpg) |![](image/ps_wechat_single_style_3.jpg) | ![](image/ps_circular_crop_new_style.jpg)|
 
 | 白色风格 | 视频 | 音频 |
 |:-----------:|:-----------:|:--------:|
-|![](image/picture_white_style.jpeg) |![](image/picture_video.jpg) | ![](image/picture_audio.jpg)| 
+|![](image/ps_white_style.jpeg) |![](image/ps_video.jpg) | ![](image/ps_audio.jpg)|
 

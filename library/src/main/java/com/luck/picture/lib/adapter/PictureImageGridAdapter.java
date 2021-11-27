@@ -8,11 +8,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.adapter.holder.BaseRecyclerMediaHolder;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.adapter.holder.BaseRecyclerMediaHolder;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,6 +25,22 @@ import java.util.List;
  * @describe：PictureImageGridAdapter
  */
 public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMediaHolder> {
+    /**
+     * 拍照
+     */
+    public final static int ADAPTER_TYPE_CAMERA = 1;
+    /**
+     * 图片
+     */
+    public final static int ADAPTER_TYPE_IMAGE = 2;
+    /**
+     * 视频
+     */
+    public final static int ADAPTER_TYPE_VIDEO = 3;
+    /**
+     * 音频
+     */
+    public final static int ADAPTER_TYPE_AUDIO = 4;
 
     private boolean showCamera;
     private List<LocalMedia> mData = new ArrayList<>();
@@ -59,16 +74,16 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
     @Override
     public int getItemViewType(int position) {
         if (showCamera && position == 0) {
-            return PictureConfig.ADAPTER_TYPE_CAMERA;
+            return ADAPTER_TYPE_CAMERA;
         } else {
             int adapterPosition = showCamera ? position - 1 : position;
             String mimeType = mData.get(adapterPosition).getMimeType();
             if (PictureMimeType.isHasVideo(mimeType)) {
-                return PictureConfig.ADAPTER_TYPE_VIDEO;
+                return ADAPTER_TYPE_VIDEO;
             } else if (PictureMimeType.isHasAudio(mimeType)) {
-                return PictureConfig.ADAPTER_TYPE_AUDIO;
+                return ADAPTER_TYPE_AUDIO;
             }
-            return PictureConfig.ADAPTER_TYPE_IMAGE;
+            return ADAPTER_TYPE_IMAGE;
         }
     }
 
@@ -86,11 +101,11 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
      */
     private int getItemResourceId(int viewType) {
         switch (viewType) {
-            case PictureConfig.ADAPTER_TYPE_CAMERA:
+            case ADAPTER_TYPE_CAMERA:
                 return R.layout.ps_item_grid_camera;
-            case PictureConfig.ADAPTER_TYPE_VIDEO:
+            case ADAPTER_TYPE_VIDEO:
                 return R.layout.ps_item_grid_video;
-            case PictureConfig.ADAPTER_TYPE_AUDIO:
+            case ADAPTER_TYPE_AUDIO:
                 return R.layout.ps_item_grid_audio;
             default:
                 return R.layout.ps_item_grid_image;
@@ -99,7 +114,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
 
     @Override
     public void onBindViewHolder(@NotNull final BaseRecyclerMediaHolder holder, final int position) {
-        if (getItemViewType(position) == PictureConfig.ADAPTER_TYPE_CAMERA) {
+        if (getItemViewType(position) == ADAPTER_TYPE_CAMERA) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -139,18 +154,18 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
         /**
          * 列表item点击事件
          *
-         * @param selectedView     所产生点击事件的View
-         * @param position 当前下标
-         * @param media    当前LocalMedia对象
+         * @param selectedView 所产生点击事件的View
+         * @param position     当前下标
+         * @param media        当前LocalMedia对象
          */
         void onItemClick(View selectedView, int position, LocalMedia media);
 
         /**
          * 列表勾选点击事件
          *
-         * @param selectedView     所产生点击事件的View
-         * @param position 当前下标
-         * @param media    当前LocalMedia对象
+         * @param selectedView 所产生点击事件的View
+         * @param position     当前下标
+         * @param media        当前LocalMedia对象
          */
         int onSelected(View selectedView, int position, LocalMedia media);
     }

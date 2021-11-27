@@ -1,5 +1,6 @@
 package com.luck.picture.lib;
 
+import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 
 import java.util.List;
@@ -88,11 +89,26 @@ public interface IPictureSelectorCommonEvent {
     void onSelectedChange(boolean isAddRemove, LocalMedia currentMedia);
 
     /**
+     * 上一次单选的数据
+     */
+    void onLastSingleSelectedChange(LocalMedia oldLocalMedia);
+
+    /**
      * 分发拍照后生成的LocalMedia
      *
      * @param media
      */
     void dispatchCameraMediaResult(LocalMedia media);
+
+    /**
+     * {@link PictureSelectionConfig.selectorStyle.getSelectMainStyle().isSelectNumberStyle}
+     * <p>
+     * isSelectNumberStyle模式下对选择结果编号进行排序
+     * </p>
+     *
+     * @param isRefreshAdapter
+     */
+    void subSelectPosition(boolean isRefreshAdapter);
 
     /**
      * 发送选择数据发生变化的通知
@@ -101,6 +117,23 @@ public interface IPictureSelectorCommonEvent {
      * @param currentMedia 当前操作的对象
      */
     void sendSelectedChangeEvent(boolean isAddRemove, LocalMedia currentMedia);
+
+    /**
+     * 发送上一次选择数据发生变化的通知
+     *
+     */
+    void sendLastSelectedChangeEvent(LocalMedia oldLocalMedia);
+
+
+    /**
+     * 原图选项发生变化
+     */
+    void sendSelectedOriginalChangeEvent();
+
+    /**
+     * 原图选项发生变化
+     */
+    void onCheckOriginalChange();
 
     /**
      * 选择结果回调

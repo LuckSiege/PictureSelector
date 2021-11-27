@@ -4,13 +4,13 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
@@ -38,12 +38,14 @@ import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.permissions.PermissionResultCallback;
 import com.luck.picture.lib.style.PictureSelectorStyle;
+import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.tools.AnimUtils;
 import com.luck.picture.lib.tools.DoubleUtils;
 import com.luck.picture.lib.tools.SortUtils;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.widget.BottomNavBar;
+import com.luck.picture.lib.widget.CompleteSelectView;
 import com.luck.picture.lib.widget.RecyclerPreloadView;
 import com.luck.picture.lib.widget.TitleBar;
 
@@ -66,6 +68,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
     private TitleBar titleBar;
 
     private BottomNavBar bottomNarBar;
+
+    private CompleteSelectView completeSelectView;
 
     /**
      * open camera number
@@ -92,13 +96,40 @@ public class PictureSelectorFragment extends PictureCommonFragment
     @Override
     public void onSelectedChange(boolean isAddRemove, LocalMedia currentMedia) {
         bottomNarBar.setSelectedChange();
+        completeSelectView.setSelectedChange(false);
+        // 刷新列表数据
         if (checkNotifyStrategy(isAddRemove)) {
             mAdapter.notifyDataSetChanged();
-            Log.i("YYY", "刷新全部");
         } else {
             mAdapter.notifyItemChanged(currentMedia.position);
-            Log.i("YYY", "刷新单个");
         }
+        if (!isAddRemove) {
+            subSelectPosition(true);
+        }
+    }
+
+    @Override
+    public void onLastSingleSelectedChange(LocalMedia oldLocalMedia) {
+        mAdapter.notifyItemChanged(oldLocalMedia.position);
+    }
+
+    @Override
+    public void subSelectPosition(boolean isRefreshAdapter) {
+        if (PictureSelectionConfig.selectorStyle.getSelectMainStyle()
+                .isSelectNumberStyle()) {
+            for (int index = 0; index < SelectedManager.getCount(); index++) {
+                LocalMedia media = SelectedManager.getSelectedResult().get(index);
+                media.setNum(index + 1);
+                if (isRefreshAdapter) {
+                    mAdapter.notifyItemChanged(media.position);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onCheckOriginalChange() {
+        bottomNarBar.setOriginalCheck();
     }
 
     /**
@@ -144,13 +175,36 @@ public class PictureSelectorFragment extends PictureCommonFragment
             allFolderSize = savedInstanceState.getInt(PictureConfig.EXTRA_ALL_FOLDER_SIZE);
         }
         tvDataEmpty = view.findViewById(R.id.tv_data_empty);
+        completeSelectView = view.findViewById(R.id.ps_complete_select);
         titleBar = view.findViewById(R.id.title_bar);
         bottomNarBar = view.findViewById(R.id.bottom_nar_bar);
         initLoader();
         initAlbumListPopWindow();
         initTitleBar();
+        initComplete();
         initRecycler(view);
         initBottomNavBar();
+    }
+
+    /**
+     * 完成按钮
+     */
+    private void initComplete() {
+        completeSelectView.setCompleteSelectViewStyle();
+        completeSelectView.setSelectedChange(false);
+        SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
+        if (selectMainStyle.isCompleteSelectRelativeTop()) {
+            ((ConstraintLayout.LayoutParams)
+                    completeSelectView.getLayoutParams()).topToTop = R.id.title_bar;
+            ((ConstraintLayout.LayoutParams)
+                    completeSelectView.getLayoutParams()).bottomToBottom = R.id.title_bar;
+        }
+        completeSelectView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dispatchTransformResult();
+            }
+        });
     }
 
     /**
@@ -276,13 +330,13 @@ public class PictureSelectorFragment extends PictureCommonFragment
             }
 
             @Override
-            public void onComplete() {
-                dispatchTransformResult();
+            public void onEditImage() {
+
             }
 
             @Override
-            public void onEditImage() {
-
+            public void onCheckOriginalChange() {
+                sendSelectedOriginalChangeEvent();
             }
         });
     }
@@ -380,7 +434,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
     private void initRecycler(View view) {
         mRecycler = view.findViewById(R.id.recycler);
         PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
-        int listBackgroundColor = selectorStyle.getAdapterStyle().getAdapterListBackgroundColor();
+        int listBackgroundColor = selectorStyle.getSelectMainStyle().getMainListBackgroundColor();
         if (listBackgroundColor != 0) {
             mRecycler.setBackgroundColor(listBackgroundColor);
         }
@@ -423,11 +477,11 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
             @Override
             public int onSelected(View selectedView, int position, LocalMedia media) {
-                int resultCode = confirmSelect(media, selectedView.isSelected());
-                if (resultCode == SelectedManager.ADD_SUCCESS) {
+                int selectResultCode = confirmSelect(media, selectedView.isSelected());
+                if (selectResultCode == SelectedManager.ADD_SUCCESS) {
                     selectedView.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.ps_anim_modal_in));
                 }
-                return resultCode;
+                return selectResultCode;
             }
 
             @Override
@@ -486,6 +540,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @SuppressLint("NotifyDataSetChanged")
     private void setAdapterData(List<LocalMedia> result) {
+        subSelectPosition(false);
         mAdapter.setDataAndDataSetChanged(result);
         if (mAdapter.isDataEmpty()) {
             showDataNull();
@@ -591,7 +646,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
             // 1、没有相册时需要手动创建相机胶卷
             allFolder = new LocalMediaFolder();
             String folderName = config.chooseMode == SelectMimeType.ofAudio()
-                    ? getString(R.string.picture_all_audio) : getString(R.string.picture_camera_roll);
+                    ? getString(R.string.ps_all_audio) : getString(R.string.ps_camera_roll);
             allFolder.setName(folderName);
             allFolder.setFirstImagePath("");
             allFolder.setCameraFolder(true);
@@ -674,7 +729,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         tvDataEmpty.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ps_ic_no_data, 0, 0);
         int chooseMode = config.chooseMode;
         String tips = chooseMode == SelectMimeType.ofAudio()
-                ? getString(R.string.picture_audio_empty) : getString(R.string.picture_empty);
+                ? getString(R.string.ps_audio_empty) : getString(R.string.ps_empty);
         tvDataEmpty.setText(tips);
     }
 

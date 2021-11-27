@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectMimeType;
 
 import java.io.File;
 
@@ -19,7 +20,7 @@ import java.io.File;
  * @date：2021/11/8 4:27 下午
  * @describe：CameraFileUtils
  */
-public class CameraFileUtils {
+public class MediaStoreUtils {
 
     /**
      * 拍摄图片地址
@@ -42,7 +43,7 @@ public class CameraFileUtils {
             imageUri = createImageUri(context, cameraFileName, config.cameraImageFormatForQ);
             config.cameraPath = imageUri != null ? imageUri.toString() : null;
         } else {
-            File cameraFile = PictureFileUtils.createCameraFile(context, PictureConfig.TYPE_IMAGE, cameraFileName, config.cameraImageFormat, config.outPutCameraPath);
+            File cameraFile = PictureFileUtils.createCameraFile(context, SelectMimeType.TYPE_IMAGE, cameraFileName, config.cameraImageFormat, config.outPutCameraPath);
             config.cameraPath = cameraFile.getAbsolutePath();
             imageUri = PictureFileUtils.parUri(context, cameraFile);
         }
@@ -71,7 +72,7 @@ public class CameraFileUtils {
             videoUri = createVideoUri(context, cameraFileName, config.cameraVideoFormatForQ);
             config.cameraPath = videoUri != null ? videoUri.toString() : "";
         } else {
-            File cameraFile = PictureFileUtils.createCameraFile(context, PictureConfig.TYPE_VIDEO, cameraFileName, config.cameraVideoFormat, config.outPutCameraPath);
+            File cameraFile = PictureFileUtils.createCameraFile(context, SelectMimeType.TYPE_VIDEO, cameraFileName, config.cameraVideoFormat, config.outPutCameraPath);
             config.cameraPath = cameraFile.getAbsolutePath();
             videoUri = PictureFileUtils.parUri(context, cameraFile);
         }
@@ -123,22 +124,22 @@ public class CameraFileUtils {
     /**
      * 构建图片的ContentValues,用于保存拍照后的照片
      *
-     * @param cameraFileName 资源名称
+     * @param customFileName 资源名称
      * @param mimeType       资源类型
      * @return
      */
-    public static ContentValues buildImageContentValues(String cameraFileName, String mimeType) {
+    public static ContentValues buildImageContentValues(String customFileName, String mimeType) {
         String time = ValueOf.toString(System.currentTimeMillis());
         // ContentValues是我们希望这条记录被创建时包含的数据信息
         ContentValues values = new ContentValues(3);
-        if (TextUtils.isEmpty(cameraFileName)) {
+        if (TextUtils.isEmpty(customFileName)) {
             values.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
         } else {
-            if (cameraFileName.lastIndexOf(".") == -1) {
+            if (customFileName.lastIndexOf(".") == -1) {
                 values.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
             } else {
-                String suffix = cameraFileName.substring(cameraFileName.lastIndexOf("."));
-                String fileName = cameraFileName.replaceAll(suffix, "");
+                String suffix = customFileName.substring(customFileName.lastIndexOf("."));
+                String fileName = customFileName.replaceAll(suffix, "");
                 values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName);
             }
         }
@@ -179,22 +180,22 @@ public class CameraFileUtils {
     /**
      * 构建视频的ContentValues,用于保存拍照后的照片
      *
-     * @param cameraFileName 资源名称
+     * @param customFileName 资源名称
      * @param mimeType       资源类型
      * @return
      */
-    public static ContentValues buildVideoContentValues(String cameraFileName, String mimeType) {
+    public static ContentValues buildVideoContentValues(String customFileName, String mimeType) {
         String time = ValueOf.toString(System.currentTimeMillis());
         // ContentValues是我们希望这条记录被创建时包含的数据信息
         ContentValues values = new ContentValues(3);
-        if (TextUtils.isEmpty(cameraFileName)) {
+        if (TextUtils.isEmpty(customFileName)) {
             values.put(MediaStore.Video.Media.DISPLAY_NAME, DateUtils.getCreateFileName("VID_"));
         } else {
-            if (cameraFileName.lastIndexOf(".") == -1) {
+            if (customFileName.lastIndexOf(".") == -1) {
                 values.put(MediaStore.Video.Media.DISPLAY_NAME, DateUtils.getCreateFileName("VID_"));
             } else {
-                String suffix = cameraFileName.substring(cameraFileName.lastIndexOf("."));
-                String fileName = cameraFileName.replaceAll(suffix, "");
+                String suffix = customFileName.substring(customFileName.lastIndexOf("."));
+                String fileName = customFileName.replaceAll(suffix, "");
                 values.put(MediaStore.Video.Media.DISPLAY_NAME, fileName);
             }
         }

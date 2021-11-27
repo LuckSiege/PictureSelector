@@ -72,7 +72,6 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isEmptyResultReturn;
     public boolean isHidePreviewDownload;
     public boolean isWithVideoImage;
-    public List<LocalMedia> selectionMedias;
     public HashSet<String> queryMimeTypeHashSet;
     public String cameraFileName;
     public boolean isCheckOriginalImage;
@@ -93,7 +92,6 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isAutoScalePreviewImage;
     public int ofAllCameraType;
     public boolean isOnlySandboxDir;
-    public boolean isExternalPreview;
 
     public static ImageEngine imageEngine;
     public static CompressEngine compressEngine;
@@ -144,7 +142,6 @@ public final class PictureSelectionConfig implements Parcelable {
         isEmptyResultReturn = in.readByte() != 0;
         isHidePreviewDownload = in.readByte() != 0;
         isWithVideoImage = in.readByte() != 0;
-        selectionMedias = in.createTypedArrayList(LocalMedia.CREATOR);
         cameraFileName = in.readString();
         isCheckOriginalImage = in.readByte() != 0;
         outPutCameraPath = in.readString();
@@ -164,7 +161,6 @@ public final class PictureSelectionConfig implements Parcelable {
         isAutoScalePreviewImage = in.readByte() != 0;
         ofAllCameraType = in.readInt();
         isOnlySandboxDir = in.readByte() != 0;
-        isExternalPreview = in.readByte() != 0;
     }
 
     @Override
@@ -209,7 +205,6 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isEmptyResultReturn ? 1 : 0));
         dest.writeByte((byte) (isHidePreviewDownload ? 1 : 0));
         dest.writeByte((byte) (isWithVideoImage ? 1 : 0));
-        dest.writeTypedList(selectionMedias);
         dest.writeString(cameraFileName);
         dest.writeByte((byte) (isCheckOriginalImage ? 1 : 0));
         dest.writeString(outPutCameraPath);
@@ -229,7 +224,6 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isAutoScalePreviewImage ? 1 : 0));
         dest.writeInt(ofAllCameraType);
         dest.writeByte((byte) (isOnlySandboxDir ? 1 : 0));
-        dest.writeByte((byte) (isExternalPreview ? 1 : 0));
     }
 
     @Override
@@ -291,7 +285,6 @@ public final class PictureSelectionConfig implements Parcelable {
         cameraAudioFormatForQ = "";
         cameraFileName = "";
         queryMimeTypeHashSet = new HashSet<>();
-        selectionMedias = new ArrayList<>();
         outPutCameraPath = "";
         sandboxFolderPath = "";
         originalPath = "";
@@ -312,7 +305,6 @@ public final class PictureSelectionConfig implements Parcelable {
         ofAllCameraType = SelectMimeType.ofAll();
         isOnlySandboxDir = false;
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
-        isExternalPreview = false;
     }
 
 

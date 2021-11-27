@@ -4,7 +4,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/picture_tv_preview"
+        android:id="@+id/ps_tv_preview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -14,12 +14,12 @@
         android:paddingTop="10dp"
         android:paddingRight="15dp"
         android:paddingBottom="10dp"
-        android:text="@string/picture_preview"
-        android:textColor="@color/picture_color_9b"
+        android:text="@string/ps_preview"
+        android:textColor="@color/ps_color_9b"
         android:textSize="14sp" />
 
     <TextView
-        android:id="@+id/picture_tv_editor"
+        android:id="@+id/ps_tv_editor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -28,8 +28,8 @@
         android:paddingTop="10dp"
         android:paddingRight="15dp"
         android:paddingBottom="10dp"
-        android:text="@string/picture_editor"
-        android:textColor="@color/picture_color_white"
+        android:text="@string/ps_editor"
+        android:textColor="@color/ps_color_white"
         android:textSize="14sp"
         android:visibility="gone" />
 
@@ -38,24 +38,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@color/picture_color_transparent"
+        android:background="@color/ps_color_transparent"
         android:button="@drawable/ps_original_checkbox"
         android:gravity="center"
+        android:includeFontPadding="false"
         android:paddingStart="5dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:text="@string/picture_default_original_image"
-        android:textColor="@color/picture_color_white"
+        android:text="@string/ps_default_original_image"
+        android:textColor="@color/ps_color_white"
         android:textSize="14sp"
         android:visibility="gone" />
-
-    <com.luck.picture.lib.widget.CompleteSelectView
-        android:id="@+id/picture_ll_select"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="15dp"
-        android:enabled="false" />
 
 </merge>

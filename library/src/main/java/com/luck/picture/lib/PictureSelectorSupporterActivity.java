@@ -40,10 +40,10 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity implemen
         int navigationBarColor = titleBarStyle.getNavigationBarColor();
         boolean isDarkStatusBarBlack = titleBarStyle.isDarkStatusBarBlack();
         if (!StyleUtils.checkStyleValidity(statusBarColor)) {
-            statusBarColor = ContextCompat.getColor(this, R.color.picture_color_grey);
+            statusBarColor = ContextCompat.getColor(this, R.color.ps_color_grey);
         }
         if (!StyleUtils.checkStyleValidity(navigationBarColor)) {
-            navigationBarColor = ContextCompat.getColor(this, R.color.picture_color_grey);
+            navigationBarColor = ContextCompat.getColor(this, R.color.ps_color_grey);
         }
         ImmersiveManage.immersiveAboveAPI23(this, statusBarColor, navigationBarColor, isDarkStatusBarBlack);
     }
@@ -69,19 +69,28 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity implemen
     }
 
     @Override
+    public void onImmediateFinish() {
+        exit();
+    }
+
+    @Override
     public void onBackPressed() {
         if (ActivityCompatHelper.checkRootFragment(this)) {
-            if (SdkVersionUtils.isQ()) {
-                finishAfterTransition();
-            } else {
-                super.onBackPressed();
-            }
-            finish();
-            PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
-            overridePendingTransition(0, windowAnimationStyle.activityExitAnimation);
+            exit();
         } else {
             getSupportFragmentManager().popBackStack();
         }
+    }
+
+    private void exit() {
+        if (SdkVersionUtils.isQ()) {
+            finishAfterTransition();
+        } else {
+            super.onBackPressed();
+        }
+        finish();
+        PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
+        overridePendingTransition(0, windowAnimationStyle.activityExitAnimation);
     }
 
     @Override

@@ -14,21 +14,21 @@ public class SelectMimeType {
      * </p>
      */
     public static int ofAll() {
-        return PictureConfig.TYPE_ALL;
+        return TYPE_ALL;
     }
 
     /**
      * GET image only
      */
     public static int ofImage() {
-        return PictureConfig.TYPE_IMAGE;
+        return TYPE_IMAGE;
     }
 
     /**
      * GET video only
      */
     public static int ofVideo() {
-        return PictureConfig.TYPE_VIDEO;
+        return TYPE_VIDEO;
     }
 
     /**
@@ -41,7 +41,13 @@ public class SelectMimeType {
      */
     @Deprecated
     public static int ofAudio() {
-        return PictureConfig.TYPE_AUDIO;
+        return TYPE_AUDIO;
     }
 
+
+    public final static int TYPE_ALL = 0;
+    public final static int TYPE_IMAGE = 1;
+    public final static int TYPE_VIDEO = 2;
+    @Deprecated
+    public final static int TYPE_AUDIO = 3;
 }

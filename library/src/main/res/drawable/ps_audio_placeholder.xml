@@ -5,7 +5,7 @@
             <size
                 android:width="100dp"
                 android:height="100dp" />
-            <solid android:color="@color/picture_color_light_grey" />
+            <solid android:color="@color/ps_color_light_grey" />
         </shape>
     </item>
     <item>
