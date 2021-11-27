@@ -33,7 +33,7 @@ public class PreviewBottomNavBar extends BottomNavBar {
         super.init();
         tvPreview.setVisibility(GONE);
         tvImageEditor.setOnClickListener(this);
-        tvImageEditor.setVisibility(config.isEditorImage ? View.VISIBLE : GONE);
+        tvImageEditor.setVisibility(PictureSelectionConfig.editMediaEventListener != null ? View.VISIBLE : GONE);
     }
 
     @Override

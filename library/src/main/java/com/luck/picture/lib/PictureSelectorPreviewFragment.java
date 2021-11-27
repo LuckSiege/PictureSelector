@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
@@ -215,7 +214,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                         if (isBottomPreview || TextUtils.equals(currentAlbum, getString(R.string.ps_camera_roll))
                                 || TextUtils.equals(media.getParentFolderName(), currentAlbum)) {
                             int newPosition = isBottomPreview ? position : isShowCamera ? media.position - 1 : media.position;
-                            viewPager.setCurrentItem(newPosition);
+                            viewPager.setCurrentItem(newPosition, false);
                         }
                     }
                 });
@@ -406,7 +405,16 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
             @Override
             public void onEditImage() {
-
+                if (PictureSelectionConfig.editMediaEventListener != null) {
+                    LocalMedia media = mData.get(viewPager.getCurrentItem());
+                    PictureSelectionConfig.editMediaEventListener.onStartMediaEdit(getContext(), media,
+                            new OnCallbackListener<LocalMedia>() {
+                                @Override
+                                public void onCall(LocalMedia media) {
+                                    confirmSelect(media, false);
+                                }
+                            });
+                }
             }
 
             @Override

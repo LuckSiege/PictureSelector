@@ -8,6 +8,7 @@ import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.interfaces.OnCameraEventInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
+import com.luck.picture.lib.interfaces.OnMediaEditEventInterceptListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.engine.CompressEngine;
@@ -33,8 +34,6 @@ public final class PictureSelectionConfig implements Parcelable {
     public int chooseMode;
     public boolean isOnlyCamera;
     public boolean isDirectReturnSingle;
-    public static PictureSelectorStyle selectorStyle;
-    public static OnCameraEventInterceptListener interceptCameraListener;
     public String cameraImageFormat;
     public String cameraVideoFormat;
     public String cameraAudioFormat;
@@ -60,7 +59,6 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean zoomAnim;
     public boolean isOriginalControl;
     public boolean isDisplayOriginalSize;
-    public boolean isEditorImage;
     public boolean isDisplayCamera;
     public boolean isGif;
     public boolean isWebp;
@@ -97,8 +95,11 @@ public final class PictureSelectionConfig implements Parcelable {
     public static CompressEngine compressEngine;
     public static CropEngine cropEngine;
     public static SandboxFileEngine sandboxFileEngine;
+    public static PictureSelectorStyle selectorStyle;
+    public static OnCameraEventInterceptListener interceptCameraListener;
     public static OnResultCallbackListener<LocalMedia> resultCallListener;
     public static OnExternalPreviewEventListener previewEventListener;
+    public static OnMediaEditEventInterceptListener editMediaEventListener;
 
 
     protected PictureSelectionConfig(Parcel in) {
@@ -130,7 +131,6 @@ public final class PictureSelectionConfig implements Parcelable {
         zoomAnim = in.readByte() != 0;
         isOriginalControl = in.readByte() != 0;
         isDisplayOriginalSize = in.readByte() != 0;
-        isEditorImage = in.readByte() != 0;
         isDisplayCamera = in.readByte() != 0;
         isGif = in.readByte() != 0;
         isWebp = in.readByte() != 0;
@@ -193,7 +193,6 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (zoomAnim ? 1 : 0));
         dest.writeByte((byte) (isOriginalControl ? 1 : 0));
         dest.writeByte((byte) (isDisplayOriginalSize ? 1 : 0));
-        dest.writeByte((byte) (isEditorImage ? 1 : 0));
         dest.writeByte((byte) (isDisplayCamera ? 1 : 0));
         dest.writeByte((byte) (isGif ? 1 : 0));
         dest.writeByte((byte) (isWebp ? 1 : 0));
@@ -300,7 +299,6 @@ public final class PictureSelectionConfig implements Parcelable {
         isAutoRotating = true;
         isSyncCover = !SdkVersionUtils.isQ();
         isAutoScalePreviewImage = true;
-        isEditorImage = false;
         isDisplayOriginalSize = true;
         ofAllCameraType = SelectMimeType.ofAll();
         isOnlySandboxDir = false;
@@ -342,6 +340,7 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.sandboxFileEngine = null;
         PictureSelectionConfig.interceptCameraListener = null;
         PictureSelectionConfig.previewEventListener = null;
+        PictureSelectionConfig.editMediaEventListener = null;
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         ArrayPoolProvide.getInstance().clearMemory();
         SelectedManager.clear();

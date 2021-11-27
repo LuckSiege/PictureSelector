@@ -161,6 +161,11 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
                         return;
                     }
                     selectedMedia(isSelected(media));
+                    if (resultCode == SelectedManager.ADD_SUCCESS) {
+                        AnimUtils.zoom(ivPicture, config.zoomAnim);
+                    } else {
+                        AnimUtils.disZoom(ivPicture, config.zoomAnim);
+                    }
                 }
             }
         });
@@ -216,9 +221,6 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
     private void selectedMedia(boolean isChecked) {
         if (tvCheck.isSelected() != isChecked) {
             tvCheck.setSelected(isChecked);
-        }
-        if (config.zoomAnim) {
-            AnimUtils.zoomItemAnimation(ivPicture, tvCheck.isSelected());
         }
         ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(isChecked ?
                 ContextCompat.getColor(mContext, R.color.ps_color_80) :

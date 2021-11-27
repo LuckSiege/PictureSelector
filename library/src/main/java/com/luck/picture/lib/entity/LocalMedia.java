@@ -149,18 +149,6 @@ public class LocalMedia implements Parcelable {
     private long bucketId = -1;
 
     /**
-     * isMaxSelectEnabledMask
-     * # For internal use only
-     */
-    private boolean isMaxSelectEnabledMask;
-
-    /**
-     * Whether the image has been edited
-     * # For internal use only
-     */
-    private boolean isEditorImage;
-
-    /**
      * media create time
      */
     private long dateAddedTime;
@@ -172,6 +160,20 @@ public class LocalMedia implements Parcelable {
      * </p>
      */
     private String customData;
+
+    /**
+     * isMaxSelectEnabledMask
+     * # For internal use only
+     */
+    private boolean isMaxSelectEnabledMask;
+
+    /**
+     * Whether the image has been edited
+     * # For internal use only
+     */
+    private boolean isEditorImage;
+
+
 
     public LocalMedia() {
 
@@ -206,10 +208,10 @@ public class LocalMedia implements Parcelable {
         fileName = in.readString();
         parentFolderName = in.readString();
         bucketId = in.readLong();
-        isMaxSelectEnabledMask = in.readByte() != 0;
-        isEditorImage = in.readByte() != 0;
         dateAddedTime = in.readLong();
         customData = in.readString();
+        isMaxSelectEnabledMask = in.readByte() != 0;
+        isEditorImage = in.readByte() != 0;
     }
 
     @Override
@@ -241,10 +243,10 @@ public class LocalMedia implements Parcelable {
         dest.writeString(fileName);
         dest.writeString(parentFolderName);
         dest.writeLong(bucketId);
-        dest.writeByte((byte) (isMaxSelectEnabledMask ? 1 : 0));
-        dest.writeByte((byte) (isEditorImage ? 1 : 0));
         dest.writeLong(dateAddedTime);
         dest.writeString(customData);
+        dest.writeByte((byte) (isMaxSelectEnabledMask ? 1 : 0));
+        dest.writeByte((byte) (isEditorImage ? 1 : 0));
     }
 
     @Override

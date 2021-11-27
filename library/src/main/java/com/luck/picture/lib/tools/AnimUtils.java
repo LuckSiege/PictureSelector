@@ -14,24 +14,25 @@ import android.widget.ImageView;
 public class AnimUtils {
     private final static int DURATION = 350;
 
-
-    public static void zoomItemAnimation(View view, boolean isSelected) {
-        float v1 = 0, v2 = 0;
-        if (isSelected) {
-            if (view.getScaleX() == 1.0F && view.getScaleX() == 1.0F) {
-                v1 = 1F;
-                v2 = 1.12F;
-            }
-        } else {
-            if (view.getScaleX() == 1.12F && view.getScaleX() == 1.12F) {
-                v1 = 1.12F;
-                v2 = 1F;
-            }
-        }
-        if (v1 > 0) {
+    public static void zoom(View view, boolean isZoomAnim) {
+        if (isZoomAnim) {
             AnimatorSet set = new AnimatorSet();
-            set.playTogether(ObjectAnimator.ofFloat(view, "scaleX", v1, v2),
-                    ObjectAnimator.ofFloat(view, "scaleY", v1, v2));
+            set.playTogether(
+                    ObjectAnimator.ofFloat(view, "scaleX", 1f, 1.12f),
+                    ObjectAnimator.ofFloat(view, "scaleY", 1f, 1.12f)
+            );
+            set.setDuration(DURATION);
+            set.start();
+        }
+    }
+
+    public static void disZoom(View view, boolean isZoomAnim) {
+        if (isZoomAnim) {
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(
+                    ObjectAnimator.ofFloat(view, "scaleX", 1.12f, 1f),
+                    ObjectAnimator.ofFloat(view, "scaleY", 1.12f, 1f)
+            );
             set.setDuration(DURATION);
             set.start();
         }

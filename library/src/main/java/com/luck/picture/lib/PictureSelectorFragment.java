@@ -330,11 +330,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
             }
 
             @Override
-            public void onEditImage() {
-
-            }
-
-            @Override
             public void onCheckOriginalChange() {
                 sendSelectedOriginalChangeEvent();
             }

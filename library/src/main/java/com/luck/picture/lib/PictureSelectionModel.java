@@ -19,6 +19,7 @@ import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnCameraEventInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
+import com.luck.picture.lib.interfaces.OnMediaEditEventInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureSelectorStyle;
@@ -119,6 +120,17 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel setCameraInterceptListener(OnCameraEventInterceptListener listener) {
         PictureSelectionConfig.interceptCameraListener = listener;
+        return this;
+    }
+
+    /**
+     * Intercept media edit click events, and users can implement their own edit media framework
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionModel setEditMediaInterceptListener(OnMediaEditEventInterceptListener listener) {
+        PictureSelectionConfig.editMediaEventListener = listener;
         return this;
     }
 
@@ -490,15 +502,6 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel isDisplayOriginalSize(boolean isDisplayOriginalSize) {
         selectionConfig.isDisplayOriginalSize = !selectionConfig.isOnlyCamera && isDisplayOriginalSize;
-        return this;
-    }
-
-    /**
-     * @param isEditorImage is editor image
-     * @return
-     */
-    public PictureSelectionModel isEditorImage(boolean isEditorImage) {
-        selectionConfig.isEditorImage = isEditorImage;
         return this;
     }
 

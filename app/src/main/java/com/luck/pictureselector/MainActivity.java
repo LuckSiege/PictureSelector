@@ -388,7 +388,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .isDirectReturnSingle(cb_single_back.isChecked())
                         .maxSelectNum(maxSelectNum)
                         .isGif(cb_isGif.isChecked())
-                        .isEditorImage(true)
                         .selectedData(mAdapter.getData())
                         .isOriginalImageControl(cb_original.isChecked())
                         .isDisplayOriginalSize(cb_original.isChecked())
