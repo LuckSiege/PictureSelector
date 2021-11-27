@@ -22,7 +22,7 @@ public interface IPictureSelectorCommonEvent {
     /**
      * 设置app语言
      */
-    void setAppLanguage();
+    void initAppLanguage();
 
     /**
      * 选择拍照或拍视频

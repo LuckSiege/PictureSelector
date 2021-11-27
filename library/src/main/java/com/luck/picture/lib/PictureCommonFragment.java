@@ -175,7 +175,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         if (config == null) {
             config = PictureSelectionConfig.getInstance();
         }
-        setAppLanguage();
         if (config.isOpenClickSound && !config.isOnlyCamera) {
             soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
             soundID = soundPool.load(getContext(), R.raw.ps_click_music, 1);
@@ -185,7 +184,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        setAppLanguage();
+        initAppLanguage();
     }
 
 
@@ -765,9 +764,10 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      * set app language
      */
     @Override
-    public void setAppLanguage() {
+    public void initAppLanguage() {
+        PictureSelectionConfig config = PictureSelectionConfig.getInstance();
         if (config.language != LanguageConfig.UNKNOWN_LANGUAGE && !config.isOnlyCamera) {
-            PictureLanguageUtils.setAppLanguage(getContext(), config.language);
+            PictureLanguageUtils.setAppLanguage(getActivity(), config.language);
         }
     }
 
@@ -810,6 +810,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     @Override
     public void onAttach(@NonNull Context context) {
+        initAppLanguage();
         super.onAttach(context);
         if (getParentFragment() instanceof IBridgePictureBehavior) {
             iBridgePictureBehavior = (IBridgePictureBehavior) getParentFragment();

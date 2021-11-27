@@ -126,21 +126,21 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
             tvCancel.setVisibility(GONE);
         } else {
             tvCancel.setVisibility(VISIBLE);
-            int rightBackgroundRes = titleBarStyle.getTitleCancelBackgroundResource();
-            if (StyleUtils.checkStyleValidity(rightBackgroundRes)) {
-                tvCancel.setBackgroundResource(rightBackgroundRes);
+            int titleCancelBackgroundResource = titleBarStyle.getTitleCancelBackgroundResource();
+            if (StyleUtils.checkStyleValidity(titleCancelBackgroundResource)) {
+                tvCancel.setBackgroundResource(titleCancelBackgroundResource);
             }
-            String rightNormalText = titleBarStyle.getTitleCancelText();
-            if (StyleUtils.checkTextValidity(rightNormalText)) {
-                tvCancel.setText(rightNormalText);
+            String titleCancelText = titleBarStyle.getTitleCancelText();
+            if (StyleUtils.checkTextValidity(titleCancelText)) {
+                tvCancel.setText(titleCancelText);
             }
-            int rightTextColor = titleBarStyle.getTitleCancelTextColor();
-            if (StyleUtils.checkStyleValidity(rightTextColor)) {
-                tvCancel.setTextColor(rightTextColor);
+            int titleCancelTextColor = titleBarStyle.getTitleCancelTextColor();
+            if (StyleUtils.checkStyleValidity(titleCancelTextColor)) {
+                tvCancel.setTextColor(titleCancelTextColor);
             }
-            int rightTextSize = titleBarStyle.getTitleCancelTextSize();
-            if (StyleUtils.checkSizeValidity(rightTextSize)) {
-                tvCancel.setTextSize(rightTextSize);
+            int titleCancelTextSize = titleBarStyle.getTitleCancelTextSize();
+            if (StyleUtils.checkSizeValidity(titleCancelTextSize)) {
+                tvCancel.setTextSize(titleCancelTextSize);
             }
         }
     }
