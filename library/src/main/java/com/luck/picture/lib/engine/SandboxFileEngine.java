@@ -1,9 +1,9 @@
 package com.luck.picture.lib.engine;
 
-import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.interfaces.OnCallbackListener;
+import android.content.Context;
 
-import java.util.List;
+import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.interfaces.OnCallbackIndexListener;
 
 /**
  * @author：luck
@@ -22,15 +22,18 @@ public interface SandboxFileEngine {
      *
      * <p>
      * 1、LocalMedia media = new LocalMedia();
-     *   media.setSandboxPath("Your sandbox path");
+     * media.setSandboxPath("Your sandbox path");
      * </p>
      * <p>
      * 2、listener.onCall( "you result" );
      * </p>
      *
-     * @param list
+     * @param context  context
+     * @param index    The location of the resource in the result queue
+     * @param media    LocalMedia
      * @param listener
      */
-    void onStartSandboxFileTransform(List<LocalMedia> list, OnCallbackListener<List<LocalMedia>> listener);
+    void onStartSandboxFileTransform(Context context, int index, LocalMedia media,
+                                     OnCallbackIndexListener<LocalMedia> listener);
 
 }

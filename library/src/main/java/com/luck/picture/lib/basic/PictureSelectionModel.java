@@ -20,6 +20,7 @@ import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.ImageEngine;
+import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnCameraEventInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
@@ -86,7 +87,9 @@ public class PictureSelectionModel {
     }
 
     /**
-     * @param locale Language
+     * Set App Language
+     *
+     * @param language {@link com.luck.picture.lib.language.LanguageConfig}
      * @return PictureSelectionModel
      */
     public PictureSelectionModel setLanguage(int language) {
@@ -95,6 +98,8 @@ public class PictureSelectionModel {
     }
 
     /**
+     * Image Load the engine
+     *
      * @param engine Image Load the engine
      * @return
      */
@@ -106,6 +111,8 @@ public class PictureSelectionModel {
     }
 
     /**
+     * Image Compress the engine
+     *
      * @param engine Image Compress the engine
      * @return
      */
@@ -117,12 +124,27 @@ public class PictureSelectionModel {
     }
 
     /**
+     * Image Crop the engine
+     *
      * @param engine Image Crop the engine
      * @return
      */
     public PictureSelectionModel setCropEngine(CropEngine engine) {
         if (PictureSelectionConfig.cropEngine != engine) {
             PictureSelectionConfig.cropEngine = engine;
+        }
+        return this;
+    }
+
+    /**
+     * App Sandbox path transform
+     *
+     * @param engine App Sandbox path transform
+     * @return
+     */
+    public PictureSelectionModel setSandboxFileEngine(SandboxFileEngine engine) {
+        if (SdkVersionUtils.isQ() && PictureSelectionConfig.sandboxFileEngine != engine) {
+            PictureSelectionConfig.sandboxFileEngine = engine;
         }
         return this;
     }

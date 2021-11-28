@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.luck.picture.lib.basic.PictureContentResolver;
+
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
@@ -13,6 +14,18 @@ import java.io.InputStream;
  * @describe：SandboxTransformUtils
  */
 public class SandboxTransformUtils {
+
+    /**
+     * 把外部目录下的图片拷贝至沙盒内
+     *
+     * @param ctx
+     * @param url
+     * @param mineType
+     * @return
+     */
+    public static String copyPathToSandbox(Context ctx, String url, String mineType) {
+        return copyPathToSandbox(ctx, url, mineType, "");
+    }
 
     /**
      * 把外部目录下的图片拷贝至沙盒内

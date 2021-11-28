@@ -1,6 +1,5 @@
 package com.luck.pictureselector;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.net.Uri;
@@ -35,11 +34,12 @@ import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.dialog.AudioPlayDialog;
-import com.luck.picture.lib.dialog.PictureLoadingDialog;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CropEngine;
+import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
+import com.luck.picture.lib.interfaces.OnCallbackIndexListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
@@ -48,10 +48,10 @@ import com.luck.picture.lib.style.BottomNavBarStyle;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.style.TitleBarStyle;
-import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.MediaUtils;
+import com.luck.picture.lib.utils.SandboxTransformUtils;
 import com.luck.picture.lib.utils.ValueOf;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.listener.DragListener;
@@ -104,10 +104,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private DragListener mDragListener;
     private int animationMode = AnimationType.DEFAULT_ANIMATION;
     private PictureSelectorStyle selectorStyle;
-    /**
-     * Loading Dialog
-     */
-    private PictureLoadingDialog mLoadingDialog;
 
     private ImageCompressEngine compressEngine;
 
@@ -425,6 +421,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .maxSelectNum(maxSelectNum)
                         .setRecyclerAnimationMode(animationMode)
                         .isGif(cb_isGif.isChecked())
+                        .setSandboxFileEngine(new MeSandboxFileEngine())
                         .selectedData(mAdapter.getData())
                         .isOriginalImageControl(cb_original.isChecked())
                         .isDisplayOriginalSize(cb_original.isChecked())
@@ -440,6 +437,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     };
+
+    /**
+     * 自定义沙盒文件处理
+     */
+    private static class MeSandboxFileEngine implements SandboxFileEngine {
+
+        @Override
+        public void onStartSandboxFileTransform(Context context, int index, LocalMedia media, OnCallbackIndexListener<LocalMedia> listener) {
+            String sandboxPath = SandboxTransformUtils.copyPathToSandbox(context, media.getPath(),
+                    media.getMimeType());
+            media.setSandboxPath(sandboxPath);
+            listener.onCall(media, index);
+        }
+    }
 
     /**
      * 自定义裁剪
@@ -477,7 +488,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onStartCompress(Context context, List<LocalMedia> list,
                                     OnCallbackListener<List<LocalMedia>> listener) {
             // 自定义压缩
-            showLoading(context);
             List<Uri> compress = new ArrayList<>();
             for (int i = 0; i < list.size(); i++) {
                 LocalMedia media = list.get(i);
@@ -531,14 +541,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 media.setSandboxPath(media.getCompressPath());
                             }
                             if (index == list.size() - 1) {
-                                dismissLoading();
                                 listener.onCall(list);
                             }
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            dismissLoading();
+
                         }
                     }).launch();
         }
@@ -900,38 +909,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (mAdapter != null && mAdapter.getData() != null && mAdapter.getData().size() > 0) {
             outState.putParcelableArrayList("selectorList",
                     (ArrayList<? extends Parcelable>) mAdapter.getData());
-        }
-    }
-
-
-    public void showLoading(Context context) {
-        try {
-            if (ActivityCompatHelper.isDestroy((Activity) context)) {
-                return;
-            }
-            if (mLoadingDialog == null) {
-                mLoadingDialog = new PictureLoadingDialog(context);
-            }
-            if (mLoadingDialog.isShowing()) {
-                mLoadingDialog.dismiss();
-            }
-            mLoadingDialog.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public void dismissLoading() {
-        try {
-            if (ActivityCompatHelper.isDestroy(MainActivity.this)) {
-                return;
-            }
-            if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
-                mLoadingDialog.dismiss();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

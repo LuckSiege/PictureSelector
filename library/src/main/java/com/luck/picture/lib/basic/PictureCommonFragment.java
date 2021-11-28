@@ -37,6 +37,7 @@ import com.luck.picture.lib.dialog.PictureLoadingDialog;
 import com.luck.picture.lib.dialog.RemindDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
+import com.luck.picture.lib.interfaces.OnCallbackIndexListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnItemClickListener;
 import com.luck.picture.lib.language.LanguageConfig;
@@ -745,29 +746,44 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     protected void dispatchTransformResult() {
         List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
         List<LocalMedia> result = new ArrayList<>(selectedResult);
-        if (PictureSelectionConfig.cropEngine != null && result.size() > 0) {
+        boolean isResultNonNull = result.size() > 0;
+        if (PictureSelectionConfig.cropEngine != null && isResultNonNull) {
             if (result.size() == 1) {
                 PictureSelectionConfig.cropEngine.onStartSingleCrop(getActivity(), this, result.get(0));
             } else {
                 PictureSelectionConfig.cropEngine.onStartMultipleCrop(getContext(), this, result);
             }
-        } else if (PictureSelectionConfig.compressEngine != null && result.size() > 0) {
+        } else if (PictureSelectionConfig.compressEngine != null && isResultNonNull) {
+            showLoading();
             PictureSelectionConfig.compressEngine.onStartCompress(getContext(), result,
                     new OnCallbackListener<List<LocalMedia>>() {
                         @Override
                         public void onCall(List<LocalMedia> result) {
+                            dismissLoading();
                             onResultEvent(result);
                         }
                     });
 
-        } else if (PictureSelectionConfig.sandboxFileEngine != null && result.size() > 0) {
-            PictureSelectionConfig.sandboxFileEngine.onStartSandboxFileTransform(result,
-                    new OnCallbackListener<List<LocalMedia>>() {
-                        @Override
-                        public void onCall(List<LocalMedia> data) {
-                            onResultEvent(data);
-                        }
-                    });
+        } else if (PictureSelectionConfig.sandboxFileEngine != null && isResultNonNull) {
+            showLoading();
+            for (int i = 0; i < result.size(); i++) {
+                LocalMedia media = result.get(i);
+                PictureSelectionConfig.sandboxFileEngine.onStartSandboxFileTransform(getContext(), i,
+                        media, new OnCallbackIndexListener<LocalMedia>() {
+                            @Override
+                            public void onCall(LocalMedia data, int index) {
+                                if (result.size() > index) {
+                                    LocalMedia media = result.get(index);
+                                    media.setSandboxPath(data.getSandboxPath());
+                                }
+                                if (index == result.size() - 1) {
+                                    dismissLoading();
+                                    onResultEvent(result);
+                                }
+                            }
+                        });
+            }
+
         } else {
             onResultEvent(result);
         }
