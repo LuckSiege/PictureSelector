@@ -1,10 +1,13 @@
 package com.luck.pictureselector;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -23,28 +26,31 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.luck.picture.lib.basic.PictureSelector;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.app.PictureAppMaster;
+import com.luck.picture.lib.basic.PictureSelector;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.dialog.AudioPlayDialog;
+import com.luck.picture.lib.dialog.PictureLoadingDialog;
+import com.luck.picture.lib.engine.CompressEngine;
+import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
-import com.luck.picture.lib.interfaces.OnMediaEditEventInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.style.BottomNavBarStyle;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.style.TitleBarStyle;
+import com.luck.picture.lib.utils.ActivityCompatHelper;
+import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.MediaUtils;
 import com.luck.picture.lib.utils.ValueOf;
-import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.listener.DragListener;
 
@@ -52,9 +58,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import top.zibin.luban.CompressionPredicate;
+import top.zibin.luban.Luban;
+import top.zibin.luban.OnCompressListener;
+import top.zibin.luban.OnRenameListener;
 
 /**
  * @author：luck
@@ -87,6 +101,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private DragListener mDragListener;
     private int animationMode = AnimationType.DEFAULT_ANIMATION;
     private PictureSelectorStyle selectorStyle;
+    /**
+     * Loading Dialog
+     */
+    private PictureLoadingDialog mLoadingDialog;
+
+    private ImageCompressEngine compressEngine;
+
+    private ImageCropEngine cropEngine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -383,12 +405,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             boolean mode = cb_mode.isChecked();
             if (mode) {
                 // 进入相册
+                if (cb_compress.isChecked()) {
+                    compressEngine = new ImageCompressEngine();
+                }
+                if (cb_crop.isChecked()) {
+                    cropEngine = new ImageCropEngine();
+                }
                 PictureSelector.create(MainActivity.this)
                         .openGallery(chooseMode)
                         .imageEngine(GlideEngine.createGlideEngine())
                         .setSelectorUIStyle(selectorStyle)
                         .selectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
                         .setLanguage(language)
+                        .isWithSelectVideoImage(true)
                         .isDirectReturnSingle(cb_single_back.isChecked())
                         .maxSelectNum(maxSelectNum)
                         .setRecyclerAnimationMode(animationMode)
@@ -396,12 +425,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .selectedData(mAdapter.getData())
                         .isOriginalImageControl(cb_original.isChecked())
                         .isDisplayOriginalSize(cb_original.isChecked())
-                        .setEditMediaInterceptListener(new OnMediaEditEventInterceptListener() {
-                            @Override
-                            public void onStartMediaEdit(Context context, LocalMedia media, OnCallbackListener<LocalMedia> listener) {
-
-                            }
-                        })
+                        .setCompressEngine(compressEngine)
+                        .setCropEngine(cropEngine)
                         .forResult(new MyResultCallback(mAdapter));
             } else {
                 // 单独拍照
@@ -412,6 +437,94 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     };
+
+    /**
+     * 自定义裁剪
+     */
+    private static class ImageCropEngine implements CropEngine {
+
+        @Override
+        public void onStartCrop(Context context, List<LocalMedia> list,
+                                OnCallbackListener<List<LocalMedia>> listener) {
+
+        }
+    }
+
+    /**
+     * 自定义压缩
+     */
+    private class ImageCompressEngine implements CompressEngine {
+
+        @Override
+        public void onStartCompress(Context context, List<LocalMedia> list,
+                                    OnCallbackListener<List<LocalMedia>> listener) {
+            // 自定义压缩
+            showLoading(context);
+            List<Uri> compress = new ArrayList<>();
+            for (int i = 0; i < list.size(); i++) {
+                LocalMedia media = list.get(i);
+                String availablePath = media.getAvailablePath();
+                Uri uri = PictureMimeType.isContent(availablePath) ? Uri.parse(availablePath)
+                        : Uri.fromFile(new File(availablePath));
+                compress.add(uri);
+            }
+            if (compress.size() == 0) {
+                listener.onCall(list);
+                return;
+            }
+            Luban.with(context)
+                    .load(compress)
+                    .ignoreBy(100)
+                    .setTargetDir(createCustomCameraOutPath())
+                    .setFocusAlpha(false)
+                    .filter(new CompressionPredicate() {
+                        @Override
+                        public boolean apply(String path) {
+                            return PictureMimeType.isUrlHasImage(path);
+
+                        }
+                    })
+                    .setRenameListener(new OnRenameListener() {
+                        @Override
+                        public String rename(String filePath) {
+                            try {
+                                int indexOf = filePath.lastIndexOf(".");
+                                String postfix = indexOf != -1 ? filePath.substring(indexOf) : ".jpg";
+                                MessageDigest md = MessageDigest.getInstance("MD5");
+                                md.update(filePath.getBytes());
+                                return new BigInteger(1, md.digest()).toString(32) + postfix;
+                            } catch (NoSuchAlgorithmException e) {
+                                e.printStackTrace();
+                            }
+                            return "";
+                        }
+                    })
+                    .setCompressListener(new OnCompressListener() {
+                        @Override
+                        public void onStart() {
+                        }
+
+                        @Override
+                        public void onSuccess(int index, File compressFile) {
+                            LocalMedia media = list.get(index);
+                            if (compressFile.exists() && !TextUtils.isEmpty(compressFile.getAbsolutePath())) {
+                                media.setCompressed(true);
+                                media.setCompressPath(compressFile.getAbsolutePath());
+                                media.setSandboxPath(media.getCompressPath());
+                            }
+                            if (index == list.size() - 1) {
+                                dismissLoading();
+                                listener.onCall(list);
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            dismissLoading();
+                        }
+                    }).launch();
+        }
+    }
 
     /**
      * 返回结果回调
@@ -450,8 +563,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.i(TAG, "沙盒路径:" + media.getSandboxPath());
                 Log.i(TAG, "宽高: " + media.getWidth() + "x" + media.getHeight());
                 Log.i(TAG, "Size: " + media.getSize());
-
-                Log.i(TAG, "onResult: " + media.toString());
             }
             if (mAdapterWeakReference.get() != null) {
                 mAdapterWeakReference.get().setList(result);
@@ -774,6 +885,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+    public void showLoading(Context context) {
+        try {
+            if (ActivityCompatHelper.isDestroy((Activity) context)) {
+                return;
+            }
+            if (mLoadingDialog == null) {
+                mLoadingDialog = new PictureLoadingDialog(context);
+            }
+            if (mLoadingDialog.isShowing()) {
+                mLoadingDialog.dismiss();
+            }
+            mLoadingDialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void dismissLoading() {
+        try {
+            if (ActivityCompatHelper.isDestroy(MainActivity.this)) {
+                return;
+            }
+            if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
+                mLoadingDialog.dismiss();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public Context getContext() {
         return this;

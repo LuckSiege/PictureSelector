@@ -69,6 +69,8 @@ android {
 
 dependencies {
     implementation project(':library')
+    implementation project(':compress')
+    implementation project(':ucrop')
     implementation "androidx.appcompat:appcompat:${cfgs.version_appcompat}"
     implementation "androidx.recyclerview:recyclerview:${cfgs.version_recyclerview}"
     implementation "androidx.camera:camera-core:${cfgs.camera_core_version}"

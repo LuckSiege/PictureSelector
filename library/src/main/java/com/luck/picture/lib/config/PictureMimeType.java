@@ -52,6 +52,27 @@ public final class PictureMimeType {
     }
 
     /**
+     * isGif
+     *
+     * @param url
+     * @return
+     */
+    public static boolean isUrlHasGif(String url) {
+        return url.toLowerCase().endsWith(".gif");
+    }
+
+    /**
+     * is has image
+     *
+     * @param url
+     * @return
+     */
+    public static boolean isUrlHasImage(String url) {
+        return url.toLowerCase().endsWith(".jpg") || url.toLowerCase().endsWith(".jpeg")
+                || url.toLowerCase().endsWith(".png");
+    }
+
+    /**
      * isWebp
      *
      * @param mimeType
@@ -92,7 +113,7 @@ public final class PictureMimeType {
      * @return
      */
     public static boolean isUrlHasVideo(String url) {
-        return url.endsWith(".mp4");
+        return url.toLowerCase().endsWith(".mp4");
     }
 
     /**
@@ -103,6 +124,16 @@ public final class PictureMimeType {
      */
     public static boolean isHasAudio(String mimeType) {
         return mimeType != null && mimeType.startsWith(MIME_TYPE_PREFIX_AUDIO);
+    }
+
+    /**
+     * isAudio
+     *
+     * @param url
+     * @return
+     */
+    public static boolean isUrlHasAudio(String url) {
+        return url.toLowerCase().endsWith(".amr");
     }
 
     /**

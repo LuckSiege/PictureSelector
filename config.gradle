@@ -19,8 +19,8 @@ ext {
             viewpage2                     :"1.0.0",
 
             camerax_view                  : "1.0.0-alpha30",
-            camerax_version               : "1.1.0-alpha10",
-            camera_core_version           : "1.0.0-rc04",
+            camerax_version               : "1.1.0-alpha11",
+            camera_core_version           : "1.1.0-alpha11",
             experimental_version          : "1.1.0",
             futures_version               : "1.1.0",
 

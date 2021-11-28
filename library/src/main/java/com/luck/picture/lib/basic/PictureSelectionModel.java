@@ -18,6 +18,7 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.engine.CompressEngine;
+import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnCameraEventInterceptListener;
@@ -108,9 +109,20 @@ public class PictureSelectionModel {
      * @param engine Image Compress the engine
      * @return
      */
-    public PictureSelectionModel compressEngine(CompressEngine engine) {
+    public PictureSelectionModel setCompressEngine(CompressEngine engine) {
         if (PictureSelectionConfig.compressEngine != engine) {
             PictureSelectionConfig.compressEngine = engine;
+        }
+        return this;
+    }
+
+    /**
+     * @param engine Image Crop the engine
+     * @return
+     */
+    public PictureSelectionModel setCropEngine(CropEngine engine) {
+        if (PictureSelectionConfig.cropEngine != engine) {
+            PictureSelectionConfig.cropEngine = engine;
         }
         return this;
     }
