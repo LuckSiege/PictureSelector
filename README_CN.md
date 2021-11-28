@@ -207,18 +207,11 @@ PictureSelector.create(this).externalPictureVideo(video_path);
 ## 项目使用第三方库
 
 * PhotoView
-* luban
-* ucrop
 
 ## 混淆配置 
 ```sh
 #PictureSelector 2.0
 -keep class com.luck.picture.lib.** { *; }
-
-#Ucrop
--dontwarn com.yalantis.ucrop**
--keep class com.yalantis.ucrop** { *; }
--keep interface com.yalantis.ucrop** { *; }
 
 
 ```

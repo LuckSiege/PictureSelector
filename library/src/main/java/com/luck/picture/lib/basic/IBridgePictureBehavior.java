@@ -1,4 +1,4 @@
-package com.luck.picture.lib;
+package com.luck.picture.lib.basic;
 
 import androidx.fragment.app.Fragment;
 

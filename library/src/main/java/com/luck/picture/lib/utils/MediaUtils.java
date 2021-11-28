@@ -12,7 +12,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import androidx.exifinterface.media.ExifInterface;
 
-import com.luck.picture.lib.PictureContentResolver;
+import com.luck.picture.lib.basic.PictureContentResolver;
 import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;

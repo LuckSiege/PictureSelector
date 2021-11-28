@@ -1,4 +1,4 @@
-package com.luck.picture.lib;
+package com.luck.picture.lib.basic;
 
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;

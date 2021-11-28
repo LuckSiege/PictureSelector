@@ -19,6 +19,8 @@ import com.luck.picture.lib.adapter.PictureImageGridAdapter;
 import com.luck.picture.lib.animators.AlphaInAnimationAdapter;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.animators.SlideInBottomAnimationAdapter;
+import com.luck.picture.lib.basic.IPictureSelectorEvent;
+import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;

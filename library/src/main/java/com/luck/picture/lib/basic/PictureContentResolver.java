@@ -1,4 +1,4 @@
-package com.luck.picture.lib;
+package com.luck.picture.lib.basic;
 
 import android.content.Context;
 import android.net.Uri;

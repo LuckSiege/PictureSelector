@@ -5,7 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-import com.luck.picture.lib.PictureContentResolver;
+import com.luck.picture.lib.basic.PictureContentResolver;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.thread.PictureThreadUtils;

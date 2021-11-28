@@ -8,7 +8,7 @@ import android.net.Uri;
 
 import androidx.exifinterface.media.ExifInterface;
 
-import com.luck.picture.lib.PictureContentResolver;
+import com.luck.picture.lib.basic.PictureContentResolver;
 import com.luck.picture.lib.config.PictureMimeType;
 
 import java.io.BufferedOutputStream;

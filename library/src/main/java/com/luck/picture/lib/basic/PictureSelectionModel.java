@@ -1,4 +1,4 @@
-package com.luck.picture.lib;
+package com.luck.picture.lib.basic;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.luck.picture.lib.PictureOnlyCameraFragment;
+import com.luck.picture.lib.PictureSelectorPreviewFragment;
+import com.luck.picture.lib.R;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;

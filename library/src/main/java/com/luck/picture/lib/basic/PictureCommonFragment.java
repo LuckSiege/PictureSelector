@@ -1,4 +1,4 @@
-package com.luck.picture.lib;
+package com.luck.picture.lib.basic;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -22,6 +22,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.luck.picture.lib.PictureOnlyCameraFragment;
+import com.luck.picture.lib.PictureSelectorPreviewFragment;
+import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -819,7 +822,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         } else {
             if (this instanceof PictureOnlyCameraFragment || this instanceof PictureSelectorPreviewFragment) {
                 /**
-                 * {@link com.luck.picture.lib.PictureSelector.openCamera or startPreview}
+                 * {@link PictureSelector.openCamera or startPreview}
                  * <p>
                  *     不需要使用到IBridgePictureBehavior，可以忽略
                  * </p>
