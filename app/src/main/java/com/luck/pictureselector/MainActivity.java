@@ -468,14 +468,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         @Override
-        public void onStartMultipleCrop(Context context, Fragment fragment, List<LocalMedia> list) {
-            LocalMedia media = list.get(0);
-            Uri inputUri = PictureMimeType.isContent(media.getAvailablePath())
-                    ? Uri.parse(media.getAvailablePath()) : Uri.fromFile(new File(media.getAvailablePath()));
+        public void onStartMultipleCrop(Context context, Fragment fragment, LocalMedia firstImageMedia, List<LocalMedia> list) {
+            Uri inputUri = PictureMimeType.isContent(firstImageMedia.getAvailablePath())
+                    ? Uri.parse(firstImageMedia.getAvailablePath()) : Uri.fromFile(new File(firstImageMedia.getAvailablePath()));
             Uri destinationUri = Uri.fromFile(
                     new File(getSandboxPath(), DateUtils.getCreateFileName("CROP_") + ".jpg"));
-            UCrop uCrop = UCrop.of(inputUri, destinationUri, list.size());
-            uCrop.start(context, fragment);
+            ArrayList<String> data = new ArrayList<>();
+            for (int i = 0; i < list.size(); i++) {
+                LocalMedia item = list.get(i);
+                data.add(item.getAvailablePath());
+            }
+            UCrop uCrop = UCrop.ofMultiple(inputUri, destinationUri, data);
+            uCrop.startMultipleCrop(context, fragment);
         }
     }
 

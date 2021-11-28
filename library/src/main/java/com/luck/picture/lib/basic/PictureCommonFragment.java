@@ -746,25 +746,30 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     protected void dispatchTransformResult() {
         List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
         List<LocalMedia> result = new ArrayList<>(selectedResult);
-        boolean isResultNonNull = result.size() > 0;
-        if (PictureSelectionConfig.cropEngine != null && isResultNonNull) {
+        if (checkCropValidity()) {
             if (result.size() == 1) {
                 PictureSelectionConfig.cropEngine.onStartSingleCrop(getActivity(), this, result.get(0));
             } else {
-                PictureSelectionConfig.cropEngine.onStartMultipleCrop(getContext(), this, result);
+                LocalMedia firstImageMedia = null;
+                for (int i = 0; i < result.size(); i++) {
+                    if (PictureMimeType.isHasImage(result.get(i).getMimeType())) {
+                        firstImageMedia = result.get(i);
+                        break;
+                    }
+                }
+                PictureSelectionConfig.cropEngine.onStartMultipleCrop(getContext(), this, firstImageMedia, result);
             }
-        } else if (PictureSelectionConfig.compressEngine != null && isResultNonNull) {
+        } else if (checkCompressValidity()) {
             showLoading();
             PictureSelectionConfig.compressEngine.onStartCompress(getContext(), result,
                     new OnCallbackListener<List<LocalMedia>>() {
                         @Override
                         public void onCall(List<LocalMedia> result) {
-                            dismissLoading();
                             onResultEvent(result);
                         }
                     });
 
-        } else if (PictureSelectionConfig.sandboxFileEngine != null && isResultNonNull) {
+        } else if (PictureSelectionConfig.sandboxFileEngine != null && result.size() > 0) {
             showLoading();
             for (int i = 0; i < result.size(); i++) {
                 LocalMedia media = result.get(i);
@@ -777,7 +782,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                                     media.setSandboxPath(data.getSandboxPath());
                                 }
                                 if (index == result.size() - 1) {
-                                    dismissLoading();
                                     onResultEvent(result);
                                 }
                             }
@@ -790,10 +794,49 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     }
 
     /**
+     * 验证裁剪的可行性
+     *
+     * @return
+     */
+    private boolean checkCropValidity() {
+        if (PictureSelectionConfig.cropEngine != null) {
+            if (SelectedManager.getCount() == 1) {
+                return PictureMimeType.isHasImage(SelectedManager.getTopResultMimeType());
+            } else {
+                for (int i = 0; i < SelectedManager.getCount(); i++) {
+                    LocalMedia media = SelectedManager.getSelectedResult().get(i);
+                    if (PictureMimeType.isHasImage(media.getMimeType())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 验证压缩的可行性
+     *
+     * @return
+     */
+    private boolean checkCompressValidity() {
+        if (PictureSelectionConfig.compressEngine != null) {
+            for (int i = 0; i < SelectedManager.getCount(); i++) {
+                LocalMedia media = SelectedManager.getSelectedResult().get(i);
+                if (PictureMimeType.isHasImage(media.getMimeType())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * 返回处理完成后的选择结果
      */
     @Override
     public void onResultEvent(List<LocalMedia> result) {
+        dismissLoading();
         if (PictureSelectionConfig.resultCallListener != null) {
             PictureSelectionConfig.resultCallListener.onResult(result);
         }

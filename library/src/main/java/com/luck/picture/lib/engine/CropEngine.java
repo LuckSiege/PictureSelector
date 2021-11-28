@@ -50,9 +50,10 @@ public interface CropEngine {
      *
      * </p>
      *
-     * @param context  Activity
-     * @param fragment Fragment
-     * @param list     crop data
+     * @param context         Activity
+     * @param fragment        Fragment
+     * @param firstImageMedia first crop data
+     * @param list            crop data
      */
-    void onStartMultipleCrop(Context context, Fragment fragment, List<LocalMedia> list);
+    void onStartMultipleCrop(Context context, Fragment fragment, LocalMedia firstImageMedia, List<LocalMedia> list);
 }

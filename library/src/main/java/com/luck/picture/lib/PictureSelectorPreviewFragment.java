@@ -322,7 +322,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
 
     private void initTitleBar() {
-
+        if (PictureSelectionConfig.selectorStyle.getTitleBarStyle().isHideTitleBar()) {
+            titleBar.setVisibility(View.GONE);
+        }
         titleBar.setTitleBarStyle();
         titleBar.setOnTitleBarListener(new TitleBar.OnTitleBarListener() {
             @Override

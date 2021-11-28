@@ -10,6 +10,10 @@ import android.os.Parcelable;
  */
 public class TitleBarStyle implements Parcelable {
     /**
+     * 是否隐藏标题栏
+     */
+    private boolean isHideTitleBar;
+    /**
      * 标题栏左边关闭样式
      */
     private int titleLeftBackResource;
@@ -101,6 +105,7 @@ public class TitleBarStyle implements Parcelable {
     }
 
     protected TitleBarStyle(Parcel in) {
+        isHideTitleBar = in.readByte() != 0;
         titleLeftBackResource = in.readInt();
         titleDefaultText = in.readString();
         titleTextSize = in.readInt();
@@ -123,6 +128,7 @@ public class TitleBarStyle implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (isHideTitleBar ? 1 : 0));
         dest.writeInt(titleLeftBackResource);
         dest.writeString(titleDefaultText);
         dest.writeInt(titleTextSize);
@@ -159,6 +165,14 @@ public class TitleBarStyle implements Parcelable {
             return new TitleBarStyle[size];
         }
     };
+
+    public boolean isHideTitleBar() {
+        return isHideTitleBar;
+    }
+
+    public void setHideTitleBar(boolean hideTitleBar) {
+        isHideTitleBar = hideTitleBar;
+    }
 
     public int getTitleLeftBackResource() {
         return titleLeftBackResource;
