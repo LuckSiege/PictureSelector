@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ucrop_label_edit_photo">Muokkaa kuvaa</string>
+    <string name="ucrop_menu_crop">Rajaa</string>
+    <string name="ucrop_error_input_data_is_absent">Sekä sisäänmeno- että ulostulo-Urit täytyy olla määritettyinä</string>
+    <string name="ucrop_mutate_exception_hint"></string>
+</resources>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:showIn="@layout/ucrop_controls"
+    tools:visibility="gone">
+
+    <TextView
+        android:id="@+id/text_view_scale"
+        style="@style/ucrop_TextViewWidgetText"
+        android:text="100%" />
+
+    <com.yalantis.ucrop.view.widget.HorizontalProgressWheelView
+        android:id="@+id/scale_scroll_wheel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/text_view_scale" />
+
+</RelativeLayout>

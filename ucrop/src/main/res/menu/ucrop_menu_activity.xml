@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_crop"
+        android:icon="@drawable/ucrop_ic_done"
+        android:title="@string/ucrop_menu_crop"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/menu_loader"
+        android:enabled="false"
+        android:icon="@drawable/ucrop_vector_loader_animated"
+        android:title=""
+        app:showAsAction="ifRoom"/>
+
+</menu>
