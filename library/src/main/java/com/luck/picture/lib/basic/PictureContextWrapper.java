@@ -20,4 +20,12 @@ public class PictureContextWrapper extends ContextWrapper {
         PictureLanguageUtils.setAppLanguage(context, language);
         return new PictureContextWrapper(context);
     }
+
+    @Override
+    public Object getSystemService(String name) {
+        if (Context.AUDIO_SERVICE.equals(name)) {
+            return getApplicationContext().getSystemService(name);
+        }
+        return super.getSystemService(name);
+    }
 }

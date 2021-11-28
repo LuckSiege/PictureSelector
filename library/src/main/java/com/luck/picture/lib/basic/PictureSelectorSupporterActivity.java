@@ -1,7 +1,6 @@
 package com.luck.picture.lib.basic;
 
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
@@ -14,10 +13,11 @@ import com.luck.picture.lib.PictureSelectorFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.immersive.ImmersiveManage;
+import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.TitleBarStyle;
-import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
+import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.StyleUtils;
 
 /**
@@ -109,14 +109,11 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity implemen
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(new ContextWrapper(newBase) {
-            @Override
-            public Object getSystemService(String name) {
-                if (Context.AUDIO_SERVICE.equals(name)) {
-                    return getApplicationContext().getSystemService(name);
-                }
-                return super.getSystemService(name);
-            }
-        });
+        PictureSelectionConfig config = PictureSelectionConfig.getInstance();
+        if (config.language == LanguageConfig.UNKNOWN_LANGUAGE) {
+            super.attachBaseContext(newBase);
+        } else {
+            super.attachBaseContext(PictureContextWrapper.wrap(newBase, config.language));
+        }
     }
 }
