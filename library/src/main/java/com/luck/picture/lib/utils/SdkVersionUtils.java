@@ -1,4 +1,4 @@
-package com.luck.picture.lib.tools;
+package com.luck.picture.lib.utils;
 
 import android.os.Build;
 

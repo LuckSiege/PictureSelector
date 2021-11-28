@@ -1,4 +1,4 @@
-package com.luck.picture.lib.tools;
+package com.luck.picture.lib.utils;
 
 import android.content.ContentResolver;
 import android.content.Context;

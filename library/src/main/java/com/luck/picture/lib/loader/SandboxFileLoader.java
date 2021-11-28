@@ -8,10 +8,10 @@ import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.entity.MediaExtraInfo;
-import com.luck.picture.lib.tools.MediaUtils;
-import com.luck.picture.lib.tools.SdkVersionUtils;
-import com.luck.picture.lib.tools.SortUtils;
-import com.luck.picture.lib.tools.ValueOf;
+import com.luck.picture.lib.utils.MediaUtils;
+import com.luck.picture.lib.utils.SdkVersionUtils;
+import com.luck.picture.lib.utils.SortUtils;
+import com.luck.picture.lib.utils.ValueOf;
 
 import java.io.File;
 import java.io.FileFilter;

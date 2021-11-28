@@ -19,7 +19,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnAlbumItemClickListener;
 import com.luck.picture.lib.manager.SelectedManager;
-import com.luck.picture.lib.tools.SdkVersionUtils;
+import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 
 import java.util.List;

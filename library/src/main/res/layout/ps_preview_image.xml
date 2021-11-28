@@ -9,7 +9,7 @@
         android:layout_height="match_parent" />
 
 
-    <com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView
+    <com.luck.picture.lib.widget.large.SubsamplingScaleImageView
         android:id="@+id/preview_long_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -3,7 +3,7 @@ package com.luck.picture.lib.io;
 import android.content.ContentResolver;
 import android.net.Uri;
 
-import com.luck.picture.lib.tools.PictureFileUtils;
+import com.luck.picture.lib.utils.PictureFileUtils;
 
 import java.io.InputStream;
 import java.util.HashSet;

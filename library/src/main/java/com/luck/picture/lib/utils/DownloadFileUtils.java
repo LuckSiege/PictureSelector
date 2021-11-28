@@ -9,8 +9,6 @@ import com.luck.picture.lib.PictureContentResolver;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.thread.PictureThreadUtils;
-import com.luck.picture.lib.tools.MediaStoreUtils;
-import com.luck.picture.lib.tools.PictureFileUtils;
 
 import java.io.FileInputStream;
 import java.io.InputStream;

@@ -18,11 +18,9 @@ import com.luck.picture.lib.io.ArrayPoolProvide;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.thread.PictureThreadUtils;
-import com.luck.picture.lib.tools.SdkVersionUtils;
+import com.luck.picture.lib.utils.SdkVersionUtils;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 /**
  * @author：luck

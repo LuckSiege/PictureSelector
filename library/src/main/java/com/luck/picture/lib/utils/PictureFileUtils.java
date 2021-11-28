@@ -1,4 +1,4 @@
-package com.luck.picture.lib.tools;
+package com.luck.picture.lib.utils;
 
 import android.annotation.SuppressLint;
 import android.content.ContentUris;
@@ -16,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
-import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.manager.PictureCacheManager;

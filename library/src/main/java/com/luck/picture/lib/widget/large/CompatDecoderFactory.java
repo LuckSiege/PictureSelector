@@ -1,4 +1,4 @@
-package com.luck.picture.lib.widget.longimage;
+package com.luck.picture.lib.widget.large;
 
 import android.graphics.Bitmap;
 

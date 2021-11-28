@@ -15,7 +15,7 @@ import androidx.annotation.NonNull;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.tools.DateUtils;
+import com.luck.picture.lib.utils.DateUtils;
 
 /**
  * @author：luck

@@ -1,4 +1,4 @@
-package com.luck.picture.lib.tools;
+package com.luck.picture.lib.utils;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;

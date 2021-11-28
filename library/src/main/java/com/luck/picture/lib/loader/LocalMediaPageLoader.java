@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
@@ -18,11 +17,11 @@ import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.entity.MediaData;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.thread.PictureThreadUtils;
-import com.luck.picture.lib.tools.MediaUtils;
-import com.luck.picture.lib.tools.PictureFileUtils;
-import com.luck.picture.lib.tools.SdkVersionUtils;
-import com.luck.picture.lib.tools.SortUtils;
-import com.luck.picture.lib.tools.ValueOf;
+import com.luck.picture.lib.utils.MediaUtils;
+import com.luck.picture.lib.utils.PictureFileUtils;
+import com.luck.picture.lib.utils.SdkVersionUtils;
+import com.luck.picture.lib.utils.SortUtils;
+import com.luck.picture.lib.utils.ValueOf;
 
 import java.util.ArrayList;
 import java.util.HashMap;

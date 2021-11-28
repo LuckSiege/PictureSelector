@@ -24,9 +24,8 @@ import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.SelectMainStyle;
-import com.luck.picture.lib.tools.AnimUtils;
-import com.luck.picture.lib.tools.ValueOf;
-import com.luck.picture.lib.utils.DensityUtil;
+import com.luck.picture.lib.utils.AnimUtils;
+import com.luck.picture.lib.utils.ValueOf;
 import com.luck.picture.lib.utils.StyleUtils;
 
 import java.util.List;

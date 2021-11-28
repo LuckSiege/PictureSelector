@@ -1,4 +1,4 @@
-package com.luck.picture.lib.tools;
+package com.luck.picture.lib.utils;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,7 +8,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
-import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;

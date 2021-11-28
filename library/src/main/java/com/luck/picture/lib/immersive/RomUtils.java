@@ -2,8 +2,8 @@ package com.luck.picture.lib.immersive;
 
 import android.os.Build;
 import android.text.TextUtils;
-import com.luck.picture.lib.tools.StringUtils;
-import com.luck.picture.lib.tools.ValueOf;
+import com.luck.picture.lib.utils.StringUtils;
+import com.luck.picture.lib.utils.ValueOf;
 
 import java.io.BufferedReader;
 import java.io.IOException;

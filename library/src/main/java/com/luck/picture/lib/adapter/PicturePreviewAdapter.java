@@ -25,11 +25,11 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.photoview.OnViewTapListener;
 import com.luck.picture.lib.photoview.PhotoView;
-import com.luck.picture.lib.tools.MediaUtils;
+import com.luck.picture.lib.utils.MediaUtils;
 import com.luck.picture.lib.utils.DensityUtil;
-import com.luck.picture.lib.widget.longimage.ImageSource;
-import com.luck.picture.lib.widget.longimage.ImageViewState;
-import com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView;
+import com.luck.picture.lib.widget.large.ImageSource;
+import com.luck.picture.lib.widget.large.ImageViewState;
+import com.luck.picture.lib.widget.large.SubsamplingScaleImageView;
 
 import java.io.File;
 import java.util.List;

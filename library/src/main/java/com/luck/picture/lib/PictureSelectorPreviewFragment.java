@@ -32,7 +32,7 @@ import com.luck.picture.lib.loader.LocalMediaPageLoader;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.style.TitleBarStyle;
-import com.luck.picture.lib.tools.ValueOf;
+import com.luck.picture.lib.utils.ValueOf;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DownloadFileUtils;

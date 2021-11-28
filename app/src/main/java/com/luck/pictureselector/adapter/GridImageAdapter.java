@@ -18,7 +18,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnItemClickListener;
-import com.luck.picture.lib.tools.DateUtils;
+import com.luck.picture.lib.utils.DateUtils;
 import com.luck.pictureselector.R;
 import com.luck.pictureselector.listener.OnItemLongClickListener;
 

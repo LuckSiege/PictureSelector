@@ -24,8 +24,8 @@ import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
-import com.luck.picture.lib.tools.DoubleUtils;
-import com.luck.picture.lib.tools.SdkVersionUtils;
+import com.luck.picture.lib.utils.DoubleUtils;
+import com.luck.picture.lib.utils.SdkVersionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
