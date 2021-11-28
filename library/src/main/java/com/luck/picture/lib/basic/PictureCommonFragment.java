@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import com.luck.picture.lib.PictureOnlyCameraFragment;
 import com.luck.picture.lib.PictureSelectorPreviewFragment;
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.Crop;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -45,6 +47,7 @@ import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.permissions.PermissionResultCallback;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.thread.PictureThreadUtils;
+import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.AlbumUtils;
 import com.luck.picture.lib.utils.BitmapUtils;
 import com.luck.picture.lib.utils.MediaStoreUtils;
@@ -53,7 +56,6 @@ import com.luck.picture.lib.utils.PictureFileUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.StringUtils;
 import com.luck.picture.lib.utils.ValueOf;
-import com.luck.picture.lib.utils.ActivityCompatHelper;
 
 import java.io.File;
 import java.io.InputStream;
@@ -575,6 +577,37 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == PictureConfig.REQUEST_CAMERA) {
                 dispatchHandleCamera(data);
+            } else if (requestCode == Crop.REQUEST_CROP) {
+                Uri resultUri = Crop.getOutput(data);
+                if (resultUri != null) {
+                    int cropCount = Crop.getCropCount(data);
+                    if (cropCount == SelectedManager.getCount()) {
+                        List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
+                        for (int i = 0; i < SelectedManager.getCount(); i++) {
+                            if (TextUtils.isEmpty(resultUri.getPath())) {
+                                continue;
+                            }
+                            LocalMedia media = selectedResult.get(i);
+                            media.setCut(true);
+                            media.setCutPath(resultUri.getPath());
+                            media.setCropImageWidth(Crop.getOutputImageWidth(data));
+                            media.setCropImageHeight(Crop.getOutputImageHeight(data));
+                            media.setCropResultAspectRatio(Crop.getOutputCropAspectRatio(data));
+                            media.setCropOffsetX(Crop.getOutputImageOffsetX(data));
+                            media.setCropOffsetY(Crop.getOutputImageOffsetY(data));
+                            media.setSandboxPath(media.getCutPath());
+                        }
+                        List<LocalMedia> result = new ArrayList<>(selectedResult);
+                        onResultEvent(result);
+                    }
+                } else {
+                    Toast.makeText(getContext(), "image crop error，data is null", Toast.LENGTH_LONG).show();
+                }
+            }
+        } else if (resultCode == Crop.RESULT_CROP_ERROR) {
+            Throwable throwable = data != null ? Crop.getError(data) : new Throwable("image crop error");
+            if (throwable != null) {
+                Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show();
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             if (requestCode == PictureConfig.REQUEST_CAMERA) {
@@ -712,15 +745,13 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     protected void dispatchTransformResult() {
         List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
         List<LocalMedia> result = new ArrayList<>(selectedResult);
-        if (PictureSelectionConfig.cropEngine != null) {
-            PictureSelectionConfig.cropEngine.onStartCrop(getContext(), result,
-                    new OnCallbackListener<List<LocalMedia>>() {
-                        @Override
-                        public void onCall(List<LocalMedia> result) {
-                            onResultEvent(result);
-                        }
-                    });
-        } else if (PictureSelectionConfig.compressEngine != null) {
+        if (PictureSelectionConfig.cropEngine != null && result.size() > 0) {
+            if (result.size() == 1) {
+                PictureSelectionConfig.cropEngine.onStartSingleCrop(getActivity(), this, result.get(0));
+            } else {
+                PictureSelectionConfig.cropEngine.onStartMultipleCrop(getContext(), this, result);
+            }
+        } else if (PictureSelectionConfig.compressEngine != null && result.size() > 0) {
             PictureSelectionConfig.compressEngine.onStartCompress(getContext(), result,
                     new OnCallbackListener<List<LocalMedia>>() {
                         @Override
@@ -729,7 +760,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         }
                     });
 
-        } else if (PictureSelectionConfig.sandboxFileEngine != null) {
+        } else if (PictureSelectionConfig.sandboxFileEngine != null && result.size() > 0) {
             PictureSelectionConfig.sandboxFileEngine.onStartSandboxFileTransform(result,
                     new OnCallbackListener<List<LocalMedia>>() {
                         @Override

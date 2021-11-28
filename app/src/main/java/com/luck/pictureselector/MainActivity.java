@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,11 +49,13 @@ import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.style.TitleBarStyle;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
+import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.MediaUtils;
 import com.luck.picture.lib.utils.ValueOf;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.listener.DragListener;
+import com.yalantis.ucrop.UCrop;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -441,12 +444,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 自定义裁剪
      */
-    private static class ImageCropEngine implements CropEngine {
+    private class ImageCropEngine implements CropEngine {
 
         @Override
-        public void onStartCrop(Context context, List<LocalMedia> list,
-                                OnCallbackListener<List<LocalMedia>> listener) {
+        public void onStartSingleCrop(Context context, Fragment fragment, LocalMedia media) {
+            Uri inputUri = PictureMimeType.isContent(media.getAvailablePath())
+                    ? Uri.parse(media.getAvailablePath()) : Uri.fromFile(new File(media.getAvailablePath()));
+            Uri destinationUri = Uri.fromFile(
+                    new File(getSandboxPath(), DateUtils.getCreateFileName("CROP_") + ".jpg"));
+            UCrop uCrop = UCrop.of(inputUri, destinationUri, 1);
+            uCrop.start(context, fragment);
+        }
 
+        @Override
+        public void onStartMultipleCrop(Context context, Fragment fragment, List<LocalMedia> list) {
+            LocalMedia media = list.get(0);
+            Uri inputUri = PictureMimeType.isContent(media.getAvailablePath())
+                    ? Uri.parse(media.getAvailablePath()) : Uri.fromFile(new File(media.getAvailablePath()));
+            Uri destinationUri = Uri.fromFile(
+                    new File(getSandboxPath(), DateUtils.getCreateFileName("CROP_") + ".jpg"));
+            UCrop uCrop = UCrop.of(inputUri, destinationUri, list.size());
+            uCrop.start(context, fragment);
         }
     }
 
@@ -475,7 +493,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Luban.with(context)
                     .load(compress)
                     .ignoreBy(100)
-                    .setTargetDir(createCustomCameraOutPath())
+                    .setTargetDir(getSandboxPath())
                     .setFocusAlpha(false)
                     .filter(new CompressionPredicate() {
                         @Override
@@ -577,11 +595,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * 创建自定义拍照输出目录
+     * 创建自定义输出目录
      *
      * @return
      */
-    private String createCustomCameraOutPath() {
+    private String getSandboxPath() {
         File externalFilesDir = getContext().getExternalFilesDir(chooseMode == SelectMimeType.ofVideo() ? Environment.DIRECTORY_MOVIES : Environment.DIRECTORY_PICTURES);
         File customFile = new File(externalFilesDir.getAbsolutePath(), "Sandbox");
         if (!customFile.exists()) {
