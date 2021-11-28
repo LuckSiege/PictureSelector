@@ -68,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="15dp"
+        android:background="@drawable/ps_cancel_default_bg"
         android:gravity="center"
         android:text="@string/ps_cancel"
         android:textColor="@color/ps_color_white"

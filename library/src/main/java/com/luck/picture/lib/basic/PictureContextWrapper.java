@@ -3,6 +3,7 @@ package com.luck.picture.lib.basic;
 import android.content.Context;
 import android.content.ContextWrapper;
 
+import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.language.PictureLanguageUtils;
 
 /**
@@ -17,7 +18,9 @@ public class PictureContextWrapper extends ContextWrapper {
     }
 
     public static ContextWrapper wrap(Context context, int language) {
-        PictureLanguageUtils.setAppLanguage(context, language);
+        if (language != LanguageConfig.UNKNOWN_LANGUAGE) {
+            PictureLanguageUtils.setAppLanguage(context, language);
+        }
         return new PictureContextWrapper(context);
     }
 
