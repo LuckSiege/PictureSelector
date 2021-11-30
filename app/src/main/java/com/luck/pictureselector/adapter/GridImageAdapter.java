@@ -177,7 +177,7 @@ public class GridImageAdapter extends
                 Log.i(TAG, "压缩地址::" + media.getCompressPath());
                 Log.i(TAG, "压缩后文件大小::" + new File(media.getCompressPath()).length() / 1024 + "k");
             }
-            if (!TextUtils.isEmpty(media.getSandboxPath())) {
+            if (media.isToSandboxPath()) {
                 Log.i(TAG, "Android Q特有地址::" + media.getSandboxPath());
             }
             if (media.isOriginal()) {

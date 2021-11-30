@@ -2,7 +2,7 @@ ext {
     cfgs = [
             compileSdkVersion             : 31,
             buildToolsVersion             : "29.0.2",
-            minSdkVersion                 : 19,
+            minSdkVersion                 : 21,
             targetSdkVersion              : 31,
             versionCode                   : 58,
             versionName                   : "v2.7.3-rc10",
@@ -18,9 +18,6 @@ ext {
             fragment_version              : "1.4.0",
             viewpage2                     :"1.0.0",
 
-            camerax_view                  : "1.0.0-alpha30",
-            camerax_version               : "1.1.0-alpha11",
-            camera_core_version           : "1.1.0-alpha11",
             experimental_version          : "1.1.0",
             futures_version               : "1.1.0",
 

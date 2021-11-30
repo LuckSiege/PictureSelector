@@ -1,0 +1,132 @@
+package com.luck.picture.lib.config;
+
+
+import android.content.Intent;
+import android.net.Uri;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+/**
+ * @author：luck
+ * @date：2021/11/28 3:47 下午
+ * @describe：Crop
+ */
+public class Crop {
+    /**
+     * <p>
+     * 这里都是对应的UCrop库的UCrop类的Key
+     * (https://github.com/Yalantis/uCrop/blob/develop/ucrop/src/main/java/com/yalantis/ucrop/UCrop.java)
+     * 如果你使用的是PictureSelector自带的裁剪库，此处不要乱改 ！！！
+     * </p>
+     */
+
+    public static final int REQUEST_CROP = 69;
+
+    public static final int RESULT_CROP_ERROR = 96;
+
+    public static String CROP_OUTPUT_PATH = "OutputPath";
+    public static String CROP_IMAGE_WIDTH = "ImageWidth";
+    public static String CROP_IMAGE_HEIGHT = "ImageHeight";
+    public static String CROP_ASPECT_RATIO = "CropAspectRatio";
+    public static String CROP_OFFSET_X = "OffsetX";
+    public static String CROP_OFFSET_Y = "OffsetY";
+
+    private static final String EXTRA_PREFIX = "com.yalantis.ucrop";
+    public static final String EXTRA_CROP_OUTPUT_MULTIPLE_RESULT = EXTRA_PREFIX + ".CropOutputMultipleResult";
+    public static final String EXTRA_OUTPUT_URI = EXTRA_PREFIX + ".OutputUri";
+    public static final String EXTRA_OUTPUT_CROP_ASPECT_RATIO = EXTRA_PREFIX + ".CropAspectRatio";
+    public static final String EXTRA_OUTPUT_IMAGE_WIDTH = EXTRA_PREFIX + ".ImageWidth";
+    public static final String EXTRA_OUTPUT_IMAGE_HEIGHT = EXTRA_PREFIX + ".ImageHeight";
+    public static final String EXTRA_OUTPUT_OFFSET_X = EXTRA_PREFIX + ".OffsetX";
+    public static final String EXTRA_OUTPUT_OFFSET_Y = EXTRA_PREFIX + ".OffsetY";
+    public static final String EXTRA_CROP_COUNT = EXTRA_PREFIX + ".CropCount";
+    public static final String EXTRA_ERROR = EXTRA_PREFIX + ".Error";
+
+    /**
+     * Retrieve cropped image Uri from the result Intent
+     *
+     * @param intent crop result intent
+     */
+    @Nullable
+    public static Uri getOutput(@NonNull Intent intent) {
+        return intent.getParcelableExtra(EXTRA_OUTPUT_URI);
+    }
+
+    /**
+     * Retrieve cropped image Uri from the result Intent
+     *
+     * @param intent crop result intent
+     */
+    @Nullable
+    public static String getMultipleOutput(@NonNull Intent intent) {
+        return intent.getStringExtra(EXTRA_CROP_OUTPUT_MULTIPLE_RESULT);
+    }
+
+    /**
+     * Retrieve cropped image Uri from the result Intent
+     *
+     * @param intent crop result intent
+     */
+    public static int getCropCount(@NonNull Intent intent) {
+        return intent.getIntExtra(EXTRA_CROP_COUNT, 0);
+    }
+
+
+    /**
+     * Retrieve the width of the cropped image
+     *
+     * @param intent crop result intent
+     */
+    public static int getOutputImageWidth(@NonNull Intent intent) {
+        return intent.getIntExtra(EXTRA_OUTPUT_IMAGE_WIDTH, -1);
+    }
+
+    /**
+     * Retrieve the height of the cropped image
+     *
+     * @param intent crop result intent
+     */
+    public static int getOutputImageHeight(@NonNull Intent intent) {
+        return intent.getIntExtra(EXTRA_OUTPUT_IMAGE_HEIGHT, -1);
+    }
+
+    /**
+     * Retrieve the x of the cropped offset x
+     *
+     * @param intent crop result intent
+     */
+    public static int getOutputImageOffsetX(@NonNull Intent intent) {
+        return intent.getIntExtra(EXTRA_OUTPUT_OFFSET_X, 0);
+    }
+
+    /**
+     * Retrieve the y of the cropped offset y
+     *
+     * @param intent crop result intent
+     */
+    public static int getOutputImageOffsetY(@NonNull Intent intent) {
+        return intent.getIntExtra(EXTRA_OUTPUT_OFFSET_Y, 0);
+    }
+
+    /**
+     * Retrieve cropped image aspect ratio from the result Intent
+     *
+     * @param intent crop result intent
+     * @return aspect ratio as a floating point value (x:y) - so it will be 1 for 1:1 or 4/3 for 4:3
+     */
+    public static float getOutputCropAspectRatio(@NonNull Intent intent) {
+        return intent.getFloatExtra(EXTRA_OUTPUT_CROP_ASPECT_RATIO, 0f);
+    }
+
+    /**
+     * Method retrieves error from the result intent.
+     *
+     * @param result crop result Intent
+     * @return Throwable that could happen while image processing
+     */
+    @Nullable
+    public static Throwable getError(@NonNull Intent result) {
+        return (Throwable) result.getSerializableExtra(EXTRA_ERROR);
+    }
+}

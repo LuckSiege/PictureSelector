@@ -1,5 +1,6 @@
 package com.luck.pictureselector;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.net.Uri;
@@ -26,6 +27,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.luck.lib.camerax.SimpleCameraX;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.basic.PictureSelector;
@@ -41,6 +43,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.interfaces.OnCallbackIndexListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
+import com.luck.picture.lib.interfaces.OnCameraEventInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.language.LanguageConfig;
@@ -105,9 +108,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int animationMode = AnimationType.DEFAULT_ANIMATION;
     private PictureSelectorStyle selectorStyle;
 
-    private ImageCompressEngine compressEngine;
-
-    private ImageCropEngine cropEngine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -397,46 +397,89 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         isUpward = false;
     }
 
-
     private final GridImageAdapter.onAddPicClickListener onAddPicClickListener = new GridImageAdapter.onAddPicClickListener() {
         @Override
         public void onAddPicClick() {
             boolean mode = cb_mode.isChecked();
             if (mode) {
                 // 进入相册
-                if (cb_compress.isChecked()) {
-                    compressEngine = new ImageCompressEngine();
-                }
-                if (cb_crop.isChecked()) {
-                    cropEngine = new ImageCropEngine();
-                }
                 PictureSelector.create(MainActivity.this)
                         .openGallery(chooseMode)
-                        .imageEngine(GlideEngine.createGlideEngine())
                         .setSelectorUIStyle(selectorStyle)
+                        .imageEngine(GlideEngine.createGlideEngine())
+                        .setCropEngine(getCropEngine())
+                        .setCompressEngine(getCompressEngine())
+                        .setSandboxFileEngine(new MeSandboxFileEngine())
+                        .setCameraInterceptListener(getCustomCameraEvent())
                         .selectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
                         .setLanguage(language)
+                        .isGetOnlySandboxDirectory(true)
+                        .setOutputCameraDir(getSandboxPath())
+                        .setQuerySandboxDir(getSandboxPath())
+                        .isPageStrategy(cbPage.isChecked())
+                        .isDisplayCamera(cb_isCamera.isChecked())
+                        .isOpenClickSound(cb_voice.isChecked())
                         .isWithSelectVideoImage(true)
                         .isDirectReturnSingle(cb_single_back.isChecked())
                         .maxSelectNum(maxSelectNum)
+                        .maxVideoSelectNum(2)
                         .setRecyclerAnimationMode(animationMode)
                         .isGif(cb_isGif.isChecked())
-                        .setSandboxFileEngine(new MeSandboxFileEngine())
                         .selectedData(mAdapter.getData())
                         .isOriginalImageControl(cb_original.isChecked())
                         .isDisplayOriginalSize(cb_original.isChecked())
-                        .setCompressEngine(compressEngine)
-                        .setCropEngine(cropEngine)
                         .forResult(new MyResultCallback(mAdapter));
             } else {
                 // 单独拍照
                 PictureSelector.create(MainActivity.this)
                         .openCamera(SelectMimeType.ofAll())
                         .imageEngine(GlideEngine.createGlideEngine())
+                        .setCameraInterceptListener(getCustomCameraEvent())
                         .forResult(new MyResultCallback(mAdapter));
             }
         }
     };
+
+    /**
+     * 压缩引擎
+     *
+     * @return
+     */
+    private ImageCompressEngine getCompressEngine() {
+        return cb_compress.isChecked() ? new ImageCompressEngine() : null;
+    }
+
+    /**
+     * 裁剪引擎
+     *
+     * @return
+     */
+    private ImageCropEngine getCropEngine() {
+        return cb_crop.isChecked() ? new ImageCropEngine() : null;
+    }
+
+    /**
+     * 自定义相机事件
+     *
+     * @return
+     */
+    private OnCameraEventInterceptListener getCustomCameraEvent() {
+        return cb_custom_camera.isChecked() ? new MeOnCameraEventInterceptListener() : null;
+    }
+
+    /**
+     * 自定义拍照
+     */
+    private class MeOnCameraEventInterceptListener implements OnCameraEventInterceptListener {
+
+        @Override
+        public void openCamera(Activity activity, Fragment fragment, int cameraMode, int requestCode) {
+            SimpleCameraX camera = SimpleCameraX.of();
+            camera.setCameraMode(cameraMode);
+            camera.setOutputPathDir(getSandboxPath());
+            camera.start(activity, fragment, requestCode);
+        }
+    }
 
     /**
      * 自定义沙盒文件处理
@@ -464,6 +507,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Uri destinationUri = Uri.fromFile(
                     new File(getSandboxPath(), DateUtils.getCreateFileName("CROP_") + ".jpg"));
             UCrop uCrop = UCrop.of(inputUri, destinationUri, 1);
+            uCrop.withOptions(buildOptions());
             uCrop.start(context, fragment);
         }
 
@@ -479,8 +523,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 data.add(item.getAvailablePath());
             }
             UCrop uCrop = UCrop.ofMultiple(inputUri, destinationUri, data);
+            uCrop.withOptions(buildOptions());
             uCrop.startMultipleCrop(context, fragment);
         }
+    }
+
+    /**
+     * 配制UCrop，可根据需求自我扩展
+     *
+     * @return
+     */
+    private UCrop.Options buildOptions() {
+        UCrop.Options options = new UCrop.Options();
+        options.setHideBottomControls(true);
+        options.isForbidCropGifWebp(false);
+        options.setCropOutputPathDir(getSandboxPath());
+        options.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
+        options.setToolbarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
+        options.setToolbarWidgetColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
+        return options;
     }
 
     /**

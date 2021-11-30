@@ -2,11 +2,11 @@
 <resources>
 
     <!--Palette-->
-    <color name="ucrop_color_black">#000</color>
+    <color name="ucrop_color_black">#000000</color>
     <color name="ucrop_color_blaze_orange">#FF6300</color>
     <color name="ucrop_color_ebony_clay">#20242F</color>
     <color name="ucrop_color_heather">#B3BECE</color>
-    <color name="ucrop_color_white">#FFF</color>
+    <color name="ucrop_color_white">#FFFFFF</color>
 
     <!--uCrop Activity-->
     <color name="ucrop_color_toolbar">@color/ucrop_color_white</color>
@@ -24,7 +24,9 @@
     <color name="ucrop_color_widget_text">@color/ucrop_color_blaze_orange</color>
     <color name="ucrop_color_progress_wheel_line">@color/ucrop_color_ebony_clay</color>
     <color name="ucrop_color_crop_background">@color/ucrop_color_black</color>
-
+    <color name="ucrop_color_divider_line">#666666</color>
+    <color name="ucrop_color_80">#80000000</color>
+    <color name="ucrop_color_20">#20000000</color>
     <!--Crop View-->
     <color name="ucrop_color_default_crop_grid">#80ffffff</color>
     <color name="ucrop_color_default_crop_frame">#ffffff</color>

@@ -1,5 +1,7 @@
 package com.yalantis.ucrop;
 
+import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,8 +19,21 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.IdRes;
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.transition.AutoTransition;
+import androidx.transition.Transition;
+import androidx.transition.TransitionManager;
+
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.model.AspectRatio;
+import com.yalantis.ucrop.util.FileUtils;
 import com.yalantis.ucrop.util.SelectedStateListDrawable;
 import com.yalantis.ucrop.view.CropImageView;
 import com.yalantis.ucrop.view.GestureCropImageView;
@@ -33,20 +48,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.IdRes;
-import androidx.annotation.IntDef;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.transition.AutoTransition;
-import androidx.transition.Transition;
-import androidx.transition.TransitionManager;
-
-import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 
 @SuppressWarnings("ConstantConditions")
 public class UCropFragment extends Fragment {
@@ -64,7 +65,7 @@ public class UCropFragment extends Fragment {
     public @interface GestureTypes {
     }
 
-    public static final String TAG = "UCropFragment";
+    public static final String TAG = UCropFragment.class.getSimpleName();
 
     private static final long CONTROLS_ANIMATION_DURATION = 50;
     private static final int TABS_COUNT = 3;
@@ -135,6 +136,15 @@ public class UCropFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Fragment重新可见
+     */
+    public void fragmentReVisible() {
+        setImageData(getArguments());
+        mUCropView.animate().alpha(1).setDuration(300).setInterpolator(new AccelerateInterpolator());
+        mBlockingView.setClickable(false);
+        callback.loadingProgress(false);
+    }
 
     public void setupViews(View view, Bundle args) {
         mActiveControlsWidgetColor = args.getInt(UCrop.Options.EXTRA_UCROP_COLOR_CONTROLS_WIDGET_ACTIVE, ContextCompat.getColor(getContext(), R.color.ucrop_color_active_controls_color));
@@ -189,6 +199,16 @@ public class UCropFragment extends Fragment {
             }
         } else {
             callback.onCropFinish(getError(new NullPointerException(getString(R.string.ucrop_error_input_data_is_absent))));
+        }
+    }
+
+
+    private String getInputOriginalPath() {
+        Uri inputUri = getArguments().getParcelable(UCrop.EXTRA_INPUT_URI);
+        if (FileUtils.isContent(inputUri.toString())) {
+            return inputUri.toString();
+        } else {
+            return inputUri.getPath();
         }
     }
 
@@ -276,7 +296,7 @@ public class UCropFragment extends Fragment {
         view.findViewById(R.id.ucrop_frame).setBackgroundColor(mRootViewBackgroundColor);
     }
 
-    private TransformImageView.TransformImageListener mImageListener = new TransformImageView.TransformImageListener() {
+    private final TransformImageView.TransformImageListener mImageListener = new TransformImageView.TransformImageListener() {
         @Override
         public void onRotate(float currentAngle) {
             setAngleText(currentAngle);
@@ -292,6 +312,13 @@ public class UCropFragment extends Fragment {
             mUCropView.animate().alpha(1).setDuration(300).setInterpolator(new AccelerateInterpolator());
             mBlockingView.setClickable(false);
             callback.loadingProgress(false);
+            if (getArguments().getBoolean(UCrop.Options.EXTRA_FORBID_CROP_GIF_WEBP, false)) {
+                Uri inputUri = getArguments().getParcelable(UCrop.EXTRA_INPUT_URI);
+                String mimeType = FileUtils.getMimeTypeFromMediaContentUri(getContext(), inputUri);
+                if (FileUtils.isGif(mimeType) || FileUtils.isWebp(mimeType)) {
+                    mBlockingView.setClickable(true);
+                }
+            }
         }
 
         @Override
@@ -569,15 +596,18 @@ public class UCropFragment extends Fragment {
                 .putExtra(UCrop.EXTRA_OUTPUT_IMAGE_HEIGHT, imageHeight)
                 .putExtra(UCrop.EXTRA_OUTPUT_OFFSET_X, offsetX)
                 .putExtra(UCrop.EXTRA_OUTPUT_OFFSET_Y, offsetY)
+                .putExtra(UCrop.EXTRA_CROP_INPUT_ORIGINAL, getInputOriginalPath())
                 .putExtra(UCrop.EXTRA_CROP_COUNT, getArguments().getInt(UCrop.EXTRA_CROP_COUNT))
         );
     }
 
     protected UCropResult getError(Throwable throwable) {
-        return new UCropResult(UCrop.RESULT_ERROR, new Intent().putExtra(UCrop.EXTRA_ERROR, throwable));
+        return new UCropResult(UCrop.RESULT_ERROR, new Intent()
+                .putExtra(UCrop.EXTRA_CROP_INPUT_ORIGINAL, getInputOriginalPath())
+                .putExtra(UCrop.EXTRA_ERROR, throwable));
     }
 
-    public class UCropResult {
+    public static class UCropResult {
 
         public int mResultCode;
         public Intent mResultData;

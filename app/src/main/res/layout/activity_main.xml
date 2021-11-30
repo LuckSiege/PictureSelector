@@ -6,51 +6,42 @@
     android:background="@color/app_color_white"
     tools:context="com.luck.pictureselector.MainActivity">
 
-    <RelativeLayout
-        android:id="@+id/rl_title"
+    <View
+        android:id="@+id/view_title"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@color/app_color_grey">
+        android:background="@color/app_color_grey" />
 
-        <ImageView
-            android:id="@+id/left_back"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:background="@color/app_color_transparent"
-            android:padding="15dp"
-            android:src="@drawable/ps_ic_back"
-            android:visibility="visible" />
+    <ImageView
+        android:id="@+id/left_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/view_title"
+        android:layout_alignBottom="@id/view_title"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ps_ic_back" />
 
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_centerVertical="true"
-            android:ellipsize="end"
-            android:maxEms="11"
-            android:text="@string/app_name"
-            android:textColor="@color/app_color_white"
-            android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/tv_right"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="5dp"
-            android:gravity="center"
-            android:text=""
-            android:textColor="@color/app_color_white"
-            android:textSize="15sp" />
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/view_title"
+        android:layout_alignBottom="@id/view_title"
+        android:layout_centerHorizontal="true"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxEms="11"
+        android:text="@string/app_name"
+        android:textColor="@color/app_color_white"
+        android:textSize="18sp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/rl_title"
+        android:layout_below="@id/view_title"
         android:clipChildren="false">
 
         <TextView
@@ -183,9 +174,9 @@
                     android:id="@+id/cb_editor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:checked="true"
                     android:gravity="center_vertical"
                     android:text="是否开启图片编辑"
-                    android:checked="true"
                     android:textColor="@color/app_color_53575e"
                     android:textSize="14sp" />
 

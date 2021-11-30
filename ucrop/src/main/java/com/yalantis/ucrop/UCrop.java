@@ -20,7 +20,6 @@ import com.yalantis.ucrop.model.AspectRatio;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -34,8 +33,20 @@ public class UCrop {
     public static final int RESULT_ERROR = 96;
     public static final int MIN_SIZE = 10;
 
+    public static String CROP_OUTPUT_PATH = "OutputPath";
+    public static String CROP_IMAGE_WIDTH = "ImageWidth";
+    public static String CROP_IMAGE_HEIGHT = "ImageHeight";
+    public static String CROP_ASPECT_RATIO = "CropAspectRatio";
+    public static String CROP_OFFSET_X = "OffsetX";
+    public static String CROP_OFFSET_Y = "OffsetY";
+
+
     private static final String EXTRA_PREFIX = "com.yalantis.ucrop";
+    public static final String EXTRA_CROP_OUTPUT_MULTIPLE_RESULT = EXTRA_PREFIX + ".CropOutputMultipleResult";
+
     public static final String EXTRA_CROP_COUNT = EXTRA_PREFIX + ".CropCount";
+    public static final String EXTRA_CROP_INPUT_ORIGINAL = EXTRA_PREFIX + ".CropInputOriginal";
+
     public static final String EXTRA_INPUT_ALL_CUT_DATA = EXTRA_PREFIX + ".InputAllCutData";
     public static final String EXTRA_INPUT_URI = EXTRA_PREFIX + ".InputUri";
     public static final String EXTRA_OUTPUT_URI = EXTRA_PREFIX + ".OutputUri";
@@ -282,6 +293,24 @@ public class UCrop {
     }
 
     /**
+     * Retrieve the x of the cropped offset x
+     *
+     * @param intent crop result intent
+     */
+    public static int getOutputImageOffsetX(@NonNull Intent intent) {
+        return intent.getIntExtra(EXTRA_OUTPUT_OFFSET_X, 0);
+    }
+
+    /**
+     * Retrieve the y of the cropped offset y
+     *
+     * @param intent crop result intent
+     */
+    public static int getOutputImageOffsetY(@NonNull Intent intent) {
+        return intent.getIntExtra(EXTRA_OUTPUT_OFFSET_Y, 0);
+    }
+
+    /**
      * Method retrieves error from the result intent.
      *
      * @param result crop result Intent
@@ -300,6 +329,10 @@ public class UCrop {
         public static final String EXTRA_COMPRESSION_FORMAT_NAME = EXTRA_PREFIX + ".CompressionFormatName";
         public static final String EXTRA_COMPRESSION_QUALITY = EXTRA_PREFIX + ".CompressionQuality";
 
+        public static final String EXTRA_CROP_OUTPUT_DIR = EXTRA_PREFIX + ".CropOutputDir";
+
+        public static final String EXTRA_CROP_OUTPUT_FILE_NAME = EXTRA_PREFIX + ".CropOutputFileName";
+
         public static final String EXTRA_ALLOWED_GESTURES = EXTRA_PREFIX + ".AllowedGestures";
 
         public static final String EXTRA_MAX_BITMAP_SIZE = EXTRA_PREFIX + ".MaxBitmapSize";
@@ -313,11 +346,16 @@ public class UCrop {
         public static final String EXTRA_CROP_FRAME_COLOR = EXTRA_PREFIX + ".CropFrameColor";
         public static final String EXTRA_CROP_FRAME_STROKE_WIDTH = EXTRA_PREFIX + ".CropFrameStrokeWidth";
 
+        public static final String EXTRA_FORBID_CROP_GIF_WEBP = EXTRA_PREFIX + ".ForbidCropGifWebp";
+
         public static final String EXTRA_SHOW_CROP_GRID = EXTRA_PREFIX + ".ShowCropGrid";
+
         public static final String EXTRA_CROP_GRID_ROW_COUNT = EXTRA_PREFIX + ".CropGridRowCount";
         public static final String EXTRA_CROP_GRID_COLUMN_COUNT = EXTRA_PREFIX + ".CropGridColumnCount";
         public static final String EXTRA_CROP_GRID_COLOR = EXTRA_PREFIX + ".CropGridColor";
         public static final String EXTRA_CROP_GRID_STROKE_WIDTH = EXTRA_PREFIX + ".CropGridStrokeWidth";
+
+        public static final String EXTRA_GALLERY_BAR_BACKGROUND = EXTRA_PREFIX + ".GalleryBarBackground";
 
         public static final String EXTRA_TOOL_BAR_COLOR = EXTRA_PREFIX + ".ToolbarColor";
         public static final String EXTRA_STATUS_BAR_COLOR = EXTRA_PREFIX + ".StatusBarColor";
@@ -355,6 +393,33 @@ public class UCrop {
          */
         public void setCompressionFormat(@NonNull Bitmap.CompressFormat format) {
             mOptionBundle.putString(EXTRA_COMPRESSION_FORMAT_NAME, format.name());
+        }
+
+        /**
+         * Set one of {@link context.getExternalFilesDir()} The path that will be used to save
+         * when clipping multiple drawings
+         * Valid when multiple pictures are cropped
+         */
+        public void setCropOutputPathDir(@NonNull String dir) {
+            mOptionBundle.putString(EXTRA_CROP_OUTPUT_DIR, dir);
+        }
+
+        /**
+         * File name after clipping output
+         * Valid when multiple pictures are cropped
+         * <p>
+         * When multiple pictures are cropped, the front will automatically keep up with the timestamp
+         * </p>
+         */
+        public void setCropOutputFileName(@NonNull String fileName) {
+            mOptionBundle.putString(EXTRA_CROP_OUTPUT_FILE_NAME, fileName);
+        }
+
+        /**
+         * @param isForbidCropGifWebp - Do you need to support clipping dynamic graphs gif or webp
+         */
+        public void isForbidCropGifWebp(boolean isForbidCropGifWebp) {
+            mOptionBundle.putBoolean(EXTRA_FORBID_CROP_GIF_WEBP, isForbidCropGifWebp);
         }
 
         /**
@@ -468,6 +533,13 @@ public class UCrop {
          */
         public void setCropGridStrokeWidth(@IntRange(from = 0) int width) {
             mOptionBundle.putInt(EXTRA_CROP_GRID_STROKE_WIDTH, width);
+        }
+
+        /**
+         * @param color - desired resolved color of the gallery bar background
+         */
+        public void setCropGalleryBarBackgroundResources(@ColorInt int color) {
+            mOptionBundle.putInt(EXTRA_GALLERY_BAR_BACKGROUND, color);
         }
 
         /**

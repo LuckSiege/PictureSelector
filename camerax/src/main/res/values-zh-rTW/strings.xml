@@ -1,0 +1,7 @@
+<resources>
+
+    <string name="picture_recording_time_is_short">錄制時間過短</string>
+    <string name="picture_photo_camera">单击拍照，長按攝像</string>
+    <string name="picture_photo_pictures">點擊拍照</string>
+    <string name="picture_photo_recording">長按攝像</string>
+</resources>

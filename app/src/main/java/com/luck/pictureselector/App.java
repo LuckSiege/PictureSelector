@@ -2,7 +2,6 @@ package com.luck.pictureselector;
 
 import android.app.Application;
 import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.camera.camera2.Camera2Config;
 import androidx.camera.core.CameraXConfig;
@@ -24,6 +23,7 @@ public class App extends Application implements IApp, CameraXConfig.Provider {
     @Override
     public void onCreate() {
         super.onCreate();
+
         PictureAppMaster.getInstance().setApp(this);
     }
 

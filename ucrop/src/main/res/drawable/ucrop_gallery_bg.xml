@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:bottom="-1dp"
+        android:left="-1dp"
+        android:right="-1dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/ucrop_color_widget_background" />
+            <stroke
+                android:width="0.5dp"
+                android:color="@color/ucrop_color_divider_line" />
+            <padding
+                android:left="0dp"
+                android:right="0dp" />
+            <corners android:radius="0dp" />
+        </shape>
+    </item>
+</layer-list>

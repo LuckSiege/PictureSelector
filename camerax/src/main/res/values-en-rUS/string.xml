@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="picture_recording_time_is_short">recording time is too short</string>
+    <string name="picture_photo_camera">Photograph, photograph</string>
+    <string name="picture_photo_pictures">Take Picture</string>
+    <string name="picture_photo_recording">Long Press Camera</string>
+
+</resources>

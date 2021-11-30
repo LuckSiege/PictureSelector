@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.luck.lib.camerax">
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <application>
+        <activity android:name="com.luck.lib.camerax.PictureCustomCameraActivity" />
+    </application>
+</manifest>

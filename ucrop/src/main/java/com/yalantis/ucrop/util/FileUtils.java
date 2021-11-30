@@ -19,6 +19,7 @@ package com.yalantis.ucrop.util;
 import static com.yalantis.ucrop.util.BitmapLoadUtils.close;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -29,6 +30,9 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
+
+import androidx.annotation.NonNull;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -39,9 +43,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-import androidx.annotation.NonNull;
 
 /**
  * @author Peli
@@ -69,6 +72,110 @@ public class FileUtils {
             return false;
         }
         return url.startsWith("content://");
+    }
+
+    /**
+     * isVideo
+     *
+     * @param url
+     * @return
+     */
+    public static boolean isUrlHasVideo(String url) {
+        return url.toLowerCase().endsWith(".mp4");
+    }
+
+    /**
+     * isVideo
+     *
+     * @param mimeType
+     * @return
+     */
+    public static boolean isHasVideo(String mimeType) {
+        return mimeType != null && mimeType.startsWith("video");
+    }
+
+    /**
+     * isAudio
+     *
+     * @param mimeType
+     * @return
+     */
+    public static boolean isHasAudio(String mimeType) {
+        return mimeType != null && mimeType.startsWith("audio");
+    }
+
+    /**
+     * is Network image
+     *
+     * @param path
+     * @return
+     */
+    public static boolean isHasHttp(String path) {
+        if (TextUtils.isEmpty(path)) {
+            return false;
+        }
+        return path.startsWith("http") || path.startsWith("https") || path.startsWith("/http") || path.startsWith("/https");
+    }
+
+    /**
+     * isGif
+     *
+     * @param mimeType
+     * @return
+     */
+    public static boolean isGif(String mimeType) {
+        return mimeType != null && (mimeType.equals("image/gif") || mimeType.equals("image/GIF"));
+    }
+
+    /**
+     * isWebp
+     *
+     * @param mimeType
+     * @return
+     */
+    public static boolean isWebp(String mimeType) {
+        return mimeType != null && (mimeType.equals("image/webp") || mimeType.equals("image/WEBP"));
+    }
+
+
+    /**
+     * 获取mimeType
+     *
+     * @param context
+     * @param uri
+     * @return
+     */
+    public static String getMimeTypeFromMediaContentUri(Context context, Uri uri) {
+        String mimeType;
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver cr = context.getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return mimeType;
+    }
+
+
+    private static final SimpleDateFormat sf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+
+    public static String getCreateFileName(String prefix) {
+        long millis = System.currentTimeMillis();
+        return prefix + sf.format(millis);
+    }
+
+    /**
+     * 根据时间戳创建文件名
+     *
+     * @param prefix 前缀名
+     * @return
+     */
+    public static String getCreateFileName() {
+        long millis = System.currentTimeMillis();
+        return sf.format(millis);
     }
 
     /**

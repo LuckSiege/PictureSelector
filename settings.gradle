@@ -1,1 +1,2 @@
-include ':app', ':library',':ucrop',':compress'
+include ':app', ':selector',':ucrop',':compress'
+include ':camerax'
