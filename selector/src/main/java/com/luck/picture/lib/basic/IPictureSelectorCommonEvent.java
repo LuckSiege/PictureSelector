@@ -20,6 +20,16 @@ public interface IPictureSelectorCommonEvent {
     int getResourceId();
 
     /**
+     * 权限被拒
+     */
+    void handlePermissionDenied();
+
+    /**
+     * 权限设置结果
+     */
+    void handlePermissionSettingResult();
+
+    /**
      * 设置app语言
      */
     void initAppLanguage();
@@ -120,7 +130,6 @@ public interface IPictureSelectorCommonEvent {
 
     /**
      * 发送上一次选择数据发生变化的通知
-     *
      */
     void sendLastSelectedChangeEvent(LocalMedia oldLocalMedia);
 

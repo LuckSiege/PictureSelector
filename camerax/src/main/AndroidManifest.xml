@@ -4,6 +4,6 @@
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <application>
-        <activity android:name="com.luck.lib.camerax.PictureCustomCameraActivity" />
+        <activity android:name="com.luck.lib.camerax.PictureCameraActivity" />
     </application>
 </manifest>

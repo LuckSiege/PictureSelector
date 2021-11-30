@@ -52,12 +52,18 @@ public class PermissionUtil {
      */
     public static void goIntentSetting(Activity activity, int requestCode) {
         try {
-            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
-            intent.setData(uri);
-            activity.startActivityForResult(intent, requestCode);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                activity.startActivityForResult(new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION),
+                        requestCode);
+            } else {
+                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
+                intent.setData(uri);
+                activity.startActivityForResult(intent, requestCode);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }

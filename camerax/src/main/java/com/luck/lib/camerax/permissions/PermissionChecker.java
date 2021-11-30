@@ -1,13 +1,14 @@
 package com.luck.lib.camerax.permissions;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.luck.lib.camerax.PictureCustomCameraActivity;
+import com.luck.lib.camerax.PictureCameraActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,15 @@ import java.util.List;
  * @describe：PermissionChecker
  */
 public class PermissionChecker {
+    /**
+     * 权限设置
+     */
+    public static final int PERMISSION_SETTING_CODE = 1102;
+
+    /**
+     * 录音权限设置
+     */
+    public static final int PERMISSION_RECORD_AUDIO_SETTING_CODE = 1103;
 
     private static final int REQUEST_CODE = 10086;
 
@@ -50,7 +60,7 @@ public class PermissionChecker {
     }
 
     private void requestPermissions(Activity activity, List<String[]> permissionGroupList, final int requestCode, PermissionResultCallback permissionResultCallback) {
-        if (activity instanceof PictureCustomCameraActivity) {
+        if (activity instanceof PictureCameraActivity) {
             if (Build.VERSION.SDK_INT < 23) {
                 if (permissionResultCallback != null) {
                     permissionResultCallback.onGranted();
@@ -66,7 +76,7 @@ public class PermissionChecker {
                 }
             }
             if (permissionList.size() > 0) {
-                ((PictureCustomCameraActivity) activity).setPermissionsResultAction(permissionResultCallback);
+                ((PictureCameraActivity) activity).setPermissionsResultAction(permissionResultCallback);
                 String[] requestArray = new String[permissionList.size()];
                 permissionList.toArray(requestArray);
                 ActivityCompat.requestPermissions(activity, requestArray, requestCode);
@@ -84,5 +94,25 @@ public class PermissionChecker {
         } else {
             action.onDenied();
         }
+    }
+
+
+    /**
+     * 检查是否有某个权限
+     *
+     * @param ctx
+     * @param permissions
+     * @return
+     */
+    public static boolean checkSelfPermission(Context ctx, String[] permissions) {
+        boolean isAllGranted = true;
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(ctx.getApplicationContext(), permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                isAllGranted = false;
+                break;
+            }
+        }
+        return isAllGranted;
     }
 }

@@ -1,5 +1,7 @@
 package com.luck.lib.camerax;
 
+import android.Manifest;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -16,14 +18,15 @@ import com.bumptech.glide.Glide;
 import com.luck.lib.camerax.listener.CameraListener;
 import com.luck.lib.camerax.listener.ClickListener;
 import com.luck.lib.camerax.listener.ImageCallbackListener;
+import com.luck.lib.camerax.permissions.PermissionChecker;
 import com.luck.lib.camerax.permissions.PermissionResultCallback;
 
 /**
  * @author：luck
  * @date：2021/11/29 7:50 下午
- * @describe：PictureCustomCameraActivity
+ * @describe：PictureCameraActivity
  */
-public class PictureCustomCameraActivity extends AppCompatActivity {
+public class PictureCameraActivity extends AppCompatActivity {
     /**
      * PermissionResultCallback
      */
@@ -69,7 +72,7 @@ public class PictureCustomCameraActivity extends AppCompatActivity {
             @Override
             public void onError(int videoCaptureError, @NonNull String message,
                                 @Nullable Throwable cause) {
-                Toast.makeText(PictureCustomCameraActivity.this,
+                Toast.makeText(PictureCameraActivity.this,
                         message, Toast.LENGTH_LONG).show();
                 handleCameraCancel();
             }
@@ -99,6 +102,25 @@ public class PictureCustomCameraActivity extends AppCompatActivity {
             mCameraView.onCancelMedia();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PermissionChecker.PERMISSION_SETTING_CODE) {
+            boolean checkSelfPermission = PermissionChecker.checkSelfPermission(this,
+                    new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE});
+            if (checkSelfPermission) {
+                mCameraView.buildUseCameraCases();
+            } else {
+                handleCameraCancel();
+            }
+        } else if (requestCode == PermissionChecker.PERMISSION_RECORD_AUDIO_SETTING_CODE) {
+            if (!PermissionChecker.checkSelfPermission(this,
+                    new String[]{Manifest.permission.RECORD_AUDIO})) {
+                Toast.makeText(this, "Missing recording permission", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     /**

@@ -46,6 +46,7 @@ import com.luck.picture.lib.loader.IBridgeMediaLoader;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.permissions.PermissionResultCallback;
+import com.luck.picture.lib.permissions.PermissionUtil;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
@@ -148,6 +149,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     }
 
     @Override
+    public void handlePermissionSettingResult() {
+
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (mPermissionResultCallback != null) {
@@ -156,7 +162,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         }
     }
 
-
     /**
      * Set PermissionResultCallback
      *
@@ -164,6 +169,12 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     public void setPermissionsResultAction(PermissionResultCallback callback) {
         mPermissionResultCallback = callback;
+    }
+
+
+    @Override
+    public void handlePermissionDenied() {
+        PermissionUtil.goIntentSetting(this, PictureConfig.REQUEST_GO_SETTING);
     }
 
     @Nullable
@@ -474,7 +485,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
                     @Override
                     public void onDenied() {
-
+                        handlePermissionDenied();
                     }
                 });
     }
@@ -510,7 +521,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
                     @Override
                     public void onDenied() {
-
+                        handlePermissionDenied();
                     }
                 });
     }
@@ -540,7 +551,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
                     @Override
                     public void onDenied() {
-
+                        handlePermissionDenied();
                     }
                 });
     }
@@ -646,6 +657,8 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         } else if (resultCode == Activity.RESULT_CANCELED) {
             if (requestCode == PictureConfig.REQUEST_CAMERA) {
                 MediaUtils.deleteUri(getContext(), config.cameraPath);
+            } else if (requestCode == PictureConfig.REQUEST_GO_SETTING) {
+                handlePermissionSettingResult();
             }
         }
     }

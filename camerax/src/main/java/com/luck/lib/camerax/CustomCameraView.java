@@ -45,6 +45,7 @@ import com.luck.lib.camerax.listener.ImageCallbackListener;
 import com.luck.lib.camerax.listener.TypeListener;
 import com.luck.lib.camerax.permissions.PermissionChecker;
 import com.luck.lib.camerax.permissions.PermissionResultCallback;
+import com.luck.lib.camerax.permissions.PermissionUtil;
 import com.luck.lib.camerax.utils.CameraUtils;
 import com.luck.lib.camerax.utils.DensityUtil;
 import com.luck.lib.camerax.utils.FileUtils;
@@ -262,7 +263,11 @@ public class CustomCameraView extends RelativeLayout {
             @Override
             public void recordEnd(long time) {
                 recordTime = time;
-                mVideoCapture.stopRecording();
+                try {
+                    mVideoCapture.stopRecording();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -277,7 +282,7 @@ public class CustomCameraView extends RelativeLayout {
                 }
             }
         });
-        //确认 取消
+
         mCaptureLayout.setTypeListener(new TypeListener() {
             @Override
             public void cancel() {
@@ -340,13 +345,7 @@ public class CustomCameraView extends RelativeLayout {
             setRecordVideoMinTime(recordVideoMinSecond);
         }
         setCaptureLoadingColor(captureLoadingColor);
-        String[] permissionArray;
-        if (lensFacing == CustomCameraConfig.BUTTON_STATE_ONLY_CAPTURE) {
-            permissionArray = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        } else {
-            permissionArray = new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        }
+        String[] permissionArray = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         PermissionChecker.getInstance().requestPermissions((Activity) getContext(), permissionArray,
                 new PermissionResultCallback() {
                     @Override
@@ -356,7 +355,7 @@ public class CustomCameraView extends RelativeLayout {
 
                     @Override
                     public void onDenied() {
-
+                        PermissionUtil.goIntentSetting((Activity) getContext(), PermissionChecker.PERMISSION_SETTING_CODE);
                     }
                 });
     }
@@ -364,7 +363,7 @@ public class CustomCameraView extends RelativeLayout {
     /**
      * 开始打开相机预览
      */
-    private void buildUseCameraCases() {
+    public void buildUseCameraCases() {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(getContext());
         cameraProviderFuture.addListener(new Runnable() {
             @Override
@@ -615,7 +614,11 @@ public class CustomCameraView extends RelativeLayout {
         if (isImageCaptureEnabled()) {
             mImagePreview.setVisibility(INVISIBLE);
         } else {
-            mVideoCapture.stopRecording();
+            try {
+                mVideoCapture.stopRecording();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         mSwitchCamera.setVisibility(VISIBLE);
         mFlashLamp.setVisibility(VISIBLE);
@@ -663,6 +666,12 @@ public class CustomCameraView extends RelativeLayout {
         }
     }
 
+    /**
+     * updateVideoViewSize
+     *
+     * @param videoWidth
+     * @param videoHeight
+     */
     private void updateVideoViewSize(float videoWidth, float videoHeight) {
         if (videoWidth > videoHeight) {
             FrameLayout.LayoutParams videoViewParam;
@@ -672,7 +681,6 @@ public class CustomCameraView extends RelativeLayout {
             mTextureView.setLayoutParams(videoViewParam);
         }
     }
-
 
     /**
      * 取消拍摄相关

@@ -27,4 +27,5 @@ public final class PictureConfig {
 
     public final static int REQUEST_CAMERA = 909;
 
+    public final static int REQUEST_GO_SETTING = 1102;
 }

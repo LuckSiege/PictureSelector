@@ -1,9 +1,11 @@
 package com.luck.lib.camerax.widget;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -12,9 +14,11 @@ import android.os.CountDownTimer;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.luck.lib.camerax.CheckPermission;
 import com.luck.lib.camerax.CustomCameraConfig;
 import com.luck.lib.camerax.listener.CaptureListener;
+import com.luck.lib.camerax.permissions.PermissionChecker;
+import com.luck.lib.camerax.permissions.PermissionResultCallback;
+import com.luck.lib.camerax.permissions.PermissionUtil;
 import com.luck.lib.camerax.utils.DoubleUtils;
 
 /**
@@ -202,7 +206,19 @@ public class CaptureButton extends View {
 
                     if ((buttonState == CustomCameraConfig.BUTTON_STATE_ONLY_RECORDER
                             || buttonState == CustomCameraConfig.BUTTON_STATE_BOTH))
-                        postDelayed(longPressRunnable, 500);
+                        PermissionChecker.getInstance().requestPermissions((Activity) getContext(),
+                                new String[]{Manifest.permission.RECORD_AUDIO}, new PermissionResultCallback() {
+                                    @Override
+                                    public void onGranted() {
+                                        postDelayed(longPressRunnable, 500);
+                                    }
+
+                                    @Override
+                                    public void onDenied() {
+                                        PermissionUtil.goIntentSetting((Activity) getContext(),
+                                                PermissionChecker.PERMISSION_RECORD_AUDIO_SETTING_CODE);
+                                    }
+                                });
                     break;
                 case MotionEvent.ACTION_MOVE:
                     if (captureListener != null
@@ -350,14 +366,6 @@ public class CaptureButton extends View {
         @Override
         public void run() {
             state = STATE_LONG_PRESS;
-            if (CheckPermission.getRecordState() != CheckPermission.STATE_SUCCESS) {
-                state = STATE_IDLE;
-                if (captureListener != null) {
-                    captureListener.recordError();
-                    return;
-                }
-            }
-            //启动按钮动画，外圆变大，内圆缩小
             startRecordAnimation(
                     button_outside_radius,
                     button_outside_radius + outside_add_size,

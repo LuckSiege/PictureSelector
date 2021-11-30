@@ -1,6 +1,7 @@
 package com.luck.picture.lib.permissions;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
@@ -92,5 +93,24 @@ public class PermissionChecker {
         } else {
             action.onDenied();
         }
+    }
+
+    /**
+     * 检查是否有某个权限
+     *
+     * @param ctx
+     * @param permissions
+     * @return
+     */
+    public static boolean checkSelfPermission(Context ctx, String[] permissions) {
+        boolean isAllGranted = true;
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(ctx.getApplicationContext(), permission)
+                    != PackageManager.PERMISSION_GRANTED) {
+                isAllGranted = false;
+                break;
+            }
+        }
+        return isAllGranted;
     }
 }

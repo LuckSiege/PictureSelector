@@ -11,6 +11,9 @@ import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
+import com.luck.picture.lib.utils.SdkVersionUtils;
 
 /**
  * @author：luck
@@ -52,10 +55,34 @@ public class PermissionUtil {
      */
     public static void goIntentSetting(Activity activity, int requestCode) {
         try {
-            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
-            intent.setData(uri);
-            activity.startActivityForResult(intent, requestCode);
+            if (SdkVersionUtils.isR()) {
+                activity.startActivityForResult(new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION),
+                        requestCode);
+            } else {
+                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
+                intent.setData(uri);
+                activity.startActivityForResult(intent, requestCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 跳转到系统设置页面
+     */
+    public static void goIntentSetting(Fragment fragment, int requestCode) {
+        try {
+            if (SdkVersionUtils.isR()) {
+                fragment.startActivityForResult(new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION),
+                        requestCode);
+            } else {
+                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", fragment.getActivity().getPackageName(), null);
+                intent.setData(uri);
+                fragment.startActivityForResult(intent, requestCode);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

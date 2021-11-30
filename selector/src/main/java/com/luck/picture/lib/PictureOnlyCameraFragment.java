@@ -3,6 +3,7 @@ package com.luck.picture.lib;
 import android.Manifest;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,6 +36,10 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        beginSelectedCamera();
+    }
+
+    private void beginSelectedCamera() {
         PermissionChecker.getInstance().requestPermissions(this,
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new PermissionResultCallback() {
                     @Override
@@ -44,9 +49,7 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
 
                     @Override
                     public void onDenied() {
-                        if (!ActivityCompatHelper.isDestroy(getActivity())) {
-                            getActivity().getSupportFragmentManager().popBackStack();
-                        }
+                        handlePermissionDenied();
                     }
                 });
     }
@@ -55,5 +58,21 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
     public void dispatchCameraMediaResult(LocalMedia media) {
         SelectedManager.getSelectedResult().add(media);
         dispatchTransformResult();
+    }
+
+    @Override
+    public void handlePermissionSettingResult() {
+        super.handlePermissionSettingResult();
+        boolean checkSelfPermission = PermissionChecker
+                .checkSelfPermission(getContext(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.CAMERA});
+        if (checkSelfPermission) {
+            beginSelectedCamera();
+        } else {
+            Toast.makeText(getContext(), getString(R.string.ps_camera), Toast.LENGTH_LONG).show();
+            if (!ActivityCompatHelper.isDestroy(getActivity())) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        }
     }
 }

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,11 +42,11 @@ import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.permissions.PermissionResultCallback;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
+import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.AnimUtils;
+import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DoubleUtils;
 import com.luck.picture.lib.utils.SortUtils;
-import com.luck.picture.lib.utils.ActivityCompatHelper;
-import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.widget.BottomNavBar;
 import com.luck.picture.lib.widget.CompleteSelectView;
 import com.luck.picture.lib.widget.RecyclerPreloadView;
@@ -263,14 +264,36 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 AnimUtils.rotateArrow(titleBar.getImageArrow(), false);
             }
         });
+        beginLoadData();
+        addAlbumPopWindowAction();
+    }
+
+    /**
+     * 开始获取数据
+     */
+    private void beginLoadData() {
         if (config.isOnlySandboxDir) {
             loadOnlyInAppDirectoryAllMedia();
         } else {
             loadAllAlbum();
         }
-        addAlbumPopWindowAction();
     }
 
+    @Override
+    public void handlePermissionSettingResult() {
+        if (PermissionChecker.checkSelfPermission(getContext(),
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
+            beginLoadData();
+        } else {
+            Toast.makeText(getContext(), getString(R.string.ps_jurisdiction), Toast.LENGTH_LONG).show();
+            iBridgePictureBehavior.onFinish();
+        }
+    }
+
+    /**
+     * 给AlbumListPopWindow添加事件
+     */
     private void addAlbumPopWindowAction() {
         albumListPopWindow.setOnIBridgeAlbumWidget(new OnAlbumItemClickListener() {
 
@@ -377,7 +400,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
                     @Override
                     public void onDenied() {
-
+                        handlePermissionDenied();
                     }
                 });
     }
@@ -414,21 +437,34 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public void loadOnlyInAppDirectoryAllMedia() {
-        mLoader.loadOnlyInAppDirectoryAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
-            @Override
-            public void onComplete(LocalMediaFolder folder) {
-                if (ActivityCompatHelper.isDestroy(getActivity())) {
-                    return;
-                }
-                dismissLoading();
-                if (folder != null) {
-                    titleBar.setTitle(folder.getName());
-                    setAdapterData(folder.getData());
-                } else {
-                    showDataNull();
-                }
-            }
-        });
+        PermissionChecker.getInstance().requestPermissions(this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                new PermissionResultCallback() {
+                    @Override
+                    public void onGranted() {
+                        showLoading();
+                        mLoader.loadOnlyInAppDirectoryAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
+                            @Override
+                            public void onComplete(LocalMediaFolder folder) {
+                                if (ActivityCompatHelper.isDestroy(getActivity())) {
+                                    return;
+                                }
+                                dismissLoading();
+                                if (folder != null) {
+                                    titleBar.setTitle(folder.getName());
+                                    setAdapterData(folder.getData());
+                                } else {
+                                    showDataNull();
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onDenied() {
+                        handlePermissionDenied();
+                    }
+                });
     }
 
     private void initRecycler(View view) {

@@ -78,12 +78,12 @@ public class SimpleCameraX {
     }
 
     /**
-     * Get Intent to start {@link PictureCustomCameraActivity}
+     * Get Intent to start {@link PictureCameraActivity}
      *
-     * @return Intent for {@link PictureCustomCameraActivity}
+     * @return Intent for {@link PictureCameraActivity}
      */
     public Intent getIntent(@NonNull Context context) {
-        mCameraIntent.setClass(context, PictureCustomCameraActivity.class);
+        mCameraIntent.setClass(context, PictureCameraActivity.class);
         mCameraIntent.putExtras(mCameraBundle);
         return mCameraIntent;
     }
