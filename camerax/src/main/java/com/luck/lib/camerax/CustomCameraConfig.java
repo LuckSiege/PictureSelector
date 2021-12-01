@@ -25,4 +25,33 @@ public class CustomCameraConfig {
      * 默认最小录制时间
      */
     public static final int DEFAULT_MIN_RECORD_VIDEO = 1500;
+
+
+    /**
+     * 图片加载引擎
+     */
+    private static ImageEngine imageEngine;
+
+    public static ImageEngine getImageEngine() {
+        return imageEngine;
+    }
+
+    /**
+     * Image Load the engine
+     *
+     * @param engine Image Load the engine
+     * @return
+     */
+    public static void imageEngine(ImageEngine engine) {
+        if (CustomCameraConfig.imageEngine != engine) {
+            CustomCameraConfig.imageEngine = engine;
+        }
+    }
+
+    /**
+     * 释放监听器
+     */
+    public static void destroy() {
+        CustomCameraConfig.imageEngine = null;
+    }
 }

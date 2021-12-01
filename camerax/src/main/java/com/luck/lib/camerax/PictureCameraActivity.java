@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
 import com.luck.lib.camerax.listener.CameraListener;
 import com.luck.lib.camerax.listener.ClickListener;
 import com.luck.lib.camerax.listener.ImageCallbackListener;
@@ -55,7 +54,7 @@ public class PictureCameraActivity extends AppCompatActivity {
         mCameraView.setImageCallbackListener(new ImageCallbackListener() {
             @Override
             public void onLoadImage(String url, ImageView imageView) {
-                Glide.with(imageView.getContext()).load(url).into(imageView);
+                CustomCameraConfig.getImageEngine().loadImage(imageView.getContext(), imageView, url);
             }
         });
         mCameraView.setCameraListener(new CameraListener() {
@@ -102,6 +101,12 @@ public class PictureCameraActivity extends AppCompatActivity {
             mCameraView.onCancelMedia();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onDestroy() {
+        CustomCameraConfig.destroy();
+        super.onDestroy();
     }
 
     @Override

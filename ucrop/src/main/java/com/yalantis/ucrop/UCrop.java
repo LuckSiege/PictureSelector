@@ -315,6 +315,11 @@ public class UCrop {
 
         public static final String EXTRA_CROP_OUTPUT_FILE_NAME = EXTRA_PREFIX + ".CropOutputFileName";
 
+        public static final String EXTRA_FORBID_CROP_GIF_WEBP = EXTRA_PREFIX + ".ForbidCropGifWebp";
+
+        public static final String EXTRA_FORBID_SKIP_CROP = EXTRA_PREFIX + ".ForbidSkipCrop";
+
+
         public static final String EXTRA_ALLOWED_GESTURES = EXTRA_PREFIX + ".AllowedGestures";
 
         public static final String EXTRA_MAX_BITMAP_SIZE = EXTRA_PREFIX + ".MaxBitmapSize";
@@ -327,8 +332,6 @@ public class UCrop {
         public static final String EXTRA_SHOW_CROP_FRAME = EXTRA_PREFIX + ".ShowCropFrame";
         public static final String EXTRA_CROP_FRAME_COLOR = EXTRA_PREFIX + ".CropFrameColor";
         public static final String EXTRA_CROP_FRAME_STROKE_WIDTH = EXTRA_PREFIX + ".CropFrameStrokeWidth";
-
-        public static final String EXTRA_FORBID_CROP_GIF_WEBP = EXTRA_PREFIX + ".ForbidCropGifWebp";
 
         public static final String EXTRA_SHOW_CROP_GRID = EXTRA_PREFIX + ".ShowCropGrid";
 
@@ -395,6 +398,13 @@ public class UCrop {
          */
         public void setCropOutputFileName(@NonNull String fileName) {
             mOptionBundle.putString(EXTRA_CROP_OUTPUT_FILE_NAME, fileName);
+        }
+
+        /**
+         * @param isForbidSkipCrop - It is forbidden to skip when cutting multiple drawings
+         */
+        public void isForbidSkipMultipleCrop(boolean isForbidSkipCrop) {
+            mOptionBundle.putBoolean(EXTRA_FORBID_SKIP_CROP, isForbidSkipCrop);
         }
 
         /**

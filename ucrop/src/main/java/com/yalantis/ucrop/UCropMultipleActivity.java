@@ -57,10 +57,6 @@ import java.util.Map;
  */
 public class UCropMultipleActivity extends AppCompatActivity implements UCropFragmentCallback {
     /**
-     * 自定义数据
-     */
-    private static final String EXTRA_CUSTOM_EXTRA_DATA = "customExtraData";
-    /**
      * 输出的路径
      */
     private static final String EXTRA_OUT_PUT_PATH = "outPutPath";
@@ -104,6 +100,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     private String outputCropFileName;
     private UCropGalleryAdapter galleryAdapter;
     private boolean isForbidCropGifWebp;
+    private boolean isForbidSkipCrop;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -190,11 +187,12 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         int galleryBarBackground = getIntent().getIntExtra(UCrop.Options.EXTRA_GALLERY_BAR_BACKGROUND,
                 R.drawable.ucrop_gallery_bg);
         mGalleryRecycle.setBackgroundResource(galleryBarBackground);
-        galleryAdapter = new UCropGalleryAdapter(uCropSupportList);
+        galleryAdapter = new UCropGalleryAdapter(uCropSupportList,isForbidSkipCrop);
         galleryAdapter.setOnItemClickListener(new UCropGalleryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, View view) {
                 String path = uCropSupportList.get(position);
+                Bundle extras = getIntent().getExtras();
                 Uri inputUri = FileUtils.isContent(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
                 String postfix = FileUtils.getPostfixDefaultJPEG(UCropMultipleActivity.this,
                         isForbidCropGifWebp, inputUri);
@@ -202,8 +200,6 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
                         ? FileUtils.getCreateFileName("CROP_") + postfix
                         : FileUtils.getCreateFileName() + "_" + outputCropFileName;
                 Uri destinationUri = Uri.fromFile(new File(getSandboxPathDir(), fileName));
-
-                Bundle extras = getIntent().getExtras();
                 extras.putParcelable(UCrop.EXTRA_INPUT_URI, inputUri);
                 extras.putParcelable(UCrop.EXTRA_OUTPUT_URI, destinationUri);
                 UCropFragment uCropFragment = fragments.get(position);
@@ -235,6 +231,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
 
     private void setupViews(@NonNull Intent intent) {
         isForbidCropGifWebp = intent.getBooleanExtra(UCrop.Options.EXTRA_FORBID_CROP_GIF_WEBP, false);
+        isForbidSkipCrop = intent.getBooleanExtra(UCrop.Options.EXTRA_FORBID_SKIP_CROP, false);
         outputCropFileName = intent.getStringExtra(UCrop.Options.EXTRA_CROP_OUTPUT_FILE_NAME);
         mStatusBarColor = intent.getIntExtra(UCrop.Options.EXTRA_STATUS_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_statusbar));
         mToolbarColor = intent.getIntExtra(UCrop.Options.EXTRA_TOOL_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_toolbar));

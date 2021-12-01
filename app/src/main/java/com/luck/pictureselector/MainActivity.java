@@ -26,6 +26,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.luck.lib.camerax.CustomCameraConfig;
+import com.luck.lib.camerax.ImageEngine;
 import com.luck.lib.camerax.SimpleCameraX;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.app.PictureAppMaster;
@@ -504,6 +507,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             SimpleCameraX camera = SimpleCameraX.of();
             camera.setCameraMode(cameraMode);
             camera.setOutputPathDir(getSandboxPath());
+            CustomCameraConfig.imageEngine(new ImageEngine() {
+                @Override
+                public void loadImage(Context context, ImageView imageView, String url) {
+                    Glide.with(context).load(url).into(imageView);
+                }
+            });
             camera.start(fragment.getActivity(), fragment, requestCode);
         }
     }
@@ -554,8 +563,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private UCrop.Options buildOptions() {
         UCrop.Options options = new UCrop.Options();
-        options.setHideBottomControls(true);
+        options.setHideBottomControls(!cb_hide.isChecked());
+        options.setFreeStyleCropEnabled(cb_styleCrop.isChecked());
+        options.setShowCropFrame(cb_showCropFrame.isChecked());
+        options.setShowCropGrid(cb_showCropGrid.isChecked());
+        options.setCircleDimmedLayer(cb_crop_circular.isChecked());
         options.setCropOutputPathDir(getSandboxPath());
+        options.isForbidSkipMultipleCrop(false);
         options.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
         options.setToolbarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
         options.setToolbarWidgetColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));

@@ -235,7 +235,8 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
      */
     private boolean isSelected(LocalMedia currentMedia) {
         List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
-        if (selectedResult.contains(currentMedia)) {
+        boolean isSelected = selectedResult.contains(currentMedia);
+        if (isSelected) {
             LocalMedia compare = currentMedia.getCompareLocalMedia();
             if (compare != null && compare.isEditorImage()) {
                 currentMedia.setCutPath(compare.getCutPath());
@@ -243,7 +244,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
                 currentMedia.setEditorImage(compare.isEditorImage());
             }
         }
-        return false;
+        return isSelected;
     }
 
     /**
