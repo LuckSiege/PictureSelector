@@ -9,7 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.luck.picture.lib.basic.PictureCommonFragment;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.permissions.PermissionResultCallback;
@@ -40,18 +43,32 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
     }
 
     private void beginSelectedCamera() {
-        PermissionChecker.getInstance().requestPermissions(this,
-                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new PermissionResultCallback() {
-                    @Override
-                    public void onGranted() {
-                        openSelectedCamera();
-                    }
+        if (PictureSelectionConfig.permissionsEventListener != null) {
+            PictureSelectionConfig.permissionsEventListener.onPermission(this,
+                    PictureConfig.WRITE_EXTERNAL_STORAGE, new OnCallbackListener<Boolean>() {
+                        @Override
+                        public void onCall(Boolean isResult) {
+                            if (isResult) {
+                                openSelectedCamera();
+                            } else {
+                                handlePermissionDenied();
+                            }
+                        }
+                    });
+        } else {
+            PermissionChecker.getInstance().requestPermissions(this,
+                    PictureConfig.WRITE_EXTERNAL_STORAGE, new PermissionResultCallback() {
+                        @Override
+                        public void onGranted() {
+                            openSelectedCamera();
+                        }
 
-                    @Override
-                    public void onDenied() {
-                        handlePermissionDenied();
-                    }
-                });
+                        @Override
+                        public void onDenied() {
+                            handlePermissionDenied();
+                        }
+                    });
+        }
     }
 
     @Override
@@ -63,10 +80,8 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
     @Override
     public void handlePermissionSettingResult() {
         super.handlePermissionSettingResult();
-        boolean checkSelfPermission = PermissionChecker
-                .checkSelfPermission(getContext(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.CAMERA});
-        if (checkSelfPermission) {
+        if (PermissionChecker.checkSelfPermission(getContext(),
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA})) {
             beginSelectedCamera();
         } else {
             Toast.makeText(getContext(), getString(R.string.ps_camera), Toast.LENGTH_LONG).show();

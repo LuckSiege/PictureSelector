@@ -8,9 +8,9 @@ import com.luck.picture.lib.entity.LocalMedia;
 /**
  * @author：luck
  * @date：2021/11/27 5:44 下午
- * @describe：OnMediaEditEventInterceptListener
+ * @describe：OnMediaEditInterceptListener
  */
-public interface OnMediaEditEventInterceptListener {
+public interface OnMediaEditInterceptListener {
     /**
      * Custom crop image engine
      * <p>

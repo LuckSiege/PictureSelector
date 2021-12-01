@@ -9,9 +9,10 @@ import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.interfaces.OnCameraEventInterceptListener;
+import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
-import com.luck.picture.lib.interfaces.OnMediaEditEventInterceptListener;
+import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
+import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.io.ArrayPoolProvide;
 import com.luck.picture.lib.language.LanguageConfig;
@@ -94,11 +95,11 @@ public final class PictureSelectionConfig implements Parcelable {
     public static CropEngine cropEngine;
     public static SandboxFileEngine sandboxFileEngine;
     public static PictureSelectorStyle selectorStyle;
-    public static OnCameraEventInterceptListener interceptCameraListener;
+    public static OnCameraInterceptListener interceptCameraListener;
     public static OnResultCallbackListener<LocalMedia> resultCallListener;
     public static OnExternalPreviewEventListener previewEventListener;
-    public static OnMediaEditEventInterceptListener editMediaEventListener;
-
+    public static OnMediaEditInterceptListener editMediaEventListener;
+    public static OnPermissionsInterceptListener permissionsEventListener;
 
     protected PictureSelectionConfig(Parcel in) {
         chooseMode = in.readInt();
@@ -339,6 +340,7 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.interceptCameraListener = null;
         PictureSelectionConfig.previewEventListener = null;
         PictureSelectionConfig.editMediaEventListener = null;
+        PictureSelectionConfig.permissionsEventListener = null;
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         ArrayPoolProvide.getInstance().clearMemory();
         SelectedManager.clear();

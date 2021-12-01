@@ -5,9 +5,9 @@ import androidx.fragment.app.Fragment;
 /**
  * @author：luck
  * @date：2021/11/23 10:41 上午
- * @describe：OnCameraEventInterceptListener
+ * @describe：OnCameraInterceptListener
  */
-public interface OnCameraEventInterceptListener {
+public interface OnCameraInterceptListener {
 
     /**
      * Intercept camera click events, and users can implement their own camera framework

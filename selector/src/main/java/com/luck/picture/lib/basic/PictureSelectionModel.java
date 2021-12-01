@@ -22,9 +22,10 @@ import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.interfaces.OnCameraEventInterceptListener;
+import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
-import com.luck.picture.lib.interfaces.OnMediaEditEventInterceptListener;
+import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
+import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureSelectorStyle;
@@ -155,7 +156,7 @@ public class PictureSelectionModel {
      * @param listener
      * @return
      */
-    public PictureSelectionModel setCameraInterceptListener(OnCameraEventInterceptListener listener) {
+    public PictureSelectionModel setCameraInterceptListener(OnCameraInterceptListener listener) {
         PictureSelectionConfig.interceptCameraListener = listener;
         return this;
     }
@@ -166,8 +167,19 @@ public class PictureSelectionModel {
      * @param listener
      * @return
      */
-    public PictureSelectionModel setEditMediaInterceptListener(OnMediaEditEventInterceptListener listener) {
+    public PictureSelectionModel setEditMediaInterceptListener(OnMediaEditInterceptListener listener) {
         PictureSelectionConfig.editMediaEventListener = listener;
+        return this;
+    }
+
+    /**
+     * Custom interception permission processing
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionModel setPermissionsInterceptListener(OnPermissionsInterceptListener listener) {
+        PictureSelectionConfig.permissionsEventListener = listener;
         return this;
     }
 

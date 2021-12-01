@@ -466,100 +466,163 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     @Override
     public void openImageCamera() {
-        PermissionChecker.getInstance().requestPermissions(this,
-                new String[]{Manifest.permission.CAMERA}, new PermissionResultCallback() {
-                    @Override
-                    public void onGranted() {
-                        if (!ActivityCompatHelper.isDestroy(getActivity())) {
-                            if (PictureSelectionConfig.interceptCameraListener != null) {
-                                interceptCameraEvent(SelectMimeType.TYPE_IMAGE);
+        if (PictureSelectionConfig.permissionsEventListener != null) {
+            PictureSelectionConfig.permissionsEventListener.onPermission(this, PictureConfig.CAMERA,
+                    new OnCallbackListener<Boolean>() {
+                        @Override
+                        public void onCall(Boolean isResult) {
+                            if (isResult) {
+                                startCameraImageCapture();
                             } else {
-                                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                                    Uri imageUri = MediaStoreUtils.createCameraOutImageUri(getContext(), config);
-                                    if (imageUri != null) {
-                                        if (config.isCameraAroundState) {
-                                            cameraIntent.putExtra(PictureConfig.CAMERA_FACING, PictureConfig.CAMERA_BEFORE);
-                                        }
-                                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                                        startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
-                                    }
-                                }
+                                handlePermissionDenied();
                             }
                         }
-                    }
+                    });
+        } else {
+            PermissionChecker.getInstance().requestPermissions(this, PictureConfig.CAMERA,
+                    new PermissionResultCallback() {
+                        @Override
+                        public void onGranted() {
+                            startCameraImageCapture();
+                        }
 
-                    @Override
-                    public void onDenied() {
-                        handlePermissionDenied();
+                        @Override
+                        public void onDenied() {
+                            handlePermissionDenied();
+                        }
+                    });
+        }
+    }
+
+    /**
+     * Start ACTION_IMAGE_CAPTURE
+     */
+    private void startCameraImageCapture() {
+        if (!ActivityCompatHelper.isDestroy(getActivity())) {
+            if (PictureSelectionConfig.interceptCameraListener != null) {
+                interceptCameraEvent(SelectMimeType.TYPE_IMAGE);
+            } else {
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    Uri imageUri = MediaStoreUtils.createCameraOutImageUri(getContext(), config);
+                    if (imageUri != null) {
+                        if (config.isCameraAroundState) {
+                            cameraIntent.putExtra(PictureConfig.CAMERA_FACING, PictureConfig.CAMERA_BEFORE);
+                        }
+                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                        startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
                     }
-                });
+                }
+            }
+        }
     }
 
 
     @Override
     public void openVideoCamera() {
-        PermissionChecker.getInstance().requestPermissions(this,
-                new String[]{Manifest.permission.CAMERA}, new PermissionResultCallback() {
-                    @Override
-                    public void onGranted() {
-                        if (!ActivityCompatHelper.isDestroy(getActivity())) {
-                            if (PictureSelectionConfig.interceptCameraListener != null) {
-                                interceptCameraEvent(SelectMimeType.TYPE_VIDEO);
+        if (PictureSelectionConfig.permissionsEventListener != null) {
+            PictureSelectionConfig.permissionsEventListener.onPermission(this, PictureConfig.CAMERA,
+                    new OnCallbackListener<Boolean>() {
+                        @Override
+                        public void onCall(Boolean isResult) {
+                            if (isResult) {
+                                startCameraVideoCapture();
                             } else {
-                                Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-                                if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                                    Uri videoUri = MediaStoreUtils.createCameraOutVideoUri(getContext(), config);
-                                    if (videoUri != null) {
-                                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoUri);
-                                        if (config.isCameraAroundState) {
-                                            cameraIntent.putExtra(PictureConfig.CAMERA_FACING, PictureConfig.CAMERA_BEFORE);
-                                        }
-                                        cameraIntent.putExtra(PictureConfig.EXTRA_QUICK_CAPTURE, config.isQuickCapture);
-                                        cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, config.recordVideoMaxSecond);
-                                        cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, config.videoQuality);
-                                        startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
-                                    }
-                                }
+                                handlePermissionDenied();
                             }
                         }
-                    }
+                    });
+        } else {
+            PermissionChecker.getInstance().requestPermissions(this, PictureConfig.CAMERA,
+                    new PermissionResultCallback() {
+                        @Override
+                        public void onGranted() {
+                            startCameraVideoCapture();
+                        }
 
-                    @Override
-                    public void onDenied() {
-                        handlePermissionDenied();
+                        @Override
+                        public void onDenied() {
+                            handlePermissionDenied();
+                        }
+                    });
+        }
+    }
+
+    /**
+     * Start ACTION_VIDEO_CAPTURE
+     */
+    private void startCameraVideoCapture() {
+        if (!ActivityCompatHelper.isDestroy(getActivity())) {
+            if (PictureSelectionConfig.interceptCameraListener != null) {
+                interceptCameraEvent(SelectMimeType.TYPE_VIDEO);
+            } else {
+                Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    Uri videoUri = MediaStoreUtils.createCameraOutVideoUri(getContext(), config);
+                    if (videoUri != null) {
+                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoUri);
+                        if (config.isCameraAroundState) {
+                            cameraIntent.putExtra(PictureConfig.CAMERA_FACING, PictureConfig.CAMERA_BEFORE);
+                        }
+                        cameraIntent.putExtra(PictureConfig.EXTRA_QUICK_CAPTURE, config.isQuickCapture);
+                        cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, config.recordVideoMaxSecond);
+                        cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, config.videoQuality);
+                        startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
                     }
-                });
+                }
+            }
+        }
     }
 
 
     @Override
     public void openSoundRecording() {
-        PermissionChecker.getInstance().requestPermissions(this,
-                new String[]{Manifest.permission.RECORD_AUDIO}, new PermissionResultCallback() {
-                    @Override
-                    public void onGranted() {
-                        if (!ActivityCompatHelper.isDestroy(getActivity())) {
-                            if (PictureSelectionConfig.interceptCameraListener != null) {
-                                interceptCameraEvent(SelectMimeType.TYPE_AUDIO);
+        if (PictureSelectionConfig.permissionsEventListener != null) {
+            PictureSelectionConfig.permissionsEventListener.onPermission(this, PictureConfig.RECORD_AUDIO,
+                    new OnCallbackListener<Boolean>() {
+                        @Override
+                        public void onCall(Boolean isResult) {
+                            if (isResult) {
+                                startCameraRecordSound();
                             } else {
-                                Intent cameraIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-                                if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                                    Uri audioUri = MediaStoreUtils.createCameraOutAudioUri(getContext(), config);
-                                    if (audioUri != null) {
-                                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, audioUri);
-                                        startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
-                                    }
-                                }
+                                handlePermissionDenied();
                             }
                         }
-                    }
+                    });
+        } else {
+            PermissionChecker.getInstance().requestPermissions(this,
+                    new String[]{Manifest.permission.RECORD_AUDIO}, new PermissionResultCallback() {
+                        @Override
+                        public void onGranted() {
+                            startCameraRecordSound();
+                        }
 
-                    @Override
-                    public void onDenied() {
-                        handlePermissionDenied();
+                        @Override
+                        public void onDenied() {
+                            handlePermissionDenied();
+                        }
+                    });
+        }
+    }
+
+    /**
+     * Start RECORD_SOUND_ACTION
+     */
+    private void startCameraRecordSound() {
+        if (!ActivityCompatHelper.isDestroy(getActivity())) {
+            if (PictureSelectionConfig.interceptCameraListener != null) {
+                interceptCameraEvent(SelectMimeType.TYPE_AUDIO);
+            } else {
+                Intent cameraIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+                if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    Uri audioUri = MediaStoreUtils.createCameraOutAudioUri(getContext(), config);
+                    if (audioUri != null) {
+                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, audioUri);
+                        startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
                     }
-                });
+                }
+            }
+        }
     }
 
 

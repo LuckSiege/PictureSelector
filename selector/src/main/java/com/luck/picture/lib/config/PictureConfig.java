@@ -1,11 +1,33 @@
 package com.luck.picture.lib.config;
 
+import android.Manifest;
+
 /**
  * @author：luck
  * @data：2017/5/24 1:00
  * @describe : constant
  */
 public final class PictureConfig {
+    /**
+     * 读写权限
+     */
+    public final static String[] READ_WRITE_EXTERNAL_STORAGE =
+            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    /**
+     * 写入权限
+     */
+    public final static String[] WRITE_EXTERNAL_STORAGE = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+    /**
+     * 相机权限
+     */
+    public final static String[] CAMERA = new String[]{Manifest.permission.CAMERA};
+
+    /**
+     * 录音权限
+     */
+    public final static String[] RECORD_AUDIO = new String[]{Manifest.permission.RECORD_AUDIO};
 
     public final static String EXTRA_PICTURE_SELECTOR_CONFIG = "PictureSelectorConfig";
 

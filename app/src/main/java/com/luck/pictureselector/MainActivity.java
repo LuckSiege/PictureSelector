@@ -42,9 +42,9 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.interfaces.OnCallbackIndexListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
-import com.luck.picture.lib.interfaces.OnCameraEventInterceptListener;
+import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
-import com.luck.picture.lib.interfaces.OnMediaEditEventInterceptListener;
+import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.style.BottomNavBarStyle;
@@ -461,8 +461,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      *
      * @return
      */
-    private OnCameraEventInterceptListener getCustomCameraEvent() {
-        return cb_custom_camera.isChecked() ? new MeOnCameraEventInterceptListener() : null;
+    private OnCameraInterceptListener getCustomCameraEvent() {
+        return cb_custom_camera.isChecked() ? new MeOnCameraInterceptListener() : null;
     }
 
     /**
@@ -470,14 +470,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      *
      * @return
      */
-    private OnMediaEditEventInterceptListener getCustomEditMediaEvent() {
-        return cbEditor.isChecked() ? new MeOnMediaEditEventInterceptListener() : null;
+    private OnMediaEditInterceptListener getCustomEditMediaEvent() {
+        return cbEditor.isChecked() ? new MeOnMediaEditInterceptListener() : null;
     }
 
     /**
      * 自定义编辑
      */
-    private class MeOnMediaEditEventInterceptListener implements OnMediaEditEventInterceptListener {
+    private class MeOnMediaEditInterceptListener implements OnMediaEditInterceptListener {
 
         @Override
         public void onStartMediaEdit(Fragment fragment, LocalMedia currentLocalMedia, int requestCode) {
@@ -497,7 +497,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 自定义拍照
      */
-    private class MeOnCameraEventInterceptListener implements OnCameraEventInterceptListener {
+    private class MeOnCameraInterceptListener implements OnCameraInterceptListener {
 
         @Override
         public void openCamera(Fragment fragment, int cameraMode, int requestCode) {

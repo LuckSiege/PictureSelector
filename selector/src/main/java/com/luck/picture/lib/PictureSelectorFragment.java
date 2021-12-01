@@ -33,6 +33,7 @@ import com.luck.picture.lib.dialog.AudioPlayDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnAlbumItemClickListener;
+import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.interfaces.OnRecyclerViewPreloadMoreListener;
 import com.luck.picture.lib.loader.LocalMediaLoader;
@@ -264,14 +265,40 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 AnimUtils.rotateArrow(titleBar.getImageArrow(), false);
             }
         });
-        beginLoadData();
         addAlbumPopWindowAction();
+        if (PictureSelectionConfig.permissionsEventListener != null) {
+            PictureSelectionConfig.permissionsEventListener.onPermission(this,
+                    PictureConfig.READ_WRITE_EXTERNAL_STORAGE, new OnCallbackListener<Boolean>() {
+                        @Override
+                        public void onCall(Boolean isResult) {
+                            if (isResult) {
+                                beginLoadData();
+                            } else {
+                                handlePermissionDenied();
+                            }
+                        }
+                    });
+        } else {
+            PermissionChecker.getInstance().requestPermissions(this,
+                    PictureConfig.READ_WRITE_EXTERNAL_STORAGE, new PermissionResultCallback() {
+                        @Override
+                        public void onGranted() {
+                            beginLoadData();
+                        }
+
+                        @Override
+                        public void onDenied() {
+                            handlePermissionDenied();
+                        }
+                    });
+        }
     }
 
     /**
      * 开始获取数据
      */
     private void beginLoadData() {
+        showLoading();
         if (config.isOnlySandboxDir) {
             loadOnlyInAppDirectoryAllMedia();
         } else {
@@ -371,39 +398,27 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public void loadAllAlbum() {
-        PermissionChecker.getInstance().requestPermissions(this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                new PermissionResultCallback() {
-                    @Override
-                    public void onGranted() {
-                        showLoading();
-                        mLoader.loadAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
+        mLoader.loadAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
 
-                            @Override
-                            public void onComplete(List<LocalMediaFolder> result) {
-                                if (ActivityCompatHelper.isDestroy(getActivity())) {
-                                    return;
-                                }
-                                if (result.size() > 0) {
-                                    LocalMediaFolder firstFolder = result.get(0);
-                                    firstFolder.setChecked(true);
-                                    titleBar.setTitle(firstFolder.getName());
-                                    albumListPopWindow.setLastFolder(firstFolder);
-                                    albumListPopWindow.bindAlbumData(result);
-                                    loadAllMedia(firstFolder);
-                                } else {
-                                    showDataNull();
-                                }
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onDenied() {
-                        handlePermissionDenied();
-                    }
-                });
+            @Override
+            public void onComplete(List<LocalMediaFolder> result) {
+                if (ActivityCompatHelper.isDestroy(getActivity())) {
+                    return;
+                }
+                if (result.size() > 0) {
+                    LocalMediaFolder firstFolder = result.get(0);
+                    firstFolder.setChecked(true);
+                    titleBar.setTitle(firstFolder.getName());
+                    albumListPopWindow.setLastFolder(firstFolder);
+                    albumListPopWindow.bindAlbumData(result);
+                    loadAllMedia(firstFolder);
+                } else {
+                    showDataNull();
+                }
+            }
+        });
     }
+
 
     @Override
     public void loadAllMedia(LocalMediaFolder firstFolder) {
@@ -437,34 +452,21 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public void loadOnlyInAppDirectoryAllMedia() {
-        PermissionChecker.getInstance().requestPermissions(this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                new PermissionResultCallback() {
-                    @Override
-                    public void onGranted() {
-                        showLoading();
-                        mLoader.loadOnlyInAppDirectoryAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
-                            @Override
-                            public void onComplete(LocalMediaFolder folder) {
-                                dismissLoading();
-                                if (!ActivityCompatHelper.isDestroy(getActivity())) {
-                                    if (folder != null) {
-                                        titleBar.setTitle(folder.getName());
-                                        albumListPopWindow.setLastFolder(folder);
-                                        setAdapterData(folder.getData());
-                                    } else {
-                                        showDataNull();
-                                    }
-                                }
-                            }
-                        });
+        mLoader.loadOnlyInAppDirectoryAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
+            @Override
+            public void onComplete(LocalMediaFolder folder) {
+                dismissLoading();
+                if (!ActivityCompatHelper.isDestroy(getActivity())) {
+                    if (folder != null) {
+                        titleBar.setTitle(folder.getName());
+                        albumListPopWindow.setLastFolder(folder);
+                        setAdapterData(folder.getData());
+                    } else {
+                        showDataNull();
                     }
-
-                    @Override
-                    public void onDenied() {
-                        handlePermissionDenied();
-                    }
-                });
+                }
+            }
+        });
     }
 
     private void initRecycler(View view) {
