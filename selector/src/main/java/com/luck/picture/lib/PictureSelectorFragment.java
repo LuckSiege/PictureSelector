@@ -446,15 +446,15 @@ public class PictureSelectorFragment extends PictureCommonFragment
                         mLoader.loadOnlyInAppDirectoryAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
                             @Override
                             public void onComplete(LocalMediaFolder folder) {
-                                if (ActivityCompatHelper.isDestroy(getActivity())) {
-                                    return;
-                                }
                                 dismissLoading();
-                                if (folder != null) {
-                                    titleBar.setTitle(folder.getName());
-                                    setAdapterData(folder.getData());
-                                } else {
-                                    showDataNull();
+                                if (!ActivityCompatHelper.isDestroy(getActivity())) {
+                                    if (folder != null) {
+                                        titleBar.setTitle(folder.getName());
+                                        albumListPopWindow.setLastFolder(folder);
+                                        setAdapterData(folder.getData());
+                                    } else {
+                                        showDataNull();
+                                    }
                                 }
                             }
                         });
@@ -732,13 +732,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
             return false;
         }
         return allFolderSize > 0 && allFolderSize < totalNum;
-    }
-
-
-    @Override
-    public void onDestroy() {
-        PictureSelectionConfig.destroy();
-        super.onDestroy();
     }
 
     /**

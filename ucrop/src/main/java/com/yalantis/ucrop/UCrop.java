@@ -28,26 +28,14 @@ import java.util.Locale;
  * Builder class to ease Intent setup.
  */
 public class UCrop {
-
     public static final int REQUEST_CROP = 69;
     public static final int RESULT_ERROR = 96;
     public static final int MIN_SIZE = 10;
 
-    public static String CROP_OUTPUT_PATH = "OutputPath";
-    public static String CROP_IMAGE_WIDTH = "ImageWidth";
-    public static String CROP_IMAGE_HEIGHT = "ImageHeight";
-    public static String CROP_ASPECT_RATIO = "CropAspectRatio";
-    public static String CROP_OFFSET_X = "OffsetX";
-    public static String CROP_OFFSET_Y = "OffsetY";
-
-
     private static final String EXTRA_PREFIX = "com.yalantis.ucrop";
-    public static final String EXTRA_CROP_OUTPUT_MULTIPLE_RESULT = EXTRA_PREFIX + ".CropOutputMultipleResult";
-
-    public static final String EXTRA_CROP_COUNT = EXTRA_PREFIX + ".CropCount";
+    public static final String EXTRA_CROP_TOTAL_DATA_SOURCE = EXTRA_PREFIX + ".CropTotalDataSource";
     public static final String EXTRA_CROP_INPUT_ORIGINAL = EXTRA_PREFIX + ".CropInputOriginal";
 
-    public static final String EXTRA_INPUT_ALL_CUT_DATA = EXTRA_PREFIX + ".InputAllCutData";
     public static final String EXTRA_INPUT_URI = EXTRA_PREFIX + ".InputUri";
     public static final String EXTRA_OUTPUT_URI = EXTRA_PREFIX + ".OutputUri";
     public static final String EXTRA_OUTPUT_CROP_ASPECT_RATIO = EXTRA_PREFIX + ".CropAspectRatio";
@@ -71,45 +59,54 @@ public class UCrop {
      *
      * @param source      Uri for image to crop
      * @param destination Uri for saving the cropped image
-     * @param count       crop data count
+     * @param totalSource crop data source for list
      */
-    public static UCrop of(@NonNull Uri source, @NonNull Uri destination, int count) {
-        if (count <= 0) {
+    public static UCrop of(@NonNull Uri source, @NonNull Uri destination, ArrayList<String> totalSource) {
+        if (totalSource == null || totalSource.size() <= 0) {
             throw new IllegalArgumentException("Missing required parameters, count cannot be less than 1");
         }
-        return new UCrop(source, destination, count);
+        if (totalSource.size() == 1) {
+            return new UCrop(source, destination);
+        }
+        return new UCrop(source, destination, totalSource);
     }
 
-
     /**
-     * This method creates new Intent builder and sets both source and destination images URIs.
+     * This method creates new Intent builder and sets both source and destination image URIs.
      *
      * @param source      Uri for image to crop
      * @param destination Uri for saving the cropped image
-     * @param count       crop data count
      */
-    public static UCrop ofMultiple(@NonNull Uri source, @NonNull Uri destination, ArrayList<String> list) {
-        if (list == null || list.size() <= 0) {
-            throw new IllegalArgumentException("Missing required parameters, count cannot be less than 1");
-        }
-        return new UCrop(source, destination, list.size(), list);
+    public static <T> UCrop of(@NonNull Uri source, @NonNull Uri destination) {
+        return new UCrop(source, destination);
     }
 
-    private UCrop(@NonNull Uri source, @NonNull Uri destination, int count) {
+    /**
+     * This method creates new Intent builder and sets both source and destination image URIs.
+     *
+     * @param source      Uri for image to crop
+     * @param destination Uri for saving the cropped image
+     */
+    private UCrop(@NonNull Uri source, @NonNull Uri destination) {
         mCropIntent = new Intent();
         mCropOptionsBundle = new Bundle();
         mCropOptionsBundle.putParcelable(EXTRA_INPUT_URI, source);
         mCropOptionsBundle.putParcelable(EXTRA_OUTPUT_URI, destination);
-        mCropOptionsBundle.putInt(EXTRA_CROP_COUNT, count);
     }
 
-    private UCrop(@NonNull Uri source, @NonNull Uri destination, int count, ArrayList<String> data) {
+    /**
+     * This method creates new Intent builder and sets both source and destination image URIs.
+     *
+     * @param source      Uri for image to crop
+     * @param destination Uri for saving the cropped image
+     * @param totalSource crop total data
+     */
+    private UCrop(@NonNull Uri source, @NonNull Uri destination, ArrayList<String> totalSource) {
         mCropIntent = new Intent();
         mCropOptionsBundle = new Bundle();
         mCropOptionsBundle.putParcelable(EXTRA_INPUT_URI, source);
         mCropOptionsBundle.putParcelable(EXTRA_OUTPUT_URI, destination);
-        mCropOptionsBundle.putStringArrayList(EXTRA_INPUT_ALL_CUT_DATA, data);
-        mCropOptionsBundle.putInt(EXTRA_CROP_COUNT, count);
+        mCropOptionsBundle.putStringArrayList(EXTRA_CROP_TOTAL_DATA_SOURCE, totalSource);
     }
 
     /**
@@ -198,24 +195,14 @@ public class UCrop {
         fragment.startActivityForResult(getIntent(context), requestCode);
     }
 
-
-    /**
-     * Send the crop Intent from a Fragment
-     *
-     * @param fragment Fragment to receive result
-     */
-    public void startMultipleCrop(@NonNull Context context, @NonNull Fragment fragment) {
-        startMultipleCrop(context, fragment, REQUEST_CROP);
-    }
-
     /**
      * Send the crop Intent with a custom request code
      *
      * @param fragment    Fragment to receive result
      * @param requestCode requestCode for result
      */
-    public void startMultipleCrop(@NonNull Context context, @NonNull Fragment fragment, int requestCode) {
-        fragment.startActivityForResult(getMultipleIntent(context), requestCode);
+    public void startEdit(@NonNull Context context, @NonNull Fragment fragment, int requestCode) {
+        fragment.startActivityForResult(getIntent(context), requestCode);
     }
 
     /**
@@ -224,18 +211,12 @@ public class UCrop {
      * @return Intent for {@link UCropActivity}
      */
     public Intent getIntent(@NonNull Context context) {
-        mCropIntent.setClass(context, UCropActivity.class);
-        mCropIntent.putExtras(mCropOptionsBundle);
-        return mCropIntent;
-    }
-
-    /**
-     * Get Intent to start {@link UCropMultipleActivity}
-     *
-     * @return Intent for {@link UCropMultipleActivity}
-     */
-    public Intent getMultipleIntent(@NonNull Context context) {
-        mCropIntent.setClass(context, UCropMultipleActivity.class);
+        ArrayList<String> dataSource = mCropOptionsBundle.getStringArrayList(EXTRA_CROP_TOTAL_DATA_SOURCE);
+        if (dataSource != null && dataSource.size() > 1) {
+            mCropIntent.setClass(context, UCropMultipleActivity.class);
+        } else {
+            mCropIntent.setClass(context, UCropActivity.class);
+        }
         mCropIntent.putExtras(mCropOptionsBundle);
         return mCropIntent;
     }
@@ -326,6 +307,7 @@ public class UCrop {
      * Use it with method {@link #withOptions(Options)}
      */
     public static class Options {
+
         public static final String EXTRA_COMPRESSION_FORMAT_NAME = EXTRA_PREFIX + ".CompressionFormatName";
         public static final String EXTRA_COMPRESSION_QUALITY = EXTRA_PREFIX + ".CompressionQuality";
 

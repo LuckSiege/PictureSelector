@@ -24,9 +24,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.PictureOnlyCameraFragment;
+import com.luck.picture.lib.PictureSelectorFragment;
 import com.luck.picture.lib.PictureSelectorPreviewFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.Crop;
+import com.luck.picture.lib.config.CustomField;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -67,7 +69,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author：luck
@@ -150,6 +151,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     @Override
     public void handlePermissionSettingResult() {
+
+    }
+
+    @Override
+    public void onEditMedia(Intent intent) {
 
     }
 
@@ -561,8 +567,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      * 拦截相机事件并处理返回结果
      */
     private void interceptCameraEvent(int cameraMode) {
-        PictureSelectionConfig.interceptCameraListener.openCamera(getActivity(), this,
-                cameraMode, PictureConfig.REQUEST_CAMERA);
+        PictureSelectionConfig.interceptCameraListener.openCamera(this, cameraMode, PictureConfig.REQUEST_CAMERA);
     }
 
     /**
@@ -589,64 +594,68 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         checkMatchCustomCameraOutputUri(data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == PictureConfig.REQUEST_CAMERA) {
                 dispatchHandleCamera(data);
+            } else if (requestCode == Crop.REQUEST_EDIT_CROP) {
+                onEditMedia(data);
             } else if (requestCode == Crop.REQUEST_CROP) {
-                try {
-                    Uri resultUri = Crop.getOutput(Objects.requireNonNull(data));
-                    if (Crop.getCropCount(data) == SelectedManager.getCount()) {
-                        List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
-                        if (Crop.getCropCount(data) > 1) {
-                            JSONArray array = new JSONArray(Crop.getMultipleOutput(data));
-                            for (int i = 0; i < SelectedManager.getCount(); i++) {
+                List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
+                if (data.hasExtra(MediaStore.EXTRA_OUTPUT)) {
+                    try {
+                        String extra = data.getStringExtra(MediaStore.EXTRA_OUTPUT);
+                        JSONArray array = new JSONArray(extra);
+                        if (array.length() == selectedResult.size()) {
+                            for (int i = 0; i < selectedResult.size(); i++) {
                                 LocalMedia media = selectedResult.get(i);
-                                JSONObject object = array.optJSONObject(i);
-                                media.setCutPath(object.optString(Crop.CROP_OUTPUT_PATH));
+                                JSONObject item = array.optJSONObject(i);
+                                media.setCutPath(item.optString(CustomField.EXTRA_OUT_PUT_PATH));
                                 media.setCut(!TextUtils.isEmpty(media.getCutPath()));
-                                media.setCropImageWidth(object.optInt(Crop.CROP_IMAGE_WIDTH));
-                                media.setCropImageHeight(object.optInt(Crop.CROP_IMAGE_HEIGHT));
-                                media.setCropResultAspectRatio((float) object.optDouble(Crop.CROP_ASPECT_RATIO));
-                                media.setCropOffsetX(object.optInt(Crop.CROP_OFFSET_X));
-                                media.setCropOffsetY(object.optInt(Crop.CROP_OFFSET_Y));
-                                media.setSandboxPath(media.getCutPath());
-                            }
-                        } else {
-                            for (int i = 0; i < SelectedManager.getCount(); i++) {
-                                LocalMedia media = selectedResult.get(i);
-                                media.setCutPath(resultUri != null ? resultUri.getPath() : "");
-                                media.setCut(!TextUtils.isEmpty(media.getCutPath()));
-                                media.setCropImageWidth(Crop.getOutputImageWidth(data));
-                                media.setCropImageHeight(Crop.getOutputImageHeight(data));
-                                media.setCropResultAspectRatio(Crop.getOutputCropAspectRatio(data));
-                                media.setCropOffsetX(Crop.getOutputImageOffsetX(data));
-                                media.setCropOffsetY(Crop.getOutputImageOffsetY(data));
+                                media.setCropImageWidth(item.optInt(CustomField.EXTRA_IMAGE_WIDTH));
+                                media.setCropImageHeight(item.optInt(CustomField.EXTRA_IMAGE_HEIGHT));
+                                media.setCropOffsetX(item.optInt(CustomField.EXTRA_OFFSET_X));
+                                media.setCropOffsetY(item.optInt(CustomField.EXTRA_OFFSET_Y));
+                                media.setCropResultAspectRatio((float) item.optDouble(CustomField.EXTRA_ASPECT_RATIO));
+                                media.setCustomData(item.optString(CustomField.EXTRA_CUSTOM_EXTRA_DATA));
                                 media.setSandboxPath(media.getCutPath());
                             }
                         }
-                        List<LocalMedia> result = new ArrayList<>(selectedResult);
-                        if (checkCompressValidity()) {
-                            showLoading();
-                            PictureSelectionConfig.compressEngine.onStartCompress(getContext(), result,
-                                    new OnCallbackListener<List<LocalMedia>>() {
-                                        @Override
-                                        public void onCall(List<LocalMedia> result) {
-                                            onResultEvent(result);
-                                        }
-                                    });
-                        } else {
-                            onResultEvent(result);
-                        }
-                    } else {
-                        Toast.makeText(getContext(), "The cropped data does not match the selection result",
-                                Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(getContext(), "image crop error," + e.getMessage(), Toast.LENGTH_LONG).show();
+                } else {
+                    if (selectedResult.size() == 1) {
+                        LocalMedia media = selectedResult.get(0);
+                        Uri output = Crop.getOutput(data);
+                        media.setCutPath(output != null ? output.getPath() : "");
+                        media.setCut(!TextUtils.isEmpty(media.getCutPath()));
+                        media.setCropImageWidth(Crop.getOutputImageWidth(data));
+                        media.setCropImageHeight(Crop.getOutputImageHeight(data));
+                        media.setCropOffsetX(Crop.getOutputImageOffsetX(data));
+                        media.setCropOffsetY(Crop.getOutputImageOffsetY(data));
+                        media.setCropResultAspectRatio(Crop.getOutputCropAspectRatio(data));
+                        media.setCustomData(Crop.getOutputCustomExtraData(data));
+                        media.setSandboxPath(media.getCutPath());
+                    } else {
+                        Toast.makeText(getContext(), "image crop data source mismatch", Toast.LENGTH_LONG).show();
+                    }
+                }
+                List<LocalMedia> result = new ArrayList<>(selectedResult);
+                if (checkCompressValidity()) {
+                    showLoading();
+                    PictureSelectionConfig.compressEngine.onStartCompress(getContext(), result,
+                            new OnCallbackListener<List<LocalMedia>>() {
+                                @Override
+                                public void onCall(List<LocalMedia> result) {
+                                    onResultEvent(result);
+                                }
+                            });
+                } else {
+                    onResultEvent(result);
                 }
             }
         } else if (resultCode == Crop.RESULT_CROP_ERROR) {
@@ -806,18 +815,15 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
         List<LocalMedia> result = new ArrayList<>(selectedResult);
         if (checkCropValidity()) {
-            if (result.size() == 1) {
-                PictureSelectionConfig.cropEngine.onStartSingleCrop(getActivity(), this, result.get(0));
-            } else {
-                LocalMedia firstImageMedia = null;
-                for (int i = 0; i < result.size(); i++) {
-                    if (PictureMimeType.isHasImage(result.get(i).getMimeType())) {
-                        firstImageMedia = result.get(i);
-                        break;
-                    }
+            LocalMedia currentLocalMedia = null;
+            for (int i = 0; i < result.size(); i++) {
+                LocalMedia item = result.get(i);
+                if (PictureMimeType.isHasImage(result.get(i).getMimeType())) {
+                    currentLocalMedia = item;
+                    break;
                 }
-                PictureSelectionConfig.cropEngine.onStartMultipleCrop(getContext(), this, firstImageMedia, result);
             }
+            PictureSelectionConfig.cropEngine.onStartCrop(this, currentLocalMedia, result, Crop.REQUEST_CROP);
         } else if (checkCompressValidity()) {
             showLoading();
             PictureSelectionConfig.compressEngine.onStartCompress(getContext(), result,
@@ -956,8 +962,16 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     @Override
     public void onDestroy() {
-        releaseSoundPool();
+        onRelease();
         super.onDestroy();
+    }
+
+    @Override
+    public void onRelease() {
+        releaseSoundPool();
+        if (this instanceof PictureSelectorFragment || this instanceof PictureOnlyCameraFragment) {
+            PictureSelectionConfig.destroy();
+        }
     }
 
     @Override

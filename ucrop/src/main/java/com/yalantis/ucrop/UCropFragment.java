@@ -90,6 +90,7 @@ public class UCropFragment extends Fragment {
     private final List<ViewGroup> mCropAspectRatioViews = new ArrayList<>();
     private TextView mTextViewRotateAngle, mTextViewScalePercent;
     private View mBlockingView;
+    private boolean isForbidCropGifWebp;
 
     private Bitmap.CompressFormat mCompressFormat = DEFAULT_COMPRESS_FORMAT;
     private int mCompressQuality = DEFAULT_COMPRESS_QUALITY;
@@ -147,6 +148,7 @@ public class UCropFragment extends Fragment {
     }
 
     public void setupViews(View view, Bundle args) {
+        isForbidCropGifWebp = args.getBoolean(UCrop.Options.EXTRA_FORBID_CROP_GIF_WEBP, false);
         mActiveControlsWidgetColor = args.getInt(UCrop.Options.EXTRA_UCROP_COLOR_CONTROLS_WIDGET_ACTIVE, ContextCompat.getColor(getContext(), R.color.ucrop_color_active_controls_color));
         mLogoColor = args.getInt(UCrop.Options.EXTRA_UCROP_LOGO_COLOR, ContextCompat.getColor(getContext(), R.color.ucrop_color_default_logo));
         mShowBottomControls = !args.getBoolean(UCrop.Options.EXTRA_HIDE_BOTTOM_CONTROLS, false);
@@ -193,6 +195,7 @@ public class UCropFragment extends Fragment {
 
         if (inputUri != null && outputUri != null) {
             try {
+                outputUri = FileUtils.replaceOutputUri(getContext(), isForbidCropGifWebp, inputUri, outputUri);
                 mGestureCropImageView.setImageUri(inputUri, outputUri);
             } catch (Exception e) {
                 callback.onCropFinish(getError(e));
@@ -202,15 +205,6 @@ public class UCropFragment extends Fragment {
         }
     }
 
-
-    private String getInputOriginalPath() {
-        Uri inputUri = getArguments().getParcelable(UCrop.EXTRA_INPUT_URI);
-        if (FileUtils.isContent(inputUri.toString())) {
-            return inputUri.toString();
-        } else {
-            return inputUri.getPath();
-        }
-    }
 
     /**
      * This method extracts {@link com.yalantis.ucrop.UCrop.Options #optionsBundle} from incoming bundle
@@ -596,14 +590,12 @@ public class UCropFragment extends Fragment {
                 .putExtra(UCrop.EXTRA_OUTPUT_IMAGE_HEIGHT, imageHeight)
                 .putExtra(UCrop.EXTRA_OUTPUT_OFFSET_X, offsetX)
                 .putExtra(UCrop.EXTRA_OUTPUT_OFFSET_Y, offsetY)
-                .putExtra(UCrop.EXTRA_CROP_INPUT_ORIGINAL, getInputOriginalPath())
-                .putExtra(UCrop.EXTRA_CROP_COUNT, getArguments().getInt(UCrop.EXTRA_CROP_COUNT))
+                .putExtra(UCrop.EXTRA_CROP_INPUT_ORIGINAL, mGestureCropImageView.getImageInputPath())
         );
     }
 
     protected UCropResult getError(Throwable throwable) {
         return new UCropResult(UCrop.RESULT_ERROR, new Intent()
-                .putExtra(UCrop.EXTRA_CROP_INPUT_ORIGINAL, getInputOriginalPath())
                 .putExtra(UCrop.EXTRA_ERROR, throwable));
     }
 

@@ -1,7 +1,11 @@
 package com.luck.picture.lib.basic;
 
+import android.content.Intent;
+
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -145,11 +149,21 @@ public interface IPictureSelectorCommonEvent {
     void onCheckOriginalChange();
 
     /**
+     * 编辑资源
+     */
+    void onEditMedia(Intent intent);
+
+    /**
      * 选择结果回调
      *
      * @param result
      */
     void onResultEvent(List<LocalMedia> result);
+
+    /**
+     * 释放资源
+     */
+    void onRelease();
 
     /**
      * show loading

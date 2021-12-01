@@ -2,6 +2,8 @@ package com.luck.picture.lib;
 
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -19,6 +21,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.luck.picture.lib.adapter.PicturePreviewAdapter;
 import com.luck.picture.lib.adapter.holder.PreviewGalleryAdapter;
 import com.luck.picture.lib.basic.PictureCommonFragment;
+import com.luck.picture.lib.config.Crop;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectModeConfig;
@@ -33,11 +36,11 @@ import com.luck.picture.lib.loader.LocalMediaPageLoader;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.style.TitleBarStyle;
-import com.luck.picture.lib.utils.ValueOf;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DownloadFileUtils;
 import com.luck.picture.lib.utils.StyleUtils;
+import com.luck.picture.lib.utils.ValueOf;
 import com.luck.picture.lib.widget.BottomNavBar;
 import com.luck.picture.lib.widget.CompleteSelectView;
 import com.luck.picture.lib.widget.PreviewBottomNavBar;
@@ -415,13 +418,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             public void onEditImage() {
                 if (PictureSelectionConfig.editMediaEventListener != null) {
                     LocalMedia media = mData.get(viewPager.getCurrentItem());
-                    PictureSelectionConfig.editMediaEventListener.onStartMediaEdit(getContext(), media,
-                            new OnCallbackListener<LocalMedia>() {
-                                @Override
-                                public void onCall(LocalMedia media) {
-                                    confirmSelect(media, false);
-                                }
-                            });
+                    PictureSelectionConfig.editMediaEventListener
+                            .onStartMediaEdit(PictureSelectorPreviewFragment.this, media,
+                                    Crop.REQUEST_EDIT_CROP);
                 }
             }
 
@@ -603,9 +602,32 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     }
 
     @Override
+    public void onEditMedia(Intent data) {
+        LocalMedia media = mData.get(viewPager.getCurrentItem());
+        Uri output = Crop.getOutput(data);
+        media.setCutPath(output != null ? output.getPath() : "");
+        media.setCropImageWidth(Crop.getOutputImageWidth(data));
+        media.setCropImageHeight(Crop.getOutputImageHeight(data));
+        media.setCropOffsetX(Crop.getOutputImageOffsetX(data));
+        media.setCropOffsetY(Crop.getOutputImageOffsetY(data));
+        media.setCropResultAspectRatio(Crop.getOutputCropAspectRatio(data));
+        media.setCut(!TextUtils.isEmpty(media.getCutPath()));
+        media.setCustomData(Crop.getOutputCustomExtraData(data));
+        media.setEditorImage(media.isCut());
+        media.setSandboxPath(media.getCutPath());
+        if (!SelectedManager.getSelectedResult().contains(media)) {
+            confirmSelect(media, false);
+        }
+        viewPageAdapter.notifyItemChanged(viewPager.getCurrentItem());
+    }
+
+    @Override
     public void onDestroy() {
         viewPageAdapter.destroyCurrentVideoHolder();
         viewPager.unregisterOnPageChangeCallback(pageChangeCallback);
+        if (isExternalPreview) {
+            PictureSelectionConfig.destroy();
+        }
         super.onDestroy();
     }
 }

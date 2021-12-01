@@ -58,6 +58,12 @@ public class FileUtils {
      */
     private static final String TAG = "FileUtils";
 
+    public static final String GIF = ".gif";
+
+    public static final String WEBP = ".webp";
+
+    public static final String JPEG = ".jpeg";
+
     private FileUtils() {
     }
 
@@ -72,6 +78,74 @@ public class FileUtils {
             return false;
         }
         return url.startsWith("content://");
+    }
+
+    /**
+     * 是否替换Output Uri
+     *
+     * @param context
+     * @param isForbidGifWebp 是否禁止裁剪Gif或webp
+     * @param inputUri        裁剪源文件
+     * @param outputUri       裁剪输出目录
+     * @return
+     */
+    public static Uri replaceOutputUri(Context context, boolean isForbidGifWebp, Uri inputUri, Uri outputUri) {
+        try {
+            String postfix = FileUtils.getPostfixDefaultEmpty(context, isForbidGifWebp, inputUri);
+            if (TextUtils.isEmpty(postfix)) {
+                return outputUri;
+            } else {
+                String outputPath = FileUtils.isContent(outputUri.toString()) ? outputUri.toString() : outputUri.getPath();
+                int lastIndexOf = outputPath.lastIndexOf(".");
+                outputPath = outputPath.replace(outputPath.substring(lastIndexOf), postfix);
+                outputUri = FileUtils.isContent(outputPath) ? Uri.parse(outputPath) : Uri.fromFile(new File(outputPath));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return outputUri;
+    }
+
+    /**
+     * 生成图片的后缀
+     *
+     * @param context
+     * @param isForbidGifWebp 是否禁止裁剪Gif或Webp
+     * @param inputUri        裁剪源文件
+     * @return
+     */
+    public static String getPostfixDefaultJPEG(Context context, boolean isForbidGifWebp, Uri inputUri) {
+        String postfix = FileUtils.JPEG;
+        if (isForbidGifWebp) {
+            String mimeType = FileUtils.getMimeTypeFromMediaContentUri(context, inputUri);
+            if (FileUtils.isGif(mimeType)) {
+                postfix = FileUtils.GIF;
+            } else if (FileUtils.isWebp(mimeType)) {
+                postfix = FileUtils.WEBP;
+            }
+        }
+        return postfix;
+    }
+
+    /**
+     * 生成图片的后缀
+     *
+     * @param context
+     * @param isForbidGifWebp 是否禁止裁剪Gif或Webp
+     * @param inputUri        裁剪源
+     * @return
+     */
+    public static String getPostfixDefaultEmpty(Context context, boolean isForbidGifWebp, Uri inputUri) {
+        String postfix = "";
+        if (isForbidGifWebp) {
+            String mimeType = FileUtils.getMimeTypeFromMediaContentUri(context, inputUri);
+            if (FileUtils.isGif(mimeType)) {
+                postfix = FileUtils.GIF;
+            } else if (FileUtils.isWebp(mimeType)) {
+                postfix = FileUtils.WEBP;
+            }
+        }
+        return postfix;
     }
 
     /**

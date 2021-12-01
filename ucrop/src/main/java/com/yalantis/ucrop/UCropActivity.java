@@ -105,6 +105,7 @@ public class UCropActivity extends AppCompatActivity {
 
     private boolean mShowBottomControls;
     private boolean mShowLoader = true;
+    private boolean isForbidCropGifWebp;
 
     private UCropView mUCropView;
     private GestureCropImageView mGestureCropImageView;
@@ -207,6 +208,7 @@ public class UCropActivity extends AppCompatActivity {
 
         if (inputUri != null && outputUri != null) {
             try {
+                outputUri = FileUtils.replaceOutputUri(UCropActivity.this, isForbidCropGifWebp, inputUri, outputUri);
                 mGestureCropImageView.setImageUri(inputUri, outputUri);
             } catch (Exception e) {
                 setResultError(e);
@@ -291,6 +293,7 @@ public class UCropActivity extends AppCompatActivity {
     }
 
     private void setupViews(@NonNull Intent intent) {
+        isForbidCropGifWebp = intent.getBooleanExtra(UCrop.Options.EXTRA_FORBID_CROP_GIF_WEBP, false);
         mStatusBarColor = intent.getIntExtra(UCrop.Options.EXTRA_STATUS_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_statusbar));
         mToolbarColor = intent.getIntExtra(UCrop.Options.EXTRA_TOOL_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_toolbar));
         mActiveControlsWidgetColor = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_COLOR_CONTROLS_WIDGET_ACTIVE, ContextCompat.getColor(this, R.color.ucrop_color_active_controls_color));
@@ -703,12 +706,11 @@ public class UCropActivity extends AppCompatActivity {
                 .putExtra(UCrop.EXTRA_OUTPUT_IMAGE_HEIGHT, imageHeight)
                 .putExtra(UCrop.EXTRA_OUTPUT_OFFSET_X, offsetX)
                 .putExtra(UCrop.EXTRA_OUTPUT_OFFSET_Y, offsetY)
-                .putExtra(UCrop.EXTRA_CROP_COUNT, getIntent().getIntExtra(UCrop.EXTRA_CROP_COUNT, 0))
+                .putExtra(UCrop.EXTRA_CROP_INPUT_ORIGINAL, mGestureCropImageView.getImageInputPath())
         );
     }
 
     protected void setResultError(Throwable throwable) {
         setResult(UCrop.RESULT_ERROR, new Intent().putExtra(UCrop.EXTRA_ERROR, throwable));
     }
-
 }

@@ -20,27 +20,20 @@ public class Crop {
      * 如果你使用的是PictureSelector自带的裁剪库，此处不要乱改 ！！！
      * </p>
      */
+    public static final int REQUEST_EDIT_CROP = 696;
 
     public static final int REQUEST_CROP = 69;
 
     public static final int RESULT_CROP_ERROR = 96;
 
-    public static String CROP_OUTPUT_PATH = "OutputPath";
-    public static String CROP_IMAGE_WIDTH = "ImageWidth";
-    public static String CROP_IMAGE_HEIGHT = "ImageHeight";
-    public static String CROP_ASPECT_RATIO = "CropAspectRatio";
-    public static String CROP_OFFSET_X = "OffsetX";
-    public static String CROP_OFFSET_Y = "OffsetY";
 
     private static final String EXTRA_PREFIX = "com.yalantis.ucrop";
-    public static final String EXTRA_CROP_OUTPUT_MULTIPLE_RESULT = EXTRA_PREFIX + ".CropOutputMultipleResult";
     public static final String EXTRA_OUTPUT_URI = EXTRA_PREFIX + ".OutputUri";
     public static final String EXTRA_OUTPUT_CROP_ASPECT_RATIO = EXTRA_PREFIX + ".CropAspectRatio";
     public static final String EXTRA_OUTPUT_IMAGE_WIDTH = EXTRA_PREFIX + ".ImageWidth";
     public static final String EXTRA_OUTPUT_IMAGE_HEIGHT = EXTRA_PREFIX + ".ImageHeight";
     public static final String EXTRA_OUTPUT_OFFSET_X = EXTRA_PREFIX + ".OffsetX";
     public static final String EXTRA_OUTPUT_OFFSET_Y = EXTRA_PREFIX + ".OffsetY";
-    public static final String EXTRA_CROP_COUNT = EXTRA_PREFIX + ".CropCount";
     public static final String EXTRA_ERROR = EXTRA_PREFIX + ".Error";
 
     /**
@@ -54,24 +47,13 @@ public class Crop {
     }
 
     /**
-     * Retrieve cropped image Uri from the result Intent
+     * custom extra data
      *
      * @param intent crop result intent
      */
-    @Nullable
-    public static String getMultipleOutput(@NonNull Intent intent) {
-        return intent.getStringExtra(EXTRA_CROP_OUTPUT_MULTIPLE_RESULT);
+    public static String getOutputCustomExtraData(@NonNull Intent intent) {
+        return intent.getStringExtra(CustomField.EXTRA_CUSTOM_EXTRA_DATA);
     }
-
-    /**
-     * Retrieve cropped image Uri from the result Intent
-     *
-     * @param intent crop result intent
-     */
-    public static int getCropCount(@NonNull Intent intent) {
-        return intent.getIntExtra(EXTRA_CROP_COUNT, 0);
-    }
-
 
     /**
      * Retrieve the width of the cropped image
@@ -92,6 +74,16 @@ public class Crop {
     }
 
     /**
+     * Retrieve cropped image aspect ratio from the result Intent
+     *
+     * @param intent crop result intent
+     * @return aspect ratio as a floating point value (x:y) - so it will be 1 for 1:1 or 4/3 for 4:3
+     */
+    public static float getOutputCropAspectRatio(@NonNull Intent intent) {
+        return intent.getFloatExtra(EXTRA_OUTPUT_CROP_ASPECT_RATIO, 0f);
+    }
+
+    /**
      * Retrieve the x of the cropped offset x
      *
      * @param intent crop result intent
@@ -107,16 +99,6 @@ public class Crop {
      */
     public static int getOutputImageOffsetY(@NonNull Intent intent) {
         return intent.getIntExtra(EXTRA_OUTPUT_OFFSET_Y, 0);
-    }
-
-    /**
-     * Retrieve cropped image aspect ratio from the result Intent
-     *
-     * @param intent crop result intent
-     * @return aspect ratio as a floating point value (x:y) - so it will be 1 for 1:1 or 4/3 for 4:3
-     */
-    public static float getOutputCropAspectRatio(@NonNull Intent intent) {
-        return intent.getFloatExtra(EXTRA_OUTPUT_CROP_ASPECT_RATIO, 0f);
     }
 
     /**

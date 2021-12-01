@@ -1,6 +1,5 @@
 package com.luck.pictureselector;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.net.Uri;
@@ -45,6 +44,7 @@ import com.luck.picture.lib.interfaces.OnCallbackIndexListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnCameraEventInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
+import com.luck.picture.lib.interfaces.OnMediaEditEventInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.style.BottomNavBarStyle;
@@ -174,8 +174,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
 //        List<LocalMedia> list = new ArrayList<>();
-//        list.add(LocalMedia.parseHttpLocalMedia("https://wx1.sinaimg.cn/mw690/006e0i7xly1gaxqq5m7t8j31311g2ao6.jpg", PictureMimeType.ofJPEG()));
-//        list.add(LocalMedia.parseHttpLocalMedia("https://ww1.sinaimg.cn/bmiddle/bcd10523ly1g96mg4sfhag20c806wu0x.gif", PictureMimeType.ofGIF()));
+//        list.add(LocalMedia.generateLocalMedia("https://wx1.sinaimg.cn/mw690/006e0i7xly1gaxqq5m7t8j31311g2ao6.jpg", PictureMimeType.ofJPEG()));
+//        list.add(LocalMedia.generateLocalMedia("https://ww1.sinaimg.cn/bmiddle/bcd10523ly1g96mg4sfhag20c806wu0x.gif", PictureMimeType.ofGIF()));
 //        mAdapter.setList(list);
 
         mAdapter.setSelectMax(maxSelectNum);
@@ -411,11 +411,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setCompressEngine(getCompressEngine())
                         .setSandboxFileEngine(new MeSandboxFileEngine())
                         .setCameraInterceptListener(getCustomCameraEvent())
+                        .setEditMediaInterceptListener(getCustomEditMediaEvent())
                         .selectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
                         .setLanguage(language)
-                        .isGetOnlySandboxDirectory(true)
-                        .setOutputCameraDir(getSandboxPath())
-                        .setQuerySandboxDir(getSandboxPath())
                         .isPageStrategy(cbPage.isChecked())
                         .isDisplayCamera(cb_isCamera.isChecked())
                         .isOpenClickSound(cb_voice.isChecked())
@@ -468,16 +466,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
+     * 自定义编辑事件
+     *
+     * @return
+     */
+    private OnMediaEditEventInterceptListener getCustomEditMediaEvent() {
+        return cbEditor.isChecked() ? new MeOnMediaEditEventInterceptListener() : null;
+    }
+
+    /**
+     * 自定义编辑
+     */
+    private class MeOnMediaEditEventInterceptListener implements OnMediaEditEventInterceptListener {
+
+        @Override
+        public void onStartMediaEdit(Fragment fragment, LocalMedia currentLocalMedia, int requestCode) {
+            String currentEditPath = currentLocalMedia.getAvailablePath();
+            Uri inputUri = PictureMimeType.isContent(currentEditPath)
+                    ? Uri.parse(currentEditPath) : Uri.fromFile(new File(currentEditPath));
+            Uri destinationUri = Uri.fromFile(
+                    new File(getSandboxPath(), DateUtils.getCreateFileName("CROP_") + ".jpeg"));
+            UCrop uCrop = UCrop.of(inputUri, destinationUri);
+            UCrop.Options options = buildOptions();
+            options.setHideBottomControls(false);
+            uCrop.withOptions(options);
+            uCrop.startEdit(fragment.getActivity(), fragment, requestCode);
+        }
+    }
+
+    /**
      * 自定义拍照
      */
     private class MeOnCameraEventInterceptListener implements OnCameraEventInterceptListener {
 
         @Override
-        public void openCamera(Activity activity, Fragment fragment, int cameraMode, int requestCode) {
+        public void openCamera(Fragment fragment, int cameraMode, int requestCode) {
             SimpleCameraX camera = SimpleCameraX.of();
             camera.setCameraMode(cameraMode);
             camera.setOutputPathDir(getSandboxPath());
-            camera.start(activity, fragment, requestCode);
+            camera.start(fragment.getActivity(), fragment, requestCode);
         }
     }
 
@@ -487,7 +514,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static class MeSandboxFileEngine implements SandboxFileEngine {
 
         @Override
-        public void onStartSandboxFileTransform(Context context, int index, LocalMedia media, OnCallbackIndexListener<LocalMedia> listener) {
+        public void onStartSandboxFileTransform(Context context, int index, LocalMedia media,
+                                                OnCallbackIndexListener<LocalMedia> listener) {
             String sandboxPath = SandboxTransformUtils.copyPathToSandbox(context, media.getPath(),
                     media.getMimeType());
             media.setSandboxPath(sandboxPath);
@@ -501,30 +529,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private class ImageCropEngine implements CropEngine {
 
         @Override
-        public void onStartSingleCrop(Context context, Fragment fragment, LocalMedia media) {
-            Uri inputUri = PictureMimeType.isContent(media.getAvailablePath())
-                    ? Uri.parse(media.getAvailablePath()) : Uri.fromFile(new File(media.getAvailablePath()));
-            Uri destinationUri = Uri.fromFile(
-                    new File(getSandboxPath(), DateUtils.getCreateFileName("CROP_") + ".jpg"));
-            UCrop uCrop = UCrop.of(inputUri, destinationUri, 1);
-            uCrop.withOptions(buildOptions());
-            uCrop.start(context, fragment);
-        }
-
-        @Override
-        public void onStartMultipleCrop(Context context, Fragment fragment, LocalMedia firstImageMedia, List<LocalMedia> list) {
-            Uri inputUri = PictureMimeType.isContent(firstImageMedia.getAvailablePath())
-                    ? Uri.parse(firstImageMedia.getAvailablePath()) : Uri.fromFile(new File(firstImageMedia.getAvailablePath()));
-            Uri destinationUri = Uri.fromFile(
-                    new File(getSandboxPath(), DateUtils.getCreateFileName("CROP_") + ".jpg"));
-            ArrayList<String> data = new ArrayList<>();
-            for (int i = 0; i < list.size(); i++) {
-                LocalMedia item = list.get(i);
-                data.add(item.getAvailablePath());
+        public void onStartCrop(Fragment fragment, LocalMedia currentLocalMedia,
+                                List<LocalMedia> dataSource, int requestCode) {
+            String currentCropPath = currentLocalMedia.getAvailablePath();
+            Uri inputUri = PictureMimeType.isContent(currentCropPath)
+                    ? Uri.parse(currentCropPath) : Uri.fromFile(new File(currentCropPath));
+            String fileName = DateUtils.getCreateFileName("CROP_") + ".jpg";
+            Uri destinationUri = Uri.fromFile(new File(getSandboxPath(), fileName));
+            ArrayList<String> dataCropSource = new ArrayList<>();
+            for (int i = 0; i < dataSource.size(); i++) {
+                LocalMedia media = dataSource.get(i);
+                dataCropSource.add(media.getAvailablePath());
             }
-            UCrop uCrop = UCrop.ofMultiple(inputUri, destinationUri, data);
+            UCrop uCrop = UCrop.of(inputUri, destinationUri, dataCropSource);
             uCrop.withOptions(buildOptions());
-            uCrop.startMultipleCrop(context, fragment);
+            uCrop.start(fragment.getActivity(), fragment, requestCode);
         }
     }
 
@@ -536,7 +555,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private UCrop.Options buildOptions() {
         UCrop.Options options = new UCrop.Options();
         options.setHideBottomControls(true);
-        options.isForbidCropGifWebp(false);
         options.setCropOutputPathDir(getSandboxPath());
         options.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
         options.setToolbarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));

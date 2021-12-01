@@ -1,7 +1,8 @@
 package com.luck.picture.lib.interfaces;
 
-import android.content.Context;
+import androidx.fragment.app.Fragment;
 
+import com.luck.picture.lib.config.CustomField;
 import com.luck.picture.lib.entity.LocalMedia;
 
 /**
@@ -23,14 +24,17 @@ public interface OnMediaEditEventInterceptListener {
      * media.setEditorImage(true);
      * media.setCut(true);
      * media.setCutPath("Your edit path"); or media.setCustomData("Your edit path");
+     * or
+     * media.setCustomData("Your custom data");
      * </p>
      * <p>
-     * 2、listener.onCall( "you result" );
+     * If you implement your own Editing function function, you need to assign the following values in
+     * Intent.putExtra {@link CustomField}
      * </p>
      *
-     * @param context
-     * @param media
-     * @param listener
+     * @param fragment
+     * @param currentLocalMedia current edit LocalMedia
+     * @param requestCode       Activity or fragment result code
      */
-    void onStartMediaEdit(Context context, LocalMedia media, OnCallbackListener<LocalMedia> listener);
+    void onStartMediaEdit(Fragment fragment, LocalMedia currentLocalMedia, int requestCode);
 }

@@ -25,8 +25,8 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.AnimUtils;
-import com.luck.picture.lib.utils.ValueOf;
 import com.luck.picture.lib.utils.StyleUtils;
+import com.luck.picture.lib.utils.ValueOf;
 
 import java.util.List;
 
@@ -235,7 +235,15 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
      */
     private boolean isSelected(LocalMedia currentMedia) {
         List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
-        return selectedResult.contains(currentMedia);
+        if (selectedResult.contains(currentMedia)) {
+            LocalMedia compare = currentMedia.getCompareLocalMedia();
+            if (compare != null && compare.isEditorImage()) {
+                currentMedia.setCutPath(compare.getCutPath());
+                currentMedia.setCut(!TextUtils.isEmpty(compare.getCutPath()));
+                currentMedia.setEditorImage(compare.isEditorImage());
+            }
+        }
+        return false;
     }
 
     /**

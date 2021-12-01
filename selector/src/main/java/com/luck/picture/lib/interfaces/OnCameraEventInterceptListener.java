@@ -1,7 +1,5 @@
 package com.luck.picture.lib.interfaces;
 
-import android.app.Activity;
-
 import androidx.fragment.app.Fragment;
 
 /**
@@ -14,7 +12,6 @@ public interface OnCameraEventInterceptListener {
     /**
      * Intercept camera click events, and users can implement their own camera framework
      *
-     * @param activity    activity    Activity to receive result
      * @param fragment    fragment    Fragment to receive result
      * @param cameraMode  Camera mode
      *                    {@link com.luck.picture.lib.config.SelectMimeType.ofImage(),ofVideo(),ofAudio()}
@@ -24,5 +21,5 @@ public interface OnCameraEventInterceptListener {
      *                    </p>
      * @param requestCode requestCode for result
      */
-    void openCamera(Activity activity, Fragment fragment, int cameraMode, int requestCode);
+    void openCamera(Fragment fragment, int cameraMode, int requestCode);
 }

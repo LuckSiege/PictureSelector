@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,6 +56,35 @@ import java.util.Map;
  * @describe：UCropMultipleActivity
  */
 public class UCropMultipleActivity extends AppCompatActivity implements UCropFragmentCallback {
+    /**
+     * 自定义数据
+     */
+    private static final String EXTRA_CUSTOM_EXTRA_DATA = "customExtraData";
+    /**
+     * 输出的路径
+     */
+    private static final String EXTRA_OUT_PUT_PATH = "outPutPath";
+    /**
+     * 图片宽度
+     */
+    private static final String EXTRA_IMAGE_WIDTH = "imageWidth";
+    /**
+     * 图片高度
+     */
+    private static final String EXTRA_IMAGE_HEIGHT = "imageHeight";
+    /**
+     * 图片X轴偏移量
+     */
+    private static final String EXTRA_OFFSET_X = "offsetX";
+    /**
+     * 图片Y轴偏移量
+     */
+    private static final String EXTRA_OFFSET_Y = "offsetY";
+    /**
+     * 图片旋转比例
+     */
+    private static final String EXTRA_ASPECT_RATIO = "aspectRatio";
+
     private String mToolbarTitle;
     // Enables dynamic coloring
     private int mToolbarColor;
@@ -70,9 +100,10 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     private int currentFragmentPosition;
     private ArrayList<String> uCropSupportList;
     private ArrayList<String> uCropNotSupportList;
-    private final LinkedHashMap<String, JSONObject> cutResultQueue = new LinkedHashMap<>();
+    private final LinkedHashMap<String, JSONObject> uCropTotalQueue = new LinkedHashMap<>();
     private String outputCropFileName;
     private UCropGalleryAdapter galleryAdapter;
+    private boolean isForbidCropGifWebp;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -90,17 +121,16 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     }
 
     private void initCropFragments() {
-        int cutCount = getIntent().getExtras().getInt(UCrop.EXTRA_CROP_COUNT);
-        ArrayList<String> uCropList = getIntent().getExtras().getStringArrayList(UCrop.EXTRA_INPUT_ALL_CUT_DATA);
-        uCropSupportList = new ArrayList<>();
-        uCropNotSupportList = new ArrayList<>();
-        if (cutCount <= 0 || uCropList == null || uCropList.size() == 0) {
+        ArrayList<String> totalCropData = getIntent().getExtras().getStringArrayList(UCrop.EXTRA_CROP_TOTAL_DATA_SOURCE);
+        if (totalCropData == null || totalCropData.size() <= 0) {
             throw new IllegalArgumentException("Missing required parameters, count cannot be less than 1");
         }
-        for (int i = 0; i < uCropList.size(); i++) {
+        uCropSupportList = new ArrayList<>();
+        uCropNotSupportList = new ArrayList<>();
+        for (int i = 0; i < totalCropData.size(); i++) {
+            String path = totalCropData.get(i);
             String realPath;
             String mimeType;
-            String path = uCropList.get(i);
             if (FileUtils.isContent(path)) {
                 realPath = FileUtils.getPath(this, Uri.parse(path));
                 mimeType = FileUtils.getMimeTypeFromMediaContentUri(this, Uri.parse(path));
@@ -116,7 +146,8 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
                 uCropSupportList.add(path);
                 fragments.add(UCropFragment.newInstance(getIntent().getExtras()));
             }
-            putCropResult(path, "", 0, 0, 0, 0, 0.0F);
+            JSONObject object = new JSONObject();
+            uCropTotalQueue.put(path, object);
         }
 
         if (uCropSupportList.size() == 0) {
@@ -165,10 +196,13 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
             public void onItemClick(int position, View view) {
                 String path = uCropSupportList.get(position);
                 Uri inputUri = FileUtils.isContent(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
-                Uri destinationUri = Uri.fromFile(
-                        new File(getSandboxPathDir(), TextUtils.isEmpty(outputCropFileName)
-                                ? FileUtils.getCreateFileName("CROP_") + ".jpg"
-                                : FileUtils.getCreateFileName() + "_" + outputCropFileName));
+                String postfix = FileUtils.getPostfixDefaultJPEG(UCropMultipleActivity.this,
+                        isForbidCropGifWebp, inputUri);
+                String fileName = TextUtils.isEmpty(outputCropFileName)
+                        ? FileUtils.getCreateFileName("CROP_") + postfix
+                        : FileUtils.getCreateFileName() + "_" + outputCropFileName;
+                Uri destinationUri = Uri.fromFile(new File(getSandboxPathDir(), fileName));
+
                 Bundle extras = getIntent().getExtras();
                 extras.putParcelable(UCrop.EXTRA_INPUT_URI, inputUri);
                 extras.putParcelable(UCrop.EXTRA_OUTPUT_URI, destinationUri);
@@ -200,6 +234,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     }
 
     private void setupViews(@NonNull Intent intent) {
+        isForbidCropGifWebp = intent.getBooleanExtra(UCrop.Options.EXTRA_FORBID_CROP_GIF_WEBP, false);
         outputCropFileName = intent.getStringExtra(UCrop.Options.EXTRA_CROP_OUTPUT_FILE_NAME);
         mStatusBarColor = intent.getIntExtra(UCrop.Options.EXTRA_STATUS_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_statusbar));
         mToolbarColor = intent.getIntExtra(UCrop.Options.EXTRA_TOOL_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_toolbar));
@@ -266,25 +301,19 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
 
     @Override
     public void onCropFinish(UCropFragment.UCropResult result) {
-        String key = result.mResultData.getStringExtra(UCrop.EXTRA_CROP_INPUT_ORIGINAL);
         switch (result.mResultCode) {
             case RESULT_OK:
+                mergeCropResult(result.mResultData);
                 int realPosition = currentFragmentPosition + uCropNotSupportList.size();
                 int realTotalSize = uCropNotSupportList.size() + uCropSupportList.size() - 1;
-                Uri resultUri = UCrop.getOutput(result.mResultData);
-                putCropResult(key, resultUri != null ? resultUri.getPath() : "",
-                        UCrop.getOutputImageWidth(result.mResultData), UCrop.getOutputImageHeight(result.mResultData),
-                        UCrop.getOutputImageOffsetX(result.mResultData), UCrop.getOutputImageOffsetY(result.mResultData),
-                        UCrop.getOutputCropAspectRatio(result.mResultData));
                 if (realPosition == realTotalSize) {
                     JSONArray array = new JSONArray();
-                    for (Map.Entry<String, JSONObject> stringJSONObjectEntry : cutResultQueue.entrySet()) {
+                    for (Map.Entry<String, JSONObject> stringJSONObjectEntry : uCropTotalQueue.entrySet()) {
                         JSONObject object = stringJSONObjectEntry.getValue();
                         array.put(object);
                     }
                     Intent intent = new Intent();
-                    intent.putExtra(UCrop.EXTRA_CROP_COUNT, array.length());
-                    intent.putExtra(UCrop.EXTRA_CROP_OUTPUT_MULTIPLE_RESULT, array.toString());
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, array.toString());
                     setResult(RESULT_OK, intent);
                     finish();
                 } else {
@@ -292,10 +321,12 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
                     Bundle extras = getIntent().getExtras();
                     String path = uCropSupportList.get(nextFragmentPosition);
                     Uri inputUri = FileUtils.isContent(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
-                    Uri destinationUri = Uri.fromFile(
-                            new File(getSandboxPathDir(), TextUtils.isEmpty(outputCropFileName)
-                                    ? FileUtils.getCreateFileName("CROP_") + ".jpg"
-                                    : FileUtils.getCreateFileName() + "_" + outputCropFileName));
+                    String postfix = FileUtils.getPostfixDefaultJPEG(UCropMultipleActivity.this,
+                            isForbidCropGifWebp, inputUri);
+                    String fileName = TextUtils.isEmpty(outputCropFileName)
+                            ? FileUtils.getCreateFileName("CROP_") + postfix
+                            : FileUtils.getCreateFileName() + "_" + outputCropFileName;
+                    Uri destinationUri = Uri.fromFile(new File(getSandboxPathDir(), fileName));
                     extras.putParcelable(UCrop.EXTRA_INPUT_URI, inputUri);
                     extras.putParcelable(UCrop.EXTRA_OUTPUT_URI, destinationUri);
                     UCropFragment uCropFragment = fragments.get(nextFragmentPosition);
@@ -307,34 +338,28 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
                 }
                 break;
             case UCrop.RESULT_ERROR:
-                putCropResult(key, "", 0, 0, 0, 0, 0.0F);
                 handleCropError(result.mResultData);
                 break;
         }
     }
 
     /**
-     * save crop info to queue
+     * merge crop result
      *
-     * @param key         KEY
-     * @param cutPath     crop output path
-     * @param imageWidth  crop image width
-     * @param imageHeight crop image height
-     * @param offsetX     crop offset x
-     * @param offsetY     crop offset y
-     * @param aspectRatio crop aspect ratio
+     * @param intent
      */
-    private void putCropResult(String key, String cutPath, int imageWidth, int imageHeight,
-                               int offsetX, int offsetY, float aspectRatio) {
+    private void mergeCropResult(Intent intent) {
         try {
-            JSONObject object = new JSONObject();
-            object.put(UCrop.CROP_OUTPUT_PATH, cutPath);
-            object.put(UCrop.CROP_IMAGE_WIDTH, imageWidth);
-            object.put(UCrop.CROP_IMAGE_HEIGHT, imageHeight);
-            object.put(UCrop.CROP_OFFSET_X, offsetX);
-            object.put(UCrop.CROP_OFFSET_Y, offsetY);
-            object.put(UCrop.CROP_ASPECT_RATIO, aspectRatio);
-            cutResultQueue.put(key, object);
+            String key = intent.getStringExtra(UCrop.EXTRA_CROP_INPUT_ORIGINAL);
+            JSONObject uCropObject = uCropTotalQueue.get(key);
+            Uri output = UCrop.getOutput(intent);
+            uCropObject.put(EXTRA_OUT_PUT_PATH, output != null ? output.getPath() : "");
+            uCropObject.put(EXTRA_IMAGE_WIDTH, UCrop.getOutputImageWidth(intent));
+            uCropObject.put(EXTRA_IMAGE_HEIGHT, UCrop.getOutputImageHeight(intent));
+            uCropObject.put(EXTRA_OFFSET_X, UCrop.getOutputImageOffsetX(intent));
+            uCropObject.put(EXTRA_OFFSET_Y, UCrop.getOutputImageOffsetY(intent));
+            uCropObject.put(EXTRA_ASPECT_RATIO, UCrop.getOutputCropAspectRatio(intent));
+            uCropTotalQueue.put(key, uCropObject);
         } catch (Exception e) {
             e.printStackTrace();
         }

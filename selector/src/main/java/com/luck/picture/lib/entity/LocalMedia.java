@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.config.SelectMimeType;
 
 /**
  * @author：luck
@@ -212,6 +211,7 @@ public class LocalMedia implements Parcelable {
         customData = in.readString();
         isMaxSelectEnabledMask = in.readByte() != 0;
         isEditorImage = in.readByte() != 0;
+        compareLocalMedia = in.readParcelable(LocalMedia.class.getClassLoader());
     }
 
     @Override
@@ -247,6 +247,7 @@ public class LocalMedia implements Parcelable {
         dest.writeString(customData);
         dest.writeByte((byte) (isMaxSelectEnabledMask ? 1 : 0));
         dest.writeByte((byte) (isEditorImage ? 1 : 0));
+        dest.writeParcelable(compareLocalMedia, flags);
     }
 
     @Override
@@ -273,25 +274,11 @@ public class LocalMedia implements Parcelable {
      * @param mimeType 资源类型 {@link PictureMimeType.ofJPEG() # PictureMimeType.ofGIF() ...}
      * @return
      */
-    public static LocalMedia parseHttpLocalMedia(String url, String mimeType) {
-        return parseLocalMedia(0, url, "", "", "", 0, SelectMimeType.ofImage(), mimeType,
-                0, 0, 0, -1, 0);
-    }
-
-    /**
-     * 构造LocalMedia
-     *
-     * @param path        资源路径
-     * @param position    图片所在下标
-     * @param chooseModel 相册模式
-     * @return
-     */
-    public static LocalMedia parseLocalMedia(String path, int position, int chooseModel) {
-        LocalMedia localMedia = parseLocalMedia(0, path,
-                "", "", "", 0, chooseModel, "",
-                0, 0, 0, -1, 0);
-        localMedia.setPosition(position);
-        return localMedia;
+    public static LocalMedia generateLocalMedia(String url, String mimeType) {
+        LocalMedia media = new LocalMedia();
+        media.setPath(url);
+        media.setMimeType(mimeType);
+        return media;
     }
 
     /**
@@ -333,12 +320,33 @@ public class LocalMedia implements Parcelable {
         return localMedia;
     }
 
+
+    /**
+     * 当前匹配上的对象
+     */
+    private LocalMedia compareLocalMedia;
+
+    /**
+     * 获取当前匹配上的对象
+     */
+    public LocalMedia getCompareLocalMedia() {
+        return compareLocalMedia;
+    }
+
+    /**
+     * 重写equals进行值的比较
+     *
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof LocalMedia)) return false;
         LocalMedia media = (LocalMedia) o;
-        return TextUtils.equals(getPath(), media.getPath()) || getId() == media.getId();
+        boolean isCompare = TextUtils.equals(getPath(), media.getPath()) || getId() == media.getId();
+        compareLocalMedia = isCompare ? media : null;
+        return isCompare;
     }
 
     /**
