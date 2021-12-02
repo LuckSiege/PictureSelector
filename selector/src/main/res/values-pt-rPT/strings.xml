@@ -61,5 +61,5 @@
     <string name="ps_know">Entendo</string>
     <string name="ps_data_null">Dados em branco…</string>
     <string name="ps_editor">Editar</string>
-
+    <string name="ps_use_camera">Usando câmera</string>
 </resources>

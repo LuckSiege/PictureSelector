@@ -184,6 +184,18 @@ public class PictureSelectionModel {
     }
 
     /**
+     * Do you want to open a foreground service to prevent the system from reclaiming the memory
+     * of some models due to the use of cameras
+     *
+     * @param isForeground
+     * @return
+     */
+    public PictureSelectionModel setCameraForegroundService(boolean isForeground) {
+        selectionConfig.isCameraForegroundService = isForeground;
+        return this;
+    }
+
+    /**
      * Change the desired orientation of this activity.  If the activity
      * is currently in the foreground or otherwise impacting the screen
      * orientation, the screen will immediately be changed (possibly causing
@@ -343,6 +355,18 @@ public class PictureSelectionModel {
         return this;
     }
 
+
+    /**
+     * Whether to turn on paging mode
+     *
+     * @param isPageStrategy
+     * @return
+     */
+    public PictureSelectionModel isPageStrategy(boolean isPageStrategy) {
+        selectionConfig.isPageStrategy = isPageStrategy;
+        return this;
+    }
+
     /**
      * Whether to turn on paging mode
      *
@@ -353,6 +377,20 @@ public class PictureSelectionModel {
     public PictureSelectionModel isPageStrategy(boolean isPageStrategy, int pageSize) {
         selectionConfig.isPageStrategy = isPageStrategy;
         selectionConfig.pageSize = pageSize < PictureConfig.MIN_PAGE_SIZE ? PictureConfig.MAX_PAGE_SIZE : pageSize;
+        return this;
+    }
+
+
+    /**
+     * Whether to turn on paging mode
+     *
+     * @param isPageStrategy
+     * @param isFilterInvalidFile Whether to filter invalid files {@link Some of the query performance is consumed,Especially on the Q version}
+     * @return
+     */
+    public PictureSelectionModel isPageStrategy(boolean isPageStrategy, boolean isFilterInvalidFile) {
+        selectionConfig.isPageStrategy = isPageStrategy;
+        selectionConfig.isFilterInvalidFile = isFilterInvalidFile;
         return this;
     }
 
@@ -371,29 +409,6 @@ public class PictureSelectionModel {
         return this;
     }
 
-    /**
-     * Whether to turn on paging mode
-     *
-     * @param isPageStrategy
-     * @return
-     */
-    public PictureSelectionModel isPageStrategy(boolean isPageStrategy) {
-        selectionConfig.isPageStrategy = isPageStrategy;
-        return this;
-    }
-
-    /**
-     * Whether to turn on paging mode
-     *
-     * @param isPageStrategy
-     * @param isFilterInvalidFile Whether to filter invalid files {@link Some of the query performance is consumed,Especially on the Q version}
-     * @return
-     */
-    public PictureSelectionModel isPageStrategy(boolean isPageStrategy, boolean isFilterInvalidFile) {
-        selectionConfig.isPageStrategy = isPageStrategy;
-        selectionConfig.isFilterInvalidFile = isFilterInvalidFile;
-        return this;
-    }
 
     /**
      * @param videoQuality video quality and 0 or 1

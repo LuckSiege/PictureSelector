@@ -18,6 +18,25 @@ public class SdkVersionUtils {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
     }
 
+    /**
+     * 判断是否是Android O版本
+     *
+     * @return
+     */
+    public static boolean isO() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+    }
+
+
+    /**
+     * 判断是否是Android N版本
+     *
+     * @return
+     */
+    public static boolean isMaxN() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+    }
+
 
     /**
      * 判断是否是Android N版本

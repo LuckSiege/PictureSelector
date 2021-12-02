@@ -27,9 +27,9 @@ import com.luck.picture.lib.photoview.OnViewTapListener;
 import com.luck.picture.lib.photoview.PhotoView;
 import com.luck.picture.lib.utils.MediaUtils;
 import com.luck.picture.lib.utils.DensityUtil;
-import com.luck.picture.lib.widget.large.ImageSource;
-import com.luck.picture.lib.widget.large.ImageViewState;
-import com.luck.picture.lib.widget.large.SubsamplingScaleImageView;
+import com.luck.picture.lib.large.ImageSource;
+import com.luck.picture.lib.large.ImageViewState;
+import com.luck.picture.lib.large.SubsamplingScaleImageView;
 
 import java.io.File;
 import java.util.List;

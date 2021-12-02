@@ -3,6 +3,7 @@ package com.luck.picture.lib.config;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +29,6 @@ public class Crop {
 
 
     private static final String EXTRA_PREFIX = "com.yalantis.ucrop";
-    public static final String EXTRA_OUTPUT_URI = EXTRA_PREFIX + ".OutputUri";
     public static final String EXTRA_OUTPUT_CROP_ASPECT_RATIO = EXTRA_PREFIX + ".CropAspectRatio";
     public static final String EXTRA_OUTPUT_IMAGE_WIDTH = EXTRA_PREFIX + ".ImageWidth";
     public static final String EXTRA_OUTPUT_IMAGE_HEIGHT = EXTRA_PREFIX + ".ImageHeight";
@@ -43,7 +43,7 @@ public class Crop {
      */
     @Nullable
     public static Uri getOutput(@NonNull Intent intent) {
-        return intent.getParcelableExtra(EXTRA_OUTPUT_URI);
+        return intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
     }
 
     /**

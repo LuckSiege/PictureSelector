@@ -60,5 +60,5 @@
     <string name="ps_know">알 겠 습 니 다</string>
     <string name="ps_data_null">데이터 없 음…</string>
     <string name="ps_editor">편집 하 다</string>
-
+    <string name="ps_use_camera">카메라 사용 중</string>
 </resources>

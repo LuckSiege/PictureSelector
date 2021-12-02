@@ -49,6 +49,7 @@ import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.permissions.PermissionResultCallback;
 import com.luck.picture.lib.permissions.PermissionUtil;
+import com.luck.picture.lib.service.ForegroundService;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
@@ -499,6 +500,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private void startCameraImageCapture() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
+            ForegroundService.startForegroundService(getContext());
             if (PictureSelectionConfig.interceptCameraListener != null) {
                 interceptCameraEvent(SelectMimeType.TYPE_IMAGE);
             } else {
@@ -553,6 +555,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private void startCameraVideoCapture() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
+            ForegroundService.startForegroundService(getContext());
             if (PictureSelectionConfig.interceptCameraListener != null) {
                 interceptCameraEvent(SelectMimeType.TYPE_VIDEO);
             } else {
@@ -610,6 +613,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private void startCameraRecordSound() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
+            ForegroundService.startForegroundService(getContext());
             if (PictureSelectionConfig.interceptCameraListener != null) {
                 interceptCameraEvent(SelectMimeType.TYPE_AUDIO);
             } else {
@@ -630,6 +634,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      * 拦截相机事件并处理返回结果
      */
     private void interceptCameraEvent(int cameraMode) {
+        ForegroundService.startForegroundService(getContext());
         PictureSelectionConfig.interceptCameraListener.openCamera(this, cameraMode, PictureConfig.REQUEST_CAMERA);
     }
 
@@ -659,7 +664,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        checkMatchCustomCameraOutputUri(data);
+        ForegroundService.stopService(getContext());
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == PictureConfig.REQUEST_CAMERA) {
                 dispatchHandleCamera(data);
@@ -667,7 +672,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 onEditMedia(data);
             } else if (requestCode == Crop.REQUEST_CROP) {
                 List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
-                if (data.hasExtra(MediaStore.EXTRA_OUTPUT)) {
+                if (data != null && data.hasExtra(MediaStore.EXTRA_OUTPUT)) {
                     try {
                         String extra = data.getStringExtra(MediaStore.EXTRA_OUTPUT);
                         JSONArray array = new JSONArray(extra);
@@ -743,6 +748,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
             @Override
             public LocalMedia doInBackground() {
+                checkMatchCustomCameraOutputUri(intent);
                 if (config.chooseMode == SelectMimeType.ofAudio()) {
                     handleAudioEvent(intent);
                 }
@@ -771,7 +777,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     protected void checkMatchCustomCameraOutputUri(Intent intent) {
         Uri outPutUri = intent != null ? intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT) : null;
-        if (outPutUri != null && TextUtils.isEmpty(config.cameraPath)) {
+        if (outPutUri != null) {
             config.cameraPath = PictureMimeType.isContent(outPutUri.toString()) ? outPutUri.toString() : outPutUri.getPath();
         }
     }

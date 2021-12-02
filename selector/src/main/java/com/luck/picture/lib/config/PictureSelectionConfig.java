@@ -89,6 +89,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isAutoScalePreviewImage;
     public int ofAllCameraType;
     public boolean isOnlySandboxDir;
+    public boolean isCameraForegroundService;
 
     public static ImageEngine imageEngine;
     public static CompressEngine compressEngine;
@@ -100,6 +101,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static OnExternalPreviewEventListener previewEventListener;
     public static OnMediaEditInterceptListener editMediaEventListener;
     public static OnPermissionsInterceptListener permissionsEventListener;
+
 
     protected PictureSelectionConfig(Parcel in) {
         chooseMode = in.readInt();
@@ -160,6 +162,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isAutoScalePreviewImage = in.readByte() != 0;
         ofAllCameraType = in.readInt();
         isOnlySandboxDir = in.readByte() != 0;
+        isCameraForegroundService = in.readByte() != 0;
     }
 
     @Override
@@ -222,6 +225,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isAutoScalePreviewImage ? 1 : 0));
         dest.writeInt(ofAllCameraType);
         dest.writeByte((byte) (isOnlySandboxDir ? 1 : 0));
+        dest.writeByte((byte) (isCameraForegroundService ? 1 : 0));
     }
 
     @Override
@@ -302,6 +306,7 @@ public final class PictureSelectionConfig implements Parcelable {
         ofAllCameraType = SelectMimeType.ofAll();
         isOnlySandboxDir = false;
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+        isCameraForegroundService = true;
     }
 
 

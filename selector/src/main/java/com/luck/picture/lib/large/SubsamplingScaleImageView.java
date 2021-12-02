@@ -1,4 +1,4 @@
-package com.luck.picture.lib.widget.large;
+package com.luck.picture.lib.large;
 
 import android.content.ContentResolver;
 import android.content.Context;

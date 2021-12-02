@@ -2,8 +2,10 @@ package com.luck.lib.camerax;
 
 import android.Manifest;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -86,6 +88,9 @@ public class PictureCameraActivity extends AppCompatActivity {
     }
 
     private void handleCameraSuccess() {
+        Uri uri = getIntent().getParcelableExtra(MediaStore.EXTRA_OUTPUT);
+        Intent intent = new Intent();
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         setResult(RESULT_OK, getIntent());
         onBackPressed();
     }

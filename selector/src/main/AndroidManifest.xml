@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.luck.picture.lib">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <application>
         <provider
             android:name="com.luck.picture.lib.basic.PictureFileProvider"
@@ -12,6 +13,11 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <service
+            android:name="com.luck.picture.lib.service.ForegroundService"
+            android:enabled="true"
+            android:foregroundServiceType="location" />
 
         <activity
             android:name=".basic.PictureSelectorSupporterActivity"

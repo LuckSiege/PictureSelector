@@ -60,6 +60,6 @@
     <string name="ps_data_null">إنه فارغ هنا …</string>
     <string name="ps_editor">تعديل</string>
     <string name="ps_webp_tag">webp</string>
-
+    <string name="ps_use_camera">استخدام الكاميرا</string>
 
 </resources>

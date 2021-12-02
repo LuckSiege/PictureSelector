@@ -59,5 +59,6 @@
     <string name="ps_know">Je sais</string>
     <string name="ps_data_null">Pas de données…</string>
     <string name="ps_editor">Édition</string>
+    <string name="ps_go_setting">Pour définir</string>
 
 </resources>

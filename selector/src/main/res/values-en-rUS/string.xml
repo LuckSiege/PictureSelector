@@ -59,9 +59,9 @@
     <string name="ps_choose_limit_seconds">Only videos from %1$ds to %2$ds can be selected</string>
 
     <string name="ps_go_setting">Go Setting</string>
-    <string name="ps_know">Ok</string>
+    <string name="ps_know">OK</string>
     <string name="ps_data_null">There no data here…</string>
     <string name="ps_editor">Editor</string>
-
+    <string name="ps_use_camera">Using camera</string>
 
 </resources>

@@ -29,7 +29,13 @@ public interface OnMediaEditInterceptListener {
      * </p>
      * <p>
      * If you implement your own Editing function function, you need to assign the following values in
-     * Intent.putExtra {@link CustomField}
+     * Intent.putExtra() {@link CustomField.EXTRA_OUT_PUT_PATH}
+     * Intent.putExtra() {@link CustomField.EXTRA_IMAGE_WIDTH}
+     * Intent.putExtra() {@link CustomField.EXTRA_IMAGE_HEIGHT}
+     * ... more {@link CustomField}
+     * <p>
+     * If you have customized additional data, please put it in Intent.putExtra()
+     * {@link CustomField.EXTRA_CUSTOM_EXTRA_DATA}
      * </p>
      *
      * @param fragment
