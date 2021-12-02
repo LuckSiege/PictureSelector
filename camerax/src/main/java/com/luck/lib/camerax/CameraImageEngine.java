@@ -6,15 +6,15 @@ import android.widget.ImageView;
 /**
  * @author：luck
  * @date：2021/12/1 9:53 下午
- * @describe：ImageEngine
+ * @describe：CameraImageEngine
  */
-public interface ImageEngine {
+public interface CameraImageEngine {
     /**
      * load image source
      *
      * @param context
-     * @param imageView
      * @param url
+     * @param imageView
      */
-    void loadImage(Context context, ImageView imageView, String url);
+    void loadImage(Context context, String url, ImageView imageView);
 }

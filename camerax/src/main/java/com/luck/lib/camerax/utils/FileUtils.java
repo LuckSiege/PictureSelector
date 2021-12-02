@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.core.content.FileProvider;
 
@@ -146,11 +147,17 @@ public class FileUtils {
      * @param context Context
      * @param path    path
      */
-    public static void deleteUri(Context context, String path) {
+    public static void deleteFile(Context context, String path) {
         try {
             if (isContent(path)) {
                 context.getContentResolver().delete(Uri.parse(path), null, null);
+            } else {
+                File file = new File(path);
+                if (file.exists()) {
+                    file.delete();
+                }
             }
+            Log.i("YYY", "deleteUri: 删除成功");
         } catch (Exception e) {
             e.printStackTrace();
         }

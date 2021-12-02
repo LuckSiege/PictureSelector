@@ -11,8 +11,6 @@ import androidx.core.graphics.BlendModeColorFilterCompat;
 import androidx.core.graphics.BlendModeCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-
 import java.util.List;
 
 /**
@@ -24,7 +22,7 @@ import java.util.List;
 public class UCropGalleryAdapter extends RecyclerView.Adapter<UCropGalleryAdapter.ViewHolder> {
     private final List<String> list;
     private int currentSelectPosition;
-    private boolean isForbidSkipCrop;
+    private final boolean isForbidSkipCrop;
 
     public UCropGalleryAdapter(List<String> list, boolean isForbidSkipCrop) {
         this.list = list;
@@ -49,7 +47,7 @@ public class UCropGalleryAdapter extends RecyclerView.Adapter<UCropGalleryAdapte
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         String path = list.get(position);
-        Glide.with(holder.itemView.getContext()).load(path).into(holder.mIvPhoto);
+        UCropDevelopConfig.imageEngine.loadImage(holder.itemView.getContext(), path, holder.mIvPhoto);
         ColorFilter colorFilter;
         if (currentSelectPosition == position) {
             holder.mViewCurrentSelect.setVisibility(View.VISIBLE);

@@ -287,6 +287,8 @@ public class CustomCameraView extends RelativeLayout {
             @Override
             public void cancel() {
                 onCancelMedia();
+                String outputPath = SimpleCameraX.getOutputPath(((Activity) getContext()).getIntent());
+                FileUtils.deleteFile(getContext(), outputPath);
             }
 
             @Override
@@ -309,8 +311,6 @@ public class CustomCameraView extends RelativeLayout {
         mCaptureLayout.setLeftClickListener(new ClickListener() {
             @Override
             public void onClick() {
-                String outputPath = SimpleCameraX.getOutputPath(((Activity) getContext()).getIntent());
-                FileUtils.deleteUri(getContext(), outputPath);
                 if (mOnClickListener != null) {
                     mOnClickListener.onClick();
                 }
@@ -478,7 +478,6 @@ public class CustomCameraView extends RelativeLayout {
         public MyImageResultCallback(ImageView imagePreview, CaptureLayout captureLayout,
                                      ImageCallbackListener imageCallbackListener,
                                      CameraListener cameraListener) {
-            super();
             this.mImagePreviewReference = new WeakReference<>(imagePreview);
             this.mCaptureLayoutReference = new WeakReference<>(captureLayout);
             this.mImageCallbackListenerReference = new WeakReference<>(imageCallbackListener);

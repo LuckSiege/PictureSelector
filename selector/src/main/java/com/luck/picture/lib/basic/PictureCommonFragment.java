@@ -841,8 +841,8 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 cameraFile.getName(), folderName, mediaExtraInfo.getDuration(), config.chooseMode,
                 mimeType, mediaExtraInfo.getWidth(), mediaExtraInfo.getHeight(), cameraFile.length(), bucketId,
                 cameraFile.lastModified() / 1000);
-        if (SdkVersionUtils.isQ() && !PictureMimeType.isContent(config.cameraPath)) {
-            media.setSandboxPath(config.cameraPath);
+        if (SdkVersionUtils.isQ()) {
+            media.setSandboxPath(PictureMimeType.isContent(config.cameraPath) ? null : config.cameraPath);
         }
         return media;
     }

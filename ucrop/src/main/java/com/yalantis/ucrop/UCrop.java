@@ -110,6 +110,22 @@ public class UCrop {
     }
 
     /**
+     * Set Multiple Crop gallery Preview Image Engine
+     *
+     * @param engine
+     * @return
+     */
+    public void setImageEngine(UCropImageEngine engine) {
+        ArrayList<String> dataSource = mCropOptionsBundle.getStringArrayList(EXTRA_CROP_TOTAL_DATA_SOURCE);
+        if (dataSource != null && dataSource.size() > 1) {
+            if (UCropDevelopConfig.imageEngine == engine) {
+                throw new NullPointerException("Missing ImageEngine,please implement UCrop.setImageEngine");
+            }
+            UCropDevelopConfig.imageEngine = engine;
+        }
+    }
+
+    /**
      * Set an aspect ratio for crop bounds.
      * User won't see the menu with other ratios options.
      *

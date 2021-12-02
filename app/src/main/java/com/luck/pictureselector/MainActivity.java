@@ -27,8 +27,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.luck.lib.camerax.CustomCameraConfig;
-import com.luck.lib.camerax.ImageEngine;
+import com.luck.lib.camerax.CameraImageEngine;
 import com.luck.lib.camerax.SimpleCameraX;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.app.PictureAppMaster;
@@ -62,6 +61,7 @@ import com.luck.picture.lib.utils.ValueOf;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.listener.DragListener;
 import com.yalantis.ucrop.UCrop;
+import com.yalantis.ucrop.UCropImageEngine;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -507,9 +507,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             SimpleCameraX camera = SimpleCameraX.of();
             camera.setCameraMode(cameraMode);
             camera.setOutputPathDir(getSandboxPath());
-            CustomCameraConfig.imageEngine(new ImageEngine() {
+            camera.setImageEngine(new CameraImageEngine() {
                 @Override
-                public void loadImage(Context context, ImageView imageView, String url) {
+                public void loadImage(Context context, String url, ImageView imageView) {
                     Glide.with(context).load(url).into(imageView);
                 }
             });
@@ -525,9 +525,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onStartSandboxFileTransform(Context context, int index, LocalMedia media,
                                                 OnCallbackIndexListener<LocalMedia> listener) {
-            String sandboxPath = SandboxTransformUtils.copyPathToSandbox(context, media.getPath(),
-                    media.getMimeType());
-            media.setSandboxPath(sandboxPath);
+            if (PictureMimeType.isContent(media.getAvailablePath())) {
+                String sandboxPath = SandboxTransformUtils.copyPathToSandbox(context, media.getPath(),
+                        media.getMimeType());
+                media.setSandboxPath(sandboxPath);
+            }
             listener.onCall(media, index);
         }
     }
@@ -551,6 +553,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dataCropSource.add(media.getAvailablePath());
             }
             UCrop uCrop = UCrop.of(inputUri, destinationUri, dataCropSource);
+            uCrop.setImageEngine(new UCropImageEngine() {
+                @Override
+                public void loadImage(Context context, String url, ImageView imageView) {
+                    Glide.with(context).load(url).into(imageView);
+                }
+            });
             uCrop.withOptions(buildOptions());
             uCrop.start(fragment.getActivity(), fragment, requestCode);
         }

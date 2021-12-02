@@ -187,7 +187,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         int galleryBarBackground = getIntent().getIntExtra(UCrop.Options.EXTRA_GALLERY_BAR_BACKGROUND,
                 R.drawable.ucrop_gallery_bg);
         mGalleryRecycle.setBackgroundResource(galleryBarBackground);
-        galleryAdapter = new UCropGalleryAdapter(uCropSupportList,isForbidSkipCrop);
+        galleryAdapter = new UCropGalleryAdapter(uCropSupportList, isForbidSkipCrop);
         galleryAdapter.setOnItemClickListener(new UCropGalleryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, View view) {
@@ -370,6 +370,12 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         } else {
             Toast.makeText(UCropMultipleActivity.this, "Unexpected error", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        UCropDevelopConfig.destroy();
     }
 
     @Override

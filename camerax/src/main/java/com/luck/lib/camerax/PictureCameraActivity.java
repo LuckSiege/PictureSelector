@@ -54,7 +54,7 @@ public class PictureCameraActivity extends AppCompatActivity {
         mCameraView.setImageCallbackListener(new ImageCallbackListener() {
             @Override
             public void onLoadImage(String url, ImageView imageView) {
-                CustomCameraConfig.getImageEngine().loadImage(imageView.getContext(), imageView, url);
+                CustomCameraConfig.imageEngine.loadImage(imageView.getContext(), url, imageView);
             }
         });
         mCameraView.setCameraListener(new CameraListener() {
@@ -87,12 +87,12 @@ public class PictureCameraActivity extends AppCompatActivity {
 
     private void handleCameraSuccess() {
         setResult(RESULT_OK, getIntent());
-        finish();
+        onBackPressed();
     }
 
     private void handleCameraCancel() {
         setResult(RESULT_CANCELED);
-        finish();
+        onBackPressed();
     }
 
     @Override
@@ -104,9 +104,9 @@ public class PictureCameraActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onBackPressed() {
+        super.onBackPressed();
         CustomCameraConfig.destroy();
-        super.onDestroy();
     }
 
     @Override

@@ -21,14 +21,4 @@ public class DateUtils {
         long millis = System.currentTimeMillis();
         return prefix + sf.format(millis);
     }
-
-    /**
-     * 根据时间戳创建文件名
-     *
-     * @return
-     */
-    public static String getCreateFileName() {
-        long millis = System.currentTimeMillis();
-        return sf.format(millis);
-    }
 }

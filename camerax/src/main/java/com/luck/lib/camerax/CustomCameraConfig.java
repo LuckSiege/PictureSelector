@@ -5,7 +5,7 @@ package com.luck.lib.camerax;
  * @date：2021/11/29 7:14 下午
  * @describe：CustomCameraConfig
  */
-public class CustomCameraConfig {
+public final class CustomCameraConfig {
     /**
      * 两者都可以
      */
@@ -30,23 +30,7 @@ public class CustomCameraConfig {
     /**
      * 图片加载引擎
      */
-    private static ImageEngine imageEngine;
-
-    public static ImageEngine getImageEngine() {
-        return imageEngine;
-    }
-
-    /**
-     * Image Load the engine
-     *
-     * @param engine Image Load the engine
-     * @return
-     */
-    public static void imageEngine(ImageEngine engine) {
-        if (CustomCameraConfig.imageEngine != engine) {
-            CustomCameraConfig.imageEngine = engine;
-        }
-    }
+    public static CameraImageEngine imageEngine;
 
     /**
      * 释放监听器

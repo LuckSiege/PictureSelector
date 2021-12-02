@@ -89,6 +89,20 @@ public class SimpleCameraX {
     }
 
     /**
+     * Set Camera Preview Image Engine
+     *
+     * @param engine
+     * @return
+     */
+    public SimpleCameraX setImageEngine(CameraImageEngine engine) {
+        if (CustomCameraConfig.imageEngine == engine) {
+            throw new NullPointerException("Missing ImageEngine,please implement SimpleCamerax.setImageEngine");
+        }
+        CustomCameraConfig.imageEngine = engine;
+        return this;
+    }
+
+    /**
      * 相机模式
      *
      * @param cameraMode Use {@link CustomCameraConfig}

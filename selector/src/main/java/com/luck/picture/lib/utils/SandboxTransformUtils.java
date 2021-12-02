@@ -4,7 +4,9 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.luck.picture.lib.basic.PictureContentResolver;
+import com.luck.picture.lib.config.PictureMimeType;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
@@ -38,8 +40,13 @@ public class SandboxTransformUtils {
      */
     public static String copyPathToSandbox(Context ctx, String url, String mineType, String customFileName) {
         try {
+            InputStream inputStream;
             String sandboxPath = PictureFileUtils.createFilePath(ctx, "", mineType, customFileName);
-            InputStream inputStream = PictureContentResolver.getContentResolverOpenInputStream(ctx, Uri.parse(url));
+            if (PictureMimeType.isContent(url)) {
+                inputStream = PictureContentResolver.getContentResolverOpenInputStream(ctx, Uri.parse(url));
+            } else {
+                inputStream = new FileInputStream(url);
+            }
             boolean copyFileSuccess = PictureFileUtils.writeFileFromIS(inputStream, new FileOutputStream(sandboxPath));
             if (copyFileSuccess) {
                 return sandboxPath;
