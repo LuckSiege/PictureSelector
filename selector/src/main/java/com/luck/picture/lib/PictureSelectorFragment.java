@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
@@ -87,8 +88,9 @@ public class PictureSelectorFragment extends PictureCommonFragment
     private AlbumListPopWindow albumListPopWindow;
 
     public static PictureSelectorFragment newInstance() {
-
-        return new PictureSelectorFragment();
+        PictureSelectorFragment fragment = new PictureSelectorFragment();
+        fragment.setArguments(new Bundle());
+        return fragment;
     }
 
     @Override
@@ -170,6 +172,10 @@ public class PictureSelectorFragment extends PictureCommonFragment
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(PictureConfig.EXTRA_ALL_FOLDER_SIZE, allFolderSize);
+        if (getArguments() != null) {
+            outState.putString(PictureConfig.EXTRA_CURRENT_FIRST_PATH, getFirstImagePath());
+            Log.i("YYY", "内存不足缓存首张封面: " + getFirstImagePath());
+        }
     }
 
     @Override
@@ -411,6 +417,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                     titleBar.setTitle(firstFolder.getName());
                     albumListPopWindow.setLastFolder(firstFolder);
                     albumListPopWindow.bindAlbumData(result);
+                    saveFirstImagePath(firstFolder.getFirstImagePath());
                     loadAllMedia(firstFolder);
                 } else {
                     showDataNull();
@@ -467,6 +474,29 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 }
             }
         });
+    }
+
+    /**
+     * 缓存首个相册目录的首张封面，拍照时有用到
+     *
+     * @param firstImagePath
+     */
+    private void saveFirstImagePath(String firstImagePath) {
+        if (getArguments() != null) {
+            getArguments().putString(PictureConfig.EXTRA_CURRENT_FIRST_PATH, firstImagePath);
+            Log.i("YYY", "保存: " + getArguments().getString(PictureConfig.EXTRA_CURRENT_FIRST_PATH, ""));
+        }
+    }
+
+    /**
+     * 获取首个相册目录的首张封面，拍照时有用到
+     */
+    private String getFirstImagePath() {
+        if (getArguments() != null) {
+            Log.i("YYY", "获取: " + getArguments().getString(PictureConfig.EXTRA_CURRENT_FIRST_PATH, ""));
+            return getArguments().getString(PictureConfig.EXTRA_CURRENT_FIRST_PATH, "");
+        }
+        return "";
     }
 
     private void initRecycler(View view) {
@@ -630,9 +660,16 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public void dispatchCameraMediaResult(LocalMedia media) {
-        boolean isAddSameImp = isAddSameImp(albumListPopWindow.getFolderCount() > 0
-                ? albumListPopWindow.getFolder(0).getImageNum() : 0);
-        if (!isAddSameImp) {
+        if (TextUtils.equals(media.getPath(), getFirstImagePath())) {
+            // 这种情况一般就是拍照时内存不足了，导致Fragment重新创建了，先走的loadAllData已经获取到了拍照生成的这张
+            // 如果这里还往下手动添加则会导致重复一张，故只要把新拍的加入选择结果即可
+            SelectedManager.getSelectedResult().add(media);
+            saveFirstImagePath(media.getPath());
+            mAdapter.notifyItemChanged(config.isDisplayCamera ? 1 : 0);
+            return;
+        }
+        int exitsTotalNum = albumListPopWindow.getFirstAlbumImageCount();
+        if (!isAddSameImp(exitsTotalNum)) {
             mAdapter.getData().add(0, media);
             openCameraNumber++;
         }

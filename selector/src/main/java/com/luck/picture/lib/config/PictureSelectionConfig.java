@@ -21,7 +21,8 @@ import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author：luck
@@ -69,7 +70,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isEmptyResultReturn;
     public boolean isHidePreviewDownload;
     public boolean isWithVideoImage;
-    public HashSet<String> queryMimeTypeHashSet;
+    public List<String> filters;
     public String cameraFileName;
     public boolean isCheckOriginalImage;
     public String outPutCameraDir;
@@ -143,6 +144,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isEmptyResultReturn = in.readByte() != 0;
         isHidePreviewDownload = in.readByte() != 0;
         isWithVideoImage = in.readByte() != 0;
+        filters = in.createStringArrayList();
         cameraFileName = in.readString();
         isCheckOriginalImage = in.readByte() != 0;
         outPutCameraDir = in.readString();
@@ -206,6 +208,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isEmptyResultReturn ? 1 : 0));
         dest.writeByte((byte) (isHidePreviewDownload ? 1 : 0));
         dest.writeByte((byte) (isWithVideoImage ? 1 : 0));
+        dest.writeStringList(filters);
         dest.writeString(cameraFileName);
         dest.writeByte((byte) (isCheckOriginalImage ? 1 : 0));
         dest.writeString(outPutCameraDir);
@@ -286,7 +289,7 @@ public final class PictureSelectionConfig implements Parcelable {
         cameraVideoFormatForQ = PictureMimeType.MIME_TYPE_VIDEO;
         cameraAudioFormatForQ = PictureMimeType.MIME_TYPE_AUDIO_AMR;
         cameraFileName = "";
-        queryMimeTypeHashSet = new HashSet<>();
+        filters = new ArrayList<>();
         outPutCameraDir = "";
         sandboxDir = "";
         originalPath = "";

@@ -161,11 +161,6 @@ public interface IPictureSelectorCommonEvent {
     void onResultEvent(List<LocalMedia> result);
 
     /**
-     * 释放资源
-     */
-    void onRelease();
-
-    /**
      * show loading
      */
     void showLoading();

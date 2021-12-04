@@ -714,9 +714,10 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
     }
 
     private String getQueryMimeCondition() {
-        HashSet<String> stringHashSet = config.queryMimeTypeHashSet;
+        List<String> filters = config.filters;
+        HashSet<String> filterSet = new HashSet<>(filters);
+        Iterator<String> iterator = filterSet.iterator();
         StringBuilder stringBuilder = new StringBuilder();
-        Iterator<String> iterator = stringHashSet.iterator();
         int index = -1;
         while (iterator.hasNext()) {
             String value = iterator.next();
@@ -740,7 +741,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
             stringBuilder.append(index == 0 ? " AND " : " OR ").append(MediaStore.MediaColumns.MIME_TYPE).append("='").append(value).append("'");
         }
         if (config.chooseMode != SelectMimeType.ofVideo()) {
-            if (!config.isGif && !stringHashSet.contains(PictureMimeType.ofGIF())) {
+            if (!config.isGif && !filterSet.contains(PictureMimeType.ofGIF())) {
                 stringBuilder.append(NOT_GIF);
             }
         }

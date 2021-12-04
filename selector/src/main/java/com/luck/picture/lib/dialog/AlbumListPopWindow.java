@@ -19,8 +19,8 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnAlbumItemClickListener;
 import com.luck.picture.lib.manager.SelectedManager;
-import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.DensityUtil;
+import com.luck.picture.lib.utils.SdkVersionUtils;
 
 import java.util.List;
 
@@ -101,6 +101,10 @@ public class AlbumListPopWindow extends PopupWindow {
     public LocalMediaFolder getFolder(int position) {
         return mAdapter.getAlbumList().size() > 0
                 && position < mAdapter.getAlbumList().size() ? mAdapter.getAlbumList().get(position) : null;
+    }
+
+    public int getFirstAlbumImageCount() {
+        return getFolderCount() > 0 ? getFolder(0).getImageNum() : 0;
     }
 
     public int getFolderCount() {

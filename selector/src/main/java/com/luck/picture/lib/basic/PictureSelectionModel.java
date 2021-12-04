@@ -35,7 +35,6 @@ import com.luck.picture.lib.utils.SdkVersionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -688,14 +687,12 @@ public class PictureSelectionModel {
     /**
      * query specified mimeType
      *
-     * @param mimeTypes Use example {@link { image/jpeg or image/png ... }}
+     * @param values Use example {@link { image/jpeg or image/png ... }}
      * @return
      */
-    public PictureSelectionModel queryMimeTypeConditions(String... mimeTypes) {
-        if (mimeTypes != null && mimeTypes.length > 0) {
-            selectionConfig.queryMimeTypeHashSet = new HashSet<>(Arrays.asList(mimeTypes));
-        } else {
-            selectionConfig.queryMimeTypeHashSet = null;
+    public PictureSelectionModel filterMimeType(String... values) {
+        if (values != null && values.length > 0) {
+            selectionConfig.filters.addAll(Arrays.asList(values));
         }
         return this;
     }

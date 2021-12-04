@@ -24,7 +24,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.PictureOnlyCameraFragment;
-import com.luck.picture.lib.PictureSelectorFragment;
 import com.luck.picture.lib.PictureSelectorPreviewFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.Crop;
@@ -985,6 +984,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 iBridgePictureBehavior.onFinish();
             }
         }
+        PictureSelectionConfig.destroy();
     }
 
     /**
@@ -998,6 +998,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         }
     }
 
+    @Override
+    public void onDestroy() {
+        releaseSoundPool();
+        super.onDestroy();
+    }
 
     @Override
     public void showLoading() {
@@ -1029,19 +1034,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         }
     }
 
-    @Override
-    public void onDestroy() {
-        onRelease();
-        super.onDestroy();
-    }
-
-    @Override
-    public void onRelease() {
-        releaseSoundPool();
-        if (this instanceof PictureSelectorFragment || this instanceof PictureOnlyCameraFragment) {
-            PictureSelectionConfig.destroy();
-        }
-    }
 
     @Override
     public void onAttach(@NonNull Context context) {
