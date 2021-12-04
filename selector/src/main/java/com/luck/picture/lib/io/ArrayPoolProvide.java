@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import com.luck.picture.lib.utils.PictureFileUtils;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
@@ -65,7 +66,12 @@ public class ArrayPoolProvide {
                 bufferedInputStreamWrap = wrapInputStream(resolver, uri);
             }
         } catch (Exception e) {
-            bufferedInputStreamWrap = wrapInputStream(resolver, uri);
+            try {
+                return resolver.openInputStream(uri);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                bufferedInputStreamWrap = wrapInputStream(resolver, uri);
+            }
         }
         return bufferedInputStreamWrap;
     }

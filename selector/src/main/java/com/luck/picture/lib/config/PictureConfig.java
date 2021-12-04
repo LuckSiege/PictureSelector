@@ -44,6 +44,8 @@ public final class PictureConfig {
 
     public final static String EXTRA_EXTERNAL_PREVIEW = KEY + ".external_preview";
 
+    public final static String EXTRA_BOTTOM_PREVIEW = KEY + ".bottom_preview";
+
     public final static String EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE = KEY + ".external_preview_display_delete";
 
     public final static String EXTRA_EXTERNAL_PREVIEW_CURRENT_POSITION = KEY + ".external_current_preview_position";

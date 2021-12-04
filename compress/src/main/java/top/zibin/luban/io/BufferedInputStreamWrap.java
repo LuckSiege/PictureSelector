@@ -10,7 +10,7 @@ import java.io.InputStream;
  * @describe：BufferedInputStreamWrap
  */
 public class BufferedInputStreamWrap extends FilterInputStream {
-    public static final int DEFAULT_MARK_READ_LIMIT = 5 * 1024 * 1024;
+    public static final int DEFAULT_MARK_READ_LIMIT = 8 * 1024 * 1024;
 
     /**
      * The buffer containing the current bytes read from the target InputStream.

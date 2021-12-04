@@ -65,7 +65,12 @@ public class ArrayPoolProvide {
                 bufferedInputStreamWrap = wrapInputStream(resolver, uri);
             }
         } catch (Exception e) {
-            bufferedInputStreamWrap = wrapInputStream(resolver, uri);
+            try {
+                return resolver.openInputStream(uri);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                bufferedInputStreamWrap = wrapInputStream(resolver, uri);
+            }
         }
         return bufferedInputStreamWrap;
     }

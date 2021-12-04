@@ -178,6 +178,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState != null) {
+            isExternalPreview = savedInstanceState.getBoolean(PictureConfig.EXTRA_EXTERNAL_PREVIEW, isExternalPreview);
+            isDisplayDelete = savedInstanceState.getBoolean(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, isDisplayDelete);
+            isBottomPreview = savedInstanceState.getBoolean(PictureConfig.EXTRA_BOTTOM_PREVIEW, isBottomPreview);
+        }
         screenWidth = DensityUtil.getScreenWidth(getContext());
         titleBar = view.findViewById(R.id.title_bar);
         tvSelected = view.findViewById(R.id.ps_tv_selected);
@@ -196,6 +201,14 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             initComplete();
         }
         initViewPagerData();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(PictureConfig.EXTRA_EXTERNAL_PREVIEW, isExternalPreview);
+        outState.putBoolean(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, isDisplayDelete);
+        outState.putBoolean(PictureConfig.EXTRA_BOTTOM_PREVIEW, isBottomPreview);
     }
 
     @Override
@@ -596,7 +609,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 mGalleryAdapter.isSelectMedia(currentMedia);
             }
             bottomNarBar.isDisplayEditor(PictureMimeType.isHasVideo(currentMedia.getMimeType()));
-            if (!isBottomPreview && !config.isOnlySandboxDir) {
+            if (!isExternalPreview && !isBottomPreview && !config.isOnlySandboxDir) {
                 if (config.isPageStrategy) {
                     if (isHasMore) {
                         if (position == (viewPageAdapter.getItemCount() - 1) - PictureConfig.MIN_PAGE_SIZE

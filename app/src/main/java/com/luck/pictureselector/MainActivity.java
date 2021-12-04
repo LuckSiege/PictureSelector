@@ -473,8 +473,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.i(TAG, "宽高: " + media.getWidth() + "x" + media.getHeight());
                 Log.i(TAG, "Size: " + media.getSize());
             }
+            mAdapter.getData().clear();
             mAdapter.getData().addAll(result);
-            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyItemRangeChanged(0, mAdapter.getData().size());
         }
 
         @Override
