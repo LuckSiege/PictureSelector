@@ -46,9 +46,15 @@ public final class PictureConfig {
 
     public final static String EXTRA_BOTTOM_PREVIEW = KEY + ".bottom_preview";
 
+    public final static String EXTRA_CURRENT_PAGE = KEY + ".current_page";
+
+    public final static String EXTRA_CURRENT_BUCKET_ID = KEY + ".current_bucketId";
+
     public final static String EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE = KEY + ".external_preview_display_delete";
 
-    public final static String EXTRA_EXTERNAL_PREVIEW_CURRENT_POSITION = KEY + ".external_current_preview_position";
+    public final static String EXTRA_PREVIEW_CURRENT_POSITION = KEY + ".current_preview_position";
+
+    public final static String EXTRA_PREVIEW_CURRENT_ALBUM_TOTAL = KEY + ".current_album_total";
 
     public final static int MAX_PAGE_SIZE = 60;
 

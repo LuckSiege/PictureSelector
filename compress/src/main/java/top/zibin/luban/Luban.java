@@ -28,6 +28,7 @@ public class Luban implements Handler.Callback {
 
     private String mTargetDir;
     private boolean focusAlpha;
+    private boolean isUseIOBufferPool;
     private int mLeastCompressSize;
     private OnRenameListener mRenameListener;
     private OnCompressListener mCompressListener;
@@ -38,6 +39,8 @@ public class Luban implements Handler.Callback {
 
     private Luban(Builder builder) {
         this.mTargetDir = builder.mTargetDir;
+        this.focusAlpha = builder.focusAlpha;
+        this.isUseIOBufferPool = builder.isUseBufferPool;
         this.mRenameListener = builder.mRenameListener;
         this.mStreamProviders = builder.mStreamProviders;
         this.mCompressListener = builder.mCompressListener;
@@ -226,6 +229,7 @@ public class Luban implements Handler.Callback {
         private Context context;
         private String mTargetDir;
         private boolean focusAlpha;
+        private boolean isUseBufferPool;
         private int mLeastCompressSize = 100;
         private OnRenameListener mRenameListener;
         private OnCompressListener mCompressListener;
@@ -307,8 +311,11 @@ public class Luban implements Handler.Callback {
         public Builder load(final Uri uri, int index) {
             mStreamProviders.add(new InputStreamAdapter() {
                 @Override
-                public InputStream openInternal() {
-                    return ArrayPoolProvide.getInstance().openInputStream(context.getContentResolver(), uri);
+                public InputStream openInternal() throws IOException {
+                    if (isUseBufferPool) {
+                        return ArrayPoolProvide.getInstance().openInputStream(context.getContentResolver(), uri);
+                    }
+                    return context.getContentResolver().openInputStream(uri);
                 }
 
                 @Override
@@ -352,6 +359,17 @@ public class Luban implements Handler.Callback {
         @Deprecated
         public Builder setFocusAlpha(boolean focusAlpha) {
             this.focusAlpha = focusAlpha;
+            return this;
+        }
+
+        /**
+         * getContentResolver().openInputStream(); open using buffer pool mode
+         *
+         * @param isUseBufferPool
+         * @return
+         */
+        public Builder isUseIOBufferPool(boolean isUseBufferPool) {
+            this.isUseBufferPool = isUseBufferPool;
             return this;
         }
 

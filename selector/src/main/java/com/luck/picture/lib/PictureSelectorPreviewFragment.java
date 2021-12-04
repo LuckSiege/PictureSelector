@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -51,6 +50,7 @@ import com.luck.picture.lib.widget.PreviewBottomNavBar;
 import com.luck.picture.lib.widget.PreviewTitleBar;
 import com.luck.picture.lib.widget.TitleBar;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -66,7 +66,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         return new PictureSelectorPreviewFragment();
     }
 
-    private List<LocalMedia> mData;
+    private List<LocalMedia> mData = new ArrayList<>();
 
     private PreviewTitleBar titleBar;
 
@@ -105,6 +105,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     private boolean isTransformPage = false;
 
+    private long mBucketId = -1;
+
     private TextView tvSelected;
 
     private TextView tvSelectedWord;
@@ -126,17 +128,20 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * @param position        预览下标
      * @param totalNum        当前预览总数
      * @param page            当前页码
+     * @param currentBucketId 当前相册目录id
      * @param data            预览数据源
      */
     public void setInternalPreviewData(boolean isBottomPreview, String currentAlbum, boolean isShowCamera,
-                                       int position, int totalNum, int page, List<LocalMedia> data) {
+                                       int position, int totalNum, int page, long currentBucketId,
+                                       List<LocalMedia> data) {
+        this.mPage = page;
+        this.mBucketId = currentBucketId;
         this.mData = data;
         this.totalNum = totalNum;
         this.curPosition = position;
         this.currentAlbum = currentAlbum;
         this.isShowCamera = isShowCamera;
         this.isBottomPreview = isBottomPreview;
-        this.mPage = page;
     }
 
     /**
@@ -179,6 +184,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState != null) {
+            mPage = savedInstanceState.getInt(PictureConfig.EXTRA_CURRENT_PAGE, 1);
+            mBucketId = savedInstanceState.getLong(PictureConfig.EXTRA_CURRENT_BUCKET_ID, -1);
+            curPosition = savedInstanceState.getInt(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, curPosition);
+            totalNum = savedInstanceState.getInt(PictureConfig.EXTRA_PREVIEW_CURRENT_ALBUM_TOTAL, totalNum);
             isExternalPreview = savedInstanceState.getBoolean(PictureConfig.EXTRA_EXTERNAL_PREVIEW, isExternalPreview);
             isDisplayDelete = savedInstanceState.getBoolean(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, isDisplayDelete);
             isBottomPreview = savedInstanceState.getBoolean(PictureConfig.EXTRA_BOTTOM_PREVIEW, isBottomPreview);
@@ -193,22 +202,45 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         bottomNarBar = view.findViewById(R.id.bottom_nar_bar);
         initTitleBar();
         if (isExternalPreview) {
+            if (savedInstanceState != null || mData.size() == 0) {
+                mData = new ArrayList<>(SelectedManager.getSelectedPreviewResult());
+            }
+            SelectedManager.clearExternalPreviewData();
+            initViewPagerData();
             externalPreviewStyle();
+            initViewPagerData();
         } else {
             initLoader();
             initBottomNavBar();
             initPreviewSelectGallery(view);
             initComplete();
+            if (savedInstanceState != null && mData.size() == 0) {
+                if (isBottomPreview) {
+                    mData = new ArrayList<>(SelectedManager.getSelectedResult());
+                    initViewPagerData();
+                } else {
+                    config.isPageStrategy = true;
+                    loadData(mPage * config.pageSize);
+                }
+            } else {
+                initViewPagerData();
+            }
         }
-        initViewPagerData();
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putInt(PictureConfig.EXTRA_CURRENT_PAGE, mPage);
+        outState.putLong(PictureConfig.EXTRA_CURRENT_BUCKET_ID, mBucketId);
+        outState.putInt(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, curPosition);
+        outState.putInt(PictureConfig.EXTRA_PREVIEW_CURRENT_ALBUM_TOTAL, totalNum);
         outState.putBoolean(PictureConfig.EXTRA_EXTERNAL_PREVIEW, isExternalPreview);
         outState.putBoolean(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, isDisplayDelete);
         outState.putBoolean(PictureConfig.EXTRA_BOTTOM_PREVIEW, isBottomPreview);
+        if (isExternalPreview) {
+            SelectedManager.addSelectedPreviewResult(mData);
+        }
     }
 
     @Override
@@ -236,12 +268,27 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     }
 
     /**
+     * 加载数据
+     */
+    private void loadData(int pageSize) {
+        mLoader.loadPageMediaData(mBucketId, 1, pageSize, new OnQueryDataResultListener<LocalMedia>() {
+            @Override
+            public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
+                if (ActivityCompatHelper.isDestroy(getActivity())) {
+                    return;
+                }
+                mData = result;
+                initViewPagerData();
+            }
+        });
+    }
+
+    /**
      * 加载更多
      */
-    private void loadMoreData(long bucketId) {
+    private void loadMoreData() {
         mPage++;
-        Log.i("YYY", "loadMoreData: " + mPage + "---" + bucketId);
-        mLoader.loadPageMediaData(bucketId, mPage, config.pageSize,
+        mLoader.loadPageMediaData(mBucketId, mPage, config.pageSize,
                 new OnQueryDataResultListener<LocalMedia>() {
                     @Override
                     public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
@@ -256,7 +303,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                                 int itemCount = mData.size();
                                 viewPageAdapter.notifyItemRangeChanged(oldStartPosition, itemCount);
                             } else {
-                                loadMoreData(bucketId);
+                                loadMoreData();
                             }
                         }
                     }
@@ -614,7 +661,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     if (isHasMore) {
                         if (position == (viewPageAdapter.getItemCount() - 1) - PictureConfig.MIN_PAGE_SIZE
                                 || position == viewPageAdapter.getItemCount() - 1) {
-                            loadMoreData(currentMedia.getBucketId());
+                            loadMoreData();
                         }
                     }
                 }

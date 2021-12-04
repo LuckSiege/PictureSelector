@@ -587,17 +587,19 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (ActivityCompatHelper.checkFragmentNonExits(getActivity(), PictureSelectorPreviewFragment.TAG)) {
             List<LocalMedia> data;
             int totalNum;
+            long currentBucketId = 0;
             if (isBottomPreview) {
                 data = new ArrayList<>(SelectedManager.getSelectedResult());
                 totalNum = data.size();
             } else {
                 data = mAdapter.getData();
                 totalNum = albumListPopWindow.getLastFolder().getImageNum();
+                currentBucketId = albumListPopWindow.getLastFolder().getBucketId();
             }
             if (iBridgePictureBehavior != null) {
                 PictureSelectorPreviewFragment previewFragment = PictureSelectorPreviewFragment.newInstance();
                 previewFragment.setInternalPreviewData(isBottomPreview, titleBar.getTitleText(), mAdapter.isShowCamera(),
-                        position, totalNum, mPage, data);
+                        position, totalNum, mPage, currentBucketId, data);
                 iBridgePictureBehavior.injectFragmentFromScreen(PictureSelectorPreviewFragment.TAG, previewFragment);
             }
         }

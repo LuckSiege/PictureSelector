@@ -1,6 +1,8 @@
 package com.luck.picture.lib;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -75,6 +77,18 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
     public void dispatchCameraMediaResult(LocalMedia media) {
         SelectedManager.getSelectedResult().add(media);
         dispatchTransformResult();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_CANCELED) {
+            if (requestCode == PictureConfig.REQUEST_CAMERA) {
+                if (!ActivityCompatHelper.isDestroy(getActivity())) {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
+            }
+        }
     }
 
     @Override

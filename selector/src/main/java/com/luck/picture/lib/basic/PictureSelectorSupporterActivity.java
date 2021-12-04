@@ -62,7 +62,7 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity implemen
     private void setupFragment() {
         if (getIntent().hasExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW)
                 && getIntent().getBooleanExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW, false)) {
-            int position = getIntent().getIntExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW_CURRENT_POSITION, 0);
+            int position = getIntent().getIntExtra(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, 0);
             PictureSelectorPreviewFragment fragment = PictureSelectorPreviewFragment.newInstance();
             List<LocalMedia> previewResult = SelectedManager.getSelectedPreviewResult();
             List<LocalMedia> previewData = new ArrayList<>(previewResult);
@@ -70,9 +70,8 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity implemen
             boolean isDisplayDelete = getIntent()
                     .getBooleanExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, false);
             fragment.setExternalPreviewData(position, previewData.size(), previewData, isDisplayDelete);
-            SelectedManager.clearExternalPreviewData();
             if (ActivityCompatHelper.checkFragmentNonExits(this, PictureSelectorPreviewFragment.TAG)) {
-                injectFragmentFromScreen(PictureSelectorFragment.TAG, fragment);
+                injectFragmentFromScreen(PictureSelectorPreviewFragment.TAG, fragment);
             }
         } else {
             if (ActivityCompatHelper.checkFragmentNonExits(this, PictureSelectorFragment.TAG)) {

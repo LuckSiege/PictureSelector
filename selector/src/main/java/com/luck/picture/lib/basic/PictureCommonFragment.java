@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -228,6 +229,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Nullable
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        Log.i("YYY", "onCreateAnimation: " + System.currentTimeMillis());
         PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
         if (enter) {
             return AnimationUtils.loadAnimation(getActivity(), windowAnimationStyle.activityEnterAnimation);

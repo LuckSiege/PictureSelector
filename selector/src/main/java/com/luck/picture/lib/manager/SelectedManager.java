@@ -46,7 +46,6 @@ public class SelectedManager {
     }
 
 
-
     /**
      * selected external preview result
      */
@@ -54,6 +53,11 @@ public class SelectedManager {
 
     public static List<LocalMedia> getSelectedPreviewResult() {
         return selectedPreviewResult;
+    }
+
+    public static void addSelectedPreviewResult(List<LocalMedia> list) {
+        clearExternalPreviewData();
+        selectedPreviewResult.addAll(list);
     }
 
     public static void clearExternalPreviewData() {

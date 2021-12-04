@@ -30,6 +30,7 @@ import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
+import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.DoubleUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 
@@ -191,6 +192,17 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel setCameraForegroundService(boolean isForeground) {
         selectionConfig.isCameraForegroundService = isForeground;
+        return this;
+    }
+
+    /**
+     * getContentResolver().openInputStream(); open using buffer pool mode
+     *
+     * @param isUseBufferPool
+     * @return
+     */
+    public PictureSelectionModel isUseIOBufferPool(boolean isUseBufferPool) {
+        selectionConfig.isUseBufferPool = isUseBufferPool;
         return this;
     }
 
@@ -846,14 +858,16 @@ public class PictureSelectionModel {
             if (fragmentManager == null) {
                 throw new NullPointerException(" FragmentManager is empty ");
             }
-            PictureSelectorPreviewFragment fragment = PictureSelectorPreviewFragment.newInstance();
-            List<LocalMedia> previewData = new ArrayList<>(list);
-            PictureSelectionConfig.selectorStyle.getSelectMainStyle().setPreviewDisplaySelectGallery(false);
-            fragment.setExternalPreviewData(position, previewData.size(), previewData, isDisplayDelete);
-            fragmentManager.beginTransaction()
-                    .add(android.R.id.content, fragment, PictureSelectorPreviewFragment.TAG)
-                    .addToBackStack(PictureSelectorPreviewFragment.TAG)
-                    .commitAllowingStateLoss();
+            if (ActivityCompatHelper.checkFragmentNonExits((FragmentActivity) activity, PictureSelectorPreviewFragment.TAG)) {
+                PictureSelectorPreviewFragment fragment = PictureSelectorPreviewFragment.newInstance();
+                List<LocalMedia> previewData = new ArrayList<>(list);
+                PictureSelectionConfig.selectorStyle.getSelectMainStyle().setPreviewDisplaySelectGallery(false);
+                fragment.setExternalPreviewData(position, previewData.size(), previewData, isDisplayDelete);
+                fragmentManager.beginTransaction()
+                        .add(android.R.id.content, fragment, PictureSelectorPreviewFragment.TAG)
+                        .addToBackStack(PictureSelectorPreviewFragment.TAG)
+                        .commitAllowingStateLoss();
+            }
         }
     }
 
@@ -882,9 +896,9 @@ public class PictureSelectionModel {
             PictureSelectionConfig.previewEventListener = listener;
 
             Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
-            SelectedManager.getSelectedPreviewResult().addAll(list);
+            SelectedManager.addSelectedPreviewResult(list);
             intent.putExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW, true);
-            intent.putExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW_CURRENT_POSITION, position);
+            intent.putExtra(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, position);
             intent.putExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, isDisplayDelete);
             activity.startActivity(intent);
             PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
@@ -921,11 +935,13 @@ public class PictureSelectionModel {
                 if (fragmentManager == null) {
                     throw new NullPointerException(" FragmentManager is empty ");
                 }
-                PictureOnlyCameraFragment fragment = PictureOnlyCameraFragment.newInstance();
-                fragmentManager.beginTransaction()
-                        .add(android.R.id.content, fragment, PictureOnlyCameraFragment.TAG)
-                        .addToBackStack(PictureOnlyCameraFragment.TAG)
-                        .commitAllowingStateLoss();
+                if (ActivityCompatHelper.checkFragmentNonExits((FragmentActivity) activity, PictureOnlyCameraFragment.TAG)) {
+                    PictureOnlyCameraFragment fragment = PictureOnlyCameraFragment.newInstance();
+                    fragmentManager.beginTransaction()
+                            .add(android.R.id.content, fragment, PictureOnlyCameraFragment.TAG)
+                            .addToBackStack(PictureOnlyCameraFragment.TAG)
+                            .commitAllowingStateLoss();
+                }
             } else {
                 Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
                 activity.startActivity(intent);
