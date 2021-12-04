@@ -50,8 +50,9 @@
 
     <com.luck.lib.camerax.widget.CaptureLayout
         android:id="@+id/capture_layout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 </merge>

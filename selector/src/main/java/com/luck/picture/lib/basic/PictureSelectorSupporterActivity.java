@@ -13,6 +13,8 @@ import com.luck.picture.lib.PictureSelectorFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.immersive.ImmersiveManage;
+import com.luck.picture.lib.language.LanguageConfig;
+import com.luck.picture.lib.language.PictureLanguageUtils;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.TitleBarStyle;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
@@ -30,6 +32,7 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity implemen
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initAppLanguage();
         immersive();
         setContentView(R.layout.ps_activity_container);
         setupFragment();
@@ -55,6 +58,15 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity implemen
         }
     }
 
+    /**
+     * set app language
+     */
+    public void initAppLanguage() {
+        PictureSelectionConfig config = PictureSelectionConfig.getInstance();
+        if (config.language != LanguageConfig.UNKNOWN_LANGUAGE && !config.isOnlyCamera) {
+            PictureLanguageUtils.setAppLanguage(this, config.language);
+        }
+    }
 
     @Override
     public void injectFragmentFromScreen(String tag, Fragment fragment) {

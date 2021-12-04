@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
@@ -174,7 +173,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
         outState.putInt(PictureConfig.EXTRA_ALL_FOLDER_SIZE, allFolderSize);
         if (getArguments() != null) {
             outState.putString(PictureConfig.EXTRA_CURRENT_FIRST_PATH, getFirstImagePath());
-            Log.i("YYY", "内存不足缓存首张封面: " + getFirstImagePath());
         }
     }
 
@@ -484,7 +482,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
     private void saveFirstImagePath(String firstImagePath) {
         if (getArguments() != null) {
             getArguments().putString(PictureConfig.EXTRA_CURRENT_FIRST_PATH, firstImagePath);
-            Log.i("YYY", "保存: " + getArguments().getString(PictureConfig.EXTRA_CURRENT_FIRST_PATH, ""));
         }
     }
 
@@ -493,7 +490,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
      */
     private String getFirstImagePath() {
         if (getArguments() != null) {
-            Log.i("YYY", "获取: " + getArguments().getString(PictureConfig.EXTRA_CURRENT_FIRST_PATH, ""));
             return getArguments().getString(PictureConfig.EXTRA_CURRENT_FIRST_PATH, "");
         }
         return "";

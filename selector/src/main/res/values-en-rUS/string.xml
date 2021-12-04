@@ -27,7 +27,7 @@
     <string name="ps_camera">Get system camera permission denied</string>
     <string name="ps_video_toast">Video not Preview</string>
     <string name="ps_record_video">Record Video</string>
-    <string name="ps_photograph">Photograph</string>
+    <string name="ps_photograph">Take Picture</string>
     <string name="ps_long_chart">Long</string>
     <string name="ps_warning">No Media files!</string>
     <string name="ps_prompt">Prompt</string>
