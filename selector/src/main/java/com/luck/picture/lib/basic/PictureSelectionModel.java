@@ -817,14 +817,13 @@ public class PictureSelectionModel {
     /**
      * preview LocalMedia
      *
-     * @param position    current position
-     * @param list        preview data
-     * @param isHasDelete if visible delete
+     * @param position        current position
+     * @param list            preview data
+     * @param isDisplayDelete if visible delete
      * @param listener
      */
-    public void startPreview(int position, List<LocalMedia> list,
-                             boolean isHasDelete,
-                             OnExternalPreviewEventListener listener) {
+    public void startFragmentPreview(int position, List<LocalMedia> list, boolean isDisplayDelete,
+                                     OnExternalPreviewEventListener listener) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
             if (activity == null) {
@@ -850,11 +849,46 @@ public class PictureSelectionModel {
             PictureSelectorPreviewFragment fragment = PictureSelectorPreviewFragment.newInstance();
             List<LocalMedia> previewData = new ArrayList<>(list);
             PictureSelectionConfig.selectorStyle.getSelectMainStyle().setPreviewDisplaySelectGallery(false);
-            fragment.setPreviewData(position, previewData.size(), previewData, isHasDelete);
+            fragment.setPreviewData(position, previewData.size(), previewData, isDisplayDelete);
             fragmentManager.beginTransaction()
                     .add(android.R.id.content, fragment, PictureSelectorPreviewFragment.TAG)
                     .addToBackStack(PictureSelectorPreviewFragment.TAG)
                     .commitAllowingStateLoss();
+        }
+    }
+
+    /**
+     * preview LocalMedia
+     *
+     * @param position        current position
+     * @param list            preview data
+     * @param isDisplayDelete if visible delete
+     * @param listener
+     */
+    public void startActivityPreview(int position, List<LocalMedia> list, boolean isDisplayDelete,
+                                     OnExternalPreviewEventListener listener) {
+        if (!DoubleUtils.isFastDoubleClick()) {
+            Activity activity = selector.getActivity();
+            if (activity == null) {
+                throw new NullPointerException("getActivity is null");
+            }
+            if (PictureSelectionConfig.imageEngine == null) {
+                throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
+            }
+            if (list == null || list.size() == 0) {
+                throw new NullPointerException("preview data is null");
+            }
+            // 绑定回调监听
+            PictureSelectionConfig.previewEventListener = listener;
+
+            Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
+            SelectedManager.getSelectedPreviewResult().addAll(list);
+            intent.putExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW, true);
+            intent.putExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW_CURRENT_POSITION, position);
+            intent.putExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, isDisplayDelete);
+            activity.startActivity(intent);
+            PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
+            activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
         }
     }
 

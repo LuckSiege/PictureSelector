@@ -2,7 +2,6 @@ package com.luck.pictureselector.adapter;
 
 import android.content.Context;
 import android.net.Uri;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.interfaces.OnItemClickListener;
 import com.luck.picture.lib.utils.DateUtils;
 import com.luck.pictureselector.R;
 import com.luck.pictureselector.listener.OnItemLongClickListener;
@@ -32,22 +30,13 @@ import java.util.List;
  * @date：2016-7-27 23:02
  * @describe：GridImageAdapter
  */
-public class GridImageAdapter extends
-        RecyclerView.Adapter<GridImageAdapter.ViewHolder> {
+public class GridImageAdapter extends RecyclerView.Adapter<GridImageAdapter.ViewHolder> {
     public static final String TAG = "PictureSelector";
     public static final int TYPE_CAMERA = 1;
     public static final int TYPE_PICTURE = 2;
     private final LayoutInflater mInflater;
-    private List<LocalMedia> list = new ArrayList<>();
+    private final List<LocalMedia> list = new ArrayList<>();
     private int selectMax = 9;
-    /**
-     * 点击添加图片跳转
-     */
-    private final onAddPicClickListener mOnAddPicClickListener;
-
-    public interface onAddPicClickListener {
-        void onAddPicClick();
-    }
 
     /**
      * 删除
@@ -65,25 +54,21 @@ public class GridImageAdapter extends
         }
     }
 
-    public GridImageAdapter(Context context, onAddPicClickListener mOnAddPicClickListener) {
+    public GridImageAdapter(Context context, List<LocalMedia> result) {
         this.mInflater = LayoutInflater.from(context);
-        this.mOnAddPicClickListener = mOnAddPicClickListener;
+        this.list.addAll(result);
     }
 
     public void setSelectMax(int selectMax) {
         this.selectMax = selectMax;
     }
 
-    public void setList(List<LocalMedia> list) {
-        this.list = list;
-    }
-
     public List<LocalMedia> getData() {
-        return list == null ? new ArrayList<>() : list;
+        return list;
     }
 
     public void remove(int position) {
-        if (list != null && position < list.size()) {
+        if (position < list.size()) {
             list.remove(position);
         }
     }
@@ -142,7 +127,14 @@ public class GridImageAdapter extends
         //少于MaxSize张，显示继续添加的图标
         if (getItemViewType(position) == TYPE_CAMERA) {
             viewHolder.mImg.setImageResource(R.drawable.ic_add_image);
-            viewHolder.mImg.setOnClickListener(v -> mOnAddPicClickListener.onAddPicClick());
+            viewHolder.mImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mItemClickListener != null) {
+                        mItemClickListener.openPicture();
+                    }
+                }
+            });
             viewHolder.mIvDel.setVisibility(View.INVISIBLE);
         } else {
             viewHolder.mIvDel.setVisibility(View.VISIBLE);
@@ -231,6 +223,21 @@ public class GridImageAdapter extends
 
     public void setOnItemClickListener(OnItemClickListener l) {
         this.mItemClickListener = l;
+    }
+
+    public interface OnItemClickListener {
+        /**
+         * Item click event
+         *
+         * @param v
+         * @param position
+         */
+        void onItemClick(View v, int position);
+
+        /**
+         * Open PictureSelector
+         */
+        void openPicture();
     }
 
     private OnItemLongClickListener mItemLongClickListener;

@@ -21,6 +21,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.luck.picture.lib.adapter.PicturePreviewAdapter;
 import com.luck.picture.lib.adapter.holder.PreviewGalleryAdapter;
 import com.luck.picture.lib.basic.PictureCommonFragment;
+import com.luck.picture.lib.basic.PictureSelectorSupporterActivity;
 import com.luck.picture.lib.config.Crop;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -88,7 +89,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     /**
      * 外部预览是否支持删除
      */
-    private boolean isHasDelete;
+    private boolean isDisplayDelete;
 
     private int totalNum;
 
@@ -131,17 +132,17 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     /**
      * 外部预览
      *
-     * @param position    预览下标
-     * @param totalNum    当前预览总数
-     * @param data        预览数据源
-     * @param isHasDelete 是否显示删除按钮
+     * @param position        预览下标
+     * @param totalNum        当前预览总数
+     * @param data            预览数据源
+     * @param isDisplayDelete 是否显示删除按钮
      */
-    public void setPreviewData(int position, int totalNum, List<LocalMedia> data, boolean isHasDelete) {
-        this.isExternalPreview = true;
+    public void setPreviewData(int position, int totalNum, List<LocalMedia> data, boolean isDisplayDelete) {
         this.mData = data;
         this.totalNum = totalNum;
         this.curPosition = position;
-        this.isHasDelete = isHasDelete;
+        this.isDisplayDelete = isDisplayDelete;
+        this.isExternalPreview = true;
     }
 
     @Override
@@ -372,9 +373,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             int currentItem = viewPager.getCurrentItem();
             mData.remove(currentItem);
             if (mData.size() == 0) {
-                if (!ActivityCompatHelper.isDestroy(getActivity())) {
-                    getActivity().getSupportFragmentManager().popBackStack();
-                }
+                handleExternalPreviewBack();
                 return;
             }
             titleBar.setTitle(getString(R.string.ps_preview_image_num,
@@ -404,7 +403,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      */
     private void handleExternalPreviewBack() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
-            getActivity().getSupportFragmentManager().popBackStack();
+            if (getActivity() instanceof PictureSelectorSupporterActivity) {
+                iBridgePictureBehavior.onFinish();
+            } else {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
         }
     }
 
@@ -442,8 +445,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         } else {
             tvSelected.setBackgroundResource(R.drawable.ps_ic_delete);
         }
-        tvSelected.setVisibility(isHasDelete ? View.VISIBLE : View.GONE);
-        tvSelected.setVisibility(isHasDelete ? View.VISIBLE : View.GONE);
+        tvSelected.setVisibility(isDisplayDelete ? View.VISIBLE : View.GONE);
+        tvSelected.setVisibility(isDisplayDelete ? View.VISIBLE : View.GONE);
         bottomNarBar.setVisibility(View.GONE);
         completeSelectView.setVisibility(View.GONE);
     }

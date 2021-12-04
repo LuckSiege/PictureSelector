@@ -66,7 +66,6 @@ import com.yalantis.ucrop.UCropImageEngine;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -110,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private DragListener mDragListener;
     private int animationMode = AnimationType.DEFAULT_ANIMATION;
     private PictureSelectorStyle selectorStyle;
-
+    private List<LocalMedia> mData = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,57 +164,100 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_crop_circular.setOnCheckedChangeListener(this);
         cb_compress.setOnCheckedChangeListener(this);
         tv_select_num.setText(ValueOf.toString(maxSelectNum));
+
+        // List<LocalMedia> list = new ArrayList<>();
+        // list.add(LocalMedia.generateLocalMedia("https://wx1.sinaimg.cn/mw690/006e0i7xly1gaxqq5m7t8j31311g2ao6.jpg", PictureMimeType.ofJPEG()));
+        // list.add(LocalMedia.generateLocalMedia("https://ww1.sinaimg.cn/bmiddle/bcd10523ly1g96mg4sfhag20c806wu0x.gif", PictureMimeType.ofGIF()));
+        // mData.addAll(list);
+
         FullyGridLayoutManager manager = new FullyGridLayoutManager(this,
                 4, GridLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(manager);
-
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(4,
                 DensityUtil.dip2px(this, 8), false));
-        mAdapter = new GridImageAdapter(getContext(), onAddPicClickListener);
-        if (savedInstanceState != null && savedInstanceState.getParcelableArrayList("selectorList") != null) {
-            mAdapter.setList(savedInstanceState.getParcelableArrayList("selectorList"));
-        }
-
-//        List<LocalMedia> list = new ArrayList<>();
-//        list.add(LocalMedia.generateLocalMedia("https://wx1.sinaimg.cn/mw690/006e0i7xly1gaxqq5m7t8j31311g2ao6.jpg", PictureMimeType.ofJPEG()));
-//        list.add(LocalMedia.generateLocalMedia("https://ww1.sinaimg.cn/bmiddle/bcd10523ly1g96mg4sfhag20c806wu0x.gif", PictureMimeType.ofGIF()));
-//        mAdapter.setList(list);
-
+        mAdapter = new GridImageAdapter(getContext(), mData);
         mAdapter.setSelectMax(maxSelectNum);
         mRecyclerView.setAdapter(mAdapter);
+        if (savedInstanceState != null && savedInstanceState.getParcelableArrayList("selectorList") != null) {
+            mData.clear();
+            mData.addAll(savedInstanceState.getParcelableArrayList("selectorList"));
+        }
+
         cb_original.setOnCheckedChangeListener((buttonView, isChecked) ->
                 tv_original_tips.setVisibility(isChecked ? View.VISIBLE : View.GONE));
         cb_choose_mode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             cb_single_back.setVisibility(isChecked ? View.GONE : View.VISIBLE);
             cb_single_back.setChecked(!isChecked && cb_single_back.isChecked());
         });
-        mAdapter.setOnItemClickListener((v, position) -> {
-            List<LocalMedia> selectList = mAdapter.getData();
-            if (selectList.size() > 0) {
-                LocalMedia media = selectList.get(position);
-                String availablePath = media.getAvailablePath();
-                if (PictureMimeType.isHasAudio(media.getMimeType())) {
-                    // 预览音频
-                    AudioPlayDialog.showPlayAudioDialog(getContext(), availablePath);
-                } else {
-                    // 预览图片 or 预览视频
-                    PictureSelector.create(MainActivity.this)
-                            .openPreview()
-                            .imageEngine(GlideEngine.createGlideEngine())
-                            .setSelectorUIStyle(selectorStyle)
-                            .startPreview(position, selectList, true,
-                                    new OnExternalPreviewEventListener() {
-                                        @Override
-                                        public void onPreviewDelete(int position) {
-                                            mAdapter.remove(position);
-                                            mAdapter.notifyItemRemoved(position);
-                                        }
+        mAdapter.setOnItemClickListener(new GridImageAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                List<LocalMedia> selectList = mAdapter.getData();
+                if (selectList.size() > 0) {
+                    LocalMedia media = selectList.get(position);
+                    String availablePath = media.getAvailablePath();
+                    if (PictureMimeType.isHasAudio(media.getMimeType())) {
+                        // 预览音频
+                        AudioPlayDialog.showPlayAudioDialog(getContext(), availablePath);
+                    } else {
+                        // 预览图片 or 预览视频
+                        PictureSelector.create(MainActivity.this)
+                                .openPreview()
+                                .imageEngine(GlideEngine.createGlideEngine())
+                                .setSelectorUIStyle(selectorStyle)
+                                .startActivityPreview(position, selectList, true,
+                                        new OnExternalPreviewEventListener() {
+                                            @Override
+                                            public void onPreviewDelete(int position) {
+                                                mAdapter.remove(position);
+                                                mAdapter.notifyItemRemoved(position);
+                                            }
 
-                                        @Override
-                                        public boolean onLongPressDownload(LocalMedia media) {
-                                            return false;
-                                        }
-                                    });
+                                            @Override
+                                            public boolean onLongPressDownload(LocalMedia media) {
+                                                return false;
+                                            }
+                                        });
+                    }
+                }
+            }
+
+            @Override
+            public void openPicture() {
+                boolean mode = cb_mode.isChecked();
+                if (mode) {
+                    // 进入相册
+                    PictureSelector.create(MainActivity.this)
+                            .openGallery(chooseMode)
+                            .setSelectorUIStyle(selectorStyle)
+                            .imageEngine(GlideEngine.createGlideEngine())
+                            .setCropEngine(getCropEngine())
+                            .setCompressEngine(getCompressEngine())
+                            .setSandboxFileEngine(new MeSandboxFileEngine())
+                            .setCameraInterceptListener(getCustomCameraEvent())
+                            .setEditMediaInterceptListener(getCustomEditMediaEvent())
+                            .selectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
+                            .setLanguage(language)
+                            .isPageStrategy(cbPage.isChecked())
+                            .isDisplayCamera(cb_isCamera.isChecked())
+                            .isOpenClickSound(cb_voice.isChecked())
+                            .isWithSelectVideoImage(true)
+                            .isDirectReturnSingle(cb_single_back.isChecked())
+                            .maxSelectNum(maxSelectNum)
+                            .maxVideoSelectNum(2)
+                            .setRecyclerAnimationMode(animationMode)
+                            .isGif(cb_isGif.isChecked())
+                            .selectedData(mAdapter.getData())
+                            .isOriginalImageControl(cb_original.isChecked())
+                            .isDisplayOriginalSize(cb_original.isChecked())
+                            .forResult(new MeOnResultCallbackListener());
+                } else {
+                    // 单独拍照
+                    PictureSelector.create(MainActivity.this)
+                            .openCamera(SelectMimeType.ofAll())
+                            .imageEngine(GlideEngine.createGlideEngine())
+                            .setCameraInterceptListener(getCustomCameraEvent())
+                            .forResult(new MeOnResultCallbackListener());
                 }
             }
         });
@@ -400,46 +442,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         isUpward = false;
     }
 
-    private final GridImageAdapter.onAddPicClickListener onAddPicClickListener = new GridImageAdapter.onAddPicClickListener() {
+    /**
+     * 选择结果
+     */
+    private class MeOnResultCallbackListener implements OnResultCallbackListener<LocalMedia> {
         @Override
-        public void onAddPicClick() {
-            boolean mode = cb_mode.isChecked();
-            if (mode) {
-                // 进入相册
-                PictureSelector.create(MainActivity.this)
-                        .openGallery(chooseMode)
-                        .setSelectorUIStyle(selectorStyle)
-                        .imageEngine(GlideEngine.createGlideEngine())
-                        .setCropEngine(getCropEngine())
-                        .setCompressEngine(getCompressEngine())
-                        .setSandboxFileEngine(new MeSandboxFileEngine())
-                        .setCameraInterceptListener(getCustomCameraEvent())
-                        .setEditMediaInterceptListener(getCustomEditMediaEvent())
-                        .selectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
-                        .setLanguage(language)
-                        .isPageStrategy(cbPage.isChecked())
-                        .isDisplayCamera(cb_isCamera.isChecked())
-                        .isOpenClickSound(cb_voice.isChecked())
-                        .isWithSelectVideoImage(true)
-                        .isDirectReturnSingle(cb_single_back.isChecked())
-                        .maxSelectNum(maxSelectNum)
-                        .maxVideoSelectNum(2)
-                        .setRecyclerAnimationMode(animationMode)
-                        .isGif(cb_isGif.isChecked())
-                        .selectedData(mAdapter.getData())
-                        .isOriginalImageControl(cb_original.isChecked())
-                        .isDisplayOriginalSize(cb_original.isChecked())
-                        .forResult(new MyResultCallback(mAdapter));
-            } else {
-                // 单独拍照
-                PictureSelector.create(MainActivity.this)
-                        .openCamera(SelectMimeType.ofAll())
-                        .imageEngine(GlideEngine.createGlideEngine())
-                        .setCameraInterceptListener(getCustomCameraEvent())
-                        .forResult(new MyResultCallback(mAdapter));
+        public void onResult(List<LocalMedia> result) {
+            for (LocalMedia media : result) {
+                if (media.getWidth() == 0 || media.getHeight() == 0) {
+                    if (PictureMimeType.isHasImage(media.getMimeType())) {
+                        MediaExtraInfo imageExtraInfo = MediaUtils.getImageSize(media.getPath());
+                        media.setWidth(imageExtraInfo.getWidth());
+                        media.setHeight(imageExtraInfo.getHeight());
+                    } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                        MediaExtraInfo videoExtraInfo = MediaUtils.getVideoSize(PictureAppMaster.getInstance().getAppContext(), media.getPath());
+                        media.setWidth(videoExtraInfo.getWidth());
+                        media.setHeight(videoExtraInfo.getHeight());
+                    }
+                }
+                Log.i(TAG, "文件名: " + media.getFileName());
+                Log.i(TAG, "是否压缩:" + media.isCompressed());
+                Log.i(TAG, "压缩:" + media.getCompressPath());
+                Log.i(TAG, "原图:" + media.getPath());
+                Log.i(TAG, "绝对路径:" + media.getRealPath());
+                Log.i(TAG, "是否裁剪:" + media.isCut());
+                Log.i(TAG, "裁剪:" + media.getCutPath());
+                Log.i(TAG, "是否开启原图:" + media.isOriginal());
+                Log.i(TAG, "原图路径:" + media.getOriginalPath());
+                Log.i(TAG, "沙盒路径:" + media.getSandboxPath());
+                Log.i(TAG, "宽高: " + media.getWidth() + "x" + media.getHeight());
+                Log.i(TAG, "Size: " + media.getSize());
             }
+            mAdapter.getData().addAll(result);
+            mAdapter.notifyDataSetChanged();
         }
-    };
+
+        @Override
+        public void onCancel() {
+            Log.i(TAG, "PictureSelector Cancel");
+        }
+    }
 
     /**
      * 压缩引擎
@@ -655,56 +697,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         }
                     }).launch();
-        }
-    }
-
-    /**
-     * 返回结果回调
-     */
-    private static class MyResultCallback implements OnResultCallbackListener<LocalMedia> {
-        private final WeakReference<GridImageAdapter> mAdapterWeakReference;
-
-        public MyResultCallback(GridImageAdapter adapter) {
-            super();
-            this.mAdapterWeakReference = new WeakReference<>(adapter);
-        }
-
-        @Override
-        public void onResult(List<LocalMedia> result) {
-            for (LocalMedia media : result) {
-                if (media.getWidth() == 0 || media.getHeight() == 0) {
-                    if (PictureMimeType.isHasImage(media.getMimeType())) {
-                        MediaExtraInfo imageExtraInfo = MediaUtils.getImageSize(media.getPath());
-                        media.setWidth(imageExtraInfo.getWidth());
-                        media.setHeight(imageExtraInfo.getHeight());
-                    } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
-                        MediaExtraInfo videoExtraInfo = MediaUtils.getVideoSize(PictureAppMaster.getInstance().getAppContext(), media.getPath());
-                        media.setWidth(videoExtraInfo.getWidth());
-                        media.setHeight(videoExtraInfo.getHeight());
-                    }
-                }
-                Log.i(TAG, "文件名: " + media.getFileName());
-                Log.i(TAG, "是否压缩:" + media.isCompressed());
-                Log.i(TAG, "压缩:" + media.getCompressPath());
-                Log.i(TAG, "原图:" + media.getPath());
-                Log.i(TAG, "绝对路径:" + media.getRealPath());
-                Log.i(TAG, "是否裁剪:" + media.isCut());
-                Log.i(TAG, "裁剪:" + media.getCutPath());
-                Log.i(TAG, "是否开启原图:" + media.isOriginal());
-                Log.i(TAG, "原图路径:" + media.getOriginalPath());
-                Log.i(TAG, "沙盒路径:" + media.getSandboxPath());
-                Log.i(TAG, "宽高: " + media.getWidth() + "x" + media.getHeight());
-                Log.i(TAG, "Size: " + media.getSize());
-            }
-            if (mAdapterWeakReference.get() != null) {
-                mAdapterWeakReference.get().setList(result);
-                mAdapterWeakReference.get().notifyDataSetChanged();
-            }
-        }
-
-        @Override
-        public void onCancel() {
-            Log.i(TAG, "PictureSelector Cancel");
         }
     }
 

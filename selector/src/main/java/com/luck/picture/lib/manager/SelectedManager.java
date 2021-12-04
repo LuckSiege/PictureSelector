@@ -15,6 +15,7 @@ public class SelectedManager {
     public static final int ADD_SUCCESS = 0;
     public static final int REMOVE = 1;
 
+
     /**
      * selected result
      */
@@ -42,5 +43,20 @@ public class SelectedManager {
 
     public static void clear() {
         selectedResult.clear();
+    }
+
+
+
+    /**
+     * selected external preview result
+     */
+    private static final List<LocalMedia> selectedPreviewResult = new ArrayList<>();
+
+    public static List<LocalMedia> getSelectedPreviewResult() {
+        return selectedPreviewResult;
+    }
+
+    public static void clearExternalPreviewData() {
+        selectedPreviewResult.clear();
     }
 }

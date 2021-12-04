@@ -10,16 +10,23 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.PictureSelectorFragment;
+import com.luck.picture.lib.PictureSelectorPreviewFragment;
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.immersive.ImmersiveManage;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.language.PictureLanguageUtils;
+import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.TitleBarStyle;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.StyleUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author：luck
@@ -53,8 +60,23 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity implemen
     }
 
     private void setupFragment() {
-        if (ActivityCompatHelper.checkFragmentNonExits(this, PictureSelectorFragment.TAG)) {
-            injectFragmentFromScreen(PictureSelectorFragment.TAG, PictureSelectorFragment.newInstance());
+        if (getIntent().hasExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW)
+                && getIntent().getBooleanExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW, false)) {
+            int position = getIntent().getIntExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW_CURRENT_POSITION, 0);
+            PictureSelectorPreviewFragment fragment = PictureSelectorPreviewFragment.newInstance();
+            List<LocalMedia> previewResult = SelectedManager.getSelectedPreviewResult();
+            List<LocalMedia> previewData = new ArrayList<>(previewResult);
+            PictureSelectionConfig.selectorStyle.getSelectMainStyle().setPreviewDisplaySelectGallery(false);
+            boolean isDisplayDelete = getIntent().getBooleanExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, false);
+            fragment.setPreviewData(position, previewData.size(), previewData, isDisplayDelete);
+            SelectedManager.clearExternalPreviewData();
+            if (ActivityCompatHelper.checkFragmentNonExits(this, PictureSelectorPreviewFragment.TAG)) {
+                injectFragmentFromScreen(PictureSelectorFragment.TAG, fragment);
+            }
+        } else {
+            if (ActivityCompatHelper.checkFragmentNonExits(this, PictureSelectorFragment.TAG)) {
+                injectFragmentFromScreen(PictureSelectorFragment.TAG, PictureSelectorFragment.newInstance());
+            }
         }
     }
 

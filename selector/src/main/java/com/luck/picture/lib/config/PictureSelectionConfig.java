@@ -352,6 +352,7 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         ArrayPoolProvide.getInstance().clearMemory();
         SelectedManager.clear();
+        SelectedManager.clearExternalPreviewData();
     }
 
 }
