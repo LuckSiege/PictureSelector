@@ -849,7 +849,7 @@ public class PictureSelectionModel {
             PictureSelectorPreviewFragment fragment = PictureSelectorPreviewFragment.newInstance();
             List<LocalMedia> previewData = new ArrayList<>(list);
             PictureSelectionConfig.selectorStyle.getSelectMainStyle().setPreviewDisplaySelectGallery(false);
-            fragment.setPreviewData(position, previewData.size(), previewData, isDisplayDelete);
+            fragment.setExternalPreviewData(position, previewData.size(), previewData, isDisplayDelete);
             fragmentManager.beginTransaction()
                     .add(android.R.id.content, fragment, PictureSelectorPreviewFragment.TAG)
                     .addToBackStack(PictureSelectorPreviewFragment.TAG)

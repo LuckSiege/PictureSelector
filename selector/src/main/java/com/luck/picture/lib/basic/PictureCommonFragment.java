@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import com.luck.picture.lib.PictureOnlyCameraFragment;
 import com.luck.picture.lib.PictureSelectorPreviewFragment;
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.config.Crop;
 import com.luck.picture.lib.config.CustomField;
 import com.luck.picture.lib.config.PictureConfig;
@@ -36,6 +37,7 @@ import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.dialog.PhotoItemSelectedDialog;
 import com.luck.picture.lib.dialog.PictureLoadingDialog;
 import com.luck.picture.lib.dialog.RemindDialog;
+import com.luck.picture.lib.engine.PictureSelectorEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.interfaces.OnCallbackIndexListener;
@@ -1038,6 +1040,8 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void onAttach(@NonNull Context context) {
         initAppLanguage();
+        newCreateEngine();
+        newCreateResultCallbackListener();
         super.onAttach(context);
         if (getParentFragment() instanceof IBridgePictureBehavior) {
             iBridgePictureBehavior = (IBridgePictureBehavior) getParentFragment();
@@ -1054,6 +1058,28 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             } else {
                 throw new IllegalArgumentException(context.toString()
                         + " please must implement IBridgePictureBehavior");
+            }
+        }
+    }
+
+    /**
+     * Get the image loading engine again, provided that the user implements the IApp interface in the Application
+     */
+    private void newCreateEngine() {
+        if (PictureSelectionConfig.imageEngine == null) {
+            PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
+            if (baseEngine != null) PictureSelectionConfig.imageEngine = baseEngine.createEngine();
+        }
+    }
+
+    /**
+     * Retrieve the result callback listener, provided that the user implements the IApp interface in the Application
+     */
+    private void newCreateResultCallbackListener() {
+        if (PictureSelectionConfig.resultCallListener == null) {
+            PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
+            if (baseEngine != null) {
+                PictureSelectionConfig.resultCallListener = baseEngine.getResultCallbackListener();
             }
         }
     }

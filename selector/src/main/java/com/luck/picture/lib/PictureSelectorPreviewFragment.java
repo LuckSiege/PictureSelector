@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -23,6 +24,7 @@ import com.luck.picture.lib.adapter.holder.PreviewGalleryAdapter;
 import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.basic.PictureSelectorSupporterActivity;
 import com.luck.picture.lib.config.Crop;
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectModeConfig;
@@ -32,6 +34,7 @@ import com.luck.picture.lib.decoration.WrapContentLinearLayoutManager;
 import com.luck.picture.lib.dialog.PictureCommonDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
+import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.loader.LocalMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaPageLoader;
 import com.luck.picture.lib.manager.SelectedManager;
@@ -72,6 +75,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private ViewPager2 viewPager;
 
     private PicturePreviewAdapter viewPageAdapter;
+
+    /**
+     * if there more
+     */
+    protected boolean isHasMore = true;
 
     private int curPosition;
 
@@ -117,16 +125,18 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * @param isShowCamera    是否有显示拍照图标
      * @param position        预览下标
      * @param totalNum        当前预览总数
+     * @param page            当前页码
      * @param data            预览数据源
      */
-    public void setData(boolean isBottomPreview, String currentAlbum, boolean isShowCamera,
-                        int position, int totalNum, List<LocalMedia> data) {
+    public void setInternalPreviewData(boolean isBottomPreview, String currentAlbum, boolean isShowCamera,
+                                       int position, int totalNum, int page, List<LocalMedia> data) {
         this.mData = data;
         this.totalNum = totalNum;
         this.curPosition = position;
         this.currentAlbum = currentAlbum;
         this.isShowCamera = isShowCamera;
         this.isBottomPreview = isBottomPreview;
+        this.mPage = page;
     }
 
     /**
@@ -137,7 +147,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * @param data            预览数据源
      * @param isDisplayDelete 是否显示删除按钮
      */
-    public void setPreviewData(int position, int totalNum, List<LocalMedia> data, boolean isDisplayDelete) {
+    public void setExternalPreviewData(int position, int totalNum, List<LocalMedia> data, boolean isDisplayDelete) {
         this.mData = data;
         this.totalNum = totalNum;
         this.curPosition = position;
@@ -185,52 +195,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             initPreviewSelectGallery(view);
             initComplete();
         }
-        initViewPager();
-    }
-
-    private void initPreviewSelectGallery(View group) {
-        SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
-        if (selectMainStyle.isPreviewDisplaySelectGallery()) {
-            if (group instanceof ConstraintLayout) {
-                mGalleryRecycle = new RecyclerView(getContext());
-                if (StyleUtils.checkStyleValidity(selectMainStyle.getAdapterPreviewGalleryBackgroundResource())) {
-                    mGalleryRecycle.setBackgroundResource(selectMainStyle.getAdapterPreviewGalleryBackgroundResource());
-                } else {
-                    mGalleryRecycle.setBackgroundResource(R.drawable.ps_preview_gallery_bg);
-                }
-                ((ConstraintLayout) group).addView(mGalleryRecycle);
-                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mGalleryRecycle.getLayoutParams();
-                params.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
-                params.height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-                params.bottomToTop = R.id.bottom_nar_bar;
-                params.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
-                params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
-                WrapContentLinearLayoutManager layoutManager = new WrapContentLinearLayoutManager(getContext());
-                layoutManager.setOrientation(WrapContentLinearLayoutManager.HORIZONTAL);
-                mGalleryRecycle.setLayoutManager(layoutManager);
-                mGalleryRecycle.addItemDecoration(new GridSpacingItemDecoration(Integer.MAX_VALUE,
-                        DensityUtil.dip2px(getContext(), 6), true));
-                mGalleryAdapter = new PreviewGalleryAdapter(SelectedManager.getSelectedResult());
-                mGalleryAdapter.isSelectMedia(mData.get(curPosition));
-                mGalleryRecycle.setAdapter(mGalleryAdapter);
-                mGalleryAdapter.setItemClickListener(new PreviewGalleryAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(int position, LocalMedia media, View v) {
-                        if (isBottomPreview || TextUtils.equals(currentAlbum, getString(R.string.ps_camera_roll))
-                                || TextUtils.equals(media.getParentFolderName(), currentAlbum)) {
-                            int newPosition = isBottomPreview ? position : isShowCamera ? media.position - 1 : media.position;
-                            viewPager.setCurrentItem(newPosition, false);
-                        }
-                    }
-                });
-
-                if (SelectedManager.getCount() > 0) {
-                    mGalleryRecycle.setVisibility(View.VISIBLE);
-                } else {
-                    mGalleryRecycle.setVisibility(View.INVISIBLE);
-                }
-            }
-        }
+        initViewPagerData();
     }
 
     @Override
@@ -255,6 +220,34 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         } else {
             mLoader = new LocalMediaLoader(getContext(), config);
         }
+    }
+
+    /**
+     * 加载更多
+     */
+    private void loadMoreData(long bucketId) {
+        mPage++;
+        Log.i("YYY", "loadMoreData: " + mPage + "---" + bucketId);
+        mLoader.loadPageMediaData(bucketId, mPage, config.pageSize,
+                new OnQueryDataResultListener<LocalMedia>() {
+                    @Override
+                    public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
+                        if (ActivityCompatHelper.isDestroy(getActivity())) {
+                            return;
+                        }
+                        PictureSelectorPreviewFragment.this.isHasMore = isHasMore;
+                        if (isHasMore) {
+                            if (result.size() > 0) {
+                                int oldStartPosition = mData.size();
+                                mData.addAll(result);
+                                int itemCount = mData.size();
+                                viewPageAdapter.notifyItemRangeChanged(oldStartPosition, itemCount);
+                            } else {
+                                loadMoreData(bucketId);
+                            }
+                        }
+                    }
+                });
     }
 
 
@@ -363,6 +356,51 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         });
     }
 
+    private void initPreviewSelectGallery(View group) {
+        SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
+        if (selectMainStyle.isPreviewDisplaySelectGallery()) {
+            if (group instanceof ConstraintLayout) {
+                mGalleryRecycle = new RecyclerView(getContext());
+                if (StyleUtils.checkStyleValidity(selectMainStyle.getAdapterPreviewGalleryBackgroundResource())) {
+                    mGalleryRecycle.setBackgroundResource(selectMainStyle.getAdapterPreviewGalleryBackgroundResource());
+                } else {
+                    mGalleryRecycle.setBackgroundResource(R.drawable.ps_preview_gallery_bg);
+                }
+                ((ConstraintLayout) group).addView(mGalleryRecycle);
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mGalleryRecycle.getLayoutParams();
+                params.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+                params.height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+                params.bottomToTop = R.id.bottom_nar_bar;
+                params.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
+                params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
+                WrapContentLinearLayoutManager layoutManager = new WrapContentLinearLayoutManager(getContext());
+                layoutManager.setOrientation(WrapContentLinearLayoutManager.HORIZONTAL);
+                mGalleryRecycle.setLayoutManager(layoutManager);
+                mGalleryRecycle.addItemDecoration(new GridSpacingItemDecoration(Integer.MAX_VALUE,
+                        DensityUtil.dip2px(getContext(), 6), true));
+                mGalleryAdapter = new PreviewGalleryAdapter(SelectedManager.getSelectedResult());
+                mGalleryAdapter.isSelectMedia(mData.get(curPosition));
+                mGalleryRecycle.setAdapter(mGalleryAdapter);
+                mGalleryAdapter.setItemClickListener(new PreviewGalleryAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(int position, LocalMedia media, View v) {
+                        if (isBottomPreview || TextUtils.equals(currentAlbum, getString(R.string.ps_camera_roll))
+                                || TextUtils.equals(media.getParentFolderName(), currentAlbum)) {
+                            int newPosition = isBottomPreview ? position : isShowCamera ? media.position - 1 : media.position;
+                            viewPager.setCurrentItem(newPosition, false);
+                        }
+                    }
+                });
+
+                if (SelectedManager.getCount() > 0) {
+                    mGalleryRecycle.setVisibility(View.VISIBLE);
+                } else {
+                    mGalleryRecycle.setVisibility(View.INVISIBLE);
+                }
+            }
+        }
+    }
+
     /**
      * 调用了startPreview预览逻辑
      */
@@ -451,7 +489,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         completeSelectView.setVisibility(View.GONE);
     }
 
-    private void initViewPager() {
+    private void initViewPagerData() {
         viewPageAdapter = new PicturePreviewAdapter(getContext(), mData, config);
         viewPageAdapter.setOnPreviewEventListener(new PicturePreviewAdapter.OnPreviewEventListener() {
             @Override
@@ -475,47 +513,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             @Override
             public void onLongPressDownload(LocalMedia media) {
                 if (isExternalPreview) {
-                    if (PictureSelectionConfig.previewEventListener != null) {
-                        if (!PictureSelectionConfig.previewEventListener.onLongPressDownload(media)) {
-                            PictureCommonDialog dialog = PictureCommonDialog.showDialog(getContext(),
-                                    getContext().getString(R.string.ps_prompt),
-                                    getContext().getString(R.string.ps_prompt_content));
-                            dialog.setOnDialogEventListener(new PictureCommonDialog.OnDialogEventListener() {
-                                @Override
-                                public void onConfirm() {
-                                    String path;
-                                    if (TextUtils.isEmpty(media.getSandboxPath())) {
-                                        path = media.getPath();
-                                    } else {
-                                        path = media.getSandboxPath();
-                                    }
-                                    if (PictureMimeType.isHasHttp(path)) {
-                                        showLoading();
-                                    }
-                                    DownloadFileUtils.saveLocalFile(getContext(),
-                                            path, media.getFileName(), media.getMimeType(), new OnCallbackListener<String>() {
-                                                @Override
-                                                public void onCall(String realPath) {
-                                                    dismissLoading();
-                                                    if (TextUtils.isEmpty(realPath)) {
-                                                        String errorMsg;
-                                                        if (PictureMimeType.isHasVideo(media.getMimeType())) {
-                                                            errorMsg = getString(R.string.ps_save_video_error);
-                                                        } else {
-                                                            errorMsg = getString(R.string.ps_save_image_error);
-                                                        }
-                                                        Toast.makeText(getContext(), errorMsg, Toast.LENGTH_LONG).show();
-                                                    } else {
-                                                        Toast.makeText(getContext(),
-                                                                getString(R.string.ps_save_success) + "\n" + realPath,
-                                                                Toast.LENGTH_LONG).show();
-                                                    }
-                                                }
-                                            });
-                                }
-                            });
-                        }
-                    }
+                    onExternalLongPressDownload(media);
                 }
             }
         });
@@ -529,6 +527,55 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         viewPager.registerOnPageChangeCallback(pageChangeCallback);
         subSelectPosition(false);
         notifySelectNumberStyle(mData.get(curPosition));
+    }
+
+    /**
+     * 外部预览长按下载
+     *
+     * @param media
+     */
+    private void onExternalLongPressDownload(LocalMedia media) {
+        if (PictureSelectionConfig.previewEventListener != null) {
+            if (!PictureSelectionConfig.previewEventListener.onLongPressDownload(media)) {
+                PictureCommonDialog dialog = PictureCommonDialog.showDialog(getContext(),
+                        getContext().getString(R.string.ps_prompt),
+                        getContext().getString(R.string.ps_prompt_content));
+                dialog.setOnDialogEventListener(new PictureCommonDialog.OnDialogEventListener() {
+                    @Override
+                    public void onConfirm() {
+                        String path;
+                        if (TextUtils.isEmpty(media.getSandboxPath())) {
+                            path = media.getPath();
+                        } else {
+                            path = media.getSandboxPath();
+                        }
+                        if (PictureMimeType.isHasHttp(path)) {
+                            showLoading();
+                        }
+                        DownloadFileUtils.saveLocalFile(getContext(),
+                                path, media.getFileName(), media.getMimeType(), new OnCallbackListener<String>() {
+                                    @Override
+                                    public void onCall(String realPath) {
+                                        dismissLoading();
+                                        if (TextUtils.isEmpty(realPath)) {
+                                            String errorMsg;
+                                            if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                                                errorMsg = getString(R.string.ps_save_video_error);
+                                            } else {
+                                                errorMsg = getString(R.string.ps_save_image_error);
+                                            }
+                                            Toast.makeText(getContext(), errorMsg, Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(getContext(),
+                                                    getString(R.string.ps_save_success) + "\n" + realPath,
+                                                    Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+                    }
+                });
+            }
+        }
     }
 
     private final ViewPager2.OnPageChangeCallback pageChangeCallback = new ViewPager2.OnPageChangeCallback() {
@@ -547,6 +594,17 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             notifySelectNumberStyle(currentMedia);
             if (mGalleryAdapter != null) {
                 mGalleryAdapter.isSelectMedia(currentMedia);
+            }
+            bottomNarBar.isDisplayEditor(PictureMimeType.isHasVideo(currentMedia.getMimeType()));
+            if (!isBottomPreview && !config.isOnlySandboxDir) {
+                if (config.isPageStrategy) {
+                    if (isHasMore) {
+                        if (position == (viewPageAdapter.getItemCount() - 1) - PictureConfig.MIN_PAGE_SIZE
+                                || position == viewPageAdapter.getItemCount() - 1) {
+                            loadMoreData(currentMedia.getBucketId());
+                        }
+                    }
+                }
             }
         }
     };

@@ -36,6 +36,10 @@ public class PreviewBottomNavBar extends BottomNavBar {
         tvImageEditor.setVisibility(PictureSelectionConfig.editMediaEventListener != null ? View.VISIBLE : GONE);
     }
 
+    public void isDisplayEditor(boolean isHasVideo) {
+        tvImageEditor.setVisibility(PictureSelectionConfig.editMediaEventListener != null && !isHasVideo ? View.VISIBLE : GONE);
+    }
+
     @Override
     public void setBottomNavBarStyle() {
         super.setBottomNavBarStyle();
