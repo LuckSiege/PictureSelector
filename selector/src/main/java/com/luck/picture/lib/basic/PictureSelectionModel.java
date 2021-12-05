@@ -654,13 +654,13 @@ public class PictureSelectionModel {
     /**
      * Only the resources in the specified directory are displayed
      * <p>
-     * Only Display setQuerySandboxDirectory();  Source
+     * Only Display setQuerySandboxDir();  Source
      * <p/>
      *
      * @param isOnlySandboxDir true or Only Display {@link PictureSelectionConfig.setQuerySandboxDirectory();}
      * @return
      */
-    public PictureSelectionModel isGetOnlySandboxDirectory(boolean isOnlySandboxDir) {
+    public PictureSelectionModel isOnlyObtainSandboxDir(boolean isOnlySandboxDir) {
         selectionConfig.isOnlySandboxDir = isOnlySandboxDir;
         return this;
     }
