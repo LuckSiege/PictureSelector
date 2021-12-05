@@ -110,7 +110,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
     }
 
     @Override
-    public void loadOnlyInAppDirectoryAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
+    public void loadOnlyInAppDirAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
          PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<LocalMediaFolder>() {
 
              @Override

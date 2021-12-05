@@ -325,9 +325,9 @@ public class PictureSelectorFragment extends PictureCommonFragment
     private void beginLoadData() {
         showLoading();
         if (config.isOnlySandboxDir) {
-            loadOnlyInAppDirectoryAllMedia();
+            loadOnlyInAppDirectoryAllMediaData();
         } else {
-            loadAllAlbum();
+            loadAllAlbumData();
         }
     }
 
@@ -373,24 +373,23 @@ public class PictureSelectorFragment extends PictureCommonFragment
                             // 3、从MediaStore拉取数据
                             mPage = 1;
                             showLoading();
-                            mLoader.loadPageMediaData(curFolder.getBucketId(), mPage, config.pageSize,
-                                    new OnQueryDataResultListener<LocalMedia>() {
-                                        @Override
-                                        public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
-                                            if (ActivityCompatHelper.isDestroy(getActivity())) {
-                                                return;
+                            if (PictureSelectionConfig.loaderDataEngine != null) {
+                                PictureSelectionConfig.loaderDataEngine.loadFirstPageMediaData(getContext(),
+                                        curFolder.getBucketId(), mPage, config.pageSize,
+                                        new OnQueryDataResultListener<LocalMedia>() {
+                                            public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                                                handleSwitchAlbum(result, isHasMore);
                                             }
-                                            dismissLoading();
-                                            mRecycler.setEnabledLoadMore(isHasMore);
-                                            if (result.size() == 0) {
-                                                // 如果从MediaStore拉取都没有数据了，adapter里的可能是缓存所以也清除
-                                                mAdapter.getData().clear();
+                                        });
+                            } else {
+                                mLoader.loadPageMediaData(curFolder.getBucketId(), mPage, config.pageSize,
+                                        new OnQueryDataResultListener<LocalMedia>() {
+                                            @Override
+                                            public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                                                handleSwitchAlbum(result, isHasMore);
                                             }
-                                            setAdapterData(result);
-                                            mRecycler.onScrolled(0, 0);
-                                            mRecycler.smoothScrollToPosition(0);
-                                        }
-                                    });
+                                        });
+                            }
                         }
                     }
                 } else {
@@ -402,6 +401,21 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 albumListPopWindow.dismiss();
             }
         });
+    }
+
+    private void handleSwitchAlbum(List<LocalMedia> result, boolean isHasMore) {
+        if (ActivityCompatHelper.isDestroy(getActivity())) {
+            return;
+        }
+        dismissLoading();
+        mRecycler.setEnabledLoadMore(isHasMore);
+        if (result.size() == 0) {
+            // 如果从MediaStore拉取都没有数据了，adapter里的可能是缓存所以也清除
+            mAdapter.getData().clear();
+        }
+        setAdapterData(result);
+        mRecycler.onScrolled(0, 0);
+        mRecycler.smoothScrollToPosition(0);
     }
 
 
@@ -423,80 +437,124 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
 
     @Override
-    public void loadAllAlbum() {
-        mLoader.loadAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
+    public void loadAllAlbumData() {
+        if (PictureSelectionConfig.loaderDataEngine != null) {
+            PictureSelectionConfig.loaderDataEngine.loadAllAlbumData(getContext(),
+                    new OnQueryDataResultListener<LocalMediaFolder>() {
+                        @Override
+                        public void onComplete(List<LocalMediaFolder> result) {
+                            handleAllAlbumData(result);
+                        }
+                    });
+        } else {
+            mLoader.loadAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
 
-            @Override
-            public void onComplete(List<LocalMediaFolder> result) {
-                if (ActivityCompatHelper.isDestroy(getActivity())) {
-                    return;
+                @Override
+                public void onComplete(List<LocalMediaFolder> result) {
+                    handleAllAlbumData(result);
                 }
-                if (result.size() > 0) {
-                    LocalMediaFolder firstFolder;
-                    if (SelectedManager.getCurrentLocalMediaFolder() != null) {
-                        firstFolder = SelectedManager.getCurrentLocalMediaFolder();
-                    } else {
-                        firstFolder = result.get(0);
-                        SelectedManager.setCurrentLocalMediaFolder(firstFolder);
-                    }
-                    titleBar.setTitle(firstFolder.getFolderName());
-                    albumListPopWindow.bindAlbumData(result);
-                    saveFirstImagePath(firstFolder.getFirstImagePath());
-                    if (config.isPageStrategy) {
-                        loadFirstPageMedia(firstFolder.getBucketId());
-                    } else {
-                        dismissLoading();
-                        setAdapterData(firstFolder.getData());
-                    }
-                } else {
-                    showDataNull();
-                }
+            });
+        }
+    }
+
+    private void handleAllAlbumData(List<LocalMediaFolder> result) {
+        if (ActivityCompatHelper.isDestroy(getActivity())) {
+            return;
+        }
+        if (result.size() > 0) {
+            LocalMediaFolder firstFolder;
+            if (SelectedManager.getCurrentLocalMediaFolder() != null) {
+                firstFolder = SelectedManager.getCurrentLocalMediaFolder();
+            } else {
+                firstFolder = result.get(0);
+                SelectedManager.setCurrentLocalMediaFolder(firstFolder);
             }
-        });
-    }
-
-    @Override
-    public void loadFirstPageMedia(long firstBucketId) {
-        mRecycler.setEnabledLoadMore(true);
-        mLoader.loadFirstPageMedia(firstBucketId, mPage * config.pageSize,
-                new OnQueryDataResultListener<LocalMedia>() {
-                    @Override
-                    public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
-                        if (ActivityCompatHelper.isDestroy(getActivity())) {
-                            return;
-                        }
-                        dismissLoading();
-                        mRecycler.setEnabledLoadMore(isHasMore);
-                        if (mRecycler.isEnabledLoadMore() && result.size() == 0) {
-                            // 如果isHasMore为true但result.size() = 0;
-                            // 那么有可能是开启了某些条件过滤，实际上是还有更多资源的再强制请求
-                            onRecyclerViewPreloadMore();
-                        } else {
-                            setAdapterData(result);
-                        }
-                        recoveryRecyclerPosition();
-                    }
-                });
-    }
-
-    @Override
-    public void loadOnlyInAppDirectoryAllMedia() {
-        mLoader.loadOnlyInAppDirectoryAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
-            @Override
-            public void onComplete(LocalMediaFolder folder) {
+            titleBar.setTitle(firstFolder.getFolderName());
+            albumListPopWindow.bindAlbumData(result);
+            saveFirstImagePath(firstFolder.getFirstImagePath());
+            if (config.isPageStrategy) {
+                loadFirstPageMediaData(firstFolder.getBucketId());
+            } else {
                 dismissLoading();
-                if (!ActivityCompatHelper.isDestroy(getActivity())) {
-                    if (folder != null) {
-                        titleBar.setTitle(folder.getFolderName());
-                        SelectedManager.setCurrentLocalMediaFolder(folder);
-                        setAdapterData(folder.getData());
-                        recoveryRecyclerPosition();
-                    } else {
-                        showDataNull();
-                    }
-                }
+                setAdapterData(firstFolder.getData());
             }
-        });
+        } else {
+            showDataNull();
+        }
+    }
+
+    @Override
+    public void loadFirstPageMediaData(long firstBucketId) {
+        mRecycler.setEnabledLoadMore(true);
+        if (PictureSelectionConfig.loaderDataEngine != null) {
+            PictureSelectionConfig.loaderDataEngine.loadFirstPageMediaData(getContext(), firstBucketId,
+                    mPage, mPage * config.pageSize, new OnQueryDataResultListener<LocalMedia>() {
+
+                        @Override
+                        public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                            handleFirstPageMedia(result, isHasMore);
+                        }
+                    });
+        } else {
+            mLoader.loadFirstPageMedia(firstBucketId, mPage * config.pageSize,
+                    new OnQueryDataResultListener<LocalMedia>() {
+                        @Override
+                        public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                            handleFirstPageMedia(result, isHasMore);
+                        }
+                    });
+        }
+    }
+
+    private void handleFirstPageMedia(List<LocalMedia> result, boolean isHasMore) {
+        if (ActivityCompatHelper.isDestroy(getActivity())) {
+            return;
+        }
+        dismissLoading();
+        mRecycler.setEnabledLoadMore(isHasMore);
+        if (mRecycler.isEnabledLoadMore() && result.size() == 0) {
+            // 如果isHasMore为true但result.size() = 0;
+            // 那么有可能是开启了某些条件过滤，实际上是还有更多资源的再强制请求
+            onRecyclerViewPreloadMore();
+        } else {
+            setAdapterData(result);
+        }
+        recoveryRecyclerPosition();
+    }
+
+    @Override
+    public void loadOnlyInAppDirectoryAllMediaData() {
+        if (PictureSelectionConfig.loaderDataEngine != null) {
+            PictureSelectionConfig.loaderDataEngine.loadOnlyInAppDirAllMediaData(getContext(),
+                    new OnQueryDataResultListener<LocalMediaFolder>() {
+                        @Override
+                        public void onComplete(LocalMediaFolder folder) {
+                            dismissLoading();
+                            handleInAppDirAllMedia(folder);
+                        }
+                    });
+        } else {
+            mLoader.loadOnlyInAppDirAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
+                @Override
+                public void onComplete(LocalMediaFolder folder) {
+                    dismissLoading();
+                    handleInAppDirAllMedia(folder);
+                }
+            });
+        }
+    }
+
+    private void handleInAppDirAllMedia(LocalMediaFolder folder) {
+        if (!ActivityCompatHelper.isDestroy(getActivity())) {
+            if (folder != null) {
+                titleBar.setTitle(folder.getFolderName());
+                SelectedManager.setCurrentLocalMediaFolder(folder);
+                setAdapterData(folder.getData());
+                recoveryRecyclerPosition();
+            } else {
+                showDataNull();
+            }
+        }
     }
 
     /**
@@ -661,41 +719,56 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public void onRecyclerViewPreloadMore() {
-        loadMoreData();
+        loadMoreMediaData();
     }
 
     /**
      * 加载更多
      */
     @Override
-    public void loadMoreData() {
+    public void loadMoreMediaData() {
         if (mRecycler.isEnabledLoadMore()) {
             mPage++;
             LocalMediaFolder localMediaFolder = SelectedManager.getCurrentLocalMediaFolder();
             long bucketId = localMediaFolder != null ? localMediaFolder.getBucketId() : 0;
-            mLoader.loadPageMediaData(bucketId, mPage, getPageLimit(bucketId), new OnQueryDataResultListener<LocalMedia>() {
-                @Override
-                public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
-                    if (ActivityCompatHelper.isDestroy(getActivity())) {
-                        return;
-                    }
-                    mRecycler.setEnabledLoadMore(isHasMore);
-                    if (mRecycler.isEnabledLoadMore()) {
-                        if (result.size() > 0) {
-                            int positionStart = mAdapter.getData().size();
-                            mAdapter.getData().addAll(result);
-                            mAdapter.notifyItemRangeChanged(positionStart, mAdapter.getItemCount());
-                        } else {
-                            // 如果没数据这里在强制调用一下上拉加载更多，防止是因为某些条件过滤导致的假为0的情况
-                            onRecyclerViewPreloadMore();
-                        }
-                        if (result.size() < PictureConfig.MIN_PAGE_SIZE) {
-                            // 当数据量过少时强制触发一下上拉加载更多，防止没有自动触发加载更多
-                            mRecycler.onScrolled(mRecycler.getScrollX(), mRecycler.getScrollY());
-                        }
-                    }
-                }
-            });
+            if (PictureSelectionConfig.loaderDataEngine != null) {
+                PictureSelectionConfig.loaderDataEngine.loadMoreMediaData(getContext(), bucketId, mPage,
+                        getPageLimit(bucketId), config.pageSize, new OnQueryDataResultListener<LocalMedia>() {
+                            @Override
+                            public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                                handleMoreMediaData(result, isHasMore);
+                            }
+                        });
+            } else {
+                mLoader.loadPageMediaData(bucketId, mPage, getPageLimit(bucketId), config.pageSize,
+                        new OnQueryDataResultListener<LocalMedia>() {
+                            @Override
+                            public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                                handleMoreMediaData(result, isHasMore);
+                            }
+                        });
+            }
+        }
+    }
+
+    private void handleMoreMediaData(List<LocalMedia> result, boolean isHasMore) {
+        if (ActivityCompatHelper.isDestroy(getActivity())) {
+            return;
+        }
+        mRecycler.setEnabledLoadMore(isHasMore);
+        if (mRecycler.isEnabledLoadMore()) {
+            if (result.size() > 0) {
+                int positionStart = mAdapter.getData().size();
+                mAdapter.getData().addAll(result);
+                mAdapter.notifyItemRangeChanged(positionStart, mAdapter.getItemCount());
+            } else {
+                // 如果没数据这里在强制调用一下上拉加载更多，防止是因为某些条件过滤导致的假为0的情况
+                onRecyclerViewPreloadMore();
+            }
+            if (result.size() < PictureConfig.MIN_PAGE_SIZE) {
+                // 当数据量过少时强制触发一下上拉加载更多，防止没有自动触发加载更多
+                mRecycler.onScrolled(mRecycler.getScrollX(), mRecycler.getScrollY());
+            }
         }
     }
 

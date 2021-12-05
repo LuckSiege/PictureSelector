@@ -15,7 +15,7 @@ public interface PictureSelectorEngine {
      *
      * @return
      */
-    ImageEngine createEngine();
+    ImageEngine createImageLoaderEngine();
 
     /**
      * Create Result Listener

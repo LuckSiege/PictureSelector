@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -284,50 +283,59 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      */
     private void loadData(int pageSize) {
         if (config.isOnlySandboxDir) {
-            mLoader.loadOnlyInAppDirectoryAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
-                @Override
-                public void onComplete(LocalMediaFolder folder) {
-                    if (ActivityCompatHelper.isDestroy(getActivity()) || folder == null) {
-                        return;
+            if (PictureSelectionConfig.loaderDataEngine != null) {
+                PictureSelectionConfig.loaderDataEngine.loadOnlyInAppDirAllMediaData(getContext(),
+                        new OnQueryDataResultListener<LocalMediaFolder>() {
+                            @Override
+                            public void onComplete(LocalMediaFolder folder) {
+                                handleLoadData(folder.getData());
+                            }
+                        });
+            } else {
+                mLoader.loadOnlyInAppDirAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
+                    @Override
+                    public void onComplete(LocalMediaFolder folder) {
+                        handleLoadData(folder.getData());
                     }
-                    mData = folder.getData();
-                    if (mData.size() == 0) {
-                        iBridgePictureBehavior.onFinish();
-                        return;
-                    }
-                    // 这里的作用主要是防止内存不足情况下重新load了数据，此时LocalMedia是没有position的
-                    // 但如果此时你选中或取消一个结果,PictureSelectorFragment列表页 notifyItemChanged下标会不对
-                    int position = isShowCamera ? 0 : -1;
-                    for (int i = 0; i < mData.size(); i++) {
-                        position++;
-                        mData.get(i).setPosition(position);
-                    }
-                    initViewPagerData();
-                }
-            });
+                });
+            }
         } else {
-            mLoader.loadFirstPageMedia(mBucketId, pageSize, new OnQueryDataResultListener<LocalMedia>() {
-                @Override
-                public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
-                    if (ActivityCompatHelper.isDestroy(getActivity())) {
-                        return;
+            if (PictureSelectionConfig.loaderDataEngine != null) {
+                PictureSelectionConfig.loaderDataEngine.loadFirstPageMediaData(getContext(),
+                        mBucketId, 1, pageSize, new OnQueryDataResultListener<LocalMedia>() {
+                            @Override
+                            public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                                handleLoadData(result);
+                            }
+                        });
+            } else {
+                mLoader.loadFirstPageMedia(mBucketId, pageSize, new OnQueryDataResultListener<LocalMedia>() {
+                    @Override
+                    public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                        handleLoadData(result);
                     }
-                    mData = result;
-                    if (mData.size() == 0) {
-                        iBridgePictureBehavior.onFinish();
-                        return;
-                    }
-                    // 这里的作用主要是防止内存不足情况下重新load了数据，此时LocalMedia是没有position的
-                    // 但如果此时你选中或取消一个结果,PictureSelectorFragment列表页notifyItemChanged下标会不对
-                    int position = isShowCamera ? 0 : -1;
-                    for (int i = 0; i < mData.size(); i++) {
-                        position++;
-                        mData.get(i).setPosition(position);
-                    }
-                    initViewPagerData();
-                }
-            });
+                });
+            }
         }
+    }
+
+    private void handleLoadData(List<LocalMedia> result) {
+        if (ActivityCompatHelper.isDestroy(getActivity())) {
+            return;
+        }
+        mData = result;
+        if (mData.size() == 0) {
+            iBridgePictureBehavior.onFinish();
+            return;
+        }
+        // 这里的作用主要是防止内存不足情况下重新load了数据，此时LocalMedia是没有position的
+        // 但如果此时你选中或取消一个结果,PictureSelectorFragment列表页 notifyItemChanged下标会不对
+        int position = isShowCamera ? 0 : -1;
+        for (int i = 0; i < mData.size(); i++) {
+            position++;
+            mData.get(i).setPosition(position);
+        }
+        initViewPagerData();
     }
 
     /**
@@ -335,26 +343,39 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      */
     private void loadMoreData() {
         mPage++;
-        mLoader.loadPageMediaData(mBucketId, mPage, config.pageSize,
-                new OnQueryDataResultListener<LocalMedia>() {
-                    @Override
-                    public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
-                        if (ActivityCompatHelper.isDestroy(getActivity())) {
-                            return;
+        if (PictureSelectionConfig.loaderDataEngine != null) {
+            PictureSelectionConfig.loaderDataEngine.loadMoreMediaData(getContext(), mBucketId, mPage,
+                    config.pageSize, config.pageSize, new OnQueryDataResultListener<LocalMedia>() {
+                        @Override
+                        public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                            handleMoreData(result, isHasMore);
                         }
-                        PictureSelectorPreviewFragment.this.isHasMore = isHasMore;
-                        if (isHasMore) {
-                            if (result.size() > 0) {
-                                int oldStartPosition = mData.size();
-                                mData.addAll(result);
-                                int itemCount = mData.size();
-                                viewPageAdapter.notifyItemRangeChanged(oldStartPosition, itemCount);
-                            } else {
-                                loadMoreData();
-                            }
+                    });
+        } else {
+            mLoader.loadPageMediaData(mBucketId, mPage, config.pageSize,new OnQueryDataResultListener<LocalMedia>() {
+                        @Override
+                        public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                            handleMoreData(result, isHasMore);
                         }
-                    }
-                });
+                    });
+        }
+    }
+
+    private void handleMoreData(List<LocalMedia> result, boolean isHasMore) {
+        if (ActivityCompatHelper.isDestroy(getActivity())) {
+            return;
+        }
+        PictureSelectorPreviewFragment.this.isHasMore = isHasMore;
+        if (isHasMore) {
+            if (result.size() > 0) {
+                int oldStartPosition = mData.size();
+                mData.addAll(result);
+                int itemCount = mData.size();
+                viewPageAdapter.notifyItemRangeChanged(oldStartPosition, itemCount);
+            } else {
+                loadMoreData();
+            }
+        }
     }
 
 

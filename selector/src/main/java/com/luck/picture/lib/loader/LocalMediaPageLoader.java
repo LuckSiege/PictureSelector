@@ -201,27 +201,27 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
      * Queries First for data in the specified directory
      *
      * @param bucketId
-     * @param limit
+     * @param pageSize
      * @param listener
      * @return
      */
     @Override
-    public void loadFirstPageMedia(long bucketId, int limit, OnQueryDataResultListener<LocalMedia> listener) {
-        loadPageMediaData(bucketId, 1, limit, listener);
+    public void loadFirstPageMedia(long bucketId, int pageSize, OnQueryDataResultListener<LocalMedia> listener) {
+        loadPageMediaData(bucketId, 1, pageSize, pageSize, listener);
     }
 
     /**
-     * Queries for data in the specified directory
+     * Queries for data in the specified directory (page)
      *
      * @param bucketId
      * @param page
      * @param limit
-     * @param listener
+     * @param pageSize
      * @return
      */
     @Override
-    public void loadPageMediaData(long bucketId, int page, int limit, OnQueryDataResultListener<LocalMedia> listener) {
-        loadPageMediaData(bucketId, page, limit, config.pageSize, listener);
+    public void loadPageMediaData(long bucketId, int page, int pageSize, OnQueryDataResultListener<LocalMedia> listener) {
+        loadPageMediaData(bucketId, page, pageSize, pageSize, listener);
     }
 
     /**
@@ -357,14 +357,14 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
             public void onSuccess(MediaData result) {
                 PictureThreadUtils.cancel(this);
                 if (listener != null) {
-                    listener.onComplete(result.data != null ? result.data : new ArrayList<>(), page, result.isHasNextMore);
+                    listener.onComplete(result.data != null ? result.data : new ArrayList<>(), result.isHasNextMore);
                 }
             }
         });
     }
 
     @Override
-    public void loadOnlyInAppDirectoryAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
+    public void loadOnlyInAppDirAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
         PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<LocalMediaFolder>() {
 
             @Override

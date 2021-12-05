@@ -12,10 +12,9 @@ public class OnQueryDataResultListener<T> {
      * Query to complete The callback listener
      *
      * @param result        The data source
-     * @param currentPage The page number
      * @param isHasMore   Is there more
      */
-    public void onComplete(List<T> result, int currentPage, boolean isHasMore) {
+    public void onComplete(List<T> result,  boolean isHasMore) {
 
     }
 

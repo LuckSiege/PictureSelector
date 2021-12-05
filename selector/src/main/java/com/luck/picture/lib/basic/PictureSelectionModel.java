@@ -19,9 +19,11 @@ import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CropEngine;
+import com.luck.picture.lib.engine.ExtendLoaderEngine;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
@@ -149,6 +151,25 @@ public class PictureSelectionModel {
         }
         return this;
     }
+
+
+    /**
+     * Users can implement some interfaces to access their own query data
+     * The premise is that you need to comply with the model specification of PictureSelector
+     * {@link ExtendLoaderEngine}
+     * {@link LocalMediaFolder}
+     * {@link LocalMedia}
+     *
+     * @param engine
+     * @return
+     */
+    public PictureSelectionModel setExtendLoaderEngine(ExtendLoaderEngine engine) {
+        if (PictureSelectionConfig.loaderDataEngine != engine) {
+            PictureSelectionConfig.loaderDataEngine = engine;
+        }
+        return this;
+    }
+
 
     /**
      * Intercept camera click events, and users can implement their own camera framework

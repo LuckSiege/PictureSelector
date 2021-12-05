@@ -34,7 +34,7 @@ public class IBridgeMediaLoader {
      * @param listener 回调监听
      * @return
      */
-    public void loadAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
+    public void loadAllMedia(OnQueryDataResultListener<LocalMediaFolder> query) {
 
     }
 
@@ -44,31 +44,30 @@ public class IBridgeMediaLoader {
      * @param listener 回调监听
      * @return
      */
-    public void loadOnlyInAppDirectoryAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
+    public void loadOnlyInAppDirAllMedia(OnQueryDataResultListener<LocalMediaFolder> query) {
 
     }
 
     /**
-     * Queries first for data in the specified directory
+     * Query the first item data of album list
      *
      * @param bucketId
-     * @param limit
      * @param listener
      * @return
      */
-    public void loadFirstPageMedia(long bucketId, int limit, OnQueryDataResultListener<LocalMedia> listener) {
+    public void loadFirstPageMedia(long bucketId, int pageSize, OnQueryDataResultListener<LocalMedia> query) {
     }
 
     /**
-     * Queries for data in the specified directory
+     * Query the data in a bucket ID directory
      *
      * @param bucketId
      * @param page
-     * @param limit
+     * @param pageSize
      * @param listener
-     * @return
      */
-    public void loadPageMediaData(long bucketId, int page, int limit, OnQueryDataResultListener<LocalMedia> listener) {
+    public void loadPageMediaData(long bucketId, int page, int pageSize, OnQueryDataResultListener<LocalMedia> query) {
+
     }
 
     /**
@@ -80,7 +79,7 @@ public class IBridgeMediaLoader {
      * @param pageSize
      * @return
      */
-    public void loadPageMediaData(long bucketId, int page, int limit, int pageSize, OnQueryDataResultListener<LocalMedia> listener) {
+    public void loadPageMediaData(long bucketId, int page, int limit, int pageSize, OnQueryDataResultListener<LocalMedia> query) {
 
     }
 

@@ -1,6 +1,5 @@
 package com.luck.picture.lib.basic;
 
-import com.luck.picture.lib.entity.LocalMediaFolder;
 
 /**
  * @author：luck
@@ -11,20 +10,20 @@ public interface IPictureSelectorEvent {
     /**
      * 获取相册目录
      */
-    void loadAllAlbum();
+    void loadAllAlbumData();
 
     /**
      * 获取首页资源
      */
-    void loadFirstPageMedia(long firstBucketId);
+    void loadFirstPageMediaData(long firstBucketId);
 
     /**
      * 加载应用沙盒内的资源
      */
-    void loadOnlyInAppDirectoryAllMedia();
+    void loadOnlyInAppDirectoryAllMediaData();
 
     /**
      * 加载更多
      */
-    void loadMoreData();
+    void loadMoreMediaData();
 }

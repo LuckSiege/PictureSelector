@@ -6,6 +6,7 @@ import android.os.Parcelable;
 
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CropEngine;
+import com.luck.picture.lib.engine.ExtendLoaderEngine;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -97,6 +98,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static CompressEngine compressEngine;
     public static CropEngine cropEngine;
     public static SandboxFileEngine sandboxFileEngine;
+    public static ExtendLoaderEngine loaderDataEngine;
     public static PictureSelectorStyle selectorStyle;
     public static OnCameraInterceptListener interceptCameraListener;
     public static OnResultCallbackListener<LocalMedia> resultCallListener;
@@ -349,6 +351,7 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.compressEngine = null;
         PictureSelectionConfig.cropEngine = null;
         PictureSelectionConfig.sandboxFileEngine = null;
+        PictureSelectionConfig.loaderDataEngine = null;
         PictureSelectionConfig.interceptCameraListener = null;
         PictureSelectionConfig.previewEventListener = null;
         PictureSelectionConfig.editMediaEventListener = null;

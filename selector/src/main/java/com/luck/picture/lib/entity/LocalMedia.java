@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 
 /**
@@ -145,7 +146,7 @@ public class LocalMedia implements Parcelable {
     /**
      * bucketId
      */
-    private long bucketId = -1;
+    private long bucketId = PictureConfig.ALL;
 
     /**
      * media create time

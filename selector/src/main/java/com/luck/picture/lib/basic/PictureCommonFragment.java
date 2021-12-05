@@ -1040,8 +1040,8 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void onAttach(@NonNull Context context) {
         initAppLanguage();
-        newCreateEngine();
-        newCreateResultCallbackListener();
+        createImageLoaderEngine();
+        createResultCallbackListener();
         super.onAttach(context);
         if (getParentFragment() instanceof IBridgePictureBehavior) {
             iBridgePictureBehavior = (IBridgePictureBehavior) getParentFragment();
@@ -1065,17 +1065,19 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     /**
      * Get the image loading engine again, provided that the user implements the IApp interface in the Application
      */
-    private void newCreateEngine() {
+    private void createImageLoaderEngine() {
         if (PictureSelectionConfig.imageEngine == null) {
             PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
-            if (baseEngine != null) PictureSelectionConfig.imageEngine = baseEngine.createEngine();
+            if (baseEngine != null)
+                PictureSelectionConfig.imageEngine = baseEngine.createImageLoaderEngine();
         }
     }
+
 
     /**
      * Retrieve the result callback listener, provided that the user implements the IApp interface in the Application
      */
-    private void newCreateResultCallbackListener() {
+    private void createResultCallbackListener() {
         if (PictureSelectionConfig.resultCallListener == null) {
             PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
             if (baseEngine != null) {
