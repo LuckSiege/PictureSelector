@@ -252,7 +252,6 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                         : mContext.getString(R.string.ps_camera_roll);
                                 allImageFolder.setFolderName(title);
                                 allImageFolder.setBucketId(PictureConfig.ALL);
-                                allImageFolder.setOfAllType(config.chooseMode);
                                 allImageFolder.setData(latelyImages);
                             }
                         }

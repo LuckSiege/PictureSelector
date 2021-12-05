@@ -45,11 +45,6 @@ public class LocalMediaFolder implements Parcelable {
     private boolean isSelectTag;
 
     /**
-     * type
-     */
-    private int ofAllType = -1;
-
-    /**
      * current folder data
      * <p>
      * In isPageStrategy mode, there is no data for the first time
@@ -73,6 +68,7 @@ public class LocalMediaFolder implements Parcelable {
     public LocalMediaFolder() {
     }
 
+
     protected LocalMediaFolder(Parcel in) {
         bucketId = in.readLong();
         folderName = in.readString();
@@ -80,7 +76,6 @@ public class LocalMediaFolder implements Parcelable {
         firstMimeType = in.readString();
         folderTotalNum = in.readInt();
         isSelectTag = in.readByte() != 0;
-        ofAllType = in.readInt();
         data = in.createTypedArrayList(LocalMedia.CREATOR);
         currentDataPage = in.readInt();
         isHasMore = in.readByte() != 0;
@@ -94,7 +89,6 @@ public class LocalMediaFolder implements Parcelable {
         dest.writeString(firstMimeType);
         dest.writeInt(folderTotalNum);
         dest.writeByte((byte) (isSelectTag ? 1 : 0));
-        dest.writeInt(ofAllType);
         dest.writeTypedList(data);
         dest.writeInt(currentDataPage);
         dest.writeByte((byte) (isHasMore ? 1 : 0));
@@ -156,16 +150,6 @@ public class LocalMediaFolder implements Parcelable {
     public void setFirstImagePath(String firstImagePath) {
         this.firstImagePath = firstImagePath;
     }
-
-
-    public int getOfAllType() {
-        return ofAllType;
-    }
-
-    public void setOfAllType(int ofAllType) {
-        this.ofAllType = ofAllType;
-    }
-
 
     public List<LocalMedia> getData() {
         return data != null ? data : new ArrayList<>();

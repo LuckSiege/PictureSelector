@@ -498,7 +498,6 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                     mContext.getString(R.string.ps_all_audio)
                                     : mContext.getString(R.string.ps_camera_roll);
                             allMediaFolder.setFolderName(bucketDisplayName);
-                            allMediaFolder.setOfAllType(config.chooseMode);
                             mediaFolders.add(0, allMediaFolder);
                             if (config.isSyncCover) {
                                 if (config.chooseMode == SelectMimeType.ofAll()) {
