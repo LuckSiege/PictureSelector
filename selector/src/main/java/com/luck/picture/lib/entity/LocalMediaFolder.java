@@ -17,15 +17,15 @@ import java.util.List;
 
 public class LocalMediaFolder implements Parcelable {
     /**
-     * bucketId
+     * folder bucketId
      */
     private long bucketId = PictureConfig.ALL;
     /**
-     * Folder name
+     * folder name
      */
-    private String name;
+    private String folderName;
     /**
-     * Folder first path
+     * folder first path
      */
     private String firstImagePath;
 
@@ -35,13 +35,14 @@ public class LocalMediaFolder implements Parcelable {
     private String firstMimeType;
 
     /**
-     * Folder media num
+     * folder total media num
      */
-    private int imageNum;
+    private int folderTotalNum;
+
     /**
-     * If the selected num
+     * There are selected resources in the current directory
      */
-    private int checkedNum;
+    private boolean isSelectTag;
 
     /**
      * type
@@ -49,7 +50,10 @@ public class LocalMediaFolder implements Parcelable {
     private int ofAllType = -1;
 
     /**
-     * data
+     * current folder data
+     * <p>
+     * In isPageStrategy mode, there is no data for the first time
+     * </p>
      */
     private List<LocalMedia> data = new ArrayList<>();
 
@@ -69,14 +73,13 @@ public class LocalMediaFolder implements Parcelable {
     public LocalMediaFolder() {
     }
 
-
     protected LocalMediaFolder(Parcel in) {
         bucketId = in.readLong();
-        name = in.readString();
+        folderName = in.readString();
         firstImagePath = in.readString();
         firstMimeType = in.readString();
-        imageNum = in.readInt();
-        checkedNum = in.readInt();
+        folderTotalNum = in.readInt();
+        isSelectTag = in.readByte() != 0;
         ofAllType = in.readInt();
         data = in.createTypedArrayList(LocalMedia.CREATOR);
         currentDataPage = in.readInt();
@@ -86,11 +89,11 @@ public class LocalMediaFolder implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(bucketId);
-        dest.writeString(name);
+        dest.writeString(folderName);
         dest.writeString(firstImagePath);
         dest.writeString(firstMimeType);
-        dest.writeInt(imageNum);
-        dest.writeInt(checkedNum);
+        dest.writeInt(folderTotalNum);
+        dest.writeByte((byte) (isSelectTag ? 1 : 0));
         dest.writeInt(ofAllType);
         dest.writeTypedList(data);
         dest.writeInt(currentDataPage);
@@ -114,20 +117,36 @@ public class LocalMediaFolder implements Parcelable {
         }
     };
 
+    public String getFolderName() {
+        return TextUtils.isEmpty(folderName) ? "unknown" : folderName;
+    }
+
+    public void setFolderName(String folderName) {
+        this.folderName = folderName;
+    }
+
+    public int getFolderTotalNum() {
+        return folderTotalNum;
+    }
+
+    public void setFolderTotalNum(int folderTotalNum) {
+        this.folderTotalNum = folderTotalNum;
+    }
+
+    public boolean isSelectTag() {
+        return isSelectTag;
+    }
+
+    public void setSelectTag(boolean selectTag) {
+        isSelectTag = selectTag;
+    }
+
     public long getBucketId() {
         return bucketId;
     }
 
     public void setBucketId(long bucketId) {
         this.bucketId = bucketId;
-    }
-
-    public String getName() {
-        return TextUtils.isEmpty(name) ? "unknown" : name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getFirstImagePath() {
@@ -138,21 +157,6 @@ public class LocalMediaFolder implements Parcelable {
         this.firstImagePath = firstImagePath;
     }
 
-    public int getImageNum() {
-        return imageNum;
-    }
-
-    public void setImageNum(int imageNum) {
-        this.imageNum = imageNum;
-    }
-
-    public int getCheckedNum() {
-        return checkedNum;
-    }
-
-    public void setCheckedNum(int checkedNum) {
-        this.checkedNum = checkedNum;
-    }
 
     public int getOfAllType() {
         return ofAllType;

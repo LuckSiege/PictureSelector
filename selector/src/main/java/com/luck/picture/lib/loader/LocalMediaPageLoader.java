@@ -428,8 +428,8 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                         String mimeType = data.getString(data.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE));
                                         long size = countMap.get(bucketId);
                                         long id = data.getLong(data.getColumnIndex(MediaStore.Files.FileColumns._ID));
-                                        mediaFolder.setName(bucketDisplayName);
-                                        mediaFolder.setImageNum(ValueOf.toInt(size));
+                                        mediaFolder.setFolderName(bucketDisplayName);
+                                        mediaFolder.setFolderTotalNum(ValueOf.toInt(size));
                                         mediaFolder.setFirstImagePath(PictureMimeType.getRealPathUri(id, mimeType));
                                         mediaFolder.setFirstMimeType(mimeType);
                                         mediaFolders.add(mediaFolder);
@@ -449,9 +449,9 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                     mediaFolder.setBucketId(bucketId);
                                     String url = data.getString(data.getColumnIndex(MediaStore.MediaColumns.DATA));
                                     mediaFolder.setFirstImagePath(url);
-                                    mediaFolder.setName(bucketDisplayName);
+                                    mediaFolder.setFolderName(bucketDisplayName);
                                     mediaFolder.setFirstMimeType(mimeType);
-                                    mediaFolder.setImageNum(size);
+                                    mediaFolder.setFolderTotalNum(size);
                                     mediaFolders.add(mediaFolder);
                                     totalCount += size;
                                 } while (data.moveToNext());
@@ -467,7 +467,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                 String firstImagePath = selfFolder.getFirstImagePath();
                                 File file = new File(firstImagePath);
                                 long lastModified = file.lastModified();
-                                totalCount += selfFolder.getImageNum();
+                                totalCount += selfFolder.getFolderTotalNum();
                                 allMediaFolder.setData(new ArrayList<>());
                                 if (data.moveToFirst()) {
                                     allMediaFolder.setFirstImagePath(SdkVersionUtils.isQ() ? getFirstUri(data) : getFirstUrl(data));
@@ -492,12 +492,12 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                             }
 
                             SortUtils.sortFolder(mediaFolders);
-                            allMediaFolder.setImageNum(totalCount);
+                            allMediaFolder.setFolderTotalNum(totalCount);
                             allMediaFolder.setBucketId(PictureConfig.ALL);
                             String bucketDisplayName = config.chooseMode == SelectMimeType.ofAudio() ?
                                     mContext.getString(R.string.ps_all_audio)
                                     : mContext.getString(R.string.ps_camera_roll);
-                            allMediaFolder.setName(bucketDisplayName);
+                            allMediaFolder.setFolderName(bucketDisplayName);
                             allMediaFolder.setOfAllType(config.chooseMode);
                             mediaFolders.add(0, allMediaFolder);
                             if (config.isSyncCover) {

@@ -22,8 +22,8 @@ public class SortUtils {
             if (lhs.getData() == null || rhs.getData() == null) {
                 return 0;
             }
-            int lSize = lhs.getImageNum();
-            int rSize = rhs.getImageNum();
+            int lSize = lhs.getFolderTotalNum();
+            int rSize = rhs.getFolderTotalNum();
             return Integer.compare(rSize, lSize);
         });
     }

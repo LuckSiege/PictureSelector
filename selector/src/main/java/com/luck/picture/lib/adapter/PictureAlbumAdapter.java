@@ -2,6 +2,7 @@ package com.luck.picture.lib.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,11 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnAlbumItemClickListener;
 import com.luck.picture.lib.manager.SelectedManager;
@@ -51,11 +54,10 @@ public class PictureAlbumAdapter extends RecyclerView.Adapter<PictureAlbumAdapte
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         LocalMediaFolder folder = albumList.get(position);
-        String name = folder.getName();
-        int imageNum = folder.getImageNum();
+        String name = folder.getFolderName();
+        int imageNum = folder.getFolderTotalNum();
         String imagePath = folder.getFirstImagePath();
-        int checkedNum = folder.getCheckedNum();
-        holder.tvSign.setVisibility(checkedNum > 0 ? View.VISIBLE : View.INVISIBLE);
+        holder.tvSelectTag.setVisibility(folder.isSelectTag() ? View.VISIBLE : View.INVISIBLE);
         LocalMediaFolder currentLocalMediaFolder = SelectedManager.getCurrentLocalMediaFolder();
         holder.itemView.setSelected(currentLocalMediaFolder != null
                 && folder.getBucketId() == currentLocalMediaFolder.getBucketId());
@@ -91,13 +93,13 @@ public class PictureAlbumAdapter extends RecyclerView.Adapter<PictureAlbumAdapte
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivFirstImage;
-        TextView tvFolderName, tvSign;
+        TextView tvFolderName, tvSelectTag;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ivFirstImage = itemView.findViewById(R.id.first_image);
             tvFolderName = itemView.findViewById(R.id.tv_folder_name);
-            tvSign = itemView.findViewById(R.id.tv_sign);
+            tvSelectTag = itemView.findViewById(R.id.tv_select_tag);
             PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
             AlbumWindowStyle albumWindowStyle = selectorStyle.getAlbumWindowStyle();
             int itemBackground = albumWindowStyle.getAlbumAdapterItemBackground();
@@ -106,7 +108,7 @@ public class PictureAlbumAdapter extends RecyclerView.Adapter<PictureAlbumAdapte
             }
             int itemSelectStyle = albumWindowStyle.getAlbumAdapterItemSelectStyle();
             if (itemSelectStyle != 0) {
-                tvSign.setBackgroundResource(itemSelectStyle);
+                tvSelectTag.setBackgroundResource(itemSelectStyle);
             }
             int titleColor = albumWindowStyle.getAlbumAdapterItemTitleColor();
             if (titleColor != 0) {

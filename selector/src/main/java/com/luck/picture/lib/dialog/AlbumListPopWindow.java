@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.PictureAlbumAdapter;
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.decoration.WrapContentLinearLayoutManager;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
@@ -91,7 +92,7 @@ public class AlbumListPopWindow extends PopupWindow {
     }
 
     public int getFirstAlbumImageCount() {
-        return getFolderCount() > 0 ? getFolder(0).getImageNum() : 0;
+        return getFolderCount() > 0 ? getFolder(0).getFolderTotalNum() : 0;
     }
 
     public int getFolderCount() {
@@ -134,26 +135,23 @@ public class AlbumListPopWindow extends PopupWindow {
     /**
      * 设置选中状态
      */
-    @SuppressLint("NotifyDataSetChanged")
     public void changeSelectedAlbumStyle() {
         List<LocalMediaFolder> folders = mAdapter.getAlbumList();
-        int size = folders.size();
-        int selectedSize = SelectedManager.getSelectedResult().size();
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < folders.size(); i++) {
             LocalMediaFolder folder = folders.get(i);
-            folder.setCheckedNum(0);
-            for (int j = 0; j < selectedSize; j++) {
+            folder.setSelectTag(false);
+            mAdapter.notifyItemChanged(i);
+            for (int j = 0; j < SelectedManager.getCount(); j++) {
                 LocalMedia media = SelectedManager.getSelectedResult().get(j);
-                if (TextUtils.equals(folder.getName(), media.getParentFolderName()) || folder.getBucketId() == -1) {
-                    folder.setCheckedNum(1);
+                if (TextUtils.equals(folder.getFolderName(), media.getParentFolderName())
+                        || folder.getBucketId() == PictureConfig.ALL) {
+                    folder.setSelectTag(true);
+                    mAdapter.notifyItemChanged(i);
                     break;
                 }
             }
         }
-        mAdapter.bindAlbumData(folders);
-        mAdapter.notifyDataSetChanged();
     }
-
 
     @Override
     public void dismiss() {

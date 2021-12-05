@@ -218,21 +218,21 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                 folder.setBucketId(image.getBucketId());
                                 List<LocalMedia> images = folder.getData();
                                 images.add(image);
-                                folder.setImageNum(folder.getImageNum() + 1);
+                                folder.setFolderTotalNum(folder.getFolderTotalNum() + 1);
                                 folder.setBucketId(image.getBucketId());
                                 latelyImages.add(image);
-                                int imageNum = allImageFolder.getImageNum();
-                                allImageFolder.setImageNum(imageNum + 1);
+                                int imageNum = allImageFolder.getFolderTotalNum();
+                                allImageFolder.setFolderTotalNum(imageNum + 1);
 
                             } while (data.moveToNext());
 
                             LocalMediaFolder selfFolder = SandboxFileLoader.loadInAppSandboxFolderFile(mContext, config.sandboxDir,config.isGif);
                             if (selfFolder != null) {
                                 imageFolders.add(selfFolder);
-                                allImageFolder.setImageNum(allImageFolder.getImageNum() + selfFolder.getImageNum());
+                                allImageFolder.setFolderTotalNum(allImageFolder.getFolderTotalNum() + selfFolder.getFolderTotalNum());
                                 allImageFolder.setData(selfFolder.getData());
                                 latelyImages.addAll(0, selfFolder.getData());
-                                if (MAX_SORT_SIZE > selfFolder.getImageNum()) {
+                                if (MAX_SORT_SIZE > selfFolder.getFolderTotalNum()) {
                                     if (latelyImages.size() > MAX_SORT_SIZE) {
                                         SortUtils.sortLocalMediaAddedTime(latelyImages.subList(0, MAX_SORT_SIZE));
                                     } else {
@@ -250,7 +250,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                 String title = config.chooseMode == SelectMimeType.ofAudio() ?
                                         mContext.getString(R.string.ps_all_audio)
                                         : mContext.getString(R.string.ps_camera_roll);
-                                allImageFolder.setName(title);
+                                allImageFolder.setFolderName(title);
                                 allImageFolder.setBucketId(PictureConfig.ALL);
                                 allImageFolder.setOfAllType(config.chooseMode);
                                 allImageFolder.setData(latelyImages);
@@ -329,7 +329,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
     private LocalMediaFolder getImageFolder(String firstPath,String firstMimeType, String folderName, List<LocalMediaFolder> imageFolders) {
         for (LocalMediaFolder folder : imageFolders) {
             // Under the same folder, return yourself, otherwise create a new folder
-            String name = folder.getName();
+            String name = folder.getFolderName();
             if (TextUtils.isEmpty(name)) {
                 continue;
             }
@@ -338,7 +338,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
             }
         }
         LocalMediaFolder newFolder = new LocalMediaFolder();
-        newFolder.setName(folderName);
+        newFolder.setFolderName(folderName);
         newFolder.setFirstImagePath(firstPath);
         newFolder.setFirstMimeType(firstMimeType);
         imageFolders.add(newFolder);

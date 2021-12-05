@@ -13,7 +13,7 @@
         android:layout_centerVertical="true" />
 
     <TextView
-        android:id="@+id/tv_sign"
+        android:id="@+id/tv_select_tag"
         android:layout_width="12dp"
         android:layout_height="12dp"
         android:layout_alignEnd="@id/first_image"

@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .isDisplayCamera(cb_isCamera.isChecked())
                             .isOpenClickSound(cb_voice.isChecked())
                             .setOutputCameraDir(getSandboxPath())
-                            .isOnlyObtainSandboxDir(true)
+                            //.isOnlyObtainSandboxDir(true)
                             .setQuerySandboxDir(getSandboxPath())
                             .isWithSelectVideoImage(true)
                             .isDirectReturnSingle(cb_single_back.isChecked())

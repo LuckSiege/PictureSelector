@@ -41,11 +41,11 @@ public final class SandboxFileLoader {
             SortUtils.sortLocalMediaAddedTime(list);
             LocalMedia firstMedia = list.get(0);
             folder = new LocalMediaFolder();
-            folder.setName(firstMedia.getParentFolderName());
+            folder.setFolderName(firstMedia.getParentFolderName());
             folder.setFirstImagePath(firstMedia.getPath());
             folder.setFirstMimeType(firstMedia.getMimeType());
             folder.setBucketId(firstMedia.getBucketId());
-            folder.setImageNum(list.size());
+            folder.setFolderTotalNum(list.size());
             folder.setData(list);
         }
         return folder;

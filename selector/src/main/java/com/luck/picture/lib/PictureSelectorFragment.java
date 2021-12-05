@@ -353,7 +353,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
             public void onItemClick(int position, LocalMediaFolder curFolder) {
                 isDisplayCamera = config.isDisplayCamera && curFolder.getBucketId() == PictureConfig.ALL;
                 mAdapter.setDisplayCamera(isDisplayCamera);
-                titleBar.setTitle(curFolder.getName());
+                titleBar.setTitle(curFolder.getFolderName());
                 LocalMediaFolder lastFolder = SelectedManager.getCurrentLocalMediaFolder();
                 long lastBucketId = lastFolder.getBucketId();
                 if (config.isPageStrategy) {
@@ -439,7 +439,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                         firstFolder = result.get(0);
                         SelectedManager.setCurrentLocalMediaFolder(firstFolder);
                     }
-                    titleBar.setTitle(firstFolder.getName());
+                    titleBar.setTitle(firstFolder.getFolderName());
                     albumListPopWindow.bindAlbumData(result);
                     saveFirstImagePath(firstFolder.getFirstImagePath());
                     if (config.isPageStrategy) {
@@ -487,7 +487,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 dismissLoading();
                 if (!ActivityCompatHelper.isDestroy(getActivity())) {
                     if (folder != null) {
-                        titleBar.setTitle(folder.getName());
+                        titleBar.setTitle(folder.getFolderName());
                         SelectedManager.setCurrentLocalMediaFolder(folder);
                         setAdapterData(folder.getData());
                         recoveryRecyclerPosition();
@@ -636,7 +636,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 totalNum = data.size();
             } else {
                 data = mAdapter.getData();
-                totalNum = SelectedManager.getCurrentLocalMediaFolder().getImageNum();
+                totalNum = SelectedManager.getCurrentLocalMediaFolder().getFolderTotalNum();
                 currentBucketId = SelectedManager.getCurrentLocalMediaFolder().getBucketId();
             }
             if (iBridgePictureBehavior != null) {
@@ -768,7 +768,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
             allFolder = new LocalMediaFolder();
             String folderName = config.chooseMode == SelectMimeType.ofAudio()
                     ? getString(R.string.ps_all_audio) : getString(R.string.ps_camera_roll);
-            allFolder.setName(folderName);
+            allFolder.setFolderName(folderName);
             allFolder.setFirstImagePath("");
             allFolder.setBucketId(PictureConfig.ALL);
             albumListPopWindow.getAlbumList().add(0, allFolder);
@@ -780,14 +780,14 @@ public class PictureSelectorFragment extends PictureCommonFragment
         allFolder.setFirstMimeType(media.getMimeType());
         allFolder.setData(mAdapter.getData());
         allFolder.setBucketId(PictureConfig.ALL);
-        allFolder.setImageNum(isAddSameImp(allFolder.getImageNum())
-                ? allFolder.getImageNum() : allFolder.getImageNum() + 1);
+        allFolder.setFolderTotalNum(isAddSameImp(allFolder.getFolderTotalNum())
+                ? allFolder.getFolderTotalNum() : allFolder.getFolderTotalNum() + 1);
         // 先查找Camera目录，没有找到则创建一个Camera目录
         LocalMediaFolder cameraFolder = null;
         List<LocalMediaFolder> albumList = albumListPopWindow.getAlbumList();
         for (int i = 0; i < albumList.size(); i++) {
             LocalMediaFolder exitsFolder = albumList.get(i);
-            if (TextUtils.equals(exitsFolder.getName(), media.getParentFolderName())) {
+            if (TextUtils.equals(exitsFolder.getFolderName(), media.getParentFolderName())) {
                 cameraFolder = exitsFolder;
                 break;
             }
@@ -795,9 +795,9 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (cameraFolder == null) {
             cameraFolder = new LocalMediaFolder();
         }
-        cameraFolder.setImageNum(isAddSameImp(allFolder.getImageNum())
-                ? cameraFolder.getImageNum() : cameraFolder.getImageNum() + 1);
-        if (!config.isPageStrategy && !isAddSameImp(allFolder.getImageNum())) {
+        cameraFolder.setFolderTotalNum(isAddSameImp(allFolder.getFolderTotalNum())
+                ? cameraFolder.getFolderTotalNum() : cameraFolder.getFolderTotalNum() + 1);
+        if (!config.isPageStrategy && !isAddSameImp(allFolder.getFolderTotalNum())) {
             cameraFolder.getData().add(0, media);
         }
         cameraFolder.setBucketId(media.getBucketId());
