@@ -16,6 +16,8 @@ import com.luck.picture.lib.utils.ValueOf;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,7 +83,15 @@ public final class SandboxFileLoader {
                 }
                 String absolutePath = f.getAbsolutePath();
                 long size = f.length();
+                long id = f.lastModified() / 1000;
                 String parentFolderName = f.getParentFile() != null ? f.getParentFile().getName() : "";
+                try {
+                    MessageDigest md = MessageDigest.getInstance("MD5");
+                    md.update(absolutePath.getBytes());
+                    id = new BigInteger(1, md.digest()).longValue();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 long bucketId = ValueOf.toLong(parentFolderName.hashCode());
                 long dateTime = f.lastModified() / 1000;
                 long duration;
@@ -100,7 +110,7 @@ public final class SandboxFileLoader {
                     chooseModel = SelectMimeType.ofImage();
                     duration = 0L;
                 }
-                LocalMedia media = LocalMedia.parseLocalMedia(dateTime, absolutePath, absolutePath, f.getName(),
+                LocalMedia media = LocalMedia.parseLocalMedia(id, absolutePath, absolutePath, f.getName(),
                         parentFolderName, duration, chooseModel, mimeType, width, height, size, bucketId, dateTime);
                 media.setSandboxPath(SdkVersionUtils.isQ() ? absolutePath : null);
                 list.add(media);
