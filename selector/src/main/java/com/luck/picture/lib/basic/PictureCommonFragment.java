@@ -675,8 +675,20 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 onEditMedia(data);
             } else if (requestCode == Crop.REQUEST_CROP) {
                 List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
-                if (data != null && data.hasExtra(MediaStore.EXTRA_OUTPUT)) {
-                    try {
+                try {
+                    if (selectedResult.size() == 1) {
+                        LocalMedia media = selectedResult.get(0);
+                        Uri output = Crop.getOutput(data);
+                        media.setCutPath(output != null ? output.getPath() : "");
+                        media.setCut(!TextUtils.isEmpty(media.getCutPath()));
+                        media.setCropImageWidth(Crop.getOutputImageWidth(data));
+                        media.setCropImageHeight(Crop.getOutputImageHeight(data));
+                        media.setCropOffsetX(Crop.getOutputImageOffsetX(data));
+                        media.setCropOffsetY(Crop.getOutputImageOffsetY(data));
+                        media.setCropResultAspectRatio(Crop.getOutputCropAspectRatio(data));
+                        media.setCustomData(Crop.getOutputCustomExtraData(data));
+                        media.setSandboxPath(media.getCutPath());
+                    } else {
                         String extra = data.getStringExtra(MediaStore.EXTRA_OUTPUT);
                         JSONArray array = new JSONArray(extra);
                         if (array.length() == selectedResult.size()) {
@@ -694,27 +706,13 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                                 media.setSandboxPath(media.getCutPath());
                             }
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
-                } else {
-                    if (selectedResult.size() == 1) {
-                        LocalMedia media = selectedResult.get(0);
-                        Uri output = Crop.getOutput(data);
-                        media.setCutPath(output != null ? output.getPath() : "");
-                        media.setCut(!TextUtils.isEmpty(media.getCutPath()));
-                        media.setCropImageWidth(Crop.getOutputImageWidth(data));
-                        media.setCropImageHeight(Crop.getOutputImageHeight(data));
-                        media.setCropOffsetX(Crop.getOutputImageOffsetX(data));
-                        media.setCropOffsetY(Crop.getOutputImageOffsetY(data));
-                        media.setCropResultAspectRatio(Crop.getOutputCropAspectRatio(data));
-                        media.setCustomData(Crop.getOutputCustomExtraData(data));
-                        media.setSandboxPath(media.getCutPath());
-                    } else {
-                        Toast.makeText(getContext(), "image crop data source mismatch", Toast.LENGTH_LONG).show();
-                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
+
                 List<LocalMedia> result = new ArrayList<>(selectedResult);
                 if (checkCompressValidity()) {
                     showLoading();
