@@ -44,6 +44,8 @@ public final class PictureConfig {
 
     public final static String EXTRA_EXTERNAL_PREVIEW = KEY + ".external_preview";
 
+    public final static String EXTRA_DISPLAY_CAMERA = KEY + ".display_camera";
+
     public final static String EXTRA_BOTTOM_PREVIEW = KEY + ".bottom_preview";
 
     public final static String EXTRA_CURRENT_PAGE = KEY + ".current_page";
@@ -69,4 +71,6 @@ public final class PictureConfig {
     public final static int REQUEST_CAMERA = 909;
 
     public final static int REQUEST_GO_SETTING = 1102;
+
+    public final static int ALL = -1;
 }

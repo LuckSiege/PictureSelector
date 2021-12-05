@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
@@ -47,7 +48,6 @@ import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.AnimUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DoubleUtils;
-import com.luck.picture.lib.utils.SortUtils;
 import com.luck.picture.lib.widget.BottomNavBar;
 import com.luck.picture.lib.widget.CompleteSelectView;
 import com.luck.picture.lib.widget.RecyclerPreloadView;
@@ -81,6 +81,10 @@ public class PictureSelectorFragment extends PictureCommonFragment
     private int openCameraNumber;
 
     private int allFolderSize;
+
+    private int currentPosition = -1;
+
+    private boolean isDisplayCamera;
 
     private PictureImageGridAdapter mAdapter;
 
@@ -171,9 +175,11 @@ public class PictureSelectorFragment extends PictureCommonFragment
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(PictureConfig.EXTRA_ALL_FOLDER_SIZE, allFolderSize);
-        if (getArguments() != null) {
-            outState.putString(PictureConfig.EXTRA_CURRENT_FIRST_PATH, getFirstImagePath());
-        }
+        outState.putInt(PictureConfig.EXTRA_CURRENT_PAGE, mPage);
+        outState.putInt(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, mRecycler.getLastVisiblePosition());
+        Log.i("YYY", "onSaveInstanceState: " + mRecycler.getLastVisiblePosition());
+        outState.putBoolean(PictureConfig.EXTRA_DISPLAY_CAMERA, mAdapter.isDisplayCamera());
+        outState.putString(PictureConfig.EXTRA_CURRENT_FIRST_PATH, getFirstImagePath());
     }
 
     @Override
@@ -181,6 +187,11 @@ public class PictureSelectorFragment extends PictureCommonFragment
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState != null) {
             allFolderSize = savedInstanceState.getInt(PictureConfig.EXTRA_ALL_FOLDER_SIZE);
+            mPage = savedInstanceState.getInt(PictureConfig.EXTRA_CURRENT_PAGE, mPage);
+            currentPosition = savedInstanceState.getInt(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, currentPosition);
+            isDisplayCamera = savedInstanceState.getBoolean(PictureConfig.EXTRA_DISPLAY_CAMERA, config.isDisplayCamera);
+        } else {
+            isDisplayCamera = config.isDisplayCamera;
         }
         tvDataEmpty = view.findViewById(R.id.tv_data_empty);
         completeSelectView = view.findViewById(R.id.ps_complete_select);
@@ -192,6 +203,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         initComplete();
         initRecycler(view);
         initBottomNavBar();
+        requestLoadData();
     }
 
     /**
@@ -270,6 +282,10 @@ public class PictureSelectorFragment extends PictureCommonFragment
             }
         });
         addAlbumPopWindowAction();
+    }
+
+    private void requestLoadData() {
+        mAdapter.setDisplayCamera(isDisplayCamera);
         if (PictureSelectionConfig.permissionsEventListener != null) {
             PictureSelectionConfig.permissionsEventListener.onPermission(this,
                     PictureConfig.READ_WRITE_EXTERNAL_STORAGE, new OnCallbackListener<Boolean>() {
@@ -330,10 +346,10 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
             @Override
             public void onItemClick(int position, LocalMediaFolder curFolder) {
-                boolean camera = config.isDisplayCamera && curFolder.isCameraFolder();
-                mAdapter.setShowCamera(camera);
+                isDisplayCamera = config.isDisplayCamera && curFolder.getBucketId() == PictureConfig.ALL;
+                mAdapter.setDisplayCamera(isDisplayCamera);
                 titleBar.setTitle(curFolder.getName());
-                LocalMediaFolder lastFolder = albumListPopWindow.getLastFolder();
+                LocalMediaFolder lastFolder = SelectedManager.getCurrentLocalMediaFolder();
                 long lastBucketId = lastFolder.getBucketId();
                 if (config.isPageStrategy) {
                     if (curFolder.getBucketId() != lastBucketId) {
@@ -352,7 +368,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                             // 3、从MediaStore拉取数据
                             mPage = 1;
                             showLoading();
-                            mLoader.loadPageMediaData(curFolder.getBucketId(), mPage,
+                            mLoader.loadPageMediaData(curFolder.getBucketId(), mPage, config.pageSize,
                                     new OnQueryDataResultListener<LocalMedia>() {
                                         @Override
                                         public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
@@ -377,7 +393,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                     setAdapterData(curFolder.getData());
                     mRecycler.smoothScrollToPosition(0);
                 }
-                albumListPopWindow.setLastFolder(curFolder);
+                SelectedManager.setCurrentLocalMediaFolder(curFolder);
                 albumListPopWindow.dismiss();
             }
         });
@@ -385,6 +401,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
 
     private void initBottomNavBar() {
+        bottomNarBar.setSelectedChange();
         bottomNarBar.setBottomNavBarStyle();
         bottomNarBar.setOnBottomNavBarListener(new BottomNavBar.OnBottomNavBarListener() {
             @Override
@@ -410,13 +427,22 @@ public class PictureSelectorFragment extends PictureCommonFragment
                     return;
                 }
                 if (result.size() > 0) {
-                    LocalMediaFolder firstFolder = result.get(0);
-                    firstFolder.setChecked(true);
+                    LocalMediaFolder firstFolder;
+                    if (SelectedManager.getCurrentLocalMediaFolder() != null) {
+                        firstFolder = SelectedManager.getCurrentLocalMediaFolder();
+                    } else {
+                        firstFolder = result.get(0);
+                        SelectedManager.setCurrentLocalMediaFolder(firstFolder);
+                    }
                     titleBar.setTitle(firstFolder.getName());
-                    albumListPopWindow.setLastFolder(firstFolder);
                     albumListPopWindow.bindAlbumData(result);
                     saveFirstImagePath(firstFolder.getFirstImagePath());
-                    loadAllMedia(firstFolder);
+                    if (config.isPageStrategy) {
+                        loadFirstPageMedia(firstFolder.getBucketId());
+                    } else {
+                        dismissLoading();
+                        setAdapterData(firstFolder.getData());
+                    }
                 } else {
                     showDataNull();
                 }
@@ -424,35 +450,28 @@ public class PictureSelectorFragment extends PictureCommonFragment
         });
     }
 
-
     @Override
-    public void loadAllMedia(LocalMediaFolder firstFolder) {
-        if (config.isPageStrategy) {
-            mPage = 1;
-            mRecycler.setEnabledLoadMore(true);
-            mLoader.loadPageMediaData(firstFolder.getBucketId(), mPage, new OnQueryDataResultListener<LocalMedia>() {
-                @Override
-                public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
-                    if (ActivityCompatHelper.isDestroy(getActivity())) {
-                        return;
+    public void loadFirstPageMedia(long firstBucketId) {
+        mRecycler.setEnabledLoadMore(true);
+        mLoader.loadFirstPageMedia(firstBucketId, mPage * config.pageSize,
+                new OnQueryDataResultListener<LocalMedia>() {
+                    @Override
+                    public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
+                        if (ActivityCompatHelper.isDestroy(getActivity())) {
+                            return;
+                        }
+                        dismissLoading();
+                        mRecycler.setEnabledLoadMore(isHasMore);
+                        if (mRecycler.isEnabledLoadMore() && result.size() == 0) {
+                            // 如果isHasMore为true但result.size() = 0;
+                            // 那么有可能是开启了某些条件过滤，实际上是还有更多资源的再强制请求
+                            onRecyclerViewPreloadMore();
+                        } else {
+                            setAdapterData(result);
+                        }
+                        recoveryRecyclerPosition();
                     }
-                    dismissLoading();
-                    mRecycler.setEnabledLoadMore(isHasMore);
-                    if (mRecycler.isEnabledLoadMore() && result.size() == 0) {
-                        // 如果isHasMore为true但result.size() = 0;
-                        // 那么有可能是开启了某些条件过滤，实际上是还有更多资源的再强制请求
-                        onRecyclerViewPreloadMore();
-                    } else {
-                        result.addAll(0, firstFolder.getData());
-                        SortUtils.sortLocalMediaAddedTime(result);
-                        setAdapterData(result);
-                    }
-                }
-            });
-        } else {
-            dismissLoading();
-            setAdapterData(firstFolder.getData());
-        }
+                });
     }
 
     @Override
@@ -464,14 +483,30 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 if (!ActivityCompatHelper.isDestroy(getActivity())) {
                     if (folder != null) {
                         titleBar.setTitle(folder.getName());
-                        albumListPopWindow.setLastFolder(folder);
+                        SelectedManager.setCurrentLocalMediaFolder(folder);
                         setAdapterData(folder.getData());
+                        recoveryRecyclerPosition();
                     } else {
                         showDataNull();
                     }
                 }
             }
         });
+    }
+
+    /**
+     * 内存不足时，恢复RecyclerView定位位置
+     */
+    private void recoveryRecyclerPosition() {
+        if (currentPosition > 0) {
+            mRecycler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mRecycler.scrollToPosition(currentPosition);
+                    mRecycler.setLastVisiblePosition(currentPosition);
+                }
+            });
+        }
     }
 
     /**
@@ -517,6 +552,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
             mRecycler.setHasFixedSize(true);
         }
         mAdapter = new PictureImageGridAdapter(config);
+        mAdapter.setDisplayCamera(isDisplayCamera);
         switch (config.animationMode) {
             case AnimationType.ALPHA_IN_ANIMATION:
                 mRecycler.setAdapter(new AlphaInAnimationAdapter(mAdapter));
@@ -593,12 +629,12 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 totalNum = data.size();
             } else {
                 data = mAdapter.getData();
-                totalNum = albumListPopWindow.getLastFolder().getImageNum();
-                currentBucketId = albumListPopWindow.getLastFolder().getBucketId();
+                totalNum = SelectedManager.getCurrentLocalMediaFolder().getImageNum();
+                currentBucketId = SelectedManager.getCurrentLocalMediaFolder().getBucketId();
             }
             if (iBridgePictureBehavior != null) {
                 PictureSelectorPreviewFragment previewFragment = PictureSelectorPreviewFragment.newInstance();
-                previewFragment.setInternalPreviewData(isBottomPreview, titleBar.getTitleText(), mAdapter.isShowCamera(),
+                previewFragment.setInternalPreviewData(isBottomPreview, titleBar.getTitleText(), mAdapter.isDisplayCamera(),
                         position, totalNum, mPage, currentBucketId, data);
                 iBridgePictureBehavior.injectFragmentFromScreen(PictureSelectorPreviewFragment.TAG, previewFragment);
             }
@@ -628,7 +664,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
     public void loadMoreData() {
         if (mRecycler.isEnabledLoadMore()) {
             mPage++;
-            long bucketId = albumListPopWindow.getLastFolder().getBucketId();
+            long bucketId = SelectedManager.getCurrentLocalMediaFolder().getBucketId();
+            Log.i("YYY", "loadMoreData: mPage:" + mPage + "--- firstBucketId:" + bucketId);
             mLoader.loadPageMediaData(bucketId, mPage, getPageLimit(bucketId), new OnQueryDataResultListener<LocalMedia>() {
                 @Override
                 public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
@@ -649,6 +686,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
                             // 当数据量过少时强制触发一下上拉加载更多，防止没有自动触发加载更多
                             mRecycler.onScrolled(mRecycler.getScrollX(), mRecycler.getScrollY());
                         }
+
+                        Log.i("YYY", "更多: " + currentPosition);
                     }
                 }
             });
@@ -723,9 +762,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                     ? getString(R.string.ps_all_audio) : getString(R.string.ps_camera_roll);
             allFolder.setName(folderName);
             allFolder.setFirstImagePath("");
-            allFolder.setCameraFolder(true);
-            allFolder.setBucketId(-1);
-            allFolder.setChecked(true);
+            allFolder.setBucketId(PictureConfig.ALL);
             albumListPopWindow.getAlbumList().add(0, allFolder);
         } else {
             // 2、有相册就找到对应的相册把数据加进去
@@ -734,7 +771,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         allFolder.setFirstImagePath(media.getPath());
         allFolder.setFirstMimeType(media.getMimeType());
         allFolder.setData(mAdapter.getData());
-        allFolder.setBucketId(-1);
+        allFolder.setBucketId(PictureConfig.ALL);
         allFolder.setImageNum(isAddSameImp(allFolder.getImageNum())
                 ? allFolder.getImageNum() : allFolder.getImageNum() + 1);
         // 先查找Camera目录，没有找到则创建一个Camera目录

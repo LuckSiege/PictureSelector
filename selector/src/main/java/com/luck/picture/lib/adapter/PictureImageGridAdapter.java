@@ -42,13 +42,13 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
      */
     public final static int ADAPTER_TYPE_AUDIO = 4;
 
-    private boolean showCamera;
+    private boolean isDisplayCamera;
+
     private List<LocalMedia> mData = new ArrayList<>();
     private final PictureSelectionConfig mConfig;
 
     public PictureImageGridAdapter(PictureSelectionConfig mConfig) {
         this.mConfig = mConfig;
-        this.showCamera = mConfig.isDisplayCamera;
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -59,12 +59,12 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
         }
     }
 
-    public void setShowCamera(boolean showCamera) {
-        this.showCamera = showCamera;
+    public boolean isDisplayCamera() {
+        return isDisplayCamera;
     }
 
-    public boolean isShowCamera() {
-        return showCamera;
+    public void setDisplayCamera(boolean displayCamera) {
+        isDisplayCamera = displayCamera;
     }
 
     public List<LocalMedia> getData() {
@@ -77,10 +77,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
 
     @Override
     public int getItemViewType(int position) {
-        if (showCamera && position == 0) {
+        if (isDisplayCamera && position == 0) {
             return ADAPTER_TYPE_CAMERA;
         } else {
-            int adapterPosition = showCamera ? position - 1 : position;
+            int adapterPosition = isDisplayCamera ? position - 1 : position;
             String mimeType = mData.get(adapterPosition).getMimeType();
             if (PictureMimeType.isHasVideo(mimeType)) {
                 return ADAPTER_TYPE_VIDEO;
@@ -128,7 +128,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
                 }
             });
         } else {
-            int adapterPosition = showCamera ? position - 1 : position;
+            int adapterPosition = isDisplayCamera ? position - 1 : position;
             LocalMedia media = mData.get(adapterPosition);
             holder.bindData(media, adapterPosition);
             holder.setOnItemClickListener(listener);
@@ -138,7 +138,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
 
     @Override
     public int getItemCount() {
-        return showCamera ? mData.size() + 1 : mData.size();
+        return isDisplayCamera ? mData.size() + 1 : mData.size();
     }
 
 

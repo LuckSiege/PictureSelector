@@ -241,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .isPageStrategy(cbPage.isChecked())
                             .isDisplayCamera(cb_isCamera.isChecked())
                             .isOpenClickSound(cb_voice.isChecked())
+                            .setQuerySandboxDir(getSandboxPath())
                             .isWithSelectVideoImage(true)
                             .isDirectReturnSingle(cb_single_back.isChecked())
                             .maxSelectNum(maxSelectNum)

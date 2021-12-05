@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.luck.picture.lib.config.PictureConfig;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,7 @@ public class LocalMediaFolder implements Parcelable {
     /**
      * bucketId
      */
-    private long bucketId = -1;
+    private long bucketId = PictureConfig.ALL;
     /**
      * Folder name
      */
@@ -40,19 +42,11 @@ public class LocalMediaFolder implements Parcelable {
      * If the selected num
      */
     private int checkedNum;
-    /**
-     * If the selected
-     */
-    private boolean isChecked;
 
     /**
      * type
      */
     private int ofAllType = -1;
-    /**
-     * Whether or not the camera
-     */
-    private boolean isCameraFolder;
 
     /**
      * data
@@ -75,6 +69,7 @@ public class LocalMediaFolder implements Parcelable {
     public LocalMediaFolder() {
     }
 
+
     protected LocalMediaFolder(Parcel in) {
         bucketId = in.readLong();
         name = in.readString();
@@ -82,9 +77,7 @@ public class LocalMediaFolder implements Parcelable {
         firstMimeType = in.readString();
         imageNum = in.readInt();
         checkedNum = in.readInt();
-        isChecked = in.readByte() != 0;
         ofAllType = in.readInt();
-        isCameraFolder = in.readByte() != 0;
         data = in.createTypedArrayList(LocalMedia.CREATOR);
         currentDataPage = in.readInt();
         isHasMore = in.readByte() != 0;
@@ -98,9 +91,7 @@ public class LocalMediaFolder implements Parcelable {
         dest.writeString(firstMimeType);
         dest.writeInt(imageNum);
         dest.writeInt(checkedNum);
-        dest.writeByte((byte) (isChecked ? 1 : 0));
         dest.writeInt(ofAllType);
-        dest.writeByte((byte) (isCameraFolder ? 1 : 0));
         dest.writeTypedList(data);
         dest.writeInt(currentDataPage);
         dest.writeByte((byte) (isHasMore ? 1 : 0));
@@ -163,14 +154,6 @@ public class LocalMediaFolder implements Parcelable {
         this.checkedNum = checkedNum;
     }
 
-    public boolean isChecked() {
-        return isChecked;
-    }
-
-    public void setChecked(boolean checked) {
-        isChecked = checked;
-    }
-
     public int getOfAllType() {
         return ofAllType;
     }
@@ -179,16 +162,9 @@ public class LocalMediaFolder implements Parcelable {
         this.ofAllType = ofAllType;
     }
 
-    public boolean isCameraFolder() {
-        return isCameraFolder;
-    }
-
-    public void setCameraFolder(boolean cameraFolder) {
-        isCameraFolder = cameraFolder;
-    }
 
     public List<LocalMedia> getData() {
-        return data;
+        return data != null ? data : new ArrayList<>();
     }
 
     public void setData(List<LocalMedia> data) {

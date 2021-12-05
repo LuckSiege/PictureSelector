@@ -1,5 +1,10 @@
 package com.luck.picture.lib.loader;
 
+import android.content.Context;
+import android.net.Uri;
+import android.provider.MediaStore;
+
+import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
@@ -10,6 +15,19 @@ import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
  * @describe：IBridgeMediaLoader
  */
 public class IBridgeMediaLoader {
+    protected static final String TAG = IBridgeMediaLoader.class.getSimpleName();
+    protected static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
+    protected static final String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
+    protected static final String NOT_GIF_UNKNOWN = "!='image/*'";
+    protected static final String NOT_GIF = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/gif' AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF_UNKNOWN + ")";
+    protected static final String GROUP_BY_BUCKET_Id = " GROUP BY (bucket_id";
+    protected static final String COLUMN_COUNT = "count";
+    protected static final String COLUMN_BUCKET_ID = "bucket_id";
+    protected static final String COLUMN_BUCKET_DISPLAY_NAME = "bucket_display_name";
+    protected static final int MAX_SORT_SIZE = 60;
+    protected Context mContext;
+    protected PictureSelectionConfig config;
+
     /**
      * 查询所有资源
      *
@@ -30,6 +48,16 @@ public class IBridgeMediaLoader {
 
     }
 
+    /**
+     * Queries first for data in the specified directory
+     *
+     * @param bucketId
+     * @param limit
+     * @param listener
+     * @return
+     */
+    public void loadFirstPageMedia(long bucketId, int limit, OnQueryDataResultListener<LocalMedia> listener) {
+    }
 
     /**
      * Queries for data in the specified directory
@@ -41,17 +69,6 @@ public class IBridgeMediaLoader {
      * @return
      */
     public void loadPageMediaData(long bucketId, int page, int limit, OnQueryDataResultListener<LocalMedia> listener) {
-    }
-
-    /**
-     * Queries for data in the specified directory
-     *
-     * @param bucketId
-     * @param listener
-     * @return
-     */
-    public void loadPageMediaData(long bucketId, int page, OnQueryDataResultListener<LocalMedia> listener) {
-
     }
 
     /**

@@ -2,11 +2,11 @@ package com.luck.picture.lib.loader;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
@@ -30,18 +30,7 @@ import java.util.Locale;
  */
 @Deprecated
 public final class LocalMediaLoader extends IBridgeMediaLoader {
-    private static final String TAG = LocalMediaLoader.class.getSimpleName();
-    private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
-    private static final String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
-    private static final String NOT_GIF_UNKNOWN = "!='image/*'";
-    private static final String NOT_GIF = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/gif' AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF_UNKNOWN + ")";
-    private static final int MAX_SORT_SIZE = 60;
-    private final Context mContext;
-    private final PictureSelectionConfig config;
-    /**
-     * unit
-     */
-    private static final long FILE_SIZE_UNIT = 1024 * 1024L;
+
     /**
      * Media file database field
      */
@@ -262,9 +251,8 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                         mContext.getString(R.string.ps_all_audio)
                                         : mContext.getString(R.string.ps_camera_roll);
                                 allImageFolder.setName(title);
-                                allImageFolder.setBucketId(-1);
+                                allImageFolder.setBucketId(PictureConfig.ALL);
                                 allImageFolder.setOfAllType(config.chooseMode);
-                                allImageFolder.setCameraFolder(true);
                                 allImageFolder.setData(latelyImages);
                             }
                         }

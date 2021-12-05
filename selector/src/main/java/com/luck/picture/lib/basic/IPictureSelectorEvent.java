@@ -14,9 +14,9 @@ public interface IPictureSelectorEvent {
     void loadAllAlbum();
 
     /**
-     * 获取全部资源
+     * 获取首页资源
      */
-    void loadAllMedia(LocalMediaFolder firstFolder);
+    void loadFirstPageMedia(long firstBucketId);
 
     /**
      * 加载应用沙盒内的资源

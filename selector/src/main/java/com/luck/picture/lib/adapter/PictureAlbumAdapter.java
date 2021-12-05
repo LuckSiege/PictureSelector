@@ -16,6 +16,7 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnAlbumItemClickListener;
+import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.AlbumWindowStyle;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 
@@ -53,10 +54,11 @@ public class PictureAlbumAdapter extends RecyclerView.Adapter<PictureAlbumAdapte
         String name = folder.getName();
         int imageNum = folder.getImageNum();
         String imagePath = folder.getFirstImagePath();
-        boolean isChecked = folder.isChecked();
         int checkedNum = folder.getCheckedNum();
         holder.tvSign.setVisibility(checkedNum > 0 ? View.VISIBLE : View.INVISIBLE);
-        holder.itemView.setSelected(isChecked);
+        LocalMediaFolder currentLocalMediaFolder = SelectedManager.getCurrentLocalMediaFolder();
+        holder.itemView.setSelected(currentLocalMediaFolder != null
+                && folder.getBucketId() == currentLocalMediaFolder.getBucketId());
         String firstMimeType = folder.getFirstMimeType();
         if (PictureMimeType.isHasAudio(firstMimeType)) {
             holder.ivFirstImage.setImageResource(R.drawable.ps_audio_placeholder);
@@ -71,18 +73,14 @@ public class PictureAlbumAdapter extends RecyclerView.Adapter<PictureAlbumAdapte
                 context.getString(R.string.ps_all_audio)
                 : context.getString(R.string.ps_camera_roll) : name;
         holder.tvFolderName.setText(context.getString(R.string.ps_camera_roll_num, firstTitle, imageNum));
-        holder.itemView.setOnClickListener(view -> {
-            if (onAlbumItemClickListener == null) {
-                return;
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onAlbumItemClickListener == null) {
+                    return;
+                }
+                onAlbumItemClickListener.onItemClick(position, folder);
             }
-            int size = albumList.size();
-            for (int i = 0; i < size; i++) {
-                LocalMediaFolder mediaFolder = albumList.get(i);
-                mediaFolder.setChecked(false);
-            }
-            folder.setChecked(true);
-            notifyDataSetChanged();
-            onAlbumItemClickListener.onItemClick(position, folder);
         });
     }
 

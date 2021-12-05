@@ -2,13 +2,13 @@ package com.luck.picture.lib.loader;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
@@ -38,21 +38,6 @@ import java.util.Set;
  * @describe：Local media database query class，Support paging
  */
 public final class LocalMediaPageLoader extends IBridgeMediaLoader {
-    private static final String TAG = LocalMediaPageLoader.class.getSimpleName();
-    /**
-     * unit
-     */
-    private static final long FILE_SIZE_UNIT = 1024 * 1024L;
-    private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
-    private static final String ORDER_BY = MediaStore.Files.FileColumns._ID + " DESC";
-    private static final String NOT_GIF_UNKNOWN = "!='image/*'";
-    private static final String NOT_GIF = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/gif' AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF_UNKNOWN + ")";
-    private static final String GROUP_BY_BUCKET_Id = " GROUP BY (bucket_id";
-    private static final String COLUMN_COUNT = "count";
-    private static final String COLUMN_BUCKET_ID = "bucket_id";
-    private static final String COLUMN_BUCKET_DISPLAY_NAME = "bucket_display_name";
-    private final Context mContext;
-    private final PictureSelectionConfig config;
 
     public LocalMediaPageLoader(Context context, PictureSelectionConfig config) {
         this.mContext = context;
@@ -211,6 +196,19 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
     }
 
     /**
+     * Queries First for data in the specified directory
+     *
+     * @param bucketId
+     * @param limit
+     * @param listener
+     * @return
+     */
+    @Override
+    public void loadFirstPageMedia(long bucketId, int limit, OnQueryDataResultListener<LocalMedia> listener) {
+        loadPageMediaData(bucketId, 1, limit, listener);
+    }
+
+    /**
      * Queries for data in the specified directory
      *
      * @param bucketId
@@ -222,18 +220,6 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
     @Override
     public void loadPageMediaData(long bucketId, int page, int limit, OnQueryDataResultListener<LocalMedia> listener) {
         loadPageMediaData(bucketId, page, limit, config.pageSize, listener);
-    }
-
-    /**
-     * Queries for data in the specified directory
-     *
-     * @param bucketId
-     * @param listener
-     * @return
-     */
-    @Override
-    public void loadPageMediaData(long bucketId, int page, OnQueryDataResultListener<LocalMedia> listener) {
-        loadPageMediaData(bucketId, page, config.pageSize, config.pageSize, listener);
     }
 
     /**
@@ -343,6 +329,14 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
 
                             } while (data.moveToNext());
                         }
+                        if (bucketId == PictureConfig.ALL && page == 1) {
+                            List<LocalMedia> list = SandboxFileLoader.loadInAppSandboxFile(mContext,
+                                    config.sandboxDir, config.isGif);
+                            if (list != null) {
+                                result.addAll(list);
+                                SortUtils.sortLocalMediaAddedTime(result);
+                            }
+                        }
                         return new MediaData(data.getCount() > 0, result);
                     }
                 } catch (Exception e) {
@@ -373,7 +367,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
 
             @Override
             public LocalMediaFolder doInBackground() {
-                return SandboxFileLoader.loadInAppSandboxFolderFile(mContext, config.sandboxDir,config.isGif);
+                return SandboxFileLoader.loadInAppSandboxFolderFile(mContext, config.sandboxDir, config.isGif);
             }
 
             @Override
@@ -465,8 +459,9 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                             LocalMediaFolder allMediaFolder = new LocalMediaFolder();
 
                             LocalMediaFolder selfFolder = SandboxFileLoader
-                                    .loadInAppSandboxFolderFile(mContext, config.sandboxDir,config.isGif);
+                                    .loadInAppSandboxFolderFile(mContext, config.sandboxDir, config.isGif);
                             if (selfFolder != null) {
+                                selfFolder.setData(new ArrayList<>());
                                 mediaFolders.add(selfFolder);
                                 totalCount += selfFolder.getImageNum();
                                 allMediaFolder.setData(selfFolder.getData());
@@ -481,14 +476,12 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
 
                             SortUtils.sortFolder(mediaFolders);
                             allMediaFolder.setImageNum(totalCount);
-                            allMediaFolder.setChecked(true);
-                            allMediaFolder.setBucketId(-1);
+                            allMediaFolder.setBucketId(PictureConfig.ALL);
                             String bucketDisplayName = config.chooseMode == SelectMimeType.ofAudio() ?
                                     mContext.getString(R.string.ps_all_audio)
                                     : mContext.getString(R.string.ps_camera_roll);
                             allMediaFolder.setName(bucketDisplayName);
                             allMediaFolder.setOfAllType(config.chooseMode);
-                            allMediaFolder.setCameraFolder(true);
                             mediaFolders.add(0, allMediaFolder);
                             if (config.isSyncCover) {
                                 if (config.chooseMode == SelectMimeType.ofAll()) {

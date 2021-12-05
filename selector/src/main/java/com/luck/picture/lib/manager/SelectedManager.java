@@ -1,6 +1,7 @@
 package com.luck.picture.lib.manager;
 
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.entity.LocalMediaFolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,5 +63,18 @@ public class SelectedManager {
 
     public static void clearExternalPreviewData() {
         selectedPreviewResult.clear();
+    }
+
+    /**
+     * current selected album
+     */
+    private static LocalMediaFolder currentLocalMediaFolder;
+
+    public static void setCurrentLocalMediaFolder(LocalMediaFolder mediaFolder) {
+        currentLocalMediaFolder = mediaFolder;
+    }
+
+    public static LocalMediaFolder getCurrentLocalMediaFolder() {
+        return currentLocalMediaFolder;
     }
 }

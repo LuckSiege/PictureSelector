@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -32,6 +33,7 @@ import com.luck.picture.lib.decoration.ViewPage2ItemDecoration;
 import com.luck.picture.lib.decoration.WrapContentLinearLayoutManager;
 import com.luck.picture.lib.dialog.PictureCommonDialog;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.loader.LocalMediaLoader;
@@ -63,7 +65,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     public static final String TAG = PictureSelectorPreviewFragment.class.getSimpleName();
 
     public static PictureSelectorPreviewFragment newInstance() {
-        return new PictureSelectorPreviewFragment();
+        PictureSelectorPreviewFragment fragment = new PictureSelectorPreviewFragment();
+        fragment.setArguments(new Bundle());
+        return fragment;
     }
 
     private List<LocalMedia> mData = new ArrayList<>();
@@ -187,6 +191,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             mPage = savedInstanceState.getInt(PictureConfig.EXTRA_CURRENT_PAGE, 1);
             mBucketId = savedInstanceState.getLong(PictureConfig.EXTRA_CURRENT_BUCKET_ID, -1);
             curPosition = savedInstanceState.getInt(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, curPosition);
+            isShowCamera = savedInstanceState.getBoolean(PictureConfig.EXTRA_DISPLAY_CAMERA, isShowCamera);
             totalNum = savedInstanceState.getInt(PictureConfig.EXTRA_PREVIEW_CURRENT_ALBUM_TOTAL, totalNum);
             isExternalPreview = savedInstanceState.getBoolean(PictureConfig.EXTRA_EXTERNAL_PREVIEW, isExternalPreview);
             isDisplayDelete = savedInstanceState.getBoolean(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, isDisplayDelete);
@@ -215,12 +220,18 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             initPreviewSelectGallery(view);
             initComplete();
             if (savedInstanceState != null && mData.size() == 0) {
+                // 这种情况就是内存不足导致页面被回收后的补全逻辑，让其恢复到回收前的样子
                 if (isBottomPreview) {
                     mData = new ArrayList<>(SelectedManager.getSelectedResult());
                     initViewPagerData();
                 } else {
-                    config.isPageStrategy = true;
-                    loadData(mPage * config.pageSize);
+                    if (config.isPageStrategy) {
+                        loadData(mPage * config.pageSize);
+                    } else {
+                        // 就算不是分页模式也强行先使用LocalMediaPageLoader模式获取数据
+                        mLoader = new LocalMediaPageLoader(getContext(), config);
+                        loadData(totalNum);
+                    }
                 }
             } else {
                 initViewPagerData();
@@ -237,6 +248,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         outState.putInt(PictureConfig.EXTRA_PREVIEW_CURRENT_ALBUM_TOTAL, totalNum);
         outState.putBoolean(PictureConfig.EXTRA_EXTERNAL_PREVIEW, isExternalPreview);
         outState.putBoolean(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, isDisplayDelete);
+        outState.putBoolean(PictureConfig.EXTRA_DISPLAY_CAMERA, isShowCamera);
         outState.putBoolean(PictureConfig.EXTRA_BOTTOM_PREVIEW, isBottomPreview);
         if (isExternalPreview) {
             SelectedManager.addSelectedPreviewResult(mData);
@@ -271,16 +283,51 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * 加载数据
      */
     private void loadData(int pageSize) {
-        mLoader.loadPageMediaData(mBucketId, 1, pageSize, new OnQueryDataResultListener<LocalMedia>() {
-            @Override
-            public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
-                if (ActivityCompatHelper.isDestroy(getActivity())) {
-                    return;
+        if (config.isOnlySandboxDir) {
+            mLoader.loadOnlyInAppDirectoryAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
+                @Override
+                public void onComplete(LocalMediaFolder folder) {
+                    if (ActivityCompatHelper.isDestroy(getActivity()) || folder == null) {
+                        return;
+                    }
+                    mData = folder.getData();
+                    if (mData.size() == 0) {
+                        iBridgePictureBehavior.onFinish();
+                        return;
+                    }
+                    // 这里的作用主要是防止内存不足情况下重新load了数据，此时LocalMedia是没有position的
+                    // 但如果此时你选中或取消一个结果,PictureSelectorFragment列表页 notifyItemChanged下标会不对
+                    int position = isShowCamera ? 0 : -1;
+                    for (int i = 0; i < mData.size(); i++) {
+                        position++;
+                        mData.get(i).setPosition(position);
+                    }
+                    initViewPagerData();
                 }
-                mData = result;
-                initViewPagerData();
-            }
-        });
+            });
+        } else {
+            mLoader.loadFirstPageMedia(mBucketId, pageSize, new OnQueryDataResultListener<LocalMedia>() {
+                @Override
+                public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
+                    if (ActivityCompatHelper.isDestroy(getActivity())) {
+                        return;
+                    }
+                    mData = result;
+                    if (mData.size() == 0) {
+                        iBridgePictureBehavior.onFinish();
+                        return;
+                    }
+                    // 这里的作用主要是防止内存不足情况下重新load了数据，此时LocalMedia是没有position的
+                    // 但如果此时你选中或取消一个结果,PictureSelectorFragment列表页notifyItemChanged下标会不对
+                    int position = isShowCamera ? 0 : -1;
+                    for (int i = 0; i < mData.size(); i++) {
+                        position++;
+                        mData.get(i).setPosition(position);
+                    }
+                    initViewPagerData();
+                }
+            });
+        }
     }
 
     /**

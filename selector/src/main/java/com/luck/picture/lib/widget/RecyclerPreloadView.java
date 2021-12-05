@@ -97,6 +97,10 @@ public class RecyclerPreloadView extends RecyclerView {
         return mLastVisiblePosition;
     }
 
+    public void setLastVisiblePosition(int position) {
+        this.mLastVisiblePosition = position;
+    }
+
     @Override
     public void onScrolled(int dx, int dy) {
         super.onScrolled(dx, dy);

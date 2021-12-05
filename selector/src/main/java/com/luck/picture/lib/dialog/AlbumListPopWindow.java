@@ -85,19 +85,6 @@ public class AlbumListPopWindow extends PopupWindow {
         return mAdapter.getAlbumList();
     }
 
-    /**
-     * 上一次选中的相册
-     */
-    private LocalMediaFolder lastFolder;
-
-    public void setLastFolder(LocalMediaFolder lastFolder) {
-        this.lastFolder = lastFolder;
-    }
-
-    public LocalMediaFolder getLastFolder() {
-        return lastFolder;
-    }
-
     public LocalMediaFolder getFolder(int position) {
         return mAdapter.getAlbumList().size() > 0
                 && position < mAdapter.getAlbumList().size() ? mAdapter.getAlbumList().get(position) : null;
