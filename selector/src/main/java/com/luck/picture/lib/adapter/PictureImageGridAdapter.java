@@ -45,7 +45,19 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
     private boolean isDisplayCamera;
 
     private List<LocalMedia> mData = new ArrayList<>();
+
     private final PictureSelectionConfig mConfig;
+
+    private int lastPosition;
+
+    public int getLastPosition() {
+        return lastPosition;
+    }
+
+    public void notifyItemPositionChanged(int position) {
+        this.lastPosition = position;
+        this.notifyItemChanged(position);
+    }
 
     public PictureImageGridAdapter(PictureSelectionConfig mConfig) {
         this.mConfig = mConfig;

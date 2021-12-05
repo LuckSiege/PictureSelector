@@ -112,7 +112,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (checkNotifyStrategy(isAddRemove)) {
             mAdapter.notifyDataSetChanged();
         } else {
-            mAdapter.notifyItemChanged(currentMedia.position);
+            mAdapter.notifyItemPositionChanged(currentMedia.position);
         }
         if (!isAddRemove) {
             subSelectPosition(true);
@@ -121,7 +121,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public void onLastSingleSelectedChange(LocalMedia oldLocalMedia) {
-        mAdapter.notifyItemChanged(oldLocalMedia.position);
+        mAdapter.notifyItemPositionChanged(oldLocalMedia.position);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 LocalMedia media = SelectedManager.getSelectedResult().get(index);
                 media.setNum(index + 1);
                 if (isRefreshAdapter) {
-                    mAdapter.notifyItemChanged(media.position);
+                    mAdapter.notifyItemPositionChanged(media.position);
                 }
             }
         }
@@ -151,7 +151,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
      */
     private boolean checkNotifyStrategy(boolean isAddRemove) {
         boolean isNotifyAll = false;
-        if (config.isMaxSelectEnabledMask) {
+        if (config.isMaxSelectEnabledMask && config.selectionMode == SelectModeConfig.MULTIPLE) {
             if (config.isWithVideoImage) {
                 isNotifyAll = SelectedManager.getCount() == config.maxSelectNum
                         || (!isAddRemove && SelectedManager.getCount() == config.maxSelectNum - 1);
@@ -785,7 +785,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
             // 如果这里还往下手动添加则会导致重复一张，故只要把新拍的加入选择结果即可
             SelectedManager.getSelectedResult().add(media);
             saveFirstImagePath(media.getPath());
-            mAdapter.notifyItemChanged(config.isDisplayCamera ? 1 : 0);
+            mAdapter.notifyItemPositionChanged(config.isDisplayCamera ? 1 : 0);
             if (config.isDirectReturnSingle) {
                 dispatchTransformResult();
             }
@@ -809,7 +809,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                         LocalMedia exitsMedia = selectedResult.get(0);
                         int position = exitsMedia.getPosition();
                         selectedResult.clear();
-                        mAdapter.notifyItemChanged(position);
+                        mAdapter.notifyItemPositionChanged(position);
                     }
                 }
                 SelectedManager.getSelectedResult().add(media);

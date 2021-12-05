@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //.isOnlyObtainSandboxDir(true)
                             .setQuerySandboxDir(getSandboxPath())
                             .isWithSelectVideoImage(true)
-                            .isMaxSelectEnabledMask(cbEnabledMask.isEnabled())
+                            .isMaxSelectEnabledMask(cbEnabledMask.isChecked())
                             .isDirectReturnSingle(cb_single_back.isChecked())
                             .maxSelectNum(maxSelectNum)
                             .maxVideoSelectNum(2)
