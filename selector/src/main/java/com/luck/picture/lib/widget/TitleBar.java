@@ -31,6 +31,10 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
     protected View viewAlbumClickArea;
     protected PictureSelectionConfig config;
 
+    public TextView getTitleCancelView() {
+        return tvCancel;
+    }
+
     public TitleBar(Context context) {
         super(context);
         init();

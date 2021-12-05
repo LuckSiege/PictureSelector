@@ -221,10 +221,14 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         if (tvCheck.isSelected() != isChecked) {
             tvCheck.setSelected(isChecked);
         }
-        ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(isChecked ?
-                ContextCompat.getColor(mContext, R.color.ps_color_80) :
-                ContextCompat.getColor(mContext, R.color.ps_color_20), BlendModeCompat.SRC_ATOP);
-        ivPicture.setColorFilter(colorFilter);
+        if (config.isDirectReturnSingle) {
+
+        } else {
+            ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(isChecked ?
+                    ContextCompat.getColor(mContext, R.color.ps_color_80) :
+                    ContextCompat.getColor(mContext, R.color.ps_color_20), BlendModeCompat.SRC_ATOP);
+            ivPicture.setColorFilter(colorFilter);
+        }
     }
 
     /**

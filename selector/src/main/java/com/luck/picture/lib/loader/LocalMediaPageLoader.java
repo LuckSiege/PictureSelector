@@ -2,6 +2,7 @@ package com.luck.picture.lib.loader;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -23,6 +24,7 @@ import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.SortUtils;
 import com.luck.picture.lib.utils.ValueOf;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -461,12 +463,27 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                             LocalMediaFolder selfFolder = SandboxFileLoader
                                     .loadInAppSandboxFolderFile(mContext, config.sandboxDir, config.isGif);
                             if (selfFolder != null) {
-                                selfFolder.setData(new ArrayList<>());
                                 mediaFolders.add(selfFolder);
+                                String firstImagePath = selfFolder.getFirstImagePath();
+                                File file = new File(firstImagePath);
+                                long lastModified = file.lastModified();
                                 totalCount += selfFolder.getImageNum();
-                                allMediaFolder.setData(selfFolder.getData());
-                                allMediaFolder.setFirstImagePath(selfFolder.getFirstImagePath());
-                                allMediaFolder.setFirstMimeType(selfFolder.getFirstMimeType());
+                                allMediaFolder.setData(new ArrayList<>());
+                                if (data.moveToFirst()) {
+                                    allMediaFolder.setFirstImagePath(SdkVersionUtils.isQ() ? getFirstUri(data) : getFirstUrl(data));
+                                    allMediaFolder.setFirstMimeType(getFirstCoverMimeType(data));
+                                    long lastModified2;
+                                    if (PictureMimeType.isContent(allMediaFolder.getFirstImagePath())) {
+                                        String path = PictureFileUtils.getPath(mContext, Uri.parse(allMediaFolder.getFirstImagePath()));
+                                        lastModified2 = new File(path).lastModified();
+                                    } else {
+                                        lastModified2 = new File(allMediaFolder.getFirstImagePath()).lastModified();
+                                    }
+                                    if (lastModified > lastModified2) {
+                                        allMediaFolder.setFirstImagePath(selfFolder.getFirstImagePath());
+                                        allMediaFolder.setFirstMimeType(selfFolder.getFirstMimeType());
+                                    }
+                                }
                             } else {
                                 if (data.moveToFirst()) {
                                     allMediaFolder.setFirstImagePath(SdkVersionUtils.isQ() ? getFirstUri(data) : getFirstUrl(data));

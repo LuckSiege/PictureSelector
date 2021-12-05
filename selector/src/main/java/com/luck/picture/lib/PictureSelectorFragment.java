@@ -177,9 +177,9 @@ public class PictureSelectorFragment extends PictureCommonFragment
         outState.putInt(PictureConfig.EXTRA_ALL_FOLDER_SIZE, allFolderSize);
         outState.putInt(PictureConfig.EXTRA_CURRENT_PAGE, mPage);
         outState.putInt(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, mRecycler.getLastVisiblePosition());
-        Log.i("YYY", "onSaveInstanceState: " + mRecycler.getLastVisiblePosition());
         outState.putBoolean(PictureConfig.EXTRA_DISPLAY_CAMERA, mAdapter.isDisplayCamera());
         outState.putString(PictureConfig.EXTRA_CURRENT_FIRST_PATH, getFirstImagePath());
+        Log.i("YYY", "onSaveInstanceState: " + getFirstImagePath());
     }
 
     @Override
@@ -210,21 +210,26 @@ public class PictureSelectorFragment extends PictureCommonFragment
      * 完成按钮
      */
     private void initComplete() {
-        completeSelectView.setCompleteSelectViewStyle();
-        completeSelectView.setSelectedChange(false);
-        SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
-        if (selectMainStyle.isCompleteSelectRelativeTop()) {
-            ((ConstraintLayout.LayoutParams)
-                    completeSelectView.getLayoutParams()).topToTop = R.id.title_bar;
-            ((ConstraintLayout.LayoutParams)
-                    completeSelectView.getLayoutParams()).bottomToBottom = R.id.title_bar;
-        }
-        completeSelectView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dispatchTransformResult();
+        if (config.selectionMode == SelectModeConfig.SINGLE && config.isDirectReturnSingle) {
+            PictureSelectionConfig.selectorStyle.getTitleBarStyle().setHideCancelButton(false);
+            titleBar.getTitleCancelView().setVisibility(View.VISIBLE);
+        } else {
+            completeSelectView.setCompleteSelectViewStyle();
+            completeSelectView.setSelectedChange(false);
+            SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
+            if (selectMainStyle.isCompleteSelectRelativeTop()) {
+                ((ConstraintLayout.LayoutParams)
+                        completeSelectView.getLayoutParams()).topToTop = R.id.title_bar;
+                ((ConstraintLayout.LayoutParams)
+                        completeSelectView.getLayoutParams()).bottomToBottom = R.id.title_bar;
             }
-        });
+            completeSelectView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dispatchTransformResult();
+                }
+            });
+        }
     }
 
     /**
@@ -516,6 +521,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
      */
     private void saveFirstImagePath(String firstImagePath) {
         if (getArguments() != null) {
+            Log.i("YYY", "saveFirstImagePath: " + firstImagePath);
             getArguments().putString(PictureConfig.EXTRA_CURRENT_FIRST_PATH, firstImagePath);
         }
     }
@@ -587,6 +593,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
             @Override
             public void onItemClick(View selectedView, int position, LocalMedia media) {
                 if (config.selectionMode == SelectModeConfig.SINGLE && config.isDirectReturnSingle) {
+                    SelectedManager.getSelectedResult().clear();
                     SelectedManager.getSelectedResult().add(media);
                     dispatchTransformResult();
                 } else {
@@ -664,8 +671,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
     public void loadMoreData() {
         if (mRecycler.isEnabledLoadMore()) {
             mPage++;
-            long bucketId = SelectedManager.getCurrentLocalMediaFolder().getBucketId();
-            Log.i("YYY", "loadMoreData: mPage:" + mPage + "--- firstBucketId:" + bucketId);
+            LocalMediaFolder localMediaFolder = SelectedManager.getCurrentLocalMediaFolder();
+            long bucketId = localMediaFolder != null ? localMediaFolder.getBucketId() : 0;
             mLoader.loadPageMediaData(bucketId, mPage, getPageLimit(bucketId), new OnQueryDataResultListener<LocalMedia>() {
                 @Override
                 public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
@@ -686,8 +693,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
                             // 当数据量过少时强制触发一下上拉加载更多，防止没有自动触发加载更多
                             mRecycler.onScrolled(mRecycler.getScrollX(), mRecycler.getScrollY());
                         }
-
-                        Log.i("YYY", "更多: " + currentPosition);
                     }
                 }
             });
@@ -697,12 +702,16 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public void dispatchCameraMediaResult(LocalMedia media) {
+        Log.i("YYY", media.getPath() + "\n" + getFirstImagePath());
         if (TextUtils.equals(media.getPath(), getFirstImagePath())) {
             // 这种情况一般就是拍照时内存不足了，导致Fragment重新创建了，先走的loadAllData已经获取到了拍照生成的这张
             // 如果这里还往下手动添加则会导致重复一张，故只要把新拍的加入选择结果即可
             SelectedManager.getSelectedResult().add(media);
             saveFirstImagePath(media.getPath());
             mAdapter.notifyItemChanged(config.isDisplayCamera ? 1 : 0);
+            if (config.isDirectReturnSingle) {
+                dispatchTransformResult();
+            }
             return;
         }
         int exitsTotalNum = albumListPopWindow.getFirstAlbumImageCount();
@@ -711,20 +720,19 @@ public class PictureSelectorFragment extends PictureCommonFragment
             openCameraNumber++;
         }
         if (config.selectionMode == SelectModeConfig.SINGLE) {
-            String exitsMimeType = SelectedManager.getTopResultMimeType();
-            if (checkOnlyMimeTypeValidity(false, media.getMimeType(), exitsMimeType, media.getDuration())) {
-                if (config.isDirectReturnSingle) {
-                    SelectedManager.getSelectedResult().clear();
-                } else {
-                    List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
-                    boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(exitsMimeType, media.getMimeType());
-                    if (mimeTypeSame || selectedResult.size() == 0) {
-                        if (selectedResult.size() > 0) {
-                            LocalMedia exitsMedia = selectedResult.get(0);
-                            int position = exitsMedia.getPosition();
-                            selectedResult.clear();
-                            mAdapter.notifyItemChanged(position);
-                        }
+            if (config.isDirectReturnSingle) {
+                SelectedManager.getSelectedResult().clear();
+                SelectedManager.getSelectedResult().add(media);
+                dispatchTransformResult();
+            } else {
+                List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
+                boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(SelectedManager.getTopResultMimeType(), media.getMimeType());
+                if (mimeTypeSame || selectedResult.size() == 0) {
+                    if (selectedResult.size() > 0) {
+                        LocalMedia exitsMedia = selectedResult.get(0);
+                        int position = exitsMedia.getPosition();
+                        selectedResult.clear();
+                        mAdapter.notifyItemChanged(position);
                     }
                 }
                 SelectedManager.getSelectedResult().add(media);
