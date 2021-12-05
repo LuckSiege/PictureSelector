@@ -16,6 +16,8 @@ import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.entity.MediaData;
+import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
+import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.utils.MediaUtils;
@@ -364,7 +366,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
     }
 
     @Override
-    public void loadOnlyInAppDirAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
+    public void loadOnlyInAppDirAllMedia(OnQueryAlbumListener<LocalMediaFolder> query) {
         PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<LocalMediaFolder>() {
 
             @Override
@@ -375,8 +377,8 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
             @Override
             public void onSuccess(LocalMediaFolder result) {
                 PictureThreadUtils.cancel(this);
-                if (listener != null) {
-                    listener.onComplete(result);
+                if (query != null) {
+                    query.onComplete(result);
                 }
             }
         });
@@ -388,7 +390,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
      * @param listener
      */
     @Override
-    public void loadAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
+    public void loadAllMedia(OnQueryAllAlbumListener<LocalMediaFolder> query) {
         PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
             @Override
             public List<LocalMediaFolder> doInBackground() {
@@ -521,8 +523,8 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
             @Override
             public void onSuccess(List<LocalMediaFolder> result) {
                 PictureThreadUtils.cancel(this);
-                if (listener != null) {
-                    listener.onComplete(result);
+                if (query != null) {
+                    query.onComplete(result);
                 }
             }
         });

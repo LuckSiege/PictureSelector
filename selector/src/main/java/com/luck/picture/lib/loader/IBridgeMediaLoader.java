@@ -7,6 +7,8 @@ import android.provider.MediaStore;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
+import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
+import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 
 /**
@@ -34,7 +36,7 @@ public class IBridgeMediaLoader {
      * @param listener 回调监听
      * @return
      */
-    public void loadAllMedia(OnQueryDataResultListener<LocalMediaFolder> query) {
+    public void loadAllMedia(OnQueryAllAlbumListener<LocalMediaFolder> query) {
 
     }
 
@@ -44,7 +46,7 @@ public class IBridgeMediaLoader {
      * @param listener 回调监听
      * @return
      */
-    public void loadOnlyInAppDirAllMedia(OnQueryDataResultListener<LocalMediaFolder> query) {
+    public void loadOnlyInAppDirAllMedia(OnQueryAlbumListener<LocalMediaFolder> query) {
 
     }
 

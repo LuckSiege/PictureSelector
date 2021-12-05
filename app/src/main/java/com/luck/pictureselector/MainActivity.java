@@ -39,16 +39,22 @@ import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.dialog.AudioPlayDialog;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CropEngine;
+import com.luck.picture.lib.engine.ExtendLoaderEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.entity.MediaExtraInfo;
 import com.luck.picture.lib.interfaces.OnCallbackIndexListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
+import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
+import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
+import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.language.LanguageConfig;
+import com.luck.picture.lib.loader.SandboxFileLoader;
 import com.luck.picture.lib.style.BottomNavBarStyle;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
@@ -109,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private DragListener mDragListener;
     private int animationMode = AnimationType.DEFAULT_ANIMATION;
     private PictureSelectorStyle selectorStyle;
-    private List<LocalMedia> mData = new ArrayList<>();
+    private final List<LocalMedia> mData = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -236,6 +242,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setSandboxFileEngine(new MeSandboxFileEngine())
                             .setCameraInterceptListener(getCustomCameraEvent())
                             .setEditMediaInterceptListener(getCustomEditMediaEvent())
+                            //.setExtendLoaderEngine(getExtendLoaderEngine())
                             .selectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
                             .setLanguage(language)
                             .isPageStrategy(cbPage.isChecked())
@@ -245,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //.isOnlyObtainSandboxDir(true)
                             .setQuerySandboxDir(getSandboxPath())
                             .isWithSelectVideoImage(true)
+                            .isMaxSelectEnabledMask(cbEnabledMask.isEnabled())
                             .isDirectReturnSingle(cb_single_back.isChecked())
                             .maxSelectNum(maxSelectNum)
                             .maxVideoSelectNum(2)
@@ -515,12 +523,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
+     * 自定义数据加载器
+     *
+     * @return
+     */
+    private ExtendLoaderEngine getExtendLoaderEngine() {
+        return new MeExtendLoaderEngine();
+    }
+
+    /**
      * 自定义编辑事件
      *
      * @return
      */
     private OnMediaEditInterceptListener getCustomEditMediaEvent() {
         return cbEditor.isChecked() ? new MeOnMediaEditInterceptListener() : null;
+    }
+
+    /**
+     * 自定义数据加载器
+     */
+    private class MeExtendLoaderEngine implements ExtendLoaderEngine {
+
+        @Override
+        public void loadAllAlbumData(Context context,
+                                     OnQueryAllAlbumListener<LocalMediaFolder> query) {
+            LocalMediaFolder folder = SandboxFileLoader
+                    .loadInAppSandboxFolderFile(context, getSandboxPath(), false);
+            List<LocalMediaFolder> folders = new ArrayList<>();
+            folders.add(folder);
+            query.onComplete(folders);
+        }
+
+        @Override
+        public void loadOnlyInAppDirAllMediaData(Context context,
+                                                 OnQueryAlbumListener<LocalMediaFolder> query) {
+            LocalMediaFolder folder = SandboxFileLoader
+                    .loadInAppSandboxFolderFile(context, getSandboxPath(), false);
+            query.onComplete(folder);
+        }
+
+        @Override
+        public void loadFirstPageMediaData(Context context, long bucketId, int page, int pageSize, OnQueryDataResultListener<LocalMedia> query) {
+            LocalMediaFolder folder = SandboxFileLoader
+                    .loadInAppSandboxFolderFile(context, getSandboxPath(), false);
+            query.onComplete(folder.getData(), false);
+        }
+
+        @Override
+        public void loadMoreMediaData(Context context, long bucketId, int page, int limit, int pageSize, OnQueryDataResultListener<LocalMedia> query) {
+
+        }
     }
 
     /**

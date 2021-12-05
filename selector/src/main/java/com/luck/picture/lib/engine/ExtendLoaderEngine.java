@@ -5,6 +5,8 @@ import android.content.Context;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
+import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
+import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 
 /**
@@ -27,7 +29,7 @@ public interface ExtendLoaderEngine {
      * @param context
      * @param query
      */
-    void loadAllAlbumData(Context context, OnQueryDataResultListener<LocalMediaFolder> query);
+    void loadAllAlbumData(Context context, OnQueryAllAlbumListener<LocalMediaFolder> query);
 
 
     /**
@@ -44,7 +46,7 @@ public interface ExtendLoaderEngine {
      * @param context
      * @param query
      */
-    void loadOnlyInAppDirAllMediaData(Context context, OnQueryDataResultListener<LocalMediaFolder> query);
+    void loadOnlyInAppDirAllMediaData(Context context, OnQueryAlbumListener<LocalMediaFolder> query);
 
 
     /**
@@ -67,7 +69,8 @@ public interface ExtendLoaderEngine {
      * @param pageSize How many entries per page
      * @param query
      */
-    void loadFirstPageMediaData(Context context, long bucketId, int page, int pageSize, OnQueryDataResultListener<LocalMedia> query);
+    void loadFirstPageMediaData(Context context, long bucketId, int page, int pageSize,
+                                OnQueryDataResultListener<LocalMedia> query);
 
 
     /**

@@ -17,22 +17,4 @@ public class OnQueryDataResultListener<T> {
     public void onComplete(List<T> result,  boolean isHasMore) {
 
     }
-
-    /**
-     * Query all to complete The callback listener
-     *
-     * @param result The data source
-     */
-    public void onComplete(List<T> result) {
-
-    }
-
-    /**
-     * Query all to complete The callback listener
-     *
-     * @param data The data source
-     */
-    public void onComplete(T data) {
-
-    }
 }

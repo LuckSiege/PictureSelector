@@ -12,6 +12,8 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
+import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
+import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
@@ -110,7 +112,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
     }
 
     @Override
-    public void loadOnlyInAppDirAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
+    public void loadOnlyInAppDirAllMedia(OnQueryAlbumListener<LocalMediaFolder> listener) {
          PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<LocalMediaFolder>() {
 
              @Override
@@ -129,7 +131,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
     }
 
     @Override
-    public void loadAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
+    public void loadAllMedia(OnQueryAllAlbumListener<LocalMediaFolder> listener) {
         PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
 
             @Override

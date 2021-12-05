@@ -34,6 +34,7 @@ import com.luck.picture.lib.dialog.PictureCommonDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
+import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.loader.LocalMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaPageLoader;
@@ -285,14 +286,14 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         if (config.isOnlySandboxDir) {
             if (PictureSelectionConfig.loaderDataEngine != null) {
                 PictureSelectionConfig.loaderDataEngine.loadOnlyInAppDirAllMediaData(getContext(),
-                        new OnQueryDataResultListener<LocalMediaFolder>() {
+                        new OnQueryAlbumListener<LocalMediaFolder>() {
                             @Override
                             public void onComplete(LocalMediaFolder folder) {
                                 handleLoadData(folder.getData());
                             }
                         });
             } else {
-                mLoader.loadOnlyInAppDirAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
+                mLoader.loadOnlyInAppDirAllMedia(new OnQueryAlbumListener<LocalMediaFolder>() {
                     @Override
                     public void onComplete(LocalMediaFolder folder) {
                         handleLoadData(folder.getData());

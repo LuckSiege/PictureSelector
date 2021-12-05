@@ -35,6 +35,8 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnAlbumItemClickListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
+import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
+import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.interfaces.OnRecyclerViewPreloadMoreListener;
 import com.luck.picture.lib.loader.LocalMediaLoader;
@@ -394,8 +396,10 @@ public class PictureSelectorFragment extends PictureCommonFragment
                     }
                 } else {
                     // 非分页模式直接导入该相册下的所有资源
-                    setAdapterData(curFolder.getData());
-                    mRecycler.smoothScrollToPosition(0);
+                    if (curFolder.getBucketId() != lastBucketId) {
+                        setAdapterData(curFolder.getData());
+                        mRecycler.smoothScrollToPosition(0);
+                    }
                 }
                 SelectedManager.setCurrentLocalMediaFolder(curFolder);
                 albumListPopWindow.dismiss();
@@ -440,14 +444,14 @@ public class PictureSelectorFragment extends PictureCommonFragment
     public void loadAllAlbumData() {
         if (PictureSelectionConfig.loaderDataEngine != null) {
             PictureSelectionConfig.loaderDataEngine.loadAllAlbumData(getContext(),
-                    new OnQueryDataResultListener<LocalMediaFolder>() {
+                    new OnQueryAllAlbumListener<LocalMediaFolder>() {
                         @Override
                         public void onComplete(List<LocalMediaFolder> result) {
                             handleAllAlbumData(result);
                         }
                     });
         } else {
-            mLoader.loadAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
+            mLoader.loadAllMedia(new OnQueryAllAlbumListener<LocalMediaFolder>() {
 
                 @Override
                 public void onComplete(List<LocalMediaFolder> result) {
@@ -526,7 +530,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
     public void loadOnlyInAppDirectoryAllMediaData() {
         if (PictureSelectionConfig.loaderDataEngine != null) {
             PictureSelectionConfig.loaderDataEngine.loadOnlyInAppDirAllMediaData(getContext(),
-                    new OnQueryDataResultListener<LocalMediaFolder>() {
+                    new OnQueryAlbumListener<LocalMediaFolder>() {
                         @Override
                         public void onComplete(LocalMediaFolder folder) {
                             dismissLoading();
@@ -534,7 +538,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                         }
                     });
         } else {
-            mLoader.loadOnlyInAppDirAllMedia(new OnQueryDataResultListener<LocalMediaFolder>() {
+            mLoader.loadOnlyInAppDirAllMedia(new OnQueryAlbumListener<LocalMediaFolder>() {
                 @Override
                 public void onComplete(LocalMediaFolder folder) {
                     dismissLoading();
