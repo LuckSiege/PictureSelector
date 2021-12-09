@@ -35,7 +35,7 @@ public class GridImageAdapter extends RecyclerView.Adapter<GridImageAdapter.View
     public static final int TYPE_CAMERA = 1;
     public static final int TYPE_PICTURE = 2;
     private final LayoutInflater mInflater;
-    private final List<LocalMedia> list = new ArrayList<>();
+    private final ArrayList<LocalMedia> list = new ArrayList<>();
     private int selectMax = 9;
 
     /**
@@ -63,7 +63,7 @@ public class GridImageAdapter extends RecyclerView.Adapter<GridImageAdapter.View
         this.selectMax = selectMax;
     }
 
-    public List<LocalMedia> getData() {
+    public ArrayList<LocalMedia> getData() {
         return list;
     }
 

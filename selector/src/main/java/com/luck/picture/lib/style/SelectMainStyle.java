@@ -10,6 +10,22 @@ import android.widget.RelativeLayout;
  * @describe：SelectMainStyle
  */
 public class SelectMainStyle implements Parcelable {
+
+    /**
+     * 状态栏背景色
+     */
+    private int statusBarColor;
+
+    /**
+     * 导航栏背景色
+     */
+    private int navigationBarColor;
+
+    /**
+     * 状态栏字体颜色，非黑即白
+     */
+    private boolean isDarkStatusBarBlack = false;
+
     /**
      * 完成按钮从底部放在右上角
      */
@@ -240,6 +256,9 @@ public class SelectMainStyle implements Parcelable {
     }
 
     protected SelectMainStyle(Parcel in) {
+        statusBarColor = in.readInt();
+        navigationBarColor = in.readInt();
+        isDarkStatusBarBlack = in.readByte() != 0;
         isCompleteSelectRelativeTop = in.readByte() != 0;
         isPreviewSelectRelativeBottom = in.readByte() != 0;
         isPreviewDisplaySelectGallery = in.readByte() != 0;
@@ -288,6 +307,9 @@ public class SelectMainStyle implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(statusBarColor);
+        dest.writeInt(navigationBarColor);
+        dest.writeByte((byte) (isDarkStatusBarBlack ? 1 : 0));
         dest.writeByte((byte) (isCompleteSelectRelativeTop ? 1 : 0));
         dest.writeByte((byte) (isPreviewSelectRelativeBottom ? 1 : 0));
         dest.writeByte((byte) (isPreviewDisplaySelectGallery ? 1 : 0));
@@ -350,6 +372,30 @@ public class SelectMainStyle implements Parcelable {
             return new SelectMainStyle[size];
         }
     };
+
+    public int getStatusBarColor() {
+        return statusBarColor;
+    }
+
+    public void setStatusBarColor(int statusBarColor) {
+        this.statusBarColor = statusBarColor;
+    }
+
+    public int getNavigationBarColor() {
+        return navigationBarColor;
+    }
+
+    public void setNavigationBarColor(int navigationBarColor) {
+        this.navigationBarColor = navigationBarColor;
+    }
+
+    public boolean isDarkStatusBarBlack() {
+        return isDarkStatusBarBlack;
+    }
+
+    public void setDarkStatusBarBlack(boolean darkStatusBarBlack) {
+        isDarkStatusBarBlack = darkStatusBarBlack;
+    }
 
     public boolean isCompleteSelectRelativeTop() {
         return isCompleteSelectRelativeTop;

@@ -2,6 +2,7 @@ package com.luck.picture.lib.immersive;
 
 import android.os.Build;
 import android.text.TextUtils;
+
 import com.luck.picture.lib.utils.StringUtils;
 import com.luck.picture.lib.utils.ValueOf;
 

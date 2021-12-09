@@ -23,13 +23,13 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
-import com.luck.picture.lib.photoview.OnViewTapListener;
-import com.luck.picture.lib.photoview.PhotoView;
-import com.luck.picture.lib.utils.MediaUtils;
-import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.large.ImageSource;
 import com.luck.picture.lib.large.ImageViewState;
 import com.luck.picture.lib.large.SubsamplingScaleImageView;
+import com.luck.picture.lib.photoview.OnViewTapListener;
+import com.luck.picture.lib.photoview.PhotoView;
+import com.luck.picture.lib.utils.DensityUtil;
+import com.luck.picture.lib.utils.MediaUtils;
 
 import java.io.File;
 import java.util.List;

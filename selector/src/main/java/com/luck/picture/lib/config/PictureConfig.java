@@ -10,7 +10,7 @@ import com.luck.picture.lib.BuildConfig;
  * @describe : constant
  */
 public final class PictureConfig {
-    private static final String KEY = BuildConfig.LIBRARY_PACKAGE_NAME;
+
     /**
      * 读写权限
      */
@@ -31,6 +31,10 @@ public final class PictureConfig {
      * 录音权限
      */
     public final static String[] RECORD_AUDIO = new String[]{Manifest.permission.RECORD_AUDIO};
+
+    private static final String KEY = BuildConfig.LIBRARY_PACKAGE_NAME;
+
+    public final static String EXTRA_RESULT_SELECTION = "extra_result_media";
 
     public final static String EXTRA_PICTURE_SELECTOR_CONFIG = KEY + ".PictureSelectorConfig";
 
@@ -69,6 +73,8 @@ public final class PictureConfig {
     public final static int DEFAULT_SPAN_COUNT = 4;
 
     public final static int REQUEST_CAMERA = 909;
+
+    public final static int CHOOSE_REQUEST = 188;
 
     public final static int REQUEST_GO_SETTING = 1102;
 

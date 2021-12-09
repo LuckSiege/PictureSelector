@@ -90,7 +90,7 @@ public class CustomCameraView extends RelativeLayout {
     /**
      * 自定义拍照输出路径
      */
-    private String outPutCameraPath;
+    private String outPutCameraDir;
     /**
      * 自定义拍照文件名
      */
@@ -188,13 +188,13 @@ public class CustomCameraView extends RelativeLayout {
                 mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
                 ImageCapture.OutputFileOptions fileOptions;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && TextUtils.isEmpty(outPutCameraPath)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && TextUtils.isEmpty(outPutCameraDir)) {
                     ContentValues contentValues = CameraUtils.buildImageContentValues(outPutCameraFileName, imageFormatForQ);
                     fileOptions = new ImageCapture.OutputFileOptions.Builder(getContext().getContentResolver()
                             , MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues).build();
                 } else {
                     File cameraFile = FileUtils.createCameraFile(getContext(), CameraUtils.TYPE_IMAGE,
-                            outPutCameraFileName, imageFormat, outPutCameraPath);
+                            outPutCameraFileName, imageFormat, outPutCameraDir);
                     fileOptions = new ImageCapture.OutputFileOptions.Builder(cameraFile).build();
                 }
                 mImageCapture.takePicture(fileOptions, ContextCompat.getMainExecutor(getContext()),
@@ -210,13 +210,13 @@ public class CustomCameraView extends RelativeLayout {
                 mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
                 VideoCapture.OutputFileOptions fileOptions;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && TextUtils.isEmpty(outPutCameraPath)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && TextUtils.isEmpty(outPutCameraDir)) {
                     ContentValues contentValues = CameraUtils.buildVideoContentValues(outPutCameraFileName, videoFormatForQ);
                     fileOptions = new VideoCapture.OutputFileOptions.Builder(getContext().getContentResolver(),
                             MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues).build();
                 } else {
                     File cameraFile = FileUtils.createCameraFile(getContext(), CameraUtils.TYPE_VIDEO,
-                            outPutCameraFileName, videoFormat, outPutCameraPath);
+                            outPutCameraFileName, videoFormat, outPutCameraDir);
                     fileOptions = new VideoCapture.OutputFileOptions.Builder(cameraFile).build();
                 }
                 mVideoCapture.startRecording(fileOptions, ContextCompat.getMainExecutor(getContext()),
@@ -328,7 +328,7 @@ public class CustomCameraView extends RelativeLayout {
         boolean isCameraAroundState = extras.getBoolean(SimpleCameraX.EXTRA_CAMERA_AROUND_STATE, false);
         buttonFeatures = extras.getInt(SimpleCameraX.EXTRA_CAMERA_MODE, CustomCameraConfig.BUTTON_STATE_BOTH);
         lensFacing = isCameraAroundState ? CameraSelector.LENS_FACING_FRONT : CameraSelector.LENS_FACING_BACK;
-        outPutCameraPath = extras.getString(SimpleCameraX.EXTRA_OUTPUT_PATH_DIR);
+        outPutCameraDir = extras.getString(SimpleCameraX.EXTRA_OUTPUT_PATH_DIR);
         outPutCameraFileName = extras.getString(SimpleCameraX.EXTRA_CAMERA_FILE_NAME);
         int recordVideoMaxSecond = extras.getInt(SimpleCameraX.EXTRA_RECORD_VIDEO_MAX_SECOND, DEFAULT_MAX_RECORD_VIDEO);
         recordVideoMinSecond = extras.getInt(SimpleCameraX.EXTRA_RECORD_VIDEO_MAX_SECOND, DEFAULT_MIN_RECORD_VIDEO);

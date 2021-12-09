@@ -1,6 +1,6 @@
 package com.luck.picture.lib.interfaces;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author：luck
@@ -14,7 +14,7 @@ public class OnQueryDataResultListener<T> {
      * @param result        The data source
      * @param isHasMore   Is there more
      */
-    public void onComplete(List<T> result,  boolean isHasMore) {
+    public void onComplete(ArrayList<T> result, boolean isHasMore) {
 
     }
 }

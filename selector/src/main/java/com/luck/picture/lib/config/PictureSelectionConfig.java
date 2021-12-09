@@ -8,6 +8,7 @@ import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
 import com.luck.picture.lib.engine.ImageEngine;
+import com.luck.picture.lib.engine.OriginalFileEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
@@ -58,8 +59,6 @@ public final class PictureSelectionConfig implements Parcelable {
     public long filterMinFileSize;
     public int language;
     public boolean zoomAnim;
-    public boolean isOriginalControl;
-    public boolean isDisplayOriginalSize;
     public boolean isDisplayCamera;
     public boolean isGif;
     public boolean isWebp;
@@ -71,7 +70,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isEmptyResultReturn;
     public boolean isHidePreviewDownload;
     public boolean isWithVideoImage;
-    public List<String> filters;
+    public List<String> queryOnlyList;
     public String cameraFileName;
     public boolean isCheckOriginalImage;
     public String outPutCameraDir;
@@ -93,11 +92,18 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isOnlySandboxDir;
     public boolean isCameraForegroundService;
     public boolean isUseBufferPool;
+    public boolean isResultBack;
+    public boolean isActivityResultBack;
+    public boolean isCompressEngine;
+    public boolean isLoaderDataEngine;
+    public boolean isSandboxFileEngine;
+    public boolean isOriginalFileEngine;
 
     public static ImageEngine imageEngine;
     public static CompressEngine compressEngine;
     public static CropEngine cropEngine;
     public static SandboxFileEngine sandboxFileEngine;
+    public static OriginalFileEngine originalFileEngine;
     public static ExtendLoaderEngine loaderDataEngine;
     public static PictureSelectorStyle selectorStyle;
     public static OnCameraInterceptListener interceptCameraListener;
@@ -134,8 +140,6 @@ public final class PictureSelectionConfig implements Parcelable {
         filterMinFileSize = in.readLong();
         language = in.readInt();
         zoomAnim = in.readByte() != 0;
-        isOriginalControl = in.readByte() != 0;
-        isDisplayOriginalSize = in.readByte() != 0;
         isDisplayCamera = in.readByte() != 0;
         isGif = in.readByte() != 0;
         isWebp = in.readByte() != 0;
@@ -147,7 +151,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isEmptyResultReturn = in.readByte() != 0;
         isHidePreviewDownload = in.readByte() != 0;
         isWithVideoImage = in.readByte() != 0;
-        filters = in.createStringArrayList();
+        queryOnlyList = in.createStringArrayList();
         cameraFileName = in.readString();
         isCheckOriginalImage = in.readByte() != 0;
         outPutCameraDir = in.readString();
@@ -169,6 +173,12 @@ public final class PictureSelectionConfig implements Parcelable {
         isOnlySandboxDir = in.readByte() != 0;
         isCameraForegroundService = in.readByte() != 0;
         isUseBufferPool = in.readByte() != 0;
+        isResultBack = in.readByte() != 0;
+        isActivityResultBack = in.readByte() != 0;
+        isCompressEngine = in.readByte() != 0;
+        isLoaderDataEngine = in.readByte() != 0;
+        isSandboxFileEngine = in.readByte() != 0;
+        isOriginalFileEngine = in.readByte() != 0;
     }
 
     @Override
@@ -199,8 +209,6 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeLong(filterMinFileSize);
         dest.writeInt(language);
         dest.writeByte((byte) (zoomAnim ? 1 : 0));
-        dest.writeByte((byte) (isOriginalControl ? 1 : 0));
-        dest.writeByte((byte) (isDisplayOriginalSize ? 1 : 0));
         dest.writeByte((byte) (isDisplayCamera ? 1 : 0));
         dest.writeByte((byte) (isGif ? 1 : 0));
         dest.writeByte((byte) (isWebp ? 1 : 0));
@@ -212,7 +220,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isEmptyResultReturn ? 1 : 0));
         dest.writeByte((byte) (isHidePreviewDownload ? 1 : 0));
         dest.writeByte((byte) (isWithVideoImage ? 1 : 0));
-        dest.writeStringList(filters);
+        dest.writeStringList(queryOnlyList);
         dest.writeString(cameraFileName);
         dest.writeByte((byte) (isCheckOriginalImage ? 1 : 0));
         dest.writeString(outPutCameraDir);
@@ -234,6 +242,12 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isOnlySandboxDir ? 1 : 0));
         dest.writeByte((byte) (isCameraForegroundService ? 1 : 0));
         dest.writeByte((byte) (isUseBufferPool ? 1 : 0));
+        dest.writeByte((byte) (isResultBack ? 1 : 0));
+        dest.writeByte((byte) (isActivityResultBack ? 1 : 0));
+        dest.writeByte((byte) (isCompressEngine ? 1 : 0));
+        dest.writeByte((byte) (isLoaderDataEngine ? 1 : 0));
+        dest.writeByte((byte) (isSandboxFileEngine ? 1 : 0));
+        dest.writeByte((byte) (isOriginalFileEngine ? 1 : 0));
     }
 
     @Override
@@ -271,7 +285,6 @@ public final class PictureSelectionConfig implements Parcelable {
         recordVideoMaxSecond = 60;
         recordVideoMinSecond = 0;
         imageSpanCount = PictureConfig.DEFAULT_SPAN_COUNT;
-        isOriginalControl = false;
         isCameraAroundState = false;
         isWithVideoImage = false;
         isDisplayCamera = true;
@@ -294,7 +307,7 @@ public final class PictureSelectionConfig implements Parcelable {
         cameraVideoFormatForQ = PictureMimeType.MIME_TYPE_VIDEO;
         cameraAudioFormatForQ = PictureMimeType.MIME_TYPE_AUDIO_AMR;
         cameraFileName = "";
-        filters = new ArrayList<>();
+        queryOnlyList = new ArrayList<>();
         outPutCameraDir = "";
         sandboxDir = "";
         originalPath = "";
@@ -310,12 +323,17 @@ public final class PictureSelectionConfig implements Parcelable {
         isAutoRotating = true;
         isSyncCover = !SdkVersionUtils.isQ();
         isAutoScalePreviewImage = true;
-        isDisplayOriginalSize = true;
         ofAllCameraType = SelectMimeType.ofAll();
         isOnlySandboxDir = false;
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
         isCameraForegroundService = true;
         isUseBufferPool = true;
+        isResultBack = true;
+        isActivityResultBack = false;
+        isCompressEngine = false;
+        isLoaderDataEngine = false;
+        isSandboxFileEngine = false;
+        isOriginalFileEngine = false;
     }
 
 
@@ -351,6 +369,7 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.compressEngine = null;
         PictureSelectionConfig.cropEngine = null;
         PictureSelectionConfig.sandboxFileEngine = null;
+        PictureSelectionConfig.originalFileEngine = null;
         PictureSelectionConfig.loaderDataEngine = null;
         PictureSelectionConfig.interceptCameraListener = null;
         PictureSelectionConfig.previewEventListener = null;

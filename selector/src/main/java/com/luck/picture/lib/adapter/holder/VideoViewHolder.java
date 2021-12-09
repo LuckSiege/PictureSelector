@@ -11,8 +11,8 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.style.SelectMainStyle;
-import com.luck.picture.lib.utils.StyleUtils;
 import com.luck.picture.lib.utils.DateUtils;
+import com.luck.picture.lib.utils.StyleUtils;
 
 /**
  * @author：luck

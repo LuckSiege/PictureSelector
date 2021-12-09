@@ -1,11 +1,16 @@
 package com.luck.picture.lib.basic;
 
 import android.app.Activity;
+import android.content.Intent;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.entity.LocalMedia;
+
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 /**
  * @author：luck
@@ -76,6 +81,28 @@ public final class PictureSelector {
      */
     public PictureSelectionModel openPreview() {
         return new PictureSelectionModel(this);
+    }
+
+    /**
+     * set result
+     *
+     * @param data result
+     * @return
+     */
+    public static Intent putIntentResult(ArrayList<LocalMedia> data) {
+        return new Intent().putParcelableArrayListExtra(PictureConfig.EXTRA_RESULT_SELECTION, data);
+    }
+
+    /**
+     * @param intent
+     * @return get Selector  LocalMedia
+     */
+    public static ArrayList<LocalMedia> obtainSelectorList(Intent intent) {
+        if (intent == null) {
+            return new ArrayList<>();
+        }
+        ArrayList<LocalMedia> result = intent.getParcelableArrayListExtra(PictureConfig.EXTRA_RESULT_SELECTION);
+        return result != null ? result : new ArrayList<>();
     }
 
     /**

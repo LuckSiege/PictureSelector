@@ -8,7 +8,6 @@ import com.luck.picture.lib.config.CustomField;
 import com.luck.picture.lib.entity.LocalMedia;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author：luck
@@ -39,6 +38,6 @@ public interface CropEngine {
      * @param dataSource        crop data
      * @param requestCode       Activity result code or fragment result code
      */
-    void onStartCrop(Fragment fragment, LocalMedia currentLocalMedia, List<LocalMedia> dataSource, int requestCode);
+    void onStartCrop(Fragment fragment, LocalMedia currentLocalMedia, ArrayList<LocalMedia> dataSource, int requestCode);
 
 }

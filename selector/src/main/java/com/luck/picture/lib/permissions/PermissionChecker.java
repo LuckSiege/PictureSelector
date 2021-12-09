@@ -9,7 +9,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-
 import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
 

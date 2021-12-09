@@ -16,8 +16,8 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.BottomNavBarStyle;
 import com.luck.picture.lib.style.PictureSelectorStyle;
-import com.luck.picture.lib.utils.PictureFileUtils;
 import com.luck.picture.lib.utils.DensityUtil;
+import com.luck.picture.lib.utils.PictureFileUtils;
 import com.luck.picture.lib.utils.StyleUtils;
 
 /**
@@ -78,7 +78,7 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
         }
         PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
         BottomNavBarStyle bottomBarStyle = selectorStyle.getBottomBarStyle();
-        if (config.isOriginalControl) {
+        if (PictureSelectionConfig.originalFileEngine != null) {
             originalCheckbox.setVisibility(View.VISIBLE);
             int originalDrawableLeft = bottomBarStyle.getBottomOriginalDrawableLeft();
             if (StyleUtils.checkStyleValidity(originalDrawableLeft)) {
@@ -210,7 +210,7 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
      * 计算原图大小
      */
     private void calculateFileTotalSize() {
-        if (config.isOriginalControl && config.isDisplayOriginalSize) {
+        if (PictureSelectionConfig.originalFileEngine != null) {
             long totalSize = 0;
             for (int i = 0; i < SelectedManager.getCount(); i++) {
                 LocalMedia media = SelectedManager.getSelectedResult().get(i);

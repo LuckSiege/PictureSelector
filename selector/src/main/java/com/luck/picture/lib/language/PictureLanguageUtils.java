@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
+
 import androidx.annotation.NonNull;
+
 import java.lang.ref.WeakReference;
 import java.util.Locale;
 

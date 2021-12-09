@@ -1,6 +1,6 @@
 package com.luck.picture.lib.entity;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author：luck
@@ -17,14 +17,14 @@ public class MediaData {
     /**
      * data
      */
-    public List<LocalMedia> data;
+    public ArrayList<LocalMedia> data;
 
 
     public MediaData() {
         super();
     }
 
-    public MediaData(boolean isHasNextMore, List<LocalMedia> data) {
+    public MediaData(boolean isHasNextMore, ArrayList<LocalMedia> data) {
         super();
         this.isHasNextMore = isHasNextMore;
         this.data = data;

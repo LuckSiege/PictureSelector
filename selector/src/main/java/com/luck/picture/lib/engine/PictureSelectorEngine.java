@@ -18,6 +18,34 @@ public interface PictureSelectorEngine {
     ImageEngine createImageLoaderEngine();
 
     /**
+     * Create compress Engine
+     *
+     * @return
+     */
+    CompressEngine createCompressEngine();
+
+    /**
+     * Create loader data Engine
+     *
+     * @return
+     */
+    ExtendLoaderEngine createLoaderDataEngine();
+
+    /**
+     * Create SandboxFileEngine  Engine
+     *
+     * @return
+     */
+    SandboxFileEngine createSandboxFileEngine();
+
+    /**
+     * Create OriginalFileEngine  Engine
+     *
+     * @return
+     */
+    OriginalFileEngine createOriginalFileEngine();
+
+    /**
      * Create Result Listener
      *
      * @return

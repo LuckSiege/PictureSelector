@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import com.luck.picture.lib.config.PictureConfig;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author：luck
@@ -50,7 +49,7 @@ public class LocalMediaFolder implements Parcelable {
      * In isPageStrategy mode, there is no data for the first time
      * </p>
      */
-    private List<LocalMedia> data = new ArrayList<>();
+    private ArrayList<LocalMedia> data = new ArrayList<>();
 
     /**
      * # Internal use
@@ -151,11 +150,11 @@ public class LocalMediaFolder implements Parcelable {
         this.firstImagePath = firstImagePath;
     }
 
-    public List<LocalMedia> getData() {
+    public ArrayList<LocalMedia> getData() {
         return data != null ? data : new ArrayList<>();
     }
 
-    public void setData(List<LocalMedia> data) {
+    public void setData(ArrayList<LocalMedia> data) {
         this.data = data;
     }
 

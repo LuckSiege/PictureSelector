@@ -1,5 +1,7 @@
 package com.luck.picture.lib.basic;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -12,7 +14,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -229,7 +230,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Nullable
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        Log.i("YYY", "onCreateAnimation: " + System.currentTimeMillis());
         PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
         if (enter) {
             return AnimationUtils.loadAnimation(getActivity(), windowAnimationStyle.activityEnterAnimation);
@@ -713,13 +713,13 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
 
-                List<LocalMedia> result = new ArrayList<>(selectedResult);
+                ArrayList<LocalMedia> result = new ArrayList<>(selectedResult);
                 if (checkCompressValidity()) {
                     showLoading();
                     PictureSelectionConfig.compressEngine.onStartCompress(getContext(), result,
-                            new OnCallbackListener<List<LocalMedia>>() {
+                            new OnCallbackListener<ArrayList<LocalMedia>>() {
                                 @Override
-                                public void onCall(List<LocalMedia> result) {
+                                public void onCall(ArrayList<LocalMedia> result) {
                                     onResultEvent(result);
                                 }
                             });
@@ -882,8 +882,8 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      * 分发处理结果，比如压缩、裁剪、沙盒路径转换
      */
     protected void dispatchTransformResult() {
-        List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
-        List<LocalMedia> result = new ArrayList<>(selectedResult);
+        ArrayList<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
+        ArrayList<LocalMedia> result = new ArrayList<>(selectedResult);
         if (checkCropValidity()) {
             LocalMedia currentLocalMedia = null;
             for (int i = 0; i < result.size(); i++) {
@@ -897,9 +897,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         } else if (checkCompressValidity()) {
             showLoading();
             PictureSelectionConfig.compressEngine.onStartCompress(getContext(), result,
-                    new OnCallbackListener<List<LocalMedia>>() {
+                    new OnCallbackListener<ArrayList<LocalMedia>>() {
                         @Override
-                        public void onCall(List<LocalMedia> result) {
+                        public void onCall(ArrayList<LocalMedia> result) {
                             onResultEvent(result);
                         }
                     });
@@ -970,21 +970,57 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      * 返回处理完成后的选择结果
      */
     @Override
-    public void onResultEvent(List<LocalMedia> result) {
+    public void onResultEvent(ArrayList<LocalMedia> result) {
+        if (config.isCheckOriginalImage && PictureSelectionConfig.originalFileEngine != null) {
+            showLoading();
+            for (int i = 0; i < result.size(); i++) {
+                LocalMedia media = result.get(i);
+                PictureSelectionConfig.originalFileEngine.onStartOriginalFileTransform(getContext(), i,
+                        media, new OnCallbackIndexListener<LocalMedia>() {
+                            @Override
+                            public void onCall(LocalMedia data, int index) {
+                                if (result.size() > index) {
+                                    LocalMedia media = result.get(index);
+                                    media.setOriginalPath(data.getOriginalPath());
+                                    media.setOriginal(!TextUtils.isEmpty(data.getOriginalPath()));
+                                }
+                                if (index == result.size() - 1) {
+                                    callBackResult(result);
+                                }
+                            }
+                        });
+            }
+        } else {
+            callBackResult(result);
+        }
+    }
+
+    /**
+     * 返回结果
+     */
+    private void callBackResult(ArrayList<LocalMedia> result) {
         dismissLoading();
         if (PictureSelectionConfig.resultCallListener != null) {
             PictureSelectionConfig.resultCallListener.onResult(result);
         }
+        SelectorResult selectorResult = getResult(RESULT_OK, result);
+        if (!ActivityCompatHelper.isDestroy(getActivity())) {
+            getActivity().setResult(selectorResult.mResultCode, selectorResult.mResultData);
+        }
         if (config.isOnlyCamera) {
             if (!ActivityCompatHelper.isDestroy(getActivity())) {
                 getActivity().getSupportFragmentManager().popBackStack();
+                if (config.isActivityResultBack && iBridgePictureBehavior == null) {
+                    throw new IllegalArgumentException(getActivity().toString()
+                            + " please must implement IBridgePictureBehavior onSelectFinish");
+                }
+                if (iBridgePictureBehavior != null) {
+                    iBridgePictureBehavior.onSelectFinish(true, selectorResult);
+                }
             }
         } else {
-            if (this instanceof PictureSelectorPreviewFragment) {
-                iBridgePictureBehavior.onImmediateFinish();
-            } else {
-                iBridgePictureBehavior.onFinish();
-            }
+            boolean isForcedExit = this instanceof PictureSelectorPreviewFragment;
+            iBridgePictureBehavior.onSelectFinish(isForcedExit, selectorResult);
         }
         PictureSelectionConfig.destroy();
     }
@@ -1041,8 +1077,13 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     public void onAttach(@NonNull Context context) {
         initAppLanguage();
         createImageLoaderEngine();
+        createCompressEngine();
+        createSandboxFileEngine();
+        createOriginalFileEngine();
+        createLoaderDataEngine();
         createResultCallbackListener();
         super.onAttach(context);
+
         if (getParentFragment() instanceof IBridgePictureBehavior) {
             iBridgePictureBehavior = (IBridgePictureBehavior) getParentFragment();
         } else if (context instanceof IBridgePictureBehavior) {
@@ -1075,14 +1116,93 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
 
     /**
+     * Get the image loader data engine again, provided that the user implements the IApp interface in the Application
+     */
+    private void createLoaderDataEngine() {
+        if (PictureSelectionConfig.getInstance().isLoaderDataEngine) {
+            if (PictureSelectionConfig.loaderDataEngine == null) {
+                PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
+                if (baseEngine != null)
+                    PictureSelectionConfig.loaderDataEngine = baseEngine.createLoaderDataEngine();
+            }
+        }
+    }
+
+    /**
+     * Get the image compress engine again, provided that the user implements the IApp interface in the Application
+     */
+    private void createCompressEngine() {
+        if (PictureSelectionConfig.getInstance().isCompressEngine) {
+            if (PictureSelectionConfig.compressEngine == null) {
+                PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
+                if (baseEngine != null)
+                    PictureSelectionConfig.compressEngine = baseEngine.createCompressEngine();
+            }
+        }
+    }
+
+
+    /**
+     * Get the Sandbox engine again, provided that the user implements the IApp interface in the Application
+     */
+    private void createSandboxFileEngine() {
+        if (PictureSelectionConfig.getInstance().isSandboxFileEngine) {
+            if (PictureSelectionConfig.sandboxFileEngine == null) {
+                PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
+                if (baseEngine != null)
+                    PictureSelectionConfig.sandboxFileEngine = baseEngine.createSandboxFileEngine();
+            }
+        }
+    }
+
+    /**
+     * Get the OriginalFileEngine engine again, provided that the user implements the IApp interface in the Application
+     */
+    private void createOriginalFileEngine() {
+        if (PictureSelectionConfig.getInstance().isOriginalFileEngine) {
+            if (PictureSelectionConfig.originalFileEngine == null) {
+                PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
+                if (baseEngine != null)
+                    PictureSelectionConfig.originalFileEngine = baseEngine.createOriginalFileEngine();
+            }
+        }
+    }
+
+    /**
      * Retrieve the result callback listener, provided that the user implements the IApp interface in the Application
      */
     private void createResultCallbackListener() {
-        if (PictureSelectionConfig.resultCallListener == null) {
-            PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
-            if (baseEngine != null) {
-                PictureSelectionConfig.resultCallListener = baseEngine.getResultCallbackListener();
+        if (PictureSelectionConfig.getInstance().isResultBack) {
+            if (PictureSelectionConfig.resultCallListener == null) {
+                PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
+                if (baseEngine != null) {
+                    PictureSelectionConfig.resultCallListener = baseEngine.getResultCallbackListener();
+                }
             }
+        }
+    }
+
+    /**
+     * generate result
+     *
+     * @param data result
+     * @return
+     */
+    protected SelectorResult getResult(int resultCode, ArrayList<LocalMedia> data) {
+        return new SelectorResult(resultCode, PictureSelector.putIntentResult(data));
+    }
+
+    /**
+     * SelectorResult
+     */
+    public static class SelectorResult {
+
+        public int mResultCode;
+        public Intent mResultData;
+
+        public SelectorResult(int resultCode, Intent data) {
+            mResultCode = resultCode;
+            mResultData = data;
         }
     }
 }

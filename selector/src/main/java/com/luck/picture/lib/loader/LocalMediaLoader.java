@@ -14,7 +14,6 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
-import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.SortUtils;
@@ -106,28 +105,28 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
     }
 
 
-    public LocalMediaLoader(Context context,PictureSelectionConfig config) {
+    public LocalMediaLoader(Context context, PictureSelectionConfig config) {
         this.mContext = context;
         this.config = config;
     }
 
     @Override
     public void loadOnlyInAppDirAllMedia(OnQueryAlbumListener<LocalMediaFolder> listener) {
-         PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<LocalMediaFolder>() {
+        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<LocalMediaFolder>() {
 
-             @Override
-             public LocalMediaFolder doInBackground() {
-                 return SandboxFileLoader.loadInAppSandboxFolderFile(mContext, config.sandboxDir, config.isGif);
-             }
+            @Override
+            public LocalMediaFolder doInBackground() {
+                return SandboxFileLoader.loadInAppSandboxFolderFile(mContext, config.sandboxDir);
+            }
 
-             @Override
-             public void onSuccess(LocalMediaFolder result) {
-                 PictureThreadUtils.cancel(this);
-                 if (listener != null) {
-                     listener.onComplete(result);
-                 }
-             }
-         });
+            @Override
+            public void onSuccess(LocalMediaFolder result) {
+                PictureThreadUtils.cancel(this);
+                if (listener != null) {
+                    listener.onComplete(result);
+                }
+            }
+        });
     }
 
     @Override
@@ -142,7 +141,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                 try {
                     if (data != null) {
                         LocalMediaFolder allImageFolder = new LocalMediaFolder();
-                        List<LocalMedia> latelyImages = new ArrayList<>();
+                        ArrayList<LocalMedia> latelyImages = new ArrayList<>();
                         int count = data.getCount();
                         if (count > 0) {
                             int idColumn = data.getColumnIndexOrThrow(PROJECTION[0]);
@@ -163,7 +162,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                 String mimeType = data.getString(mimeTypeColumn);
                                 mimeType = TextUtils.isEmpty(mimeType) ? PictureMimeType.ofJPEG() : mimeType;
                                 String absolutePath = data.getString(dataColumn);
-                                String url = SdkVersionUtils.isQ() ? PictureMimeType.getRealPathUri(id,mimeType) : absolutePath;
+                                String url = SdkVersionUtils.isQ() ? PictureMimeType.getRealPathUri(id, mimeType) : absolutePath;
                                 // Here, it is solved that some models obtain mimeType and return the format of image / *,
                                 // which makes it impossible to distinguish the specific type, such as mi 8,9,10 and other models
                                 if (mimeType.endsWith("image/*")) {
@@ -216,7 +215,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                     }
                                 }
                                 LocalMedia image = LocalMedia.parseLocalMedia(id, url, absolutePath, fileName, folderName, duration, config.chooseMode, mimeType, width, height, size, bucketId, data.getLong(dateAddedColumn));
-                                LocalMediaFolder folder = getImageFolder(url,mimeType, folderName, imageFolders);
+                                LocalMediaFolder folder = getImageFolder(url, mimeType, folderName, imageFolders);
                                 folder.setBucketId(image.getBucketId());
                                 List<LocalMedia> images = folder.getData();
                                 images.add(image);
@@ -228,7 +227,8 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
 
                             } while (data.moveToNext());
 
-                            LocalMediaFolder selfFolder = SandboxFileLoader.loadInAppSandboxFolderFile(mContext, config.sandboxDir,config.isGif);
+                            LocalMediaFolder selfFolder = SandboxFileLoader
+                                    .loadInAppSandboxFolderFile(mContext, config.sandboxDir);
                             if (selfFolder != null) {
                                 imageFolders.add(selfFolder);
                                 allImageFolder.setFolderTotalNum(allImageFolder.getFolderTotalNum() + selfFolder.getFolderTotalNum());
@@ -327,7 +327,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
      * @param folderName
      * @return
      */
-    private LocalMediaFolder getImageFolder(String firstPath,String firstMimeType, String folderName, List<LocalMediaFolder> imageFolders) {
+    private LocalMediaFolder getImageFolder(String firstPath, String firstMimeType, String folderName, List<LocalMediaFolder> imageFolders) {
         for (LocalMediaFolder folder : imageFolders) {
             // Under the same folder, return yourself, otherwise create a new folder
             String name = folder.getFolderName();
@@ -373,7 +373,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
     }
 
     private String getQueryMimeCondition() {
-        List<String> filters = config.filters;
+        List<String> filters = config.queryOnlyList;
         HashSet<String> filterSet = new HashSet<>(filters);
         Iterator<String> iterator = filterSet.iterator();
         StringBuilder stringBuilder = new StringBuilder();

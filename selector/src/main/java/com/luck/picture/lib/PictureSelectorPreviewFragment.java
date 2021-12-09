@@ -2,6 +2,7 @@ package com.luck.picture.lib;
 
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -70,7 +71,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         return fragment;
     }
 
-    private List<LocalMedia> mData = new ArrayList<>();
+    private ArrayList<LocalMedia> mData = new ArrayList<>();
 
     private PreviewTitleBar titleBar;
 
@@ -137,7 +138,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      */
     public void setInternalPreviewData(boolean isBottomPreview, String currentAlbum, boolean isShowCamera,
                                        int position, int totalNum, int page, long currentBucketId,
-                                       List<LocalMedia> data) {
+                                       ArrayList<LocalMedia> data) {
         this.mPage = page;
         this.mBucketId = currentBucketId;
         this.mData = data;
@@ -156,7 +157,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * @param data            预览数据源
      * @param isDisplayDelete 是否显示删除按钮
      */
-    public void setExternalPreviewData(int position, int totalNum, List<LocalMedia> data, boolean isDisplayDelete) {
+    public void setExternalPreviewData(int position, int totalNum, ArrayList<LocalMedia> data, boolean isDisplayDelete) {
         this.mData = data;
         this.totalNum = totalNum;
         this.curPosition = position;
@@ -305,14 +306,14 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 PictureSelectionConfig.loaderDataEngine.loadFirstPageMediaData(getContext(),
                         mBucketId, 1, pageSize, new OnQueryDataResultListener<LocalMedia>() {
                             @Override
-                            public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                            public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {
                                 handleLoadData(result);
                             }
                         });
             } else {
                 mLoader.loadFirstPageMedia(mBucketId, pageSize, new OnQueryDataResultListener<LocalMedia>() {
                     @Override
-                    public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                    public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {
                         handleLoadData(result);
                     }
                 });
@@ -320,13 +321,13 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         }
     }
 
-    private void handleLoadData(List<LocalMedia> result) {
+    private void handleLoadData(ArrayList<LocalMedia> result) {
         if (ActivityCompatHelper.isDestroy(getActivity())) {
             return;
         }
         mData = result;
         if (mData.size() == 0) {
-            iBridgePictureBehavior.onFinish();
+            iBridgePictureBehavior.onSelectFinish(false,null);
             return;
         }
         // 这里的作用主要是防止内存不足情况下重新load了数据，此时LocalMedia是没有position的
@@ -348,14 +349,14 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             PictureSelectionConfig.loaderDataEngine.loadMoreMediaData(getContext(), mBucketId, mPage,
                     config.pageSize, config.pageSize, new OnQueryDataResultListener<LocalMedia>() {
                         @Override
-                        public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                        public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {
                             handleMoreData(result, isHasMore);
                         }
                     });
         } else {
             mLoader.loadPageMediaData(mBucketId, mPage, config.pageSize,new OnQueryDataResultListener<LocalMedia>() {
                         @Override
-                        public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                        public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {
                             handleMoreData(result, isHasMore);
                         }
                     });
@@ -458,7 +459,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 if (isExternalPreview) {
                     handleExternalPreviewBack();
                 } else {
-                    iBridgePictureBehavior.onFinish();
+                    iBridgePictureBehavior.onSelectFinish(false,null);
                 }
             }
         });
@@ -571,7 +572,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private void handleExternalPreviewBack() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
             if (getActivity() instanceof PictureSelectorSupporterActivity) {
-                iBridgePictureBehavior.onFinish();
+                iBridgePictureBehavior.onSelectFinish(false,null);
             } else {
                 getActivity().getSupportFragmentManager().popBackStack();
             }
@@ -626,7 +627,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 if (isExternalPreview) {
                     handleExternalPreviewBack();
                 } else {
-                    iBridgePictureBehavior.onFinish();
+                    iBridgePictureBehavior.onSelectFinish(false, null);
                 }
             }
 

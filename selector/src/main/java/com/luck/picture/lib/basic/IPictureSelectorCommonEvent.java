@@ -5,9 +5,7 @@ import android.content.Intent;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 
-import org.json.JSONObject;
-
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author：luck
@@ -158,7 +156,7 @@ public interface IPictureSelectorCommonEvent {
      *
      * @param result
      */
-    void onResultEvent(List<LocalMedia> result);
+    void onResultEvent(ArrayList<LocalMedia> result);
 
     /**
      * show loading

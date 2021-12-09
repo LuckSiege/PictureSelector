@@ -33,7 +33,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.exifinterface.media.ExifInterface;
 
-
 import com.luck.picture.lib.R;
 
 import java.lang.ref.WeakReference;

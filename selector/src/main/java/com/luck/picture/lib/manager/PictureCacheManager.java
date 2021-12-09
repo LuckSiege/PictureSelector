@@ -2,6 +2,7 @@ package com.luck.picture.lib.manager;
 
 import android.content.Context;
 import android.os.Environment;
+
 import com.luck.picture.lib.basic.PictureMediaScannerConnection;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.interfaces.OnCallbackListener;

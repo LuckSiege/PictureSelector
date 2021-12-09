@@ -21,6 +21,7 @@ import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
 import com.luck.picture.lib.engine.ImageEngine;
+import com.luck.picture.lib.engine.OriginalFileEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
@@ -122,6 +123,9 @@ public class PictureSelectionModel {
     public PictureSelectionModel setCompressEngine(CompressEngine engine) {
         if (PictureSelectionConfig.compressEngine != engine) {
             PictureSelectionConfig.compressEngine = engine;
+            selectionConfig.isCompressEngine = true;
+        } else {
+            selectionConfig.isCompressEngine = false;
         }
         return this;
     }
@@ -140,7 +144,7 @@ public class PictureSelectionModel {
     }
 
     /**
-     * App Sandbox path transform
+     * App Sandbox file path transform
      *
      * @param engine App Sandbox path transform
      * @return
@@ -148,6 +152,25 @@ public class PictureSelectionModel {
     public PictureSelectionModel setSandboxFileEngine(SandboxFileEngine engine) {
         if (SdkVersionUtils.isQ() && PictureSelectionConfig.sandboxFileEngine != engine) {
             PictureSelectionConfig.sandboxFileEngine = engine;
+            selectionConfig.isSandboxFileEngine = true;
+        } else {
+            selectionConfig.isSandboxFileEngine = false;
+        }
+        return this;
+    }
+
+    /**
+     * App original file path transform
+     *
+     * @param engine App Sandbox path transform
+     * @return
+     */
+    public PictureSelectionModel setOriginalFileEngine(OriginalFileEngine engine) {
+        if (SdkVersionUtils.isQ() && PictureSelectionConfig.originalFileEngine != engine) {
+            PictureSelectionConfig.originalFileEngine = engine;
+            selectionConfig.isOriginalFileEngine = true;
+        } else {
+            selectionConfig.isOriginalFileEngine = false;
         }
         return this;
     }
@@ -166,6 +189,9 @@ public class PictureSelectionModel {
     public PictureSelectionModel setExtendLoaderEngine(ExtendLoaderEngine engine) {
         if (PictureSelectionConfig.loaderDataEngine != engine) {
             PictureSelectionConfig.loaderDataEngine = engine;
+            selectionConfig.isLoaderDataEngine = true;
+        } else {
+            selectionConfig.isLoaderDataEngine = false;
         }
         return this;
     }
@@ -380,10 +406,7 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel isDirectReturnSingle(boolean isDirectReturn) {
-        selectionConfig.isDirectReturnSingle = selectionConfig.selectionMode
-                == SelectModeConfig.SINGLE && isDirectReturn;
-        selectionConfig.isOriginalControl = (selectionConfig.selectionMode != SelectModeConfig.SINGLE
-                || !isDirectReturn) && selectionConfig.isOriginalControl;
+        selectionConfig.isDirectReturnSingle = selectionConfig.selectionMode  == SelectModeConfig.SINGLE && isDirectReturn;
         return this;
     }
 
@@ -582,27 +605,6 @@ public class PictureSelectionModel {
     }
 
     /**
-     * @param isOriginalControl Whether the original image is displayed
-     * @return
-     */
-    public PictureSelectionModel isOriginalImageControl(boolean isOriginalControl) {
-        selectionConfig.isOriginalControl = !selectionConfig.isOnlyCamera
-                && selectionConfig.chooseMode != SelectMimeType.ofVideo()
-                && selectionConfig.chooseMode != SelectMimeType.ofAudio() && isOriginalControl;
-        return this;
-    }
-
-    /**
-     * @param isDisplayOriginalSize Whether the original image size is displayed
-     * @return
-     */
-    public PictureSelectionModel isDisplayOriginalSize(boolean isDisplayOriginalSize) {
-        selectionConfig.isDisplayOriginalSize = !selectionConfig.isOnlyCamera && isDisplayOriginalSize;
-        return this;
-    }
-
-
-    /**
      * Camera custom local file name
      * # Such as xxx.png
      *
@@ -718,14 +720,14 @@ public class PictureSelectionModel {
     }
 
     /**
-     * query specified mimeType
+     * query only mimeType
      *
-     * @param values Use example {@link { image/jpeg or image/png ... }}
+     * @param mimeTypes Use example {@link { image/jpeg or image/png ... }}
      * @return
      */
-    public PictureSelectionModel filterMimeType(String... values) {
-        if (values != null && values.length > 0) {
-            selectionConfig.filters.addAll(Arrays.asList(values));
+    public PictureSelectionModel queryOnlyMimeType(String... mimeTypes) {
+        if (mimeTypes != null && mimeTypes.length > 0) {
+            selectionConfig.queryOnlyList.addAll(Arrays.asList(mimeTypes));
         }
         return this;
     }
@@ -881,13 +883,10 @@ public class PictureSelectionModel {
             }
             if (ActivityCompatHelper.checkFragmentNonExits((FragmentActivity) activity, PictureSelectorPreviewFragment.TAG)) {
                 PictureSelectorPreviewFragment fragment = PictureSelectorPreviewFragment.newInstance();
-                List<LocalMedia> previewData = new ArrayList<>(list);
+                ArrayList<LocalMedia> previewData = new ArrayList<>(list);
                 PictureSelectionConfig.selectorStyle.getSelectMainStyle().setPreviewDisplaySelectGallery(false);
                 fragment.setExternalPreviewData(position, previewData.size(), previewData, isDisplayDelete);
-                fragmentManager.beginTransaction()
-                        .add(android.R.id.content, fragment, PictureSelectorPreviewFragment.TAG)
-                        .addToBackStack(PictureSelectorPreviewFragment.TAG)
-                        .commitAllowingStateLoss();
+                FragmentInjectManager.injectSystemRoomFragment(fragmentManager, PictureSelectorPreviewFragment.TAG, fragment);
             }
         }
     }
@@ -900,7 +899,7 @@ public class PictureSelectionModel {
      * @param isDisplayDelete if visible delete
      * @param listener
      */
-    public void startActivityPreview(int position, List<LocalMedia> list, boolean isDisplayDelete,
+    public void startActivityPreview(int position, ArrayList<LocalMedia> list, boolean isDisplayDelete,
                                      OnExternalPreviewEventListener listener) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
@@ -945,6 +944,8 @@ public class PictureSelectionModel {
                 throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
             }
             // 绑定回调监听
+            selectionConfig.isResultBack = true;
+            selectionConfig.isActivityResultBack = false;
             PictureSelectionConfig.resultCallListener = call;
             if (selectionConfig.isOnlyCamera) {
                 FragmentManager fragmentManager = null;
@@ -957,15 +958,52 @@ public class PictureSelectionModel {
                     throw new NullPointerException(" FragmentManager is empty ");
                 }
                 if (ActivityCompatHelper.checkFragmentNonExits((FragmentActivity) activity, PictureOnlyCameraFragment.TAG)) {
-                    PictureOnlyCameraFragment fragment = PictureOnlyCameraFragment.newInstance();
-                    fragmentManager.beginTransaction()
-                            .add(android.R.id.content, fragment, PictureOnlyCameraFragment.TAG)
-                            .addToBackStack(PictureOnlyCameraFragment.TAG)
-                            .commitAllowingStateLoss();
+                    FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
+                            PictureOnlyCameraFragment.TAG, PictureOnlyCameraFragment.newInstance());
                 }
             } else {
                 Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
                 activity.startActivity(intent);
+                PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
+                activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
+            }
+        }
+    }
+
+
+    /**
+     * Start PictureSelector
+     *
+     * @param requestCode
+     */
+    public void forResult(int requestCode) {
+        if (!DoubleUtils.isFastDoubleClick()) {
+            Activity activity = selector.getActivity();
+            if (activity == null) {
+                throw new NullPointerException("getActivity is null");
+            }
+            if (PictureSelectionConfig.imageEngine == null) {
+                throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
+            }
+            selectionConfig.isResultBack = false;
+            selectionConfig.isActivityResultBack = true;
+            if (selectionConfig.isOnlyCamera) {
+                FragmentManager fragmentManager = null;
+                if (activity instanceof AppCompatActivity) {
+                    fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
+                } else if (activity instanceof FragmentActivity) {
+                    fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
+                }
+                if (fragmentManager == null) {
+                    throw new NullPointerException(" FragmentManager is empty ");
+                }
+                if (ActivityCompatHelper.checkFragmentNonExits((FragmentActivity) activity, PictureOnlyCameraFragment.TAG)) {
+                    FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
+                            PictureOnlyCameraFragment.TAG, PictureOnlyCameraFragment.newInstance());
+                }
+            } else {
+                Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
+                activity.startActivityForResult(intent, requestCode);
                 PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
                 activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
             }

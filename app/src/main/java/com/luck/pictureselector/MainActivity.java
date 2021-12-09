@@ -1,10 +1,10 @@
 package com.luck.pictureselector;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -31,7 +31,10 @@ import com.luck.lib.camerax.CameraImageEngine;
 import com.luck.lib.camerax.SimpleCameraX;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.app.PictureAppMaster;
+import com.luck.picture.lib.basic.IBridgePictureBehavior;
+import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.basic.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
@@ -40,6 +43,7 @@ import com.luck.picture.lib.dialog.AudioPlayDialog;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
+import com.luck.picture.lib.engine.OriginalFileEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
@@ -91,7 +95,7 @@ import top.zibin.luban.OnRenameListener;
  */
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
-        RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
+        RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener, IBridgePictureBehavior {
     private final static String TAG = "PictureSelectorTag";
     private GridImageAdapter mAdapter;
     private int maxSelectNum = 9;
@@ -198,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAdapter.setOnItemClickListener(new GridImageAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                List<LocalMedia> selectList = mAdapter.getData();
+                ArrayList<LocalMedia> selectList = mAdapter.getData();
                 if (selectList.size() > 0) {
                     LocalMedia media = selectList.get(position);
                     String availablePath = media.getAvailablePath();
@@ -240,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setCropEngine(getCropEngine())
                             .setCompressEngine(getCompressEngine())
                             .setSandboxFileEngine(new MeSandboxFileEngine())
+                            .setOriginalFileEngine(getOriginalFileEngine())
                             .setCameraInterceptListener(getCustomCameraEvent())
                             .setEditMediaInterceptListener(getCustomEditMediaEvent())
                             //.setExtendLoaderEngine(getExtendLoaderEngine())
@@ -248,10 +253,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .isPageStrategy(cbPage.isChecked())
                             .isDisplayCamera(cb_isCamera.isChecked())
                             .isOpenClickSound(cb_voice.isChecked())
-                            .setOutputCameraDir(getSandboxPath())
-                            //.isOnlyObtainSandboxDir(true)
-                            .setQuerySandboxDir(getSandboxPath())
                             .isWithSelectVideoImage(true)
+                            //.queryOnlyMimeType(PictureMimeType.ofGIF())
                             .isMaxSelectEnabledMask(cbEnabledMask.isChecked())
                             .isDirectReturnSingle(cb_single_back.isChecked())
                             .maxSelectNum(maxSelectNum)
@@ -259,16 +262,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setRecyclerAnimationMode(animationMode)
                             .isGif(cb_isGif.isChecked())
                             .selectedData(mAdapter.getData())
-                            .isOriginalImageControl(cb_original.isChecked())
-                            .isDisplayOriginalSize(cb_original.isChecked())
-                            .forResult(new MeOnResultCallbackListener());
+                            //.forResult(new MeOnResultCallbackListener());
+                            .forResult(PictureConfig.CHOOSE_REQUEST);
                 } else {
                     // 单独拍照
                     PictureSelector.create(MainActivity.this)
                             .openCamera(SelectMimeType.ofAll())
                             .imageEngine(GlideEngine.createGlideEngine())
                             .setCameraInterceptListener(getCustomCameraEvent())
-                            .forResult(new MeOnResultCallbackListener());
+                            //.forResult(new MeOnResultCallbackListener());
+                            .forResult(PictureConfig.CHOOSE_REQUEST);
                 }
             }
         });
@@ -532,6 +535,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
+     * 自定义原图处理
+     * @return
+     */
+    private OriginalFileEngine getOriginalFileEngine() {
+        return cb_original.isChecked() ? new MeOriginalFileEngine() : null;
+    }
+
+    /**
      * 自定义编辑事件
      *
      * @return
@@ -549,7 +560,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void loadAllAlbumData(Context context,
                                      OnQueryAllAlbumListener<LocalMediaFolder> query) {
             LocalMediaFolder folder = SandboxFileLoader
-                    .loadInAppSandboxFolderFile(context, getSandboxPath(), false);
+                    .loadInAppSandboxFolderFile(context, getSandboxPath());
             List<LocalMediaFolder> folders = new ArrayList<>();
             folders.add(folder);
             query.onComplete(folders);
@@ -559,14 +570,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void loadOnlyInAppDirAllMediaData(Context context,
                                                  OnQueryAlbumListener<LocalMediaFolder> query) {
             LocalMediaFolder folder = SandboxFileLoader
-                    .loadInAppSandboxFolderFile(context, getSandboxPath(), false);
+                    .loadInAppSandboxFolderFile(context, getSandboxPath());
             query.onComplete(folder);
         }
 
         @Override
         public void loadFirstPageMediaData(Context context, long bucketId, int page, int pageSize, OnQueryDataResultListener<LocalMedia> query) {
             LocalMediaFolder folder = SandboxFileLoader
-                    .loadInAppSandboxFolderFile(context, getSandboxPath(), false);
+                    .loadInAppSandboxFolderFile(context, getSandboxPath());
             query.onComplete(folder.getData(), false);
         }
 
@@ -616,6 +627,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+    /**
+     * 自定义原图文件处理
+     */
+    private static class MeOriginalFileEngine implements OriginalFileEngine {
+
+        @Override
+        public void onStartOriginalFileTransform(Context context, int index,
+                                                 LocalMedia media, OnCallbackIndexListener<LocalMedia> listener) {
+            if (PictureMimeType.isContent(media.getPath())) {
+                String originalPath = SandboxTransformUtils.copyPathToSandbox(context, media.getPath(),
+                        media.getMimeType());
+                media.setOriginalPath(originalPath);
+                media.setOriginal(!TextUtils.isEmpty(originalPath));
+            } else {
+                media.setOriginalPath(media.getPath());
+                media.setOriginal(true);
+            }
+            listener.onCall(media, index);
+        }
+    }
+
+
     /**
      * 自定义沙盒文件处理
      */
@@ -640,7 +674,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public void onStartCrop(Fragment fragment, LocalMedia currentLocalMedia,
-                                List<LocalMedia> dataSource, int requestCode) {
+                                ArrayList<LocalMedia> dataSource, int requestCode) {
             String currentCropPath = currentLocalMedia.getAvailablePath();
             Uri inputUri = PictureMimeType.isContent(currentCropPath)
                     ? Uri.parse(currentCropPath) : Uri.fromFile(new File(currentCropPath));
@@ -689,8 +723,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private class ImageCompressEngine implements CompressEngine {
 
         @Override
-        public void onStartCompress(Context context, List<LocalMedia> list,
-                                    OnCallbackListener<List<LocalMedia>> listener) {
+        public void onStartCompress(Context context, ArrayList<LocalMedia> list,
+                                    OnCallbackListener<ArrayList<LocalMedia>> listener) {
             // 自定义压缩
             List<Uri> compress = new ArrayList<>();
             for (int i = 0; i < list.size(); i++) {
@@ -763,7 +797,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @return
      */
     private String getSandboxPath() {
-        File externalFilesDir = getContext().getExternalFilesDir(chooseMode == SelectMimeType.ofVideo() ? Environment.DIRECTORY_MOVIES : Environment.DIRECTORY_PICTURES);
+        File externalFilesDir = getContext().getExternalFilesDir("");
         File customFile = new File(externalFilesDir.getAbsolutePath(), "Sandbox");
         if (!customFile.exists()) {
             customFile.mkdirs();
@@ -902,9 +936,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 selectorStyle = new PictureSelectorStyle();
                 TitleBarStyle whiteTitleBarStyle = new TitleBarStyle();
                 whiteTitleBarStyle.setTitleBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
-                whiteTitleBarStyle.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
                 whiteTitleBarStyle.setTitleDrawableRightResource(R.drawable.ic_orange_arrow_down);
-                whiteTitleBarStyle.setDarkStatusBarBlack(true);
                 whiteTitleBarStyle.setTitleLeftBackResource(R.drawable.ic_back_arrow);
                 whiteTitleBarStyle.setTitleTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_black));
                 whiteTitleBarStyle.setTitleCancelTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
@@ -920,6 +952,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 whiteBottomNavBarStyle.setBottomOriginalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
 
                 SelectMainStyle selectMainStyle = new SelectMainStyle();
+                selectMainStyle.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
+                selectMainStyle.setDarkStatusBarBlack(true);
                 selectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
                 selectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_fa632d));
                 selectMainStyle.setSelectText(getString(R.string.ps_done_front_num));
@@ -931,7 +965,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.rb_num_style:
                 selectorStyle = new PictureSelectorStyle();
                 TitleBarStyle blueTitleBarStyle = new TitleBarStyle();
-                blueTitleBarStyle.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));
                 blueTitleBarStyle.setTitleBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));
 
                 BottomNavBarStyle numberBlueBottomNavBarStyle = new BottomNavBarStyle();
@@ -944,6 +977,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                 SelectMainStyle numberBlueSelectMainStyle = new SelectMainStyle();
+                numberBlueSelectMainStyle.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));
                 numberBlueSelectMainStyle.setSelectNumberStyle(true);
                 numberBlueSelectMainStyle.setPreviewSelectNumberStyle(true);
                 numberBlueSelectMainStyle.setSelectBackground(R.drawable.picture_checkbox_num_selector);
@@ -1048,6 +1082,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     cb_showCropGrid.setChecked(true);
                 }
                 break;
+        }
+    }
+
+    @Override
+    public void onSelectFinish(boolean isForcedExit, @Nullable PictureCommonFragment.SelectorResult result) {
+        if (result != null) {
+            onActivityResult(PictureConfig.CHOOSE_REQUEST, result.mResultCode, result.mResultData);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == PictureConfig.CHOOSE_REQUEST) {
+                ArrayList<LocalMedia> result = PictureSelector.obtainSelectorList(data);
+                for (LocalMedia media : result) {
+                    if (media.getWidth() == 0 || media.getHeight() == 0) {
+                        if (PictureMimeType.isHasImage(media.getMimeType())) {
+                            MediaExtraInfo imageExtraInfo = MediaUtils.getImageSize(media.getPath());
+                            media.setWidth(imageExtraInfo.getWidth());
+                            media.setHeight(imageExtraInfo.getHeight());
+                        } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                            MediaExtraInfo videoExtraInfo = MediaUtils.getVideoSize(PictureAppMaster.getInstance().getAppContext(), media.getPath());
+                            media.setWidth(videoExtraInfo.getWidth());
+                            media.setHeight(videoExtraInfo.getHeight());
+                        }
+                    }
+                    Log.i(TAG, "文件名: " + media.getFileName());
+                    Log.i(TAG, "是否压缩:" + media.isCompressed());
+                    Log.i(TAG, "压缩:" + media.getCompressPath());
+                    Log.i(TAG, "原图:" + media.getPath());
+                    Log.i(TAG, "绝对路径:" + media.getRealPath());
+                    Log.i(TAG, "是否裁剪:" + media.isCut());
+                    Log.i(TAG, "裁剪:" + media.getCutPath());
+                    Log.i(TAG, "是否开启原图:" + media.isOriginal());
+                    Log.i(TAG, "原图路径:" + media.getOriginalPath());
+                    Log.i(TAG, "沙盒路径:" + media.getSandboxPath());
+                    Log.i(TAG, "宽高: " + media.getWidth() + "x" + media.getHeight());
+                    Log.i(TAG, "Size: " + media.getSize());
+                }
+                mAdapter.getData().clear();
+                mAdapter.getData().addAll(result);
+                mAdapter.notifyItemRangeChanged(0, mAdapter.getData().size());
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+            Log.i(TAG, "onActivityResult PictureSelector Cancel");
         }
     }
 

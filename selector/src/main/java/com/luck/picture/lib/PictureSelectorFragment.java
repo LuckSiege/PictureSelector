@@ -2,6 +2,7 @@ package com.luck.picture.lib;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.luck.picture.lib.adapter.PictureImageGridAdapter;
 import com.luck.picture.lib.animators.AlphaInAnimationAdapter;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.animators.SlideInBottomAnimationAdapter;
+import com.luck.picture.lib.basic.FragmentInjectManager;
 import com.luck.picture.lib.basic.IPictureSelectorEvent;
 import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.config.PictureConfig;
@@ -50,11 +52,13 @@ import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.AnimUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DoubleUtils;
+import com.luck.picture.lib.utils.ValueOf;
 import com.luck.picture.lib.widget.BottomNavBar;
 import com.luck.picture.lib.widget.CompleteSelectView;
 import com.luck.picture.lib.widget.RecyclerPreloadView;
 import com.luck.picture.lib.widget.TitleBar;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -181,7 +185,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
         outState.putInt(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, mRecycler.getLastVisiblePosition());
         outState.putBoolean(PictureConfig.EXTRA_DISPLAY_CAMERA, mAdapter.isDisplayCamera());
         outState.putString(PictureConfig.EXTRA_CURRENT_FIRST_PATH, getFirstImagePath());
-        Log.i("YYY", "onSaveInstanceState: " + getFirstImagePath());
     }
 
     @Override
@@ -261,7 +264,11 @@ public class PictureSelectorFragment extends PictureCommonFragment
                             PictureSelectionConfig.resultCallListener.onCancel();
                         }
                     }
-                    iBridgePictureBehavior.onFinish();
+                    SelectorResult result = getResult(Activity.RESULT_CANCELED, new ArrayList<>());
+                    if (!ActivityCompatHelper.isDestroy(getActivity())) {
+                        getActivity().setResult(result.mResultCode, result.mResultData);
+                    }
+                    iBridgePictureBehavior.onSelectFinish(false, result);
                 }
             }
 
@@ -341,7 +348,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
             beginLoadData();
         } else {
             Toast.makeText(getContext(), getString(R.string.ps_jurisdiction), Toast.LENGTH_LONG).show();
-            iBridgePictureBehavior.onFinish();
+            iBridgePictureBehavior.onSelectFinish(false, null);
         }
     }
 
@@ -379,7 +386,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                                 PictureSelectionConfig.loaderDataEngine.loadFirstPageMediaData(getContext(),
                                         curFolder.getBucketId(), mPage, config.pageSize,
                                         new OnQueryDataResultListener<LocalMedia>() {
-                                            public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                                            public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {
                                                 handleSwitchAlbum(result, isHasMore);
                                             }
                                         });
@@ -387,7 +394,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                                 mLoader.loadPageMediaData(curFolder.getBucketId(), mPage, config.pageSize,
                                         new OnQueryDataResultListener<LocalMedia>() {
                                             @Override
-                                            public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                                            public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {
                                                 handleSwitchAlbum(result, isHasMore);
                                             }
                                         });
@@ -407,7 +414,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         });
     }
 
-    private void handleSwitchAlbum(List<LocalMedia> result, boolean isHasMore) {
+    private void handleSwitchAlbum(ArrayList<LocalMedia> result, boolean isHasMore) {
         if (ActivityCompatHelper.isDestroy(getActivity())) {
             return;
         }
@@ -495,7 +502,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                     mPage, mPage * config.pageSize, new OnQueryDataResultListener<LocalMedia>() {
 
                         @Override
-                        public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                        public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {
                             handleFirstPageMedia(result, isHasMore);
                         }
                     });
@@ -503,14 +510,14 @@ public class PictureSelectorFragment extends PictureCommonFragment
             mLoader.loadFirstPageMedia(firstBucketId, mPage * config.pageSize,
                     new OnQueryDataResultListener<LocalMedia>() {
                         @Override
-                        public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                        public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {
                             handleFirstPageMedia(result, isHasMore);
                         }
                     });
         }
     }
 
-    private void handleFirstPageMedia(List<LocalMedia> result, boolean isHasMore) {
+    private void handleFirstPageMedia(ArrayList<LocalMedia> result, boolean isHasMore) {
         if (ActivityCompatHelper.isDestroy(getActivity())) {
             return;
         }
@@ -550,8 +557,11 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     private void handleInAppDirAllMedia(LocalMediaFolder folder) {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
-            if (folder != null) {
-                titleBar.setTitle(folder.getFolderName());
+            String sandboxDir = config.sandboxDir;
+            boolean isNonNull = folder != null;
+            String folderName = isNonNull ? folder.getFolderName() : new File(sandboxDir).getName();
+            titleBar.setTitle(folderName);
+            if (isNonNull) {
                 SelectedManager.setCurrentLocalMediaFolder(folder);
                 setAdapterData(folder.getData());
                 recoveryRecyclerPosition();
@@ -690,7 +700,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
      */
     private void onStartPreview(int position, boolean isBottomPreview) {
         if (ActivityCompatHelper.checkFragmentNonExits(getActivity(), PictureSelectorPreviewFragment.TAG)) {
-            List<LocalMedia> data;
+            ArrayList<LocalMedia> data;
             int totalNum;
             long currentBucketId = 0;
             if (isBottomPreview) {
@@ -701,17 +711,17 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 totalNum = SelectedManager.getCurrentLocalMediaFolder().getFolderTotalNum();
                 currentBucketId = SelectedManager.getCurrentLocalMediaFolder().getBucketId();
             }
-            if (iBridgePictureBehavior != null) {
+            if (ActivityCompatHelper.checkFragmentNonExits(getActivity(), PictureSelectorPreviewFragment.TAG)) {
                 PictureSelectorPreviewFragment previewFragment = PictureSelectorPreviewFragment.newInstance();
                 previewFragment.setInternalPreviewData(isBottomPreview, titleBar.getTitleText(), mAdapter.isDisplayCamera(),
                         position, totalNum, mPage, currentBucketId, data);
-                iBridgePictureBehavior.injectFragmentFromScreen(PictureSelectorPreviewFragment.TAG, previewFragment);
+                FragmentInjectManager.injectFragment(getActivity(), PictureSelectorPreviewFragment.TAG, previewFragment);
             }
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void setAdapterData(List<LocalMedia> result) {
+    private void setAdapterData(ArrayList<LocalMedia> result) {
         subSelectPosition(false);
         mAdapter.setDataAndDataSetChanged(result);
         if (mAdapter.isDataEmpty()) {
@@ -739,7 +749,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 PictureSelectionConfig.loaderDataEngine.loadMoreMediaData(getContext(), bucketId, mPage,
                         getPageLimit(bucketId), config.pageSize, new OnQueryDataResultListener<LocalMedia>() {
                             @Override
-                            public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                            public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {
                                 handleMoreMediaData(result, isHasMore);
                             }
                         });
@@ -747,7 +757,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 mLoader.loadPageMediaData(bucketId, mPage, getPageLimit(bucketId), config.pageSize,
                         new OnQueryDataResultListener<LocalMedia>() {
                             @Override
-                            public void onComplete(List<LocalMedia> result, boolean isHasMore) {
+                            public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {
                                 handleMoreMediaData(result, isHasMore);
                             }
                         });
@@ -779,7 +789,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public void dispatchCameraMediaResult(LocalMedia media) {
-        Log.i("YYY", media.getPath() + "\n" + getFirstImagePath());
         if (TextUtils.equals(media.getPath(), getFirstImagePath())) {
             // 这种情况一般就是拍照时内存不足了，导致Fragment重新创建了，先走的loadAllData已经获取到了拍照生成的这张
             // 如果这里还往下手动添加则会导致重复一张，故只要把新拍的加入选择结果即可
@@ -821,7 +830,20 @@ public class PictureSelectorFragment extends PictureCommonFragment
         mAdapter.notifyItemInserted(config.isDisplayCamera ? 1 : 0);
         mAdapter.notifyItemRangeChanged(config.isDisplayCamera ? 1 : 0, mAdapter.getData().size());
         if (config.isOnlySandboxDir) {
-            titleBar.setTitle(media.getParentFolderName());
+            LocalMediaFolder currentLocalMediaFolder = SelectedManager.getCurrentLocalMediaFolder();
+            if (currentLocalMediaFolder == null) {
+                currentLocalMediaFolder = new LocalMediaFolder();
+                long bucketId = ValueOf.toLong(media.getParentFolderName().hashCode());
+                currentLocalMediaFolder.setBucketId(bucketId);
+                currentLocalMediaFolder.setFolderName(media.getParentFolderName());
+                currentLocalMediaFolder.setFirstMimeType(media.getMimeType());
+                currentLocalMediaFolder.setFirstImagePath(media.getPath());
+                currentLocalMediaFolder.setFolderTotalNum(mAdapter.getData().size());
+                currentLocalMediaFolder.setCurrentDataPage(mPage);
+                currentLocalMediaFolder.setHasMore(false);
+                mRecycler.setEnabledLoadMore(false);
+                SelectedManager.setCurrentLocalMediaFolder(currentLocalMediaFolder);
+            }
         } else {
             mergeFolder(media);
         }

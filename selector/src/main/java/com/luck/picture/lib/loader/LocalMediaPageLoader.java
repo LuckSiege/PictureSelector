@@ -252,7 +252,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                         data = mContext.getContentResolver().query(QUERY_URI, PROJECTION_PAGE, getPageSelection(bucketId), getPageSelectionArgs(bucketId), orderBy);
                     }
                     if (data != null) {
-                        List<LocalMedia> result = new ArrayList<>();
+                        ArrayList<LocalMedia> result = new ArrayList<>();
                         if (data.getCount() > 0) {
                             int idColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[0]);
                             int dataColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[1]);
@@ -334,8 +334,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                             } while (data.moveToNext());
                         }
                         if (bucketId == PictureConfig.ALL && page == 1) {
-                            List<LocalMedia> list = SandboxFileLoader.loadInAppSandboxFile(mContext,
-                                    config.sandboxDir, config.isGif);
+                            List<LocalMedia> list = SandboxFileLoader.loadInAppSandboxFile(mContext,config.sandboxDir);
                             if (list != null) {
                                 result.addAll(list);
                                 SortUtils.sortLocalMediaAddedTime(result);
@@ -371,7 +370,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
 
             @Override
             public LocalMediaFolder doInBackground() {
-                return SandboxFileLoader.loadInAppSandboxFolderFile(mContext, config.sandboxDir, config.isGif);
+                return SandboxFileLoader.loadInAppSandboxFolderFile(mContext, config.sandboxDir);
             }
 
             @Override
@@ -463,7 +462,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                             LocalMediaFolder allMediaFolder = new LocalMediaFolder();
 
                             LocalMediaFolder selfFolder = SandboxFileLoader
-                                    .loadInAppSandboxFolderFile(mContext, config.sandboxDir, config.isGif);
+                                    .loadInAppSandboxFolderFile(mContext, config.sandboxDir);
                             if (selfFolder != null) {
                                 mediaFolders.add(selfFolder);
                                 String firstImagePath = selfFolder.getFirstImagePath();
@@ -725,7 +724,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
     }
 
     private String getQueryMimeCondition() {
-        List<String> filters = config.filters;
+        List<String> filters = config.queryOnlyList;
         HashSet<String> filterSet = new HashSet<>(filters);
         Iterator<String> iterator = filterSet.iterator();
         StringBuilder stringBuilder = new StringBuilder();

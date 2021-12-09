@@ -4,7 +4,6 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author：luck
@@ -20,13 +19,13 @@ public class SelectedManager {
     /**
      * selected result
      */
-    private static final List<LocalMedia> selectedResult = new ArrayList<>();
+    private static final ArrayList<LocalMedia> selectedResult = new ArrayList<>();
 
     public static void addResult(LocalMedia media) {
         selectedResult.add(media);
     }
 
-    public static List<LocalMedia> getSelectedResult() {
+    public static ArrayList<LocalMedia> getSelectedResult() {
         return selectedResult;
     }
 
@@ -50,13 +49,13 @@ public class SelectedManager {
     /**
      * selected external preview result
      */
-    private static final List<LocalMedia> selectedPreviewResult = new ArrayList<>();
+    private static final ArrayList<LocalMedia> selectedPreviewResult = new ArrayList<>();
 
-    public static List<LocalMedia> getSelectedPreviewResult() {
+    public static ArrayList<LocalMedia> getSelectedPreviewResult() {
         return selectedPreviewResult;
     }
 
-    public static void addSelectedPreviewResult(List<LocalMedia> list) {
+    public static void addSelectedPreviewResult(ArrayList<LocalMedia> list) {
         clearExternalPreviewData();
         selectedPreviewResult.addAll(list);
     }

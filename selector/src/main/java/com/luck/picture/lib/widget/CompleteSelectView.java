@@ -17,8 +17,8 @@ import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.BottomNavBarStyle;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
-import com.luck.picture.lib.utils.ValueOf;
 import com.luck.picture.lib.utils.StyleUtils;
+import com.luck.picture.lib.utils.ValueOf;
 
 /**
  * @author：luck

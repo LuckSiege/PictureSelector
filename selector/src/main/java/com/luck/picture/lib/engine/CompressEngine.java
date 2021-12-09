@@ -5,7 +5,7 @@ import android.content.Context;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author：luck
@@ -34,5 +34,5 @@ public interface CompressEngine {
      * @param list
      * @param listener
      */
-    void onStartCompress(Context context, List<LocalMedia> list, OnCallbackListener<List<LocalMedia>> listener);
+    void onStartCompress(Context context, ArrayList<LocalMedia> list, OnCallbackListener<ArrayList<LocalMedia>> listener);
 }

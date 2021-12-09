@@ -16,7 +16,6 @@ import com.luck.picture.lib.entity.LocalMedia;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -44,7 +43,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
 
     private boolean isDisplayCamera;
 
-    private List<LocalMedia> mData = new ArrayList<>();
+    private ArrayList<LocalMedia> mData = new ArrayList<>();
 
     private final PictureSelectionConfig mConfig;
 
@@ -64,7 +63,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setDataAndDataSetChanged(List<LocalMedia> result) {
+    public void setDataAndDataSetChanged(ArrayList<LocalMedia> result) {
         if (result != null) {
             this.mData = result;
             notifyDataSetChanged();
@@ -79,7 +78,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
         isDisplayCamera = displayCamera;
     }
 
-    public List<LocalMedia> getData() {
+    public ArrayList<LocalMedia> getData() {
         return mData;
     }
 

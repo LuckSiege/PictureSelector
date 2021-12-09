@@ -86,20 +86,6 @@ public class TitleBarStyle implements Parcelable {
      */
     private int titleCancelTextColor;
 
-    /**
-     * 状态栏背景色
-     */
-    private int statusBarColor;
-
-    /**
-     * 导航栏背景色
-     */
-    private int navigationBarColor;
-
-    /**
-     * 状态栏字体颜色，非黑即白
-     */
-    private boolean isDarkStatusBarBlack = false;
 
     public TitleBarStyle() {
     }
@@ -121,9 +107,6 @@ public class TitleBarStyle implements Parcelable {
         titleCancelText = in.readString();
         titleCancelTextSize = in.readInt();
         titleCancelTextColor = in.readInt();
-        statusBarColor = in.readInt();
-        navigationBarColor = in.readInt();
-        isDarkStatusBarBlack = in.readByte() != 0;
     }
 
     @Override
@@ -144,9 +127,6 @@ public class TitleBarStyle implements Parcelable {
         dest.writeString(titleCancelText);
         dest.writeInt(titleCancelTextSize);
         dest.writeInt(titleCancelTextColor);
-        dest.writeInt(statusBarColor);
-        dest.writeInt(navigationBarColor);
-        dest.writeByte((byte) (isDarkStatusBarBlack ? 1 : 0));
     }
 
     @Override
@@ -292,29 +272,5 @@ public class TitleBarStyle implements Parcelable {
 
     public void setTitleCancelTextColor(int titleCancelTextColor) {
         this.titleCancelTextColor = titleCancelTextColor;
-    }
-
-    public int getStatusBarColor() {
-        return statusBarColor;
-    }
-
-    public void setStatusBarColor(int statusBarColor) {
-        this.statusBarColor = statusBarColor;
-    }
-
-    public int getNavigationBarColor() {
-        return navigationBarColor;
-    }
-
-    public void setNavigationBarColor(int navigationBarColor) {
-        this.navigationBarColor = navigationBarColor;
-    }
-
-    public boolean isDarkStatusBarBlack() {
-        return isDarkStatusBarBlack;
-    }
-
-    public void setDarkStatusBarBlack(boolean darkStatusBarBlack) {
-        isDarkStatusBarBlack = darkStatusBarBlack;
     }
 }

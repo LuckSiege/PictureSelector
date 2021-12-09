@@ -1,6 +1,6 @@
 package com.luck.picture.lib.basic;
 
-import androidx.fragment.app.Fragment;
+import androidx.annotation.Nullable;
 
 /**
  * @author：luck
@@ -9,21 +9,14 @@ import androidx.fragment.app.Fragment;
  */
 public interface IBridgePictureBehavior {
 
-    /**
-     * inject fragment
-     *
-     * @param tag      fragment tag
-     * @param fragment inject fragment
-     */
-    void injectFragmentFromScreen(String tag, Fragment fragment);
 
     /**
      * finish activity
+     *
+     * @param isForcedExit true; Direct forced exit;
+     *                     false; Return according to the task stack
+     * @param result data
      */
-    void onFinish();
+    void onSelectFinish(boolean isForcedExit, @Nullable PictureCommonFragment.SelectorResult result);
 
-    /**
-     * immediate finish activity
-     */
-    void onImmediateFinish();
 }

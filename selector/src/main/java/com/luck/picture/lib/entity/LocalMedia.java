@@ -554,7 +554,7 @@ public class LocalMedia implements Parcelable {
     }
 
     public boolean isOriginal() {
-        return isOriginal;
+        return isOriginal && !TextUtils.isEmpty(getOriginalPath());
     }
 
     public void setOriginal(boolean original) {
