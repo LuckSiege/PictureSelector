@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="ucrop_rotate">Rotação</string>
+    <string name="ucrop_scale">Proporção</string>
+    <string name="ucrop_crop">Recorte</string>
+
+    <string name="ucrop_label_original">Proporção inicial</string>
+    <string name="ucrop_label_edit_photo">Recorte</string>
+
+    <string name="ucrop_menu_crop">Recorte</string>
+    <string name="ucrop_gif_tag">Gif</string>
+</resources>
