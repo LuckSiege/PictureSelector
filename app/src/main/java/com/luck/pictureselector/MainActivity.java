@@ -133,7 +133,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RadioGroup rgb_list_anim = findViewById(R.id.rgb_list_anim);
         RadioGroup rgb_photo_mode = findViewById(R.id.rgb_photo_mode);
         RadioGroup rgb_language = findViewById(R.id.rgb_language);
-        RadioGroup rgb_language2 = findViewById(R.id.rgb_language2);
         cb_voice = findViewById(R.id.cb_voice);
         cb_choose_mode = findViewById(R.id.cb_choose_mode);
         cb_isCamera = findViewById(R.id.cb_isCamera);
@@ -161,7 +160,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rgb_list_anim.setOnCheckedChangeListener(this);
         rgb_photo_mode.setOnCheckedChangeListener(this);
         rgb_language.setOnCheckedChangeListener(this);
-        rgb_language2.setOnCheckedChangeListener(this);
         RecyclerView mRecyclerView = findViewById(R.id.recycler);
         ImageView left_back = findViewById(R.id.left_back);
         left_back.setOnClickListener(this);
@@ -874,7 +872,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cb_preview_audio.setVisibility(View.VISIBLE);
                 break;
             case R.id.rb_system:
-                language = LanguageConfig.UNKNOWN_LANGUAGE;
+                language = LanguageConfig.SYSTEM_LANGUAGE;
                 break;
             case R.id.rb_jpan:
                 language = LanguageConfig.JAPAN;

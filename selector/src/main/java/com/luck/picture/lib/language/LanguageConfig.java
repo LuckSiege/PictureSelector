@@ -12,6 +12,11 @@ public class LanguageConfig {
     public final static int UNKNOWN_LANGUAGE = -2;
 
     /**
+     * system Language
+     */
+    public final static int SYSTEM_LANGUAGE = -1;
+
+    /**
      * 简体中文
      */
     public static final int CHINESE = 0;

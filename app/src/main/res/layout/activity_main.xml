@@ -221,7 +221,7 @@
                         android:textSize="14sp" />
                 </RadioGroup>
 
-                <RadioGroup
+                <com.luck.pictureselector.LineWrapRadioGroup
                     android:id="@+id/rgb_language"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -259,14 +259,6 @@
                         android:text="西班牙语"
                         android:textColor="@color/app_color_53575e"
                         android:textSize="14sp" />
-
-                </RadioGroup>
-
-                <RadioGroup
-                    android:id="@+id/rgb_language2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
 
                     <RadioButton
                         android:id="@+id/rb_de"
@@ -307,7 +299,9 @@
                         android:text="系统语言"
                         android:textColor="@color/app_color_53575e"
                         android:textSize="14sp" />
-                </RadioGroup>
+
+                </com.luck.pictureselector.LineWrapRadioGroup>
+
 
                 <RadioGroup
                     android:id="@+id/rgb_photo_mode"
