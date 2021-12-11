@@ -711,6 +711,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         options.setShowCropFrame(cb_showCropFrame.isChecked());
         options.setShowCropGrid(cb_showCropGrid.isChecked());
         options.setCircleDimmedLayer(cb_crop_circular.isChecked());
+        options.withAspectRatio(aspect_ratio_x,aspect_ratio_y);
         options.setCropOutputPathDir(getSandboxPath());
         options.isForbidSkipMultipleCrop(false);
         options.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
