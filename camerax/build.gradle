@@ -26,6 +26,10 @@ android {
     }
 }
 
+ext {
+    PUBLISH_ARTIFACT_ID = "camerax"
+}
+
 apply from: '../publish.gradle'
 
 dependencies {

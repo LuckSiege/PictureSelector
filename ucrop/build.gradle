@@ -29,6 +29,10 @@ android {
 
 }
 
+ext {
+    PUBLISH_ARTIFACT_ID = "ucrop"
+}
+
 apply from: '../publish.gradle'
 
 dependencies {
