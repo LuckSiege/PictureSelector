@@ -331,6 +331,7 @@ public class Luban implements Handler.Callback {
             return this;
         }
 
+        @Deprecated
         public Builder putGear(int gear) {
             return this;
         }

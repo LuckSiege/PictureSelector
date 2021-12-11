@@ -139,7 +139,7 @@ public final class PictureMimeType {
         if (TextUtils.isEmpty(path)) {
             return false;
         }
-        return path.startsWith("http") || path.startsWith("https") || path.startsWith("/http") || path.startsWith("/https");
+        return path.startsWith("http") || path.startsWith("https");
     }
 
     /**

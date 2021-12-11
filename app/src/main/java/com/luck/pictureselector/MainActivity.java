@@ -76,9 +76,6 @@ import com.yalantis.ucrop.UCropImageEngine;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -175,10 +172,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_compress.setOnCheckedChangeListener(this);
         tv_select_num.setText(ValueOf.toString(maxSelectNum));
 
-         List<LocalMedia> list = new ArrayList<>();
-         list.add(LocalMedia.generateLocalMedia("https://wx1.sinaimg.cn/mw690/006e0i7xly1gaxqq5m7t8j31311g2ao6.jpg", PictureMimeType.ofJPEG()));
-         list.add(LocalMedia.generateLocalMedia("https://ww1.sinaimg.cn/bmiddle/bcd10523ly1g96mg4sfhag20c806wu0x.gif", PictureMimeType.ofGIF()));
-         mData.addAll(list);
+        //List<LocalMedia> list = new ArrayList<>();
+        //list.add(LocalMedia.generateLocalMedia("https://wx1.sinaimg.cn/mw690/006e0i7xly1gaxqq5m7t8j31311g2ao6.jpg", PictureMimeType.ofJPEG()));
+        //list.add(LocalMedia.generateLocalMedia("https://ww1.sinaimg.cn/bmiddle/bcd10523ly1g96mg4sfhag20c806wu0x.gif", PictureMimeType.ofGIF()));
+        //mData.addAll(list);
 
         FullyGridLayoutManager manager = new FullyGridLayoutManager(this,
                 4, GridLayoutManager.VERTICAL, false);
@@ -737,7 +734,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             for (int i = 0; i < list.size(); i++) {
                 LocalMedia media = list.get(i);
                 String availablePath = media.getAvailablePath();
-                Uri uri = PictureMimeType.isContent(availablePath) ? Uri.parse(availablePath)
+                Uri uri = PictureMimeType.isContent(availablePath) || PictureMimeType.isHasHttp(availablePath)
+                        ? Uri.parse(availablePath)
                         : Uri.fromFile(new File(availablePath));
                 compress.add(uri);
             }
@@ -749,27 +747,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .load(compress)
                     .ignoreBy(100)
                     .setTargetDir(getSandboxPath())
-                    .setFocusAlpha(false)
                     .filter(new CompressionPredicate() {
                         @Override
                         public boolean apply(String path) {
-                            return PictureMimeType.isUrlHasImage(path);
+                            return PictureMimeType.isUrlHasImage(path) && !PictureMimeType.isHasHttp(path);
 
                         }
                     })
                     .setRenameListener(new OnRenameListener() {
                         @Override
                         public String rename(String filePath) {
-                            try {
-                                int indexOf = filePath.lastIndexOf(".");
-                                String postfix = indexOf != -1 ? filePath.substring(indexOf) : ".jpg";
-                                MessageDigest md = MessageDigest.getInstance("MD5");
-                                md.update(filePath.getBytes());
-                                return new BigInteger(1, md.digest()).toString(32) + postfix;
-                            } catch (NoSuchAlgorithmException e) {
-                                e.printStackTrace();
-                            }
-                            return "";
+                            int indexOf = filePath.lastIndexOf(".");
+                            String postfix = indexOf != -1 ? filePath.substring(indexOf) : ".jpg";
+                            return DateUtils.getCreateFileName("CMP_") + postfix;
                         }
                     })
                     .setCompressListener(new OnCompressListener() {
