@@ -119,7 +119,7 @@ public class PictureCameraActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PermissionChecker.PERMISSION_SETTING_CODE) {
             boolean checkSelfPermission = PermissionChecker.checkSelfPermission(this,
-                    new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE});
+                    new String[]{Manifest.permission.CAMERA});
             if (checkSelfPermission) {
                 mCameraView.buildUseCameraCases();
             } else {

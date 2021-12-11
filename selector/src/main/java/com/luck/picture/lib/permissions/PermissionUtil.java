@@ -1,6 +1,5 @@
 package com.luck.picture.lib.permissions;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -49,32 +48,12 @@ public class PermissionUtil {
         return isAllGranted;
     }
 
-
     /**
      * 跳转到系统设置页面
      */
-    public static void goIntentSetting(Activity activity, int requestCode) {
+    public static void goIntentSetting(Fragment fragment, boolean isManageFiles, int requestCode) {
         try {
-            if (SdkVersionUtils.isR()) {
-                activity.startActivityForResult(new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION),
-                        requestCode);
-            } else {
-                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
-                intent.setData(uri);
-                activity.startActivityForResult(intent, requestCode);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 跳转到系统设置页面
-     */
-    public static void goIntentSetting(Fragment fragment, int requestCode) {
-        try {
-            if (SdkVersionUtils.isR()) {
+            if (SdkVersionUtils.isR() && isManageFiles) {
                 fragment.startActivityForResult(new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION),
                         requestCode);
             } else {
@@ -87,4 +66,5 @@ public class PermissionUtil {
             e.printStackTrace();
         }
     }
+
 }

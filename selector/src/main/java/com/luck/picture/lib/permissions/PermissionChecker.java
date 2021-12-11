@@ -1,9 +1,11 @@
 package com.luck.picture.lib.permissions;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Environment;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -11,6 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
+import com.luck.picture.lib.utils.SdkVersionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,5 +114,46 @@ public class PermissionChecker {
             }
         }
         return isAllGranted;
+    }
+
+    /**
+     * 检查读写权限是否存在
+     *
+     * @return
+     */
+    public static boolean isCheckReadStorage(Context context) {
+        boolean isPermissionState;
+        if (SdkVersionUtils.isR()) {
+            isPermissionState = Environment.isExternalStorageManager();
+        } else {
+            isPermissionState = PermissionChecker.checkSelfPermission(context,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE});
+        }
+        return isPermissionState;
+    }
+
+    /**
+     * 检查写入权限是否存在
+     *
+     * @return
+     */
+    public static boolean isCheckWriteStorage(Context context) {
+        boolean isPermissionState;
+        if (SdkVersionUtils.isR()) {
+            isPermissionState = Environment.isExternalStorageManager();
+        } else {
+            isPermissionState = PermissionChecker.checkSelfPermission(context,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE});
+        }
+        return isPermissionState;
+    }
+
+    /**
+     * 检查相机权限是否存在
+     *
+     * @return
+     */
+    public static boolean isCheckCamera(Context context) {
+        return PermissionChecker.checkSelfPermission(context, new String[]{Manifest.permission.CAMERA});
     }
 }

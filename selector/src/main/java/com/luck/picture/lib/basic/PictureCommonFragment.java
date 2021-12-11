@@ -50,6 +50,7 @@ import com.luck.picture.lib.language.PictureLanguageUtils;
 import com.luck.picture.lib.loader.IBridgeMediaLoader;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
+import com.luck.picture.lib.permissions.PermissionConfig;
 import com.luck.picture.lib.permissions.PermissionResultCallback;
 import com.luck.picture.lib.permissions.PermissionUtil;
 import com.luck.picture.lib.service.ForegroundService;
@@ -179,10 +180,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         mPermissionResultCallback = callback;
     }
 
-
     @Override
-    public void handlePermissionDenied() {
-        PermissionUtil.goIntentSetting(this, PictureConfig.REQUEST_GO_SETTING);
+    public void handlePermissionDenied(String[] permissionArray) {
+        boolean isReadWrite = permissionArray == PermissionConfig.READ_WRITE_EXTERNAL_STORAGE
+                || permissionArray == PermissionConfig.WRITE_EXTERNAL_STORAGE;
+        PermissionUtil.goIntentSetting(this, isReadWrite, PictureConfig.REQUEST_GO_SETTING);
     }
 
     @Nullable
@@ -488,19 +490,19 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void openImageCamera() {
         if (PictureSelectionConfig.permissionsEventListener != null) {
-            PictureSelectionConfig.permissionsEventListener.onPermission(this, PictureConfig.CAMERA,
+            PictureSelectionConfig.permissionsEventListener.onPermission(this, PermissionConfig.CAMERA,
                     new OnCallbackListener<Boolean>() {
                         @Override
                         public void onCall(Boolean isResult) {
                             if (isResult) {
                                 startCameraImageCapture();
                             } else {
-                                handlePermissionDenied();
+                                handlePermissionDenied(PermissionConfig.CAMERA);
                             }
                         }
                     });
         } else {
-            PermissionChecker.getInstance().requestPermissions(this, PictureConfig.CAMERA,
+            PermissionChecker.getInstance().requestPermissions(this, PermissionConfig.CAMERA,
                     new PermissionResultCallback() {
                         @Override
                         public void onGranted() {
@@ -509,7 +511,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
                         @Override
                         public void onDenied() {
-                            handlePermissionDenied();
+                            handlePermissionDenied(PermissionConfig.CAMERA);
                         }
                     });
         }
@@ -543,19 +545,19 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void openVideoCamera() {
         if (PictureSelectionConfig.permissionsEventListener != null) {
-            PictureSelectionConfig.permissionsEventListener.onPermission(this, PictureConfig.CAMERA,
+            PictureSelectionConfig.permissionsEventListener.onPermission(this, PermissionConfig.CAMERA,
                     new OnCallbackListener<Boolean>() {
                         @Override
                         public void onCall(Boolean isResult) {
                             if (isResult) {
                                 startCameraVideoCapture();
                             } else {
-                                handlePermissionDenied();
+                                handlePermissionDenied(PermissionConfig.CAMERA);
                             }
                         }
                     });
         } else {
-            PermissionChecker.getInstance().requestPermissions(this, PictureConfig.CAMERA,
+            PermissionChecker.getInstance().requestPermissions(this, PermissionConfig.CAMERA,
                     new PermissionResultCallback() {
                         @Override
                         public void onGranted() {
@@ -564,7 +566,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
                         @Override
                         public void onDenied() {
-                            handlePermissionDenied();
+                            handlePermissionDenied(PermissionConfig.CAMERA);
                         }
                     });
         }
@@ -601,14 +603,14 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void openSoundRecording() {
         if (PictureSelectionConfig.permissionsEventListener != null) {
-            PictureSelectionConfig.permissionsEventListener.onPermission(this, PictureConfig.RECORD_AUDIO,
+            PictureSelectionConfig.permissionsEventListener.onPermission(this, PermissionConfig.RECORD_AUDIO,
                     new OnCallbackListener<Boolean>() {
                         @Override
                         public void onCall(Boolean isResult) {
                             if (isResult) {
                                 startCameraRecordSound();
                             } else {
-                                handlePermissionDenied();
+                                handlePermissionDenied(PermissionConfig.RECORD_AUDIO);
                             }
                         }
                     });
@@ -622,7 +624,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
                         @Override
                         public void onDenied() {
-                            handlePermissionDenied();
+                            handlePermissionDenied(PermissionConfig.RECORD_AUDIO);
                         }
                     });
         }

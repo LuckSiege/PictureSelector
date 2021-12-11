@@ -1,11 +1,9 @@
 package com.luck.picture.lib;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
@@ -45,6 +43,7 @@ import com.luck.picture.lib.loader.LocalMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaPageLoader;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
+import com.luck.picture.lib.permissions.PermissionConfig;
 import com.luck.picture.lib.permissions.PermissionResultCallback;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
@@ -300,31 +299,35 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     private void requestLoadData() {
         mAdapter.setDisplayCamera(isDisplayCamera);
-        if (PictureSelectionConfig.permissionsEventListener != null) {
-            PictureSelectionConfig.permissionsEventListener.onPermission(this,
-                    PictureConfig.READ_WRITE_EXTERNAL_STORAGE, new OnCallbackListener<Boolean>() {
-                        @Override
-                        public void onCall(Boolean isResult) {
-                            if (isResult) {
-                                beginLoadData();
-                            } else {
-                                handlePermissionDenied();
-                            }
-                        }
-                    });
+        if (PermissionChecker.isCheckReadStorage(getContext())) {
+            beginLoadData();
         } else {
-            PermissionChecker.getInstance().requestPermissions(this,
-                    PictureConfig.READ_WRITE_EXTERNAL_STORAGE, new PermissionResultCallback() {
-                        @Override
-                        public void onGranted() {
-                            beginLoadData();
-                        }
+            if (PictureSelectionConfig.permissionsEventListener != null) {
+                PictureSelectionConfig.permissionsEventListener.onPermission(this,
+                        PermissionConfig.READ_WRITE_EXTERNAL_STORAGE, new OnCallbackListener<Boolean>() {
+                            @Override
+                            public void onCall(Boolean isResult) {
+                                if (isResult) {
+                                    beginLoadData();
+                                } else {
+                                    handlePermissionDenied(PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
+                                }
+                            }
+                        });
+            } else {
+                PermissionChecker.getInstance().requestPermissions(this,
+                        PermissionConfig.READ_WRITE_EXTERNAL_STORAGE, new PermissionResultCallback() {
+                            @Override
+                            public void onGranted() {
+                                beginLoadData();
+                            }
 
-                        @Override
-                        public void onDenied() {
-                            handlePermissionDenied();
-                        }
-                    });
+                            @Override
+                            public void onDenied() {
+                                handlePermissionDenied(PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
+                            }
+                        });
+            }
         }
     }
 
@@ -342,9 +345,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public void handlePermissionSettingResult() {
-        if (PermissionChecker.checkSelfPermission(getContext(),
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE})) {
+        if (PermissionChecker.isCheckReadStorage(getContext())) {
             beginLoadData();
         } else {
             Toast.makeText(getContext(), getString(R.string.ps_jurisdiction), Toast.LENGTH_LONG).show();
@@ -593,7 +594,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
      */
     private void saveFirstImagePath(String firstImagePath) {
         if (getArguments() != null) {
-            Log.i("YYY", "saveFirstImagePath: " + firstImagePath);
             getArguments().putString(PictureConfig.EXTRA_CURRENT_FIRST_PATH, firstImagePath);
         }
     }

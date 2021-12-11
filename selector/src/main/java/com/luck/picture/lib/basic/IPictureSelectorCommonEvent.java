@@ -24,7 +24,7 @@ public interface IPictureSelectorCommonEvent {
     /**
      * 权限被拒
      */
-    void handlePermissionDenied();
+    void handlePermissionDenied(String[] permissionArray);
 
     /**
      * 权限设置结果

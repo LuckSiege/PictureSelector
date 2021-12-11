@@ -3,13 +3,13 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdkVersion cfgs.compileSdkVersion
 
     defaultConfig {
-        minSdk 21
-        targetSdk 31
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion cfgs.minSdkVersion
+        targetSdkVersion cfgs.targetSdkVersion
+        versionCode cfgs.versionCode
+        versionName cfgs.cameraxVersionName
 
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -25,6 +25,8 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
+
+apply from: '../publish.gradle'
 
 dependencies {
     api "androidx.camera:camera-core:1.1.0-alpha11"

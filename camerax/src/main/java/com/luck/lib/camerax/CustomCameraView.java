@@ -345,8 +345,8 @@ public class CustomCameraView extends RelativeLayout {
             setRecordVideoMinTime(recordVideoMinSecond);
         }
         setCaptureLoadingColor(captureLoadingColor);
-        String[] permissionArray = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        PermissionChecker.getInstance().requestPermissions((Activity) getContext(), permissionArray,
+        PermissionChecker.getInstance().requestPermissions((Activity) getContext(),
+                new String[]{Manifest.permission.CAMERA},
                 new PermissionResultCallback() {
                     @Override
                     public void onGranted() {

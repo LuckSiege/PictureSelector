@@ -1,15 +1,14 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 31
     buildToolsVersion '28.0.3'
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 29
-        versionCode 25
-        versionName "2.2.5-non-native"
-
+        minSdkVersion 19
+        targetSdkVersion 31
+        versionCode cfgs.versionCode
+        versionName cfgs.ucropVersionName
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -29,6 +28,8 @@ android {
     resourcePrefix 'ucrop_'
 
 }
+
+apply from: '../publish.gradle'
 
 dependencies {
     implementation "androidx.appcompat:appcompat:1.4.0"
