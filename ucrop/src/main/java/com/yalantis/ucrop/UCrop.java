@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
@@ -258,7 +259,7 @@ public class UCrop {
      */
     @Nullable
     public static Uri getOutput(@NonNull Intent intent) {
-        return intent.getParcelableExtra(EXTRA_OUTPUT_URI);
+        return intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
     }
 
     /**

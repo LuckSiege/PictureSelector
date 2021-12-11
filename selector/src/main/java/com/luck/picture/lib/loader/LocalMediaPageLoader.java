@@ -184,7 +184,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                 if (data.moveToFirst()) {
                     long id = data.getLong(data.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID));
                     String mimeType = data.getString(data.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE));
-                    return SdkVersionUtils.isQ() ? PictureMimeType.getRealPathUri(id, mimeType) : data.getString
+                    return SdkVersionUtils.isQ() ? MediaUtils.getRealPathUri(id, mimeType) : data.getString
                             (data.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA));
                 }
                 return null;
@@ -271,7 +271,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                 String mimeType = data.getString(mimeTypeColumn);
                                 mimeType = TextUtils.isEmpty(mimeType) ? PictureMimeType.ofJPEG() : mimeType;
                                 String absolutePath = data.getString(dataColumn);
-                                String url = SdkVersionUtils.isQ() ? PictureMimeType.getRealPathUri(id, mimeType) : absolutePath;
+                                String url = SdkVersionUtils.isQ() ? MediaUtils.getRealPathUri(id, mimeType) : absolutePath;
                                 if (config.isFilterInvalidFile) {
                                     if (!PictureFileUtils.isFileExists(absolutePath)) {
                                         continue;
@@ -431,7 +431,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                         long id = data.getLong(data.getColumnIndex(MediaStore.Files.FileColumns._ID));
                                         mediaFolder.setFolderName(bucketDisplayName);
                                         mediaFolder.setFolderTotalNum(ValueOf.toInt(size));
-                                        mediaFolder.setFirstImagePath(PictureMimeType.getRealPathUri(id, mimeType));
+                                        mediaFolder.setFirstImagePath(MediaUtils.getRealPathUri(id, mimeType));
                                         mediaFolder.setFirstMimeType(mimeType);
                                         mediaFolders.add(mediaFolder);
                                         hashSet.add(bucketId);
@@ -557,7 +557,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
     private static String getFirstUri(Cursor cursor) {
         long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID));
         String mimeType = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.MIME_TYPE));
-        return PictureMimeType.getRealPathUri(id, mimeType);
+        return MediaUtils.getRealPathUri(id, mimeType);
     }
 
     /**

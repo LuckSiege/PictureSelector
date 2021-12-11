@@ -584,6 +584,7 @@ public class UCropFragment extends Fragment {
     }
 
     protected UCropResult getResult(Uri uri, float resultAspectRatio, int offsetX, int offsetY, int imageWidth, int imageHeight) {
+        Uri inputUri = getArguments().getParcelable(UCrop.EXTRA_INPUT_URI);
         return new UCropResult(RESULT_OK, new Intent()
                 .putExtra(MediaStore.EXTRA_OUTPUT, uri)
                 .putExtra(UCrop.EXTRA_OUTPUT_CROP_ASPECT_RATIO, resultAspectRatio)
@@ -591,9 +592,10 @@ public class UCropFragment extends Fragment {
                 .putExtra(UCrop.EXTRA_OUTPUT_IMAGE_HEIGHT, imageHeight)
                 .putExtra(UCrop.EXTRA_OUTPUT_OFFSET_X, offsetX)
                 .putExtra(UCrop.EXTRA_OUTPUT_OFFSET_Y, offsetY)
-                .putExtra(UCrop.EXTRA_CROP_INPUT_ORIGINAL, mGestureCropImageView.getImageInputPath())
+                .putExtra(UCrop.EXTRA_CROP_INPUT_ORIGINAL, FileUtils.getInputPath(inputUri))
         );
     }
+
 
     protected UCropResult getError(Throwable throwable) {
         return new UCropResult(UCrop.RESULT_ERROR, new Intent()

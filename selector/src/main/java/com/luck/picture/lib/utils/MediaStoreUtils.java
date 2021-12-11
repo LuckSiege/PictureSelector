@@ -31,12 +31,11 @@ public class MediaStoreUtils {
     public static Uri createCameraOutImageUri(Context context, PictureSelectionConfig config) {
         Uri imageUri;
         String cameraFileName;
-        if (TextUtils.isEmpty(config.cameraFileName)) {
+        if (TextUtils.isEmpty(config.outPutCameraImageFileName)) {
             cameraFileName = "";
         } else {
-            boolean isSuffixOfImage = PictureMimeType.isSuffixOfImage(config.cameraFileName);
-            config.cameraFileName = !isSuffixOfImage ? StringUtils.renameSuffix(config.cameraFileName, PictureMimeType.JPG) : config.cameraFileName;
-            cameraFileName = config.isOnlyCamera ? config.cameraFileName : StringUtils.rename(config.cameraFileName);
+            cameraFileName = config.isOnlyCamera
+                    ? config.outPutCameraImageFileName : System.currentTimeMillis() + "_" + config.outPutCameraImageFileName;
         }
         if (SdkVersionUtils.isQ() && TextUtils.isEmpty(config.outPutCameraDir)) {
             imageUri = createImageUri(context, cameraFileName, config.cameraImageFormatForQ);
@@ -61,12 +60,11 @@ public class MediaStoreUtils {
     public static Uri createCameraOutVideoUri(Context context, PictureSelectionConfig config) {
         Uri videoUri;
         String cameraFileName;
-        if (TextUtils.isEmpty(config.cameraFileName)) {
+        if (TextUtils.isEmpty(config.outPutCameraVideoFileName)) {
             cameraFileName = "";
         } else {
-            boolean isSuffixOfImage = PictureMimeType.isSuffixOfImage(config.cameraFileName);
-            config.cameraFileName = isSuffixOfImage ? StringUtils.renameSuffix(config.cameraFileName, PictureMimeType.MP4) : config.cameraFileName;
-            cameraFileName = config.isOnlyCamera ? config.cameraFileName : StringUtils.rename(config.cameraFileName);
+            cameraFileName = config.isOnlyCamera
+                    ? config.outPutCameraVideoFileName : System.currentTimeMillis() + "_" + config.outPutCameraVideoFileName;
         }
         if (SdkVersionUtils.isQ() && TextUtils.isEmpty(config.outPutCameraDir)) {
             videoUri = createVideoUri(context, cameraFileName, config.cameraVideoFormatForQ);

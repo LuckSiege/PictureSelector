@@ -1,19 +1,14 @@
 package com.luck.picture.lib.utils;
 
 /**
- * author：luck
- * project：PictureSelector
- * package：com.luck.picture.lib.tool
- * email：893855882@qq.com
- * data：2017/5/25
+ * @author：luck
+ * @date：2021/12/10 10:07 上午
+ * @describe：DoubleUtils
  */
-
 public class DoubleUtils {
-    /**
-     * Prevent continuous click, jump two pages
-     */
+    private final static long TIME = 600;
+
     private static long lastClickTime;
-    private final static long TIME = 800;
 
     public static boolean isFastDoubleClick() {
         long time = System.currentTimeMillis();

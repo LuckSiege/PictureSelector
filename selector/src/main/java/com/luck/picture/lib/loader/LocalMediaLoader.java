@@ -15,6 +15,7 @@ import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
 import com.luck.picture.lib.thread.PictureThreadUtils;
+import com.luck.picture.lib.utils.MediaUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.SortUtils;
 
@@ -162,7 +163,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                 String mimeType = data.getString(mimeTypeColumn);
                                 mimeType = TextUtils.isEmpty(mimeType) ? PictureMimeType.ofJPEG() : mimeType;
                                 String absolutePath = data.getString(dataColumn);
-                                String url = SdkVersionUtils.isQ() ? PictureMimeType.getRealPathUri(id, mimeType) : absolutePath;
+                                String url = SdkVersionUtils.isQ() ? MediaUtils.getRealPathUri(id, mimeType) : absolutePath;
                                 // Here, it is solved that some models obtain mimeType and return the format of image / *,
                                 // which makes it impossible to distinguish the specific type, such as mi 8,9,10 and other models
                                 if (mimeType.endsWith("image/*")) {

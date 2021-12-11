@@ -118,7 +118,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             PreviewImageHolder imageHolder = (PreviewImageHolder) holder;
             previewView = imageHolder.previewView;
             boolean isGif = PictureMimeType.isGif(media.getMimeType());
-            boolean isLongImage = MediaUtils.isLongImg(media);
+            boolean isLongImage = MediaUtils.isLongImage(media.getWidth(),media.getHeight());
             imageHolder.previewLongView.setVisibility(isLongImage && !isGif ? View.VISIBLE : View.GONE);
             if (PictureMimeType.isHasHttp(path)) {
                 String mimeType = PictureMimeType.getImageMimeType(path);

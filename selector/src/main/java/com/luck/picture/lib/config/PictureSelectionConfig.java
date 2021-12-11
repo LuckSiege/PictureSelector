@@ -71,8 +71,9 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isHidePreviewDownload;
     public boolean isWithVideoImage;
     public List<String> queryOnlyList;
-    public String cameraFileName;
     public boolean isCheckOriginalImage;
+    public String outPutCameraImageFileName;
+    public String outPutCameraVideoFileName;
     public String outPutCameraDir;
     public String sandboxDir;
     public String originalPath;
@@ -152,8 +153,9 @@ public final class PictureSelectionConfig implements Parcelable {
         isHidePreviewDownload = in.readByte() != 0;
         isWithVideoImage = in.readByte() != 0;
         queryOnlyList = in.createStringArrayList();
-        cameraFileName = in.readString();
         isCheckOriginalImage = in.readByte() != 0;
+        outPutCameraImageFileName = in.readString();
+        outPutCameraVideoFileName = in.readString();
         outPutCameraDir = in.readString();
         sandboxDir = in.readString();
         originalPath = in.readString();
@@ -221,8 +223,9 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isHidePreviewDownload ? 1 : 0));
         dest.writeByte((byte) (isWithVideoImage ? 1 : 0));
         dest.writeStringList(queryOnlyList);
-        dest.writeString(cameraFileName);
         dest.writeByte((byte) (isCheckOriginalImage ? 1 : 0));
+        dest.writeString(outPutCameraImageFileName);
+        dest.writeString(outPutCameraVideoFileName);
         dest.writeString(outPutCameraDir);
         dest.writeString(sandboxDir);
         dest.writeString(originalPath);
@@ -306,7 +309,8 @@ public final class PictureSelectionConfig implements Parcelable {
         cameraImageFormatForQ = PictureMimeType.MIME_TYPE_IMAGE;
         cameraVideoFormatForQ = PictureMimeType.MIME_TYPE_VIDEO;
         cameraAudioFormatForQ = PictureMimeType.MIME_TYPE_AUDIO_AMR;
-        cameraFileName = "";
+        outPutCameraImageFileName = "";
+        outPutCameraVideoFileName = "";
         queryOnlyList = new ArrayList<>();
         outPutCameraDir = "";
         sandboxDir = "";

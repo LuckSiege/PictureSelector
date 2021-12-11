@@ -34,6 +34,8 @@ import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
 
+import com.yalantis.ucrop.UCrop;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -146,6 +148,17 @@ public class FileUtils {
             }
         }
         return postfix;
+    }
+
+    /**
+     * 获取裁剪源路径
+     *
+     * @param inputUri
+     * @return
+     */
+    public static String getInputPath(Uri inputUri) {
+        return FileUtils.isContent(inputUri.toString())
+                || isHasHttp(inputUri.toString()) ? inputUri.toString() : inputUri.getPath();
     }
 
     /**

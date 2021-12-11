@@ -10,6 +10,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.style.SelectMainStyle;
+import com.luck.picture.lib.utils.MediaUtils;
 import com.luck.picture.lib.utils.StyleUtils;
 
 /**
@@ -80,7 +81,7 @@ public class ImageViewHolder extends BaseRecyclerMediaHolder {
             tvMediaTag.setText(mContext.getString(R.string.ps_gif_tag));
         } else if (PictureMimeType.isWebp(media.getMimeType())) {
             tvMediaTag.setText(mContext.getString(R.string.ps_webp_tag));
-        } else if (PictureMimeType.isLongImage(media.getWidth(), media.getHeight())) {
+        } else if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
             tvMediaTag.setText(mContext.getString(R.string.ps_webp_tag));
         } else {
             tvMediaTag.setVisibility(View.GONE);

@@ -3,12 +3,12 @@ package com.luck.picture.lib.immersive;
 import android.os.Build;
 import android.text.TextUtils;
 
-import com.luck.picture.lib.utils.StringUtils;
 import com.luck.picture.lib.utils.ValueOf;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.regex.Pattern;
 
 /**
  * @author：luck
@@ -71,7 +71,7 @@ public class RomUtils {
 
             String version = displayId.substring(0, 1);
 
-            return StringUtils.stringToInt(version);
+            return stringToInt(version);
         }
         return 0;
     }
@@ -137,4 +137,14 @@ public class RomUtils {
         return line;
     }
 
+    /**
+     * 匹配数值
+     *
+     * @param str
+     * @return
+     */
+    public static int stringToInt(String str) {
+        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]+$");
+        return pattern.matcher(str).matches() ? ValueOf.toInt(str) : 0;
+    }
 }

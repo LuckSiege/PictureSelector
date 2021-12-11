@@ -175,10 +175,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_compress.setOnCheckedChangeListener(this);
         tv_select_num.setText(ValueOf.toString(maxSelectNum));
 
-//         List<LocalMedia> list = new ArrayList<>();
-//         list.add(LocalMedia.generateLocalMedia("https://wx1.sinaimg.cn/mw690/006e0i7xly1gaxqq5m7t8j31311g2ao6.jpg", PictureMimeType.ofJPEG()));
-//         list.add(LocalMedia.generateLocalMedia("https://ww1.sinaimg.cn/bmiddle/bcd10523ly1g96mg4sfhag20c806wu0x.gif", PictureMimeType.ofGIF()));
-//         mData.addAll(list);
+         List<LocalMedia> list = new ArrayList<>();
+         list.add(LocalMedia.generateLocalMedia("https://wx1.sinaimg.cn/mw690/006e0i7xly1gaxqq5m7t8j31311g2ao6.jpg", PictureMimeType.ofJPEG()));
+         list.add(LocalMedia.generateLocalMedia("https://ww1.sinaimg.cn/bmiddle/bcd10523ly1g96mg4sfhag20c806wu0x.gif", PictureMimeType.ofGIF()));
+         mData.addAll(list);
 
         FullyGridLayoutManager manager = new FullyGridLayoutManager(this,
                 4, GridLayoutManager.VERTICAL, false);
@@ -253,6 +253,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .isPageStrategy(cbPage.isChecked())
                             .isDisplayCamera(cb_isCamera.isChecked())
                             .isOpenClickSound(cb_voice.isChecked())
+                            //.setOutputCameraImageFileName("luck.jpeg")
+                            //.setOutputCameraVideoFileName("luck.mp4")
                             .isWithSelectVideoImage(true)
                             //.queryOnlyMimeType(PictureMimeType.ofGIF())
                             .isMaxSelectEnabledMask(cbEnabledMask.isChecked())
@@ -484,7 +486,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.i(TAG, "是否开启原图:" + media.isOriginal());
                 Log.i(TAG, "原图路径:" + media.getOriginalPath());
                 Log.i(TAG, "沙盒路径:" + media.getSandboxPath());
-                Log.i(TAG, "宽高: " + media.getWidth() + "x" + media.getHeight());
+                Log.i(TAG, "原始宽高: " + media.getWidth() + "x" + media.getHeight());
+                Log.i(TAG, "裁剪宽高: " + media.getCropImageWidth() + "x" + media.getCropImageHeight());
                 Log.i(TAG, "Size: " + media.getSize());
             }
             mAdapter.getData().clear();
@@ -676,8 +679,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onStartCrop(Fragment fragment, LocalMedia currentLocalMedia,
                                 ArrayList<LocalMedia> dataSource, int requestCode) {
             String currentCropPath = currentLocalMedia.getAvailablePath();
-            Uri inputUri = PictureMimeType.isContent(currentCropPath)
-                    ? Uri.parse(currentCropPath) : Uri.fromFile(new File(currentCropPath));
+            Uri inputUri;
+            if (PictureMimeType.isContent(currentCropPath) || PictureMimeType.isHasHttp(currentCropPath)) {
+                inputUri = Uri.parse(currentCropPath);
+            } else {
+                inputUri = Uri.fromFile(new File(currentCropPath));
+            }
             String fileName = DateUtils.getCreateFileName("CROP_") + ".jpg";
             Uri destinationUri = Uri.fromFile(new File(getSandboxPath(), fileName));
             ArrayList<String> dataCropSource = new ArrayList<>();
@@ -1120,7 +1127,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.i(TAG, "是否开启原图:" + media.isOriginal());
                     Log.i(TAG, "原图路径:" + media.getOriginalPath());
                     Log.i(TAG, "沙盒路径:" + media.getSandboxPath());
-                    Log.i(TAG, "宽高: " + media.getWidth() + "x" + media.getHeight());
+                    Log.i(TAG, "原始宽高: " + media.getWidth() + "x" + media.getHeight());
+                    Log.i(TAG, "裁剪宽高: " + media.getCropImageWidth() + "x" + media.getCropImageHeight());
                     Log.i(TAG, "Size: " + media.getSize());
                 }
                 mAdapter.getData().clear();

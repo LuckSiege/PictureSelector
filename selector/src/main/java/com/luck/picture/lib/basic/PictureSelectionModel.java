@@ -604,18 +604,6 @@ public class PictureSelectionModel {
         return this;
     }
 
-    /**
-     * Camera custom local file name
-     * # Such as xxx.png
-     *
-     * @param fileName
-     * @return
-     */
-    public PictureSelectionModel cameraFileName(String fileName) {
-        selectionConfig.cameraFileName = fileName;
-        return this;
-    }
-
 
     /**
      * @param zoomAnim Picture list zoom anim
@@ -651,6 +639,30 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel setOutputCameraDir(String outPutCameraDir) {
         selectionConfig.outPutCameraDir = outPutCameraDir;
+        return this;
+    }
+
+    /**
+     * Camera IMAGE custom local file name
+     * # Such as xxx.png
+     *
+     * @param fileName
+     * @return
+     */
+    public PictureSelectionModel setOutputCameraImageFileName(String fileName) {
+        selectionConfig.outPutCameraImageFileName = fileName;
+        return this;
+    }
+
+    /**
+     * Camera VIDEO custom local file name
+     * # Such as xxx.png
+     *
+     * @param fileName
+     * @return
+     */
+    public PictureSelectionModel setOutputCameraVideoFileName(String fileName) {
+        selectionConfig.outPutCameraVideoFileName = fileName;
         return this;
     }
 

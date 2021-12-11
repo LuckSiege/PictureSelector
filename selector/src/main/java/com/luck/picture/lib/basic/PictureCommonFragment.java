@@ -56,13 +56,11 @@ import com.luck.picture.lib.service.ForegroundService;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
-import com.luck.picture.lib.utils.AlbumUtils;
 import com.luck.picture.lib.utils.BitmapUtils;
 import com.luck.picture.lib.utils.MediaStoreUtils;
 import com.luck.picture.lib.utils.MediaUtils;
 import com.luck.picture.lib.utils.PictureFileUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
-import com.luck.picture.lib.utils.StringUtils;
 import com.luck.picture.lib.utils.ValueOf;
 
 import org.json.JSONArray;
@@ -301,7 +299,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
             if (!isSelected && selectVideoSize >= config.maxVideoSelectNum) {
                 // 如果选择的是视频
-                RemindDialog.showTipsDialog(getContext(), StringUtils.getMsg(getContext(), curMimeType, config.maxVideoSelectNum));
+                RemindDialog.showTipsDialog(getContext(), getTipsMsg(getContext(), curMimeType, config.maxVideoSelectNum));
                 return true;
             }
 
@@ -337,7 +335,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         if (PictureMimeType.isHasVideo(existMimeType) && config.maxVideoSelectNum > 0) {
             if (!isSelected && SelectedManager.getSelectedResult().size() >= config.maxVideoSelectNum) {
                 // 如果先选择的是视频
-                RemindDialog.showTipsDialog(getContext(), StringUtils.getMsg(getContext(), existMimeType, config.maxVideoSelectNum));
+                RemindDialog.showTipsDialog(getContext(), getTipsMsg(getContext(), existMimeType, config.maxVideoSelectNum));
                 return true;
             }
             if (!isSelected && config.videoMinSecond > 0 && duration < config.videoMinSecond) {
@@ -353,7 +351,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             }
         } else {
             if (!isSelected && SelectedManager.getSelectedResult().size() >= config.maxSelectNum) {
-                RemindDialog.showTipsDialog(getContext(), StringUtils.getMsg(getContext(), existMimeType, config.maxSelectNum));
+                RemindDialog.showTipsDialog(getContext(), getTipsMsg(getContext(), existMimeType, config.maxSelectNum));
                 return true;
             }
             if (PictureMimeType.isHasVideo(curMimeType)) {
@@ -372,6 +370,25 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         return false;
     }
 
+
+    /**
+     * 根据类型获取相应的Toast文案
+     *
+     * @param context
+     * @param mimeType
+     * @param maxSelectNum
+     * @return
+     */
+    @SuppressLint("StringFormatInvalid")
+    private static String getTipsMsg(Context context, String mimeType, int maxSelectNum) {
+        if (PictureMimeType.isHasVideo(mimeType)) {
+            return context.getString(R.string.ps_message_video_max_num, String.valueOf(maxSelectNum));
+        } else if (PictureMimeType.isHasAudio(mimeType)) {
+            return context.getString(R.string.ps_message_audio_max_num, String.valueOf(maxSelectNum));
+        } else {
+            return context.getString(R.string.ps_message_max_num, String.valueOf(maxSelectNum));
+        }
+    }
 
     @Override
     public void sendSelectedChangeEvent(boolean isAddRemove, LocalMedia currentMedia) {
@@ -824,7 +841,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             cameraFile = new File(path);
             int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
             id = lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : System.currentTimeMillis();
-            bucketId = AlbumUtils.generateCameraBucketId(getContext(), cameraFile, "");
+            bucketId = MediaUtils.generateCameraBucketId(getContext(), cameraFile, "");
         } else {
             cameraFile = new File(config.cameraPath);
             mimeTypeUri = Uri.fromFile(cameraFile);
@@ -832,9 +849,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 BitmapUtils.rotateImage(getContext(), config.cameraPath);
             }
             id = System.currentTimeMillis();
-            bucketId = AlbumUtils.generateCameraBucketId(getContext(), cameraFile, config.outPutCameraDir);
+            bucketId = MediaUtils.generateCameraBucketId(getContext(), cameraFile, config.outPutCameraDir);
         }
-        String mimeType = PictureMimeType.getMimeTypeFromMediaContentUri(getActivity(), mimeTypeUri);
+        String mimeType = MediaUtils.getMimeTypeFromMediaContentUri(getActivity(), mimeTypeUri);
         MediaExtraInfo mediaExtraInfo;
         if (PictureMimeType.isHasVideo(mimeType)) {
             mediaExtraInfo = MediaUtils.getVideoSize(getContext(), config.cameraPath);
@@ -843,7 +860,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         } else {
             mediaExtraInfo = MediaUtils.getImageSize(getContext(), config.cameraPath);
         }
-        String folderName = AlbumUtils.generateCameraFolderName(config.cameraPath, mimeType, config.outPutCameraDir);
+        String folderName = MediaUtils.generateCameraFolderName(config.cameraPath, mimeType, config.outPutCameraDir);
         LocalMedia media = LocalMedia.parseLocalMedia(id, config.cameraPath, cameraFile.getAbsolutePath(),
                 cameraFile.getName(), folderName, mediaExtraInfo.getDuration(), config.chooseMode,
                 mimeType, mediaExtraInfo.getWidth(), mediaExtraInfo.getHeight(), cameraFile.length(), bucketId,

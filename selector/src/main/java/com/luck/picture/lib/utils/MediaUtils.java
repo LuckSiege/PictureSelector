@@ -1,6 +1,7 @@
 package com.luck.picture.lib.utils;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
@@ -8,8 +9,10 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
 
 import androidx.exifinterface.media.ExifInterface;
 
@@ -19,6 +22,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
@@ -29,21 +33,109 @@ import java.io.InputStream;
  * @describe：资源处理工具类
  */
 public class MediaUtils {
+    /**
+     * get uri
+     *
+     * @param id
+     * @return
+     */
+    public static String getRealPathUri(long id, String mimeType) {
+        Uri contentUri;
+        if (PictureMimeType.isHasImage(mimeType)) {
+            contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        } else if (PictureMimeType.isHasVideo(mimeType)) {
+            contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+        } else if (PictureMimeType.isHasAudio(mimeType)) {
+            contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        } else {
+            contentUri = MediaStore.Files.getContentUri("external");
+        }
+        return ContentUris.withAppendedId(contentUri, id).toString();
+    }
+
+
+    /**
+     * 获取mimeType
+     *
+     * @param context
+     * @param uri
+     * @return
+     */
+    public static String getMimeTypeFromMediaContentUri(Context context, Uri uri) {
+        String mimeType;
+        if (TextUtils.equals(uri.getScheme(), ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver cr = context.getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return TextUtils.isEmpty(mimeType) ? PictureMimeType.MIME_TYPE_JPEG : mimeType;
+    }
 
     /**
      * 是否是长图
      *
-     * @param media
-     * @return true 是 or false 不是
+     * @param width  图片宽度
+     * @param height 图片高度
+     * @return
      */
-    public static boolean isLongImg(LocalMedia media) {
-        int width = media.getWidth();
-        int height = media.getHeight();
+    public static boolean isLongImage(int width, int height) {
         if (width <= 0 || height <= 0) {
             return false;
         }
-        int newHeight = width * 3;
-        return height > newHeight;
+        return height > width * 3;
+    }
+
+    /**
+     * 生成BucketId
+     *
+     * @param context          上下文
+     * @param cameraFile       拍照资源文件
+     * @param outPutCameraPath 自定义拍照输出目录
+     * @return
+     */
+    public static long generateCameraBucketId(Context context, File cameraFile, String outPutCameraPath) {
+        long bucketId;
+        if (TextUtils.isEmpty(outPutCameraPath)) {
+            bucketId = getCameraFirstBucketId(context);
+        } else {
+            if (cameraFile.getParentFile() != null) {
+                bucketId = cameraFile.getParentFile().getName().hashCode();
+            } else {
+                bucketId = getCameraFirstBucketId(context);
+            }
+        }
+        return bucketId;
+    }
+
+    /**
+     * 创建目录名
+     *
+     * @param path             资源路径
+     * @param mimeType         资源类型
+     * @param outPutCameraPath 自定义拍照输出路径
+     * @return
+     */
+    public static String generateCameraFolderName(String path, String mimeType, String outPutCameraPath) {
+        String folderName;
+        if (TextUtils.isEmpty(outPutCameraPath)) {
+            if (SdkVersionUtils.isQ() && PictureMimeType.isHasVideo(mimeType)) {
+                folderName = Environment.DIRECTORY_MOVIES;
+            } else {
+                folderName = PictureMimeType.CAMERA;
+            }
+        } else {
+            File cameraFile = new File(path);
+            if (cameraFile.getParentFile() != null) {
+                folderName = cameraFile.getParentFile().getName();
+            } else {
+                folderName = PictureMimeType.CAMERA;
+            }
+        }
+        return folderName;
     }
 
     /**

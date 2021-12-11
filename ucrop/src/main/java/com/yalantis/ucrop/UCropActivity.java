@@ -700,6 +700,7 @@ public class UCropActivity extends AppCompatActivity {
     }
 
     protected void setResultUri(Uri uri, float resultAspectRatio, int offsetX, int offsetY, int imageWidth, int imageHeight) {
+        Uri inputUri = getIntent().getParcelableExtra(UCrop.EXTRA_INPUT_URI);
         setResult(RESULT_OK, new Intent()
                 .putExtra(MediaStore.EXTRA_OUTPUT, uri)
                 .putExtra(UCrop.EXTRA_OUTPUT_CROP_ASPECT_RATIO, resultAspectRatio)
@@ -707,7 +708,7 @@ public class UCropActivity extends AppCompatActivity {
                 .putExtra(UCrop.EXTRA_OUTPUT_IMAGE_HEIGHT, imageHeight)
                 .putExtra(UCrop.EXTRA_OUTPUT_OFFSET_X, offsetX)
                 .putExtra(UCrop.EXTRA_OUTPUT_OFFSET_Y, offsetY)
-                .putExtra(UCrop.EXTRA_CROP_INPUT_ORIGINAL, mGestureCropImageView.getImageInputPath())
+                .putExtra(UCrop.EXTRA_CROP_INPUT_ORIGINAL, FileUtils.getInputPath(inputUri))
         );
     }
 

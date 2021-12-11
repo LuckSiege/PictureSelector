@@ -135,8 +135,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
                 realPath = path;
                 mimeType = FileUtils.getMimeTypeFromMediaContentUri(this, Uri.fromFile(new File(path)));
             }
-            if (FileUtils.isHasHttp(realPath) || FileUtils.isUrlHasVideo(realPath)
-                    || FileUtils.isHasVideo(mimeType) || FileUtils.isHasAudio(mimeType)) {
+            if (FileUtils.isUrlHasVideo(realPath) || FileUtils.isHasVideo(mimeType) || FileUtils.isHasAudio(mimeType)) {
                 // not crop type
                 uCropNotSupportList.add(path);
             } else {
@@ -193,7 +192,12 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
             public void onItemClick(int position, View view) {
                 String path = uCropSupportList.get(position);
                 Bundle extras = getIntent().getExtras();
-                Uri inputUri = FileUtils.isContent(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
+                Uri inputUri;
+                if (FileUtils.isContent(path) || FileUtils.isHasHttp(path)) {
+                    inputUri = Uri.parse(path);
+                } else {
+                    inputUri = Uri.fromFile(new File(path));
+                }
                 String postfix = FileUtils.getPostfixDefaultJPEG(UCropMultipleActivity.this,
                         isForbidCropGifWebp, inputUri);
                 String fileName = TextUtils.isEmpty(outputCropFileName)
@@ -317,7 +321,12 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
                     int nextFragmentPosition = currentFragmentPosition + 1;
                     Bundle extras = getIntent().getExtras();
                     String path = uCropSupportList.get(nextFragmentPosition);
-                    Uri inputUri = FileUtils.isContent(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
+                    Uri inputUri;
+                    if (FileUtils.isContent(path) || FileUtils.isHasHttp(path)) {
+                        inputUri = Uri.parse(path);
+                    } else {
+                        inputUri = Uri.fromFile(new File(path));
+                    }
                     String postfix = FileUtils.getPostfixDefaultJPEG(UCropMultipleActivity.this,
                             isForbidCropGifWebp, inputUri);
                     String fileName = TextUtils.isEmpty(outputCropFileName)
