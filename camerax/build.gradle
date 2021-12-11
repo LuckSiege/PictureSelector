@@ -9,7 +9,7 @@ android {
         minSdkVersion cfgs.minSdkVersion
         targetSdkVersion cfgs.targetSdkVersion
         versionCode cfgs.versionCode
-        versionName cfgs.cameraxVersionName
+        versionName cfgs.versionName
 
         consumerProguardFiles "consumer-rules.pro"
     }

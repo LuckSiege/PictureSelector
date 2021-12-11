@@ -8,7 +8,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 31
         versionCode cfgs.versionCode
-        versionName cfgs.ucropVersionName
+        versionName cfgs.versionName
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {

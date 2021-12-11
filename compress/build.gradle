@@ -17,7 +17,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 27
         versionCode cfgs.versionCode
-        versionName cfgs.compressVersionName
+        versionName cfgs.versionName
     }
     buildTypes {
         release {
