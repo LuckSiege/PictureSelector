@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         // 预览图片 or 预览视频
                         PictureSelector.create(MainActivity.this)
                                 .openPreview()
-                                .imageEngine(GlideEngine.createGlideEngine())
+                                .setImageEngine(GlideEngine.createGlideEngine())
                                 .setSelectorUIStyle(selectorStyle)
                                 .startActivityPreview(position, selectList, true,
                                         new OnExternalPreviewEventListener() {
@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     PictureSelector.create(MainActivity.this)
                             .openGallery(chooseMode)
                             .setSelectorUIStyle(selectorStyle)
-                            .imageEngine(GlideEngine.createGlideEngine())
+                            .setImageEngine(GlideEngine.createGlideEngine())
                             .setCropEngine(getCropEngine())
                             .setCompressEngine(getCompressEngine())
                             .setSandboxFileEngine(new MeSandboxFileEngine())
@@ -256,8 +256,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //.queryOnlyMimeType(PictureMimeType.ofGIF())
                             .isMaxSelectEnabledMask(cbEnabledMask.isChecked())
                             .isDirectReturnSingle(cb_single_back.isChecked())
-                            .maxSelectNum(maxSelectNum)
-                            .maxVideoSelectNum(2)
+                            .setMaxSelectNum(maxSelectNum)
+                            .setMaxVideoSelectNum(2)
                             .setRecyclerAnimationMode(animationMode)
                             .isGif(cb_isGif.isChecked())
                             .selectedData(mAdapter.getData())
@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // 单独拍照
                     PictureSelector.create(MainActivity.this)
                             .openCamera(SelectMimeType.ofAll())
-                            .imageEngine(GlideEngine.createGlideEngine())
+                            .setImageEngine(GlideEngine.createGlideEngine())
                             .setCameraInterceptListener(getCustomCameraEvent())
                             //.forResult(new MeOnResultCallbackListener());
                             .forResult(PictureConfig.CHOOSE_REQUEST);

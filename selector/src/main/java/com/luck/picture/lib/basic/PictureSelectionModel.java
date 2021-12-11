@@ -2,7 +2,6 @@ package com.luck.picture.lib.basic;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.text.TextUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
@@ -30,6 +29,7 @@ import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
+import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
@@ -93,7 +93,7 @@ public class PictureSelectionModel {
     /**
      * Set App Language
      *
-     * @param language {@link com.luck.picture.lib.language.LanguageConfig}
+     * @param language {@link LanguageConfig}
      * @return PictureSelectionModel
      */
     public PictureSelectionModel setLanguage(int language) {
@@ -107,7 +107,7 @@ public class PictureSelectionModel {
      * @param engine Image Load the engine
      * @return
      */
-    public PictureSelectionModel imageEngine(ImageEngine engine) {
+    public PictureSelectionModel setImageEngine(ImageEngine engine) {
         if (PictureSelectionConfig.imageEngine != engine) {
             PictureSelectionConfig.imageEngine = engine;
         }
@@ -271,7 +271,7 @@ public class PictureSelectionModel {
 
     /**
      * @param selectionMode PictureSelector Selection model
-     *                      and SelectModeConfig.MULTIPLE or SelectModeConfig.SINGLE
+     *                      and {@link SelectModeConfig.MULTIPLE} or {@link SelectModeConfig.SINGLE}
      *                      <p>
      *                      Use {@link SelectModeConfig}
      *                      </p>
@@ -281,18 +281,6 @@ public class PictureSelectionModel {
         selectionConfig.selectionMode = selectionMode;
         selectionConfig.maxSelectNum = selectionConfig.selectionMode ==
                 SelectModeConfig.SINGLE ? 1 : selectionConfig.maxSelectNum;
-        return this;
-    }
-
-
-    /**
-     * Preview audio files
-     *
-     * @param enablePreviewAudio
-     * @return
-     */
-    public PictureSelectionModel isEnablePreviewAudio(boolean enablePreviewAudio) {
-        selectionConfig.isEnablePreviewAudio = enablePreviewAudio;
         return this;
     }
 
@@ -350,7 +338,7 @@ public class PictureSelectionModel {
      * @param maxSelectNum PictureSelector max selection
      * @return
      */
-    public PictureSelectionModel maxSelectNum(int maxSelectNum) {
+    public PictureSelectionModel setMaxSelectNum(int maxSelectNum) {
         selectionConfig.maxSelectNum = selectionConfig.selectionMode == SelectModeConfig.SINGLE ? 1 : maxSelectNum;
         return this;
     }
@@ -361,7 +349,7 @@ public class PictureSelectionModel {
      * @param minSelectNum PictureSelector min selection
      * @return
      */
-    public PictureSelectionModel minSelectNum(int minSelectNum) {
+    public PictureSelectionModel setMinSelectNum(int minSelectNum) {
         selectionConfig.minSelectNum = minSelectNum;
         return this;
     }
@@ -372,7 +360,7 @@ public class PictureSelectionModel {
      * @param maxVideoSelectNum PictureSelector video max selection
      * @return
      */
-    public PictureSelectionModel maxVideoSelectNum(int maxVideoSelectNum) {
+    public PictureSelectionModel setMaxVideoSelectNum(int maxVideoSelectNum) {
         selectionConfig.maxVideoSelectNum = selectionConfig.chooseMode == SelectMimeType.ofVideo() ? 0 : maxVideoSelectNum;
         return this;
     }
@@ -383,7 +371,7 @@ public class PictureSelectionModel {
      * @param minVideoSelectNum PictureSelector video min selection
      * @return
      */
-    public PictureSelectionModel minVideoSelectNum(int minVideoSelectNum) {
+    public PictureSelectionModel setMinVideoSelectNum(int minVideoSelectNum) {
         selectionConfig.minVideoSelectNum = minVideoSelectNum;
         return this;
     }
@@ -469,7 +457,7 @@ public class PictureSelectionModel {
      * @param videoQuality video quality and 0 or 1
      * @return
      */
-    public PictureSelectionModel videoQuality(int videoQuality) {
+    public PictureSelectionModel setVideoQuality(int videoQuality) {
         selectionConfig.videoQuality = videoQuality;
         return this;
     }
@@ -483,14 +471,17 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel setCameraImageFormat(String imageFormat) {
         selectionConfig.cameraImageFormat = imageFormat;
-        if (SdkVersionUtils.isQ() || SdkVersionUtils.isR()) {
-            if (TextUtils.equals(imageFormat, PictureMimeType.PNG)) {
-                selectionConfig.cameraImageFormatForQ = PictureMimeType.PNG_Q;
-            }
-            if (TextUtils.equals(imageFormat, PictureMimeType.JPG) || TextUtils.equals(imageFormat, PictureMimeType.JPEG)) {
-                selectionConfig.cameraImageFormatForQ = PictureMimeType.JPEG_Q;
-            }
-        }
+        return this;
+    }
+
+    /**
+     * camera output image format
+     *
+     * @param imageFormat PictureSelector media format
+     * @return
+     */
+    public PictureSelectionModel setCameraImageFormatForQ(String imageFormat) {
+        selectionConfig.cameraImageFormatForQ = imageFormat;
         return this;
     }
 
@@ -502,14 +493,17 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel setCameraVideoFormat(String videoFormat) {
         selectionConfig.cameraVideoFormat = videoFormat;
-        if (SdkVersionUtils.isQ() || SdkVersionUtils.isR()) {
-            if (TextUtils.equals(videoFormat, PictureMimeType.MP4)) {
-                selectionConfig.cameraVideoFormatForQ = PictureMimeType.MP4_Q;
-            }
-            if (TextUtils.equals(videoFormat, PictureMimeType.AVI)) {
-                selectionConfig.cameraVideoFormatForQ = PictureMimeType.AVI_Q;
-            }
-        }
+        return this;
+    }
+
+    /**
+     * camera output video format
+     *
+     * @param videoFormat PictureSelector media format
+     * @return
+     */
+    public PictureSelectionModel setCameraVideoFormatForQ(String videoFormat) {
+        selectionConfig.cameraVideoFormatForQ = videoFormat;
         return this;
     }
 
@@ -522,17 +516,17 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel setCameraAudioFormat(String audioFormat) {
         selectionConfig.cameraAudioFormat = audioFormat;
-        if (SdkVersionUtils.isQ() || SdkVersionUtils.isR()) {
-            if (TextUtils.equals(audioFormat, PictureMimeType.AMR)) {
-                selectionConfig.cameraAudioFormatForQ = PictureMimeType.AMR_Q;
-            }
-            if (TextUtils.equals(audioFormat, PictureMimeType.WAV)) {
-                selectionConfig.cameraAudioFormatForQ = PictureMimeType.WAV_Q;
-            }
-            if (TextUtils.equals(audioFormat, PictureMimeType.MP3)) {
-                selectionConfig.cameraAudioFormatForQ = PictureMimeType.MP3_Q;
-            }
-        }
+        return this;
+    }
+
+    /**
+     * camera output audio format
+     *
+     * @param videoFormat PictureSelector media format
+     * @return
+     */
+    public PictureSelectionModel setCameraAudioFormatForQ(String audioFormat) {
+        selectionConfig.cameraAudioFormatForQ = audioFormat;
         return this;
     }
 
@@ -541,7 +535,7 @@ public class PictureSelectionModel {
      * @param videoMaxSecond selection video max second
      * @return
      */
-    public PictureSelectionModel videoMaxSecond(int videoMaxSecond) {
+    public PictureSelectionModel setVideoMaxSecond(int videoMaxSecond) {
         selectionConfig.videoMaxSecond = (videoMaxSecond * 1000);
         return this;
     }
@@ -550,7 +544,7 @@ public class PictureSelectionModel {
      * @param videoMinSecond selection video min second
      * @return
      */
-    public PictureSelectionModel videoMinSecond(int videoMinSecond) {
+    public PictureSelectionModel setVideoMinSecond(int videoMinSecond) {
         selectionConfig.videoMinSecond = videoMinSecond * 1000;
         return this;
     }
@@ -560,7 +554,7 @@ public class PictureSelectionModel {
      * @param maxSecond video record second
      * @return
      */
-    public PictureSelectionModel recordVideoMaxSecond(int maxSecond) {
+    public PictureSelectionModel setRecordVideoMaxSecond(int maxSecond) {
         selectionConfig.recordVideoMaxSecond = maxSecond;
         return this;
     }
@@ -569,7 +563,7 @@ public class PictureSelectionModel {
      * @param minSecond video record second
      * @return
      */
-    public PictureSelectionModel recordVideoMinSecond(int minSecond) {
+    public PictureSelectionModel setRecordVideoMinSecond(int minSecond) {
         selectionConfig.recordVideoMinSecond = minSecond;
         return this;
     }
@@ -578,7 +572,7 @@ public class PictureSelectionModel {
      * @param imageSpanCount PictureSelector image span count
      * @return
      */
-    public PictureSelectionModel imageSpanCount(int imageSpanCount) {
+    public PictureSelectionModel setImageSpanCount(int imageSpanCount) {
         selectionConfig.imageSpanCount = imageSpanCount;
         return this;
     }
@@ -681,8 +675,8 @@ public class PictureSelectionModel {
      *                      </p>
      * @return
      */
-    public PictureSelectionModel setQuerySandboxDir(String directoryPath) {
-        selectionConfig.sandboxDir = directoryPath;
+    public PictureSelectionModel setQuerySandboxDir(String dir) {
+        selectionConfig.sandboxDir = dir;
         return this;
     }
 
@@ -772,6 +766,17 @@ public class PictureSelectionModel {
     }
 
     /**
+     * Preview audio files
+     *
+     * @param enablePreviewAudio
+     * @return
+     */
+    public PictureSelectionModel isPreviewAudio(boolean enablePreviewAudio) {
+        selectionConfig.isEnablePreviewAudio = enablePreviewAudio;
+        return this;
+    }
+
+    /**
      * @param enablePreview Do you want to preview the picture?
      * @return
      */
@@ -822,14 +827,6 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel isCameraRotateImage(boolean isCameraRotateImage) {
         selectionConfig.isCameraRotateImage = isCameraRotateImage;
-        return this;
-    }
-
-    /**
-     * Compress image rotation, automatic correction
-     */
-    public PictureSelectionModel isAutoRotating(boolean isAutoRotating) {
-        selectionConfig.isAutoRotating = isAutoRotating;
         return this;
     }
 
