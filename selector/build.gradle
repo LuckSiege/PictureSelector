@@ -38,5 +38,5 @@ dependencies {
     implementation "androidx.fragment:fragment:${cfgs.fragment_version}"
     implementation "androidx.exifinterface:exifinterface:${cfgs.androidx_exifinterface_version}"
     implementation "androidx.viewpager2:viewpager2:${cfgs.viewpage2}"
-    implementation "androidx.constraintlayout:constraintlayout:2.1.2"
+    implementation "androidx.constraintlayout:constraintlayout:${cfgs.constraintlayout}"
 }

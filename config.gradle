@@ -14,7 +14,8 @@ ext {
             localbroadcastmanager         : "1.0.0",
             activity_version              : "1.4.0",
             fragment_version              : "1.4.0",
-            viewpage2                     :"1.0.0",
+            viewpage2                     : "1.0.0",
+            constraintlayout              : "2.1.2",
 
             experimental_version          : "1.1.0",
             futures_version               : "1.1.0",
