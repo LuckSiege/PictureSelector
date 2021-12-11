@@ -5,7 +5,7 @@
     <string name="ucrop_scale">Proporção</string>
     <string name="ucrop_crop">Recorte</string>
 
-    <string name="ucrop_label_original">Proporção inicial</string>
+    <string name="ucrop_label_original">Norma</string>
     <string name="ucrop_label_edit_photo">Recorte</string>
 
     <string name="ucrop_menu_crop">Recorte</string>
