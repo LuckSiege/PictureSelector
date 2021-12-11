@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="picture_photo_pictures">Ảnh</string>
+    <string name="picture_photo_recording">Máy ảnh dài</string>
+    <string name="picture_recording_time_is_short">Thời gian ghi âm quá ngắn</string>
+    <string name="picture_photo_camera">Chụp ảnh đi</string>
+</resources>

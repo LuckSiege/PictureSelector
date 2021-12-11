@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="ucrop_rotate">غزل</string>
+    <string name="ucrop_scale">نسبة</string>
+    <string name="ucrop_crop">قطع</string>
+
+    <string name="ucrop_label_original">النسبة الأصلية</string>
+    <string name="ucrop_label_edit_photo">قطع</string>
+
+    <string name="ucrop_menu_crop">قطع</string>
+    <string name="ucrop_gif_tag">الصور المتحركة</string>
+</resources>

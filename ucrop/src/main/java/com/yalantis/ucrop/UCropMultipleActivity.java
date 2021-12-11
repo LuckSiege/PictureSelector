@@ -82,6 +82,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     private static final String EXTRA_ASPECT_RATIO = "aspectRatio";
 
     private String mToolbarTitle;
+    private int mToolbarTitleSize;
     // Enables dynamic coloring
     private int mToolbarColor;
     private int mStatusBarColor;
@@ -244,6 +245,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         mToolbarCancelDrawable = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_WIDGET_CANCEL_DRAWABLE, R.drawable.ucrop_ic_cross);
         mToolbarCropDrawable = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_WIDGET_CROP_DRAWABLE, R.drawable.ucrop_ic_done);
         mToolbarTitle = intent.getStringExtra(UCrop.Options.EXTRA_UCROP_TITLE_TEXT_TOOLBAR);
+        mToolbarTitleSize = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_TITLE_TEXT_SIZE_TOOLBAR,18);
         mToolbarTitle = mToolbarTitle != null ? mToolbarTitle : getResources().getString(R.string.ucrop_label_edit_photo);
 
         setupAppBar();
@@ -265,6 +267,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         final TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         toolbarTitle.setTextColor(mToolbarWidgetColor);
         toolbarTitle.setText(mToolbarTitle);
+        toolbarTitle.setTextSize(mToolbarTitleSize);
 
         // Color buttons inside the Toolbar
         Drawable stateButtonDrawable = AppCompatResources.getDrawable(this, mToolbarCancelDrawable).mutate();

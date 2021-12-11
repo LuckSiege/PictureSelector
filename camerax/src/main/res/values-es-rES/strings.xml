@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="picture_photo_camera">Haga clic para tomar foto, mantenga pulsado para grabar video</string>
+    <string name="picture_photo_pictures">Haga clic para tomar foto</string>
+    <string name="picture_photo_recording">pulsado para grabar video</string>
+    <string name="picture_recording_time_is_short">El tiempo de grabación es demasiado corto</string>
+</resources>

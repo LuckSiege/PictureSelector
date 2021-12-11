@@ -1,0 +1,6 @@
+<resources>
+    <string name="picture_photo_pictures">Clic photo</string>
+    <string name="picture_photo_recording">Imagerie</string>
+    <string name="picture_recording_time_is_short">La durée d’enregistrement est trop courte</string>
+    <string name="picture_photo_camera">Prendre des photos, filmer</string>
+</resources>
