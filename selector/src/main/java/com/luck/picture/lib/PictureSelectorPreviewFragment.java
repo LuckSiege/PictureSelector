@@ -594,6 +594,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         }
     }
 
+    @Override
+    public void onExitFragment() {
+        if (config.isPreviewFullScreenMode) {
+            setStatusControl(false);
+        }
+    }
 
     private void initBottomNavBar() {
         bottomNarBar.setBottomNavBarStyle();

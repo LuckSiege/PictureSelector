@@ -163,6 +163,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     }
 
     @Override
+    public void onExitFragment() {
+
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (mPermissionResultCallback != null) {
@@ -234,9 +239,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         if (enter) {
             return AnimationUtils.loadAnimation(getActivity(), windowAnimationStyle.activityEnterAnimation);
         } else {
+            onExitFragment();
             return AnimationUtils.loadAnimation(getActivity(), windowAnimationStyle.activityExitAnimation);
         }
     }
+
 
 
     @Override

@@ -159,6 +159,11 @@ public interface IPictureSelectorCommonEvent {
     void onResultEvent(ArrayList<LocalMedia> result);
 
     /**
+     * 退出Fragment
+     */
+    void onExitFragment();
+
+    /**
      * show loading
      */
     void showLoading();
