@@ -15,8 +15,7 @@ public interface OnPermissionsInterceptListener {
      * @param permissionArray Permissions array
      * @param call
      */
-    void onPermission(Fragment fragment, String[] permissionArray,
-                      OnCallbackListener<Boolean> call);
+    void requestPermission(Fragment fragment, String[] permissionArray, OnCallbackListener<Boolean> call);
 
     /**
      * Verify permission application status

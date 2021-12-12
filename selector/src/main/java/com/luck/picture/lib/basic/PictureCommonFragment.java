@@ -490,7 +490,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void openImageCamera() {
         if (PictureSelectionConfig.permissionsEventListener != null) {
-            PictureSelectionConfig.permissionsEventListener.onPermission(this, PermissionConfig.CAMERA,
+            PictureSelectionConfig.permissionsEventListener.requestPermission(this, PermissionConfig.CAMERA,
                     new OnCallbackListener<Boolean>() {
                         @Override
                         public void onCall(Boolean isResult) {
@@ -545,7 +545,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void openVideoCamera() {
         if (PictureSelectionConfig.permissionsEventListener != null) {
-            PictureSelectionConfig.permissionsEventListener.onPermission(this, PermissionConfig.CAMERA,
+            PictureSelectionConfig.permissionsEventListener.requestPermission(this, PermissionConfig.CAMERA,
                     new OnCallbackListener<Boolean>() {
                         @Override
                         public void onCall(Boolean isResult) {
@@ -603,7 +603,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void openSoundRecording() {
         if (PictureSelectionConfig.permissionsEventListener != null) {
-            PictureSelectionConfig.permissionsEventListener.onPermission(this, PermissionConfig.RECORD_AUDIO,
+            PictureSelectionConfig.permissionsEventListener.requestPermission(this, PermissionConfig.RECORD_AUDIO,
                     new OnCallbackListener<Boolean>() {
                         @Override
                         public void onCall(Boolean isResult) {

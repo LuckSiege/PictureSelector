@@ -303,7 +303,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
             beginLoadData();
         } else {
             if (PictureSelectionConfig.permissionsEventListener != null) {
-                PictureSelectionConfig.permissionsEventListener.onPermission(this,
+                PictureSelectionConfig.permissionsEventListener.requestPermission(this,
                         PermissionConfig.READ_WRITE_EXTERNAL_STORAGE, new OnCallbackListener<Boolean>() {
                             @Override
                             public void onCall(Boolean isResult) {
