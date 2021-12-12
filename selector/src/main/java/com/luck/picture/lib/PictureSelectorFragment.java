@@ -345,7 +345,13 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public void handlePermissionSettingResult() {
-        if (PermissionChecker.isCheckReadStorage(getContext())) {
+        boolean isHasPermissions;
+        if (PictureSelectionConfig.permissionsEventListener != null) {
+            isHasPermissions = PictureSelectionConfig.permissionsEventListener.hasPermissions(this);
+        } else {
+            isHasPermissions = PermissionChecker.isCheckReadStorage(getContext());
+        }
+        if (isHasPermissions) {
             beginLoadData();
         } else {
             Toast.makeText(getContext(), getString(R.string.ps_jurisdiction), Toast.LENGTH_LONG).show();

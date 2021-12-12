@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 
 import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
@@ -60,7 +61,13 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
 
     @Override
     public void handlePermissionSettingResult() {
-        if (PermissionChecker.isCheckCamera(getContext())) {
+        boolean isHasPermissions;
+        if (PictureSelectionConfig.permissionsEventListener != null) {
+            isHasPermissions = PictureSelectionConfig.permissionsEventListener.hasPermissions(this);
+        } else {
+            isHasPermissions = PermissionChecker.isCheckCamera(getContext());
+        }
+        if (isHasPermissions) {
             openSelectedCamera();
         } else {
             Toast.makeText(getContext(), getString(R.string.ps_camera), Toast.LENGTH_LONG).show();

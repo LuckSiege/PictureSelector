@@ -66,6 +66,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isEnablePreview;
     public boolean isEnPreviewVideo;
     public boolean isEnablePreviewAudio;
+    public boolean isPreviewFullScreenMode;
     public boolean isOpenClickSound;
     public boolean isEmptyResultReturn;
     public boolean isHidePreviewDownload;
@@ -148,6 +149,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isEnablePreview = in.readByte() != 0;
         isEnPreviewVideo = in.readByte() != 0;
         isEnablePreviewAudio = in.readByte() != 0;
+        isPreviewFullScreenMode = in.readByte() != 0;
         isOpenClickSound = in.readByte() != 0;
         isEmptyResultReturn = in.readByte() != 0;
         isHidePreviewDownload = in.readByte() != 0;
@@ -218,6 +220,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isEnablePreview ? 1 : 0));
         dest.writeByte((byte) (isEnPreviewVideo ? 1 : 0));
         dest.writeByte((byte) (isEnablePreviewAudio ? 1 : 0));
+        dest.writeByte((byte) (isPreviewFullScreenMode ? 1 : 0));
         dest.writeByte((byte) (isOpenClickSound ? 1 : 0));
         dest.writeByte((byte) (isEmptyResultReturn ? 1 : 0));
         dest.writeByte((byte) (isHidePreviewDownload ? 1 : 0));
@@ -338,6 +341,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isLoaderDataEngine = false;
         isSandboxFileEngine = false;
         isOriginalFileEngine = false;
+        isPreviewFullScreenMode = false;
     }
 
 

@@ -766,6 +766,17 @@ public class PictureSelectionModel {
     }
 
     /**
+     * Preview Full Screen Mode
+     *
+     * @param isFullScreenModel
+     * @return
+     */
+    public PictureSelectionModel isPreviewFullScreenMode(boolean isFullScreenModel) {
+        selectionConfig.isPreviewFullScreenMode = isFullScreenModel;
+        return this;
+    }
+
+    /**
      * Preview audio files
      *
      * @param enablePreviewAudio

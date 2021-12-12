@@ -1,8 +1,8 @@
 package com.luck.picture.lib;
 
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -124,6 +124,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     private PreviewGalleryAdapter mGalleryAdapter;
 
+    private List<View> mAnimViews;
+
     /**
      * 内部预览
      *
@@ -206,6 +208,13 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         completeSelectView = view.findViewById(R.id.ps_complete_select);
         viewPager = view.findViewById(R.id.preview_pager);
         bottomNarBar = view.findViewById(R.id.bottom_nar_bar);
+        mAnimViews = new ArrayList<>();
+        mAnimViews.add(titleBar);
+        mAnimViews.add(tvSelected);
+        mAnimViews.add(tvSelectedWord);
+        mAnimViews.add(selectClickArea);
+        mAnimViews.add(completeSelectView);
+        mAnimViews.add(bottomNarBar);
         initTitleBar();
         if (isExternalPreview) {
             if (savedInstanceState != null || mData.size() == 0) {
@@ -327,7 +336,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         }
         mData = result;
         if (mData.size() == 0) {
-            iBridgePictureBehavior.onSelectFinish(false,null);
+            iBridgePictureBehavior.onSelectFinish(false, null);
             return;
         }
         // 这里的作用主要是防止内存不足情况下重新load了数据，此时LocalMedia是没有position的
@@ -354,12 +363,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                         }
                     });
         } else {
-            mLoader.loadPageMediaData(mBucketId, mPage, config.pageSize,new OnQueryDataResultListener<LocalMedia>() {
-                        @Override
-                        public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {
-                            handleMoreData(result, isHasMore);
-                        }
-                    });
+            mLoader.loadPageMediaData(mBucketId, mPage, config.pageSize, new OnQueryDataResultListener<LocalMedia>() {
+                @Override
+                public void onComplete(ArrayList<LocalMedia> result, boolean isHasMore) {
+                    handleMoreData(result, isHasMore);
+                }
+            });
         }
     }
 
@@ -459,7 +468,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 if (isExternalPreview) {
                     handleExternalPreviewBack();
                 } else {
-                    iBridgePictureBehavior.onSelectFinish(false,null);
+                    iBridgePictureBehavior.onSelectFinish(false, null);
                 }
             }
         });
@@ -521,12 +530,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                         }
                     }
                 });
-
                 if (SelectedManager.getCount() > 0) {
                     mGalleryRecycle.setVisibility(View.VISIBLE);
                 } else {
                     mGalleryRecycle.setVisibility(View.INVISIBLE);
                 }
+                mAnimViews.add(mGalleryRecycle);
             }
         }
     }
@@ -572,7 +581,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private void handleExternalPreviewBack() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
             if (getActivity() instanceof PictureSelectorSupporterActivity) {
-                iBridgePictureBehavior.onSelectFinish(false,null);
+                iBridgePictureBehavior.onSelectFinish(false, null);
             } else {
                 getActivity().getSupportFragmentManager().popBackStack();
             }
@@ -624,10 +633,14 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         viewPageAdapter.setOnPreviewEventListener(new PicturePreviewAdapter.OnPreviewEventListener() {
             @Override
             public void onBackPressed() {
-                if (isExternalPreview) {
-                    handleExternalPreviewBack();
+                if (config.isPreviewFullScreenMode) {
+                    previewFullScreenMode();
                 } else {
-                    iBridgePictureBehavior.onSelectFinish(false, null);
+                    if (isExternalPreview) {
+                        handleExternalPreviewBack();
+                    } else {
+                        iBridgePictureBehavior.onSelectFinish(false, null);
+                    }
                 }
             }
 
@@ -657,6 +670,47 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         viewPager.registerOnPageChangeCallback(pageChangeCallback);
         subSelectPosition(false);
         notifySelectNumberStyle(mData.get(curPosition));
+    }
+
+    /**
+     * 预览全屏模式
+     */
+    private void previewFullScreenMode() {
+        AnimatorSet set = new AnimatorSet();
+        boolean isAnimInit = titleBar.getTranslationY() == 0.0F;
+        float titleBarForm = isAnimInit ? 0 : -titleBar.getHeight();
+        float titleBarTo = isAnimInit ? -titleBar.getHeight() : 0;
+        float alphaForm = isAnimInit ? 1.0F : 0.0F;
+        float alphaTo = isAnimInit ? 0.0F : 1.0F;
+        for (int i = 0; i < mAnimViews.size(); i++) {
+            View view = mAnimViews.get(i);
+            ObjectAnimator objectAnimator;
+            if (view instanceof TitleBar) {
+                objectAnimator = ObjectAnimator.ofFloat(titleBar, "translationY", titleBarForm, titleBarTo);
+            } else {
+                objectAnimator = ObjectAnimator.ofFloat(view, "alpha", alphaForm, alphaTo);
+            }
+            set.playTogether(objectAnimator);
+        }
+        set.setDuration(350);
+        set.start();
+        stateControl(isAnimInit);
+    }
+
+    /**
+     * 控制是否全屏
+     *
+     * @param enable
+     * @return
+     * @author Doraemon
+     * @time 2014年12月3日下午6:03:33
+     */
+    private void stateControl(boolean enable) {
+        if (enable) {
+            getActivity().getWindow().getDecorView().setAlpha(0.0F);
+        } else {
+            getActivity().getWindow().getDecorView().setAlpha(1.0F);
+        }
     }
 
     /**
