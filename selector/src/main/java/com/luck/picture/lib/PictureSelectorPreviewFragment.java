@@ -4,10 +4,12 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -580,6 +583,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      */
     private void handleExternalPreviewBack() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
+            if (config.isPreviewFullScreenMode) {
+                setStatusControl(false);
+            }
             if (getActivity() instanceof PictureSelectorSupporterActivity) {
                 iBridgePictureBehavior.onSelectFinish(false, null);
             } else {
@@ -676,8 +682,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * 预览全屏模式
      */
     private void previewFullScreenMode() {
-        AnimatorSet set = new AnimatorSet();
         boolean isAnimInit = titleBar.getTranslationY() == 0.0F;
+        setStatusControl(isAnimInit);
+        AnimatorSet set = new AnimatorSet();
         float titleBarForm = isAnimInit ? 0 : -titleBar.getHeight();
         float titleBarTo = isAnimInit ? -titleBar.getHeight() : 0;
         float alphaForm = isAnimInit ? 1.0F : 0.0F;
@@ -694,18 +701,31 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         }
         set.setDuration(350);
         set.start();
-        stateControl(isAnimInit);
     }
 
     /**
-     * 控制是否全屏
+     * 控制状态是否全屏
      *
-     * @param enable
+     * @param isCollapse
      * @return
      */
-    private void stateControl(boolean enable) {
-        if (enable) {
+    private void setStatusControl(boolean isCollapse) {
+        View decorView = getActivity().getWindow().getDecorView();
+        ViewGroup parent = getActivity().findViewById(android.R.id.content);
+        ViewGroup supportContainer = parent.findViewById(R.id.support_container);
+        if (isCollapse) {
+            supportContainer.setFitsSystemWindows(false);
+            getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         } else {
+            SelectMainStyle mainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
+            int statusBarColor = ContextCompat.getColor(getContext(), R.color.ps_color_grey);
+            if (StyleUtils.checkStyleValidity(mainStyle.getStatusBarColor())) {
+                statusBarColor = mainStyle.getStatusBarColor();
+            }
+            supportContainer.setFitsSystemWindows(true);
+            getActivity().getWindow().setStatusBarColor(statusBarColor);
+            decorView.setSystemUiVisibility(View.VISIBLE);
         }
     }
 
