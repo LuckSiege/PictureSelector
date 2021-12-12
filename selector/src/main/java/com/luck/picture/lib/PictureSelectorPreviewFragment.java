@@ -702,14 +702,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      *
      * @param enable
      * @return
-     * @author Doraemon
-     * @time 2014年12月3日下午6:03:33
      */
     private void stateControl(boolean enable) {
         if (enable) {
-            getActivity().getWindow().getDecorView().setAlpha(0.0F);
         } else {
-            getActivity().getWindow().getDecorView().setAlpha(1.0F);
         }
     }
 

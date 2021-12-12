@@ -872,12 +872,12 @@ public class PictureSelectionModel {
     /**
      * preview LocalMedia
      *
-     * @param position        current position
+     * @param currentPosition        current position
      * @param list            preview data
      * @param isDisplayDelete if visible delete
      * @param listener
      */
-    public void startFragmentPreview(int position, List<LocalMedia> list, boolean isDisplayDelete,
+    public void startFragmentPreview(int currentPosition, List<LocalMedia> list, boolean isDisplayDelete,
                                      OnExternalPreviewEventListener listener) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
@@ -905,7 +905,7 @@ public class PictureSelectionModel {
                 PictureSelectorPreviewFragment fragment = PictureSelectorPreviewFragment.newInstance();
                 ArrayList<LocalMedia> previewData = new ArrayList<>(list);
                 PictureSelectionConfig.selectorStyle.getSelectMainStyle().setPreviewDisplaySelectGallery(false);
-                fragment.setExternalPreviewData(position, previewData.size(), previewData, isDisplayDelete);
+                fragment.setExternalPreviewData(currentPosition, previewData.size(), previewData, isDisplayDelete);
                 FragmentInjectManager.injectSystemRoomFragment(fragmentManager, PictureSelectorPreviewFragment.TAG, fragment);
             }
         }
@@ -914,12 +914,12 @@ public class PictureSelectionModel {
     /**
      * preview LocalMedia
      *
-     * @param position        current position
+     * @param currentPosition        current position
      * @param list            preview data
      * @param isDisplayDelete if visible delete
      * @param listener
      */
-    public void startActivityPreview(int position, ArrayList<LocalMedia> list, boolean isDisplayDelete,
+    public void startActivityPreview(int currentPosition, ArrayList<LocalMedia> list, boolean isDisplayDelete,
                                      OnExternalPreviewEventListener listener) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
@@ -938,7 +938,7 @@ public class PictureSelectionModel {
             Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
             SelectedManager.addSelectedPreviewResult(list);
             intent.putExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW, true);
-            intent.putExtra(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, position);
+            intent.putExtra(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, currentPosition);
             intent.putExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, isDisplayDelete);
             activity.startActivity(intent);
             PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
