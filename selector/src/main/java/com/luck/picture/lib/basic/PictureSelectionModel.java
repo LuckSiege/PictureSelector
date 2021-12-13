@@ -535,7 +535,7 @@ public class PictureSelectionModel {
      * @param videoMaxSecond selection video max second
      * @return
      */
-    public PictureSelectionModel setVideoMaxSecond(int videoMaxSecond) {
+    public PictureSelectionModel setSelectVideoMaxSecond(int videoMaxSecond) {
         selectionConfig.videoMaxSecond = (videoMaxSecond * 1000);
         return this;
     }
@@ -544,7 +544,7 @@ public class PictureSelectionModel {
      * @param videoMinSecond selection video min second
      * @return
      */
-    public PictureSelectionModel setVideoMinSecond(int videoMinSecond) {
+    public PictureSelectionModel setSelectVideoMinSecond(int videoMinSecond) {
         selectionConfig.videoMinSecond = videoMinSecond * 1000;
         return this;
     }

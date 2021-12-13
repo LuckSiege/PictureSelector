@@ -25,6 +25,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.luck.picture.lib.adapter.PicturePreviewAdapter;
 import com.luck.picture.lib.adapter.holder.PreviewGalleryAdapter;
 import com.luck.picture.lib.basic.PictureCommonFragment;
+import com.luck.picture.lib.basic.PictureMediaScannerConnection;
 import com.luck.picture.lib.basic.PictureSelectorSupporterActivity;
 import com.luck.picture.lib.config.Crop;
 import com.luck.picture.lib.config.PictureConfig;
@@ -795,26 +796,26 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                         if (PictureMimeType.isHasHttp(path)) {
                             showLoading();
                         }
-                        DownloadFileUtils.saveLocalFile(getContext(),
-                                path, media.getFileName(), media.getMimeType(), new OnCallbackListener<String>() {
-                                    @Override
-                                    public void onCall(String realPath) {
-                                        dismissLoading();
-                                        if (TextUtils.isEmpty(realPath)) {
-                                            String errorMsg;
-                                            if (PictureMimeType.isHasVideo(media.getMimeType())) {
-                                                errorMsg = getString(R.string.ps_save_video_error);
-                                            } else {
-                                                errorMsg = getString(R.string.ps_save_image_error);
-                                            }
-                                            Toast.makeText(getContext(), errorMsg, Toast.LENGTH_LONG).show();
-                                        } else {
-                                            Toast.makeText(getContext(),
-                                                    getString(R.string.ps_save_success) + "\n" + realPath,
-                                                    Toast.LENGTH_LONG).show();
-                                        }
+                        DownloadFileUtils.saveLocalFile(getContext(), path, media.getMimeType(), new OnCallbackListener<String>() {
+                            @Override
+                            public void onCall(String realPath) {
+                                dismissLoading();
+                                if (TextUtils.isEmpty(realPath)) {
+                                    String errorMsg;
+                                    if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                                        errorMsg = getString(R.string.ps_save_video_error);
+                                    } else {
+                                        errorMsg = getString(R.string.ps_save_image_error);
                                     }
-                                });
+                                    Toast.makeText(getContext(), errorMsg, Toast.LENGTH_LONG).show();
+                                } else {
+                                    new PictureMediaScannerConnection(getActivity(), realPath);
+                                    Toast.makeText(getContext(),
+                                            getString(R.string.ps_save_success) + "\n" + realPath,
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
                     }
                 });
             }
