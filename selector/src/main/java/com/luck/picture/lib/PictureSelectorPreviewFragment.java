@@ -6,7 +6,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -19,7 +18,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -45,7 +43,6 @@ import com.luck.picture.lib.loader.LocalMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaPageLoader;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.SelectMainStyle;
-import com.luck.picture.lib.style.TitleBarStyle;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DownloadFileUtils;
@@ -192,6 +189,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     public void onCheckOriginalChange() {
         bottomNarBar.setOriginalCheck();
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -429,7 +427,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             ((ConstraintLayout.LayoutParams) completeSelectView
                     .getLayoutParams()).bottomToBottom = R.id.title_bar;
 
+            if (config.isPreviewFullScreenMode) {
+                ((ConstraintLayout.LayoutParams) completeSelectView
+                        .getLayoutParams()).topMargin = DensityUtil.getStatusBarHeight(getContext());
+            }
         }
+
         if (selectMainStyle.isPreviewSelectRelativeBottom()) {
             ((ConstraintLayout.LayoutParams) tvSelected
                     .getLayoutParams()).topToTop = R.id.bottom_nar_bar;
@@ -446,6 +449,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             ((ConstraintLayout.LayoutParams) selectClickArea
                     .getLayoutParams()).bottomToBottom = R.id.bottom_nar_bar;
 
+        } else {
+            if (config.isPreviewFullScreenMode) {
+                ((ConstraintLayout.LayoutParams) tvSelectedWord
+                        .getLayoutParams()).topMargin = DensityUtil.getStatusBarHeight(getContext());
+
+            }
         }
         completeSelectView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -479,6 +488,13 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             }
         });
         titleBar.setTitle((curPosition + 1) + "/" + totalNum);
+        titleBar.getImageDelete().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deletePreview();
+            }
+        });
+
         selectClickArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -630,15 +646,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * 外部预览的样式
      */
     private void externalPreviewStyle() {
-        TitleBarStyle titleBarStyle = PictureSelectionConfig.selectorStyle.getTitleBarStyle();
-        int deleteBackgroundResource = titleBarStyle.getPreviewDeleteBackgroundResource();
-        if (StyleUtils.checkStyleValidity(deleteBackgroundResource)) {
-            tvSelected.setBackgroundResource(deleteBackgroundResource);
-        } else {
-            tvSelected.setBackgroundResource(R.drawable.ps_ic_delete);
-        }
-        tvSelected.setVisibility(isDisplayDelete ? View.VISIBLE : View.GONE);
-        tvSelected.setVisibility(isDisplayDelete ? View.VISIBLE : View.GONE);
+        titleBar.getImageDelete().setVisibility(isDisplayDelete ? View.VISIBLE : View.GONE);
+        tvSelected.setVisibility(View.GONE);
         bottomNarBar.setVisibility(View.GONE);
         completeSelectView.setVisibility(View.GONE);
     }
@@ -691,7 +700,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * 预览全屏模式
      */
     private void previewFullScreenMode() {
-        if (isAnimationStart){
+        if (isAnimationStart) {
             return;
         }
         boolean isAnimInit = titleBar.getTranslationY() == 0.0F;
@@ -702,30 +711,26 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         float alphaTo = isAnimInit ? 0.0F : 1.0F;
         for (int i = 0; i < mAnimViews.size(); i++) {
             View view = mAnimViews.get(i);
-            ObjectAnimator objectAnimator;
+            set.playTogether(ObjectAnimator.ofFloat(view, "alpha", alphaForm, alphaTo));
             if (view instanceof TitleBar) {
-                objectAnimator = ObjectAnimator.ofFloat(view, "translationY", titleBarForm, titleBarTo);
-            } else {
-                objectAnimator = ObjectAnimator.ofFloat(view, "alpha", alphaForm, alphaTo);
+                set.playTogether(ObjectAnimator.ofFloat(view, "translationY", titleBarForm, titleBarTo));
             }
-            set.playTogether(objectAnimator);
         }
         set.setDuration(350);
         set.start();
         isAnimationStart = true;
-        if (isAnimInit) {
-        } else {
-            hideFullScreenStatusBar();
-        }
         set.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 isAnimationStart = false;
-                if (isAnimInit) {
-                    showFullScreenStatusBar();
-                }
             }
         });
+
+        if (isAnimInit) {
+            showFullScreenStatusBar();
+        } else {
+            hideFullScreenStatusBar();
+        }
     }
 
     /**
@@ -736,7 +741,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             mAnimViews.get(i).setEnabled(false);
         }
         bottomNarBar.getEditor().setEnabled(false);
-        getActivity().getWindow().setStatusBarColor(Color.BLACK);
     }
 
     /**
@@ -747,12 +751,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             mAnimViews.get(i).setEnabled(true);
         }
         bottomNarBar.getEditor().setEnabled(true);
-        SelectMainStyle mainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
-        int statusBarColor = ContextCompat.getColor(getContext(), R.color.ps_color_grey);
-        if (StyleUtils.checkStyleValidity(mainStyle.getStatusBarColor())) {
-            statusBarColor = mainStyle.getStatusBarColor();
-        }
-        getActivity().getWindow().setStatusBarColor(statusBarColor);
     }
 
     /**

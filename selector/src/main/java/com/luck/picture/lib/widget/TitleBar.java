@@ -3,6 +3,7 @@ package com.luck.picture.lib.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,10 +27,13 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
     protected RelativeLayout rlAlbumBg;
     protected ImageView ivLeftBack;
     protected ImageView ivArrow;
+    protected ImageView ivDelete;
     protected MarqueeTextView tvTitle;
     protected TextView tvCancel;
     protected View viewAlbumClickArea;
     protected PictureSelectionConfig config;
+    protected View viewTopStatusBar;
+    protected RelativeLayout titleBarLayout;
 
     public TextView getTitleCancelView() {
         return tvCancel;
@@ -54,8 +58,11 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
         inflate(getContext(), R.layout.ps_title_bar, this);
         setClickable(true);
         setFocusable(true);
+        viewTopStatusBar = findViewById(R.id.top_status_bar);
+        titleBarLayout = findViewById(R.id.rl_title_bar);
         ivLeftBack = findViewById(R.id.ps_iv_left_back);
         rlAlbumBg = findViewById(R.id.ps_rl_album_bg);
+        ivDelete = findViewById(R.id.ps_iv_delete);
         viewAlbumClickArea = findViewById(R.id.ps_rl_album_click);
         tvTitle = findViewById(R.id.ps_tv_title);
         ivArrow = findViewById(R.id.ps_iv_arrow);
@@ -70,6 +77,10 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
 
     public ImageView getImageArrow() {
         return ivArrow;
+    }
+
+    public ImageView getImageDelete(){
+        return ivDelete;
     }
 
     /**
@@ -89,13 +100,17 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
     }
 
     public void setTitleBarStyle() {
+        if (config.isPreviewFullScreenMode) {
+            ViewGroup.LayoutParams layoutParams = viewTopStatusBar.getLayoutParams();
+            layoutParams.height = DensityUtil.getStatusBarHeight(getContext());
+        }
         PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
         TitleBarStyle titleBarStyle = selectorStyle.getTitleBarStyle();
         int titleBarHeight = titleBarStyle.getTitleBarHeight();
         if (StyleUtils.checkSizeValidity(titleBarHeight)) {
-            getLayoutParams().height = titleBarHeight;
+            titleBarLayout.getLayoutParams().height = titleBarHeight;
         } else {
-            getLayoutParams().height = DensityUtil.dip2px(getContext(), 48);
+            titleBarLayout.getLayoutParams().height = DensityUtil.dip2px(getContext(), 48);
         }
         int backgroundColor = titleBarStyle.getTitleBackgroundColor();
         if (StyleUtils.checkStyleValidity(backgroundColor)) {
@@ -146,6 +161,13 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
             if (StyleUtils.checkSizeValidity(titleCancelTextSize)) {
                 tvCancel.setTextSize(titleCancelTextSize);
             }
+        }
+
+        int deleteBackgroundResource = titleBarStyle.getPreviewDeleteBackgroundResource();
+        if (StyleUtils.checkStyleValidity(deleteBackgroundResource)) {
+            ivDelete.setBackgroundResource(deleteBackgroundResource);
+        } else {
+            ivDelete.setBackgroundResource(R.drawable.ps_ic_delete);
         }
     }
 

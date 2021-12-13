@@ -3,76 +3,97 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/ps_iv_left_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:paddingLeft="15dp"
-        android:paddingTop="10dp"
-        android:paddingRight="15dp"
-        android:paddingBottom="10dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/ps_ic_back" />
+    <View
+        android:id="@+id/top_status_bar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
 
     <RelativeLayout
-        android:id="@+id/ps_rl_album_bg"
-        android:layout_width="wrap_content"
+        android:id="@+id/rl_title_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <com.luck.picture.lib.widget.MarqueeTextView
-            android:id="@+id/ps_tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:ellipsize="marquee"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:maxEms="6"
-            android:scrollHorizontally="true"
-            android:singleLine="true"
-            android:text="@string/ps_camera_roll"
-            android:textColor="@color/ps_color_white"
-            android:textSize="18sp" />
+        android:layout_below="@id/top_status_bar">
 
         <ImageView
-            android:id="@+id/ps_iv_arrow"
+            android:id="@+id/ps_iv_left_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="3dp"
-            android:layout_toEndOf="@id/ps_tv_title"
+            android:paddingLeft="15dp"
+            android:paddingTop="10dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="10dp"
             android:scaleType="centerInside"
-            android:src="@drawable/ps_ic_default_arrow" />
+            android:src="@drawable/ps_ic_back" />
+
+        <RelativeLayout
+            android:id="@+id/ps_rl_album_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.luck.picture.lib.widget.MarqueeTextView
+                android:id="@+id/ps_tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:maxEms="6"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:text="@string/ps_camera_roll"
+                android:textColor="@color/ps_color_white"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/ps_iv_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="3dp"
+                android:layout_toEndOf="@id/ps_tv_title"
+                android:scaleType="centerInside"
+                android:src="@drawable/ps_ic_default_arrow" />
+        </RelativeLayout>
+
+
+        <View
+            android:id="@+id/ps_rl_album_click"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignStart="@id/ps_rl_album_bg"
+            android:layout_alignEnd="@id/ps_rl_album_bg" />
+
+
+        <TextView
+            android:id="@+id/ps_tv_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/ps_cancel_default_bg"
+            android:gravity="center"
+            android:text="@string/ps_cancel"
+            android:textColor="@color/ps_color_white"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/ps_iv_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="15dp"
+            android:scaleType="centerInside"
+            android:visibility="gone" />
+
     </RelativeLayout>
-
-
-    <View
-        android:id="@+id/ps_rl_album_click"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignStart="@id/ps_rl_album_bg"
-        android:layout_alignEnd="@id/ps_rl_album_bg" />
-
-
-    <TextView
-        android:id="@+id/ps_tv_cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:background="@drawable/ps_cancel_default_bg"
-        android:gravity="center"
-        android:text="@string/ps_cancel"
-        android:textColor="@color/ps_color_white"
-        android:textSize="14sp" />
-
-
 </merge>

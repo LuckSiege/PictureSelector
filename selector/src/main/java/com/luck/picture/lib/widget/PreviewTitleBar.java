@@ -5,6 +5,9 @@ import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.style.TitleBarStyle;
+import com.luck.picture.lib.utils.StyleUtils;
 
 /**
  * @author：luck
@@ -37,7 +40,5 @@ public class PreviewTitleBar extends TitleBar {
         tvCancel.setVisibility(GONE);
         ivArrow.setVisibility(GONE);
         viewAlbumClickArea.setVisibility(GONE);
-
     }
-
 }

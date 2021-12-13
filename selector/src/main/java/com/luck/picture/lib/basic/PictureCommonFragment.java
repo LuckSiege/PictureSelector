@@ -42,6 +42,7 @@ import com.luck.picture.lib.dialog.RemindDialog;
 import com.luck.picture.lib.engine.PictureSelectorEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
+import com.luck.picture.lib.immersive.ImmersiveManager;
 import com.luck.picture.lib.interfaces.OnCallbackIndexListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnItemClickListener;
@@ -210,6 +211,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         }
         if (config == null) {
             config = PictureSelectionConfig.getInstance();
+        }
+        if (config.isPreviewFullScreenMode) {
+            ImmersiveManager.translucentStatusBar(getActivity(), true);
         }
         if (config.isOpenClickSound && !config.isOnlyCamera) {
             soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);

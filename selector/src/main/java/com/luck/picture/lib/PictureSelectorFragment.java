@@ -226,6 +226,11 @@ public class PictureSelectorFragment extends PictureCommonFragment
                         completeSelectView.getLayoutParams()).topToTop = R.id.title_bar;
                 ((ConstraintLayout.LayoutParams)
                         completeSelectView.getLayoutParams()).bottomToBottom = R.id.title_bar;
+
+                if (config.isPreviewFullScreenMode) {
+                    ((ConstraintLayout.LayoutParams) completeSelectView
+                            .getLayoutParams()).topMargin = DensityUtil.getStatusBarHeight(getContext());
+                }
             }
             completeSelectView.setOnClickListener(new View.OnClickListener() {
                 @Override

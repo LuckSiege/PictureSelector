@@ -14,7 +14,7 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.immersive.ImmersiveManage;
+import com.luck.picture.lib.immersive.ImmersiveManager;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.language.PictureLanguageUtils;
 import com.luck.picture.lib.manager.SelectedManager;
@@ -54,7 +54,7 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity implemen
         if (!StyleUtils.checkStyleValidity(navigationBarColor)) {
             navigationBarColor = ContextCompat.getColor(this, R.color.ps_color_grey);
         }
-        ImmersiveManage.immersiveAboveAPI23(this, statusBarColor, navigationBarColor, isDarkStatusBarBlack);
+        ImmersiveManager.immersiveAboveAPI23(this, statusBarColor, navigationBarColor, isDarkStatusBarBlack);
     }
 
     private void setupFragment() {

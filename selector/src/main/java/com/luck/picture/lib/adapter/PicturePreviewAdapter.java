@@ -105,13 +105,21 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         videoHolder.videoView.setVideoURI(Uri.parse(path));
                     } else {
                         if (TextUtils.isEmpty(media.getSandboxPath())) {
-                            videoHolder.videoView.setVideoPath(media.getSandboxPath());
-                        } else {
                             videoHolder.videoView.setVideoPath(media.getPath());
+                        } else {
+                            videoHolder.videoView.setVideoPath(media.getSandboxPath());
                         }
                     }
                     videoHolder.videoView.start();
                     mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
+                    videoHolder.videoView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (mPreviewEventListener != null) {
+                                mPreviewEventListener.onBackPressed();
+                            }
+                        }
+                    });
                 }
             });
         } else {
