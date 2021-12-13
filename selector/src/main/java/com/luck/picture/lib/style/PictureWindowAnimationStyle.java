@@ -29,13 +29,13 @@ public class PictureWindowAnimationStyle implements Parcelable {
      * 预览界面启动动画
      */
     @AnimRes
-    private int activityPreviewEnterAnimation;
+    public int activityPreviewEnterAnimation;
 
     /**
      * 预览界面退出动画
      */
     @AnimRes
-    private int activityPreviewExitAnimation;
+    public int activityPreviewExitAnimation;
 
     /**
      * 默认WindowAnimationStyle

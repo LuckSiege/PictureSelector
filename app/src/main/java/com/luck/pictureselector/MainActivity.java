@@ -61,6 +61,7 @@ import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.loader.SandboxFileLoader;
 import com.luck.picture.lib.style.BottomNavBarStyle;
 import com.luck.picture.lib.style.PictureSelectorStyle;
+import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.style.TitleBarStyle;
 import com.luck.picture.lib.utils.DateUtils;
@@ -122,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        selectorStyle = new PictureSelectorStyle();
         ImageView minus = findViewById(R.id.minus);
         ImageView plus = findViewById(R.id.plus);
         tvDeleteText = findViewById(R.id.tv_delete_text);
@@ -924,16 +926,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 aspect_ratio_y = 9;
                 break;
             case R.id.rb_photo_default_animation:
-
+                PictureWindowAnimationStyle defaultAnimationStyle = new PictureWindowAnimationStyle();
+                defaultAnimationStyle.setActivityEnterAnimation(R.anim.ps_anim_enter);
+                defaultAnimationStyle.setActivityExitAnimation(R.anim.ps_anim_exit);
+                selectorStyle.setWindowAnimationStyle(defaultAnimationStyle);
                 break;
             case R.id.rb_photo_up_animation:
+                PictureWindowAnimationStyle animationStyle = new PictureWindowAnimationStyle();
+                animationStyle.setActivityEnterAnimation(R.anim.ps_anim_up_in);
+                animationStyle.setActivityExitAnimation(R.anim.ps_anim_down_out);
+                selectorStyle.setWindowAnimationStyle(animationStyle);
                 break;
             case R.id.rb_default_style:
                 selectorStyle = new PictureSelectorStyle();
 
                 break;
             case R.id.rb_white_style:
-                selectorStyle = new PictureSelectorStyle();
                 TitleBarStyle whiteTitleBarStyle = new TitleBarStyle();
                 whiteTitleBarStyle.setTitleBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
                 whiteTitleBarStyle.setTitleDrawableRightResource(R.drawable.ic_orange_arrow_down);
@@ -963,7 +971,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 selectorStyle.setSelectMainStyle(selectMainStyle);
                 break;
             case R.id.rb_num_style:
-                selectorStyle = new PictureSelectorStyle();
                 TitleBarStyle blueTitleBarStyle = new TitleBarStyle();
                 blueTitleBarStyle.setTitleBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));
 
@@ -1032,7 +1039,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 numberBottomNavBarStyle.setBottomPreviewSelectText(getString(R.string.ps_preview_num));
                 numberBottomNavBarStyle.setBottomPreviewSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
 
-                selectorStyle = new PictureSelectorStyle();
 
                 selectorStyle.setTitleBarStyle(numberTitleBarStyle);
                 selectorStyle.setBottomBarStyle(numberBottomNavBarStyle);

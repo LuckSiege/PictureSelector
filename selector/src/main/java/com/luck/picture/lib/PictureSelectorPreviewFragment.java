@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
@@ -42,6 +43,7 @@ import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.loader.LocalMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaPageLoader;
 import com.luck.picture.lib.manager.SelectedManager;
+import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.DensityUtil;
@@ -266,6 +268,23 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         outState.putBoolean(PictureConfig.EXTRA_BOTTOM_PREVIEW, isBottomPreview);
         if (isExternalPreview) {
             SelectedManager.addSelectedPreviewResult(mData);
+        }
+    }
+
+    @Nullable
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
+        if (windowAnimationStyle.activityPreviewEnterAnimation != 0
+                && windowAnimationStyle.activityPreviewExitAnimation != 0) {
+            if (enter) {
+                return AnimationUtils.loadAnimation(getActivity(), windowAnimationStyle.activityPreviewEnterAnimation);
+            } else {
+                onExitFragment();
+                return AnimationUtils.loadAnimation(getActivity(), windowAnimationStyle.activityPreviewExitAnimation);
+            }
+        } else {
+            return super.onCreateAnimation(transit, enter, nextAnim);
         }
     }
 
