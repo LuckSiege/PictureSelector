@@ -172,10 +172,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_compress.setOnCheckedChangeListener(this);
         tv_select_num.setText(ValueOf.toString(maxSelectNum));
 
-        List<LocalMedia> list = new ArrayList<>();
-        list.add(LocalMedia.generateLocalMedia("https://wx1.sinaimg.cn/mw690/006e0i7xly1gaxqq5m7t8j31311g2ao6.jpg", PictureMimeType.ofJPEG()));
-        list.add(LocalMedia.generateLocalMedia("https://ww1.sinaimg.cn/bmiddle/bcd10523ly1g96mg4sfhag20c806wu0x.gif", PictureMimeType.ofGIF()));
-        mData.addAll(list);
+//        List<LocalMedia> list = new ArrayList<>();
+//        list.add(LocalMedia.generateLocalMedia("https://wx1.sinaimg.cn/mw690/006e0i7xly1gaxqq5m7t8j31311g2ao6.jpg", PictureMimeType.ofJPEG()));
+//        list.add(LocalMedia.generateLocalMedia("https://ww1.sinaimg.cn/bmiddle/bcd10523ly1g96mg4sfhag20c806wu0x.gif", PictureMimeType.ofGIF()));
+//        mData.addAll(list);
 
         FullyGridLayoutManager manager = new FullyGridLayoutManager(this,
                 4, GridLayoutManager.VERTICAL, false);
