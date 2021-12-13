@@ -246,6 +246,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //.setExtendLoaderEngine(getExtendLoaderEngine())
                             .selectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
                             .setLanguage(language)
+                            .setOutputCameraDir(getSandboxPath())
+                            .setQuerySandboxDir(getSandboxPath())
                             .isPageStrategy(cbPage.isChecked())
                             .isDisplayCamera(cb_isCamera.isChecked())
                             .isOpenClickSound(cb_voice.isChecked())
@@ -485,7 +487,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.i(TAG, "沙盒路径:" + media.getSandboxPath());
                 Log.i(TAG, "原始宽高: " + media.getWidth() + "x" + media.getHeight());
                 Log.i(TAG, "裁剪宽高: " + media.getCropImageWidth() + "x" + media.getCropImageHeight());
-                Log.i(TAG, "Size: " + media.getSize());
+                Log.i(TAG, "文件大小: " + media.getSize());
             }
             mAdapter.getData().clear();
             mAdapter.getData().addAll(result);
@@ -1120,7 +1122,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.i(TAG, "沙盒路径:" + media.getSandboxPath());
                     Log.i(TAG, "原始宽高: " + media.getWidth() + "x" + media.getHeight());
                     Log.i(TAG, "裁剪宽高: " + media.getCropImageWidth() + "x" + media.getCropImageHeight());
-                    Log.i(TAG, "Size: " + media.getSize());
+                    Log.i(TAG, "文件大小: " + media.getSize());
                 }
                 mAdapter.getData().clear();
                 mAdapter.getData().addAll(result);

@@ -900,7 +900,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         media.setCustomData(Crop.getOutputCustomExtraData(data));
         media.setEditorImage(media.isCut());
         media.setSandboxPath(media.getCutPath());
-        if (!SelectedManager.getSelectedResult().contains(media)) {
+        if (SelectedManager.getSelectedResult().contains(media)) {
+            sendFixedSelectedChangeEvent(media);
+        } else {
             confirmSelect(media, false);
         }
         viewPageAdapter.notifyItemChanged(viewPager.getCurrentItem());

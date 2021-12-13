@@ -101,9 +101,10 @@ public interface IPictureSelectorCommonEvent {
     void onSelectedChange(boolean isAddRemove, LocalMedia currentMedia);
 
     /**
-     * 上一次单选的数据
+     * 刷新指定数据
      */
-    void onLastSingleSelectedChange(LocalMedia oldLocalMedia);
+    void onFixedSelectedChange(LocalMedia oldLocalMedia);
+
 
     /**
      * 分发拍照后生成的LocalMedia
@@ -131,9 +132,9 @@ public interface IPictureSelectorCommonEvent {
     void sendSelectedChangeEvent(boolean isAddRemove, LocalMedia currentMedia);
 
     /**
-     * 发送上一次选择数据发生变化的通知
+     * 刷新指定数据
      */
-    void sendLastSelectedChangeEvent(LocalMedia oldLocalMedia);
+    void sendFixedSelectedChangeEvent(LocalMedia currentMedia);
 
 
     /**

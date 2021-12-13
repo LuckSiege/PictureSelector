@@ -45,9 +45,7 @@ public class LocalMedia implements Parcelable {
     private String cutPath;
 
     /**
-     * Note: this field is only returned in Android Q version
-     * <p>
-     * Android Q image or video path
+     * app sandbox path
      */
     private String sandboxPath;
     /**

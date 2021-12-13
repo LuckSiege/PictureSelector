@@ -149,9 +149,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     }
 
     @Override
-    public void onLastSingleSelectedChange(LocalMedia oldLocalMedia) {
+    public void onFixedSelectedChange(LocalMedia oldLocalMedia) {
 
     }
+
+
 
     @Override
     public void handlePermissionSettingResult() {
@@ -282,7 +284,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         } else {
             if (config.selectionMode == SelectModeConfig.SINGLE) {
                 if (selectedResult.size() > 0) {
-                    sendLastSelectedChangeEvent(selectedResult.get(0));
+                    sendFixedSelectedChangeEvent(selectedResult.get(0));
                     selectedResult.clear();
                 }
             }
@@ -417,13 +419,13 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     }
 
     @Override
-    public void sendLastSelectedChangeEvent(LocalMedia oldLocalMedia) {
+    public void sendFixedSelectedChangeEvent(LocalMedia currentMedia) {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
             List<Fragment> fragments = getActivity().getSupportFragmentManager().getFragments();
             for (int i = 0; i < fragments.size(); i++) {
                 Fragment fragment = fragments.get(i);
                 if (fragment instanceof PictureCommonFragment) {
-                    ((PictureCommonFragment) fragment).onLastSingleSelectedChange(oldLocalMedia);
+                    ((PictureCommonFragment) fragment).onFixedSelectedChange(currentMedia);
                 }
             }
         }

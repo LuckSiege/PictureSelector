@@ -123,7 +123,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
     }
 
     @Override
-    public void onLastSingleSelectedChange(LocalMedia oldLocalMedia) {
+    public void onFixedSelectedChange(LocalMedia oldLocalMedia) {
         mAdapter.notifyItemPositionChanged(oldLocalMedia.position);
     }
 
