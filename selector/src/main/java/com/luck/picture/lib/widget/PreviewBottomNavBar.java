@@ -3,6 +3,7 @@ package com.luck.picture.lib.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.TextView;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -38,6 +39,10 @@ public class PreviewBottomNavBar extends BottomNavBar {
 
     public void isDisplayEditor(boolean isHasVideo) {
         tvImageEditor.setVisibility(PictureSelectionConfig.editMediaEventListener != null && !isHasVideo ? View.VISIBLE : GONE);
+    }
+
+    public TextView getEditor() {
+        return tvImageEditor;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.luck.picture.lib;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -9,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
@@ -106,6 +107,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * 外部预览是否支持删除
      */
     private boolean isDisplayDelete;
+
+    private boolean isAnimationStart;
 
     private int totalNum;
 
@@ -584,7 +587,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private void handleExternalPreviewBack() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
             if (config.isPreviewFullScreenMode) {
-                setStatusControl(false);
+                hideFullScreenStatusBar();
             }
             if (getActivity() instanceof PictureSelectorSupporterActivity) {
                 iBridgePictureBehavior.onSelectFinish(false, null);
@@ -597,7 +600,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     @Override
     public void onExitFragment() {
         if (config.isPreviewFullScreenMode) {
-            setStatusControl(false);
+            hideFullScreenStatusBar();
         }
     }
 
@@ -688,8 +691,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * 预览全屏模式
      */
     private void previewFullScreenMode() {
+        if (isAnimationStart){
+            return;
+        }
         boolean isAnimInit = titleBar.getTranslationY() == 0.0F;
-        setStatusControl(isAnimInit);
         AnimatorSet set = new AnimatorSet();
         float titleBarForm = isAnimInit ? 0 : -titleBar.getHeight();
         float titleBarTo = isAnimInit ? -titleBar.getHeight() : 0;
@@ -699,7 +704,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             View view = mAnimViews.get(i);
             ObjectAnimator objectAnimator;
             if (view instanceof TitleBar) {
-                objectAnimator = ObjectAnimator.ofFloat(titleBar, "translationY", titleBarForm, titleBarTo);
+                objectAnimator = ObjectAnimator.ofFloat(view, "translationY", titleBarForm, titleBarTo);
             } else {
                 objectAnimator = ObjectAnimator.ofFloat(view, "alpha", alphaForm, alphaTo);
             }
@@ -707,32 +712,47 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         }
         set.setDuration(350);
         set.start();
+        isAnimationStart = true;
+        if (isAnimInit) {
+        } else {
+            hideFullScreenStatusBar();
+        }
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                isAnimationStart = false;
+                if (isAnimInit) {
+                    showFullScreenStatusBar();
+                }
+            }
+        });
     }
 
     /**
-     * 控制状态是否全屏
-     *
-     * @param isCollapse
-     * @return
+     * 全屏模式
      */
-    private void setStatusControl(boolean isCollapse) {
-        View decorView = getActivity().getWindow().getDecorView();
-        ViewGroup parent = getActivity().findViewById(android.R.id.content);
-        ViewGroup supportContainer = parent.findViewById(R.id.support_container);
-        if (isCollapse) {
-            supportContainer.setFitsSystemWindows(false);
-            getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        } else {
-            SelectMainStyle mainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
-            int statusBarColor = ContextCompat.getColor(getContext(), R.color.ps_color_grey);
-            if (StyleUtils.checkStyleValidity(mainStyle.getStatusBarColor())) {
-                statusBarColor = mainStyle.getStatusBarColor();
-            }
-            supportContainer.setFitsSystemWindows(true);
-            getActivity().getWindow().setStatusBarColor(statusBarColor);
-            decorView.setSystemUiVisibility(View.VISIBLE);
+    private void showFullScreenStatusBar() {
+        for (int i = 0; i < mAnimViews.size(); i++) {
+            mAnimViews.get(i).setEnabled(false);
         }
+        bottomNarBar.getEditor().setEnabled(false);
+        getActivity().getWindow().setStatusBarColor(Color.BLACK);
+    }
+
+    /**
+     * 隐藏全屏模式
+     */
+    private void hideFullScreenStatusBar() {
+        for (int i = 0; i < mAnimViews.size(); i++) {
+            mAnimViews.get(i).setEnabled(true);
+        }
+        bottomNarBar.getEditor().setEnabled(true);
+        SelectMainStyle mainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
+        int statusBarColor = ContextCompat.getColor(getContext(), R.color.ps_color_grey);
+        if (StyleUtils.checkStyleValidity(mainStyle.getStatusBarColor())) {
+            statusBarColor = mainStyle.getStatusBarColor();
+        }
+        getActivity().getWindow().setStatusBarColor(statusBarColor);
     }
 
     /**
