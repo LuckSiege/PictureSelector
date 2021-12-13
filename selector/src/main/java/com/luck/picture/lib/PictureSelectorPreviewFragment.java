@@ -783,7 +783,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             if (!PictureSelectionConfig.previewEventListener.onLongPressDownload(media)) {
                 PictureCommonDialog dialog = PictureCommonDialog.showDialog(getContext(),
                         getContext().getString(R.string.ps_prompt),
-                        getContext().getString(R.string.ps_prompt_content));
+                        PictureMimeType.isHasVideo(media.getMimeType())
+                                || PictureMimeType.isUrlHasVideo(media.getAvailablePath())
+                                ? getContext().getString(R.string.ps_prompt_video_content)
+                                : getContext().getString(R.string.ps_prompt_content));
                 dialog.setOnDialogEventListener(new PictureCommonDialog.OnDialogEventListener() {
                     @Override
                     public void onConfirm() {

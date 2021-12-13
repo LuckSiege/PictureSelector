@@ -30,7 +30,8 @@
     <string name="ps_long_chart">長い図</string>
     <string name="ps_warning">メディアファイル！</string>
     <string name="ps_prompt">提示</string>
-    <string name="ps_prompt_content">画像を携帯電話に保存します？</string>
+    <string name="ps_prompt_content">写真をアルバムに保存するかどうか？</string>
+    <string name="ps_prompt_video_content">アルバムにビデオを保存するかどうか？</string>
     <string name="ps_save_image_error">画像の保存に失敗</string>
     <string name="ps_save_video_error">ビデオの保存に失敗しました</string>
     <string name="ps_save_success">保存に成功まで</string>

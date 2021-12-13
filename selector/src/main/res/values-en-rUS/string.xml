@@ -32,6 +32,7 @@
     <string name="ps_warning">No Media files!</string>
     <string name="ps_prompt">Prompt</string>
     <string name="ps_prompt_content">Do you want to save pictures to your phone?</string>
+    <string name="ps_prompt_video_content">Do you want to save video to your phone?</string>
     <string name="ps_save_image_error">Picture save failed</string>
     <string name="ps_save_video_error">Video save failed</string>
     <string name="ps_save_success">save successfully until</string>

@@ -30,7 +30,8 @@
     <string name="ps_long_chart">투 생</string>
     <string name="ps_warning">미디어 파일 없음！</string>
     <string name="ps_prompt">제시</string>
-    <string name="ps_prompt_content">그림을 휴대 전화에 저장할지 여부？</string>
+    <string name="ps_prompt_content">그림% 1개의 캡션을 편집했습니다.？</string>
+    <string name="ps_prompt_video_content">포토 앨범에 비디오 저장 여부？</string>
     <string name="ps_save_image_error">그림 저장 실패</string>
     <string name="ps_save_video_error">비디오 저장 실패</string>
     <string name="ps_save_success">그림 저장 성공</string>

@@ -30,6 +30,7 @@
     <string name="ps_warning">暂无媒体文件！</string>
     <string name="ps_prompt">提示</string>
     <string name="ps_prompt_content">是否保存图片至手机？</string>
+    <string name="ps_prompt_video_content">是否保存视频至手机？</string>
     <string name="ps_save_image_error">图片保存失败</string>
     <string name="ps_save_video_error">视频保存失败</string>
     <string name="ps_save_success">保存成功至</string>

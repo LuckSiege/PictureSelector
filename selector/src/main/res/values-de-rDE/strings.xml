@@ -30,7 +30,8 @@
     <string name="ps_long_chart">Langes Bild</string>
     <string name="ps_warning">Keine Mediendateien！</string>
     <string name="ps_prompt">Aufforderung</string>
-    <string name="ps_prompt_content">Gibt an, ob das Bild auf dem Telefon gespeichert werden soll？</string>
+    <string name="ps_prompt_content">Image in das Album speichern？</string>
+    <string name="ps_prompt_video_content">Video in das Album speichern？</string>
     <string name="ps_save_image_error">Speichern der Bilder fehlgeschlagen</string>
     <string name="ps_save_video_error">Das Speichern fehlgeschlagen</string>
     <string name="ps_save_success">bild erfolgreich gespeichert</string>

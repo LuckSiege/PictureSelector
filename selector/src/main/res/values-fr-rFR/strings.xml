@@ -31,6 +31,7 @@
     <string name="ps_warning">Pas de documents pour les médias！</string>
     <string name="ps_prompt">rappel</string>
     <string name="ps_prompt_content">Conserver ou non une image sur un téléphone portable？</string>
+    <string name="ps_prompt_video_content">Conserver ou non une video sur un téléphone portable？</string>
     <string name="ps_save_image_error">Défaut de conservation des images</string>
     <string name="ps_save_video_error">Défaut de conservation des videos</string>
     <string name="ps_save_success">conservée avec succès</string>

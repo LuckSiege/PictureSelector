@@ -32,6 +32,7 @@
     <string name="ps_warning">Não há documentos！</string>
     <string name="ps_prompt">Dica</string>
     <string name="ps_prompt_content">Salve a imagem para o telemóvel？</string>
+    <string name="ps_prompt_video_content">Salve a videom para o telemóvel？</string>
     <string name="ps_save_image_error">Falha em salvar a imagem</string>
     <string name="ps_save_video_error">Falha em salvar a videoem</string>
     <string name="ps_save_success">foi salva com sucesso</string>

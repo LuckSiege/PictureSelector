@@ -30,6 +30,7 @@
     <string name="ps_warning">لا توجد ملفات وسائط!</string>
     <string name="ps_prompt">اعلان</string>
     <string name="ps_prompt_content">هل تريد حفظ الصورة على الهاتف؟</string>
+    <string name="ps_prompt_video_content"> حفظ الفيديو على الهاتف</string>
     <string name="ps_save_image_error">فشل حفظ الصورة</string>
     <string name="ps_save_video_error">فشل حفظ الفيديو</string>
     <string name="ps_save_success"> تم حفظ الصورة بنجاح</string>

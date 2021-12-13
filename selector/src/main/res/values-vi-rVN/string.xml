@@ -32,6 +32,7 @@
     <string name="ps_warning">Không có tập tin phương tiện！</string>
     <string name="ps_prompt">Gợi ý</string>
     <string name="ps_prompt_content">Có lưu ảnh vào điện thoại không？</string>
+    <string name="ps_prompt_video_content">Lưu video vào tập ảnh？</string>
     <string name="ps_save_image_error">Lỗi tiết kiệm image</string>
     <string name="ps_save_video_error">Lỗi tiết kiệm video</string>
     <string name="ps_save_success">Hình ảnh được lưu vào</string>

@@ -31,6 +31,7 @@
     <string name="ps_warning">¡Sin archivos multimedia!</string>
     <string name="ps_prompt">Notificación</string>
     <string name="ps_prompt_content">¿Quieres guardar la imagen en el teléfono?</string>
+    <string name="ps_prompt_video_content">¿Quieres guardar la videon en el teléfono?</string>
     <string name="ps_save_image_error">Error al guardar la imagen</string>
     <string name="ps_save_video_error">Error al guardar la videon</string>
     <string name="ps_save_success">La se guardó en</string>
