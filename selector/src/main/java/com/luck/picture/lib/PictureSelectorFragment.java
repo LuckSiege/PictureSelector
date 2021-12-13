@@ -816,25 +816,10 @@ public class PictureSelectorFragment extends PictureCommonFragment
             mAdapter.getData().add(0, media);
             openCameraNumber++;
         }
-        if (config.selectionMode == SelectModeConfig.SINGLE) {
-            if (config.isDirectReturnSingle) {
-                SelectedManager.getSelectedResult().clear();
-                SelectedManager.getSelectedResult().add(media);
-                dispatchTransformResult();
-            } else {
-                List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
-                boolean mimeTypeSame = PictureMimeType.isMimeTypeSame(SelectedManager.getTopResultMimeType(), media.getMimeType());
-                if (mimeTypeSame || selectedResult.size() == 0) {
-                    if (selectedResult.size() > 0) {
-                        LocalMedia exitsMedia = selectedResult.get(0);
-                        int position = exitsMedia.getPosition();
-                        selectedResult.clear();
-                        mAdapter.notifyItemPositionChanged(position);
-                    }
-                }
-                SelectedManager.getSelectedResult().add(media);
-                onSelectedChange(true, media);
-            }
+        if (config.selectionMode == SelectModeConfig.SINGLE && config.isDirectReturnSingle) {
+            SelectedManager.getSelectedResult().clear();
+            SelectedManager.getSelectedResult().add(media);
+            dispatchTransformResult();
         } else {
             confirmSelect(media, false);
         }
