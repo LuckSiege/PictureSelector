@@ -212,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 .openPreview()
                                 .setImageEngine(GlideEngine.createGlideEngine())
                                 .setSelectorUIStyle(selectorStyle)
+                                .setLanguage(language)
                                 .isPreviewFullScreenMode(true)
                                 .startActivityPreview(position, selectList, true,
                                         new OnExternalPreviewEventListener() {
