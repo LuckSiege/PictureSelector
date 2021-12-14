@@ -43,7 +43,6 @@ import com.luck.picture.lib.dialog.AudioPlayDialog;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
-import com.luck.picture.lib.engine.OriginalFileEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
@@ -243,7 +242,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setCropEngine(getCropEngine())
                             .setCompressEngine(getCompressEngine())
                             .setSandboxFileEngine(new MeSandboxFileEngine())
-                            .setOriginalFileEngine(getOriginalFileEngine())
                             .setCameraInterceptListener(getCustomCameraEvent())
                             .setEditMediaInterceptListener(getCustomEditMediaEvent())
                             //.setExtendLoaderEngine(getExtendLoaderEngine())
@@ -252,6 +250,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setOutputCameraDir(getSandboxPath())
                             .setQuerySandboxDir(getSandboxPath())
                             .isPageStrategy(cbPage.isChecked())
+                            .isOriginalControl(cb_original.isChecked())
                             .isDisplayCamera(cb_isCamera.isChecked())
                             .isOpenClickSound(cb_voice.isChecked())
                             //.setOutputCameraImageFileName("luck.jpeg")
@@ -540,14 +539,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * 自定义原图处理
-     * @return
-     */
-    private OriginalFileEngine getOriginalFileEngine() {
-        return cb_original.isChecked() ? new MeOriginalFileEngine() : null;
-    }
-
-    /**
      * 自定义编辑事件
      *
      * @return
@@ -631,29 +622,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             camera.start(fragment.getActivity(), fragment, requestCode);
         }
     }
-
-
-    /**
-     * 自定义原图文件处理
-     */
-    private static class MeOriginalFileEngine implements OriginalFileEngine {
-
-        @Override
-        public void onStartOriginalFileTransform(Context context, int index,
-                                                 LocalMedia media, OnCallbackIndexListener<LocalMedia> listener) {
-            if (PictureMimeType.isContent(media.getPath())) {
-                String originalPath = SandboxTransformUtils.copyPathToSandbox(context, media.getPath(),
-                        media.getMimeType());
-                media.setOriginalPath(originalPath);
-                media.setOriginal(!TextUtils.isEmpty(originalPath));
-            } else {
-                media.setOriginalPath(media.getPath());
-                media.setOriginal(true);
-            }
-            listener.onCall(media, index);
-        }
-    }
-
 
     /**
      * 自定义沙盒文件处理

@@ -8,7 +8,6 @@ import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
 import com.luck.picture.lib.engine.ImageEngine;
-import com.luck.picture.lib.engine.OriginalFileEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
@@ -97,13 +96,12 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isCompressEngine;
     public boolean isLoaderDataEngine;
     public boolean isSandboxFileEngine;
-    public boolean isOriginalFileEngine;
+    public boolean isOriginalControl;
 
     public static ImageEngine imageEngine;
     public static CompressEngine compressEngine;
     public static CropEngine cropEngine;
     public static SandboxFileEngine sandboxFileEngine;
-    public static OriginalFileEngine originalFileEngine;
     public static ExtendLoaderEngine loaderDataEngine;
     public static PictureSelectorStyle selectorStyle;
     public static OnCameraInterceptListener interceptCameraListener;
@@ -179,7 +177,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isCompressEngine = in.readByte() != 0;
         isLoaderDataEngine = in.readByte() != 0;
         isSandboxFileEngine = in.readByte() != 0;
-        isOriginalFileEngine = in.readByte() != 0;
+        isOriginalControl = in.readByte() != 0;
     }
 
     @Override
@@ -249,7 +247,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isCompressEngine ? 1 : 0));
         dest.writeByte((byte) (isLoaderDataEngine ? 1 : 0));
         dest.writeByte((byte) (isSandboxFileEngine ? 1 : 0));
-        dest.writeByte((byte) (isOriginalFileEngine ? 1 : 0));
+        dest.writeByte((byte) (isOriginalControl ? 1 : 0));
     }
 
     @Override
@@ -335,8 +333,8 @@ public final class PictureSelectionConfig implements Parcelable {
         isCompressEngine = false;
         isLoaderDataEngine = false;
         isSandboxFileEngine = false;
-        isOriginalFileEngine = false;
         isPreviewFullScreenMode = false;
+        isOriginalControl = false;
     }
 
 
@@ -372,7 +370,6 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.compressEngine = null;
         PictureSelectionConfig.cropEngine = null;
         PictureSelectionConfig.sandboxFileEngine = null;
-        PictureSelectionConfig.originalFileEngine = null;
         PictureSelectionConfig.loaderDataEngine = null;
         PictureSelectionConfig.interceptCameraListener = null;
         PictureSelectionConfig.previewEventListener = null;

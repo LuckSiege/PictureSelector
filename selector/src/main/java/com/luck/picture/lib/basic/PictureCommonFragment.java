@@ -936,25 +936,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         }
                     });
 
-        } else if (PictureSelectionConfig.sandboxFileEngine != null && result.size() > 0) {
-            showLoading();
-            for (int i = 0; i < result.size(); i++) {
-                LocalMedia media = result.get(i);
-                PictureSelectionConfig.sandboxFileEngine.onStartSandboxFileTransform(getContext(), i,
-                        media, new OnCallbackIndexListener<LocalMedia>() {
-                            @Override
-                            public void onCall(LocalMedia data, int index) {
-                                if (result.size() > index) {
-                                    LocalMedia media = result.get(index);
-                                    media.setSandboxPath(data.getSandboxPath());
-                                }
-                                if (index == result.size() - 1) {
-                                    onResultEvent(result);
-                                }
-                            }
-                        });
-            }
-
         } else {
             onResultEvent(result);
         }
@@ -1003,18 +984,21 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     @Override
     public void onResultEvent(ArrayList<LocalMedia> result) {
-        if (config.isCheckOriginalImage && PictureSelectionConfig.originalFileEngine != null) {
+        if (PictureSelectionConfig.sandboxFileEngine != null) {
             showLoading();
             for (int i = 0; i < result.size(); i++) {
                 LocalMedia media = result.get(i);
-                PictureSelectionConfig.originalFileEngine.onStartOriginalFileTransform(getContext(), i,
+                PictureSelectionConfig.sandboxFileEngine.onStartSandboxFileTransform(getContext(), i,
                         media, new OnCallbackIndexListener<LocalMedia>() {
                             @Override
                             public void onCall(LocalMedia data, int index) {
                                 if (result.size() > index) {
                                     LocalMedia media = result.get(index);
-                                    media.setOriginalPath(data.getOriginalPath());
-                                    media.setOriginal(!TextUtils.isEmpty(data.getOriginalPath()));
+                                    media.setSandboxPath(data.getSandboxPath());
+                                    if (config.isCheckOriginalImage){
+                                        media.setOriginalPath(data.getSandboxPath());
+                                        media.setOriginal(!TextUtils.isEmpty(data.getSandboxPath()));
+                                    }
                                 }
                                 if (index == result.size() - 1) {
                                     callBackResult(result);
@@ -1111,7 +1095,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         createImageLoaderEngine();
         createCompressEngine();
         createSandboxFileEngine();
-        createOriginalFileEngine();
         createLoaderDataEngine();
         createResultCallbackListener();
         super.onAttach(context);
@@ -1187,18 +1170,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         }
     }
 
-    /**
-     * Get the OriginalFileEngine engine again, provided that the user implements the IApp interface in the Application
-     */
-    private void createOriginalFileEngine() {
-        if (PictureSelectionConfig.getInstance().isOriginalFileEngine) {
-            if (PictureSelectionConfig.originalFileEngine == null) {
-                PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
-                if (baseEngine != null)
-                    PictureSelectionConfig.originalFileEngine = baseEngine.createOriginalFileEngine();
-            }
-        }
-    }
 
     /**
      * Retrieve the result callback listener, provided that the user implements the IApp interface in the Application

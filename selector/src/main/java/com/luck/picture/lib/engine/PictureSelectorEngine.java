@@ -39,13 +39,6 @@ public interface PictureSelectorEngine {
     SandboxFileEngine createSandboxFileEngine();
 
     /**
-     * Create OriginalFileEngine  Engine
-     *
-     * @return
-     */
-    OriginalFileEngine createOriginalFileEngine();
-
-    /**
      * Create Result Listener
      *
      * @return

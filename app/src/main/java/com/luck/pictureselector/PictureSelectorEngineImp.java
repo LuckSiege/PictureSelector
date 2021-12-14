@@ -3,10 +3,8 @@ package com.luck.pictureselector;
 import android.util.Log;
 
 import com.luck.picture.lib.engine.CompressEngine;
-import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
 import com.luck.picture.lib.engine.ImageEngine;
-import com.luck.picture.lib.engine.OriginalFileEngine;
 import com.luck.picture.lib.engine.PictureSelectorEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -63,17 +61,6 @@ public class PictureSelectorEngineImp implements PictureSelectorEngine {
     @Override
     public SandboxFileEngine createSandboxFileEngine() {
         // TODO 这种情况是内存极度不足的情况下，比如开启开发者选项中的不保留活动或后台进程限制，导致SandboxFileEngine被回收
-        return null;
-    }
-
-    /**
-     * 重新创建{@link OriginalFileEngine}引擎
-     *
-     * @return
-     */
-    @Override
-    public OriginalFileEngine createOriginalFileEngine() {
-        // TODO 这种情况是内存极度不足的情况下，比如开启开发者选项中的不保留活动或后台进程限制，导致OriginalFileEngine被回收
         return null;
     }
 

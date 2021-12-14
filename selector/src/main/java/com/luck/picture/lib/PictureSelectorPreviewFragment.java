@@ -659,6 +659,15 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             public void onCheckOriginalChange() {
                 sendSelectedOriginalChangeEvent();
             }
+
+            @Override
+            public void onFirstCheckOriginalSelectedChange() {
+                int currentItem = viewPager.getCurrentItem();
+                if (mData.size() > currentItem) {
+                    LocalMedia media = mData.get(currentItem);
+                    confirmSelect(media, false);
+                }
+            }
         });
     }
 

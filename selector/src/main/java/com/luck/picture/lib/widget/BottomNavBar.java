@@ -65,11 +65,13 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
                 originalCheckbox.setChecked(config.isCheckOriginalImage);
                 if (bottomNavBarListener != null) {
                     bottomNavBarListener.onCheckOriginalChange();
+                    if (isChecked && SelectedManager.getCount() == 0) {
+                        bottomNavBarListener.onFirstCheckOriginalSelectedChange();
+                    }
                 }
             }
         });
     }
-
 
     public void setBottomNavBarStyle() {
         if (config.isDirectReturnSingle) {
@@ -78,7 +80,7 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
         }
         PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
         BottomNavBarStyle bottomBarStyle = selectorStyle.getBottomBarStyle();
-        if (PictureSelectionConfig.originalFileEngine != null) {
+        if (config.isOriginalControl) {
             originalCheckbox.setVisibility(View.VISIBLE);
             int originalDrawableLeft = bottomBarStyle.getBottomOriginalDrawableLeft();
             if (StyleUtils.checkStyleValidity(originalDrawableLeft)) {
@@ -210,7 +212,7 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
      * 计算原图大小
      */
     private void calculateFileTotalSize() {
-        if (PictureSelectionConfig.originalFileEngine != null) {
+        if (config.isOriginalControl) {
             long totalSize = 0;
             for (int i = 0; i < SelectedManager.getCount(); i++) {
                 LocalMedia media = SelectedManager.getSelectedResult().get(i);
@@ -268,6 +270,13 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
          * 原图发生变化
          */
         public void onCheckOriginalChange() {
+
+        }
+
+        /**
+         * 首次选择原图并加入选择结果
+         */
+        public void onFirstCheckOriginalSelectedChange(){
 
         }
     }

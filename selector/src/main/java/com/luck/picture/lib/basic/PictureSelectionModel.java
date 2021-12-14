@@ -20,7 +20,6 @@ import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
 import com.luck.picture.lib.engine.ImageEngine;
-import com.luck.picture.lib.engine.OriginalFileEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
@@ -159,22 +158,6 @@ public class PictureSelectionModel {
         return this;
     }
 
-    /**
-     * App original file path transform
-     *
-     * @param engine App Sandbox path transform
-     * @return
-     */
-    public PictureSelectionModel setOriginalFileEngine(OriginalFileEngine engine) {
-        if (SdkVersionUtils.isQ() && PictureSelectionConfig.originalFileEngine != engine) {
-            PictureSelectionConfig.originalFileEngine = engine;
-            selectionConfig.isOriginalFileEngine = true;
-        } else {
-            selectionConfig.isOriginalFileEngine = false;
-        }
-        return this;
-    }
-
 
     /**
      * Users can implement some interfaces to access their own query data
@@ -307,6 +290,21 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel isMaxSelectEnabledMask(boolean isMaxSelectEnabledMask) {
         selectionConfig.isMaxSelectEnabledMask = isMaxSelectEnabledMask;
+        return this;
+    }
+
+    /**
+     * Do you need to display the original controller
+     * <p>
+     * It needs to be used with setSandboxFileEngine
+     * {@link LocalMedia .setSandboxPath()}
+     * </p>
+     *
+     * @param isOriginalControl
+     * @return
+     */
+    public PictureSelectionModel isOriginalControl(boolean isOriginalControl) {
+        selectionConfig.isOriginalControl = isOriginalControl;
         return this;
     }
 
