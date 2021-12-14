@@ -1,0 +1,78 @@
+apply plugin: 'com.android.application'
+
+static def releaseTime() {
+    def date = new Date()
+    return date.format("yyyy-MM-dd") + "_" + date.format("hhmmss")
+}
+
+android {
+    compileSdkVersion cfgs.compileSdkVersion
+
+    defaultConfig {
+        applicationId "com.luck.pictureselector"
+        minSdkVersion cfgs.minSdkVersion
+        targetSdkVersion cfgs.targetSdkVersion
+        versionCode cfgs.versionCode
+        versionName cfgs.versionName
+    }
+
+    signingConfigs {
+        pictureSelectorKey {
+            storeFile file("signature/picture.jks")
+            storePassword "luck888A"
+            keyAlias "picture"
+            keyPassword "luck888A"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.pictureSelectorKey
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.pictureSelectorKey
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        applicationVariants.all { variant ->
+            variant.outputs.all { output ->
+                if ('release' == variant.buildType.name) {
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        def time = releaseTime()
+                        def fileName = "demo_${time}${"_" + versionName}.apk"
+                        outputFileName = fileName
+                    }
+                }
+            }
+        }
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation project(':picture_library')
+    implementation "androidx.appcompat:appcompat:${cfgs.version_appcompat}"
+    implementation "androidx.recyclerview:recyclerview:${cfgs.version_recyclerview}"
+    implementation "androidx.camera:camera-core:${cfgs.camera_core_version}"
+    implementation "androidx.camera:camera-camera2:${cfgs.camerax_version}"
+    implementation "com.github.bumptech.glide:glide:${cfgs.glide_version}"
+    implementation "com.squareup.picasso:picasso:${cfgs.picasso_version}"
+}

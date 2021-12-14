@@ -1,0 +1,47 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion cfgs.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion cfgs.minSdkVersion
+        targetSdkVersion cfgs.targetSdkVersion
+        versionCode cfgs.versionCode
+        versionName cfgs.versionName
+
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+
+    resourcePrefix 'ucrop_'
+}
+
+apply from: '../publish.gradle'
+
+dependencies {
+    implementation "androidx.appcompat:appcompat:${cfgs.version_appcompat}"
+    implementation "androidx.recyclerview:recyclerview:${cfgs.version_recyclerview}"
+    implementation "androidx.activity:activity:${cfgs.activity_version}"
+    implementation "androidx.fragment:fragment:${cfgs.fragment_version}"
+    implementation "androidx.concurrent:concurrent-futures:${cfgs.futures_version}"
+    implementation "androidx.annotation:annotation-experimental:${cfgs.experimental_version}"
+    implementation "androidx.exifinterface:exifinterface:${cfgs.androidx_exifinterface_version}"
+    implementation "androidx.localbroadcastmanager:localbroadcastmanager:${cfgs.localbroadcastmanager}"
+    implementation "androidx.camera:camera-view:${cfgs.camerax_view}"
+    implementation "androidx.transition:transition:${cfgs.androidx_transition_version}"
+    implementation "androidx.camera:camera-lifecycle:${cfgs.camerax_version}"
+}

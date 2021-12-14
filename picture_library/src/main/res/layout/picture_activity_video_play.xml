@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/picture_color_black"
+    android:fitsSystemWindows="true">
+
+    <VideoView
+        android:id="@+id/video_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
+    <ImageView
+        android:id="@+id/iv_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/picture_icon_video_play"
+        android:visibility="invisible" />
+
+    <ImageButton
+        android:id="@+id/pictureLeftBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@color/picture_color_transparent"
+        android:scaleType="centerInside"
+        android:src="@drawable/picture_icon_back" />
+
+    <TextView
+        android:id="@+id/tv_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/picture_send_button_bg"
+        android:text="@string/picture_confirm"
+        android:textColor="@color/picture_color_white"
+        android:textSize="14sp"
+        android:visibility="gone"
+        tools:visibility="visible" />
+</RelativeLayout>

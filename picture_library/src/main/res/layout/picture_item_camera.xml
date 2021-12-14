@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.luck.picture.lib.widget.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/picture_color_light_grey"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:drawableTop="@drawable/picture_icon_camera"
+        android:gravity="center"
+        android:text="@string/picture_take_picture"
+        android:textColor="@color/picture_color_white"
+        android:textSize="14sp" />
+
+</com.luck.picture.lib.widget.SquareRelativeLayout>

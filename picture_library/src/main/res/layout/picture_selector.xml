@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/picture_color_white"
+    android:fitsSystemWindows="true"
+    tools:context="com.luck.picture.lib.PictureSelectorActivity">
+
+    <include layout="@layout/picture_title_bar" />
+
+    <include layout="@layout/picture_bottom_bar" />
+
+    <com.luck.picture.lib.widget.RecyclerPreloadView
+        android:id="@+id/picture_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/select_bar_layout"
+        android:layout_below="@id/titleBar"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:overScrollMode="never" />
+
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:gravity="center"
+        android:lineSpacingExtra="3dp"
+        android:text="@string/picture_empty"
+        android:textColor="@color/picture_color_aab2bd"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+</RelativeLayout>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--PictureSelector-->
+    <color name="picture_color_grey">#393a3e</color>
+    <color name="picture_color_black">#000000</color>
+    <color name="picture_color_white">#FFFFFF</color>
+    <color name="picture_color_blue">#7D7DFF</color>
+    <color name="picture_color_light_grey">#999999</color>
+    <color name="picture_color_a83">#a8333333</color>
+    <color name="picture_color_70">#70000000</color>
+    <color name="picture_color_80">#80000000</color>
+    <color name="picture_color_20">#20000000</color>
+    <color name="picture_color_e">#EEEEEE</color>
+    <color name="picture_color_fa">#FAFAFA</color>
+    <color name="picture_color_66">#666666</color>
+    <color name="picture_color_fa632d">#FA632D</color>
+    <color name="picture_color_9b">#9b9b9b</color>
+    <color name="picture_color_f2">#F2F2F2</color>
+    <color name="picture_color_transparent">#00000000</color>
+    <color name="picture_color_transparent_white">#F0FFFFFF</color>
+    <color name="picture_color_transparent_e0db">#E0DBDBDB</color>
+    <color name="picture_color_53575e">#53575e</color>
+    <color name="picture_color_f0">#F0F0F0</color>
+    <color name="picture_color_grey_3e">#dd393a3e</color>
+    <color name="picture_color_4d">#4d4d4d</color>
+    <color name="picture_color_e0ff6100">#E0FF6100</color>
+    <color name="picture_color_eb">#ebebeb</color>
+    <color name="picture_color_ba3">#b0567ba3</color>
+    <color name="picture_color_bfe85d">#BF96E85D</color>
+    <color name="picture_color_ffe85d">#FF96E85D</color>
+    <color name="picture_color_ffd042">#FFFFD042</color>
+    <color name="picture_color_20c064">#20c064</color>
+    <color name="picture_color_394a3e">#394a3e</color>
+    <color name="picture_color_half_grey">#a0393a3e</color>
+    <color name="picture_color_ec">#ececec</color>
+    <color name="picture_color_4e4d4e">#4e4d4e</color>
+    <color name="picture_color_aab2bd">#AAB2BD</color>
+    <color name="picture_color_half_white">#99FFFFFF</color>
+    <color name="picture_color_ff572e">#ff572e</color>
+    <color name="picture_color_529BeA">#529BeA</color>
+
+
+    <!--Palette-->
+    <color name="ucrop_color_black">#000000</color>
+    <color name="ucrop_color_blaze_orange">#FF6300</color>
+    <color name="ucrop_color_ebony_clay">#20242F</color>
+    <color name="ucrop_color_heather">#B3BECE</color>
+    <color name="ucrop_color_white">#FFFFFF</color>
+
+    <!--uCrop Activity-->
+    <color name="ucrop_color_toolbar">@color/ucrop_color_white</color>
+    <color name="ucrop_color_statusbar">#f5f5f5</color>
+    <color name="ucrop_color_toolbar_widget">@color/ucrop_color_black</color>
+    <color name="ucrop_color_widget">@color/ucrop_color_black</color>
+    <color name="ucrop_color_widget_active">@color/ucrop_color_white</color>
+    <color name="ucrop_color_active_controls_color">@color/ucrop_color_blaze_orange</color>
+    <color name="ucrop_color_inactive_controls_color">@color/ucrop_color_heather</color>
+    <color name="ucrop_color_widget_rotate_mid_line">@color/ucrop_color_blaze_orange</color>
+    <color name="ucrop_color_widget_rotate_angle">@color/ucrop_color_ebony_clay</color>
+    <color name="ucrop_color_active_aspect_ratio">@color/ucrop_color_blaze_orange</color>
+    <color name="ucrop_color_inactive_aspect_ratio">@color/ucrop_color_ebony_clay</color>
+    <color name="ucrop_color_widget_background">@color/ucrop_color_ebony_clay</color>
+    <color name="ucrop_color_widget_text">@color/ucrop_color_blaze_orange</color>
+    <color name="ucrop_color_progress_wheel_line">@color/ucrop_color_ebony_clay</color>
+    <color name="ucrop_color_crop_background">@color/ucrop_color_black</color>
+
+    <!--Crop View-->
+    <color name="ucrop_color_default_crop_grid">#80ffffff</color>
+    <color name="ucrop_color_default_crop_frame">#ffffff</color>
+    <color name="ucrop_color_default_dimmed">#8c000000</color>
+    <color name="ucrop_color_default_logo">#4f212121</color>
+
+    <!--more-->
+    <color name="ucrop_color_ba3">#b0567ba3</color>
+    <color name="ucrop_color_ec">#ececec</color>
+
+</resources>

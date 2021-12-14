@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="picture_camera_roll">Rollo de cámara</string>
+    <string name="picture_camera_roll_num">%1$s (%2$d)</string>
+    <string name="picture_cancel">Cancelar</string>
+    <string name="picture_take_picture">Filmar</string>
+    <string name="picture_rule">No se pueden seleccionar imágenes o videos al mismo tiempo</string>
+    <string name="picture_message_max_num">Solo puede seleccionar hasta %1$s fotos</string>
+    <string name="picture_min_video_num">La selección mínima de video no puede ser menor a %1$s</string>
+    <string name="picture_message_video_max_num">Solo puede seleccionar hasta %1$s videos</string>
+    <string name="picture_message_audio_max_num">Solo puede seleccionar hasta %1$s audios</string>
+    <string name="picture_preview">Preestrenar</string>
+    <string name="picture_please">Espera…</string>
+    <string name="picture_done_front_num">%1$d/%2$d ok</string>
+    <string name="picture_completed">Terminar</string>
+    <string name="picture_done">Terminar</string>
+    <string name="picture_please_select">por favor elige</string>
+    <string name="picture_empty_title">Sin videos ni fotos\n</string>
+    <string name="picture_empty_audio_title">Sin archivos de audio\n</string>
+    <string name="picture_empty">Puedes usar la cámara para tomar fotos o videos.</string>
+    <string name="picture_audio_empty">Puede utilizar la grabación del sistema para grabar audio</string>
+    <string name="picture_min_img_num">Elija al menos %1$s imágenes</string>
+    <string name="picture_gif_tag">Gif</string>
+    <string name="picture_jurisdiction">Permiso de lectura de memoria denegado</string>
+    <string name="picture_camera">Acceso denegado al permiso de la cámara del sistema</string>
+    <string name="picture_audio">Acceso denegado al permiso de grabación del sistema</string>
+    <string name="picture_video_toast">El video no se puede previsualizar</string>
+    <string name="picture_record_video">Grabar video</string>
+    <string name="picture_photograph">Tomar fotos</string>
+    <string name="picture_long_chart">Imagen larga</string>
+    <string name="picture_warning">¡Sin archivos multimedia!</string>
+    <string name="picture_prompt">Notificación</string>
+    <string name="picture_prompt_content">¿Quieres guardar la imagen en el teléfono?</string>
+    <string name="picture_save_error">Error al guardar la imagen</string>
+    <string name="picture_save_success">La imagen se guardó en</string>
+    <string name="picture_all_audio">Todos audios</string>
+    <string name="picture_tape">Recordar</string>
+    <string name="picture_play_audio">Reproducir</string>
+    <string name="picture_stop_audio">Parada</string>
+    <string name="picture_quit_audio">Dejar</string>
+    <string name="picture_pause_audio">Pausa</string>
+    <string name="picture_error">La imagen está dañada</string>
+    <string name="picture_video_error">El video está dañado</string>
+    <string name="picture_audio_error">El audio está dañado</string>
+    <string name="picture_confirm">Seguro</string>
+    <string name="picture_preview_image_num">%1$d/%2$d</string>
+    <string name="picture_not_crop_data">No hay datos de cultivos disponibles.</string>
+    <string name="picture_original_image">imagen completa (%1$s)</string>
+    <string name="picture_default_original_image">imagen completa</string>
+    <string name="picture_send">Terminar</string>
+    <string name="picture_send_num">Terminar(%1$d/%2$d)</string>
+    <string name="picture_preview_num">Preestrenar(%1$d)</string>
+    <string name="picture_select">Elegir</string>
+    <string name="picture_data_exception">Adquisición anormal de los datos del álbum…</string>
+    <string name="picture_recording_time_is_short">El tiempo de grabación es demasiado corto</string>
+    <string name="picture_photo_camera">Haga clic para tomar foto, mantenga pulsado para grabar video</string>
+    <string name="picture_photo_pictures">Haga clic para tomar foto</string>
+    <string name="picture_photo_recording">pulsado para grabar video</string>
+    <string name="picture_choose_max_seconds">Solo puede seleccionar videos dentro de los %1$ds como máximo</string>
+    <string name="picture_choose_min_seconds">No se pueden seleccionar videos por debajo de %1$ds</string>
+    <string name="picture_choose_limit_seconds">Solo se pueden elegir entre %1$ds y %2$ds de videos</string>
+    <string name="picture_go_setting">A confugurar</string>
+    <string name="picture_know">Lo sabía</string>
+    <string name="picture_data_null">Está vacío…</string>
+    <string name="picture_editor">Editar</string>
+    <string name="picture_webp_tag">webp</string>
+
+    <string name="ucrop_rotate">Girar</string>
+    <string name="ucrop_scale">Proporción</string>
+    <string name="ucrop_crop">Recortar</string>
+
+    <string name="ucrop_label_original">Proporción original</string>
+    <string name="ucrop_label_edit_photo">Recortar</string>
+
+    <string name="ucrop_menu_crop">Recortar</string>
+    <string name="ucrop_gif_tag">Gif</string>
+</resources>

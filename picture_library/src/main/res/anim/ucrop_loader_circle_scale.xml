@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <objectAnimator
+        android:duration="@integer/ucrop_progress_loading_anim_time"
+        android:propertyName="scaleX"
+        android:repeatCount="-1"
+        android:valueFrom="0.666"
+        android:valueTo="1.0"
+        android:valueType="floatType"/>
+
+    <objectAnimator
+        android:duration="@integer/ucrop_progress_loading_anim_time"
+        android:propertyName="scaleY"
+        android:repeatCount="-1"
+        android:valueFrom="0.666"
+        android:valueTo="1.0"
+        android:valueType="floatType"/>
+
+    <objectAnimator
+        android:duration="@integer/ucrop_progress_loading_anim_time"
+        android:propertyName="rotation"
+        android:repeatCount="-1"
+        android:valueFrom="0"
+        android:valueTo="360"
+        android:valueType="floatType"/>
+
+</set>

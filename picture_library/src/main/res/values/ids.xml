@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="view_tag" type="id" />
+    <item name="view_count_tag" type="id" />
+    <item name="view_index_tag" type="id" />
+    <item name="id_recycler" type="id" />
+</resources>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="picture_camera_roll">Todos</string>
+    <string name="picture_camera_roll_num">%1$s (%2$d)</string>
+    <string name="picture_cancel">Cancelar</string>
+    <string name="picture_take_picture">Fotografia</string>
+    <string name="picture_rule">Não é possível selecionar imagens ou vídeos ao mesmo tempo</string>
+    <string name="picture_message_max_num">Você pode escolher um máximo de %1$s foto</string>
+    <string name="picture_min_video_num">Os vídeos não podem ser menos de %1$s</string>
+    <string name="picture_message_video_max_num">Você pode escolher um máximo de %1$s vídeo</string>
+    <string name="picture_message_audio_max_num">Você pode escolher um máximo de %1$s áudio</string>
+    <string name="picture_preview">Antevisão</string>
+    <string name="picture_please">Espera…</string>
+    <string name="picture_done_front_num">%1$d/%2$d Terminar</string>
+    <string name="picture_completed">Terminar</string>
+    <string name="picture_done">Terminar</string>
+    <string name="picture_please_select">Escolha</string>
+    <string name="picture_empty_title">Não há arquivos de vídeo ou imagem\n</string>
+    <string name="picture_empty_audio_title">Não há ficheiros de áudio\n</string>
+    <string name="picture_empty">Você pode usar a câmera para tirar fotos ou vídeos</string>
+    <string name="picture_audio_empty">Você pode gravar o áudio usando o sistema de gravação</string>
+    <string name="picture_min_img_num">Não pode haver menos de %1$s imagens</string>
+    <string name="picture_gif_tag">gif</string>
+    <string name="picture_webp_tag">webp</string>
+    <string name="picture_jurisdiction">A permissão para ler o cartão de memória foi negada</string>
+    <string name="picture_camera">Acesso à câmera do sistema negado</string>
+    <string name="picture_audio">Acesso ao sistema de gravação negado</string>
+    <string name="picture_video_toast">A visualização do vídeo não é suportada</string>
+    <string name="picture_record_video">Gravem video</string>
+    <string name="picture_photograph">Tirar fotos</string>
+    <string name="picture_long_chart">Figura muito</string>
+    <string name="picture_warning">Não há documentos！</string>
+    <string name="picture_prompt">Dica</string>
+    <string name="picture_prompt_content">Salve a imagem para o telemóvel？</string>
+    <string name="picture_save_error">Falha em salvar a imagem</string>
+    <string name="picture_save_success">A imagem foi salva com sucesso</string>
+    <string name="picture_all_audio">Todos os áudios</string>
+    <string name="picture_tape">Gravação</string>
+    <string name="picture_play_audio">Play</string>
+    <string name="picture_stop_audio">Parar</string>
+    <string name="picture_quit_audio">Desistir</string>
+    <string name="picture_pause_audio">Pausa</string>
+    <string name="picture_error">imagem está danificada</string>
+    <string name="picture_video_error">vídeo está danificada</string>
+    <string name="picture_audio_error">áudio está danificada</string>
+    <string name="picture_confirm">Certeza</string>
+    <string name="picture_preview_image_num">%1$d/%2$d</string>
+    <string name="picture_not_crop_data">Recursos sem cortes</string>
+    <string name="picture_original_image">Original (%1$s)</string>
+    <string name="picture_default_original_image">Original</string>
+    <string name="picture_send">Terminar</string>
+    <string name="picture_send_num">Terminar(%1$d/%2$d)</string>
+    <string name="picture_preview_num">Antevisão(%1$d)</string>
+    <string name="picture_select">Escolha</string>
+    <string name="picture_data_exception">Obter uma exceção para os dados do álbum…</string>
+    <string name="picture_recording_time_is_short">Tempo de gravação é muito curto</string>
+    <string name="picture_photo_camera">Tirar fotos，Câmara</string>
+    <string name="picture_photo_pictures">Tirar fotos</string>
+    <string name="picture_photo_recording">Câmara</string>
+    <string name="picture_choose_max_seconds">Até um máximo de %1$ds vídeos podem ser selecionados</string>
+    <string name="picture_choose_min_seconds">No mínimo, só podem ser selecionados vídeos de %1$ds segundos</string>
+    <string name="picture_choose_limit_seconds">Só podem ser selecionados vídeos de %1$ds a %2$ds segundos</string>
+    <string name="picture_go_setting">As configurações</string>
+    <string name="picture_know">Entendo</string>
+    <string name="picture_data_null">Dados em branco…</string>
+    <string name="picture_editor">Editar</string>
+
+    <string name="ucrop_rotate">Rotação</string>
+    <string name="ucrop_scale">Proporção</string>
+    <string name="ucrop_crop">Recorte</string>
+
+    <string name="ucrop_label_original">Proporção inicial</string>
+    <string name="ucrop_label_edit_photo">Recorte</string>
+
+    <string name="ucrop_menu_crop">Recorte</string>
+    <string name="ucrop_gif_tag">Gif</string>
+</resources>

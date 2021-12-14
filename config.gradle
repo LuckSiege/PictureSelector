@@ -1,0 +1,37 @@
+ext {
+    cfgs = [
+            compileSdkVersion             : 31,
+            buildToolsVersion             : "29.0.2",
+            minSdkVersion                 : 19,
+            targetSdkVersion              : 31,
+            versionCode                   : 58,
+            versionName                   : "v2.7.3-rc10",
+            ucropVersionCode              : 24,
+            ucropVersionName              : "2.2.4-non-native",
+
+            //open version control
+            androidSupportVersion         : "27.0.2",
+            version_recyclerview          : "1.2.1",
+            version_appcompat             : "1.3.1",
+            localbroadcastmanager         : "1.0.0",
+            activity_version              : "1.4.0",
+            fragment_version              : "1.3.6",
+
+            camerax_view                  : "1.0.0-alpha30",
+            camerax_version               : "1.1.0-alpha10",
+            camera_core_version           : "1.0.0-rc04",
+            experimental_version          : "1.1.0",
+            futures_version               : "1.1.0",
+
+            // ucrop
+            androidx_exifinterface_version: "1.3.3",
+            androidx_transition_version   : "1.4.1",
+
+            // glide
+            glide_version                 : "4.12.0",
+
+            // picasso
+            picasso_version               : "2.71828"
+
+    ]
+}
