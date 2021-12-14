@@ -3,9 +3,6 @@ package com.luck.picture.lib.basic;
 import android.content.Context;
 import android.net.Uri;
 
-import com.luck.picture.lib.config.PictureSelectionConfig;
-import com.luck.picture.lib.io.ArrayPoolProvide;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -24,14 +21,10 @@ public final class PictureContentResolver {
      * @return
      */
     public static InputStream getContentResolverOpenInputStream(Context context, Uri uri) {
-        if (PictureSelectionConfig.getInstance().isUseBufferPool) {
-            return ArrayPoolProvide.getInstance().openInputStream(context.getContentResolver(), uri);
-        } else {
-            try {
-                return context.getContentResolver().openInputStream(uri);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            return context.getContentResolver().openInputStream(uri);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }

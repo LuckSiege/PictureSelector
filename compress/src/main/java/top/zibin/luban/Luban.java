@@ -229,7 +229,7 @@ public class Luban implements Handler.Callback {
         private Context context;
         private String mTargetDir;
         private boolean focusAlpha;
-        private boolean isUseBufferPool;
+        private boolean isUseBufferPool = true;
         private int mLeastCompressSize = 100;
         private OnRenameListener mRenameListener;
         private OnCompressListener mCompressListener;
