@@ -208,6 +208,16 @@ public class PicassoEngine implements ImageEngine {
         }
     }
 
+    @Override
+    public void stopLoadImage(@NonNull Context context) {
+
+    }
+
+    @Override
+    public void resumeLoadImage(@NonNull Context context) {
+
+    }
+
     private PicassoEngine() {
     }
 

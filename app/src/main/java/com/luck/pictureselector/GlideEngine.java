@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -164,6 +165,18 @@ public class GlideEngine implements ImageEngine {
                 .centerCrop()
                 .placeholder(R.drawable.picture_image_placeholder)
                 .into(imageView);
+    }
+
+    @Override
+    public void stopLoadImage(@NonNull Context context) {
+        Log.e("测试", "stopLoadImage: 暂停加载图片了" );
+        Glide.with(context).pauseRequests();
+    }
+
+    @Override
+    public void resumeLoadImage(@NonNull Context context) {
+        Glide.with(context).resumeRequests();
+        Log.e("测试", "stopLoadImage: 恢复加载图片了" );
     }
 
 

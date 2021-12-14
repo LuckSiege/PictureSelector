@@ -1238,6 +1238,11 @@ public class PictureSelectionModel {
         return this;
     }
 
+    public PictureSelectionModel isNeedRecycleViewOptimization(boolean isNeedRecycleViewOptimization) {
+        selectionConfig.needDoRecycleViewOptimization = isNeedRecycleViewOptimization;
+        return this;
+    }
+
     /**
      * @param Specify get image format
      *                Use {@link .queryMimeTypeConditions()}

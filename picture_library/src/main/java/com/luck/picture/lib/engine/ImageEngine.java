@@ -49,4 +49,12 @@ public interface ImageEngine {
      * @param imageView
      */
     void loadGridImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView);
+
+    /**
+     * while RecycleView is Scrolling Stop load image
+     *
+     */
+    void stopLoadImage(@NonNull Context context);
+
+    void resumeLoadImage(@NonNull Context context);
 }

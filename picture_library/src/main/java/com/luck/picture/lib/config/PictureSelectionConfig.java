@@ -180,7 +180,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public String cropCompressFormat;
     public boolean isAutoScalePreviewImage = true;
     public int ofAllCameraType = PictureMimeType.ofAll();
-    public boolean isOnlySandboxDir;
+    public boolean isOnlySandboxDir,needDoRecycleViewOptimization;
     /**
      * 内测专用###########
      */
@@ -303,6 +303,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isAutoScalePreviewImage = in.readByte() != 0;
         ofAllCameraType = in.readInt();
         isOnlySandboxDir = in.readByte() != 0;
+        needDoRecycleViewOptimization = in.readByte() != 0;
         isFallbackVersion = in.readByte() != 0;
         isFallbackVersion2 = in.readByte() != 0;
         isFallbackVersion3 = in.readByte() != 0;
@@ -423,6 +424,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isAutoScalePreviewImage ? 1 : 0));
         dest.writeInt(ofAllCameraType);
         dest.writeByte((byte) (isOnlySandboxDir ? 1 : 0));
+        dest.writeByte((byte) (needDoRecycleViewOptimization ? 1 : 0));
         dest.writeByte((byte) (isFallbackVersion ? 1 : 0));
         dest.writeByte((byte) (isFallbackVersion2 ? 1 : 0));
         dest.writeByte((byte) (isFallbackVersion3 ? 1 : 0));
@@ -563,6 +565,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isDisplayOriginalSize = true;
         ofAllCameraType = PictureMimeType.ofAll();
         isOnlySandboxDir = false;
+        needDoRecycleViewOptimization = true;
     }
 
     public static PictureSelectionConfig getInstance() {
