@@ -33,6 +33,17 @@ public interface ImageEngine {
     void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView, SubsamplingScaleImageView longImageView, OnImageCompleteCallback callback);
 
     /**
+     * Load network long graph adaption
+     *
+     * @param context
+     * @param url
+     * @param imageView
+     */
+    @Deprecated
+    void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView, SubsamplingScaleImageView longImageView);
+
+
+    /**
      * Load album catalog pictures
      *
      * @param context
@@ -42,6 +53,15 @@ public interface ImageEngine {
     void loadFolderImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView);
 
     /**
+     * Load GIF image
+     *
+     * @param context
+     * @param url
+     * @param imageView
+     */
+    void loadAsGifImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView);
+
+    /**
      * Load picture list picture
      *
      * @param context
@@ -49,12 +69,4 @@ public interface ImageEngine {
      * @param imageView
      */
     void loadGridImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView);
-
-    /**
-     * while RecycleView is Scrolling Stop load image
-     *
-     */
-    void stopLoadImage(@NonNull Context context);
-
-    void resumeLoadImage(@NonNull Context context);
 }

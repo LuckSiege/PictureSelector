@@ -410,7 +410,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         launcherResult = createActivityResultLauncher();
 
         // 清除缓存
-//        clearCache();
+        clearCache();
     }
 
     /**
@@ -466,8 +466,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .isMaxSelectEnabledMask(cbEnabledMask.isChecked())// 选择数到了最大阀值列表是否启用蒙层效果
                         //.isAutomaticTitleRecyclerTop(false)// 连续点击标题栏RecyclerView是否自动回到顶部,默认true
                         //.setOutputCameraPath(createCustomCameraOutPath())// 自定义相机输出目录
-                        .setQuerySandboxDirectory(createCustomCameraOutPath())// 查询自定义相机输出目录
-                        .isGetOnlySandboxDirectory(false) // 是否只显示某个目录下的资源；需与setQuerySandboxDirectory相对应
                         .setCustomCameraFeatures(CustomCameraType.BUTTON_STATE_BOTH)// 设置自定义相机按钮状态
                         .setCaptureLoadingColor(ContextCompat.getColor(getContext(), R.color.app_color_blue))
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
@@ -564,9 +562,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setPictureWindowAnimationStyle(mWindowAnimationStyle)// 自定义相册启动退出动画
                         .maxSelectNum(maxSelectNum)// 最大图片选择数量
                         .isUseCustomCamera(cb_custom_camera.isChecked())// 是否使用自定义相机
-                        .setOutputCameraPath(createCustomCameraOutPath()) // 自定义相机输出目录
-                        .setQuerySandboxDirectory(createCustomCameraOutPath())// 查询自定义相机输出目录
-                        .isGetOnlySandboxDirectory(false) // 是否只显示某个目录下的资源；需与setQuerySandboxDirectory相对应
+                        //.setOutputCameraPath()// 自定义相机输出目录
                         .minSelectNum(1)// 最小选择数量
                         //.querySpecifiedFormatSuffix(PictureMimeType.ofPNG())// 查询指定后缀格式资源
                         .selectionMode(cb_choose_mode.isChecked() ?
@@ -671,10 +667,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @return
      */
     private String createCustomCameraOutPath() {
-        File externalFilesDir = getContext().getExternalFilesDir(chooseMode == PictureMimeType.ofVideo() ? Environment.DIRECTORY_MOVIES : Environment.DIRECTORY_PICTURES);
-        File customFile = new File(externalFilesDir.getAbsolutePath(), "Sandbox");
-        if (!customFile.exists()) {
-            customFile.mkdirs();
+        File customFile;
+        if (SdkVersionUtils.isQ()) {
+            // 在Android Q上不能直接使用外部存储目录；且沙盒内的资源是无法通过PictureSelector扫描出来的
+            File externalFilesDir = getContext().getExternalFilesDir(chooseMode == PictureMimeType.ofVideo() ? Environment.DIRECTORY_MOVIES : Environment.DIRECTORY_PICTURES);
+            customFile = new File(externalFilesDir.getAbsolutePath(), "PictureSelector");
+            if (!customFile.exists()) {
+                customFile.mkdirs();
+            }
+        } else {
+            File rootFile = Environment.getExternalStorageDirectory();
+            customFile = new File(rootFile.getAbsolutePath() + File.separator + "CustomPictureCamera");
+            if (!customFile.exists()) {
+                customFile.mkdirs();
+            }
         }
         return customFile.getAbsolutePath() + File.separator;
     }

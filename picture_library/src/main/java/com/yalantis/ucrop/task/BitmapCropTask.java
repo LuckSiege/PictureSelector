@@ -160,6 +160,14 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
             } else {
                 originalExif = new ExifInterface(mImageInputPath);
             }
+            Log.e(TAG, "crop:打印所有需要的参数");
+            Log.e(TAG, "crop:当前source的高度为:"+mViewBitmap.getHeight()+"\t 图片的宽为："+mViewBitmap.getWidth()+"\t 图片的cropOffsetX为："+cropOffsetX
+                    +"\t 图片的cropOffsetY为："+cropOffsetY+"\t y+height为："+ (cropOffsetY+mCroppedImageHeight));
+            Log.e(TAG, "\t mCroppedImageWidth："+ mCroppedImageWidth + "\t mCroppedImageHeight为"+mCroppedImageHeight);
+            if(cropOffsetY+mCroppedImageHeight>mViewBitmap.getHeight())
+            {
+                mCroppedImageHeight -=5;
+            }
             saveImage(Bitmap.createBitmap(mViewBitmap, cropOffsetX, cropOffsetY, mCroppedImageWidth, mCroppedImageHeight));
             if (mCompressFormat.equals(Bitmap.CompressFormat.JPEG)) {
                 ImageHeaderParser.copyExif(originalExif, mCroppedImageWidth, mCroppedImageHeight, mImageOutputPath);

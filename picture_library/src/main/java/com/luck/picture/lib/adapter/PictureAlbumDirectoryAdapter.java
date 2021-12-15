@@ -58,9 +58,6 @@ public class PictureAlbumDirectoryAdapter extends RecyclerView.Adapter<PictureAl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         LocalMediaFolder folder = folders.get(position);
-
-
-
         String name = folder.getName();
         int imageNum = folder.getImageNum();
         String imagePath = folder.getFirstImagePath();

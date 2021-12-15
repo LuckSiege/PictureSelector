@@ -203,16 +203,22 @@ public class PictureSimpleFragmentAdapter extends PagerAdapter {
             }
         });
 
-        if (PictureSelectionConfig.imageEngine != null) {
-            if (eqLongImg) {
-                displayLongPic(PictureMimeType.isContent(path)
-                        ? Uri.parse(path) : Uri.fromFile(new File(path)), longImg);
-            } else {
-                PictureSelectionConfig.imageEngine.loadImage
+        if (isGif && !media.isCompressed()) {
+            if (PictureSelectionConfig.imageEngine != null) {
+                PictureSelectionConfig.imageEngine.loadAsGifImage
                         (contentView.getContext(), path, photoView);
             }
+        } else {
+            if (PictureSelectionConfig.imageEngine != null) {
+                if (eqLongImg) {
+                    displayLongPic(PictureMimeType.isContent(path)
+                            ? Uri.parse(path) : Uri.fromFile(new File(path)), longImg);
+                } else {
+                    PictureSelectionConfig.imageEngine.loadImage
+                            (contentView.getContext(), path, photoView);
+                }
+            }
         }
-
         (container).addView(contentView, 0);
         return contentView;
     }

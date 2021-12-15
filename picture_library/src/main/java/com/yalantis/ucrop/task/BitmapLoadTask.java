@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.ColorSpace;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -20,7 +19,6 @@ import com.luck.picture.lib.PictureContentResolver;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
-import com.luck.picture.lib.tools.ToastUtils;
 import com.yalantis.ucrop.callback.BitmapLoadCallback;
 import com.yalantis.ucrop.model.ExifInfo;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
@@ -107,29 +105,24 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
             options.inSampleSize = BitmapLoadUtils.calculateInSampleSize(options.outWidth, options.outHeight, mRequiredWidth, mRequiredHeight);
         }
         options.inJustDecodeBounds = false;
-        options.inPreferredConfig = Bitmap.Config.RGB_565;
+
         Bitmap decodeSampledBitmap = null;
 
         boolean decodeAttemptSuccess = false;
         while (!decodeAttemptSuccess) {
             try {
                 InputStream stream = PictureContentResolver.getContentResolverOpenInputStream(mContext, mInputUri);
-
                 decodeSampledBitmap = BitmapFactory.decodeStream(stream, null, options);
                 if (options.outWidth == -1 || options.outHeight == -1) {
-                    ToastUtils.s(mContext,"图片异常，无法加载");
                     return new BitmapWorkerResult(new IllegalArgumentException("Bounds for bitmap could not be retrieved from the Uri: [" + mInputUri + "]"));
                 }
                 if (checkSize(decodeSampledBitmap, options)) continue;
                 decodeAttemptSuccess = true;
-                stream.close();
             } catch (OutOfMemoryError error) {
                 Log.e(TAG, "doInBackground: BitmapFactory.decodeFileDescriptor: ", error);
-                ToastUtils.s(mContext,"内存不足");
                 options.inSampleSize *= 2;
             } catch (Exception e) {
                 Log.e(TAG, "doInBackground: ImageDecoder.createSource: ", e);
-                ToastUtils.s(mContext,e.getMessage());
                 return new BitmapWorkerResult(new IllegalArgumentException("Bitmap could not be decoded from the Uri: [" + mInputUri + "]", e));
             }
         }

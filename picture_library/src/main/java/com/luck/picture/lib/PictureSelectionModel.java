@@ -1015,7 +1015,7 @@ public class PictureSelectionModel {
 
     /**
      * @param previewEggs preview eggs  It doesn't make much sense
-     * @return Use {@link .isPreviewEggs()}
+     * @return Use {link .isPreviewEggs()}
      */
     @Deprecated
     public PictureSelectionModel previewEggs(boolean previewEggs) {
@@ -1059,45 +1059,12 @@ public class PictureSelectionModel {
         return this;
     }
 
-    /**
-     * Query the pictures or videos in the specified directory
-     *
-     * @param directoryPath Camera out path
-     *                      <p>
-     *                      Normally, it should be consistent with {@link PictureSelectionConfig.setOutputCameraPath()};
-     *                      </p>
-     *
-     *                      <p>
-     *                      If build.version.sdk_INT < 29,{@link PictureSelectionConfig.setQuerySandboxDirectory();}
-     *                      Do not set the external storage path,
-     *                      which may cause the problem of picture duplication
-     *                      </p>
-     * @return
-     */
-    public PictureSelectionModel setQuerySandboxDirectory(String directoryPath) {
-        selectionConfig.sandboxFolderPath = directoryPath;
-        return this;
-    }
-
-    /**
-     * Only the resources in the specified directory are displayed
-     * <p>
-     * Only Display setQuerySandboxDirectory();  Source
-     * <p/>
-     *
-     * @param isOnlySandboxDir true or Only Display {@link PictureSelectionConfig.setQuerySandboxDirectory();}
-     * @return
-     */
-    public PictureSelectionModel isGetOnlySandboxDirectory(boolean isOnlySandboxDir) {
-        selectionConfig.isOnlySandboxDir = isOnlySandboxDir;
-        return this;
-    }
 
     /**
      * # file size The unit is M
      *
      * @param fileSize Filter max file size
-     *                 Use {@link PictureSelectionConfig.filterMaxFileSize()}
+     *                 Use {@link .filterMaxFileSize()}
      * @return
      */
     @Deprecated
@@ -1235,11 +1202,6 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel isNotPreviewDownload(boolean isNotPreviewDownload) {
         selectionConfig.isNotPreviewDownload = isNotPreviewDownload;
-        return this;
-    }
-
-    public PictureSelectionModel isNeedRecycleViewOptimization(boolean isNeedRecycleViewOptimization) {
-        selectionConfig.needDoRecycleViewOptimization = isNeedRecycleViewOptimization;
         return this;
     }
 

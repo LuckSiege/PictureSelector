@@ -286,31 +286,39 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
             boolean eqLongImg = MediaUtils.isLongImg(media);
             photoView.setVisibility(eqLongImg && !isGif ? View.GONE : View.VISIBLE);
             longImageView.setVisibility(eqLongImg && !isGif ? View.VISIBLE : View.GONE);
-            if (PictureSelectionConfig.imageEngine != null) {
-                if (isHttp) {
-                    // 网络图片
-                    PictureSelectionConfig.imageEngine.loadImage(contentView.getContext(), path,
-                            photoView, longImageView, new OnImageCompleteCallback() {
-                                @Override
-                                public void onShowLoading() {
-                                    int currentItem = viewPager.getCurrentItem();
-                                    LocalMedia localMedia = images.get(currentItem);
-                                    if (TextUtils.equals(path, localMedia.getPath())) {
-                                        showPleaseDialog();
+            // 压缩过的gif就不是gif了
+            if (isGif && !media.isCompressed()) {
+                if (PictureSelectionConfig.imageEngine != null) {
+                    PictureSelectionConfig.imageEngine.loadAsGifImage
+                            (getContext(), path, photoView);
+                }
+            } else {
+                if (PictureSelectionConfig.imageEngine != null) {
+                    if (isHttp) {
+                        // 网络图片
+                        PictureSelectionConfig.imageEngine.loadImage(contentView.getContext(), path,
+                                photoView, longImageView, new OnImageCompleteCallback() {
+                                    @Override
+                                    public void onShowLoading() {
+                                        int currentItem = viewPager.getCurrentItem();
+                                        LocalMedia localMedia = images.get(currentItem);
+                                        if (TextUtils.equals(path, localMedia.getPath())) {
+                                            showPleaseDialog();
+                                        }
                                     }
-                                }
 
-                                @Override
-                                public void onHideLoading() {
-                                    dismissDialog();
-                                }
-                            });
-                } else {
-                    if (eqLongImg) {
-                        displayLongPic(PictureMimeType.isContent(path)
-                                ? Uri.parse(path) : Uri.fromFile(new File(path)), longImageView);
+                                    @Override
+                                    public void onHideLoading() {
+                                        dismissDialog();
+                                    }
+                                });
                     } else {
-                        PictureSelectionConfig.imageEngine.loadImage(contentView.getContext(), path, photoView);
+                        if (eqLongImg) {
+                            displayLongPic(PictureMimeType.isContent(path)
+                                    ? Uri.parse(path) : Uri.fromFile(new File(path)), longImageView);
+                        } else {
+                            PictureSelectionConfig.imageEngine.loadImage(contentView.getContext(), path, photoView);
+                        }
                     }
                 }
             }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -15,8 +14,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.listener.OnImageCompleteCallback;
 import com.luck.picture.lib.tools.MediaUtils;
@@ -34,9 +32,9 @@ public class GlideEngine implements ImageEngine {
     /**
      * 加载图片
      *
-     * @param context   上下文
-     * @param url       资源url
-     * @param imageView 图片承载控件
+     * @param context
+     * @param url
+     * @param imageView
      */
     @Override
     public void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
@@ -50,24 +48,25 @@ public class GlideEngine implements ImageEngine {
 
     /**
      * 加载网络图片适配长图方案
+     * # 注意：此方法只有加载网络图片才会回调
      *
-     * @param context       上下文
-     * @param url           资源url
-     * @param imageView     图片承载控件
-     * @param longImageView 长图承载控件
-     * @param callback      网络图片加载回调监听
+     * @param context
+     * @param url
+     * @param imageView
+     * @param longImageView
+     * @param callback      网络图片加载回调监听 {link after version 2.5.1 Please use the #OnImageCompleteCallback#}
      */
     @Override
     public void loadImage(@NonNull Context context, @NonNull String url,
-                          @NonNull ImageView imageView, SubsamplingScaleImageView longImageView,
-                          OnImageCompleteCallback callback) {
+                          @NonNull ImageView imageView,
+                          SubsamplingScaleImageView longImageView, OnImageCompleteCallback callback) {
         if (!ImageLoaderUtils.assertValidRequest(context)) {
             return;
         }
         Glide.with(context)
                 .asBitmap()
                 .load(url)
-                .into(new CustomTarget<Bitmap>() {
+                .into(new ImageViewTarget<Bitmap>(imageView) {
                     @Override
                     public void onLoadStarted(@Nullable Drawable placeholder) {
                         super.onLoadStarted(placeholder);
@@ -85,32 +84,75 @@ public class GlideEngine implements ImageEngine {
                     }
 
                     @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                    protected void setResource(@Nullable Bitmap resource) {
                         if (callback != null) {
                             callback.onHideLoading();
                         }
-                        boolean eqLongImage = MediaUtils.isLongImg(resource.getWidth(),
-                                resource.getHeight());
-                        longImageView.setVisibility(eqLongImage ? View.VISIBLE : View.GONE);
-                        imageView.setVisibility(eqLongImage ? View.GONE : View.VISIBLE);
-                        if (eqLongImage) {
-                            // 加载长图
-                            longImageView.setQuickScaleEnabled(true);
-                            longImageView.setZoomEnabled(true);
-                            longImageView.setDoubleTapZoomDuration(100);
-                            longImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
-                            longImageView.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
-                            longImageView.setImage(ImageSource.cachedBitmap(resource),
-                                    new ImageViewState(0, new PointF(0, 0), 0));
-                        } else {
-                            // 普通图片
-                            imageView.setImageBitmap(resource);
+                        if (resource != null) {
+                            boolean eqLongImage = MediaUtils.isLongImg(resource.getWidth(),
+                                    resource.getHeight());
+                            longImageView.setVisibility(eqLongImage ? View.VISIBLE : View.GONE);
+                            imageView.setVisibility(eqLongImage ? View.GONE : View.VISIBLE);
+                            if (eqLongImage) {
+                                // 加载长图
+                                longImageView.setQuickScaleEnabled(true);
+                                longImageView.setZoomEnabled(true);
+                                longImageView.setDoubleTapZoomDuration(100);
+                                longImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
+                                longImageView.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
+                                longImageView.setImage(ImageSource.cachedBitmap(resource),
+                                        new ImageViewState(0, new PointF(0, 0), 0));
+                            } else {
+                                // 普通图片
+                                imageView.setImageBitmap(resource);
+                            }
                         }
                     }
+                });
+    }
 
+    /**
+     * 加载网络图片适配长图方案
+     * # 注意：此方法只有加载网络图片才会回调
+     *
+     * @param context
+     * @param url
+     * @param imageView
+     * @param longImageView
+     * @ 已废弃
+     */
+    @Override
+    public void loadImage(@NonNull Context context, @NonNull String url,
+                          @NonNull ImageView imageView,
+                          SubsamplingScaleImageView longImageView) {
+        if (!ImageLoaderUtils.assertValidRequest(context)) {
+            return;
+        }
+        Glide.with(context)
+                .asBitmap()
+                .load(url)
+                .into(new ImageViewTarget<Bitmap>(imageView) {
                     @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-
+                    protected void setResource(@Nullable Bitmap resource) {
+                        if (resource != null) {
+                            boolean eqLongImage = MediaUtils.isLongImg(resource.getWidth(),
+                                    resource.getHeight());
+                            longImageView.setVisibility(eqLongImage ? View.VISIBLE : View.GONE);
+                            imageView.setVisibility(eqLongImage ? View.GONE : View.VISIBLE);
+                            if (eqLongImage) {
+                                // 加载长图
+                                longImageView.setQuickScaleEnabled(true);
+                                longImageView.setZoomEnabled(true);
+                                longImageView.setDoubleTapZoomDuration(100);
+                                longImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
+                                longImageView.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
+                                longImageView.setImage(ImageSource.cachedBitmap(resource),
+                                        new ImageViewState(0, new PointF(0, 0), 0));
+                            } else {
+                                // 普通图片
+                                imageView.setImageBitmap(resource);
+                            }
+                        }
                     }
                 });
     }
@@ -148,6 +190,25 @@ public class GlideEngine implements ImageEngine {
 
 
     /**
+     * 加载gif
+     *
+     * @param context   上下文
+     * @param url       图片路径
+     * @param imageView 承载图片ImageView
+     */
+    @Override
+    public void loadAsGifImage(@NonNull Context context, @NonNull String url,
+                               @NonNull ImageView imageView) {
+        if (!ImageLoaderUtils.assertValidRequest(context)) {
+            return;
+        }
+        Glide.with(context)
+                .asGif()
+                .load(url)
+                .into(imageView);
+    }
+
+    /**
      * 加载图片列表图片
      *
      * @param context   上下文
@@ -165,18 +226,6 @@ public class GlideEngine implements ImageEngine {
                 .centerCrop()
                 .placeholder(R.drawable.picture_image_placeholder)
                 .into(imageView);
-    }
-
-    @Override
-    public void stopLoadImage(@NonNull Context context) {
-        Log.e("测试", "stopLoadImage: 暂停加载图片了" );
-        Glide.with(context).pauseRequests();
-    }
-
-    @Override
-    public void resumeLoadImage(@NonNull Context context) {
-        Glide.with(context).resumeRequests();
-        Log.e("测试", "stopLoadImage: 恢复加载图片了" );
     }
 
 

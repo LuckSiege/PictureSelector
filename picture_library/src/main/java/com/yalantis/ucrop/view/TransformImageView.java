@@ -138,16 +138,20 @@ public class TransformImageView extends AppCompatImageView {
      */
     public void setImageUri(@NonNull Uri imageUri, @Nullable Uri outputUri,int imageWidth,int imageHeight) throws Exception {
         int maxBitmapSize = getMaxBitmapSize();
+
         BitmapLoadUtils.decodeBitmapInBackground(getContext(), imageUri, outputUri, maxBitmapSize, maxBitmapSize, imageWidth, imageHeight,
                 new BitmapLoadCallback() {
+
                     @Override
                     public void onBitmapLoaded(@NonNull Bitmap bitmap, @NonNull ExifInfo exifInfo, @NonNull String imageInputPath, @Nullable String imageOutputPath) {
                         mImageInputPath = imageInputPath;
                         mImageOutputPath = imageOutputPath;
                         mExifInfo = exifInfo;
+
                         mBitmapDecoded = true;
                         setImageBitmap(bitmap);
                     }
+
                     @Override
                     public void onFailure(@NonNull Exception bitmapWorkerException) {
                         Log.e(TAG, "onFailure: setImageUri", bitmapWorkerException);
@@ -189,6 +193,7 @@ public class TransformImageView extends AppCompatImageView {
                 getMatrixValue(matrix, Matrix.MSCALE_X)) * (180 / Math.PI));
     }
 
+
     @Override
     public void setImageMatrix(Matrix matrix) {
         super.setImageMatrix(matrix);
@@ -204,8 +209,6 @@ public class TransformImageView extends AppCompatImageView {
             return ((FastBitmapDrawable) getDrawable()).getBitmap();
         }
     }
-
-
 
     /**
      * This method translates current image.
@@ -252,10 +255,6 @@ public class TransformImageView extends AppCompatImageView {
                 mTransformImageListener.onRotate(getMatrixAngle(mCurrentImageMatrix));
             }
         }
-    }
-
-    public void clearImage(){
-        this.setImageBitmap(null);
     }
 
     protected void init() {

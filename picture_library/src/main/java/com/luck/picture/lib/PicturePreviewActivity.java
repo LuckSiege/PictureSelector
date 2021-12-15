@@ -24,7 +24,6 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.listener.OnQueryDataResultListener;
 import com.luck.picture.lib.manager.UCropManager;
 import com.luck.picture.lib.model.LocalMediaPageLoader;
@@ -171,31 +170,24 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             List<LocalMedia> allAlbumList = new ArrayList<>(data);
             ImagesObservable.getInstance().clearData();
             totalNumber = getIntent().getIntExtra(PictureConfig.EXTRA_DATA_COUNT, 0);
-            if (config.isPageStrategy && !config.isOnlySandboxDir) {
+            if (config.isPageStrategy) {
                 if (allAlbumList.size() == 0) {
+                    // 这种情况有可能是单例被回收了导致readPreviewMediaData();返回的数据为0，那就从第一页开始加载吧
                     setNewTitle();
                     initViewPageAdapterData(allAlbumList);
                     loadData();
                 } else {
                     mPage = getIntent().getIntExtra(PictureConfig.EXTRA_PAGE, 0);
+                    setTitle();
                     initViewPageAdapterData(allAlbumList);
                 }
             } else {
                 initViewPageAdapterData(allAlbumList);
                 if (allAlbumList.size() == 0) {
-                    if (config.isOnlySandboxDir) {
-                        mLoader.loadOnlyInAppDirectoryAllMedia(new OnQueryDataResultListener<LocalMediaFolder>(){
-                            @Override
-                            public void onComplete(LocalMediaFolder data) {
-                                initViewPageAdapterData(data != null ? data.getData() : allAlbumList);
-                            }
-                        });
-                    } else {
-                        config.isPageStrategy = true;
-                        mLoader = new LocalMediaPageLoader(getContext(), config);
-                        setNewTitle();
-                        loadData();
-                    }
+                    // 这种情况有可能是单例被回收了导致readPreviewMediaData();返回的数据为0，暂时自动切换成分页模式去获取数据
+                    config.isPageStrategy = true;
+                    setNewTitle();
+                    loadData();
                 }
             }
         }
@@ -239,7 +231,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
                 }
                 onPageSelectedChange(media);
 
-                if (config.isPageStrategy && !isBottomPreview && !config.isOnlySandboxDir) {
+                if (config.isPageStrategy && !isBottomPreview) {
                     if (isHasMore) {
                         // 滑到adapter.getSize() - PictureConfig.MIN_PAGE_SIZE时或最后一条时预加载
                         if (position == (adapter.getSize() - 1) - PictureConfig.MIN_PAGE_SIZE || position == adapter.getSize() - 1) {
@@ -277,14 +269,10 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     private void loadData() {
         long bucketId = getIntent().getLongExtra(PictureConfig.EXTRA_BUCKET_ID, -1);
         mPage++;
-        mLoader.loadPageMediaData(bucketId, mPage, config.pageSize,
-                new OnQueryDataResultListener<LocalMedia>() {
-                    @Override
-                    public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
-                        if (isFinishing()) {
-                            return;
-                        }
-                        PicturePreviewActivity.this.isHasMore = isHasMore;
+        LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage, config.pageSize,
+                (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
+                    if (!isFinishing()) {
+                        this.isHasMore = isHasMore;
                         if (isHasMore) {
                             int size = result.size();
                             if (size > 0 && adapter != null) {
@@ -305,14 +293,10 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
     private void loadMoreData() {
         long bucketId = getIntent().getLongExtra(PictureConfig.EXTRA_BUCKET_ID, -1);
         mPage++;
-        mLoader.loadPageMediaData(bucketId, mPage, config.pageSize,
-                new OnQueryDataResultListener<LocalMedia>() {
-                    @Override
-                    public void onComplete(List<LocalMedia> result, int currentPage, boolean isHasMore) {
-                        if (isFinishing()) {
-                            return;
-                        }
-                        PicturePreviewActivity.this.isHasMore = isHasMore;
+        LocalMediaPageLoader.getInstance(getContext()).loadPageMediaData(bucketId, mPage, config.pageSize,
+                (OnQueryDataResultListener<LocalMedia>) (result, currentPage, isHasMore) -> {
+                    if (!isFinishing()) {
+                        this.isHasMore = isHasMore;
                         if (isHasMore) {
                             int size = result.size();
                             if (size > 0 && adapter != null) {
@@ -657,7 +641,7 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
      * 设置标题
      */
     private void setTitle() {
-        if (config.isPageStrategy && !isBottomPreview && !config.isOnlySandboxDir) {
+        if (config.isPageStrategy && !isBottomPreview) {
             tvTitle.setText(getString(R.string.picture_preview_image_num,
                     position + 1, totalNumber));
         } else {

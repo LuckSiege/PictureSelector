@@ -10,6 +10,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+
+import androidx.annotation.Nullable;
 import androidx.exifinterface.media.ExifInterface;
 
 import com.luck.picture.lib.PictureContentResolver;
@@ -261,6 +263,29 @@ public class MediaUtils {
             }
         }
         return -1;
+    }
+
+
+    /**
+     * 获取刚录取的音频文件
+     *
+     * @param uri
+     * @return
+     */
+    @Nullable
+    public static String getAudioFilePathFromUri(Context context, Uri uri) {
+        String path = "";
+        try (Cursor cursor = context.getApplicationContext().getContentResolver()
+                .query(uri, null, null, null, null)) {
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int index = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
+                path = cursor.getString(index);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return path;
     }
 
 

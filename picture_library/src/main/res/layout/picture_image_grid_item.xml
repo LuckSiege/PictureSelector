@@ -10,6 +10,7 @@
         android:scaleType="centerCrop" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/tvCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,6 +22,7 @@
         android:textSize="12sp" />
 
     <View
+        android:visibility="gone"
         android:id="@+id/btnCheck"
         android:layout_width="45dp"
         android:layout_height="45dp"

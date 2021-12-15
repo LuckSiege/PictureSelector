@@ -1,5 +1,6 @@
 package com.luck.picture.lib.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -20,10 +21,10 @@ import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.tools.MediaUtils;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.luck.picture.lib.tools.SdkVersionUtils;
-import com.luck.picture.lib.tools.SortUtils;
 import com.luck.picture.lib.tools.ValueOf;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -37,7 +38,7 @@ import java.util.Set;
  * @date：2020-04-13 15:06
  * @describe：Local media database query class，Support paging
  */
-public final class LocalMediaPageLoader extends IBridgeMediaLoader {
+public final class LocalMediaPageLoader {
     private static final String TAG = LocalMediaPageLoader.class.getSimpleName();
     /**
      * unit
@@ -54,9 +55,9 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
     private final Context mContext;
     private final PictureSelectionConfig config;
 
-    public LocalMediaPageLoader(Context context, PictureSelectionConfig config) {
+    public LocalMediaPageLoader(Context context) {
         this.mContext = context;
-        this.config = config;
+        this.config = PictureSelectionConfig.getInstance();
     }
 
     /**
@@ -174,7 +175,6 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
      * @param bucketId
      * @return
      */
-    @Override
     public String getFirstCover(long bucketId) {
         Cursor data = null;
         try {
@@ -219,7 +219,6 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
      * @param listener
      * @return
      */
-    @Override
     public void loadPageMediaData(long bucketId, int page, int limit, OnQueryDataResultListener<LocalMedia> listener) {
         loadPageMediaData(bucketId, page, limit, config.pageSize, listener);
     }
@@ -231,7 +230,6 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
      * @param listener
      * @return
      */
-    @Override
     public void loadPageMediaData(long bucketId, int page, OnQueryDataResultListener<LocalMedia> listener) {
         loadPageMediaData(bucketId, page, config.pageSize, config.pageSize, listener);
     }
@@ -245,7 +243,6 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
      * @param pageSize
      * @return
      */
-    @Override
     public void loadPageMediaData(long bucketId, int page, int limit, int pageSize,
                                   OnQueryDataResultListener<LocalMedia> listener) {
         PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<MediaData>() {
@@ -354,39 +351,20 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.i(TAG, "loadMedia Page Data Error: " + e.getMessage());
-                    return new MediaData();
+                    return null;
                 } finally {
                     if (data != null && !data.isClosed()) {
                         data.close();
                     }
                 }
-                return new MediaData();
+                return null;
             }
 
             @Override
             public void onSuccess(MediaData result) {
                 PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
-                if (listener != null) {
-                    listener.onComplete(result.data != null ? result.data : new ArrayList<>(), page, result.isHasNextMore);
-                }
-            }
-        });
-    }
-
-    @Override
-    public void loadOnlyInAppDirectoryAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
-        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<LocalMediaFolder>() {
-
-            @Override
-            public LocalMediaFolder doInBackground() {
-                return SandboxFileLoader.loadInAppSandboxFolderFile(mContext, config.sandboxFolderPath);
-            }
-
-            @Override
-            public void onSuccess(LocalMediaFolder result) {
-                PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
-                if (listener != null) {
-                    listener.onComplete(result);
+                if (listener != null && result != null) {
+                    listener.onComplete(result.data, page, result.isHasNextMore);
                 }
             }
         });
@@ -397,7 +375,6 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
      *
      * @param listener
      */
-    @Override
     public void loadAllMedia(OnQueryDataResultListener<LocalMediaFolder> listener) {
         PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
             @Override
@@ -467,27 +444,17 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                 } while (data.moveToNext());
                             }
 
+                            sortFolder(mediaFolders);
+
                             // 相机胶卷
                             LocalMediaFolder allMediaFolder = new LocalMediaFolder();
-
-                            LocalMediaFolder selfFolder = SandboxFileLoader.loadInAppSandboxFolderFile(mContext, config.sandboxFolderPath);
-                            if (selfFolder != null) {
-                                mediaFolders.add(selfFolder);
-                                totalCount += selfFolder.getImageNum();
-                                allMediaFolder.setData(selfFolder.getData());
-                                allMediaFolder.setFirstImagePath(selfFolder.getFirstImagePath());
-                                allMediaFolder.setFirstMimeType(selfFolder.getFirstMimeType());
-                            } else {
-                                if (data.moveToFirst()) {
-                                    allMediaFolder.setFirstImagePath(SdkVersionUtils.isQ() ? getFirstUri(data) : getFirstUrl(data));
-                                    allMediaFolder.setFirstMimeType(getFirstCoverMimeType(data));
-                                }
-                            }
-
-                            SortUtils.sortFolder(mediaFolders);
                             allMediaFolder.setImageNum(totalCount);
                             allMediaFolder.setChecked(true);
                             allMediaFolder.setBucketId(-1);
+                            if (data.moveToFirst()) {
+                                allMediaFolder.setFirstImagePath(SdkVersionUtils.isQ() ? getFirstUri(data) : getFirstUrl(data));
+                                allMediaFolder.setFirstMimeType(getFirstCoverMimeType(data));
+                            }
                             String bucketDisplayName = config.chooseMode == PictureMimeType.ofAudio() ?
                                     mContext.getString(R.string.picture_all_audio)
                                     : mContext.getString(R.string.picture_camera_roll);
@@ -495,11 +462,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                             allMediaFolder.setOfAllType(config.chooseMode);
                             allMediaFolder.setCameraFolder(true);
                             mediaFolders.add(0, allMediaFolder);
-                            if (config.isSyncCover) {
-                                if (config.chooseMode == PictureMimeType.ofAll()) {
-                                    synchronousFirstCover(mediaFolders);
-                                }
-                            }
+
                             return mediaFolders;
                         }
                     }
@@ -517,30 +480,11 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
             @Override
             public void onSuccess(List<LocalMediaFolder> result) {
                 PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
-                if (listener != null) {
-                    listener.onComplete(result);
+                if (listener != null && result != null) {
+                    listener.onComplete(result, 1, false);
                 }
             }
         });
-    }
-
-    /**
-     * Synchronous  First data Cover
-     *
-     * @param mediaFolders
-     */
-    private void synchronousFirstCover(List<LocalMediaFolder> mediaFolders) {
-        for (int i = 0; i < mediaFolders.size(); i++) {
-            LocalMediaFolder mediaFolder = mediaFolders.get(i);
-            if (mediaFolder == null) {
-                continue;
-            }
-            String firstCover = getFirstCover(mediaFolder.getBucketId());
-            if (TextUtils.isEmpty(firstCover)) {
-                continue;
-            }
-            mediaFolder.setFirstImagePath(firstCover);
-        }
     }
 
     /**
@@ -691,6 +635,21 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
         return null;
     }
 
+    /**
+     * Sort by number of files
+     *
+     * @param imageFolders
+     */
+    private void sortFolder(List<LocalMediaFolder> imageFolders) {
+        Collections.sort(imageFolders, (lhs, rhs) -> {
+            if (lhs.getData() == null || rhs.getData() == null) {
+                return 0;
+            }
+            int lSize = lhs.getImageNum();
+            int rSize = rhs.getImageNum();
+            return Integer.compare(rSize, lSize);
+        });
+    }
 
     /**
      * Get video (maximum or minimum time)
@@ -756,5 +715,26 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
             }
         }
         return stringBuilder.toString();
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private static LocalMediaPageLoader instance;
+
+    public static LocalMediaPageLoader getInstance(Context context) {
+        if (instance == null) {
+            synchronized (LocalMediaPageLoader.class) {
+                if (instance == null) {
+                    instance = new LocalMediaPageLoader(context.getApplicationContext());
+                }
+            }
+        }
+        return instance;
+    }
+
+    /**
+     * set empty
+     */
+    public static void setInstanceNull() {
+        instance = null;
     }
 }

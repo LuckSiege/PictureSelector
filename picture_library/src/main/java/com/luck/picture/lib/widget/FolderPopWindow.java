@@ -111,25 +111,6 @@ public class FolderPopWindow extends PopupWindow {
 
     public void bindFolder(List<LocalMediaFolder> folders) {
         adapter.setChooseMode(chooseMode);
-        for (LocalMediaFolder folder : folders) {
-            switch (folder.getName()) {
-                case "Screenshots":
-                    folder.setName("截屏");
-                    break;
-                case "Camera":
-                    folder.setName("相机");
-                    break;
-                case "WeiXin":
-                    folder.setName("微信");
-                    break;
-                case "QQ_Images":
-                    folder.setName("QQ");
-                    break;
-                case "Download":
-                    folder.setName("下载");
-                    break;
-            }
-        }
         adapter.bindFolderData(folders);
         ViewGroup.LayoutParams lp = mRecyclerView.getLayoutParams();
         lp.height = folders.size() > FOLDER_MAX_COUNT ? maxHeight : ViewGroup.LayoutParams.WRAP_CONTENT;

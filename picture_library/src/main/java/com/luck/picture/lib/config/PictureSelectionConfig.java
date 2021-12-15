@@ -162,7 +162,7 @@ public final class PictureSelectionConfig implements Parcelable {
     @Deprecated
     public int downResId;
     public String outPutCameraPath;
-    public String sandboxFolderPath;
+
     public String originalPath;
     public String cameraPath;
     public int cameraMimeType = -1;
@@ -180,7 +180,6 @@ public final class PictureSelectionConfig implements Parcelable {
     public String cropCompressFormat;
     public boolean isAutoScalePreviewImage = true;
     public int ofAllCameraType = PictureMimeType.ofAll();
-    public boolean isOnlySandboxDir,needDoRecycleViewOptimization;
     /**
      * 内测专用###########
      */
@@ -284,7 +283,6 @@ public final class PictureSelectionConfig implements Parcelable {
         upResId = in.readInt();
         downResId = in.readInt();
         outPutCameraPath = in.readString();
-        sandboxFolderPath = in.readString();
         originalPath = in.readString();
         cameraPath = in.readString();
         cameraMimeType = in.readInt();
@@ -302,8 +300,6 @@ public final class PictureSelectionConfig implements Parcelable {
         cropCompressFormat = in.readString();
         isAutoScalePreviewImage = in.readByte() != 0;
         ofAllCameraType = in.readInt();
-        isOnlySandboxDir = in.readByte() != 0;
-        needDoRecycleViewOptimization = in.readByte() != 0;
         isFallbackVersion = in.readByte() != 0;
         isFallbackVersion2 = in.readByte() != 0;
         isFallbackVersion3 = in.readByte() != 0;
@@ -405,7 +401,6 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(upResId);
         dest.writeInt(downResId);
         dest.writeString(outPutCameraPath);
-        dest.writeString(sandboxFolderPath);
         dest.writeString(originalPath);
         dest.writeString(cameraPath);
         dest.writeInt(cameraMimeType);
@@ -423,8 +418,6 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeString(cropCompressFormat);
         dest.writeByte((byte) (isAutoScalePreviewImage ? 1 : 0));
         dest.writeInt(ofAllCameraType);
-        dest.writeByte((byte) (isOnlySandboxDir ? 1 : 0));
-        dest.writeByte((byte) (needDoRecycleViewOptimization ? 1 : 0));
         dest.writeByte((byte) (isFallbackVersion ? 1 : 0));
         dest.writeByte((byte) (isFallbackVersion2 ? 1 : 0));
         dest.writeByte((byte) (isFallbackVersion3 ? 1 : 0));
@@ -543,7 +536,6 @@ public final class PictureSelectionConfig implements Parcelable {
         isOpenStyleNumComplete = false;
         isOpenStyleCheckNumMode = false;
         outPutCameraPath = "";
-        sandboxFolderPath = "";
         originalPath = "";
         cameraPath = "";
         cameraMimeType = -1;
@@ -564,8 +556,6 @@ public final class PictureSelectionConfig implements Parcelable {
         isEditorImage = false;
         isDisplayOriginalSize = true;
         ofAllCameraType = PictureMimeType.ofAll();
-        isOnlySandboxDir = false;
-        needDoRecycleViewOptimization = true;
     }
 
     public static PictureSelectionConfig getInstance() {
