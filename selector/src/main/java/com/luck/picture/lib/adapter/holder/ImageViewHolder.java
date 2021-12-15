@@ -82,7 +82,7 @@ public class ImageViewHolder extends BaseRecyclerMediaHolder {
         } else if (PictureMimeType.isWebp(media.getMimeType())) {
             tvMediaTag.setText(mContext.getString(R.string.ps_webp_tag));
         } else if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
-            tvMediaTag.setText(mContext.getString(R.string.ps_webp_tag));
+            tvMediaTag.setText(mContext.getString(R.string.ps_long_chart));
         } else {
             tvMediaTag.setVisibility(View.GONE);
         }

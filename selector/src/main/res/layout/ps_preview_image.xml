@@ -12,8 +12,6 @@
     <com.luck.picture.lib.large.SubsamplingScaleImageView
         android:id="@+id/preview_long_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp" />
+        android:layout_height="match_parent" />
 
 </FrameLayout>

@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.luck.picture.lib.adapter.PicturePreviewAdapter;
+import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
 import com.luck.picture.lib.adapter.holder.PreviewGalleryAdapter;
 import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.basic.PictureMediaScannerConnection;
@@ -690,8 +691,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     }
 
     private void initViewPagerData() {
-        viewPageAdapter = new PicturePreviewAdapter(getContext(), mData, config);
-        viewPageAdapter.setOnPreviewEventListener(new PicturePreviewAdapter.OnPreviewEventListener() {
+        viewPageAdapter = new PicturePreviewAdapter(mData, config);
+        viewPageAdapter.setOnPreviewEventListener(new BasePreviewHolder.OnPreviewEventListener() {
             @Override
             public void onBackPressed() {
                 if (config.isPreviewFullScreenMode) {
