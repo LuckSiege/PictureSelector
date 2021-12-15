@@ -8,7 +8,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.large.ImageSource;

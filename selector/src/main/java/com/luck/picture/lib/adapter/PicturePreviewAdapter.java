@@ -1,6 +1,5 @@
 package com.luck.picture.lib.adapter;
 
-import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
