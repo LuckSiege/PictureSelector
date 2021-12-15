@@ -29,6 +29,8 @@ public final class PictureConfig {
 
     public final static String EXTRA_BOTTOM_PREVIEW = KEY + ".bottom_preview";
 
+    public final static String EXTRA_CURRENT_ALBUM_NAME = KEY + ".current_album_name";
+
     public final static String EXTRA_CURRENT_PAGE = KEY + ".current_page";
 
     public final static String EXTRA_CURRENT_BUCKET_ID = KEY + ".current_bucketId";

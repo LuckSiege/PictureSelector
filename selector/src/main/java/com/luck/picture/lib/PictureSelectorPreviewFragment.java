@@ -94,8 +94,14 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     private boolean isBottomPreview;
 
+    /**
+     * 当前相册
+     */
     private String currentAlbum;
 
+    /**
+     * 是否显示了拍照入口
+     */
     private boolean isShowCamera;
 
     /**
@@ -206,6 +212,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             isExternalPreview = savedInstanceState.getBoolean(PictureConfig.EXTRA_EXTERNAL_PREVIEW, isExternalPreview);
             isDisplayDelete = savedInstanceState.getBoolean(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, isDisplayDelete);
             isBottomPreview = savedInstanceState.getBoolean(PictureConfig.EXTRA_BOTTOM_PREVIEW, isBottomPreview);
+            currentAlbum = savedInstanceState.getString(PictureConfig.EXTRA_CURRENT_ALBUM_NAME, "");
         }
         screenWidth = DensityUtil.getScreenWidth(getContext());
         titleBar = view.findViewById(R.id.title_bar);
@@ -267,6 +274,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         outState.putBoolean(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, isDisplayDelete);
         outState.putBoolean(PictureConfig.EXTRA_DISPLAY_CAMERA, isShowCamera);
         outState.putBoolean(PictureConfig.EXTRA_BOTTOM_PREVIEW, isBottomPreview);
+        outState.putString(PictureConfig.EXTRA_CURRENT_ALBUM_NAME, currentAlbum);
         if (isExternalPreview) {
             SelectedManager.addSelectedPreviewResult(mData);
         }
