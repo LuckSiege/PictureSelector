@@ -76,44 +76,44 @@ public class PreviewVideoHolder extends BasePreviewHolder {
      *
      * @param videoHolder
      */
-    public void addVideoListener(PreviewVideoHolder videoHolder) {
-        videoHolder.videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+    public void addVideoListener() {
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-                videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
-                videoHolder.coverImageView.setVisibility(View.VISIBLE);
-                videoHolder.videoView.setVisibility(View.GONE);
+                ivPlayButton.setVisibility(View.VISIBLE);
+                coverImageView.setVisibility(View.VISIBLE);
+                videoView.setVisibility(View.GONE);
                 if (mPreviewEventListener != null) {
                     mPreviewEventListener.onPreviewVideoTitle(null);
                 }
             }
         });
-        videoHolder.videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
-                if (videoHolder.ivPlayButton.getVisibility() == View.GONE) {
-                    videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
+                if (ivPlayButton.getVisibility() == View.GONE) {
+                    ivPlayButton.setVisibility(View.VISIBLE);
                 }
                 if (mPreviewEventListener != null) {
                     mPreviewEventListener.onPreviewVideoTitle(null);
                 }
-                if (videoHolder.videoView.getVisibility() == View.VISIBLE) {
-                    videoHolder.videoView.setVisibility(View.GONE);
+                if (videoView.getVisibility() == View.VISIBLE) {
+                    videoView.setVisibility(View.GONE);
                 }
-                if (videoHolder.coverImageView.getVisibility() == View.GONE) {
-                    videoHolder.coverImageView.setVisibility(View.VISIBLE);
+                if (coverImageView.getVisibility() == View.GONE) {
+                    coverImageView.setVisibility(View.VISIBLE);
                 }
                 return false;
             }
         });
-        videoHolder.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
                 mediaPlayer.setOnInfoListener(new MediaPlayer.OnInfoListener() {
                     @Override
                     public boolean onInfo(MediaPlayer mediaPlayer, int what, int i1) {
                         if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                            videoHolder.videoView.setBackgroundColor(Color.TRANSPARENT);
+                            videoView.setBackgroundColor(Color.TRANSPARENT);
                             return true;
                         }
                         return false;
@@ -125,8 +125,6 @@ public class PreviewVideoHolder extends BasePreviewHolder {
 
     /**
      * 释放VideoView
-     *
-     * @param videoHolder
      */
     public void releaseVideo() {
         videoView.stopPlayback();

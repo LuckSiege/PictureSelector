@@ -23,7 +23,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
 
     private final List<LocalMedia> mData;
     private final PictureSelectionConfig config;
-    private PreviewVideoHolder currentVideoHolder;
+    private BasePreviewHolder currentHolder;
     private BasePreviewHolder.OnPreviewEventListener onPreviewEventListener;
 
     public void setOnPreviewEventListener(BasePreviewHolder.OnPreviewEventListener listener) {
@@ -81,9 +81,10 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     @Override
     public void onViewAttachedToWindow(@NonNull BasePreviewHolder holder) {
         super.onViewAttachedToWindow(holder);
+        currentHolder = holder;
         if (holder instanceof PreviewVideoHolder) {
-            currentVideoHolder = (PreviewVideoHolder) holder;
-            currentVideoHolder.addVideoListener(currentVideoHolder);
+            PreviewVideoHolder previewVideoHolder = (PreviewVideoHolder) holder;
+            previewVideoHolder.addVideoListener();
         }
     }
 
@@ -91,8 +92,8 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
      * 释放当前视频Holder相关
      */
     public void destroyCurrentVideoHolder() {
-        if (currentVideoHolder != null) {
-            currentVideoHolder.releaseVideo();
+        if (currentHolder != null && currentHolder instanceof PreviewVideoHolder) {
+            ((PreviewVideoHolder) currentHolder).releaseVideo();
         }
     }
 }
