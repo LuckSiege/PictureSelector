@@ -5,15 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -51,6 +50,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import kotlin.Deprecated;
 
 
 /**
@@ -679,6 +680,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     /**
      * start to camera、preview、crop
      */
+    @Deprecated(message = "startActivityForResult Deprecated")
     protected void startOpenCameraImage() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
@@ -724,10 +726,55 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         }
     }
 
+    protected void startOpenCameraImage(ActivityResultLauncher<Intent> resultLauncher) {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+            Uri imageUri;
+            String cameraFileName = null;
+            String imageFormat = TextUtils.isEmpty(config.cameraImageFormat) ? config.suffixType : config.cameraImageFormat;
+            int chooseMode = config.chooseMode == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_IMAGE : config.chooseMode;
+            if (!TextUtils.isEmpty(config.cameraFileName)) {
+                boolean isSuffixOfImage = PictureMimeType.isSuffixOfImage(config.cameraFileName);
+                config.cameraFileName = !isSuffixOfImage ? StringUtils.renameSuffix(config.cameraFileName, PictureMimeType.JPG) : config.cameraFileName;
+                cameraFileName = config.camera ? config.cameraFileName : StringUtils.rename(config.cameraFileName);
+            }
+            if (SdkVersionUtils.checkedAndroid_Q()) {
+                if (TextUtils.isEmpty(config.outPutCameraPath)) {
+                    imageUri = MediaUtils.createImageUri(this, config.cameraFileName, imageFormat);
+                } else {
+                    File cameraFile = PictureFileUtils.createCameraFile(this,
+                            chooseMode, cameraFileName, imageFormat, config.outPutCameraPath);
+                    config.cameraPath = cameraFile.getAbsolutePath();
+                    imageUri = PictureFileUtils.parUri(this, cameraFile);
+                }
+                if (imageUri != null) {
+                    config.cameraPath = imageUri.toString();
+                }
+            } else {
+                File cameraFile = PictureFileUtils.createCameraFile(this, chooseMode, cameraFileName, imageFormat, config.outPutCameraPath);
+                config.cameraPath = cameraFile.getAbsolutePath();
+                imageUri = PictureFileUtils.parUri(this, cameraFile);
+            }
+            if (imageUri == null) {
+                ToastUtils.s(getContext(), "open is camera error，the uri is empty ");
+                if (config.camera) {
+                    exit();
+                }
+                return;
+            }
+            config.cameraMimeType = PictureMimeType.ofImage();
+            if (config.isCameraAroundState) {
+                cameraIntent.putExtra(PictureConfig.CAMERA_FACING, PictureConfig.CAMERA_BEFORE);
+            }
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+            resultLauncher.launch(cameraIntent);
+        }
+    }
 
     /**
      * start to camera、video
      */
+    @Deprecated(message = "startActivityForResult Deprecated")
     protected void startOpenCameraVideo() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
@@ -776,8 +823,59 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
     }
 
     /**
+     * start to camera、video
+     */
+    protected void startOpenCameraVideo(ActivityResultLauncher<Intent> resultLauncher) {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+            Uri videoUri;
+            String cameraFileName = null;
+            String videoFormat = TextUtils.isEmpty(config.cameraVideoFormat) ? config.suffixType : config.cameraVideoFormat;
+            int chooseMode = config.chooseMode == PictureConfig.TYPE_ALL ? PictureConfig.TYPE_VIDEO : config.chooseMode;
+            if (!TextUtils.isEmpty(config.cameraFileName)) {
+                boolean isSuffixOfImage = PictureMimeType.isSuffixOfImage(config.cameraFileName);
+                config.cameraFileName = isSuffixOfImage ? StringUtils.renameSuffix(config.cameraFileName, PictureMimeType.MP4) : config.cameraFileName;
+                cameraFileName = config.camera ? config.cameraFileName : StringUtils.rename(config.cameraFileName);
+            }
+            if (SdkVersionUtils.checkedAndroid_Q()) {
+                if (TextUtils.isEmpty(config.outPutCameraPath)) {
+                    videoUri = MediaUtils.createVideoUri(this, config.cameraFileName, videoFormat);
+                } else {
+                    File cameraFile = PictureFileUtils.createCameraFile(this, chooseMode, cameraFileName, videoFormat, config.outPutCameraPath);
+                    config.cameraPath = cameraFile.getAbsolutePath();
+                    videoUri = PictureFileUtils.parUri(this, cameraFile);
+                }
+                if (videoUri != null) {
+                    config.cameraPath = videoUri.toString();
+                }
+            } else {
+                File cameraFile = PictureFileUtils.createCameraFile(this, chooseMode, cameraFileName, videoFormat, config.outPutCameraPath);
+                config.cameraPath = cameraFile.getAbsolutePath();
+                videoUri = PictureFileUtils.parUri(this, cameraFile);
+            }
+            if (videoUri == null) {
+                ToastUtils.s(getContext(), "open is camera error，the uri is empty ");
+                if (config.camera) {
+                    exit();
+                }
+                return;
+            }
+            config.cameraMimeType = PictureMimeType.ofVideo();
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoUri);
+            if (config.isCameraAroundState) {
+                cameraIntent.putExtra(PictureConfig.CAMERA_FACING, PictureConfig.CAMERA_BEFORE);
+            }
+            cameraIntent.putExtra(PictureConfig.EXTRA_QUICK_CAPTURE, config.isQuickCapture);
+            cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, config.recordVideoSecond);
+            cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, config.videoQuality);
+            resultLauncher.launch(cameraIntent);
+        }
+    }
+
+    /**
      * start to camera audio
      */
+    @Deprecated(message = "startActivityForResult Deprecated")
     public void startOpenCameraAudio() {
         try {
             if (PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)) {
@@ -809,7 +907,41 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
             e.printStackTrace();
             ToastUtils.s(getContext(), e.getMessage());
         }
+    }
 
+    /**
+     * start to camera audio
+     */
+    public void startOpenCameraAudio(ActivityResultLauncher<Intent> resultLauncher) {
+        try {
+            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)) {
+                Intent cameraIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+                if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+                    config.cameraMimeType = PictureMimeType.ofAudio();
+                    String audioFormat = TextUtils.isEmpty(config.cameraAudioFormat) ? config.suffixType : config.cameraAudioFormat;
+                    if (SdkVersionUtils.checkedAndroid_Q()) {
+                        Uri audioUri = MediaUtils.createAudioUri(this, audioFormat);
+                        if (audioUri == null) {
+                            ToastUtils.s(getContext(), "open is audio error，the uri is empty ");
+                            if (config.camera) {
+                                exit();
+                            }
+                            return;
+                        }
+                        config.cameraPath = audioUri.toString();
+                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, audioUri);
+                    }
+                    resultLauncher.launch(cameraIntent);
+                } else {
+                    ToastUtils.s(getContext(), "System recording is not supported");
+                }
+            } else {
+                PermissionChecker.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PictureConfig.APPLY_AUDIO_PERMISSIONS_CODE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastUtils.s(getContext(), e.getMessage());
+        }
     }
 
     /**
@@ -859,8 +991,7 @@ public abstract class PictureBaseActivity extends AppCompatActivity {
         if (!isFinishing()) {
             if (PictureSelectionConfig.onChooseLimitCallback != null) {
                 PictureSelectionConfig.onChooseLimitCallback.onChooseLimit(getContext(), content);
-            }
-            else {
+            } else {
                 new AlertDialog.Builder(getContext())
                         .setMessage(content)
                         .setPositiveButton(R.string.picture_know, (dialog, which) -> {

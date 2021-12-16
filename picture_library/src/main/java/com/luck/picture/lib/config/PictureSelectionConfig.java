@@ -90,7 +90,6 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isMultipleRecyclerAnimation;
     public boolean isMultipleSkipCrop;
     public boolean isWeChatStyle;
-    public boolean isDoctalkStyle;
     public boolean isUseCustomCamera;
     public boolean zoomAnim;
     public boolean isCompress;
