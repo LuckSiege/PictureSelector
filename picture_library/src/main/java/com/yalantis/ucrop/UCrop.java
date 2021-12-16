@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.AnimRes;
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
@@ -25,6 +26,8 @@ import com.yalantis.ucrop.model.AspectRatio;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
+
+import kotlin.Deprecated;
 
 /**
  * Created by Oleksii Shliama (https://github.com/shliama).
@@ -138,13 +141,38 @@ public class UCrop {
     }
 
     /**
+     * Send the crop Intent from animation an Activity
+     *
+     * @param activity Activity to receive result
+     */
+    public void startAnimationActivity(@NonNull Activity activity,  ActivityResultLauncher<Intent> launcher, @AnimRes int activityCropEnterAnimation) {
+        if (activityCropEnterAnimation != 0) {
+            start(activity, launcher, activityCropEnterAnimation);
+        } else {
+            start(activity, launcher);
+        }
+    }
+
+    /**
      * Send the crop Intent from an Activity with a custom request code or animation
      *
      * @param activity    Activity to receive result
      * @param requestCode requestCode for result
      */
+    @Deprecated(message = "startActivityForResult deprecated")
     public void start(@NonNull Activity activity, int requestCode, @AnimRes int activityCropEnterAnimation) {
         activity.startActivityForResult(getIntent(activity), requestCode);
+        activity.overridePendingTransition(activityCropEnterAnimation, R.anim.ucrop_anim_fade_in);
+    }
+
+    /**
+     * Send the crop Intent from an Activity with a custom request code or animation
+     *
+     * @param activity    Activity to receive result
+     * @param launcher    result launcher
+     */
+    public void start(@NonNull Activity activity, ActivityResultLauncher<Intent> launcher, @AnimRes int activityCropEnterAnimation) {
+        launcher.launch(getIntent(activity));
         activity.overridePendingTransition(activityCropEnterAnimation, R.anim.ucrop_anim_fade_in);
     }
 
@@ -154,8 +182,19 @@ public class UCrop {
      * @param activity    Activity to receive result
      * @param requestCode requestCode for result
      */
+    @Deprecated(message = "startActivityForResult deprecated")
     public void start(@NonNull Activity activity, int requestCode) {
         activity.startActivityForResult(getIntent(activity), requestCode);
+    }
+
+    /**
+     * Send the crop Intent from an Activity with a custom request code
+     *
+     * @param activity    Activity to receive result
+     * @param launcher    result launcher
+     */
+    public void start(@NonNull Activity activity, ActivityResultLauncher<Intent> launcher) {
+        launcher.launch(getIntent(activity));
     }
 
     /**
@@ -173,27 +212,19 @@ public class UCrop {
      * @param activity    Activity to receive result
      * @param requestCode requestCode for result
      */
+    @Deprecated(message = "startActivityForResult deprecated")
     public void start(@NonNull AppCompatActivity activity, int requestCode) {
         activity.startActivityForResult(getIntent(activity), requestCode);
     }
 
     /**
-     * Send the crop Intent from a Fragment
+     * Send the crop Intent from an Activity with a custom request code
      *
-     * @param fragment Fragment to receive result
+     * @param activity    Activity to receive result
+     * @param launcher    result launcher
      */
-    public void start(@NonNull Context context, @NonNull Fragment fragment) {
-        start(context, fragment, REQUEST_CROP);
-    }
-
-    /**
-     * Send the crop Intent with a custom request code
-     *
-     * @param fragment    Fragment to receive result
-     * @param requestCode requestCode for result
-     */
-    public void start(@NonNull Context context, @NonNull Fragment fragment, int requestCode) {
-        fragment.startActivityForResult(getIntent(context), requestCode);
+    public void start(@NonNull AppCompatActivity activity, ActivityResultLauncher<Intent> launcher) {
+        launcher.launch(getIntent(activity));
     }
 
 
@@ -242,6 +273,45 @@ public class UCrop {
      */
     public void startMultiple(@NonNull Activity activity, int requestCode) {
         activity.startActivityForResult(getMultipleIntent(activity), requestCode);
+    }
+
+
+    /**
+     * 多图裁剪
+     */
+    /**
+     * Send the crop Intent from animation an Multiple Activity
+     *
+     * @param activity Activity to receive result
+     */
+    public void startAnimationMultipleCropActivity(@NonNull Activity activity,
+                                                   @AnimRes int activityCropEnterAnimation, ActivityResultLauncher<Intent> launcher) {
+        if (activityCropEnterAnimation != 0) {
+            startMultiple(activity, launcher, activityCropEnterAnimation);
+        } else {
+            startMultiple(activity, launcher);
+        }
+    }
+
+    /**
+     * Send the crop Intent from an Activity with a custom request code or animation
+     *
+     * @param activity      Activity to receive result
+     * @param launcher      requestCode for result
+     */
+    public void startMultiple(@NonNull Activity activity, ActivityResultLauncher<Intent> launcher, @AnimRes int activityCropEnterAnimation) {
+        launcher.launch(getMultipleIntent(activity));
+        activity.overridePendingTransition(activityCropEnterAnimation, R.anim.ucrop_anim_fade_in);
+    }
+
+    /**
+     * Send the crop Intent from an Activity with a custom request code
+     *
+     * @param activity      Activity to receive result
+     * @param launcher      requestCode for result
+     */
+    public void startMultiple(@NonNull Activity activity, ActivityResultLauncher<Intent> launcher) {
+        launcher.launch(getMultipleIntent(activity));
     }
 
     /**

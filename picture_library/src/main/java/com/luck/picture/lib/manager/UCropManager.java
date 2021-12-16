@@ -2,9 +2,12 @@ package com.luck.picture.lib.manager;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.text.TextUtils;
+
+import androidx.activity.result.ActivityResultLauncher;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -90,6 +93,33 @@ public class UCropManager {
     /**
      * 裁剪
      *
+     * @param activity     上下文
+     * @param originalPath 文件源路径
+     * @param mimeType     文件类型
+     */
+    public static void ofCrop(Activity activity, String originalPath, String mimeType, ActivityResultLauncher<Intent> launcher) {
+        if (DoubleUtils.isFastDoubleClick()) {
+            return;
+        }
+        if (TextUtils.isEmpty(originalPath)) {
+            ToastUtils.s(activity.getApplicationContext(), activity.getString(R.string.picture_not_crop_data));
+            return;
+        }
+        PictureSelectionConfig config = PictureSelectionConfig.getInstance();
+        boolean isHttp = PictureMimeType.isHasHttp(originalPath);
+        String suffix = mimeType.replace("image/", ".");
+        File file = new File(PictureFileUtils.getDiskCacheDir(activity.getApplicationContext()),
+                TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_CROP_") + suffix : config.renameCropFileName);
+        Uri uri = isHttp || PictureMimeType.isContent(originalPath) ? Uri.parse(originalPath) : Uri.fromFile(new File(originalPath));
+        UCrop.Options options = UCropManager.basicOptions(activity);
+        UCrop.of(uri, Uri.fromFile(file))
+                .withOptions(options)
+                .startAnimationActivity(activity, launcher, PictureSelectionConfig.windowAnimationStyle.activityCropEnterAnimation);
+    }
+
+    /**
+     * 裁剪
+     *
      * @param activity 上下文
      * @param list     待裁剪图片集合
      */
@@ -129,6 +159,51 @@ public class UCropManager {
                             + suffix : config.camera || size == 1 ? config.renameCropFileName : StringUtils.rename(config.renameCropFileName));
             UCrop.of(uri, Uri.fromFile(file)).withOptions(options)
                     .startAnimationMultipleCropActivity(activity, PictureSelectionConfig.windowAnimationStyle.activityCropEnterAnimation);
+        }
+    }
+
+    /**
+     * 裁剪
+     *
+     * @param activity 上下文
+     * @param list     待裁剪图片集合
+     */
+    public static void ofCrop(Activity activity, ArrayList<LocalMedia> list, ActivityResultLauncher<Intent> launcher) {
+        if (DoubleUtils.isFastDoubleClick()) {
+            return;
+        }
+        if (list == null || list.size() == 0) {
+            ToastUtils.s(activity.getApplicationContext(), activity.getString(R.string.picture_not_crop_data));
+            return;
+        }
+        PictureSelectionConfig config = PictureSelectionConfig.getInstance();
+        UCrop.Options options = UCropManager.basicOptions(activity);
+        options.setCutListData(list);
+        int size = list.size();
+        int index = 0;
+        if (config.chooseMode == PictureMimeType.ofAll() && config.isWithVideoImage) {
+            String mimeType = size > 0 ? list.get(index).getMimeType() : "";
+            boolean isHasVideo = PictureMimeType.isHasVideo(mimeType);
+            if (isHasVideo) {
+                for (int i = 0; i < size; i++) {
+                    LocalMedia cutInfo = list.get(i);
+                    if (cutInfo != null && PictureMimeType.isHasImage(cutInfo.getMimeType())) {
+                        index = i;
+                        break;
+                    }
+                }
+            }
+        }
+        if (index < size) {
+            LocalMedia info = list.get(index);
+            boolean isHttp = PictureMimeType.isHasHttp(info.getPath());
+            Uri uri = isHttp || PictureMimeType.isContent(info.getPath()) ? Uri.parse(info.getPath()) : Uri.fromFile(new File(info.getPath()));
+            String suffix = info.getMimeType().replace("image/", ".");
+            File file = new File(PictureFileUtils.getDiskCacheDir(activity),
+                    TextUtils.isEmpty(config.renameCropFileName) ? DateUtils.getCreateFileName("IMG_CROP_")
+                            + suffix : config.camera || size == 1 ? config.renameCropFileName : StringUtils.rename(config.renameCropFileName));
+            UCrop.of(uri, Uri.fromFile(file)).withOptions(options)
+                    .startAnimationMultipleCropActivity(activity, PictureSelectionConfig.windowAnimationStyle.activityCropEnterAnimation, launcher);
         }
     }
 
