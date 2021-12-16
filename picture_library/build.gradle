@@ -6,6 +6,8 @@ android {
     defaultConfig {
         minSdkVersion cfgs.minSdkVersion
         targetSdkVersion cfgs.targetSdkVersion
+        versionCode cfgs.versionCode
+        versionName cfgs.versionName
 
         vectorDrawables.useSupportLibrary = true
     }
@@ -38,6 +40,6 @@ dependencies {
     implementation "androidx.exifinterface:exifinterface:${cfgs.androidx_exifinterface_version}"
     implementation "androidx.localbroadcastmanager:localbroadcastmanager:${cfgs.localbroadcastmanager}"
     implementation "androidx.camera:camera-view:${cfgs.camerax_view}"
-    implementation "androidx.camera:camera-lifecycle:${cfgs.camerax_version}"
     implementation "androidx.transition:transition:${cfgs.androidx_transition_version}"
+    implementation "androidx.camera:camera-lifecycle:${cfgs.camerax_version}"
 }
