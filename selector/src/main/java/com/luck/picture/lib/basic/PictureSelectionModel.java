@@ -764,6 +764,16 @@ public class PictureSelectionModel {
     }
 
     /**
+     * Preview Scale Mode
+     *
+     * @return
+     */
+    public PictureSelectionModel isPreviewScaleMode(boolean isPreviewScale) {
+        selectionConfig.isPreviewScaleMode = isPreviewScale;
+        return this;
+    }
+
+    /**
      * Preview audio files
      *
      * @param enablePreviewAudio

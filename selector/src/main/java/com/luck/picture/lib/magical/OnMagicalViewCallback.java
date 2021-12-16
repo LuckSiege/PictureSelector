@@ -7,15 +7,10 @@ package com.luck.picture.lib.magical;
  * @describe：OnMagicalViewCallback
  */
 public interface OnMagicalViewCallback {
-    void onDrag(MagicalView view, float moveX, float moveY);
+
+    void onBeginBackToMin(boolean isResetSize);
 
     void showFinish(MagicalView mojitoView, boolean showImmediately);
 
     void onMojitoViewFinish();
-
-    void onRelease(boolean isToMax, boolean isToMin);
-
-    void onLock(boolean isLock);
-
-    void onLongImageMove(float ratio);
 }

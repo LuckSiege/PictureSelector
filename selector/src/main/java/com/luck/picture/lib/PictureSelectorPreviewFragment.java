@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +45,10 @@ import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.loader.LocalMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaPageLoader;
+import com.luck.picture.lib.magical.BuildRecycleItemViewParams;
+import com.luck.picture.lib.magical.MagicalView;
+import com.luck.picture.lib.magical.OnMagicalViewCallback;
+import com.luck.picture.lib.magical.ViewParams;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
@@ -82,6 +87,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     private PreviewBottomNavBar bottomNarBar;
 
+    private MagicalView magicalView;
+
     private ViewPager2 viewPager;
 
     private PicturePreviewAdapter viewPageAdapter;
@@ -94,6 +101,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private int curPosition;
 
     private boolean isBottomPreview;
+
+    private boolean isFirstLoaded;
 
     /**
      * 当前相册
@@ -221,7 +230,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         tvSelectedWord = view.findViewById(R.id.ps_tv_selected_word);
         selectClickArea = view.findViewById(R.id.select_click_area);
         completeSelectView = view.findViewById(R.id.ps_complete_select);
-        viewPager = view.findViewById(R.id.preview_pager);
+        magicalView = view.findViewById(R.id.magical);
+        viewPager = new ViewPager2(getContext());
+        magicalView.setMagicalContent(viewPager);
         bottomNarBar = view.findViewById(R.id.bottom_nar_bar);
         mAnimViews = new ArrayList<>();
         mAnimViews.add(titleBar);
@@ -262,6 +273,33 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 initViewPagerData();
             }
         }
+        if (config.isPreviewScaleMode) {
+            setMagicalViewAction();
+        }
+    }
+
+    private void setMagicalViewAction() {
+        magicalView.setOnMojitoViewCallback(new OnMagicalViewCallback() {
+
+            @Override
+            public void showFinish(MagicalView mojitoView, boolean showImmediately) {
+
+            }
+
+            @Override
+            public void onMojitoViewFinish() {
+                iBridgePictureBehavior.onSelectFinish(false, null);
+            }
+
+            @Override
+            public void onBeginBackToMin(boolean isResetSize) {
+                BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder();
+                ViewParams itemViewParams = BuildRecycleItemViewParams.getItemViewParams(viewPager.getCurrentItem());
+                currentHolder.coverImageView.getLayoutParams().width = itemViewParams.width;
+                currentHolder.coverImageView.getLayoutParams().height = itemViewParams.height;
+                currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            }
+        });
     }
 
     @Override
@@ -284,6 +322,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     @Nullable
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        if (config.isPreviewScaleMode) {
+            return null;
+        }
         PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
         if (windowAnimationStyle.activityPreviewEnterAnimation != 0
                 && windowAnimationStyle.activityPreviewExitAnimation != 0) {
@@ -512,7 +553,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 if (isExternalPreview) {
                     handleExternalPreviewBack();
                 } else {
-                    iBridgePictureBehavior.onSelectFinish(false, null);
+                    if (config.isPreviewScaleMode) {
+                        magicalView.backToMin();
+                    } else {
+                        iBridgePictureBehavior.onSelectFinish(false, null);
+                    }
                 }
             }
         });
@@ -691,37 +736,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     }
 
     private void initViewPagerData() {
-        viewPageAdapter = new PicturePreviewAdapter(mData, config);
-        viewPageAdapter.setOnPreviewEventListener(new BasePreviewHolder.OnPreviewEventListener() {
-            @Override
-            public void onBackPressed() {
-                if (config.isPreviewFullScreenMode) {
-                    previewFullScreenMode();
-                } else {
-                    if (isExternalPreview) {
-                        handleExternalPreviewBack();
-                    } else {
-                        iBridgePictureBehavior.onSelectFinish(false, null);
-                    }
-                }
-            }
-
-            @Override
-            public void onPreviewVideoTitle(String videoName) {
-                if (TextUtils.isEmpty(videoName)) {
-                    titleBar.setTitle((curPosition + 1) + "/" + totalNum);
-                } else {
-                    titleBar.setTitle(videoName);
-                }
-            }
-
-            @Override
-            public void onLongPressDownload(LocalMedia media) {
-                if (isExternalPreview) {
-                    onExternalLongPressDownload(media);
-                }
-            }
-        });
+        viewPageAdapter = new PicturePreviewAdapter(mData, config, new MyOnPreviewEventListener());
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         viewPager.addItemDecoration(new ViewPage2ItemDecoration(1,
                 DensityUtil.dip2px(Objects.requireNonNull(getActivity()), 1)));
@@ -732,6 +747,54 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         viewPager.registerOnPageChangeCallback(pageChangeCallback);
         subSelectPosition(false);
         notifySelectNumberStyle(mData.get(curPosition));
+        magicalView.setBackgroundAlpha(0.0F);
+    }
+
+    private class MyOnPreviewEventListener implements BasePreviewHolder.OnPreviewEventListener {
+
+        @Override
+        public void onLoadComplete() {
+            if (isFirstLoaded){
+                return;
+            }
+            isFirstLoaded = true;
+            ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(curPosition);
+            magicalView.putData(viewParams.left, viewParams.top, viewParams.width, viewParams.height,
+                    mData.get(curPosition).getWidth(), mData.get(curPosition).getHeight());
+            magicalView.show(false);
+            ObjectAnimator animator = ObjectAnimator.ofFloat(viewPager, "alpha", 0.0F, 1.0F);
+            animator.setDuration(50);
+            animator.start();
+        }
+
+        @Override
+        public void onBackPressed() {
+            if (config.isPreviewFullScreenMode) {
+                previewFullScreenMode();
+            } else {
+                if (isExternalPreview) {
+                    handleExternalPreviewBack();
+                } else {
+                    iBridgePictureBehavior.onSelectFinish(false, null);
+                }
+            }
+        }
+
+        @Override
+        public void onPreviewVideoTitle(String videoName) {
+            if (TextUtils.isEmpty(videoName)) {
+                titleBar.setTitle((curPosition + 1) + "/" + totalNum);
+            } else {
+                titleBar.setTitle(videoName);
+            }
+        }
+
+        @Override
+        public void onLongPressDownload(LocalMedia media) {
+            if (isExternalPreview) {
+                onExternalLongPressDownload(media);
+            }
+        }
     }
 
     /**

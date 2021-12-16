@@ -67,5 +67,6 @@ public class PreviewImageHolder extends BasePreviewHolder {
                 coverImageView.setImageBitmap(resource);
             }
         }
+        mPreviewEventListener.onLoadComplete();
     }
 }

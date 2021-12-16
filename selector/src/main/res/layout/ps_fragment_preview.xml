@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/preview_pager"
+    <com.luck.picture.lib.magical.MagicalView
+        android:id="@+id/magical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/ps_color_black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <com.luck.picture.lib.widget.PreviewTitleBar
         android:id="@+id/title_bar"

@@ -13,9 +13,21 @@ import java.util.List;
  * @date：2021/12/15 2:15 下午
  * @describe：BuildViewParams
  */
-public class BuildViewParams {
+public class BuildRecycleItemViewParams {
 
-    public static List<ViewParams> viewParamsData = new ArrayList<>();
+    private static final List<ViewParams> viewParamsData = new ArrayList<>();
+
+    public static ViewParams getItemViewParams(int position) {
+        ViewParams viewParams = null;
+        if (viewParamsData.size() > position) {
+            viewParams = viewParamsData.get(position);
+        }
+        if (viewParams == null) {
+            viewParams = new ViewParams();
+        }
+        return viewParams;
+    }
+
 
     public static void generateViewParams(RecyclerView recyclerView, @IdRes int viewId) {
         if (viewParamsData.size() > 0) {

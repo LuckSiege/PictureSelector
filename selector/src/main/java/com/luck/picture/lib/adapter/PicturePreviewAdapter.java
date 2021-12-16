@@ -24,15 +24,14 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     private final List<LocalMedia> mData;
     private final PictureSelectionConfig config;
     private BasePreviewHolder currentHolder;
-    private BasePreviewHolder.OnPreviewEventListener onPreviewEventListener;
+    private final BasePreviewHolder.OnPreviewEventListener onPreviewEventListener;
 
-    public void setOnPreviewEventListener(BasePreviewHolder.OnPreviewEventListener listener) {
-        this.onPreviewEventListener = listener;
-    }
-
-    public PicturePreviewAdapter(List<LocalMedia> list, PictureSelectionConfig config) {
+    public PicturePreviewAdapter(List<LocalMedia> list,
+                                 PictureSelectionConfig config,
+                                 BasePreviewHolder.OnPreviewEventListener listener) {
         this.mData = list;
         this.config = config;
+        this.onPreviewEventListener = listener;
     }
 
     @NonNull
@@ -47,9 +46,9 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
 
     @Override
     public void onBindViewHolder(@NonNull BasePreviewHolder holder, int position) {
+        holder.setOnPreviewEventListener(onPreviewEventListener);
         LocalMedia media = mData.get(position);
         holder.bindData(media, position);
-        holder.setOnPreviewEventListener(onPreviewEventListener);
     }
 
 

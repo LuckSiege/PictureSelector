@@ -71,7 +71,19 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
             String mimeType = PictureMimeType.getImageMimeType(path);
             if (PictureMimeType.isGif(mimeType) || PictureMimeType.isGif(media.getMimeType())
                     || PictureMimeType.isWebp(mimeType) || PictureMimeType.isWebp(media.getMimeType())) {
-                PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), path, coverImageView);
+                if (config.isPreviewScaleMode) {
+                    PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, new OnCallbackListener<Bitmap>() {
+                        @Override
+                        public void onCall(Bitmap bitmap) {
+                            if (bitmap != null) {
+                                coverImageView.setImageBitmap(bitmap);
+                                mPreviewEventListener.onLoadComplete();
+                            }
+                        }
+                    });
+                } else {
+                    PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), path, coverImageView);
+                }
             } else {
                 PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, new OnCallbackListener<Bitmap>() {
                     @Override
@@ -85,7 +97,19 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
                 Uri uri = PictureMimeType.isContent(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
                 onLoadLongImage(null, uri);
             } else {
-                PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), path, coverImageView);
+                if (config.isPreviewScaleMode) {
+                    PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, new OnCallbackListener<Bitmap>() {
+                        @Override
+                        public void onCall(Bitmap bitmap) {
+                            if (bitmap != null) {
+                                coverImageView.setImageBitmap(bitmap);
+                                mPreviewEventListener.onLoadComplete();
+                            }
+                        }
+                    });
+                } else {
+                    PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), path, coverImageView);
+                }
             }
         }
 
@@ -138,6 +162,8 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
     }
 
     public interface OnPreviewEventListener {
+
+        void onLoadComplete();
 
         void onBackPressed();
 

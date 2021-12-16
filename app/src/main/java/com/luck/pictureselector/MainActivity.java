@@ -257,6 +257,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //.setOutputCameraVideoFileName("luck.mp4")
                             .isWithSelectVideoImage(true)
                             .isPreviewFullScreenMode(true)
+                            .isPreviewScaleMode(true)
                             //.queryOnlyMimeType(PictureMimeType.ofGIF())
                             .isMaxSelectEnabledMask(cbEnabledMask.isChecked())
                             .isDirectReturnSingle(cb_single_back.isChecked())

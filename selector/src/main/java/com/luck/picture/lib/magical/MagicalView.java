@@ -10,7 +10,6 @@ import android.os.Build;
 import android.transition.ChangeBounds;
 import android.transition.ChangeImageTransform;
 import android.transition.ChangeTransform;
-import android.transition.Transition;
 import android.transition.TransitionManager;
 import android.transition.TransitionSet;
 import android.util.AttributeSet;
@@ -18,9 +17,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.utils.DensityUtil;
@@ -79,10 +78,16 @@ public class MagicalView extends FrameLayout {
         super(context, attrs, defStyleAttr);
         screenWidth = DensityUtil.getScreenWidth(context);
         screenHeight = DensityUtil.getScreenHeight(context);
-        inflate(context, R.layout.ps_magical_layout, this);
-        contentLayout = findViewById(R.id.contentLayout);
-        backgroundView = findViewById(R.id.backgroundView);
+        backgroundView = new View(context);
+        backgroundView.setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+        backgroundView.setBackgroundColor(ContextCompat.getColor(context,R.color.ps_color_black));
         backgroundView.setAlpha(mAlpha);
+        addView(backgroundView);
+
+        contentLayout = new FrameLayout(context);
+        contentLayout.setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+        addView(contentLayout);
+
         imageWrapper = new MagicalViewWrapper(contentLayout);
     }
 
@@ -120,18 +125,6 @@ public class MagicalView extends FrameLayout {
         mOriginHeight = originHeight;
     }
 
-    /**
-     * 重新设置宽高  因为如果图片还未加载出来  默认宽高为全屏
-     */
-    public void resetSize(int w, int h) {
-        if (this.realWidth == w && this.realHeight == h) {
-            return;
-        }
-        this.realWidth = w;
-        this.realHeight = h;
-        setOriginParams();
-        beginShow(true);
-    }
 
     public void show(boolean showImmediately) {
         mAlpha = showImmediately ? mAlpha = 1f : 0f;
@@ -227,12 +220,7 @@ public class MagicalView extends FrameLayout {
         imageWrapper.setMarginTop((int) (startY + topOffset));
     }
 
-
     public void backToMin() {
-        backToMin(false);
-    }
-
-    private void backToMin(boolean isDrag) {
         if (isAnimating) {
             return;
         }
@@ -246,7 +234,6 @@ public class MagicalView extends FrameLayout {
             return;
         }
         resetContentScaleParams();
-        reRebuildSize();
         setReleaseParams();
         beginBackToMin(true);
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
@@ -258,9 +245,6 @@ public class MagicalView extends FrameLayout {
             }
         });
         valueAnimator.setDuration(animationDuration).start();
-        if (onMagicalViewCallback != null) {
-            onMagicalViewCallback.onRelease(false, true);
-        }
         changeBackgroundViewAlpha(true);
     }
 
@@ -283,9 +267,7 @@ public class MagicalView extends FrameLayout {
                 imageWrapper.setHeight(mOriginHeight);
                 imageWrapper.setMarginTop(mOriginTop);
                 imageWrapper.setMarginLeft(mOriginLeft);
-                if (onMagicalViewCallback != null) {
-                    onMagicalViewCallback.onRelease(false, true);
-                }
+
                 changeBackgroundViewAlpha(true);
             }
         });
@@ -308,24 +290,14 @@ public class MagicalView extends FrameLayout {
         }
     }
 
-    private void reRebuildSize() {
-
-    }
-
-    private void beginBackToMin(boolean isResetSize){
+    private void beginBackToMin(boolean isResetSize) {
         if (isResetSize) {
-            contentLayout.getLayoutParams().width = 360;
-            contentLayout.getLayoutParams().height = 360;
-//            sketchImageView.scaleType = ImageView.ScaleType.CENTER_CROP;
+            onMagicalViewCallback.onBeginBackToMin(true);
         }
     }
 
 
     private void setReleaseParams() {
-        //到最小时,先把imageView的大小设置为imageView可见的大小,而不是包含黑色空隙部分
-        // set imageView size to visible size,not include black background
-        // 注意:这里 imageWrapper.getHeight() 获取的高度 是经过拖动缩放后的
-        // there imageWrapper.getHeight() is scaled height
         float draggingToReleaseScale = imageWrapper.getHeight() / (float) screenHeight;
         if (imageWrapper.getHeight() != imageHeightOfAnimatorEnd) {
             releaseHeight = (int) (draggingToReleaseScale * imageHeightOfAnimatorEnd);
@@ -365,9 +337,6 @@ public class MagicalView extends FrameLayout {
                     }
                 }).start();
         backgroundView.animate().alpha(0f).setDuration(animationDuration).start();
-        if (onMagicalViewCallback != null) {
-            onMagicalViewCallback.onRelease(false, true);
-        }
     }
 
     /**
@@ -400,36 +369,15 @@ public class MagicalView extends FrameLayout {
     }
 
 
-    //不消费该事件会导致事件交还给上级
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return true;
-    }
-
-    private boolean isTouchPointInContentLayout(View view, MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
-        if (view == null) {
-            return false;
-        }
-        int[] location = new int[2];
-        view.getLocationOnScreen(location);
-        int left = location[0];
-        int top = location[1];
-        int right = left + view.getMeasuredWidth();
-        int bottom = top + view.getMeasuredHeight();
-        return y >= top && y <= bottom && x >= left && x <= right;
     }
 
     public void setMagicalContent(View view) {
         contentLayout.addView(view);
     }
 
-    private void setViewPagerLocking(boolean lock) {
-        if (onMagicalViewCallback != null) {
-            onMagicalViewCallback.onLock(lock);
-        }
-    }
 
     private void changeContentViewToFullscreen() {
         targetImageHeight = screenHeight;
@@ -452,10 +400,6 @@ public class MagicalView extends FrameLayout {
 
     public void setOnMojitoViewCallback(OnMagicalViewCallback onMagicalViewCallback) {
         this.onMagicalViewCallback = onMagicalViewCallback;
-    }
-
-    public boolean isDrag() {
-        return isDrag;
     }
 
     public void setBackgroundAlpha(float mAlpha) {

@@ -41,6 +41,7 @@ import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.interfaces.OnRecyclerViewPreloadMoreListener;
 import com.luck.picture.lib.loader.LocalMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaPageLoader;
+import com.luck.picture.lib.magical.BuildRecycleItemViewParams;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.permissions.PermissionConfig;
@@ -723,6 +724,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 currentBucketId = SelectedManager.getCurrentLocalMediaFolder().getBucketId();
             }
             if (ActivityCompatHelper.checkFragmentNonExits(getActivity(), PictureSelectorPreviewFragment.TAG)) {
+                BuildRecycleItemViewParams.generateViewParams(mRecycler, R.id.ivPicture);
                 PictureSelectorPreviewFragment previewFragment = PictureSelectorPreviewFragment.newInstance();
                 previewFragment.setInternalPreviewData(isBottomPreview, titleBar.getTitleText(), mAdapter.isDisplayCamera(),
                         position, totalNum, mPage, currentBucketId, data);
