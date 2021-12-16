@@ -26,6 +26,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.luck.picture.lib.adapter.PicturePreviewAdapter;
 import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
 import com.luck.picture.lib.adapter.holder.PreviewGalleryAdapter;
+import com.luck.picture.lib.adapter.holder.PreviewImageHolder;
 import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
 import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.basic.PictureMediaScannerConnection;
@@ -43,6 +44,7 @@ import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
+import com.luck.picture.lib.large.SubsamplingScaleImageView;
 import com.luck.picture.lib.loader.LocalMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaPageLoader;
 import com.luck.picture.lib.magical.BuildRecycleItemViewParams;
@@ -290,6 +292,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             @Override
             public void onBeginBackMinAnim() {
                 BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder();
+                if (currentHolder == null) {
+                    return;
+                }
                 if (currentHolder instanceof PreviewVideoHolder) {
                     PreviewVideoHolder videoHolder = (PreviewVideoHolder) currentHolder;
                     videoHolder.ivPlayButton.setVisibility(View.GONE);
@@ -299,10 +304,24 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             @Override
             public void onBeginMagicalAnimComplete(MagicalView mojitoView, boolean showImmediately) {
                 BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder();
+                if (currentHolder == null) {
+                    return;
+                }
                 currentHolder.coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 if (currentHolder instanceof PreviewVideoHolder) {
                     PreviewVideoHolder videoHolder = (PreviewVideoHolder) currentHolder;
                     videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
+                }
+                if (currentHolder instanceof PreviewImageHolder) {
+                    PreviewImageHolder imageHolder = (PreviewImageHolder) currentHolder;
+                    int adapterPosition = currentHolder.getAbsoluteAdapterPosition();
+                    LocalMedia media = mData.get(adapterPosition);
+                    if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
+                        // 长图因为是使用的第三方控件没办法控制ScaleType所以借用普通ImageView来做缩放效果
+                        imageHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        imageHolder.coverImageView.setVisibility(View.GONE);
+                        imageHolder.previewLongView.setVisibility(View.VISIBLE);
+                    }
                 }
             }
 
@@ -314,10 +333,23 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             @Override
             public void onBeginBackMinMagicalFinish(boolean isResetSize) {
                 BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder();
+                if (currentHolder == null) {
+                    return;
+                }
                 ViewParams itemViewParams = BuildRecycleItemViewParams.getItemViewParams(viewPager.getCurrentItem());
                 currentHolder.coverImageView.getLayoutParams().width = itemViewParams.width;
                 currentHolder.coverImageView.getLayoutParams().height = itemViewParams.height;
                 currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                if (currentHolder instanceof PreviewImageHolder) {
+                    int adapterPosition = currentHolder.getAbsoluteAdapterPosition();
+                    LocalMedia media = mData.get(adapterPosition);
+                    PreviewImageHolder imageHolder = (PreviewImageHolder) currentHolder;
+                    if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
+                        // 长图因为是使用的第三方控件没办法控制ScaleType所以借用普通ImageView来做缩放效果
+                        imageHolder.coverImageView.setVisibility(View.VISIBLE);
+                        imageHolder.previewLongView.setVisibility(View.GONE);
+                    }
+                }
             }
 
             @Override
@@ -813,8 +845,14 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     realHeight = media.getHeight();
                 }
             }
-            magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, realWidth, realHeight);
-            magicalView.start(false);
+            if (viewParams == null || realWidth == 0 || realHeight == 0) {
+                setChildViewAlpha(1.0F);
+                magicalView.startNormal(realWidth, realHeight, false);
+            } else {
+                magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width,
+                        viewParams.height, realWidth, realHeight);
+                magicalView.start(false);
+            }
             ObjectAnimator animator = ObjectAnimator.ofFloat(holder.coverImageView, "alpha", 0.0F, 1.0F);
             animator.setDuration(50);
             animator.start();

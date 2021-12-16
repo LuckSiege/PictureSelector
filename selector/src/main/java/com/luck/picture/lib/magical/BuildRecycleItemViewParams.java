@@ -22,9 +22,6 @@ public class BuildRecycleItemViewParams {
         if (viewParamsData.size() > position) {
             viewParams = viewParamsData.get(position);
         }
-        if (viewParams == null) {
-            viewParams = new ViewParams();
-        }
         return viewParams;
     }
 

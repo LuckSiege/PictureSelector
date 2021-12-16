@@ -83,10 +83,9 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
                 PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, new OnCallbackListener<Bitmap>() {
                     @Override
                     public void onCall(Bitmap resource) {
+                        onLoadSourceImage(resource);
                         if (MediaUtils.isLongImg(resource.getWidth(), resource.getHeight())) {
                             onLoadLargeSourceImage(ImageSource.cachedBitmap(resource));
-                        } else {
-                            onLoadSourceImage(resource);
                         }
                     }
                 });
@@ -96,6 +95,17 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
                 Uri uri = PictureMimeType.isContent(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
                 ImageSource imageSource = ImageSource.uri(uri);
                 onLoadLargeSourceImage(imageSource);
+                if (config.isPreviewScaleMode) {
+                    PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, new OnCallbackListener<Bitmap>() {
+                        @Override
+                        public void onCall(Bitmap bitmap) {
+                            if (bitmap != null) {
+                                coverImageView.setImageBitmap(bitmap);
+                                mPreviewEventListener.onLoadCompleteBeginScale(BasePreviewHolder.this);
+                            }
+                        }
+                    });
+                }
             } else {
                 if (config.isPreviewScaleMode) {
                     PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, new OnCallbackListener<Bitmap>() {

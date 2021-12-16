@@ -29,7 +29,7 @@ import com.luck.picture.lib.utils.DensityUtil;
 public class MagicalView extends FrameLayout {
 
     private float mAlpha = 0.0F;
-    private final long animationDuration = 250;
+    private final long animationDuration = 2500;
     private int mOriginLeft;
     private int mOriginTop;
     private int mOriginHeight;
@@ -76,7 +76,7 @@ public class MagicalView extends FrameLayout {
         imageWrapper = new MagicalViewWrapper(contentLayout);
     }
 
-    public void showNormalView(int realWidth, int realHeight, boolean showImmediately) {
+    public void startNormal(int realWidth, int realHeight, boolean showImmediately) {
         this.realWidth = realWidth;
         this.realHeight = realHeight;
         mOriginLeft = 0;
