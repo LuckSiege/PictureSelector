@@ -44,7 +44,6 @@ import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
-import com.luck.picture.lib.large.SubsamplingScaleImageView;
 import com.luck.picture.lib.loader.LocalMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaPageLoader;
 import com.luck.picture.lib.magical.BuildRecycleItemViewParams;
@@ -319,8 +318,15 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
                         // 长图因为是使用的第三方控件没办法控制ScaleType所以借用普通ImageView来做缩放效果
                         imageHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                        imageHolder.coverImageView.setVisibility(View.GONE);
-                        imageHolder.previewLongView.setVisibility(View.VISIBLE);
+                        ObjectAnimator alphaLargerAnimator = ObjectAnimator.ofFloat(imageHolder.previewLongView, "alpha", 0.0F, 1.0F);
+                        alphaLargerAnimator.setDuration(100);
+                        alphaLargerAnimator.start();
+                        alphaLargerAnimator.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                imageHolder.coverImageView.setVisibility(View.GONE);
+                            }
+                        });
                     }
                 }
             }
@@ -347,7 +353,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
                         // 长图因为是使用的第三方控件没办法控制ScaleType所以借用普通ImageView来做缩放效果
                         imageHolder.coverImageView.setVisibility(View.VISIBLE);
-                        imageHolder.previewLongView.setVisibility(View.GONE);
+                        imageHolder.previewLongView.setAlpha(0.0F);
                     }
                 }
             }

@@ -47,7 +47,6 @@ public class PreviewImageHolder extends BasePreviewHolder {
         previewLongView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
         previewLongView.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
         previewLongView.setImage(imageSource, new ImageViewState(0, new PointF(0, 0), 0));
-        mPreviewEventListener.onLoadCompleteBeginScale(this);
     }
 
     @Override
