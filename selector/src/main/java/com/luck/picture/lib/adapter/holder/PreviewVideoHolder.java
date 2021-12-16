@@ -29,6 +29,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         super(itemView, config);
         ivPlayButton = itemView.findViewById(R.id.iv_play_video);
         videoView = itemView.findViewById(R.id.video_view);
+        ivPlayButton.setVisibility(config.isPreviewScaleMode ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -73,8 +74,6 @@ public class PreviewVideoHolder extends BasePreviewHolder {
 
     /**
      * 给 VideoView绑定监听器
-     *
-     * @param videoHolder
      */
     public void addVideoListener() {
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {

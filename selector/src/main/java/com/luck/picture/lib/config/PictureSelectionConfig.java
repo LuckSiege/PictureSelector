@@ -88,7 +88,6 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isCameraRotateImage;
     public boolean isAutoRotating;
     public boolean isSyncCover;
-    public boolean isAutoScalePreviewImage;
     public int ofAllCameraType;
     public boolean isOnlySandboxDir;
     public boolean isCameraForegroundService;
@@ -170,7 +169,6 @@ public final class PictureSelectionConfig implements Parcelable {
         isCameraRotateImage = in.readByte() != 0;
         isAutoRotating = in.readByte() != 0;
         isSyncCover = in.readByte() != 0;
-        isAutoScalePreviewImage = in.readByte() != 0;
         ofAllCameraType = in.readInt();
         isOnlySandboxDir = in.readByte() != 0;
         isCameraForegroundService = in.readByte() != 0;
@@ -241,7 +239,6 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isCameraRotateImage ? 1 : 0));
         dest.writeByte((byte) (isAutoRotating ? 1 : 0));
         dest.writeByte((byte) (isSyncCover ? 1 : 0));
-        dest.writeByte((byte) (isAutoScalePreviewImage ? 1 : 0));
         dest.writeInt(ofAllCameraType);
         dest.writeByte((byte) (isOnlySandboxDir ? 1 : 0));
         dest.writeByte((byte) (isCameraForegroundService ? 1 : 0));
@@ -326,7 +323,6 @@ public final class PictureSelectionConfig implements Parcelable {
         isCameraRotateImage = true;
         isAutoRotating = true;
         isSyncCover = !SdkVersionUtils.isQ();
-        isAutoScalePreviewImage = true;
         ofAllCameraType = SelectMimeType.ofAll();
         isOnlySandboxDir = false;
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;

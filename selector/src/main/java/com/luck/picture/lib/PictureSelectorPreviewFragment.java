@@ -26,6 +26,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.luck.picture.lib.adapter.PicturePreviewAdapter;
 import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
 import com.luck.picture.lib.adapter.holder.PreviewGalleryAdapter;
+import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
 import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.basic.PictureMediaScannerConnection;
 import com.luck.picture.lib.basic.PictureSelectorSupporterActivity;
@@ -35,7 +36,6 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
-import com.luck.picture.lib.decoration.ViewPage2ItemDecoration;
 import com.luck.picture.lib.decoration.WrapContentLinearLayoutManager;
 import com.luck.picture.lib.dialog.PictureCommonDialog;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -55,6 +55,7 @@ import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DownloadFileUtils;
+import com.luck.picture.lib.utils.MediaUtils;
 import com.luck.picture.lib.utils.StyleUtils;
 import com.luck.picture.lib.utils.ValueOf;
 import com.luck.picture.lib.widget.BottomNavBar;
@@ -65,7 +66,6 @@ import com.luck.picture.lib.widget.TitleBar;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author：luck
@@ -232,8 +232,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         completeSelectView = view.findViewById(R.id.ps_complete_select);
         magicalView = view.findViewById(R.id.magical);
         viewPager = new ViewPager2(getContext());
-        magicalView.setMagicalContent(viewPager);
         bottomNarBar = view.findViewById(R.id.bottom_nar_bar);
+        magicalView.setMagicalContent(viewPager);
         mAnimViews = new ArrayList<>();
         mAnimViews.add(titleBar);
         mAnimViews.add(tvSelected);
@@ -242,6 +242,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         mAnimViews.add(completeSelectView);
         mAnimViews.add(bottomNarBar);
         initTitleBar();
+        if (config.isPreviewScaleMode) {
+            setChildViewAlpha(0.0F);
+            setMagicalViewAction();
+        } else {
+            setChildViewAlpha(1.0F);
+        }
         if (isExternalPreview) {
             if (savedInstanceState != null || mData.size() == 0) {
                 mData = new ArrayList<>(SelectedManager.getSelectedPreviewResult());
@@ -273,33 +279,61 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 initViewPagerData();
             }
         }
-        if (config.isPreviewScaleMode) {
-            setMagicalViewAction();
-        }
     }
 
+    /**
+     * 设置MagicalView监听器
+     */
     private void setMagicalViewAction() {
         magicalView.setOnMojitoViewCallback(new OnMagicalViewCallback() {
 
             @Override
-            public void showFinish(MagicalView mojitoView, boolean showImmediately) {
-
+            public void onBeginBackMinAnim() {
+                BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder();
+                if (currentHolder instanceof PreviewVideoHolder) {
+                    PreviewVideoHolder videoHolder = (PreviewVideoHolder) currentHolder;
+                    videoHolder.ivPlayButton.setVisibility(View.GONE);
+                }
             }
 
             @Override
-            public void onMojitoViewFinish() {
+            public void onBeginMagicalAnimComplete(MagicalView mojitoView, boolean showImmediately) {
+                BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder();
+                currentHolder.coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                if (currentHolder instanceof PreviewVideoHolder) {
+                    PreviewVideoHolder videoHolder = (PreviewVideoHolder) currentHolder;
+                    videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onMagicalViewFinish() {
                 iBridgePictureBehavior.onSelectFinish(false, null);
             }
 
             @Override
-            public void onBeginBackToMin(boolean isResetSize) {
+            public void onBeginBackMinMagicalFinish(boolean isResetSize) {
                 BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder();
                 ViewParams itemViewParams = BuildRecycleItemViewParams.getItemViewParams(viewPager.getCurrentItem());
                 currentHolder.coverImageView.getLayoutParams().width = itemViewParams.width;
                 currentHolder.coverImageView.getLayoutParams().height = itemViewParams.height;
                 currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
+
+            @Override
+            public void onBackgroundAlpha(float alpha) {
+                setChildViewAlpha(alpha);
+            }
         });
+    }
+
+    private void setChildViewAlpha(float alpha) {
+        titleBar.setAlpha(alpha);
+        bottomNarBar.setAlpha(alpha);
+        completeSelectView.setAlpha(alpha);
+        tvSelected.setAlpha(alpha);
+        tvSelectedWord.setAlpha(alpha);
+        bottomNarBar.getEditor().setAlpha(alpha);
     }
 
     @Override
@@ -738,8 +772,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private void initViewPagerData() {
         viewPageAdapter = new PicturePreviewAdapter(mData, config, new MyOnPreviewEventListener());
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
-        viewPager.addItemDecoration(new ViewPage2ItemDecoration(1,
-                DensityUtil.dip2px(Objects.requireNonNull(getActivity()), 1)));
         viewPager.setAdapter(viewPageAdapter);
         viewPager.setCurrentItem(curPosition, false);
         tvSelected.setSelected(SelectedManager.getSelectedResult().contains(mData.get(viewPager.getCurrentItem())));
@@ -747,22 +779,43 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         viewPager.registerOnPageChangeCallback(pageChangeCallback);
         subSelectPosition(false);
         notifySelectNumberStyle(mData.get(curPosition));
-        magicalView.setBackgroundAlpha(0.0F);
     }
 
+    /**
+     * ViewPageAdapter回调事件处理
+     */
     private class MyOnPreviewEventListener implements BasePreviewHolder.OnPreviewEventListener {
 
+
         @Override
-        public void onLoadComplete() {
-            if (isFirstLoaded){
+        public void onLoadCompleteBeginScale(BasePreviewHolder holder) {
+            if (isFirstLoaded) {
                 return;
             }
             isFirstLoaded = true;
+            holder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            if (holder instanceof PreviewVideoHolder) {
+                PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
+                videoHolder.ivPlayButton.setVisibility(View.GONE);
+            }
+            LocalMedia media = mData.get(curPosition);
             ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(curPosition);
-            magicalView.putData(viewParams.left, viewParams.top, viewParams.width, viewParams.height,
-                    mData.get(curPosition).getWidth(), mData.get(curPosition).getHeight());
-            magicalView.show(false);
-            ObjectAnimator animator = ObjectAnimator.ofFloat(viewPager, "alpha", 0.0F, 1.0F);
+            int realWidth, realHeight;
+            if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
+                realWidth = DensityUtil.getScreenWidth(getContext());
+                realHeight = DensityUtil.getScreenHeight(getContext());
+            } else {
+                if (media.getWidth() > media.getHeight()) {
+                    realHeight = media.getWidth();
+                    realWidth = media.getHeight();
+                } else {
+                    realWidth = media.getWidth();
+                    realHeight = media.getHeight();
+                }
+            }
+            magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, realWidth, realHeight);
+            magicalView.start(false);
+            ObjectAnimator animator = ObjectAnimator.ofFloat(holder.coverImageView, "alpha", 0.0F, 1.0F);
             animator.setDuration(50);
             animator.start();
         }

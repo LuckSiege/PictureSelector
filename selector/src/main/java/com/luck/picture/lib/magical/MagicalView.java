@@ -4,8 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Build;
 import android.transition.ChangeBounds;
 import android.transition.ChangeImageTransform;
@@ -13,7 +11,6 @@ import android.transition.ChangeTransform;
 import android.transition.TransitionManager;
 import android.transition.TransitionSet;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -31,13 +28,8 @@ import com.luck.picture.lib.utils.DensityUtil;
  */
 public class MagicalView extends FrameLayout {
 
-
-    private float mAlpha = 0;
-
-    FrameLayout contentLayout;
-    View backgroundView;
-
-    long animationDuration = 250;
+    private float mAlpha = 0.0F;
+    private final long animationDuration = 250;
     private int mOriginLeft;
     private int mOriginTop;
     private int mOriginHeight;
@@ -50,21 +42,14 @@ public class MagicalView extends FrameLayout {
     private int targetImageHeight;
     private int targetEndLeft;
 
-    int releaseLeft = 0;
-    float releaseY = 0;
-    int releaseWidth = 0;
-    int releaseHeight = 0;
-    int realWidth;
-    int realHeight;
+    private int realWidth;
+    private int realHeight;
+    private boolean isAnimating = false;
 
-    int imageLeftOfAnimatorEnd = 0;
-    int imageTopOfAnimatorEnd = 0;
-    int imageWidthOfAnimatorEnd = 0;
-    int imageHeightOfAnimatorEnd = 0;
+    private final FrameLayout contentLayout;
+    private final View backgroundView;
+    private final MagicalViewWrapper imageWrapper;
 
-    MagicalViewWrapper imageWrapper;
-    boolean isDrag = false;
-    boolean isAnimating = false;
 
     public MagicalView(Context context) {
         this(context, null);
@@ -79,19 +64,19 @@ public class MagicalView extends FrameLayout {
         screenWidth = DensityUtil.getScreenWidth(context);
         screenHeight = DensityUtil.getScreenHeight(context);
         backgroundView = new View(context);
-        backgroundView.setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-        backgroundView.setBackgroundColor(ContextCompat.getColor(context,R.color.ps_color_black));
+        backgroundView.setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        backgroundView.setBackgroundColor(ContextCompat.getColor(context, R.color.ps_color_black));
         backgroundView.setAlpha(mAlpha);
         addView(backgroundView);
 
         contentLayout = new FrameLayout(context);
-        contentLayout.setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+        contentLayout.setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         addView(contentLayout);
 
         imageWrapper = new MagicalViewWrapper(contentLayout);
     }
 
-    public void showWithoutView(int realWidth, int realHeight, boolean showImmediately) {
+    public void showNormalView(int realWidth, int realHeight, boolean showImmediately) {
         this.realWidth = realWidth;
         this.realHeight = realHeight;
         mOriginLeft = 0;
@@ -101,7 +86,7 @@ public class MagicalView extends FrameLayout {
 
         setVisibility(View.VISIBLE);
         setOriginParams();
-        min2NormalAndDrag2Min(targetImageTop, targetEndLeft, targetImageWidth, targetImageHeight);
+        minNormalMin(targetImageTop, targetEndLeft, targetImageWidth, targetImageHeight);
 
         if (showImmediately) {
             mAlpha = 1f;
@@ -116,17 +101,17 @@ public class MagicalView extends FrameLayout {
         setShowEndParams();
     }
 
-    public void putData(int left, int top, int originWidth, int originHeight, int realWidth, int realHeight) {
+    public void setViewParams(int left, int top, int originWidth, int originHeight, int realWidth, int realHeight) {
         this.realWidth = realWidth;
         this.realHeight = realHeight;
+
         mOriginLeft = left;
         mOriginTop = top;
         mOriginWidth = originWidth;
         mOriginHeight = originHeight;
     }
 
-
-    public void show(boolean showImmediately) {
+    public void start(boolean showImmediately) {
         mAlpha = showImmediately ? mAlpha = 1f : 0f;
         backgroundView.setAlpha(mAlpha);
         setVisibility(View.VISIBLE);
@@ -153,14 +138,13 @@ public class MagicalView extends FrameLayout {
         imageWrapper.setHeight(mOriginHeight);
         imageWrapper.setMarginLeft(mOriginLeft);
         imageWrapper.setMarginTop(mOriginTop);
-
     }
 
     private void beginShow(final boolean showImmediately) {
         if (showImmediately) {
             mAlpha = 1f;
             backgroundView.setAlpha(mAlpha);
-            min2NormalAndDrag2Min(targetImageTop, targetEndLeft, targetImageWidth, targetImageHeight);
+            minNormalMin(targetImageTop, targetEndLeft, targetImageWidth, targetImageHeight);
             setShowEndParams();
         } else {
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
@@ -168,7 +152,7 @@ public class MagicalView extends FrameLayout {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float value = (float) animation.getAnimatedValue();
-                    min2NormalAndDrag2Min(value, mOriginTop, targetImageTop, mOriginLeft, targetEndLeft,
+                    minNormalMin(value, mOriginTop, targetImageTop, mOriginLeft, targetEndLeft,
                             mOriginWidth, targetImageWidth, mOriginHeight, targetImageHeight);
                 }
             });
@@ -185,24 +169,23 @@ public class MagicalView extends FrameLayout {
 
     private void setShowEndParams() {
         isAnimating = false;
-        setImageDataOfAnimatorEnd();
         changeContentViewToFullscreen();
         if (onMagicalViewCallback != null) {
-            onMagicalViewCallback.showFinish(MagicalView.this, false);
+            onMagicalViewCallback.onBeginMagicalAnimComplete(MagicalView.this, false);
         }
     }
 
-    private void min2NormalAndDrag2Min(float animRatio, float startY, float endY, float startLeft, float endLeft,
-                                       float startWidth, float endWidth, float startHeight, float endHeight) {
-        min2NormalAndDrag2Min(false, animRatio, startY, endY, startLeft, endLeft, startWidth, endWidth, startHeight, endHeight);
+    private void minNormalMin(float animRatio, float startY, float endY, float startLeft, float endLeft,
+                              float startWidth, float endWidth, float startHeight, float endHeight) {
+        minNormalMin(false, animRatio, startY, endY, startLeft, endLeft, startWidth, endWidth, startHeight, endHeight);
     }
 
-    private void min2NormalAndDrag2Min(float endY, float endLeft, float endWidth, float endHeight) {
-        min2NormalAndDrag2Min(true, 0, 0, endY, 0, endLeft, 0, endWidth, 0, endHeight);
+    private void minNormalMin(float endY, float endLeft, float endWidth, float endHeight) {
+        minNormalMin(true, 0, 0, endY, 0, endLeft, 0, endWidth, 0, endHeight);
     }
 
-    private void min2NormalAndDrag2Min(boolean showImmediately, float animRatio, float startY, float endY, float startLeft, float endLeft,
-                                       float startWidth, float endWidth, float startHeight, float endHeight) {
+    private void minNormalMin(boolean showImmediately, float animRatio, float startY, float endY, float startLeft, float endLeft,
+                              float startWidth, float endWidth, float startHeight, float endHeight) {
         if (showImmediately) {
             imageWrapper.setWidth(endWidth);
             imageWrapper.setHeight(endHeight);
@@ -228,24 +211,11 @@ public class MagicalView extends FrameLayout {
             backToMinWithoutView();
             return;
         }
-        beginBackToMin(false);
-        if (!isDrag) {
-            backToMinWithTransition();
-            return;
+        if (onMagicalViewCallback != null) {
+            onMagicalViewCallback.onBeginBackMinAnim();
         }
-        resetContentScaleParams();
-        setReleaseParams();
-        beginBackToMin(true);
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float value = (float) animation.getAnimatedValue();
-                min2NormalAndDrag2Min(value, releaseY, mOriginTop, releaseLeft, mOriginLeft, releaseWidth, mOriginWidth, releaseHeight, mOriginHeight);
-            }
-        });
-        valueAnimator.setDuration(animationDuration).start();
-        changeBackgroundViewAlpha(true);
+        beginBackToMin(false);
+        backToMinWithTransition();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -273,58 +243,12 @@ public class MagicalView extends FrameLayout {
         });
     }
 
-    private void resetContentScaleParams() {
-        if (contentLayout.getScaleX() != 1) {
-            Rect rectF = new Rect();
-            contentLayout.getGlobalVisibleRect(rectF);
-
-            RectF dst = new RectF(0, 0, screenWidth, screenHeight);
-            contentLayout.getMatrix().mapRect(dst);
-            contentLayout.setScaleX(1);
-            contentLayout.setScaleY(1);
-
-            imageWrapper.setWidth(dst.right - dst.left);
-            imageWrapper.setHeight(dst.bottom - dst.top);
-            imageWrapper.setMarginLeft((int) (imageWrapper.getMarginLeft() + dst.left));
-            imageWrapper.setMarginTop((int) (imageWrapper.getMarginTop() + dst.top));
-        }
-    }
 
     private void beginBackToMin(boolean isResetSize) {
         if (isResetSize) {
-            onMagicalViewCallback.onBeginBackToMin(true);
+            onMagicalViewCallback.onBeginBackMinMagicalFinish(true);
         }
     }
-
-
-    private void setReleaseParams() {
-        float draggingToReleaseScale = imageWrapper.getHeight() / (float) screenHeight;
-        if (imageWrapper.getHeight() != imageHeightOfAnimatorEnd) {
-            releaseHeight = (int) (draggingToReleaseScale * imageHeightOfAnimatorEnd);
-        } else {
-            releaseHeight = imageWrapper.getHeight();
-        }
-        if (imageWrapper.getWidth() != imageWidthOfAnimatorEnd) {
-            releaseWidth = (int) (draggingToReleaseScale * imageWidthOfAnimatorEnd);
-        } else {
-            releaseWidth = imageWrapper.getWidth();
-        }
-        if (imageWrapper.getMarginTop() != imageTopOfAnimatorEnd) {
-            releaseY = imageWrapper.getMarginTop() + (int) (draggingToReleaseScale * imageTopOfAnimatorEnd);
-        } else {
-            releaseY = imageWrapper.getMarginTop();
-        }
-        if (imageWrapper.getMarginLeft() != imageLeftOfAnimatorEnd) {
-            releaseLeft = imageWrapper.getMarginLeft() + (int) (draggingToReleaseScale * imageLeftOfAnimatorEnd);
-        } else {
-            releaseLeft = imageWrapper.getMarginLeft();
-        }
-        imageWrapper.setWidth(releaseWidth);
-        imageWrapper.setHeight(releaseHeight);
-        imageWrapper.setMarginTop((int) releaseY);
-        imageWrapper.setMarginLeft(releaseLeft);
-    }
-
 
     private void backToMinWithoutView() {
         contentLayout.animate().alpha(0f).setDuration(animationDuration)
@@ -332,7 +256,7 @@ public class MagicalView extends FrameLayout {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         if (onMagicalViewCallback != null) {
-                            onMagicalViewCallback.onMojitoViewFinish();
+                            onMagicalViewCallback.onMagicalViewFinish();
                         }
                     }
                 }).start();
@@ -351,6 +275,9 @@ public class MagicalView extends FrameLayout {
                 isAnimating = true;
                 mAlpha = (Float) animation.getAnimatedValue();
                 backgroundView.setAlpha(mAlpha);
+                if (onMagicalViewCallback != null) {
+                    onMagicalViewCallback.onBackgroundAlpha(mAlpha);
+                }
             }
         });
         valueAnimator.addListener(new AnimatorListenerAdapter() {
@@ -359,19 +286,13 @@ public class MagicalView extends FrameLayout {
                 isAnimating = false;
                 if (isToZero) {
                     if (onMagicalViewCallback != null) {
-                        onMagicalViewCallback.onMojitoViewFinish();
+                        onMagicalViewCallback.onMagicalViewFinish();
                     }
                 }
             }
         });
         valueAnimator.setDuration(animationDuration);
         valueAnimator.start();
-    }
-
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return true;
     }
 
     public void setMagicalContent(View view) {
@@ -389,21 +310,9 @@ public class MagicalView extends FrameLayout {
         imageWrapper.setMarginLeft(0);
     }
 
-    private void setImageDataOfAnimatorEnd() {
-        imageLeftOfAnimatorEnd = imageWrapper.getMarginLeft();
-        imageTopOfAnimatorEnd = imageWrapper.getMarginTop();
-        imageWidthOfAnimatorEnd = imageWrapper.getWidth();
-        imageHeightOfAnimatorEnd = imageWrapper.getHeight();
-    }
-
     private OnMagicalViewCallback onMagicalViewCallback;
 
     public void setOnMojitoViewCallback(OnMagicalViewCallback onMagicalViewCallback) {
         this.onMagicalViewCallback = onMagicalViewCallback;
-    }
-
-    public void setBackgroundAlpha(float mAlpha) {
-        this.mAlpha = mAlpha;
-        backgroundView.setAlpha(mAlpha);
     }
 }

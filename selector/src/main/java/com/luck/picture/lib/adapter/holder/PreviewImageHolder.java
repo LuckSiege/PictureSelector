@@ -2,7 +2,6 @@ package com.luck.picture.lib.adapter.holder;
 
 import android.graphics.Bitmap;
 import android.graphics.PointF;
-import android.net.Uri;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -26,11 +25,6 @@ public class PreviewImageHolder extends BasePreviewHolder {
     public PreviewImageHolder(@NonNull View itemView, PictureSelectionConfig config) {
         super(itemView, config);
         previewLongView = itemView.findViewById(R.id.preview_long_image);
-        previewLongView.setQuickScaleEnabled(true);
-        previewLongView.setZoomEnabled(true);
-        previewLongView.setDoubleTapZoomDuration(100);
-        previewLongView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
-        previewLongView.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
     }
 
     @Override
@@ -54,19 +48,23 @@ public class PreviewImageHolder extends BasePreviewHolder {
     }
 
     @Override
-    protected void onLoadLongImage(Bitmap resource, Uri uri) {
-        if (uri != null) {
-            previewLongView.setImage(ImageSource.uri(uri), new ImageViewState(0, new PointF(0, 0), 0));
-        } else {
-            boolean isLongImage = MediaUtils.isLongImg(resource.getWidth(), resource.getHeight());
-            previewLongView.setVisibility(isLongImage ? View.VISIBLE : View.GONE);
-            coverImageView.setVisibility(isLongImage ? View.GONE : View.VISIBLE);
-            if (isLongImage) {
-                previewLongView.setImage(ImageSource.cachedBitmap(resource), new ImageViewState(0, new PointF(0, 0), 0));
-            } else {
-                coverImageView.setImageBitmap(resource);
-            }
-        }
-        mPreviewEventListener.onLoadComplete();
+    protected void onLoadLargeSourceImage(ImageSource imageSource) {
+        previewLongView.setVisibility(View.VISIBLE);
+        coverImageView.setVisibility(View.GONE);
+        previewLongView.setQuickScaleEnabled(true);
+        previewLongView.setZoomEnabled(true);
+        previewLongView.setDoubleTapZoomDuration(100);
+        previewLongView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
+        previewLongView.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
+        previewLongView.setImage(imageSource, new ImageViewState(0, new PointF(0, 0), 0));
+        mPreviewEventListener.onLoadCompleteBeginScale(this);
+    }
+
+    @Override
+    protected void onLoadSourceImage(Bitmap resource) {
+        coverImageView.setVisibility(View.VISIBLE);
+        previewLongView.setVisibility(View.GONE);
+        coverImageView.setImageBitmap(resource);
+        mPreviewEventListener.onLoadCompleteBeginScale(this);
     }
 }

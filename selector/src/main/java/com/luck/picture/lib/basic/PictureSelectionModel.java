@@ -597,15 +597,6 @@ public class PictureSelectionModel {
 
 
     /**
-     * @param isAutoScalePreviewImage preview image width auto scale the screen
-     * @return
-     */
-    public PictureSelectionModel isAutoScalePreviewImage(boolean isAutoScalePreviewImage) {
-        selectionConfig.isAutoScalePreviewImage = isAutoScalePreviewImage;
-        return this;
-    }
-
-    /**
      * @param isDisplayCamera Whether to open camera button
      * @return
      */

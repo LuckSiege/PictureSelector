@@ -2,11 +2,9 @@ package com.luck.picture.lib.adapter.holder;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,9 +14,9 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
+import com.luck.picture.lib.large.ImageSource;
 import com.luck.picture.lib.photoview.OnViewTapListener;
 import com.luck.picture.lib.photoview.PhotoView;
-import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.MediaUtils;
 
 import java.io.File;
@@ -37,7 +35,6 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
      * 视频
      */
     public final static int ADAPTER_TYPE_VIDEO = 2;
-    private final int screenWidth, screenHeight;
     private final PictureSelectionConfig config;
     public PhotoView coverImageView;
 
@@ -54,8 +51,6 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         this.config = config;
         this.coverImageView = itemView.findViewById(R.id.preview_image);
-        this.screenWidth = DensityUtil.getScreenWidth(itemView.getContext());
-        this.screenHeight = DensityUtil.getScreenHeight(itemView.getContext());
     }
 
 
@@ -77,7 +72,7 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
                         public void onCall(Bitmap bitmap) {
                             if (bitmap != null) {
                                 coverImageView.setImageBitmap(bitmap);
-                                mPreviewEventListener.onLoadComplete();
+                                mPreviewEventListener.onLoadCompleteBeginScale(BasePreviewHolder.this);
                             }
                         }
                     });
@@ -88,14 +83,19 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
                 PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, new OnCallbackListener<Bitmap>() {
                     @Override
                     public void onCall(Bitmap resource) {
-                        onLoadLongImage(resource, null);
+                        if (MediaUtils.isLongImg(resource.getWidth(), resource.getHeight())) {
+                            onLoadLargeSourceImage(ImageSource.cachedBitmap(resource));
+                        } else {
+                            onLoadSourceImage(resource);
+                        }
                     }
                 });
             }
         } else {
             if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
                 Uri uri = PictureMimeType.isContent(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
-                onLoadLongImage(null, uri);
+                ImageSource imageSource = ImageSource.uri(uri);
+                onLoadLargeSourceImage(imageSource);
             } else {
                 if (config.isPreviewScaleMode) {
                     PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, new OnCallbackListener<Bitmap>() {
@@ -103,27 +103,13 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
                         public void onCall(Bitmap bitmap) {
                             if (bitmap != null) {
                                 coverImageView.setImageBitmap(bitmap);
-                                mPreviewEventListener.onLoadComplete();
+                                mPreviewEventListener.onLoadCompleteBeginScale(BasePreviewHolder.this);
                             }
                         }
                     });
                 } else {
                     PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), path, coverImageView);
                 }
-            }
-        }
-
-        if (config.isAutoScalePreviewImage && screenWidth < screenHeight) {
-            float width = Math.min(media.getWidth(), media.getHeight());
-            float height = Math.max(media.getHeight(), media.getWidth());
-            if (width > 0 && height > 0) {
-                // 只需让图片的宽是屏幕的宽，高乘以比例
-                int displayHeight = (int) Math.ceil(width * height / width);
-                //最终让图片按照宽是屏幕 高是等比例缩放的大小
-                FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) coverImageView.getLayoutParams();
-                layoutParams.width = screenWidth;
-                layoutParams.height = displayHeight < screenHeight ? displayHeight + screenHeight : displayHeight;
-                layoutParams.gravity = Gravity.CENTER;
             }
         }
 
@@ -148,9 +134,16 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * 加载长图
+     * 加载大图资源
      */
-    protected void onLoadLongImage(Bitmap bitmap, Uri uri) {
+    protected void onLoadLargeSourceImage(ImageSource imageSource) {
+
+    }
+
+    /**
+     * 加载普通资源
+     */
+    protected void onLoadSourceImage(Bitmap resource) {
 
     }
 
@@ -163,7 +156,7 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
 
     public interface OnPreviewEventListener {
 
-        void onLoadComplete();
+        void onLoadCompleteBeginScale(BasePreviewHolder holder);
 
         void onBackPressed();
 

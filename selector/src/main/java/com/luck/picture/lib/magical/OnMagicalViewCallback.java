@@ -8,9 +8,13 @@ package com.luck.picture.lib.magical;
  */
 public interface OnMagicalViewCallback {
 
-    void onBeginBackToMin(boolean isResetSize);
+    void onBeginBackMinAnim();
 
-    void showFinish(MagicalView mojitoView, boolean showImmediately);
+    void onBeginBackMinMagicalFinish(boolean isResetSize);
 
-    void onMojitoViewFinish();
+    void onBackgroundAlpha(float alpha);
+
+    void onBeginMagicalAnimComplete(MagicalView mojitoView, boolean showImmediately);
+
+    void onMagicalViewFinish();
 }
