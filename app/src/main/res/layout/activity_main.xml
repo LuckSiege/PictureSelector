@@ -429,6 +429,26 @@
                     android:textSize="14sp" />
 
                 <CheckBox
+                    android:id="@+id/cb_preview_full"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:gravity="center_vertical"
+                    android:text="全屏预览(点击)"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
+                <CheckBox
+                    android:id="@+id/cb_preview_scale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:gravity="center_vertical"
+                    android:text="预览缩放效果"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
+                <CheckBox
                     android:id="@+id/cb_preview_video"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

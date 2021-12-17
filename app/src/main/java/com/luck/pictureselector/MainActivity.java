@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
             cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
             cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
-            cb_custom_camera, cbPage, cbEnabledMask, cbEditor;
+            cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_preview_full, cb_preview_scale;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isUpward;
     private boolean needScaleBig = true;
@@ -138,6 +138,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_choose_mode = findViewById(R.id.cb_choose_mode);
         cb_isCamera = findViewById(R.id.cb_isCamera);
         cb_isGif = findViewById(R.id.cb_isGif);
+        cb_preview_full = findViewById(R.id.cb_preview_full);
+        cb_preview_scale = findViewById(R.id.cb_preview_scale);
         cb_preview_img = findViewById(R.id.cb_preview_img);
         cb_preview_video = findViewById(R.id.cb_preview_video);
         cb_crop = findViewById(R.id.cb_crop);
@@ -212,7 +214,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 .setImageEngine(GlideEngine.createGlideEngine())
                                 .setSelectorUIStyle(selectorStyle)
                                 .setLanguage(language)
-                                .isPreviewFullScreenMode(true)
+                                .isPreviewFullScreenMode(cb_preview_full.isChecked())
+                                .isPreviewScaleMode(cb_preview_scale.isChecked())
                                 .startActivityPreview(position, selectList, true,
                                         new OnExternalPreviewEventListener() {
                                             @Override
@@ -256,8 +259,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //.setOutputCameraImageFileName("luck.jpeg")
                             //.setOutputCameraVideoFileName("luck.mp4")
                             .isWithSelectVideoImage(true)
-                            .isPreviewFullScreenMode(false)
-                            .isPreviewScaleMode(true)
+                            .isPreviewFullScreenMode(cb_preview_full.isChecked())
+                            .isPreviewScaleMode(cb_preview_scale.isChecked())
                             //.queryOnlyMimeType(PictureMimeType.ofGIF())
                             .isMaxSelectEnabledMask(cbEnabledMask.isChecked())
                             .isDirectReturnSingle(cb_single_back.isChecked())
