@@ -30,6 +30,12 @@ public class DensityUtil {
         return localDisplayMetrics.heightPixels - getStatusBarHeight(context);
     }
 
+    public static int getAppInScreenHeight(Context context) {
+        DisplayMetrics localDisplayMetrics = new DisplayMetrics();
+        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
+        return localDisplayMetrics.heightPixels + getStatusBarHeight(context);
+    }
+
     /**
      * 获取状态栏高度
      */
