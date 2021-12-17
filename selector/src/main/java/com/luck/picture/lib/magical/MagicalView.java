@@ -341,7 +341,9 @@ public class MagicalView extends FrameLayout {
                 int disX = Math.abs(endX - startX);
                 int disY = Math.abs(endY - startY);
                 if (disX > disY) {
-                    // TODO 水平滑动忽略
+                    if (viewPager2 != null) {
+                        viewPager2.setUserInputEnabled(true);
+                    }
                 } else {
                     if (viewPager2 != null) {
                         viewPager2.setUserInputEnabled(canScrollVertically(startY - endY));
