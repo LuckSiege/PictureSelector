@@ -724,7 +724,9 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 currentBucketId = SelectedManager.getCurrentLocalMediaFolder().getBucketId();
             }
             if (ActivityCompatHelper.checkFragmentNonExits(getActivity(), PictureSelectorPreviewFragment.TAG)) {
-                BuildRecycleItemViewParams.generateViewParams(mRecycler, R.id.ivPicture);
+                if (config.isPreviewScaleMode) {
+                    BuildRecycleItemViewParams.generateViewParams(mRecycler);
+                }
                 PictureSelectorPreviewFragment previewFragment = PictureSelectorPreviewFragment.newInstance();
                 previewFragment.setInternalPreviewData(isBottomPreview, titleBar.getTitleText(), mAdapter.isDisplayCamera(),
                         position, totalNum, mPage, currentBucketId, data);

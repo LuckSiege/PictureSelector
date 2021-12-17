@@ -274,9 +274,10 @@ public class MagicalView extends FrameLayout {
             public void onAnimationUpdate(ValueAnimator animation) {
                 isAnimating = true;
                 mAlpha = (Float) animation.getAnimatedValue();
-                backgroundView.setAlpha(mAlpha);
                 if (onMagicalViewCallback != null) {
                     onMagicalViewCallback.onBackgroundAlpha(mAlpha);
+                } else {
+                    backgroundView.setAlpha(mAlpha);
                 }
             }
         });
@@ -308,6 +309,11 @@ public class MagicalView extends FrameLayout {
         imageWrapper.setWidth(screenWidth);
         imageWrapper.setMarginTop(0);
         imageWrapper.setMarginLeft(0);
+    }
+
+    public void setBackgroundAlpha(float mAlpha) {
+        this.mAlpha = mAlpha;
+        backgroundView.setAlpha(mAlpha);
     }
 
     private OnMagicalViewCallback onMagicalViewCallback;

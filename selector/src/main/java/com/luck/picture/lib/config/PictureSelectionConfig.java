@@ -16,6 +16,7 @@ import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.language.LanguageConfig;
+import com.luck.picture.lib.magical.BuildRecycleItemViewParams;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.thread.PictureThreadUtils;
@@ -377,6 +378,7 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.permissionsEventListener = null;
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         SelectedManager.clear();
+        BuildRecycleItemViewParams.clear();
         SelectedManager.setCurrentLocalMediaFolder(null);
     }
 

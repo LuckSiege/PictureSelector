@@ -188,6 +188,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         this.curPosition = position;
         this.isDisplayDelete = isDisplayDelete;
         this.isExternalPreview = true;
+        PictureSelectionConfig.getInstance().isPreviewScaleMode = false;
     }
 
     @Override
@@ -313,13 +314,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 }
                 if (currentHolder instanceof PreviewImageHolder) {
                     PreviewImageHolder imageHolder = (PreviewImageHolder) currentHolder;
-                    int adapterPosition = currentHolder.getAbsoluteAdapterPosition();
-                    LocalMedia media = mData.get(adapterPosition);
+                    LocalMedia media = mData.get(viewPager.getCurrentItem());
                     if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
                         // 长图因为是使用的第三方控件没办法控制ScaleType所以借用普通ImageView来做缩放效果
                         imageHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                        ObjectAnimator alphaLargerAnimator = ObjectAnimator.ofFloat(imageHolder.previewLongView, "alpha", 0.0F, 1.0F);
-                        alphaLargerAnimator.setDuration(100);
+                        ObjectAnimator alphaLargerAnimator = ObjectAnimator.ofFloat(imageHolder.largePreviewView, "alpha", 0.0F, 1.0F);
+                        alphaLargerAnimator.setDuration(150);
                         alphaLargerAnimator.start();
                         alphaLargerAnimator.addListener(new AnimatorListenerAdapter() {
                             @Override
@@ -342,18 +342,20 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 if (currentHolder == null) {
                     return;
                 }
-                ViewParams itemViewParams = BuildRecycleItemViewParams.getItemViewParams(viewPager.getCurrentItem());
+                ViewParams itemViewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
+                if (itemViewParams == null) {
+                    return;
+                }
                 currentHolder.coverImageView.getLayoutParams().width = itemViewParams.width;
                 currentHolder.coverImageView.getLayoutParams().height = itemViewParams.height;
                 currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 if (currentHolder instanceof PreviewImageHolder) {
-                    int adapterPosition = currentHolder.getAbsoluteAdapterPosition();
-                    LocalMedia media = mData.get(adapterPosition);
+                    LocalMedia media = mData.get(viewPager.getCurrentItem());
                     PreviewImageHolder imageHolder = (PreviewImageHolder) currentHolder;
                     if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
                         // 长图因为是使用的第三方控件没办法控制ScaleType所以借用普通ImageView来做缩放效果
                         imageHolder.coverImageView.setVisibility(View.VISIBLE);
-                        imageHolder.previewLongView.setAlpha(0.0F);
+                        imageHolder.largePreviewView.setAlpha(0.0F);
                     }
                 }
             }
@@ -372,6 +374,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         tvSelected.setAlpha(alpha);
         tvSelectedWord.setAlpha(alpha);
         bottomNarBar.getEditor().setAlpha(alpha);
+        magicalView.setBackgroundAlpha(alpha);
     }
 
     @Override
@@ -837,28 +840,24 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 videoHolder.ivPlayButton.setVisibility(View.GONE);
             }
             LocalMedia media = mData.get(curPosition);
-            ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(curPosition);
             int realWidth, realHeight;
             if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
                 realWidth = DensityUtil.getScreenWidth(getContext());
                 realHeight = DensityUtil.getScreenHeight(getContext());
             } else {
-                if (media.getWidth() > media.getHeight()) {
-                    realHeight = media.getWidth();
-                    realWidth = media.getHeight();
-                } else {
-                    realWidth = media.getWidth();
-                    realHeight = media.getHeight();
-                }
+                realWidth = media.getWidth();
+                realHeight = media.getHeight();
             }
+            ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
             if (viewParams == null || realWidth == 0 || realHeight == 0) {
-                setChildViewAlpha(1.0F);
                 magicalView.startNormal(realWidth, realHeight, false);
+                setChildViewAlpha(1.0F);
             } else {
                 magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width,
                         viewParams.height, realWidth, realHeight);
                 magicalView.start(false);
             }
+
             ObjectAnimator animator = ObjectAnimator.ofFloat(holder.coverImageView, "alpha", 0.0F, 1.0F);
             animator.setDuration(50);
             animator.start();
@@ -1020,6 +1019,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             if (mGalleryAdapter != null) {
                 mGalleryAdapter.isSelectMedia(currentMedia);
             }
+            if (config.isPreviewScaleMode) {
+                changeMagicalViewParams(position);
+            }
             bottomNarBar.isDisplayEditor(PictureMimeType.isHasVideo(currentMedia.getMimeType()));
             if (!isExternalPreview && !isBottomPreview && !config.isOnlySandboxDir) {
                 if (config.isPageStrategy) {
@@ -1033,6 +1035,29 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             }
         }
     };
+
+    /**
+     * 更新MagicalView ViewParams 参数
+     *
+     * @param position
+     */
+    private void changeMagicalViewParams(int position) {
+        LocalMedia media = mData.get(position);
+        int realWidth, realHeight;
+        if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
+            realWidth = DensityUtil.getScreenWidth(getContext());
+            realHeight = DensityUtil.getScreenHeight(getContext());
+        } else {
+            realWidth = media.getWidth();
+            realHeight = media.getHeight();
+        }
+        ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? position + 1 : position);
+        if (viewParams == null || realWidth == 0 || realHeight == 0) {
+            magicalView.setViewParams(0, 0, 0, 0, realWidth, realHeight);
+        } else {
+            magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, realWidth, realHeight);
+        }
+    }
 
     /**
      * 刷新画廊数据

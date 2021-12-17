@@ -19,17 +19,17 @@ import com.luck.picture.lib.large.SubsamplingScaleImageView;
  * @describe：PreviewImageHolder
  */
 public class PreviewImageHolder extends BasePreviewHolder {
-    public SubsamplingScaleImageView previewLongView;
+    public SubsamplingScaleImageView largePreviewView;
 
     public PreviewImageHolder(@NonNull View itemView, PictureSelectionConfig config) {
         super(itemView, config);
-        previewLongView = itemView.findViewById(R.id.preview_long_image);
+        largePreviewView = itemView.findViewById(R.id.preview_long_image);
     }
 
     @Override
     public void bindData(LocalMedia media, int position) {
         super.bindData(media, position);
-        previewLongView.setOnClickListener(new View.OnClickListener() {
+        largePreviewView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mPreviewEventListener != null) {
@@ -41,12 +41,12 @@ public class PreviewImageHolder extends BasePreviewHolder {
 
     @Override
     protected void onLoadLargeSourceImage(ImageSource imageSource) {
-        previewLongView.setQuickScaleEnabled(true);
-        previewLongView.setZoomEnabled(true);
-        previewLongView.setDoubleTapZoomDuration(100);
-        previewLongView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
-        previewLongView.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
-        previewLongView.setImage(imageSource, new ImageViewState(0, new PointF(0, 0), 0));
+        largePreviewView.setQuickScaleEnabled(true);
+        largePreviewView.setZoomEnabled(true);
+        largePreviewView.setDoubleTapZoomDuration(100);
+        largePreviewView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
+        largePreviewView.setDoubleTapZoomDpi(SubsamplingScaleImageView.ZOOM_FOCUS_CENTER);
+        largePreviewView.setImage(imageSource, new ImageViewState(0, new PointF(0, 0), 0));
     }
 
     @Override
