@@ -6,6 +6,8 @@ import androidx.annotation.IdRes;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.luck.picture.lib.utils.DensityUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +30,7 @@ public class BuildRecycleItemViewParams {
         return viewParams.size() > position ? viewParams.get(position) : null;
     }
 
-    public static void generateViewParams(RecyclerView recyclerView) {
+    public static void generateViewParams(RecyclerView recyclerView, int statusBarHeight) {
         List<View> views = new ArrayList<>();
         int childCount = recyclerView.getChildCount();
         for (int i = 0; i < childCount; i++) {
@@ -62,7 +64,7 @@ public class BuildRecycleItemViewParams {
                 int[] location = new int[2];
                 view.getLocationOnScreen(location);
                 viewParam.setLeft(location[0]);
-                viewParam.setTop(location[1]);
+                viewParam.setTop(location[1] - statusBarHeight);
                 viewParam.setWidth(view.getWidth());
                 viewParam.setHeight(view.getHeight());
             }

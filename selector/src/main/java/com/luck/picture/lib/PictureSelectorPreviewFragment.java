@@ -245,10 +245,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         mAnimViews.add(bottomNarBar);
         initTitleBar();
         if (config.isPreviewScaleMode) {
-            setChildViewAlpha(0.0F);
+            magicalView.setBackgroundAlpha(0.0F);
             setMagicalViewAction();
         } else {
-            setChildViewAlpha(1.0F);
+            magicalView.setBackgroundAlpha(1.0F);
         }
         if (isExternalPreview) {
             if (savedInstanceState != null || mData.size() == 0) {
@@ -338,22 +338,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 currentHolder.coverImageView.getLayoutParams().height = itemViewParams.height;
                 currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
-
-            @Override
-            public void onBackgroundAlpha(float alpha) {
-                setChildViewAlpha(alpha);
-            }
         });
-    }
-
-    private void setChildViewAlpha(float alpha) {
-        titleBar.setAlpha(alpha);
-        bottomNarBar.setAlpha(alpha);
-        completeSelectView.setAlpha(alpha);
-        tvSelected.setAlpha(alpha);
-        tvSelectedWord.setAlpha(alpha);
-        bottomNarBar.getEditor().setAlpha(alpha);
-        magicalView.setBackgroundAlpha(alpha);
     }
 
     @Override
@@ -608,7 +593,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     handleExternalPreviewBack();
                 } else {
                     if (config.isPreviewScaleMode) {
-                        magicalView.backToMin();
+                        backToMin();
                     } else {
                         iBridgePictureBehavior.onSelectFinish(false, null);
                     }
@@ -797,7 +782,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         tvSelected.setSelected(SelectedManager.getSelectedResult().contains(mData.get(viewPager.getCurrentItem())));
         completeSelectView.setSelectedChange(true);
         viewPager.registerOnPageChangeCallback(pageChangeCallback);
-        viewPager.setPageTransformer(new MarginPageTransformer(DensityUtil.dip2px(getContext(),5)));
+        viewPager.setPageTransformer(new MarginPageTransformer(DensityUtil.dip2px(getContext(), 5)));
         subSelectPosition(false);
         notifySelectNumberStyle(mData.get(curPosition));
     }
@@ -819,22 +804,14 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
                 videoHolder.ivPlayButton.setVisibility(View.GONE);
             }
-            LocalMedia media = mData.get(curPosition);
-            int realWidth, realHeight;
-            if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
-                realWidth = DensityUtil.getScreenWidth(getContext());
-                realHeight = DensityUtil.getScreenHeight(getContext());
-            } else {
-                realWidth = media.getWidth();
-                realHeight = media.getHeight();
-            }
+            int[] size = getRealSizeFromMedia(curPosition);
             ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
-            if (viewParams == null || realWidth == 0 || realHeight == 0) {
-                magicalView.startNormal(realWidth, realHeight, false);
-                setChildViewAlpha(1.0F);
+            if (viewParams == null || size[0] == 0 || size[1] == 0) {
+                magicalView.startNormal(size[0], size[1], false);
+                magicalView.setBackgroundAlpha(1.0F);
             } else {
                 magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width,
-                        viewParams.height, realWidth, realHeight);
+                        viewParams.height, size[0], size[1]);
                 magicalView.start(false);
             }
 
@@ -851,7 +828,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 if (isExternalPreview) {
                     handleExternalPreviewBack();
                 } else {
-                    iBridgePictureBehavior.onSelectFinish(false, null);
+                    if (config.isPreviewScaleMode) {
+                        backToMin();
+                    } else {
+                        iBridgePictureBehavior.onSelectFinish(false, null);
+                    }
                 }
             }
         }
@@ -871,6 +852,13 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 onExternalLongPressDownload(media);
             }
         }
+    }
+
+    /**
+     * 回到初始位置
+     */
+    public void backToMin() {
+        magicalView.backToMin();
     }
 
     /**
@@ -1022,21 +1010,31 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * @param position
      */
     private void changeMagicalViewParams(int position) {
+        int[] size = getRealSizeFromMedia(position);
+        ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? position + 1 : position);
+        if (viewParams == null || size[0] == 0 || size[1] == 0) {
+            magicalView.setViewParams(0, 0, 0, 0, size[0], size[1]);
+        } else {
+            magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, size[0], size[1]);
+        }
+    }
+
+    private int[] getRealSizeFromMedia(int position) {
         LocalMedia media = mData.get(position);
         int realWidth, realHeight;
         if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
             realWidth = DensityUtil.getScreenWidth(getContext());
             realHeight = DensityUtil.getScreenHeight(getContext());
         } else {
-            realWidth = media.getWidth();
-            realHeight = media.getHeight();
+            if (PictureMimeType.isHasVideo(media.getMimeType()) && media.getWidth() > media.getHeight()) {
+                realHeight = media.getWidth();
+                realWidth = media.getHeight();
+            } else {
+                realWidth = media.getWidth();
+                realHeight = media.getHeight();
+            }
         }
-        ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? position + 1 : position);
-        if (viewParams == null || realWidth == 0 || realHeight == 0) {
-            magicalView.setViewParams(0, 0, 0, 0, realWidth, realHeight);
-        } else {
-            magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, realWidth, realHeight);
-        }
+        return new int[]{realWidth, realHeight};
     }
 
     /**

@@ -7,6 +7,7 @@ import android.view.KeyEvent;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.PictureSelectorFragment;
 import com.luck.picture.lib.PictureSelectorPreviewFragment;
@@ -25,6 +26,7 @@ import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.StyleUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author：luck
@@ -122,9 +124,26 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity implemen
                 if (PictureSelectionConfig.resultCallListener != null) {
                     PictureSelectionConfig.resultCallListener.onCancel();
                 }
+            } else {
+                PictureSelectorPreviewFragment previewFragment = getPreviewFragment();
+                if (PictureSelectionConfig.getInstance().isPreviewScaleMode && previewFragment != null) {
+                    previewFragment.backToMin();
+                    return true;
+                }
             }
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private PictureSelectorPreviewFragment getPreviewFragment() {
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (int i = 0; i < fragments.size(); i++) {
+            Fragment fragment = fragments.get(i);
+            if (fragment instanceof PictureSelectorPreviewFragment) {
+                return (PictureSelectorPreviewFragment) fragment;
+            }
+        }
+        return null;
     }
 
     @Override

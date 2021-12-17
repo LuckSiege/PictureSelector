@@ -725,7 +725,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
             }
             if (ActivityCompatHelper.checkFragmentNonExits(getActivity(), PictureSelectorPreviewFragment.TAG)) {
                 if (config.isPreviewScaleMode) {
-                    BuildRecycleItemViewParams.generateViewParams(mRecycler);
+                    BuildRecycleItemViewParams.generateViewParams(mRecycler,
+                            config.isPreviewFullScreenMode ? 0 : DensityUtil.getStatusBarHeight(getContext()));
                 }
                 PictureSelectorPreviewFragment previewFragment = PictureSelectorPreviewFragment.newInstance();
                 previewFragment.setInternalPreviewData(isBottomPreview, titleBar.getTitleText(), mAdapter.isDisplayCamera(),

@@ -12,8 +12,6 @@ public interface OnMagicalViewCallback {
 
     void onBeginBackMinMagicalFinish(boolean isResetSize);
 
-    void onBackgroundAlpha(float alpha);
-
     void onBeginMagicalAnimComplete(MagicalView mojitoView, boolean showImmediately);
 
     void onMagicalViewFinish();
