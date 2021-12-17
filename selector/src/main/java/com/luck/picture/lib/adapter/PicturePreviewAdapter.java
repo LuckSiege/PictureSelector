@@ -1,7 +1,6 @@
 package com.luck.picture.lib.adapter;
 
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,9 +9,7 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
 import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.utils.MediaUtils;
 
 import java.util.List;
 
@@ -24,15 +21,11 @@ import java.util.List;
 public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolder> {
 
     private final List<LocalMedia> mData;
-    private final PictureSelectionConfig config;
     private BasePreviewHolder currentHolder;
     private final BasePreviewHolder.OnPreviewEventListener onPreviewEventListener;
 
-    public PicturePreviewAdapter(List<LocalMedia> list,
-                                 PictureSelectionConfig config,
-                                 BasePreviewHolder.OnPreviewEventListener listener) {
+    public PicturePreviewAdapter(List<LocalMedia> list,BasePreviewHolder.OnPreviewEventListener listener) {
         this.mData = list;
-        this.config = config;
         this.onPreviewEventListener = listener;
     }
 
@@ -40,9 +33,9 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     @Override
     public BasePreviewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == BasePreviewHolder.ADAPTER_TYPE_VIDEO) {
-            return BasePreviewHolder.generate(parent, viewType, R.layout.ps_preview_video, config);
+            return BasePreviewHolder.generate(parent, viewType, R.layout.ps_preview_video);
         } else {
-            return BasePreviewHolder.generate(parent, viewType, R.layout.ps_preview_image, config);
+            return BasePreviewHolder.generate(parent, viewType, R.layout.ps_preview_image);
         }
     }
 
@@ -86,12 +79,6 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
         if (holder instanceof PreviewVideoHolder) {
             PreviewVideoHolder previewVideoHolder = (PreviewVideoHolder) holder;
             previewVideoHolder.addVideoListener();
-        }
-        LocalMedia localMedia = holder.getLocalMedia();
-        if (localMedia != null && MediaUtils.isLongImage(localMedia.getWidth(), localMedia.getHeight())) {
-            holder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        } else {
-            holder.coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         }
     }
 

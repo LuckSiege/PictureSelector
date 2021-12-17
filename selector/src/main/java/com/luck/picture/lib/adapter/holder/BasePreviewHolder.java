@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,27 +32,20 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
      * 视频
      */
     public final static int ADAPTER_TYPE_VIDEO = 2;
-    private final PictureSelectionConfig config;
     public PhotoView coverImageView;
-    private LocalMedia currentLocalMedia;
 
-    public static BasePreviewHolder generate(ViewGroup parent, int viewType, int resource, PictureSelectionConfig config) {
+    public static BasePreviewHolder generate(ViewGroup parent, int viewType, int resource) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);
         if (viewType == ADAPTER_TYPE_VIDEO) {
-            return new PreviewVideoHolder(itemView, config);
+            return new PreviewVideoHolder(itemView);
         } else {
-            return new PreviewImageHolder(itemView, config);
+            return new PreviewImageHolder(itemView);
         }
     }
 
-    public BasePreviewHolder(@NonNull View itemView, PictureSelectionConfig config) {
+    public BasePreviewHolder(@NonNull View itemView) {
         super(itemView);
-        this.config = config;
         this.coverImageView = itemView.findViewById(R.id.preview_image);
-    }
-
-    public LocalMedia getLocalMedia() {
-        return currentLocalMedia;
     }
 
     /**
@@ -61,63 +55,24 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
      * @param position
      */
     public void bindData(LocalMedia media, int position) {
-        this.currentLocalMedia = media;
         String path = media.getAvailablePath();
-        if (PictureMimeType.isHasHttp(path)) {
-            String mimeType = PictureMimeType.getImageMimeType(path);
-            if (PictureMimeType.isGif(mimeType) || PictureMimeType.isGif(media.getMimeType())
-                    || PictureMimeType.isWebp(mimeType) || PictureMimeType.isWebp(media.getMimeType())) {
-                if (config.isPreviewScaleMode) {
-                    PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, new OnCallbackListener<Bitmap>() {
-                        @Override
-                        public void onCall(Bitmap bitmap) {
-                            if (bitmap != null) {
-                                coverImageView.setImageBitmap(bitmap);
-                                mPreviewEventListener.onLoadCompleteBeginScale(BasePreviewHolder.this);
-                            }
-                        }
-                    });
-                } else {
+        PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, new OnCallbackListener<Bitmap>() {
+            @Override
+            public void onCall(Bitmap bitmap) {
+                if (PictureMimeType.isHasWebp(media.getMimeType()) || PictureMimeType.isUrlHasWebp(path)
+                        || PictureMimeType.isUrlHasGif(path) || PictureMimeType.isHasGif(media.getMimeType())) {
                     PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), path, coverImageView);
-                }
-            } else {
-                PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, new OnCallbackListener<Bitmap>() {
-                    @Override
-                    public void onCall(Bitmap resource) {
-                        coverImageView.setImageBitmap(resource);
-                        mPreviewEventListener.onLoadCompleteBeginScale(BasePreviewHolder.this);
-                    }
-                });
-            }
-        } else {
-            if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
-                if (config.isPreviewScaleMode) {
-                    PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, new OnCallbackListener<Bitmap>() {
-                        @Override
-                        public void onCall(Bitmap bitmap) {
-                            if (bitmap != null) {
-                                coverImageView.setImageBitmap(bitmap);
-                                mPreviewEventListener.onLoadCompleteBeginScale(BasePreviewHolder.this);
-                            }
-                        }
-                    });
-                }
-            } else {
-                if (config.isPreviewScaleMode) {
-                    PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, new OnCallbackListener<Bitmap>() {
-                        @Override
-                        public void onCall(Bitmap bitmap) {
-                            if (bitmap != null) {
-                                coverImageView.setImageBitmap(bitmap);
-                                mPreviewEventListener.onLoadCompleteBeginScale(BasePreviewHolder.this);
-                            }
-                        }
-                    });
                 } else {
-                    PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), path, coverImageView);
+                    coverImageView.setImageBitmap(bitmap);
                 }
+                if (MediaUtils.isLongImage(bitmap.getWidth(), bitmap.getHeight())) {
+                    coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                } else {
+                    coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                }
+                mPreviewEventListener.onLoadCompleteBeginScale(BasePreviewHolder.this);
             }
-        }
+        });
 
         coverImageView.setOnViewTapListener(new OnViewTapListener() {
             @Override

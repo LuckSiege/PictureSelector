@@ -99,7 +99,7 @@ public final class SandboxFileLoader {
                 }
 
                 if (!config.isGif) {
-                    if (PictureMimeType.isGif(mimeType)) {
+                    if (PictureMimeType.isHasGif(mimeType)) {
                         continue;
                     }
                 }

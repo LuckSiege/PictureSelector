@@ -3,7 +3,6 @@ package com.luck.picture.lib.adapter.holder;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import com.luck.picture.lib.config.PictureSelectionConfig;
 
 /**
  * @author：luck
@@ -12,7 +11,7 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
  */
 public class PreviewImageHolder extends BasePreviewHolder {
 
-    public PreviewImageHolder(@NonNull View itemView, PictureSelectionConfig config) {
-        super(itemView, config);
+    public PreviewImageHolder(@NonNull View itemView) {
+        super(itemView);
     }
 }

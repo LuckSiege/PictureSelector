@@ -790,13 +790,14 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     }
 
     private void initViewPagerData() {
-        viewPageAdapter = new PicturePreviewAdapter(mData, config, new MyOnPreviewEventListener());
+        viewPageAdapter = new PicturePreviewAdapter(mData, new MyOnPreviewEventListener());
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         viewPager.setAdapter(viewPageAdapter);
         viewPager.setCurrentItem(curPosition, false);
         tvSelected.setSelected(SelectedManager.getSelectedResult().contains(mData.get(viewPager.getCurrentItem())));
         completeSelectView.setSelectedChange(true);
         viewPager.registerOnPageChangeCallback(pageChangeCallback);
+        viewPager.setPageTransformer(new MarginPageTransformer(DensityUtil.dip2px(getContext(),5)));
         subSelectPosition(false);
         notifySelectNumberStyle(mData.get(curPosition));
     }

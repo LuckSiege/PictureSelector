@@ -25,11 +25,11 @@ public class PreviewVideoHolder extends BasePreviewHolder {
     public ImageView ivPlayButton;
     public VideoView videoView;
 
-    public PreviewVideoHolder(@NonNull View itemView, PictureSelectionConfig config) {
-        super(itemView, config);
+    public PreviewVideoHolder(@NonNull View itemView) {
+        super(itemView);
         ivPlayButton = itemView.findViewById(R.id.iv_play_video);
         videoView = itemView.findViewById(R.id.video_view);
-        ivPlayButton.setVisibility(config.isPreviewScaleMode ? View.GONE : View.VISIBLE);
+        ivPlayButton.setVisibility(PictureSelectionConfig.getInstance().isPreviewScaleMode ? View.GONE : View.VISIBLE);
     }
 
     @Override

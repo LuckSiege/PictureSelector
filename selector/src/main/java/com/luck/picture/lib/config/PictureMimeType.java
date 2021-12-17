@@ -19,7 +19,7 @@ public final class PictureMimeType {
      * @param mimeType
      * @return
      */
-    public static boolean isGif(String mimeType) {
+    public static boolean isHasGif(String mimeType) {
         return mimeType != null && (mimeType.equals("image/gif") || mimeType.equals("image/GIF"));
     }
 
@@ -50,8 +50,18 @@ public final class PictureMimeType {
      * @param mimeType
      * @return
      */
-    public static boolean isWebp(String mimeType) {
+    public static boolean isHasWebp(String mimeType) {
         return mimeType != null && mimeType.equalsIgnoreCase("image/webp");
+    }
+
+    /**
+     * isWebp
+     *
+     * @param url
+     * @return
+     */
+    public static boolean isUrlHasWebp(String url) {
+        return url.toLowerCase().endsWith(".webp");
     }
 
     /**

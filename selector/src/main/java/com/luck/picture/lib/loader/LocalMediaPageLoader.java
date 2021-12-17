@@ -286,7 +286,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                         mimeType = PictureMimeType.getImageMimeType(url);
                                     }
                                     if (!config.isGif) {
-                                        if (PictureMimeType.isGif(mimeType)) {
+                                        if (PictureMimeType.isHasGif(mimeType)) {
                                             continue;
                                         }
                                     }

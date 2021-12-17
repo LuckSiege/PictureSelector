@@ -77,9 +77,9 @@ public class ImageViewHolder extends BaseRecyclerMediaHolder {
             ivEditor.setVisibility(View.GONE);
         }
         tvMediaTag.setVisibility(View.VISIBLE);
-        if (PictureMimeType.isGif(media.getMimeType())) {
+        if (PictureMimeType.isHasGif(media.getMimeType())) {
             tvMediaTag.setText(mContext.getString(R.string.ps_gif_tag));
-        } else if (PictureMimeType.isWebp(media.getMimeType())) {
+        } else if (PictureMimeType.isHasWebp(media.getMimeType())) {
             tvMediaTag.setText(mContext.getString(R.string.ps_webp_tag));
         } else if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
             tvMediaTag.setText(mContext.getString(R.string.ps_long_chart));

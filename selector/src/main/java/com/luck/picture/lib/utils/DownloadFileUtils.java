@@ -61,7 +61,7 @@ public class DownloadFileUtils {
                         contentValues.put(MediaStore.Images.Media.DATE_TAKEN, time);
                         contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, PictureMimeType.DCIM);
                     } else {
-                        if (PictureMimeType.isGif(mimeType) || PictureMimeType.isUrlHasGif(path)) {
+                        if (PictureMimeType.isHasGif(mimeType) || PictureMimeType.isUrlHasGif(path)) {
                             File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
                             contentValues.put(MediaStore.MediaColumns.DATA, dir.getAbsolutePath() + File.separator
                                     + DateUtils.getCreateFileName("IMG_") + PictureMimeType.GIF);
