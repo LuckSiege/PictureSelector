@@ -1,6 +1,7 @@
 package com.luck.picture.lib.adapter;
 
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,6 +12,7 @@ import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.utils.MediaUtils;
 
 import java.util.List;
 
@@ -84,6 +86,12 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
         if (holder instanceof PreviewVideoHolder) {
             PreviewVideoHolder previewVideoHolder = (PreviewVideoHolder) holder;
             previewVideoHolder.addVideoListener();
+        }
+        LocalMedia localMedia = holder.getLocalMedia();
+        if (localMedia != null && MediaUtils.isLongImage(localMedia.getWidth(), localMedia.getHeight())) {
+            holder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        } else {
+            holder.coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         }
     }
 

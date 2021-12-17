@@ -1,7 +1,6 @@
 package com.luck.picture.lib.adapter.holder;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +13,9 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
-import com.luck.picture.lib.large.ImageSource;
 import com.luck.picture.lib.photoview.OnViewTapListener;
 import com.luck.picture.lib.photoview.PhotoView;
 import com.luck.picture.lib.utils.MediaUtils;
-
-import java.io.File;
 
 /**
  * @author：luck
@@ -37,6 +33,7 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
     public final static int ADAPTER_TYPE_VIDEO = 2;
     private final PictureSelectionConfig config;
     public PhotoView coverImageView;
+    private LocalMedia currentLocalMedia;
 
     public static BasePreviewHolder generate(ViewGroup parent, int viewType, int resource, PictureSelectionConfig config) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);
@@ -53,6 +50,9 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
         this.coverImageView = itemView.findViewById(R.id.preview_image);
     }
 
+    public LocalMedia getLocalMedia() {
+        return currentLocalMedia;
+    }
 
     /**
      * bind Data
@@ -61,6 +61,7 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
      * @param position
      */
     public void bindData(LocalMedia media, int position) {
+        this.currentLocalMedia = media;
         String path = media.getAvailablePath();
         if (PictureMimeType.isHasHttp(path)) {
             String mimeType = PictureMimeType.getImageMimeType(path);
@@ -83,18 +84,13 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
                 PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, new OnCallbackListener<Bitmap>() {
                     @Override
                     public void onCall(Bitmap resource) {
-                        onLoadSourceImage(resource);
-                        if (MediaUtils.isLongImg(resource.getWidth(), resource.getHeight())) {
-                            onLoadLargeSourceImage(ImageSource.cachedBitmap(resource));
-                        }
+                        coverImageView.setImageBitmap(resource);
+                        mPreviewEventListener.onLoadCompleteBeginScale(BasePreviewHolder.this);
                     }
                 });
             }
         } else {
             if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
-                Uri uri = PictureMimeType.isContent(path) ? Uri.parse(path) : Uri.fromFile(new File(path));
-                ImageSource imageSource = ImageSource.uri(uri);
-                onLoadLargeSourceImage(imageSource);
                 if (config.isPreviewScaleMode) {
                     PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, new OnCallbackListener<Bitmap>() {
                         @Override
@@ -141,20 +137,6 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
                 return false;
             }
         });
-    }
-
-    /**
-     * 加载大图资源
-     */
-    protected void onLoadLargeSourceImage(ImageSource imageSource) {
-
-    }
-
-    /**
-     * 加载普通资源
-     */
-    protected void onLoadSourceImage(Bitmap resource) {
-
     }
 
 

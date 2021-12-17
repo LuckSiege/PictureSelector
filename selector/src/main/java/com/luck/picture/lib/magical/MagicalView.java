@@ -11,12 +11,14 @@ import android.transition.ChangeTransform;
 import android.transition.TransitionManager;
 import android.transition.TransitionSet;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.utils.DensityUtil;
@@ -300,7 +302,6 @@ public class MagicalView extends FrameLayout {
         contentLayout.addView(view);
     }
 
-
     private void changeContentViewToFullscreen() {
         targetImageHeight = screenHeight;
         targetImageWidth = screenWidth;
@@ -314,6 +315,47 @@ public class MagicalView extends FrameLayout {
     public void setBackgroundAlpha(float mAlpha) {
         this.mAlpha = mAlpha;
         backgroundView.setAlpha(mAlpha);
+    }
+
+    private int startX, startY;
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        View childView = contentLayout.getChildAt(0);
+        ViewPager2 viewPager2 = null;
+        if (childView instanceof ViewPager2) {
+            // 如果MagicalView包含的是ViewPage2 需要处理一下滑动事件冲突，主要是针对长图可以上下滑动时会与左右滑动冲突
+            viewPager2 = (ViewPager2) childView;
+        }
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                startX = (int) event.getX();
+                startY = (int) event.getY();
+                if (viewPager2 != null) {
+                    viewPager2.setUserInputEnabled(true);
+                }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                int endX = (int) event.getX();
+                int endY = (int) event.getY();
+                int disX = Math.abs(endX - startX);
+                int disY = Math.abs(endY - startY);
+                if (disX > disY) {
+                    // TODO 水平滑动忽略
+                } else {
+                    if (viewPager2 != null) {
+                        viewPager2.setUserInputEnabled(canScrollVertically(startY - endY));
+                    }
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                if (viewPager2 != null) {
+                    viewPager2.setUserInputEnabled(true);
+                }
+                break;
+        }
+        return super.dispatchTouchEvent(event);
     }
 
     private OnMagicalViewCallback onMagicalViewCallback;

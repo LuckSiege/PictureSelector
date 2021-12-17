@@ -21,12 +21,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.luck.picture.lib.adapter.PicturePreviewAdapter;
 import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
 import com.luck.picture.lib.adapter.holder.PreviewGalleryAdapter;
-import com.luck.picture.lib.adapter.holder.PreviewImageHolder;
 import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
 import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.basic.PictureMediaScannerConnection;
@@ -307,27 +307,15 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 if (currentHolder == null) {
                     return;
                 }
-                currentHolder.coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                LocalMedia media = mData.get(viewPager.getCurrentItem());
+                if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
+                    currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                } else {
+                    currentHolder.coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                }
                 if (currentHolder instanceof PreviewVideoHolder) {
                     PreviewVideoHolder videoHolder = (PreviewVideoHolder) currentHolder;
                     videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
-                }
-                if (currentHolder instanceof PreviewImageHolder) {
-                    PreviewImageHolder imageHolder = (PreviewImageHolder) currentHolder;
-                    LocalMedia media = mData.get(viewPager.getCurrentItem());
-                    if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
-                        // 长图因为是使用的第三方控件没办法控制ScaleType所以借用普通ImageView来做缩放效果
-                        imageHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                        ObjectAnimator alphaLargerAnimator = ObjectAnimator.ofFloat(imageHolder.largePreviewView, "alpha", 0.0F, 1.0F);
-                        alphaLargerAnimator.setDuration(150);
-                        alphaLargerAnimator.start();
-                        alphaLargerAnimator.addListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                imageHolder.coverImageView.setVisibility(View.GONE);
-                            }
-                        });
-                    }
                 }
             }
 
@@ -349,15 +337,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 currentHolder.coverImageView.getLayoutParams().width = itemViewParams.width;
                 currentHolder.coverImageView.getLayoutParams().height = itemViewParams.height;
                 currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                if (currentHolder instanceof PreviewImageHolder) {
-                    LocalMedia media = mData.get(viewPager.getCurrentItem());
-                    PreviewImageHolder imageHolder = (PreviewImageHolder) currentHolder;
-                    if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
-                        // 长图因为是使用的第三方控件没办法控制ScaleType所以借用普通ImageView来做缩放效果
-                        imageHolder.coverImageView.setVisibility(View.VISIBLE);
-                        imageHolder.largePreviewView.setAlpha(0.0F);
-                    }
-                }
             }
 
             @Override
@@ -858,7 +837,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 magicalView.start(false);
             }
 
-            ObjectAnimator animator = ObjectAnimator.ofFloat(holder.coverImageView, "alpha", 0.0F, 1.0F);
+            ObjectAnimator animator = ObjectAnimator.ofFloat(viewPager, "alpha", 0.0F, 1.0F);
             animator.setDuration(50);
             animator.start();
         }
