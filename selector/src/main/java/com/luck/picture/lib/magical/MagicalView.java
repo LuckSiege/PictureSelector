@@ -31,7 +31,7 @@ import com.luck.picture.lib.utils.DensityUtil;
 public class MagicalView extends FrameLayout {
 
     private float mAlpha = 0.0F;
-    private final long animationDuration = 250;
+    private final long animationDuration = 2500;
     private int mOriginLeft;
     private int mOriginTop;
     private int mOriginHeight;
