@@ -21,7 +21,6 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.utils.DensityUtil;
 
 /**
@@ -64,10 +63,8 @@ public class MagicalView extends FrameLayout {
 
     public MagicalView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        PictureSelectionConfig config = PictureSelectionConfig.getInstance();
         screenWidth = DensityUtil.getScreenWidth(context);
-        screenHeight = config.isPreviewFullScreenMode ? DensityUtil.getAppInScreenHeight(getContext())
-                : DensityUtil.getScreenHeight(context);
+        screenHeight = DensityUtil.getAppInScreenHeight(context);
         backgroundView = new View(context);
         backgroundView.setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         backgroundView.setBackgroundColor(ContextCompat.getColor(context, R.color.ps_color_black));
