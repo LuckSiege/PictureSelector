@@ -444,7 +444,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
 
     private void initBottomNavBar() {
-        bottomNarBar.setSelectedChange();
         bottomNarBar.setBottomNavBarStyle();
         bottomNarBar.setOnBottomNavBarListener(new BottomNavBar.OnBottomNavBarListener() {
             @Override
@@ -457,6 +456,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 sendSelectedOriginalChangeEvent();
             }
         });
+        bottomNarBar.setSelectedChange();
     }
 
 
