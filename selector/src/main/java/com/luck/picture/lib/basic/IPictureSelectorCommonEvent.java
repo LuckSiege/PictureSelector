@@ -114,16 +114,6 @@ public interface IPictureSelectorCommonEvent {
     void dispatchCameraMediaResult(LocalMedia media);
 
     /**
-     * {@link PictureSelectionConfig.selectorStyle.getSelectMainStyle().isSelectNumberStyle}
-     * <p>
-     * isSelectNumberStyle模式下对选择结果编号进行排序
-     * </p>
-     *
-     * @param isRefreshAdapter
-     */
-    void subSelectPosition(boolean isRefreshAdapter);
-
-    /**
      * 发送选择数据发生变化的通知
      *
      * @param isAddRemove  添加还是移除操作
@@ -137,9 +127,13 @@ public interface IPictureSelectorCommonEvent {
     void sendFixedSelectedChangeEvent(LocalMedia currentMedia);
 
     /**
-     * 重新刷新选择position标志位
+     * {@link PictureSelectionConfig.selectorStyle.getSelectMainStyle().isSelectNumberStyle}
+     * <p>
+     * isSelectNumberStyle模式下对选择结果编号进行排序
+     * </p>
+     *
      */
-    void sendChangeSubSelectPositionEvent();
+    void sendChangeSubSelectPositionEvent(boolean adapterChange);
 
     /**
      * 原图选项发生变化

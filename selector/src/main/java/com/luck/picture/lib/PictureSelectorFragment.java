@@ -119,7 +119,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
             mAdapter.notifyItemPositionChanged(currentMedia.position);
         }
         if (!isAddRemove) {
-            subSelectPosition(true);
+            sendChangeSubSelectPositionEvent(true);
         }
     }
 
@@ -129,18 +129,12 @@ public class PictureSelectorFragment extends PictureCommonFragment
     }
 
     @Override
-    public void sendChangeSubSelectPositionEvent() {
-        subSelectPosition(true);
-    }
-
-    @Override
-    public void subSelectPosition(boolean isRefreshAdapter) {
-        if (PictureSelectionConfig.selectorStyle.getSelectMainStyle()
-                .isSelectNumberStyle()) {
+    public void sendChangeSubSelectPositionEvent(boolean adapterChange) {
+        if (PictureSelectionConfig.selectorStyle.getSelectMainStyle().isSelectNumberStyle()) {
             for (int index = 0; index < SelectedManager.getCount(); index++) {
                 LocalMedia media = SelectedManager.getSelectedResult().get(index);
                 media.setNum(index + 1);
-                if (isRefreshAdapter) {
+                if (adapterChange) {
                     mAdapter.notifyItemPositionChanged(media.position);
                 }
             }
@@ -743,7 +737,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @SuppressLint("NotifyDataSetChanged")
     private void setAdapterData(ArrayList<LocalMedia> result) {
-        subSelectPosition(false);
+        sendChangeSubSelectPositionEvent(false);
         mAdapter.setDataAndDataSetChanged(result);
         if (mAdapter.isDataEmpty()) {
             showDataNull();

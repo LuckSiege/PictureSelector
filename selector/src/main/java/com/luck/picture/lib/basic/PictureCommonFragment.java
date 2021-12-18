@@ -138,10 +138,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     }
 
-    @Override
-    public void subSelectPosition(boolean isRefreshAdapter) {
-
-    }
 
     @Override
     public void onSelectedChange(boolean isAddRemove, LocalMedia currentMedia) {
@@ -154,7 +150,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     }
 
     @Override
-    public void sendChangeSubSelectPositionEvent() {
+    public void sendChangeSubSelectPositionEvent(boolean adapterChange) {
 
     }
 

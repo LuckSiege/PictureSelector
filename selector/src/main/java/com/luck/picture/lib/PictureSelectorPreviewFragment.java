@@ -394,7 +394,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     }
 
     @Override
-    public void subSelectPosition(boolean isRefreshAdapter) {
+    public void sendChangeSubSelectPositionEvent(boolean adapterChange) {
         if (PictureSelectionConfig.selectorStyle.getSelectMainStyle().isPreviewSelectNumberStyle()) {
             if (PictureSelectionConfig.selectorStyle.getSelectMainStyle().isSelectNumberStyle()) {
                 for (int index = 0; index < SelectedManager.getCount(); index++) {
@@ -404,7 +404,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             }
         }
     }
-
 
     /**
      * init LocalMedia Loader
@@ -796,7 +795,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                                 for (int i = 0; i < fragments.size(); i++) {
                                     Fragment fragment = fragments.get(i);
                                     if (fragment instanceof PictureCommonFragment) {
-                                        ((PictureCommonFragment) fragment).sendChangeSubSelectPositionEvent();
+                                        ((PictureCommonFragment) fragment).sendChangeSubSelectPositionEvent(true);
                                     }
                                 }
                             }
@@ -920,7 +919,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         completeSelectView.setSelectedChange(true);
         viewPager.registerOnPageChangeCallback(pageChangeCallback);
         viewPager.setPageTransformer(new MarginPageTransformer(DensityUtil.dip2px(getContext(), 5)));
-        subSelectPosition(false);
+        sendChangeSubSelectPositionEvent(false);
         notifySelectNumberStyle(mData.get(curPosition));
     }
 
