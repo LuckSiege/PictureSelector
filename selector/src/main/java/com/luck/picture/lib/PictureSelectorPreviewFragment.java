@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -255,11 +256,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             externalPreviewStyle();
             initViewPagerData();
         } else {
-            iniMagicalView();
             initLoader();
             initBottomNavBar();
             initPreviewSelectGallery(view);
             initComplete();
+            iniMagicalView();
             if (savedInstanceState != null && mData.size() == 0) {
                 // 这种情况就是内存不足导致页面被回收后的补全逻辑，让其恢复到回收前的样子
                 if (isBottomPreview) {
@@ -288,6 +289,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             magicalView.setBackgroundAlpha(1.0F);
         } else if (config.isPreviewZoomEffect) {
             magicalView.setBackgroundAlpha(0.0F);
+            for (int i = 0; i < mAnimViews.size(); i++) {
+                mAnimViews.get(i).setAlpha(0.0F);
+            }
             setMagicalViewAction();
         } else {
             magicalView.setBackgroundAlpha(1.0F);
@@ -327,6 +331,13 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 if (currentHolder instanceof PreviewVideoHolder) {
                     PreviewVideoHolder videoHolder = (PreviewVideoHolder) currentHolder;
                     videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onBackgroundAlpha(float alpha) {
+                for (int i = 0; i < mAnimViews.size(); i++) {
+                    mAnimViews.get(i).setAlpha(alpha);
                 }
             }
 
@@ -913,7 +924,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         tvSelected.setSelected(SelectedManager.getSelectedResult().contains(mData.get(viewPager.getCurrentItem())));
         completeSelectView.setSelectedChange(true);
         viewPager.registerOnPageChangeCallback(pageChangeCallback);
-        viewPager.setPageTransformer(new MarginPageTransformer(DensityUtil.dip2px(getContext(), 5)));
+        viewPager.setPageTransformer(new MarginPageTransformer(DensityUtil.dip2px(getContext(), 3)));
         sendChangeSubSelectPositionEvent(false);
         notifySelectNumberStyle(mData.get(curPosition));
     }

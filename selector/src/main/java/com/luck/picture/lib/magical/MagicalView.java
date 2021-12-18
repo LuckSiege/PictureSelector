@@ -32,7 +32,7 @@ import com.luck.picture.lib.utils.DensityUtil;
 public class MagicalView extends FrameLayout {
 
     private float mAlpha = 0.0F;
-    private final long animationDuration = 250;
+    private final long animationDuration = 2500;
     private int mOriginLeft;
     private int mOriginTop;
     private int mOriginHeight;
@@ -280,6 +280,9 @@ public class MagicalView extends FrameLayout {
                 isAnimating = true;
                 mAlpha = (Float) animation.getAnimatedValue();
                 backgroundView.setAlpha(mAlpha);
+                if (onMagicalViewCallback != null) {
+                    onMagicalViewCallback.onBackgroundAlpha(mAlpha);
+                }
             }
         });
         valueAnimator.addListener(new AnimatorListenerAdapter() {

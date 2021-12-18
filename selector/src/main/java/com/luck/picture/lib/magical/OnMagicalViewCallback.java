@@ -14,5 +14,7 @@ public interface OnMagicalViewCallback {
 
     void onBeginMagicalAnimComplete(MagicalView mojitoView, boolean showImmediately);
 
+    void onBackgroundAlpha(float alpha);
+
     void onMagicalViewFinish();
 }
