@@ -134,8 +134,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     private int screenWidth;
 
-    private boolean isTransformPage = false;
-
     private boolean needScaleBig = true;
 
     private boolean needScaleSmall = true;
@@ -670,7 +668,16 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                         if (isBottomPreview || TextUtils.equals(currentAlbum, getString(R.string.ps_camera_roll))
                                 || TextUtils.equals(media.getParentFolderName(), currentAlbum)) {
                             int newPosition = isBottomPreview ? position : isShowCamera ? media.position - 1 : media.position;
+                            if (newPosition == viewPager.getCurrentItem()) {
+                                return;
+                            }
+                            if (viewPager.getAdapter() != null) {
+                                // 这里清空一下重新设置，发现频繁调用setCurrentItem会出现页面闪现之前图片
+                                viewPager.setAdapter(null);
+                                viewPager.setAdapter(viewPageAdapter);
+                            }
                             viewPager.setCurrentItem(newPosition, false);
+                            mGalleryAdapter.isSelectMedia(media);
                         }
                     }
                 });
@@ -804,21 +811,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     curPosition + 1, mData.size()));
             totalNum = mData.size();
             curPosition = currentItem;
+            if (viewPager.getAdapter() != null) {
+                viewPager.setAdapter(null);
+                viewPager.setAdapter(viewPageAdapter);
+            }
             viewPager.setCurrentItem(curPosition, false);
-            isTransformPage = true;
-            viewPager.setPageTransformer(new ViewPager2.PageTransformer() {
-                @Override
-                public void transformPage(@NonNull View page, float position) {
-                    if (isTransformPage) {
-                        ObjectAnimator animator = ObjectAnimator.ofFloat(page, "alpha", 0F, 1F);
-                        animator.setDuration(450);
-                        animator.setInterpolator(new LinearInterpolator());
-                        animator.start();
-                        isTransformPage = false;
-                    }
-                }
-            });
-            viewPageAdapter.notifyDataSetChanged();
         }
     }
 
@@ -1102,9 +1099,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             titleBar.setTitle((curPosition + 1) + "/" + totalNum);
             LocalMedia currentMedia = mData.get(position);
             notifySelectNumberStyle(currentMedia);
-            if (mGalleryAdapter != null) {
-                mGalleryAdapter.isSelectMedia(currentMedia);
-            }
             if (!isBottomPreview && config.isPreviewZoomEffect) {
                 changeMagicalViewParams(position);
                 if (PictureMimeType.isHasVideo(currentMedia.getMimeType())) {
