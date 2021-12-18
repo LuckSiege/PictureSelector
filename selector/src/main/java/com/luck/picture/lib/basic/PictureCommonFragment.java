@@ -153,7 +153,10 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     }
 
+    @Override
+    public void sendChangeSubSelectPositionEvent() {
 
+    }
 
     @Override
     public void handlePermissionSettingResult() {

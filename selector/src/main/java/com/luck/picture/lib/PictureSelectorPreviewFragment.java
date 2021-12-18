@@ -13,7 +13,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.MarginPageTransformer;
@@ -723,11 +723,17 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                                 for (int i = fromPosition; i < toPosition; i++) {
                                     Collections.swap(mGalleryAdapter.getData(), i, i + 1);
                                     Collections.swap(SelectedManager.getSelectedResult(), i, i + 1);
+                                    if (isBottomPreview) {
+                                        Collections.swap(mData, i, i + 1);
+                                    }
                                 }
                             } else {
                                 for (int i = fromPosition; i > toPosition; i--) {
                                     Collections.swap(mGalleryAdapter.getData(), i, i - 1);
                                     Collections.swap(SelectedManager.getSelectedResult(), i, i - 1);
+                                    if (isBottomPreview) {
+                                        Collections.swap(mData, i, i - 1);
+                                    }
                                 }
                             }
                             mGalleryAdapter.notifyItemMoved(fromPosition, toPosition);
@@ -781,6 +787,20 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                         viewHolder.itemView.setAlpha(1.0f);
                         super.clearView(recyclerView, viewHolder);
                         mGalleryAdapter.notifyItemChanged(viewHolder.getAbsoluteAdapterPosition());
+                        if (isBottomPreview) {
+                            viewPager.setCurrentItem(viewHolder.getAbsoluteAdapterPosition(), false);
+                        }
+                        if (PictureSelectionConfig.selectorStyle.getSelectMainStyle().isSelectNumberStyle()) {
+                            if (!ActivityCompatHelper.isDestroy(getActivity())) {
+                                List<Fragment> fragments = getActivity().getSupportFragmentManager().getFragments();
+                                for (int i = 0; i < fragments.size(); i++) {
+                                    Fragment fragment = fragments.get(i);
+                                    if (fragment instanceof PictureCommonFragment) {
+                                        ((PictureCommonFragment) fragment).sendChangeSubSelectPositionEvent();
+                                    }
+                                }
+                            }
+                        }
                     }
                 });
                 mItemTouchHelper.attachToRecyclerView(mGalleryRecycle);

@@ -129,6 +129,11 @@ public class PictureSelectorFragment extends PictureCommonFragment
     }
 
     @Override
+    public void sendChangeSubSelectPositionEvent() {
+        subSelectPosition(true);
+    }
+
+    @Override
     public void subSelectPosition(boolean isRefreshAdapter) {
         if (PictureSelectionConfig.selectorStyle.getSelectMainStyle()
                 .isSelectNumberStyle()) {

@@ -136,6 +136,10 @@ public interface IPictureSelectorCommonEvent {
      */
     void sendFixedSelectedChangeEvent(LocalMedia currentMedia);
 
+    /**
+     * 重新刷新选择position标志位
+     */
+    void sendChangeSubSelectPositionEvent();
 
     /**
      * 原图选项发生变化
