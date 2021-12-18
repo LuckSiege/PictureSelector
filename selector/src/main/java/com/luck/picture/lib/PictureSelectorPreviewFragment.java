@@ -251,8 +251,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         mAnimViews.add(completeSelectView);
         mAnimViews.add(bottomNarBar);
         initTitleBar();
-        if (config.isPreviewZoomEffect) {
-            magicalView.setBackgroundAlpha(isBottomPreview ? 1.0F : 0.0F);
+        if (isBottomPreview) {
+            magicalView.setBackgroundAlpha(1.0F);
+        } else if (config.isPreviewZoomEffect) {
+            magicalView.setBackgroundAlpha(0.0F);
             setMagicalViewAction();
         } else {
             magicalView.setBackgroundAlpha(1.0F);
@@ -368,7 +370,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     @Nullable
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        if (config.isPreviewZoomEffect) {
+        if (!isBottomPreview && config.isPreviewZoomEffect) {
             return null;
         }
         PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
@@ -599,8 +601,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 if (isExternalPreview) {
                     handleExternalPreviewBack();
                 } else {
-                    if (config.isPreviewZoomEffect) {
-                        backToMin();
+                    if (!isBottomPreview && config.isPreviewZoomEffect) {
+                        magicalView.backToMin();
                     } else {
                         iBridgePictureBehavior.onSelectFinish(false, null);
                     }
@@ -938,8 +940,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 if (isExternalPreview) {
                     handleExternalPreviewBack();
                 } else {
-                    if (config.isPreviewZoomEffect) {
-                        backToMin();
+                    if (!isBottomPreview && config.isPreviewZoomEffect) {
+                        magicalView.backToMin();
                     } else {
                         iBridgePictureBehavior.onSelectFinish(false, null);
                     }
@@ -967,8 +969,14 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     /**
      * 回到初始位置
      */
-    public void backToMin() {
-        magicalView.backToMin();
+    public void onKeyDownBackToMin() {
+        if (config.isPreviewZoomEffect) {
+            if (isBottomPreview) {
+                iBridgePictureBehavior.onSelectFinish(false, null);
+            } else {
+                magicalView.backToMin();
+            }
+        }
     }
 
     /**
@@ -1097,7 +1105,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             if (mGalleryAdapter != null) {
                 mGalleryAdapter.isSelectMedia(currentMedia);
             }
-            if (config.isPreviewZoomEffect) {
+            if (!isBottomPreview && config.isPreviewZoomEffect) {
                 changeMagicalViewParams(position);
                 if (PictureMimeType.isHasVideo(currentMedia.getMimeType())) {
                     BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder();
