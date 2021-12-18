@@ -59,7 +59,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
                 }
                 videoView.start();
                 mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
-                videoView.setOnClickListener(new View.OnClickListener() {
+                itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (mPreviewEventListener != null) {

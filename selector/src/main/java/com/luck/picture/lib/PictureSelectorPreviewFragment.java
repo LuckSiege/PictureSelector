@@ -989,6 +989,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             }
             if (config.isPreviewScaleMode) {
                 changeMagicalViewParams(position);
+                if (PictureMimeType.isHasVideo(currentMedia.getMimeType())) {
+                    BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder();
+                    if (currentHolder instanceof PreviewVideoHolder) {
+                        ((PreviewVideoHolder) currentHolder).ivPlayButton.setVisibility(View.VISIBLE);
+                    }
+                }
             }
             bottomNarBar.isDisplayEditor(PictureMimeType.isHasVideo(currentMedia.getMimeType()));
             if (!isExternalPreview && !isBottomPreview && !config.isOnlySandboxDir) {
