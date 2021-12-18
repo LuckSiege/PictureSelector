@@ -188,7 +188,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         this.curPosition = position;
         this.isDisplayDelete = isDisplayDelete;
         this.isExternalPreview = true;
-        PictureSelectionConfig.getInstance().isPreviewScaleMode = false;
+        PictureSelectionConfig.getInstance().isPreviewZoomEffect = false;
     }
 
     @Override
@@ -244,7 +244,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         mAnimViews.add(completeSelectView);
         mAnimViews.add(bottomNarBar);
         initTitleBar();
-        if (config.isPreviewScaleMode) {
+        if (config.isPreviewZoomEffect) {
             magicalView.setBackgroundAlpha(0.0F);
             setMagicalViewAction();
         } else {
@@ -361,7 +361,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     @Nullable
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        if (config.isPreviewScaleMode) {
+        if (config.isPreviewZoomEffect) {
             return null;
         }
         PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
@@ -592,7 +592,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 if (isExternalPreview) {
                     handleExternalPreviewBack();
                 } else {
-                    if (config.isPreviewScaleMode) {
+                    if (config.isPreviewZoomEffect) {
                         backToMin();
                     } else {
                         iBridgePictureBehavior.onSelectFinish(false, null);
@@ -828,7 +828,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 if (isExternalPreview) {
                     handleExternalPreviewBack();
                 } else {
-                    if (config.isPreviewScaleMode) {
+                    if (config.isPreviewZoomEffect) {
                         backToMin();
                     } else {
                         iBridgePictureBehavior.onSelectFinish(false, null);
@@ -987,7 +987,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             if (mGalleryAdapter != null) {
                 mGalleryAdapter.isSelectMedia(currentMedia);
             }
-            if (config.isPreviewScaleMode) {
+            if (config.isPreviewZoomEffect) {
                 changeMagicalViewParams(position);
                 if (PictureMimeType.isHasVideo(currentMedia.getMimeType())) {
                     BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder();

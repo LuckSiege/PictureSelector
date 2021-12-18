@@ -126,7 +126,7 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity implemen
                 }
             } else {
                 PictureSelectorPreviewFragment previewFragment = getPreviewFragment();
-                if (PictureSelectionConfig.getInstance().isPreviewScaleMode && previewFragment != null) {
+                if (PictureSelectionConfig.getInstance().isPreviewZoomEffect && previewFragment != null) {
                     previewFragment.backToMin();
                     return true;
                 }

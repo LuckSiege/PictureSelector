@@ -29,7 +29,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         super(itemView);
         ivPlayButton = itemView.findViewById(R.id.iv_play_video);
         videoView = itemView.findViewById(R.id.video_view);
-        ivPlayButton.setVisibility(PictureSelectionConfig.getInstance().isPreviewScaleMode ? View.GONE : View.VISIBLE);
+        ivPlayButton.setVisibility(PictureSelectionConfig.getInstance().isPreviewZoomEffect ? View.GONE : View.VISIBLE);
     }
 
     @Override

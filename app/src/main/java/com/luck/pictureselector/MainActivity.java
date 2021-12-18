@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 .setSelectorUIStyle(selectorStyle)
                                 .setLanguage(language)
                                 .isPreviewFullScreenMode(cb_preview_full.isChecked())
-                                .isPreviewScaleMode(cb_preview_scale.isChecked())
+                                .isPreviewZoomEffect(cb_preview_scale.isChecked())
                                 .startActivityPreview(position, selectList, true,
                                         new OnExternalPreviewEventListener() {
                                             @Override
@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //.setOutputCameraVideoFileName("luck.mp4")
                             .isWithSelectVideoImage(true)
                             .isPreviewFullScreenMode(cb_preview_full.isChecked())
-                            .isPreviewScaleMode(cb_preview_scale.isChecked())
+                            .isPreviewZoomEffect(cb_preview_scale.isChecked())
                             //.queryOnlyMimeType(PictureMimeType.ofGIF())
                             .isMaxSelectEnabledMask(cbEnabledMask.isChecked())
                             .isDirectReturnSingle(cb_single_back.isChecked())

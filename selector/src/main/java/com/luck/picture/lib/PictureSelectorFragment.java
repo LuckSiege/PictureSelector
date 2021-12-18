@@ -724,7 +724,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 currentBucketId = SelectedManager.getCurrentLocalMediaFolder().getBucketId();
             }
             if (ActivityCompatHelper.checkFragmentNonExits(getActivity(), PictureSelectorPreviewFragment.TAG)) {
-                if (config.isPreviewScaleMode) {
+                if (config.isPreviewZoomEffect) {
                     BuildRecycleItemViewParams.generateViewParams(mRecycler,
                             config.isPreviewFullScreenMode ? 0 : DensityUtil.getStatusBarHeight(getContext()));
                 }

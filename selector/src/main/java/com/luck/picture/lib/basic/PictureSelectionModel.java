@@ -755,12 +755,12 @@ public class PictureSelectionModel {
     }
 
     /**
-     * Preview Scale Mode
+     * Preview Zoom Effect Mode
      *
      * @return
      */
-    public PictureSelectionModel isPreviewScaleMode(boolean isPreviewScale) {
-        selectionConfig.isPreviewScaleMode = isPreviewScale;
+    public PictureSelectionModel isPreviewZoomEffect(boolean isPreviewZoomEffect) {
+        selectionConfig.isPreviewZoomEffect = isPreviewZoomEffect;
         return this;
     }
 
