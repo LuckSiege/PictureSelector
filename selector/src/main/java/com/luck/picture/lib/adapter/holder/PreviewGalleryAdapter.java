@@ -122,7 +122,7 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
      *
      * @return
      */
-    private int getLastCheckPosition() {
+    public int getLastCheckPosition() {
         for (int i = 0; i < mData.size(); i++) {
             LocalMedia media = mData.get(i);
             if (media.isChecked()) {
