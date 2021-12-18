@@ -24,7 +24,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     private BasePreviewHolder currentHolder;
     private final BasePreviewHolder.OnPreviewEventListener onPreviewEventListener;
 
-    public PicturePreviewAdapter(List<LocalMedia> list,BasePreviewHolder.OnPreviewEventListener listener) {
+    public PicturePreviewAdapter(List<LocalMedia> list, BasePreviewHolder.OnPreviewEventListener listener) {
         this.mData = list;
         this.onPreviewEventListener = listener;
     }
@@ -83,20 +83,11 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     }
 
     /**
-     * 获取当前ViewPage2的Holder
-     *
-     * @return
-     */
-    public BasePreviewHolder getCurrentHolder() {
-        return currentHolder;
-    }
-
-    /**
      * 释放当前视频Holder相关
      */
     public void destroyCurrentVideoHolder() {
-        if (getCurrentHolder() != null && getCurrentHolder() instanceof PreviewVideoHolder) {
-            ((PreviewVideoHolder) getCurrentHolder()).releaseVideo();
+        if (currentHolder instanceof PreviewVideoHolder) {
+            ((PreviewVideoHolder) currentHolder).releaseVideo();
         }
     }
 }

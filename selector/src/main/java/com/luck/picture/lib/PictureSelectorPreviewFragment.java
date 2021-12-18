@@ -10,7 +10,6 @@ import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -54,6 +53,7 @@ import com.luck.picture.lib.magical.MagicalView;
 import com.luck.picture.lib.magical.OnMagicalViewCallback;
 import com.luck.picture.lib.magical.ViewParams;
 import com.luck.picture.lib.manager.SelectedManager;
+import com.luck.picture.lib.photoview.PhotoView;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
@@ -306,31 +306,32 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
             @Override
             public void onBeginBackMinAnim() {
-                BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder();
-                if (currentHolder == null) {
+                if (viewPager.getChildCount() == 0) {
                     return;
                 }
-                if (currentHolder instanceof PreviewVideoHolder) {
-                    PreviewVideoHolder videoHolder = (PreviewVideoHolder) currentHolder;
-                    videoHolder.ivPlayButton.setVisibility(View.GONE);
+                View itemView = viewPager.getChildAt(0);
+                View ivPlayButton = itemView.findViewById(R.id.iv_play_video);
+                if (ivPlayButton != null) {
+                    ivPlayButton.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onBeginMagicalAnimComplete(MagicalView mojitoView, boolean showImmediately) {
-                BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder();
-                if (currentHolder == null) {
+                if (viewPager.getChildCount() == 0) {
                     return;
                 }
+                View itemView = viewPager.getChildAt(0);
+                PhotoView coverImageView = itemView.findViewById(R.id.preview_image);
                 LocalMedia media = mData.get(viewPager.getCurrentItem());
                 if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
-                    currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 } else {
-                    currentHolder.coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 }
-                if (currentHolder instanceof PreviewVideoHolder) {
-                    PreviewVideoHolder videoHolder = (PreviewVideoHolder) currentHolder;
-                    videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
+                View ivPlayButton = itemView.findViewById(R.id.iv_play_video);
+                if (ivPlayButton != null) {
+                    ivPlayButton.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -348,17 +349,18 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
             @Override
             public void onBeginBackMinMagicalFinish(boolean isResetSize) {
-                BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder();
-                if (currentHolder == null) {
+                if (viewPager.getChildCount() == 0) {
                     return;
                 }
+                View itemView = viewPager.getChildAt(0);
+                PhotoView coverImageView = itemView.findViewById(R.id.preview_image);
                 ViewParams itemViewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
                 if (itemViewParams == null) {
                     return;
                 }
-                currentHolder.coverImageView.getLayoutParams().width = itemViewParams.width;
-                currentHolder.coverImageView.getLayoutParams().height = itemViewParams.height;
-                currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                coverImageView.getLayoutParams().width = itemViewParams.width;
+                coverImageView.getLayoutParams().height = itemViewParams.height;
+                coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
         });
     }
@@ -1135,9 +1137,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             if (!isBottomPreview && config.isPreviewZoomEffect) {
                 changeMagicalViewParams(position);
                 if (PictureMimeType.isHasVideo(currentMedia.getMimeType())) {
-                    BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder();
-                    if (currentHolder instanceof PreviewVideoHolder) {
-                        ((PreviewVideoHolder) currentHolder).ivPlayButton.setVisibility(View.VISIBLE);
+                    if (viewPager.getChildCount() > 0) {
+                        View itemView = viewPager.getChildAt(0);
+                        View ivPlayButton = itemView.findViewById(R.id.iv_play_video);
+                        if (ivPlayButton != null) {
+                            ivPlayButton.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
             }
