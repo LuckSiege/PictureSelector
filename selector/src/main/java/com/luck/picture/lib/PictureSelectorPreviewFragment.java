@@ -6,6 +6,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
@@ -66,6 +68,7 @@ import com.luck.picture.lib.widget.PreviewTitleBar;
 import com.luck.picture.lib.widget.TitleBar;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -132,6 +135,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private int screenWidth;
 
     private boolean isTransformPage = false;
+
+    private boolean needScaleBig = true;
+
+    private boolean needScaleSmall = true;
 
     private long mBucketId = -1;
 
@@ -245,7 +252,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         mAnimViews.add(bottomNarBar);
         initTitleBar();
         if (config.isPreviewZoomEffect) {
-            magicalView.setBackgroundAlpha(0.0F);
+            magicalView.setBackgroundAlpha(isBottomPreview ? 1.0F : 0.0F);
             setMagicalViewAction();
         } else {
             magicalView.setBackgroundAlpha(1.0F);
@@ -671,6 +678,109 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     mGalleryRecycle.setVisibility(View.INVISIBLE);
                 }
                 mAnimViews.add(mGalleryRecycle);
+                ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
+                    @Override
+                    public boolean isLongPressDragEnabled() {
+                        return true;
+                    }
+
+                    @Override
+                    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                    }
+
+                    @Override
+                    public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                        viewHolder.itemView.setAlpha(0.7F);
+                        return makeMovementFlags(ItemTouchHelper.DOWN | ItemTouchHelper.UP
+                                | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, 0);
+                    }
+
+                    @Override
+                    public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                        try {
+                            //得到item原来的position
+                            int fromPosition = viewHolder.getAbsoluteAdapterPosition();
+                            //得到目标position
+                            int toPosition = target.getAbsoluteAdapterPosition();
+                            if (fromPosition < toPosition) {
+                                for (int i = fromPosition; i < toPosition; i++) {
+                                    Collections.swap(mGalleryAdapter.getData(), i, i + 1);
+                                    Collections.swap(SelectedManager.getSelectedResult(), i, i + 1);
+                                }
+                            } else {
+                                for (int i = fromPosition; i > toPosition; i--) {
+                                    Collections.swap(mGalleryAdapter.getData(), i, i - 1);
+                                    Collections.swap(SelectedManager.getSelectedResult(), i, i - 1);
+                                }
+                            }
+                            mGalleryAdapter.notifyItemMoved(fromPosition, toPosition);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
+                                            @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                        if (needScaleBig) {
+                            //如果需要执行放大动画
+                            ObjectAnimator scaleX = ObjectAnimator.ofFloat(viewHolder.itemView, "scaleX", 1.0F, 1.1F);
+                            ObjectAnimator scaleY = ObjectAnimator.ofFloat(viewHolder.itemView, "scaleY", 1.0F, 1.1F);
+                            scaleX.setDuration(100);
+                            scaleY.setDuration(100);
+                            scaleX.start();
+                            scaleY.start();
+                            //执行完成放大动画,标记改掉
+                            needScaleBig = false;
+                            //默认不需要执行缩小动画，当执行完成放大 并且松手后才允许执行
+                            needScaleSmall = false;
+                        }
+                        if (needScaleSmall) {
+                            //需要松手后才能执行
+                            ObjectAnimator scaleX = ObjectAnimator.ofFloat(viewHolder.itemView, "scaleX", 1.1F, 1.0F);
+                            ObjectAnimator scaleY = ObjectAnimator.ofFloat(viewHolder.itemView, "scaleY", 1.1F, 1.0F);
+                            scaleX.setDuration(100);
+                            scaleY.setDuration(100);
+                            scaleX.start();
+                            scaleY.start();
+                        }
+                        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                    }
+
+                    @Override
+                    public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+                        super.onSelectedChanged(viewHolder, actionState);
+                    }
+
+                    @Override
+                    public long getAnimationDuration(@NonNull RecyclerView recyclerView, int animationType, float animateDx, float animateDy) {
+                        needScaleSmall = true;
+                        return super.getAnimationDuration(recyclerView, animationType, animateDx, animateDy);
+                    }
+
+                    @Override
+                    public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                        viewHolder.itemView.setAlpha(1.0f);
+                        super.clearView(recyclerView, viewHolder);
+                        mGalleryAdapter.notifyItemChanged(viewHolder.getAbsoluteAdapterPosition());
+                    }
+                });
+                mItemTouchHelper.attachToRecyclerView(mGalleryRecycle);
+                mGalleryAdapter.setItemLongClickListener(new PreviewGalleryAdapter.OnItemLongClickListener() {
+                    @Override
+                    public void onItemLongClick(RecyclerView.ViewHolder holder, int position, View v) {
+                        needScaleBig = true;
+                        needScaleSmall = true;
+                        if (mGalleryAdapter.getItemCount() != config.maxSelectNum) {
+                            mItemTouchHelper.startDrag(holder);
+                            return;
+                        }
+                        if (holder.getLayoutPosition() != mGalleryAdapter.getItemCount() - 1) {
+                            mItemTouchHelper.startDrag(holder);
+                        }
+                    }
+                });
             }
         }
     }
@@ -795,7 +905,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
         @Override
         public void onLoadCompleteBeginScale(BasePreviewHolder holder) {
-            if (isFirstLoaded) {
+            if (isFirstLoaded || isBottomPreview) {
                 return;
             }
             isFirstLoaded = true;

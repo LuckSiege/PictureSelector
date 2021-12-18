@@ -44,6 +44,10 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
         return new ViewHolder(itemView);
     }
 
+    public List<LocalMedia> getData() {
+        return mData;
+    }
+
     public void clear() {
         mData.clear();
     }
@@ -176,6 +180,16 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
                 }
             }
         });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (mItemLongClickListener != null) {
+                    int adapterPosition = holder.getAbsoluteAdapterPosition();
+                    mItemLongClickListener.onItemLongClick(holder, adapterPosition, v);
+                }
+                return true;
+            }
+        });
     }
 
 
@@ -208,6 +222,11 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
         }
     }
 
+    @Override
+    public int getItemCount() {
+        return mData.size();
+    }
+
     private OnItemClickListener listener;
 
     public void setItemClickListener(OnItemClickListener listener) {
@@ -218,8 +237,13 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
         void onItemClick(int position, LocalMedia media, View v);
     }
 
-    @Override
-    public int getItemCount() {
-        return mData.size();
+    private OnItemLongClickListener mItemLongClickListener;
+
+    public void setItemLongClickListener(OnItemLongClickListener listener) {
+        this.mItemLongClickListener = listener;
+    }
+
+    public interface OnItemLongClickListener {
+        void onItemLongClick(RecyclerView.ViewHolder holder, int position, View v);
     }
 }
