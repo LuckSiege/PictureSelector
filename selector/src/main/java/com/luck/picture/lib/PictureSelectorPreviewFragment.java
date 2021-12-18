@@ -249,23 +249,17 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         mAnimViews.add(completeSelectView);
         mAnimViews.add(bottomNarBar);
         initTitleBar();
-        if (isBottomPreview) {
-            magicalView.setBackgroundAlpha(1.0F);
-        } else if (config.isPreviewZoomEffect) {
-            magicalView.setBackgroundAlpha(0.0F);
-            setMagicalViewAction();
-        } else {
-            magicalView.setBackgroundAlpha(1.0F);
-        }
         if (isExternalPreview) {
             if (savedInstanceState != null || mData.size() == 0) {
                 mData = new ArrayList<>(SelectedManager.getSelectedPreviewResult());
             }
+            magicalView.setBackgroundAlpha(1.0F);
             SelectedManager.clearExternalPreviewData();
             initViewPagerData();
             externalPreviewStyle();
             initViewPagerData();
         } else {
+            iniMagicalView();
             initLoader();
             initBottomNavBar();
             initPreviewSelectGallery(view);
@@ -287,6 +281,20 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             } else {
                 initViewPagerData();
             }
+        }
+    }
+
+    /**
+     * 设置MagicalView
+     */
+    private void iniMagicalView() {
+        if (isBottomPreview) {
+            magicalView.setBackgroundAlpha(1.0F);
+        } else if (config.isPreviewZoomEffect) {
+            magicalView.setBackgroundAlpha(0.0F);
+            setMagicalViewAction();
+        } else {
+            magicalView.setBackgroundAlpha(1.0F);
         }
     }
 

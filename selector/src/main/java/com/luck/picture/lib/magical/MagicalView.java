@@ -51,7 +51,7 @@ public class MagicalView extends FrameLayout {
 
     private final FrameLayout contentLayout;
     private final View backgroundView;
-    private final MagicalViewWrapper imageWrapper;
+    private final MagicalViewWrapper magicalWrapper;
 
 
     public MagicalView(Context context) {
@@ -78,7 +78,7 @@ public class MagicalView extends FrameLayout {
         contentLayout.setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         addView(contentLayout);
 
-        imageWrapper = new MagicalViewWrapper(contentLayout);
+        magicalWrapper = new MagicalViewWrapper(contentLayout);
     }
 
     public void startNormal(int realWidth, int realHeight, boolean showImmediately) {
@@ -139,10 +139,10 @@ public class MagicalView extends FrameLayout {
             targetEndLeft = (screenWidth - targetImageWidth) / 2;
         }
 
-        imageWrapper.setWidth(mOriginWidth);
-        imageWrapper.setHeight(mOriginHeight);
-        imageWrapper.setMarginLeft(mOriginLeft);
-        imageWrapper.setMarginTop(mOriginTop);
+        magicalWrapper.setWidth(mOriginWidth);
+        magicalWrapper.setHeight(mOriginHeight);
+        magicalWrapper.setMarginLeft(mOriginLeft);
+        magicalWrapper.setMarginTop(mOriginTop);
     }
 
     private void beginShow(final boolean showImmediately) {
@@ -192,20 +192,20 @@ public class MagicalView extends FrameLayout {
     private void minNormalMin(boolean showImmediately, float animRatio, float startY, float endY, float startLeft, float endLeft,
                               float startWidth, float endWidth, float startHeight, float endHeight) {
         if (showImmediately) {
-            imageWrapper.setWidth(endWidth);
-            imageWrapper.setHeight(endHeight);
-            imageWrapper.setMarginLeft((int) (endLeft));
-            imageWrapper.setMarginTop((int) endY);
-            return;
+            magicalWrapper.setWidth(endWidth);
+            magicalWrapper.setHeight(endHeight);
+            magicalWrapper.setMarginLeft((int) (endLeft));
+            magicalWrapper.setMarginTop((int) endY);
+        } else {
+            float xOffset = animRatio * (endLeft - startLeft);
+            float widthOffset = animRatio * (endWidth - startWidth);
+            float heightOffset = animRatio * (endHeight - startHeight);
+            float topOffset = animRatio * (endY - startY);
+            magicalWrapper.setWidth(startWidth + widthOffset);
+            magicalWrapper.setHeight(startHeight + heightOffset);
+            magicalWrapper.setMarginLeft((int) (startLeft + xOffset));
+            magicalWrapper.setMarginTop((int) (startY + topOffset));
         }
-        float xOffset = animRatio * (endLeft - startLeft);
-        float widthOffset = animRatio * (endWidth - startWidth);
-        float heightOffset = animRatio * (endHeight - startHeight);
-        float topOffset = animRatio * (endY - startY);
-        imageWrapper.setWidth(startWidth + widthOffset);
-        imageWrapper.setHeight(startHeight + heightOffset);
-        imageWrapper.setMarginLeft((int) (startLeft + xOffset));
-        imageWrapper.setMarginTop((int) (startY + topOffset));
     }
 
     public void backToMin() {
@@ -238,10 +238,10 @@ public class MagicalView extends FrameLayout {
                 beginBackToMin(true);
                 contentLayout.setTranslationX(0);
                 contentLayout.setTranslationY(0);
-                imageWrapper.setWidth(mOriginWidth);
-                imageWrapper.setHeight(mOriginHeight);
-                imageWrapper.setMarginTop(mOriginTop);
-                imageWrapper.setMarginLeft(mOriginLeft);
+                magicalWrapper.setWidth(mOriginWidth);
+                magicalWrapper.setHeight(mOriginHeight);
+                magicalWrapper.setMarginTop(mOriginTop);
+                magicalWrapper.setMarginLeft(mOriginLeft);
 
                 changeBackgroundViewAlpha(true);
             }
@@ -269,10 +269,10 @@ public class MagicalView extends FrameLayout {
     }
 
     /**
-     * @param isToZero 是否透明
+     * @param isAlpha 是否透明
      */
-    private void changeBackgroundViewAlpha(final boolean isToZero) {
-        final float end = isToZero ? 0 : 1f;
+    private void changeBackgroundViewAlpha(final boolean isAlpha) {
+        final float end = isAlpha ? 0 : 1f;
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(mAlpha, end);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -286,7 +286,7 @@ public class MagicalView extends FrameLayout {
             @Override
             public void onAnimationEnd(Animator animation) {
                 isAnimating = false;
-                if (isToZero) {
+                if (isAlpha) {
                     if (onMagicalViewCallback != null) {
                         onMagicalViewCallback.onMagicalViewFinish();
                     }
@@ -305,10 +305,10 @@ public class MagicalView extends FrameLayout {
         targetImageHeight = screenHeight;
         targetImageWidth = screenWidth;
         targetImageTop = 0;
-        imageWrapper.setHeight(screenHeight);
-        imageWrapper.setWidth(screenWidth);
-        imageWrapper.setMarginTop(0);
-        imageWrapper.setMarginLeft(0);
+        magicalWrapper.setHeight(screenHeight);
+        magicalWrapper.setWidth(screenWidth);
+        magicalWrapper.setMarginTop(0);
+        magicalWrapper.setMarginLeft(0);
     }
 
     public void setBackgroundAlpha(float mAlpha) {
