@@ -91,8 +91,11 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
             return;
         }
         View ivPlayButton = itemView.findViewById(R.id.iv_play_video);
-        PhotoView coverImageView = itemView.findViewById(R.id.preview_image);
         VideoView videoView = itemView.findViewById(R.id.video_view);
+        if (videoView == null || ivPlayButton == null) {
+            return;
+        }
+        PhotoView coverImageView = itemView.findViewById(R.id.preview_image);
         coverImageView.setVisibility(View.VISIBLE);
         ivPlayButton.setVisibility(View.VISIBLE);
         videoView.setVisibility(View.GONE);
