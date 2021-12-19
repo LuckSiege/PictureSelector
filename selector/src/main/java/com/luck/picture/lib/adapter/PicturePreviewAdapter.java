@@ -90,18 +90,21 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
         if (itemView == null) {
             return;
         }
-        View ivPlayButton = itemView.findViewById(R.id.iv_play_video);
-        VideoView videoView = itemView.findViewById(R.id.video_view);
-        if (videoView == null || ivPlayButton == null) {
-            return;
-        }
         PhotoView coverImageView = itemView.findViewById(R.id.preview_image);
-        coverImageView.setVisibility(View.VISIBLE);
-        ivPlayButton.setVisibility(View.VISIBLE);
-        videoView.setVisibility(View.GONE);
-        videoView.stopPlayback();
-        videoView.setOnErrorListener(null);
-        videoView.setOnCompletionListener(null);
-        videoView.setOnPreparedListener(null);
+        if (coverImageView != null) {
+            coverImageView.setVisibility(View.VISIBLE);
+        }
+        View ivPlayButton = itemView.findViewById(R.id.iv_play_video);
+        if (ivPlayButton != null) {
+            ivPlayButton.setVisibility(View.VISIBLE);
+        }
+        VideoView videoView = itemView.findViewById(R.id.video_view);
+        if (videoView != null) {
+            videoView.setVisibility(View.GONE);
+            videoView.stopPlayback();
+            videoView.setOnErrorListener(null);
+            videoView.setOnCompletionListener(null);
+            videoView.setOnPreparedListener(null);
+        }
     }
 }
