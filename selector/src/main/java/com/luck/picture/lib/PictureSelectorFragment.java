@@ -52,6 +52,7 @@ import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.AnimUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DoubleUtils;
+import com.luck.picture.lib.utils.StyleUtils;
 import com.luck.picture.lib.utils.ValueOf;
 import com.luck.picture.lib.widget.BottomNavBar;
 import com.luck.picture.lib.widget.CompleteSelectView;
@@ -623,7 +624,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         mRecycler = view.findViewById(R.id.recycler);
         PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
         int listBackgroundColor = selectorStyle.getSelectMainStyle().getMainListBackgroundColor();
-        if (listBackgroundColor != 0) {
+        if (StyleUtils.checkStyleValidity(listBackgroundColor)) {
             mRecycler.setBackgroundColor(listBackgroundColor);
         }
         int imageSpanCount = config.imageSpanCount <= 0 ? PictureConfig.DEFAULT_SPAN_COUNT : config.imageSpanCount;
