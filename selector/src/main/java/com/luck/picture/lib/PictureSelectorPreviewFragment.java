@@ -146,6 +146,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     private CompleteSelectView completeSelectView;
 
+    private boolean needScaleBig = true;
+
+    private boolean needScaleSmall = true;
+
     private RecyclerView mGalleryRecycle;
 
     private PreviewGalleryAdapter mGalleryAdapter;
@@ -720,7 +724,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     mGalleryRecycle.setVisibility(View.INVISIBLE);
                 }
                 mAnimViews.add(mGalleryRecycle);
-                float viewScaleValue = 1.1F;
                 ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
                     @Override
                     public boolean isLongPressDragEnabled() {
@@ -771,16 +774,14 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     @Override
                     public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
                                             @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-                        float viewScaleX = viewHolder.itemView.getScaleX();
-                        float viewScaleY = viewHolder.itemView.getScaleY();
-                        if (viewScaleX == 1.0F && viewScaleY == 1.0F) {
-                            //如果需要执行放大动画
-                            ObjectAnimator scaleX = ObjectAnimator.ofFloat(viewHolder.itemView, "scaleX", viewScaleX, viewScaleValue);
-                            ObjectAnimator scaleY = ObjectAnimator.ofFloat(viewHolder.itemView, "scaleY", viewScaleY, viewScaleValue);
-                            scaleX.setDuration(100);
-                            scaleY.setDuration(100);
-                            scaleX.start();
-                            scaleY.start();
+                        if (needScaleBig) {
+                            needScaleBig = false;
+                            AnimatorSet animatorSet = new AnimatorSet();
+                            animatorSet.playTogether(
+                                    ObjectAnimator.ofFloat(viewHolder.itemView, "scaleX", 1.0F, 1.1F),
+                                    ObjectAnimator.ofFloat(viewHolder.itemView, "scaleY", 1.0F, 1.1F));
+                            animatorSet.setDuration(80);
+                            animatorSet.start();
                         }
                         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
                     }
@@ -798,15 +799,14 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     @Override
                     public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
                         viewHolder.itemView.setAlpha(1.0f);
-                        float viewScaleX = viewHolder.itemView.getScaleX();
-                        float viewScaleY = viewHolder.itemView.getScaleY();
-                        if (viewScaleX == viewScaleValue && viewScaleY == viewScaleValue) {
-                            ObjectAnimator scaleX = ObjectAnimator.ofFloat(viewHolder.itemView, "scaleX", viewScaleX, 1.0F);
-                            ObjectAnimator scaleY = ObjectAnimator.ofFloat(viewHolder.itemView, "scaleY", viewScaleY, 1.0F);
-                            scaleX.setDuration(100);
-                            scaleY.setDuration(100);
-                            scaleX.start();
-                            scaleY.start();
+                        if (needScaleSmall) {
+                            needScaleSmall = false;
+                            AnimatorSet animatorSet = new AnimatorSet();
+                            animatorSet.playTogether(
+                                    ObjectAnimator.ofFloat(viewHolder.itemView, "scaleX", 1.1F, 1.0F),
+                                    ObjectAnimator.ofFloat(viewHolder.itemView, "scaleY", 1.1F, 1.0F));
+                            animatorSet.setDuration(50);
+                            animatorSet.start();
                         }
                         super.clearView(recyclerView, viewHolder);
                         mGalleryAdapter.notifyItemChanged(viewHolder.getAbsoluteAdapterPosition());
@@ -833,6 +833,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 mGalleryAdapter.setItemLongClickListener(new PreviewGalleryAdapter.OnItemLongClickListener() {
                     @Override
                     public void onItemLongClick(RecyclerView.ViewHolder holder, int position, View v) {
+                        needScaleBig = true;
+                        needScaleSmall = true;
                         if (mGalleryAdapter.getItemCount() != config.maxSelectNum) {
                             mItemTouchHelper.startDrag(holder);
                             return;
