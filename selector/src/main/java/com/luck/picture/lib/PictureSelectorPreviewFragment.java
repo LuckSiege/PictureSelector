@@ -5,11 +5,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.app.Service;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
@@ -835,6 +837,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     public void onItemLongClick(RecyclerView.ViewHolder holder, int position, View v) {
                         needScaleBig = true;
                         needScaleSmall = true;
+                        Vibrator vibrator = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
+                        vibrator.vibrate(50);
                         if (mGalleryAdapter.getItemCount() != config.maxSelectNum) {
                             mItemTouchHelper.startDrag(holder);
                             return;
