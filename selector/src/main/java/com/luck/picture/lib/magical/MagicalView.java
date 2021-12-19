@@ -37,8 +37,8 @@ public class MagicalView extends FrameLayout {
     private int mOriginHeight;
     private int mOriginWidth;
 
-    private final int screenWidth;
-    private final int screenHeight;
+    private int screenWidth;
+    private int screenHeight;
     private int targetImageTop;
     private int targetImageWidth;
     private int targetImageHeight;
@@ -103,6 +103,27 @@ public class MagicalView extends FrameLayout {
         setShowEndParams();
     }
 
+    public void start(boolean showImmediately) {
+        mAlpha = showImmediately ? mAlpha = 1f : 0f;
+        backgroundView.setAlpha(mAlpha);
+        setVisibility(View.VISIBLE);
+        setOriginParams();
+        beginShow(showImmediately);
+    }
+
+    public void resetStart() {
+        screenWidth = DensityUtil.getScreenWidth(getContext());
+        screenHeight = DensityUtil.getAppInScreenHeight(getContext());
+        start(true);
+    }
+
+    public void resetStartNormal(int realWidth, int realHeight, boolean showImmediately) {
+        screenWidth = DensityUtil.getScreenWidth(getContext());
+        screenHeight = DensityUtil.getAppInScreenHeight(getContext());
+        startNormal(realWidth, realHeight, showImmediately);
+    }
+
+
     public void setViewParams(int left, int top, int originWidth, int originHeight, int realWidth, int realHeight) {
         this.realWidth = realWidth;
         this.realHeight = realHeight;
@@ -111,14 +132,6 @@ public class MagicalView extends FrameLayout {
         mOriginTop = top;
         mOriginWidth = originWidth;
         mOriginHeight = originHeight;
-    }
-
-    public void start(boolean showImmediately) {
-        mAlpha = showImmediately ? mAlpha = 1f : 0f;
-        backgroundView.setAlpha(mAlpha);
-        setVisibility(View.VISIBLE);
-        setOriginParams();
-        beginShow(showImmediately);
     }
 
     private void setOriginParams() {

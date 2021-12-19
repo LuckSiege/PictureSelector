@@ -6,6 +6,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
@@ -410,6 +411,22 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     LocalMedia media = SelectedManager.getSelectedResult().get(index);
                     media.setNum(index + 1);
                 }
+            }
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (!isBottomPreview && config.isPreviewZoomEffect) {
+            int[] size = getRealSizeFromMedia(curPosition);
+            ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
+            if (viewParams == null || size[0] == 0 || size[1] == 0) {
+                magicalView.setViewParams(0, 0, 0, 0, size[0], size[1]);
+                magicalView.resetStartNormal(size[0], size[1], false);
+            } else {
+                magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, size[0], size[1]);
+                magicalView.resetStart();
             }
         }
     }
