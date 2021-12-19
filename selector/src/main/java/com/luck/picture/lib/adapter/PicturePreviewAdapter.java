@@ -1,6 +1,8 @@
 package com.luck.picture.lib.adapter;
 
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,6 +12,7 @@ import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
 import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.photoview.PhotoView;
 
 import java.util.List;
 
@@ -21,7 +24,6 @@ import java.util.List;
 public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolder> {
 
     private final List<LocalMedia> mData;
-    private BasePreviewHolder currentHolder;
     private final BasePreviewHolder.OnPreviewEventListener onPreviewEventListener;
 
     public PicturePreviewAdapter(List<LocalMedia> list, BasePreviewHolder.OnPreviewEventListener listener) {
@@ -75,7 +77,6 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     @Override
     public void onViewAttachedToWindow(@NonNull BasePreviewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        currentHolder = holder;
         if (holder instanceof PreviewVideoHolder) {
             PreviewVideoHolder previewVideoHolder = (PreviewVideoHolder) holder;
             previewVideoHolder.addVideoListener();
@@ -85,9 +86,16 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     /**
      * 释放当前视频Holder相关
      */
-    public void destroyCurrentVideoHolder() {
-        if (currentHolder instanceof PreviewVideoHolder) {
-            ((PreviewVideoHolder) currentHolder).releaseVideo();
-        }
+    public void destroyCurrentVideoHolder(View itemView) {
+        View ivPlayButton = itemView.findViewById(R.id.iv_play_video);
+        PhotoView coverImageView = itemView.findViewById(R.id.preview_image);
+        VideoView videoView = itemView.findViewById(R.id.video_view);
+        coverImageView.setVisibility(View.VISIBLE);
+        ivPlayButton.setVisibility(View.VISIBLE);
+        videoView.setVisibility(View.GONE);
+        videoView.stopPlayback();
+        videoView.setOnErrorListener(null);
+        videoView.setOnCompletionListener(null);
+        videoView.setOnPreparedListener(null);
     }
 }
