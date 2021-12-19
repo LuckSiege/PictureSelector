@@ -87,6 +87,9 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
      * 释放当前视频Holder相关
      */
     public void destroyCurrentVideoHolder(View itemView) {
+        if (itemView == null) {
+            return;
+        }
         View ivPlayButton = itemView.findViewById(R.id.iv_play_video);
         PhotoView coverImageView = itemView.findViewById(R.id.preview_image);
         VideoView videoView = itemView.findViewById(R.id.video_view);
