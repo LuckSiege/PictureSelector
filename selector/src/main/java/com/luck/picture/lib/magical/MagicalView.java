@@ -88,7 +88,7 @@ public class MagicalView extends FrameLayout {
 
         setVisibility(View.VISIBLE);
         setOriginParams();
-        minNormalMin(targetImageTop, targetEndLeft, targetImageWidth, targetImageHeight);
+        showNormalMin(targetImageTop, targetEndLeft, targetImageWidth, targetImageHeight);
 
         if (showImmediately) {
             mAlpha = 1f;
@@ -159,7 +159,7 @@ public class MagicalView extends FrameLayout {
         if (showImmediately) {
             mAlpha = 1f;
             backgroundView.setAlpha(mAlpha);
-            minNormalMin(targetImageTop, targetEndLeft, targetImageWidth, targetImageHeight);
+            showNormalMin(targetImageTop, targetEndLeft, targetImageWidth, targetImageHeight);
             setShowEndParams();
         } else {
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
@@ -167,7 +167,7 @@ public class MagicalView extends FrameLayout {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float value = (float) animation.getAnimatedValue();
-                    minNormalMin(value, mOriginTop, targetImageTop, mOriginLeft, targetEndLeft,
+                    showNormalMin(value, mOriginTop, targetImageTop, mOriginLeft, targetEndLeft,
                             mOriginWidth, targetImageWidth, mOriginHeight, targetImageHeight);
                 }
             });
@@ -190,16 +190,16 @@ public class MagicalView extends FrameLayout {
         }
     }
 
-    private void minNormalMin(float animRatio, float startY, float endY, float startLeft, float endLeft,
+    private void showNormalMin(float animRatio, float startY, float endY, float startLeft, float endLeft,
                               float startWidth, float endWidth, float startHeight, float endHeight) {
-        minNormalMin(false, animRatio, startY, endY, startLeft, endLeft, startWidth, endWidth, startHeight, endHeight);
+        showNormalMin(false, animRatio, startY, endY, startLeft, endLeft, startWidth, endWidth, startHeight, endHeight);
     }
 
-    private void minNormalMin(float endY, float endLeft, float endWidth, float endHeight) {
-        minNormalMin(true, 0, 0, endY, 0, endLeft, 0, endWidth, 0, endHeight);
+    private void showNormalMin(float endY, float endLeft, float endWidth, float endHeight) {
+        showNormalMin(true, 0, 0, endY, 0, endLeft, 0, endWidth, 0, endHeight);
     }
 
-    private void minNormalMin(boolean showImmediately, float animRatio, float startY, float endY, float startLeft, float endLeft,
+    private void showNormalMin(boolean showImmediately, float animRatio, float startY, float endY, float startLeft, float endLeft,
                               float startWidth, float endWidth, float startHeight, float endHeight) {
         if (showImmediately) {
             magicalWrapper.setWidth(endWidth);
