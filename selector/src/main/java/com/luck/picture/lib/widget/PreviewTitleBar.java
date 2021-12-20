@@ -6,6 +6,7 @@ import android.widget.RelativeLayout;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.style.BottomNavBarStyle;
 import com.luck.picture.lib.style.TitleBarStyle;
 import com.luck.picture.lib.utils.StyleUtils;
 
@@ -31,6 +32,14 @@ public class PreviewTitleBar extends TitleBar {
     @Override
     public void setTitleBarStyle() {
         super.setTitleBarStyle();
+
+        TitleBarStyle titleBarStyle = PictureSelectionConfig.selectorStyle.getTitleBarStyle();
+        if (StyleUtils.checkStyleValidity(titleBarStyle.getPreviewTitleBackgroundColor())) {
+            setBackgroundColor(titleBarStyle.getPreviewTitleBackgroundColor());
+        } else if (StyleUtils.checkSizeValidity(titleBarStyle.getTitleBackgroundColor())) {
+            setBackgroundColor(titleBarStyle.getTitleBackgroundColor());
+        }
+
         rlAlbumBg.setOnClickListener(null);
         viewAlbumClickArea.setOnClickListener(null);
         RelativeLayout.LayoutParams layoutParams = (LayoutParams) rlAlbumBg.getLayoutParams();

@@ -35,6 +35,11 @@ public class TitleBarStyle implements Parcelable {
     private int titleBackgroundColor;
 
     /**
+     * 预览标题栏背景
+     */
+    private int previewTitleBackgroundColor;
+
+    /**
      * 标题栏高度
      * <p>
      * use  unit dp
@@ -97,6 +102,7 @@ public class TitleBarStyle implements Parcelable {
         titleTextSize = in.readInt();
         titleTextColor = in.readInt();
         titleBackgroundColor = in.readInt();
+        previewTitleBackgroundColor = in.readInt();
         titleBarHeight = in.readInt();
         titleAlbumBackgroundResource = in.readInt();
         isAlbumTitleRelativeLeft = in.readByte() != 0;
@@ -117,6 +123,7 @@ public class TitleBarStyle implements Parcelable {
         dest.writeInt(titleTextSize);
         dest.writeInt(titleTextColor);
         dest.writeInt(titleBackgroundColor);
+        dest.writeInt(previewTitleBackgroundColor);
         dest.writeInt(titleBarHeight);
         dest.writeInt(titleAlbumBackgroundResource);
         dest.writeByte((byte) (isAlbumTitleRelativeLeft ? 1 : 0));
@@ -192,6 +199,14 @@ public class TitleBarStyle implements Parcelable {
 
     public void setTitleBackgroundColor(int titleBackgroundColor) {
         this.titleBackgroundColor = titleBackgroundColor;
+    }
+
+    public int getPreviewTitleBackgroundColor() {
+        return previewTitleBackgroundColor;
+    }
+
+    public void setPreviewTitleBackgroundColor(int previewTitleBackgroundColor) {
+        this.previewTitleBackgroundColor = previewTitleBackgroundColor;
     }
 
     public int getTitleBarHeight() {

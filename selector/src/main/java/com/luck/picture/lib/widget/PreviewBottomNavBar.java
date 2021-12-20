@@ -49,9 +49,10 @@ public class PreviewBottomNavBar extends BottomNavBar {
     public void setBottomNavBarStyle() {
         super.setBottomNavBarStyle();
         BottomNavBarStyle bottomBarStyle = PictureSelectionConfig.selectorStyle.getBottomBarStyle();
-        int backgroundColor = bottomBarStyle.getBottomPreviewNarBarBackgroundColor();
-        if (StyleUtils.checkStyleValidity(backgroundColor)) {
-            setBackgroundColor(backgroundColor);
+        if (StyleUtils.checkStyleValidity(bottomBarStyle.getBottomPreviewNarBarBackgroundColor())) {
+            setBackgroundColor(bottomBarStyle.getBottomPreviewNarBarBackgroundColor());
+        } else if (StyleUtils.checkSizeValidity(bottomBarStyle.getBottomNarBarBackgroundColor())){
+            setBackgroundColor(bottomBarStyle.getBottomNarBarBackgroundColor());
         }
     }
 
