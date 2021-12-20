@@ -151,7 +151,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     private boolean needScaleBig = true;
 
-    private boolean needScaleSmall = true;
+    private boolean needScaleSmall = false;
 
     private RecyclerView mGalleryRecycle;
 
@@ -786,6 +786,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                             animatorSet.setDuration(50);
                             animatorSet.setInterpolator(new LinearInterpolator());
                             animatorSet.start();
+                            animatorSet.addListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    needScaleSmall = true;
+                                }
+                            });
                         }
                         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
                     }
@@ -812,6 +818,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                             animatorSet.setInterpolator(new LinearInterpolator());
                             animatorSet.setDuration(50);
                             animatorSet.start();
+                            animatorSet.addListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    needScaleBig = true;
+                                }
+                            });
                         }
                         super.clearView(recyclerView, viewHolder);
                         mGalleryAdapter.notifyItemChanged(viewHolder.getAbsoluteAdapterPosition());
@@ -838,8 +850,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 mGalleryAdapter.setItemLongClickListener(new PreviewGalleryAdapter.OnItemLongClickListener() {
                     @Override
                     public void onItemLongClick(RecyclerView.ViewHolder holder, int position, View v) {
-                        needScaleBig = true;
-                        needScaleSmall = true;
                         Vibrator vibrator = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
                         vibrator.vibrate(50);
                         if (mGalleryAdapter.getItemCount() != config.maxSelectNum) {
