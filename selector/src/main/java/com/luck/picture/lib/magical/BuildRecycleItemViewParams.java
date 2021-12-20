@@ -2,12 +2,8 @@ package com.luck.picture.lib.magical;
 
 import android.view.View;
 
-import androidx.annotation.IdRes;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.luck.picture.lib.utils.DensityUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 

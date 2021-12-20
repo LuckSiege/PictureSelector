@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -782,7 +783,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                             animatorSet.playTogether(
                                     ObjectAnimator.ofFloat(viewHolder.itemView, "scaleX", 1.0F, 1.1F),
                                     ObjectAnimator.ofFloat(viewHolder.itemView, "scaleY", 1.0F, 1.1F));
-                            animatorSet.setDuration(80);
+                            animatorSet.setDuration(50);
+                            animatorSet.setInterpolator(new LinearInterpolator());
                             animatorSet.start();
                         }
                         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
@@ -800,13 +802,14 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
                     @Override
                     public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-                        viewHolder.itemView.setAlpha(1.0f);
+                        viewHolder.itemView.setAlpha(1.0F);
                         if (needScaleSmall) {
                             needScaleSmall = false;
                             AnimatorSet animatorSet = new AnimatorSet();
                             animatorSet.playTogether(
                                     ObjectAnimator.ofFloat(viewHolder.itemView, "scaleX", 1.1F, 1.0F),
                                     ObjectAnimator.ofFloat(viewHolder.itemView, "scaleY", 1.1F, 1.0F));
+                            animatorSet.setInterpolator(new LinearInterpolator());
                             animatorSet.setDuration(50);
                             animatorSet.start();
                         }
