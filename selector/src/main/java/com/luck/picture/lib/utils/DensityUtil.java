@@ -1,8 +1,8 @@
 package com.luck.picture.lib.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 /**
  * @author：luck
@@ -10,30 +10,65 @@ import android.util.DisplayMetrics;
  * @describe：DensityUtil
  */
 public class DensityUtil {
+    private static int mScreenWidth;
+    private static int mScreenHeight;
+
     /**
-     * dp2px
+     * 获取屏幕宽度
      */
-    public static int dip2px(Context context, float dpValue) {
-        final float scale = context.getApplicationContext().getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
+    private static int getScreenWidthPixels(Context context) {
+        if (mScreenWidth <= 0) {
+            DisplayMetrics dm = new DisplayMetrics();
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            wm.getDefaultDisplay().getMetrics(dm);
+            mScreenWidth = dm.widthPixels;
+            mScreenHeight = dm.heightPixels;
+        }
+        return mScreenWidth;
     }
 
+    /**
+     * 获取屏幕高度
+     */
+    private static int getScreenHeightPixels(Context context) {
+        if (mScreenHeight <= 0) {
+            DisplayMetrics dm = new DisplayMetrics();
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            wm.getDefaultDisplay().getMetrics(dm);
+            mScreenWidth = dm.widthPixels;
+            mScreenHeight = dm.heightPixels;
+        }
+        return mScreenHeight;
+    }
+
+    /**
+     * 获取屏幕宽度
+     *
+     * @param context
+     * @return
+     */
     public static int getScreenWidth(Context context) {
-        DisplayMetrics localDisplayMetrics = new DisplayMetrics();
-        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
-        return localDisplayMetrics.widthPixels;
+        return getScreenWidthPixels(context);
     }
 
+    /**
+     * 获取屏幕高度(不包含状态栏高度)
+     *
+     * @param context
+     * @return
+     */
     public static int getScreenHeight(Context context) {
-        DisplayMetrics localDisplayMetrics = new DisplayMetrics();
-        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
-        return localDisplayMetrics.heightPixels - getStatusBarHeight(context);
+        return getScreenHeightPixels(context) - getStatusBarHeight(context);
     }
 
+    /**
+     * 获取屏幕高度(包含状态栏高度)
+     *
+     * @param context
+     * @return
+     */
     public static int getAppInScreenHeight(Context context) {
-        DisplayMetrics localDisplayMetrics = new DisplayMetrics();
-        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
-        return localDisplayMetrics.heightPixels + getStatusBarHeight(context);
+        return getScreenHeightPixels(context) + getStatusBarHeight(context);
     }
 
     /**
@@ -46,5 +81,13 @@ public class DensityUtil {
             result = context.getResources().getDimensionPixelSize(resourceId);
         }
         return result == 0 ? dip2px(context, 25) : result;
+    }
+
+    /**
+     * dp2px
+     */
+    public static int dip2px(Context context, float dpValue) {
+        final float scale = context.getApplicationContext().getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
     }
 }

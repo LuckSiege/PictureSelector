@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.utils.DensityUtil;
 
 /**
@@ -51,7 +52,7 @@ public class MagicalView extends FrameLayout {
     private final FrameLayout contentLayout;
     private final View backgroundView;
     private final MagicalViewWrapper magicalWrapper;
-
+    private boolean isPreviewFullScreenMode;
 
     public MagicalView(Context context) {
         this(context, null);
@@ -63,8 +64,9 @@ public class MagicalView extends FrameLayout {
 
     public MagicalView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        isPreviewFullScreenMode = PictureSelectionConfig.getInstance().isPreviewFullScreenMode;
         screenWidth = DensityUtil.getScreenWidth(context);
-        screenHeight = DensityUtil.getAppInScreenHeight(context);
+        screenHeight = isPreviewFullScreenMode ? DensityUtil.getAppInScreenHeight(context) : DensityUtil.getScreenHeight(context);
         backgroundView = new View(context);
         backgroundView.setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         backgroundView.setBackgroundColor(ContextCompat.getColor(context, R.color.ps_color_black));
@@ -113,13 +115,13 @@ public class MagicalView extends FrameLayout {
 
     public void resetStart() {
         screenWidth = DensityUtil.getScreenWidth(getContext());
-        screenHeight = DensityUtil.getAppInScreenHeight(getContext());
+        screenHeight = isPreviewFullScreenMode ? DensityUtil.getAppInScreenHeight(getContext()) : DensityUtil.getScreenHeight(getContext());
         start(true);
     }
 
     public void resetStartNormal(int realWidth, int realHeight, boolean showImmediately) {
         screenWidth = DensityUtil.getScreenWidth(getContext());
-        screenHeight = DensityUtil.getAppInScreenHeight(getContext());
+        screenHeight = isPreviewFullScreenMode ? DensityUtil.getAppInScreenHeight(getContext()) : DensityUtil.getScreenHeight(getContext());
         startNormal(realWidth, realHeight, showImmediately);
     }
 
@@ -191,7 +193,7 @@ public class MagicalView extends FrameLayout {
     }
 
     private void showNormalMin(float animRatio, float startY, float endY, float startLeft, float endLeft,
-                              float startWidth, float endWidth, float startHeight, float endHeight) {
+                               float startWidth, float endWidth, float startHeight, float endHeight) {
         showNormalMin(false, animRatio, startY, endY, startLeft, endLeft, startWidth, endWidth, startHeight, endHeight);
     }
 
@@ -200,7 +202,7 @@ public class MagicalView extends FrameLayout {
     }
 
     private void showNormalMin(boolean showImmediately, float animRatio, float startY, float endY, float startLeft, float endLeft,
-                              float startWidth, float endWidth, float startHeight, float endHeight) {
+                               float startWidth, float endWidth, float startHeight, float endHeight) {
         if (showImmediately) {
             magicalWrapper.setWidth(endWidth);
             magicalWrapper.setHeight(endHeight);
