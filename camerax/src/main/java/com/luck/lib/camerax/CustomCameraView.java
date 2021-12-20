@@ -14,11 +14,9 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -673,10 +671,9 @@ public class CustomCameraView extends RelativeLayout {
      */
     private void updateVideoViewSize(float videoWidth, float videoHeight) {
         if (videoWidth > videoHeight) {
-            FrameLayout.LayoutParams videoViewParam;
             int height = (int) ((videoHeight / videoWidth) * getWidth());
-            videoViewParam = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, height);
-            videoViewParam.gravity = Gravity.CENTER;
+            RelativeLayout.LayoutParams videoViewParam = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, height);
+            videoViewParam.addRule(CENTER_IN_PARENT, TRUE);
             mTextureView.setLayoutParams(videoViewParam);
         }
     }
