@@ -21,7 +21,6 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.utils.DensityUtil;
 
 /**
@@ -52,7 +51,6 @@ public class MagicalView extends FrameLayout {
     private final FrameLayout contentLayout;
     private final View backgroundView;
     private final MagicalViewWrapper magicalWrapper;
-    private final boolean isPreviewFullScreenMode;
 
     public MagicalView(Context context) {
         this(context, null);
@@ -64,9 +62,8 @@ public class MagicalView extends FrameLayout {
 
     public MagicalView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        isPreviewFullScreenMode = PictureSelectionConfig.getInstance().isPreviewFullScreenMode;
         screenWidth = DensityUtil.getScreenWidth(context);
-        screenHeight = isPreviewFullScreenMode ? DensityUtil.getAppInScreenHeight(context) : DensityUtil.getScreenHeight(context);
+        screenHeight = DensityUtil.getAppInScreenHeight(context);
         backgroundView = new View(context);
         backgroundView.setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         backgroundView.setBackgroundColor(ContextCompat.getColor(context, R.color.ps_color_black));
@@ -115,13 +112,13 @@ public class MagicalView extends FrameLayout {
 
     public void resetStart() {
         screenWidth = DensityUtil.getScreenWidth(getContext());
-        screenHeight = isPreviewFullScreenMode ? DensityUtil.getAppInScreenHeight(getContext()) : DensityUtil.getScreenHeight(getContext());
+        screenHeight = DensityUtil.getAppInScreenHeight(getContext());
         start(true);
     }
 
     public void resetStartNormal(int realWidth, int realHeight, boolean showImmediately) {
         screenWidth = DensityUtil.getScreenWidth(getContext());
-        screenHeight = isPreviewFullScreenMode ? DensityUtil.getAppInScreenHeight(getContext()) : DensityUtil.getScreenHeight(getContext());
+        screenHeight = DensityUtil.getAppInScreenHeight(getContext());
         startNormal(realWidth, realHeight, showImmediately);
     }
 
