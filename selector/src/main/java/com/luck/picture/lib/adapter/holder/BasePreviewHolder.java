@@ -37,7 +37,7 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
     public final static int ADAPTER_TYPE_VIDEO = 2;
     private final int screenWidth;
     private final int screenHeight;
-    private PictureSelectionConfig config;
+    private final PictureSelectionConfig config;
     public PhotoView coverImageView;
 
     public static BasePreviewHolder generate(ViewGroup parent, int viewType, int resource) {
