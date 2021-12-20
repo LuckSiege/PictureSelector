@@ -66,7 +66,6 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity implemen
             PictureSelectorPreviewFragment fragment = PictureSelectorPreviewFragment.newInstance();
             ArrayList<LocalMedia> previewResult = SelectedManager.getSelectedPreviewResult();
             ArrayList<LocalMedia> previewData = new ArrayList<>(previewResult);
-            PictureSelectionConfig.selectorStyle.getSelectMainStyle().setPreviewDisplaySelectGallery(false);
             boolean isDisplayDelete = getIntent()
                     .getBooleanExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, false);
             fragment.setExternalPreviewData(position, previewData.size(), previewData, isDisplayDelete);
