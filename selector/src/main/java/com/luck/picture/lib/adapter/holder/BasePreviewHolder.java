@@ -70,9 +70,7 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
                 } else {
                     coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 }
-                if (PictureSelectionConfig.getInstance().isPreviewZoomEffect){
-                    mPreviewEventListener.onLoadCompleteBeginScale(BasePreviewHolder.this);
-                }
+                mPreviewEventListener.onLoadCompleteBeginScale(BasePreviewHolder.this);
             }
         });
 

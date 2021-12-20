@@ -965,26 +965,28 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             if (isFirstLoaded || isBottomPreview) {
                 return;
             }
-            isFirstLoaded = true;
-            holder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            if (holder instanceof PreviewVideoHolder) {
-                PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
-                videoHolder.ivPlayButton.setVisibility(View.GONE);
-            }
-            int[] size = getRealSizeFromMedia(curPosition);
-            ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
-            if (viewParams == null || size[0] == 0 || size[1] == 0) {
-                magicalView.startNormal(size[0], size[1], false);
-                magicalView.setBackgroundAlpha(1.0F);
-            } else {
-                magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width,
-                        viewParams.height, size[0], size[1]);
-                magicalView.start(false);
-            }
+            if (config.isPreviewZoomEffect) {
+                isFirstLoaded = true;
+                holder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                if (holder instanceof PreviewVideoHolder) {
+                    PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
+                    videoHolder.ivPlayButton.setVisibility(View.GONE);
+                }
+                int[] size = getRealSizeFromMedia(curPosition);
+                ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
+                if (viewParams == null || size[0] == 0 || size[1] == 0) {
+                    magicalView.startNormal(size[0], size[1], false);
+                    magicalView.setBackgroundAlpha(1.0F);
+                } else {
+                    magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width,
+                            viewParams.height, size[0], size[1]);
+                    magicalView.start(false);
+                }
 
-            ObjectAnimator animator = ObjectAnimator.ofFloat(viewPager, "alpha", 0.0F, 1.0F);
-            animator.setDuration(50);
-            animator.start();
+                ObjectAnimator animator = ObjectAnimator.ofFloat(viewPager, "alpha", 0.0F, 1.0F);
+                animator.setDuration(50);
+                animator.start();
+            }
         }
 
         @Override
