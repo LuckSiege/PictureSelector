@@ -664,7 +664,7 @@ public class PictureSelectionModel {
      * Only Display setQuerySandboxDir();  Source
      * <p/>
      *
-     * @param isOnlySandboxDir true or Only Display {@link PictureSelectionConfig.setQuerySandboxDirectory();}
+     * @param isOnlySandboxDir true or Only Display {@link PictureSelectionConfig.setQuerySandboxDir();}
      * @return
      */
     public PictureSelectionModel isOnlyObtainSandboxDir(boolean isOnlySandboxDir) {

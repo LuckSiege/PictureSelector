@@ -61,6 +61,11 @@
 
         </activity>
         <activity
+            android:name=".InjectFragmentActivity"
+            android:screenOrientation="fullSensor">
+
+        </activity>
+        <activity
             android:name=".SimpleActivity"
             android:exported="true"
             android:screenOrientation="fullSensor">
