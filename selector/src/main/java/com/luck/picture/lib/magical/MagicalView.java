@@ -52,7 +52,7 @@ public class MagicalView extends FrameLayout {
     private final FrameLayout contentLayout;
     private final View backgroundView;
     private final MagicalViewWrapper magicalWrapper;
-    private boolean isPreviewFullScreenMode;
+    private final boolean isPreviewFullScreenMode;
 
     public MagicalView(Context context) {
         this(context, null);
