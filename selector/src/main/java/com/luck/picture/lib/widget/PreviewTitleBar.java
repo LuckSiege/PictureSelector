@@ -32,12 +32,17 @@ public class PreviewTitleBar extends TitleBar {
     @Override
     public void setTitleBarStyle() {
         super.setTitleBarStyle();
-
         TitleBarStyle titleBarStyle = PictureSelectionConfig.selectorStyle.getTitleBarStyle();
         if (StyleUtils.checkStyleValidity(titleBarStyle.getPreviewTitleBackgroundColor())) {
             setBackgroundColor(titleBarStyle.getPreviewTitleBackgroundColor());
         } else if (StyleUtils.checkSizeValidity(titleBarStyle.getTitleBackgroundColor())) {
             setBackgroundColor(titleBarStyle.getTitleBackgroundColor());
+        }
+
+        if (StyleUtils.checkStyleValidity(titleBarStyle.getTitleLeftBackResource())) {
+            ivLeftBack.setImageResource(titleBarStyle.getTitleLeftBackResource());
+        } else if (StyleUtils.checkStyleValidity(titleBarStyle.getPreviewTitleLeftBackResource())) {
+            ivLeftBack.setImageResource(titleBarStyle.getPreviewTitleLeftBackResource());
         }
 
         rlAlbumBg.setOnClickListener(null);

@@ -17,6 +17,12 @@ public class TitleBarStyle implements Parcelable {
      * 标题栏左边关闭样式
      */
     private int titleLeftBackResource;
+
+    /**
+     * 预览标题栏左边关闭样式
+     */
+    private int previewTitleLeftBackResource;
+
     /**
      * 标题栏默认文案
      */
@@ -98,6 +104,7 @@ public class TitleBarStyle implements Parcelable {
     protected TitleBarStyle(Parcel in) {
         isHideTitleBar = in.readByte() != 0;
         titleLeftBackResource = in.readInt();
+        previewTitleLeftBackResource = in.readInt();
         titleDefaultText = in.readString();
         titleTextSize = in.readInt();
         titleTextColor = in.readInt();
@@ -119,6 +126,7 @@ public class TitleBarStyle implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte((byte) (isHideTitleBar ? 1 : 0));
         dest.writeInt(titleLeftBackResource);
+        dest.writeInt(previewTitleLeftBackResource);
         dest.writeString(titleDefaultText);
         dest.writeInt(titleTextSize);
         dest.writeInt(titleTextColor);
@@ -167,6 +175,14 @@ public class TitleBarStyle implements Parcelable {
 
     public void setTitleLeftBackResource(int titleLeftBackResource) {
         this.titleLeftBackResource = titleLeftBackResource;
+    }
+
+    public int getPreviewTitleLeftBackResource() {
+        return previewTitleLeftBackResource;
+    }
+
+    public void setPreviewTitleLeftBackResource(int previewTitleLeftBackResource) {
+        this.previewTitleLeftBackResource = previewTitleLeftBackResource;
     }
 
     public String getTitleDefaultText() {

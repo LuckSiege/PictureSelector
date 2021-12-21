@@ -260,7 +260,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             }
             magicalView.setBackgroundAlpha(1.0F);
             SelectedManager.clearExternalPreviewData();
-            initViewPagerData();
             externalPreviewStyle();
             initViewPagerData();
         } else {
@@ -959,6 +958,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         viewPager.setAdapter(viewPageAdapter);
         viewPager.setCurrentItem(curPosition, false);
+        if (mData.size() > 0) {
+            bottomNarBar.isDisplayEditor(PictureMimeType.isHasVideo(mData.get(curPosition).getMimeType()));
+        }
         tvSelected.setSelected(SelectedManager.getSelectedResult().contains(mData.get(viewPager.getCurrentItem())));
         completeSelectView.setSelectedChange(true);
         viewPager.registerOnPageChangeCallback(pageChangeCallback);

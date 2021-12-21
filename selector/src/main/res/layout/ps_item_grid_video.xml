@@ -42,11 +42,11 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/iv_mask"
         android:layout_alignBottom="@id/iv_mask"
-        android:drawableLeft="@drawable/ps_ic_audio"
+        android:drawableLeft="@drawable/ps_ic_video"
         android:drawablePadding="5dp"
         android:gravity="center_vertical"
         android:paddingLeft="5dp"
-        android:paddingTop="8dp"
+        android:paddingTop="10dp"
         android:text="00:00"
         android:textColor="@color/ps_color_white"
         android:textSize="11sp" />
