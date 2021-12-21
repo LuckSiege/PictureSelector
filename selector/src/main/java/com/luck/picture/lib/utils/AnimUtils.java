@@ -1,8 +1,6 @@
 package com.luck.picture.lib.utils;
 
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 
@@ -12,32 +10,7 @@ import android.widget.ImageView;
  * @describe：动画相关
  */
 public class AnimUtils {
-    private final static int DURATION = 350;
-
-    public static void zoom(View view, boolean isZoomAnim) {
-        if (isZoomAnim) {
-            AnimatorSet set = new AnimatorSet();
-            set.playTogether(
-                    ObjectAnimator.ofFloat(view, "scaleX", 1f, 1.12f),
-                    ObjectAnimator.ofFloat(view, "scaleY", 1f, 1.12f)
-            );
-            set.setDuration(DURATION);
-            set.start();
-        }
-    }
-
-    public static void disZoom(View view, boolean isZoomAnim) {
-        if (isZoomAnim) {
-            AnimatorSet set = new AnimatorSet();
-            set.playTogether(
-                    ObjectAnimator.ofFloat(view, "scaleX", 1.12f, 1f),
-                    ObjectAnimator.ofFloat(view, "scaleY", 1.12f, 1f)
-            );
-            set.setDuration(DURATION);
-            set.start();
-        }
-    }
-
+    public final static int DURATION = 250;
     /**
      * 箭头旋转动画
      *

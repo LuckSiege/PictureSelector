@@ -585,17 +585,6 @@ public class PictureSelectionModel {
         return this;
     }
 
-
-    /**
-     * @param zoomAnim Picture list zoom anim
-     * @return
-     */
-    public PictureSelectionModel isZoomAnim(boolean zoomAnim) {
-        selectionConfig.zoomAnim = zoomAnim;
-        return this;
-    }
-
-
     /**
      * @param isDisplayCamera Whether to open camera button
      * @return

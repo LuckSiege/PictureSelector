@@ -71,7 +71,10 @@ import java.util.List;
 public class PictureSelectorFragment extends PictureCommonFragment
         implements OnRecyclerViewPreloadMoreListener, IPictureSelectorEvent {
     public static final String TAG = PictureSelectorFragment.class.getSimpleName();
-
+    /**
+     * 这个时间对应的是R.anim.ps_anim_modal_in里面的
+     */
+    private static final int SELECT_ANIM_DURATION = 135;
     private RecyclerPreloadView mRecycler;
 
     private TextView tvDataEmpty;
@@ -115,7 +118,13 @@ public class PictureSelectorFragment extends PictureCommonFragment
         completeSelectView.setSelectedChange(false);
         // 刷新列表数据
         if (checkNotifyStrategy(isAddRemove)) {
-            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyItemPositionChanged(currentMedia.position);
+            mRecycler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.notifyDataSetChanged();
+                }
+            }, SELECT_ANIM_DURATION);
         } else {
             mAdapter.notifyItemPositionChanged(currentMedia.position);
         }
@@ -165,8 +174,10 @@ public class PictureSelectorFragment extends PictureCommonFragment
                     isNotifyAll = true;
                 } else {
                     if (PictureMimeType.isHasVideo(SelectedManager.getTopResultMimeType())) {
-                        isNotifyAll = SelectedManager.getCount() == config.maxVideoSelectNum
-                                || (!isAddRemove && SelectedManager.getCount() == config.maxVideoSelectNum - 1);
+                        int maxSelectNum = config.maxVideoSelectNum > 0
+                                ? config.maxVideoSelectNum : config.maxSelectNum;
+                        isNotifyAll = SelectedManager.getCount() == maxSelectNum
+                                || (!isAddRemove && SelectedManager.getCount() == maxSelectNum - 1);
                     } else {
                         isNotifyAll = SelectedManager.getCount() == config.maxSelectNum
                                 || (!isAddRemove && SelectedManager.getCount() == config.maxSelectNum - 1);

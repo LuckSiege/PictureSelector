@@ -57,7 +57,6 @@ public final class PictureSelectionConfig implements Parcelable {
     public long filterMaxFileSize;
     public long filterMinFileSize;
     public int language;
-    public boolean zoomAnim;
     public boolean isDisplayCamera;
     public boolean isGif;
     public boolean isWebp;
@@ -138,7 +137,6 @@ public final class PictureSelectionConfig implements Parcelable {
         filterMaxFileSize = in.readLong();
         filterMinFileSize = in.readLong();
         language = in.readInt();
-        zoomAnim = in.readByte() != 0;
         isDisplayCamera = in.readByte() != 0;
         isGif = in.readByte() != 0;
         isWebp = in.readByte() != 0;
@@ -208,7 +206,6 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeLong(filterMaxFileSize);
         dest.writeLong(filterMinFileSize);
         dest.writeInt(language);
-        dest.writeByte((byte) (zoomAnim ? 1 : 0));
         dest.writeByte((byte) (isDisplayCamera ? 1 : 0));
         dest.writeByte((byte) (isGif ? 1 : 0));
         dest.writeByte((byte) (isWebp ? 1 : 0));
@@ -300,7 +297,6 @@ public final class PictureSelectionConfig implements Parcelable {
         isHidePreviewDownload = false;
         isOpenClickSound = false;
         isEmptyResultReturn = false;
-        zoomAnim = true;
         cameraImageFormat = PictureMimeType.JPEG;
         cameraVideoFormat = PictureMimeType.MP4;
         cameraAudioFormat = PictureMimeType.AMR;

@@ -24,7 +24,6 @@ import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.SelectMainStyle;
-import com.luck.picture.lib.utils.AnimUtils;
 import com.luck.picture.lib.utils.StyleUtils;
 import com.luck.picture.lib.utils.ValueOf;
 
@@ -159,11 +158,6 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
                     return;
                 }
                 selectedMedia(isSelected(media));
-                if (resultCode == SelectedManager.ADD_SUCCESS) {
-                    AnimUtils.zoom(ivPicture, config.zoomAnim);
-                } else {
-                    AnimUtils.disZoom(ivPicture, config.zoomAnim);
-                }
             }
         });
 
@@ -199,7 +193,9 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
                 isEnabledMask = SelectedManager.getCount() == config.maxSelectNum;
             } else {
                 if (PictureMimeType.isHasVideo(SelectedManager.getTopResultMimeType())) {
-                    isEnabledMask = SelectedManager.getCount() == config.maxVideoSelectNum
+                    int maxSelectNum = config.maxVideoSelectNum > 0
+                            ? config.maxVideoSelectNum : config.maxSelectNum;
+                    isEnabledMask = SelectedManager.getCount() == maxSelectNum
                             || PictureMimeType.isHasImage(media.getMimeType());
                 } else {
                     isEnabledMask = SelectedManager.getCount() == config.maxSelectNum
@@ -227,12 +223,11 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         if (tvCheck.isSelected() != isChecked) {
             tvCheck.setSelected(isChecked);
         }
-        if (config.isDirectReturnSingle) {
-
-        } else {
+        if (!config.isDirectReturnSingle) {
             ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(isChecked ?
                     ContextCompat.getColor(mContext, R.color.ps_color_80) :
                     ContextCompat.getColor(mContext, R.color.ps_color_20), BlendModeCompat.SRC_ATOP);
+
             ivPicture.setColorFilter(colorFilter);
         }
     }
