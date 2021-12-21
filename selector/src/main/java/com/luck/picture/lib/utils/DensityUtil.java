@@ -10,45 +10,25 @@ import android.view.WindowManager;
  * @describe：DensityUtil
  */
 public class DensityUtil {
-    private static int mScreenWidth;
-    private static int mScreenHeight;
 
     /**
      * 获取屏幕宽度
      */
-    private static int getScreenWidthPixels(Context context) {
-        if (mScreenWidth <= 0) {
-            DisplayMetrics dm = new DisplayMetrics();
-            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            wm.getDefaultDisplay().getMetrics(dm);
-            mScreenWidth = dm.widthPixels;
-            mScreenHeight = dm.heightPixels;
-        }
-        return mScreenWidth;
+    public static int getScreenWidth(Context context) {
+        DisplayMetrics dm = new DisplayMetrics();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(dm);
+        return dm.widthPixels;
     }
 
     /**
      * 获取屏幕高度
      */
-    private static int getScreenHeightPixels(Context context) {
-        if (mScreenHeight <= 0) {
-            DisplayMetrics dm = new DisplayMetrics();
-            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            wm.getDefaultDisplay().getMetrics(dm);
-            mScreenWidth = dm.widthPixels;
-            mScreenHeight = dm.heightPixels;
-        }
-        return mScreenHeight;
-    }
-
-    /**
-     * 获取屏幕宽度
-     *
-     * @param context
-     * @return
-     */
-    public static int getScreenWidth(Context context) {
-        return getScreenWidthPixels(context);
+    public static int getScreenHeightPixels(Context context) {
+        DisplayMetrics dm = new DisplayMetrics();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(dm);
+        return dm.heightPixels;
     }
 
     /**

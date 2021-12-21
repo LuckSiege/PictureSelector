@@ -393,7 +393,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     @Nullable
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        if (!isBottomPreview && config.isPreviewZoomEffect) {
+        if ((!isBottomPreview || !isExternalPreview) && config.isPreviewZoomEffect) {
             return null;
         }
         PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();

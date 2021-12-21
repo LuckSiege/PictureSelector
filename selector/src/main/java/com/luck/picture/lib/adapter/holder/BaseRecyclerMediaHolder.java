@@ -151,20 +151,18 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         btnCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (media.isMaxSelectEnabledMask()) {
+                if (media.isMaxSelectEnabledMask() || listener == null) {
                     return;
                 }
-                if (listener != null) {
-                    int resultCode = listener.onSelected(tvCheck, position, media);
-                    if (resultCode == SelectedManager.INVALID) {
-                        return;
-                    }
-                    selectedMedia(isSelected(media));
-                    if (resultCode == SelectedManager.ADD_SUCCESS) {
-                        AnimUtils.zoom(ivPicture, config.zoomAnim);
-                    } else {
-                        AnimUtils.disZoom(ivPicture, config.zoomAnim);
-                    }
+                int resultCode = listener.onSelected(tvCheck, position, media);
+                if (resultCode == SelectedManager.INVALID) {
+                    return;
+                }
+                selectedMedia(isSelected(media));
+                if (resultCode == SelectedManager.ADD_SUCCESS) {
+                    AnimUtils.zoom(ivPicture, config.zoomAnim);
+                } else {
+                    AnimUtils.disZoom(ivPicture, config.zoomAnim);
                 }
             }
         });
@@ -172,11 +170,19 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (media.isMaxSelectEnabledMask()) {
+                if (media.isMaxSelectEnabledMask() || listener == null) {
                     return;
                 }
-                if (listener != null) {
+                boolean isPreview = PictureMimeType.isHasImage(media.getMimeType()) && config.isEnablePreviewImage
+                        || config.isDirectReturnSingle
+                        || PictureMimeType.isHasVideo(media.getMimeType()) && (config.isEnablePreviewVideo
+                        || config.selectionMode == SelectModeConfig.SINGLE)
+                        || PictureMimeType.isHasAudio(media.getMimeType()) && (config.isEnablePreviewAudio
+                        || config.selectionMode == SelectModeConfig.SINGLE);
+                if (isPreview) {
                     listener.onItemClick(tvCheck, position, media);
+                } else {
+                    btnCheck.performClick();
                 }
             }
         });

@@ -681,23 +681,13 @@ public class PictureSelectorFragment extends PictureCommonFragment
                     SelectedManager.getSelectedResult().add(media);
                     dispatchTransformResult();
                 } else {
-                    boolean isPreview = PictureMimeType.isHasImage(media.getMimeType()) && config.isEnablePreview
-                            || config.isDirectReturnSingle
-                            || PictureMimeType.isHasVideo(media.getMimeType()) && (config.isEnPreviewVideo
-                            || config.selectionMode == SelectModeConfig.SINGLE)
-                            || PictureMimeType.isHasAudio(media.getMimeType()) && (config.isEnablePreviewAudio
-                            || config.selectionMode == SelectModeConfig.SINGLE);
-                    if (isPreview) {
-                        if (DoubleUtils.isFastDoubleClick()) {
-                            return;
-                        }
-                        if (PictureMimeType.isHasAudio(media.getMimeType())) {
-                            AudioPlayDialog.showPlayAudioDialog(getActivity(), media.getPath());
-                        } else {
-                            onStartPreview(position, false);
-                        }
+                    if (DoubleUtils.isFastDoubleClick()) {
+                        return;
+                    }
+                    if (PictureMimeType.isHasAudio(media.getMimeType())) {
+                        AudioPlayDialog.showPlayAudioDialog(getActivity(), media.getPath());
                     } else {
-                        confirmSelect(media, selectedView.isSelected());
+                        onStartPreview(position, false);
                     }
                 }
             }

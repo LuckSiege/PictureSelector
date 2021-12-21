@@ -62,8 +62,8 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isGif;
     public boolean isWebp;
     public boolean isBmp;
-    public boolean isEnablePreview;
-    public boolean isEnPreviewVideo;
+    public boolean isEnablePreviewImage;
+    public boolean isEnablePreviewVideo;
     public boolean isEnablePreviewAudio;
     public boolean isPreviewFullScreenMode;
     public boolean isPreviewZoomEffect;
@@ -143,8 +143,8 @@ public final class PictureSelectionConfig implements Parcelable {
         isGif = in.readByte() != 0;
         isWebp = in.readByte() != 0;
         isBmp = in.readByte() != 0;
-        isEnablePreview = in.readByte() != 0;
-        isEnPreviewVideo = in.readByte() != 0;
+        isEnablePreviewImage = in.readByte() != 0;
+        isEnablePreviewVideo = in.readByte() != 0;
         isEnablePreviewAudio = in.readByte() != 0;
         isPreviewFullScreenMode = in.readByte() != 0;
         isPreviewZoomEffect = in.readByte() != 0;
@@ -213,8 +213,8 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isGif ? 1 : 0));
         dest.writeByte((byte) (isWebp ? 1 : 0));
         dest.writeByte((byte) (isBmp ? 1 : 0));
-        dest.writeByte((byte) (isEnablePreview ? 1 : 0));
-        dest.writeByte((byte) (isEnPreviewVideo ? 1 : 0));
+        dest.writeByte((byte) (isEnablePreviewImage ? 1 : 0));
+        dest.writeByte((byte) (isEnablePreviewVideo ? 1 : 0));
         dest.writeByte((byte) (isEnablePreviewAudio ? 1 : 0));
         dest.writeByte((byte) (isPreviewFullScreenMode ? 1 : 0));
         dest.writeByte((byte) (isPreviewZoomEffect ? 1 : 0));
@@ -294,8 +294,8 @@ public final class PictureSelectionConfig implements Parcelable {
         isBmp = true;
         isCheckOriginalImage = false;
         isDirectReturnSingle = false;
-        isEnablePreview = true;
-        isEnPreviewVideo = true;
+        isEnablePreviewImage = true;
+        isEnablePreviewVideo = true;
         isEnablePreviewAudio = true;
         isHidePreviewDownload = false;
         isOpenClickSound = false;

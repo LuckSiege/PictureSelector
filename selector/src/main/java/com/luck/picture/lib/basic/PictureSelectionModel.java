@@ -765,32 +765,32 @@ public class PictureSelectionModel {
     }
 
     /**
-     * Preview audio files
+     * Do you want to preview play the audio file?
      *
-     * @param enablePreviewAudio
+     * @param isPreviewAudio
      * @return
      */
-    public PictureSelectionModel isPreviewAudio(boolean enablePreviewAudio) {
-        selectionConfig.isEnablePreviewAudio = enablePreviewAudio;
+    public PictureSelectionModel isPreviewAudio(boolean isPreviewAudio) {
+        selectionConfig.isEnablePreviewAudio = isPreviewAudio;
         return this;
     }
 
     /**
-     * @param enablePreview Do you want to preview the picture?
+     * @param isPreviewImage Do you want to preview the picture?
      * @return
      */
-    public PictureSelectionModel isPreviewImage(boolean enablePreview) {
-        selectionConfig.isEnablePreview = enablePreview;
+    public PictureSelectionModel isPreviewImage(boolean isPreviewImage) {
+        selectionConfig.isEnablePreviewImage = isPreviewImage;
         return this;
     }
 
 
     /**
-     * @param enPreviewVideo Do you want to preview the video?
+     * @param isPreviewVideo Do you want to preview the video?
      * @return
      */
-    public PictureSelectionModel isPreviewVideo(boolean enPreviewVideo) {
-        selectionConfig.isEnPreviewVideo = enPreviewVideo;
+    public PictureSelectionModel isPreviewVideo(boolean isPreviewVideo) {
+        selectionConfig.isEnablePreviewVideo = isPreviewVideo;
         return this;
     }
 
