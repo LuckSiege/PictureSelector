@@ -60,7 +60,7 @@ public class DensityUtil {
         if (resourceId > 0) {
             result = context.getResources().getDimensionPixelSize(resourceId);
         }
-        return result == 0 ? dip2px(context, 25) : result;
+        return result == 0 ? dip2px(context, 26) : result;
     }
 
     /**

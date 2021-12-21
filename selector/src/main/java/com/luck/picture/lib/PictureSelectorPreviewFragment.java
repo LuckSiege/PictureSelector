@@ -137,7 +137,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     private int totalNum;
 
-    private int screenWidth;
+    private int screenWidth,screenHeight;
 
     private long mBucketId = -1;
 
@@ -237,6 +237,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             currentAlbum = savedInstanceState.getString(PictureConfig.EXTRA_CURRENT_ALBUM_NAME, "");
         }
         screenWidth = DensityUtil.getScreenWidth(getContext());
+        screenHeight = DensityUtil.getScreenHeight(getContext());
         titleBar = view.findViewById(R.id.title_bar);
         tvSelected = view.findViewById(R.id.ps_tv_selected);
         tvSelectedWord = view.findViewById(R.id.ps_tv_selected_word);
@@ -992,6 +993,13 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 if (viewParams == null || size[0] == 0 || size[1] == 0) {
                     magicalView.startNormal(size[0], size[1], false);
                     magicalView.setBackgroundAlpha(1.0F);
+                    if (holder instanceof PreviewVideoHolder) {
+                        PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
+                        videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
+                    }
+                    for (int i = 0; i < mAnimViews.size(); i++) {
+                        mAnimViews.get(i).setAlpha(1.0F);
+                    }
                 } else {
                     magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width,
                             viewParams.height, size[0], size[1]);
@@ -1217,10 +1225,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     private int[] getRealSizeFromMedia(int position) {
         LocalMedia media = mData.get(position);
-        int realWidth, realHeight;
+        int realWidth;
+        int realHeight;
         if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
-            realWidth = DensityUtil.getScreenWidth(getContext());
-            realHeight = DensityUtil.getScreenHeight(getContext());
+            realWidth = screenWidth;
+            realHeight = screenHeight;
         } else {
             if (PictureMimeType.isHasVideo(media.getMimeType()) && media.getWidth() > media.getHeight()) {
                 realHeight = media.getWidth();
