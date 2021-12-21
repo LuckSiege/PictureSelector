@@ -331,11 +331,13 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 }
                 View itemView = viewPager.getChildAt(0);
                 PhotoView coverImageView = itemView.findViewById(R.id.preview_image);
-                LocalMedia media = mData.get(viewPager.getCurrentItem());
-                if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
-                    coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                } else {
-                    coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                if (coverImageView != null) {
+                    LocalMedia media = mData.get(viewPager.getCurrentItem());
+                    if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
+                        coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    } else {
+                        coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    }
                 }
                 View ivPlayButton = itemView.findViewById(R.id.iv_play_video);
                 if (ivPlayButton != null) {
@@ -357,18 +359,20 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
             @Override
             public void onBeginBackMinMagicalFinish(boolean isResetSize) {
+                ViewParams itemViewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
+                if (itemViewParams == null) {
+                    return;
+                }
                 if (viewPager.getChildCount() == 0) {
                     return;
                 }
                 View itemView = viewPager.getChildAt(0);
                 PhotoView coverImageView = itemView.findViewById(R.id.preview_image);
-                ViewParams itemViewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
-                if (itemViewParams == null) {
-                    return;
+                if (coverImageView != null) {
+                    coverImageView.getLayoutParams().width = itemViewParams.width;
+                    coverImageView.getLayoutParams().height = itemViewParams.height;
+                    coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 }
-                coverImageView.getLayoutParams().width = itemViewParams.width;
-                coverImageView.getLayoutParams().height = itemViewParams.height;
-                coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
         });
     }
