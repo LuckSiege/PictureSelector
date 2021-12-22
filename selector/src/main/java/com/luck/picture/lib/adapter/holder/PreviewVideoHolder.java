@@ -47,6 +47,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         ivPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
                 MediaItem mediaItem = PictureMimeType.isContent(path) ? MediaItem.fromUri(Uri.parse(path))
                         : MediaItem.fromUri(Uri.fromFile(new File(path)));
                 progress.setVisibility(View.VISIBLE);
@@ -54,31 +55,13 @@ public class PreviewVideoHolder extends BasePreviewHolder {
                 player.setMediaItem(mediaItem);
                 player.prepare();
                 player.play();
-                mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
                 player.addListener(new Player.Listener() {
                     @Override
                     public void onPlaybackStateChanged(int playbackState) {
                         if (playbackState == Player.STATE_READY) {
-                            if (progress.getVisibility() == View.VISIBLE) {
-                                progress.setVisibility(View.GONE);
-                            }
-                            if (ivPlayButton.getVisibility() == View.VISIBLE) {
-                                ivPlayButton.setVisibility(View.GONE);
-                            }
-                            if (coverImageView.getVisibility() == View.VISIBLE) {
-                                coverImageView.setVisibility(View.GONE);
-                            }
-                            if (mPlayerView.getVisibility() == View.GONE) {
-                                mPlayerView.setVisibility(View.VISIBLE);
-                            }
+                            playerIngUI();
                         } else if (playbackState == Player.STATE_ENDED) {
-                            ivPlayButton.setVisibility(View.VISIBLE);
-                            progress.setVisibility(View.GONE);
-                            coverImageView.setVisibility(View.VISIBLE);
-                            mPlayerView.setVisibility(View.GONE);
-                            if (mPreviewEventListener != null) {
-                                mPreviewEventListener.onPreviewVideoTitle(null);
-                            }
+                            playerDefaultUI();
                         }
                     }
                 });
@@ -92,6 +75,31 @@ public class PreviewVideoHolder extends BasePreviewHolder {
                 }
             }
         });
+    }
+
+    private void playerDefaultUI() {
+        ivPlayButton.setVisibility(View.VISIBLE);
+        progress.setVisibility(View.GONE);
+        coverImageView.setVisibility(View.VISIBLE);
+        mPlayerView.setVisibility(View.GONE);
+        if (mPreviewEventListener != null) {
+            mPreviewEventListener.onPreviewVideoTitle(null);
+        }
+    }
+
+    private void playerIngUI() {
+        if (progress.getVisibility() == View.VISIBLE) {
+            progress.setVisibility(View.GONE);
+        }
+        if (ivPlayButton.getVisibility() == View.VISIBLE) {
+            ivPlayButton.setVisibility(View.GONE);
+        }
+        if (coverImageView.getVisibility() == View.VISIBLE) {
+            coverImageView.setVisibility(View.GONE);
+        }
+        if (mPlayerView.getVisibility() == View.GONE) {
+            mPlayerView.setVisibility(View.VISIBLE);
+        }
     }
 
     /**

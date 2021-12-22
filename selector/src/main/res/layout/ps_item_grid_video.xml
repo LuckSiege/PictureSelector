@@ -46,7 +46,6 @@
         android:drawablePadding="5dp"
         android:gravity="center_vertical"
         android:paddingLeft="5dp"
-        android:paddingTop="10dp"
         android:text="00:00"
         android:textColor="@color/ps_color_white"
         android:textSize="11sp" />
