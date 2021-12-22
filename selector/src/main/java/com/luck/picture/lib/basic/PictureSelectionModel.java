@@ -66,6 +66,8 @@ public class PictureSelectionModel {
         selectionConfig = PictureSelectionConfig.getCleanInstance();
         selectionConfig.isOnlyCamera = isOnlyCamera;
         selectionConfig.chooseMode = chooseMode;
+        selectionConfig.isPreviewFullScreenMode = false;
+        selectionConfig.isPreviewZoomEffect = false;
     }
 
     /**
@@ -739,7 +741,11 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel isPreviewFullScreenMode(boolean isFullScreenModel) {
-        selectionConfig.isPreviewFullScreenMode = isFullScreenModel;
+        if (selectionConfig.isOnlyCamera){
+            selectionConfig.isPreviewFullScreenMode = false;
+        } else {
+            selectionConfig.isPreviewFullScreenMode = isFullScreenModel;
+        }
         return this;
     }
 
@@ -749,7 +755,11 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel isPreviewZoomEffect(boolean isPreviewZoomEffect) {
-        selectionConfig.isPreviewZoomEffect = isPreviewZoomEffect;
+        if (selectionConfig.isOnlyCamera) {
+            selectionConfig.isPreviewZoomEffect = false;
+        } else {
+            selectionConfig.isPreviewZoomEffect = isPreviewZoomEffect;
+        }
         return this;
     }
 
@@ -937,9 +947,6 @@ public class PictureSelectionModel {
             if (call == null) {
                 throw new NullPointerException("OnResultCallbackListener is null");
             }
-            if (PictureSelectionConfig.imageEngine == null) {
-                throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
-            }
             // 绑定回调监听
             selectionConfig.isResultBack = true;
             selectionConfig.isActivityResultBack = false;
@@ -959,6 +966,9 @@ public class PictureSelectionModel {
                             PictureOnlyCameraFragment.TAG, PictureOnlyCameraFragment.newInstance());
                 }
             } else {
+                if (PictureSelectionConfig.imageEngine == null) {
+                    throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
+                }
                 Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
                 activity.startActivity(intent);
                 PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
@@ -979,9 +989,6 @@ public class PictureSelectionModel {
             if (activity == null) {
                 throw new NullPointerException("getActivity is null");
             }
-            if (PictureSelectionConfig.imageEngine == null) {
-                throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
-            }
             selectionConfig.isResultBack = false;
             selectionConfig.isActivityResultBack = true;
             if (selectionConfig.isOnlyCamera) {
@@ -999,6 +1006,9 @@ public class PictureSelectionModel {
                             PictureOnlyCameraFragment.TAG, PictureOnlyCameraFragment.newInstance());
                 }
             } else {
+                if (PictureSelectionConfig.imageEngine == null) {
+                    throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
+                }
                 Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
                 activity.startActivityForResult(intent, requestCode);
                 PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();

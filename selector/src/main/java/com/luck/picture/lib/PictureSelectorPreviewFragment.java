@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,7 +34,6 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.luck.picture.lib.adapter.PicturePreviewAdapter;
 import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
 import com.luck.picture.lib.adapter.holder.PreviewGalleryAdapter;
-import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
 import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.basic.PictureMediaScannerConnection;
 import com.luck.picture.lib.basic.PictureSelectorSupporterActivity;
@@ -137,7 +137,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     private int totalNum;
 
-    private int screenWidth,screenHeight;
+    private int screenWidth, screenHeight;
 
     private long mBucketId = -1;
 
@@ -436,7 +436,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (!isBottomPreview && config.isPreviewZoomEffect) {
-            int[] size = getRealSizeFromMedia(curPosition);
+            LocalMedia media = mData.get(curPosition);
+            int[] size = getRealSizeFromMedia(media);
             ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
             if (viewParams == null || size[0] == 0 || size[1] == 0) {
                 magicalView.setViewParams(0, 0, 0, 0, size[0], size[1]);
@@ -985,28 +986,25 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      */
     private class MyOnPreviewEventListener implements BasePreviewHolder.OnPreviewEventListener {
 
-
         @Override
-        public void onLoadCompleteBeginScale(BasePreviewHolder holder) {
+        public void onLoadCompleteBeginScale(BasePreviewHolder holder, int width, int height) {
             if (isFirstLoaded || isBottomPreview) {
                 return;
             }
             if (config.isPreviewZoomEffect) {
                 isFirstLoaded = true;
                 holder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                if (holder instanceof PreviewVideoHolder) {
-                    PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
-                    videoHolder.ivPlayButton.setVisibility(View.GONE);
+                int[] size;
+                if (MediaUtils.isLongImage(width, height)) {
+                    size = new int[]{screenWidth, screenHeight};
+                } else {
+                    LocalMedia media = mData.get(curPosition);
+                    size = width > 0 && height > 0 ? new int[]{width, height} : getRealSizeFromMedia(media);
                 }
-                int[] size = getRealSizeFromMedia(curPosition);
                 ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
                 if (viewParams == null || size[0] == 0 || size[1] == 0) {
                     magicalView.startNormal(size[0], size[1], false);
                     magicalView.setBackgroundAlpha(1.0F);
-                    if (holder instanceof PreviewVideoHolder) {
-                        PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
-                        videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
-                    }
                     for (int i = 0; i < mAnimViews.size(); i++) {
                         mAnimViews.get(i).setAlpha(1.0F);
                     }
@@ -1192,17 +1190,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             titleBar.setTitle((curPosition + 1) + "/" + totalNum);
             LocalMedia currentMedia = mData.get(position);
             notifySelectNumberStyle(currentMedia);
-            if (!isBottomPreview && config.isPreviewZoomEffect) {
+            if (!isExternalPreview && !isBottomPreview && config.isPreviewZoomEffect) {
                 changeMagicalViewParams(position);
-                if (PictureMimeType.isHasVideo(currentMedia.getMimeType())) {
-                    if (viewPager.getChildCount() > 0) {
-                        View itemView = viewPager.getChildAt(0);
-                        View ivPlayButton = itemView.findViewById(R.id.iv_play_video);
-                        if (ivPlayButton != null) {
-                            ivPlayButton.setVisibility(View.VISIBLE);
-                        }
-                    }
-                }
             }
             bottomNarBar.isDisplayEditor(PictureMimeType.isHasVideo(currentMedia.getMimeType()));
             if (!isExternalPreview && !isBottomPreview && !config.isOnlySandboxDir) {
@@ -1224,30 +1213,51 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * @param position
      */
     private void changeMagicalViewParams(int position) {
-        int[] size = getRealSizeFromMedia(position);
-        ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? position + 1 : position);
-        if (viewParams == null || size[0] == 0 || size[1] == 0) {
-            magicalView.setViewParams(0, 0, 0, 0, size[0], size[1]);
+        LocalMedia media = mData.get(position);
+        int[] size = getRealSizeFromMedia(media);
+        if (size[0] == 0 && size[1] == 0) {
+            PictureSelectionConfig.imageEngine.loadImageBitmap(getActivity(), media.getPath(), new OnCallbackListener<Bitmap>() {
+                @Override
+                public void onCall(Bitmap bitmap) {
+                    if (ActivityCompatHelper.isDestroy(getActivity())) {
+                        return;
+                    }
+                    if (MediaUtils.isLongImage(bitmap.getWidth(), bitmap.getHeight())) {
+                        size[0] = screenWidth;
+                        size[1] = screenHeight;
+                    } else {
+                        size[0] = bitmap.getWidth();
+                        size[1] = bitmap.getHeight();
+                    }
+                    media.setWidth(size[0]);
+                    media.setHeight(size[1]);
+                    ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? position + 1 : position);
+                    if (viewParams == null || size[0] == 0 || size[1] == 0) {
+                        magicalView.setViewParams(0, 0, 0, 0, size[0], size[1]);
+                    } else {
+                        magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, size[0], size[1]);
+                    }
+                }
+            });
         } else {
-            magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, size[0], size[1]);
+            ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? position + 1 : position);
+            if (viewParams == null || size[0] == 0 || size[1] == 0) {
+                magicalView.setViewParams(0, 0, 0, 0, size[0], size[1]);
+            } else {
+                magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, size[0], size[1]);
+            }
         }
     }
 
-    private int[] getRealSizeFromMedia(int position) {
-        LocalMedia media = mData.get(position);
+    private int[] getRealSizeFromMedia(LocalMedia currentLocalMedia) {
         int realWidth;
         int realHeight;
-        if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
+        if (MediaUtils.isLongImage(currentLocalMedia.getWidth(), currentLocalMedia.getHeight())) {
             realWidth = screenWidth;
             realHeight = screenHeight;
         } else {
-            if (PictureMimeType.isHasVideo(media.getMimeType()) && media.getWidth() > media.getHeight()) {
-                realHeight = media.getWidth();
-                realWidth = media.getHeight();
-            } else {
-                realWidth = media.getWidth();
-                realHeight = media.getHeight();
-            }
+            realWidth = currentLocalMedia.getWidth();
+            realHeight = currentLocalMedia.getHeight();
         }
         return new int[]{realWidth, realHeight};
     }

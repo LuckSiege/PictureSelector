@@ -79,7 +79,8 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
                 } else {
                     coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 }
-                mPreviewEventListener.onLoadCompleteBeginScale(BasePreviewHolder.this);
+                mPreviewEventListener.onLoadCompleteBeginScale(BasePreviewHolder.this,
+                        bitmap.getWidth(), bitmap.getHeight());
             }
         });
 
@@ -128,7 +129,7 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
 
     public interface OnPreviewEventListener {
 
-        void onLoadCompleteBeginScale(BasePreviewHolder holder);
+        void onLoadCompleteBeginScale(BasePreviewHolder holder,int width,int height);
 
         void onBackPressed();
 

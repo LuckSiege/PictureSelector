@@ -64,7 +64,8 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         super(itemView);
         this.mContext = itemView.getContext();
         this.config = config;
-        this.isSelectNumberStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle().isSelectNumberStyle();
+        SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
+        this.isSelectNumberStyle = selectMainStyle.isSelectNumberStyle();
         ivPicture = itemView.findViewById(R.id.ivPicture);
         tvCheck = itemView.findViewById(R.id.tvCheck);
         btnCheck = itemView.findViewById(R.id.btnCheck);
@@ -75,7 +76,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
             tvCheck.setVisibility(View.VISIBLE);
             btnCheck.setVisibility(View.VISIBLE);
         }
-        SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
+
         int textSize = selectMainStyle.getAdapterSelectTextSize();
         if (StyleUtils.checkSizeValidity(textSize)) {
             tvCheck.setTextSize(textSize);

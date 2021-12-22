@@ -22,17 +22,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone"
         android:indeterminateBehavior="repeat"
-        android:indeterminateDrawable="@drawable/ps_anim_progress" />
+        android:indeterminateDrawable="@drawable/ps_anim_progress"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/iv_play_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/ps_ic_video_play"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:src="@drawable/ps_ic_video_play" />
 
 
 </FrameLayout>

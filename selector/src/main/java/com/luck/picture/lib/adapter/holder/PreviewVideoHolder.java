@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.luck.picture.lib.R;
@@ -34,7 +35,8 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         ivPlayButton = itemView.findViewById(R.id.iv_play_video);
         mPlayerView = itemView.findViewById(R.id.playerView);
         progress = itemView.findViewById(R.id.progress);
-        ivPlayButton.setVisibility(PictureSelectionConfig.getInstance().isPreviewZoomEffect ? View.GONE : View.VISIBLE);
+        PictureSelectionConfig config = PictureSelectionConfig.getInstance();
+        ivPlayButton.setVisibility(config.isPreviewZoomEffect ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -47,15 +49,20 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         ivPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
-                MediaItem mediaItem = PictureMimeType.isContent(path) ? MediaItem.fromUri(Uri.parse(path))
-                        : MediaItem.fromUri(Uri.fromFile(new File(path)));
                 progress.setVisibility(View.VISIBLE);
                 ivPlayButton.setVisibility(View.GONE);
+                mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
+                MediaItem mediaItem = PictureMimeType.isContent(path)
+                        ? MediaItem.fromUri(Uri.parse(path)) : MediaItem.fromUri(Uri.fromFile(new File(path)));
                 player.setMediaItem(mediaItem);
                 player.prepare();
                 player.play();
                 player.addListener(new Player.Listener() {
+                    @Override
+                    public void onPlayerError(@NonNull PlaybackException error) {
+                        playerDefaultUI();
+                    }
+
                     @Override
                     public void onPlaybackStateChanged(int playbackState) {
                         if (playbackState == Player.STATE_READY) {
@@ -108,6 +115,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
     public void releaseVideo() {
         if (mPlayerView.getPlayer() != null) {
             mPlayerView.getPlayer().release();
+            playerDefaultUI();
         }
     }
 }

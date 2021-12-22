@@ -25,6 +25,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
 
     private final List<LocalMedia> mData;
     private final BasePreviewHolder.OnPreviewEventListener onPreviewEventListener;
+    private boolean isFirstLoaded = true;
 
     public PicturePreviewAdapter(List<LocalMedia> list, BasePreviewHolder.OnPreviewEventListener listener) {
         this.mData = list;
@@ -63,6 +64,20 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
         return mData != null ? mData.size() : 0;
     }
 
+    @Override
+    public void onViewAttachedToWindow(@NonNull BasePreviewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if (holder instanceof PreviewVideoHolder) {
+            PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
+            if (isFirstLoaded) {
+                isFirstLoaded = false;
+            } else {
+                if (videoHolder.ivPlayButton.getVisibility() == View.GONE) {
+                    videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    }
 
     @Override
     public void onViewDetachedFromWindow(@NonNull BasePreviewHolder holder) {
