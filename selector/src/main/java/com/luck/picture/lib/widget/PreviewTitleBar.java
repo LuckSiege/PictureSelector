@@ -6,7 +6,6 @@ import android.widget.RelativeLayout;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureSelectionConfig;
-import com.luck.picture.lib.style.BottomNavBarStyle;
 import com.luck.picture.lib.style.TitleBarStyle;
 import com.luck.picture.lib.utils.StyleUtils;
 

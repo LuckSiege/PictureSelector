@@ -921,7 +921,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 TitleBarStyle whiteTitleBarStyle = new TitleBarStyle();
                 whiteTitleBarStyle.setTitleBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
                 whiteTitleBarStyle.setTitleDrawableRightResource(R.drawable.ic_orange_arrow_down);
-                whiteTitleBarStyle.setTitleLeftBackResource(R.drawable.ps_ic_back2);
+                whiteTitleBarStyle.setTitleLeftBackResource(R.drawable.ps_ic_black_back);
                 whiteTitleBarStyle.setTitleTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_black));
                 whiteTitleBarStyle.setTitleCancelTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
 

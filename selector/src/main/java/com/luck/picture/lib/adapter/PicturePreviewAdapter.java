@@ -2,11 +2,11 @@ package com.luck.picture.lib.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.exoplayer2.ui.PlayerView;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
 import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
@@ -73,16 +73,6 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
         }
     }
 
-
-    @Override
-    public void onViewAttachedToWindow(@NonNull BasePreviewHolder holder) {
-        super.onViewAttachedToWindow(holder);
-        if (holder instanceof PreviewVideoHolder) {
-            PreviewVideoHolder previewVideoHolder = (PreviewVideoHolder) holder;
-            previewVideoHolder.addVideoListener();
-        }
-    }
-
     /**
      * 释放当前视频Holder相关
      */
@@ -98,13 +88,12 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
         if (ivPlayButton != null) {
             ivPlayButton.setVisibility(View.VISIBLE);
         }
-        VideoView videoView = itemView.findViewById(R.id.video_view);
-        if (videoView != null) {
-            videoView.setVisibility(View.GONE);
-            videoView.stopPlayback();
-            videoView.setOnErrorListener(null);
-            videoView.setOnCompletionListener(null);
-            videoView.setOnPreparedListener(null);
+        PlayerView playerView = itemView.findViewById(R.id.playerView);
+        if (playerView != null) {
+            playerView.setVisibility(View.GONE);
+            if (playerView.getPlayer() != null) {
+                playerView.getPlayer().release();
+            }
         }
     }
 }
