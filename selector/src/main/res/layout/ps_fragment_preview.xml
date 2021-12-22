@@ -46,7 +46,7 @@
         android:gravity="center"
         android:includeFontPadding="false"
         android:textColor="@color/ps_color_white"
-        android:textSize="12sp"
+        android:textSize="6sp"
         app:layout_constraintBottom_toBottomOf="@id/ps_tv_selected_word"
         app:layout_constraintRight_toLeftOf="@+id/ps_tv_selected_word"
         app:layout_constraintTop_toTopOf="@id/ps_tv_selected_word" />

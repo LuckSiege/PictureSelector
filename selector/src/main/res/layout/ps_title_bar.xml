@@ -19,10 +19,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:paddingLeft="15dp"
-            android:paddingTop="10dp"
-            android:paddingRight="15dp"
-            android:paddingBottom="10dp"
             android:scaleType="centerInside"
             android:src="@drawable/ps_ic_back" />
 
@@ -91,7 +87,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="15dp"
             android:scaleType="centerInside"
             android:visibility="gone" />
 

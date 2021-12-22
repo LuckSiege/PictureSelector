@@ -56,6 +56,7 @@ import com.luck.picture.lib.permissions.PermissionResultCallback;
 import com.luck.picture.lib.permissions.PermissionUtil;
 import com.luck.picture.lib.service.ForegroundService;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
+import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.BitmapUtils;
@@ -214,7 +215,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             config = PictureSelectionConfig.getInstance();
         }
         if (config.isPreviewFullScreenMode) {
-            ImmersiveManager.translucentStatusBar(getActivity(), true);
+            SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
+            boolean isDarkStatusBarBlack = selectMainStyle.isDarkStatusBarBlack();
+            ImmersiveManager.translucentStatusBar(getActivity(), true, isDarkStatusBarBlack);
         }
         if (config.isOpenClickSound && !config.isOnlyCamera) {
             soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);

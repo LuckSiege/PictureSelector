@@ -298,6 +298,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         } else if (config.isPreviewZoomEffect) {
             magicalView.setBackgroundAlpha(0.0F);
             for (int i = 0; i < mAnimViews.size(); i++) {
+                if (!config.isPreviewFullScreenMode && mAnimViews.get(i) instanceof TitleBar) {
+                    continue;
+                }
                 mAnimViews.get(i).setAlpha(0.0F);
             }
             setMagicalViewAction();
@@ -348,6 +351,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             @Override
             public void onBackgroundAlpha(float alpha) {
                 for (int i = 0; i < mAnimViews.size(); i++) {
+                    if (!config.isPreviewFullScreenMode && mAnimViews.get(i) instanceof TitleBar) {
+                        continue;
+                    }
                     mAnimViews.get(i).setAlpha(alpha);
                 }
             }
@@ -1276,6 +1282,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         if (PictureSelectionConfig.selectorStyle.getSelectMainStyle().isPreviewSelectNumberStyle()) {
             if (PictureSelectionConfig.selectorStyle.getSelectMainStyle().isSelectNumberStyle()) {
                 tvSelected.setText("");
+                tvSelected.setTextSize(11);
                 for (int i = 0; i < SelectedManager.getCount(); i++) {
                     LocalMedia media = SelectedManager.getSelectedResult().get(i);
                     if (TextUtils.equals(media.getPath(), currentMedia.getPath())

@@ -921,7 +921,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 TitleBarStyle whiteTitleBarStyle = new TitleBarStyle();
                 whiteTitleBarStyle.setTitleBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
                 whiteTitleBarStyle.setTitleDrawableRightResource(R.drawable.ic_orange_arrow_down);
-                whiteTitleBarStyle.setTitleLeftBackResource(R.drawable.ic_back_arrow);
+                whiteTitleBarStyle.setTitleLeftBackResource(R.drawable.ps_ic_back2);
                 whiteTitleBarStyle.setTitleTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_black));
                 whiteTitleBarStyle.setTitleCancelTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
 
@@ -981,7 +981,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 numberSelectMainStyle.setPreviewSelectNumberStyle(false);
                 numberSelectMainStyle.setPreviewDisplaySelectGallery(true);
                 numberSelectMainStyle.setSelectBackground(R.drawable.ps_default_num_selector);
-                numberSelectMainStyle.setPreviewSelectBackground(R.drawable.ps_checkbox_selector);
+                numberSelectMainStyle.setPreviewSelectBackground(R.drawable.ps_preview_checkbox_selector);
                 numberSelectMainStyle.setSelectNormalBackgroundResources(R.drawable.ps_select_complete_normal_bg);
                 numberSelectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
                 numberSelectMainStyle.setSelectNormalText(getString(R.string.ps_send));
@@ -1004,6 +1004,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 numberTitleBarStyle.setAlbumTitleRelativeLeft(true);
                 numberTitleBarStyle.setTitleAlbumBackgroundResource(R.drawable.ps_album_bg);
                 numberTitleBarStyle.setTitleDrawableRightResource(R.drawable.ps_ic_grey_arrow);
+                numberTitleBarStyle.setPreviewTitleLeftBackResource(R.drawable.ps_ic_back2);
 
                 // 底部NavBar 风格
                 BottomNavBarStyle numberBottomNavBarStyle = new BottomNavBarStyle();

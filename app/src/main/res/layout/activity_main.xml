@@ -18,8 +18,6 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/view_title"
         android:layout_alignBottom="@id/view_title"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
         android:scaleType="centerInside"
         android:src="@drawable/ps_ic_back" />
 
