@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.interfaces.OnRecyclerViewPreloadMoreListener;
+import com.luck.picture.lib.interfaces.OnRecyclerViewScrollStateListener;
 
 /**
  * @author：luck
@@ -19,6 +20,7 @@ public class RecyclerPreloadView extends RecyclerView {
     private static final String TAG = RecyclerPreloadView.class.getSimpleName();
     private static final int BOTTOM_DEFAULT = 1;
     public static final int BOTTOM_PRELOAD = 2;
+    private static final int LIMIT = 150;
     private boolean isInTheBottom = false;
     private boolean isEnabledLoadMore = false;
     private int mFirstVisiblePosition, mLastVisiblePosition;
@@ -64,19 +66,6 @@ public class RecyclerPreloadView extends RecyclerView {
      */
     public boolean isEnabledLoadMore() {
         return isEnabledLoadMore;
-    }
-
-    @Override
-    public void onScrollStateChanged(int newState) {
-        super.onScrollStateChanged(newState);
-        if (newState == SCROLL_STATE_IDLE || newState == SCROLL_STATE_DRAGGING) {
-            LayoutManager layoutManager = getLayoutManager();
-            if (layoutManager instanceof GridLayoutManager) {
-                GridLayoutManager linearManager = (GridLayoutManager) layoutManager;
-                mFirstVisiblePosition = linearManager.findFirstVisibleItemPosition();
-                mLastVisiblePosition = linearManager.findLastVisibleItemPosition();
-            }
-        }
     }
 
     /**
@@ -137,12 +126,45 @@ public class RecyclerPreloadView extends RecyclerView {
                 }
             }
         }
+
+        if (onRecyclerViewScrollStateListener != null) {
+            if (Math.abs(dy) < LIMIT) {
+                onRecyclerViewScrollStateListener.onScrollSlow();
+            } else {
+                onRecyclerViewScrollStateListener.onScrollFast();
+            }
+        }
+    }
+
+
+    @Override
+    public void onScrollStateChanged(int newState) {
+        super.onScrollStateChanged(newState);
+        if (newState == SCROLL_STATE_IDLE || newState == SCROLL_STATE_DRAGGING) {
+            LayoutManager layoutManager = getLayoutManager();
+            if (layoutManager instanceof GridLayoutManager) {
+                GridLayoutManager linearManager = (GridLayoutManager) layoutManager;
+                mFirstVisiblePosition = linearManager.findFirstVisibleItemPosition();
+                mLastVisiblePosition = linearManager.findLastVisibleItemPosition();
+            }
+        }
+        if (newState == SCROLL_STATE_IDLE) {
+            if (onRecyclerViewScrollStateListener != null) {
+                onRecyclerViewScrollStateListener.onScrollSlow();
+            }
+        }
     }
 
 
     private OnRecyclerViewPreloadMoreListener onRecyclerViewPreloadListener;
 
-    public void setOnRecyclerViewPreloadListener(OnRecyclerViewPreloadMoreListener onRecyclerViewPreloadListener) {
-        this.onRecyclerViewPreloadListener = onRecyclerViewPreloadListener;
+    public void setOnRecyclerViewPreloadListener(OnRecyclerViewPreloadMoreListener listener) {
+        this.onRecyclerViewPreloadListener = listener;
+    }
+
+    private OnRecyclerViewScrollStateListener onRecyclerViewScrollStateListener;
+
+    public void setOnRecyclerViewScrollStateListener(OnRecyclerViewScrollStateListener listener) {
+        this.onRecyclerViewScrollStateListener = listener;
     }
 }

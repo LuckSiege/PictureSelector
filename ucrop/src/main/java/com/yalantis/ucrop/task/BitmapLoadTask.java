@@ -94,11 +94,16 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
             return new BitmapWorkerResult(e);
         }
 
-        final BitmapFactory.Options options = new BitmapFactory.Options();
+        BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        options.inSampleSize = BitmapLoadUtils.calculateInSampleSize(options, mRequiredWidth, mRequiredHeight);
+        try {
+            InputStream stream = context.getContentResolver().openInputStream(mInputUri);
+            BitmapFactory.decodeStream(stream, null, options);
+            options.inSampleSize = BitmapLoadUtils.calculateInSampleSize(options, mRequiredWidth, mRequiredHeight);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         options.inJustDecodeBounds = false;
-
         Bitmap decodeSampledBitmap = null;
 
         boolean decodeAttemptSuccess = false;

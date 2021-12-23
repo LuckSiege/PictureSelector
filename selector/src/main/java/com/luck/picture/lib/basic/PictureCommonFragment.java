@@ -1055,6 +1055,16 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     }
 
     @Override
+    public void onRecreateEngine() {
+        createImageLoaderEngine();
+        createCompressEngine();
+        createSandboxFileEngine();
+        createLoaderDataEngine();
+        createResultCallbackListener();
+        createLayoutResourceListener();
+    }
+
+    @Override
     public void onDestroy() {
         releaseSoundPool();
         super.onDestroy();
@@ -1094,12 +1104,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public void onAttach(@NonNull Context context) {
         initAppLanguage();
-        createImageLoaderEngine();
-        createCompressEngine();
-        createSandboxFileEngine();
-        createLoaderDataEngine();
-        createResultCallbackListener();
-        createLayoutResourceListener();
+        onRecreateEngine();
         super.onAttach(context);
 
         if (getParentFragment() instanceof IBridgePictureBehavior) {

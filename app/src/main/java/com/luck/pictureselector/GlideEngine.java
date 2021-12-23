@@ -63,7 +63,9 @@ public class GlideEngine implements ImageEngine {
 
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        call.onCall(resource);
+                        if (call != null) {
+                            call.onCall(resource);
+                        }
                     }
 
                     @Override
@@ -125,6 +127,16 @@ public class GlideEngine implements ImageEngine {
                 .centerCrop()
                 .placeholder(R.drawable.ps_image_placeholder)
                 .into(imageView);
+    }
+
+    @Override
+    public void pauseRequests(Context context) {
+        Glide.with(context).pauseRequests();
+    }
+
+    @Override
+    public void resumeRequests(Context context) {
+        Glide.with(context).resumeRequests();
     }
 
 

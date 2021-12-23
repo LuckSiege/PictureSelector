@@ -48,4 +48,18 @@ public interface ImageEngine {
      * @param imageView
      */
     void loadGridImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView);
+
+    /**
+     * When the recyclerview slides quickly, the callback can be used to pause the loading of resources
+     *
+     * @param context
+     */
+    void pauseRequests(Context context);
+
+    /**
+     * When the recyclerview is slow or stops sliding, the callback can do some operations to restore resource loading
+     *
+     * @param context
+     */
+    void resumeRequests(Context context);
 }

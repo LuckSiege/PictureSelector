@@ -41,6 +41,7 @@ import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.interfaces.OnRecyclerViewPreloadMoreListener;
+import com.luck.picture.lib.interfaces.OnRecyclerViewScrollStateListener;
 import com.luck.picture.lib.loader.LocalMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaPageLoader;
 import com.luck.picture.lib.magical.BuildRecycleItemViewParams;
@@ -715,6 +716,22 @@ public class PictureSelectorFragment extends PictureCommonFragment
                     } else {
                         onStartPreview(position, false);
                     }
+                }
+            }
+        });
+
+        mRecycler.setOnRecyclerViewScrollStateListener(new OnRecyclerViewScrollStateListener() {
+            @Override
+            public void onScrollFast() {
+                if (PictureSelectionConfig.imageEngine != null) {
+                    PictureSelectionConfig.imageEngine.pauseRequests(getContext());
+                }
+            }
+
+            @Override
+            public void onScrollSlow() {
+                if (PictureSelectionConfig.imageEngine != null) {
+                    PictureSelectionConfig.imageEngine.resumeRequests(getContext());
                 }
             }
         });

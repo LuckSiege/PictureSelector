@@ -37,6 +37,11 @@ public interface IPictureSelectorCommonEvent {
     void initAppLanguage();
 
     /**
+     * 重新创建所需引擎
+     */
+    void onRecreateEngine();
+
+    /**
      * 选择拍照或拍视频
      */
     void onSelectedOnlyCamera();

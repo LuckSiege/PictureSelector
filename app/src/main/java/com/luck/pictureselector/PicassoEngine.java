@@ -71,7 +71,9 @@ public class PicassoEngine implements ImageEngine {
                 .into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
-                        call.onCall(resource);
+                        if (call != null) {
+                            call.onCall(resource);
+                        }
                     }
 
                     @Override
@@ -174,6 +176,16 @@ public class PicassoEngine implements ImageEngine {
                         .into(imageView);
             }
         }
+    }
+
+    @Override
+    public void pauseRequests(Context context) {
+        Picasso.get().pauseTag(context);
+    }
+
+    @Override
+    public void resumeRequests(Context context) {
+        Picasso.get().resumeTag(context);
     }
 
     private PicassoEngine() {
