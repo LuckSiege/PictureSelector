@@ -43,8 +43,6 @@ public class PreviewVideoHolder extends BasePreviewHolder {
     public void bindData(LocalMedia media, int position) {
         super.bindData(media, position);
         String path = media.getAvailablePath();
-        ExoPlayer player = new ExoPlayer.Builder(itemView.getContext()).build();
-        mPlayerView.setPlayer(player);
         mPlayerView.setUseController(false);
         ivPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +50,8 @@ public class PreviewVideoHolder extends BasePreviewHolder {
                 progress.setVisibility(View.VISIBLE);
                 ivPlayButton.setVisibility(View.GONE);
                 mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
+                ExoPlayer player = new ExoPlayer.Builder(itemView.getContext()).build();
+                mPlayerView.setPlayer(player);
                 MediaItem mediaItem = PictureMimeType.isContent(path)
                         ? MediaItem.fromUri(Uri.parse(path)) : MediaItem.fromUri(Uri.fromFile(new File(path)));
                 player.setMediaItem(mediaItem);

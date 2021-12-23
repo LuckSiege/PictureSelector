@@ -43,5 +43,5 @@ dependencies {
     implementation "androidx.exifinterface:exifinterface:${cfgs.androidx_exifinterface_version}"
     implementation "androidx.viewpager2:viewpager2:${cfgs.viewpage2}"
     implementation "androidx.constraintlayout:constraintlayout:${cfgs.constraintlayout}"
-    implementation 'com.google.android.exoplayer:exoplayer:2.16.1'
+    implementation "com.google.android.exoplayer:exoplayer:${cfgs.exoplayer}"
 }

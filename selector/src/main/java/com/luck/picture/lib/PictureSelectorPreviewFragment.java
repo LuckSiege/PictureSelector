@@ -321,9 +321,17 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     return;
                 }
                 View itemView = viewPager.getChildAt(0);
+                PhotoView coverImageView = itemView.findViewById(R.id.preview_image);
+                if (coverImageView != null) {
+                    if (coverImageView.getVisibility() == View.GONE) {
+                        coverImageView.setVisibility(View.VISIBLE);
+                    }
+                }
                 View ivPlayButton = itemView.findViewById(R.id.iv_play_video);
                 if (ivPlayButton != null) {
-                    ivPlayButton.setVisibility(View.GONE);
+                    if (ivPlayButton.getVisibility() == View.VISIBLE) {
+                        ivPlayButton.setVisibility(View.GONE);
+                    }
                 }
             }
 
@@ -1341,7 +1349,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     @Override
     public void onDestroy() {
         if (viewPager.getChildCount() > 0) {
-            viewPageAdapter.destroyCurrentVideoHolder(viewPager.getChildAt(0));
+            viewPageAdapter.destroyVideo(viewPager.getChildAt(0));
         }
         viewPager.unregisterOnPageChangeCallback(pageChangeCallback);
         if (isExternalPreview) {

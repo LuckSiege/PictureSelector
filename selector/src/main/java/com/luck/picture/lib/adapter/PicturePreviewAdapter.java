@@ -12,7 +12,6 @@ import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
 import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.photoview.PhotoView;
 
 import java.util.List;
 
@@ -67,11 +66,11 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     @Override
     public void onViewAttachedToWindow(@NonNull BasePreviewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        if (holder instanceof PreviewVideoHolder) {
-            PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
-            if (isFirstLoaded) {
-                isFirstLoaded = false;
-            } else {
+        if (isFirstLoaded) {
+            isFirstLoaded = false;
+        } else {
+            if (holder instanceof PreviewVideoHolder) {
+                PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
                 if (videoHolder.ivPlayButton.getVisibility() == View.GONE) {
                     videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
                 }
@@ -89,23 +88,11 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     }
 
     /**
-     * 释放当前视频Holder相关
+     * 释放当前视频相关
      */
-    public void destroyCurrentVideoHolder(View itemView) {
-        if (itemView == null) {
-            return;
-        }
-        PhotoView coverImageView = itemView.findViewById(R.id.preview_image);
-        if (coverImageView != null) {
-            coverImageView.setVisibility(View.VISIBLE);
-        }
-        View ivPlayButton = itemView.findViewById(R.id.iv_play_video);
-        if (ivPlayButton != null) {
-            ivPlayButton.setVisibility(View.VISIBLE);
-        }
+    public void destroyVideo(View itemView) {
         PlayerView playerView = itemView.findViewById(R.id.playerView);
         if (playerView != null) {
-            playerView.setVisibility(View.GONE);
             if (playerView.getPlayer() != null) {
                 playerView.getPlayer().release();
             }
