@@ -15,10 +15,12 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +43,7 @@ import com.luck.picture.lib.config.Crop;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.ResourceSource;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.decoration.WrapContentLinearLayoutManager;
@@ -203,6 +206,13 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     @Override
     public int getResourceId() {
+        if (PictureSelectionConfig.layoutResourceListener != null) {
+            int layoutResourceId = PictureSelectionConfig.layoutResourceListener
+                    .getLayoutResourceId(getContext(), ResourceSource.PREVIEW_LAYOUT_RESOURCE);
+            if (layoutResourceId != 0) {
+                return layoutResourceId;
+            }
+        }
         return R.layout.ps_fragment_preview;
     }
 
@@ -266,7 +276,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         } else {
             initLoader();
             initBottomNavBar();
-            initPreviewSelectGallery(view);
+            initPreviewSelectGallery((ViewGroup) view);
             initComplete();
             iniMagicalView();
             if (savedInstanceState != null && mData.size() == 0) {
@@ -591,44 +601,62 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         }
 
         if (StyleUtils.checkSizeValidity(selectMainStyle.getPreviewSelectMarginRight())) {
-            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) tvSelected.getLayoutParams();
-            layoutParams.rightMargin = selectMainStyle.getPreviewSelectMarginRight();
+            if (tvSelected.getLayoutParams() instanceof ConstraintLayout.LayoutParams) {
+                if (tvSelected.getLayoutParams() instanceof ConstraintLayout.LayoutParams) {
+                    ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) tvSelected.getLayoutParams();
+                    layoutParams.rightMargin = selectMainStyle.getPreviewSelectMarginRight();
+                } else if (tvSelected.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
+                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvSelected.getLayoutParams();
+                    layoutParams.rightMargin = selectMainStyle.getPreviewSelectMarginRight();
+                }
+            }
         }
 
         completeSelectView.setCompleteSelectViewStyle();
         if (selectMainStyle.isCompleteSelectRelativeTop()) {
-            ((ConstraintLayout.LayoutParams) completeSelectView
-                    .getLayoutParams()).topToTop = R.id.title_bar;
-            ((ConstraintLayout.LayoutParams) completeSelectView
-                    .getLayoutParams()).bottomToBottom = R.id.title_bar;
-
-            if (config.isPreviewFullScreenMode) {
+            if (completeSelectView.getLayoutParams() instanceof ConstraintLayout.LayoutParams) {
                 ((ConstraintLayout.LayoutParams) completeSelectView
-                        .getLayoutParams()).topMargin = DensityUtil.getStatusBarHeight(getContext());
+                        .getLayoutParams()).topToTop = R.id.title_bar;
+                ((ConstraintLayout.LayoutParams) completeSelectView
+                        .getLayoutParams()).bottomToBottom = R.id.title_bar;
+                if (config.isPreviewFullScreenMode) {
+                    ((ConstraintLayout.LayoutParams) completeSelectView
+                            .getLayoutParams()).topMargin = DensityUtil.getStatusBarHeight(getContext());
+                }
+            } else if (completeSelectView.getLayoutParams() instanceof RelativeLayout.LayoutParams){
+                if (config.isPreviewFullScreenMode) {
+                    ((RelativeLayout.LayoutParams) completeSelectView
+                            .getLayoutParams()).topMargin = DensityUtil.getStatusBarHeight(getContext());
+                }
             }
         }
 
         if (selectMainStyle.isPreviewSelectRelativeBottom()) {
-            ((ConstraintLayout.LayoutParams) tvSelected
-                    .getLayoutParams()).topToTop = R.id.bottom_nar_bar;
-            ((ConstraintLayout.LayoutParams) tvSelected
-                    .getLayoutParams()).bottomToBottom = R.id.bottom_nar_bar;
+            if (tvSelected.getLayoutParams() instanceof ConstraintLayout.LayoutParams) {
+                ((ConstraintLayout.LayoutParams) tvSelected
+                        .getLayoutParams()).topToTop = R.id.bottom_nar_bar;
+                ((ConstraintLayout.LayoutParams) tvSelected
+                        .getLayoutParams()).bottomToBottom = R.id.bottom_nar_bar;
 
-            ((ConstraintLayout.LayoutParams) tvSelectedWord
-                    .getLayoutParams()).topToTop = R.id.bottom_nar_bar;
-            ((ConstraintLayout.LayoutParams) tvSelectedWord
-                    .getLayoutParams()).bottomToBottom = R.id.bottom_nar_bar;
+                ((ConstraintLayout.LayoutParams) tvSelectedWord
+                        .getLayoutParams()).topToTop = R.id.bottom_nar_bar;
+                ((ConstraintLayout.LayoutParams) tvSelectedWord
+                        .getLayoutParams()).bottomToBottom = R.id.bottom_nar_bar;
 
-            ((ConstraintLayout.LayoutParams) selectClickArea
-                    .getLayoutParams()).topToTop = R.id.bottom_nar_bar;
-            ((ConstraintLayout.LayoutParams) selectClickArea
-                    .getLayoutParams()).bottomToBottom = R.id.bottom_nar_bar;
-
+                ((ConstraintLayout.LayoutParams) selectClickArea
+                        .getLayoutParams()).topToTop = R.id.bottom_nar_bar;
+                ((ConstraintLayout.LayoutParams) selectClickArea
+                        .getLayoutParams()).bottomToBottom = R.id.bottom_nar_bar;
+            }
         } else {
             if (config.isPreviewFullScreenMode) {
-                ((ConstraintLayout.LayoutParams) tvSelectedWord
-                        .getLayoutParams()).topMargin = DensityUtil.getStatusBarHeight(getContext());
-
+                if (tvSelectedWord.getLayoutParams() instanceof ConstraintLayout.LayoutParams) {
+                    ((ConstraintLayout.LayoutParams) tvSelectedWord
+                            .getLayoutParams()).topMargin = DensityUtil.getStatusBarHeight(getContext());
+                } else if (tvSelectedWord.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
+                    ((RelativeLayout.LayoutParams) tvSelectedWord
+                            .getLayoutParams()).topMargin = DensityUtil.getStatusBarHeight(getContext());
+                }
             }
         }
         completeSelectView.setOnClickListener(new View.OnClickListener() {
@@ -696,191 +724,193 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         });
     }
 
-    private void initPreviewSelectGallery(View group) {
+    private void initPreviewSelectGallery(ViewGroup group) {
         SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
         if (selectMainStyle.isPreviewDisplaySelectGallery()) {
-            if (group instanceof ConstraintLayout) {
-                mGalleryRecycle = new RecyclerView(getContext());
-                if (StyleUtils.checkStyleValidity(selectMainStyle.getAdapterPreviewGalleryBackgroundResource())) {
-                    mGalleryRecycle.setBackgroundResource(selectMainStyle.getAdapterPreviewGalleryBackgroundResource());
-                } else {
-                    mGalleryRecycle.setBackgroundResource(R.drawable.ps_preview_gallery_bg);
-                }
-                ((ConstraintLayout) group).addView(mGalleryRecycle);
-                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mGalleryRecycle.getLayoutParams();
+            mGalleryRecycle = new RecyclerView(getContext());
+            if (StyleUtils.checkStyleValidity(selectMainStyle.getAdapterPreviewGalleryBackgroundResource())) {
+                mGalleryRecycle.setBackgroundResource(selectMainStyle.getAdapterPreviewGalleryBackgroundResource());
+            } else {
+                mGalleryRecycle.setBackgroundResource(R.drawable.ps_preview_gallery_bg);
+            }
+            group.addView(mGalleryRecycle);
+
+            ViewGroup.LayoutParams layoutParams = mGalleryRecycle.getLayoutParams();
+            if (layoutParams instanceof ConstraintLayout.LayoutParams) {
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) layoutParams;
                 params.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
                 params.height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
                 params.bottomToTop = R.id.bottom_nar_bar;
                 params.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
                 params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
-                WrapContentLinearLayoutManager layoutManager = new WrapContentLinearLayoutManager(getContext());
-                layoutManager.setOrientation(WrapContentLinearLayoutManager.HORIZONTAL);
-                mGalleryRecycle.setLayoutManager(layoutManager);
-                mGalleryRecycle.addItemDecoration(new GridSpacingItemDecoration(Integer.MAX_VALUE,
-                        DensityUtil.dip2px(getContext(), 6), true));
-                mGalleryAdapter = new PreviewGalleryAdapter(SelectedManager.getSelectedResult());
-                mGalleryAdapter.isSelectMedia(mData.get(curPosition));
-                mGalleryRecycle.setAdapter(mGalleryAdapter);
-                mGalleryAdapter.setItemClickListener(new PreviewGalleryAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(int position, LocalMedia media, View v) {
-                        if (isBottomPreview || TextUtils.equals(currentAlbum, getString(R.string.ps_camera_roll))
-                                || TextUtils.equals(media.getParentFolderName(), currentAlbum)) {
-                            int newPosition = isBottomPreview ? position : isShowCamera ? media.position - 1 : media.position;
-                            if (newPosition == viewPager.getCurrentItem() && media.isChecked()) {
-                                return;
-                            }
-                            if (viewPager.getAdapter() != null) {
-                                // 这里清空一下重新设置，发现频繁调用setCurrentItem会出现页面闪现之前图片
-                                viewPager.setAdapter(null);
-                                viewPager.setAdapter(viewPageAdapter);
-                            }
-                            viewPager.setCurrentItem(newPosition, false);
-                            mGalleryAdapter.isSelectMedia(media);
-                        }
-                    }
-                });
-                if (SelectedManager.getCount() > 0) {
-                    mGalleryRecycle.setVisibility(View.VISIBLE);
-                } else {
-                    mGalleryRecycle.setVisibility(View.INVISIBLE);
-                }
-                mAnimViews.add(mGalleryRecycle);
-                ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
-                    @Override
-                    public boolean isLongPressDragEnabled() {
-                        return true;
-                    }
-
-                    @Override
-                    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                    }
-
-                    @Override
-                    public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-                        viewHolder.itemView.setAlpha(0.7F);
-                        return makeMovementFlags(ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, 0);
-                    }
-
-                    @Override
-                    public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                        try {
-                            //得到item原来的position
-                            int fromPosition = viewHolder.getAbsoluteAdapterPosition();
-                            //得到目标position
-                            int toPosition = target.getAbsoluteAdapterPosition();
-                            if (fromPosition < toPosition) {
-                                for (int i = fromPosition; i < toPosition; i++) {
-                                    Collections.swap(mGalleryAdapter.getData(), i, i + 1);
-                                    Collections.swap(SelectedManager.getSelectedResult(), i, i + 1);
-                                    if (isBottomPreview) {
-                                        Collections.swap(mData, i, i + 1);
-                                    }
-                                }
-                            } else {
-                                for (int i = fromPosition; i > toPosition; i--) {
-                                    Collections.swap(mGalleryAdapter.getData(), i, i - 1);
-                                    Collections.swap(SelectedManager.getSelectedResult(), i, i - 1);
-                                    if (isBottomPreview) {
-                                        Collections.swap(mData, i, i - 1);
-                                    }
-                                }
-                            }
-                            mGalleryAdapter.notifyItemMoved(fromPosition, toPosition);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return true;
-                    }
-
-                    @Override
-                    public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
-                                            @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-                        if (needScaleBig) {
-                            needScaleBig = false;
-                            AnimatorSet animatorSet = new AnimatorSet();
-                            animatorSet.playTogether(
-                                    ObjectAnimator.ofFloat(viewHolder.itemView, "scaleX", 1.0F, 1.1F),
-                                    ObjectAnimator.ofFloat(viewHolder.itemView, "scaleY", 1.0F, 1.1F));
-                            animatorSet.setDuration(50);
-                            animatorSet.setInterpolator(new LinearInterpolator());
-                            animatorSet.start();
-                            animatorSet.addListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    needScaleSmall = true;
-                                }
-                            });
-                        }
-                        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-                    }
-
-                    @Override
-                    public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
-                        super.onSelectedChanged(viewHolder, actionState);
-                    }
-
-                    @Override
-                    public long getAnimationDuration(@NonNull RecyclerView recyclerView, int animationType, float animateDx, float animateDy) {
-                        return super.getAnimationDuration(recyclerView, animationType, animateDx, animateDy);
-                    }
-
-                    @Override
-                    public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-                        viewHolder.itemView.setAlpha(1.0F);
-                        if (needScaleSmall) {
-                            needScaleSmall = false;
-                            AnimatorSet animatorSet = new AnimatorSet();
-                            animatorSet.playTogether(
-                                    ObjectAnimator.ofFloat(viewHolder.itemView, "scaleX", 1.1F, 1.0F),
-                                    ObjectAnimator.ofFloat(viewHolder.itemView, "scaleY", 1.1F, 1.0F));
-                            animatorSet.setInterpolator(new LinearInterpolator());
-                            animatorSet.setDuration(50);
-                            animatorSet.start();
-                            animatorSet.addListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    needScaleBig = true;
-                                }
-                            });
-                        }
-                        super.clearView(recyclerView, viewHolder);
-                        mGalleryAdapter.notifyItemChanged(viewHolder.getAbsoluteAdapterPosition());
-                        if (isBottomPreview) {
-                            int position = mGalleryAdapter.getLastCheckPosition();
-                            if (viewPager.getCurrentItem() != position && position != RecyclerView.NO_POSITION) {
-                                viewPager.setCurrentItem(position, false);
-                            }
-                        }
-                        if (PictureSelectionConfig.selectorStyle.getSelectMainStyle().isSelectNumberStyle()) {
-                            if (!ActivityCompatHelper.isDestroy(getActivity())) {
-                                List<Fragment> fragments = getActivity().getSupportFragmentManager().getFragments();
-                                for (int i = 0; i < fragments.size(); i++) {
-                                    Fragment fragment = fragments.get(i);
-                                    if (fragment instanceof PictureCommonFragment) {
-                                        ((PictureCommonFragment) fragment).sendChangeSubSelectPositionEvent(true);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-                mItemTouchHelper.attachToRecyclerView(mGalleryRecycle);
-                mGalleryAdapter.setItemLongClickListener(new PreviewGalleryAdapter.OnItemLongClickListener() {
-                    @Override
-                    public void onItemLongClick(RecyclerView.ViewHolder holder, int position, View v) {
-                        Vibrator vibrator = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
-                        vibrator.vibrate(50);
-                        if (mGalleryAdapter.getItemCount() != config.maxSelectNum) {
-                            mItemTouchHelper.startDrag(holder);
+            }
+            WrapContentLinearLayoutManager layoutManager = new WrapContentLinearLayoutManager(getContext());
+            layoutManager.setOrientation(WrapContentLinearLayoutManager.HORIZONTAL);
+            mGalleryRecycle.setLayoutManager(layoutManager);
+            mGalleryRecycle.addItemDecoration(new GridSpacingItemDecoration(Integer.MAX_VALUE,
+                    DensityUtil.dip2px(getContext(), 6), true));
+            mGalleryAdapter = new PreviewGalleryAdapter(SelectedManager.getSelectedResult());
+            mGalleryAdapter.isSelectMedia(mData.get(curPosition));
+            mGalleryRecycle.setAdapter(mGalleryAdapter);
+            mGalleryAdapter.setItemClickListener(new PreviewGalleryAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(int position, LocalMedia media, View v) {
+                    if (isBottomPreview || TextUtils.equals(currentAlbum, getString(R.string.ps_camera_roll))
+                            || TextUtils.equals(media.getParentFolderName(), currentAlbum)) {
+                        int newPosition = isBottomPreview ? position : isShowCamera ? media.position - 1 : media.position;
+                        if (newPosition == viewPager.getCurrentItem() && media.isChecked()) {
                             return;
                         }
-                        if (holder.getLayoutPosition() != mGalleryAdapter.getItemCount() - 1) {
-                            mItemTouchHelper.startDrag(holder);
+                        if (viewPager.getAdapter() != null) {
+                            // 这里清空一下重新设置，发现频繁调用setCurrentItem会出现页面闪现之前图片
+                            viewPager.setAdapter(null);
+                            viewPager.setAdapter(viewPageAdapter);
+                        }
+                        viewPager.setCurrentItem(newPosition, false);
+                        mGalleryAdapter.isSelectMedia(media);
+                    }
+                }
+            });
+            if (SelectedManager.getCount() > 0) {
+                mGalleryRecycle.setVisibility(View.VISIBLE);
+            } else {
+                mGalleryRecycle.setVisibility(View.INVISIBLE);
+            }
+            mAnimViews.add(mGalleryRecycle);
+            ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
+                @Override
+                public boolean isLongPressDragEnabled() {
+                    return true;
+                }
+
+                @Override
+                public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                }
+
+                @Override
+                public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                    viewHolder.itemView.setAlpha(0.7F);
+                    return makeMovementFlags(ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, 0);
+                }
+
+                @Override
+                public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                    try {
+                        //得到item原来的position
+                        int fromPosition = viewHolder.getAbsoluteAdapterPosition();
+                        //得到目标position
+                        int toPosition = target.getAbsoluteAdapterPosition();
+                        if (fromPosition < toPosition) {
+                            for (int i = fromPosition; i < toPosition; i++) {
+                                Collections.swap(mGalleryAdapter.getData(), i, i + 1);
+                                Collections.swap(SelectedManager.getSelectedResult(), i, i + 1);
+                                if (isBottomPreview) {
+                                    Collections.swap(mData, i, i + 1);
+                                }
+                            }
+                        } else {
+                            for (int i = fromPosition; i > toPosition; i--) {
+                                Collections.swap(mGalleryAdapter.getData(), i, i - 1);
+                                Collections.swap(SelectedManager.getSelectedResult(), i, i - 1);
+                                if (isBottomPreview) {
+                                    Collections.swap(mData, i, i - 1);
+                                }
+                            }
+                        }
+                        mGalleryAdapter.notifyItemMoved(fromPosition, toPosition);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return true;
+                }
+
+                @Override
+                public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
+                                        @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                    if (needScaleBig) {
+                        needScaleBig = false;
+                        AnimatorSet animatorSet = new AnimatorSet();
+                        animatorSet.playTogether(
+                                ObjectAnimator.ofFloat(viewHolder.itemView, "scaleX", 1.0F, 1.1F),
+                                ObjectAnimator.ofFloat(viewHolder.itemView, "scaleY", 1.0F, 1.1F));
+                        animatorSet.setDuration(50);
+                        animatorSet.setInterpolator(new LinearInterpolator());
+                        animatorSet.start();
+                        animatorSet.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                needScaleSmall = true;
+                            }
+                        });
+                    }
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                }
+
+                @Override
+                public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+                    super.onSelectedChanged(viewHolder, actionState);
+                }
+
+                @Override
+                public long getAnimationDuration(@NonNull RecyclerView recyclerView, int animationType, float animateDx, float animateDy) {
+                    return super.getAnimationDuration(recyclerView, animationType, animateDx, animateDy);
+                }
+
+                @Override
+                public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                    viewHolder.itemView.setAlpha(1.0F);
+                    if (needScaleSmall) {
+                        needScaleSmall = false;
+                        AnimatorSet animatorSet = new AnimatorSet();
+                        animatorSet.playTogether(
+                                ObjectAnimator.ofFloat(viewHolder.itemView, "scaleX", 1.1F, 1.0F),
+                                ObjectAnimator.ofFloat(viewHolder.itemView, "scaleY", 1.1F, 1.0F));
+                        animatorSet.setInterpolator(new LinearInterpolator());
+                        animatorSet.setDuration(50);
+                        animatorSet.start();
+                        animatorSet.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                needScaleBig = true;
+                            }
+                        });
+                    }
+                    super.clearView(recyclerView, viewHolder);
+                    mGalleryAdapter.notifyItemChanged(viewHolder.getAbsoluteAdapterPosition());
+                    if (isBottomPreview) {
+                        int position = mGalleryAdapter.getLastCheckPosition();
+                        if (viewPager.getCurrentItem() != position && position != RecyclerView.NO_POSITION) {
+                            viewPager.setCurrentItem(position, false);
                         }
                     }
-                });
-            }
+                    if (PictureSelectionConfig.selectorStyle.getSelectMainStyle().isSelectNumberStyle()) {
+                        if (!ActivityCompatHelper.isDestroy(getActivity())) {
+                            List<Fragment> fragments = getActivity().getSupportFragmentManager().getFragments();
+                            for (int i = 0; i < fragments.size(); i++) {
+                                Fragment fragment = fragments.get(i);
+                                if (fragment instanceof PictureCommonFragment) {
+                                    ((PictureCommonFragment) fragment).sendChangeSubSelectPositionEvent(true);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            mItemTouchHelper.attachToRecyclerView(mGalleryRecycle);
+            mGalleryAdapter.setItemLongClickListener(new PreviewGalleryAdapter.OnItemLongClickListener() {
+                @Override
+                public void onItemLongClick(RecyclerView.ViewHolder holder, int position, View v) {
+                    Vibrator vibrator = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
+                    vibrator.vibrate(50);
+                    if (mGalleryAdapter.getItemCount() != config.maxSelectNum) {
+                        mItemTouchHelper.startDrag(holder);
+                        return;
+                    }
+                    if (holder.getLayoutPosition() != mGalleryAdapter.getItemCount() - 1) {
+                        mItemTouchHelper.startDrag(holder);
+                    }
+                }
+            });
         }
     }
 
@@ -1300,7 +1330,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         if (PictureSelectionConfig.selectorStyle.getSelectMainStyle().isPreviewSelectNumberStyle()) {
             if (PictureSelectionConfig.selectorStyle.getSelectMainStyle().isSelectNumberStyle()) {
                 tvSelected.setText("");
-                tvSelected.setTextSize(11);
                 for (int i = 0; i < SelectedManager.getCount(); i++) {
                     LocalMedia media = SelectedManager.getSelectedResult().get(i);
                     if (TextUtils.equals(media.getPath(), currentMedia.getPath())

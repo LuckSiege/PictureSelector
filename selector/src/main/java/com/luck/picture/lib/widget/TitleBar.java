@@ -2,6 +2,7 @@ package com.luck.picture.lib.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -55,7 +56,7 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
     }
 
     protected void init() {
-        inflate(getContext(), R.layout.ps_title_bar, this);
+        inflateLayout();
         setClickable(true);
         setFocusable(true);
         viewTopStatusBar = findViewById(R.id.top_status_bar);
@@ -73,6 +74,15 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
         viewAlbumClickArea.setOnClickListener(this);
         setBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
         config = PictureSelectionConfig.getInstance();
+        handleLayoutUI();
+    }
+
+    protected void inflateLayout() {
+        LayoutInflater.from(getContext()).inflate(R.layout.ps_title_bar, this);
+    }
+
+    protected void handleLayoutUI(){
+
     }
 
     public ImageView getImageArrow() {

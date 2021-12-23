@@ -30,8 +30,7 @@ public class PreviewBottomNavBar extends BottomNavBar {
     }
 
     @Override
-    protected void init() {
-        super.init();
+    protected void handleLayoutUI() {
         tvPreview.setVisibility(GONE);
         tvImageEditor.setOnClickListener(this);
         tvImageEditor.setVisibility(PictureSelectionConfig.editMediaEventListener != null ? View.VISIBLE : GONE);
@@ -51,7 +50,7 @@ public class PreviewBottomNavBar extends BottomNavBar {
         BottomNavBarStyle bottomBarStyle = PictureSelectionConfig.selectorStyle.getBottomBarStyle();
         if (StyleUtils.checkStyleValidity(bottomBarStyle.getBottomPreviewNarBarBackgroundColor())) {
             setBackgroundColor(bottomBarStyle.getBottomPreviewNarBarBackgroundColor());
-        } else if (StyleUtils.checkSizeValidity(bottomBarStyle.getBottomNarBarBackgroundColor())){
+        } else if (StyleUtils.checkSizeValidity(bottomBarStyle.getBottomNarBarBackgroundColor())) {
             setBackgroundColor(bottomBarStyle.getBottomNarBarBackgroundColor());
         }
     }

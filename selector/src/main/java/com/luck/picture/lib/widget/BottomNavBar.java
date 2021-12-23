@@ -47,7 +47,7 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
     }
 
     protected void init() {
-        inflate(getContext(), R.layout.ps_bottom_nav_bar, this);
+        inflateLayout();
         setClickable(true);
         setFocusable(true);
         config = PictureSelectionConfig.getInstance();
@@ -71,6 +71,15 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
                 }
             }
         });
+        handleLayoutUI();
+    }
+
+    protected void inflateLayout() {
+        inflate(getContext(), R.layout.ps_bottom_nav_bar, this);
+    }
+
+    protected void handleLayoutUI(){
+
     }
 
     public void setBottomNavBarStyle() {

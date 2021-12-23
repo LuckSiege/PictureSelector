@@ -25,6 +25,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
+import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
@@ -190,6 +191,19 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel setCameraInterceptListener(OnCameraInterceptListener listener) {
         PictureSelectionConfig.interceptCameraListener = listener;
+        return this;
+    }
+
+    /**
+     * Intercept custom inject layout events, Users can implement their own layout
+     * on the premise that the view ID must be consistent
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionModel setInjectLayoutResourceListener(OnInjectLayoutResourceListener listener) {
+        selectionConfig.isInjectLayoutResource = listener != null;
+        PictureSelectionConfig.layoutResourceListener = listener;
         return this;
     }
 

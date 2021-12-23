@@ -3,6 +3,7 @@ package com.luck.picture.lib.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
@@ -47,13 +48,17 @@ public class CompleteSelectView extends LinearLayout {
     }
 
     private void init() {
-        inflate(getContext(), R.layout.ps_complete_selected_layout, this);
+        inflateLayout();
         setOrientation(LinearLayout.HORIZONTAL);
         tvSelectNum = findViewById(R.id.ps_tv_select_num);
         tvComplete = findViewById(R.id.ps_tv_complete);
         setGravity(Gravity.CENTER_VERTICAL);
         numberChangeAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.ps_anim_modal_in);
         config = PictureSelectionConfig.getInstance();
+    }
+
+    protected void inflateLayout() {
+        LayoutInflater.from(getContext()).inflate(R.layout.ps_complete_selected_layout, this);
     }
 
     /**

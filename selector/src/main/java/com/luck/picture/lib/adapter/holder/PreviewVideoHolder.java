@@ -57,21 +57,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
                 player.setMediaItem(mediaItem);
                 player.prepare();
                 player.play();
-                player.addListener(new Player.Listener() {
-                    @Override
-                    public void onPlayerError(@NonNull PlaybackException error) {
-                        playerDefaultUI();
-                    }
-
-                    @Override
-                    public void onPlaybackStateChanged(int playbackState) {
-                        if (playbackState == Player.STATE_READY) {
-                            playerIngUI();
-                        } else if (playbackState == Player.STATE_ENDED) {
-                            playerDefaultUI();
-                        }
-                    }
-                });
+                player.addListener(mPlayerListener);
             }
         });
         itemView.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +69,22 @@ public class PreviewVideoHolder extends BasePreviewHolder {
             }
         });
     }
+
+    private final Player.Listener mPlayerListener = new Player.Listener() {
+        @Override
+        public void onPlayerError(@NonNull PlaybackException error) {
+            playerDefaultUI();
+        }
+
+        @Override
+        public void onPlaybackStateChanged(int playbackState) {
+            if (playbackState == Player.STATE_READY) {
+                playerIngUI();
+            } else if (playbackState == Player.STATE_ENDED) {
+                playerDefaultUI();
+            }
+        }
+    };
 
     private void playerDefaultUI() {
         ivPlayButton.setVisibility(View.VISIBLE);
@@ -114,6 +116,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
      */
     public void releaseVideo() {
         if (mPlayerView.getPlayer() != null) {
+            mPlayerView.getPlayer().removeListener(mPlayerListener);
             mPlayerView.getPlayer().release();
             playerDefaultUI();
         }

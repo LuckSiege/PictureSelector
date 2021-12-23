@@ -12,6 +12,7 @@ import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
+import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
@@ -92,6 +93,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isOnlySandboxDir;
     public boolean isCameraForegroundService;
     public boolean isResultBack;
+    public boolean isInjectLayoutResource;
     public boolean isActivityResultBack;
     public boolean isCompressEngine;
     public boolean isLoaderDataEngine;
@@ -109,6 +111,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static OnExternalPreviewEventListener previewEventListener;
     public static OnMediaEditInterceptListener editMediaEventListener;
     public static OnPermissionsInterceptListener permissionsEventListener;
+    public static OnInjectLayoutResourceListener layoutResourceListener;
 
 
     protected PictureSelectionConfig(Parcel in) {
@@ -172,6 +175,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isOnlySandboxDir = in.readByte() != 0;
         isCameraForegroundService = in.readByte() != 0;
         isResultBack = in.readByte() != 0;
+        isInjectLayoutResource = in.readByte() != 0;
         isActivityResultBack = in.readByte() != 0;
         isCompressEngine = in.readByte() != 0;
         isLoaderDataEngine = in.readByte() != 0;
@@ -241,6 +245,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isOnlySandboxDir ? 1 : 0));
         dest.writeByte((byte) (isCameraForegroundService ? 1 : 0));
         dest.writeByte((byte) (isResultBack ? 1 : 0));
+        dest.writeByte((byte) (isInjectLayoutResource ? 1 : 0));
         dest.writeByte((byte) (isActivityResultBack ? 1 : 0));
         dest.writeByte((byte) (isCompressEngine ? 1 : 0));
         dest.writeByte((byte) (isLoaderDataEngine ? 1 : 0));
@@ -332,6 +337,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isPreviewFullScreenMode = true;
         isPreviewZoomEffect = true;
         isOriginalControl = false;
+        isInjectLayoutResource = false;
     }
 
 
@@ -372,6 +378,7 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.previewEventListener = null;
         PictureSelectionConfig.editMediaEventListener = null;
         PictureSelectionConfig.permissionsEventListener = null;
+        PictureSelectionConfig.layoutResourceListener = null;
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         SelectedManager.clear();
         BuildRecycleItemViewParams.clear();

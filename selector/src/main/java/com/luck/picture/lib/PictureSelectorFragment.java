@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.ResourceSource;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
@@ -108,6 +110,13 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public int getResourceId() {
+        if (PictureSelectionConfig.layoutResourceListener != null) {
+            int layoutResourceId = PictureSelectionConfig.layoutResourceListener
+                    .getLayoutResourceId(getContext(), ResourceSource.SELECTOR_LAYOUT_RESOURCE);
+            if (layoutResourceId != 0) {
+                return layoutResourceId;
+            }
+        }
         return R.layout.ps_fragment_selector;
     }
 
@@ -234,14 +243,20 @@ public class PictureSelectorFragment extends PictureCommonFragment
             completeSelectView.setSelectedChange(false);
             SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
             if (selectMainStyle.isCompleteSelectRelativeTop()) {
-                ((ConstraintLayout.LayoutParams)
-                        completeSelectView.getLayoutParams()).topToTop = R.id.title_bar;
-                ((ConstraintLayout.LayoutParams)
-                        completeSelectView.getLayoutParams()).bottomToBottom = R.id.title_bar;
-
-                if (config.isPreviewFullScreenMode) {
-                    ((ConstraintLayout.LayoutParams) completeSelectView
-                            .getLayoutParams()).topMargin = DensityUtil.getStatusBarHeight(getContext());
+                if (completeSelectView.getLayoutParams() instanceof ConstraintLayout.LayoutParams) {
+                    ((ConstraintLayout.LayoutParams)
+                            completeSelectView.getLayoutParams()).topToTop = R.id.title_bar;
+                    ((ConstraintLayout.LayoutParams)
+                            completeSelectView.getLayoutParams()).bottomToBottom = R.id.title_bar;
+                    if (config.isPreviewFullScreenMode) {
+                        ((ConstraintLayout.LayoutParams) completeSelectView
+                                .getLayoutParams()).topMargin = DensityUtil.getStatusBarHeight(getContext());
+                    }
+                } else if (completeSelectView.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
+                    if (config.isPreviewFullScreenMode) {
+                        ((RelativeLayout.LayoutParams) completeSelectView
+                                .getLayoutParams()).topMargin = DensityUtil.getStatusBarHeight(getContext());
+                    }
                 }
             }
             completeSelectView.setOnClickListener(new View.OnClickListener() {

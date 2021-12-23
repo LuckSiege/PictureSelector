@@ -1,13 +1,16 @@
 package com.luck.pictureselector;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.luck.picture.lib.config.ResourceSource;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.engine.PictureSelectorEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 
 import java.util.List;
@@ -62,6 +65,26 @@ public class PictureSelectorEngineImp implements PictureSelectorEngine {
     public SandboxFileEngine createSandboxFileEngine() {
         // TODO 这种情况是内存极度不足的情况下，比如开启开发者选项中的不保留活动或后台进程限制，导致SandboxFileEngine被回收
         return null;
+    }
+
+    /**
+     * 如果出现内存不足导致OnInjectLayoutResourceListener被回收，需要重新引入自定义布局
+     *
+     * @return
+     */
+    @Override
+    public OnInjectLayoutResourceListener createLayoutResourceListener() {
+        return new OnInjectLayoutResourceListener() {
+            @Override
+            public int getLayoutResourceId(Context context, int resourceSource) {
+                if (resourceSource == ResourceSource.SELECTOR_LAYOUT_RESOURCE) {
+                    return R.layout.ps_custom_fragment_selector;
+                } else if (resourceSource == ResourceSource.PREVIEW_LAYOUT_RESOURCE) {
+                    return R.layout.ps_custom_fragment_preview;
+                }
+                return 0;
+            }
+        };
     }
 
     @Override

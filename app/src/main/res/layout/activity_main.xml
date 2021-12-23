@@ -116,6 +116,15 @@
 
                 </RadioGroup>
 
+                <CheckBox
+                    android:id="@+id/cb_inject_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="注入自定义布局"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
                 <RadioGroup
                     android:id="@+id/rgb_animation"
                     android:layout_width="match_parent"

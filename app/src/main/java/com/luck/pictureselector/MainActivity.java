@@ -36,6 +36,7 @@ import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.basic.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.config.ResourceSource;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
@@ -51,6 +52,7 @@ import com.luck.picture.lib.interfaces.OnCallbackIndexListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
+import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
 import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
@@ -105,7 +107,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
             cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
             cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
-            cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_preview_full, cb_preview_scale;
+            cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_preview_full, cb_preview_scale
+            ,cb_inject_layout;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isUpward;
     private boolean needScaleBig = true;
@@ -140,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_isGif = findViewById(R.id.cb_isGif);
         cb_preview_full = findViewById(R.id.cb_preview_full);
         cb_preview_scale = findViewById(R.id.cb_preview_scale);
+        cb_inject_layout = findViewById(R.id.cb_inject_layout);
         cb_preview_img = findViewById(R.id.cb_preview_img);
         cb_preview_video = findViewById(R.id.cb_preview_video);
         cb_crop = findViewById(R.id.cb_crop);
@@ -248,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setCameraInterceptListener(getCustomCameraEvent())
                             .setEditMediaInterceptListener(getCustomEditMediaEvent())
                             //.setExtendLoaderEngine(getExtendLoaderEngine())
+                            .setInjectLayoutResourceListener(getInjectLayoutResource())
                             .selectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
                             .setLanguage(language)
                             .setOutputCameraDir(getSandboxPath())
@@ -552,6 +557,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private OnMediaEditInterceptListener getCustomEditMediaEvent() {
         return cbEditor.isChecked() ? new MeOnMediaEditInterceptListener() : null;
+    }
+
+    /**
+     * 注入自定义布局
+     *
+     * @return
+     */
+    private OnInjectLayoutResourceListener getInjectLayoutResource() {
+        return cb_inject_layout.isChecked() ? new MeOnInjectLayoutResourceListener() : null;
+    }
+
+
+    /**
+     * 注入自定义布局UI，前提是布局View id 和 根目录Layout必须一致
+     */
+    private static class MeOnInjectLayoutResourceListener implements OnInjectLayoutResourceListener {
+
+        @Override
+        public int getLayoutResourceId(Context context, int resourceSource) {
+            if (resourceSource == ResourceSource.SELECTOR_LAYOUT_RESOURCE) {
+                return R.layout.ps_custom_fragment_selector;
+            } else if (resourceSource == ResourceSource.PREVIEW_LAYOUT_RESOURCE) {
+                return R.layout.ps_custom_fragment_preview;
+            }
+            return 0;
+        }
     }
 
     /**

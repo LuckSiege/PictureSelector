@@ -1099,6 +1099,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         createSandboxFileEngine();
         createLoaderDataEngine();
         createResultCallbackListener();
+        createLayoutResourceListener();
         super.onAttach(context);
 
         if (getParentFragment() instanceof IBridgePictureBehavior) {
@@ -1182,6 +1183,20 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
                 if (baseEngine != null) {
                     PictureSelectionConfig.resultCallListener = baseEngine.getResultCallbackListener();
+                }
+            }
+        }
+    }
+
+    /**
+     * Retrieve the layout callback listener, provided that the user implements the IApp interface in the Application
+     */
+    private void createLayoutResourceListener() {
+        if (PictureSelectionConfig.getInstance().isInjectLayoutResource) {
+            if (PictureSelectionConfig.layoutResourceListener == null) {
+                PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
+                if (baseEngine != null) {
+                    PictureSelectionConfig.layoutResourceListener = baseEngine.createLayoutResourceListener();
                 }
             }
         }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/ps_tv_preview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:enabled="false"
+        android:gravity="center"
+        android:paddingLeft="15dp"
+        android:paddingTop="10dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="10dp"
+        android:text="@string/ps_preview"
+        android:textColor="@color/ps_color_9b"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/ps_tv_editor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:paddingLeft="15dp"
+        android:paddingTop="10dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="10dp"
+        android:text="@string/ps_editor"
+        android:textColor="@color/ps_color_white"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <CheckBox
+        android:id="@+id/cb_original"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@color/ps_color_transparent"
+        android:button="@drawable/ps_original_checkbox"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:paddingStart="5dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="@string/ps_default_original_image"
+        android:textColor="@color/ps_color_white"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+</merge>
