@@ -11,6 +11,8 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
 import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.ResourceSource;
 import com.luck.picture.lib.entity.LocalMedia;
 
 import java.util.List;
@@ -34,10 +36,19 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     @NonNull
     @Override
     public BasePreviewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        int layoutResourceId = 0;
         if (viewType == BasePreviewHolder.ADAPTER_TYPE_VIDEO) {
-            return BasePreviewHolder.generate(parent, viewType, R.layout.ps_preview_video);
+            if (PictureSelectionConfig.layoutResourceListener != null) {
+                layoutResourceId = PictureSelectionConfig.layoutResourceListener.getLayoutResourceId(parent.getContext(),
+                        ResourceSource.PREVIEW_ADAPTER_ITEM_VIDEO_LAYOUT_RESOURCE);
+            }
+            return BasePreviewHolder.generate(parent, viewType, layoutResourceId != 0 ? layoutResourceId : R.layout.ps_preview_video);
         } else {
-            return BasePreviewHolder.generate(parent, viewType, R.layout.ps_preview_image);
+            if (PictureSelectionConfig.layoutResourceListener != null) {
+                layoutResourceId = PictureSelectionConfig.layoutResourceListener.getLayoutResourceId(parent.getContext(),
+                        ResourceSource.PREVIEW_ADAPTER_ITEM_IMAGE_LAYOUT_RESOURCE);
+            }
+            return BasePreviewHolder.generate(parent, viewType, layoutResourceId != 0 ? layoutResourceId : R.layout.ps_preview_image);
         }
     }
 

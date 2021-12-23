@@ -8,11 +8,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.ResourceSource;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnAlbumItemClickListener;
 import com.luck.picture.lib.manager.SelectedManager;
@@ -40,9 +42,14 @@ public class PictureAlbumAdapter extends RecyclerView.Adapter<PictureAlbumAdapte
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        int layoutResourceId = 0;
+        if (PictureSelectionConfig.layoutResourceListener != null) {
+            layoutResourceId = PictureSelectionConfig.layoutResourceListener.getLayoutResourceId(parent.getContext(),
+                    ResourceSource.ALBUM_ADAPTER_ITEM_LAYOUT_RESOURCE);
+        }
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.ps_album_folder_item, parent, false);
+                .inflate(layoutResourceId != 0 ? layoutResourceId : R.layout.ps_album_folder_item, parent, false);
         return new ViewHolder(itemView);
     }
 

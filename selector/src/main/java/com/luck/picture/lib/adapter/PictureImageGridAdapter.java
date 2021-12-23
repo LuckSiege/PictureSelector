@@ -1,6 +1,7 @@
 package com.luck.picture.lib.adapter;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -11,6 +12,7 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.holder.BaseRecyclerMediaHolder;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.ResourceSource;
 import com.luck.picture.lib.entity.LocalMedia;
 
 import org.jetbrains.annotations.NotNull;
@@ -53,13 +55,16 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
         return lastPosition;
     }
 
+    private Context mContext;
+
     public void notifyItemPositionChanged(int position) {
         this.lastPosition = position;
         this.notifyItemChanged(position);
     }
 
-    public PictureImageGridAdapter(PictureSelectionConfig mConfig) {
+    public PictureImageGridAdapter(Context context, PictureSelectionConfig mConfig) {
         this.mConfig = mConfig;
+        this.mContext = context;
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -119,10 +124,31 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
             case ADAPTER_TYPE_CAMERA:
                 return R.layout.ps_item_grid_camera;
             case ADAPTER_TYPE_VIDEO:
+                if (PictureSelectionConfig.layoutResourceListener != null) {
+                    int layoutResourceId = PictureSelectionConfig.layoutResourceListener
+                            .getLayoutResourceId(mContext, ResourceSource.MAIN_ADAPTER_ITEM_VIDEO_LAYOUT_RESOURCE);
+                    if (layoutResourceId != 0) {
+                        return layoutResourceId;
+                    }
+                }
                 return R.layout.ps_item_grid_video;
             case ADAPTER_TYPE_AUDIO:
+                if (PictureSelectionConfig.layoutResourceListener != null) {
+                    int layoutResourceId = PictureSelectionConfig.layoutResourceListener
+                            .getLayoutResourceId(mContext, ResourceSource.MAIN_ADAPTER_ITEM_AUDIO_LAYOUT_RESOURCE);
+                    if (layoutResourceId != 0) {
+                        return layoutResourceId;
+                    }
+                }
                 return R.layout.ps_item_grid_audio;
             default:
+                if (PictureSelectionConfig.layoutResourceListener != null) {
+                    int layoutResourceId = PictureSelectionConfig.layoutResourceListener
+                            .getLayoutResourceId(mContext, ResourceSource.MAIN_ADAPTER_ITEM_IMAGE_LAYOUT_RESOURCE);
+                    if (layoutResourceId != 0) {
+                        return layoutResourceId;
+                    }
+                }
                 return R.layout.ps_item_grid_image;
         }
     }

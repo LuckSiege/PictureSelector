@@ -988,26 +988,33 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     public void onResultEvent(ArrayList<LocalMedia> result) {
         if (PictureSelectionConfig.sandboxFileEngine != null) {
             showLoading();
-            for (int i = 0; i < result.size(); i++) {
-                LocalMedia media = result.get(i);
-                PictureSelectionConfig.sandboxFileEngine.onStartSandboxFileTransform(getContext(), i,
-                        media, new OnCallbackIndexListener<LocalMedia>() {
-                            @Override
-                            public void onCall(LocalMedia data, int index) {
-                                if (result.size() > index) {
-                                    LocalMedia media = result.get(index);
-                                    media.setSandboxPath(data.getSandboxPath());
-                                    if (config.isCheckOriginalImage){
-                                        media.setOriginalPath(data.getSandboxPath());
-                                        media.setOriginal(!TextUtils.isEmpty(data.getSandboxPath()));
+            PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<ArrayList<LocalMedia>>() {
+                @Override
+                public ArrayList<LocalMedia> doInBackground() {
+                    for (int i = 0; i < result.size(); i++) {
+                        LocalMedia media = result.get(i);
+                        PictureSelectionConfig.sandboxFileEngine.onStartSandboxFileTransform(getContext(), i,
+                                media, new OnCallbackIndexListener<LocalMedia>() {
+                                    @Override
+                                    public void onCall(LocalMedia data, int index) {
+                                        LocalMedia media = result.get(index);
+                                        media.setSandboxPath(data.getSandboxPath());
+                                        if (config.isCheckOriginalImage) {
+                                            media.setOriginalPath(data.getSandboxPath());
+                                            media.setOriginal(!TextUtils.isEmpty(data.getSandboxPath()));
+                                        }
                                     }
-                                }
-                                if (index == result.size() - 1) {
-                                    callBackResult(result);
-                                }
-                            }
-                        });
-            }
+                                });
+                    }
+                    return result;
+                }
+
+                @Override
+                public void onSuccess(ArrayList<LocalMedia> result) {
+                    PictureThreadUtils.cancel(this);
+                    callBackResult(result);
+                }
+            });
         } else {
             callBackResult(result);
         }

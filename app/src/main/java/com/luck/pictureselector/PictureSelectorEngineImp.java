@@ -77,12 +77,26 @@ public class PictureSelectorEngineImp implements PictureSelectorEngine {
         return new OnInjectLayoutResourceListener() {
             @Override
             public int getLayoutResourceId(Context context, int resourceSource) {
-                if (resourceSource == ResourceSource.SELECTOR_LAYOUT_RESOURCE) {
-                    return R.layout.ps_custom_fragment_selector;
-                } else if (resourceSource == ResourceSource.PREVIEW_LAYOUT_RESOURCE) {
-                    return R.layout.ps_custom_fragment_preview;
+                switch (resourceSource) {
+                    case ResourceSource.MAIN_SELECTOR_LAYOUT_RESOURCE:
+                        return R.layout.ps_custom_fragment_selector;
+                    case ResourceSource.PREVIEW_LAYOUT_RESOURCE:
+                        return R.layout.ps_custom_fragment_preview;
+                    case ResourceSource.MAIN_ADAPTER_ITEM_IMAGE_LAYOUT_RESOURCE:
+                        return R.layout.ps_custom_item_grid_image;
+                    case ResourceSource.MAIN_ADAPTER_ITEM_VIDEO_LAYOUT_RESOURCE:
+                        return R.layout.ps_custom_item_grid_video;
+                    case ResourceSource.MAIN_ADAPTER_ITEM_AUDIO_LAYOUT_RESOURCE:
+                        return R.layout.ps_custom_item_grid_audio;
+                    case ResourceSource.ALBUM_ADAPTER_ITEM_LAYOUT_RESOURCE:
+                        return R.layout.ps_custom_album_folder_item;
+                    case ResourceSource.PREVIEW_ADAPTER_ITEM_IMAGE_LAYOUT_RESOURCE:
+                        return R.layout.ps_custom_preview_image;
+                    case ResourceSource.PREVIEW_ADAPTER_ITEM_VIDEO_LAYOUT_RESOURCE:
+                        return R.layout.ps_custom_preview_video;
+                    default:
+                        return 0;
                 }
-                return 0;
             }
         };
     }

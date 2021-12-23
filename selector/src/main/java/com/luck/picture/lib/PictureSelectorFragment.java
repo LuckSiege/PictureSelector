@@ -113,7 +113,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
     public int getResourceId() {
         if (PictureSelectionConfig.layoutResourceListener != null) {
             int layoutResourceId = PictureSelectionConfig.layoutResourceListener
-                    .getLayoutResourceId(getContext(), ResourceSource.SELECTOR_LAYOUT_RESOURCE);
+                    .getLayoutResourceId(getContext(), ResourceSource.MAIN_SELECTOR_LAYOUT_RESOURCE);
             if (layoutResourceId != 0) {
                 return layoutResourceId;
             }
@@ -668,7 +668,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         } else {
             mRecycler.setHasFixedSize(true);
         }
-        mAdapter = new PictureImageGridAdapter(config);
+        mAdapter = new PictureImageGridAdapter(getContext(),config);
         mAdapter.setDisplayCamera(isDisplayCamera);
         switch (config.animationMode) {
             case AnimationType.ALPHA_IN_ANIMATION:

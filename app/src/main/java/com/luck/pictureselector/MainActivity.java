@@ -107,8 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
             cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
             cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
-            cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_preview_full, cb_preview_scale
-            ,cb_inject_layout;
+            cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_preview_full, cb_preview_scale, cb_inject_layout;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isUpward;
     private boolean needScaleBig = true;
@@ -576,12 +575,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public int getLayoutResourceId(Context context, int resourceSource) {
-            if (resourceSource == ResourceSource.SELECTOR_LAYOUT_RESOURCE) {
-                return R.layout.ps_custom_fragment_selector;
-            } else if (resourceSource == ResourceSource.PREVIEW_LAYOUT_RESOURCE) {
-                return R.layout.ps_custom_fragment_preview;
+            switch (resourceSource) {
+                case ResourceSource.MAIN_SELECTOR_LAYOUT_RESOURCE:
+                    return R.layout.ps_custom_fragment_selector;
+                case ResourceSource.PREVIEW_LAYOUT_RESOURCE:
+                    return R.layout.ps_custom_fragment_preview;
+                case ResourceSource.MAIN_ADAPTER_ITEM_IMAGE_LAYOUT_RESOURCE:
+                    return R.layout.ps_custom_item_grid_image;
+                case ResourceSource.MAIN_ADAPTER_ITEM_VIDEO_LAYOUT_RESOURCE:
+                    return R.layout.ps_custom_item_grid_video;
+                case ResourceSource.MAIN_ADAPTER_ITEM_AUDIO_LAYOUT_RESOURCE:
+                    return R.layout.ps_custom_item_grid_audio;
+                case ResourceSource.ALBUM_ADAPTER_ITEM_LAYOUT_RESOURCE:
+                    return R.layout.ps_custom_album_folder_item;
+                case ResourceSource.PREVIEW_ADAPTER_ITEM_IMAGE_LAYOUT_RESOURCE:
+                    return R.layout.ps_custom_preview_image;
+                case ResourceSource.PREVIEW_ADAPTER_ITEM_VIDEO_LAYOUT_RESOURCE:
+                    return R.layout.ps_custom_preview_video;
+                default:
+                    return 0;
             }
-            return 0;
         }
     }
 
@@ -724,7 +737,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         options.setShowCropFrame(cb_showCropFrame.isChecked());
         options.setShowCropGrid(cb_showCropGrid.isChecked());
         options.setCircleDimmedLayer(cb_crop_circular.isChecked());
-        options.withAspectRatio(aspect_ratio_x,aspect_ratio_y);
+        options.withAspectRatio(aspect_ratio_x, aspect_ratio_y);
         options.setCropOutputPathDir(getSandboxPath());
         options.isForbidSkipMultipleCrop(false);
         options.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
