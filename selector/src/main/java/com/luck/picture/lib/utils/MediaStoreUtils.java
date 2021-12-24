@@ -3,7 +3,6 @@ package com.luck.picture.lib.utils;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -76,22 +75,6 @@ public class MediaStoreUtils {
             videoUri = PictureFileUtils.parUri(context, cameraFile);
         }
         return videoUri;
-    }
-
-    /**
-     * 录制音频地址
-     *
-     * @param context 上下文
-     * @param config  PictureSelector配制类
-     * @return
-     */
-    public static Uri createCameraOutAudioUri(Context context, PictureSelectionConfig config) {
-        Uri audioUri = null;
-        if (SdkVersionUtils.isQ()) {
-            audioUri = createAudioUri(context, config.cameraAudioFormatForQ);
-            config.cameraPath = audioUri != null ? audioUri.toString() : null;
-        }
-        return audioUri;
     }
 
 
@@ -205,39 +188,4 @@ public class MediaStoreUtils {
         }
         return values;
     }
-
-
-    /**
-     * 创建一条音频地址uri,用于保存录制的音频
-     *
-     * @param ctx      上下文
-     * @param mimeType 资源类型
-     * @return
-     */
-    public static Uri createAudioUri(final Context ctx, String mimeType) {
-        Context context = ctx.getApplicationContext();
-        Uri[] imageFilePath = {null};
-        String status = Environment.getExternalStorageState();
-        String time = ValueOf.toString(System.currentTimeMillis());
-        // ContentValues是我们希望这条记录被创建时包含的数据信息
-        ContentValues values = new ContentValues(3);
-        values.put(MediaStore.Audio.Media.DISPLAY_NAME, DateUtils.getCreateFileName("AUD_"));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            values.put(MediaStore.Audio.Media.DATE_TAKEN, time);
-        }
-        values.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(mimeType) || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE) || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO) ? PictureMimeType.MIME_TYPE_AUDIO_AMR : mimeType);
-        // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
-        if (status.equals(Environment.MEDIA_MOUNTED)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                values.put(MediaStore.Audio.Media.RELATIVE_PATH, Environment.DIRECTORY_MUSIC);
-            }
-            imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
-        } else {
-            imageFilePath[0] = context.getContentResolver()
-                    .insert(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, values);
-        }
-        return imageFilePath[0];
-    }
-
 }

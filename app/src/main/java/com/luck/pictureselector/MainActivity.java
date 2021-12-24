@@ -219,19 +219,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 .setLanguage(language)
                                 .isPreviewFullScreenMode(cb_preview_full.isChecked())
                                 .isPreviewZoomEffect(cb_preview_scale.isChecked())
-                                .startActivityPreview(position, selectList, true,
-                                        new OnExternalPreviewEventListener() {
-                                            @Override
-                                            public void onPreviewDelete(int position) {
-                                                mAdapter.remove(position);
-                                                mAdapter.notifyItemRemoved(position);
-                                            }
+                                .setExternalPreviewEventListener(new OnExternalPreviewEventListener() {
+                                    @Override
+                                    public void onPreviewDelete(int position) {
+                                        mAdapter.remove(position);
+                                        mAdapter.notifyItemRemoved(position);
+                                    }
 
-                                            @Override
-                                            public boolean onLongPressDownload(LocalMedia media) {
-                                                return false;
-                                            }
-                                        });
+                                    @Override
+                                    public boolean onLongPressDownload(LocalMedia media) {
+                                        return false;
+                                    }
+                                })
+                                .startActivityPreview(position, true, selectList);
                     }
                 }
             }
@@ -276,8 +276,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setRecyclerAnimationMode(animationMode)
                             .isGif(cb_isGif.isChecked())
                             .selectedData(mAdapter.getData())
-                            //.forResult(new MeOnResultCallbackListener());
-                            .forResult(PictureConfig.CHOOSE_REQUEST);
+                            .forResult(new MeOnResultCallbackListener());
                 } else {
                     // 单独拍照
                     PictureSelector.create(MainActivity.this)

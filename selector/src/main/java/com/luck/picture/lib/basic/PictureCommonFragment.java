@@ -70,8 +70,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -481,14 +479,14 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             public void onItemClick(View v, int position) {
                 switch (position) {
                     case PhotoItemSelectedDialog.IMAGE_CAMERA:
-                        if (PictureSelectionConfig.interceptCameraListener != null) {
+                        if (PictureSelectionConfig.cameraInterceptListener != null) {
                             interceptCameraEvent(SelectMimeType.TYPE_IMAGE);
                         } else {
                             openImageCamera();
                         }
                         break;
                     case PhotoItemSelectedDialog.VIDEO_CAMERA:
-                        if (PictureSelectionConfig.interceptCameraListener != null) {
+                        if (PictureSelectionConfig.cameraInterceptListener != null) {
                             interceptCameraEvent(SelectMimeType.TYPE_VIDEO);
                         } else {
                             openVideoCamera();
@@ -538,7 +536,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     private void startCameraImageCapture() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
             ForegroundService.startForegroundService(getContext());
-            if (PictureSelectionConfig.interceptCameraListener != null) {
+            if (PictureSelectionConfig.cameraInterceptListener != null) {
                 interceptCameraEvent(SelectMimeType.TYPE_IMAGE);
             } else {
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -593,7 +591,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     private void startCameraVideoCapture() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
             ForegroundService.startForegroundService(getContext());
-            if (PictureSelectionConfig.interceptCameraListener != null) {
+            if (PictureSelectionConfig.cameraInterceptListener != null) {
                 interceptCameraEvent(SelectMimeType.TYPE_VIDEO);
             } else {
                 Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
@@ -651,16 +649,12 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     private void startCameraRecordSound() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
             ForegroundService.startForegroundService(getContext());
-            if (PictureSelectionConfig.interceptCameraListener != null) {
+            if (PictureSelectionConfig.cameraInterceptListener != null) {
                 interceptCameraEvent(SelectMimeType.TYPE_AUDIO);
             } else {
                 Intent cameraIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
                 if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    Uri audioUri = MediaStoreUtils.createCameraOutAudioUri(getContext(), config);
-                    if (audioUri != null) {
-                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, audioUri);
-                        startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
-                    }
+                    startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
                 }
             }
         }
@@ -672,7 +666,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private void interceptCameraEvent(int cameraMode) {
         ForegroundService.startForegroundService(getContext());
-        PictureSelectionConfig.interceptCameraListener.openCamera(this, cameraMode, PictureConfig.REQUEST_CAMERA);
+        PictureSelectionConfig.cameraInterceptListener.openCamera(this, cameraMode, PictureConfig.REQUEST_CAMERA);
     }
 
     /**
@@ -680,7 +674,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private void playClickEffect() {
         if (soundPool != null && config.isOpenClickSound) {
-            soundPool.play(soundID, 0.1f, 0.5f, 0, 1, 1);
+            soundPool.play(soundID, 0.1F, 0.5F, 0, 1, 1);
         }
     }
 
@@ -783,10 +777,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
             @Override
             public LocalMedia doInBackground() {
-                checkMatchCustomCameraOutputUri(intent);
-                if (config.chooseMode == SelectMimeType.ofAudio()) {
-                    handleAudioEvent(intent);
-                }
+                config.cameraPath = getCameraOutputUri(intent);
                 if (TextUtils.isEmpty(config.cameraPath)) {
                     return null;
                 }
@@ -810,11 +801,17 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      * @param intent
      * @return
      */
-    protected void checkMatchCustomCameraOutputUri(Intent intent) {
-        Uri outPutUri = intent != null ? intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT) : null;
+    protected String getCameraOutputUri(Intent intent) {
+        Uri outPutUri;
+        if (config.chooseMode == SelectMimeType.ofAudio()) {
+            outPutUri = intent.getData();
+        } else {
+            outPutUri = intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
+        }
         if (outPutUri != null) {
             config.cameraPath = PictureMimeType.isContent(outPutUri.toString()) ? outPutUri.toString() : outPutUri.getPath();
         }
+        return config.cameraPath;
     }
 
     /**
@@ -862,13 +859,13 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         } else {
             cameraFile = new File(config.cameraPath);
             mimeTypeUri = Uri.fromFile(cameraFile);
-            if (config.isCameraRotateImage) {
-                BitmapUtils.rotateImage(getContext(), config.cameraPath);
-            }
             id = System.currentTimeMillis();
             bucketId = MediaUtils.generateCameraBucketId(getContext(), cameraFile, config.outPutCameraDir);
         }
         String mimeType = MediaUtils.getMimeTypeFromMediaContentUri(getActivity(), mimeTypeUri);
+        if (config.isCameraRotateImage && PictureMimeType.isHasImage(mimeType) && !PictureMimeType.isContent(config.cameraPath)) {
+            BitmapUtils.rotateImage(getContext(), config.cameraPath);
+        }
         MediaExtraInfo mediaExtraInfo;
         if (PictureMimeType.isHasVideo(mimeType)) {
             mediaExtraInfo = MediaUtils.getVideoSize(getContext(), config.cameraPath);
@@ -888,29 +885,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         return media;
     }
 
-    /**
-     * 针对音频的处理逻辑
-     *
-     * @param intent
-     */
-    private void handleAudioEvent(Intent intent) {
-        if (intent == null) {
-            return;
-        }
-        if (ActivityCompatHelper.isDestroy(getActivity())) {
-            return;
-        }
-        if (SdkVersionUtils.isR()) {
-            config.cameraPath = PictureMimeType.isContent(intent.getData().toString()) ? intent.getData().toString() : intent.getData().getPath();
-            Uri audioOutUri = MediaStoreUtils.createAudioUri(getActivity(), config.cameraAudioFormatForQ);
-            if (audioOutUri != null) {
-                InputStream inputStream = PictureContentResolver.getContentResolverOpenInputStream(getActivity(), Uri.parse(config.cameraPath));
-                OutputStream outputStream = PictureContentResolver.getContentResolverOpenOutputStream(getActivity(), audioOutUri);
-                PictureFileUtils.writeFileFromIS(inputStream, outputStream);
-                config.cameraPath = audioOutUri.toString();
-            }
-        }
-    }
 
     /**
      * 分发处理结果，比如压缩、裁剪、沙盒路径转换

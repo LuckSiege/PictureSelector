@@ -39,7 +39,6 @@ public class SelectMimeType {
      * <p>
      * 不再维护音频相关功能，但可以继续使用但会有机型兼容性问题
      */
-    @Deprecated
     public static int ofAudio() {
         return TYPE_AUDIO;
     }
@@ -48,6 +47,5 @@ public class SelectMimeType {
     public final static int TYPE_ALL = 0;
     public final static int TYPE_IMAGE = 1;
     public final static int TYPE_VIDEO = 2;
-    @Deprecated
     public final static int TYPE_AUDIO = 3;
 }

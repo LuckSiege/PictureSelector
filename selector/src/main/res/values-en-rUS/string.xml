@@ -64,5 +64,5 @@
     <string name="ps_data_null">There no data here…</string>
     <string name="ps_editor">Editor</string>
     <string name="ps_use_camera">Using camera</string>
-
+    <string name="ps_use_sound">Using recording function</string>
 </resources>

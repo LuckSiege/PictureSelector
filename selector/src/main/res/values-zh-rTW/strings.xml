@@ -62,4 +62,5 @@
     <string name="ps_data_null">這裏空空如也…</string>
     <string name="ps_editor">編輯</string>
     <string name="ps_use_camera">正在使用相機</string>
+    <string name="ps_use_sound">正在使用錄音功能</string>
 </resources>

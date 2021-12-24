@@ -41,6 +41,8 @@ public final class PictureConfig {
 
     public final static String EXTRA_PREVIEW_CURRENT_ALBUM_TOTAL = KEY + ".current_album_total";
 
+    public final static String EXTRA_CURRENT_CHOOSE_MODE = KEY + ".current_choose_mode";
+
     public final static int MAX_PAGE_SIZE = 60;
 
     public final static int MIN_PAGE_SIZE = 10;

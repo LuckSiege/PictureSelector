@@ -15,6 +15,7 @@ import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
+import com.luck.picture.lib.interfaces.OnPreviewInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.magical.BuildRecycleItemViewParams;
@@ -41,7 +42,6 @@ public final class PictureSelectionConfig implements Parcelable {
     public String cameraAudioFormat;
     public String cameraImageFormatForQ;
     public String cameraVideoFormatForQ;
-    public String cameraAudioFormatForQ;
     public int requestedOrientation;
     public boolean isCameraAroundState;
     public int selectionMode;
@@ -106,12 +106,13 @@ public final class PictureSelectionConfig implements Parcelable {
     public static SandboxFileEngine sandboxFileEngine;
     public static ExtendLoaderEngine loaderDataEngine;
     public static PictureSelectorStyle selectorStyle;
-    public static OnCameraInterceptListener interceptCameraListener;
+    public static OnCameraInterceptListener cameraInterceptListener;
     public static OnResultCallbackListener<LocalMedia> resultCallListener;
-    public static OnExternalPreviewEventListener previewEventListener;
+    public static OnExternalPreviewEventListener externalPreviewEventListener;
     public static OnMediaEditInterceptListener editMediaEventListener;
     public static OnPermissionsInterceptListener permissionsEventListener;
     public static OnInjectLayoutResourceListener layoutResourceListener;
+    public static OnPreviewInterceptListener previewInterceptListener;
 
 
     protected PictureSelectionConfig(Parcel in) {
@@ -123,7 +124,6 @@ public final class PictureSelectionConfig implements Parcelable {
         cameraAudioFormat = in.readString();
         cameraImageFormatForQ = in.readString();
         cameraVideoFormatForQ = in.readString();
-        cameraAudioFormatForQ = in.readString();
         requestedOrientation = in.readInt();
         isCameraAroundState = in.readByte() != 0;
         selectionMode = in.readInt();
@@ -193,7 +193,6 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeString(cameraAudioFormat);
         dest.writeString(cameraImageFormatForQ);
         dest.writeString(cameraVideoFormatForQ);
-        dest.writeString(cameraAudioFormatForQ);
         dest.writeInt(requestedOrientation);
         dest.writeByte((byte) (isCameraAroundState ? 1 : 0));
         dest.writeInt(selectionMode);
@@ -307,7 +306,6 @@ public final class PictureSelectionConfig implements Parcelable {
         cameraAudioFormat = PictureMimeType.AMR;
         cameraImageFormatForQ = PictureMimeType.MIME_TYPE_IMAGE;
         cameraVideoFormatForQ = PictureMimeType.MIME_TYPE_VIDEO;
-        cameraAudioFormatForQ = PictureMimeType.MIME_TYPE_AUDIO_AMR;
         outPutCameraImageFileName = "";
         outPutCameraVideoFileName = "";
         queryOnlyList = new ArrayList<>();
@@ -374,11 +372,12 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.cropEngine = null;
         PictureSelectionConfig.sandboxFileEngine = null;
         PictureSelectionConfig.loaderDataEngine = null;
-        PictureSelectionConfig.interceptCameraListener = null;
-        PictureSelectionConfig.previewEventListener = null;
+        PictureSelectionConfig.cameraInterceptListener = null;
+        PictureSelectionConfig.externalPreviewEventListener = null;
         PictureSelectionConfig.editMediaEventListener = null;
         PictureSelectionConfig.permissionsEventListener = null;
         PictureSelectionConfig.layoutResourceListener = null;
+        PictureSelectionConfig.previewInterceptListener = null;
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         SelectedManager.clear();
         BuildRecycleItemViewParams.clear();

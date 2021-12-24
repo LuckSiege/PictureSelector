@@ -668,7 +668,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         } else {
             mRecycler.setHasFixedSize(true);
         }
-        mAdapter = new PictureImageGridAdapter(getContext(),config);
+        mAdapter = new PictureImageGridAdapter(getContext(), config);
         mAdapter.setDisplayCamera(isDisplayCamera);
         switch (config.animationMode) {
             case AnimationType.ALPHA_IN_ANIMATION:
@@ -712,7 +712,11 @@ public class PictureSelectorFragment extends PictureCommonFragment
                         return;
                     }
                     if (PictureMimeType.isHasAudio(media.getMimeType())) {
-                        AudioPlayDialog.showPlayAudioDialog(getActivity(), media.getPath());
+                        if (PictureSelectionConfig.previewInterceptListener != null) {
+                            PictureSelectionConfig.previewInterceptListener.onPreviewAudio(getContext(), media);
+                        } else {
+                            AudioPlayDialog.showPlayAudioDialog(getActivity(), media.getPath());
+                        }
                     } else {
                         onStartPreview(position, false);
                     }
@@ -756,15 +760,21 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 totalNum = SelectedManager.getCurrentLocalMediaFolder().getFolderTotalNum();
                 currentBucketId = SelectedManager.getCurrentLocalMediaFolder().getBucketId();
             }
-            if (ActivityCompatHelper.checkFragmentNonExits(getActivity(), PictureSelectorPreviewFragment.TAG)) {
-                if (config.isPreviewZoomEffect) {
-                    BuildRecycleItemViewParams.generateViewParams(mRecycler,
-                            config.isPreviewFullScreenMode ? 0 : DensityUtil.getStatusBarHeight(getContext()));
+            if (!isBottomPreview && config.isPreviewZoomEffect) {
+                BuildRecycleItemViewParams.generateViewParams(mRecycler,
+                        config.isPreviewFullScreenMode ? 0 : DensityUtil.getStatusBarHeight(getContext()));
+            }
+            if (PictureSelectionConfig.previewInterceptListener != null) {
+                PictureSelectionConfig.previewInterceptListener
+                        .onPreview(getContext(), position, totalNum, mPage, currentBucketId, titleBar.getTitleText(),
+                                mAdapter.isDisplayCamera(), data, isBottomPreview);
+            } else {
+                if (ActivityCompatHelper.checkFragmentNonExits(getActivity(), PictureSelectorPreviewFragment.TAG)) {
+                    PictureSelectorPreviewFragment previewFragment = PictureSelectorPreviewFragment.newInstance();
+                    previewFragment.setInternalPreviewData(isBottomPreview, titleBar.getTitleText(), mAdapter.isDisplayCamera(),
+                            position, totalNum, mPage, currentBucketId, data);
+                    FragmentInjectManager.injectFragment(getActivity(), PictureSelectorPreviewFragment.TAG, previewFragment);
                 }
-                PictureSelectorPreviewFragment previewFragment = PictureSelectorPreviewFragment.newInstance();
-                previewFragment.setInternalPreviewData(isBottomPreview, titleBar.getTitleText(), mAdapter.isDisplayCamera(),
-                        position, totalNum, mPage, currentBucketId, data);
-                FragmentInjectManager.injectFragment(getActivity(), PictureSelectorPreviewFragment.TAG, previewFragment);
             }
         }
     }
@@ -968,6 +978,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
      * 显示数据为空提示
      */
     private void showDataNull() {
+        dismissLoading();
         if (tvDataEmpty.getVisibility() == View.GONE) {
             tvDataEmpty.setVisibility(View.VISIBLE);
         }

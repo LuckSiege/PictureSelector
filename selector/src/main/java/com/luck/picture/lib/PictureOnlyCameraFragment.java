@@ -15,7 +15,10 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
+import com.luck.picture.lib.permissions.PermissionConfig;
+import com.luck.picture.lib.permissions.PermissionResultCallback;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
+import com.luck.picture.lib.utils.SdkVersionUtils;
 
 /**
  * @author：luck
@@ -38,7 +41,22 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        openSelectedCamera();
+        if (SdkVersionUtils.isQ()) {
+            openSelectedCamera();
+        } else {
+            PermissionChecker.getInstance().requestPermissions(this,
+                    PermissionConfig.WRITE_EXTERNAL_STORAGE, new PermissionResultCallback() {
+                        @Override
+                        public void onGranted() {
+                            openSelectedCamera();
+                        }
+
+                        @Override
+                        public void onDenied() {
+                            handlePermissionDenied(PermissionConfig.WRITE_EXTERNAL_STORAGE);
+                        }
+                    });
+        }
     }
 
     @Override
@@ -66,11 +84,19 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
             isHasPermissions = PictureSelectionConfig.permissionsEventListener.hasPermissions(this);
         } else {
             isHasPermissions = PermissionChecker.isCheckCamera(getContext());
+            if (SdkVersionUtils.isQ()) {
+            } else {
+                isHasPermissions = PermissionChecker.isCheckWriteStorage(getContext());
+            }
         }
         if (isHasPermissions) {
             openSelectedCamera();
         } else {
-            Toast.makeText(getContext(), getString(R.string.ps_camera), Toast.LENGTH_LONG).show();
+            if (!PermissionChecker.isCheckCamera(getContext())) {
+                Toast.makeText(getContext(), getString(R.string.ps_camera), Toast.LENGTH_LONG).show();
+            } else if (!PermissionChecker.isCheckWriteStorage(getContext())) {
+                Toast.makeText(getContext(), getString(R.string.ps_jurisdiction), Toast.LENGTH_LONG).show();
+            }
             if (!ActivityCompatHelper.isDestroy(getActivity())) {
                 getActivity().getSupportFragmentManager().popBackStack();
             }

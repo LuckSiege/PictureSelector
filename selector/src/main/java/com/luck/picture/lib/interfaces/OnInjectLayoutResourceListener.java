@@ -15,9 +15,16 @@ public interface OnInjectLayoutResourceListener {
      * inject custom layout resource id
      * <p>
      * The layout ID must be the same as
-     * {@link R.id.ps_fragment_selector}
-     * {@link R.id.ps_fragment_preview}
-     * The selector is the same, Otherwise, there will be a rush
+     * {@link R.layout.ps_fragment_selector}
+     * {@link R.layout.ps_fragment_preview}
+     * {@link R.layout.ps_item_grid_image}
+     * {@link R.layout.ps_item_grid_video}
+     * {@link R.layout.ps_item_grid_audio}
+     * {@link R.layout.ps_album_folder_item}
+     * {@link R.layout.ps_preview_image}
+     * {@link R.layout.ps_preview_video}
+     * <p>
+     * The layout can be overloaded to implement differences on the UI, but the view ID cannot be changed
      * </p>
      *
      * @param context

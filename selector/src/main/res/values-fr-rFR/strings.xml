@@ -61,5 +61,6 @@
     <string name="ps_data_null">Pas de données…</string>
     <string name="ps_editor">Édition</string>
     <string name="ps_go_setting">Pour définir</string>
-
+    <string name="ps_use_camera">Utilisation de la caméra</string>
+    <string name="ps_use_sound">Enregistrement en cours</string>
 </resources>

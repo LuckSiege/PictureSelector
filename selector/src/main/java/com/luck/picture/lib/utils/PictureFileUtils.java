@@ -359,18 +359,6 @@ public class PictureFileUtils {
 
 
     /**
-     * 重命名相册拍照
-     *
-     * @param fileName
-     * @return
-     */
-    public static String rename(String fileName) {
-        String temp = fileName.substring(0, fileName.lastIndexOf("."));
-        String suffix = fileName.substring(fileName.lastIndexOf("."));
-        return temp + "_" + DateUtils.getCreateFileName() + suffix;
-    }
-
-    /**
      * getDCIMCameraPath
      *
      * @return

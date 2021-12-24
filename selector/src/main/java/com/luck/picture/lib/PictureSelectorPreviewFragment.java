@@ -174,7 +174,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * @param currentBucketId 当前相册目录id
      * @param data            预览数据源
      */
-    public void setInternalPreviewData(boolean isBottomPreview, String currentAlbum, boolean isShowCamera,
+    public void setInternalPreviewData(boolean isBottomPreview, String currentAlbumName, boolean isShowCamera,
                                        int position, int totalNum, int page, long currentBucketId,
                                        ArrayList<LocalMedia> data) {
         this.mPage = page;
@@ -182,7 +182,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         this.mData = data;
         this.totalNum = totalNum;
         this.curPosition = position;
-        this.currentAlbum = currentAlbum;
+        this.currentAlbum = currentAlbumName;
         this.isShowCamera = isShowCamera;
         this.isBottomPreview = isBottomPreview;
     }
@@ -308,7 +308,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         } else if (config.isPreviewZoomEffect) {
             magicalView.setBackgroundAlpha(0.0F);
             for (int i = 0; i < mAnimViews.size(); i++) {
-                if (!config.isPreviewFullScreenMode && mAnimViews.get(i) instanceof TitleBar) {
+                if (mAnimViews.get(i) instanceof TitleBar) {
                     continue;
                 }
                 mAnimViews.get(i).setAlpha(0.0F);
@@ -369,7 +369,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             @Override
             public void onBackgroundAlpha(float alpha) {
                 for (int i = 0; i < mAnimViews.size(); i++) {
-                    if (!config.isPreviewFullScreenMode && mAnimViews.get(i) instanceof TitleBar) {
+                    if (mAnimViews.get(i) instanceof TitleBar) {
                         continue;
                     }
                     mAnimViews.get(i).setAlpha(alpha);
@@ -453,7 +453,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (!isBottomPreview && config.isPreviewZoomEffect) {
+        if (!isBottomPreview && config.isPreviewZoomEffect && mData.size() > curPosition) {
             LocalMedia media = mData.get(curPosition);
             int[] size = getRealSizeFromMedia(media);
             ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
@@ -919,8 +919,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      */
     @SuppressLint("NotifyDataSetChanged")
     private void deletePreview() {
-        if (PictureSelectionConfig.previewEventListener != null) {
-            PictureSelectionConfig.previewEventListener.onPreviewDelete(viewPager.getCurrentItem());
+        if (PictureSelectionConfig.externalPreviewEventListener != null) {
+            PictureSelectionConfig.externalPreviewEventListener.onPreviewDelete(viewPager.getCurrentItem());
             int currentItem = viewPager.getCurrentItem();
             mData.remove(currentItem);
             if (mData.size() == 0) {
@@ -1168,8 +1168,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * @param media
      */
     private void onExternalLongPressDownload(LocalMedia media) {
-        if (PictureSelectionConfig.previewEventListener != null) {
-            if (!PictureSelectionConfig.previewEventListener.onLongPressDownload(media)) {
+        if (PictureSelectionConfig.externalPreviewEventListener != null) {
+            if (!PictureSelectionConfig.externalPreviewEventListener.onLongPressDownload(media)) {
                 PictureCommonDialog dialog = PictureCommonDialog.showDialog(getContext(),
                         getContext().getString(R.string.ps_prompt),
                         PictureMimeType.isHasVideo(media.getMimeType())
@@ -1217,27 +1217,31 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private final ViewPager2.OnPageChangeCallback pageChangeCallback = new ViewPager2.OnPageChangeCallback() {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            LocalMedia currentMedia = positionOffsetPixels < screenWidth / 2 ? mData.get(position) : mData.get(position + 1);
-            tvSelected.setSelected(isSelected(currentMedia));
-            notifySelectNumberStyle(currentMedia);
+            if (mData.size() > position) {
+                LocalMedia currentMedia = positionOffsetPixels < screenWidth / 2 ? mData.get(position) : mData.get(position + 1);
+                tvSelected.setSelected(isSelected(currentMedia));
+                notifySelectNumberStyle(currentMedia);
+            }
         }
 
         @Override
         public void onPageSelected(int position) {
             curPosition = position;
             titleBar.setTitle((curPosition + 1) + "/" + totalNum);
-            LocalMedia currentMedia = mData.get(position);
-            notifySelectNumberStyle(currentMedia);
-            if (!isExternalPreview && !isBottomPreview && config.isPreviewZoomEffect) {
-                changeMagicalViewParams(position);
-            }
-            bottomNarBar.isDisplayEditor(PictureMimeType.isHasVideo(currentMedia.getMimeType()));
-            if (!isExternalPreview && !isBottomPreview && !config.isOnlySandboxDir) {
-                if (config.isPageStrategy) {
-                    if (isHasMore) {
-                        if (position == (viewPageAdapter.getItemCount() - 1) - PictureConfig.MIN_PAGE_SIZE
-                                || position == viewPageAdapter.getItemCount() - 1) {
-                            loadMoreData();
+            if (mData.size() > position) {
+                LocalMedia currentMedia = mData.get(position);
+                notifySelectNumberStyle(currentMedia);
+                if (!isExternalPreview && !isBottomPreview && config.isPreviewZoomEffect) {
+                    changeMagicalViewParams(position);
+                }
+                bottomNarBar.isDisplayEditor(PictureMimeType.isHasVideo(currentMedia.getMimeType()));
+                if (!isExternalPreview && !isBottomPreview && !config.isOnlySandboxDir) {
+                    if (config.isPageStrategy) {
+                        if (isHasMore) {
+                            if (position == (viewPageAdapter.getItemCount() - 1) - PictureConfig.MIN_PAGE_SIZE
+                                    || position == viewPageAdapter.getItemCount() - 1) {
+                                loadMoreData();
+                            }
                         }
                     }
                 }
@@ -1355,24 +1359,26 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     @Override
     public void onEditMedia(Intent data) {
-        LocalMedia media = mData.get(viewPager.getCurrentItem());
-        Uri output = Crop.getOutput(data);
-        media.setCutPath(output != null ? output.getPath() : "");
-        media.setCropImageWidth(Crop.getOutputImageWidth(data));
-        media.setCropImageHeight(Crop.getOutputImageHeight(data));
-        media.setCropOffsetX(Crop.getOutputImageOffsetX(data));
-        media.setCropOffsetY(Crop.getOutputImageOffsetY(data));
-        media.setCropResultAspectRatio(Crop.getOutputCropAspectRatio(data));
-        media.setCut(!TextUtils.isEmpty(media.getCutPath()));
-        media.setCustomData(Crop.getOutputCustomExtraData(data));
-        media.setEditorImage(media.isCut());
-        media.setSandboxPath(media.getCutPath());
-        if (SelectedManager.getSelectedResult().contains(media)) {
-            sendFixedSelectedChangeEvent(media);
-        } else {
-            confirmSelect(media, false);
+        if (mData.size() > viewPager.getCurrentItem()) {
+            LocalMedia media = mData.get(viewPager.getCurrentItem());
+            Uri output = Crop.getOutput(data);
+            media.setCutPath(output != null ? output.getPath() : "");
+            media.setCropImageWidth(Crop.getOutputImageWidth(data));
+            media.setCropImageHeight(Crop.getOutputImageHeight(data));
+            media.setCropOffsetX(Crop.getOutputImageOffsetX(data));
+            media.setCropOffsetY(Crop.getOutputImageOffsetY(data));
+            media.setCropResultAspectRatio(Crop.getOutputCropAspectRatio(data));
+            media.setCut(!TextUtils.isEmpty(media.getCutPath()));
+            media.setCustomData(Crop.getOutputCustomExtraData(data));
+            media.setEditorImage(media.isCut());
+            media.setSandboxPath(media.getCutPath());
+            if (SelectedManager.getSelectedResult().contains(media)) {
+                sendFixedSelectedChangeEvent(media);
+            } else {
+                confirmSelect(media, false);
+            }
+            viewPageAdapter.notifyItemChanged(viewPager.getCurrentItem());
         }
-        viewPageAdapter.notifyItemChanged(viewPager.getCurrentItem());
     }
 
     @Override

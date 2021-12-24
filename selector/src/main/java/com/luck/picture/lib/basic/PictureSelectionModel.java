@@ -28,6 +28,7 @@ import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
+import com.luck.picture.lib.interfaces.OnPreviewInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.manager.SelectedManager;
@@ -190,7 +191,29 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel setCameraInterceptListener(OnCameraInterceptListener listener) {
-        PictureSelectionConfig.interceptCameraListener = listener;
+        PictureSelectionConfig.cameraInterceptListener = listener;
+        return this;
+    }
+
+    /**
+     * Intercept preview click events, and users can implement their own preview framework
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionModel setPreviewInterceptListener(OnPreviewInterceptListener listener) {
+        PictureSelectionConfig.previewInterceptListener = listener;
+        return this;
+    }
+
+    /**
+     * Intercept external preview click events, and users can implement their own preview framework
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionModel setExternalPreviewEventListener(OnExternalPreviewEventListener listener) {
+        PictureSelectionConfig.externalPreviewEventListener = listener;
         return this;
     }
 
@@ -521,18 +544,6 @@ public class PictureSelectionModel {
         selectionConfig.cameraAudioFormat = audioFormat;
         return this;
     }
-
-    /**
-     * camera output audio format
-     *
-     * @param videoFormat PictureSelector media format
-     * @return
-     */
-    public PictureSelectionModel setCameraAudioFormatForQ(String audioFormat) {
-        selectionConfig.cameraAudioFormatForQ = audioFormat;
-        return this;
-    }
-
 
     /**
      * @param videoMaxSecond selection video max second
@@ -873,13 +884,11 @@ public class PictureSelectionModel {
     /**
      * preview LocalMedia
      *
-     * @param currentPosition        current position
-     * @param list            preview data
+     * @param currentPosition current position
      * @param isDisplayDelete if visible delete
-     * @param listener
+     * @param list            preview data
      */
-    public void startFragmentPreview(int currentPosition, List<LocalMedia> list, boolean isDisplayDelete,
-                                     OnExternalPreviewEventListener listener) {
+    public void startFragmentPreview(int currentPosition,boolean isDisplayDelete, List<LocalMedia> list) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
             if (activity == null) {
@@ -891,8 +900,6 @@ public class PictureSelectionModel {
             if (list == null || list.size() == 0) {
                 throw new NullPointerException("preview data is null");
             }
-            // 绑定回调监听
-            PictureSelectionConfig.previewEventListener = listener;
             FragmentManager fragmentManager = null;
             if (activity instanceof AppCompatActivity) {
                 fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
@@ -905,7 +912,6 @@ public class PictureSelectionModel {
             if (ActivityCompatHelper.checkFragmentNonExits((FragmentActivity) activity, PictureSelectorPreviewFragment.TAG)) {
                 PictureSelectorPreviewFragment fragment = PictureSelectorPreviewFragment.newInstance();
                 ArrayList<LocalMedia> previewData = new ArrayList<>(list);
-                PictureSelectionConfig.selectorStyle.getSelectMainStyle().setPreviewDisplaySelectGallery(false);
                 fragment.setExternalPreviewData(currentPosition, previewData.size(), previewData, isDisplayDelete);
                 FragmentInjectManager.injectSystemRoomFragment(fragmentManager, PictureSelectorPreviewFragment.TAG, fragment);
             }
@@ -915,13 +921,11 @@ public class PictureSelectionModel {
     /**
      * preview LocalMedia
      *
-     * @param currentPosition        current position
-     * @param list            preview data
+     * @param currentPosition current position
      * @param isDisplayDelete if visible delete
-     * @param listener
+     * @param list            preview data
      */
-    public void startActivityPreview(int currentPosition, ArrayList<LocalMedia> list, boolean isDisplayDelete,
-                                     OnExternalPreviewEventListener listener) {
+    public void startActivityPreview(int currentPosition,boolean isDisplayDelete, ArrayList<LocalMedia> list) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
             if (activity == null) {
@@ -933,9 +937,6 @@ public class PictureSelectionModel {
             if (list == null || list.size() == 0) {
                 throw new NullPointerException("preview data is null");
             }
-            // 绑定回调监听
-            PictureSelectionConfig.previewEventListener = listener;
-
             Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
             SelectedManager.addSelectedPreviewResult(list);
             intent.putExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW, true);
