@@ -69,6 +69,13 @@ public class GlideEngine implements ImageEngine {
                     }
 
                     @Override
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        if (call != null) {
+                            call.onCall(null);
+                        }
+                    }
+
+                    @Override
                     public void onLoadCleared(@Nullable Drawable placeholder) {
 
                     }

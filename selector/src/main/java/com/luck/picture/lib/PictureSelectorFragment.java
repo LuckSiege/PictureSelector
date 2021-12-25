@@ -1,6 +1,5 @@
 package com.luck.picture.lib;
 
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
@@ -224,7 +223,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
         initRecycler(view);
         initBottomNavBar();
         requestLoadData();
-        setRecyclerViewMaskAlpha();
     }
 
     @Override
@@ -690,18 +688,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 break;
         }
         addRecyclerAction();
-        setRecyclerViewMaskAlpha();
-    }
-
-    private void setRecyclerViewMaskAlpha() {
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mRecycler.setAlpha((Float) animation.getAnimatedValue());
-            }
-        });
-        valueAnimator.setDuration(250).start();
     }
 
     private void addRecyclerAction() {

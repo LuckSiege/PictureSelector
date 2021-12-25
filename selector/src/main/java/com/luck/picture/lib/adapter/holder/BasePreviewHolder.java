@@ -68,19 +68,23 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
         PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, new OnCallbackListener<Bitmap>() {
             @Override
             public void onCall(Bitmap bitmap) {
-                if (PictureMimeType.isHasWebp(media.getMimeType()) || PictureMimeType.isUrlHasWebp(path)
-                        || PictureMimeType.isUrlHasGif(path) || PictureMimeType.isHasGif(media.getMimeType())) {
-                    PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), path, coverImageView);
+                if (bitmap != null) {
+                    if (PictureMimeType.isHasWebp(media.getMimeType()) || PictureMimeType.isUrlHasWebp(path)
+                            || PictureMimeType.isUrlHasGif(path) || PictureMimeType.isHasGif(media.getMimeType())) {
+                        PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), path, coverImageView);
+                    } else {
+                        coverImageView.setImageBitmap(bitmap);
+                    }
+                    if (MediaUtils.isLongImage(bitmap.getWidth(), bitmap.getHeight())) {
+                        coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    } else {
+                        coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    }
+                    mPreviewEventListener.onLoadCompleteBeginScale(BasePreviewHolder.this,
+                            bitmap.getWidth(), bitmap.getHeight());
                 } else {
-                    coverImageView.setImageBitmap(bitmap);
+                    mPreviewEventListener.onLoadCompleteError(BasePreviewHolder.this);
                 }
-                if (MediaUtils.isLongImage(bitmap.getWidth(), bitmap.getHeight())) {
-                    coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                } else {
-                    coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                }
-                mPreviewEventListener.onLoadCompleteBeginScale(BasePreviewHolder.this,
-                        bitmap.getWidth(), bitmap.getHeight());
             }
         });
 
@@ -130,6 +134,8 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
     public interface OnPreviewEventListener {
 
         void onLoadCompleteBeginScale(BasePreviewHolder holder,int width,int height);
+
+        void onLoadCompleteError(BasePreviewHolder holder);
 
         void onBackPressed();
 

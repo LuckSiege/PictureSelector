@@ -1062,6 +1062,23 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 animator.setDuration(50);
                 animator.start();
             }
+
+        }
+
+        @Override
+        public void onLoadCompleteError(BasePreviewHolder holder) {
+            if (isFirstLoaded || isBottomPreview) {
+                return;
+            }
+            if (config.isPreviewZoomEffect) {
+                isFirstLoaded = true;
+                viewPager.setAlpha(1.0F);
+                magicalView.startNormal(0, 0, false);
+                magicalView.setBackgroundAlpha(1.0F);
+                for (int i = 0; i < mAnimViews.size(); i++) {
+                    mAnimViews.get(i).setAlpha(1.0F);
+                }
+            }
         }
 
         @Override
