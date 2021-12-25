@@ -535,17 +535,6 @@ public class PictureSelectionModel {
 
 
     /**
-     * camera output audio format
-     *
-     * @param videoFormat PictureSelector media format
-     * @return
-     */
-    public PictureSelectionModel setCameraAudioFormat(String audioFormat) {
-        selectionConfig.cameraAudioFormat = audioFormat;
-        return this;
-    }
-
-    /**
      * @param videoMaxSecond selection video max second
      * @return
      */

@@ -39,7 +39,6 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isDirectReturnSingle;
     public String cameraImageFormat;
     public String cameraVideoFormat;
-    public String cameraAudioFormat;
     public String cameraImageFormatForQ;
     public String cameraVideoFormatForQ;
     public int requestedOrientation;
@@ -121,7 +120,6 @@ public final class PictureSelectionConfig implements Parcelable {
         isDirectReturnSingle = in.readByte() != 0;
         cameraImageFormat = in.readString();
         cameraVideoFormat = in.readString();
-        cameraAudioFormat = in.readString();
         cameraImageFormatForQ = in.readString();
         cameraVideoFormatForQ = in.readString();
         requestedOrientation = in.readInt();
@@ -190,7 +188,6 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isDirectReturnSingle ? 1 : 0));
         dest.writeString(cameraImageFormat);
         dest.writeString(cameraVideoFormat);
-        dest.writeString(cameraAudioFormat);
         dest.writeString(cameraImageFormatForQ);
         dest.writeString(cameraVideoFormatForQ);
         dest.writeInt(requestedOrientation);
@@ -303,7 +300,6 @@ public final class PictureSelectionConfig implements Parcelable {
         isEmptyResultReturn = false;
         cameraImageFormat = PictureMimeType.JPEG;
         cameraVideoFormat = PictureMimeType.MP4;
-        cameraAudioFormat = PictureMimeType.AMR;
         cameraImageFormatForQ = PictureMimeType.MIME_TYPE_IMAGE;
         cameraVideoFormatForQ = PictureMimeType.MIME_TYPE_VIDEO;
         outPutCameraImageFileName = "";

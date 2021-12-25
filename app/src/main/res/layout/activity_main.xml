@@ -196,6 +196,24 @@
                     android:textColor="@color/app_color_53575e"
                     android:textSize="14sp" />
 
+                <CheckBox
+                    android:id="@+id/cb_custom_sandbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="使用自定义路径"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
+                <CheckBox
+                    android:id="@+id/cb_only_dir"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="查询指定目录"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
                 <RadioGroup
                     android:id="@+id/rgb_list_anim"
                     android:layout_width="match_parent"

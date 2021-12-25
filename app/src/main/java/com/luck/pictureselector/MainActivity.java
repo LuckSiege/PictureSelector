@@ -107,7 +107,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
             cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
             cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
-            cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_preview_full, cb_preview_scale, cb_inject_layout;
+            cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox,cb_only_dir,
+            cb_preview_full, cb_preview_scale, cb_inject_layout;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isUpward;
     private boolean needScaleBig = true;
@@ -152,6 +153,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_styleCrop = findViewById(R.id.cb_styleCrop);
         cb_compress = findViewById(R.id.cb_compress);
         cb_mode = findViewById(R.id.cb_mode);
+        cb_custom_sandbox = findViewById(R.id.cb_custom_sandbox);
+        cb_only_dir = findViewById(R.id.cb_only_dir);
         cb_showCropGrid = findViewById(R.id.cb_showCropGrid);
         cb_showCropFrame = findViewById(R.id.cb_showCropFrame);
         cb_preview_audio = findViewById(R.id.cb_preview_audio);
@@ -172,6 +175,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         minus.setOnClickListener(this);
         plus.setOnClickListener(this);
         cb_crop.setOnCheckedChangeListener(this);
+        cb_only_dir.setOnCheckedChangeListener(this);
+        cb_custom_sandbox.setOnCheckedChangeListener(this);
         cb_crop_circular.setOnCheckedChangeListener(this);
         cb_compress.setOnCheckedChangeListener(this);
         tv_select_num.setText(ValueOf.toString(maxSelectNum));
@@ -256,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setLanguage(language)
                             .setOutputCameraDir(getSandboxPath())
                             .setQuerySandboxDir(getSandboxPath())
+                            .isOnlyObtainSandboxDir(cb_only_dir.isChecked())
                             .isPageStrategy(cbPage.isChecked())
                             .isOriginalControl(cb_original.isChecked())
                             .isDisplayCamera(cb_isCamera.isChecked())
@@ -818,12 +824,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @return
      */
     private String getSandboxPath() {
-        File externalFilesDir = getContext().getExternalFilesDir("");
-        File customFile = new File(externalFilesDir.getAbsolutePath(), "Sandbox");
-        if (!customFile.exists()) {
-            customFile.mkdirs();
+        if (cb_custom_sandbox.isChecked()) {
+            File externalFilesDir = getContext().getExternalFilesDir("");
+            File customFile = new File(externalFilesDir.getAbsolutePath(), "Sandbox");
+            if (!customFile.exists()) {
+                customFile.mkdirs();
+            }
+            return customFile.getAbsolutePath() + File.separator;
+        } else {
+            return "";
         }
-        return customFile.getAbsolutePath() + File.separator;
     }
 
 
@@ -1088,6 +1098,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cb_styleCrop.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 cb_showCropFrame.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 cb_showCropGrid.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                break;
+            case R.id.cb_custom_sandbox:
+                cb_only_dir.setChecked(isChecked);
+                break;
+            case R.id.cb_only_dir:
+                cb_custom_sandbox.setChecked(isChecked);
                 break;
             case R.id.cb_crop_circular:
                 if (isChecked) {

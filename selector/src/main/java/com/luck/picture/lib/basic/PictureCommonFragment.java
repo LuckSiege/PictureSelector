@@ -777,7 +777,10 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
             @Override
             public LocalMedia doInBackground() {
-                config.cameraPath = getCameraOutputUri(intent);
+                String outputPath = getOutputPath(intent);
+                if (!TextUtils.isEmpty(outputPath)){
+                    config.cameraPath = outputPath;
+                }
                 if (TextUtils.isEmpty(config.cameraPath)) {
                     return null;
                 }
@@ -798,20 +801,21 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     /**
      * 尝试匹配查找自定义相机返回的路径
      *
-     * @param intent
+     * @param data
      * @return
      */
-    protected String getCameraOutputUri(Intent intent) {
-        Uri outPutUri;
-        if (config.chooseMode == SelectMimeType.ofAudio()) {
-            outPutUri = intent.getData();
-        } else {
-            outPutUri = intent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
+    protected String getOutputPath(Intent data) {
+        String outputPath = null;
+        if (data != null) {
+            Uri outPutUri = config.chooseMode ==
+                    SelectMimeType.ofAudio() ? data.getData()
+                    : data.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
+            if (outPutUri != null) {
+                outputPath = PictureMimeType.isContent(outPutUri.toString())
+                        ? outPutUri.toString() : outPutUri.getPath();
+            }
         }
-        if (outPutUri != null) {
-            config.cameraPath = PictureMimeType.isContent(outPutUri.toString()) ? outPutUri.toString() : outPutUri.getPath();
-        }
-        return config.cameraPath;
+        return outputPath;
     }
 
     /**
