@@ -421,7 +421,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     @Nullable
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        if ((!isBottomPreview || !isExternalPreview) && config.isPreviewZoomEffect) {
+        if (!isBottomPreview && !isExternalPreview && config.isPreviewZoomEffect) {
             return null;
         }
         PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
@@ -453,7 +453,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (!isBottomPreview && config.isPreviewZoomEffect && mData.size() > curPosition) {
+        if (!isBottomPreview && !isExternalPreview && config.isPreviewZoomEffect && mData.size() > curPosition) {
             LocalMedia media = mData.get(curPosition);
             int[] size = getRealSizeFromMedia(media);
             ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
