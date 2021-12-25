@@ -126,6 +126,10 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         return 0;
     }
 
+    @Override
+    public void reStartSavedInstance(Bundle savedInstanceState) {
+
+    }
 
     @Override
     public void onCheckOriginalChange() {

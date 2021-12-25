@@ -10,6 +10,7 @@
         android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:alpha="0"
         android:background="@color/ps_color_white"
         android:overScrollMode="never"
         app:layout_constraintBottom_toTopOf="@+id/bottom_nar_bar"

@@ -1,6 +1,7 @@
 package com.luck.picture.lib.basic;
 
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -25,6 +26,13 @@ public interface IPictureSelectorCommonEvent {
      * 权限被拒
      */
     void handlePermissionDenied(String[] permissionArray);
+
+    /**
+     * onSavedInstance
+     *
+     * @param savedInstanceState
+     */
+    void reStartSavedInstance(Bundle savedInstanceState);
 
     /**
      * 权限设置结果
