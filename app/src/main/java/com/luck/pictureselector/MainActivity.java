@@ -287,10 +287,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // 单独拍照
                     PictureSelector.create(MainActivity.this)
                             .openCamera(SelectMimeType.ofAll())
-                            .setImageEngine(GlideEngine.createGlideEngine())
                             .setCameraInterceptListener(getCustomCameraEvent())
-                            //.forResult(new MeOnResultCallbackListener());
-                            .forResult(PictureConfig.CHOOSE_REQUEST);
+                            .forResult(new MeOnResultCallbackListener());
                 }
             }
         });

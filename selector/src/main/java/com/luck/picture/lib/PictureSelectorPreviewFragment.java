@@ -756,7 +756,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             mGalleryRecycle.addItemDecoration(new GridSpacingItemDecoration(Integer.MAX_VALUE,
                     DensityUtil.dip2px(getContext(), 6), true));
             mGalleryAdapter = new PreviewGalleryAdapter(SelectedManager.getSelectedResult());
-            mGalleryAdapter.isSelectMedia(mData.get(curPosition));
+            notifyGallerySelectMedia(mData.get(curPosition));
             mGalleryRecycle.setAdapter(mGalleryAdapter);
             mGalleryAdapter.setItemClickListener(new PreviewGalleryAdapter.OnItemClickListener() {
                 @Override
@@ -773,7 +773,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                             viewPager.setAdapter(viewPageAdapter);
                         }
                         viewPager.setCurrentItem(newPosition, false);
-                        mGalleryAdapter.isSelectMedia(media);
+                        notifyGallerySelectMedia(media);
                     }
                 }
             });
@@ -917,6 +917,41 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     }
                 }
             });
+        }
+    }
+
+    /**
+     * 刷新画廊数据选中状态
+     *
+     * @param currentMedia
+     */
+    private void notifyGallerySelectMedia(LocalMedia currentMedia) {
+        if (mGalleryAdapter != null && PictureSelectionConfig.selectorStyle
+                .getSelectMainStyle().isPreviewDisplaySelectGallery()) {
+            mGalleryAdapter.isSelectMedia(currentMedia);
+        }
+    }
+
+    /**
+     * 刷新画廊数据
+     */
+    private void notifyPreviewGalleryData(boolean isAddRemove, LocalMedia currentMedia) {
+        if (mGalleryAdapter != null && PictureSelectionConfig.selectorStyle
+                .getSelectMainStyle().isPreviewDisplaySelectGallery()) {
+            if (mGalleryRecycle.getVisibility() == View.INVISIBLE) {
+                mGalleryRecycle.setVisibility(View.VISIBLE);
+            }
+            if (isAddRemove) {
+                if (config.selectionMode == SelectModeConfig.SINGLE) {
+                    mGalleryAdapter.clear();
+                }
+                mGalleryAdapter.addGalleryData(isBottomPreview, currentMedia);
+            } else {
+                mGalleryAdapter.removeGalleryData(isBottomPreview && totalNum > 1, currentMedia);
+                if (mGalleryAdapter.getItemCount() == 0) {
+                    mGalleryRecycle.setVisibility(View.INVISIBLE);
+                }
+            }
         }
     }
 
@@ -1243,6 +1278,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             if (mData.size() > position) {
                 LocalMedia currentMedia = positionOffsetPixels < screenWidth / 2 ? mData.get(position) : mData.get(position + 1);
                 tvSelected.setSelected(isSelected(currentMedia));
+                notifyGallerySelectMedia(currentMedia);
                 notifySelectNumberStyle(currentMedia);
             }
         }
@@ -1257,6 +1293,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 if (!isExternalPreview && !isBottomPreview && config.isPreviewZoomEffect) {
                     changeMagicalViewParams(position);
                 }
+                notifyGallerySelectMedia(currentMedia);
                 bottomNarBar.isDisplayEditor(PictureMimeType.isHasVideo(currentMedia.getMimeType()));
                 if (!isExternalPreview && !isBottomPreview && !config.isOnlySandboxDir) {
                     if (config.isPageStrategy) {
@@ -1325,29 +1362,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             realHeight = currentLocalMedia.getHeight();
         }
         return new int[]{realWidth, realHeight};
-    }
-
-    /**
-     * 刷新画廊数据
-     */
-    private void notifyPreviewGalleryData(boolean isAddRemove, LocalMedia currentMedia) {
-        if (mGalleryAdapter != null && PictureSelectionConfig.selectorStyle
-                .getSelectMainStyle().isPreviewDisplaySelectGallery()) {
-            if (mGalleryRecycle.getVisibility() == View.INVISIBLE) {
-                mGalleryRecycle.setVisibility(View.VISIBLE);
-            }
-            if (isAddRemove) {
-                if (config.selectionMode == SelectModeConfig.SINGLE) {
-                    mGalleryAdapter.clear();
-                }
-                mGalleryAdapter.addGalleryData(isBottomPreview, currentMedia);
-            } else {
-                mGalleryAdapter.removeGalleryData(isBottomPreview && totalNum > 1, currentMedia);
-                if (mGalleryAdapter.getItemCount() == 0) {
-                    mGalleryRecycle.setVisibility(View.INVISIBLE);
-                }
-            }
-        }
     }
 
     /**
