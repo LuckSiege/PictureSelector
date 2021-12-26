@@ -233,6 +233,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
             mPage = savedInstanceState.getInt(PictureConfig.EXTRA_CURRENT_PAGE, mPage);
             currentPosition = savedInstanceState.getInt(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, currentPosition);
             isDisplayCamera = savedInstanceState.getBoolean(PictureConfig.EXTRA_DISPLAY_CAMERA, config.isDisplayCamera);
+            String firstImagePath = savedInstanceState.getString(PictureConfig.EXTRA_CURRENT_FIRST_PATH);
+            saveFirstImagePath(firstImagePath);
         } else {
             isDisplayCamera = config.isDisplayCamera;
         }
@@ -638,7 +640,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
      * @param firstImagePath
      */
     private void saveFirstImagePath(String firstImagePath) {
-        if (getArguments() != null) {
+        if (getArguments() != null && !TextUtils.isEmpty(firstImagePath)) {
             getArguments().putString(PictureConfig.EXTRA_CURRENT_FIRST_PATH, firstImagePath);
         }
     }

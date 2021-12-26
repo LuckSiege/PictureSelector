@@ -612,6 +612,7 @@ public class PictureSelectionModel {
 
     /**
      * @param outPutCameraDir Camera out path
+     *                        <p>Audio mode setting is not supported</p>
      * @return
      */
     public PictureSelectionModel setOutputCameraDir(String outPutCameraDir) {
@@ -646,7 +647,7 @@ public class PictureSelectionModel {
     /**
      * Query the pictures or videos in the specified directory
      *
-     * @param directoryPath Camera out path
+     * @param dir Camera out path
      *                      <p>
      *                      Normally, it should be consistent with {@link PictureSelectionConfig.setOutputCameraDir()};
      *                      </p>
