@@ -1,7 +1,6 @@
 package com.luck.picture.lib.adapter.holder;
 
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,7 +24,6 @@ public class VideoViewHolder extends BaseRecyclerMediaHolder {
     public VideoViewHolder(@NonNull View itemView, PictureSelectionConfig config) {
         super(itemView, config);
         tvDuration = itemView.findViewById(R.id.tv_duration);
-        ImageView ivMask = itemView.findViewById(R.id.iv_mask);
         SelectMainStyle adapterStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
         int drawableLeft = adapterStyle.getAdapterDurationDrawableLeft();
         if (StyleUtils.checkStyleValidity(drawableLeft)) {
@@ -45,19 +43,9 @@ public class VideoViewHolder extends BaseRecyclerMediaHolder {
             tvDuration.setBackgroundResource(shadowBackground);
         }
 
-        int[] durationShadowGravity = adapterStyle.getAdapterDurationShadowGravity();
-        if (StyleUtils.checkArrayValidity(durationShadowGravity)) {
-            if (ivMask.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
-                ((RelativeLayout.LayoutParams) ivMask.getLayoutParams()).removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                for (int i : durationShadowGravity) {
-                    ((RelativeLayout.LayoutParams) ivMask.getLayoutParams()).addRule(i);
-                }
-            }
-        }
-
         int[] durationGravity = adapterStyle.getAdapterDurationGravity();
         if (StyleUtils.checkArrayValidity(durationGravity)) {
-            if (ivMask.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
+            if (tvDuration.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
                 ((RelativeLayout.LayoutParams) tvDuration.getLayoutParams()).removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                 for (int i : durationGravity) {
                     ((RelativeLayout.LayoutParams) tvDuration.getLayoutParams()).addRule(i);

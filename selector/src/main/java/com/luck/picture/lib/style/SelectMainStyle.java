@@ -172,12 +172,6 @@ public class SelectMainStyle implements Parcelable {
     private int[] adapterDurationGravity;
 
     /**
-     * 时长文字阴影位置
-     * {@link RelativeLayout.addRule()}
-     */
-    private int[] adapterDurationShadowGravity;
-
-    /**
      * 时长文字阴影背景
      */
     private int adapterDurationBackgroundResources;
@@ -287,7 +281,6 @@ public class SelectMainStyle implements Parcelable {
         adapterDurationTextSize = in.readInt();
         adapterDurationTextColor = in.readInt();
         adapterDurationGravity = in.createIntArray();
-        adapterDurationShadowGravity = in.createIntArray();
         adapterDurationBackgroundResources = in.readInt();
         adapterCameraBackgroundColor = in.readInt();
         adapterCameraDrawableTop = in.readInt();
@@ -338,7 +331,6 @@ public class SelectMainStyle implements Parcelable {
         dest.writeInt(adapterDurationTextSize);
         dest.writeInt(adapterDurationTextColor);
         dest.writeIntArray(adapterDurationGravity);
-        dest.writeIntArray(adapterDurationShadowGravity);
         dest.writeInt(adapterDurationBackgroundResources);
         dest.writeInt(adapterCameraBackgroundColor);
         dest.writeInt(adapterCameraDrawableTop);
@@ -619,14 +611,6 @@ public class SelectMainStyle implements Parcelable {
 
     public void setAdapterDurationGravity(int[] adapterDurationGravity) {
         this.adapterDurationGravity = adapterDurationGravity;
-    }
-
-    public int[] getAdapterDurationShadowGravity() {
-        return adapterDurationShadowGravity;
-    }
-
-    public void setAdapterDurationShadowGravity(int[] adapterDurationShadowGravity) {
-        this.adapterDurationShadowGravity = adapterDurationShadowGravity;
     }
 
     public int getAdapterDurationBackgroundResources() {

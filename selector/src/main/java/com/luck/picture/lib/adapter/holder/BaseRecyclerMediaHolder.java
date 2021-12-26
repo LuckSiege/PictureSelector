@@ -62,8 +62,8 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
 
     public BaseRecyclerMediaHolder(@NonNull View itemView, PictureSelectionConfig config) {
         super(itemView);
-        this.mContext = itemView.getContext();
         this.config = config;
+        this.mContext = itemView.getContext();
         SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
         this.isSelectNumberStyle = selectMainStyle.isSelectNumberStyle();
         ivPicture = itemView.findViewById(R.id.ivPicture);

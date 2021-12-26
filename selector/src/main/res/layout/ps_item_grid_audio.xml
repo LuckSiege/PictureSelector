@@ -28,24 +28,16 @@
         android:background="@color/ps_color_transparent" />
 
 
-    <ImageView
-        android:id="@+id/iv_mask"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:scaleType="fitXY"
-        android:src="@drawable/ps_ic_shadow_bg" />
-
     <TextView
         android:id="@+id/tv_duration"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/iv_mask"
-        android:layout_alignBottom="@id/iv_mask"
+        android:background="@drawable/ps_ic_shadow_bg"
         android:drawableLeft="@drawable/ps_ic_audio"
         android:drawablePadding="5dp"
         android:gravity="center_vertical"
         android:paddingLeft="5dp"
+        android:layout_alignParentBottom="true"
         android:text="00:00"
         android:textColor="@color/ps_color_white"
         android:textSize="11sp" />
