@@ -882,7 +882,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         } else {
             mediaExtraInfo = MediaUtils.getImageSize(getContext(), config.cameraPath);
         }
-        String folderName = MediaUtils.generateCameraFolderName(config.cameraPath, mimeType, config.outPutCameraDir);
+        String folderName = MediaUtils.generateCameraFolderName(cameraFile.getAbsolutePath());
         LocalMedia media = LocalMedia.parseLocalMedia(id, config.cameraPath, cameraFile.getAbsolutePath(),
                 cameraFile.getName(), folderName, mediaExtraInfo.getDuration(), config.chooseMode,
                 mimeType, mediaExtraInfo.getWidth(), mediaExtraInfo.getHeight(), cameraFile.length(), bucketId,

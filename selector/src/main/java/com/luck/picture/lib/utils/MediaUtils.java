@@ -9,7 +9,6 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
@@ -19,7 +18,6 @@ import androidx.exifinterface.media.ExifInterface;
 import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.basic.PictureContentResolver;
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
 
 import java.io.File;
@@ -114,26 +112,16 @@ public class MediaUtils {
     /**
      * 创建目录名
      *
-     * @param path             资源路径
-     * @param mimeType         资源类型
-     * @param outPutCameraPath 自定义拍照输出路径
+     * @param absolutePath             资源路径
      * @return
      */
-    public static String generateCameraFolderName(String path, String mimeType, String outPutCameraPath) {
+    public static String generateCameraFolderName(String absolutePath) {
         String folderName;
-        if (TextUtils.isEmpty(outPutCameraPath)) {
-            if (SdkVersionUtils.isQ() && PictureMimeType.isHasVideo(mimeType)) {
-                folderName = Environment.DIRECTORY_MOVIES;
-            } else {
-                folderName = PictureMimeType.CAMERA;
-            }
+        File cameraFile = new File(absolutePath);
+        if (cameraFile.getParentFile() != null) {
+            folderName = cameraFile.getParentFile().getName();
         } else {
-            File cameraFile = new File(path);
-            if (cameraFile.getParentFile() != null) {
-                folderName = cameraFile.getParentFile().getName();
-            } else {
-                folderName = PictureMimeType.CAMERA;
-            }
+            folderName = PictureMimeType.CAMERA;
         }
         return folderName;
     }
