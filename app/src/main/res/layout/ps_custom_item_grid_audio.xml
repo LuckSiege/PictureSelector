@@ -13,18 +13,17 @@
         android:id="@+id/tvCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="8dp"
-        android:background="@drawable/ps_checkbox_selector"
+        android:layout_centerInParent="true"
+        android:background="@drawable/ps_custom_checkbox_selector"
         android:gravity="center"
         android:textColor="@color/ps_color_white"
-        android:textSize="12sp" />
+        android:textSize="9sp" />
 
     <View
         android:id="@+id/btnCheck"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_alignParentEnd="true"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_centerInParent="true"
         android:background="@color/ps_color_transparent" />
 
 
