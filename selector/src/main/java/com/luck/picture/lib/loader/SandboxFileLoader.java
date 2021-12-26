@@ -131,6 +131,26 @@ public final class SandboxFileLoader {
                     chooseModel = SelectMimeType.ofImage();
                     duration = 0L;
                 }
+
+                if (PictureMimeType.isHasVideo(mimeType) || PictureMimeType.isHasAudio(mimeType)) {
+                    if (config.videoMinSecond > 0 && duration < config.videoMinSecond) {
+                        // If you set the minimum number of seconds of video to display
+                        continue;
+                    }
+                    if (config.videoMaxSecond > 0 && duration > config.videoMaxSecond) {
+                        // If you set the maximum number of seconds of video to display
+                        continue;
+                    }
+                    if (duration == 0) {
+                        //If the length is 0, the corrupted video is processed and filtered out
+                        continue;
+                    }
+                    if (size <= 0) {
+                        // The video size is 0 to filter out
+                        continue;
+                    }
+                }
+
                 LocalMedia media = LocalMedia.parseLocalMedia(id, absolutePath, absolutePath, f.getName(),
                         sandboxFile.getName(), duration, chooseModel, mimeType, width, height, size, bucketId, dateTime);
                 media.setSandboxPath(SdkVersionUtils.isQ() ? absolutePath : null);

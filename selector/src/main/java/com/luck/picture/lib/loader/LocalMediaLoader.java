@@ -30,7 +30,6 @@ import java.util.Locale;
  * @data：2016/12/31 19:12
  * @describe: Local media database query class
  */
-@Deprecated
 public final class LocalMediaLoader extends IBridgeMediaLoader {
 
     /**
@@ -197,7 +196,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                 String fileName = data.getString(fileNameColumn);
                                 long bucketId = data.getLong(bucketIdColumn);
 
-                                if (PictureMimeType.isHasVideo(mimeType)) {
+                                if (PictureMimeType.isHasVideo(mimeType) || PictureMimeType.isHasAudio(mimeType)) {
                                     if (config.videoMinSecond > 0 && duration < config.videoMinSecond) {
                                         // If you set the minimum number of seconds of video to display
                                         continue;
