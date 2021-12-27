@@ -1,12 +1,11 @@
 package com.luck.picture.lib.adapter;
 
-import android.view.View;
+import android.util.LruCache;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.exoplayer2.ui.PlayerView;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
 import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
@@ -26,7 +25,11 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
 
     private final List<LocalMedia> mData;
     private final BasePreviewHolder.OnPreviewEventListener onPreviewEventListener;
-    private boolean isFirstLoaded = true;
+    private final LruCache<Integer,BasePreviewHolder> mHolderLruCache = new LruCache<>(6);
+
+    public BasePreviewHolder getCurrentHolder(int position) {
+        return mHolderLruCache.get(position);
+    }
 
     public PicturePreviewAdapter(List<LocalMedia> list, BasePreviewHolder.OnPreviewEventListener listener) {
         this.mData = list;
@@ -56,6 +59,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     public void onBindViewHolder(@NonNull BasePreviewHolder holder, int position) {
         holder.setOnPreviewEventListener(onPreviewEventListener);
         LocalMedia media = mData.get(position);
+        mHolderLruCache.put(position, holder);
         holder.bindData(media, position);
     }
 
@@ -75,21 +79,6 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     }
 
     @Override
-    public void onViewAttachedToWindow(@NonNull BasePreviewHolder holder) {
-        super.onViewAttachedToWindow(holder);
-        if (isFirstLoaded) {
-            isFirstLoaded = false;
-        } else {
-            if (holder instanceof PreviewVideoHolder) {
-                PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
-                if (videoHolder.ivPlayButton.getVisibility() == View.GONE) {
-                    videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
-                }
-            }
-        }
-    }
-
-    @Override
     public void onViewDetachedFromWindow(@NonNull BasePreviewHolder holder) {
         super.onViewDetachedFromWindow(holder);
         if (holder instanceof PreviewVideoHolder) {
@@ -101,12 +90,11 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     /**
      * 释放当前视频相关
      */
-    public void destroyVideo(View itemView) {
-        PlayerView playerView = itemView.findViewById(R.id.playerView);
-        if (playerView != null) {
-            if (playerView.getPlayer() != null) {
-                playerView.getPlayer().release();
-            }
+    public void destroyVideo(int position) {
+        BasePreviewHolder holder = mHolderLruCache.get(position);
+        if (holder instanceof PreviewVideoHolder) {
+            PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
+            videoHolder.releaseVideo();
         }
     }
 }
