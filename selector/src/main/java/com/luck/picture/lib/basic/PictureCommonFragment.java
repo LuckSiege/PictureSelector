@@ -254,7 +254,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     }
 
 
-
     @Override
     public int confirmSelect(LocalMedia currentMedia, boolean isSelected) {
         String curMimeType = currentMedia.getMimeType();
@@ -786,7 +785,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             @Override
             public LocalMedia doInBackground() {
                 String outputPath = getOutputPath(intent);
-                if (!TextUtils.isEmpty(outputPath)){
+                if (!TextUtils.isEmpty(outputPath)) {
                     config.cameraPath = outputPath;
                 }
                 if (TextUtils.isEmpty(config.cameraPath)) {
@@ -831,19 +830,20 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     /**
      * 刷新相册
      *
-     * @param localMedia 要刷新的对象
+     * @param media 要刷新的对象
      */
-    private void onScannerScanFile(LocalMedia localMedia) {
+    private void onScannerScanFile(LocalMedia media) {
         if (ActivityCompatHelper.isDestroy(getActivity())) {
             return;
         }
         if (SdkVersionUtils.isQ()) {
-            if (PictureMimeType.isHasVideo(localMedia.getMimeType()) && PictureMimeType.isContent(config.cameraPath)) {
-                new PictureMediaScannerConnection(getActivity(), localMedia.getRealPath());
+            if (PictureMimeType.isHasVideo(media.getMimeType()) && PictureMimeType.isContent(config.cameraPath)) {
+                new PictureMediaScannerConnection(getActivity(), media.getRealPath());
             }
         } else {
-            new PictureMediaScannerConnection(getActivity(), config.cameraPath);
-            if (PictureMimeType.isHasImage(localMedia.getMimeType())) {
+            new PictureMediaScannerConnection(getActivity(),
+                    PictureMimeType.isContent(config.cameraPath) ? media.getRealPath() : config.cameraPath);
+            if (PictureMimeType.isHasImage(media.getMimeType())) {
                 int lastImageId = MediaUtils.getDCIMLastImageId(getContext());
                 if (lastImageId != -1) {
                     MediaUtils.removeMedia(getContext(), lastImageId);
