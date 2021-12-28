@@ -538,12 +538,13 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private void startCameraImageCapture() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
-            ForegroundService.startForegroundService(getContext());
             if (PictureSelectionConfig.cameraInterceptListener != null) {
+                ForegroundService.startForegroundService(getContext());
                 interceptCameraEvent(SelectMimeType.TYPE_IMAGE);
             } else {
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    ForegroundService.startForegroundService(getContext());
                     Uri imageUri = MediaStoreUtils.createCameraOutImageUri(getContext(), config);
                     if (imageUri != null) {
                         if (config.isCameraAroundState) {
@@ -593,12 +594,13 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private void startCameraVideoCapture() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
-            ForegroundService.startForegroundService(getContext());
             if (PictureSelectionConfig.cameraInterceptListener != null) {
+                ForegroundService.startForegroundService(getContext());
                 interceptCameraEvent(SelectMimeType.TYPE_VIDEO);
             } else {
                 Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
                 if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    ForegroundService.startForegroundService(getContext());
                     Uri videoUri = MediaStoreUtils.createCameraOutVideoUri(getContext(), config);
                     if (videoUri != null) {
                         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoUri);
@@ -651,13 +653,16 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private void startCameraRecordSound() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
-            ForegroundService.startForegroundService(getContext());
             if (PictureSelectionConfig.cameraInterceptListener != null) {
+                ForegroundService.startForegroundService(getContext());
                 interceptCameraEvent(SelectMimeType.TYPE_AUDIO);
             } else {
                 Intent cameraIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
                 if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    ForegroundService.startForegroundService(getContext());
                     startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
+                } else {
+                    Toast.makeText(getContext(), "The system is missing a recording component", Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -809,13 +814,15 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     protected String getOutputPath(Intent data) {
         String outputPath = null;
+        Uri outPutUri;
         if (data != null) {
-            Uri outPutUri = config.chooseMode ==
-                    SelectMimeType.ofAudio() ? data.getData()
-                    : data.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
+            if (config.chooseMode == SelectMimeType.ofAudio()) {
+                outPutUri = data.getData() != null ? data.getData() : data.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
+            } else {
+                outPutUri = data.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
+            }
             if (outPutUri != null) {
-                outputPath = PictureMimeType.isContent(outPutUri.toString())
-                        ? outPutUri.toString() : outPutUri.getPath();
+                outputPath = PictureMimeType.isContent(outPutUri.toString()) ? outPutUri.toString() : outPutUri.getPath();
             }
         }
         return outputPath;
