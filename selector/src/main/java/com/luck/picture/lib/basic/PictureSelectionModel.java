@@ -678,6 +678,20 @@ public class PictureSelectionModel {
         return this;
     }
 
+    /**
+     * Displays the creation timeline of the resource
+     *
+     * @param isDisplayTimeAxis
+     * @return
+     */
+    public PictureSelectionModel isDisplayTimeAxis(boolean isDisplayTimeAxis) {
+        if (selectionConfig.isOnlyCamera) {
+            selectionConfig.isDisplayTimeAxis = false;
+        } else {
+            selectionConfig.isDisplayTimeAxis = isDisplayTimeAxis;
+        }
+        return this;
+    }
 
     /**
      * # file size The unit is KB

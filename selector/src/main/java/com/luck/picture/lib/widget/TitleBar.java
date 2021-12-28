@@ -71,6 +71,7 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
         ivLeftBack.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
         rlAlbumBg.setOnClickListener(this);
+        titleBarLayout.setOnClickListener(this);
         viewAlbumClickArea.setOnClickListener(this);
         setBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
         config = PictureSelectionConfig.getInstance();
@@ -192,6 +193,10 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
             if (titleBarListener != null) {
                 titleBarListener.onShowAlbumPopWindow(this);
             }
+        } else if (id == R.id.rl_title_bar){
+            if (titleBarListener != null) {
+                titleBarListener.onTitleDoubleClick();
+            }
         }
     }
 
@@ -207,6 +212,13 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
     }
 
     public static class OnTitleBarListener {
+        /**
+         * 双击标题栏
+         */
+        public void onTitleDoubleClick(){
+
+        }
+
         /**
          * 关闭页面
          */

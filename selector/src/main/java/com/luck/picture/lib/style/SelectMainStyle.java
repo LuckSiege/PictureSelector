@@ -127,6 +127,19 @@ public class SelectMainStyle implements Parcelable {
     private int selectBackgroundResources;
 
     /**
+     * RecyclerView列表item间隙
+     * <p>
+     * use unit dp
+     * </p>
+     */
+    private int adapterItemSpacingSize;
+
+    /**
+     * 是否显示左右间距
+     */
+    private boolean isAdapterItemIncludeEdge;
+
+    /**
      * 勾选样式字体大小
      */
     private int adapterSelectTextSize;
@@ -273,6 +286,8 @@ public class SelectMainStyle implements Parcelable {
         selectTextSize = in.readInt();
         selectTextColor = in.readInt();
         selectBackgroundResources = in.readInt();
+        adapterItemSpacingSize = in.readInt();
+        isAdapterItemIncludeEdge = in.readByte() != 0;
         adapterSelectTextSize = in.readInt();
         adapterSelectClickArea = in.readInt();
         adapterSelectTextColor = in.readInt();
@@ -323,6 +338,8 @@ public class SelectMainStyle implements Parcelable {
         dest.writeInt(selectTextSize);
         dest.writeInt(selectTextColor);
         dest.writeInt(selectBackgroundResources);
+        dest.writeInt(adapterItemSpacingSize);
+        dest.writeByte((byte) (isAdapterItemIncludeEdge ? 1 : 0));
         dest.writeInt(adapterSelectTextSize);
         dest.writeInt(adapterSelectClickArea);
         dest.writeInt(adapterSelectTextColor);
@@ -547,6 +564,22 @@ public class SelectMainStyle implements Parcelable {
 
     public void setSelectBackgroundResources(int selectBackgroundResources) {
         this.selectBackgroundResources = selectBackgroundResources;
+    }
+
+    public int getAdapterItemSpacingSize() {
+        return adapterItemSpacingSize;
+    }
+
+    public void setAdapterItemSpacingSize(int adapterItemSpacingSize) {
+        this.adapterItemSpacingSize = adapterItemSpacingSize;
+    }
+
+    public boolean isAdapterItemIncludeEdge() {
+        return isAdapterItemIncludeEdge;
+    }
+
+    public void setAdapterItemIncludeEdge(boolean adapterItemIncludeEdge) {
+        isAdapterItemIncludeEdge = adapterItemIncludeEdge;
     }
 
     public int getAdapterSelectTextSize() {

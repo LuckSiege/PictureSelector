@@ -1,6 +1,13 @@
 package com.luck.picture.lib.utils;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+
+import com.luck.picture.lib.R;
+
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -11,12 +18,42 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class DateUtils {
+    @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat sf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+    @SuppressLint("SimpleDateFormat")
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
 
     public static long getCurrentTimeMillis() {
         String timeToString = ValueOf.toString(System.currentTimeMillis());
         return ValueOf.toLong(timeToString.length() > 10 ? timeToString.substring(0, 10) : timeToString);
     }
+
+
+    public static String getDataFormat(Context context,long time) {
+        if (isThisWeek(time)) {
+            return context.getString(R.string.ps_current_week);
+        } else if (isThisMonth(time)) {
+            return context.getString(R.string.ps_current_month);
+        } else {
+            return sdf.format(time);
+        }
+    }
+
+    private static boolean isThisWeek(long time) {
+        Calendar calendar = Calendar.getInstance();
+        int currentWeek = calendar.get(Calendar.WEEK_OF_YEAR);
+        calendar.setTime(new Date(time));
+        int paramWeek = calendar.get(Calendar.WEEK_OF_YEAR);
+        return paramWeek == currentWeek;
+    }
+
+    public static boolean isThisMonth(long time) {
+        Date date = new Date(time);
+        String param = sdf.format(date);
+        String now = sdf.format(new Date());
+        return param.equals(now);
+    }
+
 
     /**
      * 判断两个时间戳相差多少秒

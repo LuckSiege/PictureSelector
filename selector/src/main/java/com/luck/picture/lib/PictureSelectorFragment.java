@@ -3,6 +3,7 @@ package com.luck.picture.lib;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -41,6 +42,7 @@ import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.interfaces.OnRecyclerViewPreloadMoreListener;
+import com.luck.picture.lib.interfaces.OnRecyclerViewScrollListener;
 import com.luck.picture.lib.interfaces.OnRecyclerViewScrollStateListener;
 import com.luck.picture.lib.loader.LocalMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaPageLoader;
@@ -53,6 +55,7 @@ import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.AnimUtils;
+import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DoubleUtils;
 import com.luck.picture.lib.utils.StyleUtils;
@@ -87,6 +90,10 @@ public class PictureSelectorFragment extends PictureCommonFragment
     private BottomNavBar bottomNarBar;
 
     private CompleteSelectView completeSelectView;
+
+    private TextView tvCurrentDataTime;
+
+    private long intervalClickTime = 0;
 
     /**
      * open camera number
@@ -216,6 +223,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         completeSelectView = view.findViewById(R.id.ps_complete_select);
         titleBar = view.findViewById(R.id.title_bar);
         bottomNarBar = view.findViewById(R.id.bottom_nar_bar);
+        tvCurrentDataTime = view.findViewById(R.id.tv_current_data_time);
         initLoader();
         initAlbumListPopWindow();
         initTitleBar();
@@ -294,6 +302,18 @@ public class PictureSelectorFragment extends PictureCommonFragment
         }
         titleBar.setTitleBarStyle();
         titleBar.setOnTitleBarListener(new TitleBar.OnTitleBarListener() {
+            @Override
+            public void onTitleDoubleClick() {
+                if (config.isAutomaticTitleRecyclerTop) {
+                    int intervalTime = 500;
+                    if (SystemClock.uptimeMillis() - intervalClickTime < intervalTime && mAdapter.getItemCount() > 0) {
+                        mRecycler.scrollToPosition(0);
+                    } else {
+                        intervalClickTime = SystemClock.uptimeMillis();
+                    }
+                }
+            }
+
             @Override
             public void onBackPressed() {
                 if (albumListPopWindow.isShowing()) {
@@ -658,12 +678,19 @@ public class PictureSelectorFragment extends PictureCommonFragment
     private void initRecycler(View view) {
         mRecycler = view.findViewById(R.id.recycler);
         PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
-        int listBackgroundColor = selectorStyle.getSelectMainStyle().getMainListBackgroundColor();
+        SelectMainStyle selectMainStyle = selectorStyle.getSelectMainStyle();
+        int listBackgroundColor = selectMainStyle.getMainListBackgroundColor();
         if (StyleUtils.checkStyleValidity(listBackgroundColor)) {
             mRecycler.setBackgroundColor(listBackgroundColor);
         }
         int imageSpanCount = config.imageSpanCount <= 0 ? PictureConfig.DEFAULT_SPAN_COUNT : config.imageSpanCount;
-        mRecycler.addItemDecoration(new GridSpacingItemDecoration(imageSpanCount, DensityUtil.dip2px(view.getContext(), 2), true));
+        if (StyleUtils.checkSizeValidity(selectMainStyle.getAdapterItemSpacingSize())) {
+            mRecycler.addItemDecoration(new GridSpacingItemDecoration(imageSpanCount,
+                    selectMainStyle.getAdapterItemSpacingSize(), selectMainStyle.isAdapterItemIncludeEdge()));
+        } else {
+            mRecycler.addItemDecoration(new GridSpacingItemDecoration(imageSpanCount,
+                    DensityUtil.dip2px(view.getContext(), 1), selectMainStyle.isAdapterItemIncludeEdge()));
+        }
         mRecycler.setLayoutManager(new GridLayoutManager(getContext(), imageSpanCount));
         RecyclerView.ItemAnimator itemAnimator = mRecycler.getItemAnimator();
         if (itemAnimator != null) {
@@ -747,6 +774,55 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 }
             }
         });
+        mRecycler.setOnRecyclerViewScrollListener(new OnRecyclerViewScrollListener() {
+            @Override
+            public void onScrolled(int dx, int dy) {
+                setCurrentMediaCreateTimeText();
+            }
+
+            @Override
+            public void onScrollStateChanged(int state) {
+                if (state == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    showCurrentMediaCreateTimeUI();
+                } else if (state == RecyclerView.SCROLL_STATE_IDLE) {
+                    hideCurrentMediaCreateTimeUI();
+                }
+            }
+        });
+    }
+
+    /**
+     * 显示当前资源时间轴
+     */
+    private void setCurrentMediaCreateTimeText() {
+        if (config.isDisplayTimeAxis) {
+            int position = mRecycler.getFirstVisiblePosition();
+            ArrayList<LocalMedia> data = mAdapter.getData();
+            if (data.size() > position && data.get(position).getDateAddedTime() > 0) {
+                tvCurrentDataTime.setText(DateUtils.getDataFormat(getContext(),
+                        data.get(position).getDateAddedTime() * 1000));
+            }
+        }
+    }
+
+    /**
+     * 显示当前资源时间轴
+     */
+    private void showCurrentMediaCreateTimeUI() {
+        if (config.isDisplayTimeAxis && mAdapter.getData().size() > 0) {
+            if (tvCurrentDataTime.getAlpha() == 0F) {
+                tvCurrentDataTime.animate().setDuration(150).alphaBy(1.0F).start();
+            }
+        }
+    }
+
+    /**
+     * 隐藏当前资源时间轴
+     */
+    private void hideCurrentMediaCreateTimeUI() {
+        if (config.isDisplayTimeAxis && mAdapter.getData().size() > 0) {
+            tvCurrentDataTime.animate().setDuration(250).alpha(0.0F).start();
+        }
     }
 
     /**
@@ -931,8 +1007,10 @@ public class PictureSelectorFragment extends PictureCommonFragment
         allFolder.setFirstMimeType(media.getMimeType());
         allFolder.setData(mAdapter.getData());
         allFolder.setBucketId(PictureConfig.ALL);
-        allFolder.setFolderTotalNum(isAddSameImp(allFolder.getFolderTotalNum())
-                ? allFolder.getFolderTotalNum() : allFolder.getFolderTotalNum() + 1);
+        allFolder.setFolderTotalNum(isAddSameImp(allFolder.getFolderTotalNum()) ? allFolder.getFolderTotalNum() : allFolder.getFolderTotalNum() + 1);
+        if (SelectedManager.getCurrentLocalMediaFolder() == null) {
+            SelectedManager.setCurrentLocalMediaFolder(allFolder);
+        }
         // 先查找Camera目录，没有找到则创建一个Camera目录
         LocalMediaFolder cameraFolder = null;
         List<LocalMediaFolder> albumList = albumListPopWindow.getAlbumList();

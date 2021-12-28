@@ -6,9 +6,11 @@ import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.interfaces.OnRecyclerViewPreloadMoreListener;
+import com.luck.picture.lib.interfaces.OnRecyclerViewScrollListener;
 import com.luck.picture.lib.interfaces.OnRecyclerViewScrollStateListener;
 
 /**
@@ -93,12 +95,13 @@ public class RecyclerPreloadView extends RecyclerView {
     @Override
     public void onScrolled(int dx, int dy) {
         super.onScrolled(dx, dy);
+        LayoutManager layoutManager = getLayoutManager();
+        if (layoutManager == null) {
+            throw new RuntimeException("LayoutManager is null,Please check it!");
+        }
+        setLayoutManagerPosition(layoutManager);
         if (onRecyclerViewPreloadListener != null) {
             if (isEnabledLoadMore) {
-                LayoutManager layoutManager = getLayoutManager();
-                if (layoutManager == null) {
-                    throw new RuntimeException("LayoutManager is null,Please check it!");
-                }
                 Adapter adapter = getAdapter();
                 if (adapter == null) {
                     throw new RuntimeException("Adapter is null,Please check it!");
@@ -110,7 +113,7 @@ public class RecyclerPreloadView extends RecyclerView {
                     int lastVisibleRowPosition = gridLayoutManager.findLastVisibleItemPosition() / gridLayoutManager.getSpanCount();
                     isReachBottom = (lastVisibleRowPosition >= rowCount - reachBottomRow);
                 }
-
+                
                 if (!isReachBottom) {
                     isInTheBottom = false;
                 } else if (!isInTheBottom) {
@@ -127,6 +130,10 @@ public class RecyclerPreloadView extends RecyclerView {
             }
         }
 
+        if (onRecyclerViewScrollListener != null) {
+            onRecyclerViewScrollListener.onScrolled(dx, dy);
+        }
+
         if (onRecyclerViewScrollStateListener != null) {
             if (Math.abs(dy) < LIMIT) {
                 onRecyclerViewScrollStateListener.onScrollSlow();
@@ -136,19 +143,32 @@ public class RecyclerPreloadView extends RecyclerView {
         }
     }
 
+    private void setLayoutManagerPosition(LayoutManager layoutManager) {
+
+        if (layoutManager instanceof GridLayoutManager) {
+            GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
+            mFirstVisiblePosition = gridLayoutManager.findFirstVisibleItemPosition();
+            mLastVisiblePosition = gridLayoutManager.findLastVisibleItemPosition();
+        } else if (layoutManager instanceof LinearLayoutManager) {
+            LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
+            mFirstVisiblePosition = linearLayoutManager.findFirstVisibleItemPosition();
+            mLastVisiblePosition = linearLayoutManager.findLastVisibleItemPosition();
+        }
+    }
+
 
     @Override
-    public void onScrollStateChanged(int newState) {
-        super.onScrollStateChanged(newState);
-        if (newState == SCROLL_STATE_IDLE || newState == SCROLL_STATE_DRAGGING) {
-            LayoutManager layoutManager = getLayoutManager();
-            if (layoutManager instanceof GridLayoutManager) {
-                GridLayoutManager linearManager = (GridLayoutManager) layoutManager;
-                mFirstVisiblePosition = linearManager.findFirstVisibleItemPosition();
-                mLastVisiblePosition = linearManager.findLastVisibleItemPosition();
-            }
+    public void onScrollStateChanged(int state) {
+        super.onScrollStateChanged(state);
+        if (state == SCROLL_STATE_IDLE || state == SCROLL_STATE_DRAGGING) {
+            setLayoutManagerPosition(getLayoutManager());
         }
-        if (newState == SCROLL_STATE_IDLE) {
+
+        if (onRecyclerViewScrollListener != null) {
+            onRecyclerViewScrollListener.onScrollStateChanged(state);
+        }
+
+        if (state == SCROLL_STATE_IDLE) {
             if (onRecyclerViewScrollStateListener != null) {
                 onRecyclerViewScrollStateListener.onScrollSlow();
             }
@@ -166,5 +186,11 @@ public class RecyclerPreloadView extends RecyclerView {
 
     public void setOnRecyclerViewScrollStateListener(OnRecyclerViewScrollStateListener listener) {
         this.onRecyclerViewScrollStateListener = listener;
+    }
+
+    private OnRecyclerViewScrollListener onRecyclerViewScrollListener;
+
+    public void setOnRecyclerViewScrollListener(OnRecyclerViewScrollListener listener) {
+        this.onRecyclerViewScrollListener = listener;
     }
 }

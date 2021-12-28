@@ -14,8 +14,8 @@ public class SdkVersionUtils {
      *
      * @return
      */
-    public static boolean isMinLollipop() {
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
+    public static boolean isMinM() {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M;
     }
 
     /**

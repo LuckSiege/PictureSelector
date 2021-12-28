@@ -63,4 +63,6 @@
     <string name="ps_editor">編集</string>
     <string name="ps_use_camera">カメラを使用中</string>
     <string name="ps_use_sound">録音機能を使用中</string>
+    <string name="ps_current_week">今週</string>
+    <string name="ps_current_month">今月</string>
 </resources>

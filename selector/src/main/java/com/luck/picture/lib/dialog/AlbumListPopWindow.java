@@ -67,7 +67,7 @@ public class AlbumListPopWindow extends PopupWindow {
         getContentView().findViewById(R.id.rootView).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (SdkVersionUtils.isMinLollipop()) {
+                if (SdkVersionUtils.isMinM()) {
                     dismiss();
                 }
             }

@@ -65,4 +65,6 @@
     <string name="ps_editor">Editor</string>
     <string name="ps_use_camera">Using camera</string>
     <string name="ps_use_sound">Using recording function</string>
+    <string name="ps_current_week">This week</string>
+    <string name="ps_current_month">This month</string>
 </resources>

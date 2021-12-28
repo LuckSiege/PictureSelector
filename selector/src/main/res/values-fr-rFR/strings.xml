@@ -63,4 +63,6 @@
     <string name="ps_go_setting">Pour définir</string>
     <string name="ps_use_camera">Utilisation de la caméra</string>
     <string name="ps_use_sound">Enregistrement en cours</string>
+    <string name="ps_current_week">Cette semaine</string>
+    <string name="ps_current_month">Ce mois - ci</string>
 </resources>

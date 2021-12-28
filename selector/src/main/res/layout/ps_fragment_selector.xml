@@ -16,6 +16,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_bar" />
 
+    <TextView
+        android:id="@+id/tv_current_data_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:background="@color/ps_color_99_black"
+        android:gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:textColor="@color/ps_color_white"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar" />
+
     <com.luck.picture.lib.widget.TitleBar
         android:id="@+id/title_bar"
         android:layout_width="0dp"

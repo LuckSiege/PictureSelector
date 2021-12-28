@@ -63,4 +63,6 @@
     <string name="ps_webp_tag">webp</string>
     <string name="ps_use_camera">正在使用相机</string>
     <string name="ps_use_sound">正在使用录音功能</string>
+    <string name="ps_current_week">本周</string>
+    <string name="ps_current_month">这个月</string>
 </resources>

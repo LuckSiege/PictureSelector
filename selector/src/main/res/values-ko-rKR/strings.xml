@@ -63,4 +63,6 @@
     <string name="ps_editor">편집 하 다</string>
     <string name="ps_use_camera">카메라 사용 중</string>
     <string name="ps_use_sound">녹음 기능 사용 중</string>
+    <string name="ps_current_week">금주</string>
+    <string name="ps_current_month">이번 달</string>
 </resources>

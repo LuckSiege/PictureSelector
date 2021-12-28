@@ -49,16 +49,9 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
 
     private final PictureSelectionConfig mConfig;
 
-    private int lastPosition;
-
-    public int getLastPosition() {
-        return lastPosition;
-    }
-
-    private Context mContext;
+    private final Context mContext;
 
     public void notifyItemPositionChanged(int position) {
-        this.lastPosition = position;
         this.notifyItemChanged(position);
     }
 

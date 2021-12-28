@@ -63,4 +63,6 @@
     <string name="ps_webp_tag">webp</string>
     <string name="ps_use_camera">استخدام الكاميرا</string>
     <string name="ps_use_sound">استخدام وظيفة التسجيل</string>
+    <string name="ps_current_week">هذا الأسبوع</string>
+    <string name="ps_current_month">هذا الشهر</string>
 </resources>

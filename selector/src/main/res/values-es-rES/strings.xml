@@ -64,4 +64,6 @@
     <string name="ps_webp_tag">webp</string>
     <string name="ps_use_camera">Cámara en uso</string>
     <string name="ps_use_sound">Función de grabación en uso</string>
+    <string name="ps_current_week">Esta semana</string>
+    <string name="ps_current_month">Este mes</string>
 </resources>

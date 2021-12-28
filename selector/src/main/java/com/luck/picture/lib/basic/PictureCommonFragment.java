@@ -218,8 +218,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         }
         if (config.isPreviewFullScreenMode) {
             SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
-            boolean isDarkStatusBarBlack = selectMainStyle.isDarkStatusBarBlack();
-            ImmersiveManager.translucentStatusBar(getActivity(), true, isDarkStatusBarBlack);
+            ImmersiveManager.translucentStatusBar(getActivity(), selectMainStyle.isDarkStatusBarBlack());
         }
         if (config.isOpenClickSound && !config.isOnlyCamera) {
             soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);

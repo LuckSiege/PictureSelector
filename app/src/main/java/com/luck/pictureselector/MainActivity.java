@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
             cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
             cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox,cb_only_dir,
-            cb_preview_full, cb_preview_scale, cb_inject_layout;
+            cb_preview_full, cb_preview_scale, cb_inject_layout,cb_time_axis;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isUpward;
     private boolean needScaleBig = true;
@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_inject_layout = findViewById(R.id.cb_inject_layout);
         cb_preview_img = findViewById(R.id.cb_preview_img);
         cb_preview_video = findViewById(R.id.cb_preview_video);
+        cb_time_axis = findViewById(R.id.cb_time_axis);
         cb_crop = findViewById(R.id.cb_crop);
         cbPage = findViewById(R.id.cbPage);
         cbEditor = findViewById(R.id.cb_editor);
@@ -260,8 +261,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setInjectLayoutResourceListener(getInjectLayoutResource())
                             .selectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
                             .setLanguage(language)
-                            .setOutputCameraDir(getSandboxPath())
-                            .setQuerySandboxDir(getSandboxPath())
+                            .setOutputCameraDir(getSandboxOutputPath())
+                            .setQuerySandboxDir(getSandboxOutputPath())
+                            .isDisplayTimeAxis(cb_time_axis.isChecked())
                             .isOnlyObtainSandboxDir(cb_only_dir.isChecked())
                             .isPageStrategy(cbPage.isChecked())
                             .isOriginalControl(cb_original.isChecked())
@@ -822,7 +824,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      *
      * @return
      */
-    private String getSandboxPath() {
+    private String getSandboxOutputPath() {
         if (cb_custom_sandbox.isChecked()) {
             File externalFilesDir = getContext().getExternalFilesDir("");
             File customFile = new File(externalFilesDir.getAbsolutePath(), "Sandbox");
@@ -833,6 +835,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             return "";
         }
+    }
+
+    /**
+     * 创建自定义输出目录
+     *
+     * @return
+     */
+    private String getSandboxPath() {
+        File externalFilesDir = getContext().getExternalFilesDir("");
+        File customFile = new File(externalFilesDir.getAbsolutePath(), "Sandbox");
+        if (!customFile.exists()) {
+            customFile.mkdirs();
+        }
+        return customFile.getAbsolutePath() + File.separator;
     }
 
 
@@ -1049,6 +1065,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 numberSelectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_black));
                 numberSelectMainStyle.setCompleteSelectRelativeTop(true);
                 numberSelectMainStyle.setPreviewSelectRelativeBottom(true);
+                numberSelectMainStyle.setAdapterItemIncludeEdge(false);
 
                 // 头部TitleBar 风格
                 TitleBarStyle numberTitleBarStyle = new TitleBarStyle();
