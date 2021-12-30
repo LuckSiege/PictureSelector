@@ -143,9 +143,13 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
         if (StyleUtils.checkStyleValidity(titleTextColor)) {
             tvTitle.setTextColor(titleTextColor);
         }
-        int arrowResId = titleBarStyle.getTitleDrawableRightResource();
-        if (StyleUtils.checkStyleValidity(arrowResId)) {
-            ivArrow.setImageResource(arrowResId);
+        if (config.isOnlySandboxDir) {
+            ivArrow.setImageResource(R.drawable.ps_trans_1px);
+        } else {
+            int arrowResId = titleBarStyle.getTitleDrawableRightResource();
+            if (StyleUtils.checkStyleValidity(arrowResId)) {
+                ivArrow.setImageResource(arrowResId);
+            }
         }
         int albumBackgroundRes = titleBarStyle.getTitleAlbumBackgroundResource();
         if (StyleUtils.checkStyleValidity(albumBackgroundRes)) {

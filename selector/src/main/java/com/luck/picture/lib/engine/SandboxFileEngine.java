@@ -2,6 +2,7 @@ package com.luck.picture.lib.engine;
 
 import android.content.Context;
 
+import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnCallbackIndexListener;
 
@@ -29,11 +30,13 @@ public interface SandboxFileEngine {
      * </p>
      *
      * @param context  context
+     * @param config   PictureSelector Config api
      * @param index    The location of the resource in the result queue
      * @param media    LocalMedia
      * @param listener
      */
-    void onStartSandboxFileTransform(Context context, int index, LocalMedia media,
+    void onStartSandboxFileTransform(Context context, PictureSelectionConfig config,
+                                     int index, LocalMedia media,
                                      OnCallbackIndexListener<LocalMedia> listener);
 
 }

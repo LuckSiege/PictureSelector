@@ -66,7 +66,7 @@ public class ImmersiveManager {
 
                     window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 } else if (!isMarginStatusBar && !isMarginNavigationBar) {
-                    if (isDarkStatusBarIcon) {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M && isDarkStatusBarIcon) {
                         initBarBelowLOLLIPOP(baseActivity);
                     } else {
                         window.requestFeature(Window.FEATURE_NO_TITLE);
@@ -76,7 +76,7 @@ public class ImmersiveManager {
                         LightStatusBarUtils.setLightStatusBar(baseActivity, false
                                 , false
                                 , statusBarColor == Color.TRANSPARENT
-                                , false);
+                                , isDarkStatusBarIcon);
 
                         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                     }

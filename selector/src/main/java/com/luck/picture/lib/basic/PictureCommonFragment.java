@@ -676,7 +676,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private void interceptCameraEvent(int cameraMode) {
         ForegroundService.startForegroundService(getContext());
-        PictureSelectionConfig.cameraInterceptListener.openCamera(this, cameraMode, PictureConfig.REQUEST_CAMERA);
+        PictureSelectionConfig.cameraInterceptListener.openCamera(this, config, cameraMode, PictureConfig.REQUEST_CAMERA);
     }
 
     /**
@@ -1005,43 +1005,69 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     }
 
     /**
+     * SDK > 29 把外部资源copy一份至应用沙盒内
+     *
+     * @param result
+     */
+    private void copyExternalPathToAppInDirFor29(ArrayList<LocalMedia> result) {
+        showLoading();
+        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<ArrayList<LocalMedia>>() {
+            @Override
+            public ArrayList<LocalMedia> doInBackground() {
+                for (int i = 0; i < result.size(); i++) {
+                    LocalMedia media = result.get(i);
+                    PictureSelectionConfig.sandboxFileEngine.onStartSandboxFileTransform(getContext(), config, i,
+                            media, new OnCallbackIndexListener<LocalMedia>() {
+                                @Override
+                                public void onCall(LocalMedia data, int index) {
+                                    LocalMedia media = result.get(index);
+                                    media.setSandboxPath(data.getSandboxPath());
+                                    if (config.isCheckOriginalImage) {
+                                        media.setOriginalPath(data.getOriginalPath());
+                                        media.setOriginal(!TextUtils.isEmpty(data.getOriginalPath()));
+                                    }
+                                }
+                            });
+                }
+                return result;
+            }
+
+            @Override
+            public void onSuccess(ArrayList<LocalMedia> result) {
+                PictureThreadUtils.cancel(this);
+                callBackResult(result);
+            }
+        });
+    }
+
+    /**
+     * 构造原图数据
+     *
+     * @param result
+     */
+    private void mergeOriginalImage(ArrayList<LocalMedia> result) {
+        if (config.isCheckOriginalImage) {
+            for (int i = 0; i < result.size(); i++) {
+                LocalMedia media = result.get(i);
+                media.setOriginal(true);
+                media.setOriginalPath(media.getPath());
+            }
+        }
+    }
+
+    /**
      * 返回处理完成后的选择结果
      */
     @Override
     public void onResultEvent(ArrayList<LocalMedia> result) {
         if (PictureSelectionConfig.sandboxFileEngine != null) {
-            showLoading();
-            PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<ArrayList<LocalMedia>>() {
-                @Override
-                public ArrayList<LocalMedia> doInBackground() {
-                    for (int i = 0; i < result.size(); i++) {
-                        LocalMedia media = result.get(i);
-                        PictureSelectionConfig.sandboxFileEngine.onStartSandboxFileTransform(getContext(), i,
-                                media, new OnCallbackIndexListener<LocalMedia>() {
-                                    @Override
-                                    public void onCall(LocalMedia data, int index) {
-                                        LocalMedia media = result.get(index);
-                                        media.setSandboxPath(data.getSandboxPath());
-                                        if (config.isCheckOriginalImage) {
-                                            media.setOriginalPath(data.getSandboxPath());
-                                            media.setOriginal(!TextUtils.isEmpty(data.getSandboxPath()));
-                                        }
-                                    }
-                                });
-                    }
-                    return result;
-                }
-
-                @Override
-                public void onSuccess(ArrayList<LocalMedia> result) {
-                    PictureThreadUtils.cancel(this);
-                    callBackResult(result);
-                }
-            });
+            copyExternalPathToAppInDirFor29(result);
         } else {
+            mergeOriginalImage(result);
             callBackResult(result);
         }
     }
+
 
     /**
      * 返回结果

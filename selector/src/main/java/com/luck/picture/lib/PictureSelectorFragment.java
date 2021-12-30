@@ -348,12 +348,16 @@ public class PictureSelectorFragment extends PictureCommonFragment
         albumListPopWindow.setOnPopupWindowStatusListener(new AlbumListPopWindow.OnPopupWindowStatusListener() {
             @Override
             public void onShowPopupWindow() {
-                AnimUtils.rotateArrow(titleBar.getImageArrow(), true);
+                if (!config.isOnlySandboxDir) {
+                    AnimUtils.rotateArrow(titleBar.getImageArrow(), true);
+                }
             }
 
             @Override
             public void onDismissPopupWindow() {
-                AnimUtils.rotateArrow(titleBar.getImageArrow(), false);
+                if (!config.isOnlySandboxDir) {
+                    AnimUtils.rotateArrow(titleBar.getImageArrow(), false);
+                }
             }
         });
         addAlbumPopWindowAction();

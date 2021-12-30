@@ -38,6 +38,7 @@ import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.basic.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.ResourceSource;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
@@ -71,6 +72,7 @@ import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.MediaUtils;
 import com.luck.picture.lib.utils.SandboxTransformUtils;
+import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.ValueOf;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.listener.DragListener;
@@ -671,13 +673,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private class MeOnCameraInterceptListener implements OnCameraInterceptListener {
 
         @Override
-        public void openCamera(Fragment fragment, int cameraMode, int requestCode) {
+        public void openCamera(Fragment fragment, PictureSelectionConfig config, int cameraMode, int requestCode) {
             if (cameraMode == SelectMimeType.ofAudio()) {
                 Toast.makeText(getContext(), "自定义录音功能，请自行扩展", Toast.LENGTH_LONG).show();
             } else {
                 SimpleCameraX camera = SimpleCameraX.of();
                 camera.setCameraMode(cameraMode);
-                camera.setOutputPathDir(getSandboxCameraOutputPath());
+                camera.setOutputPathDir(config.outPutCameraDir);
                 camera.setImageEngine(new CameraImageEngine() {
                     @Override
                     public void loadImage(Context context, String url, ImageView imageView) {
@@ -695,12 +697,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static class MeSandboxFileEngine implements SandboxFileEngine {
 
         @Override
-        public void onStartSandboxFileTransform(Context context, int index, LocalMedia media,
+        public void onStartSandboxFileTransform(Context context, PictureSelectionConfig config,
+                                                int index, LocalMedia media,
                                                 OnCallbackIndexListener<LocalMedia> listener) {
             if (PictureMimeType.isContent(media.getAvailablePath())) {
                 String sandboxPath = SandboxTransformUtils.copyPathToSandbox(context, media.getPath(),
                         media.getMimeType());
                 media.setSandboxPath(sandboxPath);
+            }
+            if (config.isCheckOriginalImage) {
+                String originalPath = SandboxTransformUtils.copyPathToSandbox(context, media.getPath(),
+                        media.getMimeType());
+                media.setOriginalPath(originalPath);
+                media.setOriginal(!TextUtils.isEmpty(originalPath));
             }
             listener.onCall(media, index);
         }
@@ -813,7 +822,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             if (compressFile.exists() && !TextUtils.isEmpty(compressFile.getAbsolutePath())) {
                                 media.setCompressed(true);
                                 media.setCompressPath(compressFile.getAbsolutePath());
-                                media.setSandboxPath(media.getCompressPath());
+                                media.setSandboxPath(SdkVersionUtils.isQ() ? media.getCompressPath() : null);
                             }
                             if (index == list.size() - 1) {
                                 listener.onCall(list);
