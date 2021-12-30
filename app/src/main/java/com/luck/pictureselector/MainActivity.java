@@ -16,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
@@ -671,16 +672,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public void openCamera(Fragment fragment, int cameraMode, int requestCode) {
-            SimpleCameraX camera = SimpleCameraX.of();
-            camera.setCameraMode(cameraMode);
-            camera.setOutputPathDir(getSandboxCameraOutputPath());
-            camera.setImageEngine(new CameraImageEngine() {
-                @Override
-                public void loadImage(Context context, String url, ImageView imageView) {
-                    Glide.with(context).load(url).into(imageView);
-                }
-            });
-            camera.start(fragment.getActivity(), fragment, requestCode);
+            if (cameraMode == SelectMimeType.ofAudio()) {
+                Toast.makeText(getContext(), "自定义录音功能，请自行扩展", Toast.LENGTH_LONG).show();
+            } else {
+                SimpleCameraX camera = SimpleCameraX.of();
+                camera.setCameraMode(cameraMode);
+                camera.setOutputPathDir(getSandboxCameraOutputPath());
+                camera.setImageEngine(new CameraImageEngine() {
+                    @Override
+                    public void loadImage(Context context, String url, ImageView imageView) {
+                        Glide.with(context).load(url).into(imageView);
+                    }
+                });
+                camera.start(fragment.getActivity(), fragment, requestCode);
+            }
         }
     }
 
