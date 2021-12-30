@@ -1016,7 +1016,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             public ArrayList<LocalMedia> doInBackground() {
                 for (int i = 0; i < result.size(); i++) {
                     LocalMedia media = result.get(i);
-                    PictureSelectionConfig.sandboxFileEngine.onStartSandboxFileTransform(getContext(), config, i,
+                    PictureSelectionConfig.sandboxFileEngine.onStartSandboxFileTransform(getContext(), config.isCheckOriginalImage, i,
                             media, new OnCallbackIndexListener<LocalMedia>() {
                                 @Override
                                 public void onCall(LocalMedia data, int index) {

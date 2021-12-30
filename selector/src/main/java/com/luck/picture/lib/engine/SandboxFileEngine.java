@@ -29,13 +29,13 @@ public interface SandboxFileEngine {
      * 2、listener.onCall( "you result" );
      * </p>
      *
-     * @param context  context
-     * @param config   PictureSelector Config api
-     * @param index    The location of the resource in the result queue
-     * @param media    LocalMedia
+     * @param context              context
+     * @param isOriginalImage The original drawing needs to be processed
+     * @param index                The location of the resource in the result queue
+     * @param media                LocalMedia
      * @param listener
      */
-    void onStartSandboxFileTransform(Context context, PictureSelectionConfig config,
+    void onStartSandboxFileTransform(Context context, boolean isOriginalImage,
                                      int index, LocalMedia media,
                                      OnCallbackIndexListener<LocalMedia> listener);
 

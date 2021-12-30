@@ -697,7 +697,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static class MeSandboxFileEngine implements SandboxFileEngine {
 
         @Override
-        public void onStartSandboxFileTransform(Context context, PictureSelectionConfig config,
+        public void onStartSandboxFileTransform(Context context, boolean isOriginalImage,
                                                 int index, LocalMedia media,
                                                 OnCallbackIndexListener<LocalMedia> listener) {
             if (PictureMimeType.isContent(media.getAvailablePath())) {
@@ -705,7 +705,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         media.getMimeType());
                 media.setSandboxPath(sandboxPath);
             }
-            if (config.isCheckOriginalImage) {
+            if (isOriginalImage) {
                 String originalPath = SandboxTransformUtils.copyPathToSandbox(context, media.getPath(),
                         media.getMimeType());
                 media.setOriginalPath(originalPath);
