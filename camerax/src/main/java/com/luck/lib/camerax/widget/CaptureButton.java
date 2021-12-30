@@ -258,10 +258,11 @@ public class CaptureButton extends View {
 
     public void recordEnd() {
         if (captureListener != null) {
-            if (currentRecordedTime < minDuration)
+            if (currentRecordedTime < minDuration) {
                 captureListener.recordShort(currentRecordedTime);
-            else
+            } else {
                 captureListener.recordEnd(currentRecordedTime);
+            }
         }
         resetRecordAnim();
     }

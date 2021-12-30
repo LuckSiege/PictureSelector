@@ -678,6 +678,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 SimpleCameraX camera = SimpleCameraX.of();
                 camera.setCameraMode(cameraMode);
                 camera.setOutputPathDir(getSandboxCameraOutputPath());
+                camera.setRecordVideoMaxSecond(5);
                 camera.setImageEngine(new CameraImageEngine() {
                     @Override
                     public void loadImage(Context context, String url, ImageView imageView) {
