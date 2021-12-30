@@ -121,7 +121,7 @@ public class Luban implements Handler.Callback {
      */
     private void launch(final Context context) {
         if (mStreamProviders == null || mStreamProviders.size() == 0 && mCompressListener != null) {
-            mCompressListener.onError(new NullPointerException("image file cannot be null"));
+            mCompressListener.onError(-1, new NullPointerException("image file cannot be null"));
         }
 
         Iterator<InputStreamProvider> iterator = mStreamProviders.iterator();
@@ -140,7 +140,9 @@ public class Luban implements Handler.Callback {
                         message.obj = result;
                         mHandler.sendMessage(message);
                     } catch (IOException e) {
-                        mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_ERROR, e));
+                        Message message = mHandler.obtainMessage(MSG_COMPRESS_ERROR);
+                        message.arg1 = path.getIndex();
+                        mHandler.sendMessage(message);
                     }
                 }
             });
@@ -219,7 +221,7 @@ public class Luban implements Handler.Callback {
                 mCompressListener.onSuccess(msg.arg1, (File) msg.obj);
                 break;
             case MSG_COMPRESS_ERROR:
-                mCompressListener.onError((Throwable) msg.obj);
+                mCompressListener.onError(msg.arg1, (Throwable) msg.obj);
                 break;
         }
         return false;

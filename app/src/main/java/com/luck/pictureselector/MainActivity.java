@@ -795,7 +795,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Luban.with(context)
                     .load(compress)
                     .ignoreBy(100)
-                    .setTargetDir(getSandboxPath())
                     .filter(new CompressionPredicate() {
                         @Override
                         public boolean apply(String path) {
@@ -830,8 +829,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
 
                         @Override
-                        public void onError(Throwable e) {
-
+                        public void onError(int index, Throwable e) {
+                            if (index != -1) {
+                                LocalMedia media = list.get(index);
+                                media.setCompressed(false);
+                                media.setCompressPath(null);
+                                media.setSandboxPath(null);
+                                if (index == list.size() - 1) {
+                                    listener.onCall(list);
+                                }
+                            }
                         }
                     }).launch();
         }

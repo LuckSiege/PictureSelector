@@ -18,6 +18,8 @@ public interface OnCompressListener {
 
     /**
      * Fired when a compression fails to complete, override to handle in your own code
+     *
+     * @param index compression error index
      */
-    void onError(Throwable e);
+    void onError(int index, Throwable e);
 }
