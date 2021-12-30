@@ -139,7 +139,7 @@ public class Luban implements Handler.Callback {
                         message.arg1 = path.getIndex();
                         message.obj = result;
                         mHandler.sendMessage(message);
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         Message message = mHandler.obtainMessage(MSG_COMPRESS_ERROR);
                         message.arg1 = path.getIndex();
                         mHandler.sendMessage(message);
