@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
@@ -682,6 +683,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
         int listBackgroundColor = selectMainStyle.getMainListBackgroundColor();
         if (StyleUtils.checkStyleValidity(listBackgroundColor)) {
             mRecycler.setBackgroundColor(listBackgroundColor);
+        } else {
+            mRecycler.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.ps_color_black));
         }
         int imageSpanCount = config.imageSpanCount <= 0 ? PictureConfig.DEFAULT_SPAN_COUNT : config.imageSpanCount;
         if (StyleUtils.checkSizeValidity(selectMainStyle.getAdapterItemSpacingSize())) {

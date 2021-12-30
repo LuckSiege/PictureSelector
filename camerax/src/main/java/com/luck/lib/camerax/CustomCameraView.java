@@ -61,16 +61,6 @@ import java.lang.ref.WeakReference;
  */
 public class CustomCameraView extends RelativeLayout {
     /**
-     * 默认最大录制时间
-     */
-    public static final int DEFAULT_MAX_RECORD_VIDEO = 60 * 1000;
-
-    /**
-     * 默认最小录制时间
-     */
-    public static final int DEFAULT_MIN_RECORD_VIDEO = 1500;
-
-    /**
      * 闪关灯状态
      */
     private static final int TYPE_FLASH_AUTO = 0x021;
@@ -166,7 +156,6 @@ public class CustomCameraView extends RelativeLayout {
             }
             setFlashMode();
         });
-        mCaptureLayout.setDuration(DEFAULT_MAX_RECORD_VIDEO);
 
         mSwitchCamera.setOnClickListener(new OnClickListener() {
             @Override
@@ -221,7 +210,7 @@ public class CustomCameraView extends RelativeLayout {
                         new VideoCapture.OnVideoSavedCallback() {
                             @Override
                             public void onVideoSaved(@NonNull @NotNull VideoCapture.OutputFileResults outputFileResults) {
-                                long minSecond = recordVideoMinSecond <= 0 ? DEFAULT_MIN_RECORD_VIDEO : recordVideoMinSecond;
+                                long minSecond = recordVideoMinSecond <= 0 ? CustomCameraConfig.DEFAULT_MIN_RECORD_VIDEO : recordVideoMinSecond;
                                 if (recordTime < minSecond || outputFileResults.getSavedUri() == null) {
                                     return;
                                 }
@@ -328,8 +317,8 @@ public class CustomCameraView extends RelativeLayout {
         lensFacing = isCameraAroundState ? CameraSelector.LENS_FACING_FRONT : CameraSelector.LENS_FACING_BACK;
         outPutCameraDir = extras.getString(SimpleCameraX.EXTRA_OUTPUT_PATH_DIR);
         outPutCameraFileName = extras.getString(SimpleCameraX.EXTRA_CAMERA_FILE_NAME);
-        int recordVideoMaxSecond = extras.getInt(SimpleCameraX.EXTRA_RECORD_VIDEO_MAX_SECOND, DEFAULT_MAX_RECORD_VIDEO);
-        recordVideoMinSecond = extras.getInt(SimpleCameraX.EXTRA_RECORD_VIDEO_MIN_SECOND, DEFAULT_MIN_RECORD_VIDEO);
+        int recordVideoMaxSecond = extras.getInt(SimpleCameraX.EXTRA_RECORD_VIDEO_MAX_SECOND, CustomCameraConfig.DEFAULT_MAX_RECORD_VIDEO);
+        recordVideoMinSecond = extras.getInt(SimpleCameraX.EXTRA_RECORD_VIDEO_MIN_SECOND, CustomCameraConfig.DEFAULT_MIN_RECORD_VIDEO);
         imageFormat = extras.getString(SimpleCameraX.EXTRA_CAMERA_IMAGE_FORMAT, CameraUtils.JPEG);
         imageFormatForQ = extras.getString(SimpleCameraX.EXTRA_CAMERA_IMAGE_FORMAT_FOR_Q, CameraUtils.MIME_TYPE_IMAGE);
         videoFormat = extras.getString(SimpleCameraX.EXTRA_CAMERA_VIDEO_FORMAT, CameraUtils.MP4);

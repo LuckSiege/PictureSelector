@@ -154,7 +154,7 @@ public class SimpleCameraX {
      * @return
      */
     public SimpleCameraX setRecordVideoMaxSecond(int maxSecond) {
-        mCameraBundle.putInt(EXTRA_RECORD_VIDEO_MAX_SECOND, maxSecond * 1000);
+        mCameraBundle.putInt(EXTRA_RECORD_VIDEO_MAX_SECOND, (maxSecond + 1) * 1000);
         return this;
     }
 
@@ -165,7 +165,7 @@ public class SimpleCameraX {
      * @return
      */
     public SimpleCameraX setRecordVideoMinSecond(int minSecond) {
-        mCameraBundle.putInt(EXTRA_RECORD_VIDEO_MIN_SECOND, minSecond * 1000);
+        mCameraBundle.putInt(EXTRA_RECORD_VIDEO_MIN_SECOND, (minSecond + 1) * 1000);
         return this;
     }
 

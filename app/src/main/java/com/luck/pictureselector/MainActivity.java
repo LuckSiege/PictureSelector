@@ -678,7 +678,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 SimpleCameraX camera = SimpleCameraX.of();
                 camera.setCameraMode(cameraMode);
                 camera.setOutputPathDir(getSandboxCameraOutputPath());
-                camera.setRecordVideoMaxSecond(5);
                 camera.setImageEngine(new CameraImageEngine() {
                     @Override
                     public void loadImage(Context context, String url, ImageView imageView) {
@@ -1037,6 +1036,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 selectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
                 selectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_fa632d));
                 selectMainStyle.setSelectText(getString(R.string.ps_done_front_num));
+                selectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(),R.color.ps_color_white));
 
                 selectorStyle.setTitleBarStyle(whiteTitleBarStyle);
                 selectorStyle.setBottomBarStyle(whiteBottomNavBarStyle);
@@ -1060,7 +1060,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 numberBlueSelectMainStyle.setSelectNumberStyle(true);
                 numberBlueSelectMainStyle.setPreviewSelectNumberStyle(true);
                 numberBlueSelectMainStyle.setSelectBackground(R.drawable.picture_checkbox_num_selector);
-
+                numberBlueSelectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(),R.color.ps_color_white));
 
                 numberBlueSelectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
                 numberBlueSelectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));

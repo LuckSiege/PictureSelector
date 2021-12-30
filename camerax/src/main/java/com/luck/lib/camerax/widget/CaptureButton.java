@@ -150,7 +150,7 @@ public class CaptureButton extends View {
 
         state = STATE_IDLE;
         buttonState = CustomCameraConfig.BUTTON_STATE_BOTH;
-        maxDuration = 10 * 1000;
+        maxDuration = CustomCameraConfig.DEFAULT_MAX_RECORD_VIDEO;
         minDuration = CustomCameraConfig.DEFAULT_MIN_RECORD_VIDEO;
 
         center_X = (button_size + outside_add_size * 2) / 2;
