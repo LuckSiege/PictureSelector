@@ -611,12 +611,21 @@ public class PictureSelectionModel {
     }
 
     /**
-     * @param outPutCameraDir Camera out path
+     * @param outPutCameraDir Camera output path
      *                        <p>Audio mode setting is not supported</p>
      * @return
      */
     public PictureSelectionModel setOutputCameraDir(String outPutCameraDir) {
         selectionConfig.outPutCameraDir = outPutCameraDir;
+        return this;
+    }
+
+    /**
+     * @param outPutAudioDir Audio output path
+     * @return
+     */
+    public PictureSelectionModel setOutputAudioDir(String outPutAudioDir) {
+        selectionConfig.outPutAudioDir = outPutAudioDir;
         return this;
     }
 
@@ -641,6 +650,18 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel setOutputCameraVideoFileName(String fileName) {
         selectionConfig.outPutCameraVideoFileName = fileName;
+        return this;
+    }
+
+    /**
+     * Camera VIDEO custom local file name
+     * # Such as xxx.amr
+     *
+     * @param fileName
+     * @return
+     */
+    public PictureSelectionModel setOutputAudioFileName(String fileName) {
+        selectionConfig.outPutAudioFileName = fileName;
         return this;
     }
 

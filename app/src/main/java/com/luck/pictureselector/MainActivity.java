@@ -108,8 +108,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
             cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
             cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
-            cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox,cb_only_dir,
-            cb_preview_full, cb_preview_scale, cb_inject_layout,cb_time_axis;
+            cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox, cb_only_dir,
+            cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isUpward;
     private boolean needScaleBig = true;
@@ -261,8 +261,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setInjectLayoutResourceListener(getInjectLayoutResource())
                             .selectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
                             .setLanguage(language)
-                            .setOutputCameraDir(getSandboxOutputPath())
-                            .setQuerySandboxDir(getSandboxOutputPath())
+                            .setOutputCameraDir(chooseMode == SelectMimeType.ofAudio()
+                                    ? getSandboxAudioOutputPath() : getSandboxCameraOutputPath())
+                            .setOutputAudioDir(chooseMode == SelectMimeType.ofAudio()
+                                    ? getSandboxAudioOutputPath() : getSandboxCameraOutputPath())
+                            .setQuerySandboxDir(chooseMode == SelectMimeType.ofAudio()
+                                    ? getSandboxAudioOutputPath() : getSandboxCameraOutputPath())
                             .isDisplayTimeAxis(cb_time_axis.isChecked())
                             .isOnlyObtainSandboxDir(cb_only_dir.isChecked())
                             .isPageStrategy(cbPage.isChecked())
@@ -669,7 +673,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void openCamera(Fragment fragment, int cameraMode, int requestCode) {
             SimpleCameraX camera = SimpleCameraX.of();
             camera.setCameraMode(cameraMode);
-            camera.setOutputPathDir(getSandboxPath());
+            camera.setOutputPathDir(getSandboxCameraOutputPath());
             camera.setImageEngine(new CameraImageEngine() {
                 @Override
                 public void loadImage(Context context, String url, ImageView imageView) {
@@ -820,14 +824,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * 创建自定义输出目录
+     * 创建相机自定义输出目录
      *
      * @return
      */
-    private String getSandboxOutputPath() {
+    private String getSandboxCameraOutputPath() {
         if (cb_custom_sandbox.isChecked()) {
             File externalFilesDir = getContext().getExternalFilesDir("");
             File customFile = new File(externalFilesDir.getAbsolutePath(), "Sandbox");
+            if (!customFile.exists()) {
+                customFile.mkdirs();
+            }
+            return customFile.getAbsolutePath() + File.separator;
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * 创建音频自定义输出目录
+     *
+     * @return
+     */
+    private String getSandboxAudioOutputPath() {
+        if (cb_custom_sandbox.isChecked()) {
+            File externalFilesDir = getContext().getExternalFilesDir("");
+            File customFile = new File(externalFilesDir.getAbsolutePath(), "Sound");
             if (!customFile.exists()) {
                 customFile.mkdirs();
             }

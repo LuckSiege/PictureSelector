@@ -70,6 +70,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -791,6 +794,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 if (TextUtils.isEmpty(config.cameraPath)) {
                     return null;
                 }
+                if (config.chooseMode == SelectMimeType.ofAudio()) {
+                    copyOutputAudioToDir();
+                }
                 return buildLocalMedia();
             }
 
@@ -803,6 +809,35 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 }
             }
         });
+    }
+
+    /**
+     * copy录音文件至指定目录
+     */
+    private void copyOutputAudioToDir() {
+        try {
+            if (!TextUtils.isEmpty(config.outPutAudioDir) && PictureMimeType.isContent(config.cameraPath)) {
+                InputStream inputStream = PictureContentResolver.getContentResolverOpenInputStream(getContext(),
+                        Uri.parse(config.cameraPath));
+                String audioFileName;
+                if (TextUtils.isEmpty(config.outPutAudioFileName)) {
+                    audioFileName = "";
+                } else {
+                    audioFileName = config.isOnlyCamera
+                            ? config.outPutAudioFileName : System.currentTimeMillis() + "_" + config.outPutAudioFileName;
+                }
+                File outputFile = PictureFileUtils.createCameraFile(getContext(),
+                        config.chooseMode, audioFileName, "", config.outPutAudioDir);
+                FileOutputStream outputStream = new FileOutputStream(outputFile.getAbsolutePath());
+                boolean isCopyStatus = PictureFileUtils.writeFileFromIS(inputStream, outputStream);
+                if (isCopyStatus) {
+                    MediaUtils.deleteUri(getContext(), config.cameraPath);
+                    config.cameraPath = outputFile.getAbsolutePath();
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

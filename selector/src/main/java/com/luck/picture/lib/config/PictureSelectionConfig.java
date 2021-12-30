@@ -74,7 +74,9 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isCheckOriginalImage;
     public String outPutCameraImageFileName;
     public String outPutCameraVideoFileName;
+    public String outPutAudioFileName;
     public String outPutCameraDir;
+    public String outPutAudioDir;
     public String sandboxDir;
     public String originalPath;
     public String cameraPath;
@@ -156,7 +158,9 @@ public final class PictureSelectionConfig implements Parcelable {
         isCheckOriginalImage = in.readByte() != 0;
         outPutCameraImageFileName = in.readString();
         outPutCameraVideoFileName = in.readString();
+        outPutAudioFileName = in.readString();
         outPutCameraDir = in.readString();
+        outPutAudioDir = in.readString();
         sandboxDir = in.readString();
         originalPath = in.readString();
         cameraPath = in.readString();
@@ -225,7 +229,9 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isCheckOriginalImage ? 1 : 0));
         dest.writeString(outPutCameraImageFileName);
         dest.writeString(outPutCameraVideoFileName);
+        dest.writeString(outPutAudioFileName);
         dest.writeString(outPutCameraDir);
+        dest.writeString(outPutAudioDir);
         dest.writeString(sandboxDir);
         dest.writeString(originalPath);
         dest.writeString(cameraPath);
@@ -307,8 +313,10 @@ public final class PictureSelectionConfig implements Parcelable {
         cameraVideoFormatForQ = PictureMimeType.MIME_TYPE_VIDEO;
         outPutCameraImageFileName = "";
         outPutCameraVideoFileName = "";
+        outPutAudioFileName = "";
         queryOnlyList = new ArrayList<>();
         outPutCameraDir = "";
+        outPutAudioDir = "";
         sandboxDir = "";
         originalPath = "";
         cameraPath = "";

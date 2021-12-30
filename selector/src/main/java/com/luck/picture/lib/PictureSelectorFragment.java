@@ -800,7 +800,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
             ArrayList<LocalMedia> data = mAdapter.getData();
             if (data.size() > position && data.get(position).getDateAddedTime() > 0) {
                 tvCurrentDataTime.setText(DateUtils.getDataFormat(getContext(),
-                        data.get(position).getDateAddedTime() * 1000));
+                        data.get(position).getDateAddedTime()));
             }
         }
     }

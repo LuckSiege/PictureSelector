@@ -30,6 +30,7 @@ public class DateUtils {
 
 
     public static String getDataFormat(Context context,long time) {
+        time = String.valueOf(time).length() > 10 ? time : time * 1000;
         if (isThisWeek(time)) {
             return context.getString(R.string.ps_current_week);
         } else if (isThisMonth(time)) {

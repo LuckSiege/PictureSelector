@@ -117,18 +117,20 @@ public final class SandboxFileLoader {
                 long dateTime = f.lastModified() / 1000;
                 long duration;
                 int width, height;
-                int chooseModel;
                 if (PictureMimeType.isHasVideo(mimeType)) {
                     MediaExtraInfo videoSize = MediaUtils.getVideoSize(context, absolutePath);
                     width = videoSize.getWidth();
                     height = videoSize.getHeight();
                     duration = videoSize.getDuration();
-                    chooseModel = SelectMimeType.ofVideo();
+                } else if (PictureMimeType.isHasAudio(mimeType)) {
+                    MediaExtraInfo audioSize = MediaUtils.getAudioSize(context, absolutePath);
+                    width = audioSize.getWidth();
+                    height = audioSize.getHeight();
+                    duration = audioSize.getDuration();
                 } else {
                     MediaExtraInfo imageSize = MediaUtils.getImageSize(context, absolutePath);
                     width = imageSize.getWidth();
                     height = imageSize.getHeight();
-                    chooseModel = SelectMimeType.ofImage();
                     duration = 0L;
                 }
 
@@ -150,9 +152,8 @@ public final class SandboxFileLoader {
                         continue;
                     }
                 }
-
                 LocalMedia media = LocalMedia.parseLocalMedia(id, absolutePath, absolutePath, f.getName(),
-                        sandboxFile.getName(), duration, chooseModel, mimeType, width, height, size, bucketId, dateTime);
+                        sandboxFile.getName(), duration, config.chooseMode, mimeType, width, height, size, bucketId, dateTime);
                 media.setSandboxPath(SdkVersionUtils.isQ() ? absolutePath : null);
                 list.add(media);
             }
