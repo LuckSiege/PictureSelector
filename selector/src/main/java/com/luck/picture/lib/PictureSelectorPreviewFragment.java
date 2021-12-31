@@ -748,7 +748,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             mGalleryRecycle.setLayoutManager(layoutManager);
             mGalleryRecycle.addItemDecoration(new GridSpacingItemDecoration(Integer.MAX_VALUE,
                     DensityUtil.dip2px(getContext(), 6), true));
-            mGalleryAdapter = new PreviewGalleryAdapter(SelectedManager.getSelectedResult());
+            mGalleryAdapter = new PreviewGalleryAdapter(isBottomPreview,SelectedManager.getSelectedResult());
             notifyGallerySelectMedia(mData.get(curPosition));
             mGalleryRecycle.setAdapter(mGalleryAdapter);
             mGalleryAdapter.setItemClickListener(new PreviewGalleryAdapter.OnItemClickListener() {
@@ -938,10 +938,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 if (config.selectionMode == SelectModeConfig.SINGLE) {
                     mGalleryAdapter.clear();
                 }
-                mGalleryAdapter.addGalleryData(isBottomPreview, currentMedia);
+                mGalleryAdapter.addGalleryData(currentMedia);
             } else {
-                mGalleryAdapter.removeGalleryData(isBottomPreview && totalNum > 1, currentMedia);
-                if (mGalleryAdapter.getItemCount() == 0) {
+                mGalleryAdapter.removeGalleryData(currentMedia);
+                if (SelectedManager.getCount() == 0) {
                     mGalleryRecycle.setVisibility(View.INVISIBLE);
                 }
             }

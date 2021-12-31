@@ -31,9 +31,15 @@ import java.util.List;
  */
 public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAdapter.ViewHolder> {
     private final List<LocalMedia> mData;
+    private final boolean isBottomPreview;
 
-    public PreviewGalleryAdapter(List<LocalMedia> list) {
+    public PreviewGalleryAdapter(boolean isBottomPreview, List<LocalMedia> list) {
+        this.isBottomPreview = isBottomPreview;
         this.mData = new ArrayList<>(list);
+        for (int i = 0; i < this.mData.size(); i++) {
+            LocalMedia media = mData.get(i);
+            media.setGalleryEnabledMask(false);
+        }
     }
 
     @NonNull
@@ -57,7 +63,7 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
      *
      * @param currentMedia
      */
-    public void addGalleryData(boolean isBottomPreview, LocalMedia currentMedia) {
+    public void addGalleryData(LocalMedia currentMedia) {
         int lastCheckPosition = getLastCheckPosition();
         if (lastCheckPosition != RecyclerView.NO_POSITION) {
             LocalMedia lastSelectedMedia = mData.get(lastCheckPosition);
@@ -67,7 +73,7 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
         if (isBottomPreview && mData.contains(currentMedia)) {
             int currentPosition = getCurrentPosition(currentMedia);
             LocalMedia media = mData.get(currentPosition);
-            media.setMaxSelectEnabledMask(false);
+            media.setGalleryEnabledMask(false);
             media.setChecked(true);
             notifyItemChanged(currentPosition);
         } else {
@@ -82,12 +88,12 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
      *
      * @param currentMedia
      */
-    public void removeGalleryData(boolean isBottomPreview, LocalMedia currentMedia) {
+    public void removeGalleryData(LocalMedia currentMedia) {
         int currentPosition = getCurrentPosition(currentMedia);
         if (currentPosition != RecyclerView.NO_POSITION) {
             if (isBottomPreview) {
                 LocalMedia media = mData.get(currentPosition);
-                media.setMaxSelectEnabledMask(true);
+                media.setGalleryEnabledMask(true);
                 notifyItemChanged(currentPosition);
             } else {
                 mData.remove(currentPosition);
@@ -153,9 +159,9 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         LocalMedia item = mData.get(position);
         ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                ContextCompat.getColor(holder.itemView.getContext(), item.isMaxSelectEnabledMask()
+                ContextCompat.getColor(holder.itemView.getContext(), item.isGalleryEnabledMask()
                         ? R.color.ps_color_half_white : R.color.ps_color_transparent), BlendModeCompat.SRC_ATOP);
-        if (item.isChecked() && item.isMaxSelectEnabledMask()) {
+        if (item.isChecked() && item.isGalleryEnabledMask()) {
             holder.viewBorder.setVisibility(View.VISIBLE);
         } else {
             holder.viewBorder.setVisibility(item.isChecked() ? View.VISIBLE : View.GONE);

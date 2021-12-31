@@ -256,6 +256,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (config.selectionMode == SelectModeConfig.SINGLE && config.isDirectReturnSingle) {
             PictureSelectionConfig.selectorStyle.getTitleBarStyle().setHideCancelButton(false);
             titleBar.getTitleCancelView().setVisibility(View.VISIBLE);
+            completeSelectView.setVisibility(View.GONE);
         } else {
             completeSelectView.setCompleteSelectViewStyle();
             completeSelectView.setSelectedChange(false);

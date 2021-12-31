@@ -166,12 +166,16 @@ public class LocalMedia implements Parcelable {
     private boolean isMaxSelectEnabledMask;
 
     /**
+     * isGalleryEnabledMask
+     * # For internal use only
+     */
+    private boolean isGalleryEnabledMask;
+
+    /**
      * Whether the image has been edited
      * # For internal use only
      */
     private boolean isEditorImage;
-
-
 
     public LocalMedia() {
 
@@ -209,8 +213,8 @@ public class LocalMedia implements Parcelable {
         dateAddedTime = in.readLong();
         customData = in.readString();
         isMaxSelectEnabledMask = in.readByte() != 0;
+        isGalleryEnabledMask = in.readByte() != 0;
         isEditorImage = in.readByte() != 0;
-        compareLocalMedia = in.readParcelable(LocalMedia.class.getClassLoader());
     }
 
     @Override
@@ -245,8 +249,8 @@ public class LocalMedia implements Parcelable {
         dest.writeLong(dateAddedTime);
         dest.writeString(customData);
         dest.writeByte((byte) (isMaxSelectEnabledMask ? 1 : 0));
+        dest.writeByte((byte) (isGalleryEnabledMask ? 1 : 0));
         dest.writeByte((byte) (isEditorImage ? 1 : 0));
-        dest.writeParcelable(compareLocalMedia, flags);
     }
 
     @Override
@@ -617,5 +621,13 @@ public class LocalMedia implements Parcelable {
 
     public boolean isToSandboxPath(){
         return !TextUtils.isEmpty(getSandboxPath());
+    }
+
+    public boolean isGalleryEnabledMask() {
+        return isGalleryEnabledMask;
+    }
+
+    public void setGalleryEnabledMask(boolean galleryEnabledMask) {
+        isGalleryEnabledMask = galleryEnabledMask;
     }
 }
