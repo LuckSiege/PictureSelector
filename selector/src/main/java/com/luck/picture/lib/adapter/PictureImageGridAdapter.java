@@ -113,36 +113,19 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
      * @return
      */
     private int getItemResourceId(int viewType) {
+        int layoutResourceId;
         switch (viewType) {
             case ADAPTER_TYPE_CAMERA:
                 return R.layout.ps_item_grid_camera;
             case ADAPTER_TYPE_VIDEO:
-                if (PictureSelectionConfig.layoutResourceListener != null) {
-                    int layoutResourceId = PictureSelectionConfig.layoutResourceListener
-                            .getLayoutResourceId(mContext, ResourceSource.MAIN_ADAPTER_ITEM_VIDEO_LAYOUT_RESOURCE);
-                    if (layoutResourceId != 0) {
-                        return layoutResourceId;
-                    }
-                }
-                return R.layout.ps_item_grid_video;
+                layoutResourceId = ResourceSource.getLayoutResource(mContext, ResourceSource.MAIN_ITEM_VIDEO_LAYOUT_RESOURCE);
+                return layoutResourceId != 0 ? layoutResourceId : R.layout.ps_item_grid_video;
             case ADAPTER_TYPE_AUDIO:
-                if (PictureSelectionConfig.layoutResourceListener != null) {
-                    int layoutResourceId = PictureSelectionConfig.layoutResourceListener
-                            .getLayoutResourceId(mContext, ResourceSource.MAIN_ADAPTER_ITEM_AUDIO_LAYOUT_RESOURCE);
-                    if (layoutResourceId != 0) {
-                        return layoutResourceId;
-                    }
-                }
-                return R.layout.ps_item_grid_audio;
+                layoutResourceId = ResourceSource.getLayoutResource(mContext, ResourceSource.MAIN_ITEM_AUDIO_LAYOUT_RESOURCE);
+                return layoutResourceId != 0 ? layoutResourceId : R.layout.ps_item_grid_audio;
             default:
-                if (PictureSelectionConfig.layoutResourceListener != null) {
-                    int layoutResourceId = PictureSelectionConfig.layoutResourceListener
-                            .getLayoutResourceId(mContext, ResourceSource.MAIN_ADAPTER_ITEM_IMAGE_LAYOUT_RESOURCE);
-                    if (layoutResourceId != 0) {
-                        return layoutResourceId;
-                    }
-                }
-                return R.layout.ps_item_grid_image;
+                layoutResourceId = ResourceSource.getLayoutResource(mContext, ResourceSource.MAIN_ITEM_IMAGE_LAYOUT_RESOURCE);
+                return layoutResourceId != 0 ? layoutResourceId : R.layout.ps_item_grid_image;
         }
     }
 

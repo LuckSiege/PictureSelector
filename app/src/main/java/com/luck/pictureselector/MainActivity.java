@@ -593,18 +593,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return R.layout.ps_custom_fragment_selector;
                 case ResourceSource.PREVIEW_LAYOUT_RESOURCE:
                     return R.layout.ps_custom_fragment_preview;
-                case ResourceSource.MAIN_ADAPTER_ITEM_IMAGE_LAYOUT_RESOURCE:
+                case ResourceSource.MAIN_ITEM_IMAGE_LAYOUT_RESOURCE:
                     return R.layout.ps_custom_item_grid_image;
-                case ResourceSource.MAIN_ADAPTER_ITEM_VIDEO_LAYOUT_RESOURCE:
+                case ResourceSource.MAIN_ITEM_VIDEO_LAYOUT_RESOURCE:
                     return R.layout.ps_custom_item_grid_video;
-                case ResourceSource.MAIN_ADAPTER_ITEM_AUDIO_LAYOUT_RESOURCE:
+                case ResourceSource.MAIN_ITEM_AUDIO_LAYOUT_RESOURCE:
                     return R.layout.ps_custom_item_grid_audio;
-                case ResourceSource.ALBUM_ADAPTER_ITEM_LAYOUT_RESOURCE:
+                case ResourceSource.ALBUM_ITEM_LAYOUT_RESOURCE:
                     return R.layout.ps_custom_album_folder_item;
-                case ResourceSource.PREVIEW_ADAPTER_ITEM_IMAGE_LAYOUT_RESOURCE:
+                case ResourceSource.PREVIEW_ITEM_IMAGE_LAYOUT_RESOURCE:
                     return R.layout.ps_custom_preview_image;
-                case ResourceSource.PREVIEW_ADAPTER_ITEM_VIDEO_LAYOUT_RESOURCE:
+                case ResourceSource.PREVIEW_ITEM_VIDEO_LAYOUT_RESOURCE:
                     return R.layout.ps_custom_preview_video;
+                case ResourceSource.PREVIEW_GALLERY_ITEM_LAYOUT_RESOURCE:
+                    return R.layout.ps_custom_preview_gallery_item;
                 default:
                     return 0;
             }
@@ -1052,7 +1054,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 selectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
                 selectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_fa632d));
                 selectMainStyle.setSelectText(getString(R.string.ps_done_front_num));
-                selectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(),R.color.ps_color_white));
+                selectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
 
                 selectorStyle.setTitleBarStyle(whiteTitleBarStyle);
                 selectorStyle.setBottomBarStyle(whiteBottomNavBarStyle);
@@ -1076,7 +1078,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 numberBlueSelectMainStyle.setSelectNumberStyle(true);
                 numberBlueSelectMainStyle.setPreviewSelectNumberStyle(true);
                 numberBlueSelectMainStyle.setSelectBackground(R.drawable.picture_checkbox_num_selector);
-                numberBlueSelectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(),R.color.ps_color_white));
+                numberBlueSelectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
 
                 numberBlueSelectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
                 numberBlueSelectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));

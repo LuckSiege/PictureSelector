@@ -1,11 +1,14 @@
 package com.luck.picture.lib.config;
 
+import android.content.Context;
+
 import com.luck.picture.lib.PictureSelectorFragment;
 import com.luck.picture.lib.PictureSelectorPreviewFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.PictureAlbumAdapter;
 import com.luck.picture.lib.adapter.PictureImageGridAdapter;
 import com.luck.picture.lib.adapter.PicturePreviewAdapter;
+import com.luck.picture.lib.adapter.holder.PreviewGalleryAdapter;
 
 /**
  * @author：luck
@@ -27,33 +30,54 @@ public final class ResourceSource {
      * {@link PictureImageGridAdapter}  image adapter item layout
      * {@link R.layout.ps_item_grid_image}
      */
-    public static final int MAIN_ADAPTER_ITEM_IMAGE_LAYOUT_RESOURCE = 3;
+    public static final int MAIN_ITEM_IMAGE_LAYOUT_RESOURCE = 3;
     /**
      * {@link PictureImageGridAdapter}  video adapter item layout
      * {@link R.layout.ps_item_grid_video}
      */
-    public static final int MAIN_ADAPTER_ITEM_VIDEO_LAYOUT_RESOURCE = 4;
+    public static final int MAIN_ITEM_VIDEO_LAYOUT_RESOURCE = 4;
     /**
      * {@link PictureImageGridAdapter}  audio adapter item layout
      * {@link R.layout.ps_item_grid_audio}
      */
-    public static final int MAIN_ADAPTER_ITEM_AUDIO_LAYOUT_RESOURCE = 5;
+    public static final int MAIN_ITEM_AUDIO_LAYOUT_RESOURCE = 5;
 
     /**
      * {@link PictureAlbumAdapter} adapter item layout
      * {@link R.layout.ps_album_folder_item}
      */
-    public static final int ALBUM_ADAPTER_ITEM_LAYOUT_RESOURCE = 6;
+    public static final int ALBUM_ITEM_LAYOUT_RESOURCE = 6;
 
     /**
      * {@link PicturePreviewAdapter} preview adapter item layout
      * {@link R.layout.ps_preview_image}
      */
-    public static final int PREVIEW_ADAPTER_ITEM_IMAGE_LAYOUT_RESOURCE = 7;
+    public static final int PREVIEW_ITEM_IMAGE_LAYOUT_RESOURCE = 7;
 
     /**
      * {@link PicturePreviewAdapter} preview adapter item layout
      * {@link R.layout.ps_preview_video}
      */
-    public static final int PREVIEW_ADAPTER_ITEM_VIDEO_LAYOUT_RESOURCE = 8;
+    public static final int PREVIEW_ITEM_VIDEO_LAYOUT_RESOURCE = 8;
+
+    /**
+     * {@link PreviewGalleryAdapter} preview gallery adapter item layout
+     * {@link R.layout.ps_preview_gallery_item}
+     */
+    public static final int PREVIEW_GALLERY_ITEM_LAYOUT_RESOURCE = 9;
+
+    /**
+     * getLayoutResource
+     *
+     * @param context
+     * @param resourceSource {@link ResourceSource}
+     * @return
+     */
+    public static int getLayoutResource(Context context, int resourceSource) {
+        if (PictureSelectionConfig.layoutResourceListener != null) {
+            return PictureSelectionConfig.layoutResourceListener
+                    .getLayoutResourceId(context, resourceSource);
+        }
+        return 0;
+    }
 }

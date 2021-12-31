@@ -119,12 +119,9 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public int getResourceId() {
-        if (PictureSelectionConfig.layoutResourceListener != null) {
-            int layoutResourceId = PictureSelectionConfig.layoutResourceListener
-                    .getLayoutResourceId(getContext(), ResourceSource.MAIN_SELECTOR_LAYOUT_RESOURCE);
-            if (layoutResourceId != 0) {
-                return layoutResourceId;
-            }
+        int layoutResourceId = ResourceSource.getLayoutResource(getContext(), ResourceSource.MAIN_SELECTOR_LAYOUT_RESOURCE);
+        if (layoutResourceId != 0) {
+            return layoutResourceId;
         }
         return R.layout.ps_fragment_selector;
     }

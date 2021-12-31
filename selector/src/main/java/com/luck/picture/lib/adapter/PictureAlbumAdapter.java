@@ -43,11 +43,7 @@ public class PictureAlbumAdapter extends RecyclerView.Adapter<PictureAlbumAdapte
 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        int layoutResourceId = 0;
-        if (PictureSelectionConfig.layoutResourceListener != null) {
-            layoutResourceId = PictureSelectionConfig.layoutResourceListener.getLayoutResourceId(parent.getContext(),
-                    ResourceSource.ALBUM_ADAPTER_ITEM_LAYOUT_RESOURCE);
-        }
+        int layoutResourceId = ResourceSource.getLayoutResource(parent.getContext(), ResourceSource.ALBUM_ITEM_LAYOUT_RESOURCE);
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(layoutResourceId != 0 ? layoutResourceId : R.layout.ps_album_folder_item, parent, false);
         return new ViewHolder(itemView);
