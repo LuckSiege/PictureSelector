@@ -596,7 +596,7 @@ public class LocalMedia implements Parcelable {
     }
 
     public boolean isEditorImage() {
-        return isEditorImage;
+        return isEditorImage && !TextUtils.isEmpty(getCutPath());
     }
 
     public void setEditorImage(boolean editorImage) {

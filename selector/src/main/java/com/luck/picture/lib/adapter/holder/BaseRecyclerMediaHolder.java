@@ -121,15 +121,6 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
      */
     public void bindData(LocalMedia media, int position) {
         media.position = getAbsoluteAdapterPosition();
-        String path = media.getPath();
-        if (media.isEditorImage() && media.isCut()) {
-            path = media.getCutPath();
-        }
-        if (PictureMimeType.isHasAudio(media.getMimeType())) {
-            ivPicture.setImageResource(R.drawable.ps_trans_1px);
-        } else if (PictureSelectionConfig.imageEngine != null) {
-            PictureSelectionConfig.imageEngine.loadGridImage(ivPicture.getContext(), path, ivPicture);
-        }
 
         selectedMedia(isSelected(media));
 
@@ -139,6 +130,16 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
 
         if (config.isMaxSelectEnabledMask && config.selectionMode == SelectModeConfig.MULTIPLE) {
             dispatchHandleMask(media);
+        }
+
+        String path = media.getPath();
+        if (media.isEditorImage()) {
+            path = media.getCutPath();
+        }
+        if (PictureMimeType.isHasAudio(media.getMimeType())) {
+            ivPicture.setImageResource(R.drawable.ps_trans_1px);
+        } else if (PictureSelectionConfig.imageEngine != null) {
+            PictureSelectionConfig.imageEngine.loadGridImage(ivPicture.getContext(), path, ivPicture);
         }
 
         tvCheck.setOnClickListener(new View.OnClickListener() {
