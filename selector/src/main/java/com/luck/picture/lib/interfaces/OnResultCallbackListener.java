@@ -1,6 +1,6 @@
 package com.luck.picture.lib.interfaces;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author：luck
@@ -13,7 +13,7 @@ public interface OnResultCallbackListener<T> {
      *
      * @param result
      */
-    void onResult(List<T> result);
+    void onResult(ArrayList<T> result);
 
     /**
      * Cancel

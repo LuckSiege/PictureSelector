@@ -13,7 +13,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author：luck
@@ -107,7 +107,7 @@ public class PictureSelectorEngineImp implements PictureSelectorEngine {
     public OnResultCallbackListener<LocalMedia> getResultCallbackListener() {
         return new OnResultCallbackListener<LocalMedia>() {
             @Override
-            public void onResult(List<LocalMedia> result) {
+            public void onResult(ArrayList<LocalMedia> result) {
                 // TODO 这种情况是内存极度不足的情况下，比如开启开发者选项中的不保留活动或后台进程限制，导致OnResultCallbackListener被回收
                 // 可以在这里进行一些补救措施，通过广播或其他方式将结果推送到相应页面，防止结果丢失的情况
                 Log.i(TAG, "onResult:" + result.size());

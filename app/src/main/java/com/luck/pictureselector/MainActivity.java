@@ -18,6 +18,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -124,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int animationMode = AnimationType.DEFAULT_ANIMATION;
     private PictureSelectorStyle selectorStyle;
     private final List<LocalMedia> mData = new ArrayList<>();
+    private ActivityResultLauncher<Intent> launcherResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,6 +190,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_crop_circular.setOnCheckedChangeListener(this);
         cb_compress.setOnCheckedChangeListener(this);
         tv_select_num.setText(ValueOf.toString(maxSelectNum));
+
+        // 注册需要写在onCreate或Fragment onAttach里，否则会报java.lang.IllegalStateException异常
+        launcherResult = createActivityResultLauncher();
 
 //        List<LocalMedia> list = new ArrayList<>();
 //        list.add(LocalMedia.generateLocalMedia("https://wx1.sinaimg.cn/mw690/006e0i7xly1gaxqq5m7t8j31311g2ao6.jpg", PictureMimeType.ofJPEG()));
@@ -292,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setRecyclerAnimationMode(animationMode)
                             .isGif(cb_isGif.isChecked())
                             .selectedData(mAdapter.getData())
-                            .forResult(new MeOnResultCallbackListener());
+                            .forResult(launcherResult);
                 } else {
                     // 单独拍照
                     PictureSelector.create(MainActivity.this)
@@ -488,36 +496,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private class MeOnResultCallbackListener implements OnResultCallbackListener<LocalMedia> {
         @Override
-        public void onResult(List<LocalMedia> result) {
-            for (LocalMedia media : result) {
-                if (media.getWidth() == 0 || media.getHeight() == 0) {
-                    if (PictureMimeType.isHasImage(media.getMimeType())) {
-                        MediaExtraInfo imageExtraInfo = MediaUtils.getImageSize(media.getPath());
-                        media.setWidth(imageExtraInfo.getWidth());
-                        media.setHeight(imageExtraInfo.getHeight());
-                    } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
-                        MediaExtraInfo videoExtraInfo = MediaUtils.getVideoSize(PictureAppMaster.getInstance().getAppContext(), media.getPath());
-                        media.setWidth(videoExtraInfo.getWidth());
-                        media.setHeight(videoExtraInfo.getHeight());
-                    }
-                }
-                Log.i(TAG, "文件名: " + media.getFileName());
-                Log.i(TAG, "是否压缩:" + media.isCompressed());
-                Log.i(TAG, "压缩:" + media.getCompressPath());
-                Log.i(TAG, "原图:" + media.getPath());
-                Log.i(TAG, "绝对路径:" + media.getRealPath());
-                Log.i(TAG, "是否裁剪:" + media.isCut());
-                Log.i(TAG, "裁剪:" + media.getCutPath());
-                Log.i(TAG, "是否开启原图:" + media.isOriginal());
-                Log.i(TAG, "原图路径:" + media.getOriginalPath());
-                Log.i(TAG, "沙盒路径:" + media.getSandboxPath());
-                Log.i(TAG, "原始宽高: " + media.getWidth() + "x" + media.getHeight());
-                Log.i(TAG, "裁剪宽高: " + media.getCropImageWidth() + "x" + media.getCropImageHeight());
-                Log.i(TAG, "文件大小: " + media.getSize());
-            }
-            mAdapter.getData().clear();
-            mAdapter.getData().addAll(result);
-            mAdapter.notifyItemRangeChanged(0, mAdapter.getData().size());
+        public void onResult(ArrayList<LocalMedia> result) {
+            analyticalSelectResults(result);
         }
 
         @Override
@@ -765,6 +745,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         options.setCircleDimmedLayer(cb_crop_circular.isChecked());
         options.withAspectRatio(aspect_ratio_x, aspect_ratio_y);
         options.setCropOutputPathDir(getSandboxPath());
+        options.isCropDragSmoothToCenter(false);
         options.isForbidSkipMultipleCrop(false);
         options.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
         options.setToolbarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
@@ -1202,39 +1183,70 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (resultCode == RESULT_OK) {
             if (requestCode == PictureConfig.CHOOSE_REQUEST) {
                 ArrayList<LocalMedia> result = PictureSelector.obtainSelectorList(data);
-                for (LocalMedia media : result) {
-                    if (media.getWidth() == 0 || media.getHeight() == 0) {
-                        if (PictureMimeType.isHasImage(media.getMimeType())) {
-                            MediaExtraInfo imageExtraInfo = MediaUtils.getImageSize(media.getPath());
-                            media.setWidth(imageExtraInfo.getWidth());
-                            media.setHeight(imageExtraInfo.getHeight());
-                        } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
-                            MediaExtraInfo videoExtraInfo = MediaUtils.getVideoSize(PictureAppMaster.getInstance().getAppContext(), media.getPath());
-                            media.setWidth(videoExtraInfo.getWidth());
-                            media.setHeight(videoExtraInfo.getHeight());
-                        }
-                    }
-                    Log.i(TAG, "文件名: " + media.getFileName());
-                    Log.i(TAG, "是否压缩:" + media.isCompressed());
-                    Log.i(TAG, "压缩:" + media.getCompressPath());
-                    Log.i(TAG, "原图:" + media.getPath());
-                    Log.i(TAG, "绝对路径:" + media.getRealPath());
-                    Log.i(TAG, "是否裁剪:" + media.isCut());
-                    Log.i(TAG, "裁剪:" + media.getCutPath());
-                    Log.i(TAG, "是否开启原图:" + media.isOriginal());
-                    Log.i(TAG, "原图路径:" + media.getOriginalPath());
-                    Log.i(TAG, "沙盒路径:" + media.getSandboxPath());
-                    Log.i(TAG, "原始宽高: " + media.getWidth() + "x" + media.getHeight());
-                    Log.i(TAG, "裁剪宽高: " + media.getCropImageWidth() + "x" + media.getCropImageHeight());
-                    Log.i(TAG, "文件大小: " + media.getSize());
-                }
-                mAdapter.getData().clear();
-                mAdapter.getData().addAll(result);
-                mAdapter.notifyItemRangeChanged(0, mAdapter.getData().size());
+                analyticalSelectResults(result);
             }
         } else if (resultCode == RESULT_CANCELED) {
             Log.i(TAG, "onActivityResult PictureSelector Cancel");
         }
+    }
+
+    /**
+     * 处理选择结果
+     *
+     * @param result
+     */
+    private void analyticalSelectResults(ArrayList<LocalMedia> result) {
+        for (LocalMedia media : result) {
+            if (media.getWidth() == 0 || media.getHeight() == 0) {
+                if (PictureMimeType.isHasImage(media.getMimeType())) {
+                    MediaExtraInfo imageExtraInfo = MediaUtils.getImageSize(media.getPath());
+                    media.setWidth(imageExtraInfo.getWidth());
+                    media.setHeight(imageExtraInfo.getHeight());
+                } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                    MediaExtraInfo videoExtraInfo = MediaUtils.getVideoSize(PictureAppMaster.getInstance().getAppContext(), media.getPath());
+                    media.setWidth(videoExtraInfo.getWidth());
+                    media.setHeight(videoExtraInfo.getHeight());
+                }
+            }
+            Log.i(TAG, "文件名: " + media.getFileName());
+            Log.i(TAG, "是否压缩:" + media.isCompressed());
+            Log.i(TAG, "压缩:" + media.getCompressPath());
+            Log.i(TAG, "原图:" + media.getPath());
+            Log.i(TAG, "绝对路径:" + media.getRealPath());
+            Log.i(TAG, "是否裁剪:" + media.isCut());
+            Log.i(TAG, "裁剪:" + media.getCutPath());
+            Log.i(TAG, "是否开启原图:" + media.isOriginal());
+            Log.i(TAG, "原图路径:" + media.getOriginalPath());
+            Log.i(TAG, "沙盒路径:" + media.getSandboxPath());
+            Log.i(TAG, "原始宽高: " + media.getWidth() + "x" + media.getHeight());
+            Log.i(TAG, "裁剪宽高: " + media.getCropImageWidth() + "x" + media.getCropImageHeight());
+            Log.i(TAG, "文件大小: " + media.getSize());
+        }
+        mAdapter.getData().clear();
+        mAdapter.getData().addAll(result);
+        mAdapter.notifyItemRangeChanged(0, mAdapter.getData().size());
+    }
+
+
+    /**
+     * 创建一个ActivityResultLauncher
+     *
+     * @return
+     */
+    private ActivityResultLauncher<Intent> createActivityResultLauncher() {
+        return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        int resultCode = result.getResultCode();
+                        if (resultCode == RESULT_OK) {
+                            ArrayList<LocalMedia> selectList = PictureSelector.obtainSelectorList(result.getData());
+                            analyticalSelectResults(selectList);
+                        } else if (resultCode == RESULT_CANCELED) {
+                            Log.i(TAG, "onActivityResult PictureSelector Cancel");
+                        }
+                    }
+                });
     }
 
     @Override

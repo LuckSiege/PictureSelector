@@ -3,6 +3,9 @@ package com.luck.picture.lib.basic;
 import android.app.Activity;
 import android.content.Intent;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -917,7 +920,7 @@ public class PictureSelectionModel {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
             if (activity == null) {
-                throw new NullPointerException("getActivity is null");
+                throw new NullPointerException("Activity cannot be null");
             }
             if (PictureSelectionConfig.imageEngine == null) {
                 throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
@@ -932,7 +935,7 @@ public class PictureSelectionModel {
                 fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
             }
             if (fragmentManager == null) {
-                throw new NullPointerException(" FragmentManager is empty ");
+                throw new NullPointerException("FragmentManager cannot be null");
             }
             if (ActivityCompatHelper.checkFragmentNonExits((FragmentActivity) activity, PictureSelectorPreviewFragment.TAG)) {
                 PictureSelectorPreviewFragment fragment = PictureSelectorPreviewFragment.newInstance();
@@ -954,7 +957,7 @@ public class PictureSelectionModel {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
             if (activity == null) {
-                throw new NullPointerException("getActivity is null");
+                throw new NullPointerException("Activity cannot be null");
             }
             if (PictureSelectionConfig.imageEngine == null) {
                 throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
@@ -982,10 +985,10 @@ public class PictureSelectionModel {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
             if (activity == null) {
-                throw new NullPointerException("getActivity is null");
+                throw new NullPointerException("Activity cannot be null");
             }
             if (call == null) {
-                throw new NullPointerException("OnResultCallbackListener is null");
+                throw new NullPointerException("OnResultCallbackListener cannot be null");
             }
             // 绑定回调监听
             selectionConfig.isResultBack = true;
@@ -999,7 +1002,7 @@ public class PictureSelectionModel {
                     fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
                 }
                 if (fragmentManager == null) {
-                    throw new NullPointerException(" FragmentManager is empty ");
+                    throw new NullPointerException("FragmentManager cannot be null");
                 }
                 if (ActivityCompatHelper.checkFragmentNonExits((FragmentActivity) activity, PictureOnlyCameraFragment.TAG)) {
                     FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
@@ -1027,7 +1030,7 @@ public class PictureSelectionModel {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
             if (activity == null) {
-                throw new NullPointerException("getActivity is null");
+                throw new NullPointerException("Activity cannot be null");
             }
             selectionConfig.isResultBack = false;
             selectionConfig.isActivityResultBack = true;
@@ -1039,7 +1042,7 @@ public class PictureSelectionModel {
                     fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
                 }
                 if (fragmentManager == null) {
-                    throw new NullPointerException(" FragmentManager is empty ");
+                    throw new NullPointerException("FragmentManager cannot be null");
                 }
                 if (ActivityCompatHelper.checkFragmentNonExits((FragmentActivity) activity, PictureOnlyCameraFragment.TAG)) {
                     FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
@@ -1051,6 +1054,49 @@ public class PictureSelectionModel {
                 }
                 Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
                 activity.startActivityForResult(intent, requestCode);
+                PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
+                activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
+            }
+        }
+    }
+
+
+    /**
+     * ActivityResultLauncher PictureSelector
+     *
+     * @param launcher use {@link Activity.registerForActivityResult(ActivityResultContract, ActivityResultCallback)}
+     */
+    public void forResult(ActivityResultLauncher<Intent> launcher) {
+        if (!DoubleUtils.isFastDoubleClick()) {
+            Activity activity = selector.getActivity();
+            if (activity == null) {
+                throw new NullPointerException("Activity cannot be null");
+            }
+            if (launcher == null) {
+                throw new NullPointerException("ActivityResultLauncher cannot be null");
+            }
+            selectionConfig.isResultBack = false;
+            selectionConfig.isActivityResultBack = true;
+            if (selectionConfig.isOnlyCamera) {
+                FragmentManager fragmentManager = null;
+                if (activity instanceof AppCompatActivity) {
+                    fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
+                } else if (activity instanceof FragmentActivity) {
+                    fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
+                }
+                if (fragmentManager == null) {
+                    throw new NullPointerException("FragmentManager cannot be null");
+                }
+                if (ActivityCompatHelper.checkFragmentNonExits((FragmentActivity) activity, PictureOnlyCameraFragment.TAG)) {
+                    FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
+                            PictureOnlyCameraFragment.TAG, PictureOnlyCameraFragment.newInstance());
+                }
+            } else {
+                if (PictureSelectionConfig.imageEngine == null) {
+                    throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
+                }
+                Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
+                launcher.launch(intent);
                 PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
                 activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
             }

@@ -235,8 +235,8 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     }
 
     private void setupViews(@NonNull Intent intent) {
-        isForbidCropGifWebp = intent.getBooleanExtra(UCrop.Options.EXTRA_FORBID_CROP_GIF_WEBP, false);
-        isForbidSkipCrop = intent.getBooleanExtra(UCrop.Options.EXTRA_FORBID_SKIP_CROP, false);
+        isForbidCropGifWebp = intent.getBooleanExtra(UCrop.Options.EXTRA_CROP_FORBID_GIF_WEBP, false);
+        isForbidSkipCrop = intent.getBooleanExtra(UCrop.Options.EXTRA_CROP_FORBID_SKIP, false);
         outputCropFileName = intent.getStringExtra(UCrop.Options.EXTRA_CROP_OUTPUT_FILE_NAME);
         mStatusBarColor = intent.getIntExtra(UCrop.Options.EXTRA_STATUS_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_statusbar));
         mToolbarColor = intent.getIntExtra(UCrop.Options.EXTRA_TOOL_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_toolbar));

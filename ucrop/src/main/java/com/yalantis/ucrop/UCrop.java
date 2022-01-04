@@ -332,10 +332,11 @@ public class UCrop {
 
         public static final String EXTRA_CROP_OUTPUT_FILE_NAME = EXTRA_PREFIX + ".CropOutputFileName";
 
-        public static final String EXTRA_FORBID_CROP_GIF_WEBP = EXTRA_PREFIX + ".ForbidCropGifWebp";
+        public static final String EXTRA_CROP_FORBID_GIF_WEBP = EXTRA_PREFIX + ".ForbidCropGifWebp";
 
-        public static final String EXTRA_FORBID_SKIP_CROP = EXTRA_PREFIX + ".ForbidSkipCrop";
+        public static final String EXTRA_CROP_FORBID_SKIP = EXTRA_PREFIX + ".ForbidSkipCrop";
 
+        public static final String EXTRA_CROP_DRAG_CENTER = EXTRA_PREFIX + ".DragSmoothToCenter";
 
         public static final String EXTRA_ALLOWED_GESTURES = EXTRA_PREFIX + ".AllowedGestures";
 
@@ -344,6 +345,7 @@ public class UCrop {
         public static final String EXTRA_IMAGE_TO_CROP_BOUNDS_ANIM_DURATION = EXTRA_PREFIX + ".ImageToCropBoundsAnimDuration";
 
         public static final String EXTRA_DIMMED_LAYER_COLOR = EXTRA_PREFIX + ".DimmedLayerColor";
+        public static final String EXTRA_CIRCLE_STROKE_COLOR = EXTRA_PREFIX + ".CircleStrokeColor";
         public static final String EXTRA_CIRCLE_DIMMED_LAYER = EXTRA_PREFIX + ".CircleDimmedLayer";
 
         public static final String EXTRA_SHOW_CROP_FRAME = EXTRA_PREFIX + ".ShowCropFrame";
@@ -356,7 +358,7 @@ public class UCrop {
         public static final String EXTRA_CROP_GRID_COLUMN_COUNT = EXTRA_PREFIX + ".CropGridColumnCount";
         public static final String EXTRA_CROP_GRID_COLOR = EXTRA_PREFIX + ".CropGridColor";
         public static final String EXTRA_CROP_GRID_STROKE_WIDTH = EXTRA_PREFIX + ".CropGridStrokeWidth";
-
+        public static final String EXTRA_CIRCLE_STROKE_WIDTH_LAYER = EXTRA_PREFIX + ".CircleStrokeWidth";
         public static final String EXTRA_GALLERY_BAR_BACKGROUND = EXTRA_PREFIX + ".GalleryBarBackground";
 
         public static final String EXTRA_TOOL_BAR_COLOR = EXTRA_PREFIX + ".ToolbarColor";
@@ -422,14 +424,23 @@ public class UCrop {
          * @param isForbidSkipCrop - It is forbidden to skip when cutting multiple drawings
          */
         public void isForbidSkipMultipleCrop(boolean isForbidSkipCrop) {
-            mOptionBundle.putBoolean(EXTRA_FORBID_SKIP_CROP, isForbidSkipCrop);
+            mOptionBundle.putBoolean(EXTRA_CROP_FORBID_SKIP, isForbidSkipCrop);
+        }
+
+        /**
+         * isDragCenter
+         *
+         * @param isDragCenter Crop and drag automatically center
+         */
+        public void isCropDragSmoothToCenter(boolean isDragCenter) {
+            mOptionBundle.putBoolean(EXTRA_CROP_DRAG_CENTER, isDragCenter);
         }
 
         /**
          * @param isForbidCropGifWebp - Do you need to support clipping dynamic graphs gif or webp
          */
         public void isForbidCropGifWebp(boolean isForbidCropGifWebp) {
-            mOptionBundle.putBoolean(EXTRA_FORBID_CROP_GIF_WEBP, isForbidCropGifWebp);
+            mOptionBundle.putBoolean(EXTRA_CROP_FORBID_GIF_WEBP, isForbidCropGifWebp);
         }
 
         /**
@@ -480,6 +491,13 @@ public class UCrop {
          */
         public void setDimmedLayerColor(@ColorInt int color) {
             mOptionBundle.putInt(EXTRA_DIMMED_LAYER_COLOR, color);
+        }
+
+        /**
+         * @param color - desired color of dimmed stroke area around the crop bounds
+         */
+        public void setCircleStrokeColor(@ColorInt int color) {
+            mOptionBundle.putInt(EXTRA_CIRCLE_STROKE_COLOR, color);
         }
 
         /**
@@ -543,6 +561,13 @@ public class UCrop {
          */
         public void setCropGridStrokeWidth(@IntRange(from = 0) int width) {
             mOptionBundle.putInt(EXTRA_CROP_GRID_STROKE_WIDTH, width);
+        }
+
+        /**
+         * @param width Set the circular clipping border
+         */
+        public void setCircleStrokeWidth(@IntRange(from = 0) int width) {
+            mOptionBundle.putInt(EXTRA_CIRCLE_STROKE_WIDTH_LAYER, width);
         }
 
         /**

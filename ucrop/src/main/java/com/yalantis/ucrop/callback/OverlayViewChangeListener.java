@@ -9,4 +9,5 @@ public interface OverlayViewChangeListener {
 
     void onCropRectUpdated(RectF cropRect);
 
+    void postTranslate(float deltaX, float deltaY);
 }
