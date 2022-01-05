@@ -51,18 +51,15 @@
             android:value="2.1"></meta-data>
 
         <activity
-            android:name=".MainActivity"
-            android:screenOrientation="portrait">
+            android:name=".MainActivity">
 
         </activity>
         <activity
             android:name=".PhotoFragmentActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
-            android:screenOrientation="portrait"></activity>
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"></activity>
         <activity
             android:name=".SimpleActivity"
-            android:exported="true"
-            android:screenOrientation="portrait">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
