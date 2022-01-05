@@ -896,10 +896,8 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         }
         long id, bucketId;
         File cameraFile;
-        Uri mimeTypeUri;
         if (PictureMimeType.isContent(config.cameraPath)) {
             Uri cameraUri = Uri.parse(config.cameraPath);
-            mimeTypeUri = cameraUri;
             String path = PictureFileUtils.getPath(getActivity(), cameraUri);
             cameraFile = new File(path);
             int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
@@ -907,11 +905,10 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             bucketId = MediaUtils.generateCameraBucketId(getContext(), cameraFile, "");
         } else {
             cameraFile = new File(config.cameraPath);
-            mimeTypeUri = Uri.fromFile(cameraFile);
             id = System.currentTimeMillis();
             bucketId = MediaUtils.generateCameraBucketId(getContext(), cameraFile, config.outPutCameraDir);
         }
-        String mimeType = MediaUtils.getMimeTypeFromMediaContentUri(getActivity(), mimeTypeUri);
+        String mimeType = MediaUtils.getMimeTypeFromMediaUrl(cameraFile.getAbsolutePath());
         if (config.isCameraRotateImage && PictureMimeType.isHasImage(mimeType) && !PictureMimeType.isContent(config.cameraPath)) {
             BitmapUtils.rotateImage(getContext(), config.cameraPath);
         }
@@ -1188,8 +1185,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     private void createImageLoaderEngine() {
         if (PictureSelectionConfig.imageEngine == null) {
             PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
-            if (baseEngine != null)
+            if (baseEngine != null) {
                 PictureSelectionConfig.imageEngine = baseEngine.createImageLoaderEngine();
+            }
         }
     }
 

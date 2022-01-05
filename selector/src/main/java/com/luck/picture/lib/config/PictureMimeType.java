@@ -3,8 +3,6 @@ package com.luck.picture.lib.config;
 
 import android.text.TextUtils;
 
-import java.io.File;
-
 /**
  * @author：luck
  * @date：2017-5-24 17:02
@@ -167,29 +165,6 @@ public final class PictureMimeType {
     }
 
     /**
-     * Get Image mimeType
-     *
-     * @param path
-     * @return
-     */
-    public static String getImageMimeType(String path) {
-        try {
-            if (!TextUtils.isEmpty(path)) {
-                File file = new File(path);
-                String fileName = file.getName();
-                int beginIndex = fileName.lastIndexOf(".");
-                String temp = beginIndex == -1 ? "jpeg" : fileName.substring(beginIndex + 1);
-                return "image/" + temp;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return MIME_TYPE_IMAGE;
-        }
-        return MIME_TYPE_IMAGE;
-    }
-
-
-    /**
      * Picture or video
      *
      * @return
@@ -214,17 +189,12 @@ public final class PictureMimeType {
      * @return
      */
     public static String getLastImgSuffix(String mineType) {
-        String defaultSuffix = PNG;
         try {
-            int index = mineType.lastIndexOf("/") + 1;
-            if (index > 0) {
-                return "." + mineType.substring(index);
-            }
+            return mineType.substring(mineType.lastIndexOf("/")).replace("/", ".");
         } catch (Exception e) {
             e.printStackTrace();
-            return defaultSuffix;
+            return JPG;
         }
-        return defaultSuffix;
     }
 
 

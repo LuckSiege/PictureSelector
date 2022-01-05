@@ -76,7 +76,7 @@ public final class SandboxFileLoader {
             }
             PictureSelectionConfig config = PictureSelectionConfig.getInstance();
             for (File f : files) {
-                String mimeType = MediaUtils.getMimeTypeFromMediaContentUri(context, Uri.fromFile(f));
+                String mimeType = MediaUtils.getMimeTypeFromMediaUrl(f.getAbsolutePath());
 
                 if (config.chooseMode == SelectMimeType.ofImage()) {
                     if (!PictureMimeType.isHasImage(mimeType)) {

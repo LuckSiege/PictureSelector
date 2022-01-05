@@ -2,6 +2,7 @@ package com.luck.picture.lib.loader;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
@@ -165,12 +166,9 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                 String url = SdkVersionUtils.isQ() ? MediaUtils.getRealPathUri(id, mimeType) : absolutePath;
                                 // Here, it is solved that some models obtain mimeType and return the format of image / *,
                                 // which makes it impossible to distinguish the specific type, such as mi 8,9,10 and other models
+                                mimeType = "image/*";
                                 if (mimeType.endsWith("image/*")) {
-                                    if (PictureMimeType.isContent(url)) {
-                                        mimeType = PictureMimeType.getImageMimeType(absolutePath);
-                                    } else {
-                                        mimeType = PictureMimeType.getImageMimeType(url);
-                                    }
+                                    mimeType = MediaUtils.getMimeTypeFromMediaUrl(absolutePath);
                                     if (!config.isGif) {
                                         if (PictureMimeType.isHasGif(mimeType)) {
                                             continue;

@@ -40,9 +40,9 @@ import java.util.Objects;
 
 public class PictureFileUtils {
     private static final int BYTE_SIZE = 1024;
-    public static final String POSTFIX = ".jpeg";
-    public static final String POST_VIDEO = ".mp4";
-    public static final String POST_AUDIO = ".amr";
+    public static final String POSTFIX_JPG = ".jpg";
+    public static final String POSTFIX_MP4 = ".mp4";
+    public static final String POSTFIX_AMR = ".amr";
 
 
     /**
@@ -110,13 +110,13 @@ public class PictureFileUtils {
         boolean isOutFileNameEmpty = TextUtils.isEmpty(fileName);
         switch (chooseMode) {
             case SelectMimeType.TYPE_VIDEO:
-                String newFileVideoName = isOutFileNameEmpty ? DateUtils.getCreateFileName("VID_") + POST_VIDEO : fileName;
+                String newFileVideoName = isOutFileNameEmpty ? DateUtils.getCreateFileName("VID_") + POSTFIX_MP4 : fileName;
                 return new File(folderDir, newFileVideoName);
             case SelectMimeType.TYPE_AUDIO:
-                String newFileAudioName = isOutFileNameEmpty ? DateUtils.getCreateFileName("AUD_") + POST_AUDIO : fileName;
+                String newFileAudioName = isOutFileNameEmpty ? DateUtils.getCreateFileName("AUD_") + POSTFIX_AMR : fileName;
                 return new File(folderDir, newFileAudioName);
             default:
-                String suffix = TextUtils.isEmpty(format) ? POSTFIX : format;
+                String suffix = TextUtils.isEmpty(format) ? POSTFIX_JPG : format;
                 String newFileImageName = isOutFileNameEmpty ? DateUtils.getCreateFileName("IMG_") + suffix : fileName;
                 return new File(folderDir, newFileImageName);
         }

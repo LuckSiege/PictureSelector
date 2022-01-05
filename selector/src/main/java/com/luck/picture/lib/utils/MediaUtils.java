@@ -51,25 +51,16 @@ public class MediaUtils {
         return ContentUris.withAppendedId(contentUri, id).toString();
     }
 
-
     /**
      * 获取mimeType
      *
-     * @param context
-     * @param uri
+     * @param url
      * @return
      */
-    public static String getMimeTypeFromMediaContentUri(Context context, Uri uri) {
-        String mimeType;
-        if (TextUtils.equals(uri.getScheme(), ContentResolver.SCHEME_CONTENT)) {
-            ContentResolver cr = context.getContentResolver();
-            mimeType = cr.getType(uri);
-        } else {
-            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
-                    .toString());
-            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                    fileExtension.toLowerCase());
-        }
+    public static String getMimeTypeFromMediaUrl(String url) {
+        String fileExtension = MimeTypeMap.getFileExtensionFromUrl(url);
+        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                fileExtension.toLowerCase());
         return TextUtils.isEmpty(mimeType) ? PictureMimeType.MIME_TYPE_JPEG : mimeType;
     }
 
@@ -344,7 +335,7 @@ public class MediaUtils {
             queryArgs.putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection);
             queryArgs.putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArgs);
             queryArgs.putString(ContentResolver.QUERY_ARG_SQL_SORT_ORDER, MediaStore.Files.FileColumns._ID + " DESC");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (SdkVersionUtils.isR()) {
                 queryArgs.putString(ContentResolver.QUERY_ARG_SQL_LIMIT, limitCount + " offset " + offset);
             }
         }
