@@ -6,7 +6,7 @@
     android:gravity="center_vertical"
     android:orientation="vertical">
 
-    <TextView
+    <com.luck.picture.lib.widget.MediumBoldTextView
         android:id="@+id/tvCamera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

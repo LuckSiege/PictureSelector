@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_bar" />
 
-    <TextView
+    <com.luck.picture.lib.widget.MediumBoldTextView
         android:id="@+id/tv_current_data_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -19,7 +19,7 @@ import com.luck.picture.lib.R;
  * @describe：MediumBoldTextView
  */
 public class MediumBoldTextView extends AppCompatTextView {
-    private float mStrokeWidth = 1.0f;
+    private float mStrokeWidth = 0.6F;
 
     public MediumBoldTextView(Context context) {
         super(context);
