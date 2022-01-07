@@ -1085,7 +1085,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     throw new IllegalArgumentException(getActivity().toString()
                             + " please must implement IBridgePictureBehavior onSelectFinish");
                 }
-                if (iBridgePictureBehavior != null) {
+                if (config.isActivityResultBack) {
                     iBridgePictureBehavior.onSelectFinish(true, selectorResult);
                 }
             }
@@ -1237,7 +1237,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      * Retrieve the result callback listener, provided that the user implements the IApp interface in the Application
      */
     private void createResultCallbackListener() {
-        if (PictureSelectionConfig.getInstance().isResultBack) {
+        if (PictureSelectionConfig.getInstance().isResultListenerBack) {
             if (PictureSelectionConfig.resultCallListener == null) {
                 PictureSelectorEngine baseEngine = PictureAppMaster.getInstance().getPictureSelectorEngine();
                 if (baseEngine != null) {

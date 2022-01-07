@@ -19,7 +19,6 @@ public final class PictureConfig {
 
     public final static String EXTRA_ALL_FOLDER_SIZE = KEY + ".all_folder_size";
 
-    public final static String EXTRA_CURRENT_FIRST_PATH = KEY + ".current_first_path";
 
     public final static String EXTRA_QUICK_CAPTURE = "android.intent.extra.quickCapture";
 

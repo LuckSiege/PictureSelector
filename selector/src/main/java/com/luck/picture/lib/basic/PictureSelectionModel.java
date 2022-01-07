@@ -7,6 +7,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -347,6 +348,9 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel isOriginalControl(boolean isOriginalControl) {
         selectionConfig.isOriginalControl = isOriginalControl;
+        if (selectionConfig.isOnlyCamera && isOriginalControl) {
+            selectionConfig.isCheckOriginalImage = true;
+        }
         return this;
     }
 
@@ -991,7 +995,7 @@ public class PictureSelectionModel {
                 throw new NullPointerException("OnResultCallbackListener cannot be null");
             }
             // 绑定回调监听
-            selectionConfig.isResultBack = true;
+            selectionConfig.isResultListenerBack = true;
             selectionConfig.isActivityResultBack = false;
             PictureSelectionConfig.resultCallListener = call;
             if (selectionConfig.isOnlyCamera) {
@@ -1004,10 +1008,12 @@ public class PictureSelectionModel {
                 if (fragmentManager == null) {
                     throw new NullPointerException("FragmentManager cannot be null");
                 }
-                if (ActivityCompatHelper.checkFragmentNonExits((FragmentActivity) activity, PictureOnlyCameraFragment.TAG)) {
-                    FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
-                            PictureOnlyCameraFragment.TAG, PictureOnlyCameraFragment.newInstance());
+                Fragment fragment = fragmentManager.findFragmentByTag(PictureOnlyCameraFragment.TAG);
+                if (fragment != null) {
+                    fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
                 }
+                FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
+                        PictureOnlyCameraFragment.TAG, PictureOnlyCameraFragment.newInstance());
             } else {
                 if (PictureSelectionConfig.imageEngine == null) {
                     throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
@@ -1032,7 +1038,7 @@ public class PictureSelectionModel {
             if (activity == null) {
                 throw new NullPointerException("Activity cannot be null");
             }
-            selectionConfig.isResultBack = false;
+            selectionConfig.isResultListenerBack = false;
             selectionConfig.isActivityResultBack = true;
             if (selectionConfig.isOnlyCamera) {
                 FragmentManager fragmentManager = null;
@@ -1044,10 +1050,12 @@ public class PictureSelectionModel {
                 if (fragmentManager == null) {
                     throw new NullPointerException("FragmentManager cannot be null");
                 }
-                if (ActivityCompatHelper.checkFragmentNonExits((FragmentActivity) activity, PictureOnlyCameraFragment.TAG)) {
-                    FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
-                            PictureOnlyCameraFragment.TAG, PictureOnlyCameraFragment.newInstance());
+                Fragment fragment = fragmentManager.findFragmentByTag(PictureOnlyCameraFragment.TAG);
+                if (fragment != null) {
+                    fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
                 }
+                FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
+                        PictureOnlyCameraFragment.TAG, PictureOnlyCameraFragment.newInstance());
             } else {
                 if (PictureSelectionConfig.imageEngine == null) {
                     throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
@@ -1075,7 +1083,7 @@ public class PictureSelectionModel {
             if (launcher == null) {
                 throw new NullPointerException("ActivityResultLauncher cannot be null");
             }
-            selectionConfig.isResultBack = false;
+            selectionConfig.isResultListenerBack = false;
             selectionConfig.isActivityResultBack = true;
             if (selectionConfig.isOnlyCamera) {
                 FragmentManager fragmentManager = null;
@@ -1087,10 +1095,12 @@ public class PictureSelectionModel {
                 if (fragmentManager == null) {
                     throw new NullPointerException("FragmentManager cannot be null");
                 }
-                if (ActivityCompatHelper.checkFragmentNonExits((FragmentActivity) activity, PictureOnlyCameraFragment.TAG)) {
-                    FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
-                            PictureOnlyCameraFragment.TAG, PictureOnlyCameraFragment.newInstance());
+                Fragment fragment = fragmentManager.findFragmentByTag(PictureOnlyCameraFragment.TAG);
+                if (fragment != null) {
+                    fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
                 }
+                FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
+                        PictureOnlyCameraFragment.TAG, PictureOnlyCameraFragment.newInstance());
             } else {
                 if (PictureSelectionConfig.imageEngine == null) {
                     throw new NullPointerException("imageEngine is null,Please implement ImageEngine");

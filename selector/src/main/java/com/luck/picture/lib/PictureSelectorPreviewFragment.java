@@ -116,6 +116,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     private boolean isFirstLoaded;
 
+    private boolean isSaveInstanceState;
+
     /**
      * 当前相册
      */
@@ -233,6 +235,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         reStartSavedInstance(savedInstanceState);
+        isSaveInstanceState = savedInstanceState != null;
         screenWidth = DensityUtil.getScreenWidth(getContext());
         screenHeight = DensityUtil.getScreenHeight(getContext());
         titleBar = view.findViewById(R.id.title_bar);
@@ -309,12 +312,22 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         if (isBottomPreview) {
             magicalView.setBackgroundAlpha(1.0F);
         } else if (config.isPreviewZoomEffect) {
-            magicalView.setBackgroundAlpha(0.0F);
-            for (int i = 0; i < mAnimViews.size(); i++) {
-                if (mAnimViews.get(i) instanceof TitleBar) {
-                    continue;
+            if (isSaveInstanceState) {
+                magicalView.setBackgroundAlpha(1.0F);
+                for (int i = 0; i < mAnimViews.size(); i++) {
+                    if (mAnimViews.get(i) instanceof TitleBar) {
+                        continue;
+                    }
+                    mAnimViews.get(i).setAlpha(1.0F);
                 }
-                mAnimViews.get(i).setAlpha(0.0F);
+            } else {
+                magicalView.setBackgroundAlpha(0.0F);
+                for (int i = 0; i < mAnimViews.size(); i++) {
+                    if (mAnimViews.get(i) instanceof TitleBar) {
+                        continue;
+                    }
+                    mAnimViews.get(i).setAlpha(0.0F);
+                }
             }
             setMagicalViewAction();
         } else {
@@ -1057,6 +1070,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
         @Override
         public void onLoadCompleteBeginScale(BasePreviewHolder holder, int width, int height) {
+            if (isSaveInstanceState) {
+                return;
+            }
             if (isFirstLoaded || isBottomPreview) {
                 return;
             }

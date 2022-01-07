@@ -304,8 +304,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     // 单独拍照
                     PictureSelector.create(MainActivity.this)
-                            .openCamera(SelectMimeType.ofAll())
+                            .openCamera(chooseMode)
                             .setCameraInterceptListener(getCustomCameraEvent())
+                            .setCropEngine(getCropEngine())
+                            .setCompressEngine(getCompressEngine())
+                            .setSandboxFileEngine(new MeSandboxFileEngine())
+                            .isOriginalControl(cb_original.isChecked())
                             .forResult(new MeOnResultCallbackListener());
                 }
             }

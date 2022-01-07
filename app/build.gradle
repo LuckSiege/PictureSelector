@@ -72,6 +72,7 @@ dependencies {
     implementation project(':compress')
     implementation project(':ucrop')
     implementation project(":camerax")
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8'
     implementation "androidx.appcompat:appcompat:${cfgs.version_appcompat}"
     implementation "com.google.android.exoplayer:exoplayer:${cfgs.exoplayer}"
     implementation "androidx.constraintlayout:constraintlayout:${cfgs.constraintlayout}"

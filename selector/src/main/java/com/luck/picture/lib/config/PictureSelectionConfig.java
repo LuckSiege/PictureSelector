@@ -93,7 +93,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public int ofAllCameraType;
     public boolean isOnlySandboxDir;
     public boolean isCameraForegroundService;
-    public boolean isResultBack;
+    public boolean isResultListenerBack;
     public boolean isInjectLayoutResource;
     public boolean isActivityResultBack;
     public boolean isCompressEngine;
@@ -177,7 +177,7 @@ public final class PictureSelectionConfig implements Parcelable {
         ofAllCameraType = in.readInt();
         isOnlySandboxDir = in.readByte() != 0;
         isCameraForegroundService = in.readByte() != 0;
-        isResultBack = in.readByte() != 0;
+        isResultListenerBack = in.readByte() != 0;
         isInjectLayoutResource = in.readByte() != 0;
         isActivityResultBack = in.readByte() != 0;
         isCompressEngine = in.readByte() != 0;
@@ -248,7 +248,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(ofAllCameraType);
         dest.writeByte((byte) (isOnlySandboxDir ? 1 : 0));
         dest.writeByte((byte) (isCameraForegroundService ? 1 : 0));
-        dest.writeByte((byte) (isResultBack ? 1 : 0));
+        dest.writeByte((byte) (isResultListenerBack ? 1 : 0));
         dest.writeByte((byte) (isInjectLayoutResource ? 1 : 0));
         dest.writeByte((byte) (isActivityResultBack ? 1 : 0));
         dest.writeByte((byte) (isCompressEngine ? 1 : 0));
@@ -334,7 +334,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isOnlySandboxDir = false;
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
         isCameraForegroundService = true;
-        isResultBack = true;
+        isResultListenerBack = true;
         isActivityResultBack = false;
         isCompressEngine = false;
         isLoaderDataEngine = false;

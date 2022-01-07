@@ -9,6 +9,8 @@ import android.os.Build;
  */
 public class SdkVersionUtils {
 
+    public static final int R = 30;
+
     /**
      * 判断是否是低于Android LOLLIPOP版本
      *
@@ -62,6 +64,6 @@ public class SdkVersionUtils {
      * @return
      */
     public static boolean isR() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
+        return Build.VERSION.SDK_INT >= R;
     }
 }

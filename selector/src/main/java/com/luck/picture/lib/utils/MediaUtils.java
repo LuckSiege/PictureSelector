@@ -9,6 +9,7 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
@@ -321,6 +322,19 @@ public class MediaUtils {
 
 
     /**
+     * Key for an SQL style {@code LIMIT} string that may be present in the
+     * query Bundle argument passed to
+     * {@link ContentProvider#query(Uri, String[], Bundle, CancellationSignal)}.
+     *
+     * <p><b>Apps targeting {@link android.os.Build.VERSION_CODES#O} or higher are strongly
+     * encourage to use structured query arguments in lieu of opaque SQL query clauses.</b>
+     *
+     * @see #QUERY_ARG_LIMIT
+     * @see #QUERY_ARG_OFFSET
+     */
+    public static final String QUERY_ARG_SQL_LIMIT = "android:query-arg-sql-limit";
+
+    /**
      * R  createQueryArgsBundle
      *
      * @param selection
@@ -341,7 +355,6 @@ public class MediaUtils {
         }
         return queryArgs;
     }
-
 
     /**
      * delete camera PATH

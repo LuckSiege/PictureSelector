@@ -21,6 +21,22 @@ import com.luck.picture.lib.utils.SdkVersionUtils;
  */
 public class PermissionUtil {
 
+    /**
+     * Activity Action: Show screen for controlling which apps have access to manage external
+     * storage.
+     * <p>
+     * In some cases, a matching Activity may not exist, so ensure you safeguard against this.
+     * <p>
+     * If you want to control a specific app's access to manage external storage, use
+     * {@link #ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION} instead.
+     * <p>
+     * Output: Nothing.
+     * @see #ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
+     */
+    public static final String ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION =
+            "android.settings.MANAGE_ALL_FILES_ACCESS_PERMISSION";
+
+
     public static boolean hasPermissions(@NonNull Context context, @Size(min = 1) @NonNull String... perms) {
         if (Build.VERSION.SDK_INT < 23) {
             return true;
