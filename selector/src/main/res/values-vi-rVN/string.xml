@@ -66,4 +66,6 @@
     <string name="ps_use_sound">Dùng chức năng ghi âm</string>
     <string name="ps_current_week">Tuần này</string>
     <string name="ps_current_month">Tháng này</string>
+    <string name="ps_select_max_size">Tập tin đã chọn lớn hơn %1$s</string>
+    <string name="ps_select_min_size">Tập tin đã chọn ít hơn %1$s</string>
 </resources>

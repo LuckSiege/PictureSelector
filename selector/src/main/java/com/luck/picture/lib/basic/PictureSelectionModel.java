@@ -724,7 +724,7 @@ public class PictureSelectionModel {
     /**
      * # file size The unit is KB
      *
-     * @param fileSize Filter max file size
+     * @param fileKbSize Filter max file size
      * @return
      */
     public PictureSelectionModel filterMaxFileSize(long fileKbSize) {
@@ -739,7 +739,7 @@ public class PictureSelectionModel {
     /**
      * # file size The unit is KB
      *
-     * @param fileSize Filter min file size
+     * @param fileKbSize Filter min file size
      * @return
      */
     public PictureSelectionModel filterMinFileSize(long fileKbSize) {
@@ -747,6 +747,37 @@ public class PictureSelectionModel {
             selectionConfig.filterMinFileSize = fileKbSize;
         } else {
             selectionConfig.filterMinFileSize = fileKbSize * 1024;
+        }
+        return this;
+    }
+
+
+    /**
+     * # file size The unit is KB
+     *
+     * @param fileKbSize Filter max file size
+     * @return
+     */
+    public PictureSelectionModel selectMaxFileSize(long fileKbSize) {
+        if (fileKbSize >= PictureConfig.MB) {
+            selectionConfig.selectMaxFileSize = fileKbSize;
+        } else {
+            selectionConfig.selectMaxFileSize = fileKbSize * 1024;
+        }
+        return this;
+    }
+
+    /**
+     * # file size The unit is KB
+     *
+     * @param fileKbSize Filter min file size
+     * @return
+     */
+    public PictureSelectionModel selectMinFileSize(long fileKbSize) {
+        if (fileKbSize >= PictureConfig.MB) {
+            selectionConfig.selectMinFileSize = fileKbSize;
+        } else {
+            selectionConfig.selectMinFileSize = fileKbSize * 1024;
         }
         return this;
     }

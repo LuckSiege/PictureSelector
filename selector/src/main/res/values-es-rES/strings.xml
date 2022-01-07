@@ -66,4 +66,6 @@
     <string name="ps_use_sound">Función de grabación en uso</string>
     <string name="ps_current_week">Esta semana</string>
     <string name="ps_current_month">Este mes</string>
+    <string name="ps_select_max_size">Seleccionar archivo mayor que%1$s</string>
+    <string name="ps_select_min_size">Seleccionar archivo menor que%1$s</string>
 </resources>

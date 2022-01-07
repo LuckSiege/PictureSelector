@@ -65,4 +65,6 @@
     <string name="ps_use_sound">녹음 기능 사용 중</string>
     <string name="ps_current_week">금주</string>
     <string name="ps_current_month">이번 달</string>
+    <string name="ps_select_max_size">%1$s이상의 파일 선택</string>
+    <string name="ps_select_min_size">%1$s보다 작은 파일 선택</string>
 </resources>

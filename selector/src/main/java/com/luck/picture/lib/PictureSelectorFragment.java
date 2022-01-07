@@ -418,7 +418,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (isHasPermissions) {
             beginLoadData();
         } else {
-            Toast.makeText(getContext(), getString(R.string.ps_jurisdiction), Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext().getApplicationContext(), getString(R.string.ps_jurisdiction), Toast.LENGTH_LONG).show();
             iBridgePictureBehavior.onSelectFinish(false, null);
         }
     }

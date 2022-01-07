@@ -1263,10 +1263,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                                     } else {
                                         errorMsg = getString(R.string.ps_save_image_error);
                                     }
-                                    Toast.makeText(getContext(), errorMsg, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getContext().getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();
                                 } else {
                                     new PictureMediaScannerConnection(getActivity(), realPath);
-                                    Toast.makeText(getContext(),
+                                    Toast.makeText(getContext().getApplicationContext(),
                                             getString(R.string.ps_save_success) + "\n" + realPath,
                                             Toast.LENGTH_LONG).show();
                                 }

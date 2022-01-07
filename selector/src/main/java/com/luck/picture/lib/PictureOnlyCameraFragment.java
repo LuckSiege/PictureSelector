@@ -93,9 +93,9 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
             openSelectedCamera();
         } else {
             if (!PermissionChecker.isCheckCamera(getContext())) {
-                Toast.makeText(getContext(), getString(R.string.ps_camera), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext().getApplicationContext(), getString(R.string.ps_camera), Toast.LENGTH_LONG).show();
             } else if (!PermissionChecker.isCheckWriteStorage(getContext())) {
-                Toast.makeText(getContext(), getString(R.string.ps_jurisdiction), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext().getApplicationContext(), getString(R.string.ps_jurisdiction), Toast.LENGTH_LONG).show();
             }
             if (!ActivityCompatHelper.isDestroy(getActivity())) {
                 getActivity().getSupportFragmentManager().popBackStack();

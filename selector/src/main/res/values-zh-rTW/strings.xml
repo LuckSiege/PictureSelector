@@ -65,4 +65,6 @@
     <string name="ps_use_sound">正在使用錄音功能</string>
     <string name="ps_current_week">本周</string>
     <string name="ps_current_month">這個月</string>
+    <string name="ps_select_max_size">選擇檔案大於%1$s</string>
+    <string name="ps_select_min_size">選擇檔案小於%1$s</string>
 </resources>

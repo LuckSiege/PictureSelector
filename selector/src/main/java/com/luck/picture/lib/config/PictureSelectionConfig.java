@@ -56,6 +56,8 @@ public final class PictureSelectionConfig implements Parcelable {
     public int imageSpanCount;
     public long filterMaxFileSize;
     public long filterMinFileSize;
+    public long selectMaxFileSize;
+    public long selectMinFileSize;
     public int language;
     public boolean isDisplayCamera;
     public boolean isGif;
@@ -140,6 +142,8 @@ public final class PictureSelectionConfig implements Parcelable {
         imageSpanCount = in.readInt();
         filterMaxFileSize = in.readLong();
         filterMinFileSize = in.readLong();
+        selectMaxFileSize = in.readLong();
+        selectMinFileSize = in.readLong();
         language = in.readInt();
         isDisplayCamera = in.readByte() != 0;
         isGif = in.readByte() != 0;
@@ -211,6 +215,8 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(imageSpanCount);
         dest.writeLong(filterMaxFileSize);
         dest.writeLong(filterMinFileSize);
+        dest.writeLong(selectMaxFileSize);
+        dest.writeLong(selectMinFileSize);
         dest.writeInt(language);
         dest.writeByte((byte) (isDisplayCamera ? 1 : 0));
         dest.writeByte((byte) (isGif ? 1 : 0));
@@ -290,6 +296,8 @@ public final class PictureSelectionConfig implements Parcelable {
         videoMinSecond = 1000;
         filterMaxFileSize = 0;
         filterMinFileSize = 1024;
+        selectMaxFileSize = 0;
+        selectMinFileSize = 0;
         recordVideoMaxSecond = 60;
         recordVideoMinSecond = 0;
         imageSpanCount = PictureConfig.DEFAULT_SPAN_COUNT;

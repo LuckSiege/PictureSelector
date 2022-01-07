@@ -259,6 +259,20 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     @Override
     public int confirmSelect(LocalMedia currentMedia, boolean isSelected) {
+        if (config.selectMaxFileSize > 0) {
+            if (currentMedia.getSize() > config.selectMaxFileSize) {
+                String fileSize = PictureFileUtils.formatFileSize(config.selectMaxFileSize, 1);
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_max_size, fileSize));
+                return SelectedManager.INVALID;
+            }
+        }
+        if (config.selectMinFileSize > 0) {
+            if (currentMedia.getSize() < config.selectMinFileSize) {
+                String fileSize = PictureFileUtils.formatFileSize(config.selectMinFileSize, 1);
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_min_size, fileSize));
+                return SelectedManager.INVALID;
+            }
+        }
         String curMimeType = currentMedia.getMimeType();
         long curDuration = currentMedia.getDuration();
         List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
@@ -664,7 +678,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     ForegroundService.startForegroundService(getContext());
                     startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
                 } else {
-                    Toast.makeText(getContext(), "The system is missing a recording component", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext().getApplicationContext(), "The system is missing a recording component", Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -748,7 +762,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext().getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
 
                 ArrayList<LocalMedia> result = new ArrayList<>(selectedResult);
@@ -768,7 +782,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         } else if (resultCode == Crop.RESULT_CROP_ERROR) {
             Throwable throwable = data != null ? Crop.getError(data) : new Throwable("image crop error");
             if (throwable != null) {
-                Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext().getApplicationContext(), throwable.getMessage(), Toast.LENGTH_LONG).show();
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             if (requestCode == PictureConfig.REQUEST_CAMERA) {

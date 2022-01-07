@@ -67,4 +67,6 @@
     <string name="ps_use_sound">Using recording function</string>
     <string name="ps_current_week">This week</string>
     <string name="ps_current_month">This month</string>
+    <string name="ps_select_max_size">The selected file is larger than %1$s</string>
+    <string name="ps_select_min_size">The selected file is less than %1$s</string>
 </resources>
