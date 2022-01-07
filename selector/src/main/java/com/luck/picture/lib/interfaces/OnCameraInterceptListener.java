@@ -15,7 +15,6 @@ public interface OnCameraInterceptListener {
      * Intercept camera click events, and users can implement their own camera framework
      *
      * @param fragment    fragment    Fragment to receive result
-     * @param config      PictureSelector Config
      * @param cameraMode  Camera mode
      *                    {@link com.luck.picture.lib.config.SelectMimeType.ofImage(),ofVideo(),ofAudio()}
      *                    <p>
@@ -24,5 +23,5 @@ public interface OnCameraInterceptListener {
      *                    </p>
      * @param requestCode requestCode for result
      */
-    void openCamera(Fragment fragment, PictureSelectionConfig config, int cameraMode, int requestCode);
+    void openCamera(Fragment fragment, int cameraMode, int requestCode);
 }

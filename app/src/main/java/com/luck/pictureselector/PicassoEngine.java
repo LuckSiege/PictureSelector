@@ -1,6 +1,8 @@
 package com.luck.pictureselector;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -32,7 +34,7 @@ public class PicassoEngine implements ImageEngine {
      */
     @Override
     public void loadImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
-        if (!ImageLoaderUtils.assertValidRequest(context)) {
+        if (!assertValidRequest(context)) {
             return;
         }
         VideoRequestHandler videoRequestHandler = new VideoRequestHandler();
@@ -63,7 +65,7 @@ public class PicassoEngine implements ImageEngine {
      */
     @Override
     public void loadImageBitmap(@NonNull Context context, @NonNull String url, OnCallbackListener<Bitmap> call) {
-        if (!ImageLoaderUtils.assertValidRequest(context)) {
+        if (!assertValidRequest(context)) {
             return;
         }
         Picasso.get()
@@ -98,7 +100,7 @@ public class PicassoEngine implements ImageEngine {
      */
     @Override
     public void loadAlbumCover(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
-        if (!ImageLoaderUtils.assertValidRequest(context)) {
+        if (!assertValidRequest(context)) {
             return;
         }
         VideoRequestHandler videoRequestHandler = new VideoRequestHandler();
@@ -143,7 +145,7 @@ public class PicassoEngine implements ImageEngine {
      */
     @Override
     public void loadGridImage(@NonNull Context context, @NonNull String url, @NonNull ImageView imageView) {
-        if (!ImageLoaderUtils.assertValidRequest(context)) {
+        if (!assertValidRequest(context)) {
             return;
         }
         VideoRequestHandler videoRequestHandler = new VideoRequestHandler();
@@ -186,6 +188,27 @@ public class PicassoEngine implements ImageEngine {
     @Override
     public void resumeRequests(Context context) {
         Picasso.get().resumeTag(context);
+    }
+
+    public static boolean assertValidRequest(Context context) {
+        if (context instanceof Activity) {
+            Activity activity = (Activity) context;
+            return !isDestroy(activity);
+        } else if (context instanceof ContextWrapper){
+            ContextWrapper contextWrapper = (ContextWrapper) context;
+            if (contextWrapper.getBaseContext() instanceof Activity){
+                Activity activity = (Activity) contextWrapper.getBaseContext();
+                return !isDestroy(activity);
+            }
+        }
+        return true;
+    }
+
+    private static boolean isDestroy(Activity activity) {
+        if (activity == null) {
+            return true;
+        }
+        return activity.isFinishing() || activity.isDestroyed();
     }
 
     private PicassoEngine() {

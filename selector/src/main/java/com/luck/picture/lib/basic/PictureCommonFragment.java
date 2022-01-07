@@ -676,7 +676,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private void interceptCameraEvent(int cameraMode) {
         ForegroundService.startForegroundService(getContext());
-        PictureSelectionConfig.cameraInterceptListener.openCamera(this, config, cameraMode, PictureConfig.REQUEST_CAMERA);
+        PictureSelectionConfig.cameraInterceptListener.openCamera(this, cameraMode, PictureConfig.REQUEST_CAMERA);
     }
 
     /**

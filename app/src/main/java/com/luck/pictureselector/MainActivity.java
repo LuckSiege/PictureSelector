@@ -659,13 +659,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private class MeOnCameraInterceptListener implements OnCameraInterceptListener {
 
         @Override
-        public void openCamera(Fragment fragment, PictureSelectionConfig config, int cameraMode, int requestCode) {
+        public void openCamera(Fragment fragment, int cameraMode, int requestCode) {
             if (cameraMode == SelectMimeType.ofAudio()) {
                 Toast.makeText(getContext(), "自定义录音功能，请自行扩展", Toast.LENGTH_LONG).show();
             } else {
                 SimpleCameraX camera = SimpleCameraX.of();
                 camera.setCameraMode(cameraMode);
-                camera.setOutputPathDir(config.outPutCameraDir);
+                camera.setOutputPathDir(getSandboxCameraOutputPath());
                 camera.setImageEngine(new CameraImageEngine() {
                     @Override
                     public void loadImage(Context context, String url, ImageView imageView) {
