@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
+    <com.luck.picture.lib.widget.MediumBoldTextView
         android:id="@+id/ps_tv_preview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,7 +19,7 @@
         android:textColor="@color/ps_color_9b"
         android:textSize="14sp" />
 
-    <TextView
+    <com.luck.picture.lib.widget.MediumBoldTextView
         android:id="@+id/ps_tv_editor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

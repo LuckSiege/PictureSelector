@@ -3,7 +3,6 @@ package com.luck.picture.lib.widget;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
@@ -12,7 +11,7 @@ import androidx.annotation.Nullable;
  * @date：2020/8/25 10:32 AM
  * @describe：MarqueeTextView
  */
-public class MarqueeTextView extends TextView {
+public class MarqueeTextView extends MediumBoldTextView {
 
     public MarqueeTextView(Context context) {
         super(context);
@@ -20,10 +19,6 @@ public class MarqueeTextView extends TextView {
 
     public MarqueeTextView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    public MarqueeTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
     }
 
 

@@ -60,7 +60,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/bottom_nar_bar" />
 
-    <TextView
+    <com.luck.picture.lib.widget.MediumBoldTextView
         android:id="@+id/tv_data_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

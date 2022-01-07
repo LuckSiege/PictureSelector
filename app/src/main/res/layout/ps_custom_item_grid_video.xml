@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
-    <TextView
+    <com.luck.picture.lib.widget.MediumBoldTextView
         android:id="@+id/tvCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
         android:scaleType="fitXY"
         android:src="@drawable/ps_ic_shadow_bg" />
 
-    <TextView
+    <com.luck.picture.lib.widget.MediumBoldTextView
         android:id="@+id/tv_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

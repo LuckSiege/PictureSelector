@@ -23,7 +23,7 @@
         android:background="@drawable/ps_select_check"
         android:visibility="invisible" />
 
-    <TextView
+    <com.luck.picture.lib.widget.MediumBoldTextView
         android:id="@+id/tv_folder_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

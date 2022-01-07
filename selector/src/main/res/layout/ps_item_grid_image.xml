@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.luck.picture.lib.widget.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
         android:id="@+id/ivPicture"
@@ -9,7 +10,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
-    <TextView
+    <com.luck.picture.lib.widget.MediumBoldTextView
         android:id="@+id/tvCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,7 +28,7 @@
         android:layout_alignParentEnd="true"
         android:background="@color/ps_color_transparent" />
 
-    <TextView
+    <com.luck.picture.lib.widget.MediumBoldTextView
         android:id="@+id/tv_media_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
