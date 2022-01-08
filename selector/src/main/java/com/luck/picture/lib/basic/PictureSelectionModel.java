@@ -609,6 +609,16 @@ public class PictureSelectionModel {
         return this;
     }
 
+    /**
+     * Select the minimum audio number of files
+     *
+     * @param minAudioSelectNum PictureSelector audio min selection
+     * @return
+     */
+    public PictureSelectionModel setMinAudioSelectNum(int minAudioSelectNum) {
+        selectionConfig.minAudioSelectNum = minAudioSelectNum;
+        return this;
+    }
 
     /**
      * @param minSecond video record second

@@ -20,6 +20,7 @@
     <string name="ps_empty">Você pode usar a câmera para tirar fotos ou vídeos</string>
     <string name="ps_audio_empty">Você pode gravar o áudio usando o sistema de gravação</string>
     <string name="ps_min_img_num">Não pode haver menos de %1$s imagens</string>
+    <string name="ps_min_audio_num">A seleção mínima de áudio não pode ser inferior a%1$s</string>
     <string name="ps_gif_tag">gif</string>
     <string name="ps_webp_tag">webp</string>
     <string name="ps_jurisdiction">A permissão para ler o cartão de memória foi negada</string>

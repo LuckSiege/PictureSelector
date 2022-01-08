@@ -19,6 +19,7 @@
     <string name="ps_empty">Sie können mit Ihrer Kamera ein Foto oder Video aufnehmen</string>
     <string name="ps_audio_empty">Sie können Audio mit der Systemaufzeichnung aufnehmen</string>
     <string name="ps_min_img_num">Die Mindestauswahl an Bildern darf %1$s nicht unterschreiten</string>
+    <string name="ps_min_audio_num">Die minimale Audioauswahl kann nicht weniger als %1$s sein</string>
     <string name="ps_gif_tag">gif</string>
     <string name="ps_webp_tag">webp</string>
     <string name="ps_jurisdiction">Leseberechtigungen für Speicherkarten verweigert</string>

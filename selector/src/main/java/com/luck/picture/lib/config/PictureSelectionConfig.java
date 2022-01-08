@@ -49,6 +49,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public int minSelectNum;
     public int maxVideoSelectNum;
     public int minVideoSelectNum;
+    public int minAudioSelectNum;
     public int videoQuality;
     public int filterVideoMaxSecond;
     public int filterVideoMinSecond;
@@ -138,6 +139,7 @@ public final class PictureSelectionConfig implements Parcelable {
         minSelectNum = in.readInt();
         maxVideoSelectNum = in.readInt();
         minVideoSelectNum = in.readInt();
+        minAudioSelectNum = in.readInt();
         videoQuality = in.readInt();
         filterVideoMaxSecond = in.readInt();
         filterVideoMinSecond = in.readInt();
@@ -213,6 +215,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeInt(minSelectNum);
         dest.writeInt(maxVideoSelectNum);
         dest.writeInt(minVideoSelectNum);
+        dest.writeInt(minAudioSelectNum);
         dest.writeInt(videoQuality);
         dest.writeInt(filterVideoMaxSecond);
         dest.writeInt(filterVideoMinSecond);
@@ -298,6 +301,7 @@ public final class PictureSelectionConfig implements Parcelable {
         minSelectNum = 0;
         maxVideoSelectNum = 1;
         minVideoSelectNum = 0;
+        minAudioSelectNum = 0;
         videoQuality = 1;
         language = LanguageConfig.UNKNOWN_LANGUAGE;
         filterVideoMaxSecond = 0;

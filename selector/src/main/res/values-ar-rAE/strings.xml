@@ -19,6 +19,7 @@
     <string name="ps_empty">يمكنك استخدام الكاميرا لالتقاط الصور أو الفيديو</string>
     <string name="ps_audio_empty">يمكنك استخدام تسجيل النظام لتسجيل الصوت</string>
     <string name="ps_min_img_num">الحد الأدنى من اختيار الصور لا يقل عن %1$s</string>
+    <string name="ps_min_audio_num">الحد الأدنى من اختيار الصوت لا يقل عن %1$s</string>
     <string name="ps_gif_tag">الصور المتحركة</string>
     <string name="ps_jurisdiction">تم رفض الإذن بقراءة بطاقة الذاكرة</string>
     <string name="ps_camera">تم رفض الوصول إلى إذن كاميرا النظام</string>

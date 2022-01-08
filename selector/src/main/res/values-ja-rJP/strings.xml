@@ -19,6 +19,7 @@
     <string name="ps_empty">カメラを使って写真やビデオを撮ることができます</string>
     <string name="ps_audio_empty">システムを使って音声を録音することができます</string>
     <string name="ps_min_img_num">画像の最低値は %1$s 枚までとする</string>
+    <string name="ps_min_audio_num">オーディオの最低選択は %1$s つ以上</string>
     <string name="ps_gif_tag">动図</string>
     <string name="ps_webp_tag">webp</string>
     <string name="ps_jurisdiction">メモリーカードの読み取り権限が拒否された</string>

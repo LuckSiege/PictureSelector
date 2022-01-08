@@ -20,6 +20,7 @@
     <string name="ps_empty">Bạn có thể sử dụng máy ảnh để chụp ảnh hoặc quay video</string>
     <string name="ps_audio_empty">Bạn có thể ghi lại âm thanh bằng cách ghi hệ thống</string>
     <string name="ps_min_img_num">Lựa chọn tối thiểu của hình ảnh không được ít hơn%1$s</string>
+    <string name="ps_min_audio_num">Không thể chọn âm thanh tối thiểu dưới %1$s</string>
     <string name="ps_gif_tag">gif</string>
     <string name="ps_webp_tag">webp</string>
     <string name="ps_jurisdiction">Đọc thẻ nhớ bị từ chối</string>

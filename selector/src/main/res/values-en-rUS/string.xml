@@ -19,7 +19,8 @@
     <string name="ps_empty_audio_title">No audio file\n</string>
     <string name="ps_audio_empty">You can use system recordings to record audio</string>
     <string name="ps_empty">you can use your camera to take photos or videos</string>
-    <string name="ps_min_img_num">Picture Selection Cannot%1$sNumber</string>
+    <string name="ps_min_img_num">The minimum selection of pictures shall not be less than %1$s</string>
+    <string name="ps_min_audio_num">The minimum audio selection cannot be less than %1$s</string>
     <string name="ps_gif_tag">gif</string>
     <string name="ps_webp_tag">webp</string>
     <string name="ps_audio">Access to system recording permission denied</string>

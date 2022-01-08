@@ -6,6 +6,7 @@
     <string name="ps_rule">不能同時選擇圖片或視頻</string>
     <string name="ps_message_max_num">妳最多只能選擇%1$s張照片</string>
     <string name="ps_min_video_num">視頻最低選擇不能少於%1$s個</string>
+    <string name="ps_min_audio_num">音訊最低選擇不能少於%1$s個</string>
     <string name="ps_message_video_max_num">妳最多只能選擇%1$s個視頻</string>
     <string name="ps_message_audio_max_num">妳最多只能選擇%1$s個音頻</string>
     <string name="ps_preview">預覽</string>

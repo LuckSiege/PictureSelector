@@ -1139,11 +1139,105 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         return media;
     }
 
+    /**
+     * 验证完成选择的先决条件
+     *
+     * @return
+     */
+    private boolean checkCompleteSelectLimit() {
+        if (config.selectionMode != SelectModeConfig.MULTIPLE || config.isOnlyCamera) {
+            return false;
+        }
+        if (config.isWithVideoImage) {
+            // 共选型模式
+            ArrayList<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
+            int selectImageSize = 0;
+            int selectVideoSize = 0;
+            for (int i = 0; i < selectedResult.size(); i++) {
+                String mimeType = selectedResult.get(i).getMimeType();
+                if (PictureMimeType.isHasVideo(mimeType)) {
+                    selectVideoSize++;
+                } else {
+                    selectImageSize++;
+                }
+            }
+            if (config.minSelectNum > 0) {
+                if (selectImageSize < config.minSelectNum) {
+                    boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
+                            .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MIN_SELECT_LIMIT);
+                    if (isSelectLimit) {
+                        return true;
+                    }
+                    RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_min_img_num, String.valueOf(config.minSelectNum)));
+                    return true;
+                }
+            }
+            if (config.minVideoSelectNum > 0) {
+                if (selectVideoSize < config.minVideoSelectNum) {
+                    boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
+                            .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MIN_VIDEO_SELECT_LIMIT);
+                    if (isSelectLimit) {
+                        return true;
+                    }
+                    RemindDialog.showTipsDialog(getContext(),
+                            getString(R.string.ps_min_video_num, String.valueOf(config.minVideoSelectNum)));
+                    return true;
+                }
+            }
+        } else {
+            // 单类型模式
+            String mimeType = SelectedManager.getTopResultMimeType();
+            if (PictureMimeType.isHasImage(mimeType) && config.minSelectNum > 0
+                    && SelectedManager.getCount() < config.minSelectNum) {
+                if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
+                    boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
+                            .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MIN_SELECT_LIMIT);
+                    if (isSelectLimit) {
+                        return true;
+                    }
+                }
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_min_img_num,
+                        String.valueOf(config.minSelectNum)));
+                return true;
+            }
+            if (PictureMimeType.isHasVideo(mimeType) && config.minVideoSelectNum > 0
+                    && SelectedManager.getCount() < config.minVideoSelectNum) {
+                if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
+                    boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
+                            .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MIN_VIDEO_SELECT_LIMIT);
+                    if (isSelectLimit) {
+                        return true;
+                    }
+                }
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_min_video_num,
+                        String.valueOf(config.minVideoSelectNum)));
+                return true;
+            }
+
+            if (PictureMimeType.isHasAudio(mimeType) && config.minAudioSelectNum > 0
+                    && SelectedManager.getCount() < config.minAudioSelectNum) {
+                if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
+                    boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
+                            .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MIN_AUDIO_SELECT_LIMIT);
+                    if (isSelectLimit) {
+                        return true;
+                    }
+                }
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_min_audio_num,
+                        String.valueOf(config.minAudioSelectNum)));
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * 分发处理结果，比如压缩、裁剪、沙盒路径转换
      */
     protected void dispatchTransformResult() {
+        if (checkCompleteSelectLimit()) {
+            return;
+        }
         ArrayList<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
         ArrayList<LocalMedia> result = new ArrayList<>(selectedResult);
         if (checkCropValidity()) {

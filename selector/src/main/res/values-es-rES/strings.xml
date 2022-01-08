@@ -20,6 +20,7 @@
     <string name="ps_empty">Puedes usar la cámara para tomar fotos o videos.</string>
     <string name="ps_audio_empty">Puede utilizar la grabación del sistema para grabar audio</string>
     <string name="ps_min_img_num">Elija al menos %1$s imágenes</string>
+    <string name="ps_min_audio_num">La selección mínima de audio no puede ser inferior a %1$s</string>
     <string name="ps_gif_tag">Gif</string>
     <string name="ps_jurisdiction">Permiso de lectura de memoria denegado</string>
     <string name="ps_camera">Acceso denegado al permiso de la cámara del sistema</string>
