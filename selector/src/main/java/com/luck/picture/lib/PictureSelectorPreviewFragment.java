@@ -1298,8 +1298,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 notifySelectNumberStyle(currentMedia);
                 if (!isExternalPreview && !isBottomPreview && config.isPreviewZoomEffect) {
                     changeMagicalViewParams(position);
+                }
+                if (config.isPreviewZoomEffect) {
                     BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder(position);
-                    if (currentHolder instanceof PreviewVideoHolder){
+                    if (currentHolder instanceof PreviewVideoHolder) {
                         PreviewVideoHolder videoHolder = (PreviewVideoHolder) currentHolder;
                         if (videoHolder.ivPlayButton.getVisibility() == View.GONE) {
                             videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
