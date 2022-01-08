@@ -1104,19 +1104,29 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         }
         long id, bucketId;
         File cameraFile;
+        String mimeType;
         if (PictureMimeType.isContent(config.cameraPath)) {
             Uri cameraUri = Uri.parse(config.cameraPath);
             String path = PictureFileUtils.getPath(getActivity(), cameraUri);
             cameraFile = new File(path);
+            mimeType = MediaUtils.getMimeTypeFromMediaUrl(cameraFile.getAbsolutePath());
             int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
             id = lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : System.currentTimeMillis();
-            bucketId = MediaUtils.generateCameraBucketId(getContext(), cameraFile, "");
+            if (PictureMimeType.isHasAudio(mimeType)) {
+                bucketId = MediaUtils.generateSoundsBucketId(getContext(), cameraFile, "");
+            } else {
+                bucketId = MediaUtils.generateCameraBucketId(getContext(), cameraFile, "");
+            }
         } else {
             cameraFile = new File(config.cameraPath);
+            mimeType = MediaUtils.getMimeTypeFromMediaUrl(cameraFile.getAbsolutePath());
             id = System.currentTimeMillis();
-            bucketId = MediaUtils.generateCameraBucketId(getContext(), cameraFile, config.outPutCameraDir);
+            if (PictureMimeType.isHasAudio(mimeType)) {
+                bucketId = MediaUtils.generateSoundsBucketId(getContext(), cameraFile, config.outPutCameraDir);
+            } else {
+                bucketId = MediaUtils.generateCameraBucketId(getContext(), cameraFile, config.outPutCameraDir);
+            }
         }
-        String mimeType = MediaUtils.getMimeTypeFromMediaUrl(cameraFile.getAbsolutePath());
         if (config.isCameraRotateImage && PictureMimeType.isHasImage(mimeType) && !PictureMimeType.isContent(config.cameraPath)) {
             BitmapUtils.rotateImage(getContext(), config.cameraPath);
         }

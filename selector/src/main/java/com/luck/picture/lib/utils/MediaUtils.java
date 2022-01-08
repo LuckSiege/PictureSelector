@@ -84,12 +84,12 @@ public class MediaUtils {
      *
      * @param context          上下文
      * @param cameraFile       拍照资源文件
-     * @param outPutCameraPath 自定义拍照输出目录
+     * @param outPutCameraDir 自定义拍照输出目录
      * @return
      */
-    public static long generateCameraBucketId(Context context, File cameraFile, String outPutCameraPath) {
+    public static long generateCameraBucketId(Context context, File cameraFile, String outPutCameraDir) {
         long bucketId;
-        if (TextUtils.isEmpty(outPutCameraPath)) {
+        if (TextUtils.isEmpty(outPutCameraDir)) {
             bucketId = getCameraFirstBucketId(context);
         } else {
             if (cameraFile.getParentFile() != null) {
@@ -101,10 +101,33 @@ public class MediaUtils {
         return bucketId;
     }
 
+
+    /**
+     * 生成BucketId
+     *
+     * @param context        上下文
+     * @param cameraFile     拍照资源文件
+     * @param outPutAudioDir 自定义拍照输出目录
+     * @return
+     */
+    public static long generateSoundsBucketId(Context context, File cameraFile, String outPutAudioDir) {
+        long bucketId;
+        if (TextUtils.isEmpty(outPutAudioDir)) {
+            bucketId = getSoundsFirstBucketId(context);
+        } else {
+            if (cameraFile.getParentFile() != null) {
+                bucketId = cameraFile.getParentFile().getName().hashCode();
+            } else {
+                bucketId = getSoundsFirstBucketId(context);
+            }
+        }
+        return bucketId;
+    }
+
     /**
      * 创建目录名
      *
-     * @param absolutePath             资源路径
+     * @param absolutePath 资源路径
      * @return
      */
     public static String generateCameraFolderName(String absolutePath) {
@@ -320,6 +343,38 @@ public class MediaUtils {
         return -1;
     }
 
+    /**
+     * 获取Sounds文件下最新一条录音记录
+     *
+     * @return
+     */
+    public static long getSoundsFirstBucketId(Context context) {
+        Cursor data = null;
+        try {
+            String absolutePath = PictureFileUtils.getSoundsPath();
+            //selection: 指定查询条件
+            String selection = MediaStore.Files.FileColumns.DATA + " like ?";
+            //定义selectionArgs：
+            String[] selectionArgs = {absolutePath + "%"};
+            if (SdkVersionUtils.isR()) {
+                Bundle queryArgs = MediaUtils.createQueryArgsBundle(selection, selectionArgs, 1, 0);
+                data = context.getApplicationContext().getContentResolver().query(MediaStore.Files.getContentUri("external"), null, queryArgs, null);
+            } else {
+                String orderBy = MediaStore.Files.FileColumns._ID + " DESC limit 1 offset 0";
+                data = context.getApplicationContext().getContentResolver().query(MediaStore.Files.getContentUri("external"), null, selection, selectionArgs, orderBy);
+            }
+            if (data != null && data.getCount() > 0 && data.moveToFirst()) {
+                return data.getLong(data.getColumnIndex("bucket_id"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (data != null) {
+                data.close();
+            }
+        }
+        return -1;
+    }
 
     /**
      * Key for an SQL style {@code LIMIT} string that may be present in the

@@ -376,6 +376,23 @@ public class PictureFileUtils {
     }
 
     /**
+     * getSoundsPath
+     *
+     * @return
+     */
+    public static String getSoundsPath() {
+        String absolutePath;
+        try {
+            absolutePath = "%" + Environment.getExternalStoragePublicDirectory
+                    ("").getAbsolutePath() + "/Sounds";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+        return absolutePath;
+    }
+
+    /**
      * set empty PictureSelector Cache
      * Use {@link PictureCacheManager}
      *

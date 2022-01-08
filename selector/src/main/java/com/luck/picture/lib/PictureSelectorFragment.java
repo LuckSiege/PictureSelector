@@ -809,10 +809,12 @@ public class PictureSelectorFragment extends PictureCommonFragment
     private void setCurrentMediaCreateTimeText() {
         if (config.isDisplayTimeAxis) {
             int position = mRecycler.getFirstVisiblePosition();
-            ArrayList<LocalMedia> data = mAdapter.getData();
-            if (data.size() > position && data.get(position).getDateAddedTime() > 0) {
-                tvCurrentDataTime.setText(DateUtils.getDataFormat(getContext(),
-                        data.get(position).getDateAddedTime()));
+            if (position != RecyclerView.NO_POSITION) {
+                ArrayList<LocalMedia> data = mAdapter.getData();
+                if (data.size() > position && data.get(position).getDateAddedTime() > 0) {
+                    tvCurrentDataTime.setText(DateUtils.getDataFormat(getContext(),
+                            data.get(position).getDateAddedTime()));
+                }
             }
         }
     }
@@ -1034,17 +1036,30 @@ public class PictureSelectorFragment extends PictureCommonFragment
             }
         }
         if (cameraFolder == null) {
+            // 还没有这个目录，创建一个
             cameraFolder = new LocalMediaFolder();
+            cameraFolder.setFolderName(media.getParentFolderName());
+            cameraFolder.setBucketId(media.getBucketId());
+            // 自定义了存储目录的直接加
+            if (!TextUtils.isEmpty(config.outPutCameraDir) || !TextUtils.isEmpty(config.outPutAudioDir)) {
+                cameraFolder.getData().add(0, media);
+            }
+            albumList.add(cameraFolder);
+        } else {
+            // 目录已存在且是普通模式或者自定义了存储目录的直接加，分页模式是通过查询获得
+            if (!config.isPageStrategy && !isAddSameImp(allFolder.getFolderTotalNum()) ||
+                    !TextUtils.isEmpty(config.outPutCameraDir) || !TextUtils.isEmpty(config.outPutAudioDir)) {
+                cameraFolder.getData().add(0, media);
+            }
+            if (cameraFolder.getBucketId() == -1 || cameraFolder.getBucketId() == 0) {
+                cameraFolder.setBucketId(media.getBucketId());
+            }
         }
         cameraFolder.setFolderTotalNum(isAddSameImp(allFolder.getFolderTotalNum())
                 ? cameraFolder.getFolderTotalNum() : cameraFolder.getFolderTotalNum() + 1);
-        if (!config.isPageStrategy && !isAddSameImp(allFolder.getFolderTotalNum())) {
-            cameraFolder.getData().add(0, media);
-        }
-        cameraFolder.setBucketId(media.getBucketId());
         cameraFolder.setFirstImagePath(config.cameraPath);
         cameraFolder.setFirstMimeType(media.getMimeType());
-        albumListPopWindow.bindAlbumData(albumListPopWindow.getAlbumList());
+        albumListPopWindow.bindAlbumData(albumList);
     }
 
     /**
