@@ -44,14 +44,11 @@ public class GlideEngine implements ImageEngine {
     }
 
     /**
-     * 加载网络图片适配长图方案
-     * <p>
-     * 只有加载网络图片才会回调
-     * </p>
+     * 加载指定url并返回bitmap
      *
-     * @param context
-     * @param url
-     * @param call
+     * @param context 上下文
+     * @param url     资源url
+     * @param call    回调接口
      */
     @Override
     public void loadImageBitmap(@NonNull Context context, @NonNull String url, OnCallbackListener<Bitmap> call) {
@@ -153,9 +150,9 @@ public class GlideEngine implements ImageEngine {
         if (context instanceof Activity) {
             Activity activity = (Activity) context;
             return !isDestroy(activity);
-        } else if (context instanceof ContextWrapper){
+        } else if (context instanceof ContextWrapper) {
             ContextWrapper contextWrapper = (ContextWrapper) context;
-            if (contextWrapper.getBaseContext() instanceof Activity){
+            if (contextWrapper.getBaseContext() instanceof Activity) {
                 Activity activity = (Activity) contextWrapper.getBaseContext();
                 return !isDestroy(activity);
             }
