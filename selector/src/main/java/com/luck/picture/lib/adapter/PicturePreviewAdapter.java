@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
 import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
-import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.InjectResourceSource;
+import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 
 import java.util.List;

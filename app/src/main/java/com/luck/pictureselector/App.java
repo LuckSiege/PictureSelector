@@ -2,7 +2,6 @@ package com.luck.pictureselector;
 
 import android.app.Application;
 import android.content.Context;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.camera.camera2.Camera2Config;
@@ -12,6 +11,7 @@ import com.luck.picture.lib.app.IApp;
 import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.engine.PictureSelectorEngine;
+import com.luck.picture.lib.utils.ToastUtils;
 
 
 /**
@@ -31,7 +31,7 @@ public class App extends Application implements IApp, CameraXConfig.Provider {
             @Override
             public void uncaughtException(@NonNull Thread t, @NonNull Throwable e) {
                 PictureSelectionConfig.destroy();
-                Toast.makeText(getAppContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                ToastUtils.showToast(getApplicationContext(),e.getMessage());
             }
         });
     }

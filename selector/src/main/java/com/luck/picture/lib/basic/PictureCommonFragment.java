@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -65,6 +64,7 @@ import com.luck.picture.lib.utils.MediaStoreUtils;
 import com.luck.picture.lib.utils.MediaUtils;
 import com.luck.picture.lib.utils.PictureFileUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
+import com.luck.picture.lib.utils.ToastUtils;
 import com.luck.picture.lib.utils.ValueOf;
 
 import org.json.JSONArray;
@@ -801,7 +801,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     ForegroundService.startForegroundService(getContext());
                     startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
                 } else {
-                    Toast.makeText(getContext().getApplicationContext(), "The system is missing a recording component", Toast.LENGTH_LONG).show();
+                    ToastUtils.showToast(getContext(),"The system is missing a recording component");
                 }
             }
         }
@@ -885,7 +885,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(getContext().getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    ToastUtils.showToast(getContext(),e.getMessage());
                 }
 
                 ArrayList<LocalMedia> result = new ArrayList<>(selectedResult);
@@ -905,7 +905,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         } else if (resultCode == Crop.RESULT_CROP_ERROR) {
             Throwable throwable = data != null ? Crop.getError(data) : new Throwable("image crop error");
             if (throwable != null) {
-                Toast.makeText(getContext().getApplicationContext(), throwable.getMessage(), Toast.LENGTH_LONG).show();
+                ToastUtils.showToast(getContext(),throwable.getMessage());
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             if (requestCode == PictureConfig.REQUEST_CAMERA) {

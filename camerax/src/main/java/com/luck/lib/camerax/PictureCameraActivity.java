@@ -73,7 +73,7 @@ public class PictureCameraActivity extends AppCompatActivity {
             @Override
             public void onError(int videoCaptureError, @NonNull String message,
                                 @Nullable Throwable cause) {
-                Toast.makeText(PictureCameraActivity.this,
+                Toast.makeText(PictureCameraActivity.this.getApplicationContext(),
                         message, Toast.LENGTH_LONG).show();
                 handleCameraCancel();
             }
@@ -128,7 +128,7 @@ public class PictureCameraActivity extends AppCompatActivity {
         } else if (requestCode == PermissionChecker.PERMISSION_RECORD_AUDIO_SETTING_CODE) {
             if (!PermissionChecker.checkSelfPermission(this,
                     new String[]{Manifest.permission.RECORD_AUDIO})) {
-                Toast.makeText(this, "Missing recording permission", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Missing recording permission", Toast.LENGTH_LONG).show();
             }
         }
     }

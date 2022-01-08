@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,10 +25,10 @@ import com.luck.picture.lib.animators.SlideInBottomAnimationAdapter;
 import com.luck.picture.lib.basic.FragmentInjectManager;
 import com.luck.picture.lib.basic.IPictureSelectorEvent;
 import com.luck.picture.lib.basic.PictureCommonFragment;
+import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
-import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
@@ -60,6 +59,7 @@ import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DoubleUtils;
 import com.luck.picture.lib.utils.StyleUtils;
+import com.luck.picture.lib.utils.ToastUtils;
 import com.luck.picture.lib.utils.ValueOf;
 import com.luck.picture.lib.widget.BottomNavBar;
 import com.luck.picture.lib.widget.CompleteSelectView;
@@ -418,7 +418,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (isHasPermissions) {
             beginLoadData();
         } else {
-            Toast.makeText(getContext().getApplicationContext(), getString(R.string.ps_jurisdiction), Toast.LENGTH_LONG).show();
+            ToastUtils.showToast(getContext(),getString(R.string.ps_jurisdiction));
             iBridgePictureBehavior.onSelectFinish(false, null);
         }
     }

@@ -22,7 +22,6 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,10 +40,10 @@ import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.basic.PictureMediaScannerConnection;
 import com.luck.picture.lib.basic.PictureSelectorSupporterActivity;
 import com.luck.picture.lib.config.Crop;
+import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
-import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.decoration.WrapContentLinearLayoutManager;
@@ -68,6 +67,7 @@ import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DownloadFileUtils;
 import com.luck.picture.lib.utils.MediaUtils;
 import com.luck.picture.lib.utils.StyleUtils;
+import com.luck.picture.lib.utils.ToastUtils;
 import com.luck.picture.lib.utils.ValueOf;
 import com.luck.picture.lib.widget.BottomNavBar;
 import com.luck.picture.lib.widget.CompleteSelectView;
@@ -1263,12 +1263,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                                     } else {
                                         errorMsg = getString(R.string.ps_save_image_error);
                                     }
-                                    Toast.makeText(getContext().getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();
+                                    ToastUtils.showToast(getContext(),errorMsg);
                                 } else {
                                     new PictureMediaScannerConnection(getActivity(), realPath);
-                                    Toast.makeText(getContext().getApplicationContext(),
-                                            getString(R.string.ps_save_success) + "\n" + realPath,
-                                            Toast.LENGTH_LONG).show();
+                                    ToastUtils.showToast(getContext(),getString(R.string.ps_save_success) + "\n" + realPath);
                                 }
                             }
                         });

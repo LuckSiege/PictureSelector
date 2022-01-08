@@ -79,6 +79,7 @@ import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.MediaUtils;
 import com.luck.picture.lib.utils.SandboxTransformUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
+import com.luck.picture.lib.utils.ToastUtils;
 import com.luck.picture.lib.utils.ValueOf;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.listener.DragListener;
@@ -575,9 +576,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public boolean onSelectLimitTips(Context context, PictureSelectionConfig config, int limitType) {
             if (limitType == SelectLimitType.SELECT_MAX_VIDEO_SELECT_LIMIT) {
-                Toast.makeText(context,
-                        context.getString(R.string.ps_message_video_max_num, String.valueOf(config.maxVideoSelectNum)),
-                        Toast.LENGTH_LONG).show();
+                ToastUtils.showToast(context, context.getString(R.string.ps_message_video_max_num, String.valueOf(config.maxVideoSelectNum)));
                 return true;
             }
             return false;
@@ -680,7 +679,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void openCamera(Fragment fragment, int cameraMode, int requestCode) {
             if (cameraMode == SelectMimeType.ofAudio()) {
-                Toast.makeText(getContext(), "自定义录音功能，请自行扩展", Toast.LENGTH_LONG).show();
+                ToastUtils.showToast(getContext(), "自定义录音功能，请自行扩展");
             } else {
                 SimpleCameraX camera = SimpleCameraX.of();
                 camera.setCameraMode(cameraMode);
