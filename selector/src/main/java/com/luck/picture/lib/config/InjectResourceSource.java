@@ -13,9 +13,9 @@ import com.luck.picture.lib.adapter.holder.PreviewGalleryAdapter;
 /**
  * @author：luck
  * @date：2021/12/23 10:50 上午
- * @describe：ResourceSource
+ * @describe：InjectResourceSource
  */
-public final class ResourceSource {
+public final class InjectResourceSource {
     /**
      * {@link PictureSelectorFragment}  layout
      * {@link R.layout.ps_fragment_selector}
@@ -70,7 +70,7 @@ public final class ResourceSource {
      * getLayoutResource
      *
      * @param context
-     * @param resourceSource {@link ResourceSource}
+     * @param resourceSource {@link InjectResourceSource}
      * @return
      */
     public static int getLayoutResource(Context context, int resourceSource) {

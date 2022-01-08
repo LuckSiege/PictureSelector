@@ -3,7 +3,7 @@ package com.luck.picture.lib.interfaces;
 import android.content.Context;
 
 import com.luck.picture.lib.R;
-import com.luck.picture.lib.config.ResourceSource;
+import com.luck.picture.lib.config.InjectResourceSource;
 
 /**
  * @author：luck
@@ -28,7 +28,7 @@ public interface OnInjectLayoutResourceListener {
      * </p>
      *
      * @param context
-     * @param resourceSource {@link ResourceSource}
+     * @param resourceSource {@link InjectResourceSource}
      * @return
      */
     int getLayoutResourceId(Context context, int resourceSource);

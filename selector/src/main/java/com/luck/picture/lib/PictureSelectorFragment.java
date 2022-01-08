@@ -29,7 +29,7 @@ import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
-import com.luck.picture.lib.config.ResourceSource;
+import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
@@ -121,7 +121,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public int getResourceId() {
-        int layoutResourceId = ResourceSource.getLayoutResource(getContext(), ResourceSource.MAIN_SELECTOR_LAYOUT_RESOURCE);
+        int layoutResourceId = InjectResourceSource.getLayoutResource(getContext(), InjectResourceSource.MAIN_SELECTOR_LAYOUT_RESOURCE);
         if (layoutResourceId != 0) {
             return layoutResourceId;
         }

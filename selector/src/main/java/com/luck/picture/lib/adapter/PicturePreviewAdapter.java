@@ -10,7 +10,7 @@ import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
 import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
 import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.config.ResourceSource;
+import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.entity.LocalMedia;
 
 import java.util.List;
@@ -40,10 +40,10 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     public BasePreviewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         int layoutResourceId = 0;
         if (viewType == BasePreviewHolder.ADAPTER_TYPE_VIDEO) {
-            layoutResourceId = ResourceSource.getLayoutResource(parent.getContext(), ResourceSource.PREVIEW_ITEM_VIDEO_LAYOUT_RESOURCE);
+            layoutResourceId = InjectResourceSource.getLayoutResource(parent.getContext(), InjectResourceSource.PREVIEW_ITEM_VIDEO_LAYOUT_RESOURCE);
             return BasePreviewHolder.generate(parent, viewType, layoutResourceId != 0 ? layoutResourceId : R.layout.ps_preview_video);
         } else {
-            layoutResourceId = ResourceSource.getLayoutResource(parent.getContext(), ResourceSource.PREVIEW_ITEM_IMAGE_LAYOUT_RESOURCE);
+            layoutResourceId = InjectResourceSource.getLayoutResource(parent.getContext(), InjectResourceSource.PREVIEW_ITEM_IMAGE_LAYOUT_RESOURCE);
             return BasePreviewHolder.generate(parent, viewType, layoutResourceId != 0 ? layoutResourceId : R.layout.ps_preview_image);
         }
     }

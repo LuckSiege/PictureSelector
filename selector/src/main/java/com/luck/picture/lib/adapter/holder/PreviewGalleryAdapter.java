@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
-import com.luck.picture.lib.config.ResourceSource;
+import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.StyleUtils;
@@ -46,8 +46,8 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        int layoutResourceId = ResourceSource.getLayoutResource(parent.getContext(),
-                ResourceSource.PREVIEW_GALLERY_ITEM_LAYOUT_RESOURCE);
+        int layoutResourceId = InjectResourceSource.getLayoutResource(parent.getContext(),
+                InjectResourceSource.PREVIEW_GALLERY_ITEM_LAYOUT_RESOURCE);
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(layoutResourceId != 0 ? layoutResourceId
                         : R.layout.ps_preview_gallery_item, parent, false);

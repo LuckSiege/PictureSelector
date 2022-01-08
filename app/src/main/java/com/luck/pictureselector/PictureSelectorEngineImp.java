@@ -3,7 +3,7 @@ package com.luck.pictureselector;
 import android.content.Context;
 import android.util.Log;
 
-import com.luck.picture.lib.config.ResourceSource;
+import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
 import com.luck.picture.lib.engine.ImageEngine;
@@ -78,23 +78,23 @@ public class PictureSelectorEngineImp implements PictureSelectorEngine {
             @Override
             public int getLayoutResourceId(Context context, int resourceSource) {
                 switch (resourceSource) {
-                    case ResourceSource.MAIN_SELECTOR_LAYOUT_RESOURCE:
+                    case InjectResourceSource.MAIN_SELECTOR_LAYOUT_RESOURCE:
                         return R.layout.ps_custom_fragment_selector;
-                    case ResourceSource.PREVIEW_LAYOUT_RESOURCE:
+                    case InjectResourceSource.PREVIEW_LAYOUT_RESOURCE:
                         return R.layout.ps_custom_fragment_preview;
-                    case ResourceSource.MAIN_ITEM_IMAGE_LAYOUT_RESOURCE:
+                    case InjectResourceSource.MAIN_ITEM_IMAGE_LAYOUT_RESOURCE:
                         return R.layout.ps_custom_item_grid_image;
-                    case ResourceSource.MAIN_ITEM_VIDEO_LAYOUT_RESOURCE:
+                    case InjectResourceSource.MAIN_ITEM_VIDEO_LAYOUT_RESOURCE:
                         return R.layout.ps_custom_item_grid_video;
-                    case ResourceSource.MAIN_ITEM_AUDIO_LAYOUT_RESOURCE:
+                    case InjectResourceSource.MAIN_ITEM_AUDIO_LAYOUT_RESOURCE:
                         return R.layout.ps_custom_item_grid_audio;
-                    case ResourceSource.ALBUM_ITEM_LAYOUT_RESOURCE:
+                    case InjectResourceSource.ALBUM_ITEM_LAYOUT_RESOURCE:
                         return R.layout.ps_custom_album_folder_item;
-                    case ResourceSource.PREVIEW_ITEM_IMAGE_LAYOUT_RESOURCE:
+                    case InjectResourceSource.PREVIEW_ITEM_IMAGE_LAYOUT_RESOURCE:
                         return R.layout.ps_custom_preview_image;
-                    case ResourceSource.PREVIEW_ITEM_VIDEO_LAYOUT_RESOURCE:
+                    case InjectResourceSource.PREVIEW_ITEM_VIDEO_LAYOUT_RESOURCE:
                         return R.layout.ps_custom_preview_video;
-                    case ResourceSource.PREVIEW_GALLERY_ITEM_LAYOUT_RESOURCE:
+                    case InjectResourceSource.PREVIEW_GALLERY_ITEM_LAYOUT_RESOURCE:
                         return R.layout.ps_custom_preview_gallery_item;
                     default:
                         return 0;
