@@ -2,8 +2,6 @@ package com.luck.picture.lib.interfaces;
 
 import androidx.fragment.app.Fragment;
 
-import com.luck.picture.lib.config.PictureSelectionConfig;
-
 /**
  * @author：luck
  * @date：2021/11/23 10:41 上午

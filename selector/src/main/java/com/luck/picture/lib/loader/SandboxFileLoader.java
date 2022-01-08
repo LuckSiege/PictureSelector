@@ -1,7 +1,6 @@
 package com.luck.picture.lib.loader;
 
 import android.content.Context;
-import android.net.Uri;
 import android.text.TextUtils;
 
 import com.luck.picture.lib.config.PictureMimeType;

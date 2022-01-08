@@ -1,7 +1,6 @@
 package com.luck.picture.lib.adapter.holder;
 
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 

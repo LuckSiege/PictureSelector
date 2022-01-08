@@ -2,6 +2,7 @@ package com.luck.picture.lib.immersive;
 
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
+
 import java.lang.reflect.Method;
 
 /**
