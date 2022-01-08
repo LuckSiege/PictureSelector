@@ -3,6 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.luck.picture.lib.widget.MediumBoldTextView
+        android:id="@+id/tvb_inject_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="Click on the screen use PictureSelector"
+        android:textColor="@color/ps_color_bd"
+        android:textSize="14sp" />
+
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"

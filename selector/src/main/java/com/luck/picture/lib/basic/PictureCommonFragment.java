@@ -172,6 +172,16 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     }
 
     @Override
+    public void onEnterFragmentAnimComplete() {
+
+    }
+
+    @Override
+    public void onEnterFragment() {
+
+    }
+
+    @Override
     public void onExitFragment() {
 
     }
@@ -249,12 +259,26 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
         PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
+        Animation loadAnimation = AnimationUtils.loadAnimation(getActivity(),
+                enter ? windowAnimationStyle.activityEnterAnimation : windowAnimationStyle.activityExitAnimation);
         if (enter) {
-            return AnimationUtils.loadAnimation(getActivity(), windowAnimationStyle.activityEnterAnimation);
+            onEnterFragment();
         } else {
             onExitFragment();
-            return AnimationUtils.loadAnimation(getActivity(), windowAnimationStyle.activityExitAnimation);
         }
+        loadAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                onEnterFragmentAnimComplete();
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        return loadAnimation;
     }
 
 
@@ -801,7 +825,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     ForegroundService.startForegroundService(getContext());
                     startActivityForResult(cameraIntent, PictureConfig.REQUEST_CAMERA);
                 } else {
-                    ToastUtils.showToast(getContext(),"The system is missing a recording component");
+                    ToastUtils.showToast(getContext(), "The system is missing a recording component");
                 }
             }
         }
@@ -885,7 +909,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    ToastUtils.showToast(getContext(),e.getMessage());
+                    ToastUtils.showToast(getContext(), e.getMessage());
                 }
 
                 ArrayList<LocalMedia> result = new ArrayList<>(selectedResult);
@@ -905,7 +929,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         } else if (resultCode == Crop.RESULT_CROP_ERROR) {
             Throwable throwable = data != null ? Crop.getError(data) : new Throwable("image crop error");
             if (throwable != null) {
-                ToastUtils.showToast(getContext(),throwable.getMessage());
+                ToastUtils.showToast(getContext(), throwable.getMessage());
             }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             if (requestCode == PictureConfig.REQUEST_CAMERA) {

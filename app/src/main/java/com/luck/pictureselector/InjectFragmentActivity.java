@@ -3,6 +3,7 @@ package com.luck.pictureselector;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,11 +31,19 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inject_fragment);
-        PictureSelectorFragment fragment = new PictureSelectorFragment();
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, fragment, PictureSelectorFragment.TAG)
-                .addToBackStack(PictureSelectorFragment.TAG)
-                .commitAllowingStateLoss();
+        findViewById(R.id.tvb_inject_fragment).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ActivityCompatHelper.checkFragmentNonExits(
+                        InjectFragmentActivity.this, PictureSelectorFragment.TAG)) {
+                    PictureSelectorFragment fragment = new PictureSelectorFragment();
+                    getSupportFragmentManager().beginTransaction()
+                            .add(R.id.fragment_container, fragment, PictureSelectorFragment.TAG)
+                            .addToBackStack(PictureSelectorFragment.TAG)
+                            .commitAllowingStateLoss();
+                }
+            }
+        });
     }
 
     @Override

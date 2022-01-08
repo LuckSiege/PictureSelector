@@ -144,7 +144,6 @@ public interface IPictureSelectorCommonEvent {
      * <p>
      * isSelectNumberStyle模式下对选择结果编号进行排序
      * </p>
-     *
      */
     void sendChangeSubSelectPositionEvent(boolean adapterChange);
 
@@ -169,6 +168,16 @@ public interface IPictureSelectorCommonEvent {
      * @param result
      */
     void onResultEvent(ArrayList<LocalMedia> result);
+
+    /**
+     * 进入Fragment动画结束
+     */
+    void onEnterFragmentAnimComplete();
+
+    /**
+     * 进入Fragment
+     */
+    void onEnterFragment();
 
     /**
      * 退出Fragment

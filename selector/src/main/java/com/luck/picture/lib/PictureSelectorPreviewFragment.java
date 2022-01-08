@@ -431,17 +431,19 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
         if (!isBottomPreview && !isExternalPreview && config.isPreviewZoomEffect) {
+            // config.isPreviewZoomEffect模式下使用缩放动画
             return null;
         }
         PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
-        if (windowAnimationStyle.activityPreviewEnterAnimation != 0
-                && windowAnimationStyle.activityPreviewExitAnimation != 0) {
+        if (windowAnimationStyle.activityPreviewEnterAnimation != 0 && windowAnimationStyle.activityPreviewExitAnimation != 0) {
+            Animation loadAnimation = AnimationUtils.loadAnimation(getActivity(),
+                    enter ? windowAnimationStyle.activityPreviewEnterAnimation : windowAnimationStyle.activityPreviewExitAnimation);
             if (enter) {
-                return AnimationUtils.loadAnimation(getActivity(), windowAnimationStyle.activityPreviewEnterAnimation);
+                onEnterFragment();
             } else {
                 onExitFragment();
-                return AnimationUtils.loadAnimation(getActivity(), windowAnimationStyle.activityPreviewExitAnimation);
             }
+            return loadAnimation;
         } else {
             return super.onCreateAnimation(transit, enter, nextAnim);
         }
@@ -632,7 +634,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     ((ConstraintLayout.LayoutParams) completeSelectView
                             .getLayoutParams()).topMargin = DensityUtil.getStatusBarHeight(getContext());
                 }
-            } else if (completeSelectView.getLayoutParams() instanceof RelativeLayout.LayoutParams){
+            } else if (completeSelectView.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
                 if (config.isPreviewFullScreenMode) {
                     ((RelativeLayout.LayoutParams) completeSelectView
                             .getLayoutParams()).topMargin = DensityUtil.getStatusBarHeight(getContext());
@@ -758,7 +760,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             mGalleryRecycle.setLayoutManager(layoutManager);
             mGalleryRecycle.addItemDecoration(new GridSpacingItemDecoration(Integer.MAX_VALUE,
                     DensityUtil.dip2px(getContext(), 6), true));
-            mGalleryAdapter = new PreviewGalleryAdapter(isBottomPreview,SelectedManager.getSelectedResult());
+            mGalleryAdapter = new PreviewGalleryAdapter(isBottomPreview, SelectedManager.getSelectedResult());
             notifyGallerySelectMedia(mData.get(curPosition));
             mGalleryRecycle.setAdapter(mGalleryAdapter);
             mGalleryAdapter.setItemClickListener(new PreviewGalleryAdapter.OnItemClickListener() {
@@ -1263,10 +1265,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                                     } else {
                                         errorMsg = getString(R.string.ps_save_image_error);
                                     }
-                                    ToastUtils.showToast(getContext(),errorMsg);
+                                    ToastUtils.showToast(getContext(), errorMsg);
                                 } else {
                                     new PictureMediaScannerConnection(getActivity(), realPath);
-                                    ToastUtils.showToast(getContext(),getString(R.string.ps_save_success) + "\n" + realPath);
+                                    ToastUtils.showToast(getContext(), getString(R.string.ps_save_success) + "\n" + realPath);
                                 }
                             }
                         });

@@ -25,6 +25,7 @@ import com.luck.picture.lib.animators.SlideInBottomAnimationAdapter;
 import com.luck.picture.lib.basic.FragmentInjectManager;
 import com.luck.picture.lib.basic.IPictureSelectorEvent;
 import com.luck.picture.lib.basic.PictureCommonFragment;
+import com.luck.picture.lib.basic.PictureSelectorSupporterActivity;
 import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -230,7 +231,34 @@ public class PictureSelectorFragment extends PictureCommonFragment
         initComplete();
         initRecycler(view);
         initBottomNavBar();
-        requestLoadData();
+        if (isNormalDefaultEnter()) {
+            requestLoadData();
+        }
+    }
+
+    @Override
+    public void onEnterFragmentAnimComplete() {
+        if (isOtherEnter()) {
+            requestLoadData();
+        }
+    }
+
+    /**
+     * 使用PictureSelector 默认方式进入
+     *
+     * @return
+     */
+    private boolean isNormalDefaultEnter() {
+        return getActivity() instanceof PictureSelectorSupporterActivity;
+    }
+
+    /**
+     * 非默认方式进入
+     *
+     * @return
+     */
+    private boolean isOtherEnter() {
+        return !(getActivity() instanceof PictureSelectorSupporterActivity);
     }
 
     @Override
@@ -418,7 +446,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (isHasPermissions) {
             beginLoadData();
         } else {
-            ToastUtils.showToast(getContext(),getString(R.string.ps_jurisdiction));
+            ToastUtils.showToast(getContext(), getString(R.string.ps_jurisdiction));
             iBridgePictureBehavior.onSelectFinish(false, null);
         }
     }
@@ -665,7 +693,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (StyleUtils.checkStyleValidity(listBackgroundColor)) {
             mRecycler.setBackgroundColor(listBackgroundColor);
         } else {
-            mRecycler.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.ps_color_black));
+            mRecycler.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_black));
         }
         int imageSpanCount = config.imageSpanCount <= 0 ? PictureConfig.DEFAULT_SPAN_COUNT : config.imageSpanCount;
         if (StyleUtils.checkSizeValidity(selectMainStyle.getAdapterItemSpacingSize())) {
