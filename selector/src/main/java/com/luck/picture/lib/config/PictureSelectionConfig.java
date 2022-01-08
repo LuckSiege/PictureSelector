@@ -17,6 +17,7 @@ import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnPreviewInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
+import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.magical.BuildRecycleItemViewParams;
 import com.luck.picture.lib.manager.SelectedManager;
@@ -110,13 +111,14 @@ public final class PictureSelectionConfig implements Parcelable {
     public static SandboxFileEngine sandboxFileEngine;
     public static ExtendLoaderEngine loaderDataEngine;
     public static PictureSelectorStyle selectorStyle;
-    public static OnCameraInterceptListener cameraInterceptListener;
-    public static OnResultCallbackListener<LocalMedia> resultCallListener;
-    public static OnExternalPreviewEventListener externalPreviewEventListener;
-    public static OnMediaEditInterceptListener editMediaEventListener;
-    public static OnPermissionsInterceptListener permissionsEventListener;
-    public static OnInjectLayoutResourceListener layoutResourceListener;
-    public static OnPreviewInterceptListener previewInterceptListener;
+    public static OnCameraInterceptListener onCameraInterceptListener;
+    public static OnSelectLimitTipsListener onSelectLimitTipsListener;
+    public static OnResultCallbackListener<LocalMedia> onResultCallListener;
+    public static OnExternalPreviewEventListener onExternalPreviewEventListener;
+    public static OnMediaEditInterceptListener onEditMediaEventListener;
+    public static OnPermissionsInterceptListener onPermissionsEventListener;
+    public static OnInjectLayoutResourceListener onLayoutResourceListener;
+    public static OnPreviewInterceptListener onPreviewInterceptListener;
 
 
     protected PictureSelectionConfig(Parcel in) {
@@ -382,18 +384,19 @@ public final class PictureSelectionConfig implements Parcelable {
      * 释放监听器
      */
     public static void destroy() {
-        PictureSelectionConfig.resultCallListener = null;
         PictureSelectionConfig.imageEngine = null;
         PictureSelectionConfig.compressEngine = null;
         PictureSelectionConfig.cropEngine = null;
         PictureSelectionConfig.sandboxFileEngine = null;
         PictureSelectionConfig.loaderDataEngine = null;
-        PictureSelectionConfig.cameraInterceptListener = null;
-        PictureSelectionConfig.externalPreviewEventListener = null;
-        PictureSelectionConfig.editMediaEventListener = null;
-        PictureSelectionConfig.permissionsEventListener = null;
-        PictureSelectionConfig.layoutResourceListener = null;
-        PictureSelectionConfig.previewInterceptListener = null;
+        PictureSelectionConfig.onResultCallListener = null;
+        PictureSelectionConfig.onCameraInterceptListener = null;
+        PictureSelectionConfig.onExternalPreviewEventListener = null;
+        PictureSelectionConfig.onEditMediaEventListener = null;
+        PictureSelectionConfig.onPermissionsEventListener = null;
+        PictureSelectionConfig.onLayoutResourceListener = null;
+        PictureSelectionConfig.onPreviewInterceptListener = null;
+        PictureSelectionConfig.onSelectLimitTipsListener = null;
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         SelectedManager.clear();
         BuildRecycleItemViewParams.clear();

@@ -33,11 +33,11 @@ public class PreviewBottomNavBar extends BottomNavBar {
     protected void handleLayoutUI() {
         tvPreview.setVisibility(GONE);
         tvImageEditor.setOnClickListener(this);
-        tvImageEditor.setVisibility(PictureSelectionConfig.editMediaEventListener != null ? View.VISIBLE : GONE);
+        tvImageEditor.setVisibility(PictureSelectionConfig.onEditMediaEventListener != null ? View.VISIBLE : GONE);
     }
 
     public void isDisplayEditor(boolean isHasVideo) {
-        tvImageEditor.setVisibility(PictureSelectionConfig.editMediaEventListener != null && !isHasVideo ? View.VISIBLE : GONE);
+        tvImageEditor.setVisibility(PictureSelectionConfig.onEditMediaEventListener != null && !isHasVideo ? View.VISIBLE : GONE);
     }
 
     public TextView getEditor() {

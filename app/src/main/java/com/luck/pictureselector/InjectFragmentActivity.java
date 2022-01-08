@@ -71,8 +71,8 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
             if (ActivityCompatHelper.checkRootFragment(this)) {
-                if (PictureSelectionConfig.resultCallListener != null) {
-                    PictureSelectionConfig.resultCallListener.onCancel();
+                if (PictureSelectionConfig.onResultCallListener != null) {
+                    PictureSelectionConfig.onResultCallListener.onCancel();
                 }
             } else {
                 PictureSelectorPreviewFragment previewFragment = getPreviewFragment();

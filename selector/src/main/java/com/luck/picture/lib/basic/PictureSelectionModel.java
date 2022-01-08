@@ -34,6 +34,7 @@ import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnPreviewInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
+import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureSelectorStyle;
@@ -195,7 +196,7 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel setCameraInterceptListener(OnCameraInterceptListener listener) {
-        PictureSelectionConfig.cameraInterceptListener = listener;
+        PictureSelectionConfig.onCameraInterceptListener = listener;
         return this;
     }
 
@@ -206,7 +207,7 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel setPreviewInterceptListener(OnPreviewInterceptListener listener) {
-        PictureSelectionConfig.previewInterceptListener = listener;
+        PictureSelectionConfig.onPreviewInterceptListener = listener;
         return this;
     }
 
@@ -217,7 +218,7 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel setExternalPreviewEventListener(OnExternalPreviewEventListener listener) {
-        PictureSelectionConfig.externalPreviewEventListener = listener;
+        PictureSelectionConfig.onExternalPreviewEventListener = listener;
         return this;
     }
 
@@ -230,7 +231,7 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel setInjectLayoutResourceListener(OnInjectLayoutResourceListener listener) {
         selectionConfig.isInjectLayoutResource = listener != null;
-        PictureSelectionConfig.layoutResourceListener = listener;
+        PictureSelectionConfig.onLayoutResourceListener = listener;
         return this;
     }
 
@@ -241,7 +242,7 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel setEditMediaInterceptListener(OnMediaEditInterceptListener listener) {
-        PictureSelectionConfig.editMediaEventListener = listener;
+        PictureSelectionConfig.onEditMediaEventListener = listener;
         return this;
     }
 
@@ -252,7 +253,18 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel setPermissionsInterceptListener(OnPermissionsInterceptListener listener) {
-        PictureSelectionConfig.permissionsEventListener = listener;
+        PictureSelectionConfig.onPermissionsEventListener = listener;
+        return this;
+    }
+
+    /**
+     * Custom limit tips
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionModel setSelectLimitTipsListener(OnSelectLimitTipsListener listener) {
+        PictureSelectionConfig.onSelectLimitTipsListener = listener;
         return this;
     }
 
@@ -427,7 +439,7 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel isDirectReturnSingle(boolean isDirectReturn) {
-        selectionConfig.isDirectReturnSingle = selectionConfig.selectionMode  == SelectModeConfig.SINGLE && isDirectReturn;
+        selectionConfig.isDirectReturnSingle = selectionConfig.selectionMode == SelectModeConfig.SINGLE && isDirectReturn;
         return this;
     }
 
@@ -676,15 +688,15 @@ public class PictureSelectionModel {
      * Query the pictures or videos in the specified directory
      *
      * @param dir Camera out path
-     *                      <p>
-     *                      Normally, it should be consistent with {@link PictureSelectionConfig.setOutputCameraDir()};
-     *                      </p>
+     *            <p>
+     *            Normally, it should be consistent with {@link PictureSelectionConfig.setOutputCameraDir()};
+     *            </p>
      *
-     *                      <p>
-     *                      If build.version.sdk_INT < 29,{@link PictureSelectionConfig.setQuerySandboxDir();}
-     *                      Do not set the external storage path,
-     *                      which may cause the problem of picture duplication
-     *                      </p>
+     *            <p>
+     *            If build.version.sdk_INT < 29,{@link PictureSelectionConfig.setQuerySandboxDir();}
+     *            Do not set the external storage path,
+     *            which may cause the problem of picture duplication
+     *            </p>
      * @return
      */
     public PictureSelectionModel setQuerySandboxDir(String dir) {
@@ -829,7 +841,7 @@ public class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel isPreviewFullScreenMode(boolean isFullScreenModel) {
-        if (selectionConfig.isOnlyCamera){
+        if (selectionConfig.isOnlyCamera) {
             selectionConfig.isPreviewFullScreenMode = false;
         } else {
             selectionConfig.isPreviewFullScreenMode = isFullScreenModel;
@@ -951,7 +963,7 @@ public class PictureSelectionModel {
      * @param isDisplayDelete if visible delete
      * @param list            preview data
      */
-    public void startFragmentPreview(int currentPosition,boolean isDisplayDelete, List<LocalMedia> list) {
+    public void startFragmentPreview(int currentPosition, boolean isDisplayDelete, List<LocalMedia> list) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
             if (activity == null) {
@@ -988,7 +1000,7 @@ public class PictureSelectionModel {
      * @param isDisplayDelete if visible delete
      * @param list            preview data
      */
-    public void startActivityPreview(int currentPosition,boolean isDisplayDelete, ArrayList<LocalMedia> list) {
+    public void startActivityPreview(int currentPosition, boolean isDisplayDelete, ArrayList<LocalMedia> list) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
             if (activity == null) {
@@ -1028,7 +1040,7 @@ public class PictureSelectionModel {
             // 绑定回调监听
             selectionConfig.isResultListenerBack = true;
             selectionConfig.isActivityResultBack = false;
-            PictureSelectionConfig.resultCallListener = call;
+            PictureSelectionConfig.onResultCallListener = call;
             if (selectionConfig.isOnlyCamera) {
                 FragmentManager fragmentManager = null;
                 if (activity instanceof AppCompatActivity) {

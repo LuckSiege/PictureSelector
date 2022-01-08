@@ -963,8 +963,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      */
     @SuppressLint("NotifyDataSetChanged")
     private void deletePreview() {
-        if (PictureSelectionConfig.externalPreviewEventListener != null) {
-            PictureSelectionConfig.externalPreviewEventListener.onPreviewDelete(viewPager.getCurrentItem());
+        if (PictureSelectionConfig.onExternalPreviewEventListener != null) {
+            PictureSelectionConfig.onExternalPreviewEventListener.onPreviewDelete(viewPager.getCurrentItem());
             int currentItem = viewPager.getCurrentItem();
             mData.remove(currentItem);
             if (mData.size() == 0) {
@@ -1013,9 +1013,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
             @Override
             public void onEditImage() {
-                if (PictureSelectionConfig.editMediaEventListener != null) {
+                if (PictureSelectionConfig.onEditMediaEventListener != null) {
                     LocalMedia media = mData.get(viewPager.getCurrentItem());
-                    PictureSelectionConfig.editMediaEventListener
+                    PictureSelectionConfig.onEditMediaEventListener
                             .onStartMediaEdit(PictureSelectorPreviewFragment.this, media,
                                     Crop.REQUEST_EDIT_CROP);
                 }
@@ -1232,8 +1232,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * @param media
      */
     private void onExternalLongPressDownload(LocalMedia media) {
-        if (PictureSelectionConfig.externalPreviewEventListener != null) {
-            if (!PictureSelectionConfig.externalPreviewEventListener.onLongPressDownload(media)) {
+        if (PictureSelectionConfig.onExternalPreviewEventListener != null) {
+            if (!PictureSelectionConfig.onExternalPreviewEventListener.onLongPressDownload(media)) {
                 PictureCommonDialog dialog = PictureCommonDialog.showDialog(getContext(),
                         getContext().getString(R.string.ps_prompt),
                         PictureMimeType.isHasVideo(media.getMimeType())

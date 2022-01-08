@@ -42,7 +42,9 @@ import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.basic.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.ResourceSource;
+import com.luck.picture.lib.config.SelectLimitType;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
@@ -64,6 +66,7 @@ import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
+import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.loader.SandboxFileLoader;
 import com.luck.picture.lib.style.BottomNavBarStyle;
@@ -266,6 +269,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setCompressEngine(getCompressEngine())
                             .setSandboxFileEngine(new MeSandboxFileEngine())
                             .setCameraInterceptListener(getCustomCameraEvent())
+                            .setSelectLimitTipsListener(new MeOnSelectLimitTipsListener())
                             .setEditMediaInterceptListener(getCustomEditMediaEvent())
                             //.setExtendLoaderEngine(getExtendLoaderEngine())
                             .setInjectLayoutResourceListener(getInjectLayoutResource())
@@ -563,6 +567,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return cb_inject_layout.isChecked() ? new MeOnInjectLayoutResourceListener() : null;
     }
 
+    /**
+     * 拦截自定义提示
+     */
+    private static class MeOnSelectLimitTipsListener implements OnSelectLimitTipsListener {
+
+        @Override
+        public boolean onSelectLimitTips(Context context, PictureSelectionConfig config, int limitType) {
+            if (limitType == SelectLimitType.SELECT_MAX_VIDEO_SELECT_LIMIT) {
+                Toast.makeText(context,
+                        context.getString(R.string.ps_message_video_max_num, String.valueOf(config.maxVideoSelectNum)),
+                        Toast.LENGTH_LONG).show();
+                return true;
+            }
+            return false;
+        }
+    }
 
     /**
      * 注入自定义布局UI，前提是布局View id 和 根目录Layout必须一致

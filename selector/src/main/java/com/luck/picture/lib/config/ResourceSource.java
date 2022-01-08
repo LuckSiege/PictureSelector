@@ -74,8 +74,8 @@ public final class ResourceSource {
      * @return
      */
     public static int getLayoutResource(Context context, int resourceSource) {
-        if (PictureSelectionConfig.layoutResourceListener != null) {
-            return PictureSelectionConfig.layoutResourceListener
+        if (PictureSelectionConfig.onLayoutResourceListener != null) {
+            return PictureSelectionConfig.onLayoutResourceListener
                     .getLayoutResourceId(context, resourceSource);
         }
         return 0;

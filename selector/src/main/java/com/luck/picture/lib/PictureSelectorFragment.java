@@ -319,8 +319,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
                     albumListPopWindow.dismiss();
                 } else {
                     if (ActivityCompatHelper.checkRootFragment(getActivity())) {
-                        if (PictureSelectionConfig.resultCallListener != null) {
-                            PictureSelectionConfig.resultCallListener.onCancel();
+                        if (PictureSelectionConfig.onResultCallListener != null) {
+                            PictureSelectionConfig.onResultCallListener.onCancel();
                         }
                     }
                     SelectorResult result = getResult(Activity.RESULT_CANCELED, new ArrayList<>());
@@ -366,8 +366,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (PermissionChecker.isCheckReadStorage(getContext())) {
             beginLoadData();
         } else {
-            if (PictureSelectionConfig.permissionsEventListener != null) {
-                PictureSelectionConfig.permissionsEventListener.requestPermission(this,
+            if (PictureSelectionConfig.onPermissionsEventListener != null) {
+                PictureSelectionConfig.onPermissionsEventListener.requestPermission(this,
                         PermissionConfig.READ_WRITE_EXTERNAL_STORAGE, new OnCallbackListener<Boolean>() {
                             @Override
                             public void onCall(Boolean isResult) {
@@ -410,8 +410,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
     @Override
     public void handlePermissionSettingResult() {
         boolean isHasPermissions;
-        if (PictureSelectionConfig.permissionsEventListener != null) {
-            isHasPermissions = PictureSelectionConfig.permissionsEventListener.hasPermissions(this);
+        if (PictureSelectionConfig.onPermissionsEventListener != null) {
+            isHasPermissions = PictureSelectionConfig.onPermissionsEventListener.hasPermissions(this);
         } else {
             isHasPermissions = PermissionChecker.isCheckReadStorage(getContext());
         }
@@ -731,8 +731,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
                         return;
                     }
                     if (PictureMimeType.isHasAudio(media.getMimeType())) {
-                        if (PictureSelectionConfig.previewInterceptListener != null) {
-                            PictureSelectionConfig.previewInterceptListener.onPreviewAudio(getContext(), media);
+                        if (PictureSelectionConfig.onPreviewInterceptListener != null) {
+                            PictureSelectionConfig.onPreviewInterceptListener.onPreviewAudio(getContext(), media);
                         } else {
                             AudioPlayDialog.showPlayAudioDialog(getActivity(), media.getPath());
                         }
@@ -832,8 +832,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 BuildRecycleItemViewParams.generateViewParams(mRecycler,
                         config.isPreviewFullScreenMode ? 0 : DensityUtil.getStatusBarHeight(getContext()));
             }
-            if (PictureSelectionConfig.previewInterceptListener != null) {
-                PictureSelectionConfig.previewInterceptListener
+            if (PictureSelectionConfig.onPreviewInterceptListener != null) {
+                PictureSelectionConfig.onPreviewInterceptListener
                         .onPreview(getContext(), position, totalNum, mPage, currentBucketId, titleBar.getTitleText(),
                                 mAdapter.isDisplayCamera(), data, isBottomPreview);
             } else {
