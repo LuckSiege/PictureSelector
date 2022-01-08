@@ -304,7 +304,7 @@ public class PictureSelectionModel {
      *                      </p>
      * @return
      */
-    public PictureSelectionModel selectionMode(int selectionMode) {
+    public PictureSelectionModel setSelectionMode(int selectionMode) {
         selectionConfig.selectionMode = selectionMode;
         selectionConfig.maxSelectNum = selectionConfig.selectionMode ==
                 SelectModeConfig.SINGLE ? 1 : selectionConfig.maxSelectNum;
@@ -396,28 +396,6 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel setMinSelectNum(int minSelectNum) {
         selectionConfig.minSelectNum = minSelectNum;
-        return this;
-    }
-
-    /**
-     * Select the maximum video number of files
-     *
-     * @param maxVideoSelectNum PictureSelector video max selection
-     * @return
-     */
-    public PictureSelectionModel setMaxVideoSelectNum(int maxVideoSelectNum) {
-        selectionConfig.maxVideoSelectNum = selectionConfig.chooseMode == SelectMimeType.ofVideo() ? 0 : maxVideoSelectNum;
-        return this;
-    }
-
-    /**
-     * Select the minimum video number of files
-     *
-     * @param minVideoSelectNum PictureSelector video min selection
-     * @return
-     */
-    public PictureSelectionModel setMinVideoSelectNum(int minVideoSelectNum) {
-        selectionConfig.minVideoSelectNum = minVideoSelectNum;
         return this;
     }
 
@@ -554,25 +532,52 @@ public class PictureSelectionModel {
 
 
     /**
-     * @param videoMaxSecond selection video max second
+     * filter max seconds video
+     *
+     * @param videoMaxSecond filter video max second
      * @return
      */
-    public PictureSelectionModel setSelectVideoMaxSecond(int videoMaxSecond) {
-        selectionConfig.videoMaxSecond = (videoMaxSecond * 1000);
+    public PictureSelectionModel setFilterVideoMaxSecond(int videoMaxSecond) {
+        selectionConfig.filterVideoMaxSecond = videoMaxSecond * 1000;
         return this;
     }
 
     /**
-     * @param videoMinSecond selection video min second
+     * filter min seconds video
+     *
+     * @param videoMinSecond filter video min second
      * @return
      */
-    public PictureSelectionModel setSelectVideoMinSecond(int videoMinSecond) {
-        selectionConfig.videoMinSecond = videoMinSecond * 1000;
+    public PictureSelectionModel setFilterVideoMinSecond(int videoMinSecond) {
+        selectionConfig.filterVideoMinSecond = videoMinSecond * 1000;
         return this;
     }
 
+    /**
+     * Select the max number of seconds for video or audio support
+     *
+     * @param maxDurationSecond select video max second
+     * @return
+     */
+    public PictureSelectionModel setSelectMaxDurationSecond(int maxDurationSecond) {
+        selectionConfig.selectMaxDurationSecond = maxDurationSecond * 1000;
+        return this;
+    }
 
     /**
+     * Select the min number of seconds for video or audio support
+     *
+     * @param minDurationSecond select video min second
+     * @return
+     */
+    public PictureSelectionModel setSelectMinDurationSecond(int minDurationSecond) {
+        selectionConfig.selectMinDurationSecond = minDurationSecond * 1000;
+        return this;
+    }
+
+    /**
+     * The max duration of video recording. If it is system recording, there may be compatibility problems
+     *
      * @param maxSecond video record second
      * @return
      */
@@ -580,6 +585,30 @@ public class PictureSelectionModel {
         selectionConfig.recordVideoMaxSecond = maxSecond;
         return this;
     }
+
+
+    /**
+     * Select the maximum video number of files
+     *
+     * @param maxVideoSelectNum PictureSelector video max selection
+     * @return
+     */
+    public PictureSelectionModel setMaxVideoSelectNum(int maxVideoSelectNum) {
+        selectionConfig.maxVideoSelectNum = selectionConfig.chooseMode == SelectMimeType.ofVideo() ? 0 : maxVideoSelectNum;
+        return this;
+    }
+
+    /**
+     * Select the minimum video number of files
+     *
+     * @param minVideoSelectNum PictureSelector video min selection
+     * @return
+     */
+    public PictureSelectionModel setMinVideoSelectNum(int minVideoSelectNum) {
+        selectionConfig.minVideoSelectNum = minVideoSelectNum;
+        return this;
+    }
+
 
     /**
      * @param minSecond video record second
@@ -739,7 +768,7 @@ public class PictureSelectionModel {
      * @param fileKbSize Filter max file size
      * @return
      */
-    public PictureSelectionModel filterMaxFileSize(long fileKbSize) {
+    public PictureSelectionModel setFilterMaxFileSize(long fileKbSize) {
         if (fileKbSize >= PictureConfig.MB) {
             selectionConfig.filterMaxFileSize = fileKbSize;
         } else {
@@ -754,7 +783,7 @@ public class PictureSelectionModel {
      * @param fileKbSize Filter min file size
      * @return
      */
-    public PictureSelectionModel filterMinFileSize(long fileKbSize) {
+    public PictureSelectionModel setFilterMinFileSize(long fileKbSize) {
         if (fileKbSize >= PictureConfig.MB) {
             selectionConfig.filterMinFileSize = fileKbSize;
         } else {
@@ -770,7 +799,7 @@ public class PictureSelectionModel {
      * @param fileKbSize Filter max file size
      * @return
      */
-    public PictureSelectionModel selectMaxFileSize(long fileKbSize) {
+    public PictureSelectionModel setSelectMaxFileSize(long fileKbSize) {
         if (fileKbSize >= PictureConfig.MB) {
             selectionConfig.selectMaxFileSize = fileKbSize;
         } else {
@@ -785,7 +814,7 @@ public class PictureSelectionModel {
      * @param fileKbSize Filter min file size
      * @return
      */
-    public PictureSelectionModel selectMinFileSize(long fileKbSize) {
+    public PictureSelectionModel setSelectMinFileSize(long fileKbSize) {
         if (fileKbSize >= PictureConfig.MB) {
             selectionConfig.selectMinFileSize = fileKbSize;
         } else {
@@ -800,7 +829,7 @@ public class PictureSelectionModel {
      * @param mimeTypes Use example {@link { image/jpeg or image/png ... }}
      * @return
      */
-    public PictureSelectionModel queryOnlyMimeType(String... mimeTypes) {
+    public PictureSelectionModel setQueryOnlyMimeType(String... mimeTypes) {
         if (mimeTypes != null && mimeTypes.length > 0) {
             selectionConfig.queryOnlyList.addAll(Arrays.asList(mimeTypes));
         }
@@ -932,7 +961,7 @@ public class PictureSelectionModel {
      * @param selectedList Select the selected picture set
      * @return
      */
-    public PictureSelectionModel selectedData(List<LocalMedia> selectedList) {
+    public PictureSelectionModel setSelectedData(List<LocalMedia> selectedList) {
         if (selectedList == null) {
             return this;
         }

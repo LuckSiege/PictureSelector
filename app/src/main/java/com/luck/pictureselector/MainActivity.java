@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setEditMediaInterceptListener(getCustomEditMediaEvent())
                             //.setExtendLoaderEngine(getExtendLoaderEngine())
                             .setInjectLayoutResourceListener(getInjectLayoutResource())
-                            .selectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
+                            .setSelectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
                             .setLanguage(language)
                             .setOutputCameraDir(chooseMode == SelectMimeType.ofAudio()
                                     ? getSandboxAudioOutputPath() : getSandboxCameraOutputPath())
@@ -303,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setMaxVideoSelectNum(2)
                             .setRecyclerAnimationMode(animationMode)
                             .isGif(cb_isGif.isChecked())
-                            .selectedData(mAdapter.getData())
+                            .setSelectedData(mAdapter.getData())
                             .forResult(launcherResult);
                 } else {
                     // 单独拍照

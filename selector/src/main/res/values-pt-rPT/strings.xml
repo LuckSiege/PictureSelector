@@ -68,4 +68,8 @@
     <string name="ps_current_month">Este mês</string>
     <string name="ps_select_max_size">O arquivo selecionado é maior que o %1$s</string>
     <string name="ps_select_min_size">O arquivo selecionado é menos de %1$s</string>
+    <string name="ps_select_video_max_second">Selecionar vídeo por mais de %1$d segundos</string>
+    <string name="ps_select_video_min_second">Selecionar vídeo por menos de %1$d segundos</string>
+    <string name="ps_select_audio_max_second">Selecionar áudio por mais de %1$d segundos</string>
+    <string name="ps_select_audio_min_second">Selecionar áudio por menos de %1$d segundos</string>
 </resources>

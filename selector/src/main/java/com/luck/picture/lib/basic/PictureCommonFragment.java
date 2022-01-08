@@ -270,10 +270,12 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             @Override
             public void onAnimationStart(Animation animation) {
             }
+
             @Override
             public void onAnimationEnd(Animation animation) {
                 onEnterFragmentAnimComplete();
             }
+
             @Override
             public void onAnimationRepeat(Animation animation) {
             }
@@ -284,7 +286,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     @Override
     public int confirmSelect(LocalMedia currentMedia, boolean isSelected) {
-        if (checkSelectFileSizeLimit(currentMedia)) {
+        if (checkSelectLimit(currentMedia)) {
             return SelectedManager.INVALID;
         }
         String curMimeType = currentMedia.getMimeType();
@@ -331,11 +333,56 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     }
 
     /**
-     * 验证选择文件大小判断
+     * 验证选择先决条件
      *
      * @param currentMedia
      */
-    private boolean checkSelectFileSizeLimit(LocalMedia currentMedia) {
+    private boolean checkSelectLimit(LocalMedia currentMedia) {
+        if (PictureMimeType.isHasVideo(currentMedia.getMimeType()) || PictureMimeType.isHasAudio(currentMedia.getMimeType())) {
+            if (config.selectMaxDurationSecond > 0) {
+                if (currentMedia.getDuration() > config.selectMaxDurationSecond) {
+                    if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
+                        boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
+                                .onSelectLimitTips(getContext(), config,
+                                        SelectLimitType.SELECT_MAX_SECOND_SELECT_LIMIT);
+                        if (isSelectLimit) {
+                            return true;
+                        }
+                    }
+                    int second = config.selectMaxDurationSecond / 1000;
+                    if (PictureMimeType.isHasVideo(currentMedia.getMimeType())) {
+                        RemindDialog.showTipsDialog(getContext(),
+                                getString(R.string.ps_select_video_max_second, second));
+                    } else {
+                        RemindDialog.showTipsDialog(getContext(),
+                                getString(R.string.ps_select_audio_max_second, second));
+                    }
+                    return true;
+                }
+            }
+            if (config.selectMinDurationSecond > 0) {
+                int second = config.selectMinDurationSecond / 1000;
+                if (currentMedia.getDuration() < config.selectMinDurationSecond) {
+                    if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
+                        boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
+                                .onSelectLimitTips(getContext(), config,
+                                        SelectLimitType.SELECT_MIN_SECOND_SELECT_LIMIT);
+                        if (isSelectLimit) {
+                            return true;
+                        }
+                    }
+
+                    if (PictureMimeType.isHasVideo(currentMedia.getMimeType())) {
+                        RemindDialog.showTipsDialog(getContext(),
+                                getString(R.string.ps_select_video_min_second, second));
+                    } else {
+                        RemindDialog.showTipsDialog(getContext(),
+                                getString(R.string.ps_select_audio_min_second, second));
+                    }
+                    return true;
+                }
+            }
+        }
         if (config.selectMaxFileSize > 0) {
             if (currentMedia.getSize() > config.selectMaxFileSize) {
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
@@ -411,7 +458,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 return true;
             }
 
-            if (!isSelected && config.videoMinSecond > 0 && duration < config.videoMinSecond) {
+            if (!isSelected && config.filterVideoMinSecond > 0 && duration < config.filterVideoMinSecond) {
                 // 视频小于最低指定的长度
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
@@ -421,11 +468,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_choose_min_seconds, config.videoMinSecond / 1000));
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_choose_min_seconds, config.filterVideoMinSecond / 1000));
                 return true;
             }
 
-            if (!isSelected && config.videoMaxSecond > 0 && duration > config.videoMaxSecond) {
+            if (!isSelected && config.filterVideoMaxSecond > 0 && duration > config.filterVideoMaxSecond) {
                 // 视频时长超过了指定的长度
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
@@ -435,7 +482,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_choose_max_seconds, config.videoMaxSecond / 1000));
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_choose_max_seconds, config.filterVideoMaxSecond / 1000));
                 return true;
             }
         } else {
@@ -484,7 +531,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 RemindDialog.showTipsDialog(getContext(), getTipsMsg(getContext(), existMimeType, config.maxVideoSelectNum));
                 return true;
             }
-            if (!isSelected && config.videoMinSecond > 0 && duration < config.videoMinSecond) {
+            if (!isSelected && config.filterVideoMinSecond > 0 && duration < config.filterVideoMinSecond) {
                 // 视频小于最低指定的长度
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
@@ -493,11 +540,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_choose_min_seconds, config.videoMinSecond / 1000));
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_choose_min_seconds, config.filterVideoMinSecond / 1000));
                 return true;
             }
 
-            if (!isSelected && config.videoMaxSecond > 0 && duration > config.videoMaxSecond) {
+            if (!isSelected && config.filterVideoMaxSecond > 0 && duration > config.filterVideoMaxSecond) {
                 // 视频时长超过了指定的长度
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
@@ -506,7 +553,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_choose_max_seconds, config.videoMaxSecond / 1000));
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_choose_max_seconds, config.filterVideoMaxSecond / 1000));
                 return true;
             }
         } else {
@@ -522,7 +569,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 return true;
             }
             if (PictureMimeType.isHasVideo(curMimeType)) {
-                if (!isSelected && config.videoMinSecond > 0 && duration < config.videoMinSecond) {
+                if (!isSelected && config.filterVideoMinSecond > 0 && duration < config.filterVideoMinSecond) {
                     // 视频小于最低指定的长度
                     if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                         boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
@@ -531,10 +578,10 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                             return true;
                         }
                     }
-                    RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_choose_min_seconds, config.videoMinSecond / 1000));
+                    RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_choose_min_seconds, config.filterVideoMinSecond / 1000));
                     return true;
                 }
-                if (!isSelected && config.videoMaxSecond > 0 && duration > config.videoMaxSecond) {
+                if (!isSelected && config.filterVideoMaxSecond > 0 && duration > config.filterVideoMaxSecond) {
                     // 视频时长超过了指定的长度
                     if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                         boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
@@ -543,7 +590,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                             return true;
                         }
                     }
-                    RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_choose_max_seconds, config.videoMaxSecond / 1000));
+                    RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_choose_max_seconds, config.filterVideoMaxSecond / 1000));
                     return true;
                 }
             }

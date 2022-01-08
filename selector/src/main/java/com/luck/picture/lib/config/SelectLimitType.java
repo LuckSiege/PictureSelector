@@ -18,4 +18,7 @@ public class SelectLimitType {
 
     public static final int SELECT_MAX_VIDEO_SECOND_SELECT_LIMIT = 8;
     public static final int SELECT_MIN_VIDEO_SECOND_SELECT_LIMIT = 9;
+
+    public static final int SELECT_MAX_SECOND_SELECT_LIMIT = 10;
+    public static final int SELECT_MIN_SECOND_SELECT_LIMIT = 11;
 }

@@ -67,4 +67,8 @@
     <string name="ps_current_month">這個月</string>
     <string name="ps_select_max_size">選擇檔案大於%1$s</string>
     <string name="ps_select_min_size">選擇檔案小於%1$s</string>
+    <string name="ps_select_video_max_second">選擇視頻大於%1$d秒</string>
+    <string name="ps_select_video_min_second">選擇視頻小於%1$d秒</string>
+    <string name="ps_select_audio_max_second">選擇音訊大於%1$d秒</string>
+    <string name="ps_select_audio_min_second">選擇音訊小於%1$d秒</string>
 </resources>

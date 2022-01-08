@@ -134,11 +134,11 @@ public final class SandboxFileLoader {
                 }
 
                 if (PictureMimeType.isHasVideo(mimeType) || PictureMimeType.isHasAudio(mimeType)) {
-                    if (config.videoMinSecond > 0 && duration < config.videoMinSecond) {
+                    if (config.filterVideoMinSecond > 0 && duration < config.filterVideoMinSecond) {
                         // If you set the minimum number of seconds of video to display
                         continue;
                     }
-                    if (config.videoMaxSecond > 0 && duration > config.videoMaxSecond) {
+                    if (config.filterVideoMaxSecond > 0 && duration > config.filterVideoMaxSecond) {
                         // If you set the maximum number of seconds of video to display
                         continue;
                     }

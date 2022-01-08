@@ -67,4 +67,8 @@
     <string name="ps_current_month">이번 달</string>
     <string name="ps_select_max_size">%1$s이상의 파일 선택</string>
     <string name="ps_select_min_size">%1$s보다 작은 파일 선택</string>
+    <string name="ps_select_video_max_second">%1$d초 이상 비디오 선택</string>
+    <string name="ps_select_video_min_second">%1$d초 미만의 비디오 선택</string>
+    <string name="ps_select_audio_max_second">%1$d초 이상 오디오 선택</string>
+    <string name="ps_select_audio_min_second">%1$d초 미만의 오디오 선택</string>
 </resources>

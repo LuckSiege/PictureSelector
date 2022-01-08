@@ -68,4 +68,8 @@
     <string name="ps_current_month">Tháng này</string>
     <string name="ps_select_max_size">Tập tin đã chọn lớn hơn %1$s</string>
     <string name="ps_select_min_size">Tập tin đã chọn ít hơn %1$s</string>
+    <string name="ps_select_video_max_second">Chọn đoạn video lớn hơn %1$d giây</string>
+    <string name="ps_select_video_min_second">Chọn đoạn phim ít hơn %1$d giây</string>
+    <string name="ps_select_audio_max_second">Chọn tiếng lớn hơn %1$d giây</string>
+    <string name="ps_select_audio_min_second">Chọn tiếng dưới %1$d giây</string>
 </resources>

@@ -67,4 +67,8 @@
     <string name="ps_current_month">هذا الشهر</string>
     <string name="ps_select_max_size">اختيار ملف أكبر من %1$s كيلو بايت</string>
     <string name="ps_select_min_size">اختيار ملف أقل من %1$s كيلو بايت</string>
+    <string name="ps_select_video_max_second">اختيار الفيديو أكبر من %1$d ثوان</string>
+    <string name="ps_select_video_min_second">اختيار الفيديو أقل من %1$d ثوان</string>
+    <string name="ps_select_audio_max_second">ختيار الصوت أكبر من %1$d ثانية</string>
+    <string name="ps_select_audio_min_second">اختيار الصوت أقل من %1$d ثوان</string>
 </resources>
