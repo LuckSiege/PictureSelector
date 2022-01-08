@@ -30,7 +30,7 @@ import com.luck.picture.lib.PictureSelectorPreviewFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.config.Crop;
-import com.luck.picture.lib.config.CustomField;
+import com.luck.picture.lib.config.CustomIntentKey;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -870,14 +870,14 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                             for (int i = 0; i < selectedResult.size(); i++) {
                                 LocalMedia media = selectedResult.get(i);
                                 JSONObject item = array.optJSONObject(i);
-                                media.setCutPath(item.optString(CustomField.EXTRA_OUT_PUT_PATH));
+                                media.setCutPath(item.optString(CustomIntentKey.EXTRA_OUT_PUT_PATH));
                                 media.setCut(!TextUtils.isEmpty(media.getCutPath()));
-                                media.setCropImageWidth(item.optInt(CustomField.EXTRA_IMAGE_WIDTH));
-                                media.setCropImageHeight(item.optInt(CustomField.EXTRA_IMAGE_HEIGHT));
-                                media.setCropOffsetX(item.optInt(CustomField.EXTRA_OFFSET_X));
-                                media.setCropOffsetY(item.optInt(CustomField.EXTRA_OFFSET_Y));
-                                media.setCropResultAspectRatio((float) item.optDouble(CustomField.EXTRA_ASPECT_RATIO));
-                                media.setCustomData(item.optString(CustomField.EXTRA_CUSTOM_EXTRA_DATA));
+                                media.setCropImageWidth(item.optInt(CustomIntentKey.EXTRA_IMAGE_WIDTH));
+                                media.setCropImageHeight(item.optInt(CustomIntentKey.EXTRA_IMAGE_HEIGHT));
+                                media.setCropOffsetX(item.optInt(CustomIntentKey.EXTRA_OFFSET_X));
+                                media.setCropOffsetY(item.optInt(CustomIntentKey.EXTRA_OFFSET_Y));
+                                media.setCropResultAspectRatio((float) item.optDouble(CustomIntentKey.EXTRA_ASPECT_RATIO));
+                                media.setCustomData(item.optString(CustomIntentKey.EXTRA_CUSTOM_EXTRA_DATA));
                                 media.setSandboxPath(media.getCutPath());
                             }
                         }

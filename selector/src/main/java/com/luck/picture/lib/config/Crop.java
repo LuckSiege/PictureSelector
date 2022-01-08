@@ -52,7 +52,7 @@ public class Crop {
      * @param intent crop result intent
      */
     public static String getOutputCustomExtraData(@NonNull Intent intent) {
-        return intent.getStringExtra(CustomField.EXTRA_CUSTOM_EXTRA_DATA);
+        return intent.getStringExtra(CustomIntentKey.EXTRA_CUSTOM_EXTRA_DATA);
     }
 
     /**

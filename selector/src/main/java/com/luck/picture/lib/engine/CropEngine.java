@@ -4,7 +4,7 @@ package com.luck.picture.lib.engine;
 import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.config.Crop;
-import com.luck.picture.lib.config.CustomField;
+import com.luck.picture.lib.config.CustomIntentKey;
 import com.luck.picture.lib.entity.LocalMedia;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public interface CropEngine {
      * fragment.startActivityForResult({@link Crop.REQUEST_CROP})
      * <p>
      * 3、If you implement your own clipping function, you need to assign the following values in
-     * Intent.putExtra {@link CustomField}
+     * Intent.putExtra {@link CustomIntentKey}
      *
      * </p>
      *

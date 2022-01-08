@@ -3,9 +3,9 @@ package com.luck.picture.lib.config;
 /**
  * @author：luck
  * @date：2021/12/1 6:49 下午
- * @describe：CustomField
+ * @describe：CustomIntentKey
  */
-public class CustomField {
+public class CustomIntentKey {
     /**
      * 自定义数据
      */

@@ -2,7 +2,7 @@ package com.luck.picture.lib.interfaces;
 
 import androidx.fragment.app.Fragment;
 
-import com.luck.picture.lib.config.CustomField;
+import com.luck.picture.lib.config.CustomIntentKey;
 import com.luck.picture.lib.entity.LocalMedia;
 
 /**
@@ -29,13 +29,13 @@ public interface OnMediaEditInterceptListener {
      * </p>
      * <p>
      * If you implement your own Editing function function, you need to assign the following values in
-     * Intent.putExtra() {@link CustomField.EXTRA_OUT_PUT_PATH}
-     * Intent.putExtra() {@link CustomField.EXTRA_IMAGE_WIDTH}
-     * Intent.putExtra() {@link CustomField.EXTRA_IMAGE_HEIGHT}
-     * ... more {@link CustomField}
+     * Intent.putExtra() {@link CustomIntentKey.EXTRA_OUT_PUT_PATH}
+     * Intent.putExtra() {@link CustomIntentKey.EXTRA_IMAGE_WIDTH}
+     * Intent.putExtra() {@link CustomIntentKey.EXTRA_IMAGE_HEIGHT}
+     * ... more {@link CustomIntentKey}
      * <p>
      * If you have customized additional data, please put it in Intent.putExtra()
-     * {@link CustomField.EXTRA_CUSTOM_EXTRA_DATA}
+     * {@link CustomIntentKey.EXTRA_CUSTOM_EXTRA_DATA}
      * </p>
      *
      * @param fragment
