@@ -122,7 +122,7 @@ PictureSelector.create(this)
 ```sh
 .setSelectorUIStyle();
 ```
-或者您可以重载布局，更多请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)
+或者您可以重载布局，更多请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95)
 
 ```sh
 .setInjectLayoutResourceListener(new OnInjectLayoutResourceListener() {
@@ -134,7 +134,7 @@ PictureSelector.create(this)
 
 高级用例如下所示：
 
-1、使用自定义相机功能，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)
+1、使用自定义相机功能，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95)
 
 ```sh
 .setCameraInterceptListener(new OnCameraInterceptListener() {
@@ -145,7 +145,7 @@ PictureSelector.create(this)
 });
 ```
 
-2、使用图片压缩功能，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)
+2、使用图片压缩功能，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95)
 
 ```sh
 .setCompressEngine(new CompressEngine() {
@@ -156,7 +156,7 @@ PictureSelector.create(this)
 });
 ```
 
-3、使用图片裁剪功能，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)
+3、使用图片裁剪功能，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95)
 
 ```sh
 
