@@ -387,16 +387,16 @@ public class CaptureButton extends View {
         timer = new RecordCountDownTimer(duration, duration / 360);
     }
 
-    public void setProgressColor(int progressColor) {
-        this.progressColor = progressColor;
-    }
-
     public void setMinDuration(int duration) {
         this.minDuration = duration;
     }
 
     public void setCaptureListener(CaptureListener captureListener) {
         this.captureListener = captureListener;
+    }
+
+    public void setProgressColor(int progressColor) {
+        this.progressColor = progressColor;
     }
 
     public void setButtonFeatures(int state) {
