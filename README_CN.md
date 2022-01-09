@@ -77,7 +77,7 @@ dependencies {
 ```
 
 ## 进阶使用
-想要了解更多功能，请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)
+想要了解更多功能，请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%8A%9F%E8%83%BDapi%E8%AF%B4%E6%98%8E)
 
 简单用例如下所示:
 
