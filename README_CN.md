@@ -82,7 +82,7 @@ dependencies {
 
 简单用例如下所示:
 
-1、获取图片
+1、获取图片 [GlideEngine](https://github.com/LuckSiege/PictureSelector/blob/version_component/app/src/main/java/com/luck/pictureselector/GlideEngine.java)
 ```sh
 PictureSelector.create(this)
    .openGallery(SelectMimeType.ofImage())
