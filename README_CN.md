@@ -17,7 +17,7 @@
 -[演示效果](#演示效果)<br>
 -[混淆配制](#混淆配制)<br>
 -[License](#License)<br>
--[常见错误](#常见错误)<br>
+-[常见错误](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
 -[如何提Issues](#如何提Issues)<br>
 -[兼容性测试](#兼容性测试)<br>
 -[联系方式](#联系方式)<br>
