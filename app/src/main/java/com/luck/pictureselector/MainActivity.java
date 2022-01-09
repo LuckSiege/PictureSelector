@@ -681,6 +681,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 SimpleCameraX camera = SimpleCameraX.of();
                 camera.setCameraMode(cameraMode);
+                camera.setRecordVideoMaxSecond(10);
+                camera.setVideoFrameRate(25);
+                camera.setVideoBitRate(3 * 1024 * 1024);
                 camera.setOutputPathDir(getSandboxCameraOutputPath());
                 camera.setImageEngine(new CameraImageEngine() {
                     @Override

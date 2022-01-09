@@ -1,6 +1,7 @@
 package com.luck.lib.camerax;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -93,6 +94,16 @@ public class CustomCameraView extends RelativeLayout {
      * 自定义拍照文件名
      */
     private String outPutCameraFileName;
+
+    /**
+     * 设置每秒的录制帧数
+     */
+    private int videoFrameRate;
+
+    /**
+     * 设置编码比特率。
+     */
+    private int videoBitRate;
 
     /**
      * 视频录制最小时长
@@ -345,6 +356,9 @@ public class CustomCameraView extends RelativeLayout {
         lensFacing = isCameraAroundState ? CameraSelector.LENS_FACING_FRONT : CameraSelector.LENS_FACING_BACK;
         outPutCameraDir = extras.getString(SimpleCameraX.EXTRA_OUTPUT_PATH_DIR);
         outPutCameraFileName = extras.getString(SimpleCameraX.EXTRA_CAMERA_FILE_NAME);
+        videoFrameRate = extras.getInt(SimpleCameraX.EXTRA_VIDEO_FRAME_RATE);
+        videoBitRate = extras.getInt(SimpleCameraX.EXTRA_VIDEO_BIT_RATE);
+
         int recordVideoMaxSecond = extras.getInt(SimpleCameraX.EXTRA_RECORD_VIDEO_MAX_SECOND, CustomCameraConfig.DEFAULT_MAX_RECORD_VIDEO);
         recordVideoMinSecond = extras.getInt(SimpleCameraX.EXTRA_RECORD_VIDEO_MIN_SECOND, CustomCameraConfig.DEFAULT_MIN_RECORD_VIDEO);
         imageFormat = extras.getString(SimpleCameraX.EXTRA_CAMERA_IMAGE_FORMAT, CameraUtils.JPEG);
@@ -477,13 +491,25 @@ public class CustomCameraView extends RelativeLayout {
     /**
      * bindCameraVideoUseCases
      */
+    @SuppressLint("RestrictedApi")
     private void bindCameraVideoUseCases() {
         try {
             CameraSelector cameraSelector = new CameraSelector.Builder().requireLensFacing(lensFacing).build();
             // Preview
-            Preview preview = new Preview.Builder().build();
+            int rotation = mCameraPreviewView.getDisplay().getRotation();
+            Preview preview = new Preview.Builder()
+                    .setTargetRotation(rotation)
+                    .build();
             // VideoCapture
-            mVideoCapture = new VideoCapture.Builder().build();
+            VideoCapture.Builder builder = new VideoCapture.Builder();
+            builder.setTargetRotation(rotation);
+            if (videoFrameRate > 0) {
+                builder.setVideoFrameRate(videoFrameRate);
+            }
+            if (videoBitRate > 0) {
+                builder.setBitRate(videoBitRate);
+            }
+            mVideoCapture = builder.build();
             // Must unbind the use-cases before rebinding them
             mCameraProvider.unbindAll();
             // A variable number of use-cases can be passed here -

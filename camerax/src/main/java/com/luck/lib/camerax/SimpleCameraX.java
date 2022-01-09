@@ -27,6 +27,10 @@ public class SimpleCameraX {
 
     public static final String EXTRA_CAMERA_MODE = EXTRA_PREFIX + ".CameraMode";
 
+    public static final String EXTRA_VIDEO_FRAME_RATE = EXTRA_PREFIX + ".VideoFrameRate";
+
+    public static final String EXTRA_VIDEO_BIT_RATE = EXTRA_PREFIX + ".VideoBitRate";
+
     public static final String EXTRA_CAMERA_AROUND_STATE = EXTRA_PREFIX + ".CameraAroundState";
 
     public static final String EXTRA_RECORD_VIDEO_MAX_SECOND = EXTRA_PREFIX + ".RecordVideoMaxSecond";
@@ -112,6 +116,30 @@ public class SimpleCameraX {
         mCameraBundle.putInt(EXTRA_CAMERA_MODE, cameraMode);
         return this;
     }
+
+
+    /**
+     * 值越小视频越大
+     *
+     * @param videoFrameRate 0~100
+     * @return
+     */
+    public SimpleCameraX setVideoFrameRate(int videoFrameRate) {
+        mCameraBundle.putInt(EXTRA_VIDEO_FRAME_RATE, videoFrameRate);
+        return this;
+    }
+
+    /**
+     * 值越大视频越大
+     *
+     * @param bitRate example 3 * 1024 * 1024
+     * @return
+     */
+    public SimpleCameraX setVideoBitRate(int bitRate) {
+        mCameraBundle.putInt(EXTRA_VIDEO_BIT_RATE, bitRate);
+        return this;
+    }
+
 
     /**
      * 相机前置或后置
