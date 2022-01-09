@@ -41,7 +41,6 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity implemen
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initAppLanguage();
         immersive();
         setContentView(R.layout.ps_activity_container);
         setupFragment();
