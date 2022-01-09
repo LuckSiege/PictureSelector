@@ -261,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 boolean mode = cb_mode.isChecked();
                 if (mode) {
                     // 进入相册
-                    PictureSelector.create(MainActivity.this)
+                    PictureSelector.create(getContext())
                             .openGallery(chooseMode)
                             .setSelectorUIStyle(selectorStyle)
                             .setImageEngine(GlideEngine.createGlideEngine())

@@ -1,6 +1,7 @@
 package com.luck.picture.lib.basic;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.Nullable;
@@ -34,6 +35,16 @@ public final class PictureSelector {
     private PictureSelector(Activity activity, Fragment fragment) {
         mActivity = new WeakReference<>(activity);
         mFragment = new WeakReference<>(fragment);
+    }
+
+    /**
+     * Start PictureSelector for context.
+     *
+     * @param context
+     * @return PictureSelector instance.
+     */
+    public static PictureSelector create(Context context) {
+        return new PictureSelector((Activity) context);
     }
 
     /**

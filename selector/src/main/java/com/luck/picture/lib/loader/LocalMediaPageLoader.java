@@ -30,9 +30,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -690,67 +688,5 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                 return getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO);
         }
         return null;
-    }
-
-
-    /**
-     * Get video (maximum or minimum time)
-     *
-     * @return
-     */
-    private String getDurationCondition() {
-        long maxS = config.filterVideoMaxSecond == 0 ? Long.MAX_VALUE : config.filterVideoMaxSecond;
-        return String.format(Locale.CHINA, "%d <%s " + MediaStore.MediaColumns.DURATION + " and " + MediaStore.MediaColumns.DURATION + " <= %d",
-                Math.max((long) 0, config.filterVideoMinSecond),
-                Math.max((long) 0, config.filterVideoMinSecond) == 0 ? "" : "=",
-                maxS);
-    }
-
-    /**
-     * Get media size (maxFileSize or miniFileSize)
-     *
-     * @return
-     */
-    private String getFileSizeCondition() {
-        long maxS = config.filterMaxFileSize == 0 ? Long.MAX_VALUE : config.filterMaxFileSize;
-        return String.format(Locale.CHINA, "%d <%s " + MediaStore.MediaColumns.SIZE + " and " + MediaStore.MediaColumns.SIZE + " <= %d",
-                Math.max(0, config.filterMinFileSize),
-                Math.max(0, config.filterMinFileSize) == 0 ? "" : "=",
-                maxS);
-    }
-
-    private String getQueryMimeCondition() {
-        List<String> filters = config.queryOnlyList;
-        HashSet<String> filterSet = new HashSet<>(filters);
-        Iterator<String> iterator = filterSet.iterator();
-        StringBuilder stringBuilder = new StringBuilder();
-        int index = -1;
-        while (iterator.hasNext()) {
-            String value = iterator.next();
-            if (TextUtils.isEmpty(value)) {
-                continue;
-            }
-            if (config.chooseMode == SelectMimeType.ofVideo()) {
-                if (value.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE) || value.startsWith(PictureMimeType.MIME_TYPE_PREFIX_AUDIO)) {
-                    continue;
-                }
-            } else if (config.chooseMode == SelectMimeType.ofImage()) {
-                if (value.startsWith(PictureMimeType.MIME_TYPE_PREFIX_AUDIO) || value.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO)) {
-                    continue;
-                }
-            } else if (config.chooseMode == SelectMimeType.ofAudio()) {
-                if (value.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO) || value.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE)) {
-                    continue;
-                }
-            }
-            index++;
-            stringBuilder.append(index == 0 ? " AND " : " OR ").append(MediaStore.MediaColumns.MIME_TYPE).append("='").append(value).append("'");
-        }
-        if (config.chooseMode != SelectMimeType.ofVideo()) {
-            if (!config.isGif && !filterSet.contains(PictureMimeType.ofGIF())) {
-                stringBuilder.append(NOT_GIF);
-            }
-        }
-        return stringBuilder.toString();
     }
 }
