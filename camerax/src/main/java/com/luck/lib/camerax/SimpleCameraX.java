@@ -119,7 +119,7 @@ public class SimpleCameraX {
 
 
     /**
-     * 越高视频体积越大
+     * 视频帧率，越高视频体积越大
      *
      * @param videoFrameRate 0~100
      * @return
@@ -130,7 +130,7 @@ public class SimpleCameraX {
     }
 
     /**
-     * 越大视频体积越大
+     * bit率， 越大视频体积越大
      *
      * @param bitRate example 3 * 1024 * 1024
      * @return
