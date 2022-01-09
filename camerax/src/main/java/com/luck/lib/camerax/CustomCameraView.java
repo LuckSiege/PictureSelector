@@ -298,13 +298,16 @@ public class CustomCameraView extends RelativeLayout {
 
             @Override
             public void changeTime(long duration) {
-                if (isDisplayRecordTime) {
+                if (isDisplayRecordTime && tvCurrentTime.getVisibility() == VISIBLE) {
                     String format = String.format(Locale.getDefault(), "%02d:%02d",
                             TimeUnit.MILLISECONDS.toMinutes(duration),
                             TimeUnit.MILLISECONDS.toSeconds(duration)
                                     - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
                     if (!TextUtils.equals(format, tvCurrentTime.getText())) {
                         tvCurrentTime.setText(format);
+                    }
+                    if (TextUtils.equals("00:00", tvCurrentTime.getText())) {
+                        tvCurrentTime.setVisibility(GONE);
                     }
                 }
             }
