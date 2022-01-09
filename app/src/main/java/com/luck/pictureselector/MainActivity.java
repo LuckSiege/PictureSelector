@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
             cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
             cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox, cb_only_dir,
-            cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis;
+            cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isUpward;
     private boolean needScaleBig = true;
@@ -152,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_choose_mode = findViewById(R.id.cb_choose_mode);
         cb_isCamera = findViewById(R.id.cb_isCamera);
         cb_isGif = findViewById(R.id.cb_isGif);
+        cb_WithImageVideo = findViewById(R.id.cbWithImageVideo);
         cb_preview_full = findViewById(R.id.cb_preview_full);
         cb_preview_scale = findViewById(R.id.cb_preview_scale);
         cb_inject_layout = findViewById(R.id.cb_inject_layout);
@@ -289,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .isOpenClickSound(cb_voice.isChecked())
                             //.setOutputCameraImageFileName("luck.jpeg")
                             //.setOutputCameraVideoFileName("luck.mp4")
-                            .isWithSelectVideoImage(true)
+                            .isWithSelectVideoImage(cb_WithImageVideo.isChecked())
                             .isPreviewFullScreenMode(cb_preview_full.isChecked())
                             .isPreviewZoomEffect(cb_preview_scale.isChecked())
                             .isPreviewImage(cb_preview_img.isChecked())

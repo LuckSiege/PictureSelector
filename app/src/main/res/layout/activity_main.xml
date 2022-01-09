@@ -380,6 +380,15 @@
                 </RadioGroup>
 
                 <CheckBox
+                    android:id="@+id/cbWithImageVideo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="图片视频同选"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
+                <CheckBox
                     android:id="@+id/cbPage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
