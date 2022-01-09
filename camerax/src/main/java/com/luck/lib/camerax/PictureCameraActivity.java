@@ -81,7 +81,6 @@ public class PictureCameraActivity extends AppCompatActivity {
                                 @Nullable Throwable cause) {
                 Toast.makeText(PictureCameraActivity.this.getApplicationContext(),
                         message, Toast.LENGTH_LONG).show();
-                handleCameraCancel();
             }
         });
 

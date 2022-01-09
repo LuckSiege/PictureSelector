@@ -28,6 +28,8 @@ import com.luck.lib.camerax.utils.DoubleUtils;
  */
 public class CaptureButton extends View {
 
+    private static final int DIFF_TIME = 1000;
+
     /**
      * 当前按钮状态
      */
@@ -165,7 +167,7 @@ public class CaptureButton extends View {
                 center_X + (button_radius + outside_add_size - strokeWidth / 2),
                 center_Y + (button_radius + outside_add_size - strokeWidth / 2));
 
-        timer = new RecordCountDownTimer(maxDuration, maxDuration / 360);
+        timer = new RecordCountDownTimer(maxDuration + DIFF_TIME, (maxDuration + DIFF_TIME) / 360);
     }
 
     @Override
@@ -383,8 +385,8 @@ public class CaptureButton extends View {
 
 
     public void setMaxDuration(int duration) {
-        this.maxDuration = duration;
-        timer = new RecordCountDownTimer(duration, duration / 360);
+        this.maxDuration = duration + DIFF_TIME;
+        timer = new RecordCountDownTimer(maxDuration, maxDuration / 360);
     }
 
     public void setMinDuration(int duration) {

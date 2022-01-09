@@ -1,5 +1,8 @@
 package com.luck.lib.camerax;
 
+import static androidx.camera.core.VideoCapture.ERROR_RECORDING_TOO_SHORT;
+import static androidx.camera.view.video.OnVideoSavedCallback.ERROR_MUXER;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -283,7 +286,11 @@ public class CustomCameraView extends RelativeLayout {
                             public void onError(int videoCaptureError, @NonNull @NotNull String message,
                                                 @Nullable @org.jetbrains.annotations.Nullable Throwable cause) {
                                 if (mCameraListener != null) {
-                                    mCameraListener.onError(videoCaptureError, message, cause);
+                                    if (videoCaptureError == ERROR_RECORDING_TOO_SHORT || videoCaptureError == ERROR_MUXER) {
+                                        recordShort(0);
+                                    } else {
+                                        mCameraListener.onError(videoCaptureError, message, cause);
+                                    }
                                 }
                             }
                         });
