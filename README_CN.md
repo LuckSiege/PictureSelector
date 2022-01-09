@@ -17,7 +17,7 @@
 -[用前需知](https://github.com/LuckSiege/PictureSelector/wiki/%E7%94%A8%E5%89%8D%E9%9C%80%E7%9F%A5)<br>
 -[集成使用](#集成使用)<br>
 -[如何提Issues?](https://github.com/LuckSiege/PictureSelector/wiki/%E5%A6%82%E4%BD%95%E6%8F%90Issues%3F)<br>
--[功能特点](https://github.com/LuckSiege/PictureSelector/wiki/%E5%8A%9F%E8%83%BD%E7%89%B9%E7%82%B9)<br>
+-[功能特点](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-2.0-%E5%8A%9F%E8%83%BD%E7%89%B9%E7%82%B9)<br>
 -[PictureSelector路径说明](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E8%B7%AF%E5%BE%84%E8%AF%B4%E6%98%8E)<br>
 -[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.7.3-rc10)<br>
 -[主题配置-Xml方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98-Xml%E6%96%B9%E5%BC%8F)<br>
