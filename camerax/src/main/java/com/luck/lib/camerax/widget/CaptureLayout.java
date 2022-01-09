@@ -176,6 +176,13 @@ public class CaptureLayout extends FrameLayout {
             }
 
             @Override
+            public void changeTime(long time) {
+                if (captureListener != null) {
+                    captureListener.changeTime(time);
+                }
+            }
+
+            @Override
             public void recordZoom(float zoom) {
                 if (captureListener != null) {
                     captureListener.recordZoom(zoom);
@@ -306,6 +313,10 @@ public class CaptureLayout extends FrameLayout {
     public void setCaptureLoadingColor(int color) {
         ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, BlendModeCompat.SRC_IN);
         progress_bar.getIndeterminateDrawable().setColorFilter(colorFilter);
+    }
+
+    public void setProgressColor(int color) {
+        this.btn_capture.setProgressColor(color);
     }
 
     public void resetCaptureLayout() {

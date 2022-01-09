@@ -57,7 +57,10 @@ public class CaptureButton extends View {
      * 禁止状态
      */
     public static final int STATE_BAN = 0x005;
-
+    /**
+     * 录制进度外圈色值
+     */
+    private int progressColor = 0xEE16AE16;
 
     private float event_Y;
 
@@ -185,8 +188,7 @@ public class CaptureButton extends View {
         canvas.drawCircle(center_X, center_Y, button_inside_radius, mPaint);
 
         if (state == STATE_RECORDER_ING) {
-            int progress_color = 0xEE16AE16;
-            mPaint.setColor(progress_color);
+            mPaint.setColor(progressColor);
             mPaint.setStyle(Paint.Style.STROKE);
             mPaint.setStrokeWidth(strokeWidth);
             canvas.drawArc(rectF, -90, progress, false, mPaint);
@@ -355,6 +357,9 @@ public class CaptureButton extends View {
         @Override
         public void onTick(long millisUntilFinished) {
             updateProgress(millisUntilFinished);
+            if (captureListener != null) {
+                captureListener.changeTime(millisUntilFinished);
+            }
         }
 
         @Override
@@ -380,6 +385,10 @@ public class CaptureButton extends View {
     public void setMaxDuration(int duration) {
         this.maxDuration = duration;
         timer = new RecordCountDownTimer(duration, duration / 360);
+    }
+
+    public void setProgressColor(int progressColor) {
+        this.progressColor = progressColor;
     }
 
     public void setMinDuration(int duration) {

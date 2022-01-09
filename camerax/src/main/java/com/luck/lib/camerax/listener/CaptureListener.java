@@ -14,6 +14,8 @@ public interface CaptureListener {
 
     void recordEnd(long time);
 
+    void changeTime(long duration);
+
     void recordZoom(float zoom);
 
     void recordError();

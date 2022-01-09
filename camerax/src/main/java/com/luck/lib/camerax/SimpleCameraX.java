@@ -47,6 +47,8 @@ public class SimpleCameraX {
 
     public static final String EXTRA_CAPTURE_LOADING_COLOR = EXTRA_PREFIX + ".CaptureLoadingColor";
 
+    public static final String EXTRA_DISPLAY_RECORD_CHANGE_TIME = EXTRA_PREFIX + ".DisplayRecordChangeTime";
+
     private final Intent mCameraIntent;
 
     private final Bundle mCameraBundle;
@@ -182,7 +184,7 @@ public class SimpleCameraX {
      * @return
      */
     public SimpleCameraX setRecordVideoMaxSecond(int maxSecond) {
-        mCameraBundle.putInt(EXTRA_RECORD_VIDEO_MAX_SECOND, (maxSecond + 1) * 1000);
+        mCameraBundle.putInt(EXTRA_RECORD_VIDEO_MAX_SECOND, maxSecond * 1000);
         return this;
     }
 
@@ -193,7 +195,7 @@ public class SimpleCameraX {
      * @return
      */
     public SimpleCameraX setRecordVideoMinSecond(int minSecond) {
-        mCameraBundle.putInt(EXTRA_RECORD_VIDEO_MIN_SECOND, (minSecond + 1) * 1000);
+        mCameraBundle.putInt(EXTRA_RECORD_VIDEO_MIN_SECOND, minSecond * 1000);
         return this;
     }
 
@@ -261,6 +263,17 @@ public class SimpleCameraX {
      */
     public SimpleCameraX setCaptureLoadingColor(int color) {
         mCameraBundle.putInt(EXTRA_CAPTURE_LOADING_COLOR, color);
+        return this;
+    }
+
+    /**
+     * 是否显示录制时间
+     *
+     * @param isDisplayRecordTime
+     * @return
+     */
+    public SimpleCameraX isDisplayRecordChangeTime(boolean isDisplayRecordTime) {
+        mCameraBundle.putBoolean(EXTRA_DISPLAY_RECORD_CHANGE_TIME, isDisplayRecordTime);
         return this;
     }
 

@@ -22,6 +22,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -56,6 +57,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -111,6 +114,11 @@ public class CustomCameraView extends RelativeLayout {
     private int recordVideoMinSecond;
 
     /**
+     * 是否显示录制时间
+     */
+    private boolean isDisplayRecordTime;
+
+    /**
      * 图片文件类型
      */
     private String imageFormat, imageFormatForQ;
@@ -136,6 +144,7 @@ public class CustomCameraView extends RelativeLayout {
     private ImageView mImagePreview;
     private ImageView mSwitchCamera;
     private ImageView mFlashLamp;
+    private TextView tvCurrentTime;
     private CaptureLayout mCaptureLayout;
     private MediaPlayer mMediaPlayer;
     private TextureView mTextureView;
@@ -172,6 +181,7 @@ public class CustomCameraView extends RelativeLayout {
         mSwitchCamera = findViewById(R.id.image_switch);
         mFlashLamp = findViewById(R.id.image_flash);
         mCaptureLayout = findViewById(R.id.capture_layout);
+        tvCurrentTime = findViewById(R.id.tv_current_time);
         mSwitchCamera.setImageResource(R.drawable.picture_ic_camera);
         displayManager = (DisplayManager) getContext().getSystemService(Context.DISPLAY_SERVICE);
         displayListener = new DisplayListener();
@@ -208,6 +218,7 @@ public class CustomCameraView extends RelativeLayout {
                 mCaptureLayout.setButtonCaptureEnabled(false);
                 mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
+                tvCurrentTime.setVisibility(GONE);
                 boolean isReversedHorizontal = lensFacing == CameraSelector.LENS_FACING_FRONT;
                 ImageCapture.Metadata metadata = new ImageCapture.Metadata();
                 metadata.setReversedHorizontal(isReversedHorizontal);
@@ -235,6 +246,7 @@ public class CustomCameraView extends RelativeLayout {
                 useCameraCases = LifecycleCameraController.VIDEO_CAPTURE;
                 mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
+                tvCurrentTime.setVisibility(isDisplayRecordTime ? VISIBLE : GONE);
                 VideoCapture.OutputFileOptions fileOptions;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && TextUtils.isEmpty(outPutCameraDir)) {
                     ContentValues contentValues = CameraUtils.buildVideoContentValues(outPutCameraFileName, videoFormatForQ);
@@ -259,6 +271,7 @@ public class CustomCameraView extends RelativeLayout {
                                 String outPutPath = FileUtils.isContent(savedUri.toString()) ? savedUri.toString() : savedUri.getPath();
                                 mTextureView.setVisibility(View.VISIBLE);
                                 mCameraPreviewView.setVisibility(View.INVISIBLE);
+                                tvCurrentTime.setVisibility(GONE);
                                 if (mTextureView.isAvailable()) {
                                     startVideoPlay(outPutPath);
                                 } else {
@@ -277,10 +290,24 @@ public class CustomCameraView extends RelativeLayout {
             }
 
             @Override
+            public void changeTime(long duration) {
+                if (isDisplayRecordTime) {
+                    String format = String.format(Locale.getDefault(), "%02d:%02d",
+                            TimeUnit.MILLISECONDS.toMinutes(duration),
+                            TimeUnit.MILLISECONDS.toSeconds(duration)
+                                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
+                    if (!TextUtils.equals(format, tvCurrentTime.getText())) {
+                        tvCurrentTime.setText(format);
+                    }
+                }
+            }
+
+            @Override
             public void recordShort(final long time) {
                 recordTime = time;
                 mSwitchCamera.setVisibility(VISIBLE);
                 mFlashLamp.setVisibility(VISIBLE);
+                tvCurrentTime.setVisibility(GONE);
                 mCaptureLayout.resetCaptureLayout();
                 mCaptureLayout.setTextWithAnimation(getContext().getString(R.string.picture_recording_time_is_short));
                 mVideoCapture.stopRecording();
@@ -366,6 +393,7 @@ public class CustomCameraView extends RelativeLayout {
         videoFormat = extras.getString(SimpleCameraX.EXTRA_CAMERA_VIDEO_FORMAT, CameraUtils.MP4);
         videoFormatForQ = extras.getString(SimpleCameraX.EXTRA_CAMERA_VIDEO_FORMAT_FOR_Q, CameraUtils.MIME_TYPE_VIDEO);
         int captureLoadingColor = extras.getInt(SimpleCameraX.EXTRA_CAPTURE_LOADING_COLOR, 0xFF7D7DFF);
+        isDisplayRecordTime = extras.getBoolean(SimpleCameraX.EXTRA_DISPLAY_RECORD_CHANGE_TIME, false);
         mCaptureLayout.setButtonFeatures(buttonFeatures);
         if (recordVideoMaxSecond > 0) {
             setRecordVideoMaxTime(recordVideoMaxSecond);
@@ -374,6 +402,7 @@ public class CustomCameraView extends RelativeLayout {
             setRecordVideoMinTime(recordVideoMinSecond);
         }
         setCaptureLoadingColor(captureLoadingColor);
+        setProgressColor(captureLoadingColor);
         PermissionChecker.getInstance().requestPermissions((Activity) getContext(),
                 new String[]{Manifest.permission.CAMERA},
                 new PermissionResultCallback() {
@@ -638,6 +667,15 @@ public class CustomCameraView extends RelativeLayout {
      */
     public void setCaptureLoadingColor(int color) {
         mCaptureLayout.setCaptureLoadingColor(color);
+    }
+
+    /**
+     * 设置录像时loading色值
+     *
+     * @param color
+     */
+    public void setProgressColor(int color) {
+        mCaptureLayout.setProgressColor(color);
     }
 
     /**

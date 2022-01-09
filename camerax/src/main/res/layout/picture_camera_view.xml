@@ -27,6 +27,16 @@
         android:visibility="gone" />
 
 
+    <TextView
+        android:id="@+id/tv_current_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:visibility="gone" />
+
     <ImageView
         android:id="@+id/image_switch"
         android:layout_width="wrap_content"
