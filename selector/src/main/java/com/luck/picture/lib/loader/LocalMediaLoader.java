@@ -48,11 +48,15 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
      * @param queryMimeCondition
      * @return
      */
-    private static String getSelectionArgsForAllMediaCondition(String timeCondition, String sizeCondition, String queryMimeCondition) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeCondition).append(" OR ")
-                .append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=? AND ").append(timeCondition).append(") AND ").append(sizeCondition).toString();
-        return stringBuilder.toString();
+    private static String getSelectionArgsForAllMediaCondition(String timeCondition,
+                                                               String sizeCondition,
+                                                               String queryMimeCondition) {
+        return "(" +
+                MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" +
+                queryMimeCondition + " OR " +
+                MediaStore.Files.FileColumns.MEDIA_TYPE + "=? AND " +
+                timeCondition + ") AND " +
+                sizeCondition;
     }
 
     /**
@@ -65,26 +69,6 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
     private static String getSelectionArgsForImageMediaCondition(String sizeCondition, String queryMimeCondition) {
         return MediaStore.Files.FileColumns.MEDIA_TYPE + "=?" + queryMimeCondition + " AND " + sizeCondition;
     }
-
-    /**
-     * Gets a file of the specified type
-     *
-     * @return
-     */
-    private static String[] getSelectionArgsForAllMediaType() {
-        return new String[]{String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE), String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)};
-    }
-
-    /**
-     * Gets a file of the specified type
-     *
-     * @param mediaType
-     * @return
-     */
-    private static String[] getSelectionArgsForSingleMediaType(int mediaType) {
-        return new String[]{String.valueOf(mediaType)};
-    }
-
 
     public LocalMediaLoader(Context context, PictureSelectionConfig config) {
         this.mContext = context;

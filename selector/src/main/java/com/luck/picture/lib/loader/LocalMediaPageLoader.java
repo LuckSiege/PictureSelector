@@ -51,12 +51,15 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
      *
      * @param timeCondition
      * @param sizeCondition
+     * @param queryMimeTypeOptions
      * @return
      */
     private static String getSelectionArgsForAllMediaCondition(String timeCondition, String sizeCondition, String queryMimeTypeOptions) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeTypeOptions).append(" OR ")
-                .append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=? AND ").append(timeCondition).append(") AND ").append(sizeCondition);
+        stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?")
+                .append(queryMimeTypeOptions).append(" OR ")
+                .append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=? AND ").append(timeCondition).append(") AND ")
+                .append(sizeCondition);
         if (SdkVersionUtils.isQ()) {
             return stringBuilder.toString();
         } else {
@@ -74,9 +77,12 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
     private static String getSelectionArgsForImageMediaCondition(String queryMimeTypeOptions, String fileSizeCondition) {
         StringBuilder stringBuilder = new StringBuilder();
         if (SdkVersionUtils.isQ()) {
-            return stringBuilder.append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeTypeOptions).append(" AND ").append(fileSizeCondition).toString();
+            return stringBuilder.append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?")
+                    .append(queryMimeTypeOptions).append(" AND ").append(fileSizeCondition).toString();
         } else {
-            return stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeTypeOptions).append(") AND ").append(fileSizeCondition).append(")").append(GROUP_BY_BUCKET_Id).toString();
+            return stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?")
+                    .append(queryMimeTypeOptions).append(") AND ").append(fileSizeCondition).append(")")
+                    .append(GROUP_BY_BUCKET_Id).toString();
         }
     }
 
@@ -94,25 +100,6 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
         } else {
             return stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?").append(queryMimeTypeOptions).append(") AND ").append(fileSizeCondition).append(")").append(GROUP_BY_BUCKET_Id).toString();
         }
-    }
-
-    /**
-     * Gets a file of the specified type
-     *
-     * @return
-     */
-    private static String[] getSelectionArgsForAllMediaType() {
-        return new String[]{String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE), String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)};
-    }
-
-    /**
-     * Gets a file of the specified type
-     *
-     * @param mediaType
-     * @return
-     */
-    private static String[] getSelectionArgsForSingleMediaType(int mediaType) {
-        return new String[]{String.valueOf(mediaType)};
     }
 
     /**

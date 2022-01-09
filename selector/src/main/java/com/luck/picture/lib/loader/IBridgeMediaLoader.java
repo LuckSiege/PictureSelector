@@ -121,6 +121,26 @@ public class IBridgeMediaLoader {
             MediaStore.MediaColumns.DATE_ADDED};
 
     /**
+     * Gets a file of the specified type
+     *
+     * @param mediaType
+     * @return
+     */
+    protected static String[] getSelectionArgsForSingleMediaType(int mediaType) {
+        return new String[]{String.valueOf(mediaType)};
+    }
+
+    /**
+     * Gets a file of the specified type
+     *
+     * @return
+     */
+    protected static String[] getSelectionArgsForAllMediaType() {
+        return new String[]{String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE), String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)};
+    }
+
+
+    /**
      * Get video (maximum or minimum time)
      *
      * @return
