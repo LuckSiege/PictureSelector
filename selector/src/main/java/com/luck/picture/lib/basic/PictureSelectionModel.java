@@ -67,6 +67,7 @@ public class PictureSelectionModel {
         this.selector = selector;
         selectionConfig = PictureSelectionConfig.getCleanInstance();
         selectionConfig.chooseMode = chooseMode;
+        setMaxVideoSelectNum(selectionConfig.maxVideoSelectNum);
     }
 
     public PictureSelectionModel(PictureSelector selector, int chooseMode, boolean isOnlyCamera) {
