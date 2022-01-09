@@ -14,6 +14,7 @@
 ## 目录
 -[如何引用](#如何引用)<br>
 -[进阶使用](#进阶使用)<br>
+-[返回结果说明](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-LocalMedia%E8%AF%B4%E6%98%8E)
 -[演示效果](#演示效果)<br>
 -[混淆配制](#混淆配制)<br>
 -[License](#License)<br>
