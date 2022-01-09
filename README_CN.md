@@ -134,7 +134,7 @@ PictureSelector.create(this)
 
 高级用例如下所示：
 
-1、使用自定义相机功能，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95)
+1、使用自定义相机功能，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9B%B8%E6%9C%BA%EF%BC%9F)
 
 ```sh
 .setCameraInterceptListener(new OnCameraInterceptListener() {
@@ -145,7 +145,7 @@ PictureSelector.create(this)
 });
 ```
 
-2、使用图片压缩功能，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95)
+2、使用图片压缩功能，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E5%8E%8B%E7%BC%A9%EF%BC%9F)
 
 ```sh
 .setCompressEngine(new CompressEngine() {
@@ -156,7 +156,7 @@ PictureSelector.create(this)
 });
 ```
 
-3、使用图片裁剪功能，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95)
+3、使用图片裁剪功能，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%A3%81%E5%89%AA%EF%BC%9F)
 
 ```sh
 
