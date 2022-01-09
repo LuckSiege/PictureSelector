@@ -30,22 +30,6 @@ import java.util.List;
 public final class LocalMediaLoader extends IBridgeMediaLoader {
 
     /**
-     * Media file database field
-     */
-    private static final String[] PROJECTION = {
-            MediaStore.Files.FileColumns._ID,
-            MediaStore.MediaColumns.DATA,
-            MediaStore.MediaColumns.MIME_TYPE,
-            MediaStore.MediaColumns.WIDTH,
-            MediaStore.MediaColumns.HEIGHT,
-            MediaStore.MediaColumns.DURATION,
-            MediaStore.MediaColumns.SIZE,
-            MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
-            MediaStore.MediaColumns.DISPLAY_NAME,
-            MediaStore.MediaColumns.BUCKET_ID,
-            MediaStore.MediaColumns.DATE_ADDED};
-
-    /**
      * Video or Audio mode conditions
      *
      * @param sizeCondition
@@ -162,7 +146,6 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                 String url = SdkVersionUtils.isQ() ? MediaUtils.getRealPathUri(id, mimeType) : absolutePath;
                                 // Here, it is solved that some models obtain mimeType and return the format of image / *,
                                 // which makes it impossible to distinguish the specific type, such as mi 8,9,10 and other models
-                                mimeType = "image/*";
                                 if (mimeType.endsWith("image/*")) {
                                     mimeType = MediaUtils.getMimeTypeFromMediaUrl(absolutePath);
                                     if (!config.isGif) {

@@ -33,6 +33,7 @@ public class IBridgeMediaLoader {
     protected static final String GROUP_BY_BUCKET_Id = " GROUP BY (bucket_id";
     protected static final String COLUMN_COUNT = "count";
     protected static final String COLUMN_BUCKET_ID = "bucket_id";
+    protected static final String COLUMN_DURATION = "duration";
     protected static final String COLUMN_BUCKET_DISPLAY_NAME = "bucket_display_name";
     protected static final int MAX_SORT_SIZE = 60;
     protected Context mContext;
@@ -103,7 +104,21 @@ public class IBridgeMediaLoader {
         return null;
     }
 
-
+    /**
+     * Media file database field
+     */
+    protected static final String[] PROJECTION = {
+            MediaStore.Files.FileColumns._ID,
+            MediaStore.MediaColumns.DATA,
+            MediaStore.MediaColumns.MIME_TYPE,
+            MediaStore.MediaColumns.WIDTH,
+            MediaStore.MediaColumns.HEIGHT,
+            COLUMN_DURATION,
+            MediaStore.MediaColumns.SIZE,
+            COLUMN_BUCKET_DISPLAY_NAME,
+            MediaStore.MediaColumns.DISPLAY_NAME,
+            COLUMN_BUCKET_ID,
+            MediaStore.MediaColumns.DATE_ADDED};
 
     /**
      * Get video (maximum or minimum time)
@@ -112,7 +127,7 @@ public class IBridgeMediaLoader {
      */
     protected String getDurationCondition() {
         long maxS = config.filterVideoMaxSecond == 0 ? Long.MAX_VALUE : config.filterVideoMaxSecond;
-        return String.format(Locale.CHINA, "%d <%s " + MediaStore.MediaColumns.DURATION + " and " + MediaStore.MediaColumns.DURATION + " <= %d",
+        return String.format(Locale.CHINA, "%d <%s " + COLUMN_DURATION + " and " + COLUMN_DURATION + " <= %d",
                 Math.max((long) 0, config.filterVideoMinSecond),
                 Math.max((long) 0, config.filterVideoMinSecond) == 0 ? "" : "=",
                 maxS);

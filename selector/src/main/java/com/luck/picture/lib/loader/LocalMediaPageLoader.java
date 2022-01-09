@@ -131,7 +131,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
             COLUMN_BUCKET_DISPLAY_NAME,
             MediaStore.MediaColumns.MIME_TYPE};
 
-    private static final String[] PROJECTION = {
+    private static final String[] ALL_PROJECTION = {
             MediaStore.Files.FileColumns._ID,
             MediaStore.MediaColumns.DATA,
             COLUMN_BUCKET_ID,
@@ -139,21 +139,6 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
             MediaStore.MediaColumns.MIME_TYPE,
             "COUNT(*) AS " + COLUMN_COUNT};
 
-    /**
-     * Media file database field
-     */
-    private static final String[] PROJECTION_PAGE = {
-            MediaStore.Files.FileColumns._ID,
-            MediaStore.MediaColumns.DATA,
-            MediaStore.MediaColumns.MIME_TYPE,
-            MediaStore.MediaColumns.WIDTH,
-            MediaStore.MediaColumns.HEIGHT,
-            MediaStore.MediaColumns.DURATION,
-            MediaStore.MediaColumns.SIZE,
-            MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
-            MediaStore.MediaColumns.DISPLAY_NAME,
-            COLUMN_BUCKET_ID,
-            MediaStore.MediaColumns.DATE_ADDED};
 
     /**
      * Get the latest cover of an album catalog
@@ -244,25 +229,25 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                 try {
                     if (SdkVersionUtils.isR()) {
                         Bundle queryArgs = MediaUtils.createQueryArgsBundle(getPageSelection(bucketId), getPageSelectionArgs(bucketId), limit, (page - 1) * pageSize);
-                        data = mContext.getContentResolver().query(QUERY_URI, PROJECTION_PAGE, queryArgs, null);
+                        data = mContext.getContentResolver().query(QUERY_URI, PROJECTION, queryArgs, null);
                     } else {
                         String orderBy = page == -1 ? MediaStore.Files.FileColumns._ID + " DESC" : MediaStore.Files.FileColumns._ID + " DESC limit " + limit + " offset " + (page - 1) * pageSize;
-                        data = mContext.getContentResolver().query(QUERY_URI, PROJECTION_PAGE, getPageSelection(bucketId), getPageSelectionArgs(bucketId), orderBy);
+                        data = mContext.getContentResolver().query(QUERY_URI, PROJECTION, getPageSelection(bucketId), getPageSelectionArgs(bucketId), orderBy);
                     }
                     if (data != null) {
                         ArrayList<LocalMedia> result = new ArrayList<>();
                         if (data.getCount() > 0) {
-                            int idColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[0]);
-                            int dataColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[1]);
-                            int mimeTypeColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[2]);
-                            int widthColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[3]);
-                            int heightColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[4]);
-                            int durationColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[5]);
-                            int sizeColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[6]);
-                            int folderNameColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[7]);
-                            int fileNameColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[8]);
-                            int bucketIdColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[9]);
-                            int dateAddedColumn = data.getColumnIndexOrThrow(PROJECTION_PAGE[10]);
+                            int idColumn = data.getColumnIndexOrThrow(PROJECTION[0]);
+                            int dataColumn = data.getColumnIndexOrThrow(PROJECTION[1]);
+                            int mimeTypeColumn = data.getColumnIndexOrThrow(PROJECTION[2]);
+                            int widthColumn = data.getColumnIndexOrThrow(PROJECTION[3]);
+                            int heightColumn = data.getColumnIndexOrThrow(PROJECTION[4]);
+                            int durationColumn = data.getColumnIndexOrThrow(PROJECTION[5]);
+                            int sizeColumn = data.getColumnIndexOrThrow(PROJECTION[6]);
+                            int folderNameColumn = data.getColumnIndexOrThrow(PROJECTION[7]);
+                            int fileNameColumn = data.getColumnIndexOrThrow(PROJECTION[8]);
+                            int bucketIdColumn = data.getColumnIndexOrThrow(PROJECTION[9]);
+                            int dateAddedColumn = data.getColumnIndexOrThrow(PROJECTION[10]);
                             data.moveToFirst();
                             do {
                                 long id = data.getLong(idColumn);
@@ -388,7 +373,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
             @Override
             public List<LocalMediaFolder> doInBackground() {
                 Cursor data = mContext.getContentResolver().query(QUERY_URI,
-                        SdkVersionUtils.isQ() ? PROJECTION_29 : PROJECTION,
+                        SdkVersionUtils.isQ() ? PROJECTION_29 : ALL_PROJECTION,
                         getSelection(), getSelectionArgs(), ORDER_BY);
                 try {
                     if (data != null) {
@@ -399,7 +384,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                             if (SdkVersionUtils.isQ()) {
                                 Map<Long, Long> countMap = new HashMap<>();
                                 while (data.moveToNext()) {
-                                    long bucketId = data.getLong(data.getColumnIndex(COLUMN_BUCKET_ID));
+                                    long bucketId = data.getLong(data.getColumnIndexOrThrow(COLUMN_BUCKET_ID));
                                     Long newCount = countMap.get(bucketId);
                                     if (newCount == null) {
                                         newCount = 1L;
@@ -412,17 +397,17 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                 if (data.moveToFirst()) {
                                     Set<Long> hashSet = new HashSet<>();
                                     do {
-                                        long bucketId = data.getLong(data.getColumnIndex(COLUMN_BUCKET_ID));
+                                        long bucketId = data.getLong(data.getColumnIndexOrThrow(COLUMN_BUCKET_ID));
                                         if (hashSet.contains(bucketId)) {
                                             continue;
                                         }
                                         LocalMediaFolder mediaFolder = new LocalMediaFolder();
                                         mediaFolder.setBucketId(bucketId);
                                         String bucketDisplayName = data.getString(
-                                                data.getColumnIndex(COLUMN_BUCKET_DISPLAY_NAME));
-                                        String mimeType = data.getString(data.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE));
+                                                data.getColumnIndexOrThrow(COLUMN_BUCKET_DISPLAY_NAME));
+                                        String mimeType = data.getString(data.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE));
                                         long size = countMap.get(bucketId);
-                                        long id = data.getLong(data.getColumnIndex(MediaStore.Files.FileColumns._ID));
+                                        long id = data.getLong(data.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID));
                                         mediaFolder.setFolderName(bucketDisplayName);
                                         mediaFolder.setFolderTotalNum(ValueOf.toInt(size));
                                         mediaFolder.setFirstImagePath(MediaUtils.getRealPathUri(id, mimeType));
@@ -437,12 +422,12 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                                 data.moveToFirst();
                                 do {
                                     LocalMediaFolder mediaFolder = new LocalMediaFolder();
-                                    long bucketId = data.getLong(data.getColumnIndex(COLUMN_BUCKET_ID));
-                                    String bucketDisplayName = data.getString(data.getColumnIndex(COLUMN_BUCKET_DISPLAY_NAME));
-                                    String mimeType = data.getString(data.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE));
-                                    int size = data.getInt(data.getColumnIndex(COLUMN_COUNT));
+                                    long bucketId = data.getLong(data.getColumnIndexOrThrow(COLUMN_BUCKET_ID));
+                                    String bucketDisplayName = data.getString(data.getColumnIndexOrThrow(COLUMN_BUCKET_DISPLAY_NAME));
+                                    String mimeType = data.getString(data.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE));
+                                    int size = data.getInt(data.getColumnIndexOrThrow(COLUMN_COUNT));
                                     mediaFolder.setBucketId(bucketId);
-                                    String url = data.getString(data.getColumnIndex(MediaStore.MediaColumns.DATA));
+                                    String url = data.getString(data.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA));
                                     mediaFolder.setFirstImagePath(url);
                                     mediaFolder.setFolderName(bucketDisplayName);
                                     mediaFolder.setFirstMimeType(mimeType);
@@ -549,8 +534,8 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
      * @return
      */
     private static String getFirstUri(Cursor cursor) {
-        long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID));
-        String mimeType = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.MIME_TYPE));
+        long id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID));
+        String mimeType = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE));
         return MediaUtils.getRealPathUri(id, mimeType);
     }
 
@@ -561,7 +546,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
      * @return
      */
     private static String getFirstCoverMimeType(Cursor cursor) {
-        return cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.MIME_TYPE));
+        return cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE));
     }
 
     /**
@@ -571,7 +556,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
      * @return
      */
     private static String getFirstUrl(Cursor cursor) {
-        return cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
+        return cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA));
     }
 
     private String getPageSelection(long bucketId) {
