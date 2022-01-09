@@ -168,6 +168,18 @@ PictureSelector.create(this)
 });
 ```
 
+4、使用图片编辑功能，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E7%BC%96%E8%BE%91%E5%9B%BE%E7%89%87%EF%BC%9F)
+
+```sh
+.setEditMediaInterceptListener(new OnMediaEditInterceptListener() {
+    @Override
+    public void onStartMediaEdit(Fragment fragment, LocalMedia currentLocalMedia, int requestCode) {
+                                    
+    }
+});
+
+```
+
 
 ## 混淆配置 
 ```sh
