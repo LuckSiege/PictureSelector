@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 /**
@@ -74,6 +75,12 @@ public final class SandboxFileLoader {
                 return list;
             }
             PictureSelectionConfig config = PictureSelectionConfig.getInstance();
+            MessageDigest md = null;
+            try {
+                md = MessageDigest.getInstance("MD5");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
             for (File f : files) {
                 String mimeType = MediaUtils.getMimeTypeFromMediaUrl(f.getAbsolutePath());
 
@@ -104,13 +111,12 @@ public final class SandboxFileLoader {
                 }
                 String absolutePath = f.getAbsolutePath();
                 long size = f.length();
-                long id = f.lastModified() / 1000;
-                try {
-                    MessageDigest md = MessageDigest.getInstance("MD5");
+                long id;
+                if (md != null) {
                     md.update(absolutePath.getBytes());
                     id = new BigInteger(1, md.digest()).longValue();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } else {
+                    id = f.lastModified() / 1000;
                 }
                 long bucketId = ValueOf.toLong(sandboxFile.getName().hashCode());
                 long dateTime = f.lastModified() / 1000;
