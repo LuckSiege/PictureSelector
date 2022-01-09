@@ -138,6 +138,11 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                                         }
                                     }
                                 }
+
+                                if (mimeType.endsWith("image/*")) {
+                                    continue;
+                                }
+
                                 if (!config.isWebp) {
                                     if (mimeType.startsWith(PictureMimeType.ofWEBP())) {
                                         continue;
