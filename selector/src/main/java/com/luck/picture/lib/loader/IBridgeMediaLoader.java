@@ -131,6 +131,11 @@ public class IBridgeMediaLoader {
                 maxS);
     }
 
+    /**
+     * getQueryMimeCondition
+     *
+     * @return
+     */
     protected String getQueryMimeCondition() {
         List<String> filters = config.queryOnlyList;
         HashSet<String> filterSet = new HashSet<>(filters);
