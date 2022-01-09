@@ -12,7 +12,7 @@ import com.luck.picture.lib.config.PictureMimeType;
  * @author：luck
  * @date：2017-5-24 16:21
  * @describe：Media Entity
- * <a href="https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E8%B7%AF%E5%BE%84%E8%AF%B4%E6%98%8E">
+ * <a href="https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-LocalMedia%E8%AF%B4%E6%98%8E">
  */
 
 public class LocalMedia implements Parcelable {

@@ -115,6 +115,9 @@ public class PictureSelectionModel {
      * Image Load the engine
      *
      * @param engine Image Load the engine
+     *               <p>
+     *               <a href="https://github.com/LuckSiege/PictureSelector/blob/version_component/app/src/main/java/com/luck/pictureselector/GlideEngine.java">
+     *               </p>
      * @return
      */
     public PictureSelectionModel setImageEngine(ImageEngine engine) {
