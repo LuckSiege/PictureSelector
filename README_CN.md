@@ -165,7 +165,7 @@ AudioPlayDialog.showPlayAudioDialog(getContext(), availablePath);
 ```sh
 .setCameraInterceptListener(new OnCameraInterceptListener() {
     @Override
-    public void openCamera(Fragment fragment,PictureSelectionConfig config, int cameraMode, int requestCode){
+    public void openCamera(Fragment fragment, int cameraMode, int requestCode){
 	                                    
     }
 });
