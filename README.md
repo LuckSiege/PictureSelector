@@ -98,7 +98,7 @@ PictureSelector.create(this)
 });
 ```
 
-2、only use camera
+2、Only use camera
 ```sh
 PictureSelector.create(this)
      .openCamera(SelectMimeType.ofImage())
@@ -115,7 +115,7 @@ PictureSelector.create(this)
 });
 ```
 
-3、preview image or video
+3、Preview image or video
 ```sh
 
 PictureSelector.create(this)
@@ -135,7 +135,7 @@ PictureSelector.create(this)
 
 ```
 
-4、preview audio
+4、Preview audio
 
 ```sh
 AudioPlayDialog.showPlayAudioDialog(getContext(), "path");
