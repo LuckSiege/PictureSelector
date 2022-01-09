@@ -27,7 +27,7 @@ public class DensityUtil {
     public static int getScreenHeight(Context context) {
         DisplayMetrics localDisplayMetrics = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
-        return localDisplayMetrics.heightPixels - getStatusBarHeight(context);
+        return localDisplayMetrics.heightPixels;
     }
 
     /**

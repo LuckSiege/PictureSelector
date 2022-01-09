@@ -302,7 +302,7 @@ public final class PictureSelectionConfig implements Parcelable {
         maxVideoSelectNum = 1;
         minVideoSelectNum = 0;
         minAudioSelectNum = 0;
-        videoQuality = 1;
+        videoQuality = VideoQuality.VIDEO_QUALITY_HIGH;
         language = LanguageConfig.UNKNOWN_LANGUAGE;
         filterVideoMaxSecond = 0;
         filterVideoMinSecond = 1000;

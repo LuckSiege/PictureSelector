@@ -20,6 +20,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
+import com.luck.picture.lib.config.VideoQuality;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
@@ -275,7 +276,7 @@ public class PictureSelectionModel {
      * @param isForeground
      * @return
      */
-    public PictureSelectionModel setCameraForegroundService(boolean isForeground) {
+    public PictureSelectionModel isCameraForegroundService(boolean isForeground) {
         selectionConfig.isCameraForegroundService = isForeground;
         return this;
     }
@@ -477,9 +478,16 @@ public class PictureSelectionModel {
 
 
     /**
+     * The video quality output mode is only for system recording, and there are only two modes: poor quality or high quality
+     *
      * @param videoQuality video quality and 0 or 1
+     *                     Use {@link VideoQuality}
+     *                     <p>
+     *                     There are limitations, only high or low
+     *                     </p>
      * @return
      */
+    @Deprecated
     public PictureSelectionModel setVideoQuality(int videoQuality) {
         selectionConfig.videoQuality = videoQuality;
         return this;

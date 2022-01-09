@@ -2,6 +2,7 @@ package com.luck.pictureselector;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.camera.camera2.Camera2Config;
@@ -49,6 +50,7 @@ public class App extends Application implements IApp, CameraXConfig.Provider {
     @NonNull
     @Override
     public CameraXConfig getCameraXConfig() {
-        return Camera2Config.defaultConfig();
+        return CameraXConfig.Builder.fromConfig(Camera2Config.defaultConfig())
+                .setMinimumLoggingLevel(Log.ERROR).build();
     }
 }

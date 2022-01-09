@@ -965,23 +965,25 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      */
     @SuppressLint("NotifyDataSetChanged")
     private void deletePreview() {
-        if (PictureSelectionConfig.onExternalPreviewEventListener != null) {
-            PictureSelectionConfig.onExternalPreviewEventListener.onPreviewDelete(viewPager.getCurrentItem());
-            int currentItem = viewPager.getCurrentItem();
-            mData.remove(currentItem);
-            if (mData.size() == 0) {
-                handleExternalPreviewBack();
-                return;
+        if (isDisplayDelete) {
+            if (PictureSelectionConfig.onExternalPreviewEventListener != null) {
+                PictureSelectionConfig.onExternalPreviewEventListener.onPreviewDelete(viewPager.getCurrentItem());
+                int currentItem = viewPager.getCurrentItem();
+                mData.remove(currentItem);
+                if (mData.size() == 0) {
+                    handleExternalPreviewBack();
+                    return;
+                }
+                titleBar.setTitle(getString(R.string.ps_preview_image_num,
+                        curPosition + 1, mData.size()));
+                totalNum = mData.size();
+                curPosition = currentItem;
+                if (viewPager.getAdapter() != null) {
+                    viewPager.setAdapter(null);
+                    viewPager.setAdapter(viewPageAdapter);
+                }
+                viewPager.setCurrentItem(curPosition, false);
             }
-            titleBar.setTitle(getString(R.string.ps_preview_image_num,
-                    curPosition + 1, mData.size()));
-            totalNum = mData.size();
-            curPosition = currentItem;
-            if (viewPager.getAdapter() != null) {
-                viewPager.setAdapter(null);
-                viewPager.setAdapter(viewPageAdapter);
-            }
-            viewPager.setCurrentItem(curPosition, false);
         }
     }
 

@@ -4,8 +4,6 @@
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <application>
-        <activity
-            android:name="com.luck.lib.camerax.PictureCameraActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity android:name="com.luck.lib.camerax.PictureCameraActivity" />
     </application>
 </manifest>

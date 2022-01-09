@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.SurfaceTexture;
+import android.hardware.display.DisplayManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -54,12 +56,17 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.lang.ref.WeakReference;
 
+
 /**
  * @author：luck
  * @date：2020-01-04 13:41
  * @describe：自定义相机View
  */
 public class CustomCameraView extends RelativeLayout {
+
+    private static final double RATIO_4_3_VALUE = 4.0 / 3.0;
+    private static final double RATIO_16_9_VALUE = 16.0 / 9.0;
+
     /**
      * 闪关灯状态
      */
@@ -70,7 +77,10 @@ public class CustomCameraView extends RelativeLayout {
     private PreviewView mCameraPreviewView;
     private ProcessCameraProvider mCameraProvider;
     private ImageCapture mImageCapture;
+    private ImageAnalysis mImageAnalyzer;
     private VideoCapture mVideoCapture;
+
+    private int displayId = -1;
     /**
      * 相机模式
      */
@@ -118,6 +128,8 @@ public class CustomCameraView extends RelativeLayout {
     private CaptureLayout mCaptureLayout;
     private MediaPlayer mMediaPlayer;
     private TextureView mTextureView;
+    private DisplayManager displayManager;
+    private DisplayListener displayListener;
     private long recordTime = 0;
 
     private boolean isImageCaptureEnabled() {
@@ -139,6 +151,7 @@ public class CustomCameraView extends RelativeLayout {
         initView();
     }
 
+
     private void initView() {
         inflate(getContext(), R.layout.picture_camera_view, this);
         setBackgroundColor(ContextCompat.getColor(getContext(), R.color.picture_color_black));
@@ -149,6 +162,16 @@ public class CustomCameraView extends RelativeLayout {
         mFlashLamp = findViewById(R.id.image_flash);
         mCaptureLayout = findViewById(R.id.capture_layout);
         mSwitchCamera.setImageResource(R.drawable.picture_ic_camera);
+        displayManager = (DisplayManager) getContext().getSystemService(Context.DISPLAY_SERVICE);
+        displayListener = new DisplayListener();
+        displayManager.registerDisplayListener(displayListener, null);
+        mCameraPreviewView.post(new Runnable() {
+            @Override
+            public void run() {
+                displayId = mCameraPreviewView.getDisplay().getDisplayId();
+            }
+        });
+
         mFlashLamp.setOnClickListener(v -> {
             typeFlash++;
             if (typeFlash > 0x023) {
@@ -174,15 +197,20 @@ public class CustomCameraView extends RelativeLayout {
                 mCaptureLayout.setButtonCaptureEnabled(false);
                 mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
+                boolean isReversedHorizontal = lensFacing == CameraSelector.LENS_FACING_FRONT;
+                ImageCapture.Metadata metadata = new ImageCapture.Metadata();
+                metadata.setReversedHorizontal(isReversedHorizontal);
                 ImageCapture.OutputFileOptions fileOptions;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && TextUtils.isEmpty(outPutCameraDir)) {
                     ContentValues contentValues = CameraUtils.buildImageContentValues(outPutCameraFileName, imageFormatForQ);
                     fileOptions = new ImageCapture.OutputFileOptions.Builder(getContext().getContentResolver()
-                            , MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues).build();
+                            , MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+                            .setMetadata(metadata).build();
                 } else {
                     File cameraFile = FileUtils.createCameraFile(getContext(), CameraUtils.TYPE_IMAGE,
                             outPutCameraFileName, imageFormat, outPutCameraDir);
-                    fileOptions = new ImageCapture.OutputFileOptions.Builder(cameraFile).build();
+                    fileOptions = new ImageCapture.OutputFileOptions.Builder(cameraFile)
+                            .setMetadata(metadata).build();
                 }
                 mImageCapture.takePicture(fileOptions, ContextCompat.getMainExecutor(getContext()),
                         new MyImageResultCallback(mImagePreview, mCaptureLayout, mImageCallbackListener, mCameraListener));
@@ -348,6 +376,34 @@ public class CustomCameraView extends RelativeLayout {
     }
 
     /**
+     * We need a display listener for orientation changes that do not trigger a configuration
+     * change, for example if we choose to override config change in manifest or for 180-degree
+     * orientation changes.
+     */
+    private class DisplayListener implements DisplayManager.DisplayListener {
+
+        @Override
+        public void onDisplayAdded(int displayId) {
+        }
+
+        @Override
+        public void onDisplayRemoved(int displayId) {
+        }
+
+        @Override
+        public void onDisplayChanged(int displayId) {
+            if (displayId == CustomCameraView.this.displayId) {
+                if (mImageCapture != null) {
+                    mImageCapture.setTargetRotation(mCameraPreviewView.getDisplay().getRotation());
+                }
+                if (mImageAnalyzer != null) {
+                    mImageAnalyzer.setTargetRotation(mCameraPreviewView.getDisplay().getRotation());
+                }
+            }
+        }
+    }
+
+    /**
      * 开始打开相机预览
      */
     public void buildUseCameraCases() {
@@ -383,21 +439,25 @@ public class CustomCameraView extends RelativeLayout {
     private void bindCameraImageUseCases() {
         try {
             int screenAspectRatio = aspectRatio(DensityUtil.getScreenWidth(getContext()), DensityUtil.getScreenHeight(getContext()));
+            int rotation = mCameraPreviewView.getDisplay().getRotation();
             CameraSelector cameraSelector = new CameraSelector.Builder().requireLensFacing(lensFacing).build();
             // Preview
             Preview preview = new Preview.Builder()
                     .setTargetAspectRatio(screenAspectRatio)
+                    .setTargetRotation(rotation)
                     .build();
 
             // ImageCapture
             mImageCapture = new ImageCapture.Builder()
                     .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
                     .setTargetAspectRatio(screenAspectRatio)
+                    .setTargetRotation(rotation)
                     .build();
 
             // ImageAnalysis
-            ImageAnalysis mImageAnalyzer = new ImageAnalysis.Builder()
+            mImageAnalyzer = new ImageAnalysis.Builder()
                     .setTargetAspectRatio(screenAspectRatio)
+                    .setTargetRotation(rotation)
                     .build();
 
             // Must unbind the use-cases before rebinding them
@@ -436,22 +496,27 @@ public class CustomCameraView extends RelativeLayout {
         }
     }
 
+
     /**
-     * 比例
+     * [androidx.camera.core.ImageAnalysis.Builder] requires enum value of
+     * [androidx.camera.core.AspectRatio]. Currently it has values of 4:3 & 16:9.
+     * <p>
+     * Detecting the most suitable ratio for dimensions provided in @params by counting absolute
+     * of preview ratio to one of the provided values.
      *
-     * @param width  屏幕宽度
-     * @param height 屏幕高度
-     * @return
+     * @param width  - preview width
+     * @param height - preview height
+     * @return suitable aspect ratio
      */
     private int aspectRatio(int width, int height) {
-        int previewRatio = Math.max(width, height) / Math.min(width, height);
-        double RATIO_4_3_VALUE = 4.0 / 3.0;
-        double RATIO_16_9_VALUE = 16.0 / 9.0;
+        double aspect = Math.max(width, height);
+        double previewRatio = aspect / Math.min(width, height);
         if (Math.abs(previewRatio - RATIO_4_3_VALUE) <= Math.abs(previewRatio - RATIO_16_9_VALUE)) {
             return AspectRatio.RATIO_4_3;
         }
         return AspectRatio.RATIO_16_9;
     }
+
 
     /**
      * 拍照回调
@@ -685,5 +750,21 @@ public class CustomCameraView extends RelativeLayout {
             mMediaPlayer = null;
         }
         mTextureView.setVisibility(View.GONE);
+    }
+
+    /**
+     * onConfigurationChanged
+     *
+     * @param newConfig
+     */
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        buildUseCameraCases();
+    }
+
+    /**
+     * onDestroy
+     */
+    public void onDestroy() {
+        displayManager.unregisterDisplayListener(displayListener);
     }
 }

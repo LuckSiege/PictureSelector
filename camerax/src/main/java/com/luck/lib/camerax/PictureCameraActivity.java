@@ -2,6 +2,7 @@ package com.luck.lib.camerax;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -52,7 +53,12 @@ public class PictureCameraActivity extends AppCompatActivity {
                 (RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         mCameraView.setLayoutParams(layoutParams);
         setContentView(mCameraView);
-        mCameraView.setCameraConfig(getIntent());
+        mCameraView.post(new Runnable() {
+            @Override
+            public void run() {
+                mCameraView.setCameraConfig(getIntent());
+            }
+        });
         mCameraView.setImageCallbackListener(new ImageCallbackListener() {
             @Override
             public void onLoadImage(String url, ImageView imageView) {
@@ -109,6 +115,12 @@ public class PictureCameraActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mCameraView.onConfigurationChanged(newConfig);
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         CustomCameraConfig.destroy();
@@ -142,6 +154,11 @@ public class PictureCameraActivity extends AppCompatActivity {
         mPermissionResultCallback = callback;
     }
 
+    @Override
+    protected void onDestroy() {
+        mCameraView.onDestroy();
+        super.onDestroy();
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
