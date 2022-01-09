@@ -1,11 +1,9 @@
-# PictureSelector 2.0
+# PictureSelector 3.0
    一款针对Android平台下的图片选择器，支持从相册获取图片、视频、音频&拍照，支持裁剪(单图or多图裁剪)、压缩、主题自定义配置等功能，支持动态获取权限&适配Android 5.0+系统的开源图片选择框架。<br>
    
    [英文版🇺🇸](README.md)
- 
-   [我的博客地址](http://blog.csdn.net/luck_mw)   
-  
-   [体验Demo](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/demo_2021-11-14_122603_v2.7.3-rc10.apk)<br>
+
+   [效果体验](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/demo_2021-11-14_122603_v2.7.3-rc10.apk)<br>
   
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
@@ -14,32 +12,21 @@
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 ## 目录
--[用前需知](https://github.com/LuckSiege/PictureSelector/wiki/%E7%94%A8%E5%89%8D%E9%9C%80%E7%9F%A5)<br>
--[集成使用](#集成使用)<br>
--[如何提Issues?](https://github.com/LuckSiege/PictureSelector/wiki/%E5%A6%82%E4%BD%95%E6%8F%90Issues%3F)<br>
--[功能特点](https://github.com/LuckSiege/PictureSelector/wiki/%E5%8A%9F%E8%83%BD%E7%89%B9%E7%82%B9)<br>
--[PictureSelector路径说明](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E8%B7%AF%E5%BE%84%E8%AF%B4%E6%98%8E)<br>
--[更新日志](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.7.3-rc10)<br>
--[主题配置-Xml方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98-Xml%E6%96%B9%E5%BC%8F)<br>
--[主题配置-Code方式](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%A8%E6%80%81%E4%B8%BB%E9%A2%98(%E5%8C%85%E5%90%AB%E8%A3%81%E5%89%AA%E3%80%81%E7%9B%B8%E5%86%8C%E5%90%AF%E5%8A%A8%E5%8A%A8%E7%94%BB)-Code%E6%96%B9%E5%BC%8F)<br>
+-[如何引用](#如何引用)<br>
+-[进阶使用](#进阶使用)<br>
 -[演示效果](#演示效果)<br>
--[Api说明](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)<br>
--[启动相册](#启动相册)<br>
--[单独拍照](#单独拍照)<br>
--[自定义相机](#自定义相机)<br>
--[结果回调](https://github.com/LuckSiege/PictureSelector/wiki/%E7%BB%93%E6%9E%9C%E5%9B%9E%E8%B0%83)<br>
--[常见错误](https://github.com/LuckSiege/PictureSelector/wiki/%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
--[缓存清除](#缓存清除)<br>
--[混淆配置](#混淆配置)<br>
+-[混淆配制](#混淆配制)<br>
 -[License](#License)<br>
+-[常见错误](#常见错误)<br>
+-[如何提Issues](#如何提Issues)<br>
 -[兼容性测试](#兼容性测试)<br>
 -[联系方式](#联系方式)<br>
 
 
 
+## 如何引用
 
-## 集成使用
-
+使用Gradle
 ```sh
 repositories {
   google()
@@ -47,166 +34,87 @@ repositories {
 }
 
 dependencies {
-  implementation 'io.github.lucksiege:pictureselector:v2.7.3-rc10'
-}
+    // PictureSelector 基础library (必须)
+    implementation 'io.github.lucksiege:pictureselector:v3.0.1'
+
+    // 图片压缩 library (按需引入)
+    implementation 'io.github.lucksiege:compress:v3.0.1'
+
+    // 图片裁剪 library (按需引入)
+    implementation 'io.github.lucksiege:ucrop:v3.0.1'
+
+    // 自定义相机 library (按需引入)
+    implementation 'io.github.lucksiege:camerax:v3.0.1'
+	}
 ```
 
-Or Maven:
+或者Maven:
 
 ```sh
-<dependency>
-  <groupId>io.github.lucksiege</groupId>
-  <artifactId>pictureselector</artifactId>
-  <version>v2.7.3-rc10</version>
-</dependency>
+ <dependency>
+ 	  	<groupId>io.github.lucksiege</groupId>
+ 	  	<artifactId>pictureselector</artifactId>
+ 	  	<version>v3.0.1</version>
+ 	</dependency>
+
+ 	<dependency>
+ 	  	<groupId>io.github.lucksiege</groupId>
+ 	  	<artifactId>compress</artifactId>
+ 	  	<version>v3.0.1</version>
+ 	</dependency>
+
+ 	<dependency>
+ 	  	<groupId>io.github.lucksiege</groupId>
+ 	  	<artifactId>ucrop</artifactId>
+ 	  	<version>v3.0.1</version>
+ 	</dependency>
+
+ 	<dependency>
+ 	  	<groupId>io.github.lucksiege</groupId>
+ 	  	<artifactId>camerax</artifactId>
+ 	  	<version>v3.0.1</version>
+ 	</dependency>
 ```
 
-## 启动相册
-快捷调用，更多功能 [请查看](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)
-
-1、onActivityResult
-```sh 
- PictureSelector.create(this)
-   .openGallery(SelectMimeType.ofImage())
-   .imageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
-   .forResult(PictureConfig.CHOOSE_REQUEST);
-   
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case PictureConfig.CHOOSE_REQUEST:
-                    // 结果回调
-                    List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
-                    break;
-                default:
-                    break;
-            }            
-        }
-```
-
-2、Callback
-```sh
- PictureSelector.create(this)
-   .openGallery(SelectMimeType.ofAll())
-   .imageEngine(GlideEngine.createGlideEngine())
-   .forResult(new OnResultCallbackListener<LocalMedia>() {
-       @Override
-       public void onResult(List<LocalMedia> result) {
-            // 结果回调
-       }
-
-       @Override
-       public void onCancel() {
-            // 取消
-       }
-     });  
-```
-
-## 单独拍照
-快捷调用，单独启动拍照或视频 根据PictureMimeType自动识别 更多功能 [请查看](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)
-
-onActivityResult
-```sh
- PictureSelector.create(this)
-   .openCamera(SelectMimeType.ofImage())
-   .imageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
-   .forResult(PictureConfig.REQUEST_CAMERA);  
-   
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case PictureConfig.REQUEST_CAMERA:
-                    // 结果回调
-                    List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
-                    break;
-                default:
-                    break;
-            }            
-        }
-```
-
-Callback
+## 进阶使用
+想要了解更多功能，请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api%E8%AF%B4%E6%98%8E)
+简单用例如下所示:
+1、获取图片
 ```sh
 PictureSelector.create(this)
-   .openCamera(SelectMimeType.ofImage())
-   .imageEngine(GlideEngine.createGlideEngine())
-   .forResult(new OnResultCallbackListener<LocalMedia>() {
-       @Override
-       public void onResult(List<LocalMedia> result) {
-            // 结果回调
-       }
+         .openGallery(SelectMimeType.ofImage())
+         .setImageEngine(GlideEngine.createGlideEngine())
+         .forResult(new OnResultCallbackListener<LocalMedia>() {
+               @Override
+               public void onResult(List<LocalMedia> result) {
 
-       @Override
-       public void onCancel() {
-            // 取消
-       }
-     });
+               }
+
+               @Override
+               public void onCancel() {
+
+               }
+            });
 ```
 
-## 自定义相机
-如果需要使用自定义相机需要设置
-```
-.isUseCustomCamera(true);
-```
-Application下实现如下接口
+2、单独拍照
 ```sh
- public class App extends Application implements CameraXConfig.Provider {
-    private static final String TAG = App.class.getSimpleName();
+	PictureSelector.create(this)
+         .openCamera(SelectMimeType.ofImage())
+         .forResult(new OnResultCallbackListener<LocalMedia>() {
+               @Override
+               public void onResult(List<LocalMedia> result) {
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
+               }
 
-    @NonNull
-    @Override
-    public CameraXConfig getCameraXConfig() {
-        return Camera2Config.defaultConfig();
-    }
- }
+               @Override
+               public void onCancel() {
+
+               }
+            });
 ```
 
-## 缓存清除
-```sh
- //包括裁剪和压缩后的缓存，要在上传成功后调用，type 指的是图片or视频缓存取决于你设置的ofImage或ofVideo 注意：需要系统sd卡权限  
- PictureCacheManager.deleteCacheDirFile(this,type);
- // 清除所有缓存 例如：压缩、裁剪、视频、音频所生成的临时文件
- PictureCacheManager.deleteAllCacheDirFile(this);
- // 清除缓存且刷新图库
- PictureCacheManager.deleteAllCacheDirRefreshFile(this);
- // 清除缓存且刷新图库
- PictureCacheManager.deleteAllCacheDirFile(this, new OnCallbackListener<String>() {
-            @Override
-            public void onCall(String absolutePath) {
-                // 清空缓存并刷新相册
-            }
-        });
-```
- 
-## 预览图片 
-```
-// 预览图片 可自定长按保存路径
-*注意 .themeStyle(R.style.theme)；里面的参数不可删，否则闪退...
 
-PictureSelector.create(this)
- .themeStyle(R.style.ps_default_style)
- .isNotPreviewDownload(true)
- .imageEngine(GlideEngine.createGlideEngine()) // 请参考Demo GlideEngine.java
- .openExternalPreview(position, result);
-
-```
-## 预览视频
-```sh
-PictureSelector.create(this).externalPictureVideo(video_path);
-```
-
-## 项目使用第三方库
-
-* PhotoView
 
 ## 混淆配置 
 ```sh
