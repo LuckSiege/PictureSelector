@@ -1,34 +1,31 @@
-# PictureSelector 2.0  
-   A Picture Selector for Android platform, support from the album to obtain pictures, video, audio & photo, support crop (single picture or multi-picture crop), compression, theme custom configuration and other functions, support dynamic access & adapt to Android 5.0+ system of open source picture selection framework。<br>
+# PictureSelector 3.0
+   A picture selector for Android platform, which supports obtaining pictures, videos, audio & photos from photo albums, cutting (single picture or multi picture cutting), compression, theme custom configuration and other functions, and supports dynamic access & an open source picture selection framework suitable for Android 5.0 + system<br>
 
-[中文版🇨🇳](README_CN.md)
+   [English🇺🇸](README.md)
 
-[Download APK](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/demo_2021-11-14_122603_v2.7.3-rc10.apk)<br>
+   [Effect experience](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-01-09_114106_v3.0.1.apk)<br>
 
-[![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector) 
+[![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
 [![CSDN](https://img.shields.io/twitter/url/http/blog.csdn.net/luck_mw.svg?style=social)](http://blog.csdn.net/luck_mw)
 [![I](https://img.shields.io/github/issues/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector/issues)
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
-## Directory
--[Or use Gradle](#Version)<br>
--[Update Log](https://github.com/LuckSiege/PictureSelector/releases/tag/v2.7.3-rc10)<br>
--[Style Configuration-Xml](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98-Xml%E6%96%B9%E5%BC%8F)<br>
--[Style Configuration-Code](https://github.com/LuckSiege/PictureSelector/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%A8%E6%80%81%E4%B8%BB%E9%A2%98(%E5%8C%85%E5%90%AB%E8%A3%81%E5%89%AA%E3%80%81%E7%9B%B8%E5%86%8C%E5%90%AF%E5%8A%A8%E5%8A%A8%E7%94%BB)-Code%E6%96%B9%E5%BC%8F)<br>
--[Demo Effect](#Effect)<br>
--[Api Explain](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api)<br>
--[PictureSelector Path Desc](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-%E8%B7%AF%E5%BE%84%E8%AF%B4%E6%98%8E)<br>
--[Open Photo Album](#Photo)<br>
--[Open Camera](#Camera)<br>
--[Custom Camera](#CustomCamera)<br>
--[Results Callback](https://github.com/LuckSiege/PictureSelector/wiki/Result-Callback)<br>
--[Cache Clear](#CacheClear)<br>
--[Confusion](#Confusion)<br>
+## Contents
+-[Download](#Download)<br>
+-[Usage](#Usage)<br>
+-[Result description](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-LocalMedia%E8%AF%B4%E6%98%8E)<br>
+-[Effect](#Effect)<br>
+-[ProGuard](#ProGuard)<br>
 -[License](#License)<br>
+-[Common errors](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
+-[Issues](#Issues)<br>
 
-## Version
 
+
+## Download
+
+Use Gradle
 ```sh
 repositories {
   google()
@@ -36,7 +33,17 @@ repositories {
 }
 
 dependencies {
-  implementation 'io.github.lucksiege:pictureselector:v2.7.3-rc10'
+  // PictureSelector basic library (Necessary)
+  implementation 'io.github.lucksiege:pictureselector:v3.0.1'
+
+  // image compress library (Not necessary)
+  implementation 'io.github.lucksiege:compress:v3.0.1'
+
+  // uCrop library (Not necessary)
+  implementation 'io.github.lucksiege:ucrop:v3.0.1'
+
+  // simple camerax library (Not necessary)
+  implementation 'io.github.lucksiege:camerax:v3.0.1'
 }
 ```
 
@@ -46,217 +53,217 @@ Or Maven:
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>v2.7.3-rc10</version>
+  <version>v3.0.1</version>
+</dependency>
+
+<dependency>
+  <groupId>io.github.lucksiege</groupId>
+  <artifactId>compress</artifactId>
+  <version>v3.0.1</version>
+</dependency>
+
+<dependency>
+  <groupId>io.github.lucksiege</groupId>
+  <artifactId>ucrop</artifactId>
+  <version>v3.0.1</version>
+</dependency>
+
+<dependency>
+  <groupId>io.github.lucksiege</groupId>
+  <artifactId>camerax</artifactId>
+  <version>v3.0.1</version>
 </dependency>
 ```
 
-## Photo
-Quick call, more functions [More](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api)
+## Usage
+For more features, see [documentation](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%8A%9F%E8%83%BDapi%E8%AF%B4%E6%98%8E)
 
-1、onActivityResult
-```sh 
- PictureSelector.create(this)
+A simple use case is shown below:
+
+1、Get picture
+```sh
+PictureSelector.create(this)
    .openGallery(SelectMimeType.ofImage())
-   .imageEngine(GlideEngine.createGlideEngine()) // Please refer to the Demo GlideEngine.java
-   .forResult(PictureConfig.CHOOSE_REQUEST);
-   
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case PictureConfig.CHOOSE_REQUEST:
-                    // onResult Callback
-                    List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
-                    break;
-                default:
-                    break;
-            }            
-        }
-```
-
-2、Callback
-```sh
- PictureSelector.create(this)
-   .openGallery(SelectMimeType.ofAll())
-   .imageEngine(GlideEngine.createGlideEngine())
+   .setImageEngine(GlideEngine.createGlideEngine())
    .forResult(new OnResultCallbackListener<LocalMedia>() {
-       @Override
-       public void onResult(List<LocalMedia> result) {
-            // onResult Callback
-       }
+      @Override
+      public void onResult(List<LocalMedia> result) {
 
-       @Override
-       public void onCancel() {
-            // onCancel Callback
-       }
-     });  
+      }
+
+      @Override
+      public void onCancel() {
+
+     }
+});
 ```
 
-## Camera
-Quick Use, separately start the photo or video according to PictureMimeType automatic recognition [More](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-Api)
-
-onActivityResult
-```sh
- PictureSelector.create(this)
-   .openCamera(SelectMimeType.ofImage())
-   .imageEngine(GlideEngine.createGlideEngine()) // Please refer to the Demo GlideEngine.java
-   .forResult(PictureConfig.REQUEST_CAMERA);  
-   
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case PictureConfig.REQUEST_CAMERA:
-                    // onResult Callback
-                    List<LocalMedia> result = PictureSelector.obtainMultipleResult(data);
-                    break;
-                default:
-                    break;
-            }            
-        }
-```
-
-Callback
+2、only use camera
 ```sh
 PictureSelector.create(this)
-   .openCamera(SelectMimeType.ofImage())
-   .imageEngine(GlideEngine.createGlideEngine())
-   .forResult(new OnResultCallbackListener<LocalMedia>() {
-       @Override
-       public void onResult(List<LocalMedia> result) {
-            // onResult Callback
-       }
+     .openCamera(SelectMimeType.ofImage())
+     .forResult(new OnResultCallbackListener<LocalMedia>() {
+        @Override
+        public void onResult(List<LocalMedia> result) {
 
-       @Override
-       public void onCancel() {
-            // onCancel Callback
-       }
-     });
+        }
+
+        @Override
+        public void onCancel() {
+
+      }
+});
 ```
 
-## CustomCamera
-If you need to use a custom camera you need to set up
-```
-.isUseCustomCamera(true);
-``` 
-Application implementing interface
+Set theme，see [documentation](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E4%B8%BB%E9%A2%98api%E8%AF%B4%E6%98%8E)
+
 ```sh
- public class App extends Application implements CameraXConfig.Provider {
-    private static final String TAG = App.class.getSimpleName();
+.setSelectorUIStyle();
+```
+Or Overload layout，see [documentation](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E9%87%8D%E8%BD%BD%E5%B8%83%E5%B1%80%EF%BC%9F)
 
+```sh
+.setInjectLayoutResourceListener(new OnInjectLayoutResourceListener() {
+   @Override
+   public int getLayoutResourceId(Context context, int resourceSource) {
+	return 0;
+   }
+```
+
+The advanced use cases are as follow：
+
+1、Use the custom camera,See [documentation](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9B%B8%E6%9C%BA%EF%BC%9F)
+
+```sh
+.setCameraInterceptListener(new OnCameraInterceptListener() {
     @Override
-    public void onCreate() {
-        super.onCreate();
-    }
+    public void openCamera(Fragment fragment,PictureSelectionConfig config, int cameraMode, int requestCode){
 
-    @NonNull
+    }
+});
+```
+
+2、Use the image compress,See [documentation](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E5%8E%8B%E7%BC%A9%EF%BC%9F)
+
+```sh
+.setCompressEngine(new CompressEngine() {
+   @Override
+   public void onStartCompress(Context context, ArrayList<LocalMedia> list, OnCallbackListener<ArrayList<LocalMedia>> call){
+
+   }
+});
+```
+
+3、Use the image uCrop,See [documentation](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%A3%81%E5%89%AA%EF%BC%9F)
+
+```sh
+
+.setCropEngine(new CropEngine() {
+   @Override
+   public void onStartCrop(Fragment fragment, LocalMedia currentLocalMedia, ArrayList<LocalMedia> dataSource, int requestCode) {
+
+   }
+});
+```
+
+4、Use the image edit,See [documentation](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E7%BC%96%E8%BE%91%E5%9B%BE%E7%89%87%EF%BC%9F)
+
+```sh
+.setEditMediaInterceptListener(new OnMediaEditInterceptListener() {
     @Override
-    public CameraXConfig getCameraXConfig() {
-        return Camera2Config.defaultConfig();
+    public void onStartMediaEdit(Fragment fragment, LocalMedia currentLocalMedia, int requestCode) {
+
     }
- }
+});
+
 ```
 
-## CacheClear
+5、Use the custom load data,See [documentation](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E5%8A%A0%E8%BD%BD%E8%87%AA%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E6%BA%90%EF%BC%9F)
+
 ```sh
- // Include clipped and compressed cache, to be called upon successful upload, type refers to the image or video cache depending on which ofImage or ofVideo you set up note: system sd card permissions are required
- PictureCacheManager.deleteCacheDirFile(this,type);
- // Clear all temporary files generated by caching such as compression, clipping, video, and audio
- PictureCacheManager.deleteAllCacheDirFile(this);
- // Clear the cache and refresh the gallery
-  PictureCacheManager.deleteAllCacheDirRefreshFile(this);
- // Clear the cache and refresh the gallery
- PictureCacheManager.deleteAllCacheDirFile(this, new OnCallbackListener<String>() {
-            @Override
-            public void onCall(String absolutePath) {
-                // Refresh the photo album
-            }
-        });
-```
- 
-## Preview Image
-```
-// Preview picture can be customized length press save path
-*Prompt .themeStyle(R.style.theme)；Inside the parameters can not be deleted, otherwise crash...
+.setSandboxFileEngine(new SandboxFileEngine() {
+    @Override
+    public void onStartSandboxFileTransform(Context context, boolean isOriginalImage, int index, LocalMedia media, OnCallbackIndexListener<LocalMedia> listener) {
 
-PictureSelector.create(this)
- .themeStyle(R.style.ps_default_style)
- .isNotPreviewDownload(true)
- .imageEngine(GlideEngine.createGlideEngine())
- .openExternalPreview(position, result);
+   }
+});
 
 ```
-## Preview Video
+
+6、Use the custom apply Permissions,See [documentation](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9D%83%E9%99%90%E7%94%B3%E8%AF%B7-%EF%BC%9F)
+
 ```sh
-PictureSelector.create(this).externalPictureVideo(video_path);
+  .setPermissionsInterceptListener(new OnPermissionsInterceptListener() {
+      @Override
+      public void requestPermission(Fragment fragment, String[] permissionArray, OnCallbackListener<Boolean> call) {
+
+      }
+
+      @Override
+      public boolean hasPermissions(Fragment fragment) {
+      return false;
+  }
+});
+
 ```
 
-## Project use libraries
 
-* PhotoView
-
-## Confusion
+## ProGuard
 ```sh
-#PictureSelector 2.0
 -keep class com.luck.picture.lib.** { *; }
+-keep class com.luck.lib.camerax.** { *; }
 
-
+// use uCrop
+-dontwarn com.yalantis.ucrop**
+-keep class com.yalantis.ucrop** { *; }
+-keep interface com.yalantis.ucrop** { *; }
 ```
 ## License
 ```sh
-   Copyright 2016 Luck
+Copyright 2016 Luck
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 ```
 
-## Contact
-Android Group   [662320389]() <br>
-Android Group 1 [619458861]() (biggest) <br>
-Android Group 2 [679824206]() (biggest) <br>
-Android Group 3 [854136996]() (biggest) <br>
-QQ [893855882]() <br>
 
 
 ## Effect
 
 | Single Mode | Mixed Mode |
 |:-----------:|:-----------:|
-|![](image/home.jpg)|![](image/home_mixed.jpg)| 
+|![](image/home.jpg)|![](image/home_mixed.jpg)|
 
 | Default Style | Preview | Multiple Crop |
 |:-----------:|:--------:|:---------:|
-|![](image/ps_default_style_1.jpg) | <img src="image/ps_default_style_2.jpg"/> | ![](image/ps_default_style_new_3.jpg)|
+|![](image/picture_default_style_1.jpg) | <img src="image/picture_default_style_2.jpg"/> | ![](image/picture_default_style_new_3.jpg)|
 
 | Digital Style | Preview | Multiple Crop |
 |:-----------:|:--------:|:---------:|
-|![](image/ps_num_style_new_1.jpg) | ![](image/ps_num_style_new_2.jpg) | ![](image/ps_num_style_new_3.jpg)|
+|![](image/picture_num_style_new_1.jpg) | ![](image/picture_num_style_new_2.jpg) | ![](image/picture_num_style_new_3.jpg)|
 
 | White Style | Preview | Single Crop |
 |:-----------:|:--------:|:---------:|
-|![](image/ps_sina_style_1.jpg) | ![](image/ps_sina_style_new_2.jpg) | ![](image/ps_sina_style_new_3.jpg)|
+|![](image/picture_sina_style_1.jpg) | ![](image/picture_sina_style_new_2.jpg) | ![](image/picture_sina_style_new_3.jpg)|
 
 | New Style | Preview | Multiple Crop |
 |:-----------:|:--------:|:---------:|
-|![](image/ps_wechat_style_1.jpg) | ![](image/ps_wechat_style_2.jpg) | ![](image/ps_wechat_style_new_3.jpg)|
+|![](image/picture_wechat_style_1.jpg) | ![](image/picture_wechat_style_2.jpg) | ![](image/picture_wechat_style_new_3.jpg)|
 
 | Photo Album Directory | Single Mode | Circular Crop|
 |:-----------:|:--------:|:--------:|
-|![](image/ps_wechat_album_style.jpg) |![](image/ps_wechat_single_style_3.jpg) | ![](image/ps_circular_crop_new_style.jpg)|
+|![](image/picture_wechat_album_style.jpg) |![](image/picture_wechat_single_style_3.jpg) | ![](image/picture_circular_crop_new_style.jpg)|
 
 | White Style | Video | Audio |
 |:-----------:|:-----------:|:--------:|
-|![](image/ps_white_style.jpeg) |![](image/ps_video.jpg) | ![](image/ps_audio.jpg)|
-
+|![](image/picture_white_style.jpeg) |![](image/picture_video.jpg) | ![](image/picture_audio.jpg)|
 

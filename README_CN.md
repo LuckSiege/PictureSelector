@@ -3,7 +3,7 @@
    
    [英文版🇺🇸](README.md)
 
-   [效果体验](https://github.com/LuckSiege/PictureSelector/raw/master/app/demo/demo_2021-11-14_122603_v2.7.3-rc10.apk)<br>
+   [效果体验](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-01-09_114106_v3.0.1.apk)<br>
   
 [![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
@@ -238,10 +238,10 @@ limitations under the License.
 ```
 
 ## 联系方式
-Android开发交流 新群 [662320389]() <br>
-Android开发交流 群一 [619458861]() (已满) <br>
-Android开发交流 群二 [679824206]() (已满) <br>
-Android开发交流 群三 [854136996]() (已满) <br>
+Android开发交流  [662320389]() <br>
+Android开发交流  [619458861]() <br>
+Android开发交流  [679824206]() <br>
+Android开发交流  [854136996]() <br>
 QQ [893855882]() <br>
 
 
