@@ -122,7 +122,7 @@ PictureSelector.create(this)
 ```sh
 .setSelectorUIStyle();
 ```
-或者您可以重载布局，更多请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95)
+或者您可以重载布局，更多请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E9%87%8D%E8%BD%BD%E5%B8%83%E5%B1%80%EF%BC%9F)
 
 ```sh
 .setInjectLayoutResourceListener(new OnInjectLayoutResourceListener() {
