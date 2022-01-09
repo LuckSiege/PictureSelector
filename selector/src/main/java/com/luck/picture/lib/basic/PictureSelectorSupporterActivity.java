@@ -1,9 +1,11 @@
 package com.luck.picture.lib.basic;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -84,6 +86,12 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity implemen
         if (config.language != LanguageConfig.UNKNOWN_LANGUAGE && !config.isOnlyCamera) {
             PictureLanguageUtils.setAppLanguage(this, config.language);
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        initAppLanguage();
     }
 
     @Override
