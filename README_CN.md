@@ -117,6 +117,32 @@ PictureSelector.create(this)
 });
 ```
 
+3、预览图片或视频
+```sh
+
+PictureSelector.create(this)
+    .openPreview()
+    .setImageEngine(GlideEngine.createGlideEngine())
+    .setExternalPreviewEventListener(new OnExternalPreviewEventListener() {
+       @Override
+       public void onPreviewDelete(int position) {
+
+       }
+
+        @Override
+       public boolean onLongPressDownload(LocalMedia media) {
+           return false;
+       }
+    }).startActivityPreview(position, true, "data");
+
+```
+
+4、预览音频
+
+```sh
+AudioPlayDialog.showPlayAudioDialog(getContext(), availablePath);
+```
+
 设置图片选择器主题，更多请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E4%B8%BB%E9%A2%98api%E8%AF%B4%E6%98%8E)
 
 ```sh
