@@ -19,7 +19,7 @@
 -[ProGuard](#ProGuard)<br>
 -[License](#License)<br>
 -[Common errors](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
--[Issues](#Issues)<br>
+-[Issues](#https://github.com/LuckSiege/PictureSelector/wiki/%E5%A6%82%E4%BD%95%E6%8F%90Issues%3F)<br>
 
 
 
