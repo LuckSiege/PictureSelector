@@ -87,12 +87,6 @@ import java.util.List;
 public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     public static final String TAG = PictureSelectorPreviewFragment.class.getSimpleName();
 
-    public static PictureSelectorPreviewFragment newInstance() {
-        PictureSelectorPreviewFragment fragment = new PictureSelectorPreviewFragment();
-        fragment.setArguments(new Bundle());
-        return fragment;
-    }
-
     private ArrayList<LocalMedia> mData = new ArrayList<>();
 
     private PreviewTitleBar titleBar;
@@ -163,6 +157,19 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private PreviewGalleryAdapter mGalleryAdapter;
 
     private List<View> mAnimViews;
+
+
+    public static PictureSelectorPreviewFragment newInstance() {
+        PictureSelectorPreviewFragment fragment = new PictureSelectorPreviewFragment();
+        fragment.setArguments(new Bundle());
+        return fragment;
+    }
+
+    @Override
+    public String getFragmentTag() {
+        return TAG;
+    }
+
 
     /**
      * 内部预览

@@ -1287,7 +1287,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onSaveInstanceState(outState);
         if (mAdapter != null && mAdapter.getData() != null && mAdapter.getData().size() > 0) {
             outState.putParcelableArrayList("selectorList",
-                    (ArrayList<? extends Parcelable>) mAdapter.getData());
+                    mAdapter.getData());
         }
     }
 

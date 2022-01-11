@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.luck.picture.lib.PictureOnlyCameraFragment;
+import com.luck.picture.lib.PictureSelectorFragment;
 import com.luck.picture.lib.PictureSelectorPreviewFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.animators.AnimationType;
@@ -1205,5 +1206,65 @@ public class PictureSelectionModel {
                 activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
             }
         }
+    }
+
+
+    /**
+     * build PictureSelectorFragment
+     *
+     * @param call
+     */
+    public PictureSelectorFragment build(OnResultCallbackListener<LocalMedia> call) {
+        Activity activity = selector.getActivity();
+        if (activity == null) {
+            throw new NullPointerException("Activity cannot be null");
+        }
+        if (call == null) {
+            throw new NullPointerException("OnResultCallbackListener cannot be null");
+        }
+        // 绑定回调监听
+        selectionConfig.isResultListenerBack = true;
+        selectionConfig.isActivityResultBack = false;
+        PictureSelectionConfig.onResultCallListener = call;
+        return new PictureSelectorFragment();
+    }
+
+    /**
+     * build PictureSelectorFragment
+     *
+     * @param containerViewId fragment container id
+     * @param call
+     */
+    public PictureSelectorFragment build(int containerViewId, OnResultCallbackListener<LocalMedia> call) {
+        Activity activity = selector.getActivity();
+        if (activity == null) {
+            throw new NullPointerException("Activity cannot be null");
+        }
+        if (call == null) {
+            throw new NullPointerException("OnResultCallbackListener cannot be null");
+        }
+        // 绑定回调监听
+        selectionConfig.isResultListenerBack = true;
+        selectionConfig.isActivityResultBack = false;
+        PictureSelectionConfig.onResultCallListener = call;
+        FragmentManager fragmentManager = null;
+        if (activity instanceof AppCompatActivity) {
+            fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
+        } else if (activity instanceof FragmentActivity) {
+            fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
+        }
+        if (fragmentManager == null) {
+            throw new NullPointerException("FragmentManager cannot be null");
+        }
+        PictureSelectorFragment selectorFragment = new PictureSelectorFragment();
+        Fragment fragment = fragmentManager.findFragmentByTag(selectorFragment.getFragmentTag());
+        if (fragment != null) {
+            fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
+        }
+        fragmentManager.beginTransaction()
+                .add(containerViewId, selectorFragment, selectorFragment.getFragmentTag())
+                .addToBackStack(selectorFragment.getFragmentTag())
+                .commitAllowingStateLoss();
+        return selectorFragment;
     }
 }

@@ -83,7 +83,7 @@ import java.util.List;
  * @describe：PictureCommonFragment
  */
 public abstract class PictureCommonFragment extends Fragment implements IPictureSelectorCommonEvent {
-
+    public static final String TAG = PictureCommonFragment.class.getSimpleName();
     /**
      * PermissionResultCallback
      */
@@ -124,6 +124,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private int soundID;
 
+    public String getFragmentTag() {
+        return TAG;
+    }
 
     @Override
     public int getResourceId() {

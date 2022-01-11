@@ -33,6 +33,11 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
     }
 
     @Override
+    public String getFragmentTag() {
+        return TAG;
+    }
+
+    @Override
     public int getResourceId() {
         return R.layout.ps_empty;
     }
