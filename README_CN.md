@@ -5,7 +5,6 @@
 
    [效果体验](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-01-09_114106_v3.0.1.apk)<br>
   
-[![](https://jitpack.io/v/LuckSiege/PictureSelector.svg)](https://jitpack.io/#LuckSiege/PictureSelector)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
 [![CSDN](https://img.shields.io/twitter/url/http/blog.csdn.net/luck_mw.svg?style=social)](http://blog.csdn.net/luck_mw)
 [![I](https://img.shields.io/github/issues/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector/issues)
@@ -19,7 +18,7 @@
 -[混淆配制](#混淆配制)<br>
 -[License](#License)<br>
 -[常见错误](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
--[如何提Issues](#如何提Issues)<br>
+-[如何提Issues](https://github.com/LuckSiege/PictureSelector/wiki/%E5%A6%82%E4%BD%95%E6%8F%90Issues%3F)<br>
 -[兼容性测试](#兼容性测试)<br>
 -[联系方式](#联系方式)<br>
 
@@ -285,25 +284,25 @@ QQ [893855882]() <br>
 
 | 默认风格 | 预览 | 多图裁剪 |
 |:-----------:|:--------:|:---------:|
-|![](image/ps_default_style_1.jpg) | <img src="image/ps_default_style_2.jpg"/> | ![](image/ps_default_style_new_3.jpg)|
+|![](image/picture_default_style_1.jpg) | <img src="image/picture_default_style_2.jpg"/> | ![](image/picture_default_style_new_3.jpg)|
 
 | 数字风格 | 预览 | 多图裁剪 |
 |:-----------:|:--------:|:---------:|
-|![](image/ps_num_style_new_1.jpg) | ![](image/ps_num_style_new_2.jpg) | ![](image/ps_num_style_new_3.jpg)|
+|![](image/picture_num_style_new_1.jpg) | ![](image/picture_num_style_new_2.jpg) | ![](image/picture_num_style_new_3.jpg)|
 
 | 白色风格 | 预览 | 单图裁剪 |
 |:-----------:|:--------:|:---------:|
-|![](image/ps_sina_style_1.jpg) | ![](image/ps_sina_style_new_2.jpg) | ![](image/ps_sina_style_new_3.jpg)|
+|![](image/picture_sina_style_1.jpg) | ![](image/picture_sina_style_new_2.jpg) | ![](image/picture_sina_style_new_3.jpg)|
 
 | 全新风格 | 预览 | 多图裁剪 |
 |:-----------:|:--------:|:---------:|
-|![](image/ps_wechat_style_1.jpg) | ![](image/ps_wechat_style_2.jpg) | ![](image/ps_wechat_style_new_3.jpg)|
+|![](image/picture_wechat_style_1.jpg) | ![](image/picture_wechat_style_2.jpg) | ![](image/picture_wechat_style_new_3.jpg)|
 
 | 相册目录 | 单选模式 | 头像裁剪|
 |:-----------:|:--------:|:--------:|
-|![](image/ps_wechat_album_style.jpg) |![](image/ps_wechat_single_style_3.jpg) | ![](image/ps_circular_crop_new_style.jpg)|
+|![](image/picture_wechat_album_style.jpg) |![](image/picture_wechat_single_style_3.jpg) | ![](image/picture_circular_crop_new_style.jpg)|
 
 | 白色风格 | 视频 | 音频 |
 |:-----------:|:-----------:|:--------:|
-|![](image/ps_white_style.jpeg) |![](image/ps_video.jpg) | ![](image/ps_audio.jpg)|
+|![](image/picture_white_style.jpeg) |![](image/picture_video.jpg) | ![](image/picture_audio.jpg)|
 
