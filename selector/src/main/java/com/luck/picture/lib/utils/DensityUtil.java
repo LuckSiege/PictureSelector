@@ -6,13 +6,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
-import android.view.Display;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 
-import com.luck.picture.lib.immersive.OSUtils;
+import com.luck.picture.lib.immersive.RomUtils;
 
 /**
  * @author：luck
@@ -20,26 +23,32 @@ import com.luck.picture.lib.immersive.OSUtils;
  * @describe：DensityUtil
  */
 public class DensityUtil {
-
     /**
-     * 获取屏幕宽度
+     * 获取屏幕真实宽度
+     *
+     * @param context
+     * @return
      */
-    public static int getScreenWidth(Context context) {
-        DisplayMetrics dm = new DisplayMetrics();
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        wm.getDefaultDisplay().getMetrics(dm);
-        return dm.widthPixels;
+    public static int getRealScreenWidth(Context context) {
+        WindowManager wm = (WindowManager) context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+        Point point = new Point();
+        wm.getDefaultDisplay().getRealSize(point);
+        return point.x;
     }
 
     /**
-     * 获取屏幕高度
+     * 获取屏幕真实高度
+     *
+     * @param context
+     * @return
      */
-    public static int getScreenHeightPixels(Context context) {
-        DisplayMetrics dm = new DisplayMetrics();
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        wm.getDefaultDisplay().getMetrics(dm);
-        return dm.heightPixels;
+    public static int getRealScreenHeight(Context context) {
+        WindowManager wm = (WindowManager) context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+        Point point = new Point();
+        wm.getDefaultDisplay().getRealSize(point);
+        return point.y;
     }
+
 
     /**
      * 获取屏幕高度(不包含状态栏高度)
@@ -48,17 +57,21 @@ public class DensityUtil {
      * @return
      */
     public static int getScreenHeight(Context context) {
-        return getScreenHeightPixels(context) - getStatusBarHeight(context);
+        return getRealScreenHeight(context) - getStatusNavigationBarHeight(context);
     }
 
     /**
-     * 获取屏幕高度(包含状态栏高度)
+     * 获取状态栏和导航栏高度
      *
      * @param context
      * @return
      */
-    public static int getAppInScreenHeight(Context context) {
-        return getScreenHeightPixels(context) + getStatusBarHeight(context);
+    private static int getStatusNavigationBarHeight(Context context) {
+        if (isNavBarVisible(context)) {
+            return getStatusBarHeight(context) + getNavigationBarHeight(context);
+        } else {
+            return getStatusBarHeight(context);
+        }
     }
 
     /**
@@ -73,39 +86,110 @@ public class DensityUtil {
         return result == 0 ? dip2px(context, 26) : result;
     }
 
-    public static boolean hasNavigationBar(Activity activity) {
-        return getNavigationBarHeight(activity) > 0;
+
+    /**
+     * Return whether the navigation bar visible.
+     * <p>Call it in onWindowFocusChanged will get right result.</p>
+     *
+     * @param window The window.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isNavBarVisible(Context context) {
+        boolean isVisible = false;
+        if (!(context instanceof Activity)) {
+            return false;
+        }
+        Activity activity = (Activity) context;
+        Window window = activity.getWindow();
+        ViewGroup decorView = (ViewGroup) window.getDecorView();
+        for (int i = 0, count = decorView.getChildCount(); i < count; i++) {
+            final View child = decorView.getChildAt(i);
+            final int id = child.getId();
+            if (id != View.NO_ID) {
+                String resourceEntryName = getResNameById(activity, id);
+                if ("navigationBarBackground".equals(resourceEntryName)
+                        && child.getVisibility() == View.VISIBLE) {
+                    isVisible = true;
+                    break;
+                }
+            }
+        }
+        if (isVisible) {
+            // 对于三星手机，android10以下非OneUI2的版本，比如 s8，note8 等设备上，
+            // 导航栏显示存在bug："当用户隐藏导航栏时显示输入法的时候导航栏会跟随显示"，会导致隐藏输入法之后判断错误
+            // 这个问题在 OneUI 2 & android 10 版本已修复
+            if (RomUtils.isSamsung()
+                    && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
+                    && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                try {
+                    return Settings.Global.getInt(activity.getContentResolver(), "navigationbar_hide_bar_enabled") == 0;
+                } catch (Exception ignore) {
+                }
+            }
+
+            int visibility = decorView.getSystemUiVisibility();
+            isVisible = (visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0;
+        }
+
+        return isVisible;
     }
 
+    /**
+     * getResNameById
+     *
+     * @param context
+     * @param id
+     * @return
+     */
+    private static String getResNameById(Context context, int id) {
+        try {
+            return context.getResources().getResourceEntryName(id);
+        } catch (Exception ignore) {
+            return "";
+        }
+    }
+
+
+    /**
+     * 获取导航栏宽度
+     *
+     * @param context
+     * @return
+     */
     @TargetApi(14)
     public static int getNavigationBarWidth(Context context) {
         int result = 0;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            if (hasNavBar((Activity) context)) {
+            if (isNavBarVisible(context)) {
                 return getInternalDimensionSize(context, "navigation_bar_width");
             }
         }
         return result;
     }
 
+    /**
+     * 获取导航栏高度
+     *
+     * @param context
+     * @return
+     */
     @TargetApi(14)
     public static int getNavigationBarHeight(Context context) {
         int result = 0;
         Resources res = context.getResources();
         boolean mInPortrait = (res.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            if (hasNavBar((Activity) context)) {
-                String key;
-                if (mInPortrait) {
-                    key = "navigation_bar_height";
-                } else {
-                    key = "navigation_bar_height_landscape";
-                }
-                return getInternalDimensionSize(context, key);
+        if (isNavBarVisible(context)) {
+            String key;
+            if (mInPortrait) {
+                key = "navigation_bar_height";
+            } else {
+                key = "navigation_bar_height_landscape";
             }
+            return getInternalDimensionSize(context, key);
         }
         return result;
     }
+
 
     private static int getInternalDimensionSize(Context context, String key) {
         int result = 0;
@@ -148,48 +232,6 @@ public class DensityUtil {
         boolean mInPortrait = (res.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT);
         return (getSmallestWidthDp(activity) >= 600 || mInPortrait);
     }
-
-    @TargetApi(14)
-    private static boolean hasNavBar(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            //判断小米手机是否开启了全面屏，开启了，直接返回false
-            if (Settings.Global.getInt(activity.getContentResolver(), "force_fsg_nav_bar", 0) != 0) {
-                return false;
-            }
-            //判断华为手机是否隐藏了导航栏，隐藏了，直接返回false
-            if (OSUtils.isEMUI()) {
-                if (OSUtils.isEMUI3_x() || Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                    if (Settings.System.getInt(activity.getContentResolver(), "navigationbar_is_min", 0) != 0) {
-                        return false;
-                    }
-                } else {
-                    if (Settings.Global.getInt(activity.getContentResolver(), "navigationbar_is_min", 0) != 0) {
-                        return false;
-                    }
-                }
-            }
-        }
-        //其他手机根据屏幕真实高度与显示高度是否相同来判断
-        WindowManager windowManager = activity.getWindowManager();
-        Display d = windowManager.getDefaultDisplay();
-
-        DisplayMetrics realDisplayMetrics = new DisplayMetrics();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            d.getRealMetrics(realDisplayMetrics);
-        }
-
-        int realHeight = realDisplayMetrics.heightPixels;
-        int realWidth = realDisplayMetrics.widthPixels;
-
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        d.getMetrics(displayMetrics);
-
-        int displayHeight = displayMetrics.heightPixels;
-        int displayWidth = displayMetrics.widthPixels;
-
-        return (realWidth - displayWidth) > 0 || (realHeight - displayHeight) > 0;
-    }
-
 
     /**
      * dp2px

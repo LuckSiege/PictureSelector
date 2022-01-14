@@ -9,9 +9,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.BlendModeColorFilterCompat;
-import androidx.core.graphics.BlendModeCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
@@ -162,9 +159,8 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         LocalMedia item = mData.get(position);
-        ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                ContextCompat.getColor(holder.itemView.getContext(), item.isGalleryEnabledMask()
-                        ? R.color.ps_color_half_white : R.color.ps_color_transparent), BlendModeCompat.SRC_ATOP);
+        ColorFilter colorFilter = StyleUtils.getColorFilter(holder.itemView.getContext(), item.isGalleryEnabledMask()
+                ? R.color.ps_color_half_white : R.color.ps_color_transparent);
         if (item.isChecked() && item.isGalleryEnabledMask()) {
             holder.viewBorder.setVisibility(View.VISIBLE);
         } else {

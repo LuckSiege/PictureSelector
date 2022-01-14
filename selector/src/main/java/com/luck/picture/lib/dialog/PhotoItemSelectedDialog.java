@@ -71,7 +71,7 @@ public class PhotoItemSelectedDialog extends DialogFragment implements View.OnCl
         if (dialog != null) {
             Window window = dialog.getWindow();
             if (window != null) {
-                window.setLayout(DensityUtil.getScreenWidth(getContext()), RelativeLayout.LayoutParams.WRAP_CONTENT);
+                window.setLayout(DensityUtil.getRealScreenWidth(getContext()), RelativeLayout.LayoutParams.WRAP_CONTENT);
                 window.setGravity(Gravity.BOTTOM);
                 window.setWindowAnimations(R.style.PictureThemeDialogFragmentAnim);
             }

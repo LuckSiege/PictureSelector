@@ -16,7 +16,6 @@ import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.permissions.PermissionConfig;
 import com.luck.picture.lib.permissions.PermissionResultCallback;
-import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.ToastUtils;
 
@@ -75,9 +74,8 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_CANCELED) {
             if (requestCode == PictureConfig.REQUEST_CAMERA) {
-                if (!ActivityCompatHelper.isDestroy(getActivity())) {
-                    getActivity().getSupportFragmentManager().popBackStack();
-                }
+                onBackOffFragment();
+                onSelectFinish(Activity.RESULT_CANCELED, null);
             }
         }
     }
@@ -98,13 +96,11 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
             openSelectedCamera();
         } else {
             if (!PermissionChecker.isCheckCamera(getContext())) {
-                ToastUtils.showToast(getContext(),getString(R.string.ps_camera));
+                ToastUtils.showToast(getContext(), getString(R.string.ps_camera));
             } else if (!PermissionChecker.isCheckWriteStorage(getContext())) {
-                ToastUtils.showToast(getContext(),getString(R.string.ps_jurisdiction));
+                ToastUtils.showToast(getContext(), getString(R.string.ps_jurisdiction));
             }
-            if (!ActivityCompatHelper.isDestroy(getActivity())) {
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
+            onBackOffFragment();
         }
     }
 }

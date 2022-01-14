@@ -18,6 +18,9 @@ import java.util.regex.Pattern;
 
 public class RomUtils {
 
+    private static final String[] ROM_SAMSUNG = {"samsung"};
+    private final static String UNKNOWN = "unknown";
+
     public static class AvailableRomType {
         public static final int MIUI = 1;
         public static final int FLYME = 2;
@@ -138,6 +141,46 @@ public class RomUtils {
     }
 
     /**
+     * Return whether the rom is made by samsung.
+     *
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isSamsung() {
+        final String brand = getBrand();
+        final String manufacturer = getManufacturer();
+        return isRightRom(brand, manufacturer, ROM_SAMSUNG);
+    }
+
+    private static boolean isRightRom(final String brand, final String manufacturer, final String... names) {
+        for (String name : names) {
+            if (brand.contains(name) || manufacturer.contains(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String getManufacturer() {
+        try {
+            String manufacturer = Build.MANUFACTURER;
+            if (!TextUtils.isEmpty(manufacturer)) {
+                return manufacturer.toLowerCase();
+            }
+        } catch (Throwable ignore) {/**/}
+        return UNKNOWN;
+    }
+
+    private static String getBrand() {
+        try {
+            String brand = Build.BRAND;
+            if (!TextUtils.isEmpty(brand)) {
+                return brand.toLowerCase();
+            }
+        } catch (Throwable ignore) {/**/}
+        return UNKNOWN;
+    }
+
+    /**
      * 匹配数值
      *
      * @param str
@@ -147,4 +190,5 @@ public class RomUtils {
         Pattern pattern = Pattern.compile("^[-\\+]?[\\d]+$");
         return pattern.matcher(str).matches() ? ValueOf.toInt(str) : 0;
     }
+
 }

@@ -2,11 +2,12 @@ package com.luck.pictureselector;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -32,17 +33,20 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.luck.lib.camerax.CameraImageEngine;
 import com.luck.lib.camerax.SimpleCameraX;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.basic.IBridgePictureBehavior;
 import com.luck.picture.lib.basic.PictureCommonFragment;
+import com.luck.picture.lib.basic.PictureSelectionModel;
 import com.luck.picture.lib.basic.PictureSelector;
+import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
-import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.SelectLimitType;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
@@ -103,8 +107,8 @@ import top.zibin.luban.OnRenameListener;
  * @描述: Demo
  */
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener,
-        RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener, IBridgePictureBehavior {
+public class MainActivity extends AppCompatActivity implements IBridgePictureBehavior, View.OnClickListener,
+        RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
     private final static String TAG = "PictureSelectorTag";
     private GridImageAdapter mAdapter;
     private int maxSelectNum = 9;
@@ -115,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int aspect_ratio_x, aspect_ratio_y;
     private CheckBox cb_voice, cb_choose_mode, cb_isCamera, cb_isGif,
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
-            cb_mode, cb_hide, cb_crop_circular, cb_styleCrop, cb_showCropGrid,
+            cb_mode, cb_hide, cb_crop_circular,cb_crop_use_bitmap, cb_styleCrop, cb_showCropGrid,
             cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
             cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox, cb_only_dir,
             cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo;
@@ -131,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private PictureSelectorStyle selectorStyle;
     private final List<LocalMedia> mData = new ArrayList<>();
     private ActivityResultLauncher<Intent> launcherResult;
+    private int resultMode = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tv_select_num = findViewById(R.id.tv_select_num);
         tv_original_tips = findViewById(R.id.tv_original_tips);
         rgb_crop = findViewById(R.id.rgb_crop);
+        RadioGroup rgb_result = findViewById(R.id.rgb_result);
         RadioGroup rgb_style = findViewById(R.id.rgb_style);
         RadioGroup rgb_animation = findViewById(R.id.rgb_animation);
         RadioGroup rgb_list_anim = findViewById(R.id.rgb_list_anim);
@@ -176,7 +182,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_custom_camera = findViewById(R.id.cb_custom_camera);
         cb_hide = findViewById(R.id.cb_hide);
         cb_crop_circular = findViewById(R.id.cb_crop_circular);
+        cb_crop_use_bitmap = findViewById(R.id.cb_crop_use_bitmap);
         rgb_crop.setOnCheckedChangeListener(this);
+        rgb_result.setOnCheckedChangeListener(this);
         rgb_style.setOnCheckedChangeListener(this);
         rgb_animation.setOnCheckedChangeListener(this);
         rgb_list_anim.setOnCheckedChangeListener(this);
@@ -191,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cb_only_dir.setOnCheckedChangeListener(this);
         cb_custom_sandbox.setOnCheckedChangeListener(this);
         cb_crop_circular.setOnCheckedChangeListener(this);
+        cb_crop_use_bitmap.setOnCheckedChangeListener(this);
         cb_compress.setOnCheckedChangeListener(this);
         tv_select_num.setText(ValueOf.toString(maxSelectNum));
 
@@ -262,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 boolean mode = cb_mode.isChecked();
                 if (mode) {
                     // 进入相册
-                    PictureSelector.create(getContext())
+                    PictureSelectionModel model = PictureSelector.create(getContext())
                             .openGallery(chooseMode)
                             .setSelectorUIStyle(selectorStyle)
                             .setImageEngine(GlideEngine.createGlideEngine())
@@ -302,18 +311,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setMaxSelectNum(maxSelectNum)
                             .setRecyclerAnimationMode(animationMode)
                             .isGif(cb_isGif.isChecked())
-                            .setSelectedData(mAdapter.getData())
-                            .forResult(launcherResult);
+                            .setSelectedData(mAdapter.getData());
+                    forResult(model);
                 } else {
                     // 单独拍照
-                    PictureSelector.create(MainActivity.this)
+                    PictureSelectionModel model = PictureSelector.create(MainActivity.this)
                             .openCamera(chooseMode)
                             .setCameraInterceptListener(getCustomCameraEvent())
                             .setCropEngine(getCropEngine())
                             .setCompressEngine(getCompressEngine())
                             .setSandboxFileEngine(new MeSandboxFileEngine())
-                            .isOriginalControl(cb_original.isChecked())
-                            .forResult(new MeOnResultCallbackListener());
+                            .isOriginalControl(cb_original.isChecked());
+                    forResult(model);
                 }
             }
         });
@@ -485,6 +494,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 清除缓存
 //        clearCache();
+    }
+
+    private void forResult(PictureSelectionModel model) {
+        switch (resultMode) {
+            case 1:
+                model.forResult(PictureConfig.CHOOSE_REQUEST);
+                break;
+            case 2:
+                model.forResult(new MeOnResultCallbackListener());
+                break;
+            default:
+                model.forResult(launcherResult);
+                break;
+        }
     }
 
     /**
@@ -744,13 +767,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dataCropSource.add(media.getAvailablePath());
             }
             UCrop uCrop = UCrop.of(inputUri, destinationUri, dataCropSource);
+            uCrop.withOptions(buildOptions());
             uCrop.setImageEngine(new UCropImageEngine() {
                 @Override
                 public void loadImage(Context context, String url, ImageView imageView) {
+                    if (!ImageLoaderUtils.assertValidRequest(context)) {
+                        return;
+                    }
                     Glide.with(context).load(url).into(imageView);
                 }
+
+                @Override
+                public void loadImage(Context context, Uri url, OnCallbackListener<Bitmap> call) {
+                    if (!ImageLoaderUtils.assertValidRequest(context)) {
+                        return;
+                    }
+                    Glide.with(context).asBitmap().load(url).into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            if (call != null) {
+                                call.onCall(resource);
+                            }
+                        }
+
+                        @Override
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                             if (call != null) {
+                                call.onCall(null);
+                            }
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
+                    });
+                }
             });
-            uCrop.withOptions(buildOptions());
             uCrop.start(fragment.getActivity(), fragment, requestCode);
         }
     }
@@ -770,6 +822,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         options.withAspectRatio(aspect_ratio_x, aspect_ratio_y);
         options.setCropOutputPathDir(getSandboxPath());
         options.isCropDragSmoothToCenter(false);
+        options.isUseCustomLoaderBitmap(cb_crop_use_bitmap.isChecked());
         options.isForbidSkipMultipleCrop(false);
         options.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
         options.setToolbarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
@@ -780,7 +833,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 自定义压缩
      */
-    private class ImageCompressEngine implements CompressEngine {
+    private static class ImageCompressEngine implements CompressEngine {
 
         @Override
         public void onStartCompress(Context context, ArrayList<LocalMedia> list,
@@ -1022,6 +1075,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 aspect_ratio_x = 16;
                 aspect_ratio_y = 9;
                 break;
+            case R.id.rb_launcher_result:
+                resultMode = 0;
+                break;
+            case R.id.rb_activity_result:
+                resultMode = 1;
+                break;
+            case R.id.rb_callback_result:
+                resultMode = 2;
+                break;
             case R.id.rb_photo_default_animation:
                 PictureWindowAnimationStyle defaultAnimationStyle = new PictureWindowAnimationStyle();
                 defaultAnimationStyle.setActivityEnterAnimation(R.anim.ps_anim_enter);
@@ -1165,6 +1227,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 rgb_crop.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 cb_hide.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 cb_crop_circular.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                cb_crop_use_bitmap.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 cb_styleCrop.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 cb_showCropFrame.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 cb_showCropGrid.setVisibility(isChecked ? View.VISIBLE : View.GONE);
@@ -1197,10 +1260,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
     @Override
-    public void onSelectFinish(boolean isForcedExit, @Nullable PictureCommonFragment.SelectorResult result) {
-        if (result != null) {
-            onActivityResult(PictureConfig.CHOOSE_REQUEST, result.mResultCode, result.mResultData);
+    public void onSelectFinish(@Nullable PictureCommonFragment.SelectorResult result) {
+        if (result == null) {
+            return;
+        }
+        if (result.mResultCode == RESULT_OK) {
+            ArrayList<LocalMedia> selectorResult = PictureSelector.obtainSelectorList(result.mResultData);
+            analyticalSelectResults(selectorResult);
+        } else if (result.mResultCode == RESULT_CANCELED) {
+            Log.i(TAG, "onSelectFinish PictureSelector Cancel");
         }
     }
 
@@ -1216,6 +1286,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.i(TAG, "onActivityResult PictureSelector Cancel");
         }
     }
+
+    /**
+     * 创建一个ActivityResultLauncher
+     *
+     * @return
+     */
+    private ActivityResultLauncher<Intent> createActivityResultLauncher() {
+        return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        int resultCode = result.getResultCode();
+                        if (resultCode == RESULT_OK) {
+                            ArrayList<LocalMedia> selectList = PictureSelector.obtainSelectorList(result.getData());
+                            analyticalSelectResults(selectList);
+                        } else if (resultCode == RESULT_CANCELED) {
+                            Log.i(TAG, "onActivityResult PictureSelector Cancel");
+                        }
+                    }
+                });
+    }
+
 
     /**
      * 处理选择结果
@@ -1254,27 +1346,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAdapter.notifyItemRangeChanged(0, mAdapter.getData().size());
     }
 
-
-    /**
-     * 创建一个ActivityResultLauncher
-     *
-     * @return
-     */
-    private ActivityResultLauncher<Intent> createActivityResultLauncher() {
-        return registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        int resultCode = result.getResultCode();
-                        if (resultCode == RESULT_OK) {
-                            ArrayList<LocalMedia> selectList = PictureSelector.obtainSelectorList(result.getData());
-                            analyticalSelectResults(selectList);
-                        } else if (resultCode == RESULT_CANCELED) {
-                            Log.i(TAG, "onActivityResult PictureSelector Cancel");
-                        }
-                    }
-                });
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

@@ -63,6 +63,8 @@ public class GlideEngine implements ImageEngine {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         if (call != null) {
+                            // 如果出现 trying to use a recycled bitmap 请替换成如下代码：
+                            // Bitmap bitmap = resource.copy(resource.getConfig(), true);
                             call.onCall(resource);
                         }
                     }

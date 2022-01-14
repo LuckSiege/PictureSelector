@@ -73,7 +73,7 @@ public class UCropFragment extends Fragment {
     private static final int SCALE_WIDGET_SENSITIVITY_COEFFICIENT = 15000;
     private static final int ROTATE_WIDGET_SENSITIVITY_COEFFICIENT = 42;
     private UCropFragmentCallback callback;
-
+    private boolean isUseCustomBitmap;
     private int mActiveControlsWidgetColor;
     @ColorInt
     private int mRootViewBackgroundColor;
@@ -197,7 +197,7 @@ public class UCropFragment extends Fragment {
         if (inputUri != null && outputUri != null) {
             try {
                 outputUri = FileUtils.replaceOutputUri(getContext(), isForbidCropGifWebp, inputUri, outputUri);
-                mGestureCropImageView.setImageUri(inputUri, outputUri);
+                mGestureCropImageView.setImageUri(inputUri, outputUri, isUseCustomBitmap);
             } catch (Exception e) {
                 callback.onCropFinish(getError(e));
             }
@@ -222,6 +222,8 @@ public class UCropFragment extends Fragment {
         mCompressFormat = (compressFormat == null) ? DEFAULT_COMPRESS_FORMAT : compressFormat;
 
         mCompressQuality = bundle.getInt(UCrop.Options.EXTRA_COMPRESSION_QUALITY, UCropActivity.DEFAULT_COMPRESS_QUALITY);
+
+        isUseCustomBitmap = bundle.getBoolean(UCrop.Options.EXTRA_CROP_CUSTOM_LOADER_BITMAP, false);
 
         // Gestures options
         int[] allowedGestures = bundle.getIntArray(UCrop.Options.EXTRA_ALLOWED_GESTURES);

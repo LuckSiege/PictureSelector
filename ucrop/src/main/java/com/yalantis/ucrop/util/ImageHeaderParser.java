@@ -37,15 +37,15 @@ import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
+import androidx.exifinterface.media.ExifInterface;
+
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
-
-import androidx.annotation.RequiresApi;
-import androidx.exifinterface.media.ExifInterface;
 
 /**
  * A class for parsing the exif orientation from an image header.

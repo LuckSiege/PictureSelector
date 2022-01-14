@@ -47,7 +47,9 @@ public class UCropGalleryAdapter extends RecyclerView.Adapter<UCropGalleryAdapte
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         String path = list.get(position);
-        UCropDevelopConfig.imageEngine.loadImage(holder.itemView.getContext(), path, holder.mIvPhoto);
+        if (UCropDevelopConfig.imageEngine != null) {
+            UCropDevelopConfig.imageEngine.loadImage(holder.itemView.getContext(), path, holder.mIvPhoto);
+        }
         ColorFilter colorFilter;
         if (currentSelectPosition == position) {
             holder.mViewCurrentSelect.setVisibility(View.VISIBLE);

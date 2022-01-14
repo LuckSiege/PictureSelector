@@ -10,10 +10,10 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.yalantis.ucrop.R;
-
 import androidx.annotation.ColorInt;
 import androidx.core.content.ContextCompat;
+
+import com.yalantis.ucrop.R;
 
 /**
  * Created by Oleksii Shliama (https://github.com/shliama).

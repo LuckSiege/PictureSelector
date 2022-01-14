@@ -118,12 +118,13 @@ public class UCrop {
      */
     public void setImageEngine(UCropImageEngine engine) {
         ArrayList<String> dataSource = mCropOptionsBundle.getStringArrayList(EXTRA_CROP_TOTAL_DATA_SOURCE);
-        if (dataSource != null && dataSource.size() > 1) {
+        boolean isUseBitmap = mCropOptionsBundle.getBoolean(UCrop.Options.EXTRA_CROP_CUSTOM_LOADER_BITMAP, false);
+        if ((dataSource != null && dataSource.size() > 1) || isUseBitmap) {
             if (UCropDevelopConfig.imageEngine == engine) {
                 throw new NullPointerException("Missing ImageEngine,please implement UCrop.setImageEngine");
             }
-            UCropDevelopConfig.imageEngine = engine;
         }
+        UCropDevelopConfig.imageEngine = engine;
     }
 
     /**
@@ -336,6 +337,8 @@ public class UCrop {
 
         public static final String EXTRA_CROP_FORBID_SKIP = EXTRA_PREFIX + ".ForbidSkipCrop";
 
+        public static final String EXTRA_CROP_CUSTOM_LOADER_BITMAP = EXTRA_PREFIX + ".CustomLoaderCropBitmap";
+
         public static final String EXTRA_CROP_DRAG_CENTER = EXTRA_PREFIX + ".DragSmoothToCenter";
 
         public static final String EXTRA_ALLOWED_GESTURES = EXTRA_PREFIX + ".AllowedGestures";
@@ -425,6 +428,15 @@ public class UCrop {
          */
         public void isForbidSkipMultipleCrop(boolean isForbidSkipCrop) {
             mOptionBundle.putBoolean(EXTRA_CROP_FORBID_SKIP, isForbidSkipCrop);
+        }
+
+        /**
+         * Get the bitmap of the uCrop resource using the custom loader
+         *
+         * @param isUseBitmap
+         */
+        public void isUseCustomLoaderBitmap(boolean isUseBitmap) {
+            mOptionBundle.putBoolean(EXTRA_CROP_CUSTOM_LOADER_BITMAP, isUseBitmap);
         }
 
         /**

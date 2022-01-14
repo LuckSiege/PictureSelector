@@ -11,9 +11,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.BlendModeColorFilterCompat;
-import androidx.core.graphics.BlendModeCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
@@ -41,7 +38,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
     public Context mContext;
     public PictureSelectionConfig config;
     public boolean isSelectNumberStyle;
-
+    private ColorFilter defaultColorFilter, selectColorFilter, maskWhiteColorFilter;
     public static BaseRecyclerMediaHolder generate(ViewGroup parent, int viewType, int resource, PictureSelectionConfig config) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);
         switch (viewType) {
@@ -64,6 +61,9 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         super(itemView);
         this.config = config;
         this.mContext = itemView.getContext();
+        defaultColorFilter = StyleUtils.getColorFilter(mContext,R.color.ps_color_20);
+        selectColorFilter = StyleUtils.getColorFilter(mContext,R.color.ps_color_80);
+        maskWhiteColorFilter = StyleUtils.getColorFilter(mContext,R.color.ps_color_half_white);
         SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
         this.isSelectNumberStyle = selectMainStyle.isSelectNumberStyle();
         ivPicture = itemView.findViewById(R.id.ivPicture);
@@ -206,10 +206,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
             }
         }
         if (isEnabledMask) {
-            ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                    ContextCompat.getColor(mContext, R.color.ps_color_half_white),
-                    BlendModeCompat.SRC_ATOP);
-            ivPicture.setColorFilter(colorFilter);
+            ivPicture.setColorFilter(maskWhiteColorFilter);
             media.setMaxSelectEnabledMask(true);
         } else {
             media.setMaxSelectEnabledMask(false);
@@ -225,12 +222,10 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         if (tvCheck.isSelected() != isChecked) {
             tvCheck.setSelected(isChecked);
         }
-        if (!config.isDirectReturnSingle) {
-            ColorFilter colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(isChecked ?
-                    ContextCompat.getColor(mContext, R.color.ps_color_80) :
-                    ContextCompat.getColor(mContext, R.color.ps_color_20), BlendModeCompat.SRC_ATOP);
-
-            ivPicture.setColorFilter(colorFilter);
+        if (config.isDirectReturnSingle) {
+            ivPicture.setColorFilter(defaultColorFilter);
+        } else {
+            ivPicture.setColorFilter(isChecked ? selectColorFilter : defaultColorFilter);
         }
     }
 

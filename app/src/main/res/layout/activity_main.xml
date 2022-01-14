@@ -218,9 +218,9 @@
                     android:id="@+id/cb_time_axis"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:checked="true"
                     android:gravity="center_vertical"
                     android:text="显示资源时间轴"
-                    android:checked="true"
                     android:textColor="@color/app_color_53575e"
                     android:textSize="14sp" />
 
@@ -404,6 +404,38 @@
                     android:text="分页模式"
                     android:textColor="@color/app_color_53575e"
                     android:textSize="14sp" />
+
+                <RadioGroup
+                    android:id="@+id/rgb_result"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rb_launcher_result"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="LauncherResult"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_activity_result"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ActivityResult"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_callback_result"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Callback"
+                        android:textColor="@color/app_color_53575e"
+                        android:textSize="14sp" />
+                </RadioGroup>
 
                 <CheckBox
                     android:id="@+id/cbEnabledMask"
@@ -593,6 +625,17 @@
                         android:textSize="14sp" />
 
                 </RadioGroup>
+
+                <CheckBox
+                    android:id="@+id/cb_crop_use_bitmap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="自定义Loader Bitmap"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp"
+                    android:checked="true"
+                    android:visibility="gone" />
 
                 <CheckBox
                     android:id="@+id/cb_crop_circular"

@@ -1145,6 +1145,10 @@ public class PictureSelectionModel {
                 if (fragmentManager == null) {
                     throw new NullPointerException("FragmentManager cannot be null");
                 }
+                if (!(activity instanceof IBridgePictureBehavior)) {
+                    throw new NullPointerException("Use only camera openCamera mode," +
+                            "Activity or Fragment interface needs to be implemented " + IBridgePictureBehavior.class);
+                }
                 Fragment fragment = fragmentManager.findFragmentByTag(PictureOnlyCameraFragment.TAG);
                 if (fragment != null) {
                     fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
@@ -1190,6 +1194,10 @@ public class PictureSelectionModel {
                 if (fragmentManager == null) {
                     throw new NullPointerException("FragmentManager cannot be null");
                 }
+                if (!(activity instanceof IBridgePictureBehavior)) {
+                    throw new NullPointerException("Use only camera openCamera mode," +
+                            "Activity or Fragment interface needs to be implemented " + IBridgePictureBehavior.class);
+                }
                 Fragment fragment = fragmentManager.findFragmentByTag(PictureOnlyCameraFragment.TAG);
                 if (fragment != null) {
                     fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
@@ -1230,12 +1238,12 @@ public class PictureSelectionModel {
     }
 
     /**
-     * build PictureSelectorFragment
+     * build and launch PictureSelector
      *
      * @param containerViewId fragment container id
      * @param call
      */
-    public PictureSelectorFragment build(int containerViewId, OnResultCallbackListener<LocalMedia> call) {
+    public PictureSelectorFragment buildLaunch(int containerViewId, OnResultCallbackListener<LocalMedia> call) {
         Activity activity = selector.getActivity();
         if (activity == null) {
             throw new NullPointerException("Activity cannot be null");

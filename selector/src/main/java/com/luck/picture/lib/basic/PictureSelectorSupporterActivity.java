@@ -3,13 +3,11 @@ package com.luck.picture.lib.basic;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 
 import com.luck.picture.lib.PictureSelectorFragment;
 import com.luck.picture.lib.PictureSelectorPreviewFragment;
@@ -23,19 +21,16 @@ import com.luck.picture.lib.language.PictureLanguageUtils;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
-import com.luck.picture.lib.utils.ActivityCompatHelper;
-import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.StyleUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author：luck
  * @date：2021/11/17 9:59 上午
  * @describe：PictureSelectorSupporterActivity
  */
-public class PictureSelectorSupporterActivity extends AppCompatActivity implements IBridgePictureBehavior {
+public class PictureSelectorSupporterActivity extends AppCompatActivity {
 
 
     @Override
@@ -94,67 +89,15 @@ public class PictureSelectorSupporterActivity extends AppCompatActivity implemen
     }
 
     @Override
-    public void onSelectFinish(boolean isForcedExit, PictureCommonFragment.SelectorResult result) {
-        if (isForcedExit) {
-            exit();
-        } else {
-            onBackPressed();
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (ActivityCompatHelper.checkRootFragment(this)) {
-            exit();
-        } else {
-            getSupportFragmentManager().popBackStack();
-        }
-    }
-
-    private void exit() {
-        if (SdkVersionUtils.isQ()) {
-            finishAfterTransition();
-        } else {
-            super.onBackPressed();
-        }
-        finish();
-        PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
-        overridePendingTransition(0, windowAnimationStyle.activityExitAnimation);
-        PictureSelectionConfig.destroy();
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            if (ActivityCompatHelper.checkRootFragment(this)) {
-                if (PictureSelectionConfig.onResultCallListener != null) {
-                    PictureSelectionConfig.onResultCallListener.onCancel();
-                }
-            } else {
-                PictureSelectorPreviewFragment previewFragment = getPreviewFragment();
-                if (PictureSelectionConfig.getInstance().isPreviewZoomEffect && previewFragment != null) {
-                    previewFragment.onKeyDownBackToMin();
-                    return true;
-                }
-            }
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    private PictureSelectorPreviewFragment getPreviewFragment() {
-        List<Fragment> fragments = getSupportFragmentManager().getFragments();
-        for (int i = 0; i < fragments.size(); i++) {
-            Fragment fragment = fragments.get(i);
-            if (fragment instanceof PictureSelectorPreviewFragment) {
-                return (PictureSelectorPreviewFragment) fragment;
-            }
-        }
-        return null;
-    }
-
-    @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(PictureContextWrapper.wrap(newBase,
                 PictureSelectionConfig.getInstance().language));
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
+        overridePendingTransition(0, windowAnimationStyle.activityExitAnimation);
     }
 }

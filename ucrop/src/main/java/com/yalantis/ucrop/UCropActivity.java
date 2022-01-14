@@ -91,6 +91,7 @@ public class UCropActivity extends AppCompatActivity {
 
     private String mToolbarTitle;
     private int mToolbarTitleSize;
+    private boolean isUseCustomBitmap;
 
     // Enables dynamic coloring
     private int mToolbarColor;
@@ -211,7 +212,7 @@ public class UCropActivity extends AppCompatActivity {
         if (inputUri != null && outputUri != null) {
             try {
                 outputUri = FileUtils.replaceOutputUri(UCropActivity.this, isForbidCropGifWebp, inputUri, outputUri);
-                mGestureCropImageView.setImageUri(inputUri, outputUri);
+                mGestureCropImageView.setImageUri(inputUri, outputUri, isUseCustomBitmap);
             } catch (Exception e) {
                 setResultError(e);
                 finish();
@@ -243,6 +244,8 @@ public class UCropActivity extends AppCompatActivity {
         if (allowedGestures != null && allowedGestures.length == TABS_COUNT) {
             mAllowedGestures = allowedGestures;
         }
+
+        isUseCustomBitmap = intent.getBooleanExtra(UCrop.Options.EXTRA_CROP_CUSTOM_LOADER_BITMAP, false);
 
         // Crop image view options
         mGestureCropImageView.setMaxBitmapSize(intent.getIntExtra(UCrop.Options.EXTRA_MAX_BITMAP_SIZE, CropImageView.DEFAULT_MAX_BITMAP_SIZE));

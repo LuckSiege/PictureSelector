@@ -1,14 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/app_color_white">
+
 
     <com.luck.picture.lib.widget.MediumBoldTextView
         android:id="@+id/tvb_inject_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:gravity="center"
+        android:padding="15dp"
         android:text="Click on the screen use PictureSelector"
+        android:textColor="@color/ps_color_bd"
+        android:textSize="14sp" />
+
+
+    <com.luck.picture.lib.widget.MediumBoldTextView
+        android:id="@+id/tv_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvb_inject_fragment"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
         android:textColor="@color/ps_color_bd"
         android:textSize="14sp" />
 
@@ -16,4 +31,6 @@
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+
 </RelativeLayout>

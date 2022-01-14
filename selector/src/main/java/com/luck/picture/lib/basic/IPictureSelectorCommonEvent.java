@@ -23,6 +23,16 @@ public interface IPictureSelectorCommonEvent {
     int getResourceId();
 
     /**
+     * onKey back fragment
+     */
+    void onKeyBackFragment();
+
+    /**
+     * fragment onResume
+     */
+    void onFragmentResume();
+
+    /**
      * 权限被拒
      */
     void handlePermissionDenied(String[] permissionArray);
@@ -168,11 +178,6 @@ public interface IPictureSelectorCommonEvent {
      * @param result
      */
     void onResultEvent(ArrayList<LocalMedia> result);
-
-    /**
-     * 进入Fragment动画结束
-     */
-    void onEnterFragmentAnimComplete();
 
     /**
      * 进入Fragment

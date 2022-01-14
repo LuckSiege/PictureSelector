@@ -24,7 +24,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
 
     private final List<LocalMedia> mData;
     private final BasePreviewHolder.OnPreviewEventListener onPreviewEventListener;
-    private final LruCache<Integer, BasePreviewHolder> mHolderLruCache = new LruCache<>(6);
+    private final LruCache<Integer, BasePreviewHolder> mHolderLruCache = new LruCache<>(3);
 
     public BasePreviewHolder getCurrentHolder(int position) {
         return mHolderLruCache.get(position);
@@ -38,7 +38,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     @NonNull
     @Override
     public BasePreviewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        int layoutResourceId = 0;
+        int layoutResourceId;
         if (viewType == BasePreviewHolder.ADAPTER_TYPE_VIDEO) {
             layoutResourceId = InjectResourceSource.getLayoutResource(parent.getContext(), InjectResourceSource.PREVIEW_ITEM_VIDEO_LAYOUT_RESOURCE);
             return BasePreviewHolder.generate(parent, viewType, layoutResourceId != 0 ? layoutResourceId : R.layout.ps_preview_video);

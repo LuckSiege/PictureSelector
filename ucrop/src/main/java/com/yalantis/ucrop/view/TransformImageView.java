@@ -9,17 +9,19 @@ import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+
+import com.yalantis.ucrop.UCropDevelopConfig;
+import com.yalantis.ucrop.UCropImageEngine;
 import com.yalantis.ucrop.callback.BitmapLoadCallback;
 import com.yalantis.ucrop.model.ExifInfo;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
 import com.yalantis.ucrop.util.FastBitmapDrawable;
 import com.yalantis.ucrop.util.FileUtils;
 import com.yalantis.ucrop.util.RectUtils;
-
-import androidx.annotation.IntRange;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageView;
 
 /**
  * Created by Oleksii Shliama (https://github.com/shliama).
@@ -146,23 +148,61 @@ public class TransformImageView extends AppCompatImageView {
      * @param imageUri - image Uri
      * @throws Exception - can throw exception if having problems with decoding Uri or OOM.
      */
-    public void setImageUri(@NonNull Uri imageUri, @Nullable Uri outputUri) throws Exception {
-        int maxBitmapSize = getMaxBitmapSize();
+    public void setImageUri(@NonNull Uri imageUri, @Nullable Uri outputUri, boolean isUseCustomBitmap) throws Exception {
+        if (isUseCustomBitmap && UCropDevelopConfig.imageEngine != null) {
+            useCustomLoaderCrop(imageUri, outputUri);
+        } else {
+            useDefaultLoaderCrop(imageUri, outputUri);
+        }
+    }
 
+    /**
+     * use uCrop custom loader
+     *
+     * @param imageUri
+     * @param outputUri
+     */
+    private void useCustomLoaderCrop(@NonNull final Uri imageUri, @Nullable final Uri outputUri) {
+        UCropDevelopConfig.imageEngine.loadImage(getContext(), imageUri, new UCropImageEngine.OnCallbackListener<Bitmap>() {
+            @Override
+            public void onCall(Bitmap bitmap) {
+                if (bitmap != null) {
+                    int exifOrientation = BitmapLoadUtils.getExifOrientation(getContext(), imageUri);
+                    int exifDegrees = BitmapLoadUtils.exifToDegrees(exifOrientation);
+                    int exifTranslation = BitmapLoadUtils.exifToTranslation(exifOrientation);
+                    ExifInfo exifInfo = new ExifInfo(exifOrientation, exifDegrees, exifTranslation);
+                    Matrix matrix = new Matrix();
+                    if (exifDegrees != 0) {
+                        matrix.preRotate(exifDegrees);
+                    }
+                    if (exifTranslation != 1) {
+                        matrix.postScale(exifTranslation, 1);
+                    }
+                    if (!matrix.isIdentity()) {
+                        bitmap = BitmapLoadUtils.transformBitmap(bitmap, matrix);
+                    }
+                    setBitmapLoadedResult(bitmap, exifInfo, imageUri, outputUri);
+                } else {
+                    useDefaultLoaderCrop(imageUri, outputUri);
+                }
+            }
+        });
+    }
+
+    /**
+     * use uCrop default loader
+     *
+     * @param imageUri
+     * @param outputUri
+     */
+    private void useDefaultLoaderCrop(@NonNull Uri imageUri, @Nullable Uri outputUri) {
+        int maxBitmapSize = getMaxBitmapSize();
         BitmapLoadUtils.decodeBitmapInBackground(getContext(), imageUri, outputUri, maxBitmapSize, maxBitmapSize,
                 new BitmapLoadCallback() {
 
                     @Override
                     public void onBitmapLoaded(@NonNull Bitmap bitmap, @NonNull ExifInfo exifInfo, @NonNull Uri imageInputUri, @Nullable Uri imageOutputUri) {
-                        mImageInputUri = imageInputUri;
-                        mImageOutputUri = imageOutputUri;
-                        mImageInputPath = FileUtils.isContent(imageInputUri.toString()) ? imageInputUri.toString() : imageInputUri.getPath();
-                        mImageOutputPath = imageOutputUri != null ? FileUtils.isContent(imageOutputUri.toString()) ? imageOutputUri.toString()
-                                : imageOutputUri.getPath() : null;
-                        mExifInfo = exifInfo;
-
-                        mBitmapDecoded = true;
-                        setImageBitmap(bitmap);
+                        setBitmapLoadedResult(bitmap, exifInfo, imageInputUri, imageOutputUri);
                     }
 
                     @Override
@@ -173,6 +213,26 @@ public class TransformImageView extends AppCompatImageView {
                         }
                     }
                 });
+    }
+
+    /**
+     * bitmap loader complete
+     *
+     * @param bitmap
+     * @param exifInfo
+     * @param imageInputUri
+     * @param imageOutputUri
+     */
+    public void setBitmapLoadedResult(@NonNull Bitmap bitmap, @NonNull ExifInfo exifInfo, @NonNull Uri imageInputUri, @Nullable Uri imageOutputUri) {
+        mImageInputUri = imageInputUri;
+        mImageOutputUri = imageOutputUri;
+        mImageInputPath = FileUtils.isContent(imageInputUri.toString()) ? imageInputUri.toString() : imageInputUri.getPath();
+        mImageOutputPath = imageOutputUri != null ? FileUtils.isContent(imageOutputUri.toString()) ? imageOutputUri.toString()
+                : imageOutputUri.getPath() : null;
+        mExifInfo = exifInfo;
+
+        mBitmapDecoded = true;
+        setImageBitmap(bitmap);
     }
 
     /**

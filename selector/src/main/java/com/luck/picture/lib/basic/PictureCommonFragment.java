@@ -1,6 +1,7 @@
 package com.luck.picture.lib.basic;
 
 import static android.app.Activity.RESULT_OK;
+import static android.view.KeyEvent.ACTION_UP;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -14,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +26,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.luck.picture.lib.PictureOnlyCameraFragment;
-import com.luck.picture.lib.PictureSelectorPreviewFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.config.Crop;
@@ -90,6 +90,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     private PermissionResultCallback mPermissionResultCallback;
 
     /**
+     * IBridgePictureBehavior
+     */
+    protected IBridgePictureBehavior iBridgePictureBehavior;
+
+    /**
      * page
      */
     protected int mPage = 1;
@@ -98,11 +103,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      * Media Loader engine
      */
     protected IBridgeMediaLoader mLoader;
-
-    /**
-     * IBridgePictureBehavior
-     */
-    protected IBridgePictureBehavior iBridgePictureBehavior;
 
     /**
      * PictureSelector Config
@@ -131,6 +131,12 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public int getResourceId() {
         return 0;
+    }
+
+
+    @Override
+    public void onFragmentResume() {
+
     }
 
     @Override
@@ -174,8 +180,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     }
 
+
     @Override
-    public void onEnterFragmentAnimComplete() {
+    public void onKeyBackFragment() {
 
     }
 
@@ -214,6 +221,15 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         PermissionUtil.goIntentSetting(this, isReadWrite, PictureConfig.REQUEST_GO_SETTING);
     }
 
+    /**
+     * 使用PictureSelector 默认方式进入
+     *
+     * @return
+     */
+    protected boolean isNormalDefaultEnter() {
+        return getActivity() instanceof PictureSelectorSupporterActivity;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -233,14 +249,43 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         if (config == null) {
             config = PictureSelectionConfig.getInstance();
         }
-        if (config.isPreviewFullScreenMode) {
-            SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
-            ImmersiveManager.translucentStatusBar(getActivity(), selectMainStyle.isDarkStatusBarBlack());
-        }
+        setTranslucentStatusBar();
+        setRootViewKeyListener(view);
         if (config.isOpenClickSound && !config.isOnlyCamera) {
             soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
             soundID = soundPool.load(getContext(), R.raw.ps_click_music, 1);
         }
+    }
+
+
+    /**
+     * 设置透明状态栏
+     */
+    private void setTranslucentStatusBar() {
+        if (config.isPreviewFullScreenMode) {
+            SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
+            ImmersiveManager.translucentStatusBar(getActivity(), selectMainStyle.isDarkStatusBarBlack());
+        }
+    }
+
+    /**
+     * 设置回退监听
+     *
+     * @param rootView
+     */
+    public void setRootViewKeyListener(View rootView) {
+        rootView.setFocusableInTouchMode(true);
+        rootView.requestFocus();
+        rootView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == ACTION_UP) {
+                    onKeyBackFragment();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -262,30 +307,24 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
         PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
-        Animation loadAnimation = AnimationUtils.loadAnimation(getActivity(),
-                enter ? windowAnimationStyle.activityEnterAnimation : windowAnimationStyle.activityExitAnimation);
+        Animation loadAnimation;
         if (enter) {
+            if (windowAnimationStyle.activityEnterAnimation != 0) {
+                loadAnimation = AnimationUtils.loadAnimation(getContext(), windowAnimationStyle.activityEnterAnimation);
+            } else {
+                loadAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.ps_anim_alpha_enter);
+            }
             onEnterFragment();
         } else {
+            if (windowAnimationStyle.activityExitAnimation != 0) {
+                loadAnimation = AnimationUtils.loadAnimation(getContext(), windowAnimationStyle.activityExitAnimation);
+            } else {
+                loadAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.ps_anim_alpha_exit);
+            }
             onExitFragment();
         }
-        loadAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                onEnterFragmentAnimComplete();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-        });
         return loadAnimation;
     }
-
 
     @Override
     public int confirmSelect(LocalMedia currentMedia, boolean isSelected) {
@@ -1347,7 +1386,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             @Override
             public void onSuccess(ArrayList<LocalMedia> result) {
                 PictureThreadUtils.cancel(this);
-                callBackResult(result);
+                onCallBackResult(result);
             }
         });
     }
@@ -1376,7 +1415,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             copyExternalPathToAppInDirFor29(result);
         } else {
             mergeOriginalImage(result);
-            callBackResult(result);
+            onCallBackResult(result);
         }
     }
 
@@ -1384,31 +1423,19 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     /**
      * 返回结果
      */
-    private void callBackResult(ArrayList<LocalMedia> result) {
-        dismissLoading();
-        if (PictureSelectionConfig.onResultCallListener != null) {
-            PictureSelectionConfig.onResultCallListener.onResult(result);
-        }
-        SelectorResult selectorResult = getResult(RESULT_OK, result);
+    private void onCallBackResult(ArrayList<LocalMedia> result) {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
-            getActivity().setResult(selectorResult.mResultCode, selectorResult.mResultData);
-        }
-        if (config.isOnlyCamera) {
-            if (!ActivityCompatHelper.isDestroy(getActivity())) {
-                getActivity().getSupportFragmentManager().popBackStack();
-                if (config.isActivityResultBack && iBridgePictureBehavior == null) {
-                    throw new IllegalArgumentException(getActivity().toString()
-                            + " please must implement IBridgePictureBehavior onSelectFinish");
-                }
-                if (config.isActivityResultBack) {
-                    iBridgePictureBehavior.onSelectFinish(true, selectorResult);
+            dismissLoading();
+            if (config.isActivityResultBack) {
+                getActivity().setResult(RESULT_OK, PictureSelector.putIntentResult(result));
+                onSelectFinish(RESULT_OK, result);
+            } else {
+                if (PictureSelectionConfig.onResultCallListener != null) {
+                    PictureSelectionConfig.onResultCallListener.onResult(result);
                 }
             }
-        } else {
-            boolean isForcedExit = this instanceof PictureSelectorPreviewFragment;
-            iBridgePictureBehavior.onSelectFinish(isForcedExit, selectorResult);
+            onExitPictureSelector();
         }
-        PictureSelectionConfig.destroy();
     }
 
     /**
@@ -1474,24 +1501,60 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         initAppLanguage();
         onRecreateEngine();
         super.onAttach(context);
-
         if (getParentFragment() instanceof IBridgePictureBehavior) {
             iBridgePictureBehavior = (IBridgePictureBehavior) getParentFragment();
         } else if (context instanceof IBridgePictureBehavior) {
             iBridgePictureBehavior = (IBridgePictureBehavior) context;
-        } else {
-            if (this instanceof PictureOnlyCameraFragment || this instanceof PictureSelectorPreviewFragment) {
-                /**
-                 * {@link PictureSelector.openCamera or startPreview}
-                 * <p>
-                 *     不需要使用到IBridgePictureBehavior，可以忽略
-                 * </p>
-                 */
-            } else {
-                throw new IllegalArgumentException(context.toString()
-                        + " please must implement IBridgePictureBehavior");
+        }
+    }
+
+    /**
+     * back off Fragment
+     */
+    protected void onBackOffFragment() {
+        if (!ActivityCompatHelper.isDestroy(getActivity())) {
+            getActivity().getSupportFragmentManager().popBackStack();
+        }
+        List<Fragment> fragments = getActivity().getSupportFragmentManager().getFragments();
+        for (int i = 0; i < fragments.size(); i++) {
+            Fragment fragment = fragments.get(i);
+            if (fragment instanceof PictureCommonFragment) {
+                ((PictureCommonFragment) fragment).onFragmentResume();
             }
         }
+    }
+
+    /**
+     * onSelectFinish
+     *
+     * @param resultCode
+     * @param result
+     */
+    protected void onSelectFinish(int resultCode, ArrayList<LocalMedia> result) {
+        if (null != iBridgePictureBehavior) {
+            SelectorResult selectorResult = getResult(resultCode, result);
+            iBridgePictureBehavior.onSelectFinish(selectorResult);
+        }
+    }
+
+    /**
+     * exit PictureSelector
+     */
+    protected void onExitPictureSelector() {
+        if (!ActivityCompatHelper.isDestroy(getActivity())) {
+            if (isNormalDefaultEnter()) {
+                getActivity().finish();
+            } else {
+                List<Fragment> fragments = getActivity().getSupportFragmentManager().getFragments();
+                for (int i = 0; i < fragments.size(); i++) {
+                    Fragment fragment = fragments.get(i);
+                    if (fragment instanceof PictureCommonFragment) {
+                        onBackOffFragment();
+                    }
+                }
+            }
+        }
+        PictureSelectionConfig.destroy();
     }
 
     /**
@@ -1576,6 +1639,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         }
     }
 
+
     /**
      * generate result
      *
@@ -1583,7 +1647,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      * @return
      */
     protected SelectorResult getResult(int resultCode, ArrayList<LocalMedia> data) {
-        return new SelectorResult(resultCode, PictureSelector.putIntentResult(data));
+        return new SelectorResult(resultCode, data != null ? PictureSelector.putIntentResult(data) : null);
     }
 
     /**

@@ -40,6 +40,7 @@ public class MagicalView extends FrameLayout {
 
     private int screenWidth;
     private int screenHeight;
+    private final int appInScreenHeight;
     private int targetImageTop;
     private int targetImageWidth;
     private int targetImageHeight;
@@ -66,9 +67,8 @@ public class MagicalView extends FrameLayout {
         super(context, attrs, defStyleAttr);
         PictureSelectionConfig config = PictureSelectionConfig.getInstance();
         isPreviewFullScreenMode = config.isPreviewFullScreenMode;
-        screenWidth = DensityUtil.getScreenWidth(context);
-        screenHeight = PictureSelectionConfig.getInstance().isPreviewFullScreenMode
-                ? DensityUtil.getAppInScreenHeight(getContext()) : DensityUtil.getScreenHeightPixels(getContext());
+        appInScreenHeight = DensityUtil.getRealScreenHeight(getContext());
+        getScreenSize();
         backgroundView = new View(context);
         backgroundView.setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         backgroundView.setBackgroundColor(ContextCompat.getColor(context, R.color.ps_color_black));
@@ -116,16 +116,45 @@ public class MagicalView extends FrameLayout {
     }
 
     public void resetStart() {
-        screenWidth = DensityUtil.getScreenWidth(getContext());
-        screenHeight = isPreviewFullScreenMode ? DensityUtil.getAppInScreenHeight(getContext())
-                : DensityUtil.getScreenHeightPixels(getContext());
+        getScreenSize();
         start(true);
     }
 
+    /**
+     * getScreenSize
+     */
+    private void getScreenSize() {
+        screenWidth = DensityUtil.getRealScreenWidth(getContext());
+        if (isPreviewFullScreenMode) {
+            screenHeight = DensityUtil.getRealScreenHeight(getContext());
+        } else {
+            screenHeight = DensityUtil.getScreenHeight(getContext());
+        }
+    }
+
+    /**
+     * changeRealScreenHeight
+     *
+     * @param imageWidth  image width
+     * @param imageHeight image height
+     */
+    public void changeRealScreenHeight(int imageWidth, int imageHeight, boolean showImmediately) {
+        if (isPreviewFullScreenMode || screenWidth > screenHeight) {
+            return;
+        }
+        float ratio = (float) imageWidth / (float) imageHeight;
+        int displayHeight = (int) (screenWidth / ratio);
+        if (displayHeight > screenHeight) {
+            screenHeight = appInScreenHeight;
+            if (showImmediately) {
+                magicalWrapper.setWidth(screenWidth);
+                magicalWrapper.setHeight(screenHeight);
+            }
+        }
+    }
+
     public void resetStartNormal(int realWidth, int realHeight, boolean showImmediately) {
-        screenWidth = DensityUtil.getScreenWidth(getContext());
-        screenHeight = isPreviewFullScreenMode ? DensityUtil.getAppInScreenHeight(getContext())
-                : DensityUtil.getScreenHeightPixels(getContext());
+        getScreenSize();
         startNormal(realWidth, realHeight, showImmediately);
     }
 

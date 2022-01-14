@@ -3,10 +3,10 @@ package com.yalantis.ucrop.callback;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
-import com.yalantis.ucrop.model.ExifInfo;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.yalantis.ucrop.model.ExifInfo;
 
 public interface BitmapLoadCallback {
 

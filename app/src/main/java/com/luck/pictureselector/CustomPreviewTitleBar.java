@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import com.luck.picture.lib.widget.PreviewTitleBar;
-import com.luck.picture.lib.widget.TitleBar;
 
 /**
  * @author：luck

@@ -25,7 +25,6 @@ import com.luck.picture.lib.animators.SlideInBottomAnimationAdapter;
 import com.luck.picture.lib.basic.FragmentInjectManager;
 import com.luck.picture.lib.basic.IPictureSelectorEvent;
 import com.luck.picture.lib.basic.PictureCommonFragment;
-import com.luck.picture.lib.basic.PictureSelectorSupporterActivity;
 import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -221,6 +220,21 @@ public class PictureSelectorFragment extends PictureCommonFragment
     }
 
     @Override
+    public void onKeyBackFragment() {
+        if (!ActivityCompatHelper.isDestroy(getActivity())) {
+            if (config.isActivityResultBack) {
+                getActivity().setResult(Activity.RESULT_CANCELED);
+                onSelectFinish(Activity.RESULT_CANCELED,null);
+            } else {
+                if (PictureSelectionConfig.onResultCallListener != null) {
+                    PictureSelectionConfig.onResultCallListener.onCancel();
+                }
+            }
+            onExitPictureSelector();
+        }
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         reStartSavedInstance(savedInstanceState);
@@ -236,34 +250,13 @@ public class PictureSelectorFragment extends PictureCommonFragment
         initComplete();
         initRecycler(view);
         initBottomNavBar();
-        if (isNormalDefaultEnter()) {
-            requestLoadData();
-        }
+        requestLoadData();
     }
+
 
     @Override
-    public void onEnterFragmentAnimComplete() {
-        if (isOtherEnter()) {
-            requestLoadData();
-        }
-    }
-
-    /**
-     * 使用PictureSelector 默认方式进入
-     *
-     * @return
-     */
-    private boolean isNormalDefaultEnter() {
-        return getActivity() instanceof PictureSelectorSupporterActivity;
-    }
-
-    /**
-     * 非默认方式进入
-     *
-     * @return
-     */
-    private boolean isOtherEnter() {
-        return !(getActivity() instanceof PictureSelectorSupporterActivity);
+    public void onFragmentResume() {
+        setRootViewKeyListener(getView());
     }
 
     @Override
@@ -278,6 +271,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
             isDisplayCamera = config.isDisplayCamera;
         }
     }
+
 
     /**
      * 完成按钮
@@ -351,16 +345,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 if (albumListPopWindow.isShowing()) {
                     albumListPopWindow.dismiss();
                 } else {
-                    if (ActivityCompatHelper.checkRootFragment(getActivity())) {
-                        if (PictureSelectionConfig.onResultCallListener != null) {
-                            PictureSelectionConfig.onResultCallListener.onCancel();
-                        }
-                    }
-                    SelectorResult result = getResult(Activity.RESULT_CANCELED, new ArrayList<>());
-                    if (!ActivityCompatHelper.isDestroy(getActivity())) {
-                        getActivity().setResult(result.mResultCode, result.mResultData);
-                    }
-                    iBridgePictureBehavior.onSelectFinish(false, result);
+                    onKeyBackFragment();
                 }
             }
 
@@ -432,7 +417,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
      * 开始获取数据
      */
     private void beginLoadData() {
-        showLoading();
         if (config.isOnlySandboxDir) {
             loadOnlyInAppDirectoryAllMediaData();
         } else {
@@ -452,7 +436,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
             beginLoadData();
         } else {
             ToastUtils.showToast(getContext(), getString(R.string.ps_jurisdiction));
-            iBridgePictureBehavior.onSelectFinish(false, null);
+            onKeyBackFragment();
         }
     }
 
@@ -485,7 +469,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
                         } else {
                             // 3、从MediaStore拉取数据
                             mPage = 1;
-                            showLoading();
                             if (PictureSelectionConfig.loaderDataEngine != null) {
                                 PictureSelectionConfig.loaderDataEngine.loadFirstPageMediaData(getContext(),
                                         curFolder.getBucketId(), mPage, config.pageSize,
@@ -522,7 +505,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (ActivityCompatHelper.isDestroy(getActivity())) {
             return;
         }
-        dismissLoading();
         mRecycler.setEnabledLoadMore(isHasMore);
         if (result.size() == 0) {
             // 如果从MediaStore拉取都没有数据了，adapter里的可能是缓存所以也清除
@@ -589,7 +571,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
             if (config.isPageStrategy) {
                 loadFirstPageMediaData(firstFolder.getBucketId());
             } else {
-                dismissLoading();
                 setAdapterData(firstFolder.getData());
             }
         } else {
@@ -624,7 +605,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (ActivityCompatHelper.isDestroy(getActivity())) {
             return;
         }
-        dismissLoading();
         mRecycler.setEnabledLoadMore(isHasMore);
         if (mRecycler.isEnabledLoadMore() && result.size() == 0) {
             // 如果isHasMore为true但result.size() = 0;
@@ -643,7 +623,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
                     new OnQueryAlbumListener<LocalMediaFolder>() {
                         @Override
                         public void onComplete(LocalMediaFolder folder) {
-                            dismissLoading();
                             handleInAppDirAllMedia(folder);
                         }
                     });
@@ -651,7 +630,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
             mLoader.loadOnlyInAppDirAllMedia(new OnQueryAlbumListener<LocalMediaFolder>() {
                 @Override
                 public void onComplete(LocalMediaFolder folder) {
-                    dismissLoading();
                     handleInAppDirAllMedia(folder);
                 }
             });
@@ -1096,7 +1074,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
      * 显示数据为空提示
      */
     private void showDataNull() {
-        dismissLoading();
         if (tvDataEmpty.getVisibility() == View.GONE) {
             tvDataEmpty.setVisibility(View.VISIBLE);
         }

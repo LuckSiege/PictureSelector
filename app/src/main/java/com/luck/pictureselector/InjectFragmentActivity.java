@@ -3,16 +3,14 @@ package com.luck.pictureselector;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import com.luck.picture.lib.PictureSelectorPreviewFragment;
+import androidx.core.content.ContextCompat;
+
 import com.luck.picture.lib.app.PictureAppMaster;
-import com.luck.picture.lib.basic.IBridgePictureBehavior;
-import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.basic.PictureContextWrapper;
 import com.luck.picture.lib.basic.PictureSelector;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -20,41 +18,47 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
+import com.luck.picture.lib.immersive.ImmersiveManager;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
-import com.luck.picture.lib.style.PictureWindowAnimationStyle;
-import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.MediaUtils;
-import com.luck.picture.lib.utils.SdkVersionUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author：luck
  * @date：2021/12/20 1:40 下午
  * @describe：InjectFragmentActivity
  */
-public class InjectFragmentActivity extends AppCompatActivity implements IBridgePictureBehavior {
+public class InjectFragmentActivity extends AppCompatActivity {
     private final static String TAG = "PictureSelectorTag";
+    private TextView tvResult;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        int color = ContextCompat.getColor(this, R.color.app_color_white);
+        ImmersiveManager.immersiveAboveAPI23(this, color, color, true);
         setContentView(R.layout.activity_inject_fragment);
+        tvResult = findViewById(R.id.tv_result);
+
         findViewById(R.id.tvb_inject_fragment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PictureSelector.create(v.getContext())
                         .openGallery(SelectMimeType.ofAll())
                         .setImageEngine(GlideEngine.createGlideEngine())
-                        .build(R.id.fragment_container, new OnResultCallbackListener<LocalMedia>() {
+                        .buildLaunch(R.id.fragment_container, new OnResultCallbackListener<LocalMedia>() {
                             @Override
                             public void onResult(ArrayList<LocalMedia> result) {
+                                // 这里由于我本身页面状态栏是白色的，所以选图完再恢复成黑色字体用户可以按自身页面需求来处理
+                                setTranslucentStatusBar();
                                 analyticalSelectResults(result);
                             }
 
                             @Override
                             public void onCancel() {
+                                // 这里由于我本身页面状态栏是白色的，所以选图完再恢复成黑色字体用户可以按自身页面需求来处理
+                                setTranslucentStatusBar();
                                 Log.i(TAG, "onCancel");
                             }
                         });
@@ -62,34 +66,11 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
         });
     }
 
-    @Override
-    public void onSelectFinish(boolean isForcedExit, PictureCommonFragment.SelectorResult result) {
-        if (isForcedExit) {
-            exit();
-        } else {
-            onBackPressed();
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (ActivityCompatHelper.checkRootFragment(this)) {
-            exit();
-        } else {
-            getSupportFragmentManager().popBackStack();
-        }
-    }
-
-    private void exit() {
-        if (SdkVersionUtils.isQ()) {
-            finishAfterTransition();
-        } else {
-            super.onBackPressed();
-        }
-        finish();
-        PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
-        overridePendingTransition(0, windowAnimationStyle.activityExitAnimation);
-        PictureSelectionConfig.destroy();
+    /**
+     * 设置状态栏字体颜色
+     */
+    private void setTranslucentStatusBar() {
+        ImmersiveManager.translucentStatusBar(InjectFragmentActivity.this, true);
     }
 
     /**
@@ -98,6 +79,7 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
      * @param result
      */
     private void analyticalSelectResults(ArrayList<LocalMedia> result) {
+        StringBuilder builder = new StringBuilder();
         for (LocalMedia media : result) {
             if (media.getWidth() == 0 || media.getHeight() == 0) {
                 if (PictureMimeType.isHasImage(media.getMimeType())) {
@@ -110,6 +92,7 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
                     media.setHeight(videoExtraInfo.getHeight());
                 }
             }
+            builder.append(media.getAvailablePath()).append("\n");
             Log.i(TAG, "文件名: " + media.getFileName());
             Log.i(TAG, "是否压缩:" + media.isCompressed());
             Log.i(TAG, "压缩:" + media.getCompressPath());
@@ -124,35 +107,7 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
             Log.i(TAG, "裁剪宽高: " + media.getCropImageWidth() + "x" + media.getCropImageHeight());
             Log.i(TAG, "文件大小: " + media.getSize());
         }
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            if (ActivityCompatHelper.checkRootFragment(this)) {
-                if (PictureSelectionConfig.onResultCallListener != null) {
-                    PictureSelectionConfig.onResultCallListener.onCancel();
-                }
-            } else {
-                PictureSelectorPreviewFragment previewFragment = getPreviewFragment();
-                if (PictureSelectionConfig.getInstance().isPreviewZoomEffect && previewFragment != null) {
-                    previewFragment.onKeyDownBackToMin();
-                    return true;
-                }
-            }
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    private PictureSelectorPreviewFragment getPreviewFragment() {
-        List<Fragment> fragments = getSupportFragmentManager().getFragments();
-        for (int i = 0; i < fragments.size(); i++) {
-            Fragment fragment = fragments.get(i);
-            if (fragment instanceof PictureSelectorPreviewFragment) {
-                return (PictureSelectorPreviewFragment) fragment;
-            }
-        }
-        return null;
+        tvResult.setText(builder.toString());
     }
 
     @Override

@@ -155,7 +155,7 @@ public class ImmersiveManager {
         //创建一个假的状态栏
         setupStatusBarView(activity);
         //判断是否存在导航栏，是否禁止设置导航栏
-        if (DensityUtil.hasNavigationBar(activity) || OSUtils.isEMUI3_x()) {
+        if (DensityUtil.isNavBarVisible(activity)) {
             //透明导航栏，设置这个，如果有导航栏，底部布局会被导航栏遮住
             mWindow.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             //创建一个假的导航栏
