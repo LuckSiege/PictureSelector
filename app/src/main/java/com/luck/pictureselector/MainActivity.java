@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private int aspect_ratio_x, aspect_ratio_y;
     private CheckBox cb_voice, cb_choose_mode, cb_isCamera, cb_isGif,
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
-            cb_mode, cb_hide, cb_crop_circular,cb_crop_use_bitmap, cb_styleCrop, cb_showCropGrid,
+            cb_mode, cb_hide, cb_crop_circular, cb_crop_use_bitmap, cb_styleCrop, cb_showCropGrid,
             cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
             cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox, cb_only_dir,
             cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo;
@@ -778,11 +778,11 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 }
 
                 @Override
-                public void loadImage(Context context, Uri url, OnCallbackListener<Bitmap> call) {
+                public void loadImage(Context context, Uri url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {
                     if (!ImageLoaderUtils.assertValidRequest(context)) {
                         return;
                     }
-                    Glide.with(context).asBitmap().load(url).into(new CustomTarget<Bitmap>() {
+                    Glide.with(context).asBitmap().override(maxWidth, maxHeight).load(url).into(new CustomTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                             if (call != null) {
@@ -792,7 +792,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
 
                         @Override
                         public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                             if (call != null) {
+                            if (call != null) {
                                 call.onCall(null);
                             }
                         }

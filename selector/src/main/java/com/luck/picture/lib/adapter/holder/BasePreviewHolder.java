@@ -18,6 +18,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.photoview.OnViewTapListener;
 import com.luck.picture.lib.photoview.PhotoView;
+import com.luck.picture.lib.utils.BitmapUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.MediaUtils;
 
@@ -67,28 +68,31 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
      */
     public void bindData(LocalMedia media, int position) {
         String path = media.getAvailablePath();
-        PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, new OnCallbackListener<Bitmap>() {
-            @Override
-            public void onCall(Bitmap bitmap) {
-                if (bitmap != null) {
-                    if (PictureMimeType.isHasWebp(media.getMimeType()) || PictureMimeType.isUrlHasWebp(path)
-                            || PictureMimeType.isUrlHasGif(path) || PictureMimeType.isHasGif(media.getMimeType())) {
-                        PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), path, coverImageView);
-                    } else {
-                        coverImageView.setImageBitmap(bitmap);
+        int[] maxImageSize = BitmapUtils.getMaxImageSize(itemView.getContext(),
+                media.getWidth(), media.getHeight(), screenWidth, screenHeight);
+        PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, maxImageSize[0], maxImageSize[1],
+                new OnCallbackListener<Bitmap>() {
+                    @Override
+                    public void onCall(Bitmap bitmap) {
+                        if (bitmap != null) {
+                            if (PictureMimeType.isHasWebp(media.getMimeType()) || PictureMimeType.isUrlHasWebp(path)
+                                    || PictureMimeType.isUrlHasGif(path) || PictureMimeType.isHasGif(media.getMimeType())) {
+                                PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), path, coverImageView);
+                            } else {
+                                coverImageView.setImageBitmap(bitmap);
+                            }
+                            if (MediaUtils.isLongImage(bitmap.getWidth(), bitmap.getHeight())) {
+                                coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                            } else {
+                                coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                            }
+                            mPreviewEventListener.onLoadCompleteBeginScale(BasePreviewHolder.this,
+                                    bitmap.getWidth(), bitmap.getHeight());
+                        } else {
+                            mPreviewEventListener.onLoadCompleteError(BasePreviewHolder.this);
+                        }
                     }
-                    if (MediaUtils.isLongImage(bitmap.getWidth(), bitmap.getHeight())) {
-                        coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    } else {
-                        coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                    }
-                    mPreviewEventListener.onLoadCompleteBeginScale(BasePreviewHolder.this,
-                            bitmap.getWidth(), bitmap.getHeight());
-                } else {
-                    mPreviewEventListener.onLoadCompleteError(BasePreviewHolder.this);
-                }
-            }
-        });
+                });
 
         if (!config.isPreviewZoomEffect && !config.isPreviewFullScreenMode) {
             if (screenWidth < screenHeight) {
@@ -130,7 +134,7 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
 
     public interface OnPreviewEventListener {
 
-        void onLoadCompleteBeginScale(BasePreviewHolder holder,int width,int height);
+        void onLoadCompleteBeginScale(BasePreviewHolder holder, int width, int height);
 
         void onLoadCompleteError(BasePreviewHolder holder);
 

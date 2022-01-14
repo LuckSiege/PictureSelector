@@ -163,7 +163,8 @@ public class TransformImageView extends AppCompatImageView {
      * @param outputUri
      */
     private void useCustomLoaderCrop(@NonNull final Uri imageUri, @Nullable final Uri outputUri) {
-        UCropDevelopConfig.imageEngine.loadImage(getContext(), imageUri, new UCropImageEngine.OnCallbackListener<Bitmap>() {
+        int maxBitmapSize = BitmapLoadUtils.calculateMaxBitmapSize(getContext());
+        UCropDevelopConfig.imageEngine.loadImage(getContext(), imageUri, maxBitmapSize, maxBitmapSize, new UCropImageEngine.OnCallbackListener<Bitmap>() {
             @Override
             public void onCall(Bitmap bitmap) {
                 if (bitmap != null) {

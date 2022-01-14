@@ -64,12 +64,13 @@ public class PicassoEngine implements ImageEngine {
      * @param call
      */
     @Override
-    public void loadImageBitmap(@NonNull Context context, @NonNull String url, OnCallbackListener<Bitmap> call) {
+    public void loadImageBitmap(@NonNull Context context, @NonNull String url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {
         if (!assertValidRequest(context)) {
             return;
         }
         Picasso.get()
                 .load(PictureMimeType.isContent(url) ? Uri.parse(url) : Uri.fromFile(new File(url)))
+                .resize(maxWidth,maxHeight)
                 .into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
@@ -89,7 +90,6 @@ public class PicassoEngine implements ImageEngine {
                     }
                 });
     }
-
 
     /**
      * 加载相册目录

@@ -51,20 +51,19 @@ public class GlideEngine implements ImageEngine {
      * @param call    回调接口
      */
     @Override
-    public void loadImageBitmap(@NonNull Context context, @NonNull String url, OnCallbackListener<Bitmap> call) {
+    public void loadImageBitmap(@NonNull Context context, @NonNull String url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {
         if (!assertValidRequest(context)) {
             return;
         }
         Glide.with(context)
                 .asBitmap()
+                .override(maxWidth, maxHeight)
                 .load(url)
                 .into(new CustomTarget<Bitmap>() {
 
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         if (call != null) {
-                            // 如果出现 trying to use a recycled bitmap 请替换成如下代码：
-                            // Bitmap bitmap = resource.copy(resource.getConfig(), true);
                             call.onCall(resource);
                         }
                     }
@@ -83,7 +82,6 @@ public class GlideEngine implements ImageEngine {
 
                 });
     }
-
 
     /**
      * 加载相册目录封面

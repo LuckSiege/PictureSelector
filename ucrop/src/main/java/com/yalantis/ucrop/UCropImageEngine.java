@@ -25,8 +25,11 @@ public interface UCropImageEngine {
      *
      * @param context
      * @param url
+     * @param maxWidth
+     * @param maxHeight
+     * @param call
      */
-    void loadImage(Context context, Uri url, OnCallbackListener<Bitmap> call);
+    void loadImage(Context context, Uri url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call);
 
 
     interface OnCallbackListener<T> {

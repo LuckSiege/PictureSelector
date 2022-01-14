@@ -62,6 +62,7 @@ import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
 import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
+import com.luck.picture.lib.utils.BitmapUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DownloadFileUtils;
 import com.luck.picture.lib.utils.MediaUtils;
@@ -1350,27 +1351,29 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private void changeMagicalViewParams(int position) {
         LocalMedia media = mData.get(position);
         int[] size = getRealSizeFromMedia(media);
+        int[] maxImageSize = BitmapUtils.getMaxImageSize(getContext(), size[0], size[1], screenWidth, screenHeight);
         if (size[0] == 0 && size[1] == 0) {
-            PictureSelectionConfig.imageEngine.loadImageBitmap(getActivity(), media.getPath(), new OnCallbackListener<Bitmap>() {
-                @Override
-                public void onCall(Bitmap bitmap) {
-                    if (ActivityCompatHelper.isDestroy(getActivity())) {
-                        return;
-                    }
-                    media.setWidth(bitmap.getWidth());
-                    media.setHeight(bitmap.getHeight());
-                    if (MediaUtils.isLongImage(bitmap.getWidth(), bitmap.getHeight())) {
-                        size[0] = screenWidth;
-                        size[1] = screenHeight;
-                    } else {
-                        size[0] = bitmap.getWidth();
-                        size[1] = bitmap.getHeight();
-                    }
-                    setMagicalViewViewParams(size[0], size[1], position);
-                }
-            });
+            PictureSelectionConfig.imageEngine.loadImageBitmap(getActivity(), media.getPath(),
+                    maxImageSize[0], maxImageSize[1], new OnCallbackListener<Bitmap>() {
+                        @Override
+                        public void onCall(Bitmap bitmap) {
+                            if (ActivityCompatHelper.isDestroy(getActivity())) {
+                                return;
+                            }
+                            media.setWidth(bitmap.getWidth());
+                            media.setHeight(bitmap.getHeight());
+                            if (MediaUtils.isLongImage(bitmap.getWidth(), bitmap.getHeight())) {
+                                size[0] = screenWidth;
+                                size[1] = screenHeight;
+                            } else {
+                                size[0] = bitmap.getWidth();
+                                size[1] = bitmap.getHeight();
+                            }
+                            setMagicalViewViewParams(size[0], size[1], position);
+                        }
+                    });
         } else {
-            setMagicalViewViewParams(size[0], size[1],position);
+            setMagicalViewViewParams(size[0], size[1], position);
         }
     }
 

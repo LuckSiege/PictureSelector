@@ -28,8 +28,12 @@ public interface ImageEngine {
      *
      * @param context
      * @param url
+     * @param maxWidth
+     * @param maxHeight
+     * @param call
      */
-    void loadImageBitmap(@NonNull Context context, @NonNull String url, OnCallbackListener<Bitmap> call);
+    void loadImageBitmap(@NonNull Context context, @NonNull String url, int maxWidth, int maxHeight,
+                         OnCallbackListener<Bitmap> call);
 
     /**
      * load album cover
