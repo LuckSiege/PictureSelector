@@ -206,12 +206,27 @@ The advanced use cases are as follow：
 5、Use the custom load data,See [documentation](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E5%8A%A0%E8%BD%BD%E8%87%AA%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E6%BA%90%EF%BC%9F)
 
 ```sh
-.setSandboxFileEngine(new SandboxFileEngine() {
+.setExtendLoaderEngine(new ExtendLoaderEngine() {
     @Override
-    public void onStartSandboxFileTransform(Context context, boolean isOriginalImage, int index, LocalMedia media, OnCallbackIndexListener<LocalMedia> listener) {
+    public void loadAllAlbumData(Context context, OnQueryAllAlbumListener<LocalMediaFolder> query) {
+                                    
+    }
 
-   }
-});
+    @Override
+    public void loadOnlyInAppDirAllMediaData(Context context, OnQueryAlbumListener<LocalMediaFolder> query) {
+
+    }
+
+    @Override
+    public void loadFirstPageMediaData(Context context, long bucketId, int page, int pageSize, OnQueryDataResultListener<LocalMedia> query) {
+
+    }
+
+    @Override
+    public void loadMoreMediaData(Context context, long bucketId, int page, int limit, int pageSize, OnQueryDataResultListener<LocalMedia> query) {
+
+    }
+ });
 
 ```
 
