@@ -24,7 +24,7 @@ public class AnimUtils {
             targetValue = 180F;
         } else {
             srcValue = 180F;
-            targetValue = 0F;
+            targetValue = 360F;
         }
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(arrow, "rotation", srcValue, targetValue);
         objectAnimator.setDuration(DURATION);
