@@ -146,10 +146,9 @@ public class TransformImageView extends AppCompatImageView {
      * This method takes an Uri as a parameter, then calls method to decode it into Bitmap with specified size.
      *
      * @param imageUri - image Uri
-     * @throws Exception - can throw exception if having problems with decoding Uri or OOM.
      */
-    public void setImageUri(@NonNull Uri imageUri, @Nullable Uri outputUri, boolean isUseCustomBitmap) throws Exception {
-        if (isUseCustomBitmap && UCropDevelopConfig.imageEngine != null) {
+    public void setImageUri(@NonNull Uri imageUri, @Nullable Uri outputUri, boolean isUseCustomBitmap) {
+        if (isUseCustomBitmap && UCropDevelopConfig.imageEngine != null && !FileUtils.isHasHttp(imageUri.toString())) {
             useCustomLoaderCrop(imageUri, outputUri);
         } else {
             useDefaultLoaderCrop(imageUri, outputUri);
@@ -163,11 +162,13 @@ public class TransformImageView extends AppCompatImageView {
      * @param outputUri
      */
     private void useCustomLoaderCrop(@NonNull final Uri imageUri, @Nullable final Uri outputUri) {
-        int maxBitmapSize = BitmapLoadUtils.calculateMaxBitmapSize(getContext());
-        UCropDevelopConfig.imageEngine.loadImage(getContext(), imageUri, maxBitmapSize, maxBitmapSize, new UCropImageEngine.OnCallbackListener<Bitmap>() {
+        int[] maxImageSize = BitmapLoadUtils.getMaxImageSize(getContext(), imageUri);
+        UCropDevelopConfig.imageEngine.loadImage(getContext(), imageUri, maxImageSize[0], maxImageSize[1], new UCropImageEngine.OnCallbackListener<Bitmap>() {
             @Override
             public void onCall(Bitmap bitmap) {
-                if (bitmap != null) {
+                if (bitmap == null) {
+                    useDefaultLoaderCrop(imageUri, outputUri);
+                } else {
                     int exifOrientation = BitmapLoadUtils.getExifOrientation(getContext(), imageUri);
                     int exifDegrees = BitmapLoadUtils.exifToDegrees(exifOrientation);
                     int exifTranslation = BitmapLoadUtils.exifToTranslation(exifOrientation);
@@ -183,8 +184,6 @@ public class TransformImageView extends AppCompatImageView {
                         bitmap = BitmapLoadUtils.transformBitmap(bitmap, matrix);
                     }
                     setBitmapLoadedResult(bitmap, exifInfo, imageUri, outputUri);
-                } else {
-                    useDefaultLoaderCrop(imageUri, outputUri);
                 }
             }
         });

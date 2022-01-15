@@ -69,6 +69,36 @@ public class BitmapLoadUtils {
         return inSampleSize;
     }
 
+    /**
+     * Gets the zoom of the image
+     *
+     * @param context
+     * @param imageUri
+     * @return
+     */
+    public static int[] getMaxImageSize(Context context, Uri imageUri) {
+        int maxBitmapSize = BitmapLoadUtils.calculateMaxBitmapSize(context);
+        if (FileUtils.isHasHttp(imageUri.toString())) {
+            return new int[]{maxBitmapSize, maxBitmapSize};
+        }
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            InputStream stream = context.getContentResolver().openInputStream(imageUri);
+            BitmapFactory.decodeStream(stream, null, options);
+            if (options.outWidth == 0 && options.outHeight == 0) {
+                return new int[]{maxBitmapSize, maxBitmapSize};
+            }
+            int inSampleSize = BitmapLoadUtils.calculateInSampleSize(options, maxBitmapSize, maxBitmapSize);
+            int newWidth = (options.outWidth) / inSampleSize;
+            int newHeight = (options.outHeight) / inSampleSize;
+            return new int[]{newWidth, newHeight};
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new int[]{maxBitmapSize, maxBitmapSize};
+    }
+
     public static int getExifOrientation(@NonNull Context context, @NonNull Uri imageUri) {
         int orientation = ExifInterface.ORIENTATION_UNDEFINED;
         try {
