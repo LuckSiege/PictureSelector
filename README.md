@@ -1,4 +1,4 @@
-# PictureSelector 3.0  
+# PictureSelector 3.0
    A PictureSelector for Android platform, which supports obtaining pictures, videos, audio & photos from photo albums, cutting (single picture or multi picture cutting), compression, theme custom configuration and other functions, and supports dynamic access & an open source picture selection framework suitable for Android 5.0 + system<br>
 
    [中文版🇨🇳](README_CN.md)
@@ -16,10 +16,9 @@
 -[Result description](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-LocalMedia%E8%AF%B4%E6%98%8E)<br>
 -[Effect](#Effect)<br>
 -[ProGuard](#ProGuard)<br>
--[License](#License)<br>
 -[Common errors](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
 -[Issues](https://github.com/LuckSiege/PictureSelector/wiki/%E5%A6%82%E4%BD%95%E6%8F%90Issues%3F)<br>
-
+-[License](#License)<br>
 
 
 ## Download
@@ -233,7 +232,7 @@ The advanced use cases are as follow：
 6、Use the custom apply Permissions,See [documentation](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9D%83%E9%99%90%E7%94%B3%E8%AF%B7-%EF%BC%9F)
 
 ```sh
-  .setPermissionsInterceptListener(new OnPermissionsInterceptListener() {
+.setPermissionsInterceptListener(new OnPermissionsInterceptListener() {
       @Override
       public void requestPermission(Fragment fragment, String[] permissionArray, OnCallbackListener<Boolean> call) {
 
