@@ -220,6 +220,7 @@ public class MediaUtils {
             }
             mediaExtraInfo.setWidth(width);
             mediaExtraInfo.setHeight(height);
+            mediaExtraInfo.setOrientation(orientation);
             mediaExtraInfo.setDuration(ValueOf.toLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)));
         } catch (Exception e) {
             e.printStackTrace();

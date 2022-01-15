@@ -19,6 +19,11 @@ public class MediaExtraInfo {
      */
     private long duration;
 
+    /**
+     * orientation
+     */
+    private String orientation;
+
     public int getWidth() {
         return width;
     }
@@ -43,12 +48,21 @@ public class MediaExtraInfo {
         this.duration = duration;
     }
 
+    public String getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(String orientation) {
+        this.orientation = orientation;
+    }
+
     @Override
     public String toString() {
         return "MediaExtraInfo{" +
                 "width=" + width +
                 ", height=" + height +
                 ", duration=" + duration +
+                ", orientation='" + orientation + '\'' +
                 '}';
     }
 }
