@@ -236,7 +236,7 @@ AudioPlayDialog.showPlayAudioDialog(getContext(), availablePath);
 6、自定义权限申请，详情请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9D%83%E9%99%90%E7%94%B3%E8%AF%B7-%EF%BC%9F)
 
 ```sh
-  .setPermissionsInterceptListener(new OnPermissionsInterceptListener() {
+.setPermissionsInterceptListener(new OnPermissionsInterceptListener() {
       @Override
       public void requestPermission(Fragment fragment, String[] permissionArray, OnCallbackListener<Boolean> call) {
 
