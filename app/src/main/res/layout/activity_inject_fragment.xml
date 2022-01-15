@@ -36,6 +36,8 @@
         android:layout_below="@id/tvb_inject_result_fragment"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:lineSpacingExtra="2dp"
         android:textColor="@color/ps_color_bd"
         android:textSize="14sp" />
 

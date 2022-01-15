@@ -105,6 +105,7 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
      */
     private void analyticalSelectResults(ArrayList<LocalMedia> result) {
         StringBuilder builder = new StringBuilder();
+        builder.append("Result").append("\n");
         for (LocalMedia media : result) {
             if (media.getWidth() == 0 || media.getHeight() == 0) {
                 if (PictureMimeType.isHasImage(media.getMimeType())) {
