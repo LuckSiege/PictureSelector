@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -772,6 +773,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             mGalleryRecycle.setLayoutManager(layoutManager);
             mGalleryRecycle.addItemDecoration(new GridSpacingItemDecoration(Integer.MAX_VALUE,
                     DensityUtil.dip2px(getContext(), 6), true));
+            LayoutAnimationController animation = AnimationUtils
+                    .loadLayoutAnimation(getContext(), R.anim.ps_layout_animation_fall_down);
+            mGalleryRecycle.setLayoutAnimation(animation);
             mGalleryAdapter = new PreviewGalleryAdapter(isInternalBottomPreview, SelectedManager.getSelectedResult());
             notifyGallerySelectMedia(mData.get(curPosition));
             mGalleryRecycle.setAdapter(mGalleryAdapter);

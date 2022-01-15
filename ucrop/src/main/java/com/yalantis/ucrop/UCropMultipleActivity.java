@@ -178,18 +178,18 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     }
 
     private void setGalleryAdapter() {
-        RecyclerView mGalleryRecycle = findViewById(R.id.recycler_gallery);
+        RecyclerView galleryRecycle = findViewById(R.id.recycler_gallery);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mGalleryRecycle.setLayoutManager(layoutManager);
-        mGalleryRecycle.addItemDecoration(new GridSpacingItemDecoration(Integer.MAX_VALUE,
+        galleryRecycle.setLayoutManager(layoutManager);
+        galleryRecycle.addItemDecoration(new GridSpacingItemDecoration(Integer.MAX_VALUE,
                 DensityUtil.dip2px(this, 6), true));
         LayoutAnimationController animation = AnimationUtils
-                .loadLayoutAnimation(getApplicationContext(), R.anim.ucrop_layout_animation_fall_down);
-        mGalleryRecycle.setLayoutAnimation(animation);
+                .loadLayoutAnimation(this, R.anim.ucrop_layout_animation_fall_down);
+        galleryRecycle.setLayoutAnimation(animation);
         int galleryBarBackground = getIntent().getIntExtra(UCrop.Options.EXTRA_GALLERY_BAR_BACKGROUND,
                 R.drawable.ucrop_gallery_bg);
-        mGalleryRecycle.setBackgroundResource(galleryBarBackground);
+        galleryRecycle.setBackgroundResource(galleryBarBackground);
         galleryAdapter = new UCropGalleryAdapter(uCropSupportList, isForbidSkipCrop);
         galleryAdapter.setOnItemClickListener(new UCropGalleryAdapter.OnItemClickListener() {
             @Override
@@ -198,7 +198,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
                 switchCropFragment(uCropFragment, position);
             }
         });
-        mGalleryRecycle.setAdapter(galleryAdapter);
+        galleryRecycle.setAdapter(galleryAdapter);
     }
 
     /**
