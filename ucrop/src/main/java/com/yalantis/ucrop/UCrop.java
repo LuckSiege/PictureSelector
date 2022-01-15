@@ -382,6 +382,8 @@ public class UCrop {
         public static final String EXTRA_ASPECT_RATIO_SELECTED_BY_DEFAULT = EXTRA_PREFIX + ".AspectRatioSelectedByDefault";
         public static final String EXTRA_ASPECT_RATIO_OPTIONS = EXTRA_PREFIX + ".AspectRatioOptions";
 
+        public static final String EXTRA_MULTIPLE_ASPECT_RATIO = EXTRA_PREFIX + ".MultipleAspectRatio";
+
         public static final String EXTRA_UCROP_ROOT_VIEW_BACKGROUND_COLOR = EXTRA_PREFIX + ".UcropRootViewBackgroundColor";
 
 
@@ -702,6 +704,21 @@ public class UCrop {
             mOptionBundle.putFloat(EXTRA_ASPECT_RATIO_X, x);
             mOptionBundle.putFloat(EXTRA_ASPECT_RATIO_Y, y);
         }
+
+        /**
+         * The corresponding crop scale of each graph in multi graph crop
+         *
+         * @param aspectRatio - The corresponding crop scale of each graph in multi graph crop
+         */
+        public void setMultipleCropAspectRatio(AspectRatio... aspectRatio) {
+            float aspectRatioX = mOptionBundle.getFloat(EXTRA_ASPECT_RATIO_X, 0);
+            float aspectRatioY = mOptionBundle.getFloat(EXTRA_ASPECT_RATIO_Y, 0);
+            if (aspectRatio.length > 0 && aspectRatioX <= 0 && aspectRatioY <= 0) {
+                withAspectRatio(aspectRatio[0].getAspectRatioX(), aspectRatio[0].getAspectRatioY());
+            }
+            mOptionBundle.putParcelableArrayList(EXTRA_MULTIPLE_ASPECT_RATIO, new ArrayList<Parcelable>(Arrays.asList(aspectRatio)));
+        }
+
 
         /**
          * Set an aspect ratio for crop bounds that is evaluated from source image width and height.

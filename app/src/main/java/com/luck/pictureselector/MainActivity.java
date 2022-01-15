@@ -88,6 +88,7 @@ import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.listener.DragListener;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropImageEngine;
+import com.yalantis.ucrop.model.AspectRatio;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -761,13 +762,15 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             }
             String fileName = DateUtils.getCreateFileName("CROP_") + ".jpg";
             Uri destinationUri = Uri.fromFile(new File(getSandboxPath(), fileName));
+            UCrop.Options options = buildOptions();
             ArrayList<String> dataCropSource = new ArrayList<>();
             for (int i = 0; i < dataSource.size(); i++) {
                 LocalMedia media = dataSource.get(i);
                 dataCropSource.add(media.getAvailablePath());
             }
             UCrop uCrop = UCrop.of(inputUri, destinationUri, dataCropSource);
-            uCrop.withOptions(buildOptions());
+            //options.setMultipleCropAspectRatio(buildAspectRatios(dataSource.size()));
+            uCrop.withOptions(options);
             uCrop.setImageEngine(new UCropImageEngine() {
                 @Override
                 public void loadImage(Context context, String url, ImageView imageView) {
@@ -805,6 +808,26 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             });
             uCrop.start(fragment.getActivity(), fragment, requestCode);
         }
+    }
+
+    /**
+     * 多图裁剪时每张对应的裁剪比例
+     *
+     * @param dataSourceCount
+     * @return
+     */
+    private AspectRatio[] buildAspectRatios(int dataSourceCount) {
+        AspectRatio[] aspectRatios = new AspectRatio[dataSourceCount];
+        for (int i = 0; i < dataSourceCount; i++) {
+            if (i == 0) {
+                aspectRatios[i] = new AspectRatio("16:9", 16, 9);
+            } else if (i == 1) {
+                aspectRatios[i] = new AspectRatio("3:2", 3, 2);
+            } else {
+                aspectRatios[i] = new AspectRatio("原始比例", 0, 0);
+            }
+        }
+        return aspectRatios;
     }
 
     /**
