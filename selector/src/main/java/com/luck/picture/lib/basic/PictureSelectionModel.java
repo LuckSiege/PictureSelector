@@ -1219,21 +1219,20 @@ public class PictureSelectionModel {
 
     /**
      * build PictureSelectorFragment
-     *
-     * @param call
      */
-    public PictureSelectorFragment build(OnResultCallbackListener<LocalMedia> call) {
+    public PictureSelectorFragment build() {
         Activity activity = selector.getActivity();
         if (activity == null) {
             throw new NullPointerException("Activity cannot be null");
         }
-        if (call == null) {
-            throw new NullPointerException("OnResultCallbackListener cannot be null");
+        if (!(activity instanceof IBridgePictureBehavior)) {
+            throw new NullPointerException("Use only build PictureSelectorFragment," +
+                    "Activity or Fragment interface needs to be implemented " + IBridgePictureBehavior.class);
         }
         // 绑定回调监听
-        selectionConfig.isResultListenerBack = true;
-        selectionConfig.isActivityResultBack = false;
-        PictureSelectionConfig.onResultCallListener = call;
+        selectionConfig.isResultListenerBack = false;
+        selectionConfig.isActivityResultBack = true;
+        PictureSelectionConfig.onResultCallListener = null;
         return new PictureSelectorFragment();
     }
 

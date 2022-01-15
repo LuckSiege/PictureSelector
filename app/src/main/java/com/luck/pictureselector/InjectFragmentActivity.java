@@ -10,7 +10,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.luck.picture.lib.PictureSelectorFragment;
 import com.luck.picture.lib.app.PictureAppMaster;
+import com.luck.picture.lib.basic.IBridgePictureBehavior;
+import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.basic.PictureContextWrapper;
 import com.luck.picture.lib.basic.PictureSelector;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -29,7 +32,7 @@ import java.util.ArrayList;
  * @date：2021/12/20 1:40 下午
  * @describe：InjectFragmentActivity
  */
-public class InjectFragmentActivity extends AppCompatActivity {
+public class InjectFragmentActivity extends AppCompatActivity implements IBridgePictureBehavior {
     private final static String TAG = "PictureSelectorTag";
     private TextView tvResult;
 
@@ -44,33 +47,51 @@ public class InjectFragmentActivity extends AppCompatActivity {
         findViewById(R.id.tvb_inject_fragment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // 方式一
                 PictureSelector.create(v.getContext())
                         .openGallery(SelectMimeType.ofAll())
                         .setImageEngine(GlideEngine.createGlideEngine())
                         .buildLaunch(R.id.fragment_container, new OnResultCallbackListener<LocalMedia>() {
                             @Override
                             public void onResult(ArrayList<LocalMedia> result) {
-                                // 这里由于我本身页面状态栏是白色的，所以选图完再恢复成黑色字体用户可以按自身页面需求来处理
                                 setTranslucentStatusBar();
                                 analyticalSelectResults(result);
                             }
 
                             @Override
                             public void onCancel() {
-                                // 这里由于我本身页面状态栏是白色的，所以选图完再恢复成黑色字体用户可以按自身页面需求来处理
                                 setTranslucentStatusBar();
-                                Log.i(TAG, "onCancel");
+                                Log.i(TAG, "PictureSelector Cancel");
                             }
                         });
+
+                // 方式二
+//                PictureSelectorFragment selectorFragment = PictureSelector.create(v.getContext())
+//                        .openGallery(SelectMimeType.ofAll())
+//                        .setImageEngine(GlideEngine.createGlideEngine())
+//                        .build();
+//                getSupportFragmentManager().beginTransaction()
+//                        .add(R.id.fragment_container, selectorFragment, selectorFragment.getFragmentTag())
+//                        .addToBackStack(selectorFragment.getFragmentTag())
+//                        .commitAllowingStateLoss();
             }
         });
     }
 
-    /**
-     * 设置状态栏字体颜色
-     */
-    private void setTranslucentStatusBar() {
-        ImmersiveManager.translucentStatusBar(InjectFragmentActivity.this, true);
+
+    @Override
+    public void onSelectFinish(PictureCommonFragment.SelectorResult result) {
+        setTranslucentStatusBar();
+        if (result == null) {
+            return;
+        }
+        if (result.mResultCode == RESULT_OK) {
+            ArrayList<LocalMedia> selectorResult = PictureSelector.obtainSelectorList(result.mResultData);
+            analyticalSelectResults(selectorResult);
+        } else if (result.mResultCode == RESULT_CANCELED) {
+            Log.i(TAG, "onSelectFinish PictureSelector Cancel");
+            setTranslucentStatusBar();
+        }
     }
 
     /**
@@ -110,9 +131,17 @@ public class InjectFragmentActivity extends AppCompatActivity {
         tvResult.setText(builder.toString());
     }
 
+    /**
+     * 设置状态栏字体颜色
+     */
+    private void setTranslucentStatusBar() {
+        ImmersiveManager.translucentStatusBar(InjectFragmentActivity.this, true);
+    }
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(PictureContextWrapper.wrap(newBase,
                 PictureSelectionConfig.getInstance().language));
     }
+
 }
