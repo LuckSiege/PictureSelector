@@ -78,9 +78,6 @@ public class BitmapLoadUtils {
      */
     public static int[] getMaxImageSize(Context context, Uri imageUri) {
         int maxBitmapSize = BitmapLoadUtils.calculateMaxBitmapSize(context);
-        if (FileUtils.isHasHttp(imageUri.toString())) {
-            return new int[]{maxBitmapSize, maxBitmapSize};
-        }
         try {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
