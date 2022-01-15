@@ -58,6 +58,10 @@ public final class PictureThreadUtils {
         }
     }
 
+    public static boolean isInUiThread() {
+        return Looper.getMainLooper() == Looper.myLooper();
+    }
+
     /**
      * Return a thread pool that uses a single worker thread operating
      * off an unbounded queue, and uses the provided ThreadFactory to

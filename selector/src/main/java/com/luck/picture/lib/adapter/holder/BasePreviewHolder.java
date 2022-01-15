@@ -36,10 +36,10 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
      * 视频
      */
     public final static int ADAPTER_TYPE_VIDEO = 2;
-    private final int screenWidth;
-    private final int screenHeight;
-    private final int screenAppInHeight;
-    private final PictureSelectionConfig config;
+    protected final int screenWidth;
+    protected final int screenHeight;
+    protected final int screenAppInHeight;
+    protected final PictureSelectionConfig config;
     public PhotoView coverImageView;
 
     public static BasePreviewHolder generate(ViewGroup parent, int viewType, int resource) {
@@ -94,17 +94,7 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
                     }
                 });
 
-        if (!config.isPreviewZoomEffect && !config.isPreviewFullScreenMode) {
-            if (screenWidth < screenHeight) {
-                float ratio = (float) media.getWidth() / (float) media.getHeight();
-                int displayHeight = (int) (screenWidth / ratio);
-                FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) coverImageView.getLayoutParams();
-                layoutParams.width = screenWidth;
-                layoutParams.height = displayHeight > screenHeight ? screenAppInHeight : screenHeight;
-                layoutParams.gravity = Gravity.CENTER;
-            }
-        }
-
+        setScaleDisplaySize(media);
         coverImageView.setOnViewTapListener(new OnViewTapListener() {
             @Override
             public void onViewTap(View view, float x, float y) {
@@ -123,6 +113,17 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
                 return false;
             }
         });
+    }
+
+    protected void setScaleDisplaySize(LocalMedia media) {
+        if (!config.isPreviewZoomEffect && screenWidth < screenHeight) {
+            float ratio = (float) media.getWidth() / (float) media.getHeight();
+            int displayHeight = (int) (screenWidth / ratio);
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) coverImageView.getLayoutParams();
+            layoutParams.width = screenWidth;
+            layoutParams.height = displayHeight > screenHeight ? screenAppInHeight : screenHeight;
+            layoutParams.gravity = Gravity.CENTER;
+        }
     }
 
 

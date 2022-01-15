@@ -3,6 +3,8 @@ package com.luck.picture.lib.utils;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.luck.picture.lib.app.PictureAppMaster;
+
 /**
  * @author：luck
  * @date：2022/1/8 3:29 下午
@@ -16,6 +18,10 @@ public class ToastUtils {
      * @param content
      */
     public static void showToast(Context context, String content) {
-        Toast.makeText(context.getApplicationContext(), content, Toast.LENGTH_SHORT).show();
+        Context appContext = PictureAppMaster.getInstance().getAppContext();
+        if (appContext == null) {
+            appContext = context.getApplicationContext();
+        }
+        Toast.makeText(appContext, content, Toast.LENGTH_SHORT).show();
     }
 }

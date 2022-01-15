@@ -1,7 +1,9 @@
 package com.luck.picture.lib.adapter.holder;
 
 import android.net.Uri;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -44,6 +46,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         super.bindData(media, position);
         String path = media.getAvailablePath();
         mPlayerView.setUseController(false);
+        setScaleDisplaySize(media);
         ivPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,7 +73,29 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         });
     }
 
-    private final Player.Listener mPlayerListener = new Player.Listener() {
+    @Override
+    protected void setScaleDisplaySize(LocalMedia media) {
+        if (!config.isPreviewZoomEffect && screenWidth < screenHeight) {
+            float ratio;
+            if (media.getWidth() > media.getHeight()) {
+                ratio = (float) media.getHeight() / (float) media.getWidth();
+            } else {
+                ratio = (float) media.getWidth() / (float) media.getHeight();
+            }
+            int displayHeight = (int) (screenWidth / ratio);
+            FrameLayout.LayoutParams playerLayoutParams = (FrameLayout.LayoutParams) mPlayerView.getLayoutParams();
+            playerLayoutParams.width = screenWidth;
+            playerLayoutParams.height = displayHeight > screenHeight ? screenAppInHeight : screenHeight;
+            playerLayoutParams.gravity = Gravity.CENTER;
+
+            FrameLayout.LayoutParams coverLayoutParams = (FrameLayout.LayoutParams) coverImageView.getLayoutParams();
+            coverLayoutParams.width = screenWidth;
+            coverLayoutParams.height = displayHeight > screenHeight ? screenAppInHeight : screenHeight;
+            coverLayoutParams.gravity = Gravity.CENTER;
+        }
+    }
+
+    private Player.Listener mPlayerListener = new Player.Listener() {
         @Override
         public void onPlayerError(@NonNull PlaybackException error) {
             playerDefaultUI();
@@ -117,6 +142,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
     public void releaseVideo() {
         if (mPlayerView.getPlayer() != null) {
             mPlayerView.getPlayer().removeListener(mPlayerListener);
+            mPlayerListener = null;
             mPlayerView.getPlayer().release();
             playerDefaultUI();
         }

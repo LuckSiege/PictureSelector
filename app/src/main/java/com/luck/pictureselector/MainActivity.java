@@ -702,7 +702,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         @Override
         public void openCamera(Fragment fragment, int cameraMode, int requestCode) {
             if (cameraMode == SelectMimeType.ofAudio()) {
-                ToastUtils.showToast(getContext(), "自定义录音功能，请自行扩展");
+                ToastUtils.showToast(fragment.getContext(), "自定义录音功能，请自行扩展");
             } else {
                 SimpleCameraX camera = SimpleCameraX.of();
                 camera.setCameraMode(cameraMode);
