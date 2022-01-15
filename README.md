@@ -151,7 +151,7 @@ Or Overload layout，see [documentation](https://github.com/LuckSiege/PictureSel
    @Override
    public int getLayoutResourceId(Context context, int resourceSource) {
 	return 0;
-   }
+}
 ```
 
 The advanced use cases are as follow：
