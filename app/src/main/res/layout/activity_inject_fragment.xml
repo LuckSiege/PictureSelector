@@ -12,7 +12,19 @@
         android:layout_centerInParent="true"
         android:gravity="center"
         android:padding="15dp"
-        android:text="Click on the screen use PictureSelector"
+        android:text="Click on the screen use PictureSelector Callback"
+        android:textColor="@color/ps_color_bd"
+        android:textSize="14sp" />
+
+    <com.luck.picture.lib.widget.MediumBoldTextView
+        android:id="@+id/tvb_inject_result_fragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvb_inject_fragment"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:padding="15dp"
+        android:text="Click on the screen use PictureSelector SelectorResult"
         android:textColor="@color/ps_color_bd"
         android:textSize="14sp" />
 
@@ -21,7 +33,7 @@
         android:id="@+id/tv_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tvb_inject_fragment"
+        android:layout_below="@id/tvb_inject_result_fragment"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:textColor="@color/ps_color_bd"
