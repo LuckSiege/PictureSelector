@@ -224,7 +224,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
             if (config.isActivityResultBack) {
                 getActivity().setResult(Activity.RESULT_CANCELED);
-                onSelectFinish(Activity.RESULT_CANCELED,null);
+                onSelectFinish(Activity.RESULT_CANCELED, null);
             } else {
                 if (PictureSelectionConfig.onResultCallListener != null) {
                     PictureSelectionConfig.onResultCallListener.onCancel();
@@ -256,7 +256,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public void onFragmentResume() {
-        setRootViewKeyListener(getView());
+        setRootViewKeyListener(requireView());
     }
 
     @Override
@@ -862,13 +862,18 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @SuppressLint("NotifyDataSetChanged")
     private void setAdapterData(ArrayList<LocalMedia> result) {
-        sendChangeSubSelectPositionEvent(false);
-        mAdapter.setDataAndDataSetChanged(result);
-        if (mAdapter.isDataEmpty()) {
-            showDataNull();
-        } else {
-            hideDataNull();
-        }
+        requireView().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sendChangeSubSelectPositionEvent(false);
+                mAdapter.setDataAndDataSetChanged(result);
+                if (mAdapter.isDataEmpty()) {
+                    showDataNull();
+                } else {
+                    hideDataNull();
+                }
+            }
+        }, getEnterAnimationDuration());
     }
 
     @Override

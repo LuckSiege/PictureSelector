@@ -124,6 +124,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private int soundID;
 
+    /**
+     * fragment enter anim duration
+     */
+    private long enterAnimDuration;
+
     public String getFragmentTag() {
         return TAG;
     }
@@ -250,7 +255,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             config = PictureSelectionConfig.getInstance();
         }
         setTranslucentStatusBar();
-        setRootViewKeyListener(view);
+        setRootViewKeyListener(requireView());
         if (config.isOpenClickSound && !config.isOnlyCamera) {
             soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
             soundID = soundPool.load(getContext(), R.raw.ps_click_music, 1);
@@ -271,12 +276,12 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     /**
      * 设置回退监听
      *
-     * @param rootView
+     * @param view
      */
-    public void setRootViewKeyListener(View rootView) {
-        rootView.setFocusableInTouchMode(true);
-        rootView.requestFocus();
-        rootView.setOnKeyListener(new View.OnKeyListener() {
+    public void setRootViewKeyListener(View view) {
+        view.setFocusableInTouchMode(true);
+        view.requestFocus();
+        view.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == ACTION_UP) {
@@ -314,6 +319,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             } else {
                 loadAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.ps_anim_alpha_enter);
             }
+            setEnterAnimationDuration(loadAnimation.getDuration());
             onEnterFragment();
         } else {
             if (windowAnimationStyle.activityExitAnimation != 0) {
@@ -324,6 +330,15 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             onExitFragment();
         }
         return loadAnimation;
+    }
+
+    public long getEnterAnimationDuration() {
+        final long DIFFERENCE = 50;
+        return enterAnimDuration > DIFFERENCE ? enterAnimDuration - DIFFERENCE : enterAnimDuration;
+    }
+
+    private void setEnterAnimationDuration(long duration) {
+        this.enterAnimDuration = duration;
     }
 
     @Override
