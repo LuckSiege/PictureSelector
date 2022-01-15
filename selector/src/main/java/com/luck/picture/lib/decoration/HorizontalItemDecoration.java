@@ -8,33 +8,30 @@ import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * @author：luck
- * @data：2016/12/27 下午23:50
- * @describe:GridSpacingItemDecoration
+ * @data：2022/1/16 下午23:50
+ * @describe:HorizontalItemDecoration
  */
 
-public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
+public class HorizontalItemDecoration extends RecyclerView.ItemDecoration {
 
     private final int spanCount;
     private final int spacing;
-    private final boolean includeEdge;
 
-    public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
+    public HorizontalItemDecoration(int spanCount, int spacing) {
         this.spanCount = spanCount;
         this.spacing = spacing;
-        this.includeEdge = includeEdge;
     }
 
     @Override
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, RecyclerView parent, RecyclerView.State state) {
         int position = parent.getChildAdapterPosition(view);
         int column = position % spanCount;
-        if (includeEdge) {
+        if (position == 0) {
             outRect.left = spacing - column * spacing / spanCount;
-            outRect.right = (column + 1) * spacing / spanCount;
         } else {
             outRect.left = column * spacing / spanCount;
-            outRect.right = spacing - (column + 1) * spacing / spanCount;
         }
+        outRect.right = spacing - (column + 1) * spacing / spanCount;
         if (position < spanCount) {
             outRect.top = spacing;
         }

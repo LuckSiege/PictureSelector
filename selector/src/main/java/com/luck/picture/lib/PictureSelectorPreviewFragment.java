@@ -14,11 +14,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -29,6 +29,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
@@ -45,7 +46,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectModeConfig;
-import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
+import com.luck.picture.lib.decoration.HorizontalItemDecoration;
 import com.luck.picture.lib.decoration.WrapContentLinearLayoutManager;
 import com.luck.picture.lib.dialog.PictureCommonDialog;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -768,14 +769,29 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 params.startToStart = ConstraintLayout.LayoutParams.PARENT_ID;
                 params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
             }
-            WrapContentLinearLayoutManager layoutManager = new WrapContentLinearLayoutManager(getContext());
+            WrapContentLinearLayoutManager layoutManager = new WrapContentLinearLayoutManager(getContext()){
+                @Override
+                public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position) {
+                    super.smoothScrollToPosition(recyclerView, state, position);
+                    LinearSmoothScroller smoothScroller = new LinearSmoothScroller(recyclerView.getContext()){
+                        @Override
+                        protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
+                            return 300F / displayMetrics.densityDpi;
+                        }
+                    };
+                    smoothScroller.setTargetPosition(position);
+                    startSmoothScroll(smoothScroller);
+                }
+            };
+
+            if (mGalleryRecycle.getItemDecorationCount() == 0) {
+                mGalleryRecycle.addItemDecoration(new HorizontalItemDecoration(Integer.MAX_VALUE,
+                        DensityUtil.dip2px(getContext(), 6)));
+            }
             layoutManager.setOrientation(WrapContentLinearLayoutManager.HORIZONTAL);
             mGalleryRecycle.setLayoutManager(layoutManager);
-            mGalleryRecycle.addItemDecoration(new GridSpacingItemDecoration(Integer.MAX_VALUE,
-                    DensityUtil.dip2px(getContext(), 6), true));
-            LayoutAnimationController animation = AnimationUtils
-                    .loadLayoutAnimation(getContext(), R.anim.ps_layout_animation_fall_down);
-            mGalleryRecycle.setLayoutAnimation(animation);
+            mGalleryRecycle.setLayoutAnimation(AnimationUtils
+                    .loadLayoutAnimation(getContext(), R.anim.ps_layout_animation_fall_down));
             mGalleryAdapter = new PreviewGalleryAdapter(isInternalBottomPreview, SelectedManager.getSelectedResult());
             notifyGallerySelectMedia(mData.get(curPosition));
             mGalleryRecycle.setAdapter(mGalleryAdapter);
@@ -967,6 +983,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     mGalleryAdapter.clear();
                 }
                 mGalleryAdapter.addGalleryData(currentMedia);
+                mGalleryRecycle.smoothScrollToPosition(mGalleryAdapter.getItemCount() - 1);
             } else {
                 mGalleryAdapter.removeGalleryData(currentMedia);
                 if (SelectedManager.getCount() == 0) {

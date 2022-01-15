@@ -679,12 +679,14 @@ public class PictureSelectorFragment extends PictureCommonFragment
             mRecycler.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_black));
         }
         int imageSpanCount = config.imageSpanCount <= 0 ? PictureConfig.DEFAULT_SPAN_COUNT : config.imageSpanCount;
-        if (StyleUtils.checkSizeValidity(selectMainStyle.getAdapterItemSpacingSize())) {
-            mRecycler.addItemDecoration(new GridSpacingItemDecoration(imageSpanCount,
-                    selectMainStyle.getAdapterItemSpacingSize(), selectMainStyle.isAdapterItemIncludeEdge()));
-        } else {
-            mRecycler.addItemDecoration(new GridSpacingItemDecoration(imageSpanCount,
-                    DensityUtil.dip2px(view.getContext(), 1), selectMainStyle.isAdapterItemIncludeEdge()));
+        if (mRecycler.getItemDecorationCount() == 0) {
+            if (StyleUtils.checkSizeValidity(selectMainStyle.getAdapterItemSpacingSize())) {
+                mRecycler.addItemDecoration(new GridSpacingItemDecoration(imageSpanCount,
+                        selectMainStyle.getAdapterItemSpacingSize(), selectMainStyle.isAdapterItemIncludeEdge()));
+            } else {
+                mRecycler.addItemDecoration(new GridSpacingItemDecoration(imageSpanCount,
+                        DensityUtil.dip2px(view.getContext(), 1), selectMainStyle.isAdapterItemIncludeEdge()));
+            }
         }
         mRecycler.setLayoutManager(new GridLayoutManager(getContext(), imageSpanCount));
         RecyclerView.ItemAnimator itemAnimator = mRecycler.getItemAnimator();

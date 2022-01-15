@@ -37,6 +37,7 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
         for (int i = 0; i < this.mData.size(); i++) {
             LocalMedia media = mData.get(i);
             media.setGalleryEnabledMask(false);
+            media.setChecked(false);
         }
     }
 
