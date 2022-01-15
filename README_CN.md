@@ -16,11 +16,11 @@
 -[返回结果说明](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-LocalMedia%E8%AF%B4%E6%98%8E)<br>
 -[演示效果](#演示效果)<br>
 -[混淆配制](#混淆配制)<br>
--[License](#License)<br>
 -[常见错误](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF)<br>
 -[如何提Issues](https://github.com/LuckSiege/PictureSelector/wiki/%E5%A6%82%E4%BD%95%E6%8F%90Issues%3F)<br>
 -[兼容性测试](#兼容性测试)<br>
 -[联系方式](#联系方式)<br>
+-[License](#License)<br>
 
 
 
