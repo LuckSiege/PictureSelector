@@ -865,6 +865,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
         requireView().postDelayed(new Runnable() {
             @Override
             public void run() {
+                setEnterAnimationDuration(0);
                 sendChangeSubSelectPositionEvent(false);
                 mAdapter.setDataAndDataSetChanged(result);
                 if (mAdapter.isDataEmpty()) {

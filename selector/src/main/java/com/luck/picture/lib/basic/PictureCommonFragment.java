@@ -332,14 +332,17 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         return loadAnimation;
     }
 
-    public long getEnterAnimationDuration() {
-        final long DIFFERENCE = 50;
-        return enterAnimDuration > DIFFERENCE ? enterAnimDuration - DIFFERENCE : enterAnimDuration;
-    }
-
-    private void setEnterAnimationDuration(long duration) {
+    public void setEnterAnimationDuration(long duration) {
         this.enterAnimDuration = duration;
     }
+
+
+    public long getEnterAnimationDuration() {
+        final long DIFFERENCE = 50;
+        long duration = enterAnimDuration > DIFFERENCE ? enterAnimDuration - DIFFERENCE : enterAnimDuration;
+        return duration >= 0 ? duration : 0;
+    }
+
 
     @Override
     public int confirmSelect(LocalMedia currentMedia, boolean isSelected) {
