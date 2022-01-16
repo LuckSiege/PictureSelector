@@ -31,6 +31,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -783,7 +784,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     startSmoothScroll(smoothScroller);
                 }
             };
-
+            RecyclerView.ItemAnimator itemAnimator = mGalleryRecycle.getItemAnimator();
+            if (itemAnimator != null) {
+                ((SimpleItemAnimator) itemAnimator).setSupportsChangeAnimations(false);
+            }
             if (mGalleryRecycle.getItemDecorationCount() == 0) {
                 mGalleryRecycle.addItemDecoration(new HorizontalItemDecoration(Integer.MAX_VALUE,
                         DensityUtil.dip2px(getContext(), 6)));
