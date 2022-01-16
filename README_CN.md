@@ -35,16 +35,16 @@ repositories {
 
 dependencies {
   // PictureSelector 基础library (必须)
-  implementation 'io.github.lucksiege:pictureselector:v3.0.1'
+  implementation 'io.github.lucksiege:pictureselector:v3.0.2'
 
   // 图片压缩 library (按需引入)
-  implementation 'io.github.lucksiege:compress:v3.0.1'
+  implementation 'io.github.lucksiege:compress:v3.0.2'
 
   // 图片裁剪 library (按需引入)
-  implementation 'io.github.lucksiege:ucrop:v3.0.1'
+  implementation 'io.github.lucksiege:ucrop:v3.0.2'
 
   // 自定义相机 library (按需引入)
-  implementation 'io.github.lucksiege:camerax:v3.0.1'
+  implementation 'io.github.lucksiege:camerax:v3.0.2'
 }
 ```
 
@@ -54,25 +54,25 @@ dependencies {
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>v3.0.1</version>
+  <version>v3.0.2</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>compress</artifactId>
-  <version>v3.0.1</version>
+  <version>v3.0.2</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>ucrop</artifactId>
-  <version>v3.0.1</version>
+  <version>v3.0.2</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>camerax</artifactId>
-  <version>v3.0.1</version>
+  <version>v3.0.2</version>
 </dependency>
 ```
 
