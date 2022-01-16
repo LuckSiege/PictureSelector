@@ -1,6 +1,7 @@
 package com.luck.picture.lib.adapter;
 
 import android.util.LruCache;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -77,6 +78,21 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
         if (holder instanceof PreviewVideoHolder) {
             PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
             videoHolder.releaseVideo();
+        }
+    }
+
+    /**
+     * 设置播放按钮状态
+     *
+     * @param position
+     */
+    public void setVideoPlayButtonUI(int position) {
+        BasePreviewHolder currentHolder = getCurrentHolder(position);
+        if (currentHolder instanceof PreviewVideoHolder) {
+            PreviewVideoHolder videoHolder = (PreviewVideoHolder) currentHolder;
+            if (videoHolder.ivPlayButton.getVisibility() == View.GONE) {
+                videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
+            }
         }
     }
 

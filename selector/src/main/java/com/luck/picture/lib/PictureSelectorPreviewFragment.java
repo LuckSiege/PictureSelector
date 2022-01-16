@@ -815,6 +815,14 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                         }
                         viewPager.setCurrentItem(newPosition, false);
                         notifyGallerySelectMedia(media);
+                        viewPager.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (config.isPreviewZoomEffect) {
+                                    viewPageAdapter.setVideoPlayButtonUI(newPosition);
+                                }
+                            }
+                        });
                     }
                 }
             });
@@ -1344,13 +1352,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     changeMagicalViewParams(position);
                 }
                 if (config.isPreviewZoomEffect) {
-                    BasePreviewHolder currentHolder = viewPageAdapter.getCurrentHolder(position);
-                    if (currentHolder instanceof PreviewVideoHolder) {
-                        PreviewVideoHolder videoHolder = (PreviewVideoHolder) currentHolder;
-                        if (videoHolder.ivPlayButton.getVisibility() == View.GONE) {
-                            videoHolder.ivPlayButton.setVisibility(View.VISIBLE);
-                        }
-                    }
+                    viewPageAdapter.setVideoPlayButtonUI(position);
                 }
                 notifyGallerySelectMedia(currentMedia);
                 bottomNarBar.isDisplayEditor(PictureMimeType.isHasVideo(currentMedia.getMimeType()));
@@ -1367,6 +1369,8 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             }
         }
     };
+
+
 
     /**
      * 更新MagicalView ViewParams 参数
