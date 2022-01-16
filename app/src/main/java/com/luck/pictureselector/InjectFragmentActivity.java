@@ -43,21 +43,6 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
         ImmersiveManager.immersiveAboveAPI23(this, color, color, true);
         setContentView(R.layout.activity_inject_fragment);
         tvResult = findViewById(R.id.tv_result);
-        findViewById(R.id.tvb_inject_result_fragment).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 方式二
-                PictureSelectorFragment selectorFragment = PictureSelector.create(v.getContext())
-                        .openGallery(SelectMimeType.ofAll())
-                        .setImageEngine(GlideEngine.createGlideEngine())
-                        .build();
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, selectorFragment, selectorFragment.getFragmentTag())
-                        .addToBackStack(selectorFragment.getFragmentTag())
-                        .commitAllowingStateLoss();
-            }
-        });
-
         findViewById(R.id.tvb_inject_fragment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,6 +63,21 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
                                 Log.i(TAG, "PictureSelector Cancel");
                             }
                         });
+            }
+        });
+
+        findViewById(R.id.tvb_inject_result_fragment).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 方式二
+                PictureSelectorFragment selectorFragment = PictureSelector.create(v.getContext())
+                        .openGallery(SelectMimeType.ofAll())
+                        .setImageEngine(GlideEngine.createGlideEngine())
+                        .build();
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container, selectorFragment, selectorFragment.getFragmentTag())
+                        .addToBackStack(selectorFragment.getFragmentTag())
+                        .commitAllowingStateLoss();
             }
         });
     }
