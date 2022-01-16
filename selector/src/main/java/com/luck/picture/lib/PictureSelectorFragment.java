@@ -721,6 +721,9 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
             @Override
             public void openCameraClick() {
+                if (DoubleUtils.isFastDoubleClick()) {
+                    return;
+                }
                 openSelectedCamera();
             }
 
