@@ -34,16 +34,16 @@ repositories {
 }
 
 dependencies {
-  // PictureSelector 基础library (必须)
+  // PictureSelector 基础 (必须)
   implementation 'io.github.lucksiege:pictureselector:v3.0.2'
 
-  // 图片压缩 library (按需引入)
+  // 图片压缩 (按需引入)
   implementation 'io.github.lucksiege:compress:v3.0.2'
 
-  // 图片裁剪 library (按需引入)
+  // 图片裁剪 (按需引入)
   implementation 'io.github.lucksiege:ucrop:v3.0.2'
 
-  // 自定义相机 library (按需引入)
+  // 自定义相机 (按需引入)
   implementation 'io.github.lucksiege:camerax:v3.0.2'
 }
 ```

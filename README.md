@@ -3,7 +3,7 @@
 
    [简体中文🇨🇳](README_CN.md)
 
-   [Effect experience](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-01-16_050949_v3.0.2.apk)<br>
+   [Demo](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-01-16_050949_v3.0.2.apk)<br>
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
 [![CSDN](https://img.shields.io/twitter/url/http/blog.csdn.net/luck_mw.svg?style=social)](http://blog.csdn.net/luck_mw)
@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-  // PictureSelector basic library (Necessary)
+  // PictureSelector basic (Necessary)
   implementation 'io.github.lucksiege:pictureselector:v3.0.2'
 
   // image compress library (Not necessary)
