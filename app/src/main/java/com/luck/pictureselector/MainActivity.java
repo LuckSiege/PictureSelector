@@ -1370,7 +1370,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 mAdapter.notifyItemRangeRemoved(0, mAdapter.getData().size());
                 mAdapter.getData().clear();
                 mAdapter.getData().addAll(result);
-                mAdapter.notifyItemRangeInserted(0, result.size());
+                boolean isMaxSize = result.size() == mAdapter.getSelectMax();
+                mAdapter.notifyItemRangeInserted(0, isMaxSize ? result.size() - 1 : result.size());
             }
         });
     }

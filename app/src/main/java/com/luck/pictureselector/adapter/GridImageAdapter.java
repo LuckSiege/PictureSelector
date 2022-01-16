@@ -63,6 +63,10 @@ public class GridImageAdapter extends RecyclerView.Adapter<GridImageAdapter.View
         this.selectMax = selectMax;
     }
 
+    public int getSelectMax() {
+        return selectMax;
+    }
+
     public ArrayList<LocalMedia> getData() {
         return list;
     }
