@@ -270,9 +270,10 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             @Override
             public void openPicture() {
                 boolean mode = cb_mode.isChecked();
+                PictureSelectionModel model;
                 if (mode) {
                     // 进入相册
-                    PictureSelectionModel model = PictureSelector.create(getContext())
+                    model = PictureSelector.create(getContext())
                             .openGallery(chooseMode)
                             .setSelectorUIStyle(selectorStyle)
                             .setImageEngine(GlideEngine.createGlideEngine())
@@ -313,18 +314,17 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                             .setRecyclerAnimationMode(animationMode)
                             .isGif(cb_isGif.isChecked())
                             .setSelectedData(mAdapter.getData());
-                    forResult(model);
                 } else {
                     // 单独拍照
-                    PictureSelectionModel model = PictureSelector.create(MainActivity.this)
+                    model = PictureSelector.create(MainActivity.this)
                             .openCamera(chooseMode)
                             .setCameraInterceptListener(getCustomCameraEvent())
                             .setCropEngine(getCropEngine())
                             .setCompressEngine(getCompressEngine())
                             .setSandboxFileEngine(new MeSandboxFileEngine())
                             .isOriginalControl(cb_original.isChecked());
-                    forResult(model);
                 }
+                forResult(model);
             }
         });
 
