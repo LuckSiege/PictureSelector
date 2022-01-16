@@ -57,11 +57,13 @@
 
         <activity
             android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="fullSensor">
 
         </activity>
         <activity
             android:name=".InjectFragmentActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="fullSensor">
 
         </activity>

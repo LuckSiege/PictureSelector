@@ -2,7 +2,6 @@ package com.luck.pictureselector;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.RadioGroup;
 
@@ -65,7 +64,6 @@ public class LineWrapRadioGroup extends RadioGroup {
                 totalHeight += oldHeight;
                 //重置行高,当前这个View，属于下一行，因此当前最大行高为这个child的高度加上margin
                 maxLineHeight = child.getMeasuredHeight() + params.topMargin + params.bottomMargin;
-                Log.v(TAG, "maxHeight:" + totalHeight + "---" + "maxWidth:" + maxWidth);
 
             } else {
                 //不换行，累加宽度

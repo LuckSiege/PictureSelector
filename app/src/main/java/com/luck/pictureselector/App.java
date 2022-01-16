@@ -28,13 +28,13 @@ public class App extends Application implements IApp, CameraXConfig.Provider {
     public void onCreate() {
         super.onCreate();
         PictureAppMaster.getInstance().setApp(this);
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(@NonNull Thread t, @NonNull Throwable e) {
-                PictureSelectionConfig.destroy();
-                ToastUtils.showToast(getApplicationContext(),e.getMessage());
-            }
-        });
+//        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+//            @Override
+//            public void uncaughtException(@NonNull Thread t, @NonNull Throwable e) {
+//                PictureSelectionConfig.destroy();
+//                ToastUtils.showToast(getApplicationContext(),e.getMessage());
+//            }
+//        });
     }
 
     @Override

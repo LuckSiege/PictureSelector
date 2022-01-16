@@ -1364,9 +1364,15 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             Log.i(TAG, "裁剪宽高: " + media.getCropImageWidth() + "x" + media.getCropImageHeight());
             Log.i(TAG, "文件大小: " + media.getSize());
         }
-        mAdapter.getData().clear();
-        mAdapter.getData().addAll(result);
-        mAdapter.notifyItemRangeChanged(0, mAdapter.getData().size());
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.notifyItemRangeRemoved(0, mAdapter.getData().size());
+                mAdapter.getData().clear();
+                mAdapter.getData().addAll(result);
+                mAdapter.notifyItemRangeInserted(0, result.size());
+            }
+        });
     }
 
 
