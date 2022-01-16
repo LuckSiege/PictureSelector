@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.exifinterface.media.ExifInterface;
 
 import com.luck.picture.lib.basic.PictureContentResolver;
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 
 import java.io.BufferedOutputStream;
@@ -139,6 +140,9 @@ public class BitmapUtils {
         if (imageWidth == 0 && imageHeight == 0) {
             imageWidth = screenWidth;
             imageHeight = screenHeight;
+        }
+        if (MediaUtils.isLongImage(imageWidth, imageHeight)) {
+            return new int[]{PictureConfig.UNSET, PictureConfig.UNSET};
         }
         int maxBitmapSize = BitmapUtils.calculateMaxBitmapSize(context);
         int inSampleSize = BitmapUtils.calculateInSampleSize(imageWidth, imageHeight, maxBitmapSize, maxBitmapSize);

@@ -59,4 +59,6 @@ public final class PictureConfig {
     public final static int REQUEST_GO_SETTING = 1102;
 
     public final static int ALL = -1;
+
+    public final static int UNSET = -1;
 }
