@@ -133,7 +133,7 @@ PictureSelector.create(this)
 
 ```
 
-You can also use the following example：
+4、You can also use the following example：
 
 (1)、Inject into any view fragment
 ```sh
@@ -170,7 +170,7 @@ getSupportFragmentManager().beginTransaction()
 			
 ```
 
-4、Preview audio
+5、Preview audio
 
 ```sh
 AudioPlayDialog.showPlayAudioDialog(getContext(), "path");
