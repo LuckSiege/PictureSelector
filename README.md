@@ -113,27 +113,8 @@ PictureSelector.create(this)
 });
 ```
 
-3、Preview image or video
-```sh
 
-PictureSelector.create(this)
-    .openPreview()
-    .setImageEngine(GlideEngine.createGlideEngine())
-    .setExternalPreviewEventListener(new OnExternalPreviewEventListener() {
-       @Override
-       public void onPreviewDelete(int position) {
-
-       }
-
-        @Override
-       public boolean onLongPressDownload(LocalMedia media) {
-           return false;
-       }
-    }).startActivityPreview(position, true, "data");
-
-```
-
-4、You can also use the following example：
+3、You can also use the following example：
 
 (1)、Inject into any view fragment
 ```sh
@@ -168,6 +149,26 @@ getSupportFragmentManager().beginTransaction()
      .addToBackStack(selectorFragment.getFragmentTag())
      .commitAllowingStateLoss();
 			
+```
+
+4、Preview image or video
+```sh
+
+PictureSelector.create(this)
+    .openPreview()
+    .setImageEngine(GlideEngine.createGlideEngine())
+    .setExternalPreviewEventListener(new OnExternalPreviewEventListener() {
+       @Override
+       public void onPreviewDelete(int position) {
+
+       }
+
+        @Override
+       public boolean onLongPressDownload(LocalMedia media) {
+           return false;
+       }
+    }).startActivityPreview(position, true, "data");
+
 ```
 
 5、Preview audio
