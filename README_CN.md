@@ -116,6 +116,43 @@ PictureSelector.create(this)
 });
 ```
 
+您还可以按如下示例使用：
+
+(1)、注入到任意视图层
+```sh
+
+PictureSelector.create(this)
+   .openGallery(SelectMimeType.ofAll())
+   .setImageEngine(GlideEngine.createGlideEngine())
+   .buildLaunch(R.id.fragment_container, new OnResultCallbackListener<LocalMedia>() {
+      @Override
+      public void onResult(ArrayList<LocalMedia> result) {
+      
+      }
+
+      @Override
+      public void onCancel() {
+      
+      }
+});
+			
+```
+
+(2)、自行注入到任意视图层
+```sh
+
+PictureSelectorFragment selectorFragment = PictureSelector.create(this)
+     .openGallery(SelectMimeType.ofAll())
+     .setImageEngine(GlideEngine.createGlideEngine())
+     .build();
+     
+getSupportFragmentManager().beginTransaction()
+     .add(R.id.fragment_container, selectorFragment, selectorFragment.getFragmentTag())
+     .addToBackStack(selectorFragment.getFragmentTag())
+     .commitAllowingStateLoss();
+			
+```
+
 3、预览图片或视频
 ```sh
 
