@@ -121,8 +121,8 @@ public class PictureCameraActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         CustomCameraConfig.destroy();
+        super.onBackPressed();
     }
 
     @Override

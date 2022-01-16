@@ -391,8 +391,8 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         UCropDevelopConfig.destroy();
+        super.onDestroy();
     }
 
     @Override
