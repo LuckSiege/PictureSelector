@@ -1160,7 +1160,12 @@ public class PictureSelectionModel {
                     throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
                 }
                 Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
-                activity.startActivityForResult(intent, requestCode);
+                Fragment fragment = selector.getFragment();
+                if (fragment != null) {
+                    fragment.startActivityForResult(intent, requestCode);
+                } else {
+                    activity.startActivityForResult(intent, requestCode);
+                }
                 PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
                 activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
             }
