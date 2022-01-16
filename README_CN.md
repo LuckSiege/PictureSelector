@@ -116,7 +116,7 @@ PictureSelector.create(this)
 });
 ```
 
-您还可以按如下示例使用：
+3、您还可以按如下示例使用：
 
 (1)、注入到任意视图层
 ```sh
@@ -153,7 +153,7 @@ getSupportFragmentManager().beginTransaction()
 			
 ```
 
-3、预览图片或视频
+4、预览图片或视频
 ```sh
 
 PictureSelector.create(this)
@@ -173,7 +173,7 @@ PictureSelector.create(this)
 
 ```
 
-4、预览音频
+5、预览音频
 
 ```sh
 AudioPlayDialog.showPlayAudioDialog(getContext(), availablePath);
