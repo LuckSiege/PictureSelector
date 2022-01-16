@@ -34,7 +34,7 @@ repositories {
 }
 
 dependencies {
-  // PictureSelector 3.0 (必须)
+  // PictureSelector 基础 (必须)
   implementation 'io.github.lucksiege:pictureselector:v3.0.2'
 
   // 图片压缩 (按需引入)
