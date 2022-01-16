@@ -133,6 +133,43 @@ PictureSelector.create(this)
 
 ```
 
+You can also use the following example：
+
+(1)、Inject into any view fragment
+```sh
+
+PictureSelector.create(this)
+   .openGallery(SelectMimeType.ofAll())
+   .setImageEngine(GlideEngine.createGlideEngine())
+   .buildLaunch(R.id.fragment_container, new OnResultCallbackListener<LocalMedia>() {
+      @Override
+      public void onResult(ArrayList<LocalMedia> result) {
+      
+      }
+
+      @Override
+      public void onCancel() {
+      
+      }
+});
+			
+```
+
+(2)、Custom Inject into any view fragment
+```sh
+
+PictureSelectorFragment selectorFragment = PictureSelector.create(this)
+     .openGallery(SelectMimeType.ofAll())
+     .setImageEngine(GlideEngine.createGlideEngine())
+     .build();
+     
+getSupportFragmentManager().beginTransaction()
+     .add(R.id.fragment_container, selectorFragment, selectorFragment.getFragmentTag())
+     .addToBackStack(selectorFragment.getFragmentTag())
+     .commitAllowingStateLoss();
+			
+```
+
 4、Preview audio
 
 ```sh
