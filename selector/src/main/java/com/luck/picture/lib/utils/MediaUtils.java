@@ -24,6 +24,8 @@ import com.luck.picture.lib.entity.MediaExtraInfo;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.FileNameMap;
+import java.net.URLConnection;
 
 
 /**
@@ -62,7 +64,21 @@ public class MediaUtils {
         String fileExtension = MimeTypeMap.getFileExtensionFromUrl(url);
         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
                 fileExtension.toLowerCase());
+        if (TextUtils.isEmpty(mimeType)) {
+            mimeType = getMimeType(new File(url));
+        }
         return TextUtils.isEmpty(mimeType) ? PictureMimeType.MIME_TYPE_JPEG : mimeType;
+    }
+
+    /**
+     * 获取mimeType
+     *
+     * @param file
+     * @return
+     */
+    private static String getMimeType(File file) {
+        FileNameMap fileNameMap = URLConnection.getFileNameMap();
+        return fileNameMap.getContentTypeFor(file.getName());
     }
 
     /**
