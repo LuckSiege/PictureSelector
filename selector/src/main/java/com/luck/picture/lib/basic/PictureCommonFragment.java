@@ -46,6 +46,7 @@ import com.luck.picture.lib.immersive.ImmersiveManager;
 import com.luck.picture.lib.interfaces.OnCallbackIndexListener;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnItemClickListener;
+import com.luck.picture.lib.interfaces.OnRequestPermissionListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.language.PictureLanguageUtils;
 import com.luck.picture.lib.loader.IBridgeMediaLoader;
@@ -176,7 +177,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     }
 
     @Override
-    public void handlePermissionSettingResult() {
+    public void handlePermissionSettingResult(String[] permissions) {
 
     }
 
@@ -223,6 +224,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     public void handlePermissionDenied(String[] permissionArray) {
         boolean isReadWrite = permissionArray == PermissionConfig.READ_WRITE_EXTERNAL_STORAGE
                 || permissionArray == PermissionConfig.WRITE_EXTERNAL_STORAGE;
+        PermissionConfig.CURRENT_REQUEST_PERMISSION = permissionArray;
         PermissionUtil.goIntentSetting(this, isReadWrite, PictureConfig.REQUEST_GO_SETTING);
     }
 
@@ -777,13 +779,13 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     public void openImageCamera() {
         if (PictureSelectionConfig.onPermissionsEventListener != null) {
             PictureSelectionConfig.onPermissionsEventListener.requestPermission(this, PermissionConfig.CAMERA,
-                    new OnCallbackListener<Boolean>() {
+                    new OnRequestPermissionListener() {
                         @Override
-                        public void onCall(Boolean isResult) {
+                        public void onCall(String[] permissionArray, boolean isResult) {
                             if (isResult) {
                                 startCameraImageCapture();
                             } else {
-                                handlePermissionDenied(PermissionConfig.CAMERA);
+                                handlePermissionDenied(permissionArray);
                             }
                         }
                     });
@@ -833,13 +835,13 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     public void openVideoCamera() {
         if (PictureSelectionConfig.onPermissionsEventListener != null) {
             PictureSelectionConfig.onPermissionsEventListener.requestPermission(this, PermissionConfig.CAMERA,
-                    new OnCallbackListener<Boolean>() {
+                    new OnRequestPermissionListener() {
                         @Override
-                        public void onCall(Boolean isResult) {
+                        public void onCall(String[] permissionArray, boolean isResult) {
                             if (isResult) {
                                 startCameraVideoCapture();
                             } else {
-                                handlePermissionDenied(PermissionConfig.CAMERA);
+                                handlePermissionDenied(permissionArray);
                             }
                         }
                     });
@@ -892,13 +894,13 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     public void openSoundRecording() {
         if (PictureSelectionConfig.onPermissionsEventListener != null) {
             PictureSelectionConfig.onPermissionsEventListener.requestPermission(this, PermissionConfig.RECORD_AUDIO,
-                    new OnCallbackListener<Boolean>() {
+                    new OnRequestPermissionListener() {
                         @Override
-                        public void onCall(Boolean isResult) {
+                        public void onCall(String[] permissionArray, boolean isResult) {
                             if (isResult) {
                                 startCameraRecordSound();
                             } else {
-                                handlePermissionDenied(PermissionConfig.RECORD_AUDIO);
+                                handlePermissionDenied(permissionArray);
                             }
                         }
                     });
@@ -1042,7 +1044,8 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             if (requestCode == PictureConfig.REQUEST_CAMERA) {
                 MediaUtils.deleteUri(getContext(), config.cameraPath);
             } else if (requestCode == PictureConfig.REQUEST_GO_SETTING) {
-                handlePermissionSettingResult();
+                handlePermissionSettingResult(PermissionConfig.CURRENT_REQUEST_PERMISSION);
+                PermissionConfig.CURRENT_REQUEST_PERMISSION = null;
             }
         }
     }

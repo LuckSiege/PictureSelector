@@ -47,7 +47,7 @@ public interface IPictureSelectorCommonEvent {
     /**
      * 权限设置结果
      */
-    void handlePermissionSettingResult();
+    void handlePermissionSettingResult(String[] permissions);
 
     /**
      * 设置app语言

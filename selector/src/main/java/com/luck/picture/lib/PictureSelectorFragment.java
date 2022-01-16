@@ -37,13 +37,13 @@ import com.luck.picture.lib.dialog.AudioPlayDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnAlbumItemClickListener;
-import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
 import com.luck.picture.lib.interfaces.OnRecyclerViewPreloadMoreListener;
 import com.luck.picture.lib.interfaces.OnRecyclerViewScrollListener;
 import com.luck.picture.lib.interfaces.OnRecyclerViewScrollStateListener;
+import com.luck.picture.lib.interfaces.OnRequestPermissionListener;
 import com.luck.picture.lib.loader.LocalMediaLoader;
 import com.luck.picture.lib.loader.LocalMediaPageLoader;
 import com.luck.picture.lib.magical.BuildRecycleItemViewParams;
@@ -386,13 +386,13 @@ public class PictureSelectorFragment extends PictureCommonFragment
         } else {
             if (PictureSelectionConfig.onPermissionsEventListener != null) {
                 PictureSelectionConfig.onPermissionsEventListener.requestPermission(this,
-                        PermissionConfig.READ_WRITE_EXTERNAL_STORAGE, new OnCallbackListener<Boolean>() {
+                        PermissionConfig.READ_WRITE_EXTERNAL_STORAGE, new OnRequestPermissionListener() {
                             @Override
-                            public void onCall(Boolean isResult) {
+                            public void onCall(String[] permissionArray, boolean isResult) {
                                 if (isResult) {
                                     beginLoadData();
                                 } else {
-                                    handlePermissionDenied(PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
+                                    handlePermissionDenied(permissionArray);
                                 }
                             }
                         });
@@ -425,10 +425,11 @@ public class PictureSelectorFragment extends PictureCommonFragment
     }
 
     @Override
-    public void handlePermissionSettingResult() {
+    public void handlePermissionSettingResult(String[] permissions) {
         boolean isHasPermissions;
         if (PictureSelectionConfig.onPermissionsEventListener != null) {
-            isHasPermissions = PictureSelectionConfig.onPermissionsEventListener.hasPermissions(this);
+            isHasPermissions = PictureSelectionConfig.onPermissionsEventListener
+                    .hasPermissions(this, permissions);
         } else {
             isHasPermissions = PermissionChecker.isCheckReadStorage(getContext());
         }

@@ -8,6 +8,11 @@ import android.Manifest;
  * @describe：PermissionConfig
  */
 public class PermissionConfig {
+    /**
+     * 当前申请权限
+     */
+    public static String[] CURRENT_REQUEST_PERMISSION;
+
 
     /**
      * 读写权限

@@ -15,13 +15,14 @@ public interface OnPermissionsInterceptListener {
      * @param permissionArray Permissions array
      * @param call
      */
-    void requestPermission(Fragment fragment, String[] permissionArray, OnCallbackListener<Boolean> call);
+    void requestPermission(Fragment fragment, String[] permissionArray, OnRequestPermissionListener call);
 
     /**
      * Verify permission application status
      *
      * @param fragment
+     * @param permissionArray
      * @return
      */
-    boolean hasPermissions(Fragment fragment);
+    boolean hasPermissions(Fragment fragment, String[] permissionArray);
 }
