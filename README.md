@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-  // PictureSelector basic library (Necessary)
+  // PictureSelector basic (Necessary)
   implementation 'io.github.lucksiege:pictureselector:v3.0.2'
 
   // image compress library (Not necessary)
