@@ -1,7 +1,6 @@
 package com.luck.picture.lib;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.TextUtils;
@@ -220,21 +219,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
     }
 
     @Override
-    public void onKeyBackFragment() {
-        if (!ActivityCompatHelper.isDestroy(getActivity())) {
-            if (config.isActivityResultBack) {
-                getActivity().setResult(Activity.RESULT_CANCELED);
-                onSelectFinish(Activity.RESULT_CANCELED, null);
-            } else {
-                if (PictureSelectionConfig.onResultCallListener != null) {
-                    PictureSelectionConfig.onResultCallListener.onCancel();
-                }
-            }
-            onExitPictureSelector();
-        }
-    }
-
-    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         reStartSavedInstance(savedInstanceState);
@@ -345,7 +329,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 if (albumListPopWindow.isShowing()) {
                     albumListPopWindow.dismiss();
                 } else {
-                    onKeyBackFragment();
+                    onKeyBackFragmentFinish();
                 }
             }
 
@@ -437,7 +421,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
             beginLoadData();
         } else {
             ToastUtils.showToast(getContext(), getString(R.string.ps_jurisdiction));
-            onKeyBackFragment();
+            onKeyBackFragmentFinish();
         }
     }
 
@@ -740,8 +724,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
             @Override
             public void onItemClick(View selectedView, int position, LocalMedia media) {
                 if (config.selectionMode == SelectModeConfig.SINGLE && config.isDirectReturnSingle) {
-                    SelectedManager.getSelectedResult().clear();
-                    SelectedManager.getSelectedResult().add(media);
+                    SelectedManager.clearSelectResult();
+                    SelectedManager.addSelectResult(media);
                     dispatchTransformResult();
                 } else {
                     if (DoubleUtils.isFastDoubleClick()) {
@@ -945,7 +929,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
             isCameraMemoryRecycling = false;
             // 这种情况一般就是拍照时内存不足了，导致Fragment重新创建了，先走的loadAllData已经获取到了拍照生成的这张
             // 如果这里还往下手动添加则会导致重复一张，故只要把新拍的加入选择结果即可
-            SelectedManager.getSelectedResult().add(media);
+            SelectedManager.addSelectResult(media);
             mAdapter.notifyItemPositionChanged(config.isDisplayCamera ? 1 : 0);
             if (config.isDirectReturnSingle) {
                 dispatchTransformResult();
@@ -958,8 +942,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
             openCameraNumber++;
         }
         if (config.selectionMode == SelectModeConfig.SINGLE && config.isDirectReturnSingle) {
-            SelectedManager.getSelectedResult().clear();
-            SelectedManager.getSelectedResult().add(media);
+            SelectedManager.clearSelectResult();
+            SelectedManager.addSelectResult(media);
             dispatchTransformResult();
         } else {
             confirmSelect(media, false);

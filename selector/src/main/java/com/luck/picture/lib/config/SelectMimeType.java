@@ -48,4 +48,22 @@ public class SelectMimeType {
     public final static int TYPE_IMAGE = 1;
     public final static int TYPE_VIDEO = 2;
     public final static int TYPE_AUDIO = 3;
+
+    /**
+     * System all image or video album
+     */
+    public final static String[] SYSTEM_ALL = new String[]{SelectMimeType.SYSTEM_IMAGE, SelectMimeType.SYSTEM_VIDEO};
+
+    /**
+     * System image album
+     */
+    public final static String SYSTEM_IMAGE = "image/*";
+    /**
+     * System video album
+     */
+    public final static String SYSTEM_VIDEO = "video/*";
+    /**
+     * System audio album
+     */
+    public final static String SYSTEM_AUDIO = "audio/*";
 }

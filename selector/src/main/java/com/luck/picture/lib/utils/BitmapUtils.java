@@ -211,4 +211,5 @@ public class BitmapUtils {
 
         return maxBitmapSize;
     }
+
 }

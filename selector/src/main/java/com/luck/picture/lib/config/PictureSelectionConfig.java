@@ -410,7 +410,7 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.onPreviewInterceptListener = null;
         PictureSelectionConfig.onSelectLimitTipsListener = null;
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
-        SelectedManager.clear();
+        SelectedManager.clearSelectResult();
         BuildRecycleItemViewParams.clear();
         SelectedManager.setCurrentLocalMediaFolder(null);
     }

@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentManager;
 import com.luck.picture.lib.PictureOnlyCameraFragment;
 import com.luck.picture.lib.PictureSelectorFragment;
 import com.luck.picture.lib.PictureSelectorPreviewFragment;
+import com.luck.picture.lib.PictureSelectorSystemFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.config.PictureConfig;
@@ -61,7 +62,7 @@ public class PictureSelectionModel {
 
     public PictureSelectionModel(PictureSelector selector) {
         this.selector = selector;
-        selectionConfig = PictureSelectionConfig.getCleanInstance();
+        this.selectionConfig = PictureSelectionConfig.getCleanInstance();
     }
 
     public PictureSelectionModel(PictureSelector selector, int chooseMode) {
@@ -989,9 +990,9 @@ public class PictureSelectionModel {
             return this;
         }
         if (selectionConfig.selectionMode == SelectModeConfig.SINGLE && selectionConfig.isDirectReturnSingle) {
-            SelectedManager.clear();
+            SelectedManager.clearSelectResult();
         } else {
-            SelectedManager.getSelectedResult().addAll(new ArrayList<>(selectedList));
+            SelectedManager.addAllSelectResult(new ArrayList<>(selectedList));
         }
         return this;
     }
@@ -1278,5 +1279,87 @@ public class PictureSelectionModel {
                 .addToBackStack(selectorFragment.getFragmentTag())
                 .commitAllowingStateLoss();
         return selectorFragment;
+    }
+
+
+    /**
+     * Call the system library to obtain resources
+     * <p>
+     * Using the system gallery library, some API functions will not be supported
+     * </p>
+     *
+     * @param call
+     */
+    public void forSystemResult(OnResultCallbackListener<LocalMedia> call) {
+        if (!DoubleUtils.isFastDoubleClick()) {
+            Activity activity = selector.getActivity();
+            if (activity == null) {
+                throw new NullPointerException("Activity cannot be null");
+            }
+            if (call == null) {
+                throw new NullPointerException("OnResultCallbackListener cannot be null");
+            }
+            PictureSelectionConfig.onResultCallListener = call;
+            selectionConfig.isResultListenerBack = true;
+            selectionConfig.isActivityResultBack = false;
+            selectionConfig.isPreviewFullScreenMode = false;
+            selectionConfig.isPreviewZoomEffect = false;
+            FragmentManager fragmentManager = null;
+            if (activity instanceof AppCompatActivity) {
+                fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
+            } else if (activity instanceof FragmentActivity) {
+                fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
+            }
+            if (fragmentManager == null) {
+                throw new NullPointerException("FragmentManager cannot be null");
+            }
+            Fragment fragment = fragmentManager.findFragmentByTag(PictureSelectorSystemFragment.TAG);
+            if (fragment != null) {
+                fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
+            }
+            FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
+                    PictureSelectorSystemFragment.TAG, PictureSelectorSystemFragment.newInstance());
+        }
+    }
+
+
+    /**
+     * Call the system library to obtain resources
+     * <p>
+     * Using the system gallery library, some API functions will not be supported
+     * </p>
+     */
+    public void forSystemResult() {
+        if (!DoubleUtils.isFastDoubleClick()) {
+            Activity activity = selector.getActivity();
+            if (activity == null) {
+                throw new NullPointerException("Activity cannot be null");
+            }
+            if (!(activity instanceof IBridgePictureBehavior)) {
+                throw new NullPointerException("Use only forSystemResult();," +
+                        "Activity or Fragment interface needs to be implemented " + IBridgePictureBehavior.class);
+            }
+            selectionConfig.isActivityResultBack = true;
+            PictureSelectionConfig.onResultCallListener = null;
+            selectionConfig.isResultListenerBack = false;
+            selectionConfig.isPreviewFullScreenMode = false;
+            selectionConfig.isPreviewZoomEffect = false;
+
+            FragmentManager fragmentManager = null;
+            if (activity instanceof AppCompatActivity) {
+                fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
+            } else if (activity instanceof FragmentActivity) {
+                fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
+            }
+            if (fragmentManager == null) {
+                throw new NullPointerException("FragmentManager cannot be null");
+            }
+            Fragment fragment = fragmentManager.findFragmentByTag(PictureSelectorSystemFragment.TAG);
+            if (fragment != null) {
+                fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
+            }
+            FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
+                    PictureSelectorSystemFragment.TAG, PictureSelectorSystemFragment.newInstance());
+        }
     }
 }

@@ -186,12 +186,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     }
 
-
-    @Override
-    public void onKeyBackFragment() {
-
-    }
-
     @Override
     public void onEnterFragment() {
 
@@ -287,7 +281,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == ACTION_UP) {
-                    onKeyBackFragment();
+                    onKeyBackFragmentFinish();
                     return true;
                 }
                 return false;
@@ -1068,7 +1062,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 if (config.chooseMode == SelectMimeType.ofAudio()) {
                     copyOutputAudioToDir();
                 }
-                return buildLocalMedia();
+                return buildLocalMedia(config.cameraPath);
             }
 
             @Override
@@ -1160,28 +1154,30 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     /**
      * buildLocalMedia
+     *
+     * @param generatePath
      */
-    private LocalMedia buildLocalMedia() {
+    protected LocalMedia buildLocalMedia(String generatePath) {
         if (ActivityCompatHelper.isDestroy(getActivity())) {
             return null;
         }
         long id, bucketId;
         File cameraFile;
         String mimeType;
-        if (PictureMimeType.isContent(config.cameraPath)) {
-            Uri cameraUri = Uri.parse(config.cameraPath);
+        if (PictureMimeType.isContent(generatePath)) {
+            Uri cameraUri = Uri.parse(generatePath);
             String path = PictureFileUtils.getPath(getActivity(), cameraUri);
             cameraFile = new File(path);
             mimeType = MediaUtils.getMimeTypeFromMediaUrl(cameraFile.getAbsolutePath());
-            int lastIndexOf = config.cameraPath.lastIndexOf("/") + 1;
-            id = lastIndexOf > 0 ? ValueOf.toLong(config.cameraPath.substring(lastIndexOf)) : System.currentTimeMillis();
+            int lastIndexOf = generatePath.lastIndexOf("/") + 1;
+            id = lastIndexOf > 0 ? ValueOf.toLong(generatePath.substring(lastIndexOf)) : System.currentTimeMillis();
             if (PictureMimeType.isHasAudio(mimeType)) {
                 bucketId = MediaUtils.generateSoundsBucketId(getContext(), cameraFile, "");
             } else {
                 bucketId = MediaUtils.generateCameraBucketId(getContext(), cameraFile, "");
             }
         } else {
-            cameraFile = new File(config.cameraPath);
+            cameraFile = new File(generatePath);
             mimeType = MediaUtils.getMimeTypeFromMediaUrl(cameraFile.getAbsolutePath());
             id = System.currentTimeMillis();
             if (PictureMimeType.isHasAudio(mimeType)) {
@@ -1190,24 +1186,24 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 bucketId = MediaUtils.generateCameraBucketId(getContext(), cameraFile, config.outPutCameraDir);
             }
         }
-        if (config.isCameraRotateImage && PictureMimeType.isHasImage(mimeType) && !PictureMimeType.isContent(config.cameraPath)) {
-            BitmapUtils.rotateImage(getContext(), config.cameraPath);
+        if (config.isCameraRotateImage && PictureMimeType.isHasImage(mimeType) && !PictureMimeType.isContent(generatePath)) {
+            BitmapUtils.rotateImage(getContext(), generatePath);
         }
         MediaExtraInfo mediaExtraInfo;
         if (PictureMimeType.isHasVideo(mimeType)) {
-            mediaExtraInfo = MediaUtils.getVideoSize(getContext(), config.cameraPath);
+            mediaExtraInfo = MediaUtils.getVideoSize(getContext(), generatePath);
         } else if (PictureMimeType.isHasAudio(mimeType)) {
-            mediaExtraInfo = MediaUtils.getAudioSize(getContext(), config.cameraPath);
+            mediaExtraInfo = MediaUtils.getAudioSize(getContext(), generatePath);
         } else {
-            mediaExtraInfo = MediaUtils.getImageSize(getContext(), config.cameraPath);
+            mediaExtraInfo = MediaUtils.getImageSize(getContext(), generatePath);
         }
         String folderName = MediaUtils.generateCameraFolderName(cameraFile.getAbsolutePath());
-        LocalMedia media = LocalMedia.parseLocalMedia(id, config.cameraPath, cameraFile.getAbsolutePath(),
+        LocalMedia media = LocalMedia.parseLocalMedia(id, generatePath, cameraFile.getAbsolutePath(),
                 cameraFile.getName(), folderName, mediaExtraInfo.getDuration(), config.chooseMode,
                 mimeType, mediaExtraInfo.getWidth(), mediaExtraInfo.getHeight(), cameraFile.length(), bucketId,
                 cameraFile.lastModified() / 1000);
         if (SdkVersionUtils.isQ()) {
-            media.setSandboxPath(PictureMimeType.isContent(config.cameraPath) ? null : config.cameraPath);
+            media.setSandboxPath(PictureMimeType.isContent(generatePath) ? null : generatePath);
         }
         return media;
     }
@@ -1481,6 +1477,21 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     }
 
     @Override
+    public void onKeyBackFragmentFinish() {
+        if (!ActivityCompatHelper.isDestroy(getActivity())) {
+            if (config.isActivityResultBack) {
+                getActivity().setResult(Activity.RESULT_CANCELED);
+                onSelectFinish(Activity.RESULT_CANCELED, null);
+            } else {
+                if (PictureSelectionConfig.onResultCallListener != null) {
+                    PictureSelectionConfig.onResultCallListener.onCancel();
+                }
+            }
+            onExitPictureSelector();
+        }
+    }
+
+    @Override
     public void onDestroy() {
         releaseSoundPool();
         super.onDestroy();
@@ -1530,9 +1541,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
     }
 
     /**
-     * back off Fragment
+     * back current Fragment
      */
-    protected void onBackOffFragment() {
+    protected void onBackCurrentFragment() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
             getActivity().getSupportFragmentManager().popBackStack();
         }
@@ -1570,7 +1581,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 for (int i = 0; i < fragments.size(); i++) {
                     Fragment fragment = fragments.get(i);
                     if (fragment instanceof PictureCommonFragment) {
-                        onBackOffFragment();
+                        onBackCurrentFragment();
                     }
                 }
             }

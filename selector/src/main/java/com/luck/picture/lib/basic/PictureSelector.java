@@ -86,6 +86,15 @@ public final class PictureSelector {
     }
 
     /**
+     * @param chooseMode Select the type of picture you want，all or Picture or Video .
+     * @return LocalMedia PictureSelectionSystemModel
+     * Use {@link com.luck.picture.lib.config.SelectMimeType}
+     */
+    public PictureSelectionSystemModel openSystemGallery(int chooseMode) {
+        return new PictureSelectionSystemModel(this, chooseMode);
+    }
+
+    /**
      * preview data
      *
      * @return

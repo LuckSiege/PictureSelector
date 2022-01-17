@@ -393,6 +393,20 @@ public class PictureFileUtils {
     }
 
     /**
+     * 创建视频缩略图地址
+     *
+     * @return
+     */
+    public static String getVideoThumbnailDir(Context context) {
+        File externalFilesDir = context.getExternalFilesDir("");
+        File customFile = new File(externalFilesDir.getAbsolutePath(), "VideoThumbnail");
+        if (!customFile.exists()) {
+            customFile.mkdirs();
+        }
+        return customFile.getAbsolutePath() + File.separator;
+    }
+
+    /**
      * set empty PictureSelector Cache
      * Use {@link PictureCacheManager}
      *

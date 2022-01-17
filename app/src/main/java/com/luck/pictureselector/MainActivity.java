@@ -8,7 +8,11 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -111,6 +115,9 @@ import top.zibin.luban.OnRenameListener;
 public class MainActivity extends AppCompatActivity implements IBridgePictureBehavior, View.OnClickListener,
         RadioGroup.OnCheckedChangeListener, CompoundButton.OnCheckedChangeListener {
     private final static String TAG = "PictureSelectorTag";
+    private final static int ACTIVITY_RESULT = 1;
+    private final static int CALLBACK_RESULT = 2;
+    private final static int LAUNCHER_RESULT = 3;
     private GridImageAdapter mAdapter;
     private int maxSelectNum = 9;
     private TextView tv_select_num;
@@ -123,7 +130,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             cb_mode, cb_hide, cb_crop_circular, cb_crop_use_bitmap, cb_styleCrop, cb_showCropGrid,
             cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
             cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox, cb_only_dir,
-            cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo;
+            cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo
+            ,cb_system_album;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isUpward;
     private boolean needScaleBig = true;
@@ -136,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private PictureSelectorStyle selectorStyle;
     private final List<LocalMedia> mData = new ArrayList<>();
     private ActivityResultLauncher<Intent> launcherResult;
-    private int resultMode = 0;
+    private int resultMode = LAUNCHER_RESULT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_isCamera = findViewById(R.id.cb_isCamera);
         cb_isGif = findViewById(R.id.cb_isGif);
         cb_WithImageVideo = findViewById(R.id.cbWithImageVideo);
+        cb_system_album = findViewById(R.id.cb_system_album);
         cb_preview_full = findViewById(R.id.cb_preview_full);
         cb_preview_scale = findViewById(R.id.cb_preview_scale);
         cb_inject_layout = findViewById(R.id.cb_inject_layout);
@@ -224,7 +233,14 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             mData.clear();
             mData.addAll(savedInstanceState.getParcelableArrayList("selectorList"));
         }
-
+        String systemHigh = " (部分api功能将不支持)";
+        String systemTips = "使用系统图库" + systemHigh;
+        int startIndex = systemTips.indexOf(systemHigh);
+        int endOf = startIndex + systemHigh.length();
+        SpannableStringBuilder builder = new SpannableStringBuilder(systemTips);
+        builder.setSpan(new AbsoluteSizeSpan(DensityUtil.dip2px(getContext(),12)),startIndex,endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        builder.setSpan(new ForegroundColorSpan(0xFFCC0000),startIndex,endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        cb_system_album.setText(builder);
         cb_original.setOnCheckedChangeListener((buttonView, isChecked) ->
                 tv_original_tips.setVisibility(isChecked ? View.VISIBLE : View.GONE));
         cb_choose_mode.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -498,16 +514,24 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     }
 
     private void forResult(PictureSelectionModel model) {
-        switch (resultMode) {
-            case 1:
-                model.forResult(PictureConfig.CHOOSE_REQUEST);
-                break;
-            case 2:
-                model.forResult(new MeOnResultCallbackListener());
-                break;
-            default:
-                model.forResult(launcherResult);
-                break;
+        if (cb_system_album.isChecked()) {
+            if (resultMode == CALLBACK_RESULT) {
+                model.forSystemResult(new MeOnResultCallbackListener());
+            } else {
+                model.forSystemResult();
+            }
+        } else {
+            switch (resultMode) {
+                case ACTIVITY_RESULT:
+                    model.forResult(PictureConfig.CHOOSE_REQUEST);
+                    break;
+                case CALLBACK_RESULT:
+                    model.forResult(new MeOnResultCallbackListener());
+                    break;
+                default:
+                    model.forResult(launcherResult);
+                    break;
+            }
         }
     }
 

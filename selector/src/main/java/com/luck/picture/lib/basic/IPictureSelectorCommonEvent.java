@@ -23,9 +23,9 @@ public interface IPictureSelectorCommonEvent {
     int getResourceId();
 
     /**
-     * onKey back fragment
+     * onKey back fragment or finish
      */
-    void onKeyBackFragment();
+    void onKeyBackFragmentFinish();
 
     /**
      * fragment onResume

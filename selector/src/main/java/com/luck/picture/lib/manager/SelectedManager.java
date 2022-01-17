@@ -21,11 +21,15 @@ public class SelectedManager {
      */
     private static final ArrayList<LocalMedia> selectedResult = new ArrayList<>();
 
-    public static void addResult(LocalMedia media) {
+    public static synchronized void addSelectResult(LocalMedia media) {
         selectedResult.add(media);
     }
 
-    public static ArrayList<LocalMedia> getSelectedResult() {
+    public static synchronized void addAllSelectResult(ArrayList<LocalMedia> result) {
+        selectedResult.addAll(result);
+    }
+
+    public static synchronized ArrayList<LocalMedia> getSelectedResult() {
         return selectedResult;
     }
 
@@ -37,14 +41,9 @@ public class SelectedManager {
         return selectedResult.size() > 0 ? selectedResult.get(0).getMimeType() : "";
     }
 
-    public static void removeResult(LocalMedia media) {
-        selectedResult.remove(media);
-    }
-
-    public static void clear() {
+    public static synchronized void clearSelectResult() {
         selectedResult.clear();
     }
-
 
     /**
      * selected external preview result

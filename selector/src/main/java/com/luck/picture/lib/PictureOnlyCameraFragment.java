@@ -65,7 +65,7 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
 
     @Override
     public void dispatchCameraMediaResult(LocalMedia media) {
-        SelectedManager.getSelectedResult().add(media);
+        SelectedManager.addSelectResult(media);
         dispatchTransformResult();
     }
 
@@ -74,8 +74,7 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_CANCELED) {
             if (requestCode == PictureConfig.REQUEST_CAMERA) {
-                onBackOffFragment();
-                onSelectFinish(Activity.RESULT_CANCELED, null);
+                onKeyBackFragmentFinish();
             }
         }
     }
@@ -101,7 +100,7 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
             } else if (!PermissionChecker.isCheckWriteStorage(getContext())) {
                 ToastUtils.showToast(getContext(), getString(R.string.ps_jurisdiction));
             }
-            onBackOffFragment();
+            onKeyBackFragmentFinish();
         }
     }
 }

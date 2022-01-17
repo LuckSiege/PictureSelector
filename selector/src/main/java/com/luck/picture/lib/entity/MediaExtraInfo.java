@@ -7,6 +7,10 @@ package com.luck.picture.lib.entity;
  */
 public class MediaExtraInfo {
     /**
+     * videoThumbnail
+     */
+    private String videoThumbnail;
+    /**
      * width
      */
     private int width;
@@ -23,6 +27,14 @@ public class MediaExtraInfo {
      * orientation
      */
     private String orientation;
+
+    public String getVideoThumbnail() {
+        return videoThumbnail;
+    }
+
+    public void setVideoThumbnail(String videoThumbnail) {
+        this.videoThumbnail = videoThumbnail;
+    }
 
     public int getWidth() {
         return width;
@@ -59,7 +71,8 @@ public class MediaExtraInfo {
     @Override
     public String toString() {
         return "MediaExtraInfo{" +
-                "width=" + width +
+                "videoThumbnail='" + videoThumbnail + '\'' +
+                ", width=" + width +
                 ", height=" + height +
                 ", duration=" + duration +
                 ", orientation='" + orientation + '\'' +

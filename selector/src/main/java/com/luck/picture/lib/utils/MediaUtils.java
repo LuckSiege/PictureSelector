@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
@@ -20,9 +21,14 @@ import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.basic.PictureContentResolver;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.MediaExtraInfo;
+import com.luck.picture.lib.interfaces.OnCallbackListener;
+import com.luck.picture.lib.thread.PictureThreadUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
@@ -98,8 +104,8 @@ public class MediaUtils {
     /**
      * 生成BucketId
      *
-     * @param context          上下文
-     * @param cameraFile       拍照资源文件
+     * @param context         上下文
+     * @param cameraFile      拍照资源文件
      * @param outPutCameraDir 自定义拍照输出目录
      * @return
      */
@@ -426,6 +432,76 @@ public class MediaUtils {
             }
         }
         return queryArgs;
+    }
+
+    /**
+     * 异步获取视频缩略图地址
+     *
+     * @param context
+     * @param url
+     * @param call
+     * @return
+     */
+    public static void getAsyncVideoThumbnail(Context context, String url, OnCallbackListener<MediaExtraInfo> call) {
+        PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<MediaExtraInfo>() {
+
+            @Override
+            public MediaExtraInfo doInBackground() {
+                return getVideoThumbnail(context, url);
+            }
+
+            @Override
+            public void onSuccess(MediaExtraInfo result) {
+                PictureThreadUtils.cancel(this);
+                if (call != null) {
+                    call.onCall(result);
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取视频缩略图地址
+     *
+     * @param context
+     * @param url
+     * @return
+     */
+    public static MediaExtraInfo getVideoThumbnail(Context context, String url) {
+        Bitmap bitmap = null;
+        ByteArrayOutputStream stream = null;
+        FileOutputStream fos = null;
+        MediaExtraInfo extraInfo = new MediaExtraInfo();
+        try {
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            if (PictureMimeType.isContent(url)) {
+                mmr.setDataSource(context, Uri.parse(url));
+            } else {
+                mmr.setDataSource(url);
+            }
+            bitmap = mmr.getFrameAtTime();
+            if (bitmap != null && !bitmap.isRecycled()) {
+                stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+                String videoThumbnailDir = PictureFileUtils.getVideoThumbnailDir(context);
+                File targetFile = new File(videoThumbnailDir, DateUtils.getCreateFileName("vid_") + "_thumb.jpg");
+                fos = new FileOutputStream(targetFile);
+                fos.write(stream.toByteArray());
+                fos.flush();
+                extraInfo.setVideoThumbnail(targetFile.getAbsolutePath());
+                extraInfo.setWidth(bitmap.getWidth());
+                extraInfo.setHeight(bitmap.getHeight());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            PictureFileUtils.close(stream);
+            PictureFileUtils.close(fos);
+            if (bitmap != null && !bitmap.isRecycled()) {
+                bitmap.recycle();
+            }
+        }
+        return extraInfo;
     }
 
     /**

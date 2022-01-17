@@ -174,7 +174,7 @@
                     android:layout_marginLeft="8dp"
                     android:text="* 开启原图功能，用户就可以自由选择原图；但会跳过裁剪功能哦"
                     android:textColor="@android:color/holo_red_dark"
-                    android:textSize="10dp"
+                    android:textSize="12dp"
                     android:visibility="gone" />
 
                 <CheckBox
@@ -386,6 +386,15 @@
                         android:textColor="@color/app_color_53575e"
                         android:textSize="14sp" />
                 </RadioGroup>
+
+                <CheckBox
+                    android:id="@+id/cb_system_album"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="使用系统图库 (部分api功能将不支持)"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
 
                 <CheckBox
                     android:id="@+id/cbWithImageVideo"

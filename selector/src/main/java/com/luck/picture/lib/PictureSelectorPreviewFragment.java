@@ -316,7 +316,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     }
 
     @Override
-    public void onKeyBackFragment() {
+    public void onKeyBackFragmentFinish() {
         onKeyDownBackToMin();
     }
 
@@ -405,7 +405,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
             @Override
             public void onMagicalViewFinish() {
-                onBackOffFragment();
+                onBackCurrentFragment();
             }
 
             @Override
@@ -551,7 +551,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         }
         mData = result;
         if (mData.size() == 0) {
-            onBackOffFragment();
+            onBackCurrentFragment();
             return;
         }
         // 这里的作用主要是防止内存不足情况下重新load了数据，此时LocalMedia是没有position的
@@ -715,7 +715,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     if (!isInternalBottomPreview && config.isPreviewZoomEffect) {
                         magicalView.backToMin();
                     } else {
-                        onBackOffFragment();
+                        onBackCurrentFragment();
                     }
                 }
             }
@@ -1183,7 +1183,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     if (!isInternalBottomPreview && config.isPreviewZoomEffect) {
                         magicalView.backToMin();
                     } else {
-                        onBackOffFragment();
+                        onBackCurrentFragment();
                     }
                 }
             }
@@ -1214,11 +1214,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             if (isExternalPreview) {
                 onExitPictureSelector();
             } else if (isInternalBottomPreview) {
-                onBackOffFragment();
+                onBackCurrentFragment();
             } else if (config.isPreviewZoomEffect) {
                 magicalView.backToMin();
             } else {
-                onBackOffFragment();
+                onBackCurrentFragment();
             }
         }
     }
