@@ -99,8 +99,8 @@ public final class PictureSelector {
      *
      * @return
      */
-    public PictureSelectionModel openPreview() {
-        return new PictureSelectionModel(this);
+    public PictureSelectionPreviewModel openPreview() {
+        return new PictureSelectionPreviewModel(this);
     }
 
     /**

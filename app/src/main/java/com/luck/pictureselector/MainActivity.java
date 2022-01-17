@@ -46,6 +46,7 @@ import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.basic.IBridgePictureBehavior;
 import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.basic.PictureSelectionModel;
+import com.luck.picture.lib.basic.PictureSelectionSystemModel;
 import com.luck.picture.lib.basic.PictureSelector;
 import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PictureConfig;
@@ -130,8 +131,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             cb_mode, cb_hide, cb_crop_circular, cb_crop_use_bitmap, cb_styleCrop, cb_showCropGrid,
             cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
             cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox, cb_only_dir,
-            cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo
-            ,cb_system_album;
+            cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo, cb_system_album;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isUpward;
     private boolean needScaleBig = true;
@@ -238,8 +238,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         int startIndex = systemTips.indexOf(systemHigh);
         int endOf = startIndex + systemHigh.length();
         SpannableStringBuilder builder = new SpannableStringBuilder(systemTips);
-        builder.setSpan(new AbsoluteSizeSpan(DensityUtil.dip2px(getContext(),12)),startIndex,endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-        builder.setSpan(new ForegroundColorSpan(0xFFCC0000),startIndex,endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        builder.setSpan(new AbsoluteSizeSpan(DensityUtil.dip2px(getContext(), 12)), startIndex, endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        builder.setSpan(new ForegroundColorSpan(0xFFCC0000), startIndex, endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         cb_system_album.setText(builder);
         cb_original.setOnCheckedChangeListener((buttonView, isChecked) ->
                 tv_original_tips.setVisibility(isChecked ? View.VISIBLE : View.GONE));
@@ -265,7 +265,6 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setSelectorUIStyle(selectorStyle)
                                 .setLanguage(language)
                                 .isPreviewFullScreenMode(cb_preview_full.isChecked())
-                                .isPreviewZoomEffect(cb_preview_scale.isChecked())
                                 .setExternalPreviewEventListener(new OnExternalPreviewEventListener() {
                                     @Override
                                     public void onPreviewDelete(int position) {
@@ -288,48 +287,60 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 boolean mode = cb_mode.isChecked();
                 PictureSelectionModel model;
                 if (mode) {
-                    // 进入相册
-                    model = PictureSelector.create(getContext())
-                            .openGallery(chooseMode)
-                            .setSelectorUIStyle(selectorStyle)
-                            .setImageEngine(GlideEngine.createGlideEngine())
-                            .setCropEngine(getCropEngine())
-                            .setCompressEngine(getCompressEngine())
-                            .setSandboxFileEngine(new MeSandboxFileEngine())
-                            .setCameraInterceptListener(getCustomCameraEvent())
-                            .setSelectLimitTipsListener(new MeOnSelectLimitTipsListener())
-                            .setEditMediaInterceptListener(getCustomEditMediaEvent())
-                            //.setExtendLoaderEngine(getExtendLoaderEngine())
-                            .setInjectLayoutResourceListener(getInjectLayoutResource())
-                            .setSelectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
-                            .setLanguage(language)
-                            .setOutputCameraDir(chooseMode == SelectMimeType.ofAudio()
-                                    ? getSandboxAudioOutputPath() : getSandboxCameraOutputPath())
-                            .setOutputAudioDir(chooseMode == SelectMimeType.ofAudio()
-                                    ? getSandboxAudioOutputPath() : getSandboxCameraOutputPath())
-                            .setQuerySandboxDir(chooseMode == SelectMimeType.ofAudio()
-                                    ? getSandboxAudioOutputPath() : getSandboxCameraOutputPath())
-                            .isDisplayTimeAxis(cb_time_axis.isChecked())
-                            .isOnlyObtainSandboxDir(cb_only_dir.isChecked())
-                            .isPageStrategy(cbPage.isChecked())
-                            .isOriginalControl(cb_original.isChecked())
-                            .isDisplayCamera(cb_isCamera.isChecked())
-                            .isOpenClickSound(cb_voice.isChecked())
-                            //.setOutputCameraImageFileName("luck.jpeg")
-                            //.setOutputCameraVideoFileName("luck.mp4")
-                            .isWithSelectVideoImage(cb_WithImageVideo.isChecked())
-                            .isPreviewFullScreenMode(cb_preview_full.isChecked())
-                            .isPreviewZoomEffect(cb_preview_scale.isChecked())
-                            .isPreviewImage(cb_preview_img.isChecked())
-                            .isPreviewVideo(cb_preview_video.isChecked())
-                            .isPreviewAudio(cb_preview_audio.isChecked())
-                            //.setQueryOnlyMimeType(PictureMimeType.ofGIF())
-                            .isMaxSelectEnabledMask(cbEnabledMask.isChecked())
-                            .isDirectReturnSingle(cb_single_back.isChecked())
-                            .setMaxSelectNum(maxSelectNum)
-                            .setRecyclerAnimationMode(animationMode)
-                            .isGif(cb_isGif.isChecked())
-                            .setSelectedData(mAdapter.getData());
+                    // 进入系统相册
+                    if (cb_system_album.isChecked()) {
+                        PictureSelectionSystemModel systemGalleryMode = PictureSelector.create(getContext())
+                                .openSystemGallery(chooseMode)
+                                .setSelectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
+                                .setCompressEngine(getCompressEngine())
+                                .setCropEngine(getCropEngine())
+                                .setSandboxFileEngine(new MeSandboxFileEngine());
+                        forSystemResult(systemGalleryMode);
+                    } else {
+                        // 进入相册
+                        model = PictureSelector.create(getContext())
+                                .openGallery(chooseMode)
+                                .setSelectorUIStyle(selectorStyle)
+                                .setImageEngine(GlideEngine.createGlideEngine())
+                                .setCropEngine(getCropEngine())
+                                .setCompressEngine(getCompressEngine())
+                                .setSandboxFileEngine(new MeSandboxFileEngine())
+                                .setCameraInterceptListener(getCustomCameraEvent())
+                                .setSelectLimitTipsListener(new MeOnSelectLimitTipsListener())
+                                .setEditMediaInterceptListener(getCustomEditMediaEvent())
+                                //.setExtendLoaderEngine(getExtendLoaderEngine())
+                                .setInjectLayoutResourceListener(getInjectLayoutResource())
+                                .setSelectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
+                                .setLanguage(language)
+                                .setOutputCameraDir(chooseMode == SelectMimeType.ofAudio()
+                                        ? getSandboxAudioOutputPath() : getSandboxCameraOutputPath())
+                                .setOutputAudioDir(chooseMode == SelectMimeType.ofAudio()
+                                        ? getSandboxAudioOutputPath() : getSandboxCameraOutputPath())
+                                .setQuerySandboxDir(chooseMode == SelectMimeType.ofAudio()
+                                        ? getSandboxAudioOutputPath() : getSandboxCameraOutputPath())
+                                .isDisplayTimeAxis(cb_time_axis.isChecked())
+                                .isOnlyObtainSandboxDir(cb_only_dir.isChecked())
+                                .isPageStrategy(cbPage.isChecked())
+                                .isOriginalControl(cb_original.isChecked())
+                                .isDisplayCamera(cb_isCamera.isChecked())
+                                .isOpenClickSound(cb_voice.isChecked())
+                                //.setOutputCameraImageFileName("luck.jpeg")
+                                //.setOutputCameraVideoFileName("luck.mp4")
+                                .isWithSelectVideoImage(cb_WithImageVideo.isChecked())
+                                .isPreviewFullScreenMode(cb_preview_full.isChecked())
+                                .isPreviewZoomEffect(cb_preview_scale.isChecked())
+                                .isPreviewImage(cb_preview_img.isChecked())
+                                .isPreviewVideo(cb_preview_video.isChecked())
+                                .isPreviewAudio(cb_preview_audio.isChecked())
+                                //.setQueryOnlyMimeType(PictureMimeType.ofGIF())
+                                .isMaxSelectEnabledMask(cbEnabledMask.isChecked())
+                                .isDirectReturnSingle(cb_single_back.isChecked())
+                                .setMaxSelectNum(maxSelectNum)
+                                .setRecyclerAnimationMode(animationMode)
+                                .isGif(cb_isGif.isChecked())
+                                .setSelectedData(mAdapter.getData());
+                        forResult(model);
+                    }
                 } else {
                     // 单独拍照
                     model = PictureSelector.create(MainActivity.this)
@@ -339,8 +350,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                             .setCompressEngine(getCompressEngine())
                             .setSandboxFileEngine(new MeSandboxFileEngine())
                             .isOriginalControl(cb_original.isChecked());
+                    forResult(model);
                 }
-                forResult(model);
             }
         });
 
@@ -513,25 +524,25 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
 //        clearCache();
     }
 
-    private void forResult(PictureSelectionModel model) {
-        if (cb_system_album.isChecked()) {
-            if (resultMode == CALLBACK_RESULT) {
-                model.forSystemResult(new MeOnResultCallbackListener());
-            } else {
-                model.forSystemResult();
-            }
+    private void forSystemResult(PictureSelectionSystemModel model) {
+        if (resultMode == CALLBACK_RESULT) {
+            model.forSystemResult(new MeOnResultCallbackListener());
         } else {
-            switch (resultMode) {
-                case ACTIVITY_RESULT:
-                    model.forResult(PictureConfig.CHOOSE_REQUEST);
-                    break;
-                case CALLBACK_RESULT:
-                    model.forResult(new MeOnResultCallbackListener());
-                    break;
-                default:
-                    model.forResult(launcherResult);
-                    break;
-            }
+            model.forSystemResult();
+        }
+    }
+
+    private void forResult(PictureSelectionModel model) {
+        switch (resultMode) {
+            case ACTIVITY_RESULT:
+                model.forResult(PictureConfig.CHOOSE_REQUEST);
+                break;
+            case CALLBACK_RESULT:
+                model.forResult(new MeOnResultCallbackListener());
+                break;
+            default:
+                model.forResult(launcherResult);
+                break;
         }
     }
 

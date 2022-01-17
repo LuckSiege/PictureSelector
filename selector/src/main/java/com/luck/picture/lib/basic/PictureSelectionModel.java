@@ -13,8 +13,6 @@ import androidx.fragment.app.FragmentManager;
 
 import com.luck.picture.lib.PictureOnlyCameraFragment;
 import com.luck.picture.lib.PictureSelectorFragment;
-import com.luck.picture.lib.PictureSelectorPreviewFragment;
-import com.luck.picture.lib.PictureSelectorSystemFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.config.PictureConfig;
@@ -31,7 +29,6 @@ import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
-import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
@@ -42,7 +39,6 @@ import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.manager.SelectedManager;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
-import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.DoubleUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 
@@ -56,14 +52,9 @@ import java.util.List;
  * @describe：PictureSelectionModel
  */
 
-public class PictureSelectionModel {
+public final class PictureSelectionModel {
     private final PictureSelectionConfig selectionConfig;
     private final PictureSelector selector;
-
-    public PictureSelectionModel(PictureSelector selector) {
-        this.selector = selector;
-        this.selectionConfig = PictureSelectionConfig.getCleanInstance();
-    }
 
     public PictureSelectionModel(PictureSelector selector, int chooseMode) {
         this.selector = selector;
@@ -218,16 +209,6 @@ public class PictureSelectionModel {
         return this;
     }
 
-    /**
-     * Intercept external preview click events, and users can implement their own preview framework
-     *
-     * @param listener
-     * @return
-     */
-    public PictureSelectionModel setExternalPreviewEventListener(OnExternalPreviewEventListener listener) {
-        PictureSelectionConfig.onExternalPreviewEventListener = listener;
-        return this;
-    }
 
     /**
      * Intercept custom inject layout events, Users can implement their own layout
@@ -946,15 +927,6 @@ public class PictureSelectionModel {
         return this;
     }
 
-    /**
-     * @param isHidePreviewDownload Previews do not show downloads
-     * @return
-     */
-    public PictureSelectionModel isHidePreviewDownload(boolean isHidePreviewDownload) {
-        selectionConfig.isHidePreviewDownload = isHidePreviewDownload;
-        return this;
-    }
-
 
     /**
      * @param isClickSound Whether to open click voice
@@ -1007,73 +979,6 @@ public class PictureSelectionModel {
     public PictureSelectionModel setRecyclerAnimationMode(int animationMode) {
         selectionConfig.animationMode = animationMode;
         return this;
-    }
-
-    /**
-     * preview LocalMedia
-     *
-     * @param currentPosition current position
-     * @param isDisplayDelete if visible delete
-     * @param list            preview data
-     */
-    public void startFragmentPreview(int currentPosition, boolean isDisplayDelete, List<LocalMedia> list) {
-        if (!DoubleUtils.isFastDoubleClick()) {
-            Activity activity = selector.getActivity();
-            if (activity == null) {
-                throw new NullPointerException("Activity cannot be null");
-            }
-            if (PictureSelectionConfig.imageEngine == null) {
-                throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
-            }
-            if (list == null || list.size() == 0) {
-                throw new NullPointerException("preview data is null");
-            }
-            FragmentManager fragmentManager = null;
-            if (activity instanceof AppCompatActivity) {
-                fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
-            } else if (activity instanceof FragmentActivity) {
-                fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
-            }
-            if (fragmentManager == null) {
-                throw new NullPointerException("FragmentManager cannot be null");
-            }
-            if (ActivityCompatHelper.checkFragmentNonExits((FragmentActivity) activity, PictureSelectorPreviewFragment.TAG)) {
-                PictureSelectorPreviewFragment fragment = PictureSelectorPreviewFragment.newInstance();
-                ArrayList<LocalMedia> previewData = new ArrayList<>(list);
-                fragment.setExternalPreviewData(currentPosition, previewData.size(), previewData, isDisplayDelete);
-                FragmentInjectManager.injectSystemRoomFragment(fragmentManager, PictureSelectorPreviewFragment.TAG, fragment);
-            }
-        }
-    }
-
-    /**
-     * preview LocalMedia
-     *
-     * @param currentPosition current position
-     * @param isDisplayDelete if visible delete
-     * @param list            preview data
-     */
-    public void startActivityPreview(int currentPosition, boolean isDisplayDelete, ArrayList<LocalMedia> list) {
-        if (!DoubleUtils.isFastDoubleClick()) {
-            Activity activity = selector.getActivity();
-            if (activity == null) {
-                throw new NullPointerException("Activity cannot be null");
-            }
-            if (PictureSelectionConfig.imageEngine == null) {
-                throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
-            }
-            if (list == null || list.size() == 0) {
-                throw new NullPointerException("preview data is null");
-            }
-            Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
-            SelectedManager.addSelectedPreviewResult(list);
-            intent.putExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW, true);
-            intent.putExtra(PictureConfig.EXTRA_PREVIEW_CURRENT_POSITION, currentPosition);
-            intent.putExtra(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, isDisplayDelete);
-            activity.startActivity(intent);
-            PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
-            activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
-        }
     }
 
     /**
@@ -1279,87 +1184,5 @@ public class PictureSelectionModel {
                 .addToBackStack(selectorFragment.getFragmentTag())
                 .commitAllowingStateLoss();
         return selectorFragment;
-    }
-
-
-    /**
-     * Call the system library to obtain resources
-     * <p>
-     * Using the system gallery library, some API functions will not be supported
-     * </p>
-     *
-     * @param call
-     */
-    public void forSystemResult(OnResultCallbackListener<LocalMedia> call) {
-        if (!DoubleUtils.isFastDoubleClick()) {
-            Activity activity = selector.getActivity();
-            if (activity == null) {
-                throw new NullPointerException("Activity cannot be null");
-            }
-            if (call == null) {
-                throw new NullPointerException("OnResultCallbackListener cannot be null");
-            }
-            PictureSelectionConfig.onResultCallListener = call;
-            selectionConfig.isResultListenerBack = true;
-            selectionConfig.isActivityResultBack = false;
-            selectionConfig.isPreviewFullScreenMode = false;
-            selectionConfig.isPreviewZoomEffect = false;
-            FragmentManager fragmentManager = null;
-            if (activity instanceof AppCompatActivity) {
-                fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
-            } else if (activity instanceof FragmentActivity) {
-                fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
-            }
-            if (fragmentManager == null) {
-                throw new NullPointerException("FragmentManager cannot be null");
-            }
-            Fragment fragment = fragmentManager.findFragmentByTag(PictureSelectorSystemFragment.TAG);
-            if (fragment != null) {
-                fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
-            }
-            FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
-                    PictureSelectorSystemFragment.TAG, PictureSelectorSystemFragment.newInstance());
-        }
-    }
-
-
-    /**
-     * Call the system library to obtain resources
-     * <p>
-     * Using the system gallery library, some API functions will not be supported
-     * </p>
-     */
-    public void forSystemResult() {
-        if (!DoubleUtils.isFastDoubleClick()) {
-            Activity activity = selector.getActivity();
-            if (activity == null) {
-                throw new NullPointerException("Activity cannot be null");
-            }
-            if (!(activity instanceof IBridgePictureBehavior)) {
-                throw new NullPointerException("Use only forSystemResult();," +
-                        "Activity or Fragment interface needs to be implemented " + IBridgePictureBehavior.class);
-            }
-            selectionConfig.isActivityResultBack = true;
-            PictureSelectionConfig.onResultCallListener = null;
-            selectionConfig.isResultListenerBack = false;
-            selectionConfig.isPreviewFullScreenMode = false;
-            selectionConfig.isPreviewZoomEffect = false;
-
-            FragmentManager fragmentManager = null;
-            if (activity instanceof AppCompatActivity) {
-                fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
-            } else if (activity instanceof FragmentActivity) {
-                fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
-            }
-            if (fragmentManager == null) {
-                throw new NullPointerException("FragmentManager cannot be null");
-            }
-            Fragment fragment = fragmentManager.findFragmentByTag(PictureSelectorSystemFragment.TAG);
-            if (fragment != null) {
-                fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
-            }
-            FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
-                    PictureSelectorSystemFragment.TAG, PictureSelectorSystemFragment.newInstance());
-        }
     }
 }

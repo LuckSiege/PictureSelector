@@ -1200,6 +1200,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
         @Override
         public void onLongPressDownload(LocalMedia media) {
+            if (config.isHidePreviewDownload) {
+                return;
+            }
             if (isExternalPreview) {
                 onExternalLongPressDownload(media);
             }

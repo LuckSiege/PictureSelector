@@ -9,23 +9,24 @@ import androidx.fragment.app.FragmentManager;
 
 import com.luck.picture.lib.PictureSelectorSystemFragment;
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectModeConfig;
+import com.luck.picture.lib.engine.CompressEngine;
+import com.luck.picture.lib.engine.CropEngine;
+import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.utils.DoubleUtils;
+import com.luck.picture.lib.utils.SdkVersionUtils;
 
 /**
  * @author：luck
  * @date：2022/1/17 5:52 下午
  * @describe：PictureSelectionSystemModel
  */
-public class PictureSelectionSystemModel {
+public final class PictureSelectionSystemModel {
     private final PictureSelectionConfig selectionConfig;
     private final PictureSelector selector;
-
-    public PictureSelectionSystemModel(PictureSelector selector) {
-        this.selector = selector;
-        this.selectionConfig = PictureSelectionConfig.getCleanInstance();
-    }
 
     public PictureSelectionSystemModel(PictureSelector selector, int chooseMode) {
         this.selector = selector;
@@ -33,6 +34,76 @@ public class PictureSelectionSystemModel {
         selectionConfig.chooseMode = chooseMode;
         selectionConfig.isPreviewFullScreenMode = false;
         selectionConfig.isPreviewZoomEffect = false;
+    }
+
+    /**
+     * @param selectionMode PictureSelector Selection model
+     *                      and {@link SelectModeConfig.MULTIPLE} or {@link SelectModeConfig.SINGLE}
+     *                      <p>
+     *                      Use {@link SelectModeConfig}
+     *                      </p>
+     * @return
+     */
+    public PictureSelectionSystemModel setSelectionMode(int selectionMode) {
+        selectionConfig.selectionMode = selectionMode;
+        return this;
+    }
+
+
+    /**
+     * Image Compress the engine
+     *
+     * @param engine Image Compress the engine
+     * @return
+     */
+    public PictureSelectionSystemModel setCompressEngine(CompressEngine engine) {
+        if (PictureSelectionConfig.compressEngine != engine) {
+            PictureSelectionConfig.compressEngine = engine;
+            selectionConfig.isCompressEngine = true;
+        } else {
+            selectionConfig.isCompressEngine = false;
+        }
+        return this;
+    }
+
+    /**
+     * Image Crop the engine
+     *
+     * @param engine Image Crop the engine
+     * @return
+     */
+    public PictureSelectionSystemModel setCropEngine(CropEngine engine) {
+        if (PictureSelectionConfig.cropEngine != engine) {
+            PictureSelectionConfig.cropEngine = engine;
+        }
+        return this;
+    }
+
+    /**
+     * App Sandbox file path transform
+     *
+     * @param engine App Sandbox path transform
+     * @return
+     */
+    public PictureSelectionSystemModel setSandboxFileEngine(SandboxFileEngine engine) {
+        if (SdkVersionUtils.isQ() && PictureSelectionConfig.sandboxFileEngine != engine) {
+            PictureSelectionConfig.sandboxFileEngine = engine;
+            selectionConfig.isSandboxFileEngine = true;
+        } else {
+            selectionConfig.isSandboxFileEngine = false;
+        }
+        return this;
+    }
+
+    /**
+     * Custom interception permission processing
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionSystemModel setPermissionsInterceptListener(OnPermissionsInterceptListener listener) {
+        PictureSelectionConfig.onPermissionsEventListener = listener;
+        return this;
     }
 
     /**
@@ -55,8 +126,6 @@ public class PictureSelectionSystemModel {
             PictureSelectionConfig.onResultCallListener = call;
             selectionConfig.isResultListenerBack = true;
             selectionConfig.isActivityResultBack = false;
-            selectionConfig.isPreviewFullScreenMode = false;
-            selectionConfig.isPreviewZoomEffect = false;
             FragmentManager fragmentManager = null;
             if (activity instanceof AppCompatActivity) {
                 fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
@@ -95,8 +164,6 @@ public class PictureSelectionSystemModel {
             selectionConfig.isActivityResultBack = true;
             PictureSelectionConfig.onResultCallListener = null;
             selectionConfig.isResultListenerBack = false;
-            selectionConfig.isPreviewFullScreenMode = false;
-            selectionConfig.isPreviewZoomEffect = false;
 
             FragmentManager fragmentManager = null;
             if (activity instanceof AppCompatActivity) {
