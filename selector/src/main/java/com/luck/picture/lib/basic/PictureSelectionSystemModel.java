@@ -49,6 +49,21 @@ public final class PictureSelectionSystemModel {
         return this;
     }
 
+    /**
+     * Do you need to display the original controller
+     * <p>
+     * It needs to be used with setSandboxFileEngine
+     * {@link LocalMedia .setOriginalPath()}
+     * </p>
+     *
+     * @param isOriginalControl
+     * @return
+     */
+    public PictureSelectionSystemModel isOriginalControl(boolean isOriginalControl) {
+        selectionConfig.isCheckOriginalImage = isOriginalControl;
+        return this;
+    }
+
 
     /**
      * Image Compress the engine

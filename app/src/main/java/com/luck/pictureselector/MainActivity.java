@@ -294,6 +294,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setSelectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
                                 .setCompressEngine(getCompressEngine())
                                 .setCropEngine(getCropEngine())
+                                .isOriginalControl(cb_original.isChecked())
                                 .setSandboxFileEngine(new MeSandboxFileEngine());
                         forSystemResult(systemGalleryMode);
                     } else {

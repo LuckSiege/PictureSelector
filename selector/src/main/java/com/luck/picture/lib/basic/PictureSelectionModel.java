@@ -340,7 +340,7 @@ public final class PictureSelectionModel {
      * Do you need to display the original controller
      * <p>
      * It needs to be used with setSandboxFileEngine
-     * {@link LocalMedia .setSandboxPath()}
+     * {@link LocalMedia .setOriginalPath()}
      * </p>
      *
      * @param isOriginalControl
@@ -348,9 +348,7 @@ public final class PictureSelectionModel {
      */
     public PictureSelectionModel isOriginalControl(boolean isOriginalControl) {
         selectionConfig.isOriginalControl = isOriginalControl;
-        if (selectionConfig.isOnlyCamera && isOriginalControl) {
-            selectionConfig.isCheckOriginalImage = true;
-        }
+        selectionConfig.isCheckOriginalImage = selectionConfig.isOnlyCamera && isOriginalControl;
         return this;
     }
 

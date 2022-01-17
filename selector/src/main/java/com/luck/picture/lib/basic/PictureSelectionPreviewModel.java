@@ -22,7 +22,6 @@ import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.DoubleUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author：luck
@@ -128,7 +127,7 @@ public final class PictureSelectionPreviewModel {
      * @param isDisplayDelete if visible delete
      * @param list            preview data
      */
-    public void startFragmentPreview(int currentPosition, boolean isDisplayDelete, List<LocalMedia> list) {
+    public void startFragmentPreview(int currentPosition, boolean isDisplayDelete, ArrayList<LocalMedia> list) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
             if (activity == null) {
