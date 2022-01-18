@@ -468,7 +468,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     public void sendChangeSubSelectPositionEvent(boolean adapterChange) {
         if (PictureSelectionConfig.selectorStyle.getSelectMainStyle().isPreviewSelectNumberStyle()) {
             if (PictureSelectionConfig.selectorStyle.getSelectMainStyle().isSelectNumberStyle()) {
-                for (int index = 0; index < SelectedManager.getCount(); index++) {
+                for (int index = 0; index < SelectedManager.getSelectCount(); index++) {
                     LocalMedia media = SelectedManager.getSelectedResult().get(index);
                     media.setNum(index + 1);
                 }
@@ -689,7 +689,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             @Override
             public void onClick(View view) {
                 boolean isComplete = true;
-                if (selectMainStyle.isCompleteSelectRelativeTop() && SelectedManager.getCount() == 0) {
+                if (selectMainStyle.isCompleteSelectRelativeTop() && SelectedManager.getSelectCount() == 0) {
                     isComplete = confirmSelect(mData.get(viewPager.getCurrentItem()), false)
                             == SelectedManager.ADD_SUCCESS;
                 }
@@ -826,7 +826,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     }
                 }
             });
-            if (SelectedManager.getCount() > 0) {
+            if (SelectedManager.getSelectCount() > 0) {
                 mGalleryRecycle.setVisibility(View.VISIBLE);
             } else {
                 mGalleryRecycle.setVisibility(View.INVISIBLE);
@@ -998,7 +998,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 mGalleryRecycle.smoothScrollToPosition(mGalleryAdapter.getItemCount() - 1);
             } else {
                 mGalleryAdapter.removeGalleryData(currentMedia);
-                if (SelectedManager.getCount() == 0) {
+                if (SelectedManager.getSelectCount() == 0) {
                     mGalleryRecycle.setVisibility(View.INVISIBLE);
                 }
             }
@@ -1446,7 +1446,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         if (PictureSelectionConfig.selectorStyle.getSelectMainStyle().isPreviewSelectNumberStyle()) {
             if (PictureSelectionConfig.selectorStyle.getSelectMainStyle().isSelectNumberStyle()) {
                 tvSelected.setText("");
-                for (int i = 0; i < SelectedManager.getCount(); i++) {
+                for (int i = 0; i < SelectedManager.getSelectCount(); i++) {
                     LocalMedia media = SelectedManager.getSelectedResult().get(i);
                     if (TextUtils.equals(media.getPath(), currentMedia.getPath())
                             || media.getId() == currentMedia.getId()) {

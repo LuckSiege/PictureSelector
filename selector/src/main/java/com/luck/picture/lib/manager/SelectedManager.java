@@ -33,7 +33,7 @@ public class SelectedManager {
         return selectedResult;
     }
 
-    public static int getCount() {
+    public static int getSelectCount() {
         return selectedResult.size();
     }
 
@@ -42,7 +42,9 @@ public class SelectedManager {
     }
 
     public static synchronized void clearSelectResult() {
-        selectedResult.clear();
+        if (selectedResult.size() > 0) {
+            selectedResult.clear();
+        }
     }
 
     /**
@@ -60,7 +62,9 @@ public class SelectedManager {
     }
 
     public static void clearExternalPreviewData() {
-        selectedPreviewResult.clear();
+        if (selectedPreviewResult.size() > 0) {
+            selectedPreviewResult.clear();
+        }
     }
 
     /**

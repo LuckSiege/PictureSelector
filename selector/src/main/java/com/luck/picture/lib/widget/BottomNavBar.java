@@ -71,7 +71,7 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
                 originalCheckbox.setChecked(config.isCheckOriginalImage);
                 if (bottomNavBarListener != null) {
                     bottomNavBarListener.onCheckOriginalChange();
-                    if (isChecked && SelectedManager.getCount() == 0) {
+                    if (isChecked && SelectedManager.getSelectCount() == 0) {
                         bottomNavBarListener.onFirstCheckOriginalSelectedChange();
                     }
                 }
@@ -188,7 +188,7 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
         calculateFileTotalSize();
         PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
         BottomNavBarStyle bottomBarStyle = selectorStyle.getBottomBarStyle();
-        if (SelectedManager.getCount() > 0) {
+        if (SelectedManager.getSelectCount() > 0) {
             tvPreview.setEnabled(true);
             int previewSelectTextColor = bottomBarStyle.getBottomPreviewSelectTextColor();
             if (StyleUtils.checkStyleValidity(previewSelectTextColor)) {
@@ -199,12 +199,12 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
             String previewSelectText = bottomBarStyle.getBottomPreviewSelectText();
             if (StyleUtils.checkTextValidity(previewSelectText)) {
                 if (StyleUtils.checkTextFormatValidity(previewSelectText)) {
-                    tvPreview.setText(String.format(previewSelectText, SelectedManager.getCount()));
+                    tvPreview.setText(String.format(previewSelectText, SelectedManager.getSelectCount()));
                 } else {
                     tvPreview.setText(previewSelectText);
                 }
             } else {
-                tvPreview.setText(getContext().getString(R.string.ps_preview_num, SelectedManager.getCount()));
+                tvPreview.setText(getContext().getString(R.string.ps_preview_num, SelectedManager.getSelectCount()));
             }
         } else {
             tvPreview.setEnabled(false);
@@ -229,7 +229,7 @@ public class BottomNavBar extends RelativeLayout implements View.OnClickListener
     private void calculateFileTotalSize() {
         if (config.isOriginalControl) {
             long totalSize = 0;
-            for (int i = 0; i < SelectedManager.getCount(); i++) {
+            for (int i = 0; i < SelectedManager.getSelectCount(); i++) {
                 LocalMedia media = SelectedManager.getSelectedResult().get(i);
                 totalSize += media.getSize();
             }

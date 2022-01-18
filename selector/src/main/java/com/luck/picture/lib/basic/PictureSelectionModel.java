@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
-import com.luck.picture.lib.PictureOnlyCameraFragment;
 import com.luck.picture.lib.PictureSelectorFragment;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.animators.AnimationType;
@@ -61,15 +60,6 @@ public final class PictureSelectionModel {
         selectionConfig = PictureSelectionConfig.getCleanInstance();
         selectionConfig.chooseMode = chooseMode;
         setMaxVideoSelectNum(selectionConfig.maxVideoSelectNum);
-    }
-
-    public PictureSelectionModel(PictureSelector selector, int chooseMode, boolean isOnlyCamera) {
-        this.selector = selector;
-        selectionConfig = PictureSelectionConfig.getCleanInstance();
-        selectionConfig.isOnlyCamera = isOnlyCamera;
-        selectionConfig.chooseMode = chooseMode;
-        selectionConfig.isPreviewFullScreenMode = false;
-        selectionConfig.isPreviewZoomEffect = false;
     }
 
     /**
@@ -348,7 +338,6 @@ public final class PictureSelectionModel {
      */
     public PictureSelectionModel isOriginalControl(boolean isOriginalControl) {
         selectionConfig.isOriginalControl = isOriginalControl;
-        selectionConfig.isCheckOriginalImage = selectionConfig.isOnlyCamera && isOriginalControl;
         return this;
     }
 
@@ -757,11 +746,7 @@ public final class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel isDisplayTimeAxis(boolean isDisplayTimeAxis) {
-        if (selectionConfig.isOnlyCamera) {
-            selectionConfig.isDisplayTimeAxis = false;
-        } else {
-            selectionConfig.isDisplayTimeAxis = isDisplayTimeAxis;
-        }
+        selectionConfig.isDisplayTimeAxis = isDisplayTimeAxis;
         return this;
     }
 
@@ -873,11 +858,7 @@ public final class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel isPreviewFullScreenMode(boolean isFullScreenModel) {
-        if (selectionConfig.isOnlyCamera) {
-            selectionConfig.isPreviewFullScreenMode = false;
-        } else {
-            selectionConfig.isPreviewFullScreenMode = isFullScreenModel;
-        }
+        selectionConfig.isPreviewFullScreenMode = isFullScreenModel;
         return this;
     }
 
@@ -887,11 +868,7 @@ public final class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel isPreviewZoomEffect(boolean isPreviewZoomEffect) {
-        if (selectionConfig.isOnlyCamera) {
-            selectionConfig.isPreviewZoomEffect = false;
-        } else {
-            selectionConfig.isPreviewZoomEffect = isPreviewZoomEffect;
-        }
+        selectionConfig.isPreviewZoomEffect = isPreviewZoomEffect;
         return this;
     }
 
@@ -931,7 +908,7 @@ public final class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel isOpenClickSound(boolean isClickSound) {
-        selectionConfig.isOpenClickSound = !selectionConfig.isOnlyCamera && isClickSound;
+        selectionConfig.isOpenClickSound = isClickSound;
         return this;
     }
 
@@ -997,31 +974,13 @@ public final class PictureSelectionModel {
             selectionConfig.isResultListenerBack = true;
             selectionConfig.isActivityResultBack = false;
             PictureSelectionConfig.onResultCallListener = call;
-            if (selectionConfig.isOnlyCamera) {
-                FragmentManager fragmentManager = null;
-                if (activity instanceof AppCompatActivity) {
-                    fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
-                } else if (activity instanceof FragmentActivity) {
-                    fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
-                }
-                if (fragmentManager == null) {
-                    throw new NullPointerException("FragmentManager cannot be null");
-                }
-                Fragment fragment = fragmentManager.findFragmentByTag(PictureOnlyCameraFragment.TAG);
-                if (fragment != null) {
-                    fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
-                }
-                FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
-                        PictureOnlyCameraFragment.TAG, PictureOnlyCameraFragment.newInstance());
-            } else {
-                if (PictureSelectionConfig.imageEngine == null) {
-                    throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
-                }
-                Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
-                activity.startActivity(intent);
-                PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
-                activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
+            if (PictureSelectionConfig.imageEngine == null) {
+                throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
             }
+            Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
+            activity.startActivity(intent);
+            PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
+            activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
         }
     }
 
@@ -1039,40 +998,18 @@ public final class PictureSelectionModel {
             }
             selectionConfig.isResultListenerBack = false;
             selectionConfig.isActivityResultBack = true;
-            if (selectionConfig.isOnlyCamera) {
-                FragmentManager fragmentManager = null;
-                if (activity instanceof AppCompatActivity) {
-                    fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
-                } else if (activity instanceof FragmentActivity) {
-                    fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
-                }
-                if (fragmentManager == null) {
-                    throw new NullPointerException("FragmentManager cannot be null");
-                }
-                if (!(activity instanceof IBridgePictureBehavior)) {
-                    throw new NullPointerException("Use only camera openCamera mode," +
-                            "Activity or Fragment interface needs to be implemented " + IBridgePictureBehavior.class);
-                }
-                Fragment fragment = fragmentManager.findFragmentByTag(PictureOnlyCameraFragment.TAG);
-                if (fragment != null) {
-                    fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
-                }
-                FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
-                        PictureOnlyCameraFragment.TAG, PictureOnlyCameraFragment.newInstance());
-            } else {
-                if (PictureSelectionConfig.imageEngine == null) {
-                    throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
-                }
-                Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
-                Fragment fragment = selector.getFragment();
-                if (fragment != null) {
-                    fragment.startActivityForResult(intent, requestCode);
-                } else {
-                    activity.startActivityForResult(intent, requestCode);
-                }
-                PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
-                activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
+            if (PictureSelectionConfig.imageEngine == null) {
+                throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
             }
+            Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
+            Fragment fragment = selector.getFragment();
+            if (fragment != null) {
+                fragment.startActivityForResult(intent, requestCode);
+            } else {
+                activity.startActivityForResult(intent, requestCode);
+            }
+            PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
+            activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
         }
     }
 
@@ -1093,35 +1030,13 @@ public final class PictureSelectionModel {
             }
             selectionConfig.isResultListenerBack = false;
             selectionConfig.isActivityResultBack = true;
-            if (selectionConfig.isOnlyCamera) {
-                FragmentManager fragmentManager = null;
-                if (activity instanceof AppCompatActivity) {
-                    fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
-                } else if (activity instanceof FragmentActivity) {
-                    fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
-                }
-                if (fragmentManager == null) {
-                    throw new NullPointerException("FragmentManager cannot be null");
-                }
-                if (!(activity instanceof IBridgePictureBehavior)) {
-                    throw new NullPointerException("Use only camera openCamera mode," +
-                            "Activity or Fragment interface needs to be implemented " + IBridgePictureBehavior.class);
-                }
-                Fragment fragment = fragmentManager.findFragmentByTag(PictureOnlyCameraFragment.TAG);
-                if (fragment != null) {
-                    fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
-                }
-                FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
-                        PictureOnlyCameraFragment.TAG, PictureOnlyCameraFragment.newInstance());
-            } else {
-                if (PictureSelectionConfig.imageEngine == null) {
-                    throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
-                }
-                Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
-                launcher.launch(intent);
-                PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
-                activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
+            if (PictureSelectionConfig.imageEngine == null) {
+                throw new NullPointerException("imageEngine is null,Please implement ImageEngine");
             }
+            Intent intent = new Intent(activity, PictureSelectorSupporterActivity.class);
+            launcher.launch(intent);
+            PictureWindowAnimationStyle windowAnimationStyle = PictureSelectionConfig.selectorStyle.getWindowAnimationStyle();
+            activity.overridePendingTransition(windowAnimationStyle.activityEnterAnimation, R.anim.ps_anim_fade_in);
         }
     }
 

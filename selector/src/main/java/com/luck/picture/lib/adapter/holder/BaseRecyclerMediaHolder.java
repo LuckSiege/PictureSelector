@@ -190,17 +190,17 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
      */
     private void dispatchHandleMask(LocalMedia media) {
         boolean isEnabledMask = false;
-        if (SelectedManager.getCount() > 0 && !SelectedManager.getSelectedResult().contains(media)) {
+        if (SelectedManager.getSelectCount() > 0 && !SelectedManager.getSelectedResult().contains(media)) {
             if (config.isWithVideoImage) {
-                isEnabledMask = SelectedManager.getCount() == config.maxSelectNum;
+                isEnabledMask = SelectedManager.getSelectCount() == config.maxSelectNum;
             } else {
                 if (PictureMimeType.isHasVideo(SelectedManager.getTopResultMimeType())) {
                     int maxSelectNum = config.maxVideoSelectNum > 0
                             ? config.maxVideoSelectNum : config.maxSelectNum;
-                    isEnabledMask = SelectedManager.getCount() == maxSelectNum
+                    isEnabledMask = SelectedManager.getSelectCount() == maxSelectNum
                             || PictureMimeType.isHasImage(media.getMimeType());
                 } else {
-                    isEnabledMask = SelectedManager.getCount() == config.maxSelectNum
+                    isEnabledMask = SelectedManager.getSelectCount() == config.maxSelectNum
                             || PictureMimeType.isHasVideo(media.getMimeType());
                 }
             }
@@ -254,7 +254,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
      */
     private void notifySelectNumberStyle(LocalMedia currentMedia) {
         tvCheck.setText("");
-        for (int i = 0; i < SelectedManager.getCount(); i++) {
+        for (int i = 0; i < SelectedManager.getSelectCount(); i++) {
             LocalMedia media = SelectedManager.getSelectedResult().get(i);
             if (TextUtils.equals(media.getPath(), currentMedia.getPath())
                     || media.getId() == currentMedia.getId()) {

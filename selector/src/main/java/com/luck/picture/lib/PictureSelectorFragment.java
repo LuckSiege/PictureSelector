@@ -162,7 +162,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
     @Override
     public void sendChangeSubSelectPositionEvent(boolean adapterChange) {
         if (PictureSelectionConfig.selectorStyle.getSelectMainStyle().isSelectNumberStyle()) {
-            for (int index = 0; index < SelectedManager.getCount(); index++) {
+            for (int index = 0; index < SelectedManager.getSelectCount(); index++) {
                 LocalMedia media = SelectedManager.getSelectedResult().get(index);
                 media.setNum(index + 1);
                 if (adapterChange) {
@@ -187,21 +187,21 @@ public class PictureSelectorFragment extends PictureCommonFragment
         boolean isNotifyAll = false;
         if (config.isMaxSelectEnabledMask && config.selectionMode == SelectModeConfig.MULTIPLE) {
             if (config.isWithVideoImage) {
-                isNotifyAll = SelectedManager.getCount() == config.maxSelectNum
-                        || (!isAddRemove && SelectedManager.getCount() == config.maxSelectNum - 1);
+                isNotifyAll = SelectedManager.getSelectCount() == config.maxSelectNum
+                        || (!isAddRemove && SelectedManager.getSelectCount() == config.maxSelectNum - 1);
             } else {
-                if (SelectedManager.getCount() == 0 || (isAddRemove && SelectedManager.getCount() == 1)) {
+                if (SelectedManager.getSelectCount() == 0 || (isAddRemove && SelectedManager.getSelectCount() == 1)) {
                     // 首次添加或者选择数量变为0了，都notifyDataSetChanged
                     isNotifyAll = true;
                 } else {
                     if (PictureMimeType.isHasVideo(SelectedManager.getTopResultMimeType())) {
                         int maxSelectNum = config.maxVideoSelectNum > 0
                                 ? config.maxVideoSelectNum : config.maxSelectNum;
-                        isNotifyAll = SelectedManager.getCount() == maxSelectNum
-                                || (!isAddRemove && SelectedManager.getCount() == maxSelectNum - 1);
+                        isNotifyAll = SelectedManager.getSelectCount() == maxSelectNum
+                                || (!isAddRemove && SelectedManager.getSelectCount() == maxSelectNum - 1);
                     } else {
-                        isNotifyAll = SelectedManager.getCount() == config.maxSelectNum
-                                || (!isAddRemove && SelectedManager.getCount() == config.maxSelectNum - 1);
+                        isNotifyAll = SelectedManager.getSelectCount() == config.maxSelectNum
+                                || (!isAddRemove && SelectedManager.getSelectCount() == config.maxSelectNum - 1);
                     }
                 }
             }
@@ -725,8 +725,10 @@ public class PictureSelectorFragment extends PictureCommonFragment
             public void onItemClick(View selectedView, int position, LocalMedia media) {
                 if (config.selectionMode == SelectModeConfig.SINGLE && config.isDirectReturnSingle) {
                     SelectedManager.clearSelectResult();
-                    SelectedManager.addSelectResult(media);
-                    dispatchTransformResult();
+                    int selectResultCode = confirmSelect(media, false);
+                    if (selectResultCode == SelectedManager.ADD_SUCCESS) {
+                        dispatchTransformResult();
+                    }
                 } else {
                     if (DoubleUtils.isFastDoubleClick()) {
                         return;
@@ -943,8 +945,10 @@ public class PictureSelectorFragment extends PictureCommonFragment
         }
         if (config.selectionMode == SelectModeConfig.SINGLE && config.isDirectReturnSingle) {
             SelectedManager.clearSelectResult();
-            SelectedManager.addSelectResult(media);
-            dispatchTransformResult();
+            int selectResultCode = confirmSelect(media, false);
+            if (selectResultCode == SelectedManager.ADD_SUCCESS) {
+                dispatchTransformResult();
+            }
         } else {
             confirmSelect(media, false);
         }

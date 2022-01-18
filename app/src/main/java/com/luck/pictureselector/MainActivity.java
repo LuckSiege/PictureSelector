@@ -45,6 +45,7 @@ import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.basic.IBridgePictureBehavior;
 import com.luck.picture.lib.basic.PictureCommonFragment;
+import com.luck.picture.lib.basic.PictureSelectionCameraModel;
 import com.luck.picture.lib.basic.PictureSelectionModel;
 import com.luck.picture.lib.basic.PictureSelectionSystemModel;
 import com.luck.picture.lib.basic.PictureSelector;
@@ -233,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             mData.clear();
             mData.addAll(savedInstanceState.getParcelableArrayList("selectorList"));
         }
-        String systemHigh = " (部分api功能将不支持)";
+        String systemHigh = " (仅支持部分api)";
         String systemTips = "使用系统图库" + systemHigh;
         int startIndex = systemTips.indexOf(systemHigh);
         int endOf = startIndex + systemHigh.length();
@@ -285,7 +286,6 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             @Override
             public void openPicture() {
                 boolean mode = cb_mode.isChecked();
-                PictureSelectionModel model;
                 if (mode) {
                     // 进入系统相册
                     if (cb_system_album.isChecked()) {
@@ -299,7 +299,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                         forSystemResult(systemGalleryMode);
                     } else {
                         // 进入相册
-                        model = PictureSelector.create(getContext())
+                        PictureSelectionModel selectionModel = PictureSelector.create(getContext())
                                 .openGallery(chooseMode)
                                 .setSelectorUIStyle(selectorStyle)
                                 .setImageEngine(GlideEngine.createGlideEngine())
@@ -340,18 +340,20 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setRecyclerAnimationMode(animationMode)
                                 .isGif(cb_isGif.isChecked())
                                 .setSelectedData(mAdapter.getData());
-                        forResult(model);
+                        forSelectResult(selectionModel);
                     }
                 } else {
                     // 单独拍照
-                    model = PictureSelector.create(MainActivity.this)
+                    PictureSelectionCameraModel cameraModel = PictureSelector.create(MainActivity.this)
                             .openCamera(chooseMode)
                             .setCameraInterceptListener(getCustomCameraEvent())
                             .setCropEngine(getCropEngine())
                             .setCompressEngine(getCompressEngine())
                             .setSandboxFileEngine(new MeSandboxFileEngine())
-                            .isOriginalControl(cb_original.isChecked());
-                    forResult(model);
+                            .isOriginalControl(cb_original.isChecked())
+                            .setOutputAudioDir(getSandboxAudioOutputPath())
+                            .setSelectedData(mAdapter.getData());;
+                    forOnlyCameraResult(cameraModel);
                 }
             }
         });
@@ -533,7 +535,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         }
     }
 
-    private void forResult(PictureSelectionModel model) {
+    private void forSelectResult(PictureSelectionModel model) {
         switch (resultMode) {
             case ACTIVITY_RESULT:
                 model.forResult(PictureConfig.CHOOSE_REQUEST);
@@ -544,6 +546,14 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             default:
                 model.forResult(launcherResult);
                 break;
+        }
+    }
+
+    private void forOnlyCameraResult(PictureSelectionCameraModel model) {
+        if (resultMode == CALLBACK_RESULT) {
+            model.forResult(new MeOnResultCallbackListener());
+        } else {
+            model.forResult();
         }
     }
 

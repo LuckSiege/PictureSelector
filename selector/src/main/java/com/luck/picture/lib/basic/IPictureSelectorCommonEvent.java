@@ -99,10 +99,11 @@ public interface IPictureSelectorCommonEvent {
      * @param isSelected      资源是否被选中
      * @param curMimeType     选择的资源类型
      * @param selectVideoSize 已选的视频数量
+     * @param fileSize        文件大小
      * @param duration        视频时长
      * @return
      */
-    boolean checkWithMimeTypeValidity(boolean isSelected, String curMimeType, int selectVideoSize, long duration);
+    boolean checkWithMimeTypeValidity(boolean isSelected, String curMimeType, int selectVideoSize, long fileSize, long duration);
 
     /**
      * 验证单一类型模式可选条件
@@ -110,10 +111,11 @@ public interface IPictureSelectorCommonEvent {
      * @param isSelected    资源是否被选中
      * @param curMimeType   选择的资源类型
      * @param existMimeType 已选的资源类型
+     * @param fileSize      文件大小
      * @param duration      视频时长
      * @return
      */
-    boolean checkOnlyMimeTypeValidity(boolean isSelected, String curMimeType, String existMimeType, long duration);
+    boolean checkOnlyMimeTypeValidity(boolean isSelected, String curMimeType, String existMimeType, long fileSize, long duration);
 
     /**
      * 选择结果数据发生改变

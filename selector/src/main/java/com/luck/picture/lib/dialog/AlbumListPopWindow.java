@@ -141,7 +141,7 @@ public class AlbumListPopWindow extends PopupWindow {
             LocalMediaFolder folder = folders.get(i);
             folder.setSelectTag(false);
             mAdapter.notifyItemChanged(i);
-            for (int j = 0; j < SelectedManager.getCount(); j++) {
+            for (int j = 0; j < SelectedManager.getSelectCount(); j++) {
                 LocalMedia media = SelectedManager.getSelectedResult().get(j);
                 if (TextUtils.equals(folder.getFolderName(), media.getParentFolderName())
                         || folder.getBucketId() == PictureConfig.ALL) {

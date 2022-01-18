@@ -65,8 +65,12 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
 
     @Override
     public void dispatchCameraMediaResult(LocalMedia media) {
-        SelectedManager.addSelectResult(media);
-        dispatchTransformResult();
+        int selectResultCode = confirmSelect(media, false);
+        if (selectResultCode == SelectedManager.ADD_SUCCESS) {
+            dispatchTransformResult();
+        } else {
+            onKeyBackFragmentFinish();
+        }
     }
 
     @Override

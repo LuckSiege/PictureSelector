@@ -1,6 +1,7 @@
 package com.luck.picture.lib.widget;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -73,7 +74,7 @@ public class CompleteSelectView extends LinearLayout {
         String selectNormalText = selectMainStyle.getSelectNormalText();
         if (StyleUtils.checkTextValidity(selectNormalText)) {
             if (StyleUtils.checkTextTwoFormatValidity(selectNormalText)) {
-                tvComplete.setText(String.format(selectNormalText, SelectedManager.getCount(), config.maxSelectNum));
+                tvComplete.setText(String.format(selectNormalText, SelectedManager.getSelectCount(), config.maxSelectNum));
             } else {
                 tvComplete.setText(selectNormalText);
             }
@@ -114,7 +115,7 @@ public class CompleteSelectView extends LinearLayout {
     public void setSelectedChange(boolean isPreview) {
         PictureSelectorStyle selectorStyle = PictureSelectionConfig.selectorStyle;
         SelectMainStyle selectMainStyle = selectorStyle.getSelectMainStyle();
-        if (SelectedManager.getCount() > 0) {
+        if (SelectedManager.getSelectCount() > 0) {
             setEnabled(true);
             int selectBackground = selectMainStyle.getSelectBackgroundResources();
             if (StyleUtils.checkStyleValidity(selectBackground)) {
@@ -125,14 +126,13 @@ public class CompleteSelectView extends LinearLayout {
             String selectText = selectMainStyle.getSelectText();
             if (StyleUtils.checkTextValidity(selectText)) {
                 if (StyleUtils.checkTextTwoFormatValidity(selectText)) {
-                    tvComplete.setText(String.format(selectText, SelectedManager.getCount(), config.maxSelectNum));
+                    tvComplete.setText(String.format(selectText, SelectedManager.getSelectCount(), config.maxSelectNum));
                 } else {
                     tvComplete.setText(selectText);
                 }
             } else {
                 tvComplete.setText(getContext().getString(R.string.ps_completed));
             }
-
             int selectTextSize = selectMainStyle.getSelectTextSize();
             if (StyleUtils.checkSizeValidity(selectTextSize)) {
                 tvComplete.setTextSize(selectTextSize);
@@ -144,9 +144,15 @@ public class CompleteSelectView extends LinearLayout {
                 tvComplete.setTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_fa632d));
             }
             if (selectorStyle.getBottomBarStyle().isCompleteCountTips()) {
-                tvSelectNum.setVisibility(VISIBLE);
-                tvSelectNum.setText(ValueOf.toString(SelectedManager.getCount()));
-                tvSelectNum.startAnimation(numberChangeAnimation);
+                if (tvSelectNum.getVisibility() == GONE || tvSelectNum.getVisibility() == INVISIBLE) {
+                    tvSelectNum.setVisibility(VISIBLE);
+                }
+                if (TextUtils.equals(ValueOf.toString(SelectedManager.getSelectCount()), tvSelectNum.getText())) {
+                    // ignore
+                } else {
+                    tvSelectNum.setText(ValueOf.toString(SelectedManager.getSelectCount()));
+                    tvSelectNum.startAnimation(numberChangeAnimation);
+                }
             } else {
                 tvSelectNum.setVisibility(GONE);
             }
@@ -185,7 +191,7 @@ public class CompleteSelectView extends LinearLayout {
             String selectNormalText = selectMainStyle.getSelectNormalText();
             if (StyleUtils.checkTextValidity(selectNormalText)) {
                 if (StyleUtils.checkTextTwoFormatValidity(selectNormalText)) {
-                    tvComplete.setText(String.format(selectNormalText, SelectedManager.getCount(), config.maxSelectNum));
+                    tvComplete.setText(String.format(selectNormalText, SelectedManager.getSelectCount(), config.maxSelectNum));
                 } else {
                     tvComplete.setText(selectNormalText);
                 }

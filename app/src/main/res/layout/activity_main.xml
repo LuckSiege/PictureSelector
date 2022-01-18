@@ -391,7 +391,7 @@
                     android:id="@+id/cb_system_album"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="使用系统图库 (部分api功能将不支持)"
+                    android:text="使用系统图库 (仅支持部分api)"
                     android:gravity="center_vertical"
                     android:textColor="@color/app_color_53575e"
                     android:textSize="14sp" />

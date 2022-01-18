@@ -169,8 +169,12 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
                         } else {
                             LocalMedia media = buildLocalMedia(result.toString());
                             media.setPath(SdkVersionUtils.isQ() ? media.getPath() : media.getRealPath());
-                            SelectedManager.addSelectResult(media);
-                            dispatchTransformResult();
+                            int selectResultCode = confirmSelect(media, false);
+                            if (selectResultCode == SelectedManager.ADD_SUCCESS) {
+                                dispatchTransformResult();
+                            } else {
+                                onKeyBackFragmentFinish();
+                            }
                         }
                     }
                 });
@@ -215,8 +219,12 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
                                 } else {
                                     LocalMedia media = buildLocalMedia(result.toString());
                                     media.setPath(SdkVersionUtils.isQ() ? media.getPath() : media.getRealPath());
-                                    SelectedManager.addSelectResult(media);
-                                    dispatchTransformResult();
+                                    int selectResultCode = confirmSelect(media, false);
+                                    if (selectResultCode == SelectedManager.ADD_SUCCESS) {
+                                        dispatchTransformResult();
+                                    } else {
+                                        onKeyBackFragmentFinish();
+                                    }
                                 }
                             }
 

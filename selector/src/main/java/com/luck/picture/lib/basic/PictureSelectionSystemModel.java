@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.luck.picture.lib.PictureSelectorSystemFragment;
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.engine.CompressEngine;
@@ -16,6 +17,7 @@ import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
+import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
 import com.luck.picture.lib.utils.DoubleUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 
@@ -111,6 +113,58 @@ public final class PictureSelectionSystemModel {
     }
 
     /**
+     * # file size The unit is KB
+     *
+     * @param fileKbSize Filter max file size
+     * @return
+     */
+    public PictureSelectionSystemModel setSelectMaxFileSize(long fileKbSize) {
+        if (fileKbSize >= PictureConfig.MB) {
+            selectionConfig.selectMaxFileSize = fileKbSize;
+        } else {
+            selectionConfig.selectMaxFileSize = fileKbSize * 1024;
+        }
+        return this;
+    }
+
+    /**
+     * # file size The unit is KB
+     *
+     * @param fileKbSize Filter min file size
+     * @return
+     */
+    public PictureSelectionSystemModel setSelectMinFileSize(long fileKbSize) {
+        if (fileKbSize >= PictureConfig.MB) {
+            selectionConfig.selectMinFileSize = fileKbSize;
+        } else {
+            selectionConfig.selectMinFileSize = fileKbSize * 1024;
+        }
+        return this;
+    }
+
+    /**
+     * Select the max number of seconds for video or audio support
+     *
+     * @param maxDurationSecond select video max second
+     * @return
+     */
+    public PictureSelectionSystemModel setSelectMaxDurationSecond(int maxDurationSecond) {
+        selectionConfig.selectMaxDurationSecond = maxDurationSecond * 1000;
+        return this;
+    }
+
+    /**
+     * Select the min number of seconds for video or audio support
+     *
+     * @param minDurationSecond select video min second
+     * @return
+     */
+    public PictureSelectionSystemModel setSelectMinDurationSecond(int minDurationSecond) {
+        selectionConfig.selectMinDurationSecond = minDurationSecond * 1000;
+        return this;
+    }
+
+    /**
      * Custom interception permission processing
      *
      * @param listener
@@ -118,6 +172,17 @@ public final class PictureSelectionSystemModel {
      */
     public PictureSelectionSystemModel setPermissionsInterceptListener(OnPermissionsInterceptListener listener) {
         PictureSelectionConfig.onPermissionsEventListener = listener;
+        return this;
+    }
+
+    /**
+     * Custom limit tips
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionSystemModel setSelectLimitTipsListener(OnSelectLimitTipsListener listener) {
+        PictureSelectionConfig.onSelectLimitTipsListener = listener;
         return this;
     }
 

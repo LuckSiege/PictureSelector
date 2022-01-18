@@ -342,30 +342,26 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     @Override
     public int confirmSelect(LocalMedia currentMedia, boolean isSelected) {
-        if (checkSelectLimit(currentMedia)) {
-            return SelectedManager.INVALID;
-        }
         String curMimeType = currentMedia.getMimeType();
         long curDuration = currentMedia.getDuration();
+        long curFileSize = currentMedia.getSize();
         List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
-        if (config.selectionMode == SelectModeConfig.MULTIPLE) {
-            if (config.isWithVideoImage) {
-                // 共选型模式
-                int selectVideoSize = 0;
-                for (int i = 0; i < selectedResult.size(); i++) {
-                    String mimeType = selectedResult.get(i).getMimeType();
-                    if (PictureMimeType.isHasVideo(mimeType)) {
-                        selectVideoSize++;
-                    }
+        if (config.isWithVideoImage) {
+            // 共选型模式
+            int selectVideoSize = 0;
+            for (int i = 0; i < selectedResult.size(); i++) {
+                String mimeType = selectedResult.get(i).getMimeType();
+                if (PictureMimeType.isHasVideo(mimeType)) {
+                    selectVideoSize++;
                 }
-                if (checkWithMimeTypeValidity(isSelected, curMimeType, selectVideoSize, curDuration)) {
-                    return SelectedManager.INVALID;
-                }
-            } else {
-                // 单一型模式
-                if (checkOnlyMimeTypeValidity(isSelected, curMimeType, SelectedManager.getTopResultMimeType(), curDuration)) {
-                    return SelectedManager.INVALID;
-                }
+            }
+            if (checkWithMimeTypeValidity(isSelected, curMimeType, selectVideoSize, curFileSize, curDuration)) {
+                return SelectedManager.INVALID;
+            }
+        } else {
+            // 单一型模式
+            if (checkOnlyMimeTypeValidity(isSelected, curMimeType, SelectedManager.getTopResultMimeType(), curFileSize, curDuration)) {
+                return SelectedManager.INVALID;
             }
         }
         int resultCode;
@@ -388,59 +384,12 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         return resultCode;
     }
 
-    /**
-     * 验证选择先决条件
-     *
-     * @param currentMedia
-     */
-    private boolean checkSelectLimit(LocalMedia currentMedia) {
-        if (PictureMimeType.isHasVideo(currentMedia.getMimeType()) || PictureMimeType.isHasAudio(currentMedia.getMimeType())) {
-            if (config.selectMaxDurationSecond > 0) {
-                if (currentMedia.getDuration() > config.selectMaxDurationSecond) {
-                    if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
-                        boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
-                                .onSelectLimitTips(getContext(), config,
-                                        SelectLimitType.SELECT_MAX_SECOND_SELECT_LIMIT);
-                        if (isSelectLimit) {
-                            return true;
-                        }
-                    }
-                    int second = config.selectMaxDurationSecond / 1000;
-                    if (PictureMimeType.isHasVideo(currentMedia.getMimeType())) {
-                        RemindDialog.showTipsDialog(getContext(),
-                                getString(R.string.ps_select_video_max_second, second));
-                    } else {
-                        RemindDialog.showTipsDialog(getContext(),
-                                getString(R.string.ps_select_audio_max_second, second));
-                    }
-                    return true;
-                }
-            }
-            if (config.selectMinDurationSecond > 0) {
-                int second = config.selectMinDurationSecond / 1000;
-                if (currentMedia.getDuration() < config.selectMinDurationSecond) {
-                    if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
-                        boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
-                                .onSelectLimitTips(getContext(), config,
-                                        SelectLimitType.SELECT_MIN_SECOND_SELECT_LIMIT);
-                        if (isSelectLimit) {
-                            return true;
-                        }
-                    }
 
-                    if (PictureMimeType.isHasVideo(currentMedia.getMimeType())) {
-                        RemindDialog.showTipsDialog(getContext(),
-                                getString(R.string.ps_select_video_min_second, second));
-                    } else {
-                        RemindDialog.showTipsDialog(getContext(),
-                                getString(R.string.ps_select_audio_min_second, second));
-                    }
-                    return true;
-                }
-            }
-        }
+    @SuppressLint({"StringFormatInvalid", "StringFormatMatches"})
+    @Override
+    public boolean checkWithMimeTypeValidity(boolean isSelected, String curMimeType, int selectVideoSize, long fileSize, long duration) {
         if (config.selectMaxFileSize > 0) {
-            if (currentMedia.getSize() > config.selectMaxFileSize) {
+            if (fileSize > config.selectMaxFileSize) {
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
                             .onSelectLimitTips(getContext(), config,
@@ -449,13 +398,13 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                String fileSize = PictureFileUtils.formatFileSize(config.selectMaxFileSize, 1);
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_max_size, fileSize));
+                String maxFileSize = PictureFileUtils.formatFileSize(config.selectMaxFileSize, 1);
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_max_size, maxFileSize));
                 return true;
             }
         }
         if (config.selectMinFileSize > 0) {
-            if (currentMedia.getSize() < config.selectMinFileSize) {
+            if (fileSize < config.selectMinFileSize) {
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
                             .onSelectLimitTips(getContext(), config,
@@ -464,57 +413,54 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                String fileSize = PictureFileUtils.formatFileSize(config.selectMinFileSize, 1);
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_min_size, fileSize));
+                String minFileSize = PictureFileUtils.formatFileSize(config.selectMinFileSize, 1);
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_min_size, minFileSize));
                 return true;
             }
         }
-        return false;
-    }
 
-    @SuppressLint({"StringFormatInvalid", "StringFormatMatches"})
-    @Override
-    public boolean checkWithMimeTypeValidity(boolean isSelected, String curMimeType, int selectVideoSize, long duration) {
         if (PictureMimeType.isHasVideo(curMimeType)) {
-            if (config.maxVideoSelectNum <= 0) {
-                if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
-                    boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
-                            .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_NOT_WITH_SELECT_LIMIT);
-                    if (isSelectLimit) {
-                        return true;
+            if (config.selectionMode == SelectModeConfig.MULTIPLE) {
+                if (config.maxVideoSelectNum <= 0) {
+                    if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
+                        boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
+                                .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_NOT_WITH_SELECT_LIMIT);
+                        if (isSelectLimit) {
+                            return true;
+                        }
                     }
+                    // 如果视频可选数量是0
+                    RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_rule));
+                    return true;
                 }
-                // 如果视频可选数量是0
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_rule));
-                return true;
+
+                if (!isSelected && SelectedManager.getSelectedResult().size() >= config.maxSelectNum) {
+                    if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
+                        boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
+                                .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MAX_SELECT_LIMIT);
+                        if (isSelectLimit) {
+                            return true;
+                        }
+                    }
+                    RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_message_max_num, config.maxSelectNum));
+                    return true;
+                }
+
+                if (!isSelected && selectVideoSize >= config.maxVideoSelectNum) {
+                    // 如果选择的是视频
+                    if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
+                        boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
+                                .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MAX_VIDEO_SELECT_LIMIT);
+                        if (isSelectLimit) {
+                            return true;
+                        }
+                    }
+                    RemindDialog.showTipsDialog(getContext(), getTipsMsg(getContext(), curMimeType, config.maxVideoSelectNum));
+                    return true;
+                }
             }
 
-            if (!isSelected && SelectedManager.getSelectedResult().size() >= config.maxSelectNum) {
-                if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
-                    boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
-                            .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MAX_SELECT_LIMIT);
-                    if (isSelectLimit) {
-                        return true;
-                    }
-                }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_message_max_num, config.maxSelectNum));
-                return true;
-            }
-
-            if (!isSelected && selectVideoSize >= config.maxVideoSelectNum) {
-                // 如果选择的是视频
-                if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
-                    boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
-                            .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MAX_VIDEO_SELECT_LIMIT);
-                    if (isSelectLimit) {
-                        return true;
-                    }
-                }
-                RemindDialog.showTipsDialog(getContext(), getTipsMsg(getContext(), curMimeType, config.maxVideoSelectNum));
-                return true;
-            }
-
-            if (!isSelected && config.filterVideoMinSecond > 0 && duration < config.filterVideoMinSecond) {
+            if (!isSelected && config.selectMinDurationSecond > 0 && duration < config.selectMinDurationSecond) {
                 // 视频小于最低指定的长度
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
@@ -524,11 +470,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_choose_min_seconds, config.filterVideoMinSecond / 1000));
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_video_min_second, config.selectMinDurationSecond / 1000));
                 return true;
             }
 
-            if (!isSelected && config.filterVideoMaxSecond > 0 && duration > config.filterVideoMaxSecond) {
+            if (!isSelected && config.selectMaxDurationSecond > 0 && duration > config.selectMaxDurationSecond) {
                 // 视频时长超过了指定的长度
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
@@ -538,21 +484,23 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_choose_max_seconds, config.filterVideoMaxSecond / 1000));
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_video_max_second, config.selectMaxDurationSecond / 1000));
                 return true;
             }
         } else {
-            if (!isSelected && SelectedManager.getSelectedResult().size() >= config.maxSelectNum) {
-                if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
-                    boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
-                            .onSelectLimitTips(getContext(), config,
-                                    SelectLimitType.SELECT_MAX_SELECT_LIMIT);
-                    if (isSelectLimit) {
-                        return true;
+            if (config.selectionMode == SelectModeConfig.MULTIPLE) {
+                if (!isSelected && SelectedManager.getSelectedResult().size() >= config.maxSelectNum) {
+                    if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
+                        boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
+                                .onSelectLimitTips(getContext(), config,
+                                        SelectLimitType.SELECT_MAX_SELECT_LIMIT);
+                        if (isSelectLimit) {
+                            return true;
+                        }
                     }
+                    RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_message_max_num, config.maxSelectNum));
+                    return true;
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_message_max_num, config.maxSelectNum));
-                return true;
             }
         }
         return false;
@@ -561,33 +509,69 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     @SuppressLint("StringFormatInvalid")
     @Override
-    public boolean checkOnlyMimeTypeValidity(boolean isSelected, String curMimeType, String existMimeType, long duration) {
-        boolean isSameMimeType = PictureMimeType.isMimeTypeSame(existMimeType, curMimeType);
-        if (!isSameMimeType) {
-            if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
-                boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
-                        .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_NOT_WITH_SELECT_LIMIT);
-                if (isSelectLimit) {
-                    return true;
-                }
-            }
-            RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_rule));
-            return true;
-        }
-        if (PictureMimeType.isHasVideo(existMimeType) && config.maxVideoSelectNum > 0) {
-            if (!isSelected && SelectedManager.getSelectedResult().size() >= config.maxVideoSelectNum) {
-                // 如果先选择的是视频
+    public boolean checkOnlyMimeTypeValidity(boolean isSelected, String curMimeType, String existMimeType, long fileSize, long duration) {
+        if (PictureMimeType.isMimeTypeSame(existMimeType, curMimeType)) {
+            // ignore
+        } else {
+            if (config.selectionMode == SelectModeConfig.MULTIPLE) {
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
-                            .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MAX_VIDEO_SELECT_LIMIT);
+                            .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_NOT_WITH_SELECT_LIMIT);
                     if (isSelectLimit) {
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getTipsMsg(getContext(), existMimeType, config.maxVideoSelectNum));
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_rule));
                 return true;
             }
-            if (!isSelected && config.filterVideoMinSecond > 0 && duration < config.filterVideoMinSecond) {
+        }
+        if (config.selectMaxFileSize > 0) {
+            if (fileSize > config.selectMaxFileSize) {
+                if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
+                    boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
+                            .onSelectLimitTips(getContext(), config,
+                                    SelectLimitType.SELECT_MAX_FILE_SIZE_LIMIT);
+                    if (isSelectLimit) {
+                        return true;
+                    }
+                }
+                String maxFileSize = PictureFileUtils.formatFileSize(config.selectMaxFileSize, 1);
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_max_size, maxFileSize));
+                return true;
+            }
+        }
+        if (config.selectMinFileSize > 0) {
+            if (fileSize < config.selectMinFileSize) {
+                if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
+                    boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
+                            .onSelectLimitTips(getContext(), config,
+                                    SelectLimitType.SELECT_MIN_FILE_SIZE_LIMIT);
+                    if (isSelectLimit) {
+                        return true;
+                    }
+                }
+                String minFileSize = PictureFileUtils.formatFileSize(config.selectMinFileSize, 1);
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_min_size, minFileSize));
+                return true;
+            }
+        }
+        if (PictureMimeType.isHasVideo(curMimeType)) {
+            if (config.selectionMode == SelectModeConfig.MULTIPLE) {
+                config.maxVideoSelectNum = config.maxVideoSelectNum > 0 ? config.maxVideoSelectNum : config.maxSelectNum;
+                if (!isSelected && SelectedManager.getSelectCount() >= config.maxVideoSelectNum) {
+                    // 如果先选择的是视频
+                    if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
+                        boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
+                                .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MAX_VIDEO_SELECT_LIMIT);
+                        if (isSelectLimit) {
+                            return true;
+                        }
+                    }
+                    RemindDialog.showTipsDialog(getContext(), getTipsMsg(getContext(), curMimeType, config.maxVideoSelectNum));
+                    return true;
+                }
+            }
+            if (!isSelected && config.selectMinDurationSecond > 0 && duration < config.selectMinDurationSecond) {
                 // 视频小于最低指定的长度
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
@@ -596,11 +580,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_choose_min_seconds, config.filterVideoMinSecond / 1000));
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_video_min_second, config.selectMinDurationSecond / 1000));
                 return true;
             }
 
-            if (!isSelected && config.filterVideoMaxSecond > 0 && duration > config.filterVideoMaxSecond) {
+            if (!isSelected && config.selectMaxDurationSecond > 0 && duration > config.selectMaxDurationSecond) {
                 // 视频时长超过了指定的长度
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
@@ -609,44 +593,59 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_choose_max_seconds, config.filterVideoMaxSecond / 1000));
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_video_max_second, config.selectMaxDurationSecond / 1000));
                 return true;
             }
-        } else {
-            if (!isSelected && SelectedManager.getSelectedResult().size() >= config.maxSelectNum) {
+        } else if (PictureMimeType.isHasAudio(curMimeType)) {
+            if (config.selectionMode == SelectModeConfig.MULTIPLE) {
+                if (!isSelected && SelectedManager.getSelectedResult().size() >= config.maxSelectNum) {
+                    if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
+                        boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
+                                .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MAX_SELECT_LIMIT);
+                        if (isSelectLimit) {
+                            return true;
+                        }
+                    }
+                    RemindDialog.showTipsDialog(getContext(), getTipsMsg(getContext(), curMimeType, config.maxSelectNum));
+                    return true;
+                }
+            }
+
+            if (!isSelected && config.selectMinDurationSecond > 0 && duration < config.selectMinDurationSecond) {
+                // 音频小于最低指定的长度
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
-                            .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MAX_SELECT_LIMIT);
+                            .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MIN_AUDIO_SECOND_SELECT_LIMIT);
                     if (isSelectLimit) {
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getTipsMsg(getContext(), existMimeType, config.maxSelectNum));
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_audio_min_second, config.selectMinDurationSecond / 1000));
                 return true;
             }
-            if (PictureMimeType.isHasVideo(curMimeType)) {
-                if (!isSelected && config.filterVideoMinSecond > 0 && duration < config.filterVideoMinSecond) {
-                    // 视频小于最低指定的长度
-                    if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
-                        boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
-                                .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MIN_VIDEO_SECOND_SELECT_LIMIT);
-                        if (isSelectLimit) {
-                            return true;
-                        }
+            if (!isSelected && config.selectMaxDurationSecond > 0 && duration > config.selectMaxDurationSecond) {
+                // 音频时长超过了指定的长度
+                if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
+                    boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
+                            .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MAX_AUDIO_SECOND_SELECT_LIMIT);
+                    if (isSelectLimit) {
+                        return true;
                     }
-                    RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_choose_min_seconds, config.filterVideoMinSecond / 1000));
-                    return true;
                 }
-                if (!isSelected && config.filterVideoMaxSecond > 0 && duration > config.filterVideoMaxSecond) {
-                    // 视频时长超过了指定的长度
+                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_audio_max_second, config.selectMaxDurationSecond / 1000));
+                return true;
+            }
+        } else {
+            if (config.selectionMode == SelectModeConfig.MULTIPLE) {
+                if (!isSelected && SelectedManager.getSelectedResult().size() >= config.maxSelectNum) {
                     if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                         boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
-                                .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MAX_VIDEO_SECOND_SELECT_LIMIT);
+                                .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MAX_SELECT_LIMIT);
                         if (isSelectLimit) {
                             return true;
                         }
                     }
-                    RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_choose_max_seconds, config.filterVideoMaxSecond / 1000));
+                    RemindDialog.showTipsDialog(getContext(), getTipsMsg(getContext(), curMimeType, config.maxSelectNum));
                     return true;
                 }
             }
@@ -1257,7 +1256,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             // 单类型模式
             String mimeType = SelectedManager.getTopResultMimeType();
             if (PictureMimeType.isHasImage(mimeType) && config.minSelectNum > 0
-                    && SelectedManager.getCount() < config.minSelectNum) {
+                    && SelectedManager.getSelectCount() < config.minSelectNum) {
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
                             .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MIN_SELECT_LIMIT);
@@ -1270,7 +1269,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 return true;
             }
             if (PictureMimeType.isHasVideo(mimeType) && config.minVideoSelectNum > 0
-                    && SelectedManager.getCount() < config.minVideoSelectNum) {
+                    && SelectedManager.getSelectCount() < config.minVideoSelectNum) {
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
                             .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MIN_VIDEO_SELECT_LIMIT);
@@ -1284,7 +1283,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             }
 
             if (PictureMimeType.isHasAudio(mimeType) && config.minAudioSelectNum > 0
-                    && SelectedManager.getCount() < config.minAudioSelectNum) {
+                    && SelectedManager.getSelectCount() < config.minAudioSelectNum) {
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
                             .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_MIN_AUDIO_SELECT_LIMIT);
@@ -1341,10 +1340,10 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private boolean checkCropValidity() {
         if (PictureSelectionConfig.cropEngine != null) {
-            if (SelectedManager.getCount() == 1) {
+            if (SelectedManager.getSelectCount() == 1) {
                 return PictureMimeType.isHasImage(SelectedManager.getTopResultMimeType());
             } else {
-                for (int i = 0; i < SelectedManager.getCount(); i++) {
+                for (int i = 0; i < SelectedManager.getSelectCount(); i++) {
                     LocalMedia media = SelectedManager.getSelectedResult().get(i);
                     if (PictureMimeType.isHasImage(media.getMimeType())) {
                         return true;
@@ -1362,7 +1361,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private boolean checkCompressValidity() {
         if (PictureSelectionConfig.compressEngine != null) {
-            for (int i = 0; i < SelectedManager.getCount(); i++) {
+            for (int i = 0; i < SelectedManager.getSelectCount(); i++) {
                 LocalMedia media = SelectedManager.getSelectedResult().get(i);
                 if (PictureMimeType.isHasImage(media.getMimeType())) {
                     return true;
