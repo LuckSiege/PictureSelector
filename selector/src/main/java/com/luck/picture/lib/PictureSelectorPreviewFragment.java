@@ -1516,7 +1516,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     @Override
     public void onDestroy() {
-        viewPageAdapter.destroy(viewPager.getCurrentItem());
+        viewPageAdapter.destroy();
         viewPager.unregisterOnPageChangeCallback(pageChangeCallback);
         if (isExternalPreview) {
             PictureSelectionConfig.destroy();

@@ -134,6 +134,19 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    /**
+     * onViewAttachedToWindow
+     */
+    public void onViewAttachedToWindow() {
+
+    }
+
+    /**
+     * onViewDetachedFromWindow
+     */
+    public void onViewDetachedFromWindow() {
+
+    }
 
     protected OnPreviewEventListener mPreviewEventListener;
 

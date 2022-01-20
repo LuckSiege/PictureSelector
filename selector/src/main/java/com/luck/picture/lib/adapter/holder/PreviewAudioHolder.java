@@ -154,25 +154,24 @@ public class PreviewAudioHolder extends BasePreviewHolder {
         ivPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stopUpdateProgress();
-                mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
                 Player player = mPlayerView.getPlayer();
-                if (player != null && player.getPlaybackState() == Player.STATE_READY) {
-                    if (player.isPlaying()) {
-                        player.pause();
+                if (player != null) {
+                    stopUpdateProgress();
+                    mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
+                    if (player.getPlaybackState() == Player.STATE_READY) {
+                        if (player.isPlaying()) {
+                            player.pause();
+                        } else {
+                            player.play();
+                        }
                     } else {
+                        MediaItem mediaItem = PictureMimeType.isContent(path)
+                                ? MediaItem.fromUri(Uri.parse(path)) : MediaItem.fromUri(Uri.fromFile(new File(path)));
+                        player.setMediaItem(mediaItem);
+                        player.prepare();
+                        player.seekTo(seekBar.getProgress());
                         player.play();
                     }
-                } else {
-                    player = new ExoPlayer.Builder(itemView.getContext().getApplicationContext()).build();
-                    mPlayerView.setPlayer(player);
-                    MediaItem mediaItem = PictureMimeType.isContent(path)
-                            ? MediaItem.fromUri(Uri.parse(path)) : MediaItem.fromUri(Uri.fromFile(new File(path)));
-                    player.setMediaItem(mediaItem);
-                    player.prepare();
-                    player.seekTo(seekBar.getProgress());
-                    player.play();
-                    player.addListener(mPlayerListener);
                 }
             }
         });
@@ -302,16 +301,39 @@ public class PreviewAudioHolder extends BasePreviewHolder {
         }
     }
 
+    @Override
+    public void onViewAttachedToWindow() {
+        Player player;
+        if (mPlayerView.getPlayer() == null) {
+            player = new ExoPlayer.Builder(itemView.getContext().getApplicationContext()).build();
+            mPlayerView.setPlayer(player);
+        } else {
+            player = mPlayerView.getPlayer();
+        }
+        player.addListener(mPlayerListener);
+        playerDefaultUI(true);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow() {
+        mHandler.removeCallbacks(mTickerRunnable);
+        Player player = mPlayerView.getPlayer();
+        if (player != null) {
+            player.stop();
+            player.removeListener(mPlayerListener);
+            playerDefaultUI(true);
+        }
+    }
+
     /**
      * 释放PlayerView
      */
     public void releaseAudio() {
+        mHandler.removeCallbacks(mTickerRunnable);
         Player player = mPlayerView.getPlayer();
         if (player != null) {
             player.removeListener(mPlayerListener);
             player.release();
-            playerDefaultUI(true);
         }
-        mHandler.removeCallbacks(mTickerRunnable);
     }
 }

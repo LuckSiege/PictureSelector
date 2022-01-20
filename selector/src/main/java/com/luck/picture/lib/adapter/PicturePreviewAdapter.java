@@ -1,6 +1,5 @@
 package com.luck.picture.lib.adapter;
 
-import android.util.LruCache;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,6 +14,7 @@ import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -26,10 +26,10 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
 
     private final List<LocalMedia> mData;
     private final BasePreviewHolder.OnPreviewEventListener onPreviewEventListener;
-    private final LruCache<Integer, BasePreviewHolder> mHolderLruCache = new LruCache<>(3);
+    private final LinkedHashMap<Integer, BasePreviewHolder> mHolderCache = new LinkedHashMap<>();
 
     public BasePreviewHolder getCurrentHolder(int position) {
-        return mHolderLruCache.get(position);
+        return mHolderCache.get(position);
     }
 
     public PicturePreviewAdapter(List<LocalMedia> list, BasePreviewHolder.OnPreviewEventListener listener) {
@@ -57,7 +57,7 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     public void onBindViewHolder(@NonNull BasePreviewHolder holder, int position) {
         holder.setOnPreviewEventListener(onPreviewEventListener);
         LocalMedia media = mData.get(position);
-        mHolderLruCache.put(position, holder);
+        mHolderCache.put(position, holder);
         holder.bindData(media, position);
     }
 
@@ -79,17 +79,15 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     }
 
     @Override
+    public void onViewAttachedToWindow(@NonNull BasePreviewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        holder.onViewAttachedToWindow();
+    }
+
+    @Override
     public void onViewDetachedFromWindow(@NonNull BasePreviewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        if (holder instanceof PreviewVideoHolder) {
-            PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
-            videoHolder.releaseVideo();
-        }
-
-        if (holder instanceof PreviewAudioHolder) {
-            PreviewAudioHolder audioHolder = (PreviewAudioHolder) holder;
-            audioHolder.releaseAudio();
-        }
+        holder.onViewDetachedFromWindow();
     }
 
     /**
@@ -110,16 +108,16 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     /**
      * 释放当前视频相关
      */
-    public void destroy(int position) {
-        BasePreviewHolder holder = mHolderLruCache.get(position);
-        if (holder instanceof PreviewVideoHolder) {
-            PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
-            videoHolder.releaseVideo();
-        }
-
-        if (holder instanceof PreviewAudioHolder) {
-            PreviewAudioHolder audioHolder = (PreviewAudioHolder) holder;
-            audioHolder.releaseAudio();
+    public void destroy() {
+        for (Integer key : mHolderCache.keySet()) {
+            BasePreviewHolder holder = mHolderCache.get(key);
+            if (holder instanceof PreviewVideoHolder) {
+                PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
+                videoHolder.releaseVideo();
+            } else if (holder instanceof PreviewAudioHolder) {
+                PreviewAudioHolder audioHolder = (PreviewAudioHolder) holder;
+                audioHolder.releaseAudio();
+            }
         }
     }
 }

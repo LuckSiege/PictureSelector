@@ -31,7 +31,6 @@ public class PreviewVideoHolder extends BasePreviewHolder {
     public ImageView ivPlayButton;
     public PlayerView mPlayerView;
     public ProgressBar progress;
-    private Player.Listener mPlayerListener;
 
     public PreviewVideoHolder(@NonNull View itemView) {
         super(itemView);
@@ -51,19 +50,17 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         ivPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                initPlayerListener();
-                progress.setVisibility(View.VISIBLE);
-                ivPlayButton.setVisibility(View.GONE);
-                mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
-                ExoPlayer player = new ExoPlayer.Builder(itemView.getContext()).build();
-                mPlayerView.setPlayer(player);
-                MediaItem mediaItem = PictureMimeType.isContent(path)
-                        ? MediaItem.fromUri(Uri.parse(path)) : MediaItem.fromUri(Uri.fromFile(new File(path)));
-                player.setMediaItem(mediaItem);
-                player.prepare();
-                player.play();
-                player.removeListener(mPlayerListener);
-                player.addListener(mPlayerListener);
+                Player player = mPlayerView.getPlayer();
+                if (player != null) {
+                    progress.setVisibility(View.VISIBLE);
+                    ivPlayButton.setVisibility(View.GONE);
+                    mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
+                    MediaItem mediaItem = PictureMimeType.isContent(path)
+                            ? MediaItem.fromUri(Uri.parse(path)) : MediaItem.fromUri(Uri.fromFile(new File(path)));
+                    player.setMediaItem(mediaItem);
+                    player.prepare();
+                    player.play();
+                }
             }
         });
         itemView.setOnClickListener(new View.OnClickListener() {
@@ -98,25 +95,21 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         }
     }
 
-    private void initPlayerListener() {
-        if (mPlayerListener == null) {
-            mPlayerListener = new Player.Listener() {
-                @Override
-                public void onPlayerError(@NonNull PlaybackException error) {
-                    playerDefaultUI();
-                }
-
-                @Override
-                public void onPlaybackStateChanged(int playbackState) {
-                    if (playbackState == Player.STATE_READY) {
-                        playerIngUI();
-                    } else if (playbackState == Player.STATE_ENDED) {
-                        playerDefaultUI();
-                    }
-                }
-            };
+    private final Player.Listener mPlayerListener = new Player.Listener() {
+        @Override
+        public void onPlayerError(@NonNull PlaybackException error) {
+            playerDefaultUI();
         }
-    }
+
+        @Override
+        public void onPlaybackStateChanged(int playbackState) {
+            if (playbackState == Player.STATE_READY) {
+                playerIngUI();
+            } else if (playbackState == Player.STATE_ENDED) {
+                playerDefaultUI();
+            }
+        }
+    };
 
     private void playerDefaultUI() {
         ivPlayButton.setVisibility(View.VISIBLE);
@@ -143,18 +136,37 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         }
     }
 
+    @Override
+    public void onViewAttachedToWindow() {
+        Player player;
+        if (mPlayerView.getPlayer() == null) {
+            player = new ExoPlayer.Builder(itemView.getContext().getApplicationContext()).build();
+            mPlayerView.setPlayer(player);
+        } else {
+            player = mPlayerView.getPlayer();
+        }
+        player.addListener(mPlayerListener);
+        playerDefaultUI();
+    }
+
+    @Override
+    public void onViewDetachedFromWindow() {
+        Player player = mPlayerView.getPlayer();
+        if (player != null) {
+            player.stop();
+            player.removeListener(mPlayerListener);
+            playerDefaultUI();
+        }
+    }
+
     /**
      * 释放VideoView
      */
     public void releaseVideo() {
         Player player = mPlayerView.getPlayer();
         if (player != null) {
-            if (mPlayerListener != null) {
-                player.removeListener(mPlayerListener);
-            }
+            player.removeListener(mPlayerListener);
             player.release();
-            playerDefaultUI();
         }
-        mPlayerListener = null;
     }
 }
