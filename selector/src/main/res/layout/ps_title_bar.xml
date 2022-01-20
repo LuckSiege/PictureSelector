@@ -91,4 +91,13 @@
             android:visibility="gone" />
 
     </RelativeLayout>
+
+    <View
+        android:id="@+id/title_bar_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.8dp"
+        android:layout_below="@id/rl_title_bar"
+        android:background="@color/ps_color_ec"
+        android:visibility="gone" />
+
 </merge>

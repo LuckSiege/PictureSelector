@@ -97,9 +97,19 @@ public class TitleBarStyle implements Parcelable {
      */
     private int titleCancelTextColor;
 
+    /**
+     * 标题栏底部线条色值
+     */
+    private int titleBarLineColor;
+
+    /**
+     * 是否显示标题栏底部线条
+     */
+    private boolean isDisplayTitleBarLine;
 
     public TitleBarStyle() {
     }
+
 
     protected TitleBarStyle(Parcel in) {
         isHideTitleBar = in.readByte() != 0;
@@ -120,6 +130,8 @@ public class TitleBarStyle implements Parcelable {
         titleCancelText = in.readString();
         titleCancelTextSize = in.readInt();
         titleCancelTextColor = in.readInt();
+        titleBarLineColor = in.readInt();
+        isDisplayTitleBarLine = in.readByte() != 0;
     }
 
     @Override
@@ -142,6 +154,8 @@ public class TitleBarStyle implements Parcelable {
         dest.writeString(titleCancelText);
         dest.writeInt(titleCancelTextSize);
         dest.writeInt(titleCancelTextColor);
+        dest.writeInt(titleBarLineColor);
+        dest.writeByte((byte) (isDisplayTitleBarLine ? 1 : 0));
     }
 
     @Override
@@ -303,5 +317,21 @@ public class TitleBarStyle implements Parcelable {
 
     public void setTitleCancelTextColor(int titleCancelTextColor) {
         this.titleCancelTextColor = titleCancelTextColor;
+    }
+
+    public int getTitleBarLineColor() {
+        return titleBarLineColor;
+    }
+
+    public void setTitleBarLineColor(int titleBarLineColor) {
+        this.titleBarLineColor = titleBarLineColor;
+    }
+
+    public boolean isDisplayTitleBarLine() {
+        return isDisplayTitleBarLine;
+    }
+
+    public void setDisplayTitleBarLine(boolean displayTitleBarLine) {
+        isDisplayTitleBarLine = displayTitleBarLine;
     }
 }

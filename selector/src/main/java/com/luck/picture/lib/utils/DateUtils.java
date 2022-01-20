@@ -1,13 +1,17 @@
 package com.luck.picture.lib.utils;
 
+import static java.lang.Math.abs;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 
+import com.google.android.exoplayer2.C;
 import com.luck.picture.lib.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -19,9 +23,12 @@ import java.util.concurrent.TimeUnit;
 
 public class DateUtils {
     @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat sf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+    private static final SimpleDateFormat SF = new SimpleDateFormat("yyyyMMddHHmmssSSS");
     @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM");
+
+    @SuppressLint("SimpleDateFormat")
+    private static final SimpleDateFormat SDF_YEAR = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static long getCurrentTimeMillis() {
         String timeToString = ValueOf.toString(System.currentTimeMillis());
@@ -29,15 +36,20 @@ public class DateUtils {
     }
 
 
-    public static String getDataFormat(Context context,long time) {
+    public static String getDataFormat(Context context, long time) {
         time = String.valueOf(time).length() > 10 ? time : time * 1000;
         if (isThisWeek(time)) {
             return context.getString(R.string.ps_current_week);
         } else if (isThisMonth(time)) {
             return context.getString(R.string.ps_current_month);
         } else {
-            return sdf.format(time);
+            return SDF.format(time);
         }
+    }
+
+    public static String getYearDataFormat(long time) {
+        time = String.valueOf(time).length() > 10 ? time : time * 1000;
+        return SDF_YEAR.format(time);
     }
 
     private static boolean isThisWeek(long time) {
@@ -50,8 +62,8 @@ public class DateUtils {
 
     public static boolean isThisMonth(long time) {
         Date date = new Date(time);
-        String param = sdf.format(date);
-        String now = sdf.format(new Date());
+        String param = SDF.format(date);
+        String now = SDF.format(new Date());
         return param.equals(now);
     }
 
@@ -95,7 +107,7 @@ public class DateUtils {
      */
     public static String getCreateFileName(String prefix) {
         long millis = System.currentTimeMillis();
-        return prefix + sf.format(millis);
+        return prefix + SF.format(millis);
     }
 
     /**
@@ -105,7 +117,23 @@ public class DateUtils {
      */
     public static String getCreateFileName() {
         long millis = System.currentTimeMillis();
-        return sf.format(millis);
+        return SF.format(millis);
+    }
+
+    public static String getStringForTime(StringBuilder builder, Formatter formatter, long timeMs) {
+        if (timeMs == C.TIME_UNSET) {
+            timeMs = 0;
+        }
+        String prefix = timeMs < 0 ? "-" : "";
+        timeMs = abs(timeMs);
+        long totalSeconds = (timeMs + 500) / 1000;
+        long seconds = totalSeconds % 60;
+        long minutes = (totalSeconds / 60) % 60;
+        long hours = totalSeconds / 3600;
+        builder.setLength(0);
+        return hours > 0
+                ? formatter.format("%s%d:%02d:%02d", prefix, hours, minutes, seconds).toString()
+                : formatter.format("%s%02d:%02d", prefix, minutes, seconds).toString();
     }
 
     /**

@@ -362,7 +362,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isLoaderDataEngine = false;
         isSandboxFileEngine = false;
         isPreviewFullScreenMode = true;
-        isPreviewZoomEffect = true;
+        isPreviewZoomEffect = chooseMode != SelectMimeType.ofAudio();
         isOriginalControl = false;
         isInjectLayoutResource = false;
         isDisplayTimeAxis = true;

@@ -36,6 +36,12 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
      * 视频
      */
     public final static int ADAPTER_TYPE_VIDEO = 2;
+
+    /**
+     * 音频
+     */
+    public final static int ADAPTER_TYPE_AUDIO = 3;
+
     protected final int screenWidth;
     protected final int screenHeight;
     protected final int screenAppInHeight;
@@ -46,6 +52,8 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);
         if (viewType == ADAPTER_TYPE_VIDEO) {
             return new PreviewVideoHolder(itemView);
+        } else if (viewType == ADAPTER_TYPE_AUDIO) {
+            return new PreviewAudioHolder(itemView);
         } else {
             return new PreviewImageHolder(itemView);
         }

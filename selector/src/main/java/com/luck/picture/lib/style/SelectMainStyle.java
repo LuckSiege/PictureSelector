@@ -50,6 +50,11 @@ public class SelectMainStyle implements Parcelable {
     private int previewSelectMarginRight;
 
     /**
+     * 预览背景色
+     */
+    private int previewBackgroundColor;
+
+    /**
      * 预览页选择按钮文本
      */
     private String previewSelectText;
@@ -262,6 +267,7 @@ public class SelectMainStyle implements Parcelable {
 
     }
 
+
     protected SelectMainStyle(Parcel in) {
         statusBarColor = in.readInt();
         navigationBarColor = in.readInt();
@@ -270,6 +276,7 @@ public class SelectMainStyle implements Parcelable {
         isPreviewSelectRelativeBottom = in.readByte() != 0;
         isPreviewDisplaySelectGallery = in.readByte() != 0;
         previewSelectMarginRight = in.readInt();
+        previewBackgroundColor = in.readInt();
         previewSelectText = in.readString();
         previewSelectTextSize = in.readInt();
         previewSelectTextColor = in.readInt();
@@ -322,6 +329,7 @@ public class SelectMainStyle implements Parcelable {
         dest.writeByte((byte) (isPreviewSelectRelativeBottom ? 1 : 0));
         dest.writeByte((byte) (isPreviewDisplaySelectGallery ? 1 : 0));
         dest.writeInt(previewSelectMarginRight);
+        dest.writeInt(previewBackgroundColor);
         dest.writeString(previewSelectText);
         dest.writeInt(previewSelectTextSize);
         dest.writeInt(previewSelectTextColor);
@@ -764,5 +772,13 @@ public class SelectMainStyle implements Parcelable {
 
     public void setAdapterPreviewGalleryItemSize(int adapterPreviewGalleryItemSize) {
         this.adapterPreviewGalleryItemSize = adapterPreviewGalleryItemSize;
+    }
+
+    public int getPreviewBackgroundColor() {
+        return previewBackgroundColor;
+    }
+
+    public void setPreviewBackgroundColor(int previewBackgroundColor) {
+        this.previewBackgroundColor = previewBackgroundColor;
     }
 }

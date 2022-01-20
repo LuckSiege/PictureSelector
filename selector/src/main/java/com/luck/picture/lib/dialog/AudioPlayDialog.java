@@ -22,6 +22,7 @@ import com.luck.picture.lib.utils.DateUtils;
  * @date：2021/11/21 2:31 下午
  * @describe：AudioPlayDialog
  */
+@Deprecated
 public class AudioPlayDialog extends Dialog implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
     private final MediaPlayer mediaPlayer;
     private final String audioPath;

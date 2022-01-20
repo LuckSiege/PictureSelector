@@ -77,7 +77,7 @@ public class ForegroundService extends Service {
         String contentText = config.chooseMode == SelectMimeType.ofAudio()
                 ? getString(R.string.ps_use_sound) : getString(R.string.ps_use_camera);
         return new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ps_trans_1px)
+                .setSmallIcon(R.drawable.ps_ic_trans_1px)
                 .setContentTitle(getAppName())
                 .setContentText(contentText)
                 .setOngoing(true)

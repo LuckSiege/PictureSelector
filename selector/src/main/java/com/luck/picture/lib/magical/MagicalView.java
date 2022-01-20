@@ -71,7 +71,6 @@ public class MagicalView extends FrameLayout {
         getScreenSize();
         backgroundView = new View(context);
         backgroundView.setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        backgroundView.setBackgroundColor(ContextCompat.getColor(context, R.color.ps_color_black));
         backgroundView.setAlpha(mAlpha);
         addView(backgroundView);
 
@@ -80,6 +79,15 @@ public class MagicalView extends FrameLayout {
         addView(contentLayout);
 
         magicalWrapper = new MagicalViewWrapper(contentLayout);
+    }
+
+    /**
+     * setBackgroundColor
+     *
+     * @param color
+     */
+    public void setBackgroundColor(int color) {
+        backgroundView.setBackgroundColor(color);
     }
 
     public void startNormal(int realWidth, int realHeight, boolean showImmediately) {

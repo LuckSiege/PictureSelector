@@ -32,7 +32,6 @@ import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.dialog.AlbumListPopWindow;
-import com.luck.picture.lib.dialog.AudioPlayDialog;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnAlbumItemClickListener;
@@ -733,12 +732,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
                     if (DoubleUtils.isFastDoubleClick()) {
                         return;
                     }
-                    if (PictureMimeType.isHasAudio(media.getMimeType())) {
-                        if (PictureSelectionConfig.onPreviewInterceptListener != null) {
-                            PictureSelectionConfig.onPreviewInterceptListener.onPreviewAudio(getContext(), media);
-                        } else {
-                            AudioPlayDialog.showPlayAudioDialog(getActivity(), media.getPath());
-                        }
+                    if (PictureMimeType.isHasAudio(media.getMimeType()) && PictureSelectionConfig.onPreviewInterceptListener != null) {
+                        PictureSelectionConfig.onPreviewInterceptListener.onPreviewAudio(getContext(), media);
                     } else {
                         onStartPreview(position, false);
                     }

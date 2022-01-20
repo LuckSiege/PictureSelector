@@ -67,6 +67,12 @@ public final class InjectResourceSource {
     public static final int PREVIEW_GALLERY_ITEM_LAYOUT_RESOURCE = 9;
 
     /**
+     * {@link PicturePreviewAdapter} preview adapter item layout
+     * {@link R.layout.ps_preview_audio}
+     */
+    public static final int PREVIEW_ITEM_AUDIO_LAYOUT_RESOURCE = 10;
+
+    /**
      * getLayoutResource
      *
      * @param context

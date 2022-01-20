@@ -137,7 +137,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
             path = media.getCutPath();
         }
         if (PictureMimeType.isHasAudio(media.getMimeType())) {
-            ivPicture.setImageResource(R.drawable.ps_trans_1px);
+            ivPicture.setImageResource(R.drawable.ps_ic_trans_1px);
         } else if (PictureSelectionConfig.imageEngine != null) {
             PictureSelectionConfig.imageEngine.loadGridImage(ivPicture.getContext(), path, ivPicture);
         }

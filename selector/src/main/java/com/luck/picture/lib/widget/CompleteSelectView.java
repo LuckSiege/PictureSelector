@@ -121,7 +121,7 @@ public class CompleteSelectView extends LinearLayout {
             if (StyleUtils.checkStyleValidity(selectBackground)) {
                 setBackgroundResource(selectBackground);
             } else {
-                setBackgroundResource(R.drawable.ps_trans_1px);
+                setBackgroundResource(R.drawable.ps_ic_trans_1px);
             }
             String selectText = selectMainStyle.getSelectText();
             if (StyleUtils.checkTextValidity(selectText)) {
@@ -163,7 +163,7 @@ public class CompleteSelectView extends LinearLayout {
                 if (StyleUtils.checkStyleValidity(selectBackground)) {
                     setBackgroundResource(selectBackground);
                 } else {
-                    setBackgroundResource(R.drawable.ps_trans_1px);
+                    setBackgroundResource(R.drawable.ps_ic_trans_1px);
                 }
                 int selectTextColor = selectMainStyle.getSelectTextColor();
                 if (StyleUtils.checkStyleValidity(selectTextColor)) {
@@ -177,7 +177,7 @@ public class CompleteSelectView extends LinearLayout {
                 if (StyleUtils.checkStyleValidity(normalBackground)) {
                     setBackgroundResource(normalBackground);
                 } else {
-                    setBackgroundResource(R.drawable.ps_trans_1px);
+                    setBackgroundResource(R.drawable.ps_ic_trans_1px);
                 }
                 int normalTextColor = selectMainStyle.getSelectNormalTextColor();
                 if (StyleUtils.checkStyleValidity(normalTextColor)) {

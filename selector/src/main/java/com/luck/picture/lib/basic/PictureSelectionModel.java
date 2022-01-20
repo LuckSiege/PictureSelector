@@ -868,7 +868,11 @@ public final class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel isPreviewZoomEffect(boolean isPreviewZoomEffect) {
-        selectionConfig.isPreviewZoomEffect = isPreviewZoomEffect;
+        if (selectionConfig.chooseMode == SelectMimeType.ofAudio()) {
+            selectionConfig.isPreviewZoomEffect = false;
+        } else {
+            selectionConfig.isPreviewZoomEffect = isPreviewZoomEffect;
+        }
         return this;
     }
 

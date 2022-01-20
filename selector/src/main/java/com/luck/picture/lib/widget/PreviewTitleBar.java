@@ -49,7 +49,7 @@ public class PreviewTitleBar extends TitleBar {
         RelativeLayout.LayoutParams layoutParams = (LayoutParams) rlAlbumBg.getLayoutParams();
         layoutParams.removeRule(RelativeLayout.END_OF);
         layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        rlAlbumBg.setBackgroundResource(R.drawable.ps_trans_1px);
+        rlAlbumBg.setBackgroundResource(R.drawable.ps_ic_trans_1px);
         tvCancel.setVisibility(GONE);
         ivArrow.setVisibility(GONE);
         viewAlbumClickArea.setVisibility(GONE);

@@ -57,7 +57,6 @@ import com.luck.picture.lib.config.SelectLimitType;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
-import com.luck.picture.lib.dialog.AudioPlayDialog;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
@@ -251,36 +250,26 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         mAdapter.setOnItemClickListener(new GridImageAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                ArrayList<LocalMedia> selectList = mAdapter.getData();
-                if (selectList.size() > 0) {
-                    LocalMedia media = selectList.get(position);
-                    String availablePath = media.getAvailablePath();
-                    if (PictureMimeType.isHasAudio(media.getMimeType())) {
-                        // 预览音频
-                        AudioPlayDialog.showPlayAudioDialog(getContext(), availablePath);
-                    } else {
-                        // 预览图片 or 预览视频
-                        PictureSelector.create(MainActivity.this)
-                                .openPreview()
-                                .setImageEngine(GlideEngine.createGlideEngine())
-                                .setSelectorUIStyle(selectorStyle)
-                                .setLanguage(language)
-                                .isPreviewFullScreenMode(cb_preview_full.isChecked())
-                                .setExternalPreviewEventListener(new OnExternalPreviewEventListener() {
-                                    @Override
-                                    public void onPreviewDelete(int position) {
-                                        mAdapter.remove(position);
-                                        mAdapter.notifyItemRemoved(position);
-                                    }
+                // 预览图片、视频、音频
+                PictureSelector.create(MainActivity.this)
+                        .openPreview()
+                        .setImageEngine(GlideEngine.createGlideEngine())
+                        .setSelectorUIStyle(selectorStyle)
+                        .setLanguage(language)
+                        .isPreviewFullScreenMode(cb_preview_full.isChecked())
+                        .setExternalPreviewEventListener(new OnExternalPreviewEventListener() {
+                            @Override
+                            public void onPreviewDelete(int position) {
+                                mAdapter.remove(position);
+                                mAdapter.notifyItemRemoved(position);
+                            }
 
-                                    @Override
-                                    public boolean onLongPressDownload(LocalMedia media) {
-                                        return false;
-                                    }
-                                })
-                                .startActivityPreview(position, true, selectList);
-                    }
-                }
+                            @Override
+                            public boolean onLongPressDownload(LocalMedia media) {
+                                return false;
+                            }
+                        })
+                        .startActivityPreview(position, true, mAdapter.getData());
             }
 
             @Override
@@ -352,7 +341,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                             .setSandboxFileEngine(new MeSandboxFileEngine())
                             .isOriginalControl(cb_original.isChecked())
                             .setOutputAudioDir(getSandboxAudioOutputPath())
-                            .setSelectedData(mAdapter.getData());;
+                            .setSelectedData(mAdapter.getData());
+                    ;
                     forOnlyCameraResult(cameraModel);
                 }
             }
@@ -1176,6 +1166,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 whiteTitleBarStyle.setTitleLeftBackResource(R.drawable.ps_ic_black_back);
                 whiteTitleBarStyle.setTitleTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_black));
                 whiteTitleBarStyle.setTitleCancelTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
+                whiteTitleBarStyle.setDisplayTitleBarLine(true);
 
                 BottomNavBarStyle whiteBottomNavBarStyle = new BottomNavBarStyle();
                 whiteBottomNavBarStyle.setBottomNarBarBackgroundColor(Color.parseColor("#EEEEEE"));
@@ -1258,7 +1249,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 numberTitleBarStyle.setAlbumTitleRelativeLeft(true);
                 numberTitleBarStyle.setTitleAlbumBackgroundResource(R.drawable.ps_album_bg);
                 numberTitleBarStyle.setTitleDrawableRightResource(R.drawable.ps_ic_grey_arrow);
-                numberTitleBarStyle.setPreviewTitleLeftBackResource(R.drawable.ps_ic_back2);
+                numberTitleBarStyle.setPreviewTitleLeftBackResource(R.drawable.ps_ic_normal_back);
 
                 // 底部NavBar 风格
                 BottomNavBarStyle numberBottomNavBarStyle = new BottomNavBarStyle();

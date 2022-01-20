@@ -31,12 +31,14 @@ public class PreviewVideoHolder extends BasePreviewHolder {
     public ImageView ivPlayButton;
     public PlayerView mPlayerView;
     public ProgressBar progress;
+    private Player.Listener mPlayerListener;
 
     public PreviewVideoHolder(@NonNull View itemView) {
         super(itemView);
         ivPlayButton = itemView.findViewById(R.id.iv_play_video);
         mPlayerView = itemView.findViewById(R.id.playerView);
         progress = itemView.findViewById(R.id.progress);
+        mPlayerView.setUseController(false);
         PictureSelectionConfig config = PictureSelectionConfig.getInstance();
         ivPlayButton.setVisibility(config.isPreviewZoomEffect ? View.GONE : View.VISIBLE);
     }
@@ -45,11 +47,11 @@ public class PreviewVideoHolder extends BasePreviewHolder {
     public void bindData(LocalMedia media, int position) {
         super.bindData(media, position);
         String path = media.getAvailablePath();
-        mPlayerView.setUseController(false);
         setScaleDisplaySize(media);
         ivPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                initPlayerListener();
                 progress.setVisibility(View.VISIBLE);
                 ivPlayButton.setVisibility(View.GONE);
                 mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
@@ -60,6 +62,7 @@ public class PreviewVideoHolder extends BasePreviewHolder {
                 player.setMediaItem(mediaItem);
                 player.prepare();
                 player.play();
+                player.removeListener(mPlayerListener);
                 player.addListener(mPlayerListener);
             }
         });
@@ -95,21 +98,25 @@ public class PreviewVideoHolder extends BasePreviewHolder {
         }
     }
 
-    private Player.Listener mPlayerListener = new Player.Listener() {
-        @Override
-        public void onPlayerError(@NonNull PlaybackException error) {
-            playerDefaultUI();
-        }
+    private void initPlayerListener() {
+        if (mPlayerListener == null) {
+            mPlayerListener = new Player.Listener() {
+                @Override
+                public void onPlayerError(@NonNull PlaybackException error) {
+                    playerDefaultUI();
+                }
 
-        @Override
-        public void onPlaybackStateChanged(int playbackState) {
-            if (playbackState == Player.STATE_READY) {
-                playerIngUI();
-            } else if (playbackState == Player.STATE_ENDED) {
-                playerDefaultUI();
-            }
+                @Override
+                public void onPlaybackStateChanged(int playbackState) {
+                    if (playbackState == Player.STATE_READY) {
+                        playerIngUI();
+                    } else if (playbackState == Player.STATE_ENDED) {
+                        playerDefaultUI();
+                    }
+                }
+            };
         }
-    };
+    }
 
     private void playerDefaultUI() {
         ivPlayButton.setVisibility(View.VISIBLE);
@@ -140,11 +147,14 @@ public class PreviewVideoHolder extends BasePreviewHolder {
      * 释放VideoView
      */
     public void releaseVideo() {
-        if (mPlayerView.getPlayer() != null) {
-            mPlayerView.getPlayer().removeListener(mPlayerListener);
-            mPlayerListener = null;
-            mPlayerView.getPlayer().release();
+        Player player = mPlayerView.getPlayer();
+        if (player != null) {
+            if (mPlayerListener != null) {
+                player.removeListener(mPlayerListener);
+            }
+            player.release();
             playerDefaultUI();
         }
+        mPlayerListener = null;
     }
 }

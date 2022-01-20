@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.adapter.holder.BasePreviewHolder;
+import com.luck.picture.lib.adapter.holder.PreviewAudioHolder;
 import com.luck.picture.lib.adapter.holder.PreviewVideoHolder;
 import com.luck.picture.lib.config.InjectResourceSource;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -43,6 +44,9 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
         if (viewType == BasePreviewHolder.ADAPTER_TYPE_VIDEO) {
             layoutResourceId = InjectResourceSource.getLayoutResource(parent.getContext(), InjectResourceSource.PREVIEW_ITEM_VIDEO_LAYOUT_RESOURCE);
             return BasePreviewHolder.generate(parent, viewType, layoutResourceId != 0 ? layoutResourceId : R.layout.ps_preview_video);
+        } else if (viewType == BasePreviewHolder.ADAPTER_TYPE_AUDIO) {
+            layoutResourceId = InjectResourceSource.getLayoutResource(parent.getContext(), InjectResourceSource.PREVIEW_ITEM_AUDIO_LAYOUT_RESOURCE);
+            return BasePreviewHolder.generate(parent, viewType, layoutResourceId != 0 ? layoutResourceId : R.layout.ps_preview_audio);
         } else {
             layoutResourceId = InjectResourceSource.getLayoutResource(parent.getContext(), InjectResourceSource.PREVIEW_ITEM_IMAGE_LAYOUT_RESOURCE);
             return BasePreviewHolder.generate(parent, viewType, layoutResourceId != 0 ? layoutResourceId : R.layout.ps_preview_image);
@@ -62,6 +66,8 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     public int getItemViewType(int position) {
         if (PictureMimeType.isHasVideo(mData.get(position).getMimeType())) {
             return BasePreviewHolder.ADAPTER_TYPE_VIDEO;
+        } else if (PictureMimeType.isHasAudio(mData.get(position).getMimeType())) {
+            return BasePreviewHolder.ADAPTER_TYPE_AUDIO;
         } else {
             return BasePreviewHolder.ADAPTER_TYPE_IMAGE;
         }
@@ -78,6 +84,11 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
         if (holder instanceof PreviewVideoHolder) {
             PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
             videoHolder.releaseVideo();
+        }
+
+        if (holder instanceof PreviewAudioHolder) {
+            PreviewAudioHolder audioHolder = (PreviewAudioHolder) holder;
+            audioHolder.releaseAudio();
         }
     }
 
@@ -99,11 +110,16 @@ public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolde
     /**
      * 释放当前视频相关
      */
-    public void destroyVideo(int position) {
+    public void destroy(int position) {
         BasePreviewHolder holder = mHolderLruCache.get(position);
         if (holder instanceof PreviewVideoHolder) {
             PreviewVideoHolder videoHolder = (PreviewVideoHolder) holder;
             videoHolder.releaseVideo();
+        }
+
+        if (holder instanceof PreviewAudioHolder) {
+            PreviewAudioHolder audioHolder = (PreviewAudioHolder) holder;
+            audioHolder.releaseAudio();
         }
     }
 }
