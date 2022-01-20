@@ -9,12 +9,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <com.google.android.exoplayer2.ui.PlayerView
-        android:id="@+id/playerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp" />
-
-
     <TextView
         android:id="@+id/tv_audio_name"
         android:layout_width="wrap_content"

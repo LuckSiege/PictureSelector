@@ -1374,7 +1374,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 if (!isExternalPreview && !isInternalBottomPreview && config.isPreviewZoomEffect) {
                     changeMagicalViewParams(position);
                 }
-                if (config.isPreviewZoomEffect) {
+                if (config.isPreviewZoomEffect && isFirstLoaded) {
                     viewPageAdapter.setVideoPlayButtonUI(position);
                 }
                 notifyGallerySelectMedia(currentMedia);

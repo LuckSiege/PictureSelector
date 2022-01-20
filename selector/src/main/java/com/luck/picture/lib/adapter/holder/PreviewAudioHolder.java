@@ -1,5 +1,6 @@
 package com.luck.picture.lib.adapter.holder;
 
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,19 +16,15 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.PlaybackException;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.ui.PlayerView;
 import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.DensityUtil;
+import com.luck.picture.lib.utils.DoubleUtils;
 import com.luck.picture.lib.utils.PictureFileUtils;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.Formatter;
 import java.util.Locale;
 
@@ -41,7 +38,6 @@ public class PreviewAudioHolder extends BasePreviewHolder {
     private static final long MAX_UPDATE_INTERVAL_MS = 1000;
     private static final long MIN_CURRENT_POSITION = 1000;
     private final Handler mHandler = new Handler(Looper.getMainLooper());
-    public PlayerView mPlayerView;
     public ImageView ivPlayButton;
     public TextView tvAudioName;
     public TextView tvTotalDuration;
@@ -50,35 +46,32 @@ public class PreviewAudioHolder extends BasePreviewHolder {
     public ImageView ivPlayBack, ivPlayFast;
     private final StringBuilder formatBuilder;
     private final Formatter formatter;
+    private MediaPlayer mPlayer = new MediaPlayer();
+    private boolean isPausePlayer = false;
+
     /**
      * 播放计时器
      */
     public Runnable mTickerRunnable = new Runnable() {
         @Override
         public void run() {
-            Player player = mPlayerView.getPlayer();
-            if (player != null) {
-                long currentPosition = player.getCurrentPosition();
-                String time = DateUtils.getStringForTime(formatBuilder, formatter, currentPosition);
-                if (!TextUtils.equals(time, tvCurrentTime.getText())) {
-                    tvCurrentTime.setText(time);
-                    if (player.getContentDuration() - currentPosition > MIN_CURRENT_POSITION) {
-                        seekBar.setProgress((int) currentPosition);
-                    } else {
-                        seekBar.setProgress((int) player.getContentDuration());
-                    }
+            long currentPosition = mPlayer.getCurrentPosition();
+            String time = DateUtils.getStringForTime(formatBuilder, formatter, currentPosition);
+            if (!TextUtils.equals(time, tvCurrentTime.getText())) {
+                tvCurrentTime.setText(time);
+                if (mPlayer.getDuration() - currentPosition > MIN_CURRENT_POSITION) {
+                    seekBar.setProgress((int) currentPosition);
+                } else {
+                    seekBar.setProgress(mPlayer.getDuration());
                 }
-                long nextSecondMs = MAX_UPDATE_INTERVAL_MS - currentPosition % MAX_UPDATE_INTERVAL_MS;
-                mHandler.postDelayed(this, nextSecondMs);
-            } else {
-                mHandler.removeCallbacks(this);
             }
+            long nextSecondMs = MAX_UPDATE_INTERVAL_MS - currentPosition % MAX_UPDATE_INTERVAL_MS;
+            mHandler.postDelayed(this, nextSecondMs);
         }
     };
 
     public PreviewAudioHolder(@NonNull View itemView) {
         super(itemView);
-        mPlayerView = itemView.findViewById(R.id.playerView);
         ivPlayButton = itemView.findViewById(R.id.iv_play_video);
         tvAudioName = itemView.findViewById(R.id.tv_audio_name);
         tvCurrentTime = itemView.findViewById(R.id.tv_current_time);
@@ -86,7 +79,6 @@ public class PreviewAudioHolder extends BasePreviewHolder {
         seekBar = itemView.findViewById(R.id.music_seek_bar);
         ivPlayBack = itemView.findViewById(R.id.iv_play_back);
         ivPlayFast = itemView.findViewById(R.id.iv_play_fast);
-        mPlayerView.setUseController(false);
         formatBuilder = new StringBuilder();
         formatter = new Formatter(formatBuilder, Locale.getDefault());
     }
@@ -105,8 +97,8 @@ public class PreviewAudioHolder extends BasePreviewHolder {
         builder.setSpan(new AbsoluteSizeSpan(DensityUtil.dip2px(itemView.getContext(), 12)), startIndex, endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         builder.setSpan(new ForegroundColorSpan(0xFF656565), startIndex, endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         tvAudioName.setText(builder);
-        seekBar.setMax((int) media.getDuration());
         tvTotalDuration.setText(DateUtils.formatDurationTime(media.getDuration()));
+        seekBar.setMax((int) media.getDuration());
         setBackFastUI(false);
         ivPlayBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,9 +120,8 @@ public class PreviewAudioHolder extends BasePreviewHolder {
                 if (fromUser) {
                     seekBar.setProgress(progress);
                     setCurrentPlayTime(progress);
-                    Player player = mPlayerView.getPlayer();
-                    if (player != null && player.getPlaybackState() == Player.STATE_READY) {
-                        player.seekTo(seekBar.getProgress());
+                    if (mPlayer.isPlaying()) {
+                        mPlayer.seekTo(seekBar.getProgress());
                     }
                 }
             }
@@ -154,24 +145,22 @@ public class PreviewAudioHolder extends BasePreviewHolder {
         ivPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Player player = mPlayerView.getPlayer();
-                if (player != null) {
-                    stopUpdateProgress();
-                    mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
-                    if (player.getPlaybackState() == Player.STATE_READY) {
-                        if (player.isPlaying()) {
-                            player.pause();
-                        } else {
-                            player.play();
-                        }
-                    } else {
-                        MediaItem mediaItem = PictureMimeType.isContent(path)
-                                ? MediaItem.fromUri(Uri.parse(path)) : MediaItem.fromUri(Uri.fromFile(new File(path)));
-                        player.setMediaItem(mediaItem);
-                        player.prepare();
-                        player.seekTo(seekBar.getProgress());
-                        player.play();
+                try {
+                    if (DoubleUtils.isFastDoubleClick()) {
+                        return;
                     }
+                    mPreviewEventListener.onPreviewVideoTitle(media.getFileName());
+                    if (mPlayer.isPlaying()) {
+                        pausePlayer();
+                    } else {
+                        if (isPausePlayer) {
+                            resumePlayer();
+                        } else {
+                            startPlayer(path);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -188,6 +177,55 @@ public class PreviewAudioHolder extends BasePreviewHolder {
     }
 
     /**
+     * 重新开始播放
+     *
+     * @param path
+     */
+    private void startPlayer(String path) {
+        try {
+            if (PictureMimeType.isContent(path)) {
+                mPlayer.setDataSource(itemView.getContext(), Uri.parse(path));
+            } else {
+                mPlayer.setDataSource(path);
+            }
+            mPlayer.prepare();
+            mPlayer.seekTo(seekBar.getProgress());
+            mPlayer.start();
+            isPausePlayer = false;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 暂停播放
+     */
+    private void pausePlayer() {
+        mPlayer.pause();
+        isPausePlayer = true;
+        playerDefaultUI(false);
+        stopUpdateProgress();
+    }
+
+    /**
+     * 恢复播放
+     */
+    private void resumePlayer() {
+        mPlayer.start();
+        startUpdateProgress();
+        playerIngUI();
+    }
+
+    /**
+     * 重置播放器
+     */
+    private void resetMediaPlayer() {
+        isPausePlayer = false;
+        mPlayer.stop();
+        mPlayer.reset();
+    }
+
+    /**
      * 设置当前播放进度
      *
      * @param progress
@@ -201,66 +239,76 @@ public class PreviewAudioHolder extends BasePreviewHolder {
      * 快进
      */
     private void fastAudioPlay() {
-        Player player = mPlayerView.getPlayer();
-        if (player != null && player.getPlaybackState() == Player.STATE_READY) {
-            if (seekBar.getProgress() > MAX_BACK_FAST_MS) {
-                seekBar.setProgress(seekBar.getMax());
-            } else {
-                seekBar.setProgress((int) (seekBar.getProgress() + MAX_BACK_FAST_MS));
-            }
-            setCurrentPlayTime(seekBar.getProgress());
-            player.seekTo(seekBar.getProgress());
+        if (seekBar.getProgress() > MAX_BACK_FAST_MS) {
+            seekBar.setProgress(seekBar.getMax());
+        } else {
+            seekBar.setProgress((int) (seekBar.getProgress() + MAX_BACK_FAST_MS));
         }
+        setCurrentPlayTime(seekBar.getProgress());
+        mPlayer.seekTo(seekBar.getProgress());
     }
 
     /**
      * 回退
      */
     private void slowAudioPlay() {
-        Player player = mPlayerView.getPlayer();
-        if (player != null && player.getPlaybackState() == Player.STATE_READY) {
-            if (seekBar.getProgress() < MAX_BACK_FAST_MS) {
-                seekBar.setProgress(0);
-            } else {
-                seekBar.setProgress((int) (seekBar.getProgress() - MAX_BACK_FAST_MS));
-            }
-            setCurrentPlayTime(seekBar.getProgress());
-            player.seekTo(seekBar.getProgress());
+        if (seekBar.getProgress() < MAX_BACK_FAST_MS) {
+            seekBar.setProgress(0);
+        } else {
+            seekBar.setProgress((int) (seekBar.getProgress() - MAX_BACK_FAST_MS));
         }
+        setCurrentPlayTime(seekBar.getProgress());
+        mPlayer.seekTo(seekBar.getProgress());
     }
 
-    private final Player.Listener mPlayerListener = new Player.Listener() {
+    /**
+     * 播放完成监听
+     */
+    private final MediaPlayer.OnCompletionListener mPlayCompletionListener = new MediaPlayer.OnCompletionListener() {
         @Override
-        public void onPlayerError(@NonNull PlaybackException error) {
+        public void onCompletion(MediaPlayer mp) {
+            stopUpdateProgress();
+            resetMediaPlayer();
             playerDefaultUI(true);
-        }
-
-        @Override
-        public void onPlaybackStateChanged(int playbackState) {
-            if (playbackState == Player.STATE_READY) {
-                playerIngUI();
-            } else if (playbackState == Player.STATE_ENDED) {
-                setBackFastUI(false);
-                playerDefaultUI(true);
-            }
-        }
-
-        @Override
-        public void onPlayWhenReadyChanged(boolean playWhenReady, int reason) {
-            if (playWhenReady) {
-                playerIngUI();
-            } else {
-                playerDefaultUI(false);
-            }
         }
     };
 
+    /**
+     * 播放失败监听
+     */
+    private final MediaPlayer.OnErrorListener mPlayErrorListener = new MediaPlayer.OnErrorListener() {
+        @Override
+        public boolean onError(MediaPlayer mp, int what, int extra) {
+            resetMediaPlayer();
+            playerDefaultUI(true);
+            return false;
+        }
+    };
+
+    /**
+     * 资源装载完成
+     */
+    private final MediaPlayer.OnPreparedListener mPlayPreparedListener = new MediaPlayer.OnPreparedListener() {
+
+        @Override
+        public void onPrepared(MediaPlayer mp) {
+            if (mp.isPlaying()) {
+                seekBar.setMax(mp.getDuration());
+                startUpdateProgress();
+                playerIngUI();
+            } else {
+                stopUpdateProgress();
+                resetMediaPlayer();
+                playerDefaultUI(true);
+            }
+        }
+    };
 
     /**
      * 开始更新播放进度
      */
     private void startUpdateProgress() {
-        mHandler.postDelayed(mTickerRunnable, MAX_UPDATE_INTERVAL_MS);
+        mHandler.post(mTickerRunnable);
     }
 
     /**
@@ -270,6 +318,11 @@ public class PreviewAudioHolder extends BasePreviewHolder {
         mHandler.removeCallbacks(mTickerRunnable);
     }
 
+    /**
+     * 黑夜UI样式
+     *
+     * @param isResetProgress 是否重置进度条
+     */
     private void playerDefaultUI(boolean isResetProgress) {
         stopUpdateProgress();
         if (isResetProgress) {
@@ -283,12 +336,20 @@ public class PreviewAudioHolder extends BasePreviewHolder {
         }
     }
 
+    /**
+     * 播放中UI样式
+     */
     private void playerIngUI() {
         startUpdateProgress();
         setBackFastUI(true);
         ivPlayButton.setImageResource(R.drawable.ps_ic_audio_stop);
     }
 
+    /**
+     * 设置快进和回退UI样式
+     *
+     * @param isEnabled
+     */
     private void setBackFastUI(boolean isEnabled) {
         ivPlayBack.setEnabled(isEnabled);
         ivPlayFast.setEnabled(isEnabled);
@@ -303,26 +364,18 @@ public class PreviewAudioHolder extends BasePreviewHolder {
 
     @Override
     public void onViewAttachedToWindow() {
-        Player player;
-        if (mPlayerView.getPlayer() == null) {
-            player = new ExoPlayer.Builder(itemView.getContext().getApplicationContext()).build();
-            mPlayerView.setPlayer(player);
-        } else {
-            player = mPlayerView.getPlayer();
-        }
-        player.addListener(mPlayerListener);
+        isPausePlayer = false;
+        setMediaPlayerListener();
         playerDefaultUI(true);
     }
 
     @Override
     public void onViewDetachedFromWindow() {
+        isPausePlayer = false;
         mHandler.removeCallbacks(mTickerRunnable);
-        Player player = mPlayerView.getPlayer();
-        if (player != null) {
-            player.stop();
-            player.removeListener(mPlayerListener);
-            playerDefaultUI(true);
-        }
+        setNullMediaPlayerListener();
+        resetMediaPlayer();
+        playerDefaultUI(true);
     }
 
     /**
@@ -330,10 +383,28 @@ public class PreviewAudioHolder extends BasePreviewHolder {
      */
     public void releaseAudio() {
         mHandler.removeCallbacks(mTickerRunnable);
-        Player player = mPlayerView.getPlayer();
-        if (player != null) {
-            player.removeListener(mPlayerListener);
-            player.release();
+        if (mPlayer != null) {
+            setNullMediaPlayerListener();
+            mPlayer.release();
+            mPlayer = null;
         }
+    }
+
+    /**
+     * 设置监听器
+     */
+    private void setMediaPlayerListener() {
+        mPlayer.setOnCompletionListener(mPlayCompletionListener);
+        mPlayer.setOnErrorListener(mPlayErrorListener);
+        mPlayer.setOnPreparedListener(mPlayPreparedListener);
+    }
+
+    /**
+     * 置空监听器
+     */
+    private void setNullMediaPlayerListener() {
+        mPlayer.setOnCompletionListener(null);
+        mPlayer.setOnErrorListener(null);
+        mPlayer.setOnPreparedListener(null);
     }
 }

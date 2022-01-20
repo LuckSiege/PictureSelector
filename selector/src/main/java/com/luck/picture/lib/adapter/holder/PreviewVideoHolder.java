@@ -138,23 +138,18 @@ public class PreviewVideoHolder extends BasePreviewHolder {
 
     @Override
     public void onViewAttachedToWindow() {
-        Player player;
-        if (mPlayerView.getPlayer() == null) {
-            player = new ExoPlayer.Builder(itemView.getContext().getApplicationContext()).build();
-            mPlayerView.setPlayer(player);
-        } else {
-            player = mPlayerView.getPlayer();
-        }
+        Player player = new ExoPlayer.Builder(itemView.getContext()).build();
+        mPlayerView.setPlayer(player);
         player.addListener(mPlayerListener);
-        playerDefaultUI();
     }
 
     @Override
     public void onViewDetachedFromWindow() {
         Player player = mPlayerView.getPlayer();
         if (player != null) {
-            player.stop();
             player.removeListener(mPlayerListener);
+            player.release();
+            mPlayerView.setPlayer(null);
             playerDefaultUI();
         }
     }
