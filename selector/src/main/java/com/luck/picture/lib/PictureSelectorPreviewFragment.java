@@ -1374,8 +1374,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 if (!isExternalPreview && !isInternalBottomPreview && config.isPreviewZoomEffect) {
                     changeMagicalViewParams(position);
                 }
-                if (config.isPreviewZoomEffect && isFirstLoaded) {
-                    viewPageAdapter.setVideoPlayButtonUI(position);
+                if (config.isPreviewZoomEffect) {
+                    if (isFirstLoaded || isInternalBottomPreview) {
+                        viewPageAdapter.setVideoPlayButtonUI(position);
+                    }
                 }
                 notifyGallerySelectMedia(currentMedia);
                 bottomNarBar.isDisplayEditor(PictureMimeType.isHasVideo(currentMedia.getMimeType())

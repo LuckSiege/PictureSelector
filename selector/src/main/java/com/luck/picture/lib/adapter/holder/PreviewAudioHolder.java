@@ -211,6 +211,7 @@ public class PreviewAudioHolder extends BasePreviewHolder {
      * 恢复播放
      */
     private void resumePlayer() {
+        mPlayer.seekTo(seekBar.getProgress());
         mPlayer.start();
         startUpdateProgress();
         playerIngUI();

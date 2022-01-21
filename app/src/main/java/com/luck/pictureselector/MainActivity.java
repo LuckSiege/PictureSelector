@@ -1404,11 +1404,13 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mAdapter.notifyItemRangeRemoved(0, mAdapter.getData().size());
-                mAdapter.getData().clear();
-                mAdapter.getData().addAll(result);
                 boolean isMaxSize = result.size() == mAdapter.getSelectMax();
-                mAdapter.notifyItemRangeInserted(0, isMaxSize ? result.size() - 1 : result.size());
+                int oldSize = mAdapter.getData().size();
+                mAdapter.notifyItemRangeRemoved(0, isMaxSize ? oldSize + 1 : oldSize);
+                mAdapter.getData().clear();
+
+                mAdapter.getData().addAll(result);
+                mAdapter.notifyItemRangeInserted(0, result.size());
             }
         });
     }
