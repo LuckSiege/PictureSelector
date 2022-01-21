@@ -99,7 +99,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
         try {
             InputStream stream = context.getContentResolver().openInputStream(mInputUri);
             BitmapFactory.decodeStream(stream, null, options);
-            options.inSampleSize = BitmapLoadUtils.calculateInSampleSize(options, mRequiredWidth, mRequiredHeight);
+            options.inSampleSize = BitmapLoadUtils.computeSize(options.outWidth,options.outHeight);
         } catch (Exception e) {
             e.printStackTrace();
         }

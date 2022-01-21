@@ -3,18 +3,12 @@ package com.luck.picture.lib.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Point;
 import android.net.Uri;
-import android.view.Display;
-import android.view.WindowManager;
 
-import androidx.annotation.NonNull;
 import androidx.exifinterface.media.ExifInterface;
 
 import com.luck.picture.lib.basic.PictureContentResolver;
-import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 
 import java.io.BufferedOutputStream;
@@ -141,75 +135,41 @@ public class BitmapUtils {
             imageWidth = screenWidth;
             imageHeight = screenHeight;
         }
-        if (MediaUtils.isLongImage(imageWidth, imageHeight)) {
-            return new int[]{PictureConfig.UNSET, PictureConfig.UNSET};
-        }
-        int maxBitmapSize = BitmapUtils.calculateMaxBitmapSize(context);
-        int inSampleSize = BitmapUtils.calculateInSampleSize(imageWidth, imageHeight, maxBitmapSize, maxBitmapSize);
+        final int inSampleSize = BitmapUtils.computeSize(imageWidth, imageHeight);
         int newWidth = (imageWidth) / inSampleSize;
         int newHeight = (imageHeight) / inSampleSize;
         return new int[]{newWidth, newHeight};
     }
 
     /**
-     * calculateInSampleSize
+     * 计算图片合适压缩比较
      *
-     * @param width
-     * @param height
-     * @param reqWidth
-     * @param reqHeight
+     * @param srcWidth  资源宽度
+     * @param srcHeight 资源高度
      * @return
      */
-    private static int calculateInSampleSize(int width, int height, int reqWidth, int reqHeight) {
-        int inSampleSize = 1;
-        if (height > reqHeight || width > reqWidth) {
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width lower or equal to the requested height and width.
-            while ((height / inSampleSize) > reqHeight || (width / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
+    public static int computeSize(int srcWidth, int srcHeight) {
+        srcWidth = srcWidth % 2 == 1 ? srcWidth + 1 : srcWidth;
+        srcHeight = srcHeight % 2 == 1 ? srcHeight + 1 : srcHeight;
+
+        int longSide = Math.max(srcWidth, srcHeight);
+        int shortSide = Math.min(srcWidth, srcHeight);
+
+        float scale = ((float) shortSide / longSide);
+        if (scale <= 1 && scale > 0.5625) {
+            if (longSide < 1664) {
+                return 1;
+            } else if (longSide < 4990) {
+                return 2;
+            } else if (longSide > 4990 && longSide < 10240) {
+                return 4;
+            } else {
+                return longSide / 1280;
             }
+        } else if (scale <= 0.5625 && scale > 0.5) {
+            return longSide / 1280 == 0 ? 1 : longSide / 1280;
+        } else {
+            return (int) Math.ceil(longSide / (1280.0 / scale));
         }
-        return inSampleSize;
     }
-
-    /**
-     * This method calculates maximum size of both width and height of bitmap.
-     * It is twice the device screen diagonal for default implementation (extra quality to zoom image).
-     * Size cannot exceed max texture size.
-     *
-     * @return - max bitmap size in pixels.
-     */
-    private static int calculateMaxBitmapSize(@NonNull Context context) {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display;
-        int width, height;
-        Point size = new Point();
-
-        if (wm != null) {
-            display = wm.getDefaultDisplay();
-            display.getSize(size);
-        }
-
-        width = size.x;
-        height = size.y;
-
-        // Twice the device screen diagonal as default
-        int maxBitmapSize = (int) Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
-
-        // Check for max texture size via Canvas
-        Canvas canvas = new Canvas();
-        final int maxCanvasSize = Math.min(canvas.getMaximumBitmapWidth(), canvas.getMaximumBitmapHeight());
-        if (maxCanvasSize > 0) {
-            maxBitmapSize = Math.min(maxBitmapSize, maxCanvasSize);
-        }
-
-        // Check for max texture size via GL
-        final int maxTextureSize = PSEglUtils.getMaxTextureSize();
-        if (maxTextureSize > 0) {
-            maxBitmapSize = Math.min(maxBitmapSize, maxTextureSize);
-        }
-
-        return maxBitmapSize;
-    }
-
 }

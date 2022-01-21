@@ -53,6 +53,7 @@ public class BitmapLoadUtils {
         return bitmap;
     }
 
+    @Deprecated
     public static int calculateInSampleSize(@NonNull BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
@@ -67,6 +68,38 @@ public class BitmapLoadUtils {
             }
         }
         return inSampleSize;
+    }
+
+    /**
+     * 计算图片合适压缩比较
+     *
+     * @param srcWidth  src width
+     * @param srcHeight src height
+     * @return
+     */
+    public static int computeSize(int srcWidth, int srcHeight) {
+        srcWidth = srcWidth % 2 == 1 ? srcWidth + 1 : srcWidth;
+        srcHeight = srcHeight % 2 == 1 ? srcHeight + 1 : srcHeight;
+
+        int longSide = Math.max(srcWidth, srcHeight);
+        int shortSide = Math.min(srcWidth, srcHeight);
+
+        float scale = ((float) shortSide / longSide);
+        if (scale <= 1 && scale > 0.5625) {
+            if (longSide < 1664) {
+                return 1;
+            } else if (longSide < 4990) {
+                return 2;
+            } else if (longSide > 4990 && longSide < 10240) {
+                return 4;
+            } else {
+                return longSide / 1280;
+            }
+        } else if (scale <= 0.5625 && scale > 0.5) {
+            return longSide / 1280 == 0 ? 1 : longSide / 1280;
+        } else {
+            return (int) Math.ceil(longSide / (1280.0 / scale));
+        }
     }
 
     /**
@@ -86,7 +119,7 @@ public class BitmapLoadUtils {
             if (options.outWidth == 0 && options.outHeight == 0) {
                 return new int[]{maxBitmapSize, maxBitmapSize};
             }
-            int inSampleSize = BitmapLoadUtils.calculateInSampleSize(options, maxBitmapSize, maxBitmapSize);
+            int inSampleSize = BitmapLoadUtils.computeSize(options.outWidth, options.outHeight);
             int newWidth = (options.outWidth) / inSampleSize;
             int newHeight = (options.outHeight) / inSampleSize;
             return new int[]{newWidth, newHeight};
