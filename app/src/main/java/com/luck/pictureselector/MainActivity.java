@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                     } else {
                         // 进入相册
                         PictureSelectionModel selectionModel = PictureSelector.create(getContext())
-                                .openGallery(SelectMimeType.ofImage())
+                                .openGallery(chooseMode)
                                 .setSelectorUIStyle(selectorStyle)
                                 .setImageEngine(GlideEngine.createGlideEngine())
                                 .setCropEngine(getCropEngine())
@@ -328,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 //.setQueryOnlyMimeType(PictureMimeType.ofGIF())
                                 .isMaxSelectEnabledMask(cbEnabledMask.isChecked())
                                 .isDirectReturnSingle(cb_single_back.isChecked())
-                                .setMaxSelectNum(100)
+                                .setMaxSelectNum(maxSelectNum)
                                 .setRecyclerAnimationMode(animationMode)
                                 .isGif(cb_isGif.isChecked())
                                 .setSelectedData(mAdapter.getData());

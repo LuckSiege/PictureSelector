@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -753,17 +752,12 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (adapterPosition > lastAdapterPosition) {
             if (direction == TouchUtils.LEFT) {
                 // 往左--->后滑换行
-                for (int i = 0; i <= columnCount; i++) {
-                    setFastSlideSelectedAndCancel(lastAdapterPosition);
-                    Log.i("YYY", "往左后滑: "+lastAdapterPosition);
-                    lastAdapterPosition += 1;
-                }
+                setFastSlideSelectedAndCancel(adapterPosition);
             } else {
                 // 往右--->前滑换行
                 for (int i = 0; i < columnCount; i++) {
                     lastAdapterPosition += 1;
                     setFastSlideSelectedAndCancel(lastAdapterPosition);
-                    Log.i("YYY", "往右前滑: "+lastAdapterPosition);
                 }
             }
         } else {
