@@ -33,6 +33,7 @@ public class TouchUtils {
     }
 
     public static abstract class OnRvItemTouchListener implements RecyclerView.OnItemTouchListener {
+        private static final int MIN_SLIDE_ITEM_SIZE_TIMES = 3;
         private int startDownX, startDownY;
         private int direction;
 
@@ -58,7 +59,13 @@ public class TouchUtils {
                     float dx = moveX - startDownX;
                     float dy = moveY - startDownY;
                     if (Math.abs(dx) > Math.abs(dy)) {
-                        isIntercept = true;
+                        View itemView = rv.findChildViewUnder(event.getX(), event.getY());
+                        if (itemView != null) {
+                            int centerPoint = itemView.getWidth() / MIN_SLIDE_ITEM_SIZE_TIMES;
+                            if (Math.abs(dx) > centerPoint) {
+                                isIntercept = true;
+                            }
+                        }
                     }
                     break;
             }
