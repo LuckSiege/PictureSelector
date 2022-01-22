@@ -107,6 +107,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isSandboxFileEngine;
     public boolean isOriginalControl;
     public boolean isDisplayTimeAxis;
+    public boolean isFastSlidingSelect;
 
     public static ImageEngine imageEngine;
     public static CompressEngine compressEngine;
@@ -197,6 +198,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isSandboxFileEngine = in.readByte() != 0;
         isOriginalControl = in.readByte() != 0;
         isDisplayTimeAxis = in.readByte() != 0;
+        isFastSlidingSelect = in.readByte() != 0;
     }
 
     @Override
@@ -273,6 +275,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isSandboxFileEngine ? 1 : 0));
         dest.writeByte((byte) (isOriginalControl ? 1 : 0));
         dest.writeByte((byte) (isDisplayTimeAxis ? 1 : 0));
+        dest.writeByte((byte) (isFastSlidingSelect ? 1 : 0));
     }
 
     @Override
@@ -366,6 +369,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isOriginalControl = false;
         isInjectLayoutResource = false;
         isDisplayTimeAxis = true;
+        isFastSlidingSelect = false;
     }
 
 

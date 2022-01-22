@@ -492,6 +492,16 @@
                 </LinearLayout>
 
                 <CheckBox
+                    android:id="@+id/cb_fast_select"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="滑动选择"
+                    android:checked="true"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
+                <CheckBox
                     android:id="@+id/cb_isCamera"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

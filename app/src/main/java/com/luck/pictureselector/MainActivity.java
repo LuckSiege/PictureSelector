@@ -131,7 +131,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             cb_mode, cb_hide, cb_crop_circular, cb_crop_use_bitmap, cb_styleCrop, cb_showCropGrid,
             cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
             cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox, cb_only_dir,
-            cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo, cb_system_album;
+            cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo,
+            cb_system_album,cb_fast_select;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isUpward;
     private boolean needScaleBig = true;
@@ -169,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_isGif = findViewById(R.id.cb_isGif);
         cb_WithImageVideo = findViewById(R.id.cbWithImageVideo);
         cb_system_album = findViewById(R.id.cb_system_album);
+        cb_fast_select = findViewById(R.id.cb_fast_select);
         cb_preview_full = findViewById(R.id.cb_preview_full);
         cb_preview_scale = findViewById(R.id.cb_preview_scale);
         cb_inject_layout = findViewById(R.id.cb_inject_layout);
@@ -289,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                     } else {
                         // 进入相册
                         PictureSelectionModel selectionModel = PictureSelector.create(getContext())
-                                .openGallery(chooseMode)
+                                .openGallery(SelectMimeType.ofImage())
                                 .setSelectorUIStyle(selectorStyle)
                                 .setImageEngine(GlideEngine.createGlideEngine())
                                 .setCropEngine(getCropEngine())
@@ -314,6 +316,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .isOriginalControl(cb_original.isChecked())
                                 .isDisplayCamera(cb_isCamera.isChecked())
                                 .isOpenClickSound(cb_voice.isChecked())
+                                .isFastSlidingSelect(cb_fast_select.isChecked())
                                 //.setOutputCameraImageFileName("luck.jpeg")
                                 //.setOutputCameraVideoFileName("luck.mp4")
                                 .isWithSelectVideoImage(cb_WithImageVideo.isChecked())
@@ -325,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 //.setQueryOnlyMimeType(PictureMimeType.ofGIF())
                                 .isMaxSelectEnabledMask(cbEnabledMask.isChecked())
                                 .isDirectReturnSingle(cb_single_back.isChecked())
-                                .setMaxSelectNum(maxSelectNum)
+                                .setMaxSelectNum(100)
                                 .setRecyclerAnimationMode(animationMode)
                                 .isGif(cb_isGif.isChecked())
                                 .setSelectedData(mAdapter.getData());

@@ -392,6 +392,9 @@ public final class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel isDirectReturnSingle(boolean isDirectReturn) {
+        if (isDirectReturn) {
+            selectionConfig.isFastSlidingSelect = false;
+        }
         selectionConfig.isDirectReturnSingle = selectionConfig.selectionMode == SelectModeConfig.SINGLE && isDirectReturn;
         return this;
     }
@@ -906,6 +909,20 @@ public final class PictureSelectionModel {
         return this;
     }
 
+    /**
+     * Quick slide selection results
+     *
+     * @param isFastSlidingSelect
+     * @return
+     */
+    public PictureSelectionModel isFastSlidingSelect(boolean isFastSlidingSelect) {
+        if (selectionConfig.isDirectReturnSingle) {
+            selectionConfig.isFastSlidingSelect = false;
+        } else {
+            selectionConfig.isFastSlidingSelect = isFastSlidingSelect;
+        }
+        return this;
+    }
 
     /**
      * @param isClickSound Whether to open click voice

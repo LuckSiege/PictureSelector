@@ -27,8 +27,8 @@ public class RemindDialog extends Dialog implements View.OnClickListener {
         setDialogSize();
     }
 
-    public static void showTipsDialog(Context context, String tips) {
-        new RemindDialog(context, tips).show();
+    public static Dialog showTipsDialog(Context context, String tips) {
+        return new RemindDialog(context, tips);
     }
 
     private void setDialogSize() {

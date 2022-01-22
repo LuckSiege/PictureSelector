@@ -6,6 +6,7 @@ import static android.view.KeyEvent.ACTION_UP;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -129,6 +130,11 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      * fragment enter anim duration
      */
     private long enterAnimDuration;
+
+    /**
+     * tipsDialog
+     */
+    protected Dialog tipsDialog;
 
     public String getFragmentTag() {
         return TAG;
@@ -342,6 +348,39 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     @Override
     public int confirmSelect(LocalMedia currentMedia, boolean isSelected) {
+        int checkSelectValidity = isCheckSelectValidity(currentMedia, isSelected);
+        if (checkSelectValidity != SelectedManager.SUCCESS) {
+            return SelectedManager.INVALID;
+        }
+        List<LocalMedia> selectedResult = SelectedManager.getSelectedResult();
+        int resultCode;
+        if (isSelected) {
+            selectedResult.remove(currentMedia);
+            resultCode = SelectedManager.REMOVE;
+        } else {
+            if (config.selectionMode == SelectModeConfig.SINGLE) {
+                if (selectedResult.size() > 0) {
+                    sendFixedSelectedChangeEvent(selectedResult.get(0));
+                    selectedResult.clear();
+                }
+            }
+            selectedResult.add(currentMedia);
+            currentMedia.setNum(selectedResult.size());
+            resultCode = SelectedManager.ADD_SUCCESS;
+            playClickEffect();
+        }
+        sendSelectedChangeEvent(resultCode == SelectedManager.ADD_SUCCESS, currentMedia);
+        return resultCode;
+    }
+
+    /**
+     * 验证选择的合法性
+     *
+     * @param currentMedia 当前选中资源
+     * @param isSelected   选中或是取消
+     * @return
+     */
+    protected int isCheckSelectValidity(LocalMedia currentMedia, boolean isSelected) {
         String curMimeType = currentMedia.getMimeType();
         long curDuration = currentMedia.getDuration();
         long curFileSize = currentMedia.getSize();
@@ -364,26 +403,8 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 return SelectedManager.INVALID;
             }
         }
-        int resultCode;
-        if (isSelected) {
-            selectedResult.remove(currentMedia);
-            resultCode = SelectedManager.REMOVE;
-        } else {
-            if (config.selectionMode == SelectModeConfig.SINGLE) {
-                if (selectedResult.size() > 0) {
-                    sendFixedSelectedChangeEvent(selectedResult.get(0));
-                    selectedResult.clear();
-                }
-            }
-            selectedResult.add(currentMedia);
-            currentMedia.setNum(selectedResult.size());
-            resultCode = SelectedManager.ADD_SUCCESS;
-            playClickEffect();
-        }
-        sendSelectedChangeEvent(resultCode == SelectedManager.ADD_SUCCESS, currentMedia);
-        return resultCode;
+        return SelectedManager.SUCCESS;
     }
-
 
     @SuppressLint({"StringFormatInvalid", "StringFormatMatches"})
     @Override
@@ -399,7 +420,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     }
                 }
                 String maxFileSize = PictureFileUtils.formatFileSize(config.selectMaxFileSize, 1);
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_max_size, maxFileSize));
+                showTipsDialog(getString(R.string.ps_select_max_size, maxFileSize));
                 return true;
             }
         }
@@ -414,7 +435,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     }
                 }
                 String minFileSize = PictureFileUtils.formatFileSize(config.selectMinFileSize, 1);
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_min_size, minFileSize));
+                showTipsDialog(getString(R.string.ps_select_min_size, minFileSize));
                 return true;
             }
         }
@@ -430,7 +451,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         }
                     }
                     // 如果视频可选数量是0
-                    RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_rule));
+                    showTipsDialog(getString(R.string.ps_rule));
                     return true;
                 }
 
@@ -442,7 +463,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                             return true;
                         }
                     }
-                    RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_message_max_num, config.maxSelectNum));
+                    showTipsDialog(getString(R.string.ps_message_max_num, config.maxSelectNum));
                     return true;
                 }
 
@@ -455,7 +476,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                             return true;
                         }
                     }
-                    RemindDialog.showTipsDialog(getContext(), getTipsMsg(getContext(), curMimeType, config.maxVideoSelectNum));
+                    showTipsDialog(getTipsMsg(getContext(), curMimeType, config.maxVideoSelectNum));
                     return true;
                 }
             }
@@ -470,7 +491,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_video_min_second, config.selectMinDurationSecond / 1000));
+                showTipsDialog(getString(R.string.ps_select_video_min_second, config.selectMinDurationSecond / 1000));
                 return true;
             }
 
@@ -484,7 +505,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_video_max_second, config.selectMaxDurationSecond / 1000));
+                showTipsDialog(getString(R.string.ps_select_video_max_second, config.selectMaxDurationSecond / 1000));
                 return true;
             }
         } else {
@@ -498,7 +519,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                             return true;
                         }
                     }
-                    RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_message_max_num, config.maxSelectNum));
+                    showTipsDialog(getString(R.string.ps_message_max_num, config.maxSelectNum));
                     return true;
                 }
             }
@@ -521,7 +542,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_rule));
+                showTipsDialog(getString(R.string.ps_rule));
                 return true;
             }
         }
@@ -536,7 +557,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     }
                 }
                 String maxFileSize = PictureFileUtils.formatFileSize(config.selectMaxFileSize, 1);
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_max_size, maxFileSize));
+                showTipsDialog(getString(R.string.ps_select_max_size, maxFileSize));
                 return true;
             }
         }
@@ -551,7 +572,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     }
                 }
                 String minFileSize = PictureFileUtils.formatFileSize(config.selectMinFileSize, 1);
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_min_size, minFileSize));
+                showTipsDialog(getString(R.string.ps_select_min_size, minFileSize));
                 return true;
             }
         }
@@ -567,7 +588,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                             return true;
                         }
                     }
-                    RemindDialog.showTipsDialog(getContext(), getTipsMsg(getContext(), curMimeType, config.maxVideoSelectNum));
+                    showTipsDialog(getTipsMsg(getContext(), curMimeType, config.maxVideoSelectNum));
                     return true;
                 }
             }
@@ -580,7 +601,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_video_min_second, config.selectMinDurationSecond / 1000));
+                showTipsDialog(getString(R.string.ps_select_video_min_second, config.selectMinDurationSecond / 1000));
                 return true;
             }
 
@@ -593,7 +614,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_video_max_second, config.selectMaxDurationSecond / 1000));
+                showTipsDialog(getString(R.string.ps_select_video_max_second, config.selectMaxDurationSecond / 1000));
                 return true;
             }
         } else if (PictureMimeType.isHasAudio(curMimeType)) {
@@ -606,7 +627,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                             return true;
                         }
                     }
-                    RemindDialog.showTipsDialog(getContext(), getTipsMsg(getContext(), curMimeType, config.maxSelectNum));
+                    showTipsDialog(getTipsMsg(getContext(), curMimeType, config.maxSelectNum));
                     return true;
                 }
             }
@@ -620,7 +641,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_audio_min_second, config.selectMinDurationSecond / 1000));
+                showTipsDialog(getString(R.string.ps_select_audio_min_second, config.selectMinDurationSecond / 1000));
                 return true;
             }
             if (!isSelected && config.selectMaxDurationSecond > 0 && duration > config.selectMaxDurationSecond) {
@@ -632,7 +653,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_select_audio_max_second, config.selectMaxDurationSecond / 1000));
+                showTipsDialog(getString(R.string.ps_select_audio_max_second, config.selectMaxDurationSecond / 1000));
                 return true;
             }
         } else {
@@ -645,7 +666,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                             return true;
                         }
                     }
-                    RemindDialog.showTipsDialog(getContext(), getTipsMsg(getContext(), curMimeType, config.maxSelectNum));
+                    showTipsDialog(getTipsMsg(getContext(), curMimeType, config.maxSelectNum));
                     return true;
                 }
             }
@@ -653,6 +674,25 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         return false;
     }
 
+    /**
+     * 提示Dialog
+     *
+     * @param tips
+     */
+    private void showTipsDialog(String tips) {
+        if (ActivityCompatHelper.isDestroy(getActivity())) {
+            return;
+        }
+        try {
+            if (tipsDialog != null && tipsDialog.isShowing()) {
+                return;
+            }
+            tipsDialog = RemindDialog.showTipsDialog(getContext(), tips);
+            tipsDialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 根据类型获取相应的Toast文案
@@ -1236,7 +1276,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     if (isSelectLimit) {
                         return true;
                     }
-                    RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_min_img_num, String.valueOf(config.minSelectNum)));
+                    showTipsDialog(getString(R.string.ps_min_img_num, String.valueOf(config.minSelectNum)));
                     return true;
                 }
             }
@@ -1247,7 +1287,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     if (isSelectLimit) {
                         return true;
                     }
-                    RemindDialog.showTipsDialog(getContext(),
+                    showTipsDialog(
                             getString(R.string.ps_min_video_num, String.valueOf(config.minVideoSelectNum)));
                     return true;
                 }
@@ -1264,7 +1304,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_min_img_num,
+                showTipsDialog(getString(R.string.ps_min_img_num,
                         String.valueOf(config.minSelectNum)));
                 return true;
             }
@@ -1277,7 +1317,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_min_video_num,
+                showTipsDialog(getString(R.string.ps_min_video_num,
                         String.valueOf(config.minVideoSelectNum)));
                 return true;
             }
@@ -1291,7 +1331,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         return true;
                     }
                 }
-                RemindDialog.showTipsDialog(getContext(), getString(R.string.ps_min_audio_num,
+                showTipsDialog(getString(R.string.ps_min_audio_num,
                         String.valueOf(config.minAudioSelectNum)));
                 return true;
             }
