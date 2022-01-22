@@ -55,10 +55,10 @@ public class BitmapUtils {
                     bitmap = rotatingImage(bitmap, degree);
                     if (PictureMimeType.isContent(path)) {
                         outputStream = (FileOutputStream) PictureContentResolver.getContentResolverOpenOutputStream(context, Uri.parse(path));
-                        saveBitmapFile(bitmap, outputStream);
                     } else {
-                        saveBitmapFile(bitmap, new FileOutputStream(path));
+                        outputStream = new FileOutputStream(path);
                     }
+                    saveBitmapFile(bitmap, outputStream);
                 }
             }
         } catch (Exception e) {
