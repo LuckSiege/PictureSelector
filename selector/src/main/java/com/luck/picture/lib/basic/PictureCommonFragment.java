@@ -1225,8 +1225,10 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 bucketId = MediaUtils.generateCameraBucketId(getContext(), cameraFile, config.outPutCameraDir);
             }
         }
-        if (config.isCameraRotateImage && PictureMimeType.isHasImage(mimeType) && !PictureMimeType.isContent(generatePath)) {
-            BitmapUtils.rotateImage(getContext(), generatePath);
+        if (PictureMimeType.isHasImage(mimeType)) {
+            if (config.isCameraRotateImage) {
+                BitmapUtils.rotateImage(getContext(), generatePath);
+            }
         }
         MediaExtraInfo mediaExtraInfo;
         if (PictureMimeType.isHasVideo(mimeType)) {

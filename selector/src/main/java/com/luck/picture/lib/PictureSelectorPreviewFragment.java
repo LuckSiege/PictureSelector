@@ -1405,7 +1405,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private void changeMagicalViewParams(int position) {
         LocalMedia media = mData.get(position);
         int[] size = getRealSizeFromMedia(media);
-        int[] maxImageSize = BitmapUtils.getMaxImageSize(getContext(), size[0], size[1], screenWidth, screenHeight);
+        int[] maxImageSize = BitmapUtils.getMaxImageSize(size[0], size[1], screenWidth, screenHeight);
         if (size[0] == 0 && size[1] == 0) {
             PictureSelectionConfig.imageEngine.loadImageBitmap(getActivity(), media.getPath(),
                     maxImageSize[0], maxImageSize[1], new OnCallbackListener<Bitmap>() {

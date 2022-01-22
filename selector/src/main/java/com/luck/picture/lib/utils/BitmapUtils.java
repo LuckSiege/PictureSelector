@@ -11,8 +11,7 @@ import androidx.exifinterface.media.ExifInterface;
 import com.luck.picture.lib.basic.PictureContentResolver;
 import com.luck.picture.lib.config.PictureMimeType;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
@@ -30,23 +29,46 @@ public class BitmapUtils {
      * @param path    资源路径
      */
     public static void rotateImage(Context context, String path) {
+        InputStream inputStream = null;
+        FileOutputStream outputStream = null;
+        Bitmap bitmap = null;
         try {
             int degree = readPictureDegree(context, path);
             if (degree > 0) {
-                BitmapFactory.Options opts = new BitmapFactory.Options();
-                opts.inSampleSize = 2;
-                File file = new File(path);
-                Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), opts);
-                if (bitmap != null) {
-                    bitmap = rotatingImage(bitmap, degree);
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                if (PictureMimeType.isContent(path)) {
+                    inputStream = PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(path));
+                    BitmapFactory.decodeStream(inputStream, null, options);
+                } else {
+                    BitmapFactory.decodeFile(path, options);
+                }
+                options.inSampleSize = computeSize(options.outWidth, options.outHeight);
+                options.inJustDecodeBounds = false;
+                if (PictureMimeType.isContent(path)) {
+                    inputStream = PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(path));
+                    bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+                } else {
+                    bitmap = BitmapFactory.decodeFile(path, options);
                 }
                 if (bitmap != null) {
-                    saveBitmapFile(bitmap, file);
-                    bitmap.recycle();
+                    bitmap = rotatingImage(bitmap, degree);
+                    if (PictureMimeType.isContent(path)) {
+                        outputStream = (FileOutputStream) PictureContentResolver.getContentResolverOpenOutputStream(context, Uri.parse(path));
+                        saveBitmapFile(bitmap, outputStream);
+                    } else {
+                        saveBitmapFile(bitmap, new FileOutputStream(path));
+                    }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            PictureFileUtils.close(inputStream);
+            PictureFileUtils.close(outputStream);
+            if (bitmap != null && !bitmap.isRecycled()) {
+                bitmap.recycle();
+            }
         }
     }
 
@@ -67,18 +89,21 @@ public class BitmapUtils {
      * 保存Bitmap至本地
      *
      * @param bitmap
-     * @param file
+     * @param fos
      */
-    private static void saveBitmapFile(Bitmap bitmap, File file) {
-        BufferedOutputStream bos = null;
+    private static void saveBitmapFile(Bitmap bitmap, FileOutputStream fos) {
+        ByteArrayOutputStream stream = null;
         try {
-            bos = new BufferedOutputStream(new FileOutputStream(file));
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, bos);
-            bos.flush();
+            stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 60, fos);
+            fos.write(stream.toByteArray());
+            fos.flush();
+            fos.close();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            PictureFileUtils.close(bos);
+            PictureFileUtils.close(fos);
+            PictureFileUtils.close(stream);
         }
     }
 
@@ -128,8 +153,7 @@ public class BitmapUtils {
      * @param screenHeight 屏幕高度
      * @return
      */
-    public static int[] getMaxImageSize(Context context,
-                                        int imageWidth, int imageHeight,
+    public static int[] getMaxImageSize(int imageWidth, int imageHeight,
                                         int screenWidth, int screenHeight) {
         if (imageWidth == 0 && imageHeight == 0) {
             imageWidth = screenWidth;
