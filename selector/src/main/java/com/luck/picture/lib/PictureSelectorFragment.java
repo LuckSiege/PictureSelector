@@ -88,11 +88,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
      */
     private static final int MIN_LINE_FEED_COLUMN = 1;
 
-    /**
-     * 滑动最小坐标阀值
-     */
-    private static final int MIN_SLIDE = 8;
-
     private RecyclerPreloadView mRecycler;
 
     private TextView tvDataEmpty;
