@@ -867,42 +867,44 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
                 @Override
                 public void onMove(RecyclerView rv, View itemView, int adapterPosition, int direction, MotionEvent event) {
-                    if (adapterPosition != RecyclerView.NO_POSITION) {
-                        adapterPosition = mAdapter.isDisplayCamera() ? adapterPosition - 1 : adapterPosition;
-                        ArrayList<LocalMedia> adapterData = mAdapter.getData();
-                        if (adapterData.size() == 0 || adapterPosition > adapterData.size()) {
-                            return;
-                        }
-                        if (lastAdapterPosition == adapterPosition && itemView.getRight() > event.getX()) {
-                            // 再同一个item内来回摩擦不做处理
-                        } else {
-                            if (config.selectionMode == SelectModeConfig.SINGLE) {
-                                // 单选模式时要重置掉上一次的选择再选新的
-                                cleanSingleLastSelected(adapterPosition);
+                    if (direction == TouchUtils.LEFT || direction == TouchUtils.RIGHT) {
+                        if (adapterPosition != RecyclerView.NO_POSITION) {
+                            adapterPosition = mAdapter.isDisplayCamera() ? adapterPosition - 1 : adapterPosition;
+                            ArrayList<LocalMedia> adapterData = mAdapter.getData();
+                            if (adapterData.size() == 0 || adapterPosition > adapterData.size()) {
+                                return;
                             }
-                            int columnCount;
-                            if (lastAdapterPosition == RecyclerView.NO_POSITION) {
-                                columnCount = MIN_LINE_FEED_COLUMN;
+                            if (lastAdapterPosition == adapterPosition && itemView.getRight() > event.getX()) {
+                                // 再同一个item内来回摩擦不做处理
                             } else {
-                                if (adapterPosition > lastAdapterPosition) {
-                                    columnCount = adapterPosition - lastAdapterPosition;
-                                } else {
-                                    columnCount = lastAdapterPosition - adapterPosition;
+                                if (config.selectionMode == SelectModeConfig.SINGLE) {
+                                    // 单选模式时要重置掉上一次的选择再选新的
+                                    cleanSingleLastSelected(adapterPosition);
                                 }
-                            }
-                            LocalMedia media = adapterData.get(adapterPosition);
-                            boolean isSelected = SelectedManager.getSelectedResult().contains(media);
-                            if (columnCount > MIN_LINE_FEED_COLUMN) {
-                                handleGestureSpanColumn(isSelected, direction, adapterPosition, lastAdapterPosition);
-                            } else {
-                                if (isSelected && lastAdapterPosition != RecyclerView.NO_POSITION) {
-                                    setFastSlideSelectedAndCancel(lastAdapterPosition);
+                                int columnCount;
+                                if (lastAdapterPosition == RecyclerView.NO_POSITION) {
+                                    columnCount = MIN_LINE_FEED_COLUMN;
                                 } else {
-                                    setFastSlideSelectedAndCancel(adapterPosition);
+                                    if (adapterPosition > lastAdapterPosition) {
+                                        columnCount = adapterPosition - lastAdapterPosition;
+                                    } else {
+                                        columnCount = lastAdapterPosition - adapterPosition;
+                                    }
                                 }
+                                LocalMedia media = adapterData.get(adapterPosition);
+                                boolean isSelected = SelectedManager.getSelectedResult().contains(media);
+                                if (columnCount > MIN_LINE_FEED_COLUMN) {
+                                    handleGestureSpanColumn(isSelected, direction, adapterPosition, lastAdapterPosition);
+                                } else {
+                                    if (isSelected && lastAdapterPosition != RecyclerView.NO_POSITION) {
+                                        setFastSlideSelectedAndCancel(lastAdapterPosition);
+                                    } else {
+                                        setFastSlideSelectedAndCancel(adapterPosition);
+                                    }
+                                }
+                                // 更新当前最新也是最后触摸到的item position
+                                lastAdapterPosition = adapterPosition;
                             }
-                            // 更新当前最新也是最后触摸到的item position
-                            lastAdapterPosition = adapterPosition;
                         }
                     }
                 }
