@@ -11,9 +11,7 @@ import com.luck.picture.lib.R;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Formatter;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author：luck
@@ -88,14 +86,22 @@ public class DateUtils {
     /**
      * 时间戳转换成时间格式
      *
-     * @param duration
+     * @param timeMs
      * @return
      */
-    public static String formatDurationTime(long duration) {
-        return String.format(Locale.getDefault(), "%02d:%02d",
-                TimeUnit.MILLISECONDS.toMinutes(duration),
-                TimeUnit.MILLISECONDS.toSeconds(duration)
-                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
+    public static String formatDurationTime(long timeMs) {
+        if (timeMs == C.TIME_UNSET) {
+            timeMs = 0;
+        }
+        String prefix = timeMs < 0 ? "-" : "";
+        timeMs = abs(timeMs);
+        long totalSeconds = (timeMs + 500) / 1000;
+        long seconds = totalSeconds % 60;
+        long minutes = (totalSeconds / 60) % 60;
+        long hours = totalSeconds / 3600;
+        return hours > 0
+                ? String.format(Locale.getDefault(), "%s%d:%02d:%02d", prefix, hours, minutes, seconds)
+                : String.format(Locale.getDefault(), "%s%02d:%02d", prefix, minutes, seconds);
     }
 
 
@@ -118,22 +124,6 @@ public class DateUtils {
     public static String getCreateFileName() {
         long millis = System.currentTimeMillis();
         return SF.format(millis);
-    }
-
-    public static String getStringForTime(StringBuilder builder, Formatter formatter, long timeMs) {
-        if (timeMs == C.TIME_UNSET) {
-            timeMs = 0;
-        }
-        String prefix = timeMs < 0 ? "-" : "";
-        timeMs = abs(timeMs);
-        long totalSeconds = (timeMs + 500) / 1000;
-        long seconds = totalSeconds % 60;
-        long minutes = (totalSeconds / 60) % 60;
-        long hours = totalSeconds / 3600;
-        builder.setLength(0);
-        return hours > 0
-                ? formatter.format("%s%d:%02d:%02d", prefix, hours, minutes, seconds).toString()
-                : formatter.format("%s%02d:%02d", prefix, minutes, seconds).toString();
     }
 
     /**

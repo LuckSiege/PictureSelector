@@ -25,8 +25,6 @@ import com.luck.picture.lib.utils.DoubleUtils;
 import com.luck.picture.lib.utils.PictureFileUtils;
 
 import java.io.IOException;
-import java.util.Formatter;
-import java.util.Locale;
 
 /**
  * @author：luck
@@ -44,8 +42,6 @@ public class PreviewAudioHolder extends BasePreviewHolder {
     public TextView tvCurrentTime;
     public SeekBar seekBar;
     public ImageView ivPlayBack, ivPlayFast;
-    private final StringBuilder formatBuilder;
-    private final Formatter formatter;
     private MediaPlayer mPlayer = new MediaPlayer();
     private boolean isPausePlayer = false;
 
@@ -56,7 +52,7 @@ public class PreviewAudioHolder extends BasePreviewHolder {
         @Override
         public void run() {
             long currentPosition = mPlayer.getCurrentPosition();
-            String time = DateUtils.getStringForTime(formatBuilder, formatter, currentPosition);
+            String time = DateUtils.formatDurationTime(currentPosition);
             if (!TextUtils.equals(time, tvCurrentTime.getText())) {
                 tvCurrentTime.setText(time);
                 if (mPlayer.getDuration() - currentPosition > MIN_CURRENT_POSITION) {
@@ -79,8 +75,6 @@ public class PreviewAudioHolder extends BasePreviewHolder {
         seekBar = itemView.findViewById(R.id.music_seek_bar);
         ivPlayBack = itemView.findViewById(R.id.iv_play_back);
         ivPlayFast = itemView.findViewById(R.id.iv_play_fast);
-        formatBuilder = new StringBuilder();
-        formatter = new Formatter(formatBuilder, Locale.getDefault());
     }
 
     @Override
@@ -232,7 +226,7 @@ public class PreviewAudioHolder extends BasePreviewHolder {
      * @param progress
      */
     private void setCurrentPlayTime(int progress) {
-        String time = DateUtils.getStringForTime(formatBuilder, formatter, progress);
+        String time = DateUtils.formatDurationTime( progress);
         tvCurrentTime.setText(time);
     }
 
