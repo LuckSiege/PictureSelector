@@ -297,9 +297,7 @@ public final class PictureSelectionModel {
      * @return
      */
     public PictureSelectionModel isWithSelectVideoImage(boolean isWithVideoImage) {
-        selectionConfig.isWithVideoImage =
-                selectionConfig.selectionMode != SelectModeConfig.SINGLE
-                        && selectionConfig.chooseMode == SelectMimeType.ofAll() && isWithVideoImage;
+        selectionConfig.isWithVideoImage = selectionConfig.chooseMode == SelectMimeType.ofAll() && isWithVideoImage;
         return this;
     }
 

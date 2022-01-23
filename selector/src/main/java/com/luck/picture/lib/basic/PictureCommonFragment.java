@@ -534,17 +534,15 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         if (PictureMimeType.isMimeTypeSame(existMimeType, curMimeType)) {
             // ignore
         } else {
-            if (config.selectionMode == SelectModeConfig.MULTIPLE) {
-                if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
-                    boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
-                            .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_NOT_WITH_SELECT_LIMIT);
-                    if (isSelectLimit) {
-                        return true;
-                    }
+            if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
+                boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
+                        .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_NOT_WITH_SELECT_LIMIT);
+                if (isSelectLimit) {
+                    return true;
                 }
-                showTipsDialog(getString(R.string.ps_rule));
-                return true;
             }
+            showTipsDialog(getString(R.string.ps_rule));
+            return true;
         }
         if (config.selectMaxFileSize > 0) {
             if (fileSize > config.selectMaxFileSize) {

@@ -38,6 +38,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
     public Context mContext;
     public PictureSelectionConfig config;
     public boolean isSelectNumberStyle;
+    public boolean isHandleMask;
     private ColorFilter defaultColorFilter, selectColorFilter, maskWhiteColorFilter;
 
     public static BaseRecyclerMediaHolder generate(ViewGroup parent, int viewType, int resource, PictureSelectionConfig config) {
@@ -66,7 +67,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         selectColorFilter = StyleUtils.getColorFilter(mContext, R.color.ps_color_80);
         maskWhiteColorFilter = StyleUtils.getColorFilter(mContext, R.color.ps_color_half_white);
         SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
-        this.isSelectNumberStyle = selectMainStyle.isSelectNumberStyle();
+        isSelectNumberStyle = selectMainStyle.isSelectNumberStyle();
         ivPicture = itemView.findViewById(R.id.ivPicture);
         tvCheck = itemView.findViewById(R.id.tvCheck);
         btnCheck = itemView.findViewById(R.id.btnCheck);
@@ -77,6 +78,9 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
             tvCheck.setVisibility(View.VISIBLE);
             btnCheck.setVisibility(View.VISIBLE);
         }
+
+        isHandleMask = !config.isDirectReturnSingle
+                && (config.selectionMode == SelectModeConfig.SINGLE || config.selectionMode == SelectModeConfig.MULTIPLE);
 
         int textSize = selectMainStyle.getAdapterSelectTextSize();
         if (StyleUtils.checkSizeValidity(textSize)) {
@@ -129,7 +133,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
             notifySelectNumberStyle(media);
         }
 
-        if (config.isMaxSelectEnabledMask && config.selectionMode == SelectModeConfig.MULTIPLE) {
+        if (isHandleMask && config.isMaxSelectEnabledMask) {
             dispatchHandleMask(media);
         }
 
@@ -167,7 +171,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (listener !=null) {
+                if (listener != null) {
                     listener.onItemLongClick(v, position);
                 }
                 return false;
@@ -203,15 +207,30 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         boolean isEnabledMask = false;
         if (SelectedManager.getSelectCount() > 0 && !SelectedManager.getSelectedResult().contains(media)) {
             if (config.isWithVideoImage) {
-                isEnabledMask = SelectedManager.getSelectCount() == config.maxSelectNum;
+                if (config.selectionMode == SelectModeConfig.SINGLE) {
+                    isEnabledMask = SelectedManager.getSelectCount() == Integer.MAX_VALUE;
+                } else {
+                    isEnabledMask = SelectedManager.getSelectCount() == config.maxSelectNum;
+                }
             } else {
                 if (PictureMimeType.isHasVideo(SelectedManager.getTopResultMimeType())) {
-                    int maxSelectNum = config.maxVideoSelectNum > 0
-                            ? config.maxVideoSelectNum : config.maxSelectNum;
+                    int maxSelectNum;
+                    if (config.selectionMode == SelectModeConfig.SINGLE) {
+                        maxSelectNum = Integer.MAX_VALUE;
+                    } else {
+                        maxSelectNum = config.maxVideoSelectNum > 0
+                                ? config.maxVideoSelectNum : config.maxSelectNum;
+                    }
                     isEnabledMask = SelectedManager.getSelectCount() == maxSelectNum
                             || PictureMimeType.isHasImage(media.getMimeType());
                 } else {
-                    isEnabledMask = SelectedManager.getSelectCount() == config.maxSelectNum
+                    int maxSelectNum;
+                    if (config.selectionMode == SelectModeConfig.SINGLE) {
+                        maxSelectNum = Integer.MAX_VALUE;
+                    } else {
+                        maxSelectNum = config.maxSelectNum;
+                    }
+                    isEnabledMask = SelectedManager.getSelectCount() == maxSelectNum
                             || PictureMimeType.isHasVideo(media.getMimeType());
                 }
             }

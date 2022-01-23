@@ -192,13 +192,17 @@ public class PictureSelectorFragment extends PictureCommonFragment
      */
     private boolean checkNotifyStrategy(boolean isAddRemove) {
         boolean isNotifyAll = false;
-        if (config.isMaxSelectEnabledMask && config.selectionMode == SelectModeConfig.MULTIPLE) {
+        if (config.isMaxSelectEnabledMask) {
             if (config.isWithVideoImage) {
-                isNotifyAll = SelectedManager.getSelectCount() == config.maxSelectNum
-                        || (!isAddRemove && SelectedManager.getSelectCount() == config.maxSelectNum - 1);
+                if (config.selectionMode == SelectModeConfig.SINGLE) {
+                    // ignore
+                } else {
+                    isNotifyAll = SelectedManager.getSelectCount() == config.maxSelectNum
+                            || (!isAddRemove && SelectedManager.getSelectCount() == config.maxSelectNum - 1);
+                }
             } else {
                 if (SelectedManager.getSelectCount() == 0 || (isAddRemove && SelectedManager.getSelectCount() == 1)) {
-                    // 首次添加或者选择数量变为0了，都notifyDataSetChanged
+                    // 首次添加或单选，选择数量变为0了，都notifyDataSetChanged
                     isNotifyAll = true;
                 } else {
                     if (PictureMimeType.isHasVideo(SelectedManager.getTopResultMimeType())) {
