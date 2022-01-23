@@ -99,6 +99,24 @@ PictureSelector.create(this)
 });
 ```
 
+使用系统相册
+
+```sh
+PictureSelector.create(this)
+     .openSystemGallery(SelectMimeType.ofImage())
+     .forResult(new OnResultCallbackListener<LocalMedia>() {
+        @Override
+        public void onResult(List<LocalMedia> result) {
+
+        }
+
+        @Override
+        public void onCancel() {
+
+      }
+});
+```
+
 2、单独拍照
 ```sh
 PictureSelector.create(this)
@@ -115,6 +133,7 @@ PictureSelector.create(this)
       }
 });
 ```
+
 
 3、您还可以按如下示例使用：
 
