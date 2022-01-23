@@ -96,6 +96,24 @@ PictureSelector.create(this)
 });
 ```
 
+Using system albums
+
+```sh
+PictureSelector.create(this)
+     .openSystemGallery(SelectMimeType.ofImage())
+     .forResult(new OnResultCallbackListener<LocalMedia>() {
+        @Override
+        public void onResult(List<LocalMedia> result) {
+
+        }
+
+        @Override
+        public void onCancel() {
+
+      }
+});
+```
+
 2、Only use camera
 ```sh
 PictureSelector.create(this)
