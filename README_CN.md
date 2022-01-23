@@ -172,7 +172,7 @@ getSupportFragmentManager().beginTransaction()
 			
 ```
 
-4、预览图片或视频
+4、预览图片、视频、音频
 ```sh
 
 PictureSelector.create(this)
@@ -192,11 +192,6 @@ PictureSelector.create(this)
 
 ```
 
-5、预览音频
-
-```sh
-AudioPlayDialog.showPlayAudioDialog(getContext(), availablePath);
-```
 
 设置图片选择器主题，更多请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E4%B8%BB%E9%A2%98api%E8%AF%B4%E6%98%8E)
 
