@@ -167,7 +167,9 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                listener.onItemLongClick(v, position);
+                if (listener !=null) {
+                    listener.onItemLongClick(v, position);
+                }
                 return false;
             }
         });
