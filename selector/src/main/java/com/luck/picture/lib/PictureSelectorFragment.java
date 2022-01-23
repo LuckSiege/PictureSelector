@@ -1,8 +1,10 @@
 package com.luck.picture.lib;
 
 import android.annotation.SuppressLint;
+import android.app.Service;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.os.Vibrator;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -753,6 +755,8 @@ public class PictureSelectorFragment extends PictureCommonFragment
             @Override
             public void onItemLongClick(View itemView, int position) {
                 if (mDragSelectTouchListener != null && config.isFastSlidingSelect) {
+                    Vibrator vibrator = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
+                    vibrator.vibrate(50);
                     mDragSelectTouchListener.startSlideSelection(position);
                 }
             }

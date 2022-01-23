@@ -32,16 +32,16 @@ repositories {
 
 dependencies {
   // PictureSelector basic (Necessary)
-  implementation 'io.github.lucksiege:pictureselector:v3.0.2'
+  implementation 'io.github.lucksiege:pictureselector:v3.0.3'
 
   // image compress library (Not necessary)
-  implementation 'io.github.lucksiege:compress:v3.0.2'
+  implementation 'io.github.lucksiege:compress:v3.0.3'
 
   // uCrop library (Not necessary)
-  implementation 'io.github.lucksiege:ucrop:v3.0.2'
+  implementation 'io.github.lucksiege:ucrop:v3.0.3'
 
   // simple camerax library (Not necessary)
-  implementation 'io.github.lucksiege:camerax:v3.0.2'
+  implementation 'io.github.lucksiege:camerax:v3.0.3'
 }
 ```
 
@@ -51,25 +51,25 @@ Or Maven:
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>v3.0.2</version>
+  <version>v3.0.3</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>compress</artifactId>
-  <version>v3.0.2</version>
+  <version>v3.0.3</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>ucrop</artifactId>
-  <version>v3.0.2</version>
+  <version>v3.0.3</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>camerax</artifactId>
-  <version>v3.0.2</version>
+  <version>v3.0.3</version>
 </dependency>
 ```
 
@@ -272,12 +272,12 @@ The advanced use cases are as follow：
 ```sh
 .setPermissionsInterceptListener(new OnPermissionsInterceptListener() {
       @Override
-      public void requestPermission(Fragment fragment, String[] permissionArray, OnCallbackListener<Boolean> call) {
+      public void requestPermission(Fragment fragment, String[] permissionArray, OnRequestPermissionListener call) {
 
       }
 
       @Override
-      public boolean hasPermissions(Fragment fragment) {
+      public boolean hasPermissions(Fragment fragment, String[] permissionArray) {
       return false;
   }
 });
