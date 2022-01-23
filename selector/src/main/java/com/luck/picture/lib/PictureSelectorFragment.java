@@ -866,7 +866,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                         if (adapterPosition != RecyclerView.NO_POSITION) {
                             adapterPosition = mAdapter.isDisplayCamera() ? adapterPosition - 1 : adapterPosition;
                             ArrayList<LocalMedia> adapterData = mAdapter.getData();
-                            if (adapterData.size() == 0 || adapterPosition > adapterData.size()) {
+                            if (adapterPosition < 0 || adapterData.size() == 0 || adapterPosition > adapterData.size()) {
                                 return;
                             }
                             if (lastAdapterPosition == adapterPosition && itemView.getRight() > event.getX()) {
