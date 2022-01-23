@@ -39,6 +39,7 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
     public PictureSelectionConfig config;
     public boolean isSelectNumberStyle;
     private ColorFilter defaultColorFilter, selectColorFilter, maskWhiteColorFilter;
+
     public static BaseRecyclerMediaHolder generate(ViewGroup parent, int viewType, int resource, PictureSelectionConfig config) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);
         switch (viewType) {
@@ -61,9 +62,9 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         super(itemView);
         this.config = config;
         this.mContext = itemView.getContext();
-        defaultColorFilter = StyleUtils.getColorFilter(mContext,R.color.ps_color_20);
-        selectColorFilter = StyleUtils.getColorFilter(mContext,R.color.ps_color_80);
-        maskWhiteColorFilter = StyleUtils.getColorFilter(mContext,R.color.ps_color_half_white);
+        defaultColorFilter = StyleUtils.getColorFilter(mContext, R.color.ps_color_20);
+        selectColorFilter = StyleUtils.getColorFilter(mContext, R.color.ps_color_80);
+        maskWhiteColorFilter = StyleUtils.getColorFilter(mContext, R.color.ps_color_half_white);
         SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
         this.isSelectNumberStyle = selectMainStyle.isSelectNumberStyle();
         ivPicture = itemView.findViewById(R.id.ivPicture);
@@ -160,6 +161,14 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
                     return;
                 }
                 selectedMedia(isSelected(media));
+            }
+        });
+
+        itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                listener.onItemLongClick(v, position);
+                return false;
             }
         });
 

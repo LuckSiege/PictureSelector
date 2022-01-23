@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.TextUtils;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
@@ -59,15 +58,17 @@ import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DoubleUtils;
 import com.luck.picture.lib.utils.StyleUtils;
 import com.luck.picture.lib.utils.ToastUtils;
-import com.luck.picture.lib.utils.TouchUtils;
 import com.luck.picture.lib.utils.ValueOf;
 import com.luck.picture.lib.widget.BottomNavBar;
 import com.luck.picture.lib.widget.CompleteSelectView;
 import com.luck.picture.lib.widget.RecyclerPreloadView;
+import com.luck.picture.lib.widget.SlideSelectTouchListener;
+import com.luck.picture.lib.widget.SlideSelectionHandler;
 import com.luck.picture.lib.widget.TitleBar;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -82,11 +83,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
      * 这个时间对应的是R.anim.ps_anim_modal_in里面的
      */
     private static final int SELECT_ANIM_DURATION = 135;
-
-    /**
-     * 触摸换行个数
-     */
-    private static final int MIN_LINE_FEED_COLUMN = 1;
 
     private RecyclerPreloadView mRecycler;
 
@@ -119,10 +115,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     private boolean isCameraMemoryRecycling;
 
-    /**
-     * RecyclerView上一次选择位置
-     */
-    private int lastAdapterPosition = RecyclerView.NO_POSITION;
+    private SlideSelectTouchListener mDragSelectTouchListener;
 
     public static PictureSelectorFragment newInstance() {
         PictureSelectorFragment fragment = new PictureSelectorFragment();
@@ -494,6 +487,9 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 }
                 SelectedManager.setCurrentLocalMediaFolder(curFolder);
                 albumListPopWindow.dismiss();
+                if (mDragSelectTouchListener != null && config.isFastSlidingSelect) {
+                    mDragSelectTouchListener.setRecyclerViewHeaderCount(mAdapter.isDisplayCamera() ? 1 : 0);
+                }
             }
         });
     }
@@ -713,72 +709,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
         addRecyclerAction();
     }
 
-    /**
-     * 单选模式时清除上一次选择结果
-     */
-    private void cleanSingleLastSelected(int adapterPosition) {
-        if (lastAdapterPosition != RecyclerView.NO_POSITION && adapterPosition != lastAdapterPosition) {
-            ArrayList<LocalMedia> adapterData = mAdapter.getData();
-            if (adapterData.size() == 0 || adapterPosition > adapterData.size()) {
-                return;
-            }
-            LocalMedia media = adapterData.get(lastAdapterPosition);
-            if (SelectedManager.getSelectedResult().contains(media)) {
-                confirmSelect(media, true);
-            }
-        }
-    }
-
-
-    /**
-     * 处理7字型手势触摸
-     */
-    private void handleGestureSpanColumn(boolean isSelected, int direction, int adapterPosition, int lastAdapterPosition) {
-        int columnCount;
-        if (adapterPosition > lastAdapterPosition) {
-            columnCount = adapterPosition - lastAdapterPosition;
-        } else {
-            if (isSelected) {
-                columnCount = lastAdapterPosition - adapterPosition;
-            } else {
-                columnCount = lastAdapterPosition - adapterPosition + 1;
-            }
-        }
-        if (adapterPosition > lastAdapterPosition) {
-            if (direction == TouchUtils.LEFT) {
-                // 往左--->后滑换行
-                setFastSlideSelectedAndCancel(adapterPosition);
-            } else {
-                // 往右--->前滑换行
-                for (int i = 0; i < columnCount; i++) {
-                    lastAdapterPosition += 1;
-                    setFastSlideSelectedAndCancel(lastAdapterPosition);
-                }
-            }
-        } else {
-            // 同一栏左右滑动
-            for (int i = 0; i < columnCount; i++) {
-                setFastSlideSelectedAndCancel(lastAdapterPosition);
-                lastAdapterPosition -= 1;
-            }
-        }
-    }
-
-
-    /**
-     * 快速滑动选中或取消item
-     *
-     * @param adapterPosition
-     */
-    private void setFastSlideSelectedAndCancel(int adapterPosition) {
-        ArrayList<LocalMedia> adapterData = mAdapter.getData();
-        if (adapterData.size() == 0 || adapterPosition > adapterData.size()) {
-            return;
-        }
-        LocalMedia media = adapterData.get(adapterPosition);
-        confirmSelect(media, SelectedManager.getSelectedResult().contains(media));
-    }
-
 
     private void addRecyclerAction() {
         mAdapter.setOnItemClickListener(new PictureImageGridAdapter.OnItemClickListener() {
@@ -819,6 +749,13 @@ public class PictureSelectorFragment extends PictureCommonFragment
                     }
                 }
             }
+
+            @Override
+            public void onItemLongClick(View itemView, int position) {
+                if (mDragSelectTouchListener != null && config.isFastSlidingSelect) {
+                    mDragSelectTouchListener.startSlideSelection(position);
+                }
+            }
         });
 
         mRecycler.setOnRecyclerViewScrollStateListener(new OnRecyclerViewScrollStateListener() {
@@ -853,63 +790,32 @@ public class PictureSelectorFragment extends PictureCommonFragment
         });
 
         if (config.isFastSlidingSelect) {
-            TouchUtils.addOnItemTouchListener(mRecycler, new TouchUtils.OnRvItemTouchListener() {
-
+            HashSet<Integer> selectedPosition = new HashSet<>();
+            SlideSelectionHandler slideSelectionHandler = new SlideSelectionHandler(new SlideSelectionHandler.ISelectionHandler() {
                 @Override
-                public void onDown(RecyclerView rv, int x, int y, MotionEvent event) {
-                    lastAdapterPosition = RecyclerView.NO_POSITION;
-                }
-
-                @Override
-                public void onMove(RecyclerView rv, View itemView, int adapterPosition, int direction, MotionEvent event) {
-                    if (direction == TouchUtils.LEFT || direction == TouchUtils.RIGHT) {
-                        if (adapterPosition != RecyclerView.NO_POSITION) {
-                            adapterPosition = mAdapter.isDisplayCamera() ? adapterPosition - 1 : adapterPosition;
-                            ArrayList<LocalMedia> adapterData = mAdapter.getData();
-                            if (adapterPosition < 0 || adapterData.size() == 0 || adapterPosition > adapterData.size()) {
-                                return;
-                            }
-                            if (lastAdapterPosition == adapterPosition && itemView.getRight() > event.getX()) {
-                                // 再同一个item内来回摩擦不做处理
-                            } else {
-                                if (config.selectionMode == SelectModeConfig.SINGLE) {
-                                    // 单选模式时要重置掉上一次的选择再选新的
-                                    cleanSingleLastSelected(adapterPosition);
-                                }
-                                int columnCount;
-                                if (lastAdapterPosition == RecyclerView.NO_POSITION) {
-                                    columnCount = MIN_LINE_FEED_COLUMN;
-                                } else {
-                                    if (adapterPosition > lastAdapterPosition) {
-                                        columnCount = adapterPosition - lastAdapterPosition;
-                                    } else {
-                                        columnCount = lastAdapterPosition - adapterPosition;
-                                    }
-                                }
-                                LocalMedia media = adapterData.get(adapterPosition);
-                                boolean isSelected = SelectedManager.getSelectedResult().contains(media);
-                                if (columnCount > MIN_LINE_FEED_COLUMN) {
-                                    handleGestureSpanColumn(isSelected, direction, adapterPosition, lastAdapterPosition);
-                                } else {
-                                    if (isSelected && lastAdapterPosition != RecyclerView.NO_POSITION) {
-                                        setFastSlideSelectedAndCancel(lastAdapterPosition);
-                                    } else {
-                                        setFastSlideSelectedAndCancel(adapterPosition);
-                                    }
-                                }
-                                // 更新当前最新也是最后触摸到的item position
-                                lastAdapterPosition = adapterPosition;
-                            }
-                        }
+                public HashSet<Integer> getSelection() {
+                    for (int i = 0; i < SelectedManager.getSelectCount(); i++) {
+                        LocalMedia media = SelectedManager.getSelectedResult().get(i);
+                        selectedPosition.add(media.position);
                     }
+                    return selectedPosition;
                 }
 
-
                 @Override
-                public void onCancel() {
-                    lastAdapterPosition = RecyclerView.NO_POSITION;
+                public void changeSelection(int start, int end, boolean isSelected, boolean calledFromOnStart) {
+                    ArrayList<LocalMedia> adapterData = mAdapter.getData();
+                    if (adapterData.size() == 0 || start > adapterData.size()) {
+                        return;
+                    }
+                    LocalMedia media = adapterData.get(start);
+                    int selectResultCode = confirmSelect(media, SelectedManager.getSelectedResult().contains(media));
+                    mDragSelectTouchListener.setActive(selectResultCode != SelectedManager.INVALID);
                 }
             });
+            mDragSelectTouchListener = new SlideSelectTouchListener()
+                    .setRecyclerViewHeaderCount(mAdapter.isDisplayCamera() ? 1 : 0)
+                    .withSelectListener(slideSelectionHandler);
+            mRecycler.addOnItemTouchListener(mDragSelectTouchListener);
         }
     }
 
@@ -1203,6 +1109,14 @@ public class PictureSelectorFragment extends PictureCommonFragment
             return limit;
         }
         return config.pageSize;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mDragSelectTouchListener != null) {
+            mDragSelectTouchListener.stopAutoScroll();
+        }
     }
 
     /**

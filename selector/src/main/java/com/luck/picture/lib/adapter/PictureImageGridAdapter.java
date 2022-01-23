@@ -51,6 +51,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
 
     private final Context mContext;
 
+
     public void notifyItemPositionChanged(int position) {
         this.notifyItemChanged(position);
     }
@@ -176,6 +177,14 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<BaseRecyclerMe
          * @param media        当前LocalMedia对象
          */
         void onItemClick(View selectedView, int position, LocalMedia media);
+
+        /**
+         * 列表item长按事件
+         *
+         * @param itemView
+         * @param position
+         */
+        void onItemLongClick(View itemView, int position);
 
         /**
          * 列表勾选点击事件
