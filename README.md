@@ -85,7 +85,7 @@ PictureSelector.create(this)
    .setImageEngine(GlideEngine.createGlideEngine())
    .forResult(new OnResultCallbackListener<LocalMedia>() {
       @Override
-      public void onResult(List<LocalMedia> result) {
+      public void onResult(ArrayList<LocalMedia> result) {
 
       }
 
@@ -103,7 +103,7 @@ PictureSelector.create(this)
      .openSystemGallery(SelectMimeType.ofImage())
      .forResult(new OnResultCallbackListener<LocalMedia>() {
         @Override
-        public void onResult(List<LocalMedia> result) {
+        public void onResult(ArrayList<LocalMedia> result) {
 
         }
 
@@ -120,7 +120,7 @@ PictureSelector.create(this)
      .openCamera(SelectMimeType.ofImage())
      .forResult(new OnResultCallbackListener<LocalMedia>() {
         @Override
-        public void onResult(List<LocalMedia> result) {
+        public void onResult(ArrayList<LocalMedia> result) {
 
         }
 
