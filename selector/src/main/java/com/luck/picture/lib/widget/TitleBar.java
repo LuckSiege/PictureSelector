@@ -135,13 +135,15 @@ public class TitleBar extends RelativeLayout implements View.OnClickListener {
             titleBarLayout.getLayoutParams().height = DensityUtil.dip2px(getContext(), 48);
         }
 
-        if (titleBarStyle.isDisplayTitleBarLine()) {
-            titleBarLine.setVisibility(VISIBLE);
-            if (StyleUtils.checkStyleValidity(titleBarStyle.getTitleBarLineColor())) {
-                titleBarLine.setBackgroundColor(titleBarStyle.getTitleBarLineColor());
+        if (titleBarLine != null) {
+            if (titleBarStyle.isDisplayTitleBarLine()) {
+                titleBarLine.setVisibility(VISIBLE);
+                if (StyleUtils.checkStyleValidity(titleBarStyle.getTitleBarLineColor())) {
+                    titleBarLine.setBackgroundColor(titleBarStyle.getTitleBarLineColor());
+                }
+            } else {
+                titleBarLine.setVisibility(GONE);
             }
-        } else {
-            titleBarLine.setVisibility(GONE);
         }
 
         int backgroundColor = titleBarStyle.getTitleBackgroundColor();
