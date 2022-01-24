@@ -159,7 +159,7 @@ public class PreviewAudioHolder extends BasePreviewHolder {
             }
         });
 
-        coverImageView.setOnLongClickListener(new View.OnLongClickListener() {
+        itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 if (mPreviewEventListener != null) {

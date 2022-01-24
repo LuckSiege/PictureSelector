@@ -31,7 +31,7 @@
     <string name="ps_long_chart">長い図</string>
     <string name="ps_warning">メディアファイル！</string>
     <string name="ps_prompt">提示</string>
-    <string name="ps_prompt_content">写真をアルバムに保存するかどうか？</string>
+    <string name="ps_prompt_image_content">写真をアルバムに保存するかどうか？</string>
     <string name="ps_prompt_video_content">アルバムにビデオを保存するかどうか？</string>
     <string name="ps_save_image_error">画像の保存に失敗</string>
     <string name="ps_save_video_error">ビデオの保存に失敗しました</string>
@@ -42,6 +42,8 @@
     <string name="ps_stop_audio">停止</string>
     <string name="ps_quit_audio">退出</string>
     <string name="ps_pause_audio">暂停</string>
+    <string name="ps_save_audio_error">オーディオの保存に失敗しました</string>
+    <string name="ps_prompt_audio_content">オーディオをダウンロードするかどうか？</string>
     <string name="ps_error">画像が破損した</string>
     <string name="ps_video_error">映像が壊れた</string>
     <string name="ps_audio_error">オーディオが破損した</string>

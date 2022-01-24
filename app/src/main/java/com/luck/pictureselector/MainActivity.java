@@ -87,6 +87,7 @@ import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.MediaUtils;
 import com.luck.picture.lib.utils.SandboxTransformUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
+import com.luck.picture.lib.utils.StyleUtils;
 import com.luck.picture.lib.utils.ToastUtils;
 import com.luck.picture.lib.utils.ValueOf;
 import com.luck.pictureselector.adapter.GridImageAdapter;
@@ -886,9 +887,29 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         options.isCropDragSmoothToCenter(false);
         options.isUseCustomLoaderBitmap(cb_crop_use_bitmap.isChecked());
         options.isForbidSkipMultipleCrop(false);
-        options.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
-        options.setToolbarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
-        options.setToolbarWidgetColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
+        if (selectorStyle != null && selectorStyle.getSelectMainStyle().getStatusBarColor() != 0) {
+            SelectMainStyle mainStyle = selectorStyle.getSelectMainStyle();
+            boolean isDarkStatusBarBlack = mainStyle.isDarkStatusBarBlack();
+            int statusBarColor = mainStyle.getStatusBarColor();
+            options.isDarkStatusBarBlack(isDarkStatusBarBlack);
+            if (StyleUtils.checkStyleValidity(statusBarColor)) {
+                options.setStatusBarColor(statusBarColor);
+                options.setToolbarColor(statusBarColor);
+            } else {
+                options.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
+                options.setToolbarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
+            }
+            TitleBarStyle titleBarStyle = selectorStyle.getTitleBarStyle();
+            if (StyleUtils.checkStyleValidity(titleBarStyle.getTitleTextColor())) {
+                options.setToolbarWidgetColor(titleBarStyle.getTitleTextColor());
+            } else {
+                options.setToolbarWidgetColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
+            }
+        } else {
+            options.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
+            options.setToolbarColor(ContextCompat.getColor(getContext(), R.color.ps_color_grey));
+            options.setToolbarWidgetColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
+        }
         return options;
     }
 

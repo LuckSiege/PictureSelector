@@ -31,7 +31,7 @@
     <string name="ps_long_chart">Figure longue</string>
     <string name="ps_warning">Pas de documents pour les médias！</string>
     <string name="ps_prompt">rappel</string>
-    <string name="ps_prompt_content">Conserver ou non une image sur un téléphone portable？</string>
+    <string name="ps_prompt_image_content">Conserver ou non une image sur un téléphone portable？</string>
     <string name="ps_prompt_video_content">Conserver ou non une video sur un téléphone portable？</string>
     <string name="ps_save_image_error">Défaut de conservation des images</string>
     <string name="ps_save_video_error">Défaut de conservation des videos</string>
@@ -59,6 +59,8 @@
     <string name="ps_choose_min_seconds">Impossible de sélectionner une vidéo en dessous de %1$ds</string>
     <string name="ps_choose_limit_seconds">Vous ne pouvez sélectionner que les vidéos dans les %1$ds à %2$ds</string>
     <string name="ps_know">Je sais</string>
+    <string name="ps_save_audio_error">Échec de enregistrement audio</string>
+    <string name="ps_prompt_audio_content">Télécharger audio sur le téléphone？</string>
     <string name="ps_data_null">Pas de données…</string>
     <string name="ps_editor">Édition</string>
     <string name="ps_go_setting">Pour définir</string>

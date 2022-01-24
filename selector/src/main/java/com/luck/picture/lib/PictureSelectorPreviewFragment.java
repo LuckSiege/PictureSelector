@@ -312,7 +312,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     && PictureMimeType.isHasAudio(mData.get(0).getMimeType()))) {
                 magicalView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
             } else {
-                magicalView.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.ps_color_black));
+                magicalView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_black));
             }
         }
     }
@@ -1311,12 +1311,17 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private void onExternalLongPressDownload(LocalMedia media) {
         if (PictureSelectionConfig.onExternalPreviewEventListener != null) {
             if (!PictureSelectionConfig.onExternalPreviewEventListener.onLongPressDownload(media)) {
-                PictureCommonDialog dialog = PictureCommonDialog.showDialog(getContext(),
-                        getContext().getString(R.string.ps_prompt),
-                        PictureMimeType.isHasVideo(media.getMimeType())
-                                || PictureMimeType.isUrlHasVideo(media.getAvailablePath())
-                                ? getContext().getString(R.string.ps_prompt_video_content)
-                                : getContext().getString(R.string.ps_prompt_content));
+                String content;
+                if (PictureMimeType.isHasAudio(media.getMimeType())
+                        || PictureMimeType.isUrlHasAudio(media.getAvailablePath())) {
+                    content = getString(R.string.ps_prompt_audio_content);
+                } else if (PictureMimeType.isHasVideo(media.getMimeType())
+                        || PictureMimeType.isUrlHasVideo(media.getAvailablePath())) {
+                    content = getString(R.string.ps_prompt_video_content);
+                } else {
+                    content = getString(R.string.ps_prompt_image_content);
+                }
+                PictureCommonDialog dialog = PictureCommonDialog.showDialog(getContext(), getString(R.string.ps_prompt), content);
                 dialog.setOnDialogEventListener(new PictureCommonDialog.OnDialogEventListener() {
                     @Override
                     public void onConfirm() {
@@ -1335,7 +1340,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                                 dismissLoading();
                                 if (TextUtils.isEmpty(realPath)) {
                                     String errorMsg;
-                                    if (PictureMimeType.isHasVideo(media.getMimeType())) {
+                                    if (PictureMimeType.isHasAudio(media.getMimeType())) {
+                                        errorMsg = getString(R.string.ps_save_audio_error);
+                                    } else if (PictureMimeType.isHasVideo(media.getMimeType())) {
                                         errorMsg = getString(R.string.ps_save_video_error);
                                     } else {
                                         errorMsg = getString(R.string.ps_save_image_error);

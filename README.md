@@ -329,9 +329,9 @@ limitations under the License.
 
 ## Effect
 
-| Single Mode | Mixed Mode |
-|:-----------:|:-----------:|
-|![](image/home.jpg)|![](image/home_mixed.jpg)|
+| Single Mode |
+|:-----------:|
+|![](image/home.jpg)|
 
 | Default Style | Preview | Multiple Crop |
 |:-----------:|:--------:|:---------:|

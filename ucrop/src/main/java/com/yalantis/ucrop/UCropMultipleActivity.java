@@ -39,6 +39,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.yalantis.ucrop.decoration.GridSpacingItemDecoration;
 import com.yalantis.ucrop.model.AspectRatio;
+import com.yalantis.ucrop.model.CustomIntentKey;
+import com.yalantis.ucrop.statusbar.ImmersiveManager;
 import com.yalantis.ucrop.util.DensityUtil;
 import com.yalantis.ucrop.util.FileUtils;
 
@@ -57,31 +59,6 @@ import java.util.Map;
  * @describe：UCropMultipleActivity
  */
 public class UCropMultipleActivity extends AppCompatActivity implements UCropFragmentCallback {
-    /**
-     * 输出的路径
-     */
-    private static final String EXTRA_OUT_PUT_PATH = "outPutPath";
-    /**
-     * 图片宽度
-     */
-    private static final String EXTRA_IMAGE_WIDTH = "imageWidth";
-    /**
-     * 图片高度
-     */
-    private static final String EXTRA_IMAGE_HEIGHT = "imageHeight";
-    /**
-     * 图片X轴偏移量
-     */
-    private static final String EXTRA_OFFSET_X = "offsetX";
-    /**
-     * 图片Y轴偏移量
-     */
-    private static final String EXTRA_OFFSET_Y = "offsetY";
-    /**
-     * 图片旋转比例
-     */
-    private static final String EXTRA_ASPECT_RATIO = "aspectRatio";
-
     private String mToolbarTitle;
     private int mToolbarTitleSize;
     // Enables dynamic coloring
@@ -112,6 +89,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        immersive();
         setContentView(R.layout.ucrop_activity_multiple);
         initCropFragments();
         UCropFragment uCropFragment = fragments.get(0);
@@ -120,6 +98,12 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         setGalleryAdapter();
     }
 
+    private void immersive() {
+        Intent intent = getIntent();
+        boolean isDarkStatusBarBlack = intent.getBooleanExtra(UCrop.Options.EXTRA_DARK_STATUS_BAR_BLACK, false);
+        mStatusBarColor = intent.getIntExtra(UCrop.Options.EXTRA_STATUS_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_statusbar));
+        ImmersiveManager.immersiveAboveAPI23(this, mStatusBarColor, mStatusBarColor, isDarkStatusBarBlack);
+    }
 
     private void initCropFragments() {
         ArrayList<String> totalCropData = getIntent().getExtras().getStringArrayList(UCrop.EXTRA_CROP_TOTAL_DATA_SOURCE);
@@ -367,12 +351,12 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
             String key = intent.getStringExtra(UCrop.EXTRA_CROP_INPUT_ORIGINAL);
             JSONObject uCropObject = uCropTotalQueue.get(key);
             Uri output = UCrop.getOutput(intent);
-            uCropObject.put(EXTRA_OUT_PUT_PATH, output != null ? output.getPath() : "");
-            uCropObject.put(EXTRA_IMAGE_WIDTH, UCrop.getOutputImageWidth(intent));
-            uCropObject.put(EXTRA_IMAGE_HEIGHT, UCrop.getOutputImageHeight(intent));
-            uCropObject.put(EXTRA_OFFSET_X, UCrop.getOutputImageOffsetX(intent));
-            uCropObject.put(EXTRA_OFFSET_Y, UCrop.getOutputImageOffsetY(intent));
-            uCropObject.put(EXTRA_ASPECT_RATIO, UCrop.getOutputCropAspectRatio(intent));
+            uCropObject.put(CustomIntentKey.EXTRA_OUT_PUT_PATH, output != null ? output.getPath() : "");
+            uCropObject.put(CustomIntentKey.EXTRA_IMAGE_WIDTH, UCrop.getOutputImageWidth(intent));
+            uCropObject.put(CustomIntentKey.EXTRA_IMAGE_HEIGHT, UCrop.getOutputImageHeight(intent));
+            uCropObject.put(CustomIntentKey.EXTRA_OFFSET_X, UCrop.getOutputImageOffsetX(intent));
+            uCropObject.put(CustomIntentKey.EXTRA_OFFSET_Y, UCrop.getOutputImageOffsetY(intent));
+            uCropObject.put(CustomIntentKey.EXTRA_ASPECT_RATIO, UCrop.getOutputCropAspectRatio(intent));
             uCropTotalQueue.put(key, uCropObject);
         } catch (Exception e) {
             e.printStackTrace();

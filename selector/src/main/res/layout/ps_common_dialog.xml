@@ -25,7 +25,7 @@
         android:gravity="center"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
-        android:text="@string/ps_prompt_content"
+        android:text="@string/ps_prompt_image_content"
         android:textColor="#53575e"
         android:textSize="15sp" />
 

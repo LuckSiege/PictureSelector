@@ -31,11 +31,13 @@
     <string name="ps_long_chart">長圖</string>
     <string name="ps_warning">暫無媒體文件！</string>
     <string name="ps_prompt">提示</string>
-    <string name="ps_prompt_content">是否保存圖片至手機？</string>
+    <string name="ps_prompt_image_content">是否保存圖片至手機？</string>
     <string name="ps_prompt_video_content">是否保存視頻至手機？</string>
+    <string name="ps_prompt_audio_content">是否保存音訊至手機？</string>
     <string name="ps_save_image_error">圖片保存失敗</string>
     <string name="ps_save_video_error">視頻保存失敗</string>
-    <string name="ps_save_success">保存成功至</string>
+    <string name="ps_save_audio_error">音訊保存失敗</string>
+    <string name="ps_save_success">文件保存成功至</string>
     <string name="ps_all_audio">所有音頻</string>
     <string name="ps_tape">錄音</string>
     <string name="ps_play_audio">播放</string>

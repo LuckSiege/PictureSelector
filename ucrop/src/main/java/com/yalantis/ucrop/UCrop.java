@@ -337,6 +337,9 @@ public class UCrop {
 
         public static final String EXTRA_CROP_FORBID_SKIP = EXTRA_PREFIX + ".ForbidSkipCrop";
 
+        public static final String EXTRA_DARK_STATUS_BAR_BLACK = EXTRA_PREFIX + ".isDarkStatusBarBlack";
+
+
         public static final String EXTRA_CROP_CUSTOM_LOADER_BITMAP = EXTRA_PREFIX + ".CustomLoaderCropBitmap";
 
         public static final String EXTRA_CROP_DRAG_CENTER = EXTRA_PREFIX + ".DragSmoothToCenter";
@@ -604,6 +607,15 @@ public class UCrop {
         public void setStatusBarColor(@ColorInt int color) {
             mOptionBundle.putInt(EXTRA_STATUS_BAR_COLOR, color);
         }
+
+
+        /**
+         * @param Is the font of the status bar black
+         */
+        public void isDarkStatusBarBlack(boolean isDarkStatusBarBlack) {
+            mOptionBundle.putBoolean(EXTRA_DARK_STATUS_BAR_BLACK, isDarkStatusBarBlack);
+        }
+
 
         /**
          * @param color - desired resolved color of the active and selected widget and progress wheel middle line (default is white)

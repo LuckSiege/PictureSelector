@@ -99,7 +99,7 @@ public final class PictureMimeType {
      * @return
      */
     public static boolean isUrlHasAudio(String url) {
-        return url.toLowerCase().endsWith(".amr");
+        return url.toLowerCase().endsWith(".amr") || url.toLowerCase().endsWith(".mp3");
     }
 
     /**

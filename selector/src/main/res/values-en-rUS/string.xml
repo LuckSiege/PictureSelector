@@ -32,7 +32,7 @@
     <string name="ps_long_chart">Long</string>
     <string name="ps_warning">No Media files!</string>
     <string name="ps_prompt">Prompt</string>
-    <string name="ps_prompt_content">Do you want to save pictures to your phone?</string>
+    <string name="ps_prompt_image_content">Do you want to save pictures to your phone?</string>
     <string name="ps_prompt_video_content">Do you want to save video to your phone?</string>
     <string name="ps_save_image_error">Picture save failed</string>
     <string name="ps_save_video_error">Video save failed</string>
@@ -46,6 +46,8 @@
     <string name="ps_error">The picture is corrupted</string>
     <string name="ps_video_error">The video is corrupted</string>
     <string name="ps_audio_error">The audio is corrupted</string>
+    <string name="ps_save_audio_error">Audio save failed</string>
+    <string name="ps_prompt_audio_content">Save audio to phone？</string>
     <string name="ps_confirm">Confirm</string>
     <string name="ps_preview_image_num">%1$d/%2$d</string>
     <string name="ps_not_crop_data">No cropped data</string>

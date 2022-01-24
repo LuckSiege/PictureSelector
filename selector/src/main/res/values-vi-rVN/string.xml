@@ -32,7 +32,7 @@
     <string name="ps_long_chart">Hình dài</string>
     <string name="ps_warning">Không có tập tin phương tiện！</string>
     <string name="ps_prompt">Gợi ý</string>
-    <string name="ps_prompt_content">Có lưu ảnh vào điện thoại không？</string>
+    <string name="ps_prompt_image_content">Có lưu ảnh vào điện thoại không？</string>
     <string name="ps_prompt_video_content">Lưu video vào tập ảnh？</string>
     <string name="ps_save_image_error">Lỗi tiết kiệm image</string>
     <string name="ps_save_video_error">Lỗi tiết kiệm video</string>
@@ -67,6 +67,8 @@
     <string name="ps_use_sound">Dùng chức năng ghi âm</string>
     <string name="ps_current_week">Tuần này</string>
     <string name="ps_current_month">Tháng này</string>
+    <string name="ps_save_audio_error">Lỗi tải tập tin âm thanh</string>
+    <string name="ps_prompt_audio_content">Cần lấy tập tin âm thanh？</string>
     <string name="ps_select_max_size">Tập tin đã chọn lớn hơn %1$s</string>
     <string name="ps_select_min_size">Tập tin đã chọn ít hơn %1$s</string>
     <string name="ps_select_video_max_second">Chọn đoạn video lớn hơn %1$d giây</string>

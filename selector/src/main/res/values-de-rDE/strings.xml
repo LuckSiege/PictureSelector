@@ -31,10 +31,12 @@
     <string name="ps_long_chart">Langes Bild</string>
     <string name="ps_warning">Keine Mediendateien！</string>
     <string name="ps_prompt">Aufforderung</string>
-    <string name="ps_prompt_content">Image in das Album speichern？</string>
+    <string name="ps_prompt_image_content">Image in das Album speichern？</string>
     <string name="ps_prompt_video_content">Video in das Album speichern？</string>
     <string name="ps_save_image_error">Speichern der Bilder fehlgeschlagen</string>
     <string name="ps_save_video_error">Das Speichern fehlgeschlagen</string>
+    <string name="ps_save_audio_error">Audiospeicherung fehlgeschlagen</string>
+    <string name="ps_prompt_audio_content">Audio auf dem Telefon speichern？</string>
     <string name="ps_save_success">bild erfolgreich gespeichert</string>
     <string name="ps_all_audio">Alles Audio</string>
     <string name="ps_tape">Aufnahme</string>

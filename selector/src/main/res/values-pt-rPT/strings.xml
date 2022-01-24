@@ -32,7 +32,7 @@
     <string name="ps_long_chart">Figura muito</string>
     <string name="ps_warning">Não há documentos！</string>
     <string name="ps_prompt">Dica</string>
-    <string name="ps_prompt_content">Salve a imagem para o telemóvel？</string>
+    <string name="ps_prompt_image_content">Salve a imagem para o telemóvel？</string>
     <string name="ps_prompt_video_content">Salve a videom para o telemóvel？</string>
     <string name="ps_save_image_error">Falha em salvar a imagem</string>
     <string name="ps_save_video_error">Falha em salvar a videoem</string>
@@ -67,6 +67,8 @@
     <string name="ps_use_sound">Usar função de gravação</string>
     <string name="ps_current_week">Esta semana</string>
     <string name="ps_current_month">Este mês</string>
+    <string name="ps_save_audio_error">A transferência de áudio falhou</string>
+    <string name="ps_prompt_audio_content">Deseja transferir áudio？</string>
     <string name="ps_select_max_size">O arquivo selecionado é maior que o %1$s</string>
     <string name="ps_select_min_size">O arquivo selecionado é menos de %1$s</string>
     <string name="ps_select_video_max_second">Selecionar vídeo por mais de %1$d segundos</string>

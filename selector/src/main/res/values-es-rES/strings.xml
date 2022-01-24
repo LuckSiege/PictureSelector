@@ -31,10 +31,12 @@
     <string name="ps_long_chart">Imagen larga</string>
     <string name="ps_warning">¡Sin archivos multimedia!</string>
     <string name="ps_prompt">Notificación</string>
-    <string name="ps_prompt_content">¿Quieres guardar la imagen en el teléfono?</string>
+    <string name="ps_prompt_image_content">¿Quieres guardar la imagen en el teléfono?</string>
     <string name="ps_prompt_video_content">¿Quieres guardar la videon en el teléfono?</string>
     <string name="ps_save_image_error">Error al guardar la imagen</string>
     <string name="ps_save_video_error">Error al guardar la videon</string>
+    <string name="ps_save_audio_error">Fallo al guardar audio</string>
+    <string name="ps_prompt_audio_content">Guardar audio al teléfono？</string>
     <string name="ps_save_success">La se guardó en</string>
     <string name="ps_all_audio">Todos audios</string>
     <string name="ps_tape">Recordar</string>

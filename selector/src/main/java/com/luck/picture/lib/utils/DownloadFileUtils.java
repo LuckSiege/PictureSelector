@@ -42,9 +42,25 @@ public class DownloadFileUtils {
                 Uri uri;
                 ContentValues contentValues = new ContentValues();
                 String time = ValueOf.toString(System.currentTimeMillis());
-                if (PictureMimeType.isHasVideo(mimeType)) {
+                if (PictureMimeType.isHasAudio(mimeType)) {
+                    contentValues.put(MediaStore.Audio.Media.DISPLAY_NAME, DateUtils.getCreateFileName("AUD_"));
+                    contentValues.put(MediaStore.Audio.Media.MIME_TYPE, TextUtils.isEmpty(mimeType)
+                            || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO)
+                            || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE) ? PictureMimeType.MIME_TYPE_AUDIO : mimeType);
+                    if (SdkVersionUtils.isQ()) {
+                        contentValues.put(MediaStore.Audio.Media.DATE_TAKEN, time);
+                        contentValues.put(MediaStore.Audio.Media.RELATIVE_PATH, Environment.DIRECTORY_MUSIC);
+                    } else {
+                        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
+                        contentValues.put(MediaStore.MediaColumns.DATA, dir.getAbsolutePath() + File.separator
+                                + DateUtils.getCreateFileName("AUD_") + PictureMimeType.AMR);
+                    }
+                    uri = context.getContentResolver().insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, contentValues);
+                } else if (PictureMimeType.isHasVideo(mimeType)) {
                     contentValues.put(MediaStore.Video.Media.DISPLAY_NAME, DateUtils.getCreateFileName("VID_"));
-                    contentValues.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(mimeType) || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE) ? PictureMimeType.MIME_TYPE_VIDEO : mimeType);
+                    contentValues.put(MediaStore.Video.Media.MIME_TYPE, TextUtils.isEmpty(mimeType)
+                            || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_AUDIO)
+                            || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_IMAGE) ? PictureMimeType.MIME_TYPE_VIDEO : mimeType);
                     if (SdkVersionUtils.isQ()) {
                         contentValues.put(MediaStore.Video.Media.DATE_TAKEN, time);
                         contentValues.put(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES);
@@ -56,7 +72,9 @@ public class DownloadFileUtils {
                     uri = context.getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues);
                 } else {
                     contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, DateUtils.getCreateFileName("IMG_"));
-                    contentValues.put(MediaStore.Images.Media.MIME_TYPE, TextUtils.isEmpty(mimeType) || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO) ? PictureMimeType.MIME_TYPE_IMAGE : mimeType);
+                    contentValues.put(MediaStore.Images.Media.MIME_TYPE, TextUtils.isEmpty(mimeType)
+                            || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_AUDIO)
+                            || mimeType.startsWith(PictureMimeType.MIME_TYPE_PREFIX_VIDEO) ? PictureMimeType.MIME_TYPE_IMAGE : mimeType);
                     if (SdkVersionUtils.isQ()) {
                         contentValues.put(MediaStore.Images.Media.DATE_TAKEN, time);
                         contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, PictureMimeType.DCIM);
