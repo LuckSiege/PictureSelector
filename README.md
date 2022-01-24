@@ -329,7 +329,7 @@ limitations under the License.
 
 ## Effect
 
-| Single Mode |
+| Function list |
 |:-----------:|
 |![](image/home.jpg)|
 
