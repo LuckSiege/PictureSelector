@@ -252,7 +252,29 @@ public class Luban implements Handler.Callback {
             return this;
         }
 
-        public Builder load(final File file, int index) {
+        public <T> Builder load(List<T> list) {
+            int index = -1;
+            for (T src : list) {
+                index++;
+                if (src instanceof String) {
+                    load((String) src, index);
+                } else if (src instanceof File) {
+                    load((File) src, index);
+                } else if (src instanceof Uri) {
+                    load((Uri) src, index);
+                } else {
+                    throw new IllegalArgumentException("Incoming data type exception, it must be String, File, Uri or Bitmap");
+                }
+            }
+            return this;
+        }
+
+        public Builder load(final File file) {
+            load(file,0);
+            return this;
+        }
+
+        private Builder load(final File file, int index) {
             mStreamProviders.add(new InputStreamAdapter() {
                 @Override
                 public InputStream openInternal() {
@@ -273,7 +295,12 @@ public class Luban implements Handler.Callback {
             return this;
         }
 
-        public Builder load(final String string, int index) {
+        public Builder load(final String string) {
+            load(string, 0);
+            return this;
+        }
+
+        private Builder load(final String string, int index) {
             mStreamProviders.add(new InputStreamAdapter() {
                 @Override
                 public InputStream openInternal() {
@@ -293,24 +320,12 @@ public class Luban implements Handler.Callback {
             return this;
         }
 
-        public <T> Builder load(List<T> list) {
-            int index = -1;
-            for (T src : list) {
-                index++;
-                if (src instanceof String) {
-                    load((String) src, index);
-                } else if (src instanceof File) {
-                    load((File) src, index);
-                } else if (src instanceof Uri) {
-                    load((Uri) src, index);
-                } else {
-                    throw new IllegalArgumentException("Incoming data type exception, it must be String, File, Uri or Bitmap");
-                }
-            }
+        public Builder load(final Uri uri) {
+            load(uri, 0);
             return this;
         }
 
-        public Builder load(final Uri uri, int index) {
+        private Builder load(final Uri uri, int index) {
             mStreamProviders.add(new InputStreamAdapter() {
                 @Override
                 public InputStream openInternal() throws IOException {
@@ -405,6 +420,10 @@ public class Luban implements Handler.Callback {
         }
 
         public File get(final String path) throws IOException {
+            return get(path, 0);
+        }
+
+        public File get(final String path,int index) throws IOException {
             return build().get(new InputStreamAdapter() {
                 @Override
                 public InputStream openInternal() {
@@ -413,7 +432,7 @@ public class Luban implements Handler.Callback {
 
                 @Override
                 public int getIndex() {
-                    return 0;
+                    return index;
                 }
 
                 @Override

@@ -12,6 +12,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectModeConfig;
+import com.luck.picture.lib.config.VideoQuality;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;

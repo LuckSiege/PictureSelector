@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.luck.picture.lib.basic.PictureCommonFragment;
-import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.manager.SelectedManager;
@@ -77,9 +76,7 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_CANCELED) {
-            if (requestCode == PictureConfig.REQUEST_CAMERA) {
-                onKeyBackFragmentFinish();
-            }
+            onKeyBackFragmentFinish();
         }
     }
 
