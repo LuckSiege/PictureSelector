@@ -11,6 +11,6 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/ps_ic_audio_placeholder"></bitmap>
+            android:src="@drawable/ps_ic_audio_placeholder" />
     </item>
 </layer-list>

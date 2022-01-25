@@ -141,11 +141,8 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
         if (media.isEditorImage()) {
             path = media.getCutPath();
         }
-        if (PictureMimeType.isHasAudio(media.getMimeType())) {
-            ivPicture.setImageResource(R.drawable.ps_ic_trans_1px);
-        } else if (PictureSelectionConfig.imageEngine != null) {
-            PictureSelectionConfig.imageEngine.loadGridImage(ivPicture.getContext(), path, ivPicture);
-        }
+
+        loadCover(path);
 
         tvCheck.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,6 +194,15 @@ public class BaseRecyclerMediaHolder extends RecyclerView.ViewHolder {
                 }
             }
         });
+    }
+
+    /**
+     * 加载资源封面
+     */
+    protected void loadCover(String path) {
+        if (PictureSelectionConfig.imageEngine != null) {
+            PictureSelectionConfig.imageEngine.loadGridImage(ivPicture.getContext(), path, ivPicture);
+        }
     }
 
 

@@ -58,6 +58,10 @@ public class AudioViewHolder extends BaseRecyclerMediaHolder {
     public void bindData(LocalMedia media, int position) {
         super.bindData(media, position);
         tvDuration.setText(DateUtils.formatDurationTime(media.getDuration()));
+    }
+
+    @Override
+    protected void loadCover(String path) {
         ivPicture.setImageResource(R.drawable.ps_audio_placeholder);
     }
 }
