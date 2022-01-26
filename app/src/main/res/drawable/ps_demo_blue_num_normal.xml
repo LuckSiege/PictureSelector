@@ -5,7 +5,7 @@
 
     <solid android:color="@color/ps_color_transparent" />
     <stroke
-        android:width="0.5dp"
+        android:width="1dp"
         android:color="@color/ps_color_white" />
     <size
         android:width="18dp"

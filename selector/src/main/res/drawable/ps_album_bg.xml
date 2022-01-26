@@ -4,7 +4,6 @@
     <solid android:color="@color/ps_color_4e4d4e" />
     <padding
         android:bottom="3dp"
-        android:left="10dp"
-        android:right="6dp"
+        android:left="8dp"
         android:top="3dp" />
 </shape>

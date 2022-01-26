@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@drawable/ps_custom_checkbox_selector"
+        android:background="@drawable/ps_demo_custom_selector"
         android:gravity="center"
         android:textColor="@color/ps_color_white"
         android:textSize="9sp" />

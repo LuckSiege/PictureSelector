@@ -1207,6 +1207,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 selectMainStyle.setDarkStatusBarBlack(true);
                 selectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
                 selectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_fa632d));
+                selectMainStyle.setPreviewSelectBackground(R.drawable.ps_demo_white_preview_selector);
+                selectMainStyle.setSelectBackground(R.drawable.ps_checkbox_selector);
                 selectMainStyle.setSelectText(getString(R.string.ps_done_front_num));
                 selectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
 
@@ -1222,7 +1224,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 numberBlueBottomNavBarStyle.setBottomPreviewNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
                 numberBlueBottomNavBarStyle.setBottomPreviewSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));
                 numberBlueBottomNavBarStyle.setBottomNarBarBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
-                numberBlueBottomNavBarStyle.setBottomSelectNumResources(R.drawable.picture_num_oval_blue);
+                numberBlueBottomNavBarStyle.setBottomSelectNumResources(R.drawable.ps_demo_blue_num_selected);
                 numberBlueBottomNavBarStyle.setBottomEditorTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
                 numberBlueBottomNavBarStyle.setBottomOriginalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_53575e));
 
@@ -1231,8 +1233,9 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 numberBlueSelectMainStyle.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));
                 numberBlueSelectMainStyle.setSelectNumberStyle(true);
                 numberBlueSelectMainStyle.setPreviewSelectNumberStyle(true);
-                numberBlueSelectMainStyle.setSelectBackground(R.drawable.picture_checkbox_num_selector);
+                numberBlueSelectMainStyle.setSelectBackground(R.drawable.ps_demo_blue_num_selector);
                 numberBlueSelectMainStyle.setMainListBackgroundColor(ContextCompat.getColor(getContext(), R.color.ps_color_white));
+                numberBlueSelectMainStyle.setPreviewSelectBackground(R.drawable.ps_demo_preview_blue_num_selector);
 
                 numberBlueSelectMainStyle.setSelectNormalTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_9b));
                 numberBlueSelectMainStyle.setSelectTextColor(ContextCompat.getColor(getContext(), R.color.ps_color_blue));
