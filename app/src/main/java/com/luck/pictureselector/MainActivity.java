@@ -528,14 +528,19 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
 
         @Override
         public void dragState(boolean isStart) {
-            int visibility = tvDeleteText.getVisibility();
             if (isStart) {
-                if (visibility == View.GONE) {
-                    tvDeleteText.setVisibility(View.VISIBLE);
+                if (tvDeleteText.getAlpha() == 0F) {
+                    ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(tvDeleteText, "alpha", 0F, 1F);
+                    alphaAnimator.setInterpolator(new LinearInterpolator());
+                    alphaAnimator.setDuration(120);
+                    alphaAnimator.start();
                 }
             } else {
-                if (visibility == View.VISIBLE) {
-                    tvDeleteText.setVisibility(View.GONE);
+                if (tvDeleteText.getAlpha() == 1F) {
+                    ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(tvDeleteText, "alpha", 1F, 0F);
+                    alphaAnimator.setInterpolator(new LinearInterpolator());
+                    alphaAnimator.setDuration(120);
+                    alphaAnimator.start();
                 }
             }
         }

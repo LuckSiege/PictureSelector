@@ -699,6 +699,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:alpha="0"
             android:background="@color/app_color_cc_red"
             android:drawableTop="@drawable/ic_normal_delete"
             android:drawablePadding="5dp"
@@ -708,8 +709,7 @@
             android:text="@string/app_drag_delete"
             android:textColor="@color/app_color_white"
             android:textSize="12sp"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            tools:alpha="1" />
 
         <View
             android:layout_width="match_parent"
