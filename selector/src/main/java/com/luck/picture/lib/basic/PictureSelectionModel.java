@@ -1059,9 +1059,12 @@ public final class PictureSelectionModel {
         }
     }
 
-
     /**
      * build PictureSelectorFragment
+     * <p>
+     * The {@link IBridgePictureBehavior} interface needs to be
+     * implemented in the activity or fragment you call to receive the returned results
+     * </p>
      */
     public PictureSelectorFragment build() {
         Activity activity = selector.getActivity();

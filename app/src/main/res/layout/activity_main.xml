@@ -42,23 +42,6 @@
         android:layout_below="@id/view_title"
         android:clipChildren="false">
 
-        <TextView
-            android:id="@+id/tv_delete_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/app_color_red"
-            android:drawableTop="@drawable/ps_ic_delete"
-            android:drawablePadding="5dp"
-            android:gravity="center"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:text="@string/app_drag_delete"
-            android:textColor="@color/app_color_white"
-            android:textSize="12sp"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -391,8 +374,8 @@
                     android:id="@+id/cb_system_album"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="使用系统图库 (仅支持部分api)"
                     android:gravity="center_vertical"
+                    android:text="使用系统图库 (仅支持部分api)"
                     android:textColor="@color/app_color_53575e"
                     android:textSize="14sp" />
 
@@ -495,9 +478,9 @@
                     android:id="@+id/cb_fast_select"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:checked="true"
                     android:gravity="center_vertical"
                     android:text="滑动选择"
-                    android:checked="true"
                     android:textColor="@color/app_color_53575e"
                     android:textSize="14sp" />
 
@@ -649,11 +632,11 @@
                     android:id="@+id/cb_crop_use_bitmap"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:checked="true"
                     android:gravity="center_vertical"
                     android:text="自定义Loader Bitmap"
                     android:textColor="@color/app_color_53575e"
                     android:textSize="14sp"
-                    android:checked="true"
                     android:visibility="gone" />
 
                 <CheckBox
@@ -710,6 +693,23 @@
                     android:visibility="gone" />
             </LinearLayout>
         </ScrollView>
+
+        <TextView
+            android:id="@+id/tv_delete_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/app_color_cc_red"
+            android:drawableTop="@drawable/ic_normal_delete"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="@string/app_drag_delete"
+            android:textColor="@color/app_color_white"
+            android:textSize="12sp"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <View
             android:layout_width="match_parent"

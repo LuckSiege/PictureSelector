@@ -1,5 +1,9 @@
 package com.luck.pictureselector;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,7 +19,7 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -35,6 +39,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -92,6 +97,7 @@ import com.luck.picture.lib.utils.ToastUtils;
 import com.luck.picture.lib.utils.ValueOf;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.listener.DragListener;
+import com.luck.pictureselector.listener.OnItemLongClickListener;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropImageEngine;
 import com.yalantis.ucrop.model.AspectRatio;
@@ -133,15 +139,13 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
             cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox, cb_only_dir,
             cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo,
-            cb_system_album,cb_fast_select;
+            cb_system_album, cb_fast_select;
     private int chooseMode = SelectMimeType.ofAll();
-    private boolean isUpward;
+    private boolean isHasLiftDelete;
     private boolean needScaleBig = true;
-    private boolean needScaleSmall = true;
+    private boolean needScaleSmall = false;
     private int language = LanguageConfig.UNKNOWN_LANGUAGE;
     private int x = 0, y = 0;
-    private ItemTouchHelper mItemTouchHelper;
-    private DragListener mDragListener;
     private int animationMode = AnimationType.DEFAULT_ANIMATION;
     private PictureSelectorStyle selectorStyle;
     private final List<LocalMedia> mData = new ArrayList<>();
@@ -227,6 +231,10 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         FullyGridLayoutManager manager = new FullyGridLayoutManager(this,
                 4, GridLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(manager);
+        RecyclerView.ItemAnimator itemAnimator = mRecyclerView.getItemAnimator();
+        if (itemAnimator != null) {
+            ((SimpleItemAnimator) itemAnimator).setSupportsChangeAnimations(false);
+        }
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(4,
                 DensityUtil.dip2px(this, 8), false));
         mAdapter = new GridImageAdapter(getContext(), mData);
@@ -346,180 +354,192 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                             .isOriginalControl(cb_original.isChecked())
                             .setOutputAudioDir(getSandboxAudioOutputPath())
                             .setSelectedData(mAdapter.getData());
-                    ;
                     forOnlyCameraResult(cameraModel);
                 }
             }
         });
 
-        mAdapter.setItemLongClickListener((holder, position, v) -> {
-            //如果item不是最后一个，则执行拖拽
-            needScaleBig = true;
-            needScaleSmall = true;
-            int size = mAdapter.getData().size();
-            if (size != maxSelectNum) {
-                mItemTouchHelper.startDrag(holder);
-                return;
-            }
-            if (holder.getLayoutPosition() != size - 1) {
-                mItemTouchHelper.startDrag(holder);
-            }
-        });
-
-        mDragListener = new DragListener() {
+        mAdapter.setItemLongClickListener(new OnItemLongClickListener() {
             @Override
-            public void deleteState(boolean isDelete) {
-                if (isDelete) {
-                    tvDeleteText.setText(getString(R.string.app_let_go_drag_delete));
-                    tvDeleteText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_let_go_delete, 0, 0);
-                } else {
-                    tvDeleteText.setText(getString(R.string.app_drag_delete));
-                    tvDeleteText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ps_ic_delete, 0, 0);
-                }
-
-            }
-
-            @Override
-            public void dragState(boolean isStart) {
-                int visibility = tvDeleteText.getVisibility();
-                if (isStart) {
-                    if (visibility == View.GONE) {
-                        tvDeleteText.animate().alpha(1).setDuration(300).setInterpolator(new AccelerateInterpolator());
-                        tvDeleteText.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    if (visibility == View.VISIBLE) {
-                        tvDeleteText.animate().alpha(0).setDuration(300).setInterpolator(new AccelerateInterpolator());
-                        tvDeleteText.setVisibility(View.GONE);
-                    }
-                }
-            }
-        };
-
-        mItemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
-            @Override
-            public boolean isLongPressDragEnabled() {
-                return true;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            }
-
-            @Override
-            public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-                int itemViewType = viewHolder.getItemViewType();
+            public void onItemLongClick(RecyclerView.ViewHolder holder, int position, View v) {
+                int itemViewType = holder.getItemViewType();
                 if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
-                    viewHolder.itemView.setAlpha(0.7f);
-                }
-                return makeMovementFlags(ItemTouchHelper.DOWN | ItemTouchHelper.UP
-                        | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, 0);
-            }
-
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                //得到item原来的position
-                try {
-                    int fromPosition = viewHolder.getAdapterPosition();
-                    //得到目标position
-                    int toPosition = target.getAdapterPosition();
-                    int itemViewType = target.getItemViewType();
-                    if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
-                        if (fromPosition < toPosition) {
-                            for (int i = fromPosition; i < toPosition; i++) {
-                                Collections.swap(mAdapter.getData(), i, i + 1);
-                            }
-                        } else {
-                            for (int i = fromPosition; i > toPosition; i--) {
-                                Collections.swap(mAdapter.getData(), i, i - 1);
-                            }
-                        }
-                        mAdapter.notifyItemMoved(fromPosition, toPosition);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return true;
-            }
-
-            @Override
-            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
-                                    @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-                int itemViewType = viewHolder.getItemViewType();
-                if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
-                    if (null == mDragListener) {
-                        return;
-                    }
-                    if (needScaleBig) {
-                        //如果需要执行放大动画
-                        viewHolder.itemView.animate().scaleXBy(0.1f).scaleYBy(0.1f).setDuration(100);
-                        //执行完成放大动画,标记改掉
-                        needScaleBig = false;
-                        //默认不需要执行缩小动画，当执行完成放大 并且松手后才允许执行
-                        needScaleSmall = false;
-                    }
-                    int sh = recyclerView.getHeight() + tvDeleteText.getHeight();
-                    int ry = tvDeleteText.getBottom() - sh;
-                    if (dY >= ry) {
-                        //拖到删除处
-                        mDragListener.deleteState(true);
-                        if (isUpward) {
-                            //在删除处放手，则删除item
-                            viewHolder.itemView.setVisibility(View.INVISIBLE);
-                            mAdapter.delete(viewHolder.getAdapterPosition());
-                            resetState();
-                            return;
-                        }
-                    } else {//没有到删除处
-                        if (View.INVISIBLE == viewHolder.itemView.getVisibility()) {
-                            //如果viewHolder不可见，则表示用户放手，重置删除区域状态
-                            mDragListener.dragState(false);
-                        }
-                        if (needScaleSmall) {//需要松手后才能执行
-                            viewHolder.itemView.animate().scaleXBy(1f).scaleYBy(1f).setDuration(100);
-                        }
-                        mDragListener.deleteState(false);
-                    }
-                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-                }
-            }
-
-            @Override
-            public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
-                int itemViewType = viewHolder != null ? viewHolder.getItemViewType() : GridImageAdapter.TYPE_CAMERA;
-                if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
-                    if (ItemTouchHelper.ACTION_STATE_DRAG == actionState && mDragListener != null) {
-                        mDragListener.dragState(true);
-                    }
-                    super.onSelectedChanged(viewHolder, actionState);
-                }
-            }
-
-            @Override
-            public long getAnimationDuration(@NonNull RecyclerView recyclerView, int animationType, float animateDx, float animateDy) {
-                needScaleSmall = true;
-                isUpward = true;
-                return super.getAnimationDuration(recyclerView, animationType, animateDx, animateDy);
-            }
-
-            @Override
-            public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-                int itemViewType = viewHolder.getItemViewType();
-                if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
-                    viewHolder.itemView.setAlpha(1.0f);
-                    super.clearView(recyclerView, viewHolder);
-                    mAdapter.notifyDataSetChanged();
-                    resetState();
+                    mItemTouchHelper.startDrag(holder);
                 }
             }
         });
-
         // 绑定拖拽事件
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
-
         // 清除缓存
 //        clearCache();
     }
+
+    private final ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
+        @Override
+        public boolean isLongPressDragEnabled() {
+            return true;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+        }
+
+        @Override
+        public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            int itemViewType = viewHolder.getItemViewType();
+            if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
+                viewHolder.itemView.setAlpha(0.7f);
+            }
+            return makeMovementFlags(ItemTouchHelper.DOWN | ItemTouchHelper.UP
+                    | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, 0);
+        }
+
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            try {
+                //得到item原来的position
+                int fromPosition = viewHolder.getAbsoluteAdapterPosition();
+                //得到目标position
+                int toPosition = target.getAbsoluteAdapterPosition();
+                int itemViewType = target.getItemViewType();
+                if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
+                    if (fromPosition < toPosition) {
+                        for (int i = fromPosition; i < toPosition; i++) {
+                            Collections.swap(mAdapter.getData(), i, i + 1);
+                        }
+                    } else {
+                        for (int i = fromPosition; i > toPosition; i--) {
+                            Collections.swap(mAdapter.getData(), i, i - 1);
+                        }
+                    }
+                    mAdapter.notifyItemMoved(fromPosition, toPosition);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+
+        @Override
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
+                                @NonNull RecyclerView.ViewHolder viewHolder, float dx, float dy, int actionState, boolean isCurrentlyActive) {
+            int itemViewType = viewHolder.getItemViewType();
+            if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
+                if (needScaleBig) {
+                    needScaleBig = false;
+                    AnimatorSet animatorSet = new AnimatorSet();
+                    animatorSet.playTogether(
+                            ObjectAnimator.ofFloat(viewHolder.itemView, "scaleX", 1.0F, 1.1F),
+                            ObjectAnimator.ofFloat(viewHolder.itemView, "scaleY", 1.0F, 1.1F));
+                    animatorSet.setDuration(50);
+                    animatorSet.setInterpolator(new LinearInterpolator());
+                    animatorSet.start();
+                    animatorSet.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            needScaleSmall = true;
+                        }
+                    });
+                }
+                int targetDy = tvDeleteText.getTop() - viewHolder.itemView.getBottom();
+                if (dy >= targetDy) {
+                    //拖到删除处
+                    mDragListener.deleteState(true);
+                    if (isHasLiftDelete) {
+                        //在删除处放手，则删除item
+                        viewHolder.itemView.setVisibility(View.INVISIBLE);
+                        mAdapter.delete(viewHolder.getAbsoluteAdapterPosition());
+                        resetState();
+                        return;
+                    }
+                } else {
+                    //没有到删除处
+                    if (View.INVISIBLE == viewHolder.itemView.getVisibility()) {
+                        //如果viewHolder不可见，则表示用户放手，重置删除区域状态
+                        mDragListener.dragState(false);
+                    }
+                    mDragListener.deleteState(false);
+                }
+                super.onChildDraw(c, recyclerView, viewHolder, dx, dy, actionState, isCurrentlyActive);
+            }
+        }
+
+        @Override
+        public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+            int itemViewType = viewHolder != null ? viewHolder.getItemViewType() : GridImageAdapter.TYPE_CAMERA;
+            if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
+                if (ItemTouchHelper.ACTION_STATE_DRAG == actionState) {
+                    mDragListener.dragState(true);
+                }
+                super.onSelectedChanged(viewHolder, actionState);
+            }
+        }
+
+        @Override
+        public long getAnimationDuration(@NonNull RecyclerView recyclerView, int animationType, float animateDx, float animateDy) {
+            isHasLiftDelete = true;
+            return super.getAnimationDuration(recyclerView, animationType, animateDx, animateDy);
+        }
+
+        @Override
+        public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            int itemViewType = viewHolder.getItemViewType();
+            if (itemViewType != GridImageAdapter.TYPE_CAMERA) {
+                viewHolder.itemView.setAlpha(1.0F);
+                if (needScaleSmall) {
+                    needScaleSmall = false;
+                    AnimatorSet animatorSet = new AnimatorSet();
+                    animatorSet.playTogether(
+                            ObjectAnimator.ofFloat(viewHolder.itemView, "scaleX", 1.1F, 1.0F),
+                            ObjectAnimator.ofFloat(viewHolder.itemView, "scaleY", 1.1F, 1.0F));
+                    animatorSet.setInterpolator(new LinearInterpolator());
+                    animatorSet.setDuration(50);
+                    animatorSet.start();
+                    animatorSet.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            needScaleBig = true;
+                        }
+                    });
+                }
+                super.clearView(recyclerView, viewHolder);
+                mAdapter.notifyItemChanged(viewHolder.getAbsoluteAdapterPosition());
+                resetState();
+            }
+        }
+    });
+
+    private final DragListener mDragListener = new DragListener() {
+        @Override
+        public void deleteState(boolean isDelete) {
+            if (isDelete) {
+                if (!TextUtils.equals(getString(R.string.app_let_go_drag_delete), tvDeleteText.getText())) {
+                    tvDeleteText.setText(getString(R.string.app_let_go_drag_delete));
+                    tvDeleteText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_dump_delete, 0, 0);
+                }
+            } else {
+                if (!TextUtils.equals(getString(R.string.app_drag_delete), tvDeleteText.getText())) {
+                    tvDeleteText.setText(getString(R.string.app_drag_delete));
+                    tvDeleteText.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.ic_normal_delete, 0, 0);
+                }
+            }
+
+        }
+
+        @Override
+        public void dragState(boolean isStart) {
+            int visibility = tvDeleteText.getVisibility();
+            if (isStart) {
+                if (visibility == View.GONE) {
+                    tvDeleteText.setVisibility(View.VISIBLE);
+                }
+            } else {
+                if (visibility == View.VISIBLE) {
+                    tvDeleteText.setVisibility(View.GONE);
+                }
+            }
+        }
+    };
 
     private void forSystemResult(PictureSelectionSystemModel model) {
         if (resultMode == CALLBACK_RESULT) {
@@ -555,11 +575,9 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
      * 重置
      */
     private void resetState() {
-        if (mDragListener != null) {
-            mDragListener.deleteState(false);
-            mDragListener.dragState(false);
-        }
-        isUpward = false;
+        isHasLiftDelete = false;
+        mDragListener.deleteState(false);
+        mDragListener.dragState(false);
     }
 
     /**

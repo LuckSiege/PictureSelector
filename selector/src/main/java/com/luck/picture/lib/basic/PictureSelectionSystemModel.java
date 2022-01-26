@@ -230,6 +230,10 @@ public final class PictureSelectionSystemModel {
      * <p>
      * Using the system gallery library, some API functions will not be supported
      * </p>
+     * <p>
+     * The {@link IBridgePictureBehavior} interface needs to be
+     * implemented in the activity or fragment you call to receive the returned results
+     * </p>
      */
     public void forSystemResult() {
         if (!DoubleUtils.isFastDoubleClick()) {

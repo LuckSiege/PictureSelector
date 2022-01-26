@@ -443,7 +443,10 @@ public final class PictureSelectionCameraModel {
 
     /**
      * Start PictureSelector
-     *
+     * <p>
+     * The {@link IBridgePictureBehavior} interface needs to be
+     * implemented in the activity or fragment you call to receive the returned results
+     * </p>
      */
     public void forResult() {
         if (!DoubleUtils.isFastDoubleClick()) {
