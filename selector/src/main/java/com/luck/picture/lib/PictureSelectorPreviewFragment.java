@@ -812,8 +812,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             }
             layoutManager.setOrientation(WrapContentLinearLayoutManager.HORIZONTAL);
             mGalleryRecycle.setLayoutManager(layoutManager);
-            mGalleryRecycle.setLayoutAnimation(AnimationUtils
-                    .loadLayoutAnimation(getContext(), R.anim.ps_layout_animation_fall_down));
+            if (SelectedManager.getSelectCount() > 0) {
+                mGalleryRecycle.setLayoutAnimation(AnimationUtils
+                        .loadLayoutAnimation(getContext(), R.anim.ps_layout_animation_fall_enter));
+            }
             mGalleryAdapter = new PreviewGalleryAdapter(isInternalBottomPreview, SelectedManager.getSelectedResult());
             notifyGallerySelectMedia(mData.get(curPosition));
             mGalleryRecycle.setAdapter(mGalleryAdapter);

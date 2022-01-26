@@ -46,9 +46,11 @@ public class GlideEngine implements ImageEngine {
     /**
      * 加载指定url并返回bitmap
      *
-     * @param context 上下文
-     * @param url     资源url
-     * @param call    回调接口
+     * @param context   上下文
+     * @param url       资源url
+     * @param maxWidth  资源最大加载尺寸
+     * @param maxHeight 资源最大加载尺寸
+     * @param call      回调接口
      */
     @Override
     public void loadImageBitmap(@NonNull Context context, @NonNull String url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {

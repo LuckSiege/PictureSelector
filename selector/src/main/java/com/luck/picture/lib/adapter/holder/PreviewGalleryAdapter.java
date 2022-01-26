@@ -176,7 +176,7 @@ public class PreviewGalleryAdapter extends RecyclerView.Adapter<PreviewGalleryAd
         }
         holder.ivImage.setColorFilter(colorFilter);
         if (PictureSelectionConfig.imageEngine != null) {
-            PictureSelectionConfig.imageEngine.loadImage(holder.itemView.getContext(), path, holder.ivImage);
+            PictureSelectionConfig.imageEngine.loadGridImage(holder.itemView.getContext(), path, holder.ivImage);
         }
         holder.ivPlay.setVisibility(PictureMimeType.isHasVideo(item.getMimeType()) ? View.VISIBLE : View.GONE);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
