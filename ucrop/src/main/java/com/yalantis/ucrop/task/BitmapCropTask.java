@@ -163,11 +163,8 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
 
         boolean shouldCrop = shouldCrop(mCroppedImageWidth, mCroppedImageHeight);
         Log.i(TAG, "Should crop: " + shouldCrop);
-
         if (shouldCrop) {
-            while (cropOffsetY + mCroppedImageHeight > mViewBitmap.getHeight()) {
-                mCroppedImageHeight -= MIN_CROPPED_HEIGHT;
-            }
+            checkValidityCropBounds();
             saveImage(Bitmap.createBitmap(mViewBitmap, cropOffsetX, cropOffsetY, mCroppedImageWidth, mCroppedImageHeight));
             if (mCompressFormat.equals(Bitmap.CompressFormat.JPEG)) {
                 copyExifForOutputFile(context);
@@ -181,6 +178,20 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
                 FileUtils.copyFile(mImageInputPath, mImageOutputPath);
             }
             return false;
+        }
+    }
+
+    /**
+     * Check the validity of the crop bounds
+     */
+    private void checkValidityCropBounds() {
+        if (cropOffsetX < 0) {
+            cropOffsetX = 0;
+            mCroppedImageWidth = mViewBitmap.getWidth();
+        }
+        if (cropOffsetY < 0) {
+            cropOffsetY = 0;
+            mCroppedImageHeight = mViewBitmap.getHeight();
         }
     }
 

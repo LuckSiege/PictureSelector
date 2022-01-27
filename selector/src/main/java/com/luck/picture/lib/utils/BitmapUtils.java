@@ -9,6 +9,7 @@ import android.net.Uri;
 import androidx.exifinterface.media.ExifInterface;
 
 import com.luck.picture.lib.basic.PictureContentResolver;
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 
 import java.io.ByteArrayOutputStream;
@@ -147,19 +148,15 @@ public class BitmapUtils {
     /**
      * 获取图片的缩放比例
      *
-     * @param width        图片原始宽度
-     * @param height       图片原始高度
-     * @param screenWidth  屏幕宽度
-     * @param screenHeight 屏幕高度
+     * @param imageWidth  图片原始宽度
+     * @param imageHeight 图片原始高度
      * @return
      */
-    public static int[] getMaxImageSize(int imageWidth, int imageHeight,
-                                        int screenWidth, int screenHeight) {
+    public static int[] getMaxImageSize(int imageWidth, int imageHeight) {
         if (imageWidth == 0 && imageHeight == 0) {
-            imageWidth = screenWidth;
-            imageHeight = screenHeight;
+            return new int[]{PictureConfig.UNSET, PictureConfig.UNSET};
         }
-        final int inSampleSize = BitmapUtils.computeSize(imageWidth, imageHeight);
+        int inSampleSize = BitmapUtils.computeSize(imageWidth, imageHeight);
         int newWidth = (imageWidth) / inSampleSize;
         int newHeight = (imageHeight) / inSampleSize;
         return new int[]{newWidth, newHeight};

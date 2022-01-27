@@ -398,7 +398,15 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     return;
                 }
                 LocalMedia media = mData.get(viewPager.getCurrentItem());
-                if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
+                int realWidth, realHeight;
+                if (media.isCut() && media.getCropImageWidth() > 0 && media.getCropImageHeight() > 0) {
+                    realWidth = media.getCropImageWidth();
+                    realHeight = media.getCropImageHeight();
+                } else {
+                    realWidth = media.getWidth();
+                    realHeight = media.getHeight();
+                }
+                if (MediaUtils.isLongImage(realWidth, realHeight)) {
                     currentHolder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 } else {
                     currentHolder.coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -1327,12 +1335,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 dialog.setOnDialogEventListener(new PictureCommonDialog.OnDialogEventListener() {
                     @Override
                     public void onConfirm() {
-                        String path;
-                        if (TextUtils.isEmpty(media.getSandboxPath())) {
-                            path = media.getPath();
-                        } else {
-                            path = media.getSandboxPath();
-                        }
+                        String path = media.getAvailablePath();
                         if (PictureMimeType.isHasHttp(path)) {
                             showLoading();
                         }
@@ -1414,9 +1417,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private void changeMagicalViewParams(int position) {
         LocalMedia media = mData.get(position);
         int[] size = getRealSizeFromMedia(media);
-        int[] maxImageSize = BitmapUtils.getMaxImageSize(size[0], size[1], screenWidth, screenHeight);
-        if (size[0] == 0 && size[1] == 0) {
-            PictureSelectionConfig.imageEngine.loadImageBitmap(getActivity(), media.getPath(),
+        int[] maxImageSize = BitmapUtils.getMaxImageSize(size[0], size[1]);
+        if (size[0] > 0 && size[1] > 0) {
+            setMagicalViewParams(size[0], size[1], position);
+        } else {
+            PictureSelectionConfig.imageEngine.loadImageBitmap(getActivity(), media.getAvailablePath(),
                     maxImageSize[0], maxImageSize[1], new OnCallbackListener<Bitmap>() {
                         @Override
                         public void onCall(Bitmap bitmap) {
@@ -1435,8 +1440,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                             setMagicalViewParams(size[0], size[1], position);
                         }
                     });
-        } else {
-            setMagicalViewParams(size[0], size[1], position);
         }
     }
 
@@ -1457,15 +1460,19 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         }
     }
 
-    private int[] getRealSizeFromMedia(LocalMedia currentLocalMedia) {
+    private int[] getRealSizeFromMedia(LocalMedia media) {
         int realWidth;
         int realHeight;
-        if (MediaUtils.isLongImage(currentLocalMedia.getWidth(), currentLocalMedia.getHeight())) {
+        if (MediaUtils.isLongImage(media.getWidth(), media.getHeight())) {
             realWidth = screenWidth;
             realHeight = screenHeight;
         } else {
-            realWidth = currentLocalMedia.getWidth();
-            realHeight = currentLocalMedia.getHeight();
+            realWidth = media.getWidth();
+            realHeight = media.getHeight();
+        }
+        if (media.isCut() && media.getCropImageWidth() > 0 && media.getCropImageHeight() > 0) {
+            realWidth = media.getCropImageWidth();
+            realHeight = media.getCropImageHeight();
         }
         return new int[]{realWidth, realHeight};
     }

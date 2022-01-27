@@ -76,7 +76,15 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
      */
     public void bindData(LocalMedia media, int position) {
         String path = media.getAvailablePath();
-        int[] maxImageSize = BitmapUtils.getMaxImageSize(media.getWidth(), media.getHeight(), screenWidth, screenHeight);
+        int realWidth, realHeight;
+        if (media.isCut() && media.getCropImageWidth() > 0 && media.getCropImageHeight() > 0) {
+            realWidth = media.getCropImageWidth();
+            realHeight = media.getCropImageHeight();
+        } else {
+            realWidth = media.getWidth();
+            realHeight = media.getHeight();
+        }
+        int[] maxImageSize = BitmapUtils.getMaxImageSize(realWidth, realHeight);
         PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, maxImageSize[0], maxImageSize[1],
                 new OnCallbackListener<Bitmap>() {
                     @Override
