@@ -853,7 +853,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                     if (!ImageLoaderUtils.assertValidRequest(context)) {
                         return;
                     }
-                    Glide.with(context).load(url).into(imageView);
+                    Glide.with(context).load(url).override(180, 180).into(imageView);
                 }
 
                 @Override
