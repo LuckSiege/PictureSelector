@@ -301,6 +301,8 @@ The advanced use cases are as follow：
 ## ProGuard
 ```sh
 -keep class com.luck.picture.lib.** { *; }
+
+// use Camerax
 -keep class com.luck.lib.camerax.** { *; }
 
 // use uCrop
