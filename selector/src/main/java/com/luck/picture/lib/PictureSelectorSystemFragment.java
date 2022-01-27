@@ -1,5 +1,7 @@
 package com.luck.picture.lib;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -259,6 +261,14 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
             openSystemAlbum();
         } else {
             ToastUtils.showToast(getContext(), getString(R.string.ps_jurisdiction));
+            onKeyBackFragmentFinish();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_CANCELED) {
             onKeyBackFragmentFinish();
         }
     }

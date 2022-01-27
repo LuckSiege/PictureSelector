@@ -4,4 +4,5 @@
     <string name="ucrop_label_original">Original</string>
     <string name="ucrop_menu_crop">Zuschneiden</string>
     <string name="ucrop_gif_tag">Bewegen</string>
+    <string name="ucrop_not_crop">Nicht unterstützter Schnitttyp</string>
 </resources>

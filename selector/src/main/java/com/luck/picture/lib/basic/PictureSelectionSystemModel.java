@@ -21,6 +21,8 @@ import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
 import com.luck.picture.lib.utils.DoubleUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
 
+import java.util.Arrays;
+
 /**
  * @author：luck
  * @date：2022/1/17 5:52 下午
@@ -66,6 +68,18 @@ public final class PictureSelectionSystemModel {
         return this;
     }
 
+    /**
+     * Skip crop mimeType
+     *
+     * @param mimeTypes Use example {@link { image/gift or image/webp ... }}
+     * @return
+     */
+    public PictureSelectionSystemModel setSkipCropMimeType(String... mimeTypes) {
+        if (mimeTypes != null && mimeTypes.length > 0) {
+            selectionConfig.skipCropList.addAll(Arrays.asList(mimeTypes));
+        }
+        return this;
+    }
 
     /**
      * Image Compress the engine

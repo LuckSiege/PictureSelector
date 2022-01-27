@@ -4,4 +4,5 @@
     <string name="ucrop_label_original">원본</string>
     <string name="ucrop_menu_crop">확인</string>
     <string name="ucrop_gif_tag">움직이</string>
+    <string name="ucrop_not_crop">지원되지 않는 잘라내기 유형</string>
 </resources>

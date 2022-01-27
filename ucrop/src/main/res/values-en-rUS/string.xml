@@ -11,4 +11,5 @@
     <string name="ucrop_crop">Crop</string>
 
     <string name="ucrop_gif_tag">gif</string>
+    <string name="ucrop_not_crop">not supported crop type</string>
 </resources>

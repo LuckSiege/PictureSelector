@@ -10,4 +10,5 @@
 
     <string name="ucrop_menu_crop">Recortar</string>
     <string name="ucrop_gif_tag">Gif</string>
+    <string name="ucrop_not_crop">Tipos de Corte no soportados</string>
 </resources>

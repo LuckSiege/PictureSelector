@@ -77,6 +77,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -1380,15 +1381,31 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private boolean checkCropValidity() {
         if (PictureSelectionConfig.cropEngine != null) {
+            HashSet<String> filterSet = new HashSet<>();
+            List<String> filters = config.skipCropList;
+            if (filters != null && filters.size() > 0) {
+                filterSet.addAll(filters);
+            }
             if (SelectedManager.getSelectCount() == 1) {
-                return PictureMimeType.isHasImage(SelectedManager.getTopResultMimeType());
+                String mimeType = SelectedManager.getTopResultMimeType();
+                boolean isHasImage = PictureMimeType.isHasImage(mimeType);
+                if (isHasImage) {
+                    if (filterSet.contains(mimeType)) {
+                        return false;
+                    }
+                }
+                return isHasImage;
             } else {
+                int notSupportCropCount = 0;
                 for (int i = 0; i < SelectedManager.getSelectCount(); i++) {
                     LocalMedia media = SelectedManager.getSelectedResult().get(i);
                     if (PictureMimeType.isHasImage(media.getMimeType())) {
-                        return true;
+                        if (filterSet.contains(media.getMimeType())) {
+                            notSupportCropCount++;
+                        }
                     }
                 }
+                return notSupportCropCount != SelectedManager.getSelectCount();
             }
         }
         return false;

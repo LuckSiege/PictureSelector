@@ -49,6 +49,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,8 +80,8 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     private String outputCropFileName;
     private UCropGalleryAdapter galleryAdapter;
     private boolean isForbidCropGifWebp;
-    private boolean isForbidSkipCrop;
     private ArrayList<AspectRatio> aspectRatioList;
+    private final HashSet<String> filterSet = new HashSet<>();
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -92,10 +93,7 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         immersive();
         setContentView(R.layout.ucrop_activity_multiple);
         initCropFragments();
-        UCropFragment uCropFragment = fragments.get(0);
-        switchCropFragment(uCropFragment, 0);
         setupViews(getIntent());
-        setGalleryAdapter();
     }
 
     private void immersive() {
@@ -114,15 +112,8 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         uCropNotSupportList = new ArrayList<>();
         for (int i = 0; i < totalCropData.size(); i++) {
             String path = totalCropData.get(i);
-            String realPath;
-            String mimeType;
-            if (FileUtils.isContent(path)) {
-                realPath = FileUtils.getPath(this, Uri.parse(path));
-                mimeType = FileUtils.getMimeTypeFromMediaContentUri(this, Uri.parse(path));
-            } else {
-                realPath = path;
-                mimeType = FileUtils.getMimeTypeFromMediaContentUri(this, Uri.fromFile(new File(path)));
-            }
+            String realPath = FileUtils.isContent(path) ? FileUtils.getPath(this, Uri.parse(path)) : path;
+            String mimeType = getPathToMimeType(path);
             if (FileUtils.isUrlHasVideo(realPath) || FileUtils.isHasVideo(mimeType) || FileUtils.isHasAudio(mimeType)) {
                 // not crop type
                 uCropNotSupportList.add(path);
@@ -137,6 +128,61 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         if (uCropSupportList.size() == 0) {
             throw new IllegalArgumentException("No clipping data sources are available");
         }
+        setGalleryAdapter();
+        setFirstCropFragment(getCropSupportPosition());
+    }
+
+    /**
+     * getCropSupportPosition
+     *
+     * @return
+     */
+    private int getCropSupportPosition() {
+        int position = 0;
+        ArrayList<String> skipCropMimeType = getIntent().getExtras().getStringArrayList(UCrop.Options.EXTRA_SKIP_CROP_MIME_TYPE);
+        if (skipCropMimeType != null && skipCropMimeType.size() > 0) {
+            position = -1;
+            filterSet.addAll(skipCropMimeType);
+            for (int i = 0; i < uCropSupportList.size(); i++) {
+                String path = uCropSupportList.get(i);
+                String mimeType = getPathToMimeType(path);
+                position++;
+                if (!filterSet.contains(mimeType)) {
+                    break;
+                }
+            }
+            if (position == -1 || position > fragments.size()) {
+                position = 0;
+            }
+        }
+        return position;
+    }
+
+    /**
+     * getPathToMimeType
+     *
+     * @param path
+     * @return
+     */
+    private String getPathToMimeType(String path) {
+        String mimeType;
+        if (FileUtils.isContent(path)) {
+            mimeType = FileUtils.getMimeTypeFromMediaContentUri(this, Uri.parse(path));
+        } else {
+            mimeType = FileUtils.getMimeTypeFromMediaContentUri(this, Uri.fromFile(new File(path)));
+        }
+        return mimeType;
+    }
+
+    /**
+     * First crop fragment
+     *
+     * @param position
+     */
+    private void setFirstCropFragment(int position) {
+        UCropFragment uCropFragment = buildCropFragment(position);
+        switchCropFragment(uCropFragment, position);
+        galleryAdapter.setCurrentSelectPosition(position);
     }
 
     /**
@@ -166,18 +212,33 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         galleryRecycle.setLayoutManager(layoutManager);
-        galleryRecycle.addItemDecoration(new GridSpacingItemDecoration(Integer.MAX_VALUE,
-                DensityUtil.dip2px(this, 6), true));
+        if (galleryRecycle.getItemDecorationCount() == 0) {
+            galleryRecycle.addItemDecoration(new GridSpacingItemDecoration(Integer.MAX_VALUE,
+                    DensityUtil.dip2px(this, 6), true));
+        }
         LayoutAnimationController animation = AnimationUtils
                 .loadLayoutAnimation(this, R.anim.ucrop_layout_animation_fall_down);
         galleryRecycle.setLayoutAnimation(animation);
         int galleryBarBackground = getIntent().getIntExtra(UCrop.Options.EXTRA_GALLERY_BAR_BACKGROUND,
                 R.drawable.ucrop_gallery_bg);
         galleryRecycle.setBackgroundResource(galleryBarBackground);
-        galleryAdapter = new UCropGalleryAdapter(uCropSupportList, isForbidSkipCrop);
+        galleryAdapter = new UCropGalleryAdapter(uCropSupportList);
         galleryAdapter.setOnItemClickListener(new UCropGalleryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, View view) {
+                String path = uCropSupportList.get(position);
+                String mimeType = getPathToMimeType(path);
+                if (filterSet.contains(mimeType)) {
+                    Toast.makeText(getApplicationContext(),
+                            getString(R.string.ucrop_not_crop), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (galleryAdapter.getCurrentSelectPosition() == position) {
+                    return;
+                }
+                galleryAdapter.notifyItemChanged(galleryAdapter.getCurrentSelectPosition());
+                galleryAdapter.setCurrentSelectPosition(position);
+                galleryAdapter.notifyItemChanged(position);
                 UCropFragment uCropFragment = buildCropFragment(position);
                 switchCropFragment(uCropFragment, position);
             }
@@ -207,7 +268,6 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     private void setupViews(@NonNull Intent intent) {
         aspectRatioList = getIntent().getParcelableArrayListExtra(UCrop.Options.EXTRA_MULTIPLE_ASPECT_RATIO);
         isForbidCropGifWebp = intent.getBooleanExtra(UCrop.Options.EXTRA_CROP_FORBID_GIF_WEBP, false);
-        isForbidSkipCrop = intent.getBooleanExtra(UCrop.Options.EXTRA_CROP_FORBID_SKIP, false);
         outputCropFileName = intent.getStringExtra(UCrop.Options.EXTRA_CROP_OUTPUT_FILE_NAME);
         mStatusBarColor = intent.getIntExtra(UCrop.Options.EXTRA_STATUS_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_statusbar));
         mToolbarColor = intent.getIntExtra(UCrop.Options.EXTRA_TOOL_BAR_COLOR, ContextCompat.getColor(this, R.color.ucrop_color_toolbar));
@@ -278,26 +338,35 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
     public void onCropFinish(UCropFragment.UCropResult result) {
         switch (result.mResultCode) {
             case RESULT_OK:
-                mergeCropResult(result.mResultData);
                 int realPosition = currentFragmentPosition + uCropNotSupportList.size();
                 int realTotalSize = uCropNotSupportList.size() + uCropSupportList.size() - 1;
+                mergeCropResult(result.mResultData);
                 if (realPosition == realTotalSize) {
-                    JSONArray array = new JSONArray();
-                    for (Map.Entry<String, JSONObject> stringJSONObjectEntry : uCropTotalQueue.entrySet()) {
-                        JSONObject object = stringJSONObjectEntry.getValue();
-                        array.put(object);
-                    }
-                    Intent intent = new Intent();
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, array.toString());
-                    setResult(RESULT_OK, intent);
-                    finish();
+                    onCropCompleteFinish();
                 } else {
                     int nextFragmentPosition = currentFragmentPosition + 1;
-                    UCropFragment uCropFragment = buildCropFragment(nextFragmentPosition);
-                    switchCropFragment(uCropFragment, nextFragmentPosition);
-                    galleryAdapter.notifyItemChanged(galleryAdapter.getCurrentSelectPosition());
-                    galleryAdapter.setCurrentSelectPosition(nextFragmentPosition);
-                    galleryAdapter.notifyItemChanged(galleryAdapter.getCurrentSelectPosition());
+                    String path = uCropSupportList.get(nextFragmentPosition);
+                    String mimeType = getPathToMimeType(path);
+                    boolean isCropCompleteFinish = false;
+                    while (filterSet.contains(mimeType)) {
+                        if (nextFragmentPosition == realTotalSize) {
+                            isCropCompleteFinish = true;
+                            break;
+                        } else {
+                            nextFragmentPosition += 1;
+                            path = uCropSupportList.get(nextFragmentPosition);
+                            mimeType = getPathToMimeType(path);
+                        }
+                    }
+                    if (isCropCompleteFinish) {
+                        onCropCompleteFinish();
+                    } else {
+                        UCropFragment uCropFragment = buildCropFragment(nextFragmentPosition);
+                        switchCropFragment(uCropFragment, nextFragmentPosition);
+                        galleryAdapter.notifyItemChanged(galleryAdapter.getCurrentSelectPosition());
+                        galleryAdapter.setCurrentSelectPosition(nextFragmentPosition);
+                        galleryAdapter.notifyItemChanged(galleryAdapter.getCurrentSelectPosition());
+                    }
                 }
                 break;
             case UCrop.RESULT_ERROR:
@@ -305,6 +374,22 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
                 break;
         }
     }
+
+    /**
+     * onCropCompleteFinish
+     */
+    private void onCropCompleteFinish() {
+        JSONArray array = new JSONArray();
+        for (Map.Entry<String, JSONObject> stringJSONObjectEntry : uCropTotalQueue.entrySet()) {
+            JSONObject object = stringJSONObjectEntry.getValue();
+            array.put(object);
+        }
+        Intent intent = new Intent();
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, array.toString());
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
 
     /**
      * build next crop fragment
@@ -329,7 +414,6 @@ public class UCropMultipleActivity extends AppCompatActivity implements UCropFra
         Uri destinationUri = Uri.fromFile(new File(getSandboxPathDir(), fileName));
         extras.putParcelable(UCrop.EXTRA_INPUT_URI, inputUri);
         extras.putParcelable(UCrop.EXTRA_OUTPUT_URI, destinationUri);
-
         // Aspect ratio options
         if (aspectRatioList != null && aspectRatioList.size() > position) {
             AspectRatio aspectRatio = aspectRatioList.get(position);

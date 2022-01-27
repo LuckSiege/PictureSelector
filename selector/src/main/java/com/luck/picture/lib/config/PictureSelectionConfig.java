@@ -77,6 +77,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isHidePreviewDownload;
     public boolean isWithVideoImage;
     public List<String> queryOnlyList;
+    public List<String> skipCropList;
     public boolean isCheckOriginalImage;
     public String outPutCameraImageFileName;
     public String outPutCameraVideoFileName;
@@ -168,6 +169,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isHidePreviewDownload = in.readByte() != 0;
         isWithVideoImage = in.readByte() != 0;
         queryOnlyList = in.createStringArrayList();
+        skipCropList = in.createStringArrayList();
         isCheckOriginalImage = in.readByte() != 0;
         outPutCameraImageFileName = in.readString();
         outPutCameraVideoFileName = in.readString();
@@ -245,6 +247,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isHidePreviewDownload ? 1 : 0));
         dest.writeByte((byte) (isWithVideoImage ? 1 : 0));
         dest.writeStringList(queryOnlyList);
+        dest.writeStringList(skipCropList);
         dest.writeByte((byte) (isCheckOriginalImage ? 1 : 0));
         dest.writeString(outPutCameraImageFileName);
         dest.writeString(outPutCameraVideoFileName);
@@ -370,6 +373,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isInjectLayoutResource = false;
         isDisplayTimeAxis = true;
         isFastSlidingSelect = false;
+        skipCropList = new ArrayList<>();
     }
 
 

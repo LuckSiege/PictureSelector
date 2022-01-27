@@ -10,5 +10,5 @@
     <string name="ucrop_rotate">Rotate</string>
     <string name="ucrop_scale">Scale</string>
     <string name="ucrop_crop">Crop</string>
-
+    <string name="ucrop_not_crop">not supported crop type</string>
 </resources>

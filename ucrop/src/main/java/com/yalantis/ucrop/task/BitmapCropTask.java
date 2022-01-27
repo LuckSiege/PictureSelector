@@ -37,6 +37,7 @@ import java.lang.ref.WeakReference;
  * Finally new Bitmap object is created and saved to file.
  */
 public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
+    private static final int MIN_CROPPED_HEIGHT = 1;
 
     private static final String TAG = "BitmapCropTask";
 
@@ -164,6 +165,9 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Throwable> {
         Log.i(TAG, "Should crop: " + shouldCrop);
 
         if (shouldCrop) {
+            while (cropOffsetY + mCroppedImageHeight > mViewBitmap.getHeight()) {
+                mCroppedImageHeight -= MIN_CROPPED_HEIGHT;
+            }
             saveImage(Bitmap.createBitmap(mViewBitmap, cropOffsetX, cropOffsetY, mCroppedImageWidth, mCroppedImageHeight));
             if (mCompressFormat.equals(Bitmap.CompressFormat.JPEG)) {
                 copyExifForOutputFile(context);

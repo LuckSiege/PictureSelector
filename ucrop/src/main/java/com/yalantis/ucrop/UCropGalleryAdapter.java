@@ -22,11 +22,9 @@ import java.util.List;
 public class UCropGalleryAdapter extends RecyclerView.Adapter<UCropGalleryAdapter.ViewHolder> {
     private final List<String> list;
     private int currentSelectPosition;
-    private final boolean isForbidSkipCrop;
 
-    public UCropGalleryAdapter(List<String> list, boolean isForbidSkipCrop) {
+    public UCropGalleryAdapter(List<String> list) {
         this.list = list;
-        this.isForbidSkipCrop = isForbidSkipCrop;
     }
 
     public void setCurrentSelectPosition(int currentSelectPosition) {
@@ -66,16 +64,7 @@ public class UCropGalleryAdapter extends RecyclerView.Adapter<UCropGalleryAdapte
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isForbidSkipCrop) {
-                    return;
-                }
                 if (listener != null) {
-                    if (getCurrentSelectPosition() == holder.getAbsoluteAdapterPosition()) {
-                        return;
-                    }
-                    notifyItemChanged(getCurrentSelectPosition());
-                    setCurrentSelectPosition(holder.getAbsoluteAdapterPosition());
-                    notifyItemChanged(getCurrentSelectPosition());
                     listener.onItemClick(holder.getAbsoluteAdapterPosition(), v);
                 }
             }

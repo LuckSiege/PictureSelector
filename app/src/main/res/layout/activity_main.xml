@@ -691,6 +691,26 @@
                     android:textColor="@color/app_color_53575e"
                     android:textSize="14sp"
                     android:visibility="gone" />
+
+                <CheckBox
+                    android:id="@+id/cb_skip_not_gif"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="跳过裁剪gif"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+
+                <CheckBox
+                    android:id="@+id/cb_not_gif"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="禁止裁剪gif"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
             </LinearLayout>
         </ScrollView>
 

@@ -5,4 +5,5 @@
 
     <string name="ucrop_menu_crop">切り取り</string>
     <string name="ucrop_gif_tag">gif図</string>
+    <string name="ucrop_not_crop">サポートされていないクリップタイプ</string>
 </resources>

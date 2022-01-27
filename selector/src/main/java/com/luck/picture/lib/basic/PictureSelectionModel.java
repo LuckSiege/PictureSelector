@@ -825,6 +825,20 @@ public final class PictureSelectionModel {
         return this;
     }
 
+
+    /**
+     * Skip crop mimeType
+     *
+     * @param mimeTypes Use example {@link { image/gift or image/webp ... }}
+     * @return
+     */
+    public PictureSelectionModel setSkipCropMimeType(String... mimeTypes) {
+        if (mimeTypes != null && mimeTypes.length > 0) {
+            selectionConfig.skipCropList.addAll(Arrays.asList(mimeTypes));
+        }
+        return this;
+    }
+
     /**
      * @param isGif Whether to open gif
      * @return

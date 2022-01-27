@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
             cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox, cb_only_dir,
             cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo,
-            cb_system_album, cb_fast_select;
+            cb_system_album, cb_fast_select,cb_skip_not_gif,cb_not_gif;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isHasLiftDelete;
     private boolean needScaleBig = true;
@@ -198,6 +198,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_single_back = findViewById(R.id.cb_single_back);
         cb_custom_camera = findViewById(R.id.cb_custom_camera);
         cb_hide = findViewById(R.id.cb_hide);
+        cb_not_gif = findViewById(R.id.cb_not_gif);
+        cb_skip_not_gif = findViewById(R.id.cb_skip_not_gif);
         cb_crop_circular = findViewById(R.id.cb_crop_circular);
         cb_crop_use_bitmap = findViewById(R.id.cb_crop_use_bitmap);
         rgb_crop.setOnCheckedChangeListener(this);
@@ -218,6 +220,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_crop_circular.setOnCheckedChangeListener(this);
         cb_crop_use_bitmap.setOnCheckedChangeListener(this);
         cb_compress.setOnCheckedChangeListener(this);
+        cb_not_gif.setOnCheckedChangeListener(this);
+        cb_skip_not_gif.setOnCheckedChangeListener(this);
         tv_select_num.setText(ValueOf.toString(maxSelectNum));
 
         // 注册需要写在onCreate或Fragment onAttach里，否则会报java.lang.IllegalStateException异常
@@ -294,6 +298,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setSelectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
                                 .setCompressEngine(getCompressEngine())
                                 .setCropEngine(getCropEngine())
+                                .setSkipCropMimeType(getNotSupportCrop())
                                 .isOriginalControl(cb_original.isChecked())
                                 .setSandboxFileEngine(new MeSandboxFileEngine());
                         forSystemResult(systemGalleryMode);
@@ -325,6 +330,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .isOriginalControl(cb_original.isChecked())
                                 .isDisplayCamera(cb_isCamera.isChecked())
                                 .isOpenClickSound(cb_voice.isChecked())
+                                .setSkipCropMimeType(getNotSupportCrop())
                                 .isFastSlidingSelect(cb_fast_select.isChecked())
                                 //.setOutputCameraImageFileName("luck.jpeg")
                                 //.setOutputCameraVideoFileName("luck.mp4")
@@ -372,6 +378,13 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
         // 清除缓存
 //        clearCache();
+    }
+
+    private String[] getNotSupportCrop() {
+        if (cb_skip_not_gif.isChecked()) {
+            return new String[]{PictureMimeType.ofGIF(), PictureMimeType.ofWEBP()};
+        }
+        return null;
     }
 
     private final ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
@@ -909,6 +922,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         options.setCropOutputPathDir(getSandboxPath());
         options.isCropDragSmoothToCenter(false);
         options.isUseCustomLoaderBitmap(cb_crop_use_bitmap.isChecked());
+        options.setSkipCropMimeType(getNotSupportCrop());
+        options.isForbidCropGifWebp(cb_not_gif.isChecked());
         options.isForbidSkipMultipleCrop(false);
         if (selectorStyle != null && selectorStyle.getSelectMainStyle().getStatusBarColor() != 0) {
             SelectMainStyle mainStyle = selectorStyle.getSelectMainStyle();
@@ -1341,12 +1356,22 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 cb_styleCrop.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 cb_showCropFrame.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 cb_showCropGrid.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                cb_skip_not_gif.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                cb_not_gif.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 break;
             case R.id.cb_custom_sandbox:
                 cb_only_dir.setChecked(isChecked);
                 break;
             case R.id.cb_only_dir:
                 cb_custom_sandbox.setChecked(isChecked);
+                break;
+            case R.id.cb_skip_not_gif:
+                cb_not_gif.setChecked(false);
+                cb_skip_not_gif.setChecked(isChecked);
+                break;
+            case R.id.cb_not_gif:
+                cb_skip_not_gif.setChecked(false);
+                cb_not_gif.setChecked(isChecked);
                 break;
             case R.id.cb_crop_circular:
                 if (isChecked) {

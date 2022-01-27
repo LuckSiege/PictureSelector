@@ -10,4 +10,5 @@
     <string name="ucrop_menu_crop">裁剪</string>
     <string name="ucrop_gif_tag">动图</string>
 
+    <string name="ucrop_not_crop">不支持的裁剪类型</string>
 </resources>

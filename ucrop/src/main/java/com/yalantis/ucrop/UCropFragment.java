@@ -91,7 +91,6 @@ public class UCropFragment extends Fragment {
     private final List<ViewGroup> mCropAspectRatioViews = new ArrayList<>();
     private TextView mTextViewRotateAngle, mTextViewScalePercent;
     private View mBlockingView;
-    private boolean isForbidCropGifWebp;
 
     private Bitmap.CompressFormat mCompressFormat = DEFAULT_COMPRESS_FORMAT;
     private int mCompressQuality = DEFAULT_COMPRESS_QUALITY;
@@ -144,12 +143,17 @@ public class UCropFragment extends Fragment {
     public void fragmentReVisible() {
         setImageData(getArguments());
         mUCropView.animate().alpha(1).setDuration(300).setInterpolator(new AccelerateInterpolator());
-        mBlockingView.setClickable(false);
         callback.loadingProgress(false);
+        boolean isClickable = false;
+        if (getArguments().getBoolean(UCrop.Options.EXTRA_CROP_FORBID_GIF_WEBP, false)) {
+            Uri inputUri = getArguments().getParcelable(UCrop.EXTRA_INPUT_URI);
+            String mimeType = FileUtils.getMimeTypeFromMediaContentUri(getContext(), inputUri);
+            isClickable = FileUtils.isGif(mimeType) || FileUtils.isWebp(mimeType);
+        }
+        mBlockingView.setClickable(isClickable);
     }
 
     public void setupViews(View view, Bundle args) {
-        isForbidCropGifWebp = args.getBoolean(UCrop.Options.EXTRA_CROP_FORBID_GIF_WEBP, false);
         mActiveControlsWidgetColor = args.getInt(UCrop.Options.EXTRA_UCROP_COLOR_CONTROLS_WIDGET_ACTIVE, ContextCompat.getColor(getContext(), R.color.ucrop_color_active_controls_color));
         mLogoColor = args.getInt(UCrop.Options.EXTRA_UCROP_LOGO_COLOR, ContextCompat.getColor(getContext(), R.color.ucrop_color_default_logo));
         mShowBottomControls = !args.getBoolean(UCrop.Options.EXTRA_HIDE_BOTTOM_CONTROLS, false);
@@ -196,6 +200,7 @@ public class UCropFragment extends Fragment {
 
         if (inputUri != null && outputUri != null) {
             try {
+                boolean isForbidCropGifWebp = bundle.getBoolean(UCrop.Options.EXTRA_CROP_FORBID_GIF_WEBP, false);
                 outputUri = FileUtils.replaceOutputUri(getContext(), isForbidCropGifWebp, inputUri, outputUri);
                 mGestureCropImageView.setImageUri(inputUri, outputUri, isUseCustomBitmap);
             } catch (Exception e) {
