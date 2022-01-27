@@ -62,6 +62,7 @@ import com.luck.picture.lib.style.SelectMainStyle;
 import com.luck.picture.lib.thread.PictureThreadUtils;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.luck.picture.lib.utils.BitmapUtils;
+import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.MediaStoreUtils;
 import com.luck.picture.lib.utils.MediaUtils;
 import com.luck.picture.lib.utils.PictureFileUtils;
@@ -482,7 +483,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 }
             }
 
-            if (!isSelected && config.selectMinDurationSecond > 0 && duration < config.selectMinDurationSecond) {
+            if (!isSelected && config.selectMinDurationSecond > 0 && DateUtils.millisecondToSecond(duration) < config.selectMinDurationSecond) {
                 // 视频小于最低指定的长度
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
@@ -496,7 +497,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 return true;
             }
 
-            if (!isSelected && config.selectMaxDurationSecond > 0 && duration > config.selectMaxDurationSecond) {
+            if (!isSelected && config.selectMaxDurationSecond > 0 && DateUtils.millisecondToSecond(duration) > config.selectMaxDurationSecond) {
                 // 视频时长超过了指定的长度
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
@@ -527,7 +528,6 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         }
         return false;
     }
-
 
     @SuppressLint("StringFormatInvalid")
     @Override
@@ -591,7 +591,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                     return true;
                 }
             }
-            if (!isSelected && config.selectMinDurationSecond > 0 && duration < config.selectMinDurationSecond) {
+            if (!isSelected && config.selectMinDurationSecond > 0 && DateUtils.millisecondToSecond(duration) < config.selectMinDurationSecond) {
                 // 视频小于最低指定的长度
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
@@ -604,7 +604,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 return true;
             }
 
-            if (!isSelected && config.selectMaxDurationSecond > 0 && duration > config.selectMaxDurationSecond) {
+            if (!isSelected && config.selectMaxDurationSecond > 0 && DateUtils.millisecondToSecond(duration) > config.selectMaxDurationSecond) {
                 // 视频时长超过了指定的长度
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
@@ -631,7 +631,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 }
             }
 
-            if (!isSelected && config.selectMinDurationSecond > 0 && duration < config.selectMinDurationSecond) {
+            if (!isSelected && config.selectMinDurationSecond > 0 && DateUtils.millisecondToSecond(duration) < config.selectMinDurationSecond) {
                 // 音频小于最低指定的长度
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
@@ -643,7 +643,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 showTipsDialog(getString(R.string.ps_select_audio_min_second, config.selectMinDurationSecond / 1000));
                 return true;
             }
-            if (!isSelected && config.selectMaxDurationSecond > 0 && duration > config.selectMaxDurationSecond) {
+            if (!isSelected && config.selectMaxDurationSecond > 0 && DateUtils.millisecondToSecond(duration) > config.selectMaxDurationSecond) {
                 // 音频时长超过了指定的长度
                 if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
                     boolean isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener

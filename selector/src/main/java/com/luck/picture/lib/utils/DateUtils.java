@@ -67,6 +67,18 @@ public class DateUtils {
 
 
     /**
+     * millisecondToSecond
+     *
+     * @param duration millisecond
+     * @return
+     */
+    public static long millisecondToSecond(long duration) {
+        duration = abs(duration);
+        long totalSeconds = (duration + 500) / 1000;
+        return totalSeconds * 1000;
+    }
+
+    /**
      * 判断两个时间戳相差多少秒
      *
      * @param d
