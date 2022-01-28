@@ -657,10 +657,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                 if (tvSelected.getLayoutParams() instanceof ConstraintLayout.LayoutParams) {
                     ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) tvSelected.getLayoutParams();
                     layoutParams.rightMargin = selectMainStyle.getPreviewSelectMarginRight();
-                } else if (tvSelected.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
-                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvSelected.getLayoutParams();
-                    layoutParams.rightMargin = selectMainStyle.getPreviewSelectMarginRight();
                 }
+            } else if (tvSelected.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvSelected.getLayoutParams();
+                layoutParams.rightMargin = selectMainStyle.getPreviewSelectMarginRight();
             }
         }
 

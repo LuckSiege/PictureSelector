@@ -169,6 +169,7 @@ public class TransformImageView extends AppCompatImageView {
                 if (bitmap == null) {
                     useDefaultLoaderCrop(imageUri, outputUri);
                 } else {
+                    Bitmap copyBitmap = bitmap.copy(bitmap.getConfig(), true);
                     int exifOrientation = BitmapLoadUtils.getExifOrientation(getContext(), imageUri);
                     int exifDegrees = BitmapLoadUtils.exifToDegrees(exifOrientation);
                     int exifTranslation = BitmapLoadUtils.exifToTranslation(exifOrientation);
@@ -181,9 +182,9 @@ public class TransformImageView extends AppCompatImageView {
                         matrix.postScale(exifTranslation, 1);
                     }
                     if (!matrix.isIdentity()) {
-                        bitmap = BitmapLoadUtils.transformBitmap(bitmap, matrix);
+                        copyBitmap = BitmapLoadUtils.transformBitmap(copyBitmap, matrix);
                     }
-                    setBitmapLoadedResult(bitmap, exifInfo, imageUri, outputUri);
+                    setBitmapLoadedResult(copyBitmap, exifInfo, imageUri, outputUri);
                 }
             }
         });
