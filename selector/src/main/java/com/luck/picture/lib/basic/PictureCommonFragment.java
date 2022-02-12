@@ -1118,8 +1118,8 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             public void onSuccess(LocalMedia result) {
                 PictureThreadUtils.cancel(this);
                 if (result != null) {
-                    dispatchCameraMediaResult(result);
                     onScannerScanFile(result);
+                    dispatchCameraMediaResult(result);
                 }
             }
         });
