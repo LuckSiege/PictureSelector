@@ -3,6 +3,12 @@
 
     <style name="Base.Theme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar" />
 
+    <style name="Picture.Theme.Translucent" parent="Base.Theme.NoActionBar">
+        <item name="android:windowBackground">@color/ps_color_transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
     <style name="PictureThemeWindowStyle">
         <item name="android:windowEnterAnimation">@anim/ps_anim_album_show</item>
         <item name="android:windowExitAnimation">@anim/ps_anim_album_dismiss</item>

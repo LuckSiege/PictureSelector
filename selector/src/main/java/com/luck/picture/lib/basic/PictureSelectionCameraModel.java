@@ -1,13 +1,18 @@
 package com.luck.picture.lib.basic;
 
 import android.app.Activity;
+import android.content.Intent;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.luck.picture.lib.PictureOnlyCameraFragment;
+import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.config.PictureSelectionConfig;
@@ -403,9 +408,54 @@ public final class PictureSelectionCameraModel {
         return this;
     }
 
-
     /**
      * Start PictureSelector
+     * <p>
+     * The {@link IBridgePictureBehavior} interface needs to be
+     * implemented in the activity or fragment you call to receive the returned results
+     * </p>
+     * <p>
+     * If the navigation component manages fragments,
+     * it is recommended to use {@link PictureSelectionCameraModel.forResultActivity()} in openCamera mode
+     * </p>
+     */
+    public void forResult() {
+        if (!DoubleUtils.isFastDoubleClick()) {
+            Activity activity = selector.getActivity();
+            if (activity == null) {
+                throw new NullPointerException("Activity cannot be null");
+            }
+            selectionConfig.isResultListenerBack = false;
+            selectionConfig.isActivityResultBack = true;
+            FragmentManager fragmentManager = null;
+            if (activity instanceof AppCompatActivity) {
+                fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
+            } else if (activity instanceof FragmentActivity) {
+                fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
+            }
+            if (fragmentManager == null) {
+                throw new NullPointerException("FragmentManager cannot be null");
+            }
+            if (!(activity instanceof IBridgePictureBehavior)) {
+                throw new NullPointerException("Use only camera openCamera mode," +
+                        "Activity or Fragment interface needs to be implemented " + IBridgePictureBehavior.class);
+            }
+            Fragment fragment = fragmentManager.findFragmentByTag(PictureOnlyCameraFragment.TAG);
+            if (fragment != null) {
+                fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
+            }
+            FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
+                    PictureOnlyCameraFragment.TAG, PictureOnlyCameraFragment.newInstance());
+        }
+    }
+
+
+    /**
+     * Start PictureSelector Camera
+     * <p>
+     * If the navigation component manages fragments,
+     * it is recommended to use {@link PictureSelectionCameraModel.forResultActivity()} in openCamera mode
+     * </p>
      *
      * @param call
      */
@@ -442,13 +492,74 @@ public final class PictureSelectionCameraModel {
 
 
     /**
-     * Start PictureSelector
+     * build PictureOnlyCameraFragment
      * <p>
      * The {@link IBridgePictureBehavior} interface needs to be
      * implemented in the activity or fragment you call to receive the returned results
      * </p>
      */
-    public void forResult() {
+    public PictureOnlyCameraFragment build() {
+        Activity activity = selector.getActivity();
+        if (activity == null) {
+            throw new NullPointerException("Activity cannot be null");
+        }
+        if (!(activity instanceof IBridgePictureBehavior)) {
+            throw new NullPointerException("Use only build PictureOnlyCameraFragment," +
+                    "Activity or Fragment interface needs to be implemented " + IBridgePictureBehavior.class);
+        }
+        // 绑定回调监听
+        selectionConfig.isResultListenerBack = false;
+        selectionConfig.isActivityResultBack = true;
+        PictureSelectionConfig.onResultCallListener = null;
+        return new PictureOnlyCameraFragment();
+    }
+
+
+    /**
+     * build and launch PictureSelector Camera
+     *
+     * @param containerViewId fragment container id
+     * @param call
+     */
+    public PictureOnlyCameraFragment buildLaunch(int containerViewId, OnResultCallbackListener<LocalMedia> call) {
+        Activity activity = selector.getActivity();
+        if (activity == null) {
+            throw new NullPointerException("Activity cannot be null");
+        }
+        if (call == null) {
+            throw new NullPointerException("OnResultCallbackListener cannot be null");
+        }
+        // 绑定回调监听
+        selectionConfig.isResultListenerBack = true;
+        selectionConfig.isActivityResultBack = false;
+        PictureSelectionConfig.onResultCallListener = call;
+        FragmentManager fragmentManager = null;
+        if (activity instanceof AppCompatActivity) {
+            fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
+        } else if (activity instanceof FragmentActivity) {
+            fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
+        }
+        if (fragmentManager == null) {
+            throw new NullPointerException("FragmentManager cannot be null");
+        }
+        PictureOnlyCameraFragment onlyCameraFragment = new PictureOnlyCameraFragment();
+        Fragment fragment = fragmentManager.findFragmentByTag(onlyCameraFragment.getFragmentTag());
+        if (fragment != null) {
+            fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
+        }
+        fragmentManager.beginTransaction()
+                .add(containerViewId, onlyCameraFragment, onlyCameraFragment.getFragmentTag())
+                .addToBackStack(onlyCameraFragment.getFragmentTag())
+                .commitAllowingStateLoss();
+        return onlyCameraFragment;
+    }
+
+    /**
+     * Start PictureSelector
+     *
+     * @param requestCode
+     */
+    public void forResultActivity(int requestCode) {
         if (!DoubleUtils.isFastDoubleClick()) {
             Activity activity = selector.getActivity();
             if (activity == null) {
@@ -456,25 +567,60 @@ public final class PictureSelectionCameraModel {
             }
             selectionConfig.isResultListenerBack = false;
             selectionConfig.isActivityResultBack = true;
-            FragmentManager fragmentManager = null;
-            if (activity instanceof AppCompatActivity) {
-                fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
-            } else if (activity instanceof FragmentActivity) {
-                fragmentManager = ((FragmentActivity) activity).getSupportFragmentManager();
-            }
-            if (fragmentManager == null) {
-                throw new NullPointerException("FragmentManager cannot be null");
-            }
-            if (!(activity instanceof IBridgePictureBehavior)) {
-                throw new NullPointerException("Use only camera openCamera mode," +
-                        "Activity or Fragment interface needs to be implemented " + IBridgePictureBehavior.class);
-            }
-            Fragment fragment = fragmentManager.findFragmentByTag(PictureOnlyCameraFragment.TAG);
+            Intent intent = new Intent(activity, PictureSelectorCameraActivity.class);
+            Fragment fragment = selector.getFragment();
             if (fragment != null) {
-                fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
+                fragment.startActivityForResult(intent, requestCode);
+            } else {
+                activity.startActivityForResult(intent, requestCode);
             }
-            FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
-                    PictureOnlyCameraFragment.TAG, PictureOnlyCameraFragment.newInstance());
+            activity.overridePendingTransition(R.anim.ps_anim_fade_in, 0);
+        }
+    }
+
+    /**
+     * ActivityResultLauncher PictureSelector
+     *
+     * @param launcher use {@link Activity.registerForActivityResult( ActivityResultContract , ActivityResultCallback )}
+     */
+    public void forResultActivity(ActivityResultLauncher<Intent> launcher) {
+        if (!DoubleUtils.isFastDoubleClick()) {
+            Activity activity = selector.getActivity();
+            if (activity == null) {
+                throw new NullPointerException("Activity cannot be null");
+            }
+            if (launcher == null) {
+                throw new NullPointerException("ActivityResultLauncher cannot be null");
+            }
+            selectionConfig.isResultListenerBack = false;
+            selectionConfig.isActivityResultBack = true;
+            Intent intent = new Intent(activity, PictureSelectorCameraActivity.class);
+            launcher.launch(intent);
+            activity.overridePendingTransition(R.anim.ps_anim_fade_in, 0);
+        }
+    }
+
+    /**
+     * Start PictureSelector
+     *
+     * @param call
+     */
+    public void forResultActivity(OnResultCallbackListener<LocalMedia> call) {
+        if (!DoubleUtils.isFastDoubleClick()) {
+            Activity activity = selector.getActivity();
+            if (activity == null) {
+                throw new NullPointerException("Activity cannot be null");
+            }
+            if (call == null) {
+                throw new NullPointerException("OnResultCallbackListener cannot be null");
+            }
+            // 绑定回调监听
+            selectionConfig.isResultListenerBack = true;
+            selectionConfig.isActivityResultBack = false;
+            PictureSelectionConfig.onResultCallListener = call;
+            Intent intent = new Intent(activity, PictureSelectorCameraActivity.class);
+            activity.startActivity(intent);
+            activity.overridePendingTransition(R.anim.ps_anim_fade_in, 0);
         }
     }
 }

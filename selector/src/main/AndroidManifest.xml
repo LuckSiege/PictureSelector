@@ -43,6 +43,13 @@
 
         </activity>
 
+        <activity
+            android:name=".basic.PictureSelectorCameraActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/Picture.Theme.Translucent">
+
+        </activity>
+
     </application>
 
 </manifest>

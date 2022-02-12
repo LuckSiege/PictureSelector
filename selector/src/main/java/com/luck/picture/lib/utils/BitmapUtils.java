@@ -157,6 +157,11 @@ public class BitmapUtils {
             return new int[]{PictureConfig.UNSET, PictureConfig.UNSET};
         }
         int inSampleSize = BitmapUtils.computeSize(imageWidth, imageHeight);
+        if (MediaUtils.isLongImage(imageWidth, imageHeight)) {
+            if (inSampleSize == 1) {
+                inSampleSize = 2;
+            }
+        }
         int newWidth = (imageWidth) / inSampleSize;
         int newHeight = (imageHeight) / inSampleSize;
         return new int[]{newWidth, newHeight};

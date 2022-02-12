@@ -20,7 +20,7 @@
         android:drawableTop="@drawable/ps_ic_audio_play_cover"
         android:drawablePadding="15dp"
         android:gravity="center"
-        android:lineSpacingExtra="3dp"
+        android:lineSpacingExtra="5dp"
         android:textColor="@color/ps_color_33"
         android:textSize="14sp"
         tools:text="AUD_2020123123123123.amr" />

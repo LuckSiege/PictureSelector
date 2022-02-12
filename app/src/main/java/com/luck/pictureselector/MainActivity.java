@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             cb_showCropFrame, cb_preview_audio, cb_original, cb_single_back,
             cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox, cb_only_dir,
             cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo,
-            cb_system_album, cb_fast_select,cb_skip_not_gif,cb_not_gif;
+            cb_system_album, cb_fast_select,cb_skip_not_gif,cb_not_gif,cb_attach_camera_mode;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isHasLiftDelete;
     private boolean needScaleBig = true;
@@ -202,6 +202,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_skip_not_gif = findViewById(R.id.cb_skip_not_gif);
         cb_crop_circular = findViewById(R.id.cb_crop_circular);
         cb_crop_use_bitmap = findViewById(R.id.cb_crop_use_bitmap);
+        cb_attach_camera_mode = findViewById(R.id.cb_attach_camera_mode);
+        cb_mode.setOnCheckedChangeListener(this);
         rgb_crop.setOnCheckedChangeListener(this);
         rgb_result.setOnCheckedChangeListener(this);
         rgb_style.setOnCheckedChangeListener(this);
@@ -219,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_custom_sandbox.setOnCheckedChangeListener(this);
         cb_crop_circular.setOnCheckedChangeListener(this);
         cb_crop_use_bitmap.setOnCheckedChangeListener(this);
+        cb_attach_camera_mode.setOnCheckedChangeListener(this);
         cb_compress.setOnCheckedChangeListener(this);
         cb_not_gif.setOnCheckedChangeListener(this);
         cb_skip_not_gif.setOnCheckedChangeListener(this);
@@ -248,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             mData.clear();
             mData.addAll(savedInstanceState.getParcelableArrayList("selectorList"));
         }
+
         String systemHigh = " (仅支持部分api)";
         String systemTips = "使用系统图库" + systemHigh;
         int startIndex = systemTips.indexOf(systemHigh);
@@ -256,6 +260,16 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         builder.setSpan(new AbsoluteSizeSpan(DensityUtil.dip2px(getContext(), 12)), startIndex, endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         builder.setSpan(new ForegroundColorSpan(0xFFCC0000), startIndex, endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         cb_system_album.setText(builder);
+
+        String cameraHigh = " (默认fragment)";
+        String cameraTips = "使用Activity承载Camera相机" + cameraHigh;
+        int startIndex2 = cameraTips.indexOf(cameraHigh);
+        int endOf2 = startIndex2 + cameraHigh.length();
+        SpannableStringBuilder builder2 = new SpannableStringBuilder(cameraTips);
+        builder2.setSpan(new AbsoluteSizeSpan(DensityUtil.dip2px(getContext(), 12)), startIndex2, endOf2, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        builder2.setSpan(new ForegroundColorSpan(0xFFCC0000), startIndex2, endOf2, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        cb_attach_camera_mode.setText(builder2);
+
         cb_original.setOnCheckedChangeListener((buttonView, isChecked) ->
                 tv_original_tips.setVisibility(isChecked ? View.VISIBLE : View.GONE));
         cb_choose_mode.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -582,10 +596,24 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     }
 
     private void forOnlyCameraResult(PictureSelectionCameraModel model) {
-        if (resultMode == CALLBACK_RESULT) {
-            model.forResult(new MeOnResultCallbackListener());
+        if (cb_attach_camera_mode.isChecked()) {
+            switch (resultMode) {
+                case ACTIVITY_RESULT:
+                    model.forResultActivity(PictureConfig.REQUEST_CAMERA);
+                    break;
+                case CALLBACK_RESULT:
+                    model.forResultActivity(new MeOnResultCallbackListener());
+                    break;
+                default:
+                    model.forResultActivity(launcherResult);
+                    break;
+            }
         } else {
-            model.forResult();
+            if (resultMode == CALLBACK_RESULT) {
+                model.forResult(new MeOnResultCallbackListener());
+            } else {
+                model.forResult();
+            }
         }
     }
 
@@ -1373,6 +1401,9 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 cb_skip_not_gif.setChecked(false);
                 cb_not_gif.setChecked(isChecked);
                 break;
+            case R.id.cb_mode:
+                cb_attach_camera_mode.setVisibility(isChecked ? View.GONE : View.VISIBLE);
+                break;
             case R.id.cb_crop_circular:
                 if (isChecked) {
                     x = aspect_ratio_x;
@@ -1413,7 +1444,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == PictureConfig.CHOOSE_REQUEST) {
+            if (requestCode == PictureConfig.CHOOSE_REQUEST || requestCode == PictureConfig.REQUEST_CAMERA) {
                 ArrayList<LocalMedia> result = PictureSelector.obtainSelectorList(data);
                 analyticalSelectResults(result);
             }

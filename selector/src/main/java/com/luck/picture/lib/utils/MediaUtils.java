@@ -1,5 +1,6 @@
 package com.luck.picture.lib.utils;
 
+import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;

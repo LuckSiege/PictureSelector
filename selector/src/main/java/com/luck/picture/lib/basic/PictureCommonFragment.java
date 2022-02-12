@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.AudioManager;
@@ -236,7 +237,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      * @return
      */
     protected boolean isNormalDefaultEnter() {
-        return getActivity() instanceof PictureSelectorSupporterActivity;
+        return getActivity() instanceof PictureSelectorSupporterActivity || getActivity() instanceof PictureSelectorCameraActivity;
     }
 
     @Nullable
@@ -801,6 +802,16 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                         break;
                     default:
                         break;
+                }
+            }
+        });
+        selectedDialog.setOnDismissListener(new PhotoItemSelectedDialog.OnDismissListener() {
+            @Override
+            public void onDismiss(boolean isCancel, DialogInterface dialog) {
+                if (config.isOnlyCamera) {
+                    if (isCancel) {
+                        onKeyBackFragmentFinish();
+                    }
                 }
             }
         });
