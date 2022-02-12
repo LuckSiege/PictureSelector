@@ -1510,25 +1510,38 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     @Override
     public void onEditMedia(Intent data) {
         if (mData.size() > viewPager.getCurrentItem()) {
-            LocalMedia media = mData.get(viewPager.getCurrentItem());
+            LocalMedia currentMedia = mData.get(viewPager.getCurrentItem());
             Uri output = Crop.getOutput(data);
-            media.setCutPath(output != null ? output.getPath() : "");
-            media.setCropImageWidth(Crop.getOutputImageWidth(data));
-            media.setCropImageHeight(Crop.getOutputImageHeight(data));
-            media.setCropOffsetX(Crop.getOutputImageOffsetX(data));
-            media.setCropOffsetY(Crop.getOutputImageOffsetY(data));
-            media.setCropResultAspectRatio(Crop.getOutputCropAspectRatio(data));
-            media.setCut(!TextUtils.isEmpty(media.getCutPath()));
-            media.setCustomData(Crop.getOutputCustomExtraData(data));
-            media.setEditorImage(media.isCut());
-            media.setSandboxPath(media.getCutPath());
-            if (SelectedManager.getSelectedResult().contains(media)) {
-                sendFixedSelectedChangeEvent(media);
+            currentMedia.setCutPath(output != null ? output.getPath() : "");
+            currentMedia.setCropImageWidth(Crop.getOutputImageWidth(data));
+            currentMedia.setCropImageHeight(Crop.getOutputImageHeight(data));
+            currentMedia.setCropOffsetX(Crop.getOutputImageOffsetX(data));
+            currentMedia.setCropOffsetY(Crop.getOutputImageOffsetY(data));
+            currentMedia.setCropResultAspectRatio(Crop.getOutputCropAspectRatio(data));
+            currentMedia.setCut(!TextUtils.isEmpty(currentMedia.getCutPath()));
+            currentMedia.setCustomData(Crop.getOutputCustomExtraData(data));
+            currentMedia.setEditorImage(currentMedia.isCut());
+            currentMedia.setSandboxPath(currentMedia.getCutPath());
+            if (SelectedManager.getSelectedResult().contains(currentMedia)) {
+                LocalMedia exitsMedia = currentMedia.getCompareLocalMedia();
+                if (exitsMedia != null) {
+                    exitsMedia.setCutPath(currentMedia.getCutPath());
+                    exitsMedia.setCut(currentMedia.isCut());
+                    exitsMedia.setEditorImage(currentMedia.isEditorImage());
+                    exitsMedia.setCustomData(currentMedia.getCustomData());
+                    exitsMedia.setSandboxPath(currentMedia.getCutPath());
+                    exitsMedia.setCropImageWidth(Crop.getOutputImageWidth(data));
+                    exitsMedia.setCropImageHeight(Crop.getOutputImageHeight(data));
+                    exitsMedia.setCropOffsetX(Crop.getOutputImageOffsetX(data));
+                    exitsMedia.setCropOffsetY(Crop.getOutputImageOffsetY(data));
+                    exitsMedia.setCropResultAspectRatio(Crop.getOutputCropAspectRatio(data));
+                }
+                sendFixedSelectedChangeEvent(currentMedia);
             } else {
-                confirmSelect(media, false);
+                confirmSelect(currentMedia, false);
             }
             viewPageAdapter.notifyItemChanged(viewPager.getCurrentItem());
-            notifyGallerySelectMedia(media);
+            notifyGallerySelectMedia(currentMedia);
         }
     }
 
