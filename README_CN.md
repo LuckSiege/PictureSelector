@@ -13,6 +13,7 @@
 ## 目录
 -[如何引用](#如何引用)<br>
 -[进阶使用](#进阶使用)<br>
+-[权限](#权限)<br>
 -[返回结果说明](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-LocalMedia%E8%AF%B4%E6%98%8E)<br>
 -[演示效果](#演示效果)<br>
 -[混淆配制](#混淆配制)<br>
@@ -75,6 +76,28 @@ dependencies {
   <version>v3.0.4</version>
 </dependency>
 ```
+
+## 权限
+
+```sh
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.WRITE_SETTINGS" />
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+<uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+<uses-permission android:name="android.permission.VIBRATE" />
+<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+<uses-permission android:name="android.permission.BLUETOOTH" />
+<uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+```
+
 
 ## 进阶使用
 想要了解更多功能，请参阅[文档](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%8A%9F%E8%83%BDapi%E8%AF%B4%E6%98%8E)
