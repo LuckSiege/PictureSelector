@@ -822,7 +822,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             mGalleryRecycle.setLayoutManager(layoutManager);
             if (SelectedManager.getSelectCount() > 0) {
                 mGalleryRecycle.setLayoutAnimation(AnimationUtils
-                        .loadLayoutAnimation(getContext(), R.anim.ps_layout_animation_fall_enter));
+                        .loadLayoutAnimation(getContext(), R.anim.ps_anim_layout_fall_enter));
             }
             mGalleryAdapter = new PreviewGalleryAdapter(isInternalBottomPreview, SelectedManager.getSelectedResult());
             notifyGallerySelectMedia(mData.get(curPosition));
