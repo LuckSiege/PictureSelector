@@ -42,6 +42,8 @@ public final class PictureConfig {
 
     public final static String EXTRA_CURRENT_CHOOSE_MODE = KEY + ".current_choose_mode";
 
+    public final static String EXTRA_MODE_TYPE_SOURCE = KEY + ".mode_type_source";
+
     public final static int MAX_PAGE_SIZE = 60;
 
     public final static int MIN_PAGE_SIZE = 10;
@@ -61,4 +63,6 @@ public final class PictureConfig {
     public final static int ALL = -1;
 
     public final static int UNSET = -1;
+
+    public final static int MODE_TYPE_SYSTEM_SOURCE = 1;
 }

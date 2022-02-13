@@ -567,7 +567,7 @@ public final class PictureSelectionCameraModel {
             }
             selectionConfig.isResultListenerBack = false;
             selectionConfig.isActivityResultBack = true;
-            Intent intent = new Intent(activity, PictureSelectorCameraActivity.class);
+            Intent intent = new Intent(activity, PictureSelectorTransparentActivity.class);
             Fragment fragment = selector.getFragment();
             if (fragment != null) {
                 fragment.startActivityForResult(intent, requestCode);
@@ -594,7 +594,7 @@ public final class PictureSelectionCameraModel {
             }
             selectionConfig.isResultListenerBack = false;
             selectionConfig.isActivityResultBack = true;
-            Intent intent = new Intent(activity, PictureSelectorCameraActivity.class);
+            Intent intent = new Intent(activity, PictureSelectorTransparentActivity.class);
             launcher.launch(intent);
             activity.overridePendingTransition(R.anim.ps_anim_fade_in, 0);
         }
@@ -618,7 +618,7 @@ public final class PictureSelectionCameraModel {
             selectionConfig.isResultListenerBack = true;
             selectionConfig.isActivityResultBack = false;
             PictureSelectionConfig.onResultCallListener = call;
-            Intent intent = new Intent(activity, PictureSelectorCameraActivity.class);
+            Intent intent = new Intent(activity, PictureSelectorTransparentActivity.class);
             activity.startActivity(intent);
             activity.overridePendingTransition(R.anim.ps_anim_fade_in, 0);
         }

@@ -380,6 +380,16 @@
                     android:textSize="14sp" />
 
                 <CheckBox
+                    android:id="@+id/cb_attach_system_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:visibility="gone"
+                    android:text="使用Activity承载系统相册"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
+                <CheckBox
                     android:id="@+id/cbWithImageVideo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

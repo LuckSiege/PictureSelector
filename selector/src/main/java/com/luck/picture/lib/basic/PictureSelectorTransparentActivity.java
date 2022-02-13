@@ -13,7 +13,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.luck.picture.lib.PictureOnlyCameraFragment;
+import com.luck.picture.lib.PictureSelectorSystemFragment;
 import com.luck.picture.lib.R;
+import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.immersive.ImmersiveManager;
 import com.luck.picture.lib.style.SelectMainStyle;
@@ -22,9 +24,9 @@ import com.luck.picture.lib.utils.StyleUtils;
 /**
  * @author：luck
  * @date：2022/2/10 6:07 下午
- * @describe：PictureSelectorCameraActivity
+ * @describe：PictureSelectorTransparentActivity
  */
-public class PictureSelectorCameraActivity extends AppCompatActivity {
+public class PictureSelectorTransparentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,13 +51,22 @@ public class PictureSelectorCameraActivity extends AppCompatActivity {
     }
 
     private void setupFragment() {
+        int modeTypeSource = getIntent().getIntExtra(PictureConfig.EXTRA_MODE_TYPE_SOURCE, 0);
+        String fragmentTag;
+        Fragment targetFragment;
+        if (modeTypeSource == PictureConfig.MODE_TYPE_SYSTEM_SOURCE) {
+            fragmentTag = PictureSelectorSystemFragment.TAG;
+            targetFragment = PictureSelectorSystemFragment.newInstance();
+        } else {
+            fragmentTag = PictureOnlyCameraFragment.TAG;
+            targetFragment = PictureOnlyCameraFragment.newInstance();
+        }
         FragmentManager supportFragmentManager = getSupportFragmentManager();
-        Fragment fragment = supportFragmentManager.findFragmentByTag(PictureOnlyCameraFragment.TAG);
+        Fragment fragment = supportFragmentManager.findFragmentByTag(fragmentTag);
         if (fragment != null) {
             supportFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
         }
-        FragmentInjectManager.injectSystemRoomFragment(supportFragmentManager,
-                PictureOnlyCameraFragment.TAG, PictureOnlyCameraFragment.newInstance());
+        FragmentInjectManager.injectSystemRoomFragment(supportFragmentManager, fragmentTag, targetFragment);
     }
 
     @SuppressLint("RtlHardcoded")

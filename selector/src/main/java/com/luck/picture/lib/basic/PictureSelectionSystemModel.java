@@ -1,13 +1,16 @@
 package com.luck.picture.lib.basic;
 
 import android.app.Activity;
+import android.content.Intent;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.luck.picture.lib.PictureSelectorSystemFragment;
+import com.luck.picture.lib.R;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.config.SelectModeConfig;
@@ -278,6 +281,80 @@ public final class PictureSelectionSystemModel {
             }
             FragmentInjectManager.injectSystemRoomFragment(fragmentManager,
                     PictureSelectorSystemFragment.TAG, PictureSelectorSystemFragment.newInstance());
+        }
+    }
+
+
+    /**
+     * Start PictureSelector
+     *
+     * @param requestCode
+     */
+    public void forSystemResultActivity(int requestCode) {
+        if (!DoubleUtils.isFastDoubleClick()) {
+            Activity activity = selector.getActivity();
+            if (activity == null) {
+                throw new NullPointerException("Activity cannot be null");
+            }
+            selectionConfig.isResultListenerBack = false;
+            selectionConfig.isActivityResultBack = true;
+            Intent intent = new Intent(activity, PictureSelectorTransparentActivity.class);
+            intent.putExtra(PictureConfig.EXTRA_MODE_TYPE_SOURCE, PictureConfig.MODE_TYPE_SYSTEM_SOURCE);
+            Fragment fragment = selector.getFragment();
+            if (fragment != null) {
+                fragment.startActivityForResult(intent, requestCode);
+            } else {
+                activity.startActivityForResult(intent, requestCode);
+            }
+            activity.overridePendingTransition(R.anim.ps_anim_fade_in, 0);
+        }
+    }
+
+    /**
+     * ActivityResultLauncher PictureSelector
+     *
+     * @param launcher use {@link Activity.registerForActivityResult( ActivityResultContract , ActivityResultCallback )}
+     */
+    public void forSystemResultActivity(ActivityResultLauncher<Intent> launcher) {
+        if (!DoubleUtils.isFastDoubleClick()) {
+            Activity activity = selector.getActivity();
+            if (activity == null) {
+                throw new NullPointerException("Activity cannot be null");
+            }
+            if (launcher == null) {
+                throw new NullPointerException("ActivityResultLauncher cannot be null");
+            }
+            selectionConfig.isResultListenerBack = false;
+            selectionConfig.isActivityResultBack = true;
+            Intent intent = new Intent(activity, PictureSelectorTransparentActivity.class);
+            intent.putExtra(PictureConfig.EXTRA_MODE_TYPE_SOURCE, PictureConfig.MODE_TYPE_SYSTEM_SOURCE);
+            launcher.launch(intent);
+            activity.overridePendingTransition(R.anim.ps_anim_fade_in, 0);
+        }
+    }
+
+    /**
+     * Start PictureSelector
+     *
+     * @param call
+     */
+    public void forSystemResultActivity(OnResultCallbackListener<LocalMedia> call) {
+        if (!DoubleUtils.isFastDoubleClick()) {
+            Activity activity = selector.getActivity();
+            if (activity == null) {
+                throw new NullPointerException("Activity cannot be null");
+            }
+            if (call == null) {
+                throw new NullPointerException("OnResultCallbackListener cannot be null");
+            }
+            // 绑定回调监听
+            selectionConfig.isResultListenerBack = true;
+            selectionConfig.isActivityResultBack = false;
+            PictureSelectionConfig.onResultCallListener = call;
+            Intent intent = new Intent(activity, PictureSelectorTransparentActivity.class);
+            intent.putExtra(PictureConfig.EXTRA_MODE_TYPE_SOURCE, PictureConfig.MODE_TYPE_SYSTEM_SOURCE);
+            activity.startActivity(intent);
+            activity.overridePendingTransition(R.anim.ps_anim_fade_in, 0);
         }
     }
 }

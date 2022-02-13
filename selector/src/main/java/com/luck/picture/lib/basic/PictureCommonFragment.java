@@ -15,6 +15,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -237,7 +238,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      * @return
      */
     protected boolean isNormalDefaultEnter() {
-        return getActivity() instanceof PictureSelectorSupporterActivity || getActivity() instanceof PictureSelectorCameraActivity;
+        return getActivity() instanceof PictureSelectorSupporterActivity || getActivity() instanceof PictureSelectorTransparentActivity;
     }
 
     @Nullable
@@ -1210,7 +1211,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         if (ActivityCompatHelper.isDestroy(getActivity())) {
             return null;
         }
-        long id, bucketId;
+        long id = 0, bucketId;
         File cameraFile;
         String mimeType;
         if (PictureMimeType.isContent(generatePath)) {
@@ -1218,8 +1219,20 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             String path = PictureFileUtils.getPath(getActivity(), cameraUri);
             cameraFile = new File(path);
             mimeType = MediaUtils.getMimeTypeFromMediaUrl(cameraFile.getAbsolutePath());
-            int lastIndexOf = generatePath.lastIndexOf("/") + 1;
-            id = lastIndexOf > 0 ? ValueOf.toLong(generatePath.substring(lastIndexOf)) : System.currentTimeMillis();
+            if (PictureFileUtils.isMediaDocument(cameraUri)) {
+                String documentId = DocumentsContract.getDocumentId(cameraUri);
+                if (!TextUtils.isEmpty(documentId)) {
+                    String[] split = documentId.split(":");
+                    if (split.length > 1) {
+                        id = ValueOf.toLong(split[1]);
+                    }
+                }
+            } else if (PictureFileUtils.isDownloadsDocument(cameraUri)) {
+                id = ValueOf.toLong(DocumentsContract.getDocumentId(cameraUri));
+            } else {
+                int lastIndexOf = generatePath.lastIndexOf("/") + 1;
+                id = lastIndexOf > 0 ? ValueOf.toLong(generatePath.substring(lastIndexOf)) : System.currentTimeMillis();
+            }
             if (PictureMimeType.isHasAudio(mimeType)) {
                 bucketId = MediaUtils.generateSoundsBucketId(getContext(), cameraFile, "");
             } else {
