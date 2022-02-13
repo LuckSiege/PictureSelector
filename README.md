@@ -3,7 +3,7 @@
 
    [简体中文🇨🇳](README_CN.md)
 
-   [Download Demo Apk](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-01-28_062817_v3.0.4.apk)<br>
+   [Download Demo Apk](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-02-13_073401_v3.0.4.apk)<br>
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
 [![CSDN](https://img.shields.io/twitter/url/http/blog.csdn.net/luck_mw.svg?style=social)](http://blog.csdn.net/luck_mw)
@@ -32,16 +32,16 @@ repositories {
 
 dependencies {
   // PictureSelector basic (Necessary)
-  implementation 'io.github.lucksiege:pictureselector:v3.0.3'
+  implementation 'io.github.lucksiege:pictureselector:v3.0.4'
 
   // image compress library (Not necessary)
-  implementation 'io.github.lucksiege:compress:v3.0.3'
+  implementation 'io.github.lucksiege:compress:v3.0.4'
 
   // uCrop library (Not necessary)
-  implementation 'io.github.lucksiege:ucrop:v3.0.3'
+  implementation 'io.github.lucksiege:ucrop:v3.0.4'
 
   // simple camerax library (Not necessary)
-  implementation 'io.github.lucksiege:camerax:v3.0.3'
+  implementation 'io.github.lucksiege:camerax:v3.0.4'
 }
 ```
 
@@ -51,25 +51,25 @@ Or Maven:
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>v3.0.3</version>
+  <version>v3.0.4</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>compress</artifactId>
-  <version>v3.0.3</version>
+  <version>v3.0.4</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>ucrop</artifactId>
-  <version>v3.0.3</version>
+  <version>v3.0.4</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>camerax</artifactId>
-  <version>v3.0.3</version>
+  <version>v3.0.4</version>
 </dependency>
 ```
 
