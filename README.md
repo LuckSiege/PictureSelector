@@ -11,6 +11,7 @@
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 ## Contents
+-[Last version](https://github.com/LuckSiege/PictureSelector/releases/tag/v3.0.4)<br>
 -[Download](#Download)<br>
 -[Usage](#Usage)<br>
 -[Permission](#Permission)<br>
