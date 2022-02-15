@@ -109,6 +109,7 @@ public class PicassoEngine implements ImageEngine {
                     .resize(180, 180)
                     .centerCrop()
                     .noFade()
+                    .transform(new RoundedCornersTransform(8))
                     .placeholder(R.drawable.ps_image_placeholder)
                     .into(imageView);
         } else {
@@ -120,6 +121,7 @@ public class PicassoEngine implements ImageEngine {
                         .resize(180, 180)
                         .centerCrop()
                         .noFade()
+                        .transform(new RoundedCornersTransform(8))
                         .placeholder(R.drawable.ps_image_placeholder)
                         .into(imageView);
             } else {
@@ -128,6 +130,7 @@ public class PicassoEngine implements ImageEngine {
                         .resize(180, 180)
                         .centerCrop()
                         .noFade()
+                        .transform(new RoundedCornersTransform(8))
                         .placeholder(R.drawable.ps_image_placeholder)
                         .into(imageView);
             }

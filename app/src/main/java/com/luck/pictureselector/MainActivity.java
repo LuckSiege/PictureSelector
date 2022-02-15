@@ -65,6 +65,7 @@ import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
+import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
@@ -152,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private final List<LocalMedia> mData = new ArrayList<>();
     private ActivityResultLauncher<Intent> launcherResult;
     private int resultMode = LAUNCHER_RESULT;
+    private ImageEngine imageEngine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,6 +172,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         RadioGroup rgb_list_anim = findViewById(R.id.rgb_list_anim);
         RadioGroup rgb_photo_mode = findViewById(R.id.rgb_photo_mode);
         RadioGroup rgb_language = findViewById(R.id.rgb_language);
+        RadioGroup rgb_engine = findViewById(R.id.rgb_engine);
         cb_voice = findViewById(R.id.cb_voice);
         cb_choose_mode = findViewById(R.id.cb_choose_mode);
         cb_isCamera = findViewById(R.id.cb_isCamera);
@@ -213,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         rgb_list_anim.setOnCheckedChangeListener(this);
         rgb_photo_mode.setOnCheckedChangeListener(this);
         rgb_language.setOnCheckedChangeListener(this);
+        rgb_engine.setOnCheckedChangeListener(this);
         RecyclerView mRecyclerView = findViewById(R.id.recycler);
         ImageView left_back = findViewById(R.id.left_back);
         left_back.setOnClickListener(this);
@@ -290,13 +294,16 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             cb_single_back.setVisibility(isChecked ? View.GONE : View.VISIBLE);
             cb_single_back.setChecked(!isChecked && cb_single_back.isChecked());
         });
+
+        imageEngine = GlideEngine.createGlideEngine();
+
         mAdapter.setOnItemClickListener(new GridImageAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
                 // 预览图片、视频、音频
                 PictureSelector.create(MainActivity.this)
                         .openPreview()
-                        .setImageEngine(GlideEngine.createGlideEngine())
+                        .setImageEngine(imageEngine)
                         .setSelectorUIStyle(selectorStyle)
                         .setLanguage(language)
                         .isPreviewFullScreenMode(cb_preview_full.isChecked())
@@ -335,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                         PictureSelectionModel selectionModel = PictureSelector.create(getContext())
                                 .openGallery(chooseMode)
                                 .setSelectorUIStyle(selectorStyle)
-                                .setImageEngine(GlideEngine.createGlideEngine())
+                                .setImageEngine(imageEngine)
                                 .setCropEngine(getCropEngine())
                                 .setCompressEngine(getCompressEngine())
                                 .setSandboxFileEngine(new MeSandboxFileEngine())
@@ -1201,6 +1208,15 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             case R.id.rb_audio:
                 chooseMode = SelectMimeType.ofAudio();
                 cb_preview_audio.setVisibility(View.VISIBLE);
+                break;
+            case R.id.rb_glide:
+                imageEngine = GlideEngine.createGlideEngine();
+                break;
+            case R.id.rb_picasso:
+                imageEngine = PicassoEngine.createPicassoEngine();
+                break;
+            case R.id.rb_coil:
+                imageEngine = new CoilEngine();
                 break;
             case R.id.rb_system:
                 language = LanguageConfig.SYSTEM_LANGUAGE;

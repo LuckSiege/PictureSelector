@@ -370,6 +370,35 @@
                         android:textSize="14sp" />
                 </RadioGroup>
 
+                <RadioGroup
+                    android:id="@+id/rgb_engine"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rb_glide"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="Glide"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_picasso"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Picasso"
+                        android:textSize="14sp" />
+
+                    <RadioButton
+                        android:id="@+id/rb_coil"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Coil"
+                        android:textSize="14sp" />
+                </RadioGroup>
+
                 <CheckBox
                     android:id="@+id/cb_system_album"
                     android:layout_width="wrap_content"
@@ -384,10 +413,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:visibility="gone"
                     android:text="使用Activity承载系统相册"
                     android:textColor="@color/app_color_53575e"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:visibility="gone" />
 
                 <CheckBox
                     android:id="@+id/cbWithImageVideo"

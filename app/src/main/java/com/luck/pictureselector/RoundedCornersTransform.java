@@ -14,6 +14,12 @@ import com.squareup.picasso.Transformation;
  * @describe：RoundedCornersTransform
  */
 public class RoundedCornersTransform implements Transformation {
+    private final float roundingRadius;
+
+    public RoundedCornersTransform(float roundingRadius) {
+        this.roundingRadius = roundingRadius;
+    }
+
     @Override
     public Bitmap transform(Bitmap source) {
         int size = Math.min(source.getWidth(), source.getHeight());
@@ -34,7 +40,7 @@ public class RoundedCornersTransform implements Transformation {
         paint.setShader(shader);
         paint.setAntiAlias(true);
 
-        float r = size / 8f;
+        float r = size / roundingRadius > 0 ? roundingRadius : 8f;
         canvas.drawRoundRect(new RectF(0, 0, source.getWidth(), source.getHeight()), r, r, paint);
         squaredBitmap.recycle();
         return bitmap;

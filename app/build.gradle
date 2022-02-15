@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 static def releaseTime() {
     def date = new Date()
@@ -79,4 +80,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:${cfgs.version_recyclerview}"
     implementation "com.github.bumptech.glide:glide:${cfgs.glide_version}"
     implementation "com.squareup.picasso:picasso:${cfgs.picasso_version}"
+    implementation("io.coil-kt:coil:${cfgs.coil_version}")
+    implementation("io.coil-kt:coil-gif:${cfgs.coil_version}")
+    implementation("io.coil-kt:coil-video:${cfgs.coil_version}")
 }

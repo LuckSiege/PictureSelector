@@ -7,11 +7,10 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.luck.picture.lib.engine.ImageEngine;
@@ -100,19 +99,10 @@ public class GlideEngine implements ImageEngine {
                 .asBitmap()
                 .load(url)
                 .override(180, 180)
-                .centerCrop()
                 .sizeMultiplier(0.5f)
+                .transform(new CenterCrop(), new RoundedCorners(8))
                 .placeholder(R.drawable.ps_image_placeholder)
-                .into(new BitmapImageViewTarget(imageView) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.
-                                        create(context.getResources(), resource);
-                        circularBitmapDrawable.setCornerRadius(8);
-                        imageView.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
+                .into(imageView);
     }
 
 
