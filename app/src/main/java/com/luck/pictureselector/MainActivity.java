@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private TextView tv_original_tips;
     private TextView tvDeleteText;
     private RadioGroup rgb_crop;
-    private int aspect_ratio_x, aspect_ratio_y;
+    private int aspect_ratio_x = -1, aspect_ratio_y = -1;
     private CheckBox cb_voice, cb_choose_mode, cb_isCamera, cb_isGif,
             cb_preview_img, cb_preview_video, cb_crop, cb_compress,
             cb_mode, cb_hide, cb_crop_circular, cb_crop_use_bitmap, cb_styleCrop, cb_showCropGrid,
@@ -1249,8 +1249,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 language = LanguageConfig.AR;
                 break;
             case R.id.rb_crop_default:
-                aspect_ratio_x = 0;
-                aspect_ratio_y = 0;
+                aspect_ratio_x = -1;
+                aspect_ratio_y = -1;
                 break;
             case R.id.rb_crop_1to1:
                 aspect_ratio_x = 1;

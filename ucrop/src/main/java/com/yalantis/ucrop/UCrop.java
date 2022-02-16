@@ -339,6 +339,7 @@ public class UCrop {
 
         public static final String EXTRA_DARK_STATUS_BAR_BLACK = EXTRA_PREFIX + ".isDarkStatusBarBlack";
 
+        public static final String EXTRA_DRAG_IMAGES = EXTRA_PREFIX + ".isDragImages";
 
         public static final String EXTRA_CROP_CUSTOM_LOADER_BITMAP = EXTRA_PREFIX + ".CustomLoaderCropBitmap";
 
@@ -617,6 +618,14 @@ public class UCrop {
             mOptionBundle.putBoolean(EXTRA_DARK_STATUS_BAR_BLACK, isDarkStatusBarBlack);
         }
 
+        /**
+         * Can I drag and drop images when crop
+         *
+         * @param isDragImages
+         */
+        public void isDragCropImages(boolean isDragImages) {
+            mOptionBundle.putBoolean(EXTRA_DRAG_IMAGES, isDragImages);
+        }
 
         /**
          * @param color - desired resolved color of the active and selected widget and progress wheel middle line (default is white)
@@ -690,9 +699,9 @@ public class UCrop {
          * @param aspectRatio       - list of aspect ratio options that are available to user
          */
         public void setAspectRatioOptions(int selectedByDefault, AspectRatio... aspectRatio) {
-            if (selectedByDefault > aspectRatio.length) {
+            if (selectedByDefault >= aspectRatio.length) {
                 throw new IllegalArgumentException(String.format(Locale.US,
-                        "Index [selectedByDefault = %d] cannot be higher than aspect ratio options count [count = %d].",
+                        "Index [selectedByDefault = %d] (0-based) cannot be higher or equal than aspect ratio options count [count = %d].",
                         selectedByDefault, aspectRatio.length));
             }
             mOptionBundle.putInt(EXTRA_ASPECT_RATIO_SELECTED_BY_DEFAULT, selectedByDefault);
