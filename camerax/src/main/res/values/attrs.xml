@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="FocusImageView">
+        <attr name="focus_focusing" format="integer" />
+        <attr name="focus_success" format="integer" />
+        <attr name="focus_error" format="integer" />
+    </declare-styleable>
+</resources>

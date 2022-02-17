@@ -49,6 +49,10 @@ public class SimpleCameraX {
 
     public static final String EXTRA_DISPLAY_RECORD_CHANGE_TIME = EXTRA_PREFIX + ".DisplayRecordChangeTime";
 
+    public static final String EXTRA_MANUAL_FOCUS = EXTRA_PREFIX + ".isManualFocus";
+
+    public static final String EXTRA_ZOOM_PREVIEW = EXTRA_PREFIX + ".isZoomPreview";
+
     private final Intent mCameraIntent;
 
     private final Bundle mCameraBundle;
@@ -274,6 +278,28 @@ public class SimpleCameraX {
      */
     public SimpleCameraX isDisplayRecordChangeTime(boolean isDisplayRecordTime) {
         mCameraBundle.putBoolean(EXTRA_DISPLAY_RECORD_CHANGE_TIME, isDisplayRecordTime);
+        return this;
+    }
+
+    /**
+     * 是否手动点击对焦
+     *
+     * @param isManualFocus
+     * @return
+     */
+    public SimpleCameraX isManualFocusCameraPreview(boolean isManualFocus) {
+        mCameraBundle.putBoolean(EXTRA_MANUAL_FOCUS, isManualFocus);
+        return this;
+    }
+
+    /**
+     * 是否可缩放相机
+     *
+     * @param isZoom
+     * @return
+     */
+    public SimpleCameraX isZoomCameraPreview(boolean isZoom) {
+        mCameraBundle.putBoolean(EXTRA_ZOOM_PREVIEW, isZoom);
         return this;
     }
 

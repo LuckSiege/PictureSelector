@@ -33,7 +33,7 @@ public class UCrop {
     public static final int RESULT_ERROR = 96;
     public static final int MIN_SIZE = 10;
 
-    private static final String EXTRA_PREFIX = "com.yalantis.ucrop";
+    private static final String EXTRA_PREFIX = BuildConfig.LIBRARY_PACKAGE_NAME;
     public static final String EXTRA_CROP_TOTAL_DATA_SOURCE = EXTRA_PREFIX + ".CropTotalDataSource";
     public static final String EXTRA_CROP_INPUT_ORIGINAL = EXTRA_PREFIX + ".CropInputOriginal";
 

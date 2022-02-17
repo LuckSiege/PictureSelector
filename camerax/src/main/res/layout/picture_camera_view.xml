@@ -11,6 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <com.luck.lib.camerax.widget.FocusImageView
+        android:id="@+id/focus_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:focus_error="@drawable/focus_failed"
+        app:focus_focusing="@drawable/focus_focusing"
+        app:focus_success="@drawable/focus_focused" />
+
     <ImageView
         android:id="@+id/cover_preview"
         android:layout_width="match_parent"

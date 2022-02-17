@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox, cb_only_dir,
             cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo,
             cb_system_album, cb_fast_select, cb_skip_not_gif, cb_not_gif, cb_attach_camera_mode,
-            cb_attach_system_mode;
+            cb_attach_system_mode, cb_camera_zoom, cb_camera_focus;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isHasLiftDelete;
     private boolean needScaleBig = true;
@@ -184,6 +184,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_preview_scale = findViewById(R.id.cb_preview_scale);
         cb_inject_layout = findViewById(R.id.cb_inject_layout);
         cb_preview_img = findViewById(R.id.cb_preview_img);
+        cb_camera_zoom = findViewById(R.id.cb_camera_zoom);
+        cb_camera_focus = findViewById(R.id.cb_camera_focus);
         cb_preview_video = findViewById(R.id.cb_preview_video);
         cb_time_axis = findViewById(R.id.cb_time_axis);
         cb_crop = findViewById(R.id.cb_crop);
@@ -210,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_attach_system_mode = findViewById(R.id.cb_attach_system_mode);
         cb_mode.setOnCheckedChangeListener(this);
         rgb_crop.setOnCheckedChangeListener(this);
+        cb_custom_camera.setOnCheckedChangeListener(this);
         rgb_result.setOnCheckedChangeListener(this);
         rgb_style.setOnCheckedChangeListener(this);
         rgb_animation.setOnCheckedChangeListener(this);
@@ -848,6 +851,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 camera.setVideoFrameRate(25);
                 camera.setVideoBitRate(3 * 1024 * 1024);
                 camera.isDisplayRecordChangeTime(true);
+                camera.isManualFocusCameraPreview(cb_camera_focus.isChecked());
+                camera.isZoomCameraPreview(cb_camera_zoom.isChecked());
                 camera.setOutputPathDir(getSandboxCameraOutputPath());
                 camera.setImageEngine(new CameraImageEngine() {
                     @Override
@@ -1450,6 +1455,15 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 break;
             case R.id.cb_system_album:
                 cb_attach_system_mode.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                break;
+            case R.id.cb_custom_camera:
+                cb_camera_zoom.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                cb_camera_focus.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                if (isChecked) {
+                } else {
+                    cb_camera_zoom.setChecked(false);
+                    cb_camera_focus.setChecked(false);
+                }
                 break;
             case R.id.cb_crop_circular:
                 if (isChecked) {

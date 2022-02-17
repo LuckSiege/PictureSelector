@@ -10,6 +10,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.graphics.SurfaceTexture;
 import android.hardware.display.DisplayManager;
 import android.media.AudioManager;
@@ -30,20 +31,30 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.camera.core.AspectRatio;
+import androidx.camera.core.Camera;
+import androidx.camera.core.CameraControl;
+import androidx.camera.core.CameraInfo;
 import androidx.camera.core.CameraSelector;
+import androidx.camera.core.FocusMeteringAction;
+import androidx.camera.core.FocusMeteringResult;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
+import androidx.camera.core.MeteringPoint;
+import androidx.camera.core.MeteringPointFactory;
 import androidx.camera.core.Preview;
 import androidx.camera.core.VideoCapture;
+import androidx.camera.core.ZoomState;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.LifecycleCameraController;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.luck.lib.camerax.listener.CameraListener;
+import com.luck.lib.camerax.listener.CameraXPreviewViewTouchListener;
 import com.luck.lib.camerax.listener.CaptureListener;
 import com.luck.lib.camerax.listener.ClickListener;
 import com.luck.lib.camerax.listener.ImageCallbackListener;
@@ -55,12 +66,14 @@ import com.luck.lib.camerax.utils.CameraUtils;
 import com.luck.lib.camerax.utils.DensityUtil;
 import com.luck.lib.camerax.utils.FileUtils;
 import com.luck.lib.camerax.widget.CaptureLayout;
+import com.luck.lib.camerax.widget.FocusImageView;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.Locale;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 
@@ -138,6 +151,17 @@ public class CustomCameraView extends RelativeLayout {
      * 摄像头方向
      */
     private int lensFacing = CameraSelector.LENS_FACING_BACK;
+
+    /**
+     * 手动对焦
+     */
+    private boolean isManualFocus;
+
+    /**
+     * 双击可放大缩小
+     */
+    private boolean isZoomPreview;
+
     /**
      * 回调监听
      */
@@ -153,7 +177,11 @@ public class CustomCameraView extends RelativeLayout {
     private TextureView mTextureView;
     private DisplayManager displayManager;
     private DisplayListener displayListener;
+    private CameraInfo mCameraInfo;
+    private CameraControl mCameraControl;
+    private FocusImageView focusImageView;
     private long recordTime = 0;
+    private Executor mainExecutor;
 
     private boolean isImageCaptureEnabled() {
         return useCameraCases == LifecycleCameraController.IMAGE_CAPTURE;
@@ -180,6 +208,7 @@ public class CustomCameraView extends RelativeLayout {
         setBackgroundColor(ContextCompat.getColor(getContext(), R.color.picture_color_black));
         mCameraPreviewView = findViewById(R.id.cameraPreviewView);
         mTextureView = findViewById(R.id.video_play_preview);
+        focusImageView = findViewById(R.id.focus_view);
         mImagePreview = findViewById(R.id.cover_preview);
         mSwitchCamera = findViewById(R.id.image_switch);
         mFlashLamp = findViewById(R.id.image_flash);
@@ -189,6 +218,9 @@ public class CustomCameraView extends RelativeLayout {
         displayManager = (DisplayManager) getContext().getSystemService(Context.DISPLAY_SERVICE);
         displayListener = new DisplayListener();
         displayManager.registerDisplayListener(displayListener, null);
+
+        mainExecutor = ContextCompat.getMainExecutor(getContext());
+
         mCameraPreviewView.post(new Runnable() {
             @Override
             public void run() {
@@ -237,7 +269,7 @@ public class CustomCameraView extends RelativeLayout {
                     fileOptions = new ImageCapture.OutputFileOptions.Builder(cameraFile)
                             .setMetadata(metadata).build();
                 }
-                mImageCapture.takePicture(fileOptions, ContextCompat.getMainExecutor(getContext()),
+                mImageCapture.takePicture(fileOptions, mainExecutor,
                         new MyImageResultCallback(mImagePreview, mCaptureLayout, mImageCallbackListener, mCameraListener));
             }
 
@@ -260,7 +292,7 @@ public class CustomCameraView extends RelativeLayout {
                             outPutCameraFileName, videoFormat, outPutCameraDir);
                     fileOptions = new VideoCapture.OutputFileOptions.Builder(cameraFile).build();
                 }
-                mVideoCapture.startRecording(fileOptions, ContextCompat.getMainExecutor(getContext()),
+                mVideoCapture.startRecording(fileOptions, mainExecutor,
                         new VideoCapture.OnVideoSavedCallback() {
                             @Override
                             public void onVideoSaved(@NonNull @NotNull VideoCapture.OutputFileResults outputFileResults) {
@@ -395,6 +427,8 @@ public class CustomCameraView extends RelativeLayout {
         outPutCameraFileName = extras.getString(SimpleCameraX.EXTRA_CAMERA_FILE_NAME);
         videoFrameRate = extras.getInt(SimpleCameraX.EXTRA_VIDEO_FRAME_RATE);
         videoBitRate = extras.getInt(SimpleCameraX.EXTRA_VIDEO_BIT_RATE);
+        isManualFocus = extras.getBoolean(SimpleCameraX.EXTRA_MANUAL_FOCUS);
+        isZoomPreview = extras.getBoolean(SimpleCameraX.EXTRA_ZOOM_PREVIEW);
 
         int recordVideoMaxSecond = extras.getInt(SimpleCameraX.EXTRA_RECORD_VIDEO_MAX_SECOND, CustomCameraConfig.DEFAULT_MAX_RECORD_VIDEO);
         recordVideoMinSecond = extras.getInt(SimpleCameraX.EXTRA_RECORD_VIDEO_MIN_SECOND, CustomCameraConfig.DEFAULT_MIN_RECORD_VIDEO);
@@ -471,7 +505,7 @@ public class CustomCameraView extends RelativeLayout {
                     e.printStackTrace();
                 }
             }
-        }, ContextCompat.getMainExecutor(getContext()));
+        }, mainExecutor);
     }
 
     /**
@@ -517,11 +551,14 @@ public class CustomCameraView extends RelativeLayout {
             mCameraProvider.unbindAll();
             // A variable number of use-cases can be passed here -
             // camera provides access to CameraControl & CameraInfo
-            mCameraProvider.bindToLifecycle((LifecycleOwner) getContext(), cameraSelector, preview, mImageCapture, mImageAnalyzer);
+            Camera camera = mCameraProvider.bindToLifecycle((LifecycleOwner) getContext(), cameraSelector, preview, mImageCapture, mImageAnalyzer);
             // Attach the viewfinder's surface provider to preview use case
             preview.setSurfaceProvider(mCameraPreviewView.getSurfaceProvider());
             // setFlashMode
             setFlashMode();
+            mCameraInfo = camera.getCameraInfo();
+            mCameraControl = camera.getCameraControl();
+            initCameraPreviewListener();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -553,14 +590,81 @@ public class CustomCameraView extends RelativeLayout {
             mCameraProvider.unbindAll();
             // A variable number of use-cases can be passed here -
             // camera provides access to CameraControl & CameraInfo
-            mCameraProvider.bindToLifecycle((LifecycleOwner) getContext(), cameraSelector, preview, mVideoCapture);
+            Camera camera = mCameraProvider.bindToLifecycle((LifecycleOwner) getContext(), cameraSelector, preview, mVideoCapture);
             // Attach the viewfinder's surface provider to preview use case
             preview.setSurfaceProvider(mCameraPreviewView.getSurfaceProvider());
+            mCameraInfo = camera.getCameraInfo();
+            mCameraControl = camera.getCameraControl();
+            initCameraPreviewListener();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+
+    private void initCameraPreviewListener() {
+        LiveData<ZoomState> zoomState = mCameraInfo.getZoomState();
+        CameraXPreviewViewTouchListener cameraXPreviewViewTouchListener = new CameraXPreviewViewTouchListener(getContext());
+        cameraXPreviewViewTouchListener.setCustomTouchListener(new CameraXPreviewViewTouchListener.CustomTouchListener() {
+            @Override
+            public void zoom(float delta) {
+                if (isZoomPreview) {
+                    if (zoomState.getValue() != null) {
+                        float currentZoomRatio = zoomState.getValue().getZoomRatio();
+                        mCameraControl.setZoomRatio(currentZoomRatio * delta);
+                    }
+                }
+            }
+
+            @Override
+            public void click(float x, float y) {
+                if (isManualFocus) {
+                    MeteringPointFactory factory = mCameraPreviewView.getMeteringPointFactory();
+                    MeteringPoint point = factory.createPoint(x, y);
+                    FocusMeteringAction action = new FocusMeteringAction.Builder(point, FocusMeteringAction.FLAG_AF)
+                            .setAutoCancelDuration(3, TimeUnit.SECONDS)
+                            .build();
+                    if (mCameraInfo.isFocusMeteringSupported(action)) {
+                        mCameraControl.cancelFocusAndMetering();
+                        focusImageView.setDisappear(false);
+                        focusImageView.startFocus(new Point((int) x, (int) y));
+                        ListenableFuture<FocusMeteringResult> future = mCameraControl.startFocusAndMetering(action);
+                        future.addListener(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    FocusMeteringResult result = future.get();
+                                    focusImageView.setDisappear(true);
+                                    if (result.isFocusSuccessful()) {
+                                        focusImageView.onFocusSuccess();
+                                    } else {
+                                        focusImageView.onFocusFailed();
+                                    }
+                                } catch (Exception ignored) {
+                                }
+                            }
+                        }, mainExecutor);
+                    }
+                }
+            }
+
+            @Override
+            public void doubleClick(float x, float y) {
+                if (isZoomPreview) {
+                    if (zoomState.getValue() != null) {
+                        float currentZoomRatio = zoomState.getValue().getZoomRatio();
+                        float minZoomRatio = zoomState.getValue().getMinZoomRatio();
+                        if (currentZoomRatio > minZoomRatio) {
+                            mCameraControl.setLinearZoom(0f);
+                        } else {
+                            mCameraControl.setLinearZoom(0.5f);
+                        }
+                    }
+                }
+            }
+        });
+        mCameraPreviewView.setOnTouchListener(cameraXPreviewViewTouchListener);
+    }
 
     /**
      * [androidx.camera.core.ImageAnalysis.Builder] requires enum value of
@@ -840,5 +944,6 @@ public class CustomCameraView extends RelativeLayout {
      */
     public void onDestroy() {
         displayManager.unregisterDisplayListener(displayListener);
+        focusImageView.destroy();
     }
 }
