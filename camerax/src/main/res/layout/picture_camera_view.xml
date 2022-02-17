@@ -13,8 +13,8 @@
 
     <com.luck.lib.camerax.widget.FocusImageView
         android:id="@+id/focus_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
         app:focus_error="@drawable/focus_failed"
         app:focus_focusing="@drawable/focus_focusing"
         app:focus_success="@drawable/focus_focused" />

@@ -6,9 +6,15 @@ import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.Closeable;
 import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Objects;
 
 /**
@@ -141,6 +147,34 @@ public class FileUtils {
     }
 
     /**
+     * 复制文件
+     *
+     * @param is 文件输入流
+     * @param os 文件输出流
+     * @return
+     */
+    public static boolean writeFileFromIS(final InputStream is, final OutputStream os) {
+        OutputStream osBuffer = null;
+        BufferedInputStream isBuffer = null;
+        try {
+            isBuffer = new BufferedInputStream(is);
+            osBuffer = new BufferedOutputStream(os);
+            byte[] data = new byte[1024];
+            for (int len; (len = isBuffer.read(data)) != -1; ) {
+                os.write(data, 0, len);
+            }
+            os.flush();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            close(isBuffer);
+            close(osBuffer);
+        }
+    }
+
+    /**
      * delete camera PATH
      *
      * @param context Context
@@ -158,6 +192,18 @@ public class FileUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public static void close(@Nullable Closeable c) {
+        // java.lang.IncompatibleClassChangeError: interface not implemented
+        if (c instanceof Closeable) {
+            try {
+                c.close();
+            } catch (Exception e) {
+                // silence
+            }
         }
     }
 }

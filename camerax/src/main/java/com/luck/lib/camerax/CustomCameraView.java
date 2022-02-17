@@ -71,6 +71,9 @@ import com.luck.lib.camerax.widget.FocusImageView;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.Locale;
 import java.util.concurrent.Executor;
@@ -153,7 +156,7 @@ public class CustomCameraView extends RelativeLayout {
     private int lensFacing = CameraSelector.LENS_FACING_BACK;
 
     /**
-     * 手动对焦
+     * 手指点击对焦
      */
     private boolean isManualFocus;
 
@@ -161,6 +164,8 @@ public class CustomCameraView extends RelativeLayout {
      * 双击可放大缩小
      */
     private boolean isZoomPreview;
+
+    private long recordTime = 0;
 
     /**
      * 回调监听
@@ -180,7 +185,6 @@ public class CustomCameraView extends RelativeLayout {
     private CameraInfo mCameraInfo;
     private CameraControl mCameraControl;
     private FocusImageView focusImageView;
-    private long recordTime = 0;
     private Executor mainExecutor;
 
     private boolean isImageCaptureEnabled() {
@@ -258,17 +262,15 @@ public class CustomCameraView extends RelativeLayout {
                 ImageCapture.Metadata metadata = new ImageCapture.Metadata();
                 metadata.setReversedHorizontal(isReversedHorizontal);
                 ImageCapture.OutputFileOptions fileOptions;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && TextUtils.isEmpty(outPutCameraDir)) {
-                    ContentValues contentValues = CameraUtils.buildImageContentValues(outPutCameraFileName, imageFormatForQ);
-                    fileOptions = new ImageCapture.OutputFileOptions.Builder(getContext().getContentResolver()
-                            , MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-                            .setMetadata(metadata).build();
+                File cameraFile;
+                if (isSaveExternal()) {
+                    cameraFile = createTempFile(false);
                 } else {
-                    File cameraFile = FileUtils.createCameraFile(getContext(), CameraUtils.TYPE_IMAGE,
+                    cameraFile = FileUtils.createCameraFile(getContext(), CameraUtils.TYPE_IMAGE,
                             outPutCameraFileName, imageFormat, outPutCameraDir);
-                    fileOptions = new ImageCapture.OutputFileOptions.Builder(cameraFile)
-                            .setMetadata(metadata).build();
                 }
+                fileOptions = new ImageCapture.OutputFileOptions.Builder(cameraFile)
+                        .setMetadata(metadata).build();
                 mImageCapture.takePicture(fileOptions, mainExecutor,
                         new MyImageResultCallback(mImagePreview, mCaptureLayout, mImageCallbackListener, mCameraListener));
             }
@@ -283,15 +285,14 @@ public class CustomCameraView extends RelativeLayout {
                 mFlashLamp.setVisibility(INVISIBLE);
                 tvCurrentTime.setVisibility(isDisplayRecordTime ? VISIBLE : GONE);
                 VideoCapture.OutputFileOptions fileOptions;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && TextUtils.isEmpty(outPutCameraDir)) {
-                    ContentValues contentValues = CameraUtils.buildVideoContentValues(outPutCameraFileName, videoFormatForQ);
-                    fileOptions = new VideoCapture.OutputFileOptions.Builder(getContext().getContentResolver(),
-                            MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues).build();
+                File cameraFile;
+                if (isSaveExternal()) {
+                    cameraFile = createTempFile(true);
                 } else {
-                    File cameraFile = FileUtils.createCameraFile(getContext(), CameraUtils.TYPE_VIDEO,
+                    cameraFile = FileUtils.createCameraFile(getContext(), CameraUtils.TYPE_VIDEO,
                             outPutCameraFileName, videoFormat, outPutCameraDir);
-                    fileOptions = new VideoCapture.OutputFileOptions.Builder(cameraFile).build();
                 }
+                fileOptions = new VideoCapture.OutputFileOptions.Builder(cameraFile).build();
                 mVideoCapture.startRecording(fileOptions, mainExecutor,
                         new VideoCapture.OnVideoSavedCallback() {
                             @Override
@@ -382,14 +383,12 @@ public class CustomCameraView extends RelativeLayout {
             @Override
             public void cancel() {
                 onCancelMedia();
-                String outputPath = SimpleCameraX.getOutputPath(((Activity) getContext()).getIntent());
-                FileUtils.deleteFile(getContext(), outputPath);
             }
 
             @Override
             public void confirm() {
                 Activity activity = (Activity) getContext();
-                String outputPath = SimpleCameraX.getOutputPath(activity.getIntent());
+                String outputPath = isMergeExternalStorageState(activity, SimpleCameraX.getOutputPath(activity.getIntent()));
                 if (isImageCaptureEnabled()) {
                     mImagePreview.setVisibility(INVISIBLE);
                     if (mCameraListener != null) {
@@ -411,6 +410,56 @@ public class CustomCameraView extends RelativeLayout {
                 }
             }
         });
+    }
+
+    private String isMergeExternalStorageState(Activity activity, String outputPath) {
+        if (isSaveExternal()) {
+            try {
+                // 当用户未设置存储路径时，相片默认是存在外部公共目录下
+                Uri externalSavedUri;
+                if (isImageCaptureEnabled()) {
+                    ContentValues contentValues = CameraUtils.buildImageContentValues(outPutCameraFileName, imageFormatForQ);
+                    externalSavedUri = getContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+                } else {
+                    ContentValues contentValues = CameraUtils.buildVideoContentValues(outPutCameraFileName, videoFormatForQ);
+                    externalSavedUri = getContext().getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues);
+                }
+                if (externalSavedUri == null) {
+                    return outputPath;
+                }
+                OutputStream outputStream = getContext().getContentResolver().openOutputStream(externalSavedUri);
+                boolean isWriteFileSuccess = FileUtils.writeFileFromIS(new FileInputStream(outputPath), outputStream);
+                if (isWriteFileSuccess) {
+                    FileUtils.deleteFile(getContext(), outputPath);
+                    SimpleCameraX.putOutputUri(activity.getIntent(), externalSavedUri);
+                    return externalSavedUri.toString();
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return outputPath;
+    }
+
+    /**
+     * 创建一个临时路径，主要是解决华为手机放弃拍照后会弹出相册图片被删除的提示
+     *
+     * @param isVideo
+     * @return
+     */
+    private File createTempFile(boolean isVideo) {
+        File externalFilesDir = getContext().getExternalFilesDir("");
+        File tempCameraFile = new File(externalFilesDir.getAbsolutePath(), ".TemporaryCamera");
+        if (!tempCameraFile.exists()) {
+            tempCameraFile.mkdirs();
+        }
+        String fileName = System.currentTimeMillis() + (isVideo ? CameraUtils.MP4 : CameraUtils.JPEG);
+        return new File(tempCameraFile.getAbsolutePath(), fileName);
+    }
+
+
+    private boolean isSaveExternal() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && TextUtils.isEmpty(outPutCameraDir);
     }
 
     /**
@@ -914,6 +963,8 @@ public class CustomCameraView extends RelativeLayout {
      * 取消拍摄相关
      */
     public void onCancelMedia() {
+        String outputPath = SimpleCameraX.getOutputPath(((Activity) getContext()).getIntent());
+        FileUtils.deleteFile(getContext(), outputPath);
         stopVideoPlay();
         resetState();
     }
