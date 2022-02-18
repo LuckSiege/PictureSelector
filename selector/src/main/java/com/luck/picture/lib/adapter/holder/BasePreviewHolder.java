@@ -76,15 +76,8 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
      */
     public void bindData(LocalMedia media, int position) {
         String path = media.getAvailablePath();
-        int realWidth, realHeight;
-        if (media.isCut() && media.getCropImageWidth() > 0 && media.getCropImageHeight() > 0) {
-            realWidth = media.getCropImageWidth();
-            realHeight = media.getCropImageHeight();
-        } else {
-            realWidth = media.getWidth();
-            realHeight = media.getHeight();
-        }
-        int[] maxImageSize = BitmapUtils.getMaxImageSize(realWidth, realHeight);
+        int[] size = getSize(media);
+        int[] maxImageSize = BitmapUtils.getMaxImageSize(size[0], size[1]);
         PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, maxImageSize[0], maxImageSize[1],
                 new OnCallbackListener<Bitmap>() {
                     @Override
@@ -129,6 +122,16 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
             }
         });
     }
+
+
+    public int[] getSize(LocalMedia media) {
+        if (media.isCut() && media.getCropImageWidth() > 0 && media.getCropImageHeight() > 0) {
+            return new int[]{media.getCropImageWidth(), media.getCropImageHeight()};
+        } else {
+            return new int[]{media.getWidth(), media.getHeight()};
+        }
+    }
+
 
     protected void setScaleDisplaySize(LocalMedia media) {
         if (!config.isPreviewZoomEffect && screenWidth < screenHeight) {
