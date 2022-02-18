@@ -150,11 +150,21 @@ public class BitmapLoadUtils {
 
     public static boolean checkSize(Bitmap bitmap, BitmapFactory.Options options) {
         int bitmapSize = bitmap != null ? bitmap.getByteCount() : 0;
-        if (bitmapSize > MAX_BITMAP_SIZE) {
+        if (bitmapSize > getFreeMemory()) {
             options.inSampleSize *= 2;
             return true;
         }
         return false;
+    }
+
+    /**
+     * Get free memory of current application
+     *
+     * @return
+     */
+    public static long getFreeMemory() {
+        long freeMemory = Runtime.getRuntime().freeMemory();
+        return freeMemory > MAX_BITMAP_SIZE ? MAX_BITMAP_SIZE : freeMemory;
     }
 
     public static int getExifOrientation(@NonNull Context context, @NonNull Uri imageUri) {

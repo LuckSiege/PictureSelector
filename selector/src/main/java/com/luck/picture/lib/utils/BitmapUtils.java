@@ -22,6 +22,8 @@ import java.io.InputStream;
  * @describe：BitmapUtils
  */
 public class BitmapUtils {
+    private static final int ARGB_8888_MEMORY_BYTE = 4;
+    private static final int MAX_BITMAP_SIZE = 100 * 1024 * 1024;   // 100 MB
 
     /**
      * 判断拍照 图片是否旋转
@@ -153,18 +155,33 @@ public class BitmapUtils {
      * @return
      */
     public static int[] getMaxImageSize(int imageWidth, int imageHeight) {
+        int maxWidth = PictureConfig.UNSET, maxHeight = PictureConfig.UNSET;
         if (imageWidth == 0 && imageHeight == 0) {
-            return new int[]{PictureConfig.UNSET, PictureConfig.UNSET};
+            return new int[]{maxWidth, maxHeight};
         }
         int inSampleSize = BitmapUtils.computeSize(imageWidth, imageHeight);
-        if (MediaUtils.isLongImage(imageWidth, imageHeight)) {
-            if (inSampleSize == 1) {
-                inSampleSize = 2;
+        boolean decodeAttemptSuccess = false;
+        while (!decodeAttemptSuccess) {
+            maxWidth = imageWidth / inSampleSize;
+            maxHeight = imageHeight / inSampleSize;
+            int bitmapSize = maxWidth * maxHeight * ARGB_8888_MEMORY_BYTE;
+            if (bitmapSize > getFreeMemory()) {
+                inSampleSize *= 2;
+                continue;
             }
+            decodeAttemptSuccess = true;
         }
-        int newWidth = (imageWidth) / inSampleSize;
-        int newHeight = (imageHeight) / inSampleSize;
-        return new int[]{newWidth, newHeight};
+        return new int[]{maxWidth, maxHeight};
+    }
+
+    /**
+     * 获取当前应用空闲内存
+     *
+     * @return
+     */
+    public static long getFreeMemory() {
+        long freeMemory = Runtime.getRuntime().freeMemory();
+        return freeMemory > MAX_BITMAP_SIZE ? MAX_BITMAP_SIZE : freeMemory;
     }
 
     /**
