@@ -2,6 +2,8 @@ package com.luck.picture.lib.basic;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.provider.MediaStore;
+import android.text.TextUtils;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -835,6 +837,24 @@ public final class PictureSelectionModel {
     public PictureSelectionModel setSkipCropMimeType(String... mimeTypes) {
         if (mimeTypes != null && mimeTypes.length > 0) {
             selectionConfig.skipCropList.addAll(Arrays.asList(mimeTypes));
+        }
+        return this;
+    }
+
+    /**
+     * query local data source sort
+     * {@link MediaStore.MediaColumns.DATE_MODIFIED # DATE_ADDED # _ID}
+     * <p>
+     * example:
+     * MediaStore.MediaColumns.DATE_MODIFIED + " DESC";  or MediaStore.MediaColumns.DATE_MODIFIED + " ASC";
+     * </p>
+     *
+     * @param sortOrder
+     * @return
+     */
+    public PictureSelectionModel setQuerySortOrder(String sortOrder) {
+        if (!TextUtils.isEmpty(sortOrder)) {
+            selectionConfig.sortOrder = sortOrder;
         }
         return this;
     }

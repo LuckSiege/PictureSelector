@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox, cb_only_dir,
             cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo,
             cb_system_album, cb_fast_select, cb_skip_not_gif, cb_not_gif, cb_attach_camera_mode,
-            cb_attach_system_mode, cb_camera_zoom, cb_camera_focus;
+            cb_attach_system_mode, cb_camera_zoom, cb_camera_focus, cb_query_sort_order;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isHasLiftDelete;
     private boolean needScaleBig = true;
@@ -186,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_preview_img = findViewById(R.id.cb_preview_img);
         cb_camera_zoom = findViewById(R.id.cb_camera_zoom);
         cb_camera_focus = findViewById(R.id.cb_camera_focus);
+        cb_query_sort_order = findViewById(R.id.cb_query_sort_order);
         cb_preview_video = findViewById(R.id.cb_preview_video);
         cb_time_axis = findViewById(R.id.cb_time_axis);
         cb_crop = findViewById(R.id.cb_crop);
@@ -356,6 +358,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setInjectLayoutResourceListener(getInjectLayoutResource())
                                 .setSelectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
                                 .setLanguage(language)
+                                .setQuerySortOrder(cb_query_sort_order.isChecked() ? MediaStore.MediaColumns.DATE_MODIFIED + " ASC" : "")
                                 .setOutputCameraDir(chooseMode == SelectMimeType.ofAudio()
                                         ? getSandboxAudioOutputPath() : getSandboxCameraOutputPath())
                                 .setOutputAudioDir(chooseMode == SelectMimeType.ofAudio()
@@ -993,6 +996,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         options.setSkipCropMimeType(getNotSupportCrop());
         options.isForbidCropGifWebp(cb_not_gif.isChecked());
         options.isForbidSkipMultipleCrop(false);
+        options.setMaxScaleMultiplier(100);
         if (selectorStyle != null && selectorStyle.getSelectMainStyle().getStatusBarColor() != 0) {
             SelectMainStyle mainStyle = selectorStyle.getSelectMainStyle();
             boolean isDarkStatusBarBlack = mainStyle.isDarkStatusBarBlack();

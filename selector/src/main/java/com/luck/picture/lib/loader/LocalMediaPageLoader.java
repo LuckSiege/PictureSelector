@@ -144,7 +144,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                         MediaStore.MediaColumns.MIME_TYPE,
                         MediaStore.MediaColumns.DATA}, queryArgs, null);
             } else {
-                String orderBy = MediaStore.Files.FileColumns._ID + " DESC limit 1 offset 0";
+                String orderBy = getSortOrder() + " limit 1 offset 0";
                 data = mContext.getContentResolver().query(QUERY_URI, new String[]{
                         MediaStore.Files.FileColumns._ID,
                         MediaStore.MediaColumns.MIME_TYPE,
@@ -218,7 +218,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                         Bundle queryArgs = MediaUtils.createQueryArgsBundle(getPageSelection(bucketId), getPageSelectionArgs(bucketId), limit, (page - 1) * pageSize);
                         data = mContext.getContentResolver().query(QUERY_URI, PROJECTION, queryArgs, null);
                     } else {
-                        String orderBy = page == -1 ? MediaStore.Files.FileColumns._ID + " DESC" : MediaStore.Files.FileColumns._ID + " DESC limit " + limit + " offset " + (page - 1) * pageSize;
+                        String orderBy = page == -1 ? getSortOrder() : getSortOrder() + " limit " + limit + " offset " + (page - 1) * pageSize;
                         data = mContext.getContentResolver().query(QUERY_URI, PROJECTION, getPageSelection(bucketId), getPageSelectionArgs(bucketId), orderBy);
                     }
                     if (data != null) {
@@ -366,7 +366,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
             public List<LocalMediaFolder> doInBackground() {
                 Cursor data = mContext.getContentResolver().query(QUERY_URI,
                         SdkVersionUtils.isQ() ? PROJECTION_29 : ALL_PROJECTION,
-                        getSelection(), getSelectionArgs(), ORDER_BY);
+                        getSelection(), getSelectionArgs(), getSortOrder());
                 try {
                     if (data != null) {
                         int count = data.getCount();

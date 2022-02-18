@@ -27,7 +27,7 @@ import java.io.InputStream;
  * Created by Oleksii Shliama (https://github.com/shliama).
  */
 public class BitmapLoadUtils {
-
+    private static final int MAX_BITMAP_SIZE = 100 * 1024 * 1024;   // 100 MB
     private static final String CONTENT_SCHEME = "content";
 
     private static final String TAG = "BitmapLoadUtils";
@@ -106,27 +106,55 @@ public class BitmapLoadUtils {
      * Gets the zoom of the image
      *
      * @param context
-     * @param imageUri
+     * @param mInputUri
      * @return
      */
-    public static int[] getMaxImageSize(Context context, Uri imageUri) {
+    public static int[] getMaxImageSize(Context context, Uri mInputUri) {
         int maxBitmapSize = BitmapLoadUtils.calculateMaxBitmapSize(context);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
         try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            InputStream stream = context.getContentResolver().openInputStream(imageUri);
+            InputStream stream = context.getContentResolver().openInputStream(mInputUri);
             BitmapFactory.decodeStream(stream, null, options);
-            if (options.outWidth == 0 && options.outHeight == 0) {
-                return new int[]{maxBitmapSize, maxBitmapSize};
-            }
-            int inSampleSize = BitmapLoadUtils.computeSize(options.outWidth, options.outHeight);
-            int newWidth = (options.outWidth) / inSampleSize;
-            int newHeight = (options.outHeight) / inSampleSize;
-            return new int[]{newWidth, newHeight};
+            options.inSampleSize = BitmapLoadUtils.computeSize(options.outWidth, options.outHeight);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new int[]{maxBitmapSize, maxBitmapSize};
+        options.inJustDecodeBounds = false;
+
+        boolean decodeAttemptSuccess = false;
+        while (!decodeAttemptSuccess) {
+            try {
+                InputStream stream = context.getContentResolver().openInputStream(mInputUri);
+                Bitmap decodeSampledBitmap;
+                try {
+                    decodeSampledBitmap = BitmapFactory.decodeStream(stream, null, options);
+                } finally {
+                    BitmapLoadUtils.close(stream);
+                }
+                if (BitmapLoadUtils.checkSize(decodeSampledBitmap, options)) continue;
+                decodeAttemptSuccess = true;
+            } catch (OutOfMemoryError error) {
+                Log.e(TAG, "doInBackground: BitmapFactory.decodeFileDescriptor: ", error);
+                options.inSampleSize *= 2;
+            } catch (IOException e) {
+                Log.e(TAG, "doInBackground: ImageDecoder.createSource: ", e);
+            }
+        }
+        if (options.outWidth <= 0 || options.outHeight <= 0) {
+            return new int[]{maxBitmapSize, maxBitmapSize};
+        } else {
+            return new int[]{options.outWidth / options.inSampleSize, options.outHeight / options.inSampleSize};
+        }
+    }
+
+    public static boolean checkSize(Bitmap bitmap, BitmapFactory.Options options) {
+        int bitmapSize = bitmap != null ? bitmap.getByteCount() : 0;
+        if (bitmapSize > MAX_BITMAP_SIZE) {
+            options.inSampleSize *= 2;
+            return true;
+        }
+        return false;
     }
 
     public static int getExifOrientation(@NonNull Context context, @NonNull Uri imageUri) {

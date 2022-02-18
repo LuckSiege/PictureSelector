@@ -102,7 +102,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
             public List<LocalMediaFolder> doInBackground() {
                 List<LocalMediaFolder> imageFolders = new ArrayList<>();
                 Cursor data = mContext.getContentResolver().query(QUERY_URI, PROJECTION,
-                        getSelection(), getSelectionArgs(), ORDER_BY);
+                        getSelection(), getSelectionArgs(), getSortOrder());
                 try {
                     if (data != null) {
                         LocalMediaFolder allImageFolder = new LocalMediaFolder();

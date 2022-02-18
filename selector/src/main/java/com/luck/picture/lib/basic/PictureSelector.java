@@ -69,7 +69,7 @@ public final class PictureSelector {
     }
 
     /**
-     * @param chooseMode Select the type of picture you want，all or Picture or Video .
+     * @param chooseMode Select the type of images you want，all or images or video or audio
      * @return LocalMedia PictureSelectionModel
      * Use {@link SelectMimeType}
      */
@@ -78,7 +78,7 @@ public final class PictureSelector {
     }
 
     /**
-     * @param chooseMode Select the type of picture you want，Picture or Video.
+     * @param chooseMode only use camera，images or video or audio
      * @return LocalMedia PictureSelectionModel
      * Use {@link SelectMimeType}
      */
@@ -87,7 +87,7 @@ public final class PictureSelector {
     }
 
     /**
-     * @param chooseMode Select the type of picture you want，all or Picture or Video .
+     * @param chooseMode Select the type of images you want，all or images or video or audio
      * @return LocalMedia PictureSelectionSystemModel
      * Use {@link SelectMimeType}
      * <p>
@@ -99,7 +99,19 @@ public final class PictureSelector {
     }
 
     /**
-     * preview data
+     * @param selectMimeType query the type of images you want，all or images or video or audio
+     * @return LocalMedia PictureSelectionQueryModel
+     * Use {@link SelectMimeType}
+     * <p>
+     * only query {@link LocalMedia} data source
+     * </p>
+     */
+    public PictureSelectionQueryModel dataSource(int selectMimeType) {
+        return new PictureSelectionQueryModel(this, selectMimeType);
+    }
+
+    /**
+     * Preview mode to preview images or videos or audio
      *
      * @return
      */

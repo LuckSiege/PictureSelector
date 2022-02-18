@@ -22,4 +22,13 @@
         android:text="Inject Fragment"
         android:textAllCaps="false" />
 
+    <Button
+        android:id="@+id/btn_only_query_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_inject_fragment"
+        android:layout_marginTop="10dp"
+        android:text="Only query data source"
+        android:textAllCaps="false" />
+
 </RelativeLayout>

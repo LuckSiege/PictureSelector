@@ -37,8 +37,6 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
 
     private static final String TAG = "BitmapWorkerTask";
 
-    private static final int MAX_BITMAP_SIZE = 100 * 1024 * 1024;   // 100 MB
-
     private final WeakReference<Context> mContext;
     private Uri mInputUri;
     private Uri mOutputUri;
@@ -76,6 +74,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
         mBitmapLoadCallback = loadCallback;
     }
 
+
     @Override
     @NonNull
     protected BitmapWorkerResult doInBackground(Void... params) {
@@ -104,6 +103,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
             e.printStackTrace();
         }
         options.inJustDecodeBounds = false;
+
         Bitmap decodeSampledBitmap = null;
 
         boolean decodeAttemptSuccess = false;
@@ -118,7 +118,7 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
                 } finally {
                     BitmapLoadUtils.close(stream);
                 }
-                if (checkSize(decodeSampledBitmap, options)) continue;
+                if (BitmapLoadUtils.checkSize(decodeSampledBitmap, options)) continue;
                 decodeAttemptSuccess = true;
             } catch (OutOfMemoryError error) {
                 Log.e(TAG, "doInBackground: BitmapFactory.decodeFileDescriptor: ", error);
@@ -223,12 +223,4 @@ public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapW
         }
     }
 
-    private boolean checkSize(Bitmap bitmap, BitmapFactory.Options options) {
-        int bitmapSize = bitmap != null ? bitmap.getByteCount() : 0;
-        if (bitmapSize > MAX_BITMAP_SIZE) {
-            options.inSampleSize *= 2;
-            return true;
-        }
-        return false;
-    }
 }

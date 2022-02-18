@@ -205,4 +205,14 @@ public class IBridgeMediaLoader {
         }
         return stringBuilder.toString();
     }
+
+    public String getSortOrder() {
+        String sortOrder;
+        if (TextUtils.isEmpty(config.sortOrder)) {
+            sortOrder = ORDER_BY;
+        } else {
+            sortOrder = config.sortOrder;
+        }
+        return sortOrder;
+    }
 }

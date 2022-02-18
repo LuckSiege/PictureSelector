@@ -1,16 +1,19 @@
-## 当前使用的版本是多少？
+## Current use version？
+#### 当前使用的版本是多少？
 
 ```
 
 ```
 
-## Demo能否复现这问题？
+## Will this problem occur in demo?
+#### Demo能否复现这问题？
 
 ```
 
 ```
 
-## 描述问题或提供错误log？
+## Describe the problem or provide an error log？
+#### 描述问题或提供错误log？
 
 ```
 

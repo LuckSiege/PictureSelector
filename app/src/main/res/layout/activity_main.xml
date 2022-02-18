@@ -390,6 +390,15 @@
                         android:textSize="14sp" />
                 </RadioGroup>
 
+                <CheckBox
+                    android:id="@+id/cb_query_sort_order"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="(降序/升序) 查询"
+                    android:textColor="@color/app_color_53575e"
+                    android:textSize="14sp" />
+
                 <RadioGroup
                     android:id="@+id/rgb_engine"
                     android:layout_width="match_parent"
