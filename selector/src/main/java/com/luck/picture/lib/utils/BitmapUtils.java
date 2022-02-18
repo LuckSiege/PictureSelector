@@ -165,7 +165,7 @@ public class BitmapUtils {
             maxWidth = imageWidth / inSampleSize;
             maxHeight = imageHeight / inSampleSize;
             int bitmapSize = maxWidth * maxHeight * ARGB_8888_MEMORY_BYTE;
-            if (bitmapSize > getFreeMemory()) {
+            if (bitmapSize > getTotalMemory()) {
                 inSampleSize *= 2;
                 continue;
             }
@@ -179,9 +179,9 @@ public class BitmapUtils {
      *
      * @return
      */
-    public static long getFreeMemory() {
-        long freeMemory = Runtime.getRuntime().freeMemory();
-        return freeMemory > MAX_BITMAP_SIZE ? MAX_BITMAP_SIZE : freeMemory;
+    public static long getTotalMemory() {
+        long totalMemory = Runtime.getRuntime().totalMemory();
+        return totalMemory > MAX_BITMAP_SIZE ? MAX_BITMAP_SIZE : totalMemory;
     }
 
     /**
