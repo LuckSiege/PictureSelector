@@ -1144,41 +1144,26 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private class MyOnPreviewEventListener implements BasePreviewHolder.OnPreviewEventListener {
 
         @Override
-        public void onLoadCompleteBeginScale(BasePreviewHolder holder, int width, int height) {
-            if (isSaveInstanceState) {
-                return;
-            }
-            if (isFirstLoaded || isInternalBottomPreview) {
+        public void onLoadComplete(ImageView imageView, int width, int height) {
+            if (isSaveInstanceState || isFirstLoaded || isInternalBottomPreview) {
                 return;
             }
             if (config.isPreviewZoomEffect) {
                 isFirstLoaded = true;
-                holder.coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                int[] size;
-                if (MediaUtils.isLongImage(width, height)) {
-                    size = new int[]{screenWidth, screenHeight};
-                } else {
-                    LocalMedia media = mData.get(curPosition);
-                    if (width > 0 && height > 0) {
-                        size = new int[]{width, height};
-                    } else {
-                        size = getRealSizeFromMedia(media);
-                    }
-                }
-                magicalView.changeRealScreenHeight(size[0], size[1], false);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                magicalView.changeRealScreenHeight(width, height, false);
                 ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
-                if (viewParams == null || size[0] == 0 || size[1] == 0) {
-                    magicalView.startNormal(size[0], size[1], false);
+                if (viewParams == null) {
+                    magicalView.startNormal(width, height, false);
                     magicalView.setBackgroundAlpha(1.0F);
                     for (int i = 0; i < mAnimViews.size(); i++) {
                         mAnimViews.get(i).setAlpha(1.0F);
                     }
                 } else {
                     magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width,
-                            viewParams.height, size[0], size[1]);
+                            viewParams.height, width, height);
                     magicalView.start(false);
                 }
-
                 ObjectAnimator animator = ObjectAnimator.ofFloat(viewPager, "alpha", 0.0F, 1.0F);
                 animator.setDuration(50);
                 animator.start();
@@ -1187,7 +1172,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         }
 
         @Override
-        public void onLoadCompleteError(BasePreviewHolder holder) {
+        public void onLoadError() {
             if (isFirstLoaded || isInternalBottomPreview) {
                 return;
             }

@@ -82,22 +82,32 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
                 new OnCallbackListener<Bitmap>() {
                     @Override
                     public void onCall(Bitmap bitmap) {
-                        if (bitmap != null) {
-                            if (PictureMimeType.isHasWebp(media.getMimeType()) || PictureMimeType.isUrlHasWebp(path)
-                                    || PictureMimeType.isUrlHasGif(path) || PictureMimeType.isHasGif(media.getMimeType())) {
+                        if (bitmap == null) {
+                            mPreviewEventListener.onLoadError();
+                        } else {
+                            boolean isHasWebp = PictureMimeType.isHasWebp(media.getMimeType()) || PictureMimeType.isUrlHasWebp(path);
+                            boolean isHasGif = PictureMimeType.isUrlHasGif(path) || PictureMimeType.isHasGif(media.getMimeType());
+                            if (isHasWebp || isHasGif) {
                                 PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), path, coverImageView);
                             } else {
                                 coverImageView.setImageBitmap(bitmap);
                             }
+                            int width, height;
                             if (MediaUtils.isLongImage(bitmap.getWidth(), bitmap.getHeight())) {
+                                width = screenWidth;
+                                height = screenHeight;
                                 coverImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                             } else {
+                                if (bitmap.getWidth() > 0 && bitmap.getHeight() > 0) {
+                                    width = bitmap.getWidth();
+                                    height = bitmap.getHeight();
+                                } else {
+                                    width = size[0];
+                                    height = size[1];
+                                }
                                 coverImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                             }
-                            mPreviewEventListener.onLoadCompleteBeginScale(BasePreviewHolder.this,
-                                    bitmap.getWidth(), bitmap.getHeight());
-                        } else {
-                            mPreviewEventListener.onLoadCompleteError(BasePreviewHolder.this);
+                            mPreviewEventListener.onLoadComplete(coverImageView, width, height);
                         }
                     }
                 });
@@ -166,9 +176,9 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
 
     public interface OnPreviewEventListener {
 
-        void onLoadCompleteBeginScale(BasePreviewHolder holder, int width, int height);
+        void onLoadComplete(ImageView imageView, int width, int height);
 
-        void onLoadCompleteError(BasePreviewHolder holder);
+        void onLoadError();
 
         void onBackPressed();
 
