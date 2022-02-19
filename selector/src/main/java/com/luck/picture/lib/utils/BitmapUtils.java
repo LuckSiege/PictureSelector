@@ -160,12 +160,13 @@ public class BitmapUtils {
             return new int[]{maxWidth, maxHeight};
         }
         int inSampleSize = BitmapUtils.computeSize(imageWidth, imageHeight);
+        long totalMemory = getTotalMemory();
         boolean decodeAttemptSuccess = false;
         while (!decodeAttemptSuccess) {
             maxWidth = imageWidth / inSampleSize;
             maxHeight = imageHeight / inSampleSize;
             int bitmapSize = maxWidth * maxHeight * ARGB_8888_MEMORY_BYTE;
-            if (bitmapSize > getTotalMemory()) {
+            if (bitmapSize > totalMemory) {
                 inSampleSize *= 2;
                 continue;
             }
