@@ -26,6 +26,7 @@
 ## Download
 
 Use Gradle
+
 ```sh
 repositories {
   google()
@@ -34,16 +35,16 @@ repositories {
 
 dependencies {
   // PictureSelector basic (Necessary)
-  implementation 'io.github.lucksiege:pictureselector:v3.0.4'
+  implementation 'io.github.lucksiege:pictureselector:v3.0.5'
 
   // image compress library (Not necessary)
-  implementation 'io.github.lucksiege:compress:v3.0.4'
+  implementation 'io.github.lucksiege:compress:v3.0.5'
 
   // uCrop library (Not necessary)
-  implementation 'io.github.lucksiege:ucrop:v3.0.4'
+  implementation 'io.github.lucksiege:ucrop:v3.0.5'
 
   // simple camerax library (Not necessary)
-  implementation 'io.github.lucksiege:camerax:v3.0.4'
+  implementation 'io.github.lucksiege:camerax:v3.0.5'
 }
 ```
 
@@ -53,25 +54,25 @@ Or Maven:
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>v3.0.4</version>
+  <version>v3.0.5</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>compress</artifactId>
-  <version>v3.0.4</version>
+  <version>v3.0.5</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>ucrop</artifactId>
-  <version>v3.0.4</version>
+  <version>v3.0.5</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>camerax</artifactId>
-  <version>v3.0.4</version>
+  <version>v3.0.5</version>
 </dependency>
 ```
 
@@ -101,7 +102,8 @@ For more features, see [documentation](https://github.com/LuckSiege/PictureSelec
 
 A simple use case is shown below:
 
-1、Get picture [GlideEngine](https://github.com/LuckSiege/PictureSelector/blob/version_component/app/src/main/java/com/luck/pictureselector/GlideEngine.java)
+1、Get picture [GlideEngine](https://github.com/LuckSiege/PictureSelector/blob/version_component/app/src/main/java/com/luck/pictureselector/GlideEngine.java) or [PicassoEngine](https://github.com/LuckSiege/PictureSelector/blob/version_component/app/src/main/java/com/luck/pictureselector/PicassoEngine.java) or [CoilEngine](https://github.com/LuckSiege/PictureSelector/blob/version_component/app/src/main/java/com/luck/pictureselector/CoilEngine.java)
+
 ```sh
 PictureSelector.create(this)
    .openGallery(SelectMimeType.ofImage())
@@ -138,6 +140,7 @@ PictureSelector.create(this)
 ```
 
 2、Only use camera
+
 ```sh
 PictureSelector.create(this)
      .openCamera(SelectMimeType.ofImage())
@@ -158,6 +161,7 @@ PictureSelector.create(this)
 3、You can also use the following example：
 
 (1)、Inject into any view fragment
+
 ```sh
 
 PictureSelector.create(this)
@@ -178,6 +182,7 @@ PictureSelector.create(this)
 ```
 
 (2)、Custom Inject into any view fragment
+
 ```sh
 
 PictureSelectorFragment selectorFragment = PictureSelector.create(this)
@@ -192,7 +197,37 @@ getSupportFragmentManager().beginTransaction()
 			
 ```
 
-4、Preview image、video、audio
+4、only query data source
+
+```sh
+
+PictureSelector.create(this)
+    .dataSource(SelectMimeType.ofAll())
+    .forAlbumDataSource(new OnQueryDataSourceListener<LocalMediaFolder>() {
+        @Override
+        public void onComplete(List<LocalMediaFolder> result) {
+
+        }
+   );
+
+```
+
+```sh
+
+PictureSelector.create(this)
+    .dataSource(SelectMimeType.ofAll())
+    .forMediaDataSource(new OnQueryDataSourceListener<LocalMedia>() {
+        @Override
+        public void onComplete(List<LocalMedia> result) {
+
+        }
+   );
+
+```
+
+
+5、Preview image、video、audio
+
 ```sh
 
 PictureSelector.create(this)

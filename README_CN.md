@@ -37,16 +37,16 @@ repositories {
 
 dependencies {
   // PictureSelector 基础 (必须)
-  implementation 'io.github.lucksiege:pictureselector:v3.0.4'
+  implementation 'io.github.lucksiege:pictureselector:v3.0.5'
 
   // 图片压缩 (按需引入)
-  implementation 'io.github.lucksiege:compress:v3.0.4'
+  implementation 'io.github.lucksiege:compress:v3.0.5'
 
   // 图片裁剪 (按需引入)
-  implementation 'io.github.lucksiege:ucrop:v3.0.4'
+  implementation 'io.github.lucksiege:ucrop:v3.0.5'
 
   // 自定义相机 (按需引入)
-  implementation 'io.github.lucksiege:camerax:v3.0.4'
+  implementation 'io.github.lucksiege:camerax:v3.0.5'
 }
 ```
 
@@ -56,25 +56,25 @@ dependencies {
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>v3.0.4</version>
+  <version>v3.0.5</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>compress</artifactId>
-  <version>v3.0.4</version>
+  <version>v3.0.5</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>ucrop</artifactId>
-  <version>v3.0.4</version>
+  <version>v3.0.5</version>
 </dependency>
 
 <dependency>
   <groupId>io.github.lucksiege</groupId>
   <artifactId>camerax</artifactId>
-  <version>v3.0.4</version>
+  <version>v3.0.5</version>
 </dependency>
 ```
 
@@ -106,6 +106,7 @@ dependencies {
 简单用例如下所示:
 
 1、获取图片 [GlideEngine](https://github.com/LuckSiege/PictureSelector/blob/version_component/app/src/main/java/com/luck/pictureselector/GlideEngine.java)
+
 ```sh
 PictureSelector.create(this)
    .openGallery(SelectMimeType.ofImage())
@@ -142,6 +143,7 @@ PictureSelector.create(this)
 ```
 
 2、单独拍照
+
 ```sh
 PictureSelector.create(this)
      .openCamera(SelectMimeType.ofImage())
@@ -162,6 +164,7 @@ PictureSelector.create(this)
 3、您还可以按如下示例使用：
 
 (1)、注入到任意视图层
+
 ```sh
 
 PictureSelector.create(this)
@@ -182,6 +185,7 @@ PictureSelector.create(this)
 ```
 
 (2)、自行注入到任意视图层
+
 ```sh
 
 PictureSelectorFragment selectorFragment = PictureSelector.create(this)
@@ -196,7 +200,37 @@ getSupportFragmentManager().beginTransaction()
 			
 ```
 
-4、预览图片、视频、音频
+4、只获取数据源
+
+```sh
+
+PictureSelector.create(this)
+    .dataSource(SelectMimeType.ofAll())
+    .forAlbumDataSource(new OnQueryDataSourceListener<LocalMediaFolder>() {
+        @Override
+        public void onComplete(List<LocalMediaFolder> result) {
+
+        }
+   );
+
+```
+
+```sh
+
+PictureSelector.create(this)
+    .dataSource(SelectMimeType.ofAll())
+    .forMediaDataSource(new OnQueryDataSourceListener<LocalMedia>() {
+        @Override
+        public void onComplete(List<LocalMedia> result) {
+
+        }
+   );
+
+```
+
+
+5、预览图片、视频、音频
+
 ```sh
 
 PictureSelector.create(this)
