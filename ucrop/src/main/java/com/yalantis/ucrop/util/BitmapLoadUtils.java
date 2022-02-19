@@ -158,7 +158,7 @@ public class BitmapLoadUtils {
     }
 
     /**
-     * Get free memory of current application
+     * Get total memory of current application
      *
      * @return
      */

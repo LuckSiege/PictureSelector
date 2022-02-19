@@ -176,7 +176,7 @@ public class BitmapUtils {
     }
 
     /**
-     * 获取当前应用空闲内存
+     * 获取当前应用可用内存
      *
      * @return
      */
