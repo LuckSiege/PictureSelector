@@ -190,11 +190,11 @@ public class PictureSelectionQueryModel {
 
 
     /**
-     * query album data source
+     * obtain album data source
      *
      * @param call
      */
-    public void forAlbumDataSource(OnQueryDataSourceListener<LocalMediaFolder> call) {
+    public void obtainAlbumData(OnQueryDataSourceListener<LocalMediaFolder> call) {
         Activity activity = selector.getActivity();
         if (activity == null) {
             throw new NullPointerException("Activity cannot be null");
@@ -218,11 +218,11 @@ public class PictureSelectionQueryModel {
 
 
     /**
-     * query data source
+     * obtain data source
      *
      * @param call
      */
-    public void forMediaDataSource(OnQueryDataSourceListener<LocalMedia> call) {
+    public void obtainMediaData(OnQueryDataSourceListener<LocalMedia> call) {
         Activity activity = selector.getActivity();
         if (activity == null) {
             throw new NullPointerException("Activity cannot be null");

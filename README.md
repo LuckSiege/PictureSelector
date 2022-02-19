@@ -203,7 +203,7 @@ getSupportFragmentManager().beginTransaction()
 
 PictureSelector.create(this)
     .dataSource(SelectMimeType.ofAll())
-    .forAlbumDataSource(new OnQueryDataSourceListener<LocalMediaFolder>() {
+    .obtainAlbumData(new OnQueryDataSourceListener<LocalMediaFolder>() {
         @Override
         public void onComplete(List<LocalMediaFolder> result) {
 
@@ -216,7 +216,7 @@ PictureSelector.create(this)
 
 PictureSelector.create(this)
     .dataSource(SelectMimeType.ofAll())
-    .forMediaDataSource(new OnQueryDataSourceListener<LocalMedia>() {
+    .obtainMediaData(new OnQueryDataSourceListener<LocalMedia>() {
         @Override
         public void onComplete(List<LocalMedia> result) {
 

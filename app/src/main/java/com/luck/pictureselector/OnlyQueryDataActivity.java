@@ -62,7 +62,7 @@ public class OnlyQueryDataActivity extends AppCompatActivity {
         PictureSelector.create(this)
                 .dataSource(SelectMimeType.ofAll())
                 .setQuerySortOrder(MediaStore.MediaColumns.DATE_MODIFIED + " DESC")
-                .forMediaDataSource(new OnQueryDataSourceListener<LocalMedia>() {
+                .obtainMediaData(new OnQueryDataSourceListener<LocalMedia>() {
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void onComplete(List<LocalMedia> result) {
