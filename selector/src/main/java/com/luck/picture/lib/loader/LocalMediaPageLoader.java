@@ -360,7 +360,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
      * @param listener
      */
     @Override
-    public void loadAllMedia(OnQueryAllAlbumListener<LocalMediaFolder> query) {
+    public void loadAllAlbum(OnQueryAllAlbumListener<LocalMediaFolder> query) {
         PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
             @Override
             public List<LocalMediaFolder> doInBackground() {

@@ -95,7 +95,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
     }
 
     @Override
-    public void loadAllMedia(OnQueryAllAlbumListener<LocalMediaFolder> listener) {
+    public void loadAllAlbum(OnQueryAllAlbumListener<LocalMediaFolder> query) {
         PictureThreadUtils.executeByIo(new PictureThreadUtils.SimpleTask<List<LocalMediaFolder>>() {
 
             @Override
@@ -237,8 +237,8 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
             @Override
             public void onSuccess(List<LocalMediaFolder> result) {
                 PictureThreadUtils.cancel(this);
-                if (listener != null) {
-                    listener.onComplete(result);
+                if (query != null) {
+                    query.onComplete(result);
                 }
             }
         });

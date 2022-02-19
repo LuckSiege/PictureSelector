@@ -208,7 +208,7 @@ public class PictureSelectionQueryModel {
         } else {
             loader = new LocalMediaLoader(activity, selectionConfig);
         }
-        loader.loadAllMedia(new OnQueryAllAlbumListener<LocalMediaFolder>() {
+        loader.loadAllAlbum(new OnQueryAllAlbumListener<LocalMediaFolder>() {
             @Override
             public void onComplete(List<LocalMediaFolder> result) {
                 call.onComplete(result);
@@ -236,7 +236,7 @@ public class PictureSelectionQueryModel {
         } else {
             loader = new LocalMediaLoader(activity, selectionConfig);
         }
-        loader.loadAllMedia(new OnQueryAllAlbumListener<LocalMediaFolder>() {
+        loader.loadAllAlbum(new OnQueryAllAlbumListener<LocalMediaFolder>() {
             @Override
             public void onComplete(List<LocalMediaFolder> result) {
                 if (result != null && result.size() > 0) {

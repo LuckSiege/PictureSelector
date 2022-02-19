@@ -543,7 +543,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                         }
                     });
         } else {
-            mLoader.loadAllMedia(new OnQueryAllAlbumListener<LocalMediaFolder>() {
+            mLoader.loadAllAlbum(new OnQueryAllAlbumListener<LocalMediaFolder>() {
 
                 @Override
                 public void onComplete(List<LocalMediaFolder> result) {

@@ -225,6 +225,18 @@ PictureSelector.create(this)
 
 ```
 
+```sh
+
+IBridgeMediaLoader loader = PictureSelector.create(this)
+    .dataSource(SelectMimeType.ofImage()).buildMediaLoader();
+    loader.loadAllAlbum(new OnQueryAllAlbumListener<LocalMediaFolder>() {
+        @Override
+        public void onComplete(List<LocalMediaFolder> result) {
+
+        }
+  });
+
+```
 
 5、Preview image、video、audio
 

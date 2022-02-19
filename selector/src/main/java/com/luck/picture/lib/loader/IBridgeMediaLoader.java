@@ -42,17 +42,17 @@ public class IBridgeMediaLoader {
     /**
      * 查询所有资源
      *
-     * @param listener 回调监听
+     * @param query 回调监听
      * @return
      */
-    public void loadAllMedia(OnQueryAllAlbumListener<LocalMediaFolder> query) {
+    public void loadAllAlbum(OnQueryAllAlbumListener<LocalMediaFolder> query) {
 
     }
 
     /**
      * 查询指定目录下资源
      *
-     * @param listener 回调监听
+     * @param query 回调监听
      * @return
      */
     public void loadOnlyInAppDirAllMedia(OnQueryAlbumListener<LocalMediaFolder> query) {
@@ -63,7 +63,7 @@ public class IBridgeMediaLoader {
      * Query the first item data of album list
      *
      * @param bucketId
-     * @param listener
+     * @param query
      * @return
      */
     public void loadFirstPageMedia(long bucketId, int pageSize, OnQueryDataResultListener<LocalMedia> query) {
@@ -75,7 +75,7 @@ public class IBridgeMediaLoader {
      * @param bucketId
      * @param page
      * @param pageSize
-     * @param listener
+     * @param query
      */
     public void loadPageMediaData(long bucketId, int page, int pageSize, OnQueryDataResultListener<LocalMedia> query) {
 

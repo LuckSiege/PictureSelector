@@ -76,7 +76,7 @@ public class OnlyQueryDataActivity extends AppCompatActivity {
             public void onClick(View v) {
                 IBridgeMediaLoader loader = PictureSelector.create(v.getContext())
                         .dataSource(SelectMimeType.ofImage()).buildMediaLoader();
-                loader.loadAllMedia(new OnQueryAllAlbumListener<LocalMediaFolder>() {
+                loader.loadAllAlbum(new OnQueryAllAlbumListener<LocalMediaFolder>() {
                     @Override
                     public void onComplete(List<LocalMediaFolder> result) {
 
