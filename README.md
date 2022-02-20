@@ -157,7 +157,7 @@ PictureSelector.create(this)
         @Override
         public void onCancel() {
 
-      }
+        }
 });
 ```
 
@@ -175,7 +175,7 @@ PictureSelector.create(this)
         @Override
         public void onCancel() {
 
-      }
+        }
 });
 ```
 
