@@ -3,7 +3,7 @@
    
    [English🇺🇸](README.md)
 
-   [效果体验](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-02-13_073401_v3.0.4.apk)<br>
+   [效果体验](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-02-20_051709_v3.0.5.apk)<br>
   
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
 [![CSDN](https://img.shields.io/twitter/url/http/blog.csdn.net/luck_mw.svg?style=social)](http://blog.csdn.net/luck_mw)
@@ -11,7 +11,7 @@
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
 
 ## 目录
--[最新版本](https://github.com/LuckSiege/PictureSelector/releases/tag/v3.0.4)<br>
+-[最新版本](https://github.com/LuckSiege/PictureSelector/releases/tag/v3.0.5)<br>
 -[如何引用](#如何引用)<br>
 -[进阶使用](#进阶使用)<br>
 -[权限](#权限)<br>
