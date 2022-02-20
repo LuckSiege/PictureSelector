@@ -219,7 +219,9 @@ getSupportFragmentManager().beginTransaction()
 			
 ```
 
-4、only query data source
+4、Only query data source
+
+(1)、get album data
 
 ```sh
 
@@ -234,6 +236,8 @@ PictureSelector.create(this)
 
 ```
 
+(2)、get media data
+
 ```sh
 
 PictureSelector.create(this)
@@ -246,6 +250,8 @@ PictureSelector.create(this)
    );
 
 ```
+
+(3)、IBridgeMediaLoader get data 
 
 ```sh
 
