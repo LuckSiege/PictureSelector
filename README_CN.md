@@ -142,7 +142,7 @@ PictureSelector.create(this)
       @Override
       public void onCancel() {
 
-     }
+      }
 });
 ```
 
@@ -160,7 +160,7 @@ PictureSelector.create(this)
         @Override
         public void onCancel() {
 
-      }
+        }
 });
 ```
 
@@ -178,7 +178,7 @@ PictureSelector.create(this)
         @Override
         public void onCancel() {
 
-      }
+        }
 });
 ```
 
@@ -388,8 +388,8 @@ PictureSelector.create(this)
 
       @Override
       public boolean hasPermissions(Fragment fragment, String[] permissionArray) {
-      return false;
-  }
+      	return false;
+      }
 });
 
 ```
