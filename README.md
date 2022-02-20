@@ -96,6 +96,23 @@ Or Maven:
 <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
 ```
 
+Android 11 use camera，AndroidManifest.xm add the code：
+
+```sh
+<queries package="${applicationId}">
+    <intent>
+        <action android:name="android.media.action.IMAGE_CAPTURE">
+
+        </action>
+    </intent>
+    <intent>
+        <action android:name="android.media.action.ACTION_VIDEO_CAPTURE">
+
+        </action>
+    </intent>
+</queries>
+```
+
 ## Usage
 For more features, see [documentation](https://github.com/LuckSiege/PictureSelector/wiki/PictureSelector-3.0-%E5%8A%9F%E8%83%BDapi%E8%AF%B4%E6%98%8E)
 
