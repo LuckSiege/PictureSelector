@@ -222,8 +222,9 @@ getSupportFragmentManager().beginTransaction()
 			
 ```
 
-4、只获取数据源
+4、单独获取数据源
 
+(1)、专辑列表
 ```sh
 
 PictureSelector.create(this)
@@ -237,6 +238,7 @@ PictureSelector.create(this)
 
 ```
 
+(2)、相册列表
 ```sh
 
 PictureSelector.create(this)
@@ -250,6 +252,7 @@ PictureSelector.create(this)
 
 ```
 
+(3)、根据IBridgeMediaLoader获取指定数据
 ```sh
 
 IBridgeMediaLoader loader = PictureSelector.create(this)
