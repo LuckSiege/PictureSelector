@@ -24,16 +24,19 @@ import java.util.List;
  */
 public class PicturePreviewAdapter extends RecyclerView.Adapter<BasePreviewHolder> {
 
-    private final List<LocalMedia> mData;
-    private final BasePreviewHolder.OnPreviewEventListener onPreviewEventListener;
+    private List<LocalMedia> mData;
+    private BasePreviewHolder.OnPreviewEventListener onPreviewEventListener;
     private final LinkedHashMap<Integer, BasePreviewHolder> mHolderCache = new LinkedHashMap<>();
 
     public BasePreviewHolder getCurrentHolder(int position) {
         return mHolderCache.get(position);
     }
 
-    public PicturePreviewAdapter(List<LocalMedia> list, BasePreviewHolder.OnPreviewEventListener listener) {
+    public void setData(List<LocalMedia> list) {
         this.mData = list;
+    }
+
+    public void setOnPreviewEventListener(BasePreviewHolder.OnPreviewEventListener listener) {
         this.onPreviewEventListener = listener;
     }
 

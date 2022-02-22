@@ -748,11 +748,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                     if (DoubleUtils.isFastDoubleClick()) {
                         return;
                     }
-                    if (PictureMimeType.isHasAudio(media.getMimeType()) && PictureSelectionConfig.onPreviewInterceptListener != null) {
-                        PictureSelectionConfig.onPreviewInterceptListener.onPreviewAudio(getContext(), media);
-                    } else {
-                        onStartPreview(position, false);
-                    }
+                    onStartPreview(position, false);
                 }
             }
 

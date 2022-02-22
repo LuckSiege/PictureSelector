@@ -92,76 +92,76 @@ import java.util.List;
 public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     public static final String TAG = PictureSelectorPreviewFragment.class.getSimpleName();
 
-    private ArrayList<LocalMedia> mData = new ArrayList<>();
+    protected ArrayList<LocalMedia> mData = new ArrayList<>();
 
-    private PreviewTitleBar titleBar;
+    protected MagicalView magicalView;
 
-    private PreviewBottomNavBar bottomNarBar;
+    protected ViewPager2 viewPager;
 
-    private MagicalView magicalView;
+    protected PicturePreviewAdapter viewPageAdapter;
 
-    private ViewPager2 viewPager;
+    protected PreviewBottomNavBar bottomNarBar;
 
-    private PicturePreviewAdapter viewPageAdapter;
+    protected PreviewTitleBar titleBar;
 
     /**
      * if there more
      */
     protected boolean isHasMore = true;
 
-    private int curPosition;
+    protected int curPosition;
 
-    private boolean isInternalBottomPreview;
+    protected boolean isInternalBottomPreview;
 
-    private boolean isFirstLoaded;
+    protected boolean isFirstLoaded;
 
-    private boolean isSaveInstanceState;
+    protected boolean isSaveInstanceState;
 
     /**
      * 当前相册
      */
-    private String currentAlbum;
+    protected String currentAlbum;
 
     /**
      * 是否显示了拍照入口
      */
-    private boolean isShowCamera;
+    protected boolean isShowCamera;
 
     /**
      * 是否外部预览进来
      */
-    private boolean isExternalPreview;
+    protected boolean isExternalPreview;
 
     /**
      * 外部预览是否支持删除
      */
-    private boolean isDisplayDelete;
+    protected boolean isDisplayDelete;
 
-    private boolean isAnimationStart;
+    protected boolean isAnimationStart;
 
-    private int totalNum;
+    protected int totalNum;
 
-    private int screenWidth, screenHeight;
+    protected int screenWidth, screenHeight;
 
-    private long mBucketId = -1;
+    protected long mBucketId = -1;
 
-    private TextView tvSelected;
+    protected TextView tvSelected;
 
-    private TextView tvSelectedWord;
+    protected TextView tvSelectedWord;
 
-    private View selectClickArea;
+    protected View selectClickArea;
 
-    private CompleteSelectView completeSelectView;
+    protected CompleteSelectView completeSelectView;
 
-    private boolean needScaleBig = true;
+    protected boolean needScaleBig = true;
 
-    private boolean needScaleSmall = false;
+    protected boolean needScaleSmall = false;
 
-    private RecyclerView mGalleryRecycle;
+    protected RecyclerView mGalleryRecycle;
 
-    private PreviewGalleryAdapter mGalleryAdapter;
+    protected PreviewGalleryAdapter mGalleryAdapter;
 
-    private List<View> mAnimViews;
+    protected List<View> mAnimViews;
 
 
     public static PictureSelectorPreviewFragment newInstance() {
@@ -371,7 +371,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     /**
      * 设置MagicalView监听器
      */
-    private void setMagicalViewAction() {
+    protected void setMagicalViewAction() {
         magicalView.setOnMojitoViewCallback(new OnMagicalViewCallback() {
 
             @Override
@@ -776,7 +776,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         });
     }
 
-    private void initPreviewSelectGallery(ViewGroup group) {
+    protected void initPreviewSelectGallery(ViewGroup group) {
         SelectMainStyle selectMainStyle = PictureSelectionConfig.selectorStyle.getSelectMainStyle();
         if (selectMainStyle.isPreviewDisplaySelectGallery()) {
             mGalleryRecycle = new RecyclerView(getContext());
@@ -1120,8 +1120,14 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         completeSelectView.setVisibility(View.GONE);
     }
 
+    protected PicturePreviewAdapter createAdapter() {
+        return new PicturePreviewAdapter();
+    }
+
     private void initViewPagerData() {
-        viewPageAdapter = new PicturePreviewAdapter(mData, new MyOnPreviewEventListener());
+        viewPageAdapter = createAdapter();
+        viewPageAdapter.setData(mData);
+        viewPageAdapter.setOnPreviewEventListener(new MyOnPreviewEventListener());
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         viewPager.setAdapter(viewPageAdapter);
         viewPager.setCurrentItem(curPosition, false);
@@ -1144,13 +1150,15 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     private class MyOnPreviewEventListener implements BasePreviewHolder.OnPreviewEventListener {
 
         @Override
-        public void onLoadComplete(ImageView imageView, int width, int height) {
+        public void onLoadComplete(int width, int height, OnCallbackListener<Boolean> call) {
             if (isSaveInstanceState || isFirstLoaded || isInternalBottomPreview) {
+                call.onCall(false);
                 return;
+            } else {
+                call.onCall(config.isPreviewZoomEffect);
             }
             if (config.isPreviewZoomEffect) {
                 isFirstLoaded = true;
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 magicalView.changeRealScreenHeight(width, height, false);
                 ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
                 if (viewParams == null) {
@@ -1160,15 +1168,11 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                         mAnimViews.get(i).setAlpha(1.0F);
                     }
                 } else {
-                    magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width,
-                            viewParams.height, width, height);
+                    magicalView.setViewParams(viewParams.left, viewParams.top, viewParams.width, viewParams.height, width, height);
                     magicalView.start(false);
                 }
-                ObjectAnimator animator = ObjectAnimator.ofFloat(viewPager, "alpha", 0.0F, 1.0F);
-                animator.setDuration(50);
-                animator.start();
+                ObjectAnimator.ofFloat(viewPager, "alpha", 0.0F, 1.0F).setDuration(50).start();
             }
-
         }
 
         @Override

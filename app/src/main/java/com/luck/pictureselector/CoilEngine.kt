@@ -38,14 +38,16 @@ class CoilEngine : ImageEngine {
         if (!ActivityCompatHelper.assertValidRequest(context)) {
             return
         }
-        context.imageLoader.enqueue(
-            ImageRequest.Builder(context)
-                .size(maxWidth, maxHeight)
-                .data(url)
-                .target {
-                    call?.onCall(it.toBitmap())
-                }
-                .build())
+        val builder = ImageRequest.Builder(context)
+        if (maxWidth > 0 && maxHeight > 0) {
+            builder.size(maxWidth, maxHeight)
+        }
+        builder.data(url)
+        builder.target {
+            call?.onCall(it.toBitmap())
+        }
+        val request = builder.build();
+        context.imageLoader.enqueue(request)
     }
 
     override fun loadAlbumCover(context: Context, url: String, imageView: ImageView) {

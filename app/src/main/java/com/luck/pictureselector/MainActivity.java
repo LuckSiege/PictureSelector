@@ -37,6 +37,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,6 +50,7 @@ import com.luck.lib.camerax.CameraImageEngine;
 import com.luck.lib.camerax.SimpleCameraX;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.app.PictureAppMaster;
+import com.luck.picture.lib.basic.FragmentInjectManager;
 import com.luck.picture.lib.basic.IBridgePictureBehavior;
 import com.luck.picture.lib.basic.PictureCommonFragment;
 import com.luck.picture.lib.basic.PictureSelectionCameraModel;
@@ -77,6 +79,7 @@ import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
+import com.luck.picture.lib.interfaces.OnPreviewInterceptListener;
 import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryDataResultListener;
@@ -142,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox, cb_only_dir,
             cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo,
             cb_system_album, cb_fast_select, cb_skip_not_gif, cb_not_gif, cb_attach_camera_mode,
-            cb_attach_system_mode, cb_camera_zoom, cb_camera_focus, cb_query_sort_order;
+            cb_attach_system_mode, cb_camera_zoom, cb_camera_focus, cb_query_sort_order, cb_custom_preview;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isHasLiftDelete;
     private boolean needScaleBig = true;
@@ -188,6 +191,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_camera_zoom = findViewById(R.id.cb_camera_zoom);
         cb_camera_focus = findViewById(R.id.cb_camera_focus);
         cb_query_sort_order = findViewById(R.id.cb_query_sort_order);
+        cb_custom_preview = findViewById(R.id.cb_custom_preview);
         cb_preview_video = findViewById(R.id.cb_preview_video);
         cb_time_axis = findViewById(R.id.cb_time_axis);
         cb_crop = findViewById(R.id.cb_crop);
@@ -354,6 +358,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setCameraInterceptListener(getCustomCameraEvent())
                                 .setSelectLimitTipsListener(new MeOnSelectLimitTipsListener())
                                 .setEditMediaInterceptListener(getCustomEditMediaEvent())
+                                .setPreviewInterceptListener(getPreviewInterceptListener())
                                 //.setExtendLoaderEngine(getExtendLoaderEngine())
                                 .setInjectLayoutResourceListener(getInjectLayoutResource())
                                 .setSelectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
@@ -734,6 +739,31 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
      */
     private OnInjectLayoutResourceListener getInjectLayoutResource() {
         return cb_inject_layout.isChecked() ? new MeOnInjectLayoutResourceListener() : null;
+    }
+
+    /**
+     * 自定义预览
+     *
+     * @return
+     */
+    private OnPreviewInterceptListener getPreviewInterceptListener() {
+        return cb_custom_preview.isChecked() ? new MeOnPreviewInterceptListener() : null;
+    }
+
+    /**
+     * 自定义预览
+     *
+     * @return
+     */
+    private static class MeOnPreviewInterceptListener implements OnPreviewInterceptListener {
+
+        @Override
+        public void onPreview(Context context, int position, int totalNum, int page, long currentBucketId, String currentAlbumName, boolean isShowCamera, ArrayList<LocalMedia> data, boolean isBottomPreview) {
+            CustomPreviewFragment previewFragment = CustomPreviewFragment.newInstance();
+            previewFragment.setInternalPreviewData(isBottomPreview, currentAlbumName, isShowCamera,
+                    position, totalNum, page, currentBucketId, data);
+            FragmentInjectManager.injectFragment((FragmentActivity) context, CustomPreviewFragment.TAG, previewFragment);
+        }
     }
 
     /**

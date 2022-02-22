@@ -28,12 +28,4 @@ public interface OnPreviewInterceptListener {
     void onPreview(Context context, int position, int totalNum, int page,
                    long currentBucketId, String currentAlbumName, boolean isShowCamera,
                    ArrayList<LocalMedia> data, boolean isBottomPreview);
-
-    /**
-     * Custom preview event
-     *
-     * @param context
-     * @param media   current preview source
-     */
-    void onPreviewAudio(Context context, LocalMedia media);
 }

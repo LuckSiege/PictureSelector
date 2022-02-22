@@ -13,6 +13,7 @@ import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
 
 import java.io.File;
@@ -53,24 +54,26 @@ public class PicassoEngine implements ImageEngine {
     }
 
     /**
-     * 加载网络图片适配长图方案
-     * <p>
-     * 只有加载网络图片才会回调
-     * </p>
+     * 加载指定url并返回bitmap
      *
-     * @param context
-     * @param url
-     * @param call
+     * @param context   上下文
+     * @param url       资源url
+     * @param maxWidth  资源最大加载尺寸
+     * @param maxHeight 资源最大加载尺寸
+     * @param call      回调接口
      */
     @Override
     public void loadImageBitmap(@NonNull Context context, @NonNull String url, int maxWidth, int maxHeight, OnCallbackListener<Bitmap> call) {
         if (!ActivityCompatHelper.assertValidRequest(context)) {
             return;
         }
-        Picasso.get()
-                .load(PictureMimeType.isContent(url) ? Uri.parse(url) : Uri.fromFile(new File(url)))
-                .resize(maxWidth,maxHeight)
-                .into(new Target() {
+        Picasso picasso = new Picasso.Builder(context.getApplicationContext())
+                .build();
+        RequestCreator request = picasso.load(PictureMimeType.isContent(url) ? Uri.parse(url) : Uri.fromFile(new File(url)));
+        if (maxWidth > 0 && maxHeight > 0) {
+            request.resize(maxWidth, maxHeight);
+        }
+        request.into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
                         if (call != null) {
