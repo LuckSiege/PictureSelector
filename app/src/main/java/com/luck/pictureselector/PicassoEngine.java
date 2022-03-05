@@ -12,6 +12,7 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.interfaces.OnCallbackListener;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
@@ -67,30 +68,32 @@ public class PicassoEngine implements ImageEngine {
         if (!ActivityCompatHelper.assertValidRequest(context)) {
             return;
         }
-        Picasso picasso = new Picasso.Builder(context.getApplicationContext())
+        Picasso picasso = new Picasso.Builder(context)
                 .build();
         RequestCreator request = picasso.load(PictureMimeType.isContent(url) ? Uri.parse(url) : Uri.fromFile(new File(url)));
+        request.config(Bitmap.Config.RGB_565);
         if (maxWidth > 0 && maxHeight > 0) {
             request.resize(maxWidth, maxHeight);
         }
-        request.into(new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap resource, Picasso.LoadedFrom from) {
-                        if (call != null) {
-                            call.onCall(resource);
-                        }
-                    }
+        Target target = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                if (call != null) {
+                    call.onCall(bitmap);
+                }
+            }
 
-                    @Override
-                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+            @Override
+            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
 
-                    }
+            }
 
-                    @Override
-                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
 
-                    }
-                });
+            }
+        };
+        request.into(target);
     }
 
     /**

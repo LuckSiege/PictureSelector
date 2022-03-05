@@ -1131,11 +1131,13 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
         viewPager.setAdapter(viewPageAdapter);
         viewPager.setCurrentItem(curPosition, false);
-        if (mData.size() > 0) {
-            LocalMedia media = mData.get(curPosition);
-            bottomNarBar.isDisplayEditor(PictureMimeType.isHasVideo(media.getMimeType())
-                    || PictureMimeType.isHasAudio(media.getMimeType()));
+        if (mData.size() == 0 || curPosition > mData.size()) {
+            onKeyBackFragmentFinish();
+            return;
         }
+        LocalMedia media = mData.get(curPosition);
+        bottomNarBar.isDisplayEditor(PictureMimeType.isHasVideo(media.getMimeType())
+                || PictureMimeType.isHasAudio(media.getMimeType()));
         tvSelected.setSelected(SelectedManager.getSelectedResult().contains(mData.get(viewPager.getCurrentItem())));
         completeSelectView.setSelectedChange(true);
         viewPager.registerOnPageChangeCallback(pageChangeCallback);

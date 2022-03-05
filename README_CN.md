@@ -4,11 +4,11 @@
    [English🇺🇸](README.md)
 
    [效果体验](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-02-20_051709_v3.0.5.apk)<br>
-  
+
+[![Maven Central](https://img.shields.io/badge/maven%20central-v3.0.5-yellow)](https://github.com/LuckSiege)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
-[![CSDN](https://img.shields.io/twitter/url/http/blog.csdn.net/luck_mw.svg?style=social)](http://blog.csdn.net/luck_mw)
-[![I](https://img.shields.io/github/issues/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector/issues)
 [![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
+
 
 ## 目录
 -[最新版本](https://github.com/LuckSiege/PictureSelector/releases/tag/v3.0.5)<br>

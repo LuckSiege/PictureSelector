@@ -874,7 +874,7 @@ public class PictureSelectorFragment extends PictureCommonFragment
                 data = new ArrayList<>(SelectedManager.getSelectedResult());
                 totalNum = data.size();
             } else {
-                data = mAdapter.getData();
+                data = new ArrayList<>(mAdapter.getData());
                 totalNum = SelectedManager.getCurrentLocalMediaFolder().getFolderTotalNum();
                 currentBucketId = SelectedManager.getCurrentLocalMediaFolder().getBucketId();
             }
