@@ -1540,9 +1540,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     public void onDestroy() {
         viewPageAdapter.destroy();
         viewPager.unregisterOnPageChangeCallback(pageChangeCallback);
-        if (isExternalPreview) {
-            PictureSelectionConfig.destroy();
-        }
         super.onDestroy();
     }
 }

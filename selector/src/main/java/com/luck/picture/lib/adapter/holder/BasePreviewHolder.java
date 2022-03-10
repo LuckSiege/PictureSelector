@@ -113,14 +113,15 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
     }
 
     protected void loadImageBitmap(final LocalMedia media, int maxWidth, int maxHeight) {
-        String path = media.getAvailablePath();
-        PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), path, maxWidth, maxHeight,
-                new OnCallbackListener<Bitmap>() {
-                    @Override
-                    public void onCall(Bitmap bitmap) {
-                        loadBitmapCallback(media, bitmap);
-                    }
-                });
+        if (PictureSelectionConfig.imageEngine != null) {
+            PictureSelectionConfig.imageEngine.loadImageBitmap(itemView.getContext(), media.getAvailablePath(), maxWidth, maxHeight,
+                    new OnCallbackListener<Bitmap>() {
+                        @Override
+                        public void onCall(Bitmap bitmap) {
+                            loadBitmapCallback(media, bitmap);
+                        }
+                    });
+        }
     }
 
     protected void loadBitmapCallback(LocalMedia media, Bitmap bitmap) {
@@ -131,7 +132,9 @@ public class BasePreviewHolder extends RecyclerView.ViewHolder {
             boolean isHasWebp = PictureMimeType.isHasWebp(media.getMimeType()) || PictureMimeType.isUrlHasWebp(path);
             boolean isHasGif = PictureMimeType.isUrlHasGif(path) || PictureMimeType.isHasGif(media.getMimeType());
             if (isHasWebp || isHasGif) {
-                PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), path, coverImageView);
+                if (PictureSelectionConfig.imageEngine != null) {
+                    PictureSelectionConfig.imageEngine.loadImage(itemView.getContext(), path, coverImageView);
+                }
             } else {
                 setImageViewBitmap(bitmap);
             }
