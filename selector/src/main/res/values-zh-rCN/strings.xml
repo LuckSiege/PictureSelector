@@ -74,4 +74,5 @@
     <string name="ps_select_video_min_second">选择视频小于%1$d秒</string>
     <string name="ps_select_audio_max_second">选择音频大于%1$d秒</string>
     <string name="ps_select_audio_min_second">选择音频小于%1$d秒</string>
+    <string name="ps_select_no_support">不支持的选择类型</string>
 </resources>

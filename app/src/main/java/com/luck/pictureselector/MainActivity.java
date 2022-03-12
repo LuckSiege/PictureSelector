@@ -776,6 +776,9 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             if (limitType == SelectLimitType.SELECT_MAX_VIDEO_SELECT_LIMIT) {
                 ToastUtils.showToast(context, context.getString(R.string.ps_message_video_max_num, String.valueOf(config.maxVideoSelectNum)));
                 return true;
+            } else if (limitType == SelectLimitType.SELECT_NOT_SUPPORT_SELECT_LIMIT) {
+                ToastUtils.showToast(context, "暂不支持的选择类型");
+                return true;
             }
             return false;
         }
@@ -1579,7 +1582,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         for (LocalMedia media : result) {
             if (media.getWidth() == 0 || media.getHeight() == 0) {
                 if (PictureMimeType.isHasImage(media.getMimeType())) {
-                    MediaExtraInfo imageExtraInfo = MediaUtils.getImageSize(media.getPath());
+                    MediaExtraInfo imageExtraInfo = MediaUtils.getImageSize(getContext(), media.getPath());
                     media.setWidth(imageExtraInfo.getWidth());
                     media.setHeight(imageExtraInfo.getHeight());
                 } else if (PictureMimeType.isHasVideo(media.getMimeType())) {

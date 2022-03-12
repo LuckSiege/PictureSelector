@@ -109,7 +109,7 @@ public class InjectFragmentActivity extends AppCompatActivity implements IBridge
         for (LocalMedia media : result) {
             if (media.getWidth() == 0 || media.getHeight() == 0) {
                 if (PictureMimeType.isHasImage(media.getMimeType())) {
-                    MediaExtraInfo imageExtraInfo = MediaUtils.getImageSize(media.getPath());
+                    MediaExtraInfo imageExtraInfo = MediaUtils.getImageSize(this,media.getPath());
                     media.setWidth(imageExtraInfo.getWidth());
                     media.setHeight(imageExtraInfo.getHeight());
                 } else if (PictureMimeType.isHasVideo(media.getMimeType())) {

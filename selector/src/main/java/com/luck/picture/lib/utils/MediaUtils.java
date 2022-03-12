@@ -16,8 +16,6 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
-import androidx.exifinterface.media.ExifInterface;
-
 import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.basic.PictureContentResolver;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -166,39 +164,16 @@ public class MediaUtils {
 
     /**
      * get Local image width or height
-     *
-     * @param context
-     * @param url
-     * @return
-     */
-    public static MediaExtraInfo getImageSize(Context context, String url) {
-        MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
-        ExifInterface exifInterface;
-        InputStream inputStream;
-        try {
-            if (PictureMimeType.isContent(url)) {
-                inputStream = PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(url));
-                exifInterface = new ExifInterface(inputStream);
-            } else {
-                exifInterface = new ExifInterface(url);
-            }
-            mediaExtraInfo.setWidth(exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_WIDTH, ExifInterface.ORIENTATION_NORMAL));
-            mediaExtraInfo.setHeight(exifInterface.getAttributeInt(ExifInterface.TAG_IMAGE_LENGTH, ExifInterface.ORIENTATION_NORMAL));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return mediaExtraInfo;
-    }
-
-    /**
-     * get Local image width or height
+     * <p>
+     * Use {@link MediaUtils.getImageSize(Context context, String url)}
      *
      * @param url
      * @return
      */
+    @Deprecated
     public static MediaExtraInfo getImageSize(String url) {
         MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
-        InputStream inputStream;
+        InputStream inputStream = null;
         try {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
@@ -212,6 +187,36 @@ public class MediaUtils {
             mediaExtraInfo.setHeight(options.outHeight);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            PictureFileUtils.close(inputStream);
+        }
+        return mediaExtraInfo;
+    }
+
+    /**
+     * get Local image width or height
+     *
+     * @param url
+     * @return
+     */
+    public static MediaExtraInfo getImageSize(Context context, String url) {
+        MediaExtraInfo mediaExtraInfo = new MediaExtraInfo();
+        InputStream inputStream = null;
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            if (PictureMimeType.isContent(url)) {
+                inputStream = PictureContentResolver.getContentResolverOpenInputStream(context, Uri.parse(url));
+            } else {
+                inputStream = new FileInputStream(url);
+            }
+            BitmapFactory.decodeStream(inputStream, null, options);
+            mediaExtraInfo.setWidth(options.outWidth);
+            mediaExtraInfo.setHeight(options.outHeight);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            PictureFileUtils.close(inputStream);
         }
         return mediaExtraInfo;
     }

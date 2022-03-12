@@ -74,4 +74,5 @@
     <string name="ps_select_video_min_second">%1$d秒未満のビデオを選択</string>
     <string name="ps_select_audio_max_second">オーディオを%1$d秒以上選択</string>
     <string name="ps_select_audio_min_second">オーディオを%1$d秒未満で選択</string>
+    <string name="ps_select_no_support">サポートされていない選択タイプ</string>
 </resources>

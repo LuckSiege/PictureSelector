@@ -35,6 +35,7 @@ import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnPreviewInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
+import com.luck.picture.lib.interfaces.OnSelectFilterListener;
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.manager.SelectedManager;
@@ -245,6 +246,17 @@ public final class PictureSelectionModel {
      */
     public PictureSelectionModel setSelectLimitTipsListener(OnSelectLimitTipsListener listener) {
         PictureSelectionConfig.onSelectLimitTipsListener = listener;
+        return this;
+    }
+
+    /**
+     * You need to filter out the content that does not meet the selection criteria
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionModel setSelectFilterListener(OnSelectFilterListener listener) {
+        PictureSelectionConfig.onSelectFilterListener = listener;
         return this;
     }
 
@@ -978,6 +990,14 @@ public final class PictureSelectionModel {
      */
     public PictureSelectionModel isCameraRotateImage(boolean isCameraRotateImage) {
         selectionConfig.isCameraRotateImage = isCameraRotateImage;
+        return this;
+    }
+
+    /**
+     * Zoom animation is required when selecting an asset
+     */
+    public PictureSelectionModel isSelectZoomAnim(boolean isSelectZoomAnim) {
+        selectionConfig.isSelectZoomAnim = isSelectZoomAnim;
         return this;
     }
 

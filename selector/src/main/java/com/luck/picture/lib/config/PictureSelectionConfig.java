@@ -17,6 +17,7 @@ import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnPreviewInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
+import com.luck.picture.lib.interfaces.OnSelectFilterListener;
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.magical.BuildRecycleItemViewParams;
@@ -110,6 +111,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public boolean isOriginalControl;
     public boolean isDisplayTimeAxis;
     public boolean isFastSlidingSelect;
+    public boolean isSelectZoomAnim;
 
     public static ImageEngine imageEngine;
     public static CompressEngine compressEngine;
@@ -125,6 +127,7 @@ public final class PictureSelectionConfig implements Parcelable {
     public static OnPermissionsInterceptListener onPermissionsEventListener;
     public static OnInjectLayoutResourceListener onLayoutResourceListener;
     public static OnPreviewInterceptListener onPreviewInterceptListener;
+    public static OnSelectFilterListener onSelectFilterListener;
 
 
     protected PictureSelectionConfig(Parcel in) {
@@ -203,6 +206,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isOriginalControl = in.readByte() != 0;
         isDisplayTimeAxis = in.readByte() != 0;
         isFastSlidingSelect = in.readByte() != 0;
+        isSelectZoomAnim = in.readByte() != 0;
     }
 
     @Override
@@ -282,6 +286,7 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte((byte) (isOriginalControl ? 1 : 0));
         dest.writeByte((byte) (isDisplayTimeAxis ? 1 : 0));
         dest.writeByte((byte) (isFastSlidingSelect ? 1 : 0));
+        dest.writeByte((byte) (isSelectZoomAnim ? 1 : 0));
     }
 
     @Override
@@ -378,6 +383,7 @@ public final class PictureSelectionConfig implements Parcelable {
         isFastSlidingSelect = false;
         skipCropList = new ArrayList<>();
         sortOrder = "";
+        isSelectZoomAnim = true;
     }
 
 
@@ -421,6 +427,7 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.onLayoutResourceListener = null;
         PictureSelectionConfig.onPreviewInterceptListener = null;
         PictureSelectionConfig.onSelectLimitTipsListener = null;
+        PictureSelectionConfig.onSelectFilterListener = null;
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         SelectedManager.clearSelectResult();
         BuildRecycleItemViewParams.clear();

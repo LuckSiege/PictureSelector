@@ -18,4 +18,5 @@ public class SelectLimitType {
     public static final int SELECT_MAX_AUDIO_SECOND_SELECT_LIMIT = 10;
     public static final int SELECT_MIN_AUDIO_SECOND_SELECT_LIMIT = 11;
     public static final int SELECT_MIN_AUDIO_SELECT_LIMIT = 12;
+    public static final int SELECT_NOT_SUPPORT_SELECT_LIMIT = 13;
 }

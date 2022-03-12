@@ -75,4 +75,5 @@
     <string name="ps_select_video_min_second">Chọn đoạn phim ít hơn %1$d giây</string>
     <string name="ps_select_audio_max_second">Chọn tiếng lớn hơn %1$d giây</string>
     <string name="ps_select_audio_min_second">Chọn tiếng dưới %1$d giây</string>
+    <string name="ps_select_no_support">Kiểu chọn không được sắp xếp</string>
 </resources>

@@ -352,6 +352,20 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     @Override
     public int confirmSelect(LocalMedia currentMedia, boolean isSelected) {
+        if (PictureSelectionConfig.onSelectFilterListener != null) {
+            if (PictureSelectionConfig.onSelectFilterListener.onSelectFilter(currentMedia)) {
+                boolean isSelectLimit = false;
+                if (PictureSelectionConfig.onSelectLimitTipsListener != null) {
+                    isSelectLimit = PictureSelectionConfig.onSelectLimitTipsListener
+                            .onSelectLimitTips(getContext(), config, SelectLimitType.SELECT_NOT_SUPPORT_SELECT_LIMIT);
+                }
+                if (isSelectLimit) {
+                } else {
+                    ToastUtils.showToast(getContext(), getString(R.string.ps_select_no_support));
+                }
+                return SelectedManager.INVALID;
+            }
+        }
         int checkSelectValidity = isCheckSelectValidity(currentMedia, isSelected);
         if (checkSelectValidity != SelectedManager.SUCCESS) {
             return SelectedManager.INVALID;

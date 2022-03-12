@@ -22,6 +22,7 @@ import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
+import com.luck.picture.lib.interfaces.OnSelectFilterListener;
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
 import com.luck.picture.lib.utils.DoubleUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
@@ -202,6 +203,17 @@ public final class PictureSelectionSystemModel {
      */
     public PictureSelectionSystemModel setSelectLimitTipsListener(OnSelectLimitTipsListener listener) {
         PictureSelectionConfig.onSelectLimitTipsListener = listener;
+        return this;
+    }
+
+    /**
+     * You need to filter out the content that does not meet the selection criteria
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionSystemModel setSelectFilterListener(OnSelectFilterListener listener) {
+        PictureSelectionConfig.onSelectFilterListener = listener;
         return this;
     }
 

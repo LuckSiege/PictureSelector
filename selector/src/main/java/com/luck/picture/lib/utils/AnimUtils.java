@@ -1,6 +1,8 @@
 package com.luck.picture.lib.utils;
 
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 
@@ -11,6 +13,7 @@ import android.widget.ImageView;
  */
 public class AnimUtils {
     public final static int DURATION = 250;
+
     /**
      * 箭头旋转动画
      *
@@ -30,5 +33,20 @@ public class AnimUtils {
         objectAnimator.setDuration(DURATION);
         objectAnimator.setInterpolator(new LinearInterpolator());
         objectAnimator.start();
+    }
+
+    /**
+     * 缩放动画
+     *
+     * @param view
+     */
+    public static void selectZoom(View view) {
+        AnimatorSet animatorSet = new AnimatorSet();
+        ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, "scaleX", 1.0F, 1.1F, 1.0F);
+        ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, "scaleY", 1.0F, 1.1F, 1.0F);
+        animatorSet.playTogether(objectAnimatorX, objectAnimatorY);
+        animatorSet.setDuration(DURATION);
+        animatorSet.setInterpolator(new LinearInterpolator());
+        animatorSet.start();
     }
 }
