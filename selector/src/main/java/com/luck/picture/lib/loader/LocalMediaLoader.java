@@ -120,6 +120,7 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
                             int fileNameColumn = data.getColumnIndexOrThrow(PROJECTION[8]);
                             int bucketIdColumn = data.getColumnIndexOrThrow(PROJECTION[9]);
                             int dateAddedColumn = data.getColumnIndexOrThrow(PROJECTION[10]);
+                            int orientationColumn = data.getColumnIndexOrThrow(PROJECTION[11]);
 
                             data.moveToFirst();
                             do {
@@ -156,6 +157,11 @@ public final class LocalMediaLoader extends IBridgeMediaLoader {
 
                                 int width = data.getInt(widthColumn);
                                 int height = data.getInt(heightColumn);
+                                int orientation = data.getInt(orientationColumn);
+                                if (orientation == 90 || orientation == 270) {
+                                    width = data.getInt(heightColumn);
+                                    height = data.getInt(widthColumn);
+                                }
                                 long duration = data.getLong(durationColumn);
                                 long size = data.getLong(sizeColumn);
                                 String folderName = data.getString(folderNameColumn);

@@ -35,6 +35,7 @@ public class IBridgeMediaLoader {
     protected static final String COLUMN_BUCKET_ID = "bucket_id";
     protected static final String COLUMN_DURATION = "duration";
     protected static final String COLUMN_BUCKET_DISPLAY_NAME = "bucket_display_name";
+    protected static final String COLUMN_ORIENTATION = "orientation";
     protected static final int MAX_SORT_SIZE = 60;
     protected Context mContext;
     protected PictureSelectionConfig config;
@@ -118,7 +119,8 @@ public class IBridgeMediaLoader {
             COLUMN_BUCKET_DISPLAY_NAME,
             MediaStore.MediaColumns.DISPLAY_NAME,
             COLUMN_BUCKET_ID,
-            MediaStore.MediaColumns.DATE_ADDED};
+            MediaStore.MediaColumns.DATE_ADDED,
+            COLUMN_ORIENTATION};
 
     /**
      * Gets a file of the specified type
