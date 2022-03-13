@@ -963,6 +963,10 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
                     if (isInternalBottomPreview) {
                         int position = mGalleryAdapter.getLastCheckPosition();
                         if (viewPager.getCurrentItem() != position && position != RecyclerView.NO_POSITION) {
+                            if (viewPager.getAdapter() != null) {
+                                viewPager.setAdapter(null);
+                                viewPager.setAdapter(viewPageAdapter);
+                            }
                             viewPager.setCurrentItem(position, false);
                         }
                     }
