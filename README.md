@@ -2,7 +2,7 @@
    A PictureSelector for Android platform, which supports obtaining pictures, videos, audio & photos from photo albums, cutting (single picture or multi picture cutting), compression, theme custom configuration and other functions, and supports dynamic access & an open source picture selection framework suitable for Android 5.0 + system<br>
    
    ![](image/picture_framework_es.png)
-
+   
    [简体中文🇨🇳](README_CN.md)
 
    [Download Demo Apk](https://github.com/LuckSiege/PictureSelector/raw/version_component/app/demo/demo_2022-03-13_074512_v3.0.6.apk)<br>
