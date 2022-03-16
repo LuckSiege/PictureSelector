@@ -138,7 +138,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
         Cursor data = null;
         try {
             if (SdkVersionUtils.isR()) {
-                Bundle queryArgs = MediaUtils.createQueryArgsBundle(getPageSelection(bucketId), getPageSelectionArgs(bucketId), 1, 0);
+                Bundle queryArgs = MediaUtils.createQueryArgsBundle(getPageSelection(bucketId), getPageSelectionArgs(bucketId), 1, 0,getSortOrder());
                 data = mContext.getContentResolver().query(QUERY_URI, new String[]{
                         MediaStore.Files.FileColumns._ID,
                         MediaStore.MediaColumns.MIME_TYPE,
@@ -215,7 +215,7 @@ public final class LocalMediaPageLoader extends IBridgeMediaLoader {
                 Cursor data = null;
                 try {
                     if (SdkVersionUtils.isR()) {
-                        Bundle queryArgs = MediaUtils.createQueryArgsBundle(getPageSelection(bucketId), getPageSelectionArgs(bucketId), limit, (page - 1) * pageSize);
+                        Bundle queryArgs = MediaUtils.createQueryArgsBundle(getPageSelection(bucketId), getPageSelectionArgs(bucketId), limit, (page - 1) * pageSize, getSortOrder());
                         data = mContext.getContentResolver().query(QUERY_URI, PROJECTION, queryArgs, null);
                     } else {
                         String orderBy = page == -1 ? getSortOrder() : getSortOrder() + " limit " + limit + " offset " + (page - 1) * pageSize;

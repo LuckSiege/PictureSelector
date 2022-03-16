@@ -314,7 +314,7 @@ public class MediaUtils {
             //定义selectionArgs：
             String[] selectionArgs = {absolutePath + "%"};
             if (SdkVersionUtils.isR()) {
-                Bundle queryArgs = MediaUtils.createQueryArgsBundle(selection, selectionArgs, 1, 0);
+                Bundle queryArgs = MediaUtils.createQueryArgsBundle(selection, selectionArgs, 1, 0,MediaStore.Files.FileColumns._ID + " DESC");
                 data = context.getApplicationContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, queryArgs, null);
             } else {
                 String orderBy = MediaStore.Files.FileColumns._ID + " DESC limit 1 offset 0";
@@ -353,7 +353,7 @@ public class MediaUtils {
             //定义selectionArgs：
             String[] selectionArgs = {absolutePath + "%"};
             if (SdkVersionUtils.isR()) {
-                Bundle queryArgs = MediaUtils.createQueryArgsBundle(selection, selectionArgs, 1, 0);
+                Bundle queryArgs = MediaUtils.createQueryArgsBundle(selection, selectionArgs, 1, 0,MediaStore.Files.FileColumns._ID + " DESC");
                 data = context.getApplicationContext().getContentResolver().query(MediaStore.Files.getContentUri("external"), null, queryArgs, null);
             } else {
                 String orderBy = MediaStore.Files.FileColumns._ID + " DESC limit 1 offset 0";
@@ -386,7 +386,7 @@ public class MediaUtils {
             //定义selectionArgs：
             String[] selectionArgs = {absolutePath + "%"};
             if (SdkVersionUtils.isR()) {
-                Bundle queryArgs = MediaUtils.createQueryArgsBundle(selection, selectionArgs, 1, 0);
+                Bundle queryArgs = MediaUtils.createQueryArgsBundle(selection, selectionArgs, 1, 0,MediaStore.Files.FileColumns._ID + " DESC");
                 data = context.getApplicationContext().getContentResolver().query(MediaStore.Files.getContentUri("external"), null, queryArgs, null);
             } else {
                 String orderBy = MediaStore.Files.FileColumns._ID + " DESC limit 1 offset 0";
@@ -427,12 +427,12 @@ public class MediaUtils {
      * @param offset
      * @return
      */
-    public static Bundle createQueryArgsBundle(String selection, String[] selectionArgs, int limitCount, int offset) {
+    public static Bundle createQueryArgsBundle(String selection, String[] selectionArgs, int limitCount, int offset, String orderBy) {
         Bundle queryArgs = new Bundle();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             queryArgs.putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection);
             queryArgs.putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArgs);
-            queryArgs.putString(ContentResolver.QUERY_ARG_SQL_SORT_ORDER, MediaStore.Files.FileColumns._ID + " DESC");
+            queryArgs.putString(ContentResolver.QUERY_ARG_SQL_SORT_ORDER, orderBy);
             if (SdkVersionUtils.isR()) {
                 queryArgs.putString(ContentResolver.QUERY_ARG_SQL_LIMIT, limitCount + " offset " + offset);
             }
