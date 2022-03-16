@@ -4,6 +4,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.LocalMediaFolder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author：luck
@@ -48,7 +49,7 @@ public final class SelectedManager {
     }
 
     /**
-     * selected external preview result
+     * selected preview result
      */
     private static final ArrayList<LocalMedia> selectedPreviewResult = new ArrayList<>();
 
@@ -64,6 +65,51 @@ public final class SelectedManager {
     public static void clearPreviewData() {
         if (selectedPreviewResult.size() > 0) {
             selectedPreviewResult.clear();
+        }
+    }
+
+
+    /**
+     * all data source
+     */
+    private static final ArrayList<LocalMedia> dataSource = new ArrayList<>();
+
+    public static ArrayList<LocalMedia> getDataSource() {
+        return dataSource;
+    }
+
+    public static void addDataSource(ArrayList<LocalMedia> list) {
+        if (list != null) {
+            clearDataSource();
+            dataSource.addAll(list);
+        }
+    }
+
+    public static void clearDataSource() {
+        if (dataSource.size() > 0) {
+            dataSource.clear();
+        }
+    }
+
+    /**
+     * all album data source
+     */
+    private static final ArrayList<LocalMediaFolder> albumDataSource = new ArrayList<>();
+
+    public static ArrayList<LocalMediaFolder> getAlbumDataSource() {
+        return albumDataSource;
+    }
+
+    public static void addAlbumDataSource(List<LocalMediaFolder> list) {
+        if (list != null) {
+            clearAlbumDataSource();
+            albumDataSource.addAll(list);
+        }
+    }
+
+    public static void clearAlbumDataSource() {
+        if (albumDataSource.size() > 0) {
+            albumDataSource.clear();
         }
     }
 

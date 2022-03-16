@@ -268,7 +268,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
         mAnimViews.add(completeSelectView);
         mAnimViews.add(bottomNarBar);
         initTitleBar();
-        onRestoreSavedInstanceData(savedInstanceState);
         initViewPagerData(mData);
         iniMagicalView();
         if (isExternalPreview) {
@@ -278,12 +277,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             initBottomNavBar();
             initPreviewSelectGallery((ViewGroup) view);
             initComplete();
-        }
-    }
-
-    private void onRestoreSavedInstanceData(Bundle savedInstanceState) {
-        if (savedInstanceState != null || mData.size() == 0) {
-            mData.addAll(new ArrayList<>(SelectedManager.getSelectedPreviewResult()));
         }
     }
 
@@ -304,7 +297,6 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     @Override
     public void reStartSavedInstance(Bundle savedInstanceState) {
-        super.reStartSavedInstance(savedInstanceState);
         if (savedInstanceState != null) {
             mPage = savedInstanceState.getInt(PictureConfig.EXTRA_CURRENT_PAGE, 1);
             mBucketId = savedInstanceState.getLong(PictureConfig.EXTRA_CURRENT_BUCKET_ID, -1);
@@ -315,6 +307,9 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             isDisplayDelete = savedInstanceState.getBoolean(PictureConfig.EXTRA_EXTERNAL_PREVIEW_DISPLAY_DELETE, isDisplayDelete);
             isInternalBottomPreview = savedInstanceState.getBoolean(PictureConfig.EXTRA_BOTTOM_PREVIEW, isInternalBottomPreview);
             currentAlbum = savedInstanceState.getString(PictureConfig.EXTRA_CURRENT_ALBUM_NAME, "");
+            if (mData.size() == 0) {
+                mData.addAll(new ArrayList<>(SelectedManager.getSelectedPreviewResult()));
+            }
         }
     }
 

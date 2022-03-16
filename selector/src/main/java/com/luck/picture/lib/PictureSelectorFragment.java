@@ -258,7 +258,6 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public void reStartSavedInstance(Bundle savedInstanceState) {
-        super.reStartSavedInstance(savedInstanceState);
         if (savedInstanceState != null) {
             allFolderSize = savedInstanceState.getInt(PictureConfig.EXTRA_ALL_FOLDER_SIZE);
             mPage = savedInstanceState.getInt(PictureConfig.EXTRA_CURRENT_PAGE, mPage);
