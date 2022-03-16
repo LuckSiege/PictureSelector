@@ -327,30 +327,23 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
      * 设置MagicalView
      */
     private void iniMagicalView() {
-        if (isInternalBottomPreview || isExternalPreview) {
-            magicalView.setBackgroundAlpha(1.0F);
-        } else if (config.isPreviewZoomEffect) {
-            if (isSaveInstanceState) {
-                magicalView.setBackgroundAlpha(1.0F);
-                for (int i = 0; i < mAnimViews.size(); i++) {
-                    if (mAnimViews.get(i) instanceof TitleBar) {
-                        continue;
-                    }
-                    mAnimViews.get(i).setAlpha(1.0F);
-                }
-            } else {
-                magicalView.setBackgroundAlpha(0.0F);
-                for (int i = 0; i < mAnimViews.size(); i++) {
-                    if (mAnimViews.get(i) instanceof TitleBar) {
-                        continue;
-                    }
-                    mAnimViews.get(i).setAlpha(0.0F);
-                }
-            }
+        if (isHasMagicalEffect()) {
             setMagicalViewAction();
+            float alpha = isSaveInstanceState ? 1.0F : 0.0F;
+            magicalView.setBackgroundAlpha(alpha);
+            for (int i = 0; i < mAnimViews.size(); i++) {
+                if (mAnimViews.get(i) instanceof TitleBar) {
+                    continue;
+                }
+                mAnimViews.get(i).setAlpha(alpha);
+            }
         } else {
             magicalView.setBackgroundAlpha(1.0F);
         }
+    }
+
+    private boolean isHasMagicalEffect() {
+        return !isInternalBottomPreview && !isExternalPreview && config.isPreviewZoomEffect;
     }
 
     /**
@@ -454,7 +447,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     @Nullable
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        if (!isInternalBottomPreview && !isExternalPreview && config.isPreviewZoomEffect) {
+        if (isHasMagicalEffect()) {
             // config.isPreviewZoomEffect模式下使用缩放动画
             return null;
         }
@@ -488,7 +481,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (!isInternalBottomPreview && !isExternalPreview && config.isPreviewZoomEffect && mData.size() > curPosition) {
+        if (isHasMagicalEffect() && mData.size() > curPosition) {
             LocalMedia media = mData.get(curPosition);
             int[] size = getRealSizeFromMedia(media);
             ViewParams viewParams = BuildRecycleItemViewParams.getItemViewParams(isShowCamera ? curPosition + 1 : curPosition);
@@ -1362,7 +1355,7 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
             if (mData.size() > position) {
                 LocalMedia currentMedia = mData.get(position);
                 notifySelectNumberStyle(currentMedia);
-                if (!isExternalPreview && !isInternalBottomPreview && config.isPreviewZoomEffect) {
+                if (isHasMagicalEffect()) {
                     changeMagicalViewParams(position);
                 }
                 if (config.isPreviewZoomEffect) {
