@@ -10,6 +10,8 @@ import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.luck.lib.camerax.listener.OnSimpleXPermissionDeniedListener;
+import com.luck.lib.camerax.listener.OnSimpleXPermissionDescriptionListener;
 import com.luck.lib.camerax.utils.FileUtils;
 
 /**
@@ -109,6 +111,28 @@ public class SimpleCameraX {
             throw new NullPointerException("Missing ImageEngine,please implement SimpleCamerax.setImageEngine");
         }
         CustomCameraConfig.imageEngine = engine;
+        return this;
+    }
+
+    /**
+     * Permission description
+     *
+     * @param explainListener
+     * @return
+     */
+    public SimpleCameraX setPermissionDescriptionListener(OnSimpleXPermissionDescriptionListener explainListener) {
+        CustomCameraConfig.explainListener = explainListener;
+        return this;
+    }
+
+    /**
+     * Permission denied
+     *
+     * @param deniedListener
+     * @return
+     */
+    public SimpleCameraX setPermissionDeniedListener(OnSimpleXPermissionDeniedListener deniedListener) {
+        CustomCameraConfig.deniedListener = deniedListener;
         return this;
     }
 

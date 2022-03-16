@@ -66,18 +66,9 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
         if (PermissionChecker.isCheckReadStorage(getContext())) {
             openSystemAlbum();
         } else {
+            onPermissionExplainEvent(true, PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
             if (PictureSelectionConfig.onPermissionsEventListener != null) {
-                PictureSelectionConfig.onPermissionsEventListener.requestPermission(this,
-                        PermissionConfig.READ_WRITE_EXTERNAL_STORAGE, new OnRequestPermissionListener() {
-                            @Override
-                            public void onCall(String[] permissionArray, boolean isResult) {
-                                if (isResult) {
-                                    openSystemAlbum();
-                                } else {
-                                    handlePermissionDenied(permissionArray);
-                                }
-                            }
-                        });
+                onApplyPermissionsEvent(-1, PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
             } else {
                 PermissionChecker.getInstance().requestPermissions(this,
                         PermissionConfig.READ_WRITE_EXTERNAL_STORAGE, new PermissionResultCallback() {
@@ -95,10 +86,26 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
         }
     }
 
+    @Override
+    public void onApplyPermissionsEvent(int event, String[] permissionArray) {
+        PictureSelectionConfig.onPermissionsEventListener.requestPermission(this,
+                PermissionConfig.READ_WRITE_EXTERNAL_STORAGE, new OnRequestPermissionListener() {
+                    @Override
+                    public void onCall(String[] permissionArray, boolean isResult) {
+                        if (isResult) {
+                            openSystemAlbum();
+                        } else {
+                            handlePermissionDenied(permissionArray);
+                        }
+                    }
+                });
+    }
+
     /**
      * 打开系统相册
      */
     private void openSystemAlbum() {
+        onPermissionExplainEvent(false, null);
         if (config.selectionMode == SelectModeConfig.SINGLE) {
             if (config.chooseMode == SelectMimeType.ofAll()) {
                 mDocSingleLauncher.launch(SelectMimeType.SYSTEM_ALL);
@@ -250,6 +257,7 @@ public class PictureSelectorSystemFragment extends PictureCommonFragment {
 
     @Override
     public void handlePermissionSettingResult(String[] permissions) {
+        onPermissionExplainEvent(false, null);
         boolean isHasPermissions;
         if (PictureSelectionConfig.onPermissionsEventListener != null) {
             isHasPermissions = PictureSelectionConfig.onPermissionsEventListener

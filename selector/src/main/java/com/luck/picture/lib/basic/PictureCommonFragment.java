@@ -69,6 +69,7 @@ import com.luck.picture.lib.utils.MediaStoreUtils;
 import com.luck.picture.lib.utils.MediaUtils;
 import com.luck.picture.lib.utils.PictureFileUtils;
 import com.luck.picture.lib.utils.SdkVersionUtils;
+import com.luck.picture.lib.utils.SpUtils;
 import com.luck.picture.lib.utils.ToastUtils;
 import com.luck.picture.lib.utils.ValueOf;
 
@@ -226,10 +227,28 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     @Override
     public void handlePermissionDenied(String[] permissionArray) {
-        boolean isReadWrite = permissionArray == PermissionConfig.READ_WRITE_EXTERNAL_STORAGE
-                || permissionArray == PermissionConfig.WRITE_EXTERNAL_STORAGE;
         PermissionConfig.CURRENT_REQUEST_PERMISSION = permissionArray;
-        PermissionUtil.goIntentSetting(this, isReadWrite, PictureConfig.REQUEST_GO_SETTING);
+        if (permissionArray != null && permissionArray.length > 0) {
+            SpUtils.putBoolean(getContext(),permissionArray[0], true);
+        }
+        if (PictureSelectionConfig.onPermissionDeniedListener != null) {
+            onPermissionExplainEvent(false, null);
+            PictureSelectionConfig.onPermissionDeniedListener
+                    .onDenied(this, permissionArray, PictureConfig.REQUEST_GO_SETTING,
+                            new OnCallbackListener<Boolean>() {
+                                @Override
+                                public void onCall(Boolean isResult) {
+                                    if (isResult) {
+                                        handlePermissionSettingResult(PermissionConfig.CURRENT_REQUEST_PERMISSION);
+                                        PermissionConfig.CURRENT_REQUEST_PERMISSION = null;
+                                    }
+                                }
+                            });
+        } else {
+            boolean isReadWrite = permissionArray == PermissionConfig.READ_WRITE_EXTERNAL_STORAGE
+                    || permissionArray == PermissionConfig.WRITE_EXTERNAL_STORAGE;
+            PermissionUtil.goIntentSetting(this, isReadWrite, PictureConfig.REQUEST_GO_SETTING);
+        }
     }
 
     /**
@@ -702,7 +721,7 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
             if (tipsDialog != null && tipsDialog.isShowing()) {
                 return;
             }
-            tipsDialog = RemindDialog.showTipsDialog(getContext(), tips);
+            tipsDialog = RemindDialog.buildDialog(getContext(), tips);
             tipsDialog.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -803,14 +822,14 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
                 switch (position) {
                     case PhotoItemSelectedDialog.IMAGE_CAMERA:
                         if (PictureSelectionConfig.onCameraInterceptListener != null) {
-                            interceptCameraEvent(SelectMimeType.TYPE_IMAGE);
+                            onInterceptCameraEvent(SelectMimeType.TYPE_IMAGE);
                         } else {
                             openImageCamera();
                         }
                         break;
                     case PhotoItemSelectedDialog.VIDEO_CAMERA:
                         if (PictureSelectionConfig.onCameraInterceptListener != null) {
-                            interceptCameraEvent(SelectMimeType.TYPE_VIDEO);
+                            onInterceptCameraEvent(SelectMimeType.TYPE_VIDEO);
                         } else {
                             openVideoCamera();
                         }
@@ -835,18 +854,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     @Override
     public void openImageCamera() {
+        onPermissionExplainEvent(true, PermissionConfig.CAMERA);
         if (PictureSelectionConfig.onPermissionsEventListener != null) {
-            PictureSelectionConfig.onPermissionsEventListener.requestPermission(this, PermissionConfig.CAMERA,
-                    new OnRequestPermissionListener() {
-                        @Override
-                        public void onCall(String[] permissionArray, boolean isResult) {
-                            if (isResult) {
-                                startCameraImageCapture();
-                            } else {
-                                handlePermissionDenied(permissionArray);
-                            }
-                        }
-                    });
+            onApplyPermissionsEvent(SelectMimeType.ofImage(), PermissionConfig.CAMERA);
         } else {
             PermissionChecker.getInstance().requestPermissions(this, PermissionConfig.CAMERA,
                     new PermissionResultCallback() {
@@ -868,9 +878,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private void startCameraImageCapture() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
+            onPermissionExplainEvent(false, null);
             if (PictureSelectionConfig.onCameraInterceptListener != null) {
-                ForegroundService.startForegroundService(getContext());
-                interceptCameraEvent(SelectMimeType.TYPE_IMAGE);
+                onInterceptCameraEvent(SelectMimeType.TYPE_IMAGE);
             } else {
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -891,18 +901,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     @Override
     public void openVideoCamera() {
+        onPermissionExplainEvent(true, PermissionConfig.CAMERA);
         if (PictureSelectionConfig.onPermissionsEventListener != null) {
-            PictureSelectionConfig.onPermissionsEventListener.requestPermission(this, PermissionConfig.CAMERA,
-                    new OnRequestPermissionListener() {
-                        @Override
-                        public void onCall(String[] permissionArray, boolean isResult) {
-                            if (isResult) {
-                                startCameraVideoCapture();
-                            } else {
-                                handlePermissionDenied(permissionArray);
-                            }
-                        }
-                    });
+            onApplyPermissionsEvent(SelectMimeType.ofVideo(), PermissionConfig.CAMERA);
         } else {
             PermissionChecker.getInstance().requestPermissions(this, PermissionConfig.CAMERA,
                     new PermissionResultCallback() {
@@ -924,9 +925,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private void startCameraVideoCapture() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
+            onPermissionExplainEvent(false, null);
             if (PictureSelectionConfig.onCameraInterceptListener != null) {
-                ForegroundService.startForegroundService(getContext());
-                interceptCameraEvent(SelectMimeType.TYPE_VIDEO);
+                onInterceptCameraEvent(SelectMimeType.TYPE_VIDEO);
             } else {
                 Intent cameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
                 if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -950,18 +951,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
 
     @Override
     public void openSoundRecording() {
+        onPermissionExplainEvent(true, PermissionConfig.RECORD_AUDIO);
         if (PictureSelectionConfig.onPermissionsEventListener != null) {
-            PictureSelectionConfig.onPermissionsEventListener.requestPermission(this, PermissionConfig.RECORD_AUDIO,
-                    new OnRequestPermissionListener() {
-                        @Override
-                        public void onCall(String[] permissionArray, boolean isResult) {
-                            if (isResult) {
-                                startCameraRecordSound();
-                            } else {
-                                handlePermissionDenied(permissionArray);
-                            }
-                        }
-                    });
+            onApplyPermissionsEvent(SelectMimeType.ofAudio(), PermissionConfig.RECORD_AUDIO);
         } else {
             PermissionChecker.getInstance().requestPermissions(this,
                     new String[]{Manifest.permission.RECORD_AUDIO}, new PermissionResultCallback() {
@@ -983,9 +975,9 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
      */
     private void startCameraRecordSound() {
         if (!ActivityCompatHelper.isDestroy(getActivity())) {
+            onPermissionExplainEvent(false, null);
             if (PictureSelectionConfig.onCameraInterceptListener != null) {
-                ForegroundService.startForegroundService(getContext());
-                interceptCameraEvent(SelectMimeType.TYPE_AUDIO);
+                onInterceptCameraEvent(SelectMimeType.TYPE_AUDIO);
             } else {
                 Intent cameraIntent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
                 if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -998,13 +990,61 @@ public abstract class PictureCommonFragment extends Fragment implements IPicture
         }
     }
 
-
     /**
      * 拦截相机事件并处理返回结果
      */
-    private void interceptCameraEvent(int cameraMode) {
+    @Override
+    public void onInterceptCameraEvent(int cameraMode) {
         ForegroundService.startForegroundService(getContext());
         PictureSelectionConfig.onCameraInterceptListener.openCamera(this, cameraMode, PictureConfig.REQUEST_CAMERA);
+    }
+
+    /**
+     * 权限申请
+     *
+     * @param permissionArray
+     */
+    @Override
+    public void onApplyPermissionsEvent(int event, String[] permissionArray) {
+        PictureSelectionConfig.onPermissionsEventListener.requestPermission(this, permissionArray,
+                new OnRequestPermissionListener() {
+                    @Override
+                    public void onCall(String[] permissionArray, boolean isResult) {
+                        if (isResult) {
+                            if (event == SelectMimeType.ofImage()) {
+                                startCameraImageCapture();
+                            } else if (event == SelectMimeType.ofVideo()) {
+                                startCameraVideoCapture();
+                            } else if (event == SelectMimeType.ofAudio()) {
+                                startCameraRecordSound();
+                            }
+                        } else {
+                            handlePermissionDenied(permissionArray);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 权限说明
+     *
+     * @param permissionArray
+     */
+    @Override
+    public void onPermissionExplainEvent(boolean isDisplayExplain, String[] permissionArray) {
+        if (PictureSelectionConfig.onPermissionDescriptionListener != null) {
+            if (isDisplayExplain) {
+                if (PermissionChecker.isCheckSelfPermission(getContext(), permissionArray)) {
+                    SpUtils.putBoolean(getContext(),permissionArray[0], false);
+                } else {
+                    if (!SpUtils.getBoolean(getContext(),permissionArray[0], false)) {
+                        PictureSelectionConfig.onPermissionDescriptionListener.onPermissionDescription(this, permissionArray);
+                    }
+                }
+            } else {
+                PictureSelectionConfig.onPermissionDescriptionListener.onDismiss(this);
+            }
+        }
     }
 
     /**

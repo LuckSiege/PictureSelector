@@ -106,11 +106,13 @@ public class PermissionChecker {
      */
     public static boolean checkSelfPermission(Context ctx, String[] permissions) {
         boolean isAllGranted = true;
-        for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(ctx.getApplicationContext(), permission)
-                    != PackageManager.PERMISSION_GRANTED) {
-                isAllGranted = false;
-                break;
+        if (permissions != null) {
+            for (String permission : permissions) {
+                if (ContextCompat.checkSelfPermission(ctx.getApplicationContext(), permission)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    isAllGranted = false;
+                    break;
+                }
             }
         }
         return isAllGranted;
@@ -155,5 +157,14 @@ public class PermissionChecker {
      */
     public static boolean isCheckCamera(Context context) {
         return PermissionChecker.checkSelfPermission(context, new String[]{Manifest.permission.CAMERA});
+    }
+
+    /**
+     * 权限是否已申请
+     *
+     * @return
+     */
+    public static boolean isCheckSelfPermission(Context context, String[] permissions) {
+        return PermissionChecker.checkSelfPermission(context, permissions);
     }
 }

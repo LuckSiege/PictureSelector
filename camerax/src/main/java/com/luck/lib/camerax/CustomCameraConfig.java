@@ -1,5 +1,8 @@
 package com.luck.lib.camerax;
 
+import com.luck.lib.camerax.listener.OnSimpleXPermissionDeniedListener;
+import com.luck.lib.camerax.listener.OnSimpleXPermissionDescriptionListener;
+
 /**
  * @author：luck
  * @date：2021/11/29 7:14 下午
@@ -33,15 +36,29 @@ public final class CustomCameraConfig {
     public static final int DEFAULT_MIN_RECORD_VIDEO = 1500;
 
 
+    public static final String SP_NAME = "PictureSpUtils";
+
     /**
      * 图片加载引擎
      */
     public static CameraImageEngine imageEngine;
 
     /**
+     * 自定义权限说明
+     */
+    public static OnSimpleXPermissionDescriptionListener explainListener;
+
+    /**
+     * 权限拒绝回调
+     */
+    public static OnSimpleXPermissionDeniedListener deniedListener;
+
+    /**
      * 释放监听器
      */
     public static void destroy() {
         CustomCameraConfig.imageEngine = null;
+        CustomCameraConfig.explainListener = null;
+        CustomCameraConfig.deniedListener = null;
     }
 }

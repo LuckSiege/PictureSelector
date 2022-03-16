@@ -23,6 +23,8 @@ import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
+import com.luck.picture.lib.interfaces.OnPermissionDeniedListener;
+import com.luck.picture.lib.interfaces.OnPermissionDescriptionListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
@@ -119,6 +121,28 @@ public final class PictureSelectionCameraModel {
      */
     public PictureSelectionCameraModel setPermissionsInterceptListener(OnPermissionsInterceptListener listener) {
         PictureSelectionConfig.onPermissionsEventListener = listener;
+        return this;
+    }
+
+    /**
+     * permission description
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionCameraModel setPermissionDescriptionListener(OnPermissionDescriptionListener listener) {
+        PictureSelectionConfig.onPermissionDescriptionListener = listener;
+        return this;
+    }
+
+    /**
+     *  Permission denied
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionCameraModel setPermissionDeniedListener(OnPermissionDeniedListener listener) {
+        PictureSelectionConfig.onPermissionDeniedListener = listener;
         return this;
     }
 

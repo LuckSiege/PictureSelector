@@ -15,12 +15,9 @@ import androidx.core.content.ContextCompat;
 /**
  * @author：luck
  * @date：2021/11/18 10:12 上午
- * @describe：PermissionUtil
- *
- * Use {@link SimpleXPermissionUtil}
+ * @describe：SimpleXPermissionUtil
  */
-@Deprecated
-public class PermissionUtil {
+public class SimpleXPermissionUtil {
 
     public static boolean hasPermissions(@NonNull Context context, @Size(min = 1) @NonNull String... perms) {
         if (Build.VERSION.SDK_INT < 23) {

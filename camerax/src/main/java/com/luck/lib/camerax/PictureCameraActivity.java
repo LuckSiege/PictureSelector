@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.KeyEvent;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -19,16 +20,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.luck.lib.camerax.listener.CameraListener;
 import com.luck.lib.camerax.listener.ClickListener;
+import com.luck.lib.camerax.listener.IObtainCameraView;
 import com.luck.lib.camerax.listener.ImageCallbackListener;
 import com.luck.lib.camerax.permissions.PermissionChecker;
 import com.luck.lib.camerax.permissions.PermissionResultCallback;
+import com.luck.lib.camerax.utils.SimpleXSpUtils;
 
 /**
  * @author：luck
  * @date：2021/11/29 7:50 下午
  * @describe：PictureCameraActivity
  */
-public class PictureCameraActivity extends AppCompatActivity {
+public class PictureCameraActivity extends AppCompatActivity implements IObtainCameraView {
     /**
      * PermissionResultCallback
      */
@@ -128,17 +131,19 @@ public class PictureCameraActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (CustomCameraConfig.explainListener != null) {
+            CustomCameraConfig.explainListener.onDismiss(mCameraView);
+        }
         if (requestCode == PermissionChecker.PERMISSION_SETTING_CODE) {
-            boolean checkSelfPermission = PermissionChecker.checkSelfPermission(this,
-                    new String[]{Manifest.permission.CAMERA});
-            if (checkSelfPermission) {
+            if (PermissionChecker.checkSelfPermission(this,new String[]{Manifest.permission.CAMERA})) {
                 mCameraView.buildUseCameraCases();
             } else {
+                SimpleXSpUtils.putBoolean(this,Manifest.permission.CAMERA, true);
                 handleCameraCancel();
             }
         } else if (requestCode == PermissionChecker.PERMISSION_RECORD_AUDIO_SETTING_CODE) {
-            if (!PermissionChecker.checkSelfPermission(this,
-                    new String[]{Manifest.permission.RECORD_AUDIO})) {
+            if (!PermissionChecker.checkSelfPermission(this, new String[]{Manifest.permission.RECORD_AUDIO})) {
+                SimpleXSpUtils.putBoolean(this, Manifest.permission.RECORD_AUDIO, true);
                 Toast.makeText(getApplicationContext(), "Missing recording permission", Toast.LENGTH_LONG).show();
             }
         }
@@ -167,5 +172,10 @@ public class PictureCameraActivity extends AppCompatActivity {
                     .onRequestPermissionsResult(grantResults, mPermissionResultCallback);
             mPermissionResultCallback = null;
         }
+    }
+
+    @Override
+    public ViewGroup getCustomCameraView() {
+        return mCameraView;
     }
 }

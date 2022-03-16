@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.luck.picture.lib.config.PictureSelectionConfig;
+import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 
 import java.util.ArrayList;
@@ -180,6 +181,28 @@ public interface IPictureSelectorCommonEvent {
      * @param result
      */
     void onResultEvent(ArrayList<LocalMedia> result);
+
+    /**
+     * 权限申请
+     *
+     * @param permissionArray
+     */
+    void onApplyPermissionsEvent(int event, String[] permissionArray);
+
+    /**
+     * 权限说明
+     *
+     * @param isDisplayExplain  是否显示权限说明
+     * @param permissionArray   权限组
+     */
+    void onPermissionExplainEvent(boolean isDisplayExplain, String[] permissionArray);
+
+    /**
+     * 拦截相机事件
+     *
+     * @param cameraMode {@link SelectMimeType}
+     */
+    void onInterceptCameraEvent(int cameraMode);
 
     /**
      * 进入Fragment

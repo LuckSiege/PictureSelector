@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,11 +21,13 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
@@ -35,6 +38,8 @@ import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -48,6 +53,9 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.luck.lib.camerax.CameraImageEngine;
 import com.luck.lib.camerax.SimpleCameraX;
+import com.luck.lib.camerax.listener.OnSimpleXPermissionDeniedListener;
+import com.luck.lib.camerax.listener.OnSimpleXPermissionDescriptionListener;
+import com.luck.lib.camerax.permissions.SimpleXPermissionUtil;
 import com.luck.picture.lib.animators.AnimationType;
 import com.luck.picture.lib.app.PictureAppMaster;
 import com.luck.picture.lib.basic.FragmentInjectManager;
@@ -65,6 +73,7 @@ import com.luck.picture.lib.config.SelectLimitType;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.config.SelectModeConfig;
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration;
+import com.luck.picture.lib.dialog.RemindDialog;
 import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.ExtendLoaderEngine;
@@ -79,6 +88,8 @@ import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
+import com.luck.picture.lib.interfaces.OnPermissionDeniedListener;
+import com.luck.picture.lib.interfaces.OnPermissionDescriptionListener;
 import com.luck.picture.lib.interfaces.OnPreviewInterceptListener;
 import com.luck.picture.lib.interfaces.OnQueryAlbumListener;
 import com.luck.picture.lib.interfaces.OnQueryAllAlbumListener;
@@ -87,6 +98,8 @@ import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.interfaces.OnSelectLimitTipsListener;
 import com.luck.picture.lib.language.LanguageConfig;
 import com.luck.picture.lib.loader.SandboxFileLoader;
+import com.luck.picture.lib.permissions.PermissionConfig;
+import com.luck.picture.lib.permissions.PermissionUtil;
 import com.luck.picture.lib.style.BottomNavBarStyle;
 import com.luck.picture.lib.style.PictureSelectorStyle;
 import com.luck.picture.lib.style.PictureWindowAnimationStyle;
@@ -100,6 +113,7 @@ import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.StyleUtils;
 import com.luck.picture.lib.utils.ToastUtils;
 import com.luck.picture.lib.utils.ValueOf;
+import com.luck.picture.lib.widget.MediumBoldTextView;
 import com.luck.pictureselector.adapter.GridImageAdapter;
 import com.luck.pictureselector.listener.DragListener;
 import com.luck.pictureselector.listener.OnItemLongClickListener;
@@ -145,7 +159,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
             cb_custom_camera, cbPage, cbEnabledMask, cbEditor, cb_custom_sandbox, cb_only_dir,
             cb_preview_full, cb_preview_scale, cb_inject_layout, cb_time_axis, cb_WithImageVideo,
             cb_system_album, cb_fast_select, cb_skip_not_gif, cb_not_gif, cb_attach_camera_mode,
-            cb_attach_system_mode, cb_camera_zoom, cb_camera_focus, cb_query_sort_order, cb_custom_preview;
+            cb_attach_system_mode, cb_camera_zoom, cb_camera_focus, cb_query_sort_order,
+            cb_custom_preview, cb_permission_desc;
     private int chooseMode = SelectMimeType.ofAll();
     private boolean isHasLiftDelete;
     private boolean needScaleBig = true;
@@ -192,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
         cb_camera_focus = findViewById(R.id.cb_camera_focus);
         cb_query_sort_order = findViewById(R.id.cb_query_sort_order);
         cb_custom_preview = findViewById(R.id.cb_custom_preview);
+        cb_permission_desc = findViewById(R.id.cb_permission_desc);
         cb_preview_video = findViewById(R.id.cb_preview_video);
         cb_time_axis = findViewById(R.id.cb_time_axis);
         cb_crop = findViewById(R.id.cb_crop);
@@ -316,18 +332,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                         .setSelectorUIStyle(selectorStyle)
                         .setLanguage(language)
                         .isPreviewFullScreenMode(cb_preview_full.isChecked())
-                        .setExternalPreviewEventListener(new OnExternalPreviewEventListener() {
-                            @Override
-                            public void onPreviewDelete(int position) {
-                                mAdapter.remove(position);
-                                mAdapter.notifyItemRemoved(position);
-                            }
-
-                            @Override
-                            public boolean onLongPressDownload(LocalMedia media) {
-                                return false;
-                            }
-                        })
+                        .setExternalPreviewEventListener(new MyExternalPreviewEventListener(mAdapter))
                         .startActivityPreview(position, true, mAdapter.getData());
             }
 
@@ -344,6 +349,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setCropEngine(getCropEngine())
                                 .setSkipCropMimeType(getNotSupportCrop())
                                 .isOriginalControl(cb_original.isChecked())
+                                .setPermissionDescriptionListener(getPermissionDescriptionListener())
                                 .setSandboxFileEngine(new MeSandboxFileEngine());
                         forSystemResult(systemGalleryMode);
                     } else {
@@ -358,7 +364,9 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                                 .setCameraInterceptListener(getCustomCameraEvent())
                                 .setSelectLimitTipsListener(new MeOnSelectLimitTipsListener())
                                 .setEditMediaInterceptListener(getCustomEditMediaEvent())
+                                .setPermissionDescriptionListener(getPermissionDescriptionListener())
                                 .setPreviewInterceptListener(getPreviewInterceptListener())
+                                .setPermissionDeniedListener(getPermissionDeniedListener())
                                 //.setExtendLoaderEngine(getExtendLoaderEngine())
                                 .setInjectLayoutResourceListener(getInjectLayoutResource())
                                 .setSelectionMode(cb_choose_mode.isChecked() ? SelectModeConfig.MULTIPLE : SelectModeConfig.SINGLE)
@@ -404,6 +412,7 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                             .setCompressEngine(getCompressEngine())
                             .setSandboxFileEngine(new MeSandboxFileEngine())
                             .isOriginalControl(cb_original.isChecked())
+                            .setPermissionDescriptionListener(getPermissionDescriptionListener())
                             .setOutputAudioDir(getSandboxAudioOutputPath())
                             .setSelectedData(mAdapter.getData());
                     forOnlyCameraResult(cameraModel);
@@ -673,6 +682,28 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     }
 
     /**
+     * 外部预览监听事件
+     */
+    private static class MyExternalPreviewEventListener implements OnExternalPreviewEventListener {
+        private final GridImageAdapter adapter;
+
+        public MyExternalPreviewEventListener(GridImageAdapter adapter) {
+            this.adapter = adapter;
+        }
+
+        @Override
+        public void onPreviewDelete(int position) {
+            adapter.remove(position);
+            adapter.notifyItemRemoved(position);
+        }
+
+        @Override
+        public boolean onLongPressDownload(LocalMedia media) {
+            return false;
+        }
+    }
+
+    /**
      * 选择结果
      */
     private class MeOnResultCallbackListener implements OnResultCallbackListener<LocalMedia> {
@@ -742,6 +773,15 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     }
 
     /**
+     * 权限说明
+     *
+     * @return
+     */
+    private OnPermissionDescriptionListener getPermissionDescriptionListener() {
+        return cb_permission_desc.isChecked() ? new MeOnPermissionDescriptionListener() : null;
+    }
+
+    /**
      * 自定义预览
      *
      * @return
@@ -749,6 +789,205 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
     private OnPreviewInterceptListener getPreviewInterceptListener() {
         return cb_custom_preview.isChecked() ? new MeOnPreviewInterceptListener() : null;
     }
+
+    /**
+     * SimpleCameraX权限说明
+     *
+     * @return
+     */
+    private OnSimpleXPermissionDescriptionListener getSimpleXPermissionDescriptionListener() {
+        return cb_permission_desc.isChecked() ? new MeOnSimpleXPermissionDescriptionListener() : null;
+    }
+
+
+    /**
+     * SimpleCameraX权限拒绝后回调
+     *
+     * @return
+     */
+    private OnSimpleXPermissionDeniedListener getSimpleXPermissionDeniedListener() {
+        return cb_permission_desc.isChecked() ? new MeOnSimpleXPermissionDeniedListener() : null;
+    }
+
+    /**
+     * 权限拒绝后回调
+     *
+     * @return
+     */
+    private OnPermissionDeniedListener getPermissionDeniedListener() {
+        return cb_permission_desc.isChecked() ? new MeOnPermissionDeniedListener() : null;
+    }
+
+    /**
+     * 权限拒绝后回调
+     */
+    private static class MeOnPermissionDeniedListener implements OnPermissionDeniedListener {
+
+        @Override
+        public void onDenied(Fragment fragment, String[] permissionArray,
+                             int requestCode, OnCallbackListener<Boolean> call) {
+            String tips;
+            if (TextUtils.equals(permissionArray[0], PermissionConfig.CAMERA[0])) {
+                tips = "缺少相机权限\n可能会导致不能使用摄像头功能";
+            } else if (TextUtils.equals(permissionArray[0], PermissionConfig.RECORD_AUDIO[0])) {
+                tips = "缺少录音权限\n访问您设备上的音频、媒体内容和文件";
+            } else {
+                tips = "缺少存储权限\n访问您设备上的照片、媒体内容和文件";
+            }
+            RemindDialog dialog = RemindDialog.buildDialog(fragment.getContext(), tips);
+            dialog.setButtonText("去设置");
+            dialog.setButtonTextColor(0xFF7D7DFF);
+            dialog.setContentTextColor(0xFF333333);
+            dialog.setOnDialogClickListener(new RemindDialog.OnDialogClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PermissionUtil.goIntentSetting(fragment, true, requestCode);
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+        }
+    }
+
+    /**
+     * SimpleCameraX添加权限说明
+     */
+    private static class MeOnSimpleXPermissionDeniedListener implements OnSimpleXPermissionDeniedListener {
+
+        @Override
+        public void onDenied(Context context, String permission, int requestCode) {
+            String tips;
+            if (TextUtils.equals(permission, PermissionConfig.RECORD_AUDIO[0])) {
+                tips = "缺少录音权限\n访问您设备上的音频、媒体内容和文件";
+            } else {
+                tips = "缺少相机权限\n可能会导致不能使用摄像头功能";
+            }
+            RemindDialog dialog = RemindDialog.buildDialog(context, tips);
+            dialog.setButtonText("去设置");
+            dialog.setButtonTextColor(0xFF7D7DFF);
+            dialog.setContentTextColor(0xFF333333);
+            dialog.setOnDialogClickListener(new RemindDialog.OnDialogClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SimpleXPermissionUtil.goIntentSetting((Activity) context, requestCode);
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+        }
+    }
+
+    /**
+     * SimpleCameraX添加权限说明
+     */
+    private static class MeOnSimpleXPermissionDescriptionListener implements OnSimpleXPermissionDescriptionListener {
+
+        @Override
+        public void onPermissionDescription(Context context, ViewGroup viewGroup, String permission) {
+            int dp10 = DensityUtil.dip2px(context, 10);
+            int dp15 = DensityUtil.dip2px(context, 15);
+            MediumBoldTextView view = new MediumBoldTextView(context);
+            view.setTag("TAG_EXPLAIN_VIEW");
+            view.setTextSize(14);
+            view.setTextColor(Color.parseColor("#333333"));
+            view.setPadding(dp10, dp15, dp10, dp15);
+
+            String title;
+            String explain;
+
+            if (TextUtils.equals(permission, PermissionConfig.RECORD_AUDIO[0])) {
+                title = "录音权限使用说明";
+                explain = "录音权限使用说明\n用户app用于录制音频";
+            } else {
+                title = "相机权限使用说明";
+                explain = "相机权限使用说明\n用户app用于拍照/录视频";
+            }
+
+            int startIndex = 0;
+            int endOf = startIndex + title.length();
+            SpannableStringBuilder builder = new SpannableStringBuilder(explain);
+            builder.setSpan(new AbsoluteSizeSpan(DensityUtil.dip2px(context, 16)), startIndex, endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            builder.setSpan(new ForegroundColorSpan(0xFF333333), startIndex, endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            view.setText(builder);
+
+            view.setBackground(ContextCompat.getDrawable(context, R.drawable.ps_demo_permission_desc_bg));
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
+                    (RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.topMargin = DensityUtil.getStatusBarHeight(context);
+            layoutParams.leftMargin = dp10;
+            layoutParams.rightMargin = dp10;
+            viewGroup.addView(view, layoutParams);
+        }
+
+        @Override
+        public void onDismiss(ViewGroup viewGroup) {
+            View tagExplainView = viewGroup.findViewWithTag("TAG_EXPLAIN_VIEW");
+            viewGroup.removeView(tagExplainView);
+        }
+    }
+
+
+    /**
+     * 添加权限说明
+     */
+    private static class MeOnPermissionDescriptionListener implements OnPermissionDescriptionListener {
+
+        @Override
+        public void onPermissionDescription(Fragment fragment, String[] permissionArray) {
+            View rootView = fragment.getView();
+            if (rootView instanceof ViewGroup) {
+                int dp10 = DensityUtil.dip2px(fragment.getContext(), 10);
+                int dp15 = DensityUtil.dip2px(fragment.getContext(), 15);
+                ViewGroup viewGroup = (ViewGroup) rootView;
+                MediumBoldTextView view = new MediumBoldTextView(fragment.getContext());
+                view.setTag("TAG_EXPLAIN_VIEW");
+                view.setTextSize(14);
+                view.setTextColor(Color.parseColor("#333333"));
+                view.setPadding(dp10, dp15, dp10, dp15);
+
+                String title;
+                String explain;
+
+                if (TextUtils.equals(permissionArray[0], PermissionConfig.CAMERA[0])) {
+                    title = "相机权限使用说明";
+                    explain = "相机权限使用说明\n用户app用于拍照/录视频";
+                } else if (TextUtils.equals(permissionArray[0], PermissionConfig.RECORD_AUDIO[0])) {
+                    title = "录音权限使用说明";
+                    explain = "录音权限使用说明\n用户app用于录制音频";
+                } else {
+                    title = "存储权限使用说明";
+                    explain = "存储权限使用说明\n用户app写入/下载/保存/读取/修改/删除图片、视频、文件等信息";
+                }
+
+                int startIndex = 0;
+                int endOf = startIndex + title.length();
+                SpannableStringBuilder builder = new SpannableStringBuilder(explain);
+                builder.setSpan(new AbsoluteSizeSpan(DensityUtil.dip2px(fragment.getContext(), 16)), startIndex, endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+                builder.setSpan(new ForegroundColorSpan(0xFF333333), startIndex, endOf, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+                view.setText(builder);
+
+                view.setBackground(ContextCompat.getDrawable(fragment.getContext(), R.drawable.ps_demo_permission_desc_bg));
+                ConstraintLayout.LayoutParams layoutParams =
+                        new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams.topToBottom = R.id.title_bar;
+                layoutParams.leftToLeft = ConstraintSet.PARENT_ID;
+                layoutParams.leftMargin = dp10;
+                layoutParams.rightMargin = dp10;
+                viewGroup.addView(view, layoutParams);
+            }
+        }
+
+        @Override
+        public void onDismiss(Fragment fragment) {
+            View rootView = fragment.getView();
+            if (rootView instanceof ViewGroup) {
+                ViewGroup viewGroup = (ViewGroup) rootView;
+                View tagExplainView = viewGroup.findViewWithTag("TAG_EXPLAIN_VIEW");
+                viewGroup.removeView(tagExplainView);
+            }
+        }
+    }
+
 
     /**
      * 自定义预览
@@ -890,6 +1129,8 @@ public class MainActivity extends AppCompatActivity implements IBridgePictureBeh
                 camera.isManualFocusCameraPreview(cb_camera_focus.isChecked());
                 camera.isZoomCameraPreview(cb_camera_zoom.isChecked());
                 camera.setOutputPathDir(getSandboxCameraOutputPath());
+                camera.setPermissionDeniedListener(getSimpleXPermissionDeniedListener());
+                camera.setPermissionDescriptionListener(getSimpleXPermissionDescriptionListener());
                 camera.setImageEngine(new CameraImageEngine() {
                     @Override
                     public void loadImage(Context context, String url, ImageView imageView) {

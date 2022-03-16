@@ -1542,8 +1542,12 @@ public class PictureSelectorPreviewFragment extends PictureCommonFragment {
 
     @Override
     public void onDestroy() {
-        viewPageAdapter.destroy();
-        viewPager.unregisterOnPageChangeCallback(pageChangeCallback);
+        if (viewPageAdapter != null) {
+            viewPageAdapter.destroy();
+        }
+        if (viewPager != null) {
+            viewPager.unregisterOnPageChangeCallback(pageChangeCallback);
+        }
         super.onDestroy();
     }
 }

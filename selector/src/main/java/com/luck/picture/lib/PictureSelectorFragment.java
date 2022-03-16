@@ -3,6 +3,7 @@ package com.luck.picture.lib;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.text.TextUtils;
@@ -58,6 +59,7 @@ import com.luck.picture.lib.utils.AnimUtils;
 import com.luck.picture.lib.utils.DateUtils;
 import com.luck.picture.lib.utils.DensityUtil;
 import com.luck.picture.lib.utils.DoubleUtils;
+import com.luck.picture.lib.utils.SdkVersionUtils;
 import com.luck.picture.lib.utils.StyleUtils;
 import com.luck.picture.lib.utils.ToastUtils;
 import com.luck.picture.lib.utils.ValueOf;
@@ -379,18 +381,9 @@ public class PictureSelectorFragment extends PictureCommonFragment
         if (PermissionChecker.isCheckReadStorage(getContext())) {
             beginLoadData();
         } else {
+            onPermissionExplainEvent(true, PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
             if (PictureSelectionConfig.onPermissionsEventListener != null) {
-                PictureSelectionConfig.onPermissionsEventListener.requestPermission(this,
-                        PermissionConfig.READ_WRITE_EXTERNAL_STORAGE, new OnRequestPermissionListener() {
-                            @Override
-                            public void onCall(String[] permissionArray, boolean isResult) {
-                                if (isResult) {
-                                    beginLoadData();
-                                } else {
-                                    handlePermissionDenied(permissionArray);
-                                }
-                            }
-                        });
+                onApplyPermissionsEvent(-1, PermissionConfig.READ_WRITE_EXTERNAL_STORAGE);
             } else {
                 PermissionChecker.getInstance().requestPermissions(this,
                         PermissionConfig.READ_WRITE_EXTERNAL_STORAGE, new PermissionResultCallback() {
@@ -408,10 +401,26 @@ public class PictureSelectorFragment extends PictureCommonFragment
         }
     }
 
+    @Override
+    public void onApplyPermissionsEvent(int event, String[] permissionArray) {
+        PictureSelectionConfig.onPermissionsEventListener.requestPermission(this, permissionArray,
+                new OnRequestPermissionListener() {
+                    @Override
+                    public void onCall(String[] permissionArray, boolean isResult) {
+                        if (isResult) {
+                            beginLoadData();
+                        } else {
+                            handlePermissionDenied(permissionArray);
+                        }
+                    }
+                });
+    }
+
     /**
      * 开始获取数据
      */
     private void beginLoadData() {
+        onPermissionExplainEvent(false, null);
         if (config.isOnlySandboxDir) {
             loadOnlyInAppDirectoryAllMediaData();
         } else {
@@ -421,18 +430,35 @@ public class PictureSelectorFragment extends PictureCommonFragment
 
     @Override
     public void handlePermissionSettingResult(String[] permissions) {
+        onPermissionExplainEvent(false, null);
+        boolean isHasCamera = TextUtils.equals(permissions[0],PermissionConfig.CAMERA[0]);
         boolean isHasPermissions;
         if (PictureSelectionConfig.onPermissionsEventListener != null) {
-            isHasPermissions = PictureSelectionConfig.onPermissionsEventListener
-                    .hasPermissions(this, permissions);
+            isHasPermissions = PictureSelectionConfig.onPermissionsEventListener.hasPermissions(this, permissions);
         } else {
-            isHasPermissions = PermissionChecker.isCheckReadStorage(getContext());
+            if (isHasCamera) {
+                isHasPermissions = PermissionChecker.isCheckSelfPermission(getContext(), permissions);
+            } else {
+                if (SdkVersionUtils.isR()) {
+                    isHasPermissions = Environment.isExternalStorageManager();
+                } else {
+                    isHasPermissions = PermissionChecker.isCheckSelfPermission(getContext(), permissions);
+                }
+            }
         }
         if (isHasPermissions) {
-            beginLoadData();
+            if (isHasCamera) {
+                openSelectedCamera();
+            } else {
+                beginLoadData();
+            }
         } else {
-            ToastUtils.showToast(getContext(), getString(R.string.ps_jurisdiction));
-            onKeyBackFragmentFinish();
+            if (isHasCamera) {
+                ToastUtils.showToast(getContext(), getString(R.string.ps_camera));
+            } else {
+                ToastUtils.showToast(getContext(), getString(R.string.ps_jurisdiction));
+                onKeyBackFragmentFinish();
+            }
         }
     }
 

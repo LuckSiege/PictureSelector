@@ -61,10 +61,11 @@ import com.luck.lib.camerax.listener.ImageCallbackListener;
 import com.luck.lib.camerax.listener.TypeListener;
 import com.luck.lib.camerax.permissions.PermissionChecker;
 import com.luck.lib.camerax.permissions.PermissionResultCallback;
-import com.luck.lib.camerax.permissions.PermissionUtil;
+import com.luck.lib.camerax.permissions.SimpleXPermissionUtil;
 import com.luck.lib.camerax.utils.CameraUtils;
 import com.luck.lib.camerax.utils.DensityUtil;
 import com.luck.lib.camerax.utils.FileUtils;
+import com.luck.lib.camerax.utils.SimpleXSpUtils;
 import com.luck.lib.camerax.widget.CaptureLayout;
 import com.luck.lib.camerax.widget.FocusImageView;
 
@@ -186,6 +187,7 @@ public class CustomCameraView extends RelativeLayout {
     private CameraControl mCameraControl;
     private FocusImageView focusImageView;
     private Executor mainExecutor;
+    private Activity activity;
 
     private boolean isImageCaptureEnabled() {
         return useCameraCases == LifecycleCameraController.IMAGE_CAPTURE;
@@ -209,6 +211,7 @@ public class CustomCameraView extends RelativeLayout {
 
     private void initView() {
         inflate(getContext(), R.layout.picture_camera_view, this);
+        activity = (Activity) getContext();
         setBackgroundColor(ContextCompat.getColor(getContext(), R.color.picture_color_black));
         mCameraPreviewView = findViewById(R.id.cameraPreviewView);
         mTextureView = findViewById(R.id.video_play_preview);
@@ -302,7 +305,6 @@ public class CustomCameraView extends RelativeLayout {
                                     return;
                                 }
                                 Uri savedUri = outputFileResults.getSavedUri();
-                                Activity activity = (Activity) getContext();
                                 SimpleCameraX.putOutputUri(activity.getIntent(), savedUri);
                                 String outPutPath = FileUtils.isContent(savedUri.toString()) ? savedUri.toString() : savedUri.getPath();
                                 mTextureView.setVisibility(View.VISIBLE);
@@ -387,7 +389,6 @@ public class CustomCameraView extends RelativeLayout {
 
             @Override
             public void confirm() {
-                Activity activity = (Activity) getContext();
                 String outputPath = isMergeExternalStorageState(activity, SimpleCameraX.getOutputPath(activity.getIntent()));
                 if (isImageCaptureEnabled()) {
                     mImagePreview.setVisibility(INVISIBLE);
@@ -496,19 +497,40 @@ public class CustomCameraView extends RelativeLayout {
         }
         setCaptureLoadingColor(captureLoadingColor);
         setProgressColor(captureLoadingColor);
-        PermissionChecker.getInstance().requestPermissions((Activity) getContext(),
-                new String[]{Manifest.permission.CAMERA},
-                new PermissionResultCallback() {
-                    @Override
-                    public void onGranted() {
-                        buildUseCameraCases();
-                    }
+        boolean isCheckSelfPermission = PermissionChecker.checkSelfPermission(getContext(), new String[]{Manifest.permission.CAMERA});
+        if (isCheckSelfPermission) {
+            buildUseCameraCases();
+        } else {
+            if (CustomCameraConfig.explainListener != null) {
+                if (!SimpleXSpUtils.getBoolean(getContext(), Manifest.permission.CAMERA, false)) {
+                    CustomCameraConfig.explainListener
+                            .onPermissionDescription(getContext(), this, Manifest.permission.CAMERA);
+                }
+            }
+            PermissionChecker.getInstance().requestPermissions(activity, new String[]{Manifest.permission.CAMERA},
+                    new PermissionResultCallback() {
+                        @Override
+                        public void onGranted() {
+                            buildUseCameraCases();
+                            if (CustomCameraConfig.explainListener != null) {
+                                CustomCameraConfig.explainListener.onDismiss(CustomCameraView.this);
+                            }
+                        }
 
-                    @Override
-                    public void onDenied() {
-                        PermissionUtil.goIntentSetting((Activity) getContext(), PermissionChecker.PERMISSION_SETTING_CODE);
-                    }
-                });
+                        @Override
+                        public void onDenied() {
+                            if (CustomCameraConfig.deniedListener != null) {
+                                SimpleXSpUtils.putBoolean(getContext(), Manifest.permission.CAMERA, true);
+                                CustomCameraConfig.deniedListener.onDenied(getContext(), Manifest.permission.CAMERA, PermissionChecker.PERMISSION_SETTING_CODE);
+                                if (CustomCameraConfig.explainListener != null) {
+                                    CustomCameraConfig.explainListener.onDismiss(CustomCameraView.this);
+                                }
+                            } else {
+                                SimpleXPermissionUtil.goIntentSetting(activity, PermissionChecker.PERMISSION_SETTING_CODE);
+                            }
+                        }
+                    });
+        }
     }
 
     /**
@@ -785,7 +807,7 @@ public class CustomCameraView extends RelativeLayout {
     private final TextureView.SurfaceTextureListener surfaceTextureListener = new TextureView.SurfaceTextureListener() {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-            String outputPath = SimpleCameraX.getOutputPath(((Activity) getContext()).getIntent());
+            String outputPath = SimpleCameraX.getOutputPath(activity.getIntent());
             startVideoPlay(outputPath);
         }
 
@@ -963,7 +985,7 @@ public class CustomCameraView extends RelativeLayout {
      * 取消拍摄相关
      */
     public void onCancelMedia() {
-        String outputPath = SimpleCameraX.getOutputPath(((Activity) getContext()).getIntent());
+        String outputPath = SimpleCameraX.getOutputPath(activity.getIntent());
         FileUtils.deleteFile(getContext(), outputPath);
         stopVideoPlay();
         resetState();

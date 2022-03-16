@@ -16,19 +16,42 @@ import com.luck.picture.lib.R;
  * @describe：RemindDialog
  */
 public class RemindDialog extends Dialog implements View.OnClickListener {
+    private final TextView btnOk;
+    private final TextView tvContent;
 
     public RemindDialog(Context context, String tips) {
         super(context, R.style.Picture_Theme_Dialog);
         setContentView(R.layout.ps_remind_dialog);
-        TextView btnOk = findViewById(R.id.btnOk);
-        TextView tvContent = findViewById(R.id.tv_content);
+        btnOk = findViewById(R.id.btnOk);
+        tvContent = findViewById(R.id.tv_content);
         tvContent.setText(tips);
         btnOk.setOnClickListener(this);
         setDialogSize();
     }
 
+    @Deprecated
     public static Dialog showTipsDialog(Context context, String tips) {
         return new RemindDialog(context, tips);
+    }
+
+    public static RemindDialog buildDialog(Context context, String tips) {
+        return new RemindDialog(context, tips);
+    }
+
+    public void setButtonText(String text) {
+        btnOk.setText(text);
+    }
+
+    public void setButtonTextColor(int color) {
+        btnOk.setTextColor(color);
+    }
+
+    public void setContent(String text) {
+        tvContent.setText(text);
+    }
+
+    public void setContentTextColor(int color) {
+        tvContent.setTextColor(color);
     }
 
     private void setDialogSize() {
@@ -44,7 +67,21 @@ public class RemindDialog extends Dialog implements View.OnClickListener {
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.btnOk) {
-            dismiss();
+            if (listener != null) {
+                listener.onClick(view);
+            } else {
+                dismiss();
+            }
         }
+    }
+
+    private OnDialogClickListener listener;
+
+    public void setOnDialogClickListener(OnDialogClickListener listener) {
+        this.listener = listener;
+    }
+
+    public interface OnDialogClickListener {
+        void onClick(View view);
     }
 }

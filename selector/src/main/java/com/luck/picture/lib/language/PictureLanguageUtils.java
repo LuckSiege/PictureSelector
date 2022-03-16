@@ -1,12 +1,13 @@
 package com.luck.picture.lib.language;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
 import androidx.annotation.NonNull;
+
+import com.luck.picture.lib.utils.SpUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.Locale;
@@ -20,8 +21,7 @@ public class PictureLanguageUtils {
 
     private static final String KEY_LOCALE = "KEY_LOCALE";
     private static final String VALUE_FOLLOW_SYSTEM = "VALUE_FOLLOW_SYSTEM";
-    private static final String SP_NAME = "PictureSpUtils";
-    private static SharedPreferences  pictureSpUtils;
+
     private PictureLanguageUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
@@ -54,23 +54,16 @@ public class PictureLanguageUtils {
     private static void applyLanguage(@NonNull Context context, @NonNull final Locale locale,
                                       final boolean isFollowSystem) {
         if (isFollowSystem) {
-            pictureSpUtils = context.getSharedPreferences("PictureSpUtils", Context.MODE_PRIVATE);
-            getSp(context).edit().putString(KEY_LOCALE, VALUE_FOLLOW_SYSTEM).apply();
+            SpUtils.putString(context, KEY_LOCALE, VALUE_FOLLOW_SYSTEM);
         } else {
             String localLanguage = locale.getLanguage();
             String localCountry = locale.getCountry();
-            pictureSpUtils = context.getSharedPreferences("PictureSpUtils", Context.MODE_PRIVATE);
-            getSp(context).edit().putString(KEY_LOCALE, localLanguage + "$" + localCountry).apply();
+            SpUtils.putString(context, KEY_LOCALE, localLanguage + "$" + localCountry);
         }
         updateLanguage(context, locale);
     }
 
-    private static SharedPreferences getSp(Context context) {
-        if (pictureSpUtils == null) {
-            pictureSpUtils = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
-        }
-        return pictureSpUtils;
-    }
+
 
     private static void updateLanguage(Context context, Locale locale) {
         Resources resources = context.getResources();

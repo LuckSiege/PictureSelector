@@ -32,6 +32,8 @@ import com.luck.picture.lib.entity.LocalMediaFolder;
 import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
+import com.luck.picture.lib.interfaces.OnPermissionDeniedListener;
+import com.luck.picture.lib.interfaces.OnPermissionDescriptionListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnPreviewInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
@@ -239,6 +241,28 @@ public final class PictureSelectionModel {
     }
 
     /**
+     * permission description
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionModel setPermissionDescriptionListener(OnPermissionDescriptionListener listener) {
+        PictureSelectionConfig.onPermissionDescriptionListener = listener;
+        return this;
+    }
+
+    /**
+     *  Permission denied
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionModel setPermissionDeniedListener(OnPermissionDeniedListener listener) {
+        PictureSelectionConfig.onPermissionDeniedListener = listener;
+        return this;
+    }
+
+    /**
      * Custom limit tips
      *
      * @param listener
@@ -271,6 +295,7 @@ public final class PictureSelectionModel {
         selectionConfig.isCameraForegroundService = isForeground;
         return this;
     }
+
 
     /**
      * Change the desired orientation of this activity.  If the activity

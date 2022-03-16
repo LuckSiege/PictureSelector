@@ -14,6 +14,8 @@ import com.luck.picture.lib.interfaces.OnCameraInterceptListener;
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener;
 import com.luck.picture.lib.interfaces.OnInjectLayoutResourceListener;
 import com.luck.picture.lib.interfaces.OnMediaEditInterceptListener;
+import com.luck.picture.lib.interfaces.OnPermissionDeniedListener;
+import com.luck.picture.lib.interfaces.OnPermissionDescriptionListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnPreviewInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
@@ -128,6 +130,8 @@ public final class PictureSelectionConfig implements Parcelable {
     public static OnInjectLayoutResourceListener onLayoutResourceListener;
     public static OnPreviewInterceptListener onPreviewInterceptListener;
     public static OnSelectFilterListener onSelectFilterListener;
+    public static OnPermissionDescriptionListener onPermissionDescriptionListener;
+    public static OnPermissionDeniedListener onPermissionDeniedListener;
 
 
     protected PictureSelectionConfig(Parcel in) {
@@ -428,6 +432,8 @@ public final class PictureSelectionConfig implements Parcelable {
         PictureSelectionConfig.onPreviewInterceptListener = null;
         PictureSelectionConfig.onSelectLimitTipsListener = null;
         PictureSelectionConfig.onSelectFilterListener = null;
+        PictureSelectionConfig.onPermissionDescriptionListener = null;
+        PictureSelectionConfig.onPermissionDeniedListener = null;
         PictureThreadUtils.cancel(PictureThreadUtils.getIoPool());
         SelectedManager.clearSelectResult();
         BuildRecycleItemViewParams.clear();

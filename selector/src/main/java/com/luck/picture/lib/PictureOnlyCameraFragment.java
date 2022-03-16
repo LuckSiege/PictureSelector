@@ -82,6 +82,7 @@ public class PictureOnlyCameraFragment extends PictureCommonFragment {
 
     @Override
     public void handlePermissionSettingResult(String[] permissions) {
+        onPermissionExplainEvent(false, null);
         boolean isHasPermissions;
         if (PictureSelectionConfig.onPermissionsEventListener != null) {
             isHasPermissions = PictureSelectionConfig.onPermissionsEventListener

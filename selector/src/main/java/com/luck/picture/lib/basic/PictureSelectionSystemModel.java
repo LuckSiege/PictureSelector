@@ -20,6 +20,8 @@ import com.luck.picture.lib.engine.CompressEngine;
 import com.luck.picture.lib.engine.CropEngine;
 import com.luck.picture.lib.engine.SandboxFileEngine;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.interfaces.OnPermissionDeniedListener;
+import com.luck.picture.lib.interfaces.OnPermissionDescriptionListener;
 import com.luck.picture.lib.interfaces.OnPermissionsInterceptListener;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.luck.picture.lib.interfaces.OnSelectFilterListener;
@@ -192,6 +194,28 @@ public final class PictureSelectionSystemModel {
      */
     public PictureSelectionSystemModel setPermissionsInterceptListener(OnPermissionsInterceptListener listener) {
         PictureSelectionConfig.onPermissionsEventListener = listener;
+        return this;
+    }
+
+    /**
+     * permission description
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionSystemModel setPermissionDescriptionListener(OnPermissionDescriptionListener listener) {
+        PictureSelectionConfig.onPermissionDescriptionListener = listener;
+        return this;
+    }
+
+    /**
+     *  Permission denied
+     *
+     * @param listener
+     * @return
+     */
+    public PictureSelectionSystemModel setPermissionDeniedListener(OnPermissionDeniedListener listener) {
+        PictureSelectionConfig.onPermissionDeniedListener = listener;
         return this;
     }
 
